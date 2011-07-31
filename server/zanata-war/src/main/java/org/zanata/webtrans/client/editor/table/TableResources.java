@@ -20,38 +20,26 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 
-public class EditorTextArea extends TextArea
+/**
+ * Resources used by the table.
+ */
+public interface TableResources extends ClientBundle
 {
-   public EditorTextArea()
-   {
-      super();
-      sinkEvents(Event.ONPASTE);
 
-   }
+   /**
+    * An {@link ClientBundle} that provides images for
+    * {@link InlineTargetCellEditor}.
+    */
+   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/button_save.png")
+   ImageResource cellEditorAccept();
 
-   @Override
-   public void onBrowserEvent(Event event)
-   {
-      super.onBrowserEvent(event);
-      switch (DOM.eventGetType(event)) {
-      case Event.ONPASTE:
-         Scheduler.get().scheduleDeferred(new ScheduledCommand()
-         {
-                @Override
-                  public void execute() {
-                      ValueChangeEvent.fire(EditorTextArea.this, getText());
-                  }
-         });
-         break;
-      }
-   }
+   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/button_cancel.png")
+   ImageResource cellEditorCancel();
+
+   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/2rightarrow.png")
+   ImageResource copySrcButton();
 
 }
-

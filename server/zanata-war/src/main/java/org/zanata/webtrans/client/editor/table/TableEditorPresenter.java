@@ -77,6 +77,8 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -463,10 +465,17 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
             // save the Approved state when target cell editor is not opened
             // and target is not empty
-            if (!display.getTargetCellEditor().isOpened())
+            if (!rowValue.getTarget().isEmpty())
             {
-               if (!rowValue.getTarget().isEmpty())
+               if (!display.getTargetCellEditor().isOpened())
+               {
                   tableModelHandler.onSetRowValue(row, rowValue);
+               }
+               else
+               {
+                  if (rowValue.getStatus() == ContentState.NeedReview)
+                     display.getTargetCellEditor().acceptEdit();
+               }
             }
          }
       }));
@@ -479,11 +488,20 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          {
             int rowOffset = getRowOffset(event.getTransUnit().getId());
             int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
-            display.getTableModel().setRowValueOverride(row, event.getTransUnit());
+            // display.getTableModel().setRowValueOverride(row,
+            // event.getTransUnit());
             if (display.getTargetCellEditor().isEditing())
             {
-               display.getTargetCellEditor().setText(event.getTransUnit().getSource());
-               display.getTargetCellEditor().setTextAreaSize();
+               int curRow = display.getTargetCellEditor().getCurrentRow();
+               if (curRow == row)
+               {
+                  display.getTargetCellEditor().setText(event.getTransUnit().getSource());
+                  display.getTargetCellEditor().setTextAreaSize();
+               }
+            }
+            else
+            {
+               tableModelHandler.gotoRow(row);
             }
          }
 

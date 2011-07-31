@@ -173,6 +173,11 @@ Removes some of the styling on the page-level splitters
 	vertical-align: top;
 }
 
+.TableEditor tr td.TableEditorCell-Middle {
+	vertical-align: middle;
+	width: 100%;
+}
+
 .TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Source {
 	background: url(tu_bg_fuzzy_left.png) repeat-y left;
 	border-right: 3px solid #cccccc;
@@ -261,12 +266,8 @@ td.TableEditorCell-Source {
 	
 }
 
-td.TableEditorCell-Middle {
-	
-}
-
 td.TableEditorCell-Target {
-	
+
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell {

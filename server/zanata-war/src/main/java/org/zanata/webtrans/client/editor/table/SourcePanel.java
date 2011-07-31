@@ -23,6 +23,9 @@ package org.zanata.webtrans.client.editor.table;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -31,7 +34,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 
-public class SourcePanel extends Composite implements HasValue<TransUnit>
+public class SourcePanel extends Composite implements HasValue<TransUnit>, HasClickHandlers
 {
 
    private final FlowPanel panel;
@@ -93,11 +96,16 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>
    {
       return addHandler(handler, ValueChangeEvent.getType());
    }
+
+   @Override
+   public HandlerRegistration addClickHandler(ClickHandler handler)
+   {
+      return addHandler(handler, ClickEvent.getType());
+   }
    
    public void highlightSearch(String search)
    {
       ((HighlightingLabel) sourceLabel).highlightSearch(search);
    }
-   
 
 }

@@ -39,11 +39,10 @@ import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -52,17 +51,12 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
    // public static final int INDICATOR_COL = 0;
    public static final int SOURCE_COL = 0;
-   public static final int TARGET_COL = 1;
+   public static final int TARGET_COL = 2;
 
    private String findMessage;
    private CheckBox toggleApproved;
+   private SourcePanel sourcePanel;
    private EventBus eventBus;
-
-   public static interface OperationsColumnImages extends ImageBundle
-   {
-      @Resource("org/zanata/webtrans/images/crystal_project/_16x16/actions/2rightarrow.png")
-      AbstractImagePrototype copySrcButton();
-   }
 
    private final RowRenderer<TransUnit> rowRenderer = new RowRenderer<TransUnit>()
    {
@@ -141,14 +135,28 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    private final CellRenderer<TransUnit, TransUnit> sourceCellRenderer = new CellRenderer<TransUnit, TransUnit>()
    {
       @Override
-      public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, com.google.gwt.gen2.table.client.TableDefinition.AbstractCellView<TransUnit> view)
+      public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
       {
          view.setStyleName("TableEditorCell TableEditorCell-Source");
-         SourcePanel sourcePanel = new SourcePanel(rowValue, messages);
+         sourcePanel = new SourcePanel(rowValue, messages);
          if (findMessage != null && !findMessage.isEmpty())
          {
             sourcePanel.highlightSearch(findMessage);
          }
+         sourcePanel.sinkEvents(Event.ONCLICK);
+         sourcePanel.addClickHandler(new ClickHandler()
+         {
+            @Override
+            public void onClick(ClickEvent event)
+            {
+               Log.debug("click");
+               if (targetCellEditor.isOpened())
+               {
+                  targetCellEditor.acceptEdit();
+               }
+            }
+
+         });
          view.setWidget(sourcePanel);
       }
    };
@@ -175,7 +183,9 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       {
          view.setStyleName("TableEditorCell TableEditorCell-Middle");
          VerticalPanel operationsPanel = new VerticalPanel();
+         operationsPanel.setWidth("100%");
          operationsPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+
          toggleApproved = new CheckBox();
          if (rowValue.getStatus() == ContentState.Approved)
             toggleApproved.setValue(true);
@@ -196,8 +206,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             }
 
          });
-         OperationsColumnImages images = GWT.<OperationsColumnImages> create(OperationsColumnImages.class);
-         Image copyButton = images.copySrcButton().createImage();
+         TableResources images = GWT.create(TableResources.class);
+         Image copyButton = new Image(images.copySrcButton());
          copyButton.setStyleName("gwt-Button");
          //copyButton.setText(messages.editClone());
          copyButton.setTitle(messages.copySourcetoTarget());
