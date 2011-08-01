@@ -282,7 +282,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       operationsPanel = new VerticalPanel();
       operationsPanel.setHeight("100%");
-      operationsPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+      operationsPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
       operationsPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
       // operationsPanel.addStyleName("float-right-div");
@@ -408,26 +408,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       cellViewWidget = table.getWidget(curRow, curCol);
 
-      // int height = table.getWidget(curRow, curCol - 1).getOffsetHeight();
-
-      // int realHeight = height > MIN_HEIGHT ? height : MIN_HEIGHT;
-
-      //Disable it for autosize
-      // textArea.setHeight(realHeight + "px");
-
-      // Leave space for operationsPanel
-      int width = table.getWidget(curRow, 0).getOffsetWidth() - 60;
-      // layoutTable.setHeight(realHeight + "px");
-      textArea.setWidth(width + "px");
-
+      layoutTable.setCellWidth(this.operationsPanel, "20px");
       table.setWidget(curRow, curCol, layoutTable);
       
       textArea.setText(cellValue.getTarget());
 
       autoSize();
-
-      int height = textArea.getOffsetHeight();
-      operationsPanel.setHeight(height + "px");
 
       this.cellValue = cellValue;
       textArea.setFocus(true);

@@ -316,9 +316,9 @@ tr.TableEditorRow.selected td {
 .TableEditorContent,.TableEditorContent-Edit {
 	font-size: 14px;
 	font-family: sans-serif;
-	padding: 3px;
-	margin: 2px;
-	width: 99%;
+	padding: 0px;
+	margin: 0px;
+	width: 98%;
 }
 
 .TableEditorContent-Empty {
