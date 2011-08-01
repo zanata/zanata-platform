@@ -46,6 +46,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class InlineTargetCellEditor implements CellEditor<TransUnit>
@@ -125,7 +126,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private TransUnit cellValue;
 
    private EditorTextArea textArea;
-   private HorizontalPanel operationsPanel;
+   private VerticalPanel operationsPanel;
 
    private boolean isFocused = false;
    // private boolean allowFuzzyOverride = false;
@@ -279,8 +280,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       layoutTable.add(textArea);
 
-      operationsPanel = new HorizontalPanel();
-      operationsPanel.setWidth("100%");
+      operationsPanel = new VerticalPanel();
+      operationsPanel.setHeight("100%");
       operationsPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
       operationsPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
@@ -292,21 +293,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       // stateImage = new Image(resources.newUnit());
       // operationsPanel.add(stateImage);
 
-      // Add content widget
-      // toggleFuzzy = new CheckBox(messages.fuzzy());
-      // operationsPanel.add(toggleFuzzy);
-
-      // PushButton cloneButton = new PushButton(new Image(), cloneHandler);
-      // cloneButton.setText(messages.editClone());
-      // cloneButton.setTitle(messages.editCloneShortcut());
-      // operationsPanel.add(cloneButton);
-
-      // PushButton cloneAndSaveButton = new PushButton(new Image(),
-      // cloneAndSaveHandler);
-      // cloneAndSaveButton.setText(messages.editCloneAndSave());
-      // cloneAndSaveButton.setTitle(messages.editCloneAndSaveShortcut());
-      // operationsPanel.add(cloneAndSaveButton);
-
       // PushButton doesn't allow to have images and text at the same time
       TableResources images = GWT.create(TableResources.class);
       Image cancelButton = new Image(images.cellEditorCancel());
@@ -315,14 +301,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       cancelButton.setTitle(messages.editCancelShortcut());
       cancelButton.addClickHandler(cancelHandler);
 
-      operationsPanel.add(cancelButton);
-
       Image saveButton = new Image(images.cellEditorAccept());
       // saveButton.setText(messages.editSave());
       saveButton.setStyleName("gwt-Button");
       saveButton.setTitle(messages.editSaveShortcut());
       saveButton.addClickHandler(acceptHandler);
+
       operationsPanel.add(saveButton);
+      operationsPanel.add(cancelButton);
       layoutTable.add(operationsPanel);
    }
 
