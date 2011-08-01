@@ -400,9 +400,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          }
          restoreView();
       }
-      
+
       // save the content in previous cell before start new editing
-      if (this.cellValue != null && curRow != cellEditInfo.getRowIndex() && !textArea.getText().equals(this.cellValue.getTarget()))
+      if (this.cellValue != null && curRow != cellEditInfo.getRowIndex())
       {
          Log.debug("save content of previous cell");
          acceptEdit();
