@@ -490,19 +490,22 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
             // display.getTableModel().setRowValueOverride(row,
             // event.getTransUnit());
-            if (display.getTargetCellEditor().isEditing())
-            {
-               int curRow = display.getTargetCellEditor().getCurrentRow();
-               if (curRow == row)
-               {
-                  display.getTargetCellEditor().setText(event.getTransUnit().getSource());
-                  display.getTargetCellEditor().setTextAreaSize();
-               }
-            }
-            else
+            // if (display.getTargetCellEditor().isEditing())
+            // {
+               // int curRow = display.getTargetCellEditor().getCurrentRow();
+               // if (curRow == row)
+               // {
+            // display.getTargetCellEditor().setText(event.getTransUnit().getSource());
+            // display.getTargetCellEditor().setTextAreaSize();
+               // }
+            // }
+            if (!display.getTargetCellEditor().isEditing())
             {
                tableModelHandler.gotoRow(row);
+
             }
+            display.getTargetCellEditor().setText(event.getTransUnit().getSource());
+            display.getTargetCellEditor().setTextAreaSize();
          }
 
       }));
