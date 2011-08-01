@@ -155,6 +155,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       // Wrap contents in a table
       layoutTable = new HorizontalPanel();
       layoutTable.setWidth("100%");
+      layoutTable.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
       // this.eventBus = eventBus;
       cancelCallback = callback;
@@ -281,7 +282,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       layoutTable.add(textArea);
 
       operationsPanel = new VerticalPanel();
-      operationsPanel.setHeight("100%");
+      operationsPanel.setHeight("40px");
       operationsPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
       operationsPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
@@ -566,9 +567,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       {
          textArea.setVisibleLines(textArea.getVisibleLines() + growByLines);
       }
-
-      int height = textArea.getOffsetHeight();
-      operationsPanel.setHeight(height + "px");
    }
 
 }
