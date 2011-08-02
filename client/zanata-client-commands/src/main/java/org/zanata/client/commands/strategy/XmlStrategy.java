@@ -23,8 +23,8 @@ package org.zanata.client.commands.strategy;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
@@ -32,15 +32,13 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.AndFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.tools.ant.DirectoryScanner;
 import org.zanata.client.commands.pull.PullOptions;
 import org.zanata.client.commands.pull.PullStrategy;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.commands.push.PushOptions;
 import org.zanata.client.commands.push.PushStrategy;
-import org.zanata.client.commands.push.NotTargetFileFilter;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
@@ -97,25 +95,30 @@ public class XmlStrategy implements PushStrategy, PullStrategy
       return docName + "_" + locale.getJavaLocale() + ".xml";
    }
 
-   private String removeDotXml(String propFileName)
-   {
-      return propFileName.substring(0, propFileName.length() - ".xml".length());
-   }
-
    @Override
-   public Set<String> findDocNames(File srcDir, AndFileFilter fileFilter) throws IOException
+   public Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes) throws IOException
    {
       Set<String> localDocNames = new HashSet<String>();
-      NotTargetFileFilter targetFilter = new NotTargetFileFilter(pushOptions.getLocales(), ".xml");
-      fileFilter.addFileFilter(targetFilter);
 
-      Collection<File> files = FileUtils.listFiles(srcDir, fileFilter, TrueFileFilter.TRUE);
-      for (File f : files)
+      includes.add("**/*.xml");
+      for (LocaleMapping locMap : pushOptions.getLocales())
       {
-         String fileName = f.getPath();
-         String baseName = removeDotXml(fileName);
-         String relativeName = PathUtil.getRelativePath(baseName, srcDir.getPath());
-         localDocNames.add(relativeName);
+         String loc = locMap.getJavaLocale().toLowerCase();
+         excludes.add("**/*_" + loc + ".xml");
+      }
+
+      DirectoryScanner dirScanner = new DirectoryScanner();
+      dirScanner.setBasedir(srcDir);
+      dirScanner.setCaseSensitive(false);
+      dirScanner.setExcludes((String[]) excludes.toArray(new String[excludes.size()]));
+      dirScanner.setIncludes((String[]) includes.toArray(new String[includes.size()]));
+      dirScanner.scan();
+      String[] files = dirScanner.getIncludedFiles();
+
+      for (String relativeFilePath : files)
+      {
+         String baseName = FilenameUtils.removeExtension(relativeFilePath);
+         localDocNames.add(baseName);
       }
       return localDocNames;
    }
@@ -205,5 +208,4 @@ public class XmlStrategy implements PushStrategy, PullStrategy
          throw new IOException(e);
       }
    }
-
 }

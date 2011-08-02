@@ -27,13 +27,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.AndFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.tools.ant.DirectoryScanner;
 import org.fedorahosted.openprops.Properties;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
@@ -45,7 +44,6 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.util.PathUtil;
 
 class PropertiesStrategy implements PushStrategy
 {
@@ -63,19 +61,29 @@ class PropertiesStrategy implements PushStrategy
    }
 
    @Override
-   public Set<String> findDocNames(File srcDir, AndFileFilter fileFilter) throws IOException
+   public Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes) throws IOException
    {
       Set<String> localDocNames = new HashSet<String>();
-      NotTargetFileFilter notTargetFilter = new NotTargetFileFilter(opts.getLocales(), ".properties");
-      fileFilter.addFileFilter(notTargetFilter);
 
-      Collection<File> files = FileUtils.listFiles(srcDir, fileFilter, TrueFileFilter.TRUE);
-      for (File f : files)
+      includes.add("**/*.properties");
+      for (LocaleMapping locMap : opts.getLocales())
       {
-         String fileName = f.getPath();
-         String baseName = removeDotProperties(fileName);
-         String relativeName = PathUtil.getRelativePath(baseName, srcDir.getPath());
-         localDocNames.add(relativeName);
+         String loc = locMap.getJavaLocale().toLowerCase();
+         excludes.add("**/*_" + loc + ".properties");
+      }
+
+      DirectoryScanner dirScanner = new DirectoryScanner();
+      dirScanner.setBasedir(srcDir);
+      dirScanner.setCaseSensitive(false);
+      dirScanner.setExcludes((String[]) excludes.toArray(new String[excludes.size()]));
+      dirScanner.setIncludes((String[]) includes.toArray(new String[includes.size()]));
+      dirScanner.scan();
+      String[] files = dirScanner.getIncludedFiles();
+
+      for (String relativeFilePath : files)
+      {
+         String baseName = FilenameUtils.removeExtension(relativeFilePath);
+         localDocNames.add(baseName);
       }
       return localDocNames;
    }
@@ -177,11 +185,6 @@ class PropertiesStrategy implements PushStrategy
       targetDoc.getTextFlowTargets().add(textFlowTarget);
    }
 
-   private String removeDotProperties(String propFileName)
-   {
-      return propFileName.substring(0, propFileName.length() - ".properties".length());
-   }
-
    @Override
    public void setPushOptions(PushOptions opts)
    {
@@ -206,5 +209,4 @@ class PropertiesStrategy implements PushStrategy
          }
       }
    }
-
 }
