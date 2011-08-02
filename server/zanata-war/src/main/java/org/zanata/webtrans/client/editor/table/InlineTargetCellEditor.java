@@ -46,6 +46,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class InlineTargetCellEditor implements CellEditor<TransUnit>
@@ -96,6 +97,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       public void onClick(ClickEvent event)
       {
+         cellValue.setStatus(ContentState.Approved);
          acceptEdit();
          // gotoNextRow(curRow);
       }
@@ -125,7 +127,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private TransUnit cellValue;
 
    private EditorTextArea textArea;
-   private HorizontalPanel operationsPanel;
+   private VerticalPanel operationsPanel;
 
    private boolean isFocused = false;
    // private boolean allowFuzzyOverride = false;
@@ -154,6 +156,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       // Wrap contents in a table
       layoutTable = new HorizontalPanel();
       layoutTable.setWidth("100%");
+      layoutTable.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
       // this.eventBus = eventBus;
       cancelCallback = callback;
@@ -279,9 +282,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       layoutTable.add(textArea);
 
-      operationsPanel = new HorizontalPanel();
-      operationsPanel.setWidth("100%");
-      operationsPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+      operationsPanel = new VerticalPanel();
+      operationsPanel.setHeight("40px");
+      operationsPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
       operationsPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
       // operationsPanel.addStyleName("float-right-div");
@@ -292,21 +295,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       // stateImage = new Image(resources.newUnit());
       // operationsPanel.add(stateImage);
 
-      // Add content widget
-      // toggleFuzzy = new CheckBox(messages.fuzzy());
-      // operationsPanel.add(toggleFuzzy);
-
-      // PushButton cloneButton = new PushButton(new Image(), cloneHandler);
-      // cloneButton.setText(messages.editClone());
-      // cloneButton.setTitle(messages.editCloneShortcut());
-      // operationsPanel.add(cloneButton);
-
-      // PushButton cloneAndSaveButton = new PushButton(new Image(),
-      // cloneAndSaveHandler);
-      // cloneAndSaveButton.setText(messages.editCloneAndSave());
-      // cloneAndSaveButton.setTitle(messages.editCloneAndSaveShortcut());
-      // operationsPanel.add(cloneAndSaveButton);
-
       // PushButton doesn't allow to have images and text at the same time
       TableResources images = GWT.create(TableResources.class);
       Image cancelButton = new Image(images.cellEditorCancel());
@@ -315,14 +303,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       cancelButton.setTitle(messages.editCancelShortcut());
       cancelButton.addClickHandler(cancelHandler);
 
-      operationsPanel.add(cancelButton);
-
       Image saveButton = new Image(images.cellEditorAccept());
       // saveButton.setText(messages.editSave());
       saveButton.setStyleName("gwt-Button");
       saveButton.setTitle(messages.editSaveShortcut());
       saveButton.addClickHandler(acceptHandler);
+
       operationsPanel.add(saveButton);
+      operationsPanel.add(cancelButton);
       layoutTable.add(operationsPanel);
    }
 
@@ -400,10 +388,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          }
          restoreView();
       }
-      
+
       // save the content in previous cell before start new editing
-      if (this.cellValue != null && curRow != cellEditInfo.getRowIndex() && !textArea.getText().equals(this.cellValue.getTarget()))
+      if (this.cellValue != null && curRow != cellEditInfo.getRowIndex())
       {
+         this.cellValue.setStatus(ContentState.Approved);
          Log.debug("save content of previous cell");
          acceptEdit();
       }
@@ -422,26 +411,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       cellViewWidget = table.getWidget(curRow, curCol);
 
-      // int height = table.getWidget(curRow, curCol - 1).getOffsetHeight();
-
-      // int realHeight = height > MIN_HEIGHT ? height : MIN_HEIGHT;
-
-      //Disable it for autosize
-      // textArea.setHeight(realHeight + "px");
-
-      // Leave space for operationsPanel
-      int width = table.getWidget(curRow, 0).getOffsetWidth() - 60;
-      // layoutTable.setHeight(realHeight + "px");
-      textArea.setWidth(width + "px");
-
+      layoutTable.setCellWidth(this.operationsPanel, "20px");
       table.setWidget(curRow, curCol, layoutTable);
       
       textArea.setText(cellValue.getTarget());
 
       autoSize();
-
-      int height = textArea.getOffsetHeight();
-      operationsPanel.setHeight(height + "px");
 
       this.cellValue = cellValue;
       textArea.setFocus(true);
@@ -594,9 +569,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       {
          textArea.setVisibleLines(textArea.getVisibleLines() + growByLines);
       }
-
-      int height = textArea.getOffsetHeight();
-      operationsPanel.setHeight(height + "px");
    }
 
 }
