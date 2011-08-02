@@ -97,6 +97,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       public void onClick(ClickEvent event)
       {
+         cellValue.setStatus(ContentState.Approved);
          acceptEdit();
          // gotoNextRow(curRow);
       }
@@ -391,6 +392,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       // save the content in previous cell before start new editing
       if (this.cellValue != null && curRow != cellEditInfo.getRowIndex())
       {
+         this.cellValue.setStatus(ContentState.Approved);
          Log.debug("save content of previous cell");
          acceptEdit();
       }

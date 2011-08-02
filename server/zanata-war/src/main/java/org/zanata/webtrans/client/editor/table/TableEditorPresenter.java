@@ -461,8 +461,13 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
             Log.info("toggle Approved for " + row);
             TransUnit rowValue = event.getTransUnit();
-            display.getTableModel().setRowValueOverride(row, rowValue);
+            if (rowValue.getStatus() == ContentState.Approved)
+            {
+               if (rowValue.getTarget().isEmpty())
+                  rowValue.setStatus(ContentState.New);
+            }
 
+            display.getTableModel().setRowValueOverride(row, rowValue);
             // save the Approved state when target cell editor is not opened
             // and target is not empty
             if (!rowValue.getTarget().isEmpty())
@@ -473,8 +478,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                }
                else
                {
-                  if (rowValue.getStatus() == ContentState.NeedReview)
-                     display.getTargetCellEditor().acceptEdit();
+                  display.getTargetCellEditor().acceptEdit();
                }
             }
          }
