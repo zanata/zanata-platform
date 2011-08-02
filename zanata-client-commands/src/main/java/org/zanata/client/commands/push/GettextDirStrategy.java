@@ -29,12 +29,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.filefilter.AndFileFilter;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.tools.ant.DirectoryScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
-import org.zanata.client.commands.StringUtil;
 import org.zanata.client.commands.gettext.PublicanUtil;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
@@ -64,15 +64,22 @@ class GettextDirStrategy implements PushStrategy
       return extensions;
    }
 
-   @Override
-   public Set<String> findDocNames(File srcDir, AndFileFilter fileFilter) throws IOException
+   public Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes) throws IOException
    {
       Set<String> localDocNames = new HashSet<String>();
+      includes.add("**/*.pot");
       // populate localDocNames by looking in pot directory
-      String[] srcFiles = PublicanUtil.findPotFiles(srcDir, fileFilter);
+      DirectoryScanner dirScanner = new DirectoryScanner();
+      dirScanner.setBasedir(srcDir);
+      dirScanner.setCaseSensitive(false);
+      dirScanner.setExcludes((String[]) excludes.toArray(new String[excludes.size()]));
+      dirScanner.setIncludes((String[]) includes.toArray(new String[includes.size()]));
+      dirScanner.scan();
+      String[] srcFiles = dirScanner.getIncludedFiles();
+
       for (String potName : srcFiles)
       {
-         String docName = StringUtil.removeFileExtension(potName, ".pot");
+         String docName = FilenameUtils.removeExtension(potName);
          localDocNames.add(docName);
       }
       return localDocNames;
@@ -150,5 +157,4 @@ class GettextDirStrategy implements PushStrategy
          }
       }
    }
-
 }

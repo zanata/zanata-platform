@@ -23,9 +23,9 @@ package org.zanata.client.commands.push;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.filefilter.AndFileFilter;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
@@ -34,8 +34,7 @@ public interface PushStrategy
 {
    void setPushOptions(PushOptions opts);
    StringSet getExtensions();
-
-   Set<String> findDocNames(File srcDir, AndFileFilter fileFilter) throws IOException;
+   Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes) throws IOException;
    Resource loadSrcDoc(File sourceDir, String docName) throws IOException;
    void visitTranslationResources(String docName, Resource srcDoc, TranslationResourcesVisitor visitor) throws IOException;
 }

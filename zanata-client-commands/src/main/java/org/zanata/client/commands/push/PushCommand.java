@@ -14,10 +14,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.apache.commons.io.filefilter.AndFileFilter;
-import org.apache.commons.io.filefilter.NotFileFilter;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,8 +101,29 @@ public class PushCommand extends ConfigurableProjectCommand
       log.info("Source language: {}", opts.getSourceLang());
       log.info("Copy previous translations: {}", opts.getCopyTrans());
       log.info("Merge type: {}", opts.getMergeType());
-      log.info("Include file pattern: {}", opts.getIncludeFilePattern());
-      log.info("Exclude file pattern: {}", opts.getExcludeFilePattern());
+
+      if (!opts.getIncludes().isEmpty())
+      {
+         StringBuilder sb = new StringBuilder();
+         for (String pattern : opts.getIncludes())
+         {
+            sb.append(pattern);
+            sb.append(" ");
+         }
+         log.info("Include patterns: {}", sb.toString());
+      }
+
+      if (!opts.getExcludes().isEmpty())
+      {
+         StringBuilder sb = new StringBuilder();
+         for(String pattern:opts.getExcludes())
+         {
+            sb.append(pattern);
+            sb.append(" ");
+         }
+         log.info("Exclude patterns: {}", sb.toString());
+      }
+
 
       if (opts.getPushTrans())
       {
@@ -155,18 +172,12 @@ public class PushCommand extends ConfigurableProjectCommand
 
       // NB we don't load all the docs into a HashMap, because that would waste
       // memory
-      AndFileFilter fileFilter = new AndFileFilter();
 
-      WildcardFileFilter includeFilter = new WildcardFileFilter(opts.getIncludeFilePattern());
-      fileFilter.addFileFilter(includeFilter);
-
-      if (!StringUtils.isEmpty(opts.getExcludeFilePattern()))
+      Set<String> localDocNames = strat.findDocNames(sourceDir, opts.getIncludes(), opts.getExcludes());
+      for (String docName : localDocNames)
       {
-         NotFileFilter excludeFilter = new NotFileFilter(new WildcardFileFilter(opts.getExcludeFilePattern()));
-         fileFilter.addFileFilter(excludeFilter);
+         log.info("Source file to be uploaded: {}", docName);
       }
-
-      Set<String> localDocNames = strat.findDocNames(sourceDir, fileFilter);
       deleteObsoleteDocsFromServer(localDocNames);
 
       for (String docName : localDocNames)

@@ -1,7 +1,10 @@
 package org.zanata.maven;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptions;
 
@@ -89,18 +92,20 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    private String merge;
 
    /**
-    * Wildcard pattern to include files. default-value="**"
+    * Wildcard pattern to include file and directory. This parameter is only
+    * needed for some project types, eg XLIFF.
     * 
-    * @parameter expression="${zanata.includeFilePattern}"
+    * @parameter expression="${zanata.includes}" default-value="**\/**"
     */
-   private String includeFilePattern = "**";
+   private String includes = "**/**";
 
    /**
-    * Wildcard pattern to exclude files.
+    * Wildcard pattern to exclude file and directory. Usage
+    * -Dzanata.excludes="Pattern1,Pattern2,Pattern3"
     * 
-    * @parameter expression="${zanata.excludeFilePattern}"
+    * @parameter expression="${zanata.excludes}"
     */
-   private String excludeFilePattern;
+   private String excludes;
 
    @Override
    public File getSrcDir()
@@ -151,15 +156,32 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    }
 
    @Override
-   public String getIncludeFilePattern()
+   public List<String> getIncludes()
    {
-      return includeFilePattern;
+      String[] includeList = StringUtils.split(includes, ",");
+      List<String> list = new ArrayList<String>();
+      if (includeList != null && includeList.length >= 1)
+      {
+         for (String include : includeList)
+         {
+            list.add(include);
+         }
+      }
+      return list;
    }
 
    @Override
-   public String getExcludeFilePattern()
+   public List<String> getExcludes()
    {
-      return excludeFilePattern;
+      String[] excludeList = StringUtils.split(excludes, ",");
+      List<String> list = new ArrayList<String>();
+      if (excludeList != null && excludeList.length >= 1)
+      {
+         for (String exclude : excludeList)
+         {
+            list.add(exclude);
+         }
+      }
+      return list;
    }
-
 }

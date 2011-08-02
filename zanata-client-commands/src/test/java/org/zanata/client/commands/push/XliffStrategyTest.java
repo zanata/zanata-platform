@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.filefilter.AndFileFilter;
-import org.apache.commons.io.filefilter.NotFileFilter;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.junit.Assert;
@@ -59,24 +56,23 @@ public class XliffStrategyTest
       XliffStrategy xliffStrategy = new XliffStrategy();
 
       mockPushOption = createMock("mockPushOption", PushOptions.class);
-      EasyMock.expect(mockPushOption.getIncludeFilePattern()).andReturn("*StringResource_en_US*");
+      List<String> include = new ArrayList<String>();
+      include.add("*StringResource*");
+
+      // EasyMock.expect(mockPushOption.getIncludes()).andReturn(include);
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
 
       xliffStrategy.setPushOptions(mockPushOption);
       EasyMock.replay(mockPushOption);
-     
-      AndFileFilter fileFilter = new AndFileFilter();
-      WildcardFileFilter includeFilter = new WildcardFileFilter(mockPushOption.getIncludeFilePattern());
-      fileFilter.addFileFilter(includeFilter);
 
-      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, fileFilter);
+      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, new ArrayList<String>());
 
       control.verify();
       for (String docName : localDocNames)
-         System.out.println("findDocNamesTest || Source doc name || " + docName);
-      System.out.println("findDocNamesTest || Total source docs || " + localDocNames.size());
-      Assert.assertEquals(2, localDocNames.size());
+         System.out.println("findDocNamesTest || Source doc name:" + docName);
+      System.out.println("findDocNamesTest || Total source docs:" + localDocNames.size());
+      Assert.assertEquals(3, localDocNames.size());
    }
 
    @Test
@@ -85,7 +81,10 @@ public class XliffStrategyTest
       XliffStrategy xliffStrategy = new XliffStrategy();
 
       mockPushOption = createMock("mockPushOption", PushOptions.class);
-      EasyMock.expect(mockPushOption.getIncludeFilePattern()).andReturn("*StringResource_en_US*");
+      List<String> include = new ArrayList<String>();
+      include.add("*StringResource_en_US*");
+
+      // EasyMock.expect(mockPushOption.getIncludes()).andReturn(include);
       EasyMock.expect(mockPushOption.getTransDir()).andReturn(sourceDir).anyTimes();
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
@@ -93,11 +92,7 @@ public class XliffStrategyTest
       xliffStrategy.setPushOptions(mockPushOption);
       EasyMock.replay(mockPushOption);
 
-      AndFileFilter fileFilter = new AndFileFilter();
-      WildcardFileFilter includeFilter = new WildcardFileFilter(mockPushOption.getIncludeFilePattern());
-      fileFilter.addFileFilter(includeFilter);
-
-      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, fileFilter);
+      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, new ArrayList<String>());
       List<Resource> resourceList = new ArrayList<Resource>();
       for (String docName : localDocNames)
       {
@@ -123,32 +118,31 @@ public class XliffStrategyTest
       System.out.println("loadSrcDocTest || Total source docs:" + localDocNames.size());
       control.verify();
 
-      Assert.assertEquals(2, resourceList.size());
+      Assert.assertEquals(3, resourceList.size());
    }
 
    @Test
-   public void loadSrcDocTestWithExcludeOption() throws IOException
+   public void loadSrcDocTestWithExcludeFileOption() throws IOException
    {
       XliffStrategy xliffStrategy = new XliffStrategy();
 
       mockPushOption = createMock("mockPushOption", PushOptions.class);
-      EasyMock.expect(mockPushOption.getIncludeFilePattern()).andReturn("*StringResource_en_US*");
+      List<String> include = new ArrayList<String>();
+      include.add("*StringResource*");
+
+      // EasyMock.expect(mockPushOption.getIncludes()).andReturn(include);
       EasyMock.expect(mockPushOption.getTransDir()).andReturn(sourceDir).anyTimes();
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
-      EasyMock.expect(mockPushOption.getExcludeFilePattern()).andReturn("*StringResource*").anyTimes();
+
+      List<String> exclude = new ArrayList<String>();
+      exclude.add("**/*StringResource*");
+      // EasyMock.expect(mockPushOption.getExcludes()).andReturn(exclude).anyTimes();
 
       xliffStrategy.setPushOptions(mockPushOption);
       EasyMock.replay(mockPushOption);
 
-      AndFileFilter fileFilter = new AndFileFilter();
-      WildcardFileFilter includeFilter = new WildcardFileFilter(mockPushOption.getIncludeFilePattern());
-      fileFilter.addFileFilter(includeFilter);
-
-      NotFileFilter excludeFilter = new NotFileFilter(new WildcardFileFilter(mockPushOption.getExcludeFilePattern()));
-      fileFilter.addFileFilter(excludeFilter);
-
-      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, fileFilter);
+      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, exclude);
       List<Resource> resourceList = new ArrayList<Resource>();
       for (String docName : localDocNames)
       {
@@ -171,9 +165,59 @@ public class XliffStrategyTest
          xliffStrategy.visitTranslationResources(docName, srcDoc, visitor);
          EasyMock.verify(visitor);
       }
-      System.out.println("loadSrcDocTestWithExclude || Total source docs:" + localDocNames.size());
+      System.out.println("loadSrcDocTestWithExcludeFileOption || Total source docs:" + localDocNames.size());
       control.verify();
 
       Assert.assertEquals(0, resourceList.size());
+   }
+
+   @Test
+   public void loadSrcDocTestWithExcludeOption() throws IOException
+   {
+      XliffStrategy xliffStrategy = new XliffStrategy();
+
+      mockPushOption = createMock("mockPushOption", PushOptions.class);
+      List<String> include = new ArrayList<String>();
+      include.add("*StringResource_en_US*");
+
+      // EasyMock.expect(mockPushOption.getIncludes()).andReturn(include);
+      EasyMock.expect(mockPushOption.getTransDir()).andReturn(sourceDir).anyTimes();
+      EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
+      EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
+
+      List<String> exclude = new ArrayList<String>();
+      exclude.add("**/dir2/*");
+      // EasyMock.expect(mockPushOption.getExcludes()).andReturn(exclude).anyTimes();
+
+      xliffStrategy.setPushOptions(mockPushOption);
+      EasyMock.replay(mockPushOption);
+
+      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, exclude);
+      List<Resource> resourceList = new ArrayList<Resource>();
+      for (String docName : localDocNames)
+      {
+         Resource srcDoc = xliffStrategy.loadSrcDoc(sourceDir, docName);
+         resourceList.add(srcDoc);
+
+         TranslationResourcesVisitor visitor = EasyMock.createMock("visitor" + resourceList.size(), TranslationResourcesVisitor.class);
+         LocaleMapping loc;
+         // each src file in test has one trans file ('de' or 'fr'):
+         if (srcDoc.getName().equals("dir1/StringResource"))
+         {
+            loc = new LocaleMapping("de");
+         }
+         else
+         {
+            loc = new LocaleMapping("fr");
+         }
+         visitor.visit(eq(loc), EasyMock.anyObject(TranslationsResource.class));
+         EasyMock.replay(visitor);
+         xliffStrategy.visitTranslationResources(docName, srcDoc, visitor);
+         EasyMock.verify(visitor);
+      }
+      System.out.println("loadSrcDocTestWithExcludeDirOption || Total source docs:" + localDocNames.size());
+      control.verify();
+
+      Assert.assertEquals(1, resourceList.size());
    }
 }
