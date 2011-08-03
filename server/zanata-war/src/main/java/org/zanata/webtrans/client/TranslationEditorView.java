@@ -29,7 +29,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -82,27 +81,27 @@ public class TranslationEditorView extends Composite implements TranslationEdito
       this.resources = resources;
       this.transUnitCountBar = new TransUnitCountBar(messages);
       this.pager = new Pager(messages, resources);
-      this.tmPanelContainer = new LayoutPanel()
-      {
-         public void onBrowserEvent(com.google.gwt.user.client.Event event)
-         {
-
-            super.onBrowserEvent(event);
-            switch (event.getTypeInt())
-            {
-            case Event.ONMOUSEOVER:
-               tmMinimize.setVisible(true);
-               break;
-            case Event.ONMOUSEOUT:
-               tmMinimize.setVisible(false);
-               break;
-            }
-         };
-      };
-      tmPanelContainer.sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT);
+      this.tmPanelContainer = new LayoutPanel();
+      // {
+      // public void onBrowserEvent(com.google.gwt.user.client.Event event)
+      // {
+      //
+      // super.onBrowserEvent(event);
+      // switch (event.getTypeInt())
+      // {
+      // case Event.ONMOUSEOVER:
+      // tmMinimize.setVisible(true);
+      // break;
+      // case Event.ONMOUSEOUT:
+      // tmMinimize.setVisible(false);
+      // break;
+      // }
+      // };
+      // };
+      // tmPanelContainer.sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT);
 
       initWidget(uiBinder.createAndBindUi(this));
-      tmMinimize.setVisible(false);
+      tmMinimize.setVisible(true);
       splitPanel.setWidgetMinSize(tmPanelContainer, (int) southHeight);
 
       showTmViewLink.setTitle(messages.showTranslationMemoryPanel());
@@ -190,6 +189,7 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    public void setShowTMViewButtonVisible(boolean visible)
    {
       showTmViewLink.setVisible(visible);
+      tmMinimize.setVisible(!visible);
    }
 
 }

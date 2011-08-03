@@ -33,11 +33,17 @@ public interface Resources extends ClientBundle
    @Source("org/zanata/webtrans/WebTransStyles.css")
    WebTransStyles style();
 
-   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/info.png")
-   ImageResource infoButton();
+   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/upArrow.png")
+   ImageResource upArrowButton();
 
-   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/search.png")
-   ImageResource searchButton();
+   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/downArrow.png")
+   ImageResource downArrowButton();
+
+   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/leftArrow.png")
+   ImageResource leftArrowButton();
+
+   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/rightArrow.png")
+   ImageResource rightArrowButton();
 
    @Source("org/zanata/webtrans/images/banner_bg.png")
    DataResource bannerBackground();
@@ -47,9 +53,6 @@ public interface Resources extends ClientBundle
 
    @Source("org/zanata/webtrans/images/x.png")
    ImageResource xButton();
-
-   @Source("org/zanata/webtrans/images/x2.png")
-   ImageResource minimizeButton();
 
    @Source("org/zanata/webtrans/images/silk/user.png")
    ImageResource userOnline();
