@@ -23,7 +23,6 @@ package org.zanata.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.easymock.EasyMock;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -31,7 +30,6 @@ import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HLocale;
-import org.zanata.service.impl.LocaleServiceImpl;
 
 
 @Test(groups = { "business-tests" })

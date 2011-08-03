@@ -1,7 +1,9 @@
 package org.zanata.dao;
 
-import java.util.List;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -10,10 +12,6 @@ import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.TextFlowDAO;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.*;
 
 @Test(groups = { "jpa-tests" })
 public class TextFlowDAOTest extends ZanataDbunitJpaTest

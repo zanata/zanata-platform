@@ -1,6 +1,6 @@
 package org.zanata.util;
 
-import static org.zanata.util.OkapiUtil.*;
+import static org.zanata.util.OkapiUtil.countWords;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;

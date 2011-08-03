@@ -1,7 +1,6 @@
 package org.zanata.rest;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.StringWriter;
 import java.util.TreeMap;
 

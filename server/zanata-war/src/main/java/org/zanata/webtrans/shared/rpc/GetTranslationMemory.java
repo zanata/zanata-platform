@@ -1,8 +1,8 @@
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.common.LocaleId;
-
 import net.customware.gwt.dispatch.shared.Action;
+
+import org.zanata.common.LocaleId;
 
 
 public class GetTranslationMemory implements Action<GetTranslationMemoryResult>

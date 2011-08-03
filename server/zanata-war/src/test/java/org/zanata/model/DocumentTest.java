@@ -10,7 +10,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.jboss.seam.security.Identity;
@@ -22,13 +21,6 @@ import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
-import org.zanata.model.HDocument;
-import org.zanata.model.HIterationProject;
-import org.zanata.model.HLocale;
-import org.zanata.model.HProjectIteration;
-import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.HTextFlowTargetHistory;
 
 @Test(groups = { "jpa-tests" })
 public class DocumentTest extends ZanataDbunitJpaTest

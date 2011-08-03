@@ -38,7 +38,6 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 
-
 import org.hibernate.jmx.StatisticsService;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;

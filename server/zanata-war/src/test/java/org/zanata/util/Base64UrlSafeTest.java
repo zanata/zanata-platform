@@ -23,7 +23,6 @@ package org.zanata.util;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.zanata.util.Base64UrlSafe;
 
 @Test(groups = { "unit-tests" })
 public class Base64UrlSafeTest

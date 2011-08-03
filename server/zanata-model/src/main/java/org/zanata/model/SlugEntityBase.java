@@ -22,7 +22,6 @@ package org.zanata.model;
 
 import javax.persistence.MappedSuperclass;
 
-
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.validator.Length;

@@ -22,7 +22,6 @@ package org.zanata.model.validator;
 
 import java.io.Serializable;
 
-
 import org.hibernate.validator.Validator;
 
 public class SlugValidator implements Validator<Slug>, Serializable

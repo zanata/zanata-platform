@@ -1,14 +1,12 @@
 package org.zanata.rest.service;
 
+import static org.testng.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
-
 import org.fedorahosted.openprops.Properties;
 import org.testng.annotations.Test;
-import org.zanata.rest.service.PoUtility;
-
-import static org.testng.Assert.*;
 
 @Test(groups = { "unit-tests" })
 public class PoUtilityTest

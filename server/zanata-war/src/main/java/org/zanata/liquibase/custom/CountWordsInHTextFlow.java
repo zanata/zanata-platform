@@ -7,9 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.zanata.util.OkapiUtil;
-
-
 import liquibase.FileOpener;
 import liquibase.change.custom.CustomTaskChange;
 import liquibase.database.Database;
@@ -19,6 +16,8 @@ import liquibase.exception.InvalidChangeDefinitionException;
 import liquibase.exception.SetupException;
 import liquibase.exception.UnsupportedChangeException;
 import liquibase.log.LogFactory;
+
+import org.zanata.util.OkapiUtil;
 
 public class CountWordsInHTextFlow implements CustomTaskChange
 {

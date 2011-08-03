@@ -2,10 +2,10 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.ArrayList;
 
+import net.customware.gwt.dispatch.shared.Result;
+
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
-
-import net.customware.gwt.dispatch.shared.Result;
 
 
 public class GetTransUnitListResult implements Result

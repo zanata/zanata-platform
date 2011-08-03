@@ -10,7 +10,6 @@ import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.tools.ant.DirectoryScanner;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.xliff.XliffReader;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
@@ -21,25 +20,14 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 
-public class XliffStrategy implements PushStrategy
+public class XliffStrategy extends AbstractPushStrategy
 {
-   StringSet extensions = new StringSet("comment");
    XliffReader reader = new XliffReader();
    Set<String> sourceFiles;
    
-   private PushOptions opts;
-
-   @Override
-   public void setPushOptions(PushOptions opts)
+   public XliffStrategy()
    {
-      this.opts = opts;
-
-   }
-
-   @Override
-   public StringSet getExtensions()
-   {
-      return extensions;
+      super(new StringSet("comment"), ".xml");
    }
 
    @Override
@@ -48,20 +36,7 @@ public class XliffStrategy implements PushStrategy
       sourceFiles = new HashSet<String>();
       Set<String> localDocNames = new HashSet<String>();
 
-      includes.add("**/*.xml");
-      for (LocaleMapping locMap : opts.getLocales())
-      {
-         String loc = locMap.getJavaLocale().toLowerCase();
-         excludes.add("**/*_" + loc + ".xml");
-      }
-
-      DirectoryScanner dirScanner = new DirectoryScanner();
-      dirScanner.setBasedir(srcDir);
-      dirScanner.setCaseSensitive(false);
-      dirScanner.setExcludes((String[]) excludes.toArray(new String[excludes.size()]));
-      dirScanner.setIncludes((String[]) includes.toArray(new String[includes.size()]));
-      dirScanner.scan();
-      String[] files = dirScanner.getIncludedFiles();
+      String[] files = getSrcFiles(srcDir, includes, excludes, true);
 
       for (String relativeFilePath : files)
       {
@@ -77,7 +52,7 @@ public class XliffStrategy implements PushStrategy
    {
       if (fileName.contains("_"))
       {
-         String loc = new LocaleId(opts.getSourceLang()).toJavaName();
+         String loc = new LocaleId(getOpts().getSourceLang()).toJavaName();
          if (StringUtils.containsIgnoreCase(fileName, "_" + loc))
          {
             fileName = fileName.replaceAll("_" + loc, "");
@@ -85,27 +60,29 @@ public class XliffStrategy implements PushStrategy
       }
       return fileName;
    }
+
    @Override
    public Resource loadSrcDoc(File sourceDir, String docName) throws IOException
    {
       File srcFile = null;
 	   for(String file:sourceFiles){
-         if (file.startsWith(docName) && file.endsWith(".xml"))
+         if (file.startsWith(docName) && file.endsWith(getFileExtension()))
          {
 	         srcFile = new File(sourceDir, file);
 	         break;
 	      }
 	   }
       InputSource srcInputSource = new InputSource(new FileInputStream(srcFile));
-      return reader.extractTemplate(srcInputSource, new LocaleId(opts.getSourceLang()), docName);
+      return reader.extractTemplate(srcInputSource, new LocaleId(getOpts().getSourceLang()), docName);
    }
 
    @Override
    public void visitTranslationResources(String docName, Resource srcDoc, TranslationResourcesVisitor visitor) throws FileNotFoundException
    {
-      for (LocaleMapping locale : opts.getLocales())
+      for (LocaleMapping locale : getOpts().getLocales())
       {
-         File transFile = new File(opts.getTransDir(), docName + "_" + locale.getJavaLocale() + ".xml");
+         String filename = docNameToFilename(docName, locale);
+         File transFile = new File(getOpts().getTransDir(), filename);
          if (transFile.exists())
          {
             InputSource inputSource = new InputSource(new FileInputStream(transFile));

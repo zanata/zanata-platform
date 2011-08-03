@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;

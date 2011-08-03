@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.EntityManager;
 
-
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.jboss.seam.ScopeType;

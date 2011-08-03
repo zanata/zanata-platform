@@ -25,11 +25,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 
-
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Type;
-import org.zanata.model.ModelEntityBase;
 import org.zanata.model.HSimpleComment;
+import org.zanata.model.ModelEntityBase;
 
 /**
  * 

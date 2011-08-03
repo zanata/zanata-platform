@@ -32,8 +32,9 @@ import javax.faces.event.PhaseListener;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jboss.seam.Component;
+import org.jboss.seam.log.LogProvider;
+import org.jboss.seam.log.Logging;
 import org.jboss.seam.navigation.Pages;
-import org.jboss.seam.log.*;
 
 public class FedoraOpenIdPhaseListener implements PhaseListener
 {

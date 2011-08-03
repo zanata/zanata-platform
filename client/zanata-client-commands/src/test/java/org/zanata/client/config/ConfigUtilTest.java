@@ -4,10 +4,8 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SubnodeConfiguration;
-import org.zanata.client.config.ConfigUtil;
 
 public class ConfigUtilTest extends TestCase
 {

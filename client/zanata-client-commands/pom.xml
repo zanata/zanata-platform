@@ -8,7 +8,6 @@
 		<version>1.4-SNAPSHOT</version>
 		<relativePath>../../zanata-parent/pom.xml</relativePath>
 	</parent>
-	<groupId>org.zanata</groupId>
 	<artifactId>zanata-client-commands</artifactId>
 	<name>Zanata client commands</name>
 	<url>http://maven.apache.org</url>

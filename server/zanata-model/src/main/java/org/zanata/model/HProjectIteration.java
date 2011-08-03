@@ -35,7 +35,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 
-
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Where;
 import org.hibernate.validator.NotNull;

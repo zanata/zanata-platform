@@ -3,7 +3,6 @@ package org.zanata.client;
 import java.io.PrintStream;
 import java.util.Collection;
 
-
 import org.codehaus.plexus.util.StringOutputStream;
 import org.kohsuke.args4j.CmdLineParser;
 import org.slf4j.Logger;
@@ -12,7 +11,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.zanata.client.ZanataClient;
 import org.zanata.client.commands.BasicOptions;
 import org.zanata.client.commands.RuntimeExceptionStrategy;
 

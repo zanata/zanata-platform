@@ -22,6 +22,7 @@ package org.zanata.security;
 
 import static org.jboss.seam.ScopeType.SESSION;
 import static org.jboss.seam.annotations.Install.APPLICATION;
+
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 

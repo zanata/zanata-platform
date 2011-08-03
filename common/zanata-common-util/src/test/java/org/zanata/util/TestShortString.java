@@ -1,10 +1,9 @@
 package org.zanata.util;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.zanata.util.ShortString;
 
 public class TestShortString
 {

@@ -25,7 +25,6 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.HasTransUnitUpdatedData;
 
-
 import com.google.gwt.event.shared.GwtEvent;
 
 public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler> implements HasTransUnitUpdatedData

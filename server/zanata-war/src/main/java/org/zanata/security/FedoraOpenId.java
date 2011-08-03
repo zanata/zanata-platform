@@ -23,8 +23,10 @@ package org.zanata.security;
 import static org.jboss.seam.ScopeType.SESSION;
 import static org.jboss.seam.annotations.Install.APPLICATION;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
+import javax.faces.context.ExternalContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
@@ -34,25 +36,20 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.core.Events;
-import org.jboss.seam.log.LogProvider;
-import org.jboss.seam.log.Logging;
-import org.jboss.seam.security.openid.OpenIdPrincipal;
-import org.openid4java.consumer.ConsumerException;
-import org.openid4java.message.ParameterList;
-import java.util.List;
-
-import javax.faces.context.ExternalContext;
-
-
 import org.jboss.seam.faces.FacesManager;
 import org.jboss.seam.faces.Redirect;
+import org.jboss.seam.log.LogProvider;
+import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
+import org.jboss.seam.security.openid.OpenIdPrincipal;
 import org.openid4java.OpenIDException;
+import org.openid4java.consumer.ConsumerException;
 import org.openid4java.consumer.ConsumerManager;
 import org.openid4java.consumer.VerificationResult;
 import org.openid4java.discovery.DiscoveryInformation;
 import org.openid4java.discovery.Identifier;
 import org.openid4java.message.AuthRequest;
+import org.openid4java.message.ParameterList;
 import org.openid4java.message.ax.FetchRequest;
 import org.zanata.ApplicationConfiguration;
 

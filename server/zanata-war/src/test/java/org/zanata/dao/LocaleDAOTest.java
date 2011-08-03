@@ -14,7 +14,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HLocale;
 
 @Test(groups = { "jpa-tests" })

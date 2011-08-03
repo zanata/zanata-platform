@@ -20,13 +20,13 @@
  */
 package org.zanata.webtrans.client;
 
-import org.zanata.webtrans.client.events.NavTransUnitEvent;
-import org.zanata.webtrans.client.events.NavTransUnitHandler;
-import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
-
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
+import org.zanata.webtrans.client.events.NavTransUnitEvent;
+import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
+import org.zanata.webtrans.client.events.NavTransUnitHandler;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

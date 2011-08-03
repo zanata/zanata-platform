@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.is;
 
 import javax.ws.rs.core.Response.Status;
 
-
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

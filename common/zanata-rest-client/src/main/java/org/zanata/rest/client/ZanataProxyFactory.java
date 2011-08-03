@@ -5,7 +5,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-
 import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
@@ -13,12 +12,6 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.rest.RestConstant;
-import org.zanata.rest.client.IAccountResource;
-import org.zanata.rest.client.IProjectIterationResource;
-import org.zanata.rest.client.IProjectResource;
-import org.zanata.rest.client.IProjectsResource;
-import org.zanata.rest.client.ITranslationResources;
-import org.zanata.rest.client.IVersion;
 import org.zanata.rest.dto.VersionInfo;
 
 public class ZanataProxyFactory implements ITranslationResourcesFactory

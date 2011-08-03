@@ -22,9 +22,6 @@ package org.zanata.security;
 
 import static org.jboss.seam.ScopeType.APPLICATION;
 
-
-
-
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;

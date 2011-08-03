@@ -5,11 +5,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-
 import org.jboss.seam.annotations.Name;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.VersionInfo;
-import org.zanata.rest.service.VersionResource;
 import org.zanata.util.VersionUtility;
 
 

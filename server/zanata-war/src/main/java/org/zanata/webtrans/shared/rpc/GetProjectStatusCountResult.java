@@ -2,9 +2,9 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.ArrayList;
 
-import org.zanata.webtrans.shared.model.DocumentStatus;
-
 import net.customware.gwt.dispatch.shared.Result;
+
+import org.zanata.webtrans.shared.model.DocumentStatus;
 
 public class GetProjectStatusCountResult implements Result
 {

@@ -6,10 +6,10 @@ import java.net.URISyntaxException;
 import org.jboss.resteasy.client.ClientExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.client.IProjectIterationResource;
 import org.zanata.rest.client.ITranslationResources;
 import org.zanata.rest.client.IVersion;
+import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.VersionInfo;
 
 

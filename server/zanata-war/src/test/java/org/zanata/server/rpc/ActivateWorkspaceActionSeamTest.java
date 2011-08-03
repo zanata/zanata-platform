@@ -1,7 +1,7 @@
 package org.zanata.server.rpc;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.seam.mock.DBUnitSeamTest;

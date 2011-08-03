@@ -6,7 +6,6 @@ import java.net.URISyntaxException;
 
 import javax.xml.bind.JAXBException;
 
-
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

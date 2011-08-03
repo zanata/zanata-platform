@@ -25,7 +25,6 @@ import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-
 import org.hibernate.validator.Validator;
 
 public class UrlValidator<U extends Annotation> implements Validator<U>, Serializable

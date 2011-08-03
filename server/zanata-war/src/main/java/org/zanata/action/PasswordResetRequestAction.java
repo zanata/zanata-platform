@@ -2,7 +2,6 @@ package org.zanata.action;
 
 import javax.persistence.EntityManager;
 
-
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.validator.Email;

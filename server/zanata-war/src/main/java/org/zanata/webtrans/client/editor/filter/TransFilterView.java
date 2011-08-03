@@ -21,7 +21,6 @@
 package org.zanata.webtrans.client.editor.filter;
 
 import org.zanata.webtrans.client.Resources;
-import org.zanata.webtrans.client.editor.filter.TransFilterMessages;
 import org.zanata.webtrans.client.ui.ClearableTextBox;
 import org.zanata.webtrans.client.ui.UiMessages;
 

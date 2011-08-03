@@ -1,11 +1,10 @@
 package org.zanata.util;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import java.io.File;
 
-
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-//import static org.junit.Assert.*;
 import org.testng.annotations.Test;
 import org.zanata.util.PathUtil.PathResolutionException;
 

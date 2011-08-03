@@ -2,9 +2,9 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
 
-import org.zanata.webtrans.shared.model.DocumentId;
-
 import net.customware.gwt.dispatch.shared.Result;
+
+import org.zanata.webtrans.shared.model.DocumentId;
 
 
 public class GetTransUnitsNavigationResult implements Result

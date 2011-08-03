@@ -25,7 +25,6 @@ import java.io.Serializable;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
-
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Pattern;

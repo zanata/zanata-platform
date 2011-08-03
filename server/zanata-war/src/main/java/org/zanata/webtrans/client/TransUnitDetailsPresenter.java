@@ -1,12 +1,12 @@
 package org.zanata.webtrans.client;
 
-import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
-import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
-import org.zanata.webtrans.shared.model.TransUnit;
-
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
+import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
+import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
+import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.inject.Inject;
 

@@ -24,7 +24,6 @@ import java.io.Serializable;
 
 import javax.security.auth.login.LoginException;
 
-
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;

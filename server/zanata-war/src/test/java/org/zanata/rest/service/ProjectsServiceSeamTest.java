@@ -7,7 +7,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import java.net.URI;
 import java.util.List;
 
-
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;

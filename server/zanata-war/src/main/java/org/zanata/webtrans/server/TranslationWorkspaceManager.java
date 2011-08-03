@@ -2,7 +2,6 @@ package org.zanata.webtrans.server;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-
 import org.hibernate.Session;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;

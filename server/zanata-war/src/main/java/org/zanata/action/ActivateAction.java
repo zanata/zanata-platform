@@ -22,7 +22,6 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
-
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.End;
