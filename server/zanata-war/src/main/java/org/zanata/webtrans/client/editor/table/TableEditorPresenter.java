@@ -497,7 +497,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                int curRow = display.getTargetCellEditor().getCurrentRow();
                if (curRow != row)
                {
-                  display.getTargetCellEditor().cancelEdit();
+                  display.getTargetCellEditor().acceptEdit();
                }
             }
             tableModelHandler.gotoRow(row);
