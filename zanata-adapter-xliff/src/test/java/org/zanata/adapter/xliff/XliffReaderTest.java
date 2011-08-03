@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import org.apache.commons.lang.StringUtils;
 import org.testng.annotations.Test;
 import org.xml.sax.InputSource;
 import org.zanata.common.LocaleId;

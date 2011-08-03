@@ -22,7 +22,6 @@ package org.zanata.client.commands;
 
 import java.util.List;
 
-
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

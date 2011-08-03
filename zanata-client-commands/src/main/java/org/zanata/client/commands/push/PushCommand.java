@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.ConfigurableProjectCommand;
 import org.zanata.client.commands.OptionsUtil;
-import org.zanata.client.commands.strategy.XmlStrategy;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.common.LocaleId;
@@ -41,7 +40,7 @@ public class PushCommand extends ConfigurableProjectCommand
 {
    private static final Logger log = LoggerFactory.getLogger(PushCommand.class);
 
-   private static final Map<String, PushStrategy> strategies = new HashMap<String, PushStrategy>();
+   private static final Map<String, AbstractPushStrategy> strategies = new HashMap<String, AbstractPushStrategy>();
 
    public static interface TranslationResourcesVisitor
    {
@@ -79,9 +78,9 @@ public class PushCommand extends ConfigurableProjectCommand
       this(opts, OptionsUtil.createRequestFactory(opts));
    }
 
-   private PushStrategy getStrategy(String strategyType)
+   private AbstractPushStrategy getStrategy(String strategyType)
    {
-      PushStrategy strat = strategies.get(strategyType);
+      AbstractPushStrategy strat = strategies.get(strategyType);
       if (strat == null)
       {
          throw new RuntimeException("unknown project type: " + opts.getProjectType());
@@ -157,7 +156,7 @@ public class PushCommand extends ConfigurableProjectCommand
          confirmWithUser("This will overwrite/delete any existing documents on the server.\n");
       }
 
-      PushStrategy strat = getStrategy(opts.getProjectType());
+      AbstractPushStrategy strat = getStrategy(opts.getProjectType());
 
       JAXBContext jc = null;
       if (opts.isDebugSet()) // || opts.getValidate())

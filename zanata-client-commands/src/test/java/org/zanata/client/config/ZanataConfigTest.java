@@ -9,14 +9,10 @@ import javax.xml.bind.Unmarshaller;
 
 import junit.framework.TestCase;
 
-
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.FileConfiguration;
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
-import org.zanata.client.config.ZanataConfig;
-import org.zanata.client.config.LocaleList;
-import org.zanata.client.config.LocaleMapping;
 
 public class ZanataConfigTest extends TestCase
 {

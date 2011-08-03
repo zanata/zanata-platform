@@ -7,7 +7,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SubnodeConfiguration;
@@ -15,8 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.VersionUtility;
 import org.zanata.client.config.ConfigUtil;
-import org.zanata.client.config.ZanataConfig;
 import org.zanata.client.config.LocaleList;
+import org.zanata.client.config.ZanataConfig;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.rest.client.ZanataProxyFactory;
 
