@@ -6,7 +6,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-
 import org.jboss.resteasy.client.ClientResponse;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Project;

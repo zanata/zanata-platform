@@ -32,7 +32,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
-
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.zanata.common.LocaleId;
 import org.zanata.common.Namespaces;

@@ -9,21 +9,18 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.ValidationException;
 
-
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig.Feature;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
-import org.zanata.common.Namespaces;
 import org.zanata.rest.MediaTypes.Format;
 import org.zanata.rest.dto.HasMediaType;
 import org.zanata.rest.dto.HasSample;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
 import org.zanata.rest.dto.ProjectList;
-import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.rest.dto.resource.ResourceMetaList;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
