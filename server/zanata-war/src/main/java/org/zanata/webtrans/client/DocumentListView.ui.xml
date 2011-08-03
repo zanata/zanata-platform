@@ -23,10 +23,10 @@
 	<g:LayoutPanel>
 		<g:layer top="0px" bottom="8px">
 			<g:LayoutPanel styleName="{style.mainPanel}">
-				<g:layer top='2px' height='20px' left="2px" right="104px">
+				<g:layer top='2px' height='20px' left="2px" right="205px">
 					<fui:ClearableTextBox ui:field='filterTextBox'/>
 				</g:layer>
-				<g:layer top='4px' height='18px' right="2px" width="100px">
+				<g:layer top='4px' height='18px' right="2px" width="200px">
 					<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.unitStatus}"/>
 				</g:layer>
                 

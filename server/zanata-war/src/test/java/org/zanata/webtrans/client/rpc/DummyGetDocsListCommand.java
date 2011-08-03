@@ -36,6 +36,7 @@ final class DummyGetDocsListCommand implements Command
    private ArrayList<DocumentInfo> generateTransUnitSampleData()
    {
       ArrayList<DocumentInfo> names = new ArrayList<DocumentInfo>();
+      names.add(new DocumentInfo(new DocumentId(0), "name0", ""));
       names.add(new DocumentInfo(new DocumentId(1), "path1name1", "path/1"));
       names.add(new DocumentInfo(new DocumentId(2), "path1name2", "path/1"));
       names.add(new DocumentInfo(new DocumentId(3), "path2name1", "path/2"));

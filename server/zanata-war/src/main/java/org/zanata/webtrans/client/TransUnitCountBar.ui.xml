@@ -24,13 +24,12 @@
 		
 		.label {
 			font-weight: bold;
-			cursor: pointer;
 			text-align: center;
 			z-index: 1;
 		}
 		
 	</ui:style>
-	<g:LayoutPanel ui:field='layoutPanel'>
+	<g:LayoutPanel ui:field='layoutPanel' width="100px">
 		<g:layer left='0' width='0'>
 			<g:FlowPanel ui:field='approvedPanel' styleName="{style.approved}"/>
 		</g:layer>
@@ -43,7 +42,7 @@
 		<g:layer left='0' width='100%'>
 			<g:FlowPanel ui:field='undefinedPanel' styleName="{style.undefined}"/>
 		</g:layer>
-		<g:layer>
+		<g:layer left='100px' width="100px">
 			<g:Label ui:field='label' styleName='{style.label}'/>
 		</g:layer>
 	</g:LayoutPanel>

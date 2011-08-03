@@ -54,7 +54,7 @@
 						<g:FlowPanel ui:field="undoRedoContainer" styleName="{style.centerText}"/>
 					</g:HorizontalPanel>
 				</g:layer>
-				<g:layer top='4px' height='18px' right="300px" width="100px">
+				<g:layer top='4px' height='18px' left="75%" width="200px">
 					<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.unitStatus}"/>
 				</g:layer>
 				<g:layer top="22px" bottom="2em">

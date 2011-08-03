@@ -131,7 +131,7 @@ public final class DocumentListTable
          @Override
          public String getValue(DocumentNode object)
          {
-            return messages.statusGraphLabelHours(object.getTransUnitCountGraph().getRemainingWordsHours());
+            return messages.statusBarLabelHours(object.getTransUnitCountGraph().getRemainingWordsHours());
          }
       };
       remainingColumn.setSortable(true);
@@ -142,7 +142,7 @@ public final class DocumentListTable
    {
       final CellTable<DocumentNode> documentListTable = new CellTable<DocumentNode>();
       final SingleSelectionModel<DocumentNode> selectionModel = new SingleSelectionModel<DocumentNode>();
-
+      
       documentListTable.setStylePrimaryName("DocumentListTable");
       documentListTable.setSelectionModel(selectionModel);
       selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler()
@@ -153,6 +153,7 @@ public final class DocumentListTable
             if (selectedNode != null)
             {
                SelectionEvent.fire(documentListView, selectedNode.getDataItem());
+               selectionModel.setSelected(selectionModel.getSelectedObject(), false);
             }
          }
       });
@@ -197,7 +198,15 @@ public final class DocumentListTable
       {
          public int compare(DocumentNode o1, DocumentNode o2)
          {
-            return o1.getTransUnitCountGraph().getLabelText().compareTo(o2.getTransUnitCountGraph().getLabelText());
+            if (o1.getTransUnitCountGraph().getApprovedPercent() == o2.getTransUnitCountGraph().getApprovedPercent())
+            {
+               return 0;
+            }
+            if (o1 != null && o2 != null)
+            {
+               return o1.getTransUnitCountGraph().getApprovedPercent() > o2.getTransUnitCountGraph().getApprovedPercent() ? 1 : -1;
+            }
+            return -1;
          }
       });
       columnSortHandler.setComparator(translatedColumn, new Comparator<DocumentNode>()

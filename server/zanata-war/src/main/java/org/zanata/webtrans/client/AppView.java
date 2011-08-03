@@ -103,6 +103,7 @@ public class AppView extends Composite implements AppPresenter.Display
          container.setWidgetTopBottom(documentListView, 0, Unit.PX, 0, Unit.PX);
          container.setWidgetTopHeight(translationView, 0, Unit.PX, 0, Unit.PX);
          filterPanelContainer.setWidgetTopHeight(filterView, 0, Unit.PX, 0, Unit.PX);
+         resetSelectedDocument();
          break;
       case Editor:
          container.setWidgetTopBottom(translationView, 0, Unit.PX, 0, Unit.PX);
@@ -176,6 +177,12 @@ public class AppView extends Composite implements AppPresenter.Display
       String path = document.getPath() == null || document.getPath().isEmpty() ? "" : document.getPath() + "/";
       selectedDocumentPathSpan.setInnerText(path);
       selectedDocumentSpan.setInnerText(document.getName());
+   }
+
+   public void resetSelectedDocument()
+   {
+      selectedDocumentPathSpan.setInnerText("");
+      selectedDocumentSpan.setInnerText("No document selected");
    }
 
    private final AnimationCallback callback = new AnimationCallback()

@@ -7,16 +7,10 @@ public interface HasTranslationStats
 
    public static enum LabelFormat
    {
-      WORD_COUNTS, HOURS_REMAIN, PERCENT_COMPLETE, MESSAGE_COUNTS;
-      public LabelFormat next()
-      {
-         return values()[(ordinal() + 1) % values().length];
-      }
-      public static final LabelFormat DEFAULT_FORMAT = WORD_COUNTS;
+      PERCENT_COMPLETE, PERCENT_COMPLETE_HRS;
+
+      public static final LabelFormat DEFAULT_FORMAT = PERCENT_COMPLETE_HRS;
    }
 
    public void setStats(TranslationStats stats);
-
-   public void setLabelFormat(LabelFormat format);
-
 }

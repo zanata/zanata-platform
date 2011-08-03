@@ -1,6 +1,6 @@
 package org.zanata.webtrans.client.ui;
 
-import org.zanata.webtrans.client.TransUnitCountGraph;
+import org.zanata.webtrans.client.TransUnitCountBar;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.i18n.client.LocaleInfo;
@@ -13,9 +13,9 @@ public class TooltipPopupPanel extends PopupPanel
 {
    final VerticalPanel popUpPanelContents = new VerticalPanel();
 
-   public void refreshData(TransUnitCountGraph graph)
+   public void refreshData(TransUnitCountBar stats)
    {
-      HTML message = new HTML(getHTMLTooltip(graph));
+      HTML message = new HTML(getHTMLTooltip(stats));
       popUpPanelContents.clear();
       popUpPanelContents.add(message);
    }
@@ -26,7 +26,7 @@ public class TooltipPopupPanel extends PopupPanel
       this.setWidget(popUpPanelContents);
    }
 
-   private String getHTMLTooltip(TransUnitCountGraph graph)
+   private String getHTMLTooltip(TransUnitCountBar graph)
    {
       StringBuilder sb = new StringBuilder();
 
@@ -70,7 +70,7 @@ public class TooltipPopupPanel extends PopupPanel
 
       sb.append("<tr>");
       sb.append("<th>");
-      sb.append("Units");
+      sb.append("Msg");
       sb.append("</th>");
       sb.append("<td>");
       sb.append(graph.getUnitApproved());
