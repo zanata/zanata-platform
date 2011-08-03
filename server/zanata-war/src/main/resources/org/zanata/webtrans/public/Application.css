@@ -179,6 +179,7 @@ Removes some of the styling on the page-level splitters
 }
 
 .TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Source {
+	font-style: italic;
 	background: url(tu_bg_fuzzy_left.png) repeat-y left;
 	border-right: 3px solid #cccccc;
 	border-left: 3px solid #cccccc;
@@ -219,6 +220,7 @@ Removes some of the styling on the page-level splitters
 }
 
 .TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Target {
+	font-style: italic;
 	background: url(tu_bg_fuzzy_right.png) repeat-y right;
 	border-right: 3px solid #cccccc;
 	border-left: 3px solid #cccccc;
