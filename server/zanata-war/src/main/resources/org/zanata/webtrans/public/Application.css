@@ -278,6 +278,9 @@ tr.TableEditorRow.highlighted td.TableEditorCell {
 	there is a background gradient image for editor cells.
 	
 	background-color: #f1f2f6; */
+	
+	border-color: #666666;
+	border-bottom: 1px solid #666666;
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell-Source {
