@@ -273,7 +273,11 @@ td.TableEditorCell-Target {
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell {
-	background-color: #f1f2f6;
+	/* This appears behind the background image, and looks like
+	a variable-sized grey square (ugly). Should not be enabled if
+	there is a background gradient image for editor cells.
+	
+	background-color: #f1f2f6; */
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell-Source {
