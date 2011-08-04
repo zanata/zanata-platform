@@ -315,9 +315,19 @@ tr.TableEditorRow.selected {
 }
 
 tr.TableEditorRow.selected td.TableEditorCell {
-	border-top: 1px solid #666666;
-	border-bottom: 1px solid #666666;
+	border-top: 3px solid #666666;
+	border-bottom: 3px solid #666666;
 }
+
+tr.TableEditorRow.selected td.TableEditorCell-Source {
+	border-left: 3px solid #666666;
+}
+
+tr.TableEditorRow.selected td.TableEditorCell-Target {
+	border-right: 3px solid #666666;
+}
+
+
 
 .TableEditorContent,.TableEditorContent-Edit {
 	font-size: 14px;
