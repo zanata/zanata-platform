@@ -334,8 +334,6 @@ tr.TableEditorRow.selected td.TableEditorCell-Target {
 	border-right: 3px solid #666666;
 }
 
-
-
 .TableEditorContent,.TableEditorContent-Edit {
 	font-size: 14px;
 	font-family: sans-serif;
@@ -343,6 +341,16 @@ tr.TableEditorRow.selected td.TableEditorCell-Target {
 	margin: 0px;
 	width: 98%;
 	/*border: none; might make the text area look less cramped */
+}
+
+.TableEditorContent font {
+	background-color: #ffa; 
+	color: blue!important;
+}
+
+.TableEditorContent font span {
+	background-color: #ffa; 
+	color: blue!important;
 }
 
 .TableEditorContent-Edit {

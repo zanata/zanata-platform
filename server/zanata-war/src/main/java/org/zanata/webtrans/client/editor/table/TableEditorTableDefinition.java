@@ -145,9 +145,9 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          }
          if (rowValue.getStatus() == ContentState.NeedReview)
          {
-            String content = sourcePanel.getElement().getInnerHTML();
-            String highlight = "<font style='color:blue; background-color:yellow;'>" + content;
-            sourcePanel.getElement().setInnerHTML(highlight);
+            String content = sourcePanel.getLabel().getElement().getInnerHTML();
+            String highlight = "<font>" + content;
+            sourcePanel.getLabel().getElement().setInnerHTML(highlight);
          }
          sourcePanel.sinkEvents(Event.ONCLICK);
          sourcePanel.addClickHandler(new ClickHandler()
@@ -286,7 +286,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          if (rowValue.getStatus() == ContentState.NeedReview)
          {
             String content = label.getElement().getInnerHTML();
-            String newHtml = "<font style='color:blue; background-color:yellow;'>" + content;
+            String newHtml = "<font>" + content;
             label.getElement().setInnerHTML(newHtml);
          }
 

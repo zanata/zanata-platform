@@ -65,6 +65,11 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
    {
    }
 
+   public Label getLabel()
+   {
+      return sourceLabel;
+   }
+
    @Override
    public TransUnit getValue()
    {
