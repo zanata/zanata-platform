@@ -17,7 +17,6 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.List;
 
-
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;

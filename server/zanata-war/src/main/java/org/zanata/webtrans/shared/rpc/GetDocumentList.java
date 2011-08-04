@@ -1,8 +1,8 @@
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.shared.model.ProjectIterationId;
-
 import net.customware.gwt.dispatch.shared.Action;
+
+import org.zanata.webtrans.shared.model.ProjectIterationId;
 
 
 public class GetDocumentList implements Action<GetDocumentListResult>

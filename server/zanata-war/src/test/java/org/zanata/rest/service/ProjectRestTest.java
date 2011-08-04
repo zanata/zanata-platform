@@ -11,7 +11,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-
 import org.dbunit.operation.DatabaseOperation;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
@@ -29,8 +28,6 @@ import org.zanata.model.HIterationProject;
 import org.zanata.rest.client.IProjectResource;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectType;
-import org.zanata.rest.service.ETagUtils;
-import org.zanata.rest.service.ProjectService;
 
 public class ProjectRestTest extends ZanataRestTest
 {

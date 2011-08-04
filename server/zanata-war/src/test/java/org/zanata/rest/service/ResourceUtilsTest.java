@@ -1,7 +1,7 @@
 package org.zanata.rest.service;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,8 +9,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-
-
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +22,6 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.po.HPoTargetHeader;
 import org.zanata.rest.dto.extensions.gettext.PoTargetHeader;
 import org.zanata.rest.dto.resource.TextFlow;
-import org.zanata.rest.service.MergeType;
-import org.zanata.rest.service.ResourceUtils;
 
 @Test(groups = { "unit-tests" })
 public class ResourceUtilsTest

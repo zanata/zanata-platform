@@ -3,14 +3,11 @@ package org.zanata.rest.service;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 import org.zanata.ZanataRestTest;
 import org.zanata.rest.dto.VersionInfo;
-import org.zanata.rest.service.VersionResource;
-import org.zanata.rest.service.VersionService;
 
 
 public class VersionRestTest extends ZanataRestTest

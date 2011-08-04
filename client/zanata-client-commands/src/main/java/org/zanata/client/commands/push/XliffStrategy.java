@@ -4,13 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.AndFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.xliff.XliffReader;
@@ -20,61 +18,47 @@ import org.zanata.common.LocaleId;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.util.PathUtil;
 
-public class XliffStrategy implements PushStrategy
+
+public class XliffStrategy extends AbstractPushStrategy
 {
-   private static final String XML_EXTENSION = ".xml";
-
-   StringSet extensions = new StringSet("comment");
    XliffReader reader = new XliffReader();
-   NotTargetFileFilter notTargetFileFilter;
    Set<String> sourceFiles;
    
-   private PushOptions opts;
-
-   @Override
-   public void setPushOptions(PushOptions opts)
+   public XliffStrategy()
    {
-      this.opts = opts;
-
+      super(new StringSet("comment"), ".xml");
    }
 
    @Override
-   public StringSet getExtensions()
-   {
-      return extensions;
-   }
-
-   @Override
-   public Set<String> findDocNames(File srcDir, AndFileFilter fileFilter) throws IOException
+   public Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes) throws IOException
    {
       sourceFiles = new HashSet<String>();
       Set<String> localDocNames = new HashSet<String>();
-      
-      notTargetFileFilter = new NotTargetFileFilter(opts.getLocales(), XML_EXTENSION);
-      fileFilter.addFileFilter(notTargetFileFilter);
 
-      Collection<File> files = FileUtils.listFiles(srcDir, fileFilter, TrueFileFilter.TRUE);
+      String[] files = getSrcFiles(srcDir, includes, excludes, true);
 
-      for (File file : files)
+      for (String relativeFilePath : files)
       {
-         String baseName = file.getPath();
-
-         baseName = PathUtil.getRelativePath(baseName, srcDir.getPath());
-         sourceFiles.add(baseName);
-         baseName = baseName.substring(0, baseName.length() - XML_EXTENSION.length());
-         if (baseName.contains("_"))
-         {
-               String loc = new LocaleId(opts.getSourceLang()).toJavaName();
-               if (StringUtils.containsIgnoreCase(baseName, "_" + loc))
-               {
-                  baseName = baseName.replaceAll("_" + loc, "");
-               }
-         }
+         sourceFiles.add(relativeFilePath);
+         String baseName = FilenameUtils.removeExtension(relativeFilePath);
+         baseName = trimLocaleFromFile(baseName);
          localDocNames.add(baseName);
       }
       return localDocNames;
+   }
+
+   private String trimLocaleFromFile(String fileName)
+   {
+      if (fileName.contains("_"))
+      {
+         String loc = new LocaleId(getOpts().getSourceLang()).toJavaName();
+         if (StringUtils.containsIgnoreCase(fileName, "_" + loc))
+         {
+            fileName = fileName.replaceAll("_" + loc, "");
+         }
+      }
+      return fileName;
    }
 
    @Override
@@ -82,21 +66,23 @@ public class XliffStrategy implements PushStrategy
    {
       File srcFile = null;
 	   for(String file:sourceFiles){
-	      if(file.startsWith(docName) && file.endsWith(XML_EXTENSION)){
+         if (file.startsWith(docName) && file.endsWith(getFileExtension()))
+         {
 	         srcFile = new File(sourceDir, file);
 	         break;
 	      }
 	   }
       InputSource srcInputSource = new InputSource(new FileInputStream(srcFile));
-      return reader.extractTemplate(srcInputSource, new LocaleId(opts.getSourceLang()), docName);
+      return reader.extractTemplate(srcInputSource, new LocaleId(getOpts().getSourceLang()), docName);
    }
 
    @Override
    public void visitTranslationResources(String docName, Resource srcDoc, TranslationResourcesVisitor visitor) throws FileNotFoundException
    {
-      for (LocaleMapping locale : opts.getLocales())
+      for (LocaleMapping locale : getOpts().getLocales())
       {
-         File transFile = new File(opts.getTransDir(), docName + "_" + locale.getJavaLocale() + XML_EXTENSION);
+         String filename = docNameToFilename(docName, locale);
+         File transFile = new File(getOpts().getTransDir(), filename);
          if (transFile.exists())
          {
             InputSource inputSource = new InputSource(new FileInputStream(transFile));

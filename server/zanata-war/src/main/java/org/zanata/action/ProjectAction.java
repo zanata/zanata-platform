@@ -24,7 +24,6 @@ import java.io.Serializable;
 
 import javax.faces.model.DataModel;
 
-
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;

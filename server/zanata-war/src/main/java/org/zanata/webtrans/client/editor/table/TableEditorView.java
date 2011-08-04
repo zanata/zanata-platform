@@ -22,14 +22,14 @@ package org.zanata.webtrans.client.editor.table;
 
 import java.util.List;
 
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.shared.model.TransUnit;
-
 
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import net.customware.gwt.presenter.client.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.gen2.table.client.FixedWidthGridBulkRenderer;
 import com.google.gwt.gen2.table.client.PagingScrollTable;

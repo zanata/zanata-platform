@@ -2,7 +2,6 @@ package org.zanata.client.commands;
 
 import java.net.URI;
 
-
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

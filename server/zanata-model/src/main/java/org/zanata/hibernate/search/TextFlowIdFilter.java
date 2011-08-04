@@ -23,7 +23,6 @@ package org.zanata.hibernate.search;
 import java.io.IOException;
 import java.util.List;
 
-
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermDocs;

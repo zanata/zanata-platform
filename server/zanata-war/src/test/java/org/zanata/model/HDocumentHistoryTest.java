@@ -7,7 +7,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.Date;
 import java.util.List;
 
-
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -17,10 +16,6 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
-import org.zanata.model.HDocument;
-import org.zanata.model.HDocumentHistory;
-import org.zanata.model.HLocale;
-import org.zanata.model.HProjectIteration;
 
 public class HDocumentHistoryTest extends ZanataDbunitJpaTest
 {

@@ -27,7 +27,6 @@ import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
@@ -56,10 +55,10 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    SplitLayoutPanel mainSplitPanel;
 
    @UiField
-   Image sidePanelMinimize;
+   Image sidePanelCollapse;
 
    @UiField
-   Image showSidePanelViewLink;
+   Image sidePanelExpend;
 
    final WebTransMessages messages;
 
@@ -72,46 +71,32 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       this.messages = messages;
 
       StyleInjector.inject(resources.style().getText(), true);
-      this.sidePanelOuterContainer = new LayoutPanel()
-      {
-         public void onBrowserEvent(Event event)
-         {
-            super.onBrowserEvent(event);
-            switch (event.getTypeInt())
-            {
-            case Event.ONMOUSEOVER:
-               sidePanelMinimize.setVisible(true);
-               break;
-            case Event.ONMOUSEOUT:
-               sidePanelMinimize.setVisible(false);
-               break;
-            }
-         };
-      };
-      sidePanelOuterContainer.sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT);
+      this.sidePanelOuterContainer = new LayoutPanel();
+
       initWidget(uiBinder.createAndBindUi(this));
 
-      sidePanelMinimize.setVisible(false);
+      sidePanelCollapse.setVisible(true);
       mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) panelWidth);
-      showSidePanelViewLink.setTitle(messages.showTranslationDetailsPanel());
+      sidePanelExpend.setTitle(messages.showTranslationDetailsPanel());
    }
 
    @Override
    public HasClickHandlers getHideSidePanelViewButton()
    {
-      return sidePanelMinimize;
+      return sidePanelCollapse;
    }
 
    @Override
    public HasClickHandlers getShowSidePanelViewButton()
    {
-      return showSidePanelViewLink;
+      return sidePanelExpend;
    }
 
    @Override
    public void setShowSidePanelViewButtonVisible(boolean visible)
    {
-      showSidePanelViewLink.setVisible(visible);
+      sidePanelExpend.setVisible(visible);
+      sidePanelCollapse.setVisible(!visible);
    }
 
    @Override

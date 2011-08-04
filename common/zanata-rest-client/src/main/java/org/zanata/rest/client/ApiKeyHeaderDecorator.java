@@ -2,7 +2,6 @@ package org.zanata.rest.client;
 
 import javax.ws.rs.ext.Provider;
 
-
 import org.jboss.resteasy.annotations.interception.ClientInterceptor;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.spi.interception.ClientExecutionContext;

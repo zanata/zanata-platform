@@ -1,15 +1,12 @@
 package org.zanata.rest.service;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-
 import org.testng.annotations.Test;
-import org.zanata.rest.service.TranslatorCredit;
 
 @Test(groups = { "unit-tests" })
 public class TranslatorCreditTest

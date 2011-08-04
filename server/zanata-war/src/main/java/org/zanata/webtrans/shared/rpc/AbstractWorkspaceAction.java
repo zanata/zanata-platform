@@ -1,10 +1,10 @@
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.shared.auth.SessionId;
-import org.zanata.webtrans.shared.model.WorkspaceId;
-
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
+
+import org.zanata.webtrans.shared.auth.SessionId;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 
 
 public abstract class AbstractWorkspaceAction<R extends Result> implements Action<R>

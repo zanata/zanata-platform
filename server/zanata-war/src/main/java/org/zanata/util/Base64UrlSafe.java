@@ -23,7 +23,6 @@ package org.zanata.util;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
-
 import org.apache.commons.codec.binary.Base64;
 import org.zanata.exception.ZanataServiceException;
 

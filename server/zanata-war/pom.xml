@@ -29,6 +29,9 @@
 		<zanata.gwt.module>org.zanata.webtrans.Application</zanata.gwt.module>
 		<fedora.openId>false</fedora.openId>
 		<extra.servlets />
+		<!-- Default MySql login -->
+		<mysql.user>root</mysql.user>
+		<mysql.password></mysql.password>
 	</properties>
 
 	<build>
@@ -926,7 +929,6 @@
 		<dependency>
 			<groupId>javax.transaction</groupId>
 			<artifactId>jta</artifactId>
-			<version>1.1</version>
 			<scope>provided</scope>
 		</dependency>
 

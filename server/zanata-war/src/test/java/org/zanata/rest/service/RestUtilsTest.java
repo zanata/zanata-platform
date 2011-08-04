@@ -11,7 +11,6 @@ import java.io.UnsupportedEncodingException;
 
 import javax.ws.rs.core.MediaType;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.DataProvider;
@@ -20,7 +19,6 @@ import org.zanata.rest.dto.VersionInfo;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.rest.service.RestUtils;
 
 import com.allen_sauer.gwt.log.client.Log;
 

@@ -20,11 +20,11 @@
  */
 package org.zanata.webtrans.client.editor.filter;
 
-import org.zanata.webtrans.client.events.FindMessageEvent;
-
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
+import org.zanata.webtrans.client.events.FindMessageEvent;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;

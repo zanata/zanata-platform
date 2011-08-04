@@ -29,12 +29,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.filefilter.AndFileFilter;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
-import org.zanata.client.commands.StringUtil;
 import org.zanata.client.commands.gettext.PublicanUtil;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
@@ -43,36 +42,28 @@ import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
-class GettextDirStrategy implements PushStrategy
+class GettextDirStrategy extends AbstractPushStrategy
 {
    private static final Logger log = LoggerFactory.getLogger(GettextDirStrategy.class);
 
-   StringSet extensions = new StringSet("comment;gettext");
    PoReader2 poReader = new PoReader2();
    List<LocaleMapping> locales;
-   private PushOptions opts;
 
-   @Override
-   public void setPushOptions(PushOptions opts)
+   public GettextDirStrategy()
    {
-      this.opts = opts;
+      super(new StringSet("comment;gettext"), ".pot");
    }
 
-   @Override
-   public StringSet getExtensions()
-   {
-      return extensions;
-   }
-
-   @Override
-   public Set<String> findDocNames(File srcDir, AndFileFilter fileFilter) throws IOException
+   public Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes) throws IOException
    {
       Set<String> localDocNames = new HashSet<String>();
+
       // populate localDocNames by looking in pot directory
-      String[] srcFiles = PublicanUtil.findPotFiles(srcDir, fileFilter);
+      String[] srcFiles = getSrcFiles(srcDir, includes, excludes, false);
+
       for (String potName : srcFiles)
       {
-         String docName = StringUtil.removeFileExtension(potName, ".pot");
+         String docName = FilenameUtils.removeExtension(potName);
          localDocNames.add(docName);
       }
       return localDocNames;
@@ -81,14 +72,14 @@ class GettextDirStrategy implements PushStrategy
    @Override
    public Resource loadSrcDoc(File sourceDir, String docName) throws IOException
    {
-      File srcFile = new File(sourceDir, docName + ".pot");
+      File srcFile = new File(sourceDir, docName + getFileExtension());
       BufferedInputStream bis = new BufferedInputStream(new FileInputStream(srcFile));
       try
       {
          InputSource potInputSource = new InputSource(bis);
          potInputSource.setEncoding("utf8");
          // load 'srcDoc' from pot/${docID}.pot
-         return poReader.extractTemplate(potInputSource, new LocaleId(opts.getSourceLang()), docName);
+         return poReader.extractTemplate(potInputSource, new LocaleId(getOpts().getSourceLang()), docName);
       }
       finally
       {
@@ -100,11 +91,11 @@ class GettextDirStrategy implements PushStrategy
    {
       if (locales != null)
          return locales;
-      if (opts.getPushTrans())
+      if (getOpts().getPushTrans())
       {
-         if (opts.getLocales() != null)
+         if (getOpts().getLocales() != null)
          {
-            locales = PublicanUtil.findLocales(opts.getTransDir(), opts.getLocales());
+            locales = PublicanUtil.findLocales(getOpts().getTransDir(), getOpts().getLocales());
             if (locales.size() == 0)
             {
                log.warn("option 'pushTrans' is set, but none of the configured locale directories was found (check zanata.xml)");
@@ -112,7 +103,7 @@ class GettextDirStrategy implements PushStrategy
          }
          else
          {
-            locales = PublicanUtil.findLocales(opts.getTransDir());
+            locales = PublicanUtil.findLocales(getOpts().getTransDir());
             if (locales.size() == 0)
             {
                log.warn("option 'pushTrans' is set, but no locale directories were found");
@@ -131,7 +122,7 @@ class GettextDirStrategy implements PushStrategy
    {
       for (LocaleMapping locale : findLocales())
       {
-         File localeDir = new File(opts.getTransDir(), locale.getLocalLocale());
+         File localeDir = new File(getOpts().getTransDir(), locale.getLocalLocale());
          File transFile = new File(localeDir, docName + ".po");
          if (transFile.canRead())
          {
@@ -140,7 +131,7 @@ class GettextDirStrategy implements PushStrategy
             {
                InputSource inputSource = new InputSource(bis);
                inputSource.setEncoding("utf8");
-               TranslationsResource targetDoc = poReader.extractTarget(inputSource, srcDoc, opts.getUseSrcOrder());
+               TranslationsResource targetDoc = poReader.extractTarget(inputSource, srcDoc, getOpts().getUseSrcOrder());
                callback.visit(locale, targetDoc);
             }
             finally
@@ -150,5 +141,4 @@ class GettextDirStrategy implements PushStrategy
          }
       }
    }
-
 }

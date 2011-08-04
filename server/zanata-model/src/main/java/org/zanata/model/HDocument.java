@@ -36,7 +36,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 
-
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;

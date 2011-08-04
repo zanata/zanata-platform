@@ -24,8 +24,8 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
-import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.layout.client.Layout.AnimationCallback;
 import com.google.gwt.layout.client.Layout.Layer;
@@ -103,6 +103,7 @@ public class AppView extends Composite implements AppPresenter.Display
          container.setWidgetTopBottom(documentListView, 0, Unit.PX, 0, Unit.PX);
          container.setWidgetTopHeight(translationView, 0, Unit.PX, 0, Unit.PX);
          filterPanelContainer.setWidgetTopHeight(filterView, 0, Unit.PX, 0, Unit.PX);
+         resetSelectedDocument();
          break;
       case Editor:
          container.setWidgetTopBottom(translationView, 0, Unit.PX, 0, Unit.PX);
@@ -176,6 +177,12 @@ public class AppView extends Composite implements AppPresenter.Display
       String path = document.getPath() == null || document.getPath().isEmpty() ? "" : document.getPath() + "/";
       selectedDocumentPathSpan.setInnerText(path);
       selectedDocumentSpan.setInnerText(document.getName());
+   }
+
+   public void resetSelectedDocument()
+   {
+      selectedDocumentPathSpan.setInnerText("");
+      selectedDocumentSpan.setInnerText("No document selected");
    }
 
    private final AnimationCallback callback = new AnimationCallback()

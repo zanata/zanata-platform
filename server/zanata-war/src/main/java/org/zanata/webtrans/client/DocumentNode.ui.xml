@@ -7,7 +7,7 @@
 		.unitStatus {
 			float: left;
 			padding-right:25px;
-			width: 120px;
+			width: 123px;
 			height: 1.2em;
 		}
 		

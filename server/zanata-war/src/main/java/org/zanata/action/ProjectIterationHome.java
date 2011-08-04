@@ -27,7 +27,6 @@ import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 
-
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;

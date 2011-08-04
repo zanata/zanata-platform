@@ -2,7 +2,6 @@ package org.zanata.service.impl;
 
 import java.util.List;
 
-
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;

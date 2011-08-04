@@ -22,7 +22,6 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
-
 import org.hibernate.validator.Email;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;

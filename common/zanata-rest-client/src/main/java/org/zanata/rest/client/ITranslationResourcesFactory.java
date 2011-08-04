@@ -2,8 +2,6 @@ package org.zanata.rest.client;
 
 import java.net.URI;
 
-import org.zanata.rest.client.ITranslationResources;
-
 
 public interface ITranslationResourcesFactory
 {

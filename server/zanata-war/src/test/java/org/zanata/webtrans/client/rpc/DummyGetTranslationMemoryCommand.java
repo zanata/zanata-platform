@@ -4,9 +4,8 @@ import java.util.ArrayList;
 
 import org.zanata.webtrans.shared.model.TranslationMemoryItem;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
-import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
-
+import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;

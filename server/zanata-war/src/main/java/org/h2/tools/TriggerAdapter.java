@@ -9,6 +9,7 @@ package org.h2.tools;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import org.h2.api.Trigger;
 
 /**

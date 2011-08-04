@@ -20,11 +20,11 @@
  */
 package org.zanata.webtrans.client;
 
-import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
-
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
+import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;

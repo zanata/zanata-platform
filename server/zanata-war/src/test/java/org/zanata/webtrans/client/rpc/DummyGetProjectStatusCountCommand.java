@@ -10,7 +10,6 @@ import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.rpc.GetProjectStatusCount;
 import org.zanata.webtrans.shared.rpc.GetProjectStatusCountResult;
 
-
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

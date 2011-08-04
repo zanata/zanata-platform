@@ -1,7 +1,11 @@
 package org.zanata.rest.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isOneOf;
+import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,14 +16,12 @@ import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
-
 import org.apache.commons.httpclient.URIException;
 import org.dbunit.operation.DatabaseOperation;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.fest.assertions.Assertions;
 import org.jboss.resteasy.client.ClientResponse;
-import org.jboss.resteasy.plugins.delegates.UriHeaderDelegate;
 import org.jboss.seam.security.Identity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,9 +55,6 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.rest.service.ETagUtils;
-import org.zanata.rest.service.ResourceUtils;
-import org.zanata.rest.service.TranslationResourcesService;
 import org.zanata.service.impl.LocaleServiceImpl;
 
 public class TranslationResourceRestTest extends ZanataRestTest

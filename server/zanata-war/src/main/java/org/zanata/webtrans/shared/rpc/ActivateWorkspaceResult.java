@@ -1,9 +1,9 @@
 package org.zanata.webtrans.shared.rpc;
 
+import net.customware.gwt.dispatch.shared.Result;
+
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
-
-import net.customware.gwt.dispatch.shared.Result;
 
 
 public class ActivateWorkspaceResult implements Result

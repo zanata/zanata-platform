@@ -27,7 +27,6 @@ import java.util.Set;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.NoResultException;
 
-
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;

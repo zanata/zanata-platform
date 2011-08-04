@@ -20,6 +20,10 @@
  */
 package org.zanata.webtrans.client.gin;
 
+import net.customware.gwt.presenter.client.DefaultEventBus;
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
+
 import org.zanata.webtrans.client.AppPresenter;
 import org.zanata.webtrans.client.AppView;
 import org.zanata.webtrans.client.Application;
@@ -55,10 +59,6 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.rpc.DelegatingDispatchAsync;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
-
-import net.customware.gwt.presenter.client.DefaultEventBus;
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
 
 import com.google.inject.Provider;
 import com.google.inject.Singleton;

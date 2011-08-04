@@ -20,6 +20,10 @@
  */
 package org.zanata.webtrans.client;
 
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
 import org.zanata.webtrans.client.action.UndoManager;
 import org.zanata.webtrans.client.action.UndoableAction;
 import org.zanata.webtrans.client.events.EditTransUnitEvent;
@@ -32,17 +36,13 @@ import org.zanata.webtrans.client.events.UndoAddEvent;
 import org.zanata.webtrans.client.events.UndoAddEventHandler;
 import org.zanata.webtrans.client.events.UndoFailureEvent;
 import org.zanata.webtrans.client.events.UndoFailureEventHandler;
-import org.zanata.webtrans.client.events.UndoRedoFinishEvent;
 import org.zanata.webtrans.client.events.UndoFinishEventHandler;
+import org.zanata.webtrans.client.events.UndoRedoFinishEvent;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.inject.Inject;
-
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 public class UndoRedoPresenter extends WidgetPresenter<UndoRedoPresenter.Display>
 {

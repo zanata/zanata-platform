@@ -3,7 +3,6 @@ package org.zanata.maven;
 import java.io.File;
 import java.net.URL;
 
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;

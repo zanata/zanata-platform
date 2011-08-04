@@ -22,7 +22,6 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
-
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.jboss.seam.ScopeType;

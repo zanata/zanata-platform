@@ -179,8 +179,9 @@ Removes some of the styling on the page-level splitters
 }
 
 .TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Source {
+	font-style: italic;
 	background: url(tu_bg_fuzzy_left.png) repeat-y left;
-	border-right: 3px solid #cccccc;
+	border-right: none;
 	border-left: 3px solid #cccccc;
 	/* need to verify if #cccccc works for all borders first
 	border-right: 3px solid #f7dec3;
@@ -190,7 +191,7 @@ Removes some of the styling on the page-level splitters
 
 .TableEditor tr.NewStateDecoration td.TableEditorCell-Source {
 	background: url(tu_bg_new_left.png) repeat-y left;
-	border-right: 3px solid #cccccc;
+	border-right: none;
 	border-left: 3px solid #cccccc;
 	/* need to verify if #cccccc works for all borders first
 	border-right: 3px solid #c3e0f7;
@@ -200,7 +201,7 @@ Removes some of the styling on the page-level splitters
 
 .TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Source {
 	background: url(tu_bg_approved_left.png) repeat-y left;
-	border-right: 3px solid #cccccc;
+	border-right: none;
 	border-left: 3px solid #cccccc;
 	/* need to verify if #cccccc works for all borders first
 	border-right: 3px solid #a8eab1;
@@ -210,7 +211,7 @@ Removes some of the styling on the page-level splitters
 
 .TableEditor tr.ErrorStateDecoration td.TableEditorCell-Source {
 	background: url(tu_bg_error_left.png) repeat-y left;
-	border-right: 3px solid #cccccc;
+	border-right: none;
 	border-left: 3px solid #cccccc;
 	/* need to verify if #cccccc works for all borders first
     border-right: 3px solid #f7c3c3;
@@ -219,9 +220,10 @@ Removes some of the styling on the page-level splitters
 }
 
 .TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Target {
+	font-style: italic;
 	background: url(tu_bg_fuzzy_right.png) repeat-y right;
 	border-right: 3px solid #cccccc;
-	border-left: 3px solid #cccccc;
+	border-left: none;
 	/* need to verify if #cccccc works for all borders first
 	border-right: 3px solid #f7dec3;
 	border-left: 3px solid #f7dec3;
@@ -231,7 +233,7 @@ Removes some of the styling on the page-level splitters
 .TableEditor tr.NewStateDecoration td.TableEditorCell-Target {
 	background: url(tu_bg_new_right.png) repeat-y right;
 	border-right: 3px solid #cccccc;
-	border-left: 3px solid #cccccc;
+	border-left: none;
 	/* need to verify if #cccccc works for all borders first
 	border-right: 3px solid #c3e0f7;
 	border-left: 3px solid #c3e0f7;
@@ -241,7 +243,7 @@ Removes some of the styling on the page-level splitters
 .TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Target {
 	background: url(tu_bg_approved_right.png) repeat-y right;
 	border-right: 3px solid #cccccc;
-	border-left: 3px solid #cccccc;
+	border-left: none;
 	/* need to verify if #cccccc works for all borders first
 	border-right: 3px solid #a8eab1;
 	border-left: 3px solid #a8eab1;
@@ -251,7 +253,7 @@ Removes some of the styling on the page-level splitters
 .TableEditor tr.ErrorStateDecoration td.TableEditorCell-Target {
 	background: url(tu_bg_error_right.png) repeat-y right;
 	border-right: 3px solid #cccccc;
-	border-left: 3px solid #cccccc;
+	border-left: none;
 	/* need to verify if #cccccc works for all borders first
     border-right: 3px solid #f7c3c3;
     border-left: 3px solid #f7c3c3;
@@ -271,7 +273,14 @@ td.TableEditorCell-Target {
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell {
-	background-color: #f1f2f6;
+	/* This appears behind the background image, and looks like
+	a variable-sized grey square (ugly). Should not be enabled if
+	there is a background gradient image for editor cells.
+	
+	background-color: #f1f2f6; */
+	
+	border-color: #AAA;
+	border-bottom: 1px solid #AAA;
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell-Source {
@@ -309,9 +318,23 @@ tr.TableEditorRow.content-filter-nomatch {
 	opacity: 0.25;
 }
 
-tr.TableEditorRow.selected td {
-	
+tr.TableEditorRow.selected {
 }
+
+tr.TableEditorRow.selected td.TableEditorCell {
+	border-top: 3px solid #666666;
+	border-bottom: 3px solid #666666;
+}
+
+tr.TableEditorRow.selected td.TableEditorCell-Source {
+	border-left: 3px solid #666666;
+}
+
+tr.TableEditorRow.selected td.TableEditorCell-Target {
+	border-right: 3px solid #666666;
+}
+
+
 
 .TableEditorContent,.TableEditorContent-Edit {
 	font-size: 14px;
@@ -319,6 +342,11 @@ tr.TableEditorRow.selected td {
 	padding: 0px;
 	margin: 0px;
 	width: 98%;
+	/*border: none; might make the text area look less cramped */
+}
+
+.TableEditorContent-Edit {
+	border: 1px solid #666666;
 }
 
 .TableEditorContent-Empty {

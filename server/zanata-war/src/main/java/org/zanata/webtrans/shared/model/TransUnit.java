@@ -5,7 +5,6 @@ import java.io.Serializable;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class TransUnit implements IsSerializable, Serializable

@@ -1,6 +1,7 @@
 package org.zanata.client.commands.push;
 
 import java.io.File;
+import java.util.List;
 
 import org.zanata.client.commands.ConfigurableProjectOptions;
 
@@ -14,7 +15,8 @@ public interface PushOptions extends ConfigurableProjectOptions
    public boolean getCopyTrans();
    public boolean getUseSrcOrder();
    public String getMergeType();
-   public String getIncludeFilePattern();
-   public String getExcludeFilePattern();
+
+   public List<String> getIncludes();
+   public List<String> getExcludes();
 }
 

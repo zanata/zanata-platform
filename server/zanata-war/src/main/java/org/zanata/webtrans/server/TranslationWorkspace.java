@@ -2,7 +2,6 @@ package org.zanata.webtrans.server;
 
 import java.util.concurrent.ConcurrentMap;
 
-
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;

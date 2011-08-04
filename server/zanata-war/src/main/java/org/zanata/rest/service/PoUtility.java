@@ -28,7 +28,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-
 import org.fedorahosted.openprops.Properties;
 import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
 

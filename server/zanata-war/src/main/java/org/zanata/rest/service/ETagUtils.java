@@ -5,7 +5,6 @@ import java.util.Set;
 
 import javax.ws.rs.core.EntityTag;
 
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;

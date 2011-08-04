@@ -11,7 +11,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
-import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HProject;
 
 @Test(groups = { "jpa-tests" })

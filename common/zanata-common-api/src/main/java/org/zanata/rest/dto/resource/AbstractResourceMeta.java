@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;

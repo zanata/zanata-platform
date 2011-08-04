@@ -2,10 +2,10 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.ArrayList;
 
+import net.customware.gwt.dispatch.shared.Result;
+
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
-
-import net.customware.gwt.dispatch.shared.Result;
 
 
 public class GetDocumentListResult implements Result

@@ -27,13 +27,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.AndFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.io.FilenameUtils;
 import org.fedorahosted.openprops.Properties;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
@@ -45,45 +43,27 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.util.PathUtil;
 
-class PropertiesStrategy implements PushStrategy
+class PropertiesStrategy extends AbstractPushStrategy
 {
-   private StringSet extensions = new StringSet("comment");
-   private PushOptions opts;
-
-   private String docNameToFilename(String docName)
+   public PropertiesStrategy()
    {
-      return docName + ".properties";
-   }
-
-   private String docNameToFilename(String docName, LocaleMapping locale)
-   {
-      return docName + "_" + locale.getJavaLocale() + ".properties";
+      super(new StringSet("comment"), ".properties");
    }
 
    @Override
-   public Set<String> findDocNames(File srcDir, AndFileFilter fileFilter) throws IOException
+   public Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes) throws IOException
    {
       Set<String> localDocNames = new HashSet<String>();
-      NotTargetFileFilter notTargetFilter = new NotTargetFileFilter(opts.getLocales(), ".properties");
-      fileFilter.addFileFilter(notTargetFilter);
 
-      Collection<File> files = FileUtils.listFiles(srcDir, fileFilter, TrueFileFilter.TRUE);
-      for (File f : files)
+      String[] files = getSrcFiles(srcDir, includes, excludes, true);
+
+      for (String relativeFilePath : files)
       {
-         String fileName = f.getPath();
-         String baseName = removeDotProperties(fileName);
-         String relativeName = PathUtil.getRelativePath(baseName, srcDir.getPath());
-         localDocNames.add(relativeName);
+         String baseName = FilenameUtils.removeExtension(relativeFilePath);
+         localDocNames.add(baseName);
       }
       return localDocNames;
-   }
-
-   @Override
-   public StringSet getExtensions()
-   {
-      return extensions;
    }
 
    private Properties loadPropFile(File propFile) throws FileNotFoundException, IOException
@@ -118,7 +98,7 @@ class PropertiesStrategy implements PushStrategy
    private TextFlow propEntryToTextFlow(Properties props, String key)
    {
       String content = props.getProperty(key);
-      LocaleId sourceLoc = new LocaleId(opts.getSourceLang());
+      LocaleId sourceLoc = new LocaleId(getOpts().getSourceLang());
       TextFlow textflow = new TextFlow(key, sourceLoc, content);
       String comment = props.getComment(key);
       if (comment != null)
@@ -142,7 +122,7 @@ class PropertiesStrategy implements PushStrategy
       // TODO consider using PropReader
       TranslationsResource targetDoc = new TranslationsResource();
       Properties props = loadPropFile(transFile);
-      if (opts.getUseSrcOrder())
+      if (getOpts().getUseSrcOrder())
       {
          for (TextFlow tf : srcDoc.getTextFlows())
          {
@@ -177,27 +157,16 @@ class PropertiesStrategy implements PushStrategy
       targetDoc.getTextFlowTargets().add(textFlowTarget);
    }
 
-   private String removeDotProperties(String propFileName)
-   {
-      return propFileName.substring(0, propFileName.length() - ".properties".length());
-   }
-
-   @Override
-   public void setPushOptions(PushOptions opts)
-   {
-      this.opts = opts;
-   }
-
    @Override
    public void visitTranslationResources(String docName, Resource srcDoc, TranslationResourcesVisitor callback) throws IOException
    {
-      for (LocaleMapping locale : opts.getLocales())
+      for (LocaleMapping locale : getOpts().getLocales())
       {
          String filename = docNameToFilename(docName, locale);
-         File transFile = new File(opts.getTransDir(), filename);
+         File transFile = new File(getOpts().getTransDir(), filename);
          if (transFile.exists())
          {
-            TranslationsResource targetDoc = loadTranslationsResource(srcDoc, transFile, opts.getUseSrcOrder());
+            TranslationsResource targetDoc = loadTranslationsResource(srcDoc, transFile, getOpts().getUseSrcOrder());
             callback.visit(locale, targetDoc);
          }
          else
@@ -206,5 +175,4 @@ class PropertiesStrategy implements PushStrategy
          }
       }
    }
-
 }

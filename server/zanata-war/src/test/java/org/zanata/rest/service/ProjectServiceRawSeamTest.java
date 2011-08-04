@@ -9,7 +9,6 @@ import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
 
-
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
 import org.jboss.seam.mock.EnhancedMockHttpServletResponse;

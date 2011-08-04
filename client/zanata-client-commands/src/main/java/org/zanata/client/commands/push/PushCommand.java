@@ -14,16 +14,11 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.apache.commons.io.filefilter.AndFileFilter;
-import org.apache.commons.io.filefilter.NotFileFilter;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.ConfigurableProjectCommand;
 import org.zanata.client.commands.OptionsUtil;
-import org.zanata.client.commands.strategy.XmlStrategy;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.common.LocaleId;
@@ -45,7 +40,7 @@ public class PushCommand extends ConfigurableProjectCommand
 {
    private static final Logger log = LoggerFactory.getLogger(PushCommand.class);
 
-   private static final Map<String, PushStrategy> strategies = new HashMap<String, PushStrategy>();
+   private static final Map<String, AbstractPushStrategy> strategies = new HashMap<String, AbstractPushStrategy>();
 
    public static interface TranslationResourcesVisitor
    {
@@ -83,9 +78,9 @@ public class PushCommand extends ConfigurableProjectCommand
       this(opts, OptionsUtil.createRequestFactory(opts));
    }
 
-   private PushStrategy getStrategy(String strategyType)
+   private AbstractPushStrategy getStrategy(String strategyType)
    {
-      PushStrategy strat = strategies.get(strategyType);
+      AbstractPushStrategy strat = strategies.get(strategyType);
       if (strat == null)
       {
          throw new RuntimeException("unknown project type: " + opts.getProjectType());
@@ -105,8 +100,29 @@ public class PushCommand extends ConfigurableProjectCommand
       log.info("Source language: {}", opts.getSourceLang());
       log.info("Copy previous translations: {}", opts.getCopyTrans());
       log.info("Merge type: {}", opts.getMergeType());
-      log.info("Include file pattern: {}", opts.getIncludeFilePattern());
-      log.info("Exclude file pattern: {}", opts.getExcludeFilePattern());
+
+      if (!opts.getIncludes().isEmpty())
+      {
+         StringBuilder sb = new StringBuilder();
+         for (String pattern : opts.getIncludes())
+         {
+            sb.append(pattern);
+            sb.append(" ");
+         }
+         log.info("Include patterns: {}", sb.toString());
+      }
+
+      if (!opts.getExcludes().isEmpty())
+      {
+         StringBuilder sb = new StringBuilder();
+         for(String pattern:opts.getExcludes())
+         {
+            sb.append(pattern);
+            sb.append(" ");
+         }
+         log.info("Exclude patterns: {}", sb.toString());
+      }
+
 
       if (opts.getPushTrans())
       {
@@ -140,7 +156,7 @@ public class PushCommand extends ConfigurableProjectCommand
          confirmWithUser("This will overwrite/delete any existing documents on the server.\n");
       }
 
-      PushStrategy strat = getStrategy(opts.getProjectType());
+      AbstractPushStrategy strat = getStrategy(opts.getProjectType());
 
       JAXBContext jc = null;
       if (opts.isDebugSet()) // || opts.getValidate())
@@ -155,18 +171,12 @@ public class PushCommand extends ConfigurableProjectCommand
 
       // NB we don't load all the docs into a HashMap, because that would waste
       // memory
-      AndFileFilter fileFilter = new AndFileFilter();
 
-      WildcardFileFilter includeFilter = new WildcardFileFilter(opts.getIncludeFilePattern());
-      fileFilter.addFileFilter(includeFilter);
-
-      if (!StringUtils.isEmpty(opts.getExcludeFilePattern()))
+      Set<String> localDocNames = strat.findDocNames(sourceDir, opts.getIncludes(), opts.getExcludes());
+      for (String docName : localDocNames)
       {
-         NotFileFilter excludeFilter = new NotFileFilter(new WildcardFileFilter(opts.getExcludeFilePattern()));
-         fileFilter.addFileFilter(excludeFilter);
+         log.info("Source file to be uploaded: {}", docName);
       }
-
-      Set<String> localDocNames = strat.findDocNames(sourceDir, fileFilter);
       deleteObsoleteDocsFromServer(localDocNames);
 
       for (String docName : localDocNames)

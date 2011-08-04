@@ -45,7 +45,7 @@
 		<g:layer left='0' width='100%'>
 			<g:FlowPanel ui:field='undefinedPanel' styleName="{style.undefined}" />
 		</g:layer>
-		<g:layer right='2px' margin-left="auto" width="25px" top="3px" bottom="0">
+		<g:layer right='2px' margin-left="auto" width="30px" top="3px" bottom="0">
 			<g:Label ui:field='label' styleName='{style.label}' />
 		</g:layer>
 	</g:LayoutPanel>

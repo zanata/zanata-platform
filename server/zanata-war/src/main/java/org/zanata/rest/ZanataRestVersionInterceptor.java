@@ -1,14 +1,12 @@
 package org.zanata.rest;
 
 import static org.jboss.seam.ScopeType.APPLICATION;
-import org.jboss.resteasy.annotations.interception.HeaderDecoratorPrecedence;
-
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-
+import org.jboss.resteasy.annotations.interception.HeaderDecoratorPrecedence;
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;
 import org.jboss.resteasy.core.ResourceMethod;
 import org.jboss.resteasy.core.ServerResponse;
@@ -16,7 +14,6 @@ import org.jboss.resteasy.spi.Failure;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.interception.PreProcessInterceptor;
 import org.jboss.seam.Component;
-import org.zanata.rest.RestConstant;
 import org.zanata.service.impl.VersionManager;
 import org.zanata.util.VersionUtility;
 

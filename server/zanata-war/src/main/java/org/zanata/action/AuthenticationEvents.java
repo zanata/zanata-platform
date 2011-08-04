@@ -28,9 +28,9 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.security.permission.RuleBasedPermissionResolver;
-import org.jboss.seam.security.Identity;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 

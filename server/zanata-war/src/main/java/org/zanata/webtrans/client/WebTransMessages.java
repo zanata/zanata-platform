@@ -14,23 +14,14 @@ public interface WebTransMessages extends Messages
    @Description("Title of the minimized users panel")
    String nUsersOnline(@PluralCount int numUsers);
 
-   @DefaultMessage("{0}% (words)")
-   String statusBarLabelPercentage(int approved, @Optional int needReview, @Optional int untranslated);
-   
-   @DefaultMessage("{0,number,#.#} hours")
-   String statusBarLabelHours(double remainingHours);
-
-   @DefaultMessage("{0}/{1}/{2} (wds)")
-   String statusBarLabelWords(int approved, int needReview, int untranslated);
-
-   @DefaultMessage("{0}/{1}/{2} (msgs)")
-   String statusBarLabelUnits(int approved, int needReview, int untranslated);
-
-   @DefaultMessage("{0}%")
-   String statusGraphLabelPercentage(int approved, @Optional int needReview, @Optional int untranslated);
+   @DefaultMessage("{0}% ({1,number,#.#}hrs)")
+   String statusBarPercentageHrs(int approved, double remainingHours);
 
    @DefaultMessage("{0,number,#.#}")
-   String statusGraphLabelHours(double remainingHours);
+   String statusBarLabelHours(double remainingHours);
+
+   @DefaultMessage("{0}%")
+   String statusBarLabelPercentage(int approved);
 
    @DefaultMessage("http://zanata.org/")
    String hrefHelpLink();

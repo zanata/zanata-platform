@@ -28,7 +28,6 @@ import java.lang.reflect.Field;
 
 import javax.faces.context.FacesContext;
 
-
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Install;

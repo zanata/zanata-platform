@@ -2,9 +2,9 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.ArrayList;
 
-import org.zanata.webtrans.shared.model.TranslationMemoryItem;
-
 import net.customware.gwt.dispatch.shared.Result;
+
+import org.zanata.webtrans.shared.model.TranslationMemoryItem;
 
 
 public class GetTranslationMemoryResult implements Result

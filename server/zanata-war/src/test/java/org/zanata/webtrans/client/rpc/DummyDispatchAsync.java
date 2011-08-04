@@ -1,6 +1,8 @@
 package org.zanata.webtrans.client.rpc;
 
-import org.zanata.webtrans.client.rpc.SeamDispatchAsync;
+import net.customware.gwt.dispatch.shared.Action;
+import net.customware.gwt.dispatch.shared.Result;
+
 import org.zanata.webtrans.shared.auth.AuthorizationError;
 import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
@@ -18,12 +20,7 @@ import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 
-import net.customware.gwt.dispatch.shared.Action;
-import net.customware.gwt.dispatch.shared.Result;
-
-
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -54,6 +51,7 @@ public class DummyDispatchAsync extends SeamDispatchAsync
       {
          GetTransUnitList gtuAction = (GetTransUnitList) action;
          AsyncCallback<GetTransUnitListResult> gtuCallback = (AsyncCallback<GetTransUnitListResult>) callback;
+         DeferredCommand.addCommand(new DummyGetTransUnitCommand(gtuAction, gtuCallback));
          DeferredCommand.addCommand(new DummyGetTransUnitCommand(gtuAction, gtuCallback));
       }
       else if (action instanceof GetDocumentList)

@@ -1,10 +1,10 @@
 package org.zanata.server.rpc;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import org.apache.lucene.queryParser.QueryParser;
 import org.testng.annotations.Test;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.*;
 
 @Test(groups = { "unit-tests" })
 public class GetTransMemoryHandlerTest

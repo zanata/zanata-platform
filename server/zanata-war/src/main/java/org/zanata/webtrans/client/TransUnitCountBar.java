@@ -3,13 +3,18 @@ package org.zanata.webtrans.client;
 import org.zanata.common.ContentState;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.editor.HasTranslationStats;
+import org.zanata.webtrans.client.ui.TooltipPopupPanel;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -21,6 +26,8 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
 {
 
    private static TransUnitCountBarUiBinder uiBinder = GWT.create(TransUnitCountBarUiBinder.class);
+
+   final TooltipPopupPanel tooltipPanel = new TooltipPopupPanel(true);
 
    interface TransUnitCountBarUiBinder extends UiBinder<Widget, TransUnitCountBar>
    {
@@ -40,18 +47,50 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
    private final TranslationStats stats = new TranslationStats();
 
    protected final WebTransMessages messages;
-   
+
+   protected int approvedPercent = 0;
+
    private int totalWidth = 100;
+
+   private boolean isGraph = false;
+
 
    @Inject
    public TransUnitCountBar(WebTransMessages messages)
    {
       this.messages = messages;
+      tooltipPanel.setStyleName("transUnitCountGraphTooltipPanel");
       initWidget(uiBinder.createAndBindUi(this));
+      initLayoutPanelHandler();
    }
 
-   public TransUnitCountBar(WebTransMessages messages, boolean fromChild)
+   private void initLayoutPanelHandler()
    {
+      layoutPanel.addHandler(new MouseOverHandler()
+      {
+         @Override
+         public void onMouseOver(MouseOverEvent event)
+         {
+            tooltipPanel.showRelativeTo(layoutPanel);
+         }
+      }, MouseOverEvent.getType());
+
+      layoutPanel.addHandler(new MouseOutHandler()
+      {
+         @Override
+         public void onMouseOut(MouseOutEvent event)
+         {
+            tooltipPanel.hide(true);
+         }
+      }, MouseOutEvent.getType());
+
+      layoutPanel.sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT);
+   }
+
+   public TransUnitCountBar(WebTransMessages messages, boolean isGraph)
+   {
+      tooltipPanel.setStyleName("transUnitCountGraphTooltipPanel");
+      this.isGraph = isGraph;
       this.messages = messages;
    }
 
@@ -78,13 +117,6 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
       }
       else
       {
-         if (labelFormat != LabelFormat.MESSAGE_COUNTS)
-         {
-            approved = getWordsApproved();
-            needReview = getWordsNeedReview();
-            untranslated = getWordsUntranslated();
-            total = getWordsTotal();
-         }
          int completePx = approved * 100 / total * width / totalWidth;
          int inProgressPx = needReview * 100 / total * width / totalWidth;
          int unfinishedPx = untranslated * 100 / total * width / totalWidth;
@@ -92,33 +124,41 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
          setupLayoutPanel(0.0, 0, 0.0, completePx, completePx, inProgressPx, completePx + inProgressPx, unfinishedPx);
          setLabelText(total, approved, needReview, untranslated);
       }
-      refreshDisplay(1000);
+
+      if (isGraph)
+      {
+         refreshDisplay(0);
+      }
+      else
+      {
+         refreshDisplay(1000);
+      }
    }
 
-   protected void setLabelText(int total, int approved, int needReview, int untranslated)
+   private void setLabelText(int total, int approved, int needReview, int untranslated)
    {
+      approvedPercent = approved * 100 / total;
       switch (labelFormat)
       {
+      case PERCENT_COMPLETE_HRS:
+         label.setText(messages.statusBarPercentageHrs(approvedPercent, getRemainingWordsHours()));
+         break;
       case PERCENT_COMPLETE:
-         label.setText(messages.statusBarLabelPercentage(approved * 100 / total, needReview * 100 / total, untranslated * 100 / total));
-         break;
-      case HOURS_REMAIN:
-         double remainHours = remainingHours(needReview, untranslated);
-         label.setText(messages.statusBarLabelHours(remainHours));
-         break;
-      case WORD_COUNTS:
-         label.setText(messages.statusBarLabelWords(approved, needReview, untranslated));
-         break;
-      case MESSAGE_COUNTS:
-         label.setText(messages.statusBarLabelUnits(approved, needReview, untranslated));
+         label.setText(messages.statusBarLabelPercentage(approvedPercent));
          break;
       default:
          label.setText("error: " + labelFormat.name());
       }
    }
 
+   public int getApprovedPercent()
+   {
+      return approvedPercent;
+   }
+
    protected void refreshDisplay(int duration)
    {
+      tooltipPanel.refreshData(this);
       layoutPanel.animate(duration);
    }
 
@@ -175,22 +215,20 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
       return remainHours;
    }
 
-   public void setLabelFormat(LabelFormat labelFormat)
-   {
-      this.labelFormat = labelFormat;
-      refresh();
-   }
-
-   @UiHandler("label")
-   public void onLabelClick(ClickEvent event)
-   {
-      setLabelFormat(labelFormat.next());
-   }
-
    @Override
    public void setStats(TranslationStats stats)
    {
       this.stats.set(stats);
       refresh();
+   }
+
+   public void onMouseOver(Element target)
+   {
+      tooltipPanel.showRelativeTo(target);
+   }
+
+   public void onMouseOut()
+   {
+      tooltipPanel.hide(true);
    }
 }

@@ -6,7 +6,6 @@ import java.util.Set;
 
 import javax.ws.rs.ext.ExceptionMapper;
 
-
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.core.executors.InMemoryClientExecutor;
 import org.jboss.resteasy.core.Dispatcher;

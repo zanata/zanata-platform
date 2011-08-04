@@ -3,7 +3,6 @@ package org.zanata.rest.service;
 import java.util.HashSet;
 import java.util.Set;
 
-
 import org.testng.annotations.Test;
 import org.zanata.ZanataJpaTest;
 import org.zanata.common.ContentType;
@@ -15,7 +14,6 @@ import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.rest.dto.resource.ResourceMeta;
-import org.zanata.rest.service.ResourceUtils;
 
 public class ResourceUtilsJpaTest extends ZanataJpaTest
 {

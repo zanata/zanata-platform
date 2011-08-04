@@ -1,6 +1,7 @@
 package org.zanata.client.commands;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.notNull;
 
 import java.io.File;
 import java.net.URI;

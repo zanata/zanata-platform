@@ -12,10 +12,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
-
+import javax.ws.rs.core.UriInfo;
 
 import org.hibernate.Session;
 import org.jboss.resteasy.spi.NoLogWebApplicationException;
@@ -35,7 +34,6 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Account;
-import org.zanata.rest.service.AccountResource;
 
 @Name("accountService")
 @Path("/accounts/u/{username:[a-z\\d_]{3,20}}")

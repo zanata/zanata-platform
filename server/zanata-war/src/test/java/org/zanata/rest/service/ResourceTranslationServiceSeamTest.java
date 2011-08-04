@@ -5,7 +5,6 @@ import java.net.URI;
 
 import javax.ws.rs.core.MediaType;
 
-
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.spi.interception.ClientExecutionContext;

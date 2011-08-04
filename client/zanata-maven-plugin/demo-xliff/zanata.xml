@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config xmlns="http://zanata.org/namespace/config/">
 	<url>http://localhost:8080/zanata/</url> 
-	<project>TEST1</project> 
-	<project-version>3.3</project-version>
+	<project>xliff-test</project> 
+	<project-version>1.0</project-version>
 
 <!-- 
     <locales mapping="java">
