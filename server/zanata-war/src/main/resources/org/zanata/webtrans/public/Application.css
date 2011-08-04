@@ -273,7 +273,14 @@ td.TableEditorCell-Target {
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell {
-	background-color: #f1f2f6;
+	/* This appears behind the background image, and looks like
+	a variable-sized grey square (ugly). Should not be enabled if
+	there is a background gradient image for editor cells.
+	
+	background-color: #f1f2f6; */
+	
+	border-color: #666666;
+	border-bottom: 1px solid #666666;
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell-Source {
@@ -315,9 +322,19 @@ tr.TableEditorRow.selected {
 }
 
 tr.TableEditorRow.selected td.TableEditorCell {
-	border-top: 1px solid #666666;
-	border-bottom: 1px solid #666666;
+	border-top: 3px solid #666666;
+	border-bottom: 3px solid #666666;
 }
+
+tr.TableEditorRow.selected td.TableEditorCell-Source {
+	border-left: 3px solid #666666;
+}
+
+tr.TableEditorRow.selected td.TableEditorCell-Target {
+	border-right: 3px solid #666666;
+}
+
+
 
 .TableEditorContent,.TableEditorContent-Edit {
 	font-size: 14px;
