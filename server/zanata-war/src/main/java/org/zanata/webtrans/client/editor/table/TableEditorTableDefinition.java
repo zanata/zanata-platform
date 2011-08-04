@@ -22,9 +22,7 @@ package org.zanata.webtrans.client.editor.table;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopySourceEvent;
-import org.zanata.webtrans.client.events.ToggleApprovedEvent;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
@@ -32,8 +30,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
@@ -41,10 +37,8 @@ import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit>
 {
@@ -135,19 +129,13 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    private final CellRenderer<TransUnit, TransUnit> sourceCellRenderer = new CellRenderer<TransUnit, TransUnit>()
    {
       @Override
-      public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
+      public void renderRowValue(final TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
       {
          view.setStyleName("TableEditorCell TableEditorCell-Source");
          sourcePanel = new SourcePanel(rowValue, messages);
          if (findMessage != null && !findMessage.isEmpty())
          {
             sourcePanel.highlightSearch(findMessage);
-         }
-         if (rowValue.getStatus() == ContentState.NeedReview)
-         {
-            String content = sourcePanel.getElement().getInnerHTML();
-            String highlight = "<font style='color:blue; background-color:yellow;'>" + content;
-            sourcePanel.getElement().setInnerHTML(highlight);
          }
          sourcePanel.sinkEvents(Event.ONCLICK);
          sourcePanel.addClickHandler(new ClickHandler()
@@ -163,6 +151,24 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             }
 
          });
+
+         TableResources images = GWT.create(TableResources.class);
+         Image copyButton = new Image(images.copySrcButton());
+         copyButton.setStyleName("gwt-Button");
+         copyButton.setTitle(messages.copySourcetoTarget());
+         copyButton.addClickHandler(new ClickHandler()
+         {
+
+            @Override
+            public void onClick(ClickEvent event)
+            {
+               rowValue.setTarget(rowValue.getSource());
+               eventBus.fireEvent(new CopySourceEvent(rowValue));
+            }
+
+         });
+         sourcePanel.add(copyButton);
+
          view.setWidget(sourcePanel);
       }
    };
@@ -182,57 +188,60 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       }
    };
 
-   private final CellRenderer<TransUnit, TransUnit> operationsCellRenderer = new CellRenderer<TransUnit, TransUnit>()
-   {
-      @Override
-      public void renderRowValue(final TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
-      {
-         view.setStyleName("TableEditorCell TableEditorCell-Middle");
-         VerticalPanel operationsPanel = new VerticalPanel();
-         operationsPanel.setWidth("100%");
-         operationsPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-
-         toggleApproved = new CheckBox();
-         if (rowValue.getStatus() == ContentState.Approved)
-            toggleApproved.setValue(true);
-         else
-            toggleApproved.setValue(false);
-         toggleApproved.addValueChangeHandler(new ValueChangeHandler<Boolean>()
-         {
-            @Override
-            public void onValueChange(ValueChangeEvent<Boolean> event)
-            {
-               if (event.getValue())
-                  rowValue.setStatus(ContentState.Approved);
-               else
-                  // change status to Fuzzy, if remove Approved mark
-                  rowValue.setStatus(ContentState.NeedReview);
-
-               eventBus.fireEvent(new ToggleApprovedEvent(rowValue));
-            }
-
-         });
-         TableResources images = GWT.create(TableResources.class);
-         Image copyButton = new Image(images.copySrcButton());
-         copyButton.setStyleName("gwt-Button");
-         //copyButton.setText(messages.editClone());
-         copyButton.setTitle(messages.copySourcetoTarget());
-         copyButton.addClickHandler(new ClickHandler()
-         {
-
-            @Override
-            public void onClick(ClickEvent event)
-            {
-               rowValue.setTarget(rowValue.getSource());
-               eventBus.fireEvent(new CopySourceEvent(rowValue));
-            }
-
-         });
-         operationsPanel.add(copyButton);
-         operationsPanel.add(toggleApproved);
-         view.setWidget(operationsPanel);
-      }
-   };
+   // private final CellRenderer<TransUnit, TransUnit> operationsCellRenderer =
+   // new CellRenderer<TransUnit, TransUnit>()
+   // {
+   // @Override
+   // public void renderRowValue(final TransUnit rowValue,
+   // ColumnDefinition<TransUnit, TransUnit> columnDef,
+   // AbstractCellView<TransUnit> view)
+   // {
+   // view.setStyleName("TableEditorCell TableEditorCell-Middle");
+   // VerticalPanel operationsPanel = new VerticalPanel();
+   // // operationsPanel.setWidth("100%");
+   // operationsPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+   //
+   // toggleApproved = new CheckBox();
+   // if (rowValue.getStatus() == ContentState.Approved)
+   // toggleApproved.setValue(true);
+   // else
+   // toggleApproved.setValue(false);
+   // toggleApproved.addValueChangeHandler(new ValueChangeHandler<Boolean>()
+   // {
+   // @Override
+   // public void onValueChange(ValueChangeEvent<Boolean> event)
+   // {
+   // if (event.getValue())
+   // rowValue.setStatus(ContentState.Approved);
+   // else
+   // // change status to Fuzzy, if remove Approved mark
+   // rowValue.setStatus(ContentState.NeedReview);
+   //
+   // eventBus.fireEvent(new ToggleApprovedEvent(rowValue));
+   // }
+   //
+   // });
+   // // TableResources images = GWT.create(TableResources.class);
+   // // Image copyButton = new Image(images.copySrcButton());
+   // // copyButton.setStyleName("gwt-Button");
+   // // // copyButton.setText(messages.editClone());
+   // // copyButton.setTitle(messages.copySourcetoTarget());
+   // // copyButton.addClickHandler(new ClickHandler()
+   // // {
+   // //
+   // // @Override
+   // // public void onClick(ClickEvent event)
+   // // {
+   // // rowValue.setTarget(rowValue.getSource());
+   // // eventBus.fireEvent(new CopySourceEvent(rowValue));
+   // // }
+   // //
+   // // });
+   // // operationsPanel.add(copyButton);
+   // operationsPanel.add(toggleApproved);
+   // view.setWidget(operationsPanel);
+   // }
+   // };
 
    private final AbstractColumnDefinition<TransUnit, TransUnit> targetColumnDefinition = new AbstractColumnDefinition<TransUnit, TransUnit>()
    {
@@ -248,7 +257,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       {
          cellValue.setTarget(rowValue.getTarget());
       }
-
    };
 
    private final CellRenderer<TransUnit, TransUnit> targetCellRenderer = new CellRenderer<TransUnit, TransUnit>()
@@ -283,12 +291,13 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             ((HighlightingLabel) label).highlightSearch(findMessage);
          }
 
-         if (rowValue.getStatus() == ContentState.NeedReview)
-         {
-            String content = label.getElement().getInnerHTML();
-            String newHtml = "<font style='color:blue; background-color:yellow;'>" + content;
-            label.getElement().setInnerHTML(newHtml);
-         }
+         // if (rowValue.getStatus() == ContentState.NeedReview)
+         // {
+         // String content = label.getElement().getInnerHTML();
+         // String newHtml =
+         // "<font style='color:blue; background-color:#F9F9B3;'>" + content;
+         // label.getElement().setInnerHTML(newHtml);
+         // }
 
          label.setTitle(messages.clickHere());
 
@@ -316,10 +325,10 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       // indicatorColumnDefinition.setMinimumColumnWidth(15);
       // indicatorColumnDefinition.setCellRenderer(indicatorCellRenderer);
       sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
-      operationsColumnDefinition.setMaximumColumnWidth(60);
-      operationsColumnDefinition.setPreferredColumnWidth(60);
-      operationsColumnDefinition.setMinimumColumnWidth(60);
-      operationsColumnDefinition.setCellRenderer(operationsCellRenderer);
+      // operationsColumnDefinition.setMaximumColumnWidth(16);
+      // operationsColumnDefinition.setPreferredColumnWidth(16);
+      // operationsColumnDefinition.setMinimumColumnWidth(16);
+      // operationsColumnDefinition.setCellRenderer(operationsCellRenderer);
       targetColumnDefinition.setCellRenderer(targetCellRenderer);
       CancelCallback<TransUnit> cancelCallBack = new CancelCallback<TransUnit>()
       {
@@ -361,7 +370,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       // See _INDEX consts above if modifying!
       // addColumnDefinition(indicatorColumnDefinition);
       addColumnDefinition(sourceColumnDefinition);
-      addColumnDefinition(operationsColumnDefinition);
+      // addColumnDefinition(operationsColumnDefinition);
       addColumnDefinition(targetColumnDefinition);
    }
 

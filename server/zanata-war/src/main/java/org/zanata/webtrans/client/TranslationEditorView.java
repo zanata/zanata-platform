@@ -82,23 +82,6 @@ public class TranslationEditorView extends Composite implements TranslationEdito
       this.transUnitCountBar = new TransUnitCountBar(messages);
       this.pager = new Pager(messages, resources);
       this.tmPanelContainer = new LayoutPanel();
-      // {
-      // public void onBrowserEvent(com.google.gwt.user.client.Event event)
-      // {
-      //
-      // super.onBrowserEvent(event);
-      // switch (event.getTypeInt())
-      // {
-      // case Event.ONMOUSEOVER:
-      // tmMinimize.setVisible(true);
-      // break;
-      // case Event.ONMOUSEOUT:
-      // tmMinimize.setVisible(false);
-      // break;
-      // }
-      // };
-      // };
-      // tmPanelContainer.sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT);
 
       initWidget(uiBinder.createAndBindUi(this));
       tmMinimize.setVisible(true);
