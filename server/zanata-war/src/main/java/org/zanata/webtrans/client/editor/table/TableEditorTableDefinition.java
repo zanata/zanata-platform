@@ -143,12 +143,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          {
             sourcePanel.highlightSearch(findMessage);
          }
-         if (rowValue.getStatus() == ContentState.NeedReview)
-         {
-            String content = sourcePanel.getLabel().getElement().getInnerHTML();
-            String highlight = "<font>" + content;
-            sourcePanel.getLabel().getElement().setInnerHTML(highlight);
-         }
          sourcePanel.sinkEvents(Event.ONCLICK);
          sourcePanel.addClickHandler(new ClickHandler()
          {
@@ -282,13 +276,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          {
             ((HighlightingLabel) label).highlightSearch(findMessage);
          }
-
-         // if (rowValue.getStatus() == ContentState.NeedReview)
-         // {
-         // String content = label.getElement().getInnerHTML();
-         // String newHtml = "<font>" + content;
-         // label.getElement().setInnerHTML(newHtml);
-         // }
 
          label.setTitle(messages.clickHere());
 
