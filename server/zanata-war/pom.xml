@@ -68,15 +68,23 @@
 				<artifactId>gwt-maven-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>compile</id>
 						<goals>
 							<goal>compile</goal>
 							<!-- compile, generateAsync, test -->
 						</goals>
+						<configuration>
+							<module>${zanata.gwt.module}</module>
+						</configuration>
+					</execution>
+					<execution>
+						<id>clean</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<module>${zanata.gwt.module}</module>
-				</configuration>
 			</plugin>
 
 			<plugin>
