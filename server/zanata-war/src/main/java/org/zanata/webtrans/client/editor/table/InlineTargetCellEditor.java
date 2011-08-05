@@ -43,11 +43,8 @@ import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class InlineTargetCellEditor implements CellEditor<TransUnit>
@@ -77,6 +74,18 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     *****************/
 
    /**
+    * The click listener used to save as fuzzy.
+    */
+   private ClickHandler fuzzyHandler = new ClickHandler()
+   {
+      public void onClick(ClickEvent event)
+      {
+         cellValue.setStatus(ContentState.NeedReview);
+         // acceptEdit();
+      }
+   };
+
+   /**
     * The click listener used to cancel.
     */
    private ClickHandler cancelHandler = new ClickHandler()
@@ -84,12 +93,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       public void onClick(ClickEvent event)
       {
          cancelEdit();
-         // disableSaveButton();
       }
    };
-   
-   // private final CheckBox toggleFuzzy;
-   // private Image saveButton;
 
    /**
     * The click listener used to accept.
@@ -100,7 +105,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       {
          cellValue.setStatus(ContentState.Approved);
          acceptEdit();
-         // gotoNextRow(curRow);
+         gotoNextRow(curRow);
       }
    };
 
@@ -167,12 +172,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          @Override
          public void onValueChange(ValueChangeEvent<String> event)
          {
-            // remove fuzzy mark only at beginning if fuzzy is marked
-            // if (allowFuzzyOverride)
-            // removeFuzzyMark();
-            // enable save button when start typing
-            // enableSaveButton();
-            // allowFuzzyOverride = false;
             autoSize();
          }
 
@@ -250,14 +249,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             { // alt-pageup
                handlePrevState();
             }
-            // else if (event.isAltKeyDown() && keyCode == KEY_N)
-            // {
-            // if (toggleFuzzy.getValue())
-            // toggleFuzzy.setValue(false);
-            // else
-            // toggleFuzzy.setValue(true);
-            // }
-
             else if (!event.isAltKeyDown() && !event.isControlKeyDown())
             {
                autoSize();
@@ -304,7 +295,13 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       saveButton.setTitle(messages.editSaveShortcut());
       saveButton.addClickHandler(acceptHandler);
 
+      Image fuzzyButton = new Image(images.cellEditorFuzzy());
+      fuzzyButton.setStyleName("gwt-Button");
+      fuzzyButton.setTitle(messages.fuzzy());
+      fuzzyButton.addClickHandler(fuzzyHandler);
+
       operationsPanel.add(saveButton);
+      operationsPanel.add(fuzzyButton);
       operationsPanel.add(cancelButton);
       layoutTable.add(operationsPanel);
    }
@@ -387,7 +384,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       // save the content in previous cell before start new editing
       if (this.cellValue != null && curRow != cellEditInfo.getRowIndex())
       {
-         this.cellValue.setStatus(ContentState.Approved);
+         // this.cellValue.setStatus(ContentState.Approved);
          Log.debug("save content of previous cell");
          acceptEdit();
       }
@@ -419,11 +416,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       textArea.setFocus(true);
       isOpened = true;
       DOM.scrollIntoView(table.getCellFormatter().getElement(curRow, curCol));
-      // toggleFuzzy.setValue(cellValue.getStatus() == ContentState.NeedReview);
-      // if (cellValue.getStatus() == ContentState.NeedReview)
-      // allowFuzzyOverride = true;
-      // preStatus = cellValue.getStatus();
-      // refreshStateImage();
    }
 
    // private void refreshStateImage()
@@ -485,13 +477,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       restoreView();
       isOpened = false;
-
-      // restore to previous status
-      // if (cellValue != null)
-      // {
-      // cellValue.setStatus(preStatus);
-      // eventBus.fireEvent(new ToggleFuzzyEvent(cellValue));
-      // }
 
       // Call the callback
       if (curCallback != null)

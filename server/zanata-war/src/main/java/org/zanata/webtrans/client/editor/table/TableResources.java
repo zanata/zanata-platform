@@ -39,6 +39,9 @@ public interface TableResources extends ClientBundle
    @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/button_cancel.png")
    ImageResource cellEditorCancel();
 
+   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/fuzzy.png")
+   ImageResource cellEditorFuzzy();
+
    @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/2rightarrow.png")
    ImageResource copySrcButton();
 

@@ -56,7 +56,7 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Alt+PageUp")
    String prevFuzzyOrUntranslatedShortcut();
 
-   @DefaultMessage("Save (Ctrl+Enter)")
+   @DefaultMessage("Save as Approved (Ctrl+Enter)")
    String editSaveShortcut();
 
    @DefaultMessage("Cancel (Esc)")
@@ -82,7 +82,7 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("{0} ({1})")
    String actionToolTip(String actionName, String shortcut);
 
-   @DefaultMessage("Fuzzy")
+   @DefaultMessage("Save as Fuzzy")
    String fuzzy();
 
    @DefaultMessage("Source comment: ")
