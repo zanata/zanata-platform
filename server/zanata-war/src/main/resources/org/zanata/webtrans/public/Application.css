@@ -255,7 +255,7 @@ td.TableEditorCell {
 }
 
 td.TableEditorCell-Source {
-	
+	position: relative;
 }
 
 td.TableEditorCell-Target {
@@ -276,6 +276,17 @@ tr.TableEditorRow.highlighted td.TableEditorCell {
 
 tr.TableEditorRow.highlighted td.TableEditorCell-Source {
 	
+}
+
+tr.TableEditorRow td.TableEditorCell-Source img {
+	position: absolute;
+	top: 0;
+	right: 1px;
+	display: none;
+}
+
+tr.TableEditorRow.highlighted td.TableEditorCell-Source img {
+	display: block;
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell-Middle {
@@ -334,7 +345,6 @@ tr.TableEditorRow.selected td.TableEditorCell-Target {
 	font-family: sans-serif;
 	padding: 0px;
 	margin: 0px;
-	width: 98%;
 	/*border: none; might make the text area look less cramped */
 }
 
