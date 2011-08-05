@@ -138,7 +138,26 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       public void renderRowValue(final TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
       {
          view.setStyleName("TableEditorCell TableEditorCell-Source");
+         
+         TableResources images = GWT.create(TableResources.class);
+         final Image copyButton = new Image(images.copySrcButton());
+         copyButton.setStyleName("gwt-Button");
+         copyButton.setStyleName("gwt-Button-display-onhover");
+         copyButton.setTitle(messages.copySourcetoTarget());
+         copyButton.addClickHandler(new ClickHandler()
+         {
+            @Override
+            public void onClick(ClickEvent event)
+            {
+               rowValue.setTarget(rowValue.getSource());
+               eventBus.fireEvent(new CopySourceEvent(rowValue));
+            }
+
+         });
+         
          sourcePanel = new SourcePanel(rowValue, messages);
+
+         
          if (findMessage != null && !findMessage.isEmpty())
          {
             sourcePanel.highlightSearch(findMessage);
@@ -157,21 +176,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             }
 
          });
-         TableResources images = GWT.create(TableResources.class);
-         Image copyButton = new Image(images.copySrcButton());
-         copyButton.setStyleName("gwt-Button");
-         copyButton.setTitle(messages.copySourcetoTarget());
-         copyButton.addClickHandler(new ClickHandler()
-         {
-
-            @Override
-            public void onClick(ClickEvent event)
-            {
-               rowValue.setTarget(rowValue.getSource());
-               eventBus.fireEvent(new CopySourceEvent(rowValue));
-            }
-
-         });
+         
          sourcePanel.add(copyButton);
          view.setWidget(sourcePanel);
       }
