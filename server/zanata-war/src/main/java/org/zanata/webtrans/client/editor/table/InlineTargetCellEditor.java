@@ -42,6 +42,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -120,20 +121,17 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    /**
     * The main grid used for layout.
     */
-   private HorizontalPanel layoutTable;
+   private FlowPanel layoutTable;
 
    private Widget cellViewWidget;
 
    private TransUnit cellValue;
 
    private EditorTextArea textArea;
-   private VerticalPanel operationsPanel;
+   private HorizontalPanel operationsPanel;
 
    private boolean isFocused = false;
-   // private boolean allowFuzzyOverride = false;
    private boolean isOpened = false;
-
-   // private Image stateImage;
 
    private int curRow;
    private int curCol;
@@ -154,9 +152,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    public InlineTargetCellEditor(final NavigationMessages messages, CancelCallback<TransUnit> callback, EditRowCallback rowCallback, final EventBus eventBus)
    {
       // Wrap contents in a table
-      layoutTable = new HorizontalPanel();
+      layoutTable = new FlowPanel();
       layoutTable.setWidth("100%");
-      layoutTable.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+      // layoutTable.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
       // this.eventBus = eventBus;
       cancelCallback = callback;
@@ -282,13 +280,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       layoutTable.add(textArea);
 
-      operationsPanel = new VerticalPanel();
-      operationsPanel.setHeight("40px");
-      operationsPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-      operationsPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+      operationsPanel = new HorizontalPanel();
 
-      // operationsPanel.addStyleName("float-right-div");
-      // operationsPanel.setSpacing(4);
+      operationsPanel.addStyleName("float-right-div");
+      operationsPanel.setSpacing(4);
       // layoutTable.add(operationsPanel);
 
       // icon as the current state of the unit
@@ -411,7 +406,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       cellViewWidget = table.getWidget(curRow, curCol);
 
-      layoutTable.setCellWidth(this.operationsPanel, "20px");
+      int width = table.getWidget(curRow, 0).getOffsetWidth() - 10;
+      textArea.setWidth(width + "px");
+      // layoutTable.setCellWidth(this.operationsPanel, "20px");
       table.setWidget(curRow, curCol, layoutTable);
       
       textArea.setText(cellValue.getTarget());
