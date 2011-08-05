@@ -19,8 +19,7 @@
 		<env.debug>false</env.debug>
 		<env.import.testdata>false</env.import.testdata>
 		<ds.jndi.name>zanataTestDatasource</ds.jndi.name>
-		<app.name>zanata</app.name>
-		<war.name>${artifactId}-${version}</war.name>
+		<war.name>zanata</war.name>
 		<!-- Default database settings -->
 		<env.dbunit.type>HSQL</env.dbunit.type>
 		<internal.authentication>false</internal.authentication>
@@ -35,7 +34,7 @@
 	</properties>
 
 	<build>
- 		<finalName>${war.name}</finalName>
+		<finalName>zanata</finalName>
 
 		<resources>
 			<resource>
@@ -49,6 +48,7 @@
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
+					<warName>${war.name}</warName>
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
@@ -361,7 +361,7 @@
 							<deployer>
 								<deployables>
 									<deployable>
-										<pingURL>http://localhost:${port}/${app.name}/</pingURL>
+										<pingURL>http://localhost:${port}/${war.name}/</pingURL>
 										<location>${project.build.directory}/zanata</location>
 									</deployable>
 								</deployables>
@@ -591,6 +591,15 @@
 				<fedora.openId>true</fedora.openId>
 			</properties>
 		</profile>
+
+
+		<profile>
+			<id>zanata-test</id>
+			<properties>
+				<war.name>zanata-test</war.name>
+			</properties>
+		</profile>
+
 
 		<profile>
 			<id>kerberos</id>
