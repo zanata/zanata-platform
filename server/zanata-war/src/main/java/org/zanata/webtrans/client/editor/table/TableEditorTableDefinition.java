@@ -142,7 +142,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          TableResources images = GWT.create(TableResources.class);
          final Image copyButton = new Image(images.copySrcButton());
          copyButton.setStyleName("gwt-Button");
-         copyButton.setStyleName("gwt-Button-display-onhover");
+         // copyButton.setStyleName("gwt-Button-display-onhover");
          copyButton.setTitle(messages.copySourcetoTarget());
          copyButton.addClickHandler(new ClickHandler()
          {

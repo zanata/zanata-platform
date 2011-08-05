@@ -283,7 +283,7 @@ tr.TableEditorRow.highlighted td.TableEditorCell-Middle {
 }
 
 tr.TableEditorRow.highlighted .gwt-Button-display-onhover {
-	display:block;
+	display:inline;
 	cursor:pointer;
 }
 
