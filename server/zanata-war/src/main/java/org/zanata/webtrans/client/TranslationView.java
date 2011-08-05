@@ -46,10 +46,10 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    final Resources resources;
 
    @UiField(provided = true)
-   LayoutPanel sidePanelOuterContainer;
+   LayoutPanel sidePanelOuterContainer, tmPanelContainer;
 
    @UiField
-   LayoutPanel editorContainer, sidePanelContainer;
+   LayoutPanel editorContainer, sidePanelContainer, tmPanel;
 
    @UiField
    SplitLayoutPanel mainSplitPanel;
@@ -60,9 +60,16 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    @UiField
    Image sidePanelExpend;
 
+   @UiField
+   Image tmMinimize;
+
+   @UiField
+   Image showTmViewLink;
+
    final WebTransMessages messages;
 
    private double panelWidth = 20;
+   private double southHeight = 45;
 
    @Inject
    public TranslationView(Resources resources, WebTransMessages messages)
@@ -72,12 +79,23 @@ public class TranslationView extends Composite implements TranslationPresenter.D
 
       StyleInjector.inject(resources.style().getText(), true);
       this.sidePanelOuterContainer = new LayoutPanel();
+      this.tmPanelContainer = new LayoutPanel();
 
       initWidget(uiBinder.createAndBindUi(this));
 
+      tmMinimize.setVisible(true);
       sidePanelCollapse.setVisible(true);
       mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) panelWidth);
+      mainSplitPanel.setWidgetMinSize(tmPanelContainer, (int) southHeight);
+
       sidePanelExpend.setTitle(messages.showTranslationDetailsPanel());
+   }
+
+   @Override
+   public void setTranslationMemoryView(Widget translationMemoryView)
+   {
+      tmPanel.clear();
+      tmPanel.add(translationMemoryView);
    }
 
    @Override
@@ -135,6 +153,44 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       splitter.setVisible(visible);
       mainSplitPanel.animate(500);
 
+   }
+
+   @Override
+   public void setTmViewVisible(boolean visible)
+   {
+      mainSplitPanel.forceLayout();
+      Widget splitter = SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel, tmPanelContainer);
+      if (visible)
+      {
+         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, tmPanelContainer, southHeight);
+      }
+      else
+      {
+         southHeight = mainSplitPanel.getWidgetContainerElement(tmPanelContainer).getOffsetHeight();
+         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, tmPanelContainer, 45);
+      }
+      splitter.setVisible(visible);
+      mainSplitPanel.animate(500);
+
+   }
+
+   @Override
+   public HasClickHandlers getHideTMViewButton()
+   {
+      return tmMinimize;
+   }
+
+   @Override
+   public HasClickHandlers getShowTMViewButton()
+   {
+      return showTmViewLink;
+   }
+
+   @Override
+   public void setShowTMViewButtonVisible(boolean visible)
+   {
+      showTmViewLink.setVisible(visible);
+      tmMinimize.setVisible(!visible);
    }
 
 }

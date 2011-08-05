@@ -24,6 +24,8 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.shared.model.TransUnit;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -38,6 +40,16 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 
       void setSidePanel(Widget sidePanel);
 
+      void setTranslationMemoryView(Widget translationMemoryView);
+
+      void setTmViewVisible(boolean visible);
+
+      HasClickHandlers getHideTMViewButton();
+
+      HasClickHandlers getShowTMViewButton();
+
+      void setShowTMViewButtonVisible(boolean visible);
+
       void setSidePanelViewVisible(boolean visible);
 
       HasClickHandlers getHideSidePanelViewButton();
@@ -50,12 +62,14 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 
    private final TranslationEditorPresenter translationEditorPresenter;
    private final SidePanelPresenter sidePanelPresenter;
+   private final TransMemoryPresenter transMemoryPresenter;
 
    @Inject
-   public TranslationPresenter(Display display, EventBus eventBus, final TranslationEditorPresenter translationEditorPresenter, final SidePanelPresenter sidePanelPresenter)
+   public TranslationPresenter(Display display, EventBus eventBus, final TranslationEditorPresenter translationEditorPresenter, final SidePanelPresenter sidePanelPresenter, final TransMemoryPresenter transMemoryPresenter)
    {
       super(display, eventBus);
       this.translationEditorPresenter = translationEditorPresenter;
+      this.transMemoryPresenter = transMemoryPresenter;
       this.sidePanelPresenter = sidePanelPresenter;
    }
 
@@ -67,6 +81,9 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    @Override
    protected void onBind()
    {
+      transMemoryPresenter.bind();
+      display.setTranslationMemoryView(transMemoryPresenter.getDisplay().asWidget());
+
       translationEditorPresenter.bind();
       display.setEditorView(translationEditorPresenter.getDisplay().asWidget());
 
@@ -97,11 +114,40 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
             display.setShowSidePanelViewButtonVisible(false);
          }
       });
+
+      registerHandler(display.getHideTMViewButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            display.setTmViewVisible(false);
+            transMemoryPresenter.unbind();
+            display.setShowTMViewButtonVisible(true);
+         }
+      }));
+
+      display.setShowTMViewButtonVisible(false);
+      display.getShowTMViewButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            transMemoryPresenter.bind();
+            display.setTmViewVisible(true);
+            display.setShowTMViewButtonVisible(false);
+            TransUnit tu = translationEditorPresenter.getSelectedTransUnit();
+            if (tu != null)
+            {
+               transMemoryPresenter.showResultsFor(tu);
+            }
+         }
+      });
    }
 
    @Override
    protected void onUnbind()
    {
+      transMemoryPresenter.unbind();
       translationEditorPresenter.unbind();
       sidePanelPresenter.unbind();
    }
