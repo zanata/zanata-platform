@@ -175,12 +175,12 @@ Removes some of the styling on the page-level splitters
 
 .TableEditor tr td.TableEditorCell-Middle {
 	vertical-align: middle;
-	width: 100%;
+	width: 16px;
 }
 
 .TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Source {
 	font-style: italic;
-	background: url(tu_bg_fuzzy_left.png) repeat-y left;
+/* 	background: url(tu_bg_fuzzy_left.png) repeat-y left; */
 	border-right: none;
 	border-left: 3px solid #cccccc;
 	/* need to verify if #cccccc works for all borders first
@@ -190,7 +190,7 @@ Removes some of the styling on the page-level splitters
 }
 
 .TableEditor tr.NewStateDecoration td.TableEditorCell-Source {
-	background: url(tu_bg_new_left.png) repeat-y left;
+/* 	background: url(tu_bg_new_left.png) repeat-y left; */
 	border-right: none;
 	border-left: 3px solid #cccccc;
 	/* need to verify if #cccccc works for all borders first
@@ -200,7 +200,7 @@ Removes some of the styling on the page-level splitters
 }
 
 .TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Source {
-	background: url(tu_bg_approved_left.png) repeat-y left;
+/* 	background: url(tu_bg_approved_left.png) repeat-y left; */
 	border-right: none;
 	border-left: 3px solid #cccccc;
 	/* need to verify if #cccccc works for all borders first
@@ -210,7 +210,7 @@ Removes some of the styling on the page-level splitters
 }
 
 .TableEditor tr.ErrorStateDecoration td.TableEditorCell-Source {
-	background: url(tu_bg_error_left.png) repeat-y left;
+/* 	background: url(tu_bg_error_left.png) repeat-y left; */
 	border-right: none;
 	border-left: 3px solid #cccccc;
 	/* need to verify if #cccccc works for all borders first
@@ -221,9 +221,8 @@ Removes some of the styling on the page-level splitters
 
 .TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Target {
 	font-style: italic;
-	background: url(tu_bg_fuzzy_right.png) repeat-y right;
+/* 	background: url(tu_bg_fuzzy_right.png) repeat-y right; */
 	border-right: 3px solid #cccccc;
-	border-left: none;
 	/* need to verify if #cccccc works for all borders first
 	border-right: 3px solid #f7dec3;
 	border-left: 3px solid #f7dec3;
@@ -231,7 +230,7 @@ Removes some of the styling on the page-level splitters
 }
 
 .TableEditor tr.NewStateDecoration td.TableEditorCell-Target {
-	background: url(tu_bg_new_right.png) repeat-y right;
+/* 	background: url(tu_bg_new_right.png) repeat-y right; */
 	border-right: 3px solid #cccccc;
 	border-left: none;
 	/* need to verify if #cccccc works for all borders first
@@ -241,7 +240,7 @@ Removes some of the styling on the page-level splitters
 }
 
 .TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Target {
-	background: url(tu_bg_approved_right.png) repeat-y right;
+/* 	background: url(tu_bg_approved_right.png) repeat-y right; */
 	border-right: 3px solid #cccccc;
 	border-left: none;
 	/* need to verify if #cccccc works for all borders first
@@ -251,7 +250,7 @@ Removes some of the styling on the page-level splitters
 }
 
 .TableEditor tr.ErrorStateDecoration td.TableEditorCell-Target {
-	background: url(tu_bg_error_right.png) repeat-y right;
+/* 	background: url(tu_bg_error_right.png) repeat-y right; */
 	border-right: 3px solid #cccccc;
 	border-left: none;
 	/* need to verify if #cccccc works for all borders first
@@ -269,7 +268,8 @@ td.TableEditorCell-Source {
 }
 
 td.TableEditorCell-Target {
-
+	/*TODO: put this back on when middle colmun is removed.
+/*     padding-left:20px; */
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell {
@@ -334,8 +334,6 @@ tr.TableEditorRow.selected td.TableEditorCell-Target {
 	border-right: 3px solid #666666;
 }
 
-
-
 .TableEditorContent,.TableEditorContent-Edit {
 	font-size: 14px;
 	font-family: sans-serif;
@@ -345,8 +343,28 @@ tr.TableEditorRow.selected td.TableEditorCell-Target {
 	/*border: none; might make the text area look less cramped */
 }
 
+.TableEditorContent font {
+	background-color: #ffa; 
+	color: blue!important;
+}
+
+.TableEditorContent font span {
+	background-color: #ffa; 
+	color: blue!important;
+}
+
 .TableEditorContent-Edit {
-	border: 1px solid #666666;
+	border: 1px solid #BFBFBF;
+}
+
+tr.FuzzyStateDecoration td.TableEditorCell-Target .TableEditorContent {
+    border-left:3px solid #ffc000;
+    padding-left:5px;
+}
+
+tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent {
+    border-left:3px solid #099b09;
+    padding-left:5px;
 }
 
 .TableEditorContent-Empty {

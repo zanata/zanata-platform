@@ -135,19 +135,13 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    private final CellRenderer<TransUnit, TransUnit> sourceCellRenderer = new CellRenderer<TransUnit, TransUnit>()
    {
       @Override
-      public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
+      public void renderRowValue(final TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
       {
          view.setStyleName("TableEditorCell TableEditorCell-Source");
          sourcePanel = new SourcePanel(rowValue, messages);
          if (findMessage != null && !findMessage.isEmpty())
          {
             sourcePanel.highlightSearch(findMessage);
-         }
-         if (rowValue.getStatus() == ContentState.NeedReview)
-         {
-            String content = sourcePanel.getElement().getInnerHTML();
-            String highlight = "<font style='color:blue; background-color:yellow;'>" + content;
-            sourcePanel.getElement().setInnerHTML(highlight);
          }
          sourcePanel.sinkEvents(Event.ONCLICK);
          sourcePanel.addClickHandler(new ClickHandler()
@@ -163,6 +157,22 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             }
 
          });
+         TableResources images = GWT.create(TableResources.class);
+         Image copyButton = new Image(images.copySrcButton());
+         copyButton.setStyleName("gwt-Button");
+         copyButton.setTitle(messages.copySourcetoTarget());
+         copyButton.addClickHandler(new ClickHandler()
+         {
+
+            @Override
+            public void onClick(ClickEvent event)
+            {
+               rowValue.setTarget(rowValue.getSource());
+               eventBus.fireEvent(new CopySourceEvent(rowValue));
+            }
+
+         });
+         sourcePanel.add(copyButton);
          view.setWidget(sourcePanel);
       }
    };
@@ -212,23 +222,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             }
 
          });
-         TableResources images = GWT.create(TableResources.class);
-         Image copyButton = new Image(images.copySrcButton());
-         copyButton.setStyleName("gwt-Button");
-         //copyButton.setText(messages.editClone());
-         copyButton.setTitle(messages.copySourcetoTarget());
-         copyButton.addClickHandler(new ClickHandler()
-         {
-
-            @Override
-            public void onClick(ClickEvent event)
-            {
-               rowValue.setTarget(rowValue.getSource());
-               eventBus.fireEvent(new CopySourceEvent(rowValue));
-            }
-
-         });
-         operationsPanel.add(copyButton);
          operationsPanel.add(toggleApproved);
          view.setWidget(operationsPanel);
       }
@@ -281,13 +274,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          if (findMessage != null && !findMessage.isEmpty())
          {
             ((HighlightingLabel) label).highlightSearch(findMessage);
-         }
-
-         if (rowValue.getStatus() == ContentState.NeedReview)
-         {
-            String content = label.getElement().getInnerHTML();
-            String newHtml = "<font style='color:blue; background-color:yellow;'>" + content;
-            label.getElement().setInnerHTML(newHtml);
          }
 
          label.setTitle(messages.clickHere());

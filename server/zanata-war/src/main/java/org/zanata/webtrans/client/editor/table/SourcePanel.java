@@ -30,14 +30,17 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 public class SourcePanel extends Composite implements HasValue<TransUnit>, HasClickHandlers
 {
 
-   private final FlowPanel panel;
+   private final HorizontalPanel panel;
+   private final HorizontalPanel rightPanel;
    private final Label sourceLabel;
    private TransUnit value;
 
@@ -47,22 +50,34 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
    {
       this.value = value;
       this.messages = messages;
-      panel = new FlowPanel();
+      panel = new HorizontalPanel();
       panel.setSize("100%", "100%");
+
       initWidget(panel);
       setStylePrimaryName("TableEditorSource");
+
+      rightPanel = new HorizontalPanel();
+      rightPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+      rightPanel.setSize("100%", "100%");
 
       sourceLabel = new HighlightingLabel(value.getSource());
       sourceLabel.setStylePrimaryName("TableEditorContent");
       sourceLabel.setTitle(messages.sourceCommentLabel() + value.getSourceComment());
 
       panel.add(sourceLabel);
-
-      refresh();
+      panel.add(rightPanel);
    }
 
-   public void refresh()
+
+
+   public void add(Widget w)
    {
+      rightPanel.add(w);
+   }
+
+   public Label getLabel()
+   {
+      return sourceLabel;
    }
 
    @Override
@@ -87,7 +102,6 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
          {
             ValueChangeEvent.fire(this, value);
          }
-         refresh();
       }
    }
 
