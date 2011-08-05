@@ -6,14 +6,6 @@
 	
 	<ui:with field="resources" type="org.zanata.webtrans.client.Resources" />
 	<ui:style>
-		.tmview{
-			padding-left: 7px;
-			padding-bottom: 7px;
-			background-color: #ffffff;
-			border: 3px solid #e0e8ee;
-			-moz-border-radius: 7px;
-			-webkit-border-radius: 7px;
-		}
 		.editor {
 			background-color: #ffffff;
 			border: 3px solid #e0e8ee;
@@ -39,14 +31,8 @@
 			text-align: center;
 			display: inline;
 			}
-		
-		.imageButton {
-			cursor: pointer;
-		}
 				
 	</ui:style>
-	<g:SplitLayoutPanel ui:field="splitPanel" styleName="PageSplitLayoutPanel" >
-		<g:center>
 			<g:LayoutPanel styleName="{style.editor}">
 				<g:layer top="2px" height="20px">
 					<g:HorizontalPanel width="90%">
@@ -65,20 +51,5 @@
 						<fui:Pager ui:field="pager"/>
 					</g:FlowPanel>
 				</g:layer>
-				<g:layer bottom="1px" height="16px" width="16px" right="2px">
-					<g:FlowPanel>
-					   <g:Image resource="{resources.upArrowButton}" ui:field="showTmViewLink" styleName="{style.imageButton}" />
-					   <g:Image resource="{resources.downArrowButton}" ui:field="tmMinimize" styleName="{style.imageButton}" />
-					</g:FlowPanel>
-				</g:layer>
 			</g:LayoutPanel>
-		</g:center>
-		<g:south size="150" min-size="45">
-			<g:LayoutPanel ui:field="tmPanelContainer">
-				<g:layer top="0" bottom="8px">
-					<g:LayoutPanel styleName="{style.tmview}" ui:field="tmPanel" />
-				</g:layer>
-			</g:LayoutPanel>
-		</g:south>
-	</g:SplitLayoutPanel>
 </ui:UiBinder> 

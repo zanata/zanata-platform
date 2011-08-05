@@ -282,6 +282,15 @@ tr.TableEditorRow.highlighted td.TableEditorCell-Middle {
 	
 }
 
+tr.TableEditorRow.highlighted .gwt-Button-display-onhover {
+	display:inline;
+	cursor:pointer;
+}
+
+tr.TableEditorRow .gwt-Button-display-onhover {
+    display:none;
+}
+
 tr.TableEditorRow.highlighted td.TableEditorCell-Target {
 	cursor: hand;
 }

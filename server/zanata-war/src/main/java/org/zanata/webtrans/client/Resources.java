@@ -53,6 +53,9 @@ public interface Resources extends ClientBundle
 
    @Source("org/zanata/webtrans/images/x.png")
    ImageResource xButton();
+   
+   @Source("org/zanata/webtrans/images/x2.png")
+   ImageResource minimizeButton();
 
    @Source("org/zanata/webtrans/images/silk/user.png")
    ImageResource userOnline();

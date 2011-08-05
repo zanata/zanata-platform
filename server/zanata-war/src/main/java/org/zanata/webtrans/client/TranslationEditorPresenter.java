@@ -43,9 +43,6 @@ import org.zanata.webtrans.shared.rpc.GetStatusCount;
 import org.zanata.webtrans.shared.rpc.GetStatusCountResult;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageChangeEvent;
@@ -63,30 +60,19 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    public interface Display extends WidgetDisplay
    {
 
-      void setTranslationMemoryView(Widget translationMemoryView);
-
       void setEditorView(Widget widget);
 
       void setTransUnitNavigation(Widget widget);
 
-      void setTmViewVisible(boolean visible);
-
       HasTranslationStats getTransUnitCount();
 
       HasPager getPageNavigation();
-
-      HasClickHandlers getHideTMViewButton();
-
-      HasClickHandlers getShowTMViewButton();
-
-      void setShowTMViewButtonVisible(boolean visible);
 
       void setUndoRedo(Widget undoRedoWidget);
 
    }
 
    private final TransUnitNavigationPresenter transUnitNavigationPresenter;
-   private final TransMemoryPresenter transMemoryPresenter;
    private final TableEditorPresenter tableEditorPresenter;
    private final UndoRedoPresenter undoRedoPresenter;
 
@@ -96,11 +82,10 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    private final DispatchAsync dispatcher;
 
    @Inject
-   public TranslationEditorPresenter(Display display, EventBus eventBus, final CachingDispatchAsync dispatcher, final TransMemoryPresenter transMemoryPresenter, final TableEditorPresenter tableEditorPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter, final UndoRedoPresenter undoRedoPresenter)
+   public TranslationEditorPresenter(Display display, EventBus eventBus, final CachingDispatchAsync dispatcher, final TableEditorPresenter tableEditorPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter, final UndoRedoPresenter undoRedoPresenter)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
-      this.transMemoryPresenter = transMemoryPresenter;
       this.tableEditorPresenter = tableEditorPresenter;
       this.transUnitNavigationPresenter = transUnitNavigationPresenter;
       this.undoRedoPresenter = undoRedoPresenter;
@@ -109,9 +94,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    @Override
    protected void onBind()
    {
-      transMemoryPresenter.bind();
-      display.setTranslationMemoryView(transMemoryPresenter.getDisplay().asWidget());
-
       tableEditorPresenter.bind();
       display.setEditorView(tableEditorPresenter.getDisplay().asWidget());
 
@@ -168,35 +150,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
          }
       }));
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), updateHandler));
-
-      registerHandler(display.getHideTMViewButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            display.setTmViewVisible(false);
-            transMemoryPresenter.unbind();
-            display.setShowTMViewButtonVisible(true);
-         }
-      }));
-
-      display.setShowTMViewButtonVisible(false);
-      display.getShowTMViewButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            transMemoryPresenter.bind();
-            display.setTmViewVisible(true);
-            display.setShowTMViewButtonVisible(false);
-            TransUnit tu = tableEditorPresenter.getSelectedTransUnit();
-            if (tu != null)
-            {
-               transMemoryPresenter.showResultsFor(tu);
-            }
-         }
-      });
-
    }
 
    private void requestStatusCount(final DocumentId newDocumentId)
@@ -248,7 +201,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    @Override
    protected void onUnbind()
    {
-      transMemoryPresenter.unbind();
       tableEditorPresenter.unbind();
       transUnitNavigationPresenter.unbind();
    }
@@ -256,6 +208,11 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    @Override
    public void onRevealDisplay()
    {
+   }
+
+   public TransUnit getSelectedTransUnit()
+   {
+      return tableEditorPresenter.getSelectedTransUnit();
    }
 
 }
