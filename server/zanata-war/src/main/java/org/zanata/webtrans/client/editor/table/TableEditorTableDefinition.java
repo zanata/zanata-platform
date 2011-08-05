@@ -135,7 +135,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    private final CellRenderer<TransUnit, TransUnit> sourceCellRenderer = new CellRenderer<TransUnit, TransUnit>()
    {
       @Override
-      public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
+      public void renderRowValue(final TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
       {
          view.setStyleName("TableEditorCell TableEditorCell-Source");
          sourcePanel = new SourcePanel(rowValue, messages);
@@ -157,6 +157,22 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             }
 
          });
+         TableResources images = GWT.create(TableResources.class);
+         Image copyButton = new Image(images.copySrcButton());
+         copyButton.setStyleName("gwt-Button");
+         copyButton.setTitle(messages.copySourcetoTarget());
+         copyButton.addClickHandler(new ClickHandler()
+         {
+
+            @Override
+            public void onClick(ClickEvent event)
+            {
+               rowValue.setTarget(rowValue.getSource());
+               eventBus.fireEvent(new CopySourceEvent(rowValue));
+            }
+
+         });
+         sourcePanel.add(copyButton);
          view.setWidget(sourcePanel);
       }
    };
@@ -206,23 +222,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             }
 
          });
-         TableResources images = GWT.create(TableResources.class);
-         Image copyButton = new Image(images.copySrcButton());
-         copyButton.setStyleName("gwt-Button");
-         // copyButton.setText(messages.editClone());
-         copyButton.setTitle(messages.copySourcetoTarget());
-         copyButton.addClickHandler(new ClickHandler()
-         {
-
-            @Override
-            public void onClick(ClickEvent event)
-            {
-               rowValue.setTarget(rowValue.getSource());
-               eventBus.fireEvent(new CopySourceEvent(rowValue));
-            }
-
-         });
-         operationsPanel.add(copyButton);
          operationsPanel.add(toggleApproved);
          view.setWidget(operationsPanel);
       }
