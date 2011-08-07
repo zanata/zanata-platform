@@ -20,6 +20,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -140,11 +141,7 @@ public final class DocumentListTable
 
    public static CellTable<DocumentNode> initDocumentListTable(final DocumentListView documentListView, final Resources resources, final WebTransMessages messages, final ListDataProvider<DocumentNode> dataProvider)
    {
-      final CellTable<DocumentNode> documentListTable = new CellTable<DocumentNode>();
       final SingleSelectionModel<DocumentNode> selectionModel = new SingleSelectionModel<DocumentNode>();
-      
-      documentListTable.setStylePrimaryName("DocumentListTable");
-      documentListTable.setSelectionModel(selectionModel);
       selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler()
       {
          public void onSelectionChange(SelectionChangeEvent event)
@@ -153,10 +150,25 @@ public final class DocumentListTable
             if (selectedNode != null)
             {
                SelectionEvent.fire(documentListView, selectedNode.getDataItem());
-               selectionModel.setSelected(selectionModel.getSelectedObject(), false);
             }
          }
       });
+
+      final CellTable<DocumentNode> documentListTable = new CellTable<DocumentNode>()
+      {
+         @Override
+         public void onBrowserEvent2(Event event)
+         {
+            if (event.getType().equals("click"))
+            {
+               SelectionChangeEvent.fire(selectionModel);
+            }
+            super.onBrowserEvent2(event);
+         }
+      };
+
+      documentListTable.setStylePrimaryName("DocumentListTable");
+      documentListTable.setSelectionModel(selectionModel);
 
       final Column<DocumentNode, String> folderColumn = getFolderColumn(resources);
       final Column<DocumentNode, String> documentColumn = getDocumentColumn(resources);
