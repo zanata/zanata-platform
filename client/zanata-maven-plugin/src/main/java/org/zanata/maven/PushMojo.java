@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.tools.ant.DirectoryScanner;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptions;
 
@@ -108,6 +109,13 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
     */
    private String excludes;
 
+   /**
+    * Add default exclude to the exclude filters.
+    * 
+    * @parameter expression="${zanata.defaultexclude}" default-value="true"
+    */
+   private boolean defaultexclude = true;
+
    @Override
    public File getSrcDir()
    {
@@ -161,7 +169,10 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    {
       String[] includeList = StringUtils.split(includes, ",");
       List<String> list = new ArrayList<String>();
-      Collections.addAll(list, includeList);
+      if (includeList != null && includeList.length > 0)
+      {
+         Collections.addAll(list, includeList);
+      }
       return list;
    }
 
@@ -170,7 +181,24 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    {
       String[] excludeList = StringUtils.split(excludes, ",");
       List<String> list = new ArrayList<String>();
-      Collections.addAll(list, excludeList);
+
+      if (excludeList != null && excludeList.length > 0)
+      {
+         Collections.addAll(list, excludeList);
+      }
+
+      if (getDefaultexclude())
+      {
+         Collections.addAll(list, DirectoryScanner.getDefaultExcludes());
+      }
+
       return list;
    }
+
+   @Override
+   public boolean getDefaultexclude()
+   {
+      return defaultexclude;
+   }
+
 }

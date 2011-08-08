@@ -122,7 +122,7 @@ public class PushCommand extends ConfigurableProjectCommand
          }
          log.info("Exclude patterns: {}", sb.toString());
       }
-
+      log.info("Default exclude: {}", opts.getDefaultexclude());
 
       if (opts.getPushTrans())
       {
