@@ -22,7 +22,6 @@ package org.zanata.client.commands.push;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -58,7 +57,6 @@ public abstract class AbstractPushStrategy
    public String[] getSrcFiles(File srcDir, List<String> includes, List<String> excludes, boolean excludeLocalFileName)
    {
       includes.add("**/*" + fileExtension);
-      Collections.addAll(excludes, DirectoryScanner.getDefaultExcludes());
       if (excludeLocalFileName)
       {
          excludeLocaleFileName(excludes);
