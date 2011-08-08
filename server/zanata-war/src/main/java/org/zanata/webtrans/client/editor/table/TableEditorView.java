@@ -202,6 +202,7 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    @Override
    public void gotoRow(int row)
    {
+      getDataTable().selectRow(row, true);
       editCell(row, TableEditorTableDefinition.TARGET_COL);
    }
 
