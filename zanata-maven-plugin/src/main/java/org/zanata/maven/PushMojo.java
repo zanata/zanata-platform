@@ -2,6 +2,7 @@ package org.zanata.maven;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -160,13 +161,7 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    {
       String[] includeList = StringUtils.split(includes, ",");
       List<String> list = new ArrayList<String>();
-      if (includeList != null && includeList.length >= 1)
-      {
-         for (String include : includeList)
-         {
-            list.add(include);
-         }
-      }
+      Collections.addAll(list, includeList);
       return list;
    }
 
@@ -175,13 +170,7 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    {
       String[] excludeList = StringUtils.split(excludes, ",");
       List<String> list = new ArrayList<String>();
-      if (excludeList != null && excludeList.length >= 1)
-      {
-         for (String exclude : excludeList)
-         {
-            list.add(exclude);
-         }
-      }
+      Collections.addAll(list, excludeList);
       return list;
    }
 }
