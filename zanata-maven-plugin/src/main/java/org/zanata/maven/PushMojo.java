@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.tools.ant.DirectoryScanner;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptions;
 
@@ -181,17 +180,10 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    {
       String[] excludeList = StringUtils.split(excludes, ",");
       List<String> list = new ArrayList<String>();
-
       if (excludeList != null && excludeList.length > 0)
       {
          Collections.addAll(list, excludeList);
       }
-
-      if (getDefaultexclude())
-      {
-         Collections.addAll(list, DirectoryScanner.getDefaultExcludes());
-      }
-
       return list;
    }
 
