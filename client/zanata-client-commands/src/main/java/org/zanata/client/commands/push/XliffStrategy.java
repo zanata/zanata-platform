@@ -31,12 +31,12 @@ public class XliffStrategy extends AbstractPushStrategy
    }
 
    @Override
-   public Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes) throws IOException
+   public Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes, boolean includeDefaultExclude) throws IOException
    {
       sourceFiles = new HashSet<String>();
       Set<String> localDocNames = new HashSet<String>();
 
-      String[] files = getSrcFiles(srcDir, includes, excludes, true);
+      String[] files = getSrcFiles(srcDir, includes, excludes, true, includeDefaultExclude);
 
       for (String relativeFilePath : files)
       {

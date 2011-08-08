@@ -52,11 +52,11 @@ class PropertiesStrategy extends AbstractPushStrategy
    }
 
    @Override
-   public Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes) throws IOException
+   public Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes, boolean includeDefaultExclude) throws IOException
    {
       Set<String> localDocNames = new HashSet<String>();
 
-      String[] files = getSrcFiles(srcDir, includes, excludes, true);
+      String[] files = getSrcFiles(srcDir, includes, excludes, true, includeDefaultExclude);
 
       for (String relativeFilePath : files)
       {

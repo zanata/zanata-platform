@@ -62,11 +62,12 @@ public class XliffStrategyTest
       // EasyMock.expect(mockPushOption.getIncludes()).andReturn(include);
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
+      EasyMock.expect(mockPushOption.getDefaultexclude()).andReturn(true).anyTimes();
 
       xliffStrategy.setPushOptions(mockPushOption);
       EasyMock.replay(mockPushOption);
 
-      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, new ArrayList<String>());
+      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, new ArrayList<String>(), mockPushOption.getDefaultexclude());
 
       control.verify();
       for (String docName : localDocNames)
@@ -88,11 +89,12 @@ public class XliffStrategyTest
       EasyMock.expect(mockPushOption.getTransDir()).andReturn(sourceDir).anyTimes();
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
+      EasyMock.expect(mockPushOption.getDefaultexclude()).andReturn(true).anyTimes();
 
       xliffStrategy.setPushOptions(mockPushOption);
       EasyMock.replay(mockPushOption);
 
-      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, new ArrayList<String>());
+      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, new ArrayList<String>(), mockPushOption.getDefaultexclude());
       List<Resource> resourceList = new ArrayList<Resource>();
       for (String docName : localDocNames)
       {
@@ -134,6 +136,7 @@ public class XliffStrategyTest
       EasyMock.expect(mockPushOption.getTransDir()).andReturn(sourceDir).anyTimes();
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
+      EasyMock.expect(mockPushOption.getDefaultexclude()).andReturn(true).anyTimes();
 
       List<String> exclude = new ArrayList<String>();
       exclude.add("**/*StringResource*");
@@ -142,7 +145,7 @@ public class XliffStrategyTest
       xliffStrategy.setPushOptions(mockPushOption);
       EasyMock.replay(mockPushOption);
 
-      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, exclude);
+      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, exclude, mockPushOption.getDefaultexclude());
       List<Resource> resourceList = new ArrayList<Resource>();
       for (String docName : localDocNames)
       {
@@ -184,6 +187,7 @@ public class XliffStrategyTest
       EasyMock.expect(mockPushOption.getTransDir()).andReturn(sourceDir).anyTimes();
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
+      EasyMock.expect(mockPushOption.getDefaultexclude()).andReturn(true).anyTimes();
 
       List<String> exclude = new ArrayList<String>();
       exclude.add("**/dir2/*");
@@ -192,7 +196,7 @@ public class XliffStrategyTest
       xliffStrategy.setPushOptions(mockPushOption);
       EasyMock.replay(mockPushOption);
 
-      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, exclude);
+      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, include, exclude, mockPushOption.getDefaultexclude());
       List<Resource> resourceList = new ArrayList<Resource>();
       for (String docName : localDocNames)
       {

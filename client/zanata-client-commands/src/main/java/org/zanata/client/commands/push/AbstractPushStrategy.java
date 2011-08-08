@@ -42,7 +42,7 @@ public abstract class AbstractPushStrategy
    private StringSet extensions;
    private String fileExtension;
 
-   public abstract Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes) throws IOException;
+   public abstract Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes, boolean includeDefaultExclude) throws IOException;
 
    public abstract Resource loadSrcDoc(File sourceDir, String docName) throws IOException;
 
@@ -54,7 +54,7 @@ public abstract class AbstractPushStrategy
       this.fileExtension = fileExtension;
    }
 
-   public String[] getSrcFiles(File srcDir, List<String> includes, List<String> excludes, boolean excludeLocalFileName)
+   public String[] getSrcFiles(File srcDir, List<String> includes, List<String> excludes, boolean excludeLocalFileName, boolean includeDefaultExclude)
    {
       includes.add("**/*" + fileExtension);
       if (excludeLocalFileName)
@@ -63,6 +63,12 @@ public abstract class AbstractPushStrategy
       }
 
       DirectoryScanner dirScanner = new DirectoryScanner();
+
+      if (includeDefaultExclude)
+      {
+         dirScanner.addDefaultExcludes();
+      }
+
       dirScanner.setBasedir(srcDir);
       dirScanner.setCaseSensitive(false);
       dirScanner.setExcludes((String[]) excludes.toArray(new String[excludes.size()]));
