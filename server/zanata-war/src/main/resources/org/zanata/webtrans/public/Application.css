@@ -358,16 +358,30 @@ tr.TableEditorRow.selected td.TableEditorCell-Target {
 }
 
 .TableEditorContent-Edit {
-	border: 1px solid #BFBFBF;
+	border-top: 1px solid #BFBFBF;
+	border-bottom: 1px solid #BFBFBF;
 }
 
-tr.FuzzyStateDecoration td.TableEditorCell-Target .TableEditorContent {
+tr.FuzzyStateDecoration td.TableEditorCell-Target .TableEditorContent{
     border-left:3px solid #ffc000;
     border-right:3px solid #ffc000;
     padding-left:5px;
 }
 
+tr.FuzzyStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
+    border-left:3px solid #ffc000;
+    border-right:3px solid #ffc000;
+    padding-left:5px;
+    font-style:italic;
+}
+
 tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent {
+    border-left:3px solid #099b09;
+    border-right:3px solid #099b09;
+    padding-left:5px;
+}
+
+tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
     border-left:3px solid #099b09;
     border-right:3px solid #099b09;
     padding-left:5px;
