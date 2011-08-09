@@ -172,7 +172,7 @@ public class PushCommand extends ConfigurableProjectCommand
       // NB we don't load all the docs into a HashMap, because that would waste
       // memory
 
-      Set<String> localDocNames = strat.findDocNames(sourceDir, opts.getIncludes(), opts.getExcludes());
+      Set<String> localDocNames = strat.findDocNames(sourceDir, opts.getIncludes(), opts.getExcludes(), opts.getDefaultexclude());
       for (String docName : localDocNames)
       {
          log.info("Source file to be uploaded: {}", docName);
