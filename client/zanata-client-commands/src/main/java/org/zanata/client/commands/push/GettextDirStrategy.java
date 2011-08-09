@@ -54,12 +54,12 @@ class GettextDirStrategy extends AbstractPushStrategy
       super(new StringSet("comment;gettext"), ".pot");
    }
 
-   public Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes) throws IOException
+   public Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes, boolean includeDefaultExclude) throws IOException
    {
       Set<String> localDocNames = new HashSet<String>();
 
       // populate localDocNames by looking in pot directory
-      String[] srcFiles = getSrcFiles(srcDir, includes, excludes, false);
+      String[] srcFiles = getSrcFiles(srcDir, includes, excludes, false, includeDefaultExclude);
 
       for (String potName : srcFiles)
       {
