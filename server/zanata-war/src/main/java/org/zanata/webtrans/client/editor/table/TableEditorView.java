@@ -90,6 +90,7 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
       getDataTable().setStylePrimaryName("TableEditor");
       getDataTable().setSelectionPolicy(SelectionPolicy.ONE_ROW);
       getDataTable().setCellPadding(3);
+      getDataTable().setWidth("100%");
       getDataTable().addRowSelectionHandler(new RowSelectionHandler()
       {
          @Override
@@ -202,6 +203,7 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    @Override
    public void gotoRow(int row)
    {
+      getDataTable().selectRow(row, true);
       editCell(row, TableEditorTableDefinition.TARGET_COL);
    }
 
