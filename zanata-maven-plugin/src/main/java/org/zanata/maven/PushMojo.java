@@ -96,9 +96,9 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
     * Wildcard pattern to include file and directory. This parameter is only
     * needed for some project types, eg XLIFF.
     * 
-    * @parameter expression="${zanata.includes}" default-value="**\/**"
+    * @parameter expression="${zanata.includes}"
     */
-   private String includes = "**/**";
+   private String includes;
 
    /**
     * Wildcard pattern to exclude file and directory. Usage
