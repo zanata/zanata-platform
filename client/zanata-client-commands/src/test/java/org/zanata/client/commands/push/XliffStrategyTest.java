@@ -57,7 +57,7 @@ public class XliffStrategyTest
 
       mockPushOption = createMock("mockPushOption", PushOptions.class);
       List<String> include = new ArrayList<String>();
-      include.add("*StringResource*");
+      include.add("**/**StringResource_en_US*");
 
       // EasyMock.expect(mockPushOption.getIncludes()).andReturn(include);
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
@@ -83,7 +83,7 @@ public class XliffStrategyTest
 
       mockPushOption = createMock("mockPushOption", PushOptions.class);
       List<String> include = new ArrayList<String>();
-      include.add("*StringResource_en_US*");
+      include.add("**/**StringResource_en_US*");
 
       // EasyMock.expect(mockPushOption.getIncludes()).andReturn(include);
       EasyMock.expect(mockPushOption.getTransDir()).andReturn(sourceDir).anyTimes();
@@ -130,7 +130,7 @@ public class XliffStrategyTest
 
       mockPushOption = createMock("mockPushOption", PushOptions.class);
       List<String> include = new ArrayList<String>();
-      include.add("*StringResource*");
+      include.add("**/**StringResource_en_US*");
 
       // EasyMock.expect(mockPushOption.getIncludes()).andReturn(include);
       EasyMock.expect(mockPushOption.getTransDir()).andReturn(sourceDir).anyTimes();
@@ -181,7 +181,7 @@ public class XliffStrategyTest
 
       mockPushOption = createMock("mockPushOption", PushOptions.class);
       List<String> include = new ArrayList<String>();
-      include.add("*StringResource_en_US*");
+      include.add("**/**StringResource_en_US*");
 
       // EasyMock.expect(mockPushOption.getIncludes()).andReturn(include);
       EasyMock.expect(mockPushOption.getTransDir()).andReturn(sourceDir).anyTimes();
