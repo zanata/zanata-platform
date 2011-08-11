@@ -29,7 +29,6 @@ import java.util.List;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
-import org.zanata.common.ContentState;
 import org.zanata.common.EditState;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateAction;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateHandler;
@@ -42,13 +41,9 @@ import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
-import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RedoFailureEvent;
-import org.zanata.webtrans.client.events.ToggleApprovedEvent;
-import org.zanata.webtrans.client.events.ToggleApprovedEventHandler;
 import org.zanata.webtrans.client.events.TransMemoryCopyEvent;
 import org.zanata.webtrans.client.events.TransMemoryCopyHandler;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
@@ -59,6 +54,8 @@ import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.UndoAddEvent;
 import org.zanata.webtrans.client.events.UndoFailureEvent;
 import org.zanata.webtrans.client.events.UndoRedoFinishEvent;
+import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
@@ -446,39 +443,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             }
             else
                eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnopened()));
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(ToggleApprovedEvent.getType(), new ToggleApprovedEventHandler()
-      {
-
-         @Override
-         public void onToggleApproved(ToggleApprovedEvent event)
-         {
-            int rowOffset = getRowOffset(event.getTransUnit().getId());
-            int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
-            Log.info("toggle Approved for " + row);
-            TransUnit rowValue = event.getTransUnit();
-            if (rowValue.getStatus() == ContentState.Approved)
-            {
-               if (rowValue.getTarget().isEmpty())
-                  rowValue.setStatus(ContentState.New);
-            }
-
-            display.getTableModel().setRowValueOverride(row, rowValue);
-            // save the Approved state when target cell editor is not opened
-            // and target is not empty
-            if (!rowValue.getTarget().isEmpty())
-            {
-               if (!display.getTargetCellEditor().isOpened())
-               {
-                  tableModelHandler.onSetRowValue(row, rowValue);
-               }
-               else
-               {
-                  display.getTargetCellEditor().acceptEdit();
-               }
-            }
          }
       }));
 
