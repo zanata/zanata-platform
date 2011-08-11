@@ -59,7 +59,7 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Save as Approved (Ctrl+Enter)")
    String editSaveShortcut();
 
-   @DefaultMessage("Cancel (Esc)")
+   @DefaultMessage("Cancel")
    String editCancelShortcut();
 
    // @DefaultMessage("Copy")
