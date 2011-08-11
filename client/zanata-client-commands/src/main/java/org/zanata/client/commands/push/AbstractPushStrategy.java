@@ -56,7 +56,11 @@ public abstract class AbstractPushStrategy
 
    public String[] getSrcFiles(File srcDir, List<String> includes, List<String> excludes, boolean excludeLocalFileName, boolean includeDefaultExclude)
    {
-      includes.add("**/*" + fileExtension);
+      if (includes.isEmpty())
+      {
+         includes.add("**/*" + fileExtension);
+      }
+
       if (excludeLocalFileName)
       {
          excludeLocaleFileName(excludes);

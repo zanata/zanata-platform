@@ -148,14 +148,13 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          });
          
          sourcePanel = new SourcePanel(rowValue, messages);
-
          
          if (findMessage != null && !findMessage.isEmpty())
          {
             sourcePanel.highlightSearch(findMessage);
          }
-         sourcePanel.sinkEvents(Event.ONCLICK);
-         sourcePanel.addClickHandler(new ClickHandler()
+         sourcePanel.getLabel().sinkEvents(Event.ONCLICK);
+         sourcePanel.getLabel().addClickHandler(new ClickHandler()
          {
             @Override
             public void onClick(ClickEvent event)

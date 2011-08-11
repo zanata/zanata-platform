@@ -209,10 +209,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
                acceptEdit();
                gotoNextRow(curRow);
             }
-            if (keyCode == KeyCodes.KEY_ESCAPE)
-            {
-               cancelEdit();
-            }
             // else if (event.isControlKeyDown() && event.isShiftKeyDown() &&
             // event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
             // { // was alt-e
