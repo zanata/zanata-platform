@@ -81,7 +81,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       public void onClick(ClickEvent event)
       {
          cellValue.setStatus(ContentState.NeedReview);
-         // acceptEdit();
+         cellValue.setTarget(textArea.getText());
+         curCallback.onComplete(curCellEditInfo, cellValue);
       }
    };
 
@@ -380,9 +381,13 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       // save the content in previous cell before start new editing
       if (this.cellValue != null && curRow != cellEditInfo.getRowIndex())
       {
-         // this.cellValue.setStatus(ContentState.Approved);
-         Log.debug("save content of previous cell");
-         acceptEdit();
+         // if something has changed, save as approved
+         if (!this.cellValue.getTarget().equals(textArea.getText()))
+         {
+            Log.debug("save content of previous cell");
+            this.cellValue.setStatus(ContentState.Approved);
+            acceptEdit();
+         }
       }
 
       Log.debug("starting edit of cell");
