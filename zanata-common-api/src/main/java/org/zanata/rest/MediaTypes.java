@@ -47,6 +47,10 @@ public class MediaTypes
    public static final String APPLICATION_ZANATA_VERSION_XML = APPLICATION_ZANATA_VERSION + XML;
    public static final String APPLICATION_ZANATA_VERSION_JSON = APPLICATION_ZANATA_VERSION + JSON;
 
+   public static final String APPLICATION_ZANATA_GLOSSARY = APPLICATION_VND_ZANATA + ".glossary";
+   public static final String APPLICATION_ZANATA_GLOSSARY_XML = APPLICATION_ZANATA_GLOSSARY + XML;
+   public static final String APPLICATION_ZANATA_GLOSSARY_JSON = APPLICATION_ZANATA_GLOSSARY + XML;
+
    /**
     * Creates a format specific MediaType string given an existing media type
     * 
