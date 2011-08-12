@@ -240,17 +240,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          @Override
          public void onSelection(SelectionEvent<TransUnit> event)
          {
-            if (selectedTransUnit == null || !event.getSelectedItem().getId().equals(selectedTransUnit.getId()))
-            {
-               selectedTransUnit = event.getSelectedItem();
-               Log.info("SelectedTransUnit " + selectedTransUnit.getId());
-               // Clean the cache when we click the new entry
-               if (!transIdNextFuzzyCache.isEmpty())
-                  transIdNextFuzzyCache.clear();
-               if (!transIdPrevFuzzyCache.isEmpty())
-                  transIdPrevFuzzyCache.clear();
-               eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
-            }
+            TransUnit newSelectedItem = event.getSelectedItem();
+         selectTransUnit(newSelectedItem);
          }
       }));
 
@@ -679,7 +670,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          int rowNum = rowIndex % (MAX_PAGE_ROW + 1);
          if (pageNum != curPage)
             display.gotoPage(pageNum, false);
-         selectedTransUnit = display.getTransUnitValue(rowNum);
+         selectTransUnit(display.getTransUnitValue(rowNum));
+         //selectedTransUnit = display.getTransUnitValue(rowNum);
+         //TODO fire selected TU event here
+         
+         //eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
          display.gotoRow(rowNum);
       }
 
@@ -917,5 +912,24 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    public void cancelEdit()
    {
       display.getTargetCellEditor().cancelEdit();
+   }
+
+   /**
+    * Selects the given TransUnit and fires associated TU Selection event
+    * @param transUnit the new TO to select
+    */
+   void selectTransUnit(TransUnit transUnit)
+   {
+      if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
+      {
+         selectedTransUnit = transUnit;
+         Log.info("SelectedTransUnit " + selectedTransUnit.getId());
+         // Clean the cache when we click the new entry
+         if (!transIdNextFuzzyCache.isEmpty())
+            transIdNextFuzzyCache.clear();
+         if (!transIdPrevFuzzyCache.isEmpty())
+            transIdPrevFuzzyCache.clear();
+         eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
+      }
    }
 }
