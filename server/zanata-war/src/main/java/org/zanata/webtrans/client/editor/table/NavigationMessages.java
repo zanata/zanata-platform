@@ -82,7 +82,7 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("{0} ({1})")
    String actionToolTip(String actionName, String shortcut);
 
-   @DefaultMessage("Save as Fuzzy")
+   @DefaultMessage("Save as Fuzzy (Ctrl+S)")
    String fuzzy();
 
    @DefaultMessage("Source comment: ")
