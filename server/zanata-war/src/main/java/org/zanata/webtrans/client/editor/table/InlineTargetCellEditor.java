@@ -104,9 +104,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       public void onClick(ClickEvent event)
       {
-         cellValue.setStatus(ContentState.Approved);
-         acceptEdit();
-         gotoNextRow(curRow);
+         saveApprovedAndNextRow();
       }
    };
 
@@ -226,8 +224,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             // NB: if you change these, please change NavigationConsts too!
             if (event.isControlKeyDown() && keyCode == KeyCodes.KEY_ENTER)
             {
-               acceptEdit();
-               gotoNextRow(curRow);
+               saveApprovedAndNextRow();
             }
             // else if (event.isControlKeyDown() && event.isShiftKeyDown() &&
             // event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
@@ -458,6 +455,15 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 	   curCallback.onComplete(curCellEditInfo, cellValue);
    }
    
+   
+   /**
+    * save the contents of the cell as approved and move to the next row.
+    */
+   void saveApprovedAndNextRow() {
+	   cellValue.setStatus(ContentState.Approved);
+	   acceptEdit();
+	   gotoNextRow(curRow);
+   }
    
    /**
     * Accept the contents of the cell editor as the new cell value.
