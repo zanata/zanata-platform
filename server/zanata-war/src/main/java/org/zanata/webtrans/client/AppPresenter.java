@@ -31,7 +31,6 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.auth.Identity;
-import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 
@@ -61,6 +60,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       void showInMainView(MainView editor);
 
+      MainView getCurrentView();
+
       HasClickHandlers getSignOutLink();
 
       HasClickHandlers getLeaveWorkspaceLink();
@@ -86,7 +87,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
    private final WebTransMessages messages;
 
-   private DocumentId selectedDocument;
+   private DocumentInfo selectedDocument;
 
    @Inject
    public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final TransFilterPresenter transFilterPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
@@ -132,9 +133,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          @Override
          public void onDocumentSelected(DocumentSelectionEvent event)
          {
-            if (selectedDocument == null || !event.getDocument().getId().equals(selectedDocument))
+            if (selectedDocument == null || !event.getDocument().getId().equals(selectedDocument.getId()))
             {
                display.setSelectedDocument(event.getDocument());
+               selectedDocument = event.getDocument();
             }
             display.showInMainView(MainView.Editor);
          }
@@ -146,7 +148,18 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          @Override
          public void onClick(ClickEvent event)
          {
-            display.showInMainView(MainView.Documents);
+            if (display.getCurrentView().equals(MainView.Documents))
+            {
+               if (selectedDocument != null)
+               {
+                  display.setSelectedDocument(selectedDocument);
+                  display.showInMainView(MainView.Editor);
+               }
+            }
+            else
+            {
+               display.showInMainView(MainView.Documents);
+            }
          }
       }));
 

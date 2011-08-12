@@ -39,6 +39,16 @@ public class OkapiUtil
       return LocaleId.fromBCP47(zanataLocale.getId());
    }
 
+   /**
+    * Count words using Okapi's WordCounter, which tries to implement the LISA
+    * standard GMX-V:
+    * http://web.archive.org/web/20090403134742/http://www.lisa.org/Global
+    * -information-m.105.0.html
+    * 
+    * @param s
+    * @param bcp47Locale
+    * @return
+    */
    public static long countWords(String s, String bcp47Locale)
    {
       try
@@ -62,9 +72,7 @@ public class OkapiUtil
       catch (Exception e)
       {
          Object[] args = new Object[] {s, bcp47Locale, e};
-         if (log.isInfoEnabled())
-            log.info("unable to count words in string '{}' for locale '{}'", args);
-         log.error("unable to count words in string '{}' for locale '{}': {}", args);
+         log.error("unable to count words in string '{}' for locale '{}'", args);
          return 0;
       }
    }
