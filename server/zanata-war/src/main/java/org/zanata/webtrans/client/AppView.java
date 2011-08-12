@@ -74,6 +74,8 @@ public class AppView extends Composite implements AppPresenter.Display
 
    private boolean showMessage = true;
 
+   private MainView currentView;
+
    @Inject
    public AppView(Resources resources, WebTransMessages messages)
    {
@@ -104,11 +106,13 @@ public class AppView extends Composite implements AppPresenter.Display
          container.setWidgetTopHeight(translationView, 0, Unit.PX, 0, Unit.PX);
          filterPanelContainer.setWidgetTopHeight(filterView, 0, Unit.PX, 0, Unit.PX);
          resetSelectedDocument();
+         currentView = MainView.Documents;
          break;
       case Editor:
          container.setWidgetTopBottom(translationView, 0, Unit.PX, 0, Unit.PX);
          container.setWidgetTopHeight(documentListView, 0, Unit.PX, 0, Unit.PX);
          filterPanelContainer.setWidgetTopBottom(filterView, 0, Unit.PX, 0, Unit.PX);
+         currentView = MainView.Editor;
          break;
       }
    }
@@ -211,5 +215,11 @@ public class AppView extends Composite implements AppPresenter.Display
          showMessage = false;
          topPanel.animate(NOTIFICATION_TIME, callback);
       }
+   }
+
+   @Override
+   public MainView getCurrentView()
+   {
+      return currentView;
    }
 }
