@@ -1,5 +1,6 @@
 package org.zanata.rest.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -14,8 +15,10 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
+import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
+import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.po.HPoHeader;
 import org.zanata.rest.NoSuchEntityException;
@@ -111,6 +114,33 @@ public class ETagUtils
       hashcode = hashcode * 31 + extHash;
 
       return EntityTag.valueOf(String.valueOf(hashcode));
+   }
+   
+   public EntityTag generateTagForGlossary(List<Integer> glossaryEntryIds)
+   {
+      List<String> glossaryVersions = new ArrayList<String>();
+      for (int glossaryEntryId : glossaryEntryIds)
+      {
+         Integer glossaryId = (Integer) session.createQuery("select g.id from HGlossaryEntry g where id =:id").setParameter("id", glossaryEntryId).uniqueResult();
+         if (glossaryId == null)
+         {
+            throw new NoSuchEntityException("GlossaryEntry '" + glossaryEntryId + "' not found.");
+         }
+         glossaryVersions.add(glossaryId.toString());
+      }
+      String hash = HashUtil.generateHash(StringUtils.join(glossaryVersions, ':'));
+      return EntityTag.valueOf(hash);
+   }
+
+   public EntityTag generateTagForGlossaryTerm(LocaleId locale)
+   {
+      Object[] queryResult = (Object[]) session.createQuery("select g.glossaryEntryId,g.localeId from HGlossaryTerm g where locale =:locale").setParameter("locale", new HLocale(locale)).uniqueResult();
+      if (queryResult == null)
+      {
+         throw new NoSuchEntityException("HGlossaryTerm with locale '" + locale + "' not found.");
+      }
+      String hash = HashUtil.generateHash(String.valueOf(queryResult));
+      return EntityTag.valueOf(hash);
    }
 
 }

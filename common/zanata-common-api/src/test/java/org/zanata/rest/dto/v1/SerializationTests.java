@@ -22,6 +22,9 @@ import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ResourceType;
 import org.zanata.rest.JaxbUtil;
+import org.zanata.rest.dto.Glossary;
+import org.zanata.rest.dto.GlossaryEntry;
+import org.zanata.rest.dto.GlossaryTerm;
 import org.zanata.rest.dto.Person;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
@@ -221,4 +224,42 @@ public class SerializationTests
       assertThat(((PoTargetHeader) res2.getExtensions().iterator().next()).getComment(), is("target header comment"));
    }
 
+   @Test
+   public void serializeAndDeserializeGlossary() throws JsonGenerationException, JsonMappingException, IOException, JAXBException
+   {
+      Glossary glossary = new Glossary();
+
+      GlossaryEntry entry = new GlossaryEntry();
+      entry.setSrcLang(LocaleId.EN_US);
+
+      GlossaryTerm term = new GlossaryTerm();
+      term.setContent("testData1");
+      term.setSourcereference("testRefData1");
+      term.setLocale(LocaleId.EN_US);
+      term.getComments().add("comment1");
+      term.getComments().add("comment2");
+      term.getComments().add("comment3");
+
+      GlossaryTerm term2 = new GlossaryTerm();
+      term2.setContent("testData2");
+      term2.setSourcereference("testRefData2");
+      term2.setLocale(LocaleId.DE);
+      term2.getComments().add("comment4");
+      term2.getComments().add("comment5");
+      term2.getComments().add("comment6");
+
+      entry.getGlossaryTerms().add(term);
+      entry.getGlossaryTerms().add(term2);
+      glossary.getGlossaryEntries().add(entry);
+
+      System.out.println(glossary.toString());
+
+      JaxbUtil.validateXml(glossary, Glossary.class);
+      String output = mapper.writeValueAsString(glossary);
+
+      Glossary glossary2 = mapper.readValue(output, Glossary.class);
+      assertThat(glossary2.getGlossaryEntries().size(), is(1));
+      assertThat(glossary2.getGlossaryEntries().get(0).getGlossaryTerms().size(), is(2));
+
+   }
 }

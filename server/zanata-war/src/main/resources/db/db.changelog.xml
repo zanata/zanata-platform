@@ -4,4 +4,5 @@
    <include relativeToChangelogFile="true" file="changelogs/db.changelog-1.0.xml"/> 
    <include relativeToChangelogFile="true" file="changelogs/db.changelog-1.2.xml"/> 
    <include relativeToChangelogFile="true" file="changelogs/db.changelog-1.3.xml"/>   
+   <include relativeToChangelogFile="true" file="changelogs/db.changelog-1.5.xml"/>   
 </databaseChangeLog>
