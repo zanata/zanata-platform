@@ -206,6 +206,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             //using keydown for Ctrl+S in order to override browser Ctrl+S on keydown (chrome)
             if (event.isControlKeyDown() && keyCode == KEY_S)
             {
+               event.stopPropagation();
                event.preventDefault(); //stop browser save
                saveAsFuzzy();
             }
