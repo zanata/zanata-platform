@@ -50,7 +50,7 @@ public class AppView extends Composite implements AppPresenter.Display
    private final int NOTIFICATION_TIME = 2500;
 
    @UiField
-   Anchor signOutLink, leaveLink, helpLink, documentsLink;
+   Anchor signOutLink, leaveLink, helpLink, documentsLink, operationButtonsLink;
 
    @UiField
    Label notificationMessage;
@@ -150,7 +150,26 @@ public class AppView extends Composite implements AppPresenter.Display
    {
       return leaveLink;
    }
-
+   
+   @Override
+   public HasClickHandlers getOperationButtonsLink()
+   {
+	   return operationButtonsLink;
+   }
+   
+   @Override
+   public void setOperationButtonLinkLabel(boolean show)
+   {
+	   if (show)
+	   {
+          operationButtonsLink.setText("show operation buttons");
+	   }
+	   else
+	   {
+	      operationButtonsLink.setText("hide operation buttons");
+	   }
+   }
+   
    @Override
    public HasClickHandlers getSignOutLink()
    {

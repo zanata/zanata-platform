@@ -69,8 +69,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       HasClickHandlers getHelpLink();
 
       HasClickHandlers getDocumentsLink();
+      
+      HasClickHandlers getOperationButtonsLink();
 
+      void setOperationButtonLinkLabel(boolean show);
+      
       void setUserLabel(String userLabel);
+      
 
       void setWorkspaceNameLabel(String workspaceNameLabel);
 
@@ -88,6 +93,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    private final WebTransMessages messages;
 
    private DocumentInfo selectedDocument;
+   
+   private boolean showEditorOperationButtons = true;
 
    @Inject
    public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final TransFilterPresenter transFilterPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
@@ -182,6 +189,18 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             // rather than redirected to project home.
             // Application.redirectToZanataProjectHome(workspaceContext.getWorkspaceId());
          }
+      }));
+      
+      registerHandler(display.getOperationButtonsLink().addClickHandler(new ClickHandler()
+      {
+    	  @Override
+    	  public void onClick(ClickEvent event)
+    	  {
+    		  showEditorOperationButtons = !showEditorOperationButtons;
+    		  //TODO generate event on bus
+    		  display.setOperationButtonLinkLabel(showEditorOperationButtons);
+    		  
+    	  }
       }));
 
       display.setUserLabel(identity.getPerson().getName());
