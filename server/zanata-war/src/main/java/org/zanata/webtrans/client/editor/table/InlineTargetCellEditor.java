@@ -35,6 +35,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -80,9 +82,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       public void onClick(ClickEvent event)
       {
-         cellValue.setStatus(ContentState.NeedReview);
-         cellValue.setTarget(textArea.getText());
-         curCallback.onComplete(curCellEditInfo, cellValue);
+         saveAsFuzzy();
       }
    };
 
@@ -104,9 +104,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       public void onClick(ClickEvent event)
       {
-         cellValue.setStatus(ContentState.Approved);
-         acceptEdit();
-         gotoNextRow(curRow);
+         saveApprovedAndNextRow();
       }
    };
 
@@ -151,6 +149,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private static final int KEY_G = 'G';
    private static final int KEY_J = 'J';
    private static final int KEY_K = 'K';
+   private static final int KEY_S = 'S';
 
    /**
     * Construct a new {@link InlineTargetCellEditor} with the specified images.
@@ -196,6 +195,24 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          }
 
       });
+      
+      textArea.addKeyDownHandler(new KeyDownHandler()
+      {
+
+         @Override
+         public void onKeyDown(KeyDownEvent event)
+         {
+            int keyCode = event.getNativeKeyCode();
+            //using keydown for Ctrl+S in order to override browser Ctrl+S on keydown (chrome)
+            if (event.isControlKeyDown() && keyCode == KEY_S)
+            {
+               event.preventDefault(); //stop browser save
+               saveAsFuzzy();
+            }
+         }
+
+      });
+
       textArea.addKeyUpHandler(new KeyUpHandler()
       {
          @Override
@@ -207,8 +224,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             // NB: if you change these, please change NavigationConsts too!
             if (event.isControlKeyDown() && keyCode == KeyCodes.KEY_ENTER)
             {
-               acceptEdit();
-               gotoNextRow(curRow);
+               saveApprovedAndNextRow();
             }
             // else if (event.isControlKeyDown() && event.isShiftKeyDown() &&
             // event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
@@ -428,7 +444,27 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    // else if (cellValue.getStatus() == ContentState.Approved)
    // stateImage.setUrl(resources.approvedUnit().getURL());
    // }
-
+   
+   
+   /**
+    * Save the contents of the cell and set status to fuzzy.
+    */
+   void saveAsFuzzy() {
+	   cellValue.setStatus(ContentState.NeedReview);
+	   cellValue.setTarget(textArea.getText());
+	   curCallback.onComplete(curCellEditInfo, cellValue);
+   }
+   
+   
+   /**
+    * save the contents of the cell as approved and move to the next row.
+    */
+   void saveApprovedAndNextRow() {
+	   cellValue.setStatus(ContentState.Approved);
+	   acceptEdit();
+	   gotoNextRow(curRow);
+   }
+   
    /**
     * Accept the contents of the cell editor as the new cell value.
     */
@@ -553,5 +589,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          textArea.setVisibleLines(textArea.getVisibleLines() + growByLines);
       }
    }
+
 
 }
