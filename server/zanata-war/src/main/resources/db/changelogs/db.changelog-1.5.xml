@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+	<changeSet author="aeng@redhat.com" id="1">
+		<comment>Add table to store glossary entry</comment>
+		<createTable tableName="HGlossaryEntry">
+			<column name="id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="creationDate" type="DATETIME">
+				<constraints nullable="false" />
+			</column>
+			<column name="lastChanged" type="DATETIME">
+				<constraints nullable="false" />
+			</column>
+			<column name="versionNum" type="int">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<addPrimaryKey tableName="HGlossaryEntry" columnNames="id" />
+	</changeSet>
+
+	<changeSet author="aeng@redhat.com" id="2">
+		<comment>Add table to store glossary term</comment>
+		<createTable tableName="HGlossaryTerm">
+			<column name="id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="glossaryEntryId" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="localeId" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="content" type="longtext" />
+			<column name="sourceRef" type="longtext" />
+			<column name="creationDate" type="DATETIME">
+				<constraints nullable="false" />
+			</column>
+			<column name="lastChanged" type="DATETIME">
+				<constraints nullable="false" />
+			</column>
+			<column name="versionNum" type="int">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<addPrimaryKey tableName="HGlossaryTerm" columnNames="id" />
+		<addUniqueConstraint tableName="HGlossaryTerm"
+			                 columnNames="glossaryEntryId,localeId" 
+			                 constraintName="UKglossaryEntryId_LocaleId" />
+			                 
+		<addForeignKeyConstraint baseTableName="HGlossaryTerm"
+			                     baseColumnNames="glossaryEntryId" 
+			                     constraintName="UKglossaryterm_glossary_entry_id"
+			                     referencedTableName="HGlossaryEntry" 
+			                     referencedColumnNames="id" />
+			                     
+		<addForeignKeyConstraint baseTableName="HGlossaryTerm"
+			                     baseColumnNames="localeId" 
+			                     constraintName="UKglossaryterm_localeId"
+			                     referencedTableName="HLocale" 
+			                     referencedColumnNames="id" />
+	</changeSet>
+
+
+    <changeSet author="aeng@redhat.com" id="3">
+        <comment>Add table to store glossary term comment</comment>
+        <createTable tableName="HTermComment">
+            <column name="id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="comment" type="longtext">
+                <constraints nullable="false" />
+            </column>
+            <column name="pos" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="glossaryTermId" type="bigint">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="HTermComment" columnNames="id" />
+        
+        <addForeignKeyConstraint baseTableName="HTermComment"
+                                 baseColumnNames="glossaryTermId" 
+                                 constraintName="UKtermComment_glossaryTerm"
+                                 referencedTableName="HGlossaryTerm" 
+                                 referencedColumnNames="id" />
+    </changeSet>
+
+
+</databaseChangeLog>
