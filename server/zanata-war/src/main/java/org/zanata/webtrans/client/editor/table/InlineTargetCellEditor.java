@@ -421,8 +421,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       cellViewWidget = table.getWidget(curRow, curCol);
 
-      int width = table.getWidget(curRow, 0).getOffsetWidth() - 10;
-      textArea.setWidth(width + "px");
       // layoutTable.setCellWidth(this.operationsPanel, "20px");
       table.setWidget(curRow, curCol, layoutTable);
       
