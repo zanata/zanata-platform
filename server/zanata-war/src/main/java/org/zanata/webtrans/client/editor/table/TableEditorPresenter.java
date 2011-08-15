@@ -671,10 +671,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          if (pageNum != curPage)
             display.gotoPage(pageNum, false);
          selectTransUnit(display.getTransUnitValue(rowNum));
-         //selectedTransUnit = display.getTransUnitValue(rowNum);
-         //TODO fire selected TU event here
-         
-         //eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
          display.gotoRow(rowNum);
       }
 
