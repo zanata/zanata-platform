@@ -132,6 +132,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
       int getPageSize();
 
+      void setShowCopyButtons(boolean showButtons);
+
       void setFindMessage(String findMessage);
       
       void startProcessing();
@@ -471,6 +473,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          public void onButtonDisplayChange(ButtonDisplayChangeEvent event)
          {
             display.getTargetCellEditor().setShowOperationButtons(event.isShowButtons());
+            display.setShowCopyButtons(event.isShowButtons());
          }
       }));
 
