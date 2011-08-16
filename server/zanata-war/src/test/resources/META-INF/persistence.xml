@@ -34,6 +34,9 @@
 		<class>org.zanata.model.HTextFlow</class>
 		<class>org.zanata.model.HTextFlowTargetHistory</class>
 		<class>org.zanata.model.HTextFlowTarget</class>
+		<class>org.zanata.model.HGlossaryEntry</class>
+		<class>org.zanata.model.HGlossaryTerm</class>
+		<class>org.zanata.model.HTermComment</class>
 		<class>org.zanata.model.po.HPoHeader</class>
 		<class>org.zanata.model.po.HPoTargetHeader</class>
 		<class>org.zanata.model.po.HPotEntryData</class>

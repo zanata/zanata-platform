@@ -90,5 +90,28 @@
                                  referencedColumnNames="id" />
     </changeSet>
 
+    <changeSet author="aeng@redhat.com" id="4">
+        <comment>Alter glossary entry table</comment>
+        <addColumn tableName="HGlossaryEntry">
+            <column name="srcTermId" type="bigint">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        
+        <addForeignKeyConstraint baseTableName="HGlossaryEntry"
+                                 baseColumnNames="srcTermId" 
+                                 constraintName="UKglossaryEntry_glossaryTerm"
+                                 referencedTableName="HGlossaryTerm" 
+                                 referencedColumnNames="id" />
+    </changeSet>
+    
+     <changeSet author="aeng@redhat.com" id="5">
+        <comment>Add obsolete column to HTermComment</comment>
+        <addColumn tableName="HTermComment">
+            <column name="obsolete" type="bit">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

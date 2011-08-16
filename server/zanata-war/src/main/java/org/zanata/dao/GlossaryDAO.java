@@ -27,6 +27,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.LocaleId;
@@ -39,40 +40,55 @@ import org.zanata.model.HLocale;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-@Name("glossaryTermDAO")
+@Name("glossaryEntryDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class GlossaryTermDAO extends AbstractDAOImpl<HGlossaryTerm, Long>
+public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
 {
-
-   public GlossaryTermDAO()
+   public GlossaryDAO()
    {
-      super(HGlossaryTerm.class);
+      super(HGlossaryEntry.class);
    }
 
-   public GlossaryTermDAO(Session session)
+   public GlossaryDAO(Session session)
    {
-      super(HGlossaryTerm.class, session);
+      super(HGlossaryEntry.class, session);
    }
 
-   public HGlossaryTerm findByNaturalId(HGlossaryEntry glossaryEntry, HLocale locale)
+   public HGlossaryEntry getEntryById(Long id)
    {
-      return (HGlossaryTerm) getSession().createCriteria(HGlossaryTerm.class).add(Restrictions.naturalId().set("glossaryEntry", glossaryEntry).set("locale", locale)).setCacheable(true).setComment("GlossaryTermDAO.findByNaturalId").uniqueResult();
+      return (HGlossaryEntry) getSession().createCriteria(HGlossaryEntry.class).add(Restrictions.naturalId().set("id", id)).setCacheable(true).setComment("GlossaryDAO.getEntryById").uniqueResult();
+   }
+
+   public HGlossaryTerm getTermByEntryAndLocale(Long glossaryEntryId, LocaleId locale)
+   {
+      Query query = getSession().createQuery("from HGlossaryTerm as t WHERE t.locale.localeId= :locale AND glossaryEntry.id= :glossaryEntryId");
+      query.setParameter("locale", locale);
+      query.setParameter("glossaryEntryId", glossaryEntryId);
+      return (HGlossaryTerm) query.uniqueResult();
    }
 
    @SuppressWarnings("unchecked")
-   public List<HGlossaryTerm> findByGlossaryEntryId(HGlossaryEntry glossaryEntry)
+   public List<HGlossaryTerm> getTermByGlossaryEntryId(Long glossaryEntryId)
    {
-      Query query = getSession().createQuery("from HTerm as t where t.glossaryEntryId= :glossaryEntryId");
-      query.setParameter("glossaryEntryId", glossaryEntry.getId());
+      Query query = getSession().createQuery("from HGlossaryTerm as t WHERE t.glossaryEntry.id= :glossaryEntryId");
+      query.setParameter("glossaryEntryId", glossaryEntryId);
+      return query.list();
+
+   }
+
+   @SuppressWarnings("unchecked")
+   public List<HGlossaryEntry> getEntriesByLocaleId(LocaleId locale)
+   {
+      Query query = getSession().createQuery("from HGlossaryEntry as e WHERE e.id IN (SELECT t.glossaryEntry.id FROM HGlossaryTerm as t WHERE t.locale.localeId= :localeId)");
+      query.setParameter("localeId", locale);
       return query.list();
    }
 
    @SuppressWarnings("unchecked")
-   public List<HGlossaryTerm> findByLocaleId(LocaleId locale)
+   public List<HGlossaryEntry> getEntries()
    {
-      Query query = getSession().createQuery("from HTerm as t where t.localeId= :localeId");
-      query.setParameter("localeId", locale.getId());
+      Query query = getSession().createQuery("from HGlossaryEntry");
       return query.list();
    }
 }

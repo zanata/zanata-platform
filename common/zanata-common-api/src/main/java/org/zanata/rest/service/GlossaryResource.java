@@ -25,7 +25,6 @@ import java.io.InputStream;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.HEAD;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -47,12 +46,15 @@ public interface GlossaryResource
    public static final String SERVICE_PATH = "/glossary";
 
    @GET
+   @Path("SERVICE_PATH")
+   public Response getEntries();
+
+   @GET
    @Path(SERVICE_PATH + "/{locale}")
-   @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response get(@PathParam("locale") LocaleId locale);
 
    @PUT
-   @Consumes({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+   @Path("SERVICE_PATH")
    public Response put(InputStream messageBody);
 
 }

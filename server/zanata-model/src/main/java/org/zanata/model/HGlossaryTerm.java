@@ -20,6 +20,7 @@
  */
 package org.zanata.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -51,6 +52,11 @@ public class HGlossaryTerm extends ModelEntityBase
    private List<HTermComment> comments;
    private HGlossaryEntry glossaryEntry;
    private HLocale locale;
+
+   public HGlossaryTerm()
+   {
+
+   }
 
    public HGlossaryTerm(String content)
    {
@@ -86,6 +92,10 @@ public class HGlossaryTerm extends ModelEntityBase
    @JoinColumn(name = "glossaryTermId", nullable = false)
    public List<HTermComment> getComments()
    {
+      if (comments == null)
+      {
+         comments = new ArrayList<HTermComment>();
+      }
       return comments;
    }
 
@@ -95,7 +105,7 @@ public class HGlossaryTerm extends ModelEntityBase
    }
 
    @ManyToOne
-   @JoinColumn(name = "glossaryEntryId", nullable = false)
+   @JoinColumn(name = "glossaryEntryId")
    @NaturalId
    public HGlossaryEntry getGlossaryEntry()
    {
@@ -116,13 +126,11 @@ public class HGlossaryTerm extends ModelEntityBase
    {
       return locale;
    }
-
+   
    public void setLocale(HLocale locale)
    {
       this.locale = locale;
    }
-
-
 }
 
 
