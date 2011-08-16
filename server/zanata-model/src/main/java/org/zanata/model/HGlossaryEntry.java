@@ -25,10 +25,13 @@ import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.NaturalId;
 
 /**
  *
@@ -38,8 +41,9 @@ import org.hibernate.annotations.BatchSize;
  @Entity
 public class HGlossaryEntry extends ModelEntityBase
 {
-
    private Map<HLocale, HGlossaryTerm> glossaryTerms;
+
+   private HGlossaryTerm srcTerm;
 
    @OneToMany(cascade = CascadeType.ALL, mappedBy = "glossaryEntry")
    @MapKey(name = "locale")
@@ -48,12 +52,26 @@ public class HGlossaryEntry extends ModelEntityBase
    {
       if (glossaryTerms == null)
          glossaryTerms = new HashMap<HLocale, HGlossaryTerm>();
+
       return glossaryTerms;
    }
 
    public void setGlossaryTerms(Map<HLocale, HGlossaryTerm> glossaryTerms)
    {
       this.glossaryTerms = glossaryTerms;
+   }
+
+   @OneToOne(optional = false, cascade = CascadeType.ALL)
+   @JoinColumn(name = "srcTermId")
+   @NaturalId
+   public HGlossaryTerm getSrcTerm()
+   {
+      return srcTerm;
+   }
+
+   public void setSrcTerm(HGlossaryTerm srcTerm)
+   {
+      this.srcTerm = srcTerm;
    }
 
 }

@@ -21,7 +21,7 @@ public abstract class ResourceTranslationServiceSeamTest extends ZanataDBUnitSea
    private static final String AUTH_KEY = "b6d7044e9ee3b2447c28fb7c50d86d98";
    private static final String USERNAME = "admin";
    private static final String DOCUMENTS_DATA_DBUNIT_XML = "org/zanata/test/model/DocumentsData.dbunit.xml";
-   private static final String LOCALE_DATA_DBUNIT_XML = "META-INF/testdata/LocalesData.dbunit.xml";
+   private static final String LOCALE_DATA_DBUNIT_XML = "org/zanata/test/model/LocalesData.dbunit.xml";
    private static final String PROJECTS_DATA_DBUNIT_XML = "org/zanata/test/model/ProjectsData.dbunit.xml";
 
    protected ITranslationResources translationResource;

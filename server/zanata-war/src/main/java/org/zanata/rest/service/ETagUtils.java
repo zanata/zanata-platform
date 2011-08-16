@@ -49,6 +49,11 @@ public class ETagUtils
       this.documentDAO = documentDAO;
    }
 
+   public ETagUtils(Session session)
+   {
+      this.session = session;
+   }
+
    /**
     * Retrieves the ETag for the Project
     * 
@@ -116,12 +121,12 @@ public class ETagUtils
       return EntityTag.valueOf(String.valueOf(hashcode));
    }
    
-   public EntityTag generateTagForGlossary(List<Integer> glossaryEntryIds)
+   public EntityTag generateTagForGlossary(List<Long> glossaryEntryIds)
    {
       List<String> glossaryVersions = new ArrayList<String>();
-      for (int glossaryEntryId : glossaryEntryIds)
+      for (Long glossaryEntryId : glossaryEntryIds)
       {
-         Integer glossaryId = (Integer) session.createQuery("select g.id from HGlossaryEntry g where id =:id").setParameter("id", glossaryEntryId).uniqueResult();
+         Long glossaryId = (Long) session.createQuery("select g.id from HGlossaryEntry g where g.id =:id").setParameter("id", glossaryEntryId).uniqueResult();
          if (glossaryId == null)
          {
             throw new NoSuchEntityException("GlossaryEntry '" + glossaryEntryId + "' not found.");
@@ -134,7 +139,7 @@ public class ETagUtils
 
    public EntityTag generateTagForGlossaryTerm(LocaleId locale)
    {
-      Object[] queryResult = (Object[]) session.createQuery("select g.glossaryEntryId,g.localeId from HGlossaryTerm g where locale =:locale").setParameter("locale", new HLocale(locale)).uniqueResult();
+      Object[] queryResult = (Object[]) session.createQuery("select g.glossaryEntry.id,g.locale.id from HGlossaryTerm g where locale.localeId =:locale").setParameter("locale", locale).uniqueResult();
       if (queryResult == null)
       {
          throw new NoSuchEntityException("HGlossaryTerm with locale '" + locale + "' not found.");

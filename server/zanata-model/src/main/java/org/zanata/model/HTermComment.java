@@ -45,6 +45,8 @@ public class HTermComment
 
    private Integer pos;
 
+   private boolean obsolete = false;
+
    private HGlossaryTerm glossaryTerm;
 
    public HTermComment()
@@ -89,6 +91,16 @@ public class HTermComment
    public void setPos(Integer pos)
    {
       this.pos = pos;
+   }
+
+   public boolean isObsolete()
+   {
+      return obsolete;
+   }
+
+   public void setObsolete(boolean obsolete)
+   {
+      this.obsolete = obsolete;
    }
 
    @ManyToOne
