@@ -34,6 +34,8 @@ import org.zanata.webtrans.client.action.UndoableTransUnitUpdateAction;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateHandler;
 import org.zanata.webtrans.client.editor.DocumentEditorPresenter;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
+import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
+import org.zanata.webtrans.client.events.ButtonDisplayChangeEventHandler;
 import org.zanata.webtrans.client.events.CopySourceEvent;
 import org.zanata.webtrans.client.events.CopySourceEventHandler;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
@@ -460,6 +462,16 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             display.getTargetCellEditor().setTextAreaSize();
          }
 
+      }));
+
+      registerHandler(eventBus.addHandler(ButtonDisplayChangeEvent.getType(), new ButtonDisplayChangeEventHandler()
+      {
+
+         @Override
+         public void onButtonDisplayChange(ButtonDisplayChangeEvent event)
+         {
+            display.getTargetCellEditor().setShowOperationButtons(event.isShowButtons());
+         }
       }));
 
       Event.addNativePreviewHandler(new NativePreviewHandler()

@@ -25,6 +25,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.AppPresenter.Display.MainView;
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
+import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -38,6 +39,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -69,13 +71,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       HasClickHandlers getHelpLink();
 
       HasClickHandlers getDocumentsLink();
-      
-      HasClickHandlers getOperationButtonsLink();
 
-      void setOperationButtonLinkLabel(boolean show);
+      HasClickHandlers getEditorButtonsCheckbox();
       
       void setUserLabel(String userLabel);
-      
 
       void setWorkspaceNameLabel(String workspaceNameLabel);
 
@@ -93,8 +92,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    private final WebTransMessages messages;
 
    private DocumentInfo selectedDocument;
-   
-   private boolean showEditorOperationButtons = true;
 
    @Inject
    public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final TransFilterPresenter transFilterPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
@@ -191,16 +188,14 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          }
       }));
       
-      registerHandler(display.getOperationButtonsLink().addClickHandler(new ClickHandler()
+      registerHandler(display.getEditorButtonsCheckbox().addClickHandler(new ClickHandler()
       {
-    	  @Override
-    	  public void onClick(ClickEvent event)
-    	  {
-    		  showEditorOperationButtons = !showEditorOperationButtons;
-    		  //TODO generate event on bus
-    		  display.setOperationButtonLinkLabel(showEditorOperationButtons);
-    		  
-    	  }
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            boolean showButtons = ((CheckBox) display.getEditorButtonsCheckbox()).getValue();
+            eventBus.fireEvent(new ButtonDisplayChangeEvent(showButtons));
+         }
       }));
 
       display.setUserLabel(identity.getPerson().getName());

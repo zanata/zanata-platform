@@ -71,7 +71,7 @@
 								<span class="{style.divider}">|</span>
 								<g:Anchor href="#" ui:field="helpLink"><ui:msg>Help</ui:msg></g:Anchor>
 								<span class="{style.divider}">|</span>
-								<g:Anchor href="#" ui:field="operationButtonsLink"><ui:msg>Hide Buttons</ui:msg></g:Anchor>
+								<g:CheckBox ui:field="editorButtonsCheckbox"><ui:msg>Editor Buttons</ui:msg></g:CheckBox>
 								<span class="{style.divider}">|</span>
 								<g:Anchor href="#" ui:field="leaveLink"><ui:msg>Leave Workspace</ui:msg></g:Anchor>
 								<span class="{style.divider}">|</span>

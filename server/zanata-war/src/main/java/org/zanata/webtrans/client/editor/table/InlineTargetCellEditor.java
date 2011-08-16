@@ -133,7 +133,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private EditorTextArea textArea;
    private HorizontalPanel operationsPanel;
-
    private boolean isFocused = false;
    private boolean isOpened = false;
 
@@ -588,6 +587,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          textArea.setVisibleLines(textArea.getVisibleLines() + growByLines);
       }
    }
-
-
+   
+   public void setShowOperationButtons(boolean showButtons)
+   {
+	   operationsPanel.setVisible(showButtons);
+   }
+   
 }
