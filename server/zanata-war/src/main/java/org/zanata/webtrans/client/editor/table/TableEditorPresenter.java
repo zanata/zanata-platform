@@ -34,6 +34,8 @@ import org.zanata.webtrans.client.action.UndoableTransUnitUpdateAction;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateHandler;
 import org.zanata.webtrans.client.editor.DocumentEditorPresenter;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
+import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
+import org.zanata.webtrans.client.events.ButtonDisplayChangeEventHandler;
 import org.zanata.webtrans.client.events.CopySourceEvent;
 import org.zanata.webtrans.client.events.CopySourceEventHandler;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
@@ -129,6 +131,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       int getCurrentPage();
 
       int getPageSize();
+
+      void setShowCopyButtons(boolean showButtons);
 
       void setFindMessage(String findMessage);
       
@@ -462,6 +466,17 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
       }));
 
+      registerHandler(eventBus.addHandler(ButtonDisplayChangeEvent.getType(), new ButtonDisplayChangeEventHandler()
+      {
+
+         @Override
+         public void onButtonDisplayChange(ButtonDisplayChangeEvent event)
+         {
+            display.getTargetCellEditor().setShowOperationButtons(event.isShowButtons());
+            display.setShowCopyButtons(event.isShowButtons());
+         }
+      }));
+
       Event.addNativePreviewHandler(new NativePreviewHandler()
       {
          @Override
@@ -671,10 +686,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          if (pageNum != curPage)
             display.gotoPage(pageNum, false);
          selectTransUnit(display.getTransUnitValue(rowNum));
-         //selectedTransUnit = display.getTransUnitValue(rowNum);
-         //TODO fire selected TU event here
-         
-         //eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
          display.gotoRow(rowNum);
       }
 

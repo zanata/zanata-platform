@@ -33,6 +33,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -51,6 +52,9 @@ public class AppView extends Composite implements AppPresenter.Display
 
    @UiField
    Anchor signOutLink, leaveLink, helpLink, documentsLink;
+
+   @UiField
+   CheckBox editorButtonsCheckbox;
 
    @UiField
    Label notificationMessage;
@@ -88,6 +92,8 @@ public class AppView extends Composite implements AppPresenter.Display
 
       helpLink.setHref(messages.hrefHelpLink());
       helpLink.setTarget("_BLANK");
+
+      editorButtonsCheckbox.setValue(true);
    }
 
    @Override
@@ -149,6 +155,12 @@ public class AppView extends Composite implements AppPresenter.Display
    public HasClickHandlers getLeaveWorkspaceLink()
    {
       return leaveLink;
+   }
+   
+   @Override
+   public HasClickHandlers getEditorButtonsCheckbox()
+   {
+      return editorButtonsCheckbox;
    }
 
    @Override

@@ -25,6 +25,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.AppPresenter.Display.MainView;
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
+import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -38,6 +39,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -70,6 +72,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       HasClickHandlers getDocumentsLink();
 
+      HasClickHandlers getEditorButtonsCheckbox();
+      
       void setUserLabel(String userLabel);
 
       void setWorkspaceNameLabel(String workspaceNameLabel);
@@ -181,6 +185,16 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             // As the editor was created at new window, it should be closed
             // rather than redirected to project home.
             // Application.redirectToZanataProjectHome(workspaceContext.getWorkspaceId());
+         }
+      }));
+      
+      registerHandler(display.getEditorButtonsCheckbox().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            boolean showButtons = ((CheckBox) display.getEditorButtonsCheckbox()).getValue();
+            eventBus.fireEvent(new ButtonDisplayChangeEvent(showButtons));
          }
       }));
 

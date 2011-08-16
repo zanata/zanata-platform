@@ -238,4 +238,10 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
       gotoRow(0, false);
    }
 
+   @Override
+   public void setShowCopyButtons(boolean showButtons)
+   {
+      this.tableDefinition.setShowCopyButtons(showButtons);
+   }
+
 }

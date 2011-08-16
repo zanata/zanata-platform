@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
+import java.util.ArrayList;
+
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.CopySourceEvent;
@@ -48,6 +50,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
    private String findMessage;
    private SourcePanel sourcePanel;
+   private ArrayList<Image> copyButtons;
+   private boolean showingCopyButtons;
    private EventBus eventBus;
 
    private final RowRenderer<TransUnit> rowRenderer = new RowRenderer<TransUnit>()
@@ -136,6 +140,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          copyButton.setStyleName("gwt-Button");
          // copyButton.setStyleName("gwt-Button-display-onhover");
          copyButton.setTitle(messages.copySourcetoTarget());
+         copyButton.setVisible(showingCopyButtons);
          copyButton.addClickHandler(new ClickHandler()
          {
             @Override
@@ -169,11 +174,19 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          });
          
          sourcePanel.add(copyButton);
+         copyButtons.add(copyButton);
          view.setWidget(sourcePanel);
       }
    };
 
-
+   public void setShowCopyButtons(boolean showButtons)
+   {
+      showingCopyButtons = showButtons;
+      for (Image copyBtn : copyButtons)
+      {
+         copyBtn.setVisible(showButtons);
+      }
+   }
 
    private final AbstractColumnDefinition<TransUnit, TransUnit> targetColumnDefinition = new AbstractColumnDefinition<TransUnit, TransUnit>()
    {
@@ -292,6 +305,9 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       // addColumnDefinition(indicatorColumnDefinition);
       addColumnDefinition(sourceColumnDefinition);
       addColumnDefinition(targetColumnDefinition);
+
+      copyButtons = new ArrayList<Image>();
+      showingCopyButtons = true;
    }
 
    public InlineTargetCellEditor getTargetCellEditor()
