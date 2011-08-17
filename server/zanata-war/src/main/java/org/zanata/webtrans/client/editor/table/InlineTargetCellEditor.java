@@ -139,6 +139,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private int curRow;
    private int curCol;
    private HTMLTable table;
+   private int miniHeight;
 
    /*
     * The minimum height of the target editor
@@ -421,6 +422,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       cellViewWidget = table.getWidget(curRow, curCol);
 
       // layoutTable.setCellWidth(this.operationsPanel, "20px");
+      miniHeight = table.getWidget(curRow, 0).getOffsetHeight() - 20;
       table.setWidget(curRow, curCol, layoutTable);
       
       textArea.setText(cellValue.getTarget());
@@ -581,6 +583,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       Log.debug("autosize TextArea");
 
       textArea.setVisibleLines(initialLines);
+
+      while (textArea.getOffsetHeight() < miniHeight)
+      {
+         textArea.setVisibleLines(textArea.getVisibleLines() + growByLines);
+      }
 
       while (textArea.getElement().getScrollHeight() > textArea.getElement().getClientHeight())
       {
