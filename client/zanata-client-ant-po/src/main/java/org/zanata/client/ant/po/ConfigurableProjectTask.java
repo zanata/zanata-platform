@@ -10,6 +10,7 @@ public abstract class ConfigurableProjectTask extends ConfigurableTask
 
    private String project;
    private String projectVersion;
+   private String projectType;
    private LocaleList locales;
 
    public String getProj()
@@ -38,6 +39,17 @@ public abstract class ConfigurableProjectTask extends ConfigurableTask
    public void setProjectVersion(String versionSlug)
    {
       this.projectVersion = versionSlug;
+   }
+
+   public String getProjectType()
+   {
+      return projectType;
+   }
+
+   @Option(name = "--project-type", metaVar = "PROJTYPE", usage = "Type of project ('properties' = Java .properties, 'podir' = publican-style gettext directories)")
+   public void setProjectType(String projectType)
+   {
+      this.projectType = projectType;
    }
 
    public String getProjectConfig()
