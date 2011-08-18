@@ -43,6 +43,14 @@ public abstract class ConfigurableProjectMojo extends ConfigurableMojo implement
     */
    private String projectVersion;
 
+   /**
+    * Type of project ("properties" = Java .properties, "podir" = publican-style
+    * gettext directories). This is from ConfigurableProjectMojo.java
+    * 
+    * @parameter expression="${zanata.projectType}"
+    */
+   private String projectType;
+
    private LocaleList locales;
 
    public ConfigurableProjectMojo()
@@ -84,6 +92,18 @@ public abstract class ConfigurableProjectMojo extends ConfigurableMojo implement
    public void setProjectVersion(String projectVersion)
    {
       this.projectVersion = projectVersion;
+   }
+
+   @Override
+   public String getProjectType()
+   {
+      return projectType;
+   }
+
+   @Override
+   public void setProjectType(String projectType)
+   {
+      this.projectType = projectType;
    }
 
    @Override

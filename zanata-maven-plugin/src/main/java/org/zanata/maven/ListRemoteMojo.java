@@ -22,4 +22,12 @@ public class ListRemoteMojo extends ConfigurableProjectMojo
       return new ListRemoteCommand(this);
    }
 
+   private final String zanataServerProjectType = "remote";
+
+   @Override
+   public String getProjectType()
+   {
+      return zanataServerProjectType;
+   }
+
 }
