@@ -91,4 +91,12 @@ public class PublicanPullMojo extends ConfigurableProjectMojo implements Publica
       this.exportPot = exportPot;
    }
 
+   private final String publicanProjectType = "podir";
+
+   @Override
+   public String getProjectType()
+   {
+      return publicanProjectType;
+   }
+
 }
