@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 
  */
-@XmlType(name = "configType", propOrder = { "url", "project", "projectVersion", "locales" })
+@XmlType(name = "configType", propOrder = { "url", "project", "projectVersion", "projectType", "locales" })
 @XmlRootElement(name = "config")
 public class ZanataConfig implements Serializable
 {
@@ -43,6 +43,7 @@ public class ZanataConfig implements Serializable
    private LocaleList locales = new LocaleList();
    private String project;
    private URL url;
+   private String projectType;
    private String projectVersion;
 
    public ZanataConfig()
@@ -83,6 +84,17 @@ public class ZanataConfig implements Serializable
       this.url = url;
    }
 
+   @XmlElement(name = "project-type")
+   public String getProjectType()
+   {
+      return projectType;
+   }
+
+   public void setProjectType(String type)
+   {
+      this.projectType = type;
+   }
+
    @XmlElement(name = "project-version")
    public String getProjectVersion()
    {
@@ -93,5 +105,4 @@ public class ZanataConfig implements Serializable
    {
       this.projectVersion = version;
    }
-
 }

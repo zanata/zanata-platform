@@ -40,6 +40,8 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
          throw new ConfigException("Project must be specified");
       if (opts.getProjectVersion() == null)
          throw new ConfigException("Project version must be specified");
+      if (opts.getProjectType() == null)
+         throw new ConfigException("Project type must be specified");
    }
 
    public ConfigurableProjectCommand(ConfigurableProjectOptions opts)
