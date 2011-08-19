@@ -68,6 +68,12 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
    }
 
    @Override
+   protected String getProjectType()
+   {
+      return "podir";
+   }
+
+   @Override
    public void run() throws Exception
    {
       log.info("Server: {}", opts.getUrl());

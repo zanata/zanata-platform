@@ -31,20 +31,25 @@ import org.zanata.rest.client.ZanataProxyFactory;
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 
  */
-public abstract class ConfigurableProjectCommand extends ConfigurableCommand
+public abstract class ConfigurableProjectCommand<O extends ConfigurableProjectOptions> extends ConfigurableCommand<O>
 {
-   public ConfigurableProjectCommand(ConfigurableProjectOptions opts, ZanataProxyFactory factory)
+   public ConfigurableProjectCommand(O opts, ZanataProxyFactory factory)
    {
       super(opts, factory);
       if (opts.getProj() == null)
          throw new ConfigException("Project must be specified");
       if (opts.getProjectVersion() == null)
          throw new ConfigException("Project version must be specified");
-      if (opts.getProjectType() == null)
+      if (getProjectType() == null)
          throw new ConfigException("Project type must be specified");
    }
 
-   public ConfigurableProjectCommand(ConfigurableProjectOptions opts)
+   protected String getProjectType()
+   {
+      return this.getOpts().getProjectType();
+   }
+
+   public ConfigurableProjectCommand(O opts)
    {
       this(opts, null);
    }
