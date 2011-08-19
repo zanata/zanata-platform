@@ -45,7 +45,7 @@ public abstract class ConfigurableProjectMojo extends ConfigurableMojo implement
 
    /**
     * Type of project ("properties" = Java .properties, "podir" = publican-style
-    * gettext directories). This is from ConfigurableProjectMojo.java
+    * gettext directories).
     * 
     * @parameter expression="${zanata.projectType}"
     */

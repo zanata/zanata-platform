@@ -12,6 +12,8 @@ import org.zanata.client.commands.ListRemoteCommand;
 public class ListRemoteMojo extends ConfigurableProjectMojo
 {
 
+   private static final String ZANATA_SERVER_PROJECT_TYPE = "remote";
+
    public ListRemoteMojo() throws Exception
    {
       super();
@@ -22,12 +24,11 @@ public class ListRemoteMojo extends ConfigurableProjectMojo
       return new ListRemoteCommand(this);
    }
 
-   private final String zanataServerProjectType = "remote";
 
    @Override
    public String getProjectType()
    {
-      return zanataServerProjectType;
+      return ZANATA_SERVER_PROJECT_TYPE;
    }
 
 }

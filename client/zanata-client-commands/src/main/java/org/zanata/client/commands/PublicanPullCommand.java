@@ -58,7 +58,7 @@ public class PublicanPullCommand extends ConfigurableProjectCommand
    @Override
    protected String getProjectType()
    {
-      return "podir";
+      return PROJECT_TYPE_PUBLICAN;
    }
 
    @Override
