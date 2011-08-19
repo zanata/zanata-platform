@@ -123,11 +123,4 @@ public class PublicanPushMojo extends ConfigurableProjectMojo implements Publica
       return merge;
    }
 
-   private final String publicanProjectType = "podir";
-
-   @Override
-   public String getProjectType()
-   {
-      return publicanProjectType;
-   }
 }

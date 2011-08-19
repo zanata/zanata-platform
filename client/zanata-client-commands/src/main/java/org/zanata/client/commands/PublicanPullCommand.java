@@ -55,6 +55,11 @@ public class PublicanPullCommand extends ConfigurableProjectCommand
       this(opts, OptionsUtil.createRequestFactory(opts));
    }
 
+   @Override
+   protected String getProjectType()
+   {
+      return "podir";
+   }
 
    @Override
    public void run() throws Exception
