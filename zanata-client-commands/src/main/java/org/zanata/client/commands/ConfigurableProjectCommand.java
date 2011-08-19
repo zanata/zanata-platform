@@ -33,6 +33,12 @@ import org.zanata.rest.client.ZanataProxyFactory;
  */
 public abstract class ConfigurableProjectCommand<O extends ConfigurableProjectOptions> extends ConfigurableCommand<O>
 {
+
+   protected static final String PROJECT_TYPE_PUBLICAN = "podir";
+   protected static final String PROJECT_TYPE_PROPERTIES = "properties";
+   protected static final String PROJECT_TYPE_XLIFF = "xliff";
+   protected static final String PROJECT_TYPE_XML = "xml";
+
    public ConfigurableProjectCommand(O opts, ZanataProxyFactory factory)
    {
       super(opts, factory);
@@ -44,13 +50,13 @@ public abstract class ConfigurableProjectCommand<O extends ConfigurableProjectOp
          throw new ConfigException("Project type must be specified");
    }
 
-   protected String getProjectType()
-   {
-      return this.getOpts().getProjectType();
-   }
-
    public ConfigurableProjectCommand(O opts)
    {
       this(opts, null);
+   }
+
+   protected String getProjectType()
+   {
+      return this.getOpts().getProjectType();
    }
 }
