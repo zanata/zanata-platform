@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -37,6 +38,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.validator.NotNull;
+import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.LocaleIdBridge;
 
 /**
@@ -118,7 +120,7 @@ public class HGlossaryTerm extends ModelEntityBase
    }
 
    @NaturalId
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "localeId", nullable = false)
    @Field(index = Index.UN_TOKENIZED)
    @FieldBridge(impl = LocaleIdBridge.class)
@@ -131,6 +133,74 @@ public class HGlossaryTerm extends ModelEntityBase
    {
       this.locale = locale;
    }
+
+   @Override
+   public String toString()
+   {
+      return "HGlossaryTerm [content=" + content + ", sourceRef=" + sourceRef + ", comments=" + comments + ", locale=" + locale + ", id=" + id + ", creationDate=" + creationDate + ", lastChanged=" + lastChanged + ", versionNum=" + versionNum + "]";
+   }
+
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = super.hashCode();
+      result = prime * result + ((comments == null) ? 0 : comments.hashCode());
+      result = prime * result + ((content == null) ? 0 : content.hashCode());
+      result = prime * result + ((glossaryEntry == null) ? 0 : glossaryEntry.hashCode());
+      result = prime * result + ((locale == null) ? 0 : locale.hashCode());
+      result = prime * result + ((sourceRef == null) ? 0 : sourceRef.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+         return true;
+      if (!super.equals(obj))
+         return false;
+      if (getClass() != obj.getClass())
+         return false;
+      HGlossaryTerm other = (HGlossaryTerm) obj;
+      if (comments == null)
+      {
+         if (other.comments != null)
+            return false;
+      }
+      else if (!comments.equals(other.comments))
+         return false;
+      if (content == null)
+      {
+         if (other.content != null)
+            return false;
+      }
+      else if (!content.equals(other.content))
+         return false;
+      if (glossaryEntry == null)
+      {
+         if (other.glossaryEntry != null)
+            return false;
+      }
+      else if (!glossaryEntry.equals(other.glossaryEntry))
+         return false;
+      if (locale == null)
+      {
+         if (other.locale != null)
+            return false;
+      }
+      else if (!locale.equals(other.locale))
+         return false;
+      if (sourceRef == null)
+      {
+         if (other.sourceRef != null)
+            return false;
+      }
+      else if (!sourceRef.equals(other.sourceRef))
+         return false;
+      return true;
+   }
+
 }
 
 

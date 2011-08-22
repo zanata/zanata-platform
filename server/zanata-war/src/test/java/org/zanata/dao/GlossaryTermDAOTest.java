@@ -19,9 +19,10 @@ import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HGlossaryEntry;
+import org.zanata.model.HGlossaryTerm;
 
 @Test(groups = { "jpa-tests" })
-public class GlossaryDAOTest extends ZanataDbunitJpaTest
+public class GlossaryTermDAOTest extends ZanataDbunitJpaTest
 {
    IMocksControl control = EasyMock.createControl();
 
@@ -31,8 +32,8 @@ public class GlossaryDAOTest extends ZanataDbunitJpaTest
       return mock;
    }
 
-   private GlossaryDAO dao;
-   private Log log = Logging.getLog(GlossaryDAOTest.class);
+   private GlossaryTermDAO dao;
+   private Log log = Logging.getLog(GlossaryTermDAOTest.class);
 
    @Override
    protected void prepareDBUnitOperations()
@@ -50,24 +51,30 @@ public class GlossaryDAOTest extends ZanataDbunitJpaTest
    @BeforeMethod(firstTimeOnly = true)
    public void setup()
    {
-      dao = new GlossaryDAO((Session) getEm().getDelegate());
+      dao = new GlossaryTermDAO((Session) getEm().getDelegate());
    }
 
    @Test
-   public void testGetEntryById()
+   public void testGetTermEntryAndLocale()
    {
-      log.debug("testGetEntryById");
-      HGlossaryEntry entry = dao.getEntryById(new Long(1));
+      HGlossaryEntry mockEntry = createMock("mockEntry", HGlossaryEntry.class);
+      EasyMock.expect(mockEntry.getId()).andReturn(new Long(1)).anyTimes();
 
-      Assert.assertNotNull(entry);
-      assertThat(entry.getGlossaryTerms().size(), is(3));
+      EasyMock.replay(mockEntry);
+      
+      log.debug("testGetTermEntryAndLocale");
+      HGlossaryTerm term = dao.getTermByEntryAndLocale(mockEntry.getId(), LocaleId.DE);
+      Assert.assertNotNull(term);
+
    }
 
    @Test
-   public void testGetTermByLocaleId()
+   public void testGetTermByGlossaryEntryId()
    {
-      log.debug("testGetTermByLocaleId");
-      List<HGlossaryEntry> entryList = dao.getEntriesByLocaleId(LocaleId.DE);
-      assertThat(entryList.size(), is(1));
+      log.debug("testGetTermByGlossaryEntry");
+      List<HGlossaryTerm> termList = dao.getTermByGlossaryEntryId(new Long(1));
+      assertThat(termList.size(), is(2));
+
    }
+
 }

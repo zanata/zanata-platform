@@ -252,7 +252,7 @@ public class SerializationTests
       entry.getGlossaryTerms().add(term2);
       glossary.getGlossaryEntries().add(entry);
 
-      System.out.println(glossary);
+      // System.out.println(glossary);
       JaxbUtil.validateXml(glossary, Glossary.class);
       String output = mapper.writeValueAsString(glossary);
 

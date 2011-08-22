@@ -139,7 +139,7 @@ public class ETagUtils
 
    public EntityTag generateTagForGlossaryTerm(LocaleId locale)
    {
-      Object[] queryResult = (Object[]) session.createQuery("select g.glossaryEntry.id,g.locale.id from HGlossaryTerm g where locale.localeId =:locale").setParameter("locale", locale).uniqueResult();
+      List<Object[]> queryResult = (List<Object[]>) session.createQuery("select g.glossaryEntry.id,g.locale.id from HGlossaryTerm g where g.locale.localeId =:locale").setParameter("locale", locale).list();
       if (queryResult == null)
       {
          throw new NoSuchEntityException("HGlossaryTerm with locale '" + locale + "' not found.");

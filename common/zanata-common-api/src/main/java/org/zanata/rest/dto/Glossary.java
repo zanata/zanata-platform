@@ -48,7 +48,6 @@ public class Glossary implements Serializable, HasMediaType
 {
    private List<GlossaryEntry> glossaryEntries;
 
-
    @XmlElementWrapper(name = "Entries")
    @XmlElementRef
    public List<GlossaryEntry> getGlossaryEntries()

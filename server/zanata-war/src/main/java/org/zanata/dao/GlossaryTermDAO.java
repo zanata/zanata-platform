@@ -24,52 +24,48 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.LocaleId;
-import org.zanata.model.HGlossaryEntry;
+import org.zanata.model.HGlossaryTerm;
 
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-@Name("glossaryDAO")
+@Name("glossaryTermDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
+public class GlossaryTermDAO extends AbstractDAOImpl<HGlossaryTerm, Long>
 {
-   public GlossaryDAO()
+   public GlossaryTermDAO()
    {
-      super(HGlossaryEntry.class);
+      super(HGlossaryTerm.class);
    }
 
-   public GlossaryDAO(Session session)
+   public GlossaryTermDAO(Session session)
    {
-      super(HGlossaryEntry.class, session);
+      super(HGlossaryTerm.class, session);
    }
 
-   public HGlossaryEntry getEntryById(Long id)
+   public HGlossaryTerm getTermByEntryAndLocale(Long glossaryEntryId, LocaleId locale)
    {
-      return (HGlossaryEntry) getSession().createCriteria(HGlossaryEntry.class).add(Restrictions.naturalId().set("id", id)).setCacheable(true).setComment("GlossaryDAO.getEntryById").uniqueResult();
-   }
-
-   @SuppressWarnings("unchecked")
-   public List<HGlossaryEntry> getEntriesByLocaleId(LocaleId locale)
-   {
-      Query query = getSession().createQuery("from HGlossaryEntry as e WHERE e.id IN (SELECT t.glossaryEntry.id FROM HGlossaryTerm as t WHERE t.locale.localeId= :localeId)");
-      query.setParameter("localeId", locale);
-      return query.list();
+      Query query = getSession().createQuery("from HGlossaryTerm as t WHERE t.locale.localeId= :locale AND glossaryEntry.id= :glossaryEntryId");
+      query.setParameter("locale", locale);
+      query.setParameter("glossaryEntryId", glossaryEntryId);
+      return (HGlossaryTerm) query.uniqueResult();
    }
 
    @SuppressWarnings("unchecked")
-   public List<HGlossaryEntry> getEntries()
+   public List<HGlossaryTerm> getTermByGlossaryEntryId(Long glossaryEntryId)
    {
-      Query query = getSession().createQuery("from HGlossaryEntry");
+      Query query = getSession().createQuery("from HGlossaryTerm as t WHERE t.glossaryEntry.id= :glossaryEntryId");
+      query.setParameter("glossaryEntryId", glossaryEntryId);
       return query.list();
+
    }
 }
 

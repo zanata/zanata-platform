@@ -113,5 +113,23 @@
             </column>
         </addColumn>
     </changeSet>
+    
+    <changeSet author="aeng@redhat.com" id="6">
+        <comment>Alter glossary entry table - srcTermId</comment>
+        <dropUniqueConstraint tableName="HGlossaryEntry" constraintName="UKglossaryEntry_glossaryTerm"/>
+        <dropColumn tableName="HGlossaryEntry" columnName="srcTermId" />
+        
+        <addColumn tableName="HGlossaryEntry">
+            <column name="srcLocaleId" type="bigint">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+                                                  
+        <addForeignKeyConstraint baseTableName="HGlossaryEntry"
+                                 baseColumnNames="srcLocaleId" 
+                                 constraintName="UKglossaryentry_srcLocaleId"
+                                 referencedTableName="HLocale" 
+                                 referencedColumnNames="id" />
+    </changeSet>
 
 </databaseChangeLog>
