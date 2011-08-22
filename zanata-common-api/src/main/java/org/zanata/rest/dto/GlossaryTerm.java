@@ -34,7 +34,6 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.hibernate.validator.NotNull;
 import org.zanata.common.LocaleId;
-import org.zanata.common.Namespaces;
 
 /**
  *

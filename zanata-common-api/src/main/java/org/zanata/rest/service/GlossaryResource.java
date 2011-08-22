@@ -23,17 +23,14 @@ package org.zanata.rest.service;
 
 import java.io.InputStream;
 
-import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.zanata.common.LocaleId;
-import org.zanata.rest.MediaTypes;
 
 
 /**
@@ -46,7 +43,7 @@ public interface GlossaryResource
    public static final String SERVICE_PATH = "/glossary";
 
    @GET
-   @Path("SERVICE_PATH")
+   @Path(SERVICE_PATH)
    public Response getEntries();
 
    @GET
@@ -54,7 +51,15 @@ public interface GlossaryResource
    public Response get(@PathParam("locale") LocaleId locale);
 
    @PUT
-   @Path("SERVICE_PATH")
+   @Path(SERVICE_PATH)
    public Response put(InputStream messageBody);
+
+   @DELETE
+   @Path(SERVICE_PATH + "/{locale}")
+   public Response deleteGlossary(@PathParam("locale") LocaleId locale);
+
+   @DELETE
+   @Path(SERVICE_PATH)
+   public Response deleteGlossaries();
 
 }
