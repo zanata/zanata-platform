@@ -15,16 +15,18 @@ import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 
-public class HTextFlowHistoryTest extends ZanataDbunitJpaTest
+public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest
 {
    private LocaleDAO localeDAO;
    HLocale en_US;
+   HLocale de_DE;
 
    @BeforeMethod(firstTimeOnly = true)
    public void beforeMethod()
    {
       localeDAO = new LocaleDAO((Session) em.getDelegate());
       en_US = localeDAO.findByLocaleId(LocaleId.EN_US);
+      de_DE = localeDAO.findByLocaleId(new LocaleId("de"));
    }
 
    @Override
@@ -46,28 +48,29 @@ public class HTextFlowHistoryTest extends ZanataDbunitJpaTest
 
       HTextFlow tf = new HTextFlow(d, "mytf", "hello world");
       d.getTextFlows().add(tf);
-
       session.flush();
 
-      List<HTextFlowHistory> historyElems = getHistory(tf);
+      HTextFlowTarget target = new HTextFlowTarget(tf, de_DE);
+      target.setContent("helleu world");
+      session.save(target);
+      session.flush();
 
+      List<HTextFlowTargetHistory> historyElems = getHistory(target);
       assertThat(historyElems.size(), is(0));
 
-      d.incrementRevision();
-      tf.setContent("hello world again");
-      tf.setRevision(d.getRevision());
+      target.setContent("blah!");
       session.flush();
 
-      historyElems = getHistory(tf);
+      historyElems = getHistory(target);
 
       assertThat(historyElems.size(), is(1));
 
    }
 
    @SuppressWarnings("unchecked")
-   private List<HTextFlowHistory> getHistory(HTextFlow tf)
+   private List<HTextFlowTargetHistory> getHistory(HTextFlowTarget tft)
    {
-      return getSession().createCriteria(HTextFlowHistory.class).add(Restrictions.eq("textFlow", tf)).list();
+      return getSession().createCriteria(HTextFlowTargetHistory.class).add(Restrictions.eq("textFlowTarget", tft)).list();
 
    }
 }

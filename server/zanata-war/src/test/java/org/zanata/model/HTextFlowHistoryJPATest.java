@@ -1,10 +1,8 @@
 package org.zanata.model;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.util.Date;
 import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
@@ -17,16 +15,16 @@ import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 
-public class HDocumentHistoryTest extends ZanataDbunitJpaTest
+public class HTextFlowHistoryJPATest extends ZanataDbunitJpaTest
 {
    private LocaleDAO localeDAO;
-   HLocale de_DE;
+   HLocale en_US;
 
    @BeforeMethod(firstTimeOnly = true)
    public void beforeMethod()
    {
       localeDAO = new LocaleDAO((Session) em.getDelegate());
-      de_DE = localeDAO.findByLocaleId(new LocaleId("de"));
+      en_US = localeDAO.findByLocaleId(LocaleId.EN_US);
    }
 
    @Override
@@ -41,45 +39,35 @@ public class HDocumentHistoryTest extends ZanataDbunitJpaTest
    public void ensureHistoryIsRecorded()
    {
       Session session = getSession();
-      HDocument d = new HDocument("/path/to/document.txt", ContentType.TextPlain, de_DE);
+      HDocument d = new HDocument("/path/to/document.txt", ContentType.TextPlain, en_US);
       d.setProjectIteration((HProjectIteration) session.load(HProjectIteration.class, 1L));
       session.save(d);
       session.flush();
 
-      Date lastChanged = d.getLastChanged();
+      HTextFlow tf = new HTextFlow(d, "mytf", "hello world");
+      d.getTextFlows().add(tf);
 
-      d.incrementRevision();
-      d.setContentType(ContentType.PO);
-      session.update(d);
       session.flush();
 
-      List<HDocumentHistory> historyElems = loadHistory(d);
+      List<HTextFlowHistory> historyElems = getHistory(tf);
+
+      assertThat(historyElems.size(), is(0));
+
+      d.incrementRevision();
+      tf.setContent("hello world again");
+      tf.setRevision(d.getRevision());
+      session.flush();
+
+      historyElems = getHistory(tf);
 
       assertThat(historyElems.size(), is(1));
-      HDocumentHistory history = historyElems.get(0);
-      assertThat(history.getDocId(), is(d.getDocId()));
-      assertThat(history.getContentType(), is(ContentType.TextPlain));
-      assertThat(history.getLastChanged(), is(lastChanged));
-      assertThat(history.getLastModifiedBy(), nullValue());
-      assertThat(history.getLocale().getLocaleId(), is(de_DE.getLocaleId()));
-      assertThat(history.getName(), is(d.getName()));
-      assertThat(history.getPath(), is(d.getPath()));
-      assertThat(history.getRevision(), is(d.getRevision() - 1));
-
-      d.incrementRevision();
-      d.setName("name2");
-      session.update(d);
-      session.flush();
-
-      historyElems = loadHistory(d);
-      assertThat(historyElems.size(), is(2));
 
    }
 
    @SuppressWarnings("unchecked")
-   private List<HDocumentHistory> loadHistory(HDocument d)
+   private List<HTextFlowHistory> getHistory(HTextFlow tf)
    {
-      return getSession().createCriteria(HDocumentHistory.class).add(Restrictions.eq("document", d)).list();
-   }
+      return getSession().createCriteria(HTextFlowHistory.class).add(Restrictions.eq("textFlow", tf)).list();
 
+   }
 }

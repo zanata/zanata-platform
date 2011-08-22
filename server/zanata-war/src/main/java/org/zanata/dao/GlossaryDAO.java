@@ -31,6 +31,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HGlossaryEntry;
+import org.zanata.model.HGlossaryTerm;
 
 /**
  *
@@ -69,6 +70,22 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
    public List<HGlossaryEntry> getEntries()
    {
       Query query = getSession().createQuery("from HGlossaryEntry");
+      return query.list();
+   }
+
+   public HGlossaryTerm getTermByEntryAndLocale(Long glossaryEntryId, LocaleId locale)
+   {
+      Query query = getSession().createQuery("from HGlossaryTerm as t WHERE t.locale.localeId= :locale AND glossaryEntry.id= :glossaryEntryId");
+      query.setParameter("locale", locale);
+      query.setParameter("glossaryEntryId", glossaryEntryId);
+      return (HGlossaryTerm) query.uniqueResult();
+   }
+
+   @SuppressWarnings("unchecked")
+   public List<HGlossaryTerm> getTermByGlossaryEntryId(Long glossaryEntryId)
+   {
+      Query query = getSession().createQuery("from HGlossaryTerm as t WHERE t.glossaryEntry.id= :glossaryEntryId");
+      query.setParameter("glossaryEntryId", glossaryEntryId);
       return query.list();
    }
 }

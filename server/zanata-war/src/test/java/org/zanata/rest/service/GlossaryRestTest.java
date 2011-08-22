@@ -21,7 +21,6 @@ import org.zanata.ZanataRestTest;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.GlossaryDAO;
-import org.zanata.dao.GlossaryTermDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.rest.client.IGlossaryResource;
@@ -68,7 +67,6 @@ public class GlossaryRestTest extends ZanataRestTest
    protected void prepareResources()
    {
       GlossaryDAO glossaryDAO = new GlossaryDAO(getSession());
-      GlossaryTermDAO glossaryTermDAO = new GlossaryTermDAO(getSession());
       AccountDAO accountDAO = new AccountDAO(getSession());
       ETagUtils eTagUtils = new ETagUtils(getSession());
 
@@ -76,7 +74,7 @@ public class GlossaryRestTest extends ZanataRestTest
       LocaleDAO localeDAO = new LocaleDAO(getSession());
       localeService.setLocaleDAO(localeDAO);
 
-      GlossaryService glossaryService = new GlossaryService(glossaryDAO, glossaryTermDAO, accountDAO, mockIdentity, eTagUtils, localeService);
+      GlossaryService glossaryService = new GlossaryService(glossaryDAO, accountDAO, mockIdentity, eTagUtils, localeService);
 
       resources.add(glossaryService);
    }

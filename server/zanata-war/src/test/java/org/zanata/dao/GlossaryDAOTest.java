@@ -19,6 +19,7 @@ import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HGlossaryEntry;
+import org.zanata.model.HGlossaryTerm;
 
 @Test(groups = { "jpa-tests" })
 public class GlossaryDAOTest extends ZanataDbunitJpaTest
@@ -70,4 +71,28 @@ public class GlossaryDAOTest extends ZanataDbunitJpaTest
       List<HGlossaryEntry> entryList = dao.getEntriesByLocaleId(LocaleId.DE);
       assertThat(entryList.size(), is(1));
    }
+
+   @Test
+   public void testGetTermEntryAndLocale()
+   {
+      HGlossaryEntry mockEntry = createMock("mockEntry", HGlossaryEntry.class);
+      EasyMock.expect(mockEntry.getId()).andReturn(new Long(1)).anyTimes();
+
+      EasyMock.replay(mockEntry);
+
+      log.debug("testGetTermEntryAndLocale");
+      HGlossaryTerm term = dao.getTermByEntryAndLocale(mockEntry.getId(), LocaleId.DE);
+      Assert.assertNotNull(term);
+
+   }
+
+   @Test
+   public void testGetTermByGlossaryEntryId()
+   {
+      log.debug("testGetTermByGlossaryEntry");
+      List<HGlossaryTerm> termList = dao.getTermByGlossaryEntryId(new Long(1));
+      assertThat(termList.size(), is(2));
+
+   }
+
 }

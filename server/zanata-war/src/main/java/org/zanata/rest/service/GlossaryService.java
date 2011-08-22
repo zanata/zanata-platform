@@ -2,9 +2,7 @@ package org.zanata.rest.service;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -32,7 +30,6 @@ import org.jboss.seam.security.Identity;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.GlossaryDAO;
-import org.zanata.dao.GlossaryTermDAO;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
@@ -69,9 +66,6 @@ public class GlossaryService implements GlossaryResource
    private GlossaryDAO glossaryDAO;
 
    @In
-   private GlossaryTermDAO glossaryTermDAO;
-
-   @In
    private Identity identity;
 
    @In
@@ -84,10 +78,9 @@ public class GlossaryService implements GlossaryResource
    {
    }
 
-   public GlossaryService(GlossaryDAO glossaryDAO, GlossaryTermDAO glossaryTermDAO, AccountDAO accountDAO, Identity identity, ETagUtils eTagUtils, LocaleService localeService)
+   public GlossaryService(GlossaryDAO glossaryDAO, AccountDAO accountDAO, Identity identity, ETagUtils eTagUtils, LocaleService localeService)
    {
       this.glossaryDAO = glossaryDAO;
-      this.glossaryTermDAO = glossaryTermDAO;
       this.accountDAO = accountDAO;
       this.identity = identity;
       this.eTagUtils = eTagUtils;
@@ -174,8 +167,7 @@ public class GlossaryService implements GlossaryResource
 
    /**
     * Delete all glossary term with specified locale. GlossaryEntry will be
-    * deleted if there's only srcTerm attached to the termList with no other
-    * locale
+    * deleted if termList is empty
     */
    @Override
    @DELETE
@@ -192,17 +184,6 @@ public class GlossaryService implements GlossaryResource
 
       for (HGlossaryEntry hGlossaryEntry : hGlossaryEntries)
       {
-         // for (HLocale key : hGlossaryEntry.getGlossaryTerms().keySet())
-         // {
-         // System.out.println("============================");
-         // System.out.println("============================");
-         // System.out.println("============================");
-         // System.out.println("============================");
-         // System.out.println("============================");
-         // System.out.println("Key:" + key);
-         // System.out.println(hGlossaryEntry.getGlossaryTerms().containsKey(key));
-         // }
-
          for (HGlossaryTerm hGlossaryTerm : hGlossaryEntry.getGlossaryTerms().values())
          {
             if (hGlossaryTerm.getLocale().getLocaleId().equals(targetLocale))
@@ -211,7 +192,6 @@ public class GlossaryService implements GlossaryResource
             }
          }
          glossaryDAO.makePersistent(hGlossaryEntry);
-         
          
          if (hGlossaryEntry.getGlossaryTerms().isEmpty())
          {

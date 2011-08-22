@@ -18,7 +18,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.rest.service;
+package org.zanata.model;
 
 import java.util.Date;
 import java.util.List;
@@ -28,7 +28,6 @@ import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.hibernate.Session;
 import org.junit.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
@@ -45,7 +44,7 @@ import org.zanata.service.impl.LocaleServiceImpl;
  *
  **/
 @Test(groups = { "jpa-tests" })
-public class GlossaryJPATest extends ZanataDbunitJpaTest
+public class HGlossaryEntryJPATest extends ZanataDbunitJpaTest
 {
    IMocksControl control = EasyMock.createControl();
 

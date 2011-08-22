@@ -23,7 +23,7 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 
 @Test(groups = { "jpa-tests" })
-public class DocumentTest extends ZanataDbunitJpaTest
+public class DocumentJPATest extends ZanataDbunitJpaTest
 {
 
    private DocumentDAO dao;
