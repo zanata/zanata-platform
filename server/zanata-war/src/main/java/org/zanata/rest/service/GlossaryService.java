@@ -191,13 +191,23 @@ public class GlossaryService implements GlossaryResource
                hGlossaryEntry.getGlossaryTerms().remove(hGlossaryTerm.getLocale());
             }
          }
-         glossaryDAO.makePersistent(hGlossaryEntry);
-         
-         if (hGlossaryEntry.getGlossaryTerms().isEmpty())
+
+         if (hGlossaryEntry.getSrcTerm().getLocale().getLocaleId().equals(targetLocale))
+         {
+            hGlossaryEntry.setSrcTerm(null);
+         }
+
+         if (hGlossaryEntry.getGlossaryTerms().isEmpty() && hGlossaryEntry.getSrcTerm() == null)
          {
             identity.checkPermission(hGlossaryEntry, "delete");
             glossaryDAO.makeTransient(hGlossaryEntry);
          }
+         else
+         {
+            identity.checkPermission(hGlossaryEntry, "update");
+            glossaryDAO.makePersistent(hGlossaryEntry);
+         }
+
          glossaryDAO.flush();
 
       }
@@ -246,9 +256,12 @@ public class GlossaryService implements GlossaryResource
          // check if term equals to sourceLang
          if (targetLocale.getLocaleId().equals(from.getSrcLang()))
          {
-            to.setSrcLocale(targetLocale);
+            to.setSrcTerm(hGlossaryTerm);
          }
-         to.getGlossaryTerms().put(targetLocale, hGlossaryTerm);
+         else
+         {
+            to.getGlossaryTerms().put(targetLocale, hGlossaryTerm);
+         }
       }
    }
 
@@ -257,7 +270,7 @@ public class GlossaryService implements GlossaryResource
       for (HGlossaryEntry hGlossaryEntry : hGlosssaryEntries)
       {
          GlossaryEntry glossaryEntry = new GlossaryEntry();
-         glossaryEntry.setSrcLang(hGlossaryEntry.getSrcLocale().getLocaleId());
+         glossaryEntry.setSrcLang(hGlossaryEntry.getSrcTerm().getLocale().getLocaleId());
 
          for (HGlossaryTerm hGlossaryTerm : hGlossaryEntry.getGlossaryTerms().values())
          {
@@ -281,7 +294,7 @@ public class GlossaryService implements GlossaryResource
       for (HGlossaryEntry hGlossaryEntry : hGlosssaryEntries)
       {
          GlossaryEntry glossaryEntry = new GlossaryEntry();
-         glossaryEntry.setSrcLang(hGlossaryEntry.getSrcLocale().getLocaleId());
+         glossaryEntry.setSrcLang(hGlossaryEntry.getSrcTerm().getLocale().getLocaleId());
 
          for (HGlossaryTerm hGlossaryTerm : hGlossaryEntry.getGlossaryTerms().values())
          {

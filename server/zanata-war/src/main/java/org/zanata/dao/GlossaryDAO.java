@@ -61,7 +61,7 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
    @SuppressWarnings("unchecked")
    public List<HGlossaryEntry> getEntriesByLocaleId(LocaleId locale)
    {
-      Query query = getSession().createQuery("from HGlossaryEntry as e WHERE e.id IN (SELECT t.glossaryEntry.id FROM HGlossaryTerm as t WHERE t.locale.localeId= :localeId)");
+      Query query = getSession().createQuery("from HGlossaryEntry as e WHERE e.id IN (SELECT t.glossaryEntry.id FROM HGlossaryTerm as t WHERE t.locale.localeId= :localeId) OR e.srcTerm.locale.localeId= :localeId");
       query.setParameter("localeId", locale);
       return query.list();
    }

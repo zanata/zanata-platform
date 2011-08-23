@@ -61,7 +61,7 @@ public class GlossaryDAOTest extends ZanataDbunitJpaTest
       HGlossaryEntry entry = dao.getEntryById(new Long(1));
 
       Assert.assertNotNull(entry);
-      assertThat(entry.getGlossaryTerms().size(), is(3));
+      assertThat(entry.getGlossaryTerms().size(), is(2));
    }
 
    @Test

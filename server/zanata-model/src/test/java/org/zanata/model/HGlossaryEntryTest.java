@@ -49,36 +49,40 @@ public class HGlossaryEntryTest
       HLocale srcLang = new HLocale(LocaleId.EN_US);
       setupHLocale(srcLang, new Long(1));
 
-      entry.setSrcLocale(srcLang);
+      HGlossaryTerm srcTerm = new HGlossaryTerm("source term");
+      srcTerm.setId(new Long(1));
+      srcTerm.setVersionNum(1);
+      srcTerm.setCreationDate(new Date());
+      srcTerm.setLastChanged(new Date());
+      srcTerm.setSourceRef("source term ref");
+
+      // Glossary Term Locale
+      HLocale termLocale = new HLocale(LocaleId.EN_US);
+      setupHLocale(termLocale, new Long(1));
+      srcTerm.setLocale(termLocale);
+
+      entry.setSrcTerm(srcTerm);
 
    }
 
    @Test
-   public void hashMapDataTerm1Test()
+   public void hashMapDataSrcTermTest()
    {
       entry.getGlossaryTerms().clear();
+      // Glossary Source term - EN_US
 
-      // Glossary Term 1 - EN_US
-      HLocale term1Locale = setupTerm(new Long(1), "TERM 1", "Term 1 source ref", LocaleId.EN_US, new Long(1));
-
-      Assert.assertEquals(1, entry.getGlossaryTerms().size());
-      Assert.assertEquals(true, entry.getGlossaryTerms().containsKey(term1Locale));
-      Assert.assertNotNull(entry.getGlossaryTerms().get(term1Locale));
-      Assert.assertEquals("TERM 1", entry.getGlossaryTerms().get(term1Locale).getContent());
+      Assert.assertNotNull(entry.getSrcTerm());
+      Assert.assertEquals(LocaleId.EN_US, entry.getSrcTerm().getLocale().getLocaleId());
    }
 
    @Test
    public void hashMapDataTerm2Test()
    {
       entry.getGlossaryTerms().clear();
-
-      // Glossary Term 1 - EN_US
-      HLocale term1Locale = setupTerm(new Long(1), "TERM 1", "Term 1 source ref", LocaleId.EN_US, new Long(1));
-
       // Glossary Term 2 - DE
       HLocale term2Locale = setupTerm(new Long(2), "TERM 2", "Term 2 source ref", LocaleId.DE, new Long(2));
 
-      Assert.assertEquals(2, entry.getGlossaryTerms().size());
+      Assert.assertEquals(1, entry.getGlossaryTerms().size());
       Assert.assertEquals(true, entry.getGlossaryTerms().containsKey(term2Locale));
       Assert.assertNotNull(entry.getGlossaryTerms().get(term2Locale));
       Assert.assertEquals("TERM 2", entry.getGlossaryTerms().get(term2Locale).getContent());
@@ -88,17 +92,13 @@ public class HGlossaryEntryTest
    public void hashMapDataTerm3Test()
    {
       entry.getGlossaryTerms().clear();
-
-      // Glossary Term 1 - EN_US
-      HLocale term1Locale = setupTerm(new Long(1), "TERM 1", "Term 1 source ref", LocaleId.EN_US, new Long(1));
-
       // Glossary Term 2 - DE
       HLocale term2Locale = setupTerm(new Long(2), "TERM 2", "Term 2 source ref", LocaleId.DE, new Long(2));
 
       // Glossary Term 3 - ES
       HLocale term3Locale = setupTerm(new Long(3), "TERM 3", "Term 3 source ref", LocaleId.ES, new Long(3));
 
-      Assert.assertEquals(3, entry.getGlossaryTerms().size());
+      Assert.assertEquals(2, entry.getGlossaryTerms().size());
       Assert.assertEquals(true, entry.getGlossaryTerms().containsKey(term3Locale));
       Assert.assertNotNull(entry.getGlossaryTerms().get(term3Locale));
       Assert.assertEquals("TERM 3", entry.getGlossaryTerms().get(term3Locale).getContent());
@@ -108,10 +108,6 @@ public class HGlossaryEntryTest
    public void hashMapDataTest()
    {
       entry.getGlossaryTerms().clear();
-
-      // Glossary Term 1 - EN_US
-      setupTerm(new Long(1), "TERM 1", "Term 1 source ref", LocaleId.EN_US, new Long(1));
-
       // Glossary Term 2 - DE
       setupTerm(new Long(2), "TERM 2", "Term 2 source ref", LocaleId.DE, new Long(2));
 

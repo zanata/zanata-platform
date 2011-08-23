@@ -31,10 +31,6 @@ import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Cascade;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Index;
-import org.zanata.hibernate.search.LocaleIdBridge;
 
 /**
  *
@@ -46,7 +42,7 @@ public class HGlossaryEntry extends ModelEntityBase
 {
    private Map<HLocale, HGlossaryTerm> glossaryTerms;
 
-   private HLocale srcLocale;
+   private HGlossaryTerm srcTerm;
 
    @OneToMany(cascade = CascadeType.ALL, mappedBy = "glossaryEntry")
    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
@@ -63,24 +59,23 @@ public class HGlossaryEntry extends ModelEntityBase
       this.glossaryTerms = glossaryTerms;
    }
 
-   @ManyToOne
-   @JoinColumn(name = "srcLocaleId", nullable = false)
-   @Field(index = Index.UN_TOKENIZED)
-   @FieldBridge(impl = LocaleIdBridge.class)
-   public HLocale getSrcLocale()
+   @ManyToOne(cascade = CascadeType.ALL)
+   @JoinColumn(name = "srcTermId")
+   @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+   public HGlossaryTerm getSrcTerm()
    {
-      return srcLocale;
+      return srcTerm;
    }
 
-   public void setSrcLocale(HLocale srcLocale)
+   public void setSrcTerm(HGlossaryTerm srcTerm)
    {
-      this.srcLocale = srcLocale;
+      this.srcTerm = srcTerm;
    }
 
    @Override
    public String toString()
    {
-      return "HGlossaryEntry [glossaryTerms.size=" + glossaryTerms.size() + ", srcLocale=" + srcLocale + ", id=" + id + ", creationDate=" + creationDate + ", lastChanged=" + lastChanged + ", versionNum=" + versionNum + "]";
+      return "HGlossaryEntry [glossaryTerms.size=" + glossaryTerms.size() + ", srcTerm=" + srcTerm + ", id=" + id + ", creationDate=" + creationDate + ", lastChanged=" + lastChanged + ", versionNum=" + versionNum + "]";
    }
 
    @Override
@@ -89,7 +84,7 @@ public class HGlossaryEntry extends ModelEntityBase
       final int prime = 31;
       int result = super.hashCode();
       result = prime * result + ((glossaryTerms == null) ? 0 : glossaryTerms.hashCode());
-      result = prime * result + ((srcLocale == null) ? 0 : srcLocale.hashCode());
+      result = prime * result + ((srcTerm == null) ? 0 : srcTerm.hashCode());
       return result;
    }
 
@@ -110,12 +105,12 @@ public class HGlossaryEntry extends ModelEntityBase
       }
       else if (!glossaryTerms.equals(other.glossaryTerms))
          return false;
-      if (srcLocale == null)
+      if (srcTerm == null)
       {
-         if (other.srcLocale != null)
+         if (other.srcTerm != null)
             return false;
       }
-      else if (!srcLocale.equals(other.srcLocale))
+      else if (!srcTerm.equals(other.srcTerm))
          return false;
       return true;
    }

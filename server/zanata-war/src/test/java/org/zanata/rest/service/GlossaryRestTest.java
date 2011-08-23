@@ -14,6 +14,7 @@ import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.seam.security.Identity;
+import org.junit.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -58,8 +59,8 @@ public class GlossaryRestTest extends ZanataRestTest
    @Override
    protected void prepareDBUnitOperations()
    {
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/GlossaryData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
@@ -89,7 +90,7 @@ public class GlossaryRestTest extends ZanataRestTest
       assertThat(glossaryEntries.size(), is(1));
 
       List<GlossaryTerm> glossaryTerms = glossaryEntries.get(0).getGlossaryTerms();
-      assertThat(glossaryTerms.size(), is(3));
+      assertThat(glossaryTerms.size(), is(2));
    }
 
    @Test
@@ -102,7 +103,11 @@ public class GlossaryRestTest extends ZanataRestTest
       assertThat(glossaryEntries.size(), is(1));
 
       List<GlossaryTerm> glossaryTerms = glossaryEntries.get(0).getGlossaryTerms();
-      assertThat(glossaryTerms.size(), is(1));
+      assertThat(glossaryTerms.size(), is(0));
+
+      Assert.assertNotNull(glossaryEntries.get(0).getSrcLang());
+      assertThat(glossaryEntries.get(0).getSrcLang(), is(LocaleId.EN_US));
+
    }
 
    @Test
@@ -185,7 +190,7 @@ public class GlossaryRestTest extends ZanataRestTest
       ClientResponse<Glossary> response1 = glossaryService.getEntries();
       List<GlossaryEntry> glossaryEntries = response1.getEntity().getGlossaryEntries();
 
-      assertThat(glossaryEntries.get(0).getGlossaryTerms().size(), is(2));
+      assertThat(glossaryEntries.get(0).getGlossaryTerms().size(), is(1));
    }
 
 }

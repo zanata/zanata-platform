@@ -38,7 +38,6 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.validator.NotNull;
-import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.LocaleIdBridge;
 
 /**
@@ -106,9 +105,9 @@ public class HGlossaryTerm extends ModelEntityBase
       this.comments = comments;
    }
 
+   @NaturalId
    @ManyToOne
    @JoinColumn(name = "glossaryEntryId")
-   @NaturalId
    public HGlossaryEntry getGlossaryEntry()
    {
       return glossaryEntry;

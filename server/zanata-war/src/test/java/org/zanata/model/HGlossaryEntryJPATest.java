@@ -20,6 +20,9 @@
  */
 package org.zanata.model;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +76,14 @@ public class HGlossaryEntryJPATest extends ZanataDbunitJpaTest
             Assert.assertNotNull(hGlossaryEntry.getGlossaryTerms().get(entry.getKey()));
          }
       }
+
+   }
+
+   @Test
+   public void testTermsSize()
+   {
+      List<HGlossaryEntry> entryList = dao.getEntries();
+      assertThat(entryList.get(0).getGlossaryTerms().size(), is(2));
    }
 
    @Override
@@ -93,16 +104,20 @@ public class HGlossaryEntryJPATest extends ZanataDbunitJpaTest
       entry.setCreationDate(new Date());
       entry.setLastChanged(new Date());
 
-      entry.setSrcLocale(localeService.getByLocaleId(LocaleId.EN_US));
+      HGlossaryTerm term = new HGlossaryTerm("TERM 1");
+      term.setVersionNum(1);
+      term.setCreationDate(new Date());
+      term.setLastChanged(new Date());
+      term.setSourceRef("Term 1 source ref");
+      term.setLocale(localeService.getByLocaleId(LocaleId.EN_US));
+      entry.setSrcTerm(term);
 
-      // Glossary Term 1 - EN_US
-      setupTerm(new Long(1), "TERM 1", "Term 1 source ref", localeService.getByLocaleId(LocaleId.EN_US));
 
       // Glossary Term 2 - DE
-      setupTerm(new Long(2), "TERM 2", "Term 2 source ref", localeService.getByLocaleId(LocaleId.DE));
+      setupTerm("TERM 2", "Term 2 source ref", localeService.getByLocaleId(LocaleId.DE));
 
       // Glossary Term 3 - ES
-      setupTerm(new Long(3), "TERM 3", "Term 3 source ref", localeService.getByLocaleId(LocaleId.ES));
+      setupTerm("TERM 3", "Term 3 source ref", localeService.getByLocaleId(LocaleId.ES));
 
       dao.makePersistent(entry);
       dao.flush();
@@ -110,7 +125,7 @@ public class HGlossaryEntryJPATest extends ZanataDbunitJpaTest
 
    }
 
-   private void setupTerm(Long id, String content, String sourceRef, HLocale locale)
+   private void setupTerm(String content, String sourceRef, HLocale locale)
    {
       HGlossaryTerm term = new HGlossaryTerm(content);
       term.setVersionNum(1);
