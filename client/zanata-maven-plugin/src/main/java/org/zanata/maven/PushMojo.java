@@ -110,11 +110,11 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    private String excludes;
 
    /**
-    * Add default exclude to the exclude filters.
+    * Add default excludes to the exclude filters.
     * 
-    * @parameter expression="${zanata.defaultexclude}" default-value="true"
+    * @parameter expression="${zanata.defaultExcludes}" default-value="true"
     */
-   private boolean defaultexclude = true;
+   private boolean defaultExcludes = true;
 
    @Override
    public File getSrcDir()
@@ -189,9 +189,9 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    }
 
    @Override
-   public boolean getDefaultexclude()
+   public boolean getDefaultExcludes()
    {
-      return defaultexclude;
+      return defaultExcludes;
    }
 
 }
