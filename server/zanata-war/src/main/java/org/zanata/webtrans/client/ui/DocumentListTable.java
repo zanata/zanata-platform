@@ -7,6 +7,7 @@ import org.zanata.webtrans.client.DocumentNode;
 import org.zanata.webtrans.client.Resources;
 import org.zanata.webtrans.client.TransUnitCountGraph;
 import org.zanata.webtrans.client.WebTransMessages;
+import org.zanata.webtrans.shared.util.ObjectUtil;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.IconCellDecorator;
@@ -20,7 +21,6 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -141,7 +141,20 @@ public final class DocumentListTable
 
    public static CellTable<DocumentNode> initDocumentListTable(final DocumentListView documentListView, final Resources resources, final WebTransMessages messages, final ListDataProvider<DocumentNode> dataProvider)
    {
-      final SingleSelectionModel<DocumentNode> selectionModel = new SingleSelectionModel<DocumentNode>();
+
+      final SingleSelectionModel<DocumentNode> selectionModel = new SingleSelectionModel<DocumentNode>()
+      {
+         @Override
+         public void setSelected(DocumentNode object, boolean selected)
+         {
+            if (selected && ObjectUtil.equals(object, super.getSelectedObject()))
+            {
+               // fire event on re-selection
+               SelectionChangeEvent.fire(this);
+            }
+            super.setSelected(object, selected);
+         }
+      };
       selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler()
       {
          public void onSelectionChange(SelectionChangeEvent event)
@@ -154,18 +167,7 @@ public final class DocumentListTable
          }
       });
 
-      final CellTable<DocumentNode> documentListTable = new CellTable<DocumentNode>()
-      {
-         @Override
-         public void onBrowserEvent2(Event event)
-         {
-            if (event.getType().equals("click"))
-            {
-               SelectionChangeEvent.fire(selectionModel);
-            }
-            super.onBrowserEvent2(event);
-         }
-      };
+      final CellTable<DocumentNode> documentListTable = new CellTable<DocumentNode>();
 
       documentListTable.setStylePrimaryName("DocumentListTable");
       documentListTable.setSelectionModel(selectionModel);
