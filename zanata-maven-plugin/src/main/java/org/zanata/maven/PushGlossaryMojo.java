@@ -32,7 +32,7 @@ import org.zanata.client.commands.pushGlossary.PushGlossaryOptions;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class PushGlossaryMojo extends ConfigurableMojo implements PushGlossaryOptions
+public class PushGlossaryMojo extends ConfigurableProjectMojo implements PushGlossaryOptions
 {
 
    /**
@@ -59,6 +59,13 @@ public class PushGlossaryMojo extends ConfigurableMojo implements PushGlossaryOp
     */
    private File glossaryFile;
 
+   /**
+    * Treat all comments and source reference in glossary file as translation
+    * comment
+    * 
+    * @parameter expression="${zanata.allTransComments}" default-value="false"
+    */
+   private boolean allTransComments = false;
 
 
    public PushGlossaryMojo() throws Exception
@@ -89,6 +96,12 @@ public class PushGlossaryMojo extends ConfigurableMojo implements PushGlossaryOp
    public String getTransLang()
    {
       return transLang;
+   }
+
+   @Override
+   public boolean getAllTransComments()
+   {
+      return allTransComments;
    }
 
 }
