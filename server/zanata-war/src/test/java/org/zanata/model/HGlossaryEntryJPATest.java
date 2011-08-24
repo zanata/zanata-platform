@@ -83,7 +83,7 @@ public class HGlossaryEntryJPATest extends ZanataDbunitJpaTest
    public void testTermsSize()
    {
       List<HGlossaryEntry> entryList = dao.getEntries();
-      assertThat(entryList.get(0).getGlossaryTerms().size(), is(2));
+      assertThat(entryList.get(0).getGlossaryTerms().size(), is(3));
    }
 
    @Override
@@ -104,20 +104,17 @@ public class HGlossaryEntryJPATest extends ZanataDbunitJpaTest
       entry.setCreationDate(new Date());
       entry.setLastChanged(new Date());
 
-      HGlossaryTerm term = new HGlossaryTerm("TERM 1");
-      term.setVersionNum(1);
-      term.setCreationDate(new Date());
-      term.setLastChanged(new Date());
-      term.setSourceRef("Term 1 source ref");
-      term.setLocale(localeService.getByLocaleId(LocaleId.EN_US));
-      entry.setSrcTerm(term);
+      entry.setSrcLocale(localeService.getByLocaleId(LocaleId.EN_US));
+      entry.setSourceRef("source ref");
 
+      // Glossary Term 1 - EN_US
+      setupTerm("TERM 1", localeService.getByLocaleId(LocaleId.EN_US));
 
       // Glossary Term 2 - DE
-      setupTerm("TERM 2", "Term 2 source ref", localeService.getByLocaleId(LocaleId.DE));
+      setupTerm("TERM 2", localeService.getByLocaleId(LocaleId.DE));
 
       // Glossary Term 3 - ES
-      setupTerm("TERM 3", "Term 3 source ref", localeService.getByLocaleId(LocaleId.ES));
+      setupTerm("TERM 3", localeService.getByLocaleId(LocaleId.ES));
 
       dao.makePersistent(entry);
       dao.flush();
@@ -125,13 +122,12 @@ public class HGlossaryEntryJPATest extends ZanataDbunitJpaTest
 
    }
 
-   private void setupTerm(String content, String sourceRef, HLocale locale)
+   private void setupTerm(String content, HLocale locale)
    {
       HGlossaryTerm term = new HGlossaryTerm(content);
       term.setVersionNum(1);
       term.setCreationDate(new Date());
       term.setLastChanged(new Date());
-      term.setSourceRef(sourceRef);
 
       // Glossary Term Locale
       term.setLocale(locale);

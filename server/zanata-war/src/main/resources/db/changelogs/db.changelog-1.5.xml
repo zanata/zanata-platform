@@ -48,70 +48,99 @@
 		</createTable>
 		<addPrimaryKey tableName="HGlossaryTerm" columnNames="id" />
 		<addUniqueConstraint tableName="HGlossaryTerm"
-			                 columnNames="glossaryEntryId,localeId" 
-			                 constraintName="UKglossaryEntryId_LocaleId" />
-			                 
+			columnNames="glossaryEntryId,localeId" constraintName="UKglossaryEntryId_LocaleId" />
+
 		<addForeignKeyConstraint baseTableName="HGlossaryTerm"
-			                     baseColumnNames="glossaryEntryId" 
-			                     constraintName="UKglossaryterm_glossary_entry_id"
-			                     referencedTableName="HGlossaryEntry" 
-			                     referencedColumnNames="id" />
-			                     
+			baseColumnNames="glossaryEntryId" constraintName="UKglossaryterm_glossary_entry_id"
+			referencedTableName="HGlossaryEntry" referencedColumnNames="id" />
+
 		<addForeignKeyConstraint baseTableName="HGlossaryTerm"
-			                     baseColumnNames="localeId" 
-			                     constraintName="UKglossaryterm_localeId"
-			                     referencedTableName="HLocale" 
-			                     referencedColumnNames="id" />
+			baseColumnNames="localeId" constraintName="UKglossaryterm_localeId"
+			referencedTableName="HLocale" referencedColumnNames="id" />
 	</changeSet>
 
 
-    <changeSet author="aeng@redhat.com" id="3">
-        <comment>Add table to store glossary term comment</comment>
-        <createTable tableName="HTermComment">
-            <column name="id" type="bigint">
-                <constraints nullable="false" />
-            </column>
-            <column name="comment" type="longtext">
-                <constraints nullable="false" />
-            </column>
-            <column name="pos" type="int">
-                <constraints nullable="false" />
-            </column>
-            <column name="glossaryTermId" type="bigint">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-        <addPrimaryKey tableName="HTermComment" columnNames="id" />
+	<changeSet author="aeng@redhat.com" id="3">
+		<comment>Add table to store glossary term comment</comment>
+		<createTable tableName="HTermComment">
+			<column name="id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="comment" type="longtext">
+				<constraints nullable="false" />
+			</column>
+			<column name="pos" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="glossaryTermId" type="bigint">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<addPrimaryKey tableName="HTermComment" columnNames="id" />
+
+		<addForeignKeyConstraint baseTableName="HTermComment"
+			baseColumnNames="glossaryTermId" constraintName="UKtermComment_glossaryTerm"
+			referencedTableName="HGlossaryTerm" referencedColumnNames="id" />
+	</changeSet>
+
+	<changeSet author="aeng@redhat.com" id="4">
+		<comment>Alter glossary entry table</comment>
+		<addColumn tableName="HGlossaryEntry">
+			<column name="srcTermId" type="bigint">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+
+		<addForeignKeyConstraint baseTableName="HGlossaryEntry"
+			baseColumnNames="srcTermId" constraintName="UKglossaryEntry_glossaryTerm"
+			referencedTableName="HGlossaryTerm" referencedColumnNames="id" />
+	</changeSet>
+
+	<changeSet author="aeng@redhat.com" id="5">
+		<comment>Add obsolete column to HTermComment</comment>
+		<addColumn tableName="HTermComment">
+			<column name="obsolete" type="bit">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+	</changeSet>
+
+	<changeSet author="aeng@redhat.com" id="6">
+		<comment>Alter HTermComment - removed obsolete</comment>
+		<dropColumn tableName="HTermComment" columnName="obsolete" />
+	</changeSet>
+
+	<changeSet author="aeng@redhat.com" id="7">
+		<comment>Alter glossary entry table - remove srcTermId/add srcLocaleId/add sourceRef</comment>
+		<dropForeignKeyConstraint baseTableName="HGlossaryEntry" constraintName="UKglossaryEntry_glossaryTerm" />
+		<dropUniqueConstraint tableName="HGlossaryEntry" constraintName="UKglossaryEntry_glossaryTerm" />
+		<dropColumn tableName="HGlossaryEntry" columnName="srcTermId" />
+
+		<addColumn tableName="HGlossaryEntry">
+			<column name="srcLocaleId" type="bigint">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+		
+		<addForeignKeyConstraint baseTableName="HGlossaryEntry"
+            baseColumnNames="srcLocaleId" constraintName="UKglossaryentry_srcLocaleId"
+            referencedTableName="HLocale" referencedColumnNames="id" />
+            
+         <addColumn tableName="HGlossaryEntry">
+            <column name="sourceRef" type="longtext"/>
+        </addColumn>   
+	</changeSet>
+	
+	
+	<changeSet author="aeng@redhat.com" id="8">
+        <comment>Alter glossary tables - remove sourceRef/add auto increment</comment>
         
-        <addForeignKeyConstraint baseTableName="HTermComment"
-                                 baseColumnNames="glossaryTermId" 
-                                 constraintName="UKtermComment_glossaryTerm"
-                                 referencedTableName="HGlossaryTerm" 
-                                 referencedColumnNames="id" />
+        <dropColumn tableName="HGlossaryTerm" columnName="sourceRef" />
+        
+        <addAutoIncrement tableName="HGlossaryEntry" columnName="id" columnDataType="bigint"/>
+        <addAutoIncrement tableName="HGlossaryTerm" columnName="id" columnDataType="bigint"/>
+        <addAutoIncrement tableName="HTermComment" columnName="id" columnDataType="bigint"/>
     </changeSet>
 
-    <changeSet author="aeng@redhat.com" id="4">
-        <comment>Alter glossary entry table</comment>
-        <addColumn tableName="HGlossaryEntry">
-            <column name="srcTermId" type="bigint">
-                <constraints nullable="false" />
-            </column>
-        </addColumn>
-        
-        <addForeignKeyConstraint baseTableName="HGlossaryEntry"
-                                 baseColumnNames="srcTermId" 
-                                 constraintName="UKglossaryEntry_glossaryTerm"
-                                 referencedTableName="HGlossaryTerm" 
-                                 referencedColumnNames="id" />
-    </changeSet>
-    
-     <changeSet author="aeng@redhat.com" id="5">
-        <comment>Add obsolete column to HTermComment</comment>
-        <addColumn tableName="HTermComment">
-            <column name="obsolete" type="bit">
-                <constraints nullable="false" />
-            </column>
-        </addColumn>
-    </changeSet>
 
 </databaseChangeLog>

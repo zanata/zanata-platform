@@ -52,8 +52,6 @@ public class GlossaryTerm implements Serializable
 
    private String content;
 
-   private String sourcereference;
-
    private List<String> comments;
 
    @XmlAttribute(name = "locale")
@@ -77,17 +75,6 @@ public class GlossaryTerm implements Serializable
    public void setContent(String content)
    {
       this.content = content;
-   }
-
-   @XmlElement(name = "sourcereference", required = false)
-   public String getSourcereference()
-   {
-      return sourcereference;
-   }
-
-   public void setSourcereference(String ref)
-   {
-      this.sourcereference = ref;
    }
 
    @XmlElement(name = "comment")
@@ -118,7 +105,6 @@ public class GlossaryTerm implements Serializable
       int result = 1;
       result = prime * result + ((locale == null) ? 0 : locale.hashCode());
       result = prime * result + ((content == null) ? 0 : content.hashCode());
-      result = prime * result + ((sourcereference == null) ? 0 : sourcereference.hashCode());
       result = prime * result + ((comments == null) ? 0 : comments.hashCode());
       return result;
    }

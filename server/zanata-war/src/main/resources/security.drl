@@ -178,3 +178,35 @@ TODO grant permission check: if user is a member of the language team,
 OR of project maintainers
 */
 
+
+/*****************************************************************************************
+
+  Glossary rules
+  
+******************************************************************************************/
+
+/* 'glossarist' can push */
+/* this should be glossarist */
+rule GlossaristPushGlossary
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(action == "glossary-insert" || action == "glossary-update", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+/* 'glossarist' can delete */
+/* this should be glossarist-admin */
+rule GlossaristDeleteGlossary
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(action == "glossary-delete" || action == "glossary-update", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+

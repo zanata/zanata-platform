@@ -59,8 +59,8 @@ public class GlossaryRestTest extends ZanataRestTest
    @Override
    protected void prepareDBUnitOperations()
    {
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/GlossaryData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/GlossaryData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
@@ -69,13 +69,12 @@ public class GlossaryRestTest extends ZanataRestTest
    {
       GlossaryDAO glossaryDAO = new GlossaryDAO(getSession());
       AccountDAO accountDAO = new AccountDAO(getSession());
-      ETagUtils eTagUtils = new ETagUtils(getSession());
 
       LocaleServiceImpl localeService = new LocaleServiceImpl();
       LocaleDAO localeDAO = new LocaleDAO(getSession());
       localeService.setLocaleDAO(localeDAO);
 
-      GlossaryService glossaryService = new GlossaryService(glossaryDAO, accountDAO, mockIdentity, eTagUtils, localeService);
+      GlossaryService glossaryService = new GlossaryService(glossaryDAO, accountDAO, mockIdentity, localeService);
 
       resources.add(glossaryService);
    }
@@ -90,7 +89,7 @@ public class GlossaryRestTest extends ZanataRestTest
       assertThat(glossaryEntries.size(), is(1));
 
       List<GlossaryTerm> glossaryTerms = glossaryEntries.get(0).getGlossaryTerms();
-      assertThat(glossaryTerms.size(), is(2));
+      assertThat(glossaryTerms.size(), is(3));
    }
 
    @Test
@@ -103,7 +102,7 @@ public class GlossaryRestTest extends ZanataRestTest
       assertThat(glossaryEntries.size(), is(1));
 
       List<GlossaryTerm> glossaryTerms = glossaryEntries.get(0).getGlossaryTerms();
-      assertThat(glossaryTerms.size(), is(0));
+      assertThat(glossaryTerms.size(), is(1));
 
       Assert.assertNotNull(glossaryEntries.get(0).getSrcLang());
       assertThat(glossaryEntries.get(0).getSrcLang(), is(LocaleId.EN_US));
@@ -127,17 +126,16 @@ public class GlossaryRestTest extends ZanataRestTest
       Glossary glossary = new Glossary();
       GlossaryEntry glossaryEntry1 = new GlossaryEntry();
       glossaryEntry1.setSrcLang(LocaleId.EN_US);
+      glossaryEntry1.setSourcereference("TEST SOURCE REF DATA");
       
       GlossaryTerm glossaryTerm1 = new GlossaryTerm();
       glossaryTerm1.setLocale(LocaleId.EN_US);
       glossaryTerm1.setContent("TEST DATA 1 EN_US");
-      glossaryTerm1.setSourcereference("TEST SOURCE REF DATA 1");
       glossaryTerm1.getComments().add("COMMENT 1");
 
       GlossaryTerm glossaryTerm2 = new GlossaryTerm();
       glossaryTerm2.setLocale(LocaleId.DE);
       glossaryTerm2.setContent("TEST DATA 2 DE");
-      glossaryTerm2.setSourcereference("TEST SOURCE REF DATA 2");
       glossaryTerm2.getComments().add("COMMENT 2");
 
       glossaryEntry1.getGlossaryTerms().add(glossaryTerm1);
@@ -145,17 +143,16 @@ public class GlossaryRestTest extends ZanataRestTest
 
       GlossaryEntry glossaryEntry2 = new GlossaryEntry();
       glossaryEntry2.setSrcLang(LocaleId.EN_US);
+      glossaryEntry2.setSourcereference("TEST SOURCE REF DATA2");
 
       GlossaryTerm glossaryTerm3 = new GlossaryTerm();
       glossaryTerm3.setLocale(LocaleId.EN_US);
       glossaryTerm3.setContent("TEST DATA 3 EN_US");
-      glossaryTerm3.setSourcereference("TEST SOURCE REF DATA 3");
       glossaryTerm3.getComments().add("COMMENT 3");
 
       GlossaryTerm glossaryTerm4 = new GlossaryTerm();
       glossaryTerm4.setLocale(LocaleId.DE);
       glossaryTerm4.setContent("TEST DATA 4 DE");
-      glossaryTerm4.setSourcereference("TEST SOURCE REF DATA 4");
       glossaryTerm4.getComments().add("COMMENT 4");
 
       glossaryEntry2.getGlossaryTerms().add(glossaryTerm3);
@@ -190,7 +187,7 @@ public class GlossaryRestTest extends ZanataRestTest
       ClientResponse<Glossary> response1 = glossaryService.getEntries();
       List<GlossaryEntry> glossaryEntries = response1.getEntity().getGlossaryEntries();
 
-      assertThat(glossaryEntries.get(0).getGlossaryTerms().size(), is(1));
+      assertThat(glossaryEntries.get(0).getGlossaryTerms().size(), is(2));
    }
 
 }

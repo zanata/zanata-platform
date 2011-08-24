@@ -30,6 +30,8 @@ import java.nio.charset.Charset;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.Message;
 import org.fedorahosted.tennera.jgettext.catalog.parse.MessageStreamParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.Glossary;
@@ -43,6 +45,8 @@ import org.zanata.rest.dto.GlossaryTerm;
  **/
 public class PoReader extends AbstractPushGlossaryReader
 {
+
+   private static final Logger log = LoggerFactory.getLogger(PoReader.class);
 
    @Override
    public Glossary extractGlossary(File glossaryFile) throws IOException
@@ -68,31 +72,75 @@ public class PoReader extends AbstractPushGlossaryReader
       LocaleId targetLang = new LocaleId(getOpts().getTransLang());
 
       Glossary glossary = new Glossary();
-      GlossaryEntry entry = new GlossaryEntry();
-      entry.setSrcLang(srcLang);
 
       while (messageParser.hasNext())
       {
          Message message = messageParser.next();
 
-         if (message.isHeader() || message.isObsolete() || message.isPlural())
+         if (message.isHeader())
          {
-            // TODO skip for now
+            // log.warn("term: [{}] is ignored - message is header",
+            // message.getMsgid());
+         }
+         else if (message.isObsolete())
+         {
+            // log.warn("term: [{}] is ignored - message obsolete",
+            // message.getMsgid());
+         }
+         else if (message.isPlural())
+         {
+            // log.warn("term: [{}] is ignored - message is plural",
+            // message.getMsgid());
+         }
+         else if (message.isFuzzy())
+         {
+            log.warn("term: [{}] is ignored - state fuzzy", message.getMsgid());
          }
          else
          {
+            GlossaryEntry entry = new GlossaryEntry();
+            entry.setSrcLang(srcLang);
+
             GlossaryTerm srcTerm = new GlossaryTerm();
             srcTerm.setLocale(srcLang);
-            srcTerm.setSourcereference(StringUtils.join(message.getSourceReferences(), null));
             srcTerm.setContent(message.getMsgid());
-            for (String comment : message.getExtractedComments())
-            {
-               srcTerm.getComments().add(comment);
-            }
 
             GlossaryTerm targetTerm = new GlossaryTerm();
             targetTerm.setLocale(targetLang);
             targetTerm.setContent(message.getMsgstr());
+
+            // Treat all comments and source reference as translation comment
+            if (getOpts().getAllTransComments())
+            {
+               for (String srcRef : message.getSourceReferences())
+               {
+                  targetTerm.getComments().add(srcRef);
+               }
+
+               for (String comment : message.getExtractedComments())
+               {
+                  targetTerm.getComments().add(comment);
+               }
+            }
+            else
+            {
+               StringBuilder sb = new StringBuilder();
+               if (!StringUtils.isEmpty(entry.getSourcereference()))
+               {
+                  sb.append(entry.getSourcereference());
+               }
+               if (!StringUtils.isEmpty(StringUtils.join(message.getSourceReferences(), "\n")))
+               {
+                  sb.append(StringUtils.join(message.getSourceReferences(), "\n"));
+               }
+
+               entry.setSourcereference(sb.toString());
+
+               for (String comment : message.getExtractedComments())
+               {
+                  srcTerm.getComments().add(comment);
+               }
+            }
             for (String comment : message.getComments())
             {
                targetTerm.getComments().add(comment);
@@ -100,10 +148,10 @@ public class PoReader extends AbstractPushGlossaryReader
 
             entry.getGlossaryTerms().add(srcTerm);
             entry.getGlossaryTerms().add(targetTerm);
+
+            glossary.getGlossaryEntries().add(entry);
          }
       }
-
-      glossary.getGlossaryEntries().add(entry);
 
       return glossary;
    }
@@ -133,12 +181,10 @@ public class PoReader extends AbstractPushGlossaryReader
          }
          catch (IOException e)
          {
-            // TODO throw stronger typed exception
             throw new RuntimeException("failed to get input from url in inputSource", e);
          }
       }
       else
-         // TODO throw stronger typed exception
          throw new RuntimeException("not a valid inputSource");
 
       return messageParser;

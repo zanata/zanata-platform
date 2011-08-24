@@ -33,7 +33,6 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.Where;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
@@ -49,7 +48,6 @@ import org.zanata.hibernate.search.LocaleIdBridge;
 public class HGlossaryTerm extends ModelEntityBase
 {
    private String content;
-   private String sourceRef;
    private List<HTermComment> comments;
    private HGlossaryEntry glossaryEntry;
    private HLocale locale;
@@ -76,19 +74,7 @@ public class HGlossaryTerm extends ModelEntityBase
       this.content = content;
    }
 
-   @Type(type = "text")
-   public String getSourceRef()
-   {
-      return sourceRef;
-   }
-
-   public void setSourceRef(String refs)
-   {
-      this.sourceRef = refs;
-   }
-
    @OneToMany(cascade = CascadeType.ALL)
-   @Where(clause = "obsolete=0")
    @IndexColumn(name = "pos", base = 0, nullable = false)
    @JoinColumn(name = "glossaryTermId", nullable = false)
    public List<HTermComment> getComments()
@@ -107,7 +93,7 @@ public class HGlossaryTerm extends ModelEntityBase
 
    @NaturalId
    @ManyToOne
-   @JoinColumn(name = "glossaryEntryId")
+   @JoinColumn(name = "glossaryEntryId", nullable = false)
    public HGlossaryEntry getGlossaryEntry()
    {
       return glossaryEntry;
@@ -133,10 +119,11 @@ public class HGlossaryTerm extends ModelEntityBase
       this.locale = locale;
    }
 
+
    @Override
    public String toString()
    {
-      return "HGlossaryTerm [content=" + content + ", sourceRef=" + sourceRef + ", comments=" + comments + ", locale=" + locale + ", id=" + id + ", creationDate=" + creationDate + ", lastChanged=" + lastChanged + ", versionNum=" + versionNum + "]";
+      return "HGlossaryTerm [content=" + content + ", comments=" + comments + ", glossaryEntry=" + glossaryEntry + ", locale=" + locale + "]";
    }
 
    @Override
@@ -148,7 +135,6 @@ public class HGlossaryTerm extends ModelEntityBase
       result = prime * result + ((content == null) ? 0 : content.hashCode());
       result = prime * result + ((glossaryEntry == null) ? 0 : glossaryEntry.hashCode());
       result = prime * result + ((locale == null) ? 0 : locale.hashCode());
-      result = prime * result + ((sourceRef == null) ? 0 : sourceRef.hashCode());
       return result;
    }
 
@@ -190,16 +176,8 @@ public class HGlossaryTerm extends ModelEntityBase
       }
       else if (!locale.equals(other.locale))
          return false;
-      if (sourceRef == null)
-      {
-         if (other.sourceRef != null)
-            return false;
-      }
-      else if (!sourceRef.equals(other.sourceRef))
-         return false;
       return true;
    }
-
 }
 
 

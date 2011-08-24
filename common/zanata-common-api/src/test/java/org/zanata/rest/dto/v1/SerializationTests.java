@@ -231,10 +231,10 @@ public class SerializationTests
 
       GlossaryEntry entry = new GlossaryEntry();
       entry.setSrcLang(LocaleId.EN_US);
+      entry.setSourcereference("source ref");
 
       GlossaryTerm term = new GlossaryTerm();
       term.setContent("testData1");
-      term.setSourcereference("testRefData1");
       term.setLocale(LocaleId.EN_US);
       term.getComments().add("comment1");
       term.getComments().add("comment2");
@@ -242,7 +242,6 @@ public class SerializationTests
 
       GlossaryTerm term2 = new GlossaryTerm();
       term2.setContent("testData2");
-      term2.setSourcereference("testRefData2");
       term2.setLocale(LocaleId.DE);
       term2.getComments().add("comment4");
       term2.getComments().add("comment5");

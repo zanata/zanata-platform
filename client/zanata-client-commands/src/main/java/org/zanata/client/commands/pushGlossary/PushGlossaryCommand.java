@@ -34,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.ConfigurableCommand;
 import org.zanata.client.commands.OptionsUtil;
-import org.zanata.common.LocaleId;
 import org.zanata.rest.client.ClientUtility;
 import org.zanata.rest.client.IGlossaryResource;
 import org.zanata.rest.client.ZanataProxyFactory;
@@ -98,6 +97,7 @@ public class PushGlossaryCommand extends ConfigurableCommand
       log.info("Username: {}", opts.getUsername());
       log.info("Source language: {}", opts.getSourceLang());
       log.info("Translation language: {}", opts.getTransLang());
+      log.info("All translation comment: {}", opts.getAllTransComments());
       log.info("Glossary file: {}", opts.getGlossaryFile());
 
       File glossaryFile = opts.getGlossaryFile();
@@ -122,23 +122,23 @@ public class PushGlossaryCommand extends ConfigurableCommand
          m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
       }
 
-      deleteTargetLocaleGlossaryFromServer(opts.getTransLang());
+      // deleteTargetLocaleGlossaryFromServer(opts.getTransLang());
 
-      log.info("pushing glossary document [name={}] to server", glossaryFile.getName());
+      log.info("pushing glossary document [{}] to server", glossaryFile.getName());
       
       Glossary glossary = reader.extractGlossary(glossaryFile);
-      System.out.println(glossary);
-      // ClientResponse<Glossary> response = glossaryResource.put(glossary);
-      // ClientUtility.checkResult(response, uri);
-   }
-
-   private void deleteTargetLocaleGlossaryFromServer(String transLang)
-   {
-      log.info("deleting glossaries with locale [{}] from server", transLang);
-      ClientResponse<String> response = glossaryResource.deleteGlossary(new LocaleId(transLang));
+      log.debug(glossary.toString());
+      ClientResponse<Glossary> response = glossaryResource.put(glossary);
       ClientUtility.checkResult(response, uri);
    }
 
+   // private void deleteTargetLocaleGlossaryFromServer(String transLang)
+   // {
+   // log.info("deleting glossaries with locale [{}] from server", transLang);
+   // ClientResponse<String> response = glossaryResource.deleteGlossary(new
+   // LocaleId(transLang));
+   // ClientUtility.checkResult(response, uri);
+   // }
 
 }
 

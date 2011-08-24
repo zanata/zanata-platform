@@ -1,7 +1,6 @@
 package org.zanata.rest.service;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -12,13 +11,14 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.jboss.seam.annotations.In;
@@ -69,22 +69,22 @@ public class GlossaryService implements GlossaryResource
    private Identity identity;
 
    @In
-   private ETagUtils eTagUtils;
+   private LocaleService localeServiceImpl;
 
-   @In
-   private LocaleService localeService;
+   private final static String GLOSSARY_ACTION_INSERT = "glossary-insert";
+   private final static String GLOSSARY_ACTION_DELETE = "glossary-delete";
+   private final static String GLOSSARY_ACTION_UPDATE = "glossary-update";
 
    public GlossaryService()
    {
    }
 
-   public GlossaryService(GlossaryDAO glossaryDAO, AccountDAO accountDAO, Identity identity, ETagUtils eTagUtils, LocaleService localeService)
+   public GlossaryService(GlossaryDAO glossaryDAO, AccountDAO accountDAO, Identity identity, LocaleService localeService)
    {
       this.glossaryDAO = glossaryDAO;
       this.accountDAO = accountDAO;
       this.identity = identity;
-      this.eTagUtils = eTagUtils;
-      this.localeService = localeService;
+      this.localeServiceImpl = localeService;
    }
 
    @Override
@@ -93,9 +93,7 @@ public class GlossaryService implements GlossaryResource
    @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON })
    public Response getEntries()
    {
-      EntityTag etag = eTagUtils.generateTagForGlossaryTerm(LocaleId.EN_US);
-
-      ResponseBuilder response = request.evaluatePreconditions(etag);
+      ResponseBuilder response = request.evaluatePreconditions();
       if (response != null)
       {
          return response.build();
@@ -106,7 +104,7 @@ public class GlossaryService implements GlossaryResource
       Glossary glossary = new Glossary();
       transferEntriesResource(hGlosssaryEntries, glossary);
 
-      return Response.ok(glossary).tag(etag).build();
+      return Response.ok(glossary).build();
    }
 
    @Override
@@ -115,9 +113,7 @@ public class GlossaryService implements GlossaryResource
    @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON })
    public Response get(@PathParam("locale") LocaleId locale)
    {
-      EntityTag etag = eTagUtils.generateTagForGlossaryTerm(locale);
-
-      ResponseBuilder response = request.evaluatePreconditions(etag);
+      ResponseBuilder response = request.evaluatePreconditions();
       if (response != null)
       {
          return response.build();
@@ -128,7 +124,7 @@ public class GlossaryService implements GlossaryResource
 
       transferEntriesLocaleResource(hGlosssaryEntries, glossary, locale);
 
-      return Response.ok(glossary).tag(etag).build();
+      return Response.ok(glossary).build();
    }
 
    @Override
@@ -138,7 +134,6 @@ public class GlossaryService implements GlossaryResource
    public Response put(InputStream messageBody)
    {
       ResponseBuilder response;
-      EntityTag etag;
 
       // must be a create operation
       response = request.evaluatePreconditions();
@@ -149,20 +144,15 @@ public class GlossaryService implements GlossaryResource
       response = Response.created(uri.getAbsolutePath());
       Glossary glossary = RestUtils.unmarshall(Glossary.class, messageBody, requestContentType, headers.getRequestHeaders());
 
-      List<Long> hGlossaryEntryIds = new ArrayList<Long>();
+      identity.checkPermission("", GLOSSARY_ACTION_INSERT);
+
       for (GlossaryEntry glossaryEntry : glossary.getGlossaryEntries())
       {
-         HGlossaryEntry hGlossaryEntry = new HGlossaryEntry();
-         identity.checkPermission(hGlossaryEntry, "insert");
-
-         transferGlossaryEntry(glossaryEntry, hGlossaryEntry);
-         hGlossaryEntry = glossaryDAO.makePersistent(hGlossaryEntry);
-         hGlossaryEntryIds.add(hGlossaryEntry.getId().longValue());
+         transferGlossaryEntry(glossaryEntry);
       }
       glossaryDAO.flush();
 
-      etag = eTagUtils.generateTagForGlossary(hGlossaryEntryIds);
-      return response.tag(etag).build();
+      return response.build();
    }
 
    /**
@@ -180,6 +170,8 @@ public class GlossaryService implements GlossaryResource
          return response.build();
       }
 
+      identity.checkPermission("", GLOSSARY_ACTION_DELETE);
+
       List<HGlossaryEntry> hGlossaryEntries = glossaryDAO.getEntries();
 
       for (HGlossaryEntry hGlossaryEntry : hGlossaryEntries)
@@ -192,19 +184,12 @@ public class GlossaryService implements GlossaryResource
             }
          }
 
-         if (hGlossaryEntry.getSrcTerm().getLocale().getLocaleId().equals(targetLocale))
+         if (hGlossaryEntry.getGlossaryTerms().isEmpty())
          {
-            hGlossaryEntry.setSrcTerm(null);
-         }
-
-         if (hGlossaryEntry.getGlossaryTerms().isEmpty() && hGlossaryEntry.getSrcTerm() == null)
-         {
-            identity.checkPermission(hGlossaryEntry, "delete");
             glossaryDAO.makeTransient(hGlossaryEntry);
          }
          else
          {
-            identity.checkPermission(hGlossaryEntry, "update");
             glossaryDAO.makePersistent(hGlossaryEntry);
          }
 
@@ -225,12 +210,11 @@ public class GlossaryService implements GlossaryResource
       {
          return response.build();
       }
-
       List<HGlossaryEntry> hGlossaryEntries = glossaryDAO.getEntries();
 
+      identity.checkPermission("", GLOSSARY_ACTION_DELETE);
       for (HGlossaryEntry hGlossaryEntry : hGlossaryEntries)
       {
-         identity.checkPermission(hGlossaryEntry, "delete");
          glossaryDAO.makeTransient(hGlossaryEntry);
       }
       glossaryDAO.flush();
@@ -238,31 +222,69 @@ public class GlossaryService implements GlossaryResource
       return Response.ok().build();
    }
 
-   public void transferGlossaryEntry(GlossaryEntry from, HGlossaryEntry to)
+   private HGlossaryTerm getExistingGlossaryTerm(HGlossaryEntry hGlossaryEntry, LocaleId locale, String content)
    {
+      HLocale termHLocale = localeServiceImpl.getByLocaleId(locale);
+      HGlossaryTerm hGlossaryTerm = hGlossaryEntry.getGlossaryTerms().get(termHLocale);
+
+      if (hGlossaryTerm == null)
+      {
+         hGlossaryTerm = new HGlossaryTerm(content);
+         hGlossaryTerm.setLocale(termHLocale);
+         hGlossaryTerm.setGlossaryEntry(hGlossaryEntry);
+         hGlossaryEntry.getGlossaryTerms().put(termHLocale, hGlossaryTerm);
+      }
+      hGlossaryTerm.getComments().clear();
+      return hGlossaryTerm;
+   }
+
+   private HGlossaryEntry getExistingGlossaryEntry(LocaleId srcLocale, String srcContent)
+   {
+      HGlossaryEntry hGlossaryEntry = glossaryDAO.getEntryBySrcContentLocale(srcLocale, srcContent);
+
+      if (hGlossaryEntry == null)
+      {
+         hGlossaryEntry = new HGlossaryEntry();
+         HLocale srcHLocale = localeServiceImpl.getByLocaleId(srcLocale);
+         hGlossaryEntry.setSrcLocale(srcHLocale);
+      }
+      return hGlossaryEntry;
+   }
+
+   public String getSrcGlossaryTerm(GlossaryEntry entry)
+   {
+      for (GlossaryTerm term : entry.getGlossaryTerms())
+      {
+         if (term.getLocale().equals(entry.getSrcLang()))
+         {
+            return term.getContent();
+         }
+      }
+      return null;
+   }
+
+   public void transferGlossaryEntry(GlossaryEntry from)
+   {
+      HGlossaryEntry to = getExistingGlossaryEntry(from.getSrcLang(), getSrcGlossaryTerm(from));
+            
+      to.setSourceRef(from.getSourcereference());
+
       for (GlossaryTerm glossaryTerm : from.getGlossaryTerms())
       {
-         HGlossaryTerm hGlossaryTerm = new HGlossaryTerm(glossaryTerm.getContent());
-         hGlossaryTerm.setSourceRef(glossaryTerm.getSourcereference());
+         if (!localeServiceImpl.localeExists(glossaryTerm.getLocale()))
+         {
+            throw new WebApplicationException(Response.status(Status.FORBIDDEN).entity("Locale " + glossaryTerm.getLocale() + " is not enabled on this server. Please contact admin.").build());
+         }
+
+         // check if there's existing term with same content, overrides comments
+         HGlossaryTerm hGlossaryTerm = getExistingGlossaryTerm(to, glossaryTerm.getLocale(), glossaryTerm.getContent());
 
          for (String comment : glossaryTerm.getComments())
          {
             hGlossaryTerm.getComments().add(new HTermComment(comment));
          }
-         localeService.save(glossaryTerm.getLocale());
-         HLocale targetLocale = localeService.getByLocaleId(glossaryTerm.getLocale());
-         hGlossaryTerm.setLocale(targetLocale);
-
-         // check if term equals to sourceLang
-         if (targetLocale.getLocaleId().equals(from.getSrcLang()))
-         {
-            to.setSrcTerm(hGlossaryTerm);
-         }
-         else
-         {
-            to.getGlossaryTerms().put(targetLocale, hGlossaryTerm);
-         }
       }
+      glossaryDAO.makePersistent(to);
    }
 
    public void transferEntriesResource(List<HGlossaryEntry> hGlosssaryEntries, Glossary glossary)
@@ -270,14 +292,14 @@ public class GlossaryService implements GlossaryResource
       for (HGlossaryEntry hGlossaryEntry : hGlosssaryEntries)
       {
          GlossaryEntry glossaryEntry = new GlossaryEntry();
-         glossaryEntry.setSrcLang(hGlossaryEntry.getSrcTerm().getLocale().getLocaleId());
+         glossaryEntry.setSourcereference(hGlossaryEntry.getSourceRef());
+         glossaryEntry.setSrcLang(hGlossaryEntry.getSrcLocale().getLocaleId());
 
          for (HGlossaryTerm hGlossaryTerm : hGlossaryEntry.getGlossaryTerms().values())
          {
             GlossaryTerm glossaryTerm = new GlossaryTerm();
             glossaryTerm.setContent(hGlossaryTerm.getContent());
             glossaryTerm.setLocale(hGlossaryTerm.getLocale().getLocaleId());
-            glossaryTerm.setSourcereference(hGlossaryTerm.getSourceRef());
 
             for (HTermComment hTermComment : hGlossaryTerm.getComments())
             {
@@ -294,8 +316,8 @@ public class GlossaryService implements GlossaryResource
       for (HGlossaryEntry hGlossaryEntry : hGlosssaryEntries)
       {
          GlossaryEntry glossaryEntry = new GlossaryEntry();
-         glossaryEntry.setSrcLang(hGlossaryEntry.getSrcTerm().getLocale().getLocaleId());
-
+         glossaryEntry.setSrcLang(hGlossaryEntry.getSrcLocale().getLocaleId());
+         glossaryEntry.setSourcereference(hGlossaryEntry.getSourceRef());
          for (HGlossaryTerm hGlossaryTerm : hGlossaryEntry.getGlossaryTerms().values())
          {
             if (hGlossaryTerm.getLocale().getLocaleId().equals(locale))
@@ -303,7 +325,6 @@ public class GlossaryService implements GlossaryResource
                GlossaryTerm glossaryTerm = new GlossaryTerm();
                glossaryTerm.setContent(hGlossaryTerm.getContent());
                glossaryTerm.setLocale(hGlossaryTerm.getLocale().getLocaleId());
-               glossaryTerm.setSourcereference(hGlossaryTerm.getSourceRef());
 
                for (HTermComment hTermComment : hGlossaryTerm.getComments())
                {
