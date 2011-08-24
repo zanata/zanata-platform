@@ -25,6 +25,7 @@ import java.util.List;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.editor.HasPageNavigation;
+import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;

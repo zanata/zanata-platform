@@ -3,6 +3,7 @@ package org.zanata.webtrans.client;
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.client.EventProcessor.StartCallback;
 import org.zanata.webtrans.client.gin.WebTransGinjector;
+import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.Identity;

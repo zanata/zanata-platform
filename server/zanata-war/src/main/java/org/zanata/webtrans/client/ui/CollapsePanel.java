@@ -22,7 +22,7 @@ package org.zanata.webtrans.client.ui;
 
 import java.util.Iterator;
 
-import org.zanata.webtrans.client.Resources;
+import org.zanata.webtrans.client.resources.Resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;

@@ -2,7 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
-	<ui:with field='resources' type="org.zanata.webtrans.client.Resources"/>
+	<ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources"/>
 	
 	<ui:style type="org.zanata.webtrans.client.ui.ClearableTextBox.Styles">
 		.flow {
