@@ -40,6 +40,7 @@ import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.events.ProjectStatsRetrievedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -202,6 +203,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       // It is fetching stats for all documents in the workspace,
       // but then it adds them all up
       // and discards the individual document stats.
+      // this can be discarded when project stats bar is removed from here.
       dispatcher.execute(new GetProjectStatusCount(), new AsyncCallback<GetProjectStatusCountResult>()
       {
          @Override
@@ -324,10 +326,10 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          @Override
          public void onSuccess(GetProjectStatusCountResult result)
          {
-            ArrayList<DocumentStatus> liststatus = result.getStatus();
-            Log.info("Received project status for " + liststatus.size() + " elements");
+            ArrayList<DocumentStatus> listStatus = result.getStatus();
+            Log.info("Received project status for " + listStatus.size() + " elements");
             statuscache.clear();
-            for (DocumentStatus doc : liststatus)
+            for (DocumentStatus doc : listStatus)
             {
                statuscache.put(doc.getDocumentid(), doc);
                // TreeNode<DocName> node =
@@ -336,6 +338,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
                // calPercentage(doc.getUntranslated(), doc.getFuzzy(),
                // doc.getTranslated()) +"%)");
             }
+
+            // re-use these stats for the project stats
+            eventBus.fireEvent(new ProjectStatsRetrievedEvent(listStatus));
          }
       });
    }
