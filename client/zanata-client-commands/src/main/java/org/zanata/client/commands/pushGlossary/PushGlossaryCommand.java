@@ -55,7 +55,7 @@ public class PushGlossaryCommand extends ConfigurableCommand
    private final URI uri;
 
    {
-      glossaryReaders.put("po", new PoReader());
+      glossaryReaders.put("po", new GlossaryPoReader());
       // strategies.put("cvs", new cvsStrategy());
       // strategies.put("po", new poStrategy());
    }

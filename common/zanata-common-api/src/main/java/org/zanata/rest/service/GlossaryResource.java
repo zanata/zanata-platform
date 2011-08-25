@@ -43,23 +43,20 @@ public interface GlossaryResource
    public static final String SERVICE_PATH = "/glossary";
 
    @GET
-   @Path(SERVICE_PATH)
    public Response getEntries();
 
    @GET
-   @Path(SERVICE_PATH + "/{locale}")
+   @Path("/{locale}")
    public Response get(@PathParam("locale") LocaleId locale);
 
    @PUT
-   @Path(SERVICE_PATH)
    public Response put(InputStream messageBody);
 
    @DELETE
-   @Path(SERVICE_PATH + "/{locale}")
+   @Path("/{locale}")
    public Response deleteGlossary(@PathParam("locale") LocaleId locale);
 
    @DELETE
-   @Path(SERVICE_PATH)
    public Response deleteGlossaries();
 
 }
