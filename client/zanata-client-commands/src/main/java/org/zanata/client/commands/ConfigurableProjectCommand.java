@@ -31,19 +31,32 @@ import org.zanata.rest.client.ZanataProxyFactory;
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 
  */
-public abstract class ConfigurableProjectCommand extends ConfigurableCommand
+public abstract class ConfigurableProjectCommand<O extends ConfigurableProjectOptions> extends ConfigurableCommand<O>
 {
-   public ConfigurableProjectCommand(ConfigurableProjectOptions opts, ZanataProxyFactory factory)
+
+   protected static final String PROJECT_TYPE_PUBLICAN = "podir";
+   protected static final String PROJECT_TYPE_PROPERTIES = "properties";
+   protected static final String PROJECT_TYPE_XLIFF = "xliff";
+   protected static final String PROJECT_TYPE_XML = "xml";
+
+   public ConfigurableProjectCommand(O opts, ZanataProxyFactory factory)
    {
       super(opts, factory);
       if (opts.getProj() == null)
          throw new ConfigException("Project must be specified");
       if (opts.getProjectVersion() == null)
          throw new ConfigException("Project version must be specified");
+      if (getProjectType() == null)
+         throw new ConfigException("Project type must be specified");
    }
 
-   public ConfigurableProjectCommand(ConfigurableProjectOptions opts)
+   public ConfigurableProjectCommand(O opts)
    {
       this(opts, null);
+   }
+
+   protected String getProjectType()
+   {
+      return this.getOpts().getProjectType();
    }
 }

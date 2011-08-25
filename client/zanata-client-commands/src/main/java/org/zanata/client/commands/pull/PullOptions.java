@@ -33,6 +33,5 @@ public interface PullOptions extends ConfigurableProjectOptions
 {
    File getSrcDir();
    File getTransDir();
-   public String getProjectType();
    boolean getPullSrc();
 }
