@@ -110,11 +110,8 @@
 				</g:FlowPanel>
 			</g:HorizontalPanel>
 			</g:layer>
-			<g:layer right="310px" width="200px">
+			<g:layer right="7px" width="200px">
 			    <fui:TransUnitCountBar ui:field="translationStatsBar" styleName="{style.translationStats}"/>
-			</g:layer>
-			<g:layer right="7px" width ="300px" >
-			   <g:LayoutPanel ui:field="filterPanelContainer" />
 			</g:layer>
 		</g:LayoutPanel>
 		</g:layer>

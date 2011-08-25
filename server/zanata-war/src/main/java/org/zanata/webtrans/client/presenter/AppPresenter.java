@@ -30,7 +30,6 @@ import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.Application;
-import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
@@ -82,8 +81,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       void setTranslationView(Widget translationView);
 
-      void setFilterView(Widget filterView);
-
       void showInMainView(MainView editor);
 
       MainView getCurrentView();
@@ -132,7 +129,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
    private final DocumentListPresenter documentListPresenter;
    private final TranslationPresenter translationPresenter;
-   private final TransFilterPresenter transFilterPresenter;
    private final WorkspaceContext workspaceContext;
    private final Identity identity;
 
@@ -146,7 +142,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    private final TranslationStats projectStats = new TranslationStats();
 
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final TransFilterPresenter transFilterPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
+   public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
@@ -154,7 +150,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       this.messages = messages;
       this.documentListPresenter = documentListPresenter;
       this.translationPresenter = translationPresenter;
-      this.transFilterPresenter = transFilterPresenter;
       this.workspaceContext = workspaceContext;
    }
 
@@ -176,11 +171,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       documentListPresenter.bind();
       translationPresenter.bind();
-      transFilterPresenter.bind();
 
       display.setDocumentListView(documentListPresenter.getDisplay().asWidget());
       display.setTranslationView(translationPresenter.getDisplay().asWidget());
-      display.setFilterView(transFilterPresenter.getDisplay().asWidget());
 
       display.showInMainView(MainView.Documents);
 

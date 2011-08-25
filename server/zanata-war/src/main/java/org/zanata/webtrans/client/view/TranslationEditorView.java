@@ -27,6 +27,7 @@ import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.client.ui.Pager;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -45,7 +46,7 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    }
 
    @UiField
-   FlowPanel transUnitNavigationContainer, undoRedoContainer;
+   FlowPanel transUnitNavigationContainer;
 
    @UiField
    LayoutPanel editor;
@@ -55,6 +56,11 @@ public class TranslationEditorView extends Composite implements TranslationEdito
 
    @UiField(provided = true)
    Resources resources;
+
+   @UiField
+   LayoutPanel filterPanelContainer;
+
+   // private Widget filterView;
 
    @Inject
    public TranslationEditorView(final WebTransMessages messages, final Resources resources)
@@ -80,12 +86,12 @@ public class TranslationEditorView extends Composite implements TranslationEdito
       transUnitNavigationContainer.add(navigationWidget);
    }
 
-   @Override
-   public void setUndoRedo(Widget undoRedoWidget)
-   {
-      undoRedoContainer.clear();
-      undoRedoContainer.add(undoRedoWidget);
-   }
+   // @Override
+   // public void setUndoRedo(Widget undoRedoWidget)
+   // {
+   // undoRedoContainer.clear();
+   // undoRedoContainer.add(undoRedoWidget);
+   // }
 
    @Override
    public Widget asWidget()
@@ -97,5 +103,14 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    public HasPager getPageNavigation()
    {
       return pager;
+   }
+
+   @Override
+   public void setFilterView(Widget filterView)
+   {
+      filterPanelContainer.clear();
+      filterPanelContainer.add(filterView);
+      filterPanelContainer.setWidgetTopBottom(filterView, 0, Unit.PX, 0, Unit.PX);
+      // this.filterView = filterView;
    }
 }

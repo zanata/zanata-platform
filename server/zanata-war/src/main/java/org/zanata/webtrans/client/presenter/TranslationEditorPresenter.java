@@ -24,6 +24,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
@@ -38,7 +39,7 @@ import com.google.gwt.gen2.table.event.client.PageChangeEvent;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
-import com.google.gwt.user.client.ui.Label;
+//import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -52,25 +53,29 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
 
       void setTransUnitNavigation(Widget widget);
 
+      void setFilterView(Widget filterView);
+
       HasPager getPageNavigation();
 
-      void setUndoRedo(Widget undoRedoWidget);
+      // void setUndoRedo(Widget undoRedoWidget);
 
    }
 
    private final TransUnitNavigationPresenter transUnitNavigationPresenter;
    private final TableEditorPresenter tableEditorPresenter;
-   private final UndoRedoPresenter undoRedoPresenter;
+   // private final UndoRedoPresenter undoRedoPresenter;
+   private final TransFilterPresenter transFilterPresenter;
 
    private DocumentInfo currentDocument;
 
    @Inject
-   public TranslationEditorPresenter(Display display, EventBus eventBus, final CachingDispatchAsync dispatcher, final TableEditorPresenter tableEditorPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter, final UndoRedoPresenter undoRedoPresenter)
+   public TranslationEditorPresenter(Display display, EventBus eventBus, final CachingDispatchAsync dispatcher, final TableEditorPresenter tableEditorPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter, final UndoRedoPresenter undoRedoPresenter, final TransFilterPresenter transFilterPresenter)
    {
       super(display, eventBus);
       this.tableEditorPresenter = tableEditorPresenter;
       this.transUnitNavigationPresenter = transUnitNavigationPresenter;
-      this.undoRedoPresenter = undoRedoPresenter;
+      // this.undoRedoPresenter = undoRedoPresenter;
+      this.transFilterPresenter = transFilterPresenter;
    }
 
    @Override
@@ -82,11 +87,14 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       transUnitNavigationPresenter.bind();
       display.setTransUnitNavigation(transUnitNavigationPresenter.getDisplay().asWidget());
 
+      transFilterPresenter.bind();
+      display.setFilterView(transFilterPresenter.getDisplay().asWidget());
+
       // undoRedoPresenter.bind();
       // display.setUndoRedo(undoRedoPresenter.getDisplay().asWidget());
-      Label spacer = new Label();
-      spacer.setWidth("80px");
-      display.setUndoRedo(spacer);
+      // Label spacer = new Label();
+      // spacer.setWidth("80px");
+      // display.setUndoRedo(spacer);
 
       registerHandler(display.getPageNavigation().addValueChangeHandler(new ValueChangeHandler<Integer>()
       {
