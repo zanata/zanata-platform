@@ -20,36 +20,24 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.common.TransUnitCount;
-import org.zanata.common.TransUnitWords;
-import org.zanata.common.TranslationStats;
-import org.zanata.webtrans.client.editor.HasTranslationStats;
 import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
-import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
-import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasPager;
-import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.rpc.GetStatusCount;
-import org.zanata.webtrans.shared.rpc.GetStatusCountResult;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageChangeEvent;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -64,8 +52,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
 
       void setTransUnitNavigation(Widget widget);
 
-      HasTranslationStats getTransUnitCount();
-
       HasPager getPageNavigation();
 
       void setUndoRedo(Widget undoRedoWidget);
@@ -77,15 +63,11 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    private final UndoRedoPresenter undoRedoPresenter;
 
    private DocumentInfo currentDocument;
-   private final TranslationStats statusCount = new TranslationStats();
-
-   private final DispatchAsync dispatcher;
 
    @Inject
    public TranslationEditorPresenter(Display display, EventBus eventBus, final CachingDispatchAsync dispatcher, final TableEditorPresenter tableEditorPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter, final UndoRedoPresenter undoRedoPresenter)
    {
       super(display, eventBus);
-      this.dispatcher = dispatcher;
       this.tableEditorPresenter = tableEditorPresenter;
       this.transUnitNavigationPresenter = transUnitNavigationPresenter;
       this.undoRedoPresenter = undoRedoPresenter;
@@ -146,57 +128,9 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
                return;
             }
             currentDocument = event.getDocument();
-            requestStatusCount(event.getDocument().getId());
          }
       }));
-      registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), updateHandler));
    }
-
-   private void requestStatusCount(final DocumentId newDocumentId)
-   {
-      dispatcher.execute(new GetStatusCount(newDocumentId), new AsyncCallback<GetStatusCountResult>()
-      {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            Log.error("error fetching GetStatusCount: " + caught.getMessage());
-         }
-
-         @Override
-         public void onSuccess(GetStatusCountResult result)
-         {
-            statusCount.set(result.getCount());
-            display.getTransUnitCount().setStats(statusCount);
-         }
-      });
-   }
-
-   private final TransUnitUpdatedEventHandler updateHandler = new TransUnitUpdatedEventHandler()
-   {
-      @Override
-      public void onTransUnitUpdated(TransUnitUpdatedEvent event)
-      {
-         if (currentDocument == null)
-         {
-            return;
-         }
-         if (!event.getDocumentId().equals(currentDocument.getId()))
-         {
-            return;
-         }
-
-         TransUnitCount unitCount = statusCount.getUnitCount();
-         TransUnitWords wordCount = statusCount.getWordCount();
-
-         unitCount.increment(event.getTransUnit().getStatus());
-         unitCount.decrement(event.getPreviousStatus());
-         wordCount.increment(event.getTransUnit().getStatus(), event.getWordCount());
-         wordCount.decrement(event.getPreviousStatus(), event.getWordCount());
-
-         display.getTransUnitCount().setStats(statusCount);
-
-      }
-   };
 
    @Override
    protected void onUnbind()

@@ -20,13 +20,11 @@
  */
 package org.zanata.webtrans.client.view;
 
-import org.zanata.webtrans.client.editor.HasTranslationStats;
 import org.zanata.webtrans.client.presenter.TranslationEditorPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.client.ui.Pager;
-import org.zanata.webtrans.client.ui.TransUnitCountBar;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -53,9 +51,6 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    LayoutPanel editor;
 
    @UiField(provided = true)
-   TransUnitCountBar transUnitCountBar;
-
-   @UiField(provided = true)
    Pager pager;
 
    @UiField(provided = true)
@@ -65,7 +60,6 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    public TranslationEditorView(final WebTransMessages messages, final Resources resources)
    {
       this.resources = resources;
-      this.transUnitCountBar = new TransUnitCountBar(messages);
       this.pager = new Pager(messages, resources);
 
       initWidget(uiBinder.createAndBindUi(this));
@@ -97,12 +91,6 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    public Widget asWidget()
    {
       return this;
-   }
-
-   @Override
-   public HasTranslationStats getTransUnitCount()
-   {
-      return transUnitCountBar;
    }
 
    @Override
