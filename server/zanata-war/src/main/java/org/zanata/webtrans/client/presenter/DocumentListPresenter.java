@@ -31,10 +31,6 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.common.TransUnitCount;
-import org.zanata.common.TransUnitWords;
-import org.zanata.common.TranslationStats;
-import org.zanata.webtrans.client.editor.HasTranslationStats;
 import org.zanata.webtrans.client.editor.filter.ContentFilter;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
@@ -85,8 +81,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
       HasValue<String> getFilterTextBox();
 
-      HasTranslationStats getTransUnitCountBar();
-
       HasSelectionHandlers<DocumentInfo> getDocumentList();
    }
 
@@ -94,7 +88,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    private final WorkspaceContext workspaceContext;
    private final Map<DocumentId, DocumentStatus> statuscache = new HashMap<DocumentId, DocumentStatus>();
    private DocumentInfo currentDocument;
-   private final TranslationStats projectStats = new TranslationStats();
 
    private final WebTransMessages messages;
 
@@ -183,46 +176,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             }
          }
       }));
-
-      registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler()
-      {
-         @Override
-         public void onTransUnitUpdated(TransUnitUpdatedEvent event)
-         {
-            TransUnitCount projectCount = projectStats.getUnitCount();
-            projectCount.decrement(event.getPreviousStatus());
-            projectCount.increment(event.getTransUnit().getStatus());
-            TransUnitWords projectWords = projectStats.getWordCount();
-            projectWords.decrement(event.getPreviousStatus(), event.getWordCount());
-            projectWords.increment(event.getTransUnit().getStatus(), event.getWordCount());
-            getDisplay().getTransUnitCountBar().setStats(projectStats);
-         }
-      }));
-
-      // TODO get rid of this
-      // It is fetching stats for all documents in the workspace,
-      // but then it adds them all up
-      // and discards the individual document stats.
-      // this can be discarded when project stats bar is removed from here.
-      dispatcher.execute(new GetProjectStatusCount(), new AsyncCallback<GetProjectStatusCountResult>()
-      {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-         }
-
-         @Override
-         public void onSuccess(GetProjectStatusCountResult result)
-         {
-            ArrayList<DocumentStatus> liststatus = result.getStatus();
-            for (DocumentStatus doc : liststatus)
-            {
-               projectStats.add(doc.getCount());
-            }
-            display.getTransUnitCountBar().setStats(projectStats);
-         }
-      });
-
    }
 
    final class BasicContentFilter implements ContentFilter<DocumentInfo>

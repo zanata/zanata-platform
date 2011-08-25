@@ -25,7 +25,6 @@ import java.util.HashMap;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.zanata.webtrans.client.editor.HasTranslationStats;
 import org.zanata.webtrans.client.editor.filter.ContentFilter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.resources.Resources;
@@ -35,7 +34,6 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.ClearableTextBox;
 import org.zanata.webtrans.client.ui.DocumentListTable;
 import org.zanata.webtrans.client.ui.DocumentNode;
-import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
@@ -68,9 +66,6 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    ScrollPanel documentScrollPanel;
 
    @UiField(provided = true)
-   TransUnitCountBar transUnitCountBar;
-
-   @UiField(provided = true)
    ClearableTextBox filterTextBox;
 
    @UiField(provided = true)
@@ -99,7 +94,6 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       this.messages = messages;
       filterTextBox = new ClearableTextBox(resources, uiMessages);
       nodes = new HashMap<DocumentId, DocumentNode>();
-      transUnitCountBar = new TransUnitCountBar(messages);
       dataProvider = new ListDataProvider<DocumentNode>();
       this.dispatcher = dispatcher;
       this.eventBus = eventBus;
@@ -211,12 +205,6 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    public HasValue<String> getFilterTextBox()
    {
       return filterTextBox.getTextBox();
-   }
-
-   @Override
-   public HasTranslationStats getTransUnitCountBar()
-   {
-      return transUnitCountBar;
    }
 
    @Override
