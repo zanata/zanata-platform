@@ -10,7 +10,6 @@ public interface PushOptions extends ConfigurableProjectOptions
    public String getSourceLang();
    public File getSrcDir();
    public File getTransDir();
-   public String getProjectType();
    public boolean getPushTrans();
    public boolean getCopyTrans();
    public boolean getUseSrcOrder();

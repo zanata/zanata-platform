@@ -55,6 +55,11 @@ public class PublicanPullCommand extends ConfigurableProjectCommand
       this(opts, OptionsUtil.createRequestFactory(opts));
    }
 
+   @Override
+   protected String getProjectType()
+   {
+      return PROJECT_TYPE_PUBLICAN;
+   }
 
    @Override
    public void run() throws Exception
