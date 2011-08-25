@@ -49,6 +49,8 @@ public class GlossaryEntry implements Serializable
 
    private LocaleId srcLang;
 
+   private String sourcereference;
+
    @XmlElement(name = "Term")
    public List<GlossaryTerm> getGlossaryTerms()
    {
@@ -76,6 +78,17 @@ public class GlossaryEntry implements Serializable
       this.srcLang = srcLang;
    }
 
+   @XmlElement(name = "sourcereference", required = false)
+   public String getSourcereference()
+   {
+      return sourcereference;
+   }
+
+   public void setSourcereference(String ref)
+   {
+      this.sourcereference = ref;
+   }
+
    @Override
    public String toString()
    {
@@ -88,6 +101,7 @@ public class GlossaryEntry implements Serializable
       final int prime = 31;
       int result = 1;
       result = prime * result + ((glossaryTerms == null) ? 0 : glossaryTerms.hashCode());
+      result = prime * result + ((sourcereference == null) ? 0 : sourcereference.hashCode());
       result = prime * result + ((srcLang == null) ? 0 : srcLang.hashCode());
       return result;
    }
@@ -96,45 +110,36 @@ public class GlossaryEntry implements Serializable
    public boolean equals(Object obj)
    {
       if (this == obj)
-      {
          return true;
-      }
       if (obj == null)
-      {
          return false;
-      }
-      if (!(obj instanceof Glossary))
-      {
+      if (getClass() != obj.getClass())
          return false;
-      }
       GlossaryEntry other = (GlossaryEntry) obj;
       if (glossaryTerms == null)
       {
          if (other.glossaryTerms != null)
-         {
             return false;
-         }
       }
       else if (!glossaryTerms.equals(other.glossaryTerms))
-      {
          return false;
+      if (sourcereference == null)
+      {
+         if (other.sourcereference != null)
+            return false;
       }
-      
-      
+      else if (!sourcereference.equals(other.sourcereference))
+         return false;
       if (srcLang == null)
       {
          if (other.srcLang != null)
-         {
             return false;
-         }
       }
       else if (!srcLang.equals(other.srcLang))
-      {
          return false;
-      }
-      
       return true;
    }
+
 }
 
 

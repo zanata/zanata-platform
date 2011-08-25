@@ -61,7 +61,7 @@ public class GlossaryDAOTest extends ZanataDbunitJpaTest
       HGlossaryEntry entry = dao.getEntryById(new Long(1));
 
       Assert.assertNotNull(entry);
-      assertThat(entry.getGlossaryTerms().size(), is(2));
+      assertThat(entry.getGlossaryTerms().size(), is(3));
    }
 
    @Test
@@ -91,8 +91,17 @@ public class GlossaryDAOTest extends ZanataDbunitJpaTest
    {
       log.debug("testGetTermByGlossaryEntry");
       List<HGlossaryTerm> termList = dao.getTermByGlossaryEntryId(new Long(1));
-      assertThat(termList.size(), is(2));
+      assertThat(termList.size(), is(3));
 
+   }
+
+   @Test
+   public void testGetEntryBySrcContentLocale()
+   {
+      log.debug("testGetEntryBySrcContentLocale");
+      HGlossaryEntry entry = dao.getEntryBySrcContentLocale(LocaleId.EN_US, "test data content 1 (source lang)");
+      Assert.assertNotNull(entry);
+      assertThat(entry.getSrcLocale().getLocaleId(), is(LocaleId.EN_US));
    }
 
 }

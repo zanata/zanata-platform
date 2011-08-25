@@ -120,32 +120,4 @@ public class ETagUtils
 
       return EntityTag.valueOf(String.valueOf(hashcode));
    }
-   
-   public EntityTag generateTagForGlossary(List<Long> glossaryEntryIds)
-   {
-      List<String> glossaryVersions = new ArrayList<String>();
-      for (Long glossaryEntryId : glossaryEntryIds)
-      {
-         Long glossaryId = (Long) session.createQuery("select g.id from HGlossaryEntry g where g.id =:id").setParameter("id", glossaryEntryId).uniqueResult();
-         if (glossaryId == null)
-         {
-            throw new NoSuchEntityException("GlossaryEntry '" + glossaryEntryId + "' not found.");
-         }
-         glossaryVersions.add(glossaryId.toString());
-      }
-      String hash = HashUtil.generateHash(StringUtils.join(glossaryVersions, ':'));
-      return EntityTag.valueOf(hash);
-   }
-
-   public EntityTag generateTagForGlossaryTerm(LocaleId locale)
-   {
-      List<Object[]> queryResult = (List<Object[]>) session.createQuery("select g.glossaryEntry.id,g.locale.id from HGlossaryTerm g where g.locale.localeId =:locale").setParameter("locale", locale).list();
-      if (queryResult == null)
-      {
-         throw new NoSuchEntityException("HGlossaryTerm with locale '" + locale + "' not found.");
-      }
-      String hash = HashUtil.generateHash(String.valueOf(queryResult));
-      return EntityTag.valueOf(hash);
-   }
-
 }

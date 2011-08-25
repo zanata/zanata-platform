@@ -18,7 +18,6 @@ public interface PushOptions extends ConfigurableProjectOptions
 
    public List<String> getIncludes();
    public List<String> getExcludes();
-
-   public boolean getDefaultexclude();
+   public boolean getDefaultExcludes();
 }
 

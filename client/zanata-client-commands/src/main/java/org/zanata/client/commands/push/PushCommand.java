@@ -122,7 +122,7 @@ public class PushCommand extends ConfigurableProjectCommand
          }
          log.info("Exclude patterns: {}", sb.toString());
       }
-      log.info("Default exclude: {}", opts.getDefaultexclude());
+      log.info("Default exclude: {}", opts.getDefaultExcludes());
 
       if (opts.getPushTrans())
       {
@@ -172,7 +172,7 @@ public class PushCommand extends ConfigurableProjectCommand
       // NB we don't load all the docs into a HashMap, because that would waste
       // memory
 
-      Set<String> localDocNames = strat.findDocNames(sourceDir, opts.getIncludes(), opts.getExcludes(), opts.getDefaultexclude());
+      Set<String> localDocNames = strat.findDocNames(sourceDir, opts.getIncludes(), opts.getExcludes(), opts.getDefaultExcludes());
       for (String docName : localDocNames)
       {
          log.info("Source file to be uploaded: {}", docName);
