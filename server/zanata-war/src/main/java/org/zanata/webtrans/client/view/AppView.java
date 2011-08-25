@@ -20,9 +20,11 @@
  */
 package org.zanata.webtrans.client.view;
 
+import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
 import com.google.gwt.core.client.GWT;
@@ -55,6 +57,12 @@ public class AppView extends Composite implements AppPresenter.Display
 
    @UiField
    Anchor signOutLink, leaveLink, helpLink, documentsLink;
+
+   @UiField(provided = true)
+   TransUnitCountBar translationStatsBar;
+
+   private final TranslationStats documentStats, projectStats;
+   private StatsType showingStats;
 
    @UiField
    CheckBox editorButtonsCheckbox;
@@ -91,12 +99,22 @@ public class AppView extends Composite implements AppPresenter.Display
 
       StyleInjector.inject(resources.style().getText(), true);
 
+      // this must be initialized before uiBinder.createAndBindUi(), or an
+      // exception will be thrown at runtime
+      translationStatsBar = new TransUnitCountBar(messages);
+
+      documentStats = new TranslationStats();
+      projectStats = new TranslationStats();
+      showingStats = StatsType.Project;
+      setStatsVisible(false); // hide until there is a value to display
+
       initWidget(uiBinder.createAndBindUi(this));
 
       helpLink.setHref(messages.hrefHelpLink());
       helpLink.setTarget("_BLANK");
 
       editorButtonsCheckbox.setValue(true);
+
    }
 
    @Override
@@ -115,12 +133,16 @@ public class AppView extends Composite implements AppPresenter.Display
          container.setWidgetTopHeight(translationView, 0, Unit.PX, 0, Unit.PX);
          filterPanelContainer.setWidgetTopHeight(filterView, 0, Unit.PX, 0, Unit.PX);
          resetSelectedDocument();
+         showStats(StatsType.Project);
+         setStatsVisible(true);
          currentView = MainView.Documents;
          break;
       case Editor:
          container.setWidgetTopBottom(translationView, 0, Unit.PX, 0, Unit.PX);
          container.setWidgetTopHeight(documentListView, 0, Unit.PX, 0, Unit.PX);
          filterPanelContainer.setWidgetTopBottom(filterView, 0, Unit.PX, 0, Unit.PX);
+         showStats(StatsType.Document);
+         setStatsVisible(true);
          currentView = MainView.Editor;
          break;
       }
@@ -236,5 +258,49 @@ public class AppView extends Composite implements AppPresenter.Display
    public MainView getCurrentView()
    {
       return currentView;
+   }
+
+   @Override
+   public void setStatsVisible(boolean visible)
+   {
+      translationStatsBar.setVisible(visible);
+   }
+
+   @Override
+   public void setStats(StatsType statsFor, TranslationStats transStats)
+   {
+      switch (statsFor)
+      {
+      case Document:
+         documentStats.set(transStats);
+         break;
+      case Project:
+         projectStats.set(transStats);
+         break;
+      }
+      updateStatsDisplay();
+   }
+
+   @Override
+   public void showStats(StatsType whichStats)
+   {
+      showingStats = whichStats;
+      updateStatsDisplay();
+   }
+
+   /**
+    * @param whichStats the stats type being displayed
+    */
+   private void updateStatsDisplay()
+   {
+      switch (showingStats)
+      {
+      case Document:
+         translationStatsBar.setStats(documentStats);
+         break;
+      case Project:
+         translationStatsBar.setStats(projectStats);
+         break;
+      }
    }
 }

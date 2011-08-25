@@ -20,9 +20,15 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
+
+import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.common.TransUnitCount;
+import org.zanata.common.TransUnitWords;
+import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
@@ -30,17 +36,28 @@ import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEventHandler;
+import org.zanata.webtrans.client.events.ProjectStatsRetrievedEvent;
+import org.zanata.webtrans.client.events.ProjectStatsRetrievedEventHandler;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display.MainView;
+import org.zanata.webtrans.client.presenter.AppPresenter.Display.StatsType;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.auth.Identity;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
+import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.rpc.GetStatusCount;
+import org.zanata.webtrans.shared.rpc.GetStatusCountResult;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -54,6 +71,11 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       enum MainView
       {
          Documents, Editor;
+      }
+
+      enum StatsType
+      {
+         Document, Project;
       }
 
       void setDocumentListView(Widget documentListView);
@@ -83,6 +105,29 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       void setSelectedDocument(DocumentInfo document);
 
       void setNotificationMessage(String var);
+
+      /**
+       * Set the statistics to display for the current document or project
+       * 
+       * @param statsFor whether these are document or project stats
+       * @param transStats the stats to display for the document/project
+       */
+      void setStats(StatsType statsFor, TranslationStats transStats);
+
+      /**
+       * Choose which statistics to show in the header bar. Does not change
+       * visibility of the stats bar.
+       * 
+       * @param whichStats the type of stats to display
+       */
+      void showStats(StatsType whichStats);
+
+      /**
+       * Set whether the stats bar is visible.
+       * 
+       * @param visible
+       */
+      void setStatsVisible(boolean visible);
    }
 
    private final DocumentListPresenter documentListPresenter;
@@ -95,10 +140,16 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
    private DocumentInfo selectedDocument;
 
+   private final DispatchAsync dispatcher;
+
+   private final TranslationStats selectedDocumentStats = new TranslationStats();
+   private final TranslationStats projectStats = new TranslationStats();
+
    @Inject
    public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final TransFilterPresenter transFilterPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
    {
       super(display, eventBus);
+      this.dispatcher = dispatcher;
       this.identity = identity;
       this.messages = messages;
       this.documentListPresenter = documentListPresenter;
@@ -141,13 +192,47 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          {
             if (selectedDocument == null || !event.getDocument().getId().equals(selectedDocument.getId()))
             {
-               display.setSelectedDocument(event.getDocument());
                selectedDocument = event.getDocument();
+               requestDocumentStats(selectedDocument.getId());
             }
+            display.setSelectedDocument(selectedDocument);
             display.showInMainView(MainView.Editor);
          }
       }));
 
+      registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler()
+      {
+         @Override
+         public void onTransUnitUpdated(TransUnitUpdatedEvent event)
+         {
+            if (selectedDocument != null && event.getDocumentId().equals(selectedDocument.getId()))
+            {
+               adjustStats(selectedDocumentStats, event);
+               display.setStats(StatsType.Document, selectedDocumentStats);
+            }
+            adjustStats(projectStats, event);
+            display.setStats(StatsType.Project, projectStats);
+         }
+      }));
+
+      registerHandler(eventBus.addHandler(ProjectStatsRetrievedEvent.getType(), new ProjectStatsRetrievedEventHandler()
+      {
+
+         @Override
+         public void onProjectStatsRetrieved(ProjectStatsRetrievedEvent event)
+         {
+            ArrayList<DocumentStatus> liststatus = event.getProjectDocumentStats();
+            // this shouldn't be required at the moment, but will prevent
+            // confusing bugs if project stats are retrieved multiple times in
+            // future
+            projectStats.set(new TranslationStats());
+            for (DocumentStatus doc : liststatus)
+            {
+               projectStats.add(doc.getCount());
+            }
+            display.setStats(StatsType.Project, projectStats);
+         }
+      }));
 
       registerHandler(display.getDocumentsLink().addClickHandler(new ClickHandler()
       {
@@ -199,6 +284,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             eventBus.fireEvent(new ButtonDisplayChangeEvent(showButtons));
          }
       }));
+      
+      
 
       display.setUserLabel(identity.getPerson().getName());
 
@@ -215,5 +302,38 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    @Override
    public void onRevealDisplay()
    {
+   }
+
+   private void requestDocumentStats(final DocumentId newDocumentId)
+   {
+      dispatcher.execute(new GetStatusCount(newDocumentId), new AsyncCallback<GetStatusCountResult>()
+      {
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            Log.error("error fetching GetStatusCount: " + caught.getMessage());
+         }
+
+         @Override
+         public void onSuccess(GetStatusCountResult result)
+         {
+            selectedDocumentStats.set(result.getCount());
+            display.setStats(StatsType.Document, selectedDocumentStats);
+         }
+      });
+   }
+
+   /**
+    * @param Updateevent
+    */
+   private void adjustStats(TranslationStats statsObject, TransUnitUpdatedEvent Updateevent)
+   {
+      TransUnitCount unitCount = statsObject.getUnitCount();
+      TransUnitWords wordCount = statsObject.getWordCount();
+
+      unitCount.increment(Updateevent.getTransUnit().getStatus());
+      unitCount.decrement(Updateevent.getPreviousStatus());
+      wordCount.increment(Updateevent.getTransUnit().getStatus(), Updateevent.getWordCount());
+      wordCount.decrement(Updateevent.getPreviousStatus(), Updateevent.getWordCount());
    }
 }

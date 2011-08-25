@@ -38,7 +38,15 @@
 			font-weight: bold;
 			text-decoration: none;
 		}
-
+		
+		.translationStats {
+			float: left;
+			width: 140px;
+			height: 1.2em;
+			color: white;
+			margin-top: 7px;
+		}
+		
 		.userName {
 			font-weight: bold;
 			color: #ae1f23;
@@ -84,7 +92,7 @@
 		</g:layer>
 		<g:layer top="30px" height="30px">
 		<g:LayoutPanel ui:field='topPanel' styleName="{resources.style.banner}">
-			<g:layer left="0px" right="310px">
+			<g:layer left="0px" right="520px">
 			<g:HorizontalPanel width="100%">
 				<g:FlowPanel>
 				<g:HTMLPanel styleName="{style.topPanel-Workspace}">
@@ -101,6 +109,9 @@
 					<g:Label ui:field="notificationMessage" styleName="{style.notification}"/>
 				</g:FlowPanel>
 			</g:HorizontalPanel>
+			</g:layer>
+			<g:layer right="310px" width="200px">
+			    <fui:TransUnitCountBar ui:field="translationStatsBar" styleName="{style.translationStats}"/>
 			</g:layer>
 			<g:layer right="7px" width ="300px" >
 			   <g:LayoutPanel ui:field="filterPanelContainer" />
