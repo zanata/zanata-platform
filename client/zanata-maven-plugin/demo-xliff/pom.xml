@@ -30,16 +30,49 @@
     </plugins>
   </build>
   <pluginRepositories>
-    <pluginRepository>
-      <id>openl10n-public-repository-group</id>
-      <name>OpenL10n Public Repository Group</name>
-      <url>http://nexus.openl10n.net/content/groups/public</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
+		<pluginRepository>
+			<id>zanata-cloudbees-release</id>
+			<name>zanata-cloudbees-release</name>
+			<url>http://repository-zanata.forge.cloudbees.com/release/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>zanata-cloudbees-snapshot</id>
+			<name>zanata-cloudbees-snapshot</name>
+			<url>http://repository-zanata.forge.cloudbees.com/snapshot/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>jboss-releases</id>
+			<name>jboss-releases</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>jboss-thirdparty-releases</id>
+			<name>jboss-thirdparty-releases</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
   </pluginRepositories>
 </project>
