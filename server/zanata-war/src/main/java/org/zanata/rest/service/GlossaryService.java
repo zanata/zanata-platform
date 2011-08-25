@@ -90,7 +90,7 @@ public class GlossaryService implements GlossaryResource
    @Override
    @GET
    // @Path(SERVICE_PATH)
-   @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON })
+   @Produces( { MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response getEntries()
    {
       ResponseBuilder response = request.evaluatePreconditions();
@@ -110,7 +110,7 @@ public class GlossaryService implements GlossaryResource
    @Override
    @GET
    @Path("/{locale}")
-   @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON })
+   @Produces( { MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response get(@PathParam("locale") LocaleId locale)
    {
       ResponseBuilder response = request.evaluatePreconditions();
@@ -130,7 +130,7 @@ public class GlossaryService implements GlossaryResource
    @Override
    @PUT
    // @Path(SERVICE_PATH)
-   @Consumes({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON })
+   @Consumes( { MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response put(InputStream messageBody)
    {
       ResponseBuilder response;
