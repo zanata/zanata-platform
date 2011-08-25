@@ -44,6 +44,7 @@ public abstract class ConfigurableProjectOptionsImpl extends ConfigurableOptions
 
    private String project;
    private String projectVersion;
+   private String projectType;
    private LocaleList locales;
 
    @Override
@@ -77,6 +78,19 @@ public abstract class ConfigurableProjectOptionsImpl extends ConfigurableOptions
    public void setProjectVersion(String versionSlug)
    {
       this.projectVersion = versionSlug;
+   }
+
+   @Override
+   public String getProjectType()
+   {
+      return projectType;
+   }
+
+   @Override
+   @Option(name = "--project-type", metaVar = "PROJTYPE", usage = "Type of project ('properties' = Java .properties, 'podir' = publican-style gettext directories)")
+   public void setProjectType(String projectType)
+   {
+      this.projectType = projectType;
    }
 
    @Override

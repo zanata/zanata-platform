@@ -31,15 +31,6 @@ public class PullMojo extends ConfigurableProjectMojo implements PullOptions
    private File transDir;
 
    /**
-    * Type of project ("properties" = Java .properties, "podir" = publican-style
-    * gettext directories)
-    * 
-    * @parameter expression="${zanata.projectType}"
-    * @required
-    */
-   private String projectType;
-
-   /**
     * Export source-language text from Zanata to local files, overwriting or
     * erasing existing files (DANGER!)
     * 
@@ -67,12 +58,6 @@ public class PullMojo extends ConfigurableProjectMojo implements PullOptions
    public File getTransDir()
    {
       return transDir;
-   }
-
-   @Override
-   public String getProjectType()
-   {
-      return projectType;
    }
 
    @Override
