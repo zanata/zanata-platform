@@ -27,6 +27,11 @@ public interface ConfigurableProjectOptions extends ConfigurableOptions
    @Option(name = "--project-version", metaVar = "VER", usage = "Project version ID  This value is required unless specified in zanata.xml.")
    public void setProjectVersion(String versionSlug);
 
+   public String getProjectType();
+
+   @Option(name = "--project-type", metaVar = "PROJTYPE", usage = "Project type  This value is required unless specified in zanata.xml.")
+   public void setProjectType(String projectType);
+
    public String getProjectConfig();
 
    public LocaleList getLocales();

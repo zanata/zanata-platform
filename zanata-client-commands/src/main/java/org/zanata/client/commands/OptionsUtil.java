@@ -99,6 +99,10 @@ public class OptionsUtil
       {
          opts.setProjectVersion(config.getProjectVersion());
       }
+      if (opts.getProjectType() == null)
+      {
+         opts.setProjectType(config.getProjectType());
+      }
       LocaleList locales = config.getLocales();
       opts.setLocales(locales);
    }
