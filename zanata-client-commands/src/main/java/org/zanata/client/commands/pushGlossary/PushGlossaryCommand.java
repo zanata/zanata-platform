@@ -55,9 +55,8 @@ public class PushGlossaryCommand extends ConfigurableCommand
    private final URI uri;
 
    {
-      glossaryReaders.put("po", new PoReader());
-      // strategies.put("cvs", new cvsStrategy());
-      // strategies.put("po", new poStrategy());
+      glossaryReaders.put("po", new GlossaryPoReader());
+      // glossaryReaders.put("csv", new GlossaryCSVReader());
    }
 
    public PushGlossaryCommand(PushGlossaryOptions opts, ZanataProxyFactory factory, IGlossaryResource glossaryResource, URI uri)
