@@ -20,9 +20,9 @@
  */
 package org.zanata.webtrans.client.editor.filter;
 
-import org.zanata.webtrans.client.Resources;
+import org.zanata.webtrans.client.resources.Resources;
+import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.ClearableTextBox;
-import org.zanata.webtrans.client.ui.UiMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;

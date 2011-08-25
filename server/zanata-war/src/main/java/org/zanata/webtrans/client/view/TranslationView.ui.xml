@@ -1,0 +1,68 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:f="urn:import:org.zanata.webtrans.client"
+	xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
+
+	<ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources" />
+
+	<ui:style>
+		.imageButton {
+			cursor: pointer;
+		}
+		
+		.tmview {
+			padding-left: 7px;
+			padding-bottom: 7px;
+			background-color: #ffffff;
+			border: 3px solid #e0e8ee;
+			-moz-border-radius: 7px;
+			-webkit-border-radius: 7px;
+		}
+	</ui:style>
+
+	<g:LayoutPanel>
+		<g:layer top="0px" bottom="0px">
+			<g:SplitLayoutPanel styleName="PageSplitLayoutPanel" ui:field="mainSplitPanel">
+				<g:south size="150" min-size="45">
+                    <g:LayoutPanel ui:field="tmPanelContainer">
+                        <g:layer top="0" bottom="8px">
+                            <g:LayoutPanel styleName="{style.tmview}" ui:field="tmPanel" />
+                        </g:layer>
+                        <g:layer right="3px" top="3px" width="15px" height="15px">
+                            <g:FlowPanel>
+                                <g:Image resource="{resources.upArrowButton}" ui:field="showTmViewLink" styleName="{style.imageButton}" />
+                                <g:Image resource="{resources.minimizeButton}" ui:field="tmMinimize" styleName="{style.imageButton}" />
+                            </g:FlowPanel>
+                        </g:layer>
+                    </g:LayoutPanel>
+                </g:south>
+				<g:center>
+					<g:LayoutPanel>
+						<g:layer>
+							<g:LayoutPanel ui:field="editorContainer" />
+						</g:layer>
+
+						<g:layer height="16px" width="16px" right="4px" top="6px">
+							<g:FlowPanel>
+								<g:Image resource="{resources.leftArrowButton}"
+									ui:field="sidePanelExpend" styleName="{style.imageButton}" />
+							</g:FlowPanel>
+						</g:layer>
+					</g:LayoutPanel>
+				</g:center>
+				<g:east size="205" min-size="20">
+					<g:LayoutPanel ui:field="sidePanelOuterContainer">
+						<g:layer top="0px" bottom="0px">
+							<g:LayoutPanel ui:field="sidePanelContainer" />
+						</g:layer>
+						<g:layer right="3px" top="4px" width="15px" height="15px">
+							<g:Image resource="{resources.minimizeButton}" ui:field="sidePanelCollapse"
+								styleName="{style.imageButton}" />
+						</g:layer>
+					</g:LayoutPanel>
+				</g:east>
+				
+			</g:SplitLayoutPanel>
+		</g:layer>
+	</g:LayoutPanel>
+</ui:UiBinder>

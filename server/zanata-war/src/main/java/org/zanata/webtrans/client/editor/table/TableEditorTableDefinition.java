@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.CopySourceEvent;
+import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TransUnit;
 

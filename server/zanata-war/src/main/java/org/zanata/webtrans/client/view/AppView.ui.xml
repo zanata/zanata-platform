@@ -1,0 +1,122 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:f="urn:import:org.zanata.webtrans.client"
+	xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
+    ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+    ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+    ui:generateLocales="en">
+	
+	<ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources"/>
+	
+	<ui:style>
+		.header {
+			background-color: #ffffff;
+		}
+		
+		.topPanel-Navigation {
+			float: right;
+			color: #0203ad;
+		}
+		.topPanel-Navigation a {
+			text-decoration: none;
+		}
+
+		.topPanel-Workspace {
+			font-size: 1.2em;
+			color: white;
+			padding: 5px;
+		}
+
+		.notification {
+			color: yellow;
+			padding: 5px;
+		}
+
+		.topPanel-Workspace a{
+			color: white;
+			font-weight: bold;
+			text-decoration: none;
+		}
+		
+		.translationStats {
+			float: left;
+			width: 140px;
+			height: 1.2em;
+			color: white;
+			margin-top: 7px;
+		}
+		
+		.userName {
+			font-weight: bold;
+			color: #ae1f23;
+		}
+		
+		.divider {
+			color: #e0e0e0;	
+		}
+		
+		.editor {
+			padding-left: 7px;
+			background-color: #b4e2ff;
+			border: 2px solid #99ccff;
+			-moz-border-radius: 10px;
+		}
+
+		
+	</ui:style>
+	<g:LayoutPanel>
+		<g:layer top="0px" height="30px">
+			<g:LayoutPanel styleName="{style.header}">
+				<g:layer top="6px" left="6px" width="18px" height="18px">
+					<g:Image resource="{resources.logo}"/>
+				</g:layer>
+				<g:layer top="6px" height="100%" left="25px" right="6px">
+					<g:FlowPanel>
+						<g:HTMLPanel styleName="{style.topPanel-Navigation}">
+							<nobr>
+								<span ui:field="user" class="{style.userName}"><ui:msg>User Name</ui:msg></span>
+								<span class="{style.divider}">|</span>
+								<g:Anchor href="#" ui:field="helpLink"><ui:msg>Help</ui:msg></g:Anchor>
+								<span class="{style.divider}">|</span>
+								<g:CheckBox ui:field="editorButtonsCheckbox"><ui:msg>Editor Buttons</ui:msg></g:CheckBox>
+								<span class="{style.divider}">|</span>
+								<g:Anchor href="#" ui:field="leaveLink"><ui:msg>Leave Workspace</ui:msg></g:Anchor>
+								<span class="{style.divider}">|</span>
+								<g:Anchor href="#" ui:field="signOutLink"><ui:msg>Sign Out</ui:msg></g:Anchor>
+							</nobr>
+						</g:HTMLPanel>
+					</g:FlowPanel>
+				</g:layer>
+			</g:LayoutPanel>
+		</g:layer>
+		<g:layer top="30px" height="30px">
+		<g:LayoutPanel ui:field='topPanel' styleName="{resources.style.banner}">
+			<g:layer left="0px" right="520px">
+			<g:HorizontalPanel width="100%">
+				<g:FlowPanel>
+				<g:HTMLPanel styleName="{style.topPanel-Workspace}">
+					<nobr>
+						<g:Anchor href="#" ui:field="documentsLink"><ui:msg>Documents</ui:msg></g:Anchor>
+						<span class="{style.divider}">></span>
+						<em>
+							<span ui:field="selectedDocumentPathSpan"/><span ui:field="selectedDocumentSpan"><ui:msg>No document selected</ui:msg></span>
+						</em>
+					</nobr>
+				</g:HTMLPanel>
+				</g:FlowPanel>
+				<g:FlowPanel >
+					<g:Label ui:field="notificationMessage" styleName="{style.notification}"/>
+				</g:FlowPanel>
+			</g:HorizontalPanel>
+			</g:layer>
+			<g:layer right="7px" width="200px">
+			    <fui:TransUnitCountBar ui:field="translationStatsBar" styleName="{style.translationStats}"/>
+			</g:layer>
+		</g:LayoutPanel>
+		</g:layer>
+		<g:layer top="66px" bottom="0px" left='7px' right='7px' >
+		   <g:LayoutPanel ui:field="container" />
+		</g:layer>
+	</g:LayoutPanel>
+</ui:UiBinder>

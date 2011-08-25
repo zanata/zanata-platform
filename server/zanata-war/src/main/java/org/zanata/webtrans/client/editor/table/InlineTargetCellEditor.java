@@ -24,6 +24,7 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.EditTransUnitEvent;
+import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;

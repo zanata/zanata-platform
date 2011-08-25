@@ -1,7 +1,7 @@
 package org.zanata.webtrans.client.ui;
 
-import org.zanata.webtrans.client.Resources;
-import org.zanata.webtrans.client.WebTransMessages;
+import org.zanata.webtrans.client.resources.Resources;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

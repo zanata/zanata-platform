@@ -58,6 +58,7 @@ import org.zanata.webtrans.client.events.UndoFailureEvent;
 import org.zanata.webtrans.client.events.UndoRedoFinishEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;

@@ -2,11 +2,9 @@ package org.zanata.webtrans.client.ui;
 
 import java.util.Comparator;
 
-import org.zanata.webtrans.client.DocumentListView;
-import org.zanata.webtrans.client.DocumentNode;
-import org.zanata.webtrans.client.Resources;
-import org.zanata.webtrans.client.TransUnitCountGraph;
-import org.zanata.webtrans.client.WebTransMessages;
+import org.zanata.webtrans.client.resources.Resources;
+import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.view.DocumentListView;
 import org.zanata.webtrans.shared.util.ObjectUtil;
 
 import com.google.gwt.cell.client.AbstractCell;
