@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.zanata</groupId>
 	<artifactId>zanata-parent</artifactId>
-	<version>1.5-SNAPSHOT</version>
+	<version>1.4-SNAPSHOT</version>
 	<name>Zanata Parent POM</name>
 	<url>http://zanata.org/</url>
 	<packaging>pom</packaging>
@@ -150,10 +151,10 @@
 		<javadoc.skip>true</javadoc.skip>
 
 		<checkstyle.skip>false</checkstyle.skip>
-		<checkstyle.configLocation />
-		<checkstyle.propertiesLocation />
-		<checkstyle.suppressionsLocation />
-		<checkstyle.suppressionsFileExpression />
+		<checkstyle.configLocation></checkstyle.configLocation>
+		<checkstyle.propertiesLocation></checkstyle.propertiesLocation>
+		<checkstyle.suppressionsLocation></checkstyle.suppressionsLocation>
+		<checkstyle.suppressionsFileExpression></checkstyle.suppressionsFileExpression>
 
 		<reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
 		<reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
@@ -308,6 +309,9 @@
 		</pluginManagement>
 		<extensions>
 			<extension>
+				<!--
+				enables dav: protocol for distributionManagement in Maven 3+
+				-->
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-webdav-jackrabbit</artifactId>
 				<version>1.0-beta-7</version>
@@ -811,50 +815,80 @@
 	</dependencyManagement>
 
 	<repositories>
-		<!-- <repository> -->
-		<!-- <id>central</id> -->
-		<!-- <name>Maven Repository Switchboard</name> -->
-		<!-- <layout>default</layout> -->
-		<!-- <url>http://repo1.maven.org/maven2</url> -->
-		<!-- <snapshots> -->
-		<!-- <enabled>false</enabled> -->
-		<!-- </snapshots> -->
-		<!-- </repository> -->
-
 		<repository>
-			<id>openl10n-public-repository-group</id>
-			<name>OpenL10n Public Repository Group</name>
-			<url>http://nexus.openl10n.net/content/groups/public</url>
-			<layout>default</layout>
+			<id>zanata-cloudbees-release</id>
+			<name>zanata-cloudbees-release</name>
+			<url>http://repository-zanata.forge.cloudbees.com/release/</url>
 			<releases>
 				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>zanata-cloudbees-snapshot</id>
+			<name>zanata-cloudbees-snapshot</name>
+			<url>http://repository-zanata.forge.cloudbees.com/snapshot/</url>
+			<releases>
+				<enabled>false</enabled>
 			</releases>
 			<snapshots>
 				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>jboss-releases</id>
+			<name>jboss-releases</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>jboss-thirdparty-releases</id>
+			<name>jboss-thirdparty-releases</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>jboss-snapshots</id>
+			<name>jboss-snapshots</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
 			</snapshots>
 		</repository>
 	</repositories>
 	<pluginRepositories>
-		<!-- <pluginRepository> -->
-		<!-- <id>central</id> -->
-		<!-- <name>Maven Plugin Repository</name> -->
-		<!-- <url>http://repo1.maven.org/maven2</url> -->
-		<!-- <layout>default</layout> -->
-		<!-- <snapshots> -->
-		<!-- <enabled>false</enabled> -->
-		<!-- </snapshots> -->
-		<!-- <releases> -->
-		<!-- <updatePolicy>never</updatePolicy> -->
-		<!-- </releases> -->
-		<!-- </pluginRepository> -->
 		<pluginRepository>
-			<id>openl10n-public-repository-group</id>
-			<name>OpenL10n Public Repository Group</name>
-			<url>http://nexus.openl10n.net/content/groups/public</url>
+			<id>zanata-cloudbees-release</id>
+			<name>zanata-cloudbees-release</name>
+			<url>http://repository-zanata.forge.cloudbees.com/release/</url>
 			<releases>
 				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>zanata-cloudbees-snapshot</id>
+			<name>zanata-cloudbees-snapshot</name>
+			<url>http://repository-zanata.forge.cloudbees.com/snapshot/</url>
+			<releases>
+				<enabled>false</enabled>
 			</releases>
 			<snapshots>
 				<enabled>true</enabled>
