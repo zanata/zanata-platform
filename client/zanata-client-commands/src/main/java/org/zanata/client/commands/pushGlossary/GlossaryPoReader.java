@@ -43,10 +43,10 @@ import org.zanata.rest.dto.GlossaryTerm;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class PoReader extends AbstractPushGlossaryReader
+public class GlossaryPoReader extends AbstractPushGlossaryReader
 {
 
-   private static final Logger log = LoggerFactory.getLogger(PoReader.class);
+   private static final Logger log = LoggerFactory.getLogger(GlossaryPoReader.class);
 
    @Override
    public Glossary extractGlossary(File glossaryFile) throws IOException
@@ -72,6 +72,7 @@ public class PoReader extends AbstractPushGlossaryReader
       LocaleId targetLang = new LocaleId(getOpts().getTransLang());
 
       Glossary glossary = new Glossary();
+      // glossary.setSourceLocale(srcLang);
 
       while (messageParser.hasNext())
       {
