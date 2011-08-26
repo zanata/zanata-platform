@@ -72,7 +72,6 @@ public class GlossaryPoReader extends AbstractPushGlossaryReader
       LocaleId targetLang = new LocaleId(getOpts().getTransLang());
 
       Glossary glossary = new Glossary();
-      // glossary.setSourceLocale(srcLang);
 
       while (messageParser.hasNext())
       {
@@ -153,7 +152,6 @@ public class GlossaryPoReader extends AbstractPushGlossaryReader
             glossary.getGlossaryEntries().add(entry);
          }
       }
-
       return glossary;
    }
 
