@@ -1,21 +1,28 @@
 package org.zanata.adapter.properties;
 
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.InvalidPropertiesFormatException;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.junit.Test;
+import org.apache.commons.lang.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static org.testng.Assert.*;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
+import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 public class PropReaderTests
@@ -23,7 +30,13 @@ public class PropReaderTests
    private static final Logger log = LoggerFactory.getLogger(PropReaderTests.class);
 
    @SuppressWarnings("deprecation")
-   PropReader propReader = new PropReader();
+   PropReader propReader;
+
+   @BeforeMethod
+   public void resetReader()
+   {
+      propReader = new PropReader();
+   }
 
    @Test
    public void roundtripSrcPropsToDocXmlToProps() throws Exception
@@ -76,5 +89,43 @@ public class PropReaderTests
       if (stream == null)
          throw new FileNotFoundException(relativeResourceName);
       return stream;
+   }
+   
+   @Test
+   public void extractTemplateRemovesNonTranslateableRegions() throws IOException
+   {
+      Resource srcDoc = new Resource("test");
+      InputStream testStream = getResourceAsStream("test_non_trans.properties");
+      propReader.extractTemplate(srcDoc, testStream);
+
+      List<TextFlow> textFlows = srcDoc.getTextFlows();
+
+      assertEquals(textFlows.size(), 2, "Unexpected number of textflows");
+      assertEquals(textFlows.get(0).getId(), "HELLO", "Unexpected textflow id");
+      assertEquals(textFlows.get(1).getId(), "GOODBYE", "Unexpected textflow id");
+      // TODO also check comments?
+   }
+
+   @Test
+   public void extractTemplateNestedNonTranslatableRegions() throws Exception
+   {
+      Resource srcDoc = new Resource("test");
+      InputStream testStream = getResourceAsStream("test_non_trans_nested.properties");
+      propReader.extractTemplate(srcDoc, testStream);
+
+      List<TextFlow> textFlows = srcDoc.getTextFlows();
+
+      assertEquals(textFlows.size(), 2, "Unexpected number of textflows");
+      assertEquals(textFlows.get(0).getId(), "HELLO", "Unexpected textflow id");
+      assertEquals(textFlows.get(1).getId(), "GOODBYE", "Unexpected textflow id");
+      // TODO also check comments?
+   }
+
+   @Test(expectedExceptions = InvalidPropertiesFormatException.class)
+   public void extractTemplateNonTranslatableMismatchException() throws IOException, InvalidPropertiesFormatException
+   {
+      Resource srcDoc = new Resource("test");
+      InputStream testStream = getResourceAsStream("test_non_trans_mismatch.properties");
+      propReader.extractTemplate(srcDoc, testStream);
    }
 }
