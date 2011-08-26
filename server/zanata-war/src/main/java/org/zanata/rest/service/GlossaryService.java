@@ -89,7 +89,6 @@ public class GlossaryService implements GlossaryResource
 
    @Override
    @GET
-   // @Path(SERVICE_PATH)
    @Produces( { MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response getEntries()
    {
@@ -129,7 +128,6 @@ public class GlossaryService implements GlossaryResource
 
    @Override
    @PUT
-   // @Path(SERVICE_PATH)
    @Consumes( { MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response put(InputStream messageBody)
    {
@@ -202,7 +200,6 @@ public class GlossaryService implements GlossaryResource
 
    @Override
    @DELETE
-//   @Path(SERVICE_PATH)
    public Response deleteGlossaries()
    {
       ResponseBuilder response = request.evaluatePreconditions();

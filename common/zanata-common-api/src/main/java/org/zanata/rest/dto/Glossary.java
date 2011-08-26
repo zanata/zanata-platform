@@ -24,15 +24,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.MediaTypes.Format;
+import org.zanata.rest.dto.resource.LocaleList;
 
 /**
  *
@@ -40,15 +43,44 @@ import org.zanata.rest.MediaTypes.Format;
  *
  **/
 
-@XmlRootElement(name = "Glossary")
-@JsonPropertyOrder({ "Entries" })
+@XmlRootElement(name = "glossary")
+@XmlType(name = "glossaryType", propOrder = { "sourceLocales", "targetLocales", "glossaryEntries" })
+@JsonPropertyOrder({ "sourceLocales", "glossaryEntries", "targetLocales" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
 public class Glossary implements Serializable, HasMediaType
 {
    private List<GlossaryEntry> glossaryEntries;
 
-   @XmlElementWrapper(name = "Entries")
+   private LocaleList sourceLocales = new LocaleList();
+
+   private LocaleList targetLocales = new LocaleList();
+
+   @XmlElementWrapper(name = "source-locales", required = false)
+   @XmlElement(name = "locale")
+   public LocaleList getSourceLocales()
+   {
+      return sourceLocales;
+   }
+
+   public void setSourceLocales(LocaleList sourceLocales)
+   {
+      this.sourceLocales = sourceLocales;
+   }
+
+   @XmlElementWrapper(name = "target-locales", required = false)
+   @XmlElement(name = "locale")
+   public LocaleList getTargetLocales()
+   {
+      return targetLocales;
+   }
+
+   public void setTargetLocales(LocaleList targetLocales)
+   {
+      this.targetLocales = targetLocales;
+   }
+
+   @XmlElementWrapper(name = "glossary-entries")
    @XmlElementRef
    public List<GlossaryEntry> getGlossaryEntries()
    {
@@ -82,6 +114,8 @@ public class Glossary implements Serializable, HasMediaType
       final int prime = 31;
       int result = 1;
       result = prime * result + ((glossaryEntries == null) ? 0 : glossaryEntries.hashCode());
+      result = prime * result + ((sourceLocales == null) ? 0 : sourceLocales.hashCode());
+      result = prime * result + ((targetLocales == null) ? 0 : targetLocales.hashCode());
       return result;
    }
 
@@ -89,18 +123,33 @@ public class Glossary implements Serializable, HasMediaType
    public boolean equals(Object obj)
    {
       if (this == obj)
-      {
          return true;
-      }
       if (obj == null)
-      {
          return false;
-      }
-      if (!(obj instanceof Glossary))
-      {
+      if (getClass() != obj.getClass())
          return false;
-      }
       Glossary other = (Glossary) obj;
+      if (glossaryEntries == null)
+      {
+         if (other.glossaryEntries != null)
+            return false;
+      }
+      else if (!glossaryEntries.equals(other.glossaryEntries))
+         return false;
+      if (sourceLocales == null)
+      {
+         if (other.sourceLocales != null)
+            return false;
+      }
+      else if (!sourceLocales.equals(other.sourceLocales))
+         return false;
+      if (targetLocales == null)
+      {
+         if (other.targetLocales != null)
+            return false;
+      }
+      else if (!targetLocales.equals(other.targetLocales))
+         return false;
       return true;
    }
 }
