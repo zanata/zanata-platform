@@ -228,6 +228,10 @@ public class SerializationTests
    public void serializeAndDeserializeGlossary() throws JsonGenerationException, JsonMappingException, IOException, JAXBException
    {
       Glossary glossary = new Glossary();
+      glossary.getSourceLocales().add("en-US");
+
+      glossary.getTargetLocales().add("jp");
+      glossary.getTargetLocales().add("de");
 
       GlossaryEntry entry = new GlossaryEntry();
       entry.setSrcLang(LocaleId.EN_US);
@@ -251,7 +255,6 @@ public class SerializationTests
       entry.getGlossaryTerms().add(term2);
       glossary.getGlossaryEntries().add(entry);
 
-      // System.out.println(glossary);
       JaxbUtil.validateXml(glossary, Glossary.class);
       String output = mapper.writeValueAsString(glossary);
 

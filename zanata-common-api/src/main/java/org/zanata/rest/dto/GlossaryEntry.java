@@ -27,6 +27,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -39,8 +40,9 @@ import org.zanata.common.LocaleId;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-@XmlRootElement(name = "Entry")
-@JsonPropertyOrder({ "Term" })
+@XmlRootElement(name = "glossary-entry")
+@XmlType(name = "glossaryEntryType", propOrder = { "sourcereference", "glossaryTerms" })
+@JsonPropertyOrder({ "srcLang", "sourcereference", "glossaryTerms" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
 public class GlossaryEntry implements Serializable
@@ -51,7 +53,7 @@ public class GlossaryEntry implements Serializable
 
    private String sourcereference;
 
-   @XmlElement(name = "Term")
+   @XmlElement(name = "glossary-term")
    public List<GlossaryTerm> getGlossaryTerms()
    {
       if (glossaryTerms == null)
@@ -66,7 +68,7 @@ public class GlossaryEntry implements Serializable
       this.glossaryTerms = glossaryTerms;
    }
 
-   @XmlAttribute(name = "srcLang")
+   @XmlAttribute(name = "src-lang")
    @XmlJavaTypeAdapter(type = LocaleId.class, value = LocaleIdAdapter.class)
    public LocaleId getSrcLang()
    {
@@ -78,7 +80,7 @@ public class GlossaryEntry implements Serializable
       this.srcLang = srcLang;
    }
 
-   @XmlElement(name = "sourcereference", required = false)
+   @XmlElement(name = "source-reference", required = false)
    public String getSourcereference()
    {
       return sourcereference;

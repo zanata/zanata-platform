@@ -27,6 +27,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -34,6 +35,7 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.hibernate.validator.NotNull;
 import org.zanata.common.LocaleId;
+import org.zanata.common.Namespaces;
 
 /**
  *
@@ -41,8 +43,9 @@ import org.zanata.common.LocaleId;
  *
  **/
 
-@XmlRootElement(name = "Term")
-@JsonPropertyOrder({ "Content", "Comments" })
+@XmlRootElement(name = "glossary-term")
+@XmlType(name = "glossaryTermType", propOrder = { "comments", "content" })
+@JsonPropertyOrder({ "content", "comments", "locale" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
 public class GlossaryTerm implements Serializable
@@ -54,7 +57,7 @@ public class GlossaryTerm implements Serializable
 
    private List<String> comments;
 
-   @XmlAttribute(name = "locale")
+   @XmlAttribute(name = "lang", namespace = Namespaces.XML)
    @XmlJavaTypeAdapter(type = LocaleId.class, value = LocaleIdAdapter.class)
    public LocaleId getLocale()
    {
@@ -103,10 +106,44 @@ public class GlossaryTerm implements Serializable
    {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((locale == null) ? 0 : locale.hashCode());
-      result = prime * result + ((content == null) ? 0 : content.hashCode());
       result = prime * result + ((comments == null) ? 0 : comments.hashCode());
+      result = prime * result + ((content == null) ? 0 : content.hashCode());
+      result = prime * result + ((locale == null) ? 0 : locale.hashCode());
       return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+         return true;
+      if (obj == null)
+         return false;
+      if (getClass() != obj.getClass())
+         return false;
+      GlossaryTerm other = (GlossaryTerm) obj;
+      if (comments == null)
+      {
+         if (other.comments != null)
+            return false;
+      }
+      else if (!comments.equals(other.comments))
+         return false;
+      if (content == null)
+      {
+         if (other.content != null)
+            return false;
+      }
+      else if (!content.equals(other.content))
+         return false;
+      if (locale == null)
+      {
+         if (other.locale != null)
+            return false;
+      }
+      else if (!locale.equals(other.locale))
+         return false;
+      return true;
    }
 
 }
