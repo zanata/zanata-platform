@@ -44,10 +44,9 @@ public class PushGlossaryMojo extends ConfigurableProjectMojo implements PushGlo
 
 
    /**
-    * Translation language of document
+    * Translation language of document. Not required for csv file
     * 
     * @parameter expression="${zanata.transLang}"
-    * @required
     */
    private String transLang;
 

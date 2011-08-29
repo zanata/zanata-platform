@@ -91,7 +91,11 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
 
    public HGlossaryEntry getEntryBySrcContentLocale(LocaleId localeid, String content)
    {
-      Query query = getSession().createQuery("from HGlossaryEntry as e WHERE e.srcLocale.localeId= :localeid AND e.id IN (SELECT t.glossaryEntry.id FROM HGlossaryTerm as t WHERE t.locale.localeId=e.srcLocale.localeId AND t.content= :content)");
+      Query query = getSession().createQuery("from HGlossaryEntry as e " +
+      		"WHERE e.srcLocale.localeId= :localeid AND e.id IN " +
+      		"(SELECT t.glossaryEntry.id FROM HGlossaryTerm as t " +
+      		"WHERE t.locale.localeId=e.srcLocale.localeId " +
+      		"AND t.content= :content)");
       query.setParameter("localeid", localeid);
       query.setParameter("content", content);
       return (HGlossaryEntry) query.uniqueResult();

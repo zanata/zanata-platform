@@ -219,9 +219,8 @@ public class GlossaryService implements GlossaryResource
       return Response.ok().build();
    }
 
-   private HGlossaryTerm getExistingGlossaryTerm(HGlossaryEntry hGlossaryEntry, LocaleId locale, String content)
+   private HGlossaryTerm getOrCreateGlossaryTerm(HGlossaryEntry hGlossaryEntry, HLocale termHLocale, String content)
    {
-      HLocale termHLocale = localeServiceImpl.getByLocaleId(locale);
       HGlossaryTerm hGlossaryTerm = hGlossaryEntry.getGlossaryTerms().get(termHLocale);
 
       if (hGlossaryTerm == null)
@@ -231,11 +230,11 @@ public class GlossaryService implements GlossaryResource
          hGlossaryTerm.setGlossaryEntry(hGlossaryEntry);
          hGlossaryEntry.getGlossaryTerms().put(termHLocale, hGlossaryTerm);
       }
-      hGlossaryTerm.getComments().clear();
+
       return hGlossaryTerm;
    }
 
-   private HGlossaryEntry getExistingGlossaryEntry(LocaleId srcLocale, String srcContent)
+   private HGlossaryEntry getOrCreateGlossaryEntry(LocaleId srcLocale, String srcContent)
    {
       HGlossaryEntry hGlossaryEntry = glossaryDAO.getEntryBySrcContentLocale(srcLocale, srcContent);
 
@@ -262,19 +261,18 @@ public class GlossaryService implements GlossaryResource
 
    public void transferGlossaryEntry(GlossaryEntry from)
    {
-      HGlossaryEntry to = getExistingGlossaryEntry(from.getSrcLang(), getSrcGlossaryTerm(from));
+      HGlossaryEntry to = getOrCreateGlossaryEntry(from.getSrcLang(), getSrcGlossaryTerm(from));
             
       to.setSourceRef(from.getSourcereference());
 
       for (GlossaryTerm glossaryTerm : from.getGlossaryTerms())
       {
-         if (!localeServiceImpl.localeExists(glossaryTerm.getLocale()))
-         {
-            throw new WebApplicationException(Response.status(Status.FORBIDDEN).entity("Locale " + glossaryTerm.getLocale() + " is not enabled on this server. Please contact admin.").build());
-         }
+         HLocale termHLocale = localeServiceImpl.validateSourceLocale(glossaryTerm.getLocale());
 
          // check if there's existing term with same content, overrides comments
-         HGlossaryTerm hGlossaryTerm = getExistingGlossaryTerm(to, glossaryTerm.getLocale(), glossaryTerm.getContent());
+         HGlossaryTerm hGlossaryTerm = getOrCreateGlossaryTerm(to, termHLocale, glossaryTerm.getContent());
+
+         hGlossaryTerm.getComments().clear();
 
          for (String comment : glossaryTerm.getComments())
          {

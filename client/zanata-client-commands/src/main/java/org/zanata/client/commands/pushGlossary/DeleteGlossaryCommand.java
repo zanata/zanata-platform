@@ -20,54 +20,46 @@
  */
 package org.zanata.client.commands.pushGlossary;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.zanata.client.config.LocaleMapping;
-import org.zanata.common.LocaleId;
-import org.zanata.rest.dto.Glossary;
+import org.zanata.client.commands.ConfigurableCommand;
+import org.zanata.client.commands.ConfigurableOptions;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  **/
-public abstract class AbstractPushGlossaryReader
+public class DeleteGlossaryCommand extends ConfigurableCommand
 {
-   private PushGlossaryOptions opts;
 
-   private String fileExtension;
-
-   public abstract Glossary extractGlossary(File glossaryFile) throws IOException;
-
-   protected LocaleId getLocaleFromMap(String localLocale)
+   /**
+    * @param opts
+    */
+   public DeleteGlossaryCommand(ConfigurableOptions opts)
    {
-      if (!getOpts().getLocales().isEmpty())
-      {
-         for (LocaleMapping loc : getOpts().getLocales())
-         {
-            if (loc.getLocalLocale().equals(localLocale))
-            {
-               return new LocaleId(loc.getLocale());
-            }
-         }
-      }
-      return new LocaleId(localLocale);
+      super(opts);
+      // TODO Auto-generated constructor stub
    }
 
-   public PushGlossaryOptions getOpts()
+   /*
+    * (non-Javadoc)
+    * 
+    * @see org.zanata.client.commands.ZanataCommand#run()
+    */
+   @Override
+   public void run() throws Exception
    {
-      return opts;
+      // TODO Auto-generated method stub
+
    }
 
-   public void setOpts(PushGlossaryOptions opts)
-   {
-      this.opts = opts;
-   }
-
-   public String getFileExtension()
-   {
-      return fileExtension;
-   }
-
+   // private void deleteTargetLocaleGlossaryFromServer(String transLang)
+   // {
+   // log.info("deleting glossaries with locale [{}] from server", transLang);
+   // ClientResponse<String> response = glossaryResource.deleteGlossary(new
+   // LocaleId(transLang));
+   // ClientUtility.checkResult(response, uri);
+   // }
 }
+
+
+ 

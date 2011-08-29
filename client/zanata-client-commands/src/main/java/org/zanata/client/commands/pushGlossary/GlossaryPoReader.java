@@ -68,8 +68,8 @@ public class GlossaryPoReader extends AbstractPushGlossaryReader
    {
       MessageStreamParser messageParser = createParser(potInputSource);
 
-      LocaleId srcLang = new LocaleId(getOpts().getSourceLang());
-      LocaleId targetLang = new LocaleId(getOpts().getTransLang());
+      LocaleId srcLang = getLocaleFromMap(getOpts().getSourceLang());
+      LocaleId targetLang = getLocaleFromMap(getOpts().getTransLang());
 
       Glossary glossary = new Glossary();
 

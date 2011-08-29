@@ -29,6 +29,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +57,7 @@ public class PushGlossaryCommand extends ConfigurableCommand
 
    {
       glossaryReaders.put("po", new GlossaryPoReader());
-      // glossaryReaders.put("csv", new GlossaryCSVReader());
+      glossaryReaders.put("csv", new GlossaryCSVReader());
    }
 
    public PushGlossaryCommand(PushGlossaryOptions opts, ZanataProxyFactory factory, IGlossaryResource glossaryResource, URI uri)
@@ -77,9 +78,8 @@ public class PushGlossaryCommand extends ConfigurableCommand
       this(opts, OptionsUtil.createRequestFactory(opts));
    }
 
-   private AbstractPushGlossaryReader getReader(String fileName)
+   private AbstractPushGlossaryReader getReader(String fileExtension)
    {
-      String fileExtension = FilenameUtils.getExtension(fileName);
       AbstractPushGlossaryReader reader = glossaryReaders.get(fileExtension);
       if (reader == null)
       {
@@ -87,6 +87,20 @@ public class PushGlossaryCommand extends ConfigurableCommand
       }
       reader.setOpts(opts);
       return reader;
+   }
+
+   private String validateFileExtensionWithTransLang() throws RuntimeException
+   {
+      String fileExtension = FilenameUtils.getExtension(opts.getGlossaryFile().getName());
+
+      if (StringUtils.isEmpty(opts.getTransLang()))
+      {
+         if (fileExtension.equals("po"))
+         {
+            throw new RuntimeException("Option 'zanata.transLang' is required.");
+         }
+      }
+      return fileExtension;
    }
 
    @Override
@@ -106,7 +120,9 @@ public class PushGlossaryCommand extends ConfigurableCommand
          throw new RuntimeException("File '" + glossaryFile + "' does not exist - check glossaryFile option");
       }
 
-      AbstractPushGlossaryReader reader = getReader((opts.getGlossaryFile().getName()));
+      String fileExtension = validateFileExtensionWithTransLang();
+
+      AbstractPushGlossaryReader reader = getReader(fileExtension);
 
       JAXBContext jc = null;
       Marshaller m = null;
@@ -121,8 +137,6 @@ public class PushGlossaryCommand extends ConfigurableCommand
          m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
       }
 
-      // deleteTargetLocaleGlossaryFromServer(opts.getTransLang());
-
       log.info("pushing glossary document [{}] to server", glossaryFile.getName());
       
       Glossary glossary = reader.extractGlossary(glossaryFile);
@@ -130,15 +144,6 @@ public class PushGlossaryCommand extends ConfigurableCommand
       ClientResponse<Glossary> response = glossaryResource.put(glossary);
       ClientUtility.checkResult(response, uri);
    }
-
-   // private void deleteTargetLocaleGlossaryFromServer(String transLang)
-   // {
-   // log.info("deleting glossaries with locale [{}] from server", transLang);
-   // ClientResponse<String> response = glossaryResource.deleteGlossary(new
-   // LocaleId(transLang));
-   // ClientUtility.checkResult(response, uri);
-   // }
-
 }
 
 

@@ -21,53 +21,32 @@
 package org.zanata.client.commands.pushGlossary;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
-import org.zanata.client.config.LocaleMapping;
-import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.Glossary;
 
+import au.com.bytecode.opencsv.CSVReader;
+
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  **/
-public abstract class AbstractPushGlossaryReader
+public class GlossaryCSVReader extends AbstractPushGlossaryReader
 {
-   private PushGlossaryOptions opts;
-
-   private String fileExtension;
-
-   public abstract Glossary extractGlossary(File glossaryFile) throws IOException;
-
-   protected LocaleId getLocaleFromMap(String localLocale)
+   @Override
+   public Glossary extractGlossary(File glossaryFile) throws IOException
    {
-      if (!getOpts().getLocales().isEmpty())
-      {
-         for (LocaleMapping loc : getOpts().getLocales())
-         {
-            if (loc.getLocalLocale().equals(localLocale))
-            {
-               return new LocaleId(loc.getLocale());
-            }
-         }
-      }
-      return new LocaleId(localLocale);
-   }
+      CSVReader reader = new CSVReader(new FileReader(glossaryFile));
 
-   public PushGlossaryOptions getOpts()
-   {
-      return opts;
-   }
+      List myEntries = reader.readAll();
 
-   public void setOpts(PushGlossaryOptions opts)
-   {
-      this.opts = opts;
-   }
-
-   public String getFileExtension()
-   {
-      return fileExtension;
+      return null;
    }
 
 }
+
+
+ 

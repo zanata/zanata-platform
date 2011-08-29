@@ -11,8 +11,8 @@
         <artifactId>zanata-maven-plugin</artifactId>
         <version>1.4-SNAPSHOT</version>
         <configuration>
-           <glossaryFile>RPM.po</glossaryFile>
-           <transLang>zh</transLang>
+           <glossaryFile>fuel_hi.po</glossaryFile>
+           <transLang>hi</transLang>
 <!-- for instance 
           <importPo>false</importPo>
 -->
