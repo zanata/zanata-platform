@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config xmlns="http://zanata.org/namespace/config/">
+	<url>http://localhost:8080/zanata/</url> 
+	
+        <locales>
+                <locale map-from="test">zh</locale>
+        </locales>
+</config>
