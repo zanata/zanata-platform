@@ -97,7 +97,7 @@ public class PushGlossaryCommand extends ConfigurableCommand
       {
          if (fileExtension.equals("po"))
          {
-            throw new RuntimeException("Option 'zanata.transLang' is required.");
+            throw new RuntimeException("Option 'zanata.transLang' is required for this file type.");
          }
       }
       return fileExtension;

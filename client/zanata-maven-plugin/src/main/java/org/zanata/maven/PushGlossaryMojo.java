@@ -21,7 +21,11 @@
 package org.zanata.maven;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.zanata.client.commands.pushGlossary.PushGlossaryCommand;
 import org.zanata.client.commands.pushGlossary.PushGlossaryOptions;
 
@@ -66,6 +70,16 @@ public class PushGlossaryMojo extends ConfigurableProjectMojo implements PushGlo
     */
    private boolean allTransComments = false;
 
+   /**
+    * Customized comment column headers for csv file format. Format of CVS:
+    * {source locale},{locale},{locale}...,pos,description OR {source
+    * locale},{locale},{locale}...,description1,description2...
+    * 
+    * @parameter expression="${zanata.commentHeaders}"
+    *            default-value="pos,description"
+    */
+   private String commentHeaders = "pos,description";
+
 
    public PushGlossaryMojo() throws Exception
    {
@@ -103,6 +117,17 @@ public class PushGlossaryMojo extends ConfigurableProjectMojo implements PushGlo
       return allTransComments;
    }
 
+   @Override
+   public List<String> getCommentHeaders()
+   {
+      String[] commentHeadersList = StringUtils.split(commentHeaders, ",");
+      List<String> list = new ArrayList<String>();
+      if (commentHeadersList != null && commentHeadersList.length > 0)
+      {
+         Collections.addAll(list, commentHeadersList);
+      }
+      return list;
+   }
 }
 
 
