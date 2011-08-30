@@ -27,6 +27,14 @@ public class PropWriter
          parentFile.mkdirs();
    }
 
+   /**
+    * Writes a properties file representation of the given {@link Resource} to
+    * the given directory.
+    * 
+    * @param doc
+    * @param baseDir
+    * @throws IOException
+    */
    public static void write(final Resource doc, final File baseDir) throws IOException
    {
       File baseFile = new File(baseDir, doc.getName() + ".properties");
@@ -44,6 +52,7 @@ public class PropWriter
       // props.store(System.out, null);
       PrintStream out = new PrintStream(new FileOutputStream(baseFile));
       props.store(out, null);
+      out.close();
    }
 
    public static void write(final TranslationsResource doc, final File baseDir, String bundleName, String locale) throws IOException
