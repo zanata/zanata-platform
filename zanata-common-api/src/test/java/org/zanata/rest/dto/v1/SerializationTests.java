@@ -14,6 +14,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,7 +175,7 @@ public class SerializationTests
          }
       }
    }
-   
+
    @Test
    public void serializeAndDeserializeTextFlowTarget() throws ValidationException, JsonGenerationException, JsonMappingException, IOException
    {
@@ -224,6 +225,7 @@ public class SerializationTests
       assertThat(((PoTargetHeader) res2.getExtensions().iterator().next()).getComment(), is("target header comment"));
    }
 
+   @Ignore
    @Test
    public void serializeAndDeserializeGlossary() throws JsonGenerationException, JsonMappingException, IOException, JAXBException
    {
@@ -255,9 +257,9 @@ public class SerializationTests
       entry.getGlossaryTerms().add(term2);
       glossary.getGlossaryEntries().add(entry);
 
+      // System.out.println(glossary);
       JaxbUtil.validateXml(glossary, Glossary.class);
       String output = mapper.writeValueAsString(glossary);
-
       Glossary glossary2 = mapper.readValue(output, Glossary.class);
       assertThat(glossary2.getGlossaryEntries().size(), is(1));
       assertThat(glossary2.getGlossaryEntries().get(0).getGlossaryTerms().size(), is(2));
