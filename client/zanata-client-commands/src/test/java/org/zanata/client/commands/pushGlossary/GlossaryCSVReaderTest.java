@@ -31,6 +31,8 @@ import org.junit.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import org.zanata.client.commands.glossary.push.GlossaryCSVReader;
+import org.zanata.client.commands.glossary.push.GlossaryPushOptions;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.rest.dto.Glossary;
@@ -49,7 +51,7 @@ public class GlossaryCSVReaderTest
    GlossaryCSVReader reader = new GlossaryCSVReader();
 
    IMocksControl control = EasyMock.createControl();
-   PushGlossaryOptions mockPushOption;
+   GlossaryPushOptions mockPushOption;
 
    @BeforeMethod
    void beforeMethod()
@@ -77,12 +79,12 @@ public class GlossaryCSVReaderTest
       commentHeaders.add("pos");
       commentHeaders.add("description");
 
-      mockPushOption = createMock("mockPushGlossaryOption", PushGlossaryOptions.class);
+      mockPushOption = createMock("mockPushGlossaryOption", GlossaryPushOptions.class);
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
       EasyMock.expect(mockPushOption.getTransLang()).andReturn("hi").anyTimes();
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getAllTransComments()).andReturn(false).anyTimes();
-      EasyMock.expect(mockPushOption.getCommentHeaders()).andReturn(commentHeaders).anyTimes();
+      EasyMock.expect(mockPushOption.getCommentsHeader()).andReturn(commentHeaders).anyTimes();
 
       reader.setOpts(mockPushOption);
       EasyMock.replay(mockPushOption);
@@ -108,12 +110,12 @@ public class GlossaryCSVReaderTest
       commentHeaders.add("description2");
       commentHeaders.add("description3"); // this will be ignored
 
-      mockPushOption = createMock("mockPushGlossaryOption", PushGlossaryOptions.class);
+      mockPushOption = createMock("mockPushGlossaryOption", GlossaryPushOptions.class);
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
       EasyMock.expect(mockPushOption.getTransLang()).andReturn("hi").anyTimes();
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getAllTransComments()).andReturn(false).anyTimes();
-      EasyMock.expect(mockPushOption.getCommentHeaders()).andReturn(commentHeaders).anyTimes();
+      EasyMock.expect(mockPushOption.getCommentsHeader()).andReturn(commentHeaders).anyTimes();
 
       reader.setOpts(mockPushOption);
       EasyMock.replay(mockPushOption);

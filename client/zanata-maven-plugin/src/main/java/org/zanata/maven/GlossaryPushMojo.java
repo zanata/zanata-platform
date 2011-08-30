@@ -26,17 +26,17 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.zanata.client.commands.pushGlossary.PushGlossaryCommand;
-import org.zanata.client.commands.pushGlossary.PushGlossaryOptions;
+import org.zanata.client.commands.glossary.push.GlossaryPushCommand;
+import org.zanata.client.commands.glossary.push.GlossaryPushOptions;
 
 /**
  * Pushes glossary file into Zanata.
  * 
- * @goal push-glossary
+ * @goal glossary-push
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class PushGlossaryMojo extends ConfigurableProjectMojo implements PushGlossaryOptions
+public class GlossaryPushMojo extends ConfigurableProjectMojo implements GlossaryPushOptions
 {
 
    /**
@@ -75,13 +75,13 @@ public class PushGlossaryMojo extends ConfigurableProjectMojo implements PushGlo
     * {source locale},{locale},{locale}...,pos,description OR {source
     * locale},{locale},{locale}...,description1,description2...
     * 
-    * @parameter expression="${zanata.commentHeaders}"
+    * @parameter expression="${zanata.commentsHeader}"
     *            default-value="pos,description"
     */
-   private String commentHeaders = "pos,description";
+   private String commentsHeader = "pos,description";
 
 
-   public PushGlossaryMojo() throws Exception
+   public GlossaryPushMojo() throws Exception
    {
       super();
    }
@@ -100,9 +100,9 @@ public class PushGlossaryMojo extends ConfigurableProjectMojo implements PushGlo
    }
 
    @Override
-   public PushGlossaryCommand initCommand()
+   public GlossaryPushCommand initCommand()
    {
-      return new PushGlossaryCommand(this);
+      return new GlossaryPushCommand(this);
    }
 
    @Override
@@ -118,9 +118,9 @@ public class PushGlossaryMojo extends ConfigurableProjectMojo implements PushGlo
    }
 
    @Override
-   public List<String> getCommentHeaders()
+   public List<String> getCommentsHeader()
    {
-      String[] commentHeadersList = StringUtils.split(commentHeaders, ",");
+      String[] commentHeadersList = StringUtils.split(commentsHeader, ",");
       List<String> list = new ArrayList<String>();
       if (commentHeadersList != null && commentHeadersList.length > 0)
       {

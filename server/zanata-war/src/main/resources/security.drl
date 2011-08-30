@@ -197,7 +197,7 @@ then
   check.grant();
 end
 
-/* 'glossarist' can delete */
+/* 'glossarist-admin' can delete */
 /* this should be glossarist-admin */
 rule GlossaristDeleteGlossary
   no-loop
