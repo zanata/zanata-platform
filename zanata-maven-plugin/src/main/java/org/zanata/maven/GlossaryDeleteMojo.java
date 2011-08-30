@@ -18,47 +18,57 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.client.commands.pushGlossary;
+package org.zanata.maven;
 
-import org.zanata.client.commands.ConfigurableCommand;
-import org.zanata.client.commands.ConfigurableOptions;
+import org.zanata.client.commands.ZanataCommand;
+import org.zanata.client.commands.glossary.delete.GlossaryDeleteCommand;
+import org.zanata.client.commands.glossary.delete.GlossaryDeleteOptions;
 
 /**
- *
+ * Pushes glossary file into Zanata.
+ * 
+ * @goal glossary-delete
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
+ * 
  **/
-public class DeleteGlossaryCommand extends ConfigurableCommand
+public class GlossaryDeleteMojo extends ConfigurableProjectMojo implements GlossaryDeleteOptions
 {
 
    /**
-    * @param opts
-    */
-   public DeleteGlossaryCommand(ConfigurableOptions opts)
-   {
-      super(opts);
-      // TODO Auto-generated constructor stub
-   }
-
-   /*
-    * (non-Javadoc)
+    * locale of glossary to delete
     * 
-    * @see org.zanata.client.commands.ZanataCommand#run()
+    * @parameter expression="${zanata.lang}"
     */
-   @Override
-   public void run() throws Exception
-   {
-      // TODO Auto-generated method stub
+   private String lang;
 
+   /**
+    * delete entire glossaries
+    * 
+    * @parameter expression="${zanata.allGlossary}" default-value="false"
+    */
+   private boolean allGlossary = false;
+
+
+   @Override
+   public String getlang()
+   {
+      return lang;
    }
 
-   // private void deleteTargetLocaleGlossaryFromServer(String transLang)
-   // {
-   // log.info("deleting glossaries with locale [{}] from server", transLang);
-   // ClientResponse<String> response = glossaryResource.deleteGlossary(new
-   // LocaleId(transLang));
-   // ClientUtility.checkResult(response, uri);
-   // }
+   @Override
+   public boolean getAllGlossary()
+   {
+      return allGlossary;
+   }
+
+
+   @Override
+   public ZanataCommand initCommand()
+   {
+      return new GlossaryDeleteCommand(this);
+   }
+
+
 }
 
 

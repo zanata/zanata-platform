@@ -18,7 +18,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.client.commands.pushGlossary;
+package org.zanata.client.commands.glossary.push;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,9 +32,9 @@ import org.zanata.rest.dto.Glossary;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public abstract class AbstractPushGlossaryReader
+public abstract class AbstractGlossaryPushReader
 {
-   private PushGlossaryOptions opts;
+   private GlossaryPushOptions opts;
 
    private String fileExtension;
 
@@ -55,12 +55,12 @@ public abstract class AbstractPushGlossaryReader
       return new LocaleId(localLocale);
    }
 
-   public PushGlossaryOptions getOpts()
+   public GlossaryPushOptions getOpts()
    {
       return opts;
    }
 
-   public void setOpts(PushGlossaryOptions opts)
+   public void setOpts(GlossaryPushOptions opts)
    {
       this.opts = opts;
    }

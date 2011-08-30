@@ -18,7 +18,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.client.commands.pushGlossary;
+package org.zanata.client.commands.glossary.push;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -43,7 +43,7 @@ import org.zanata.rest.dto.GlossaryTerm;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class GlossaryPoReader extends AbstractPushGlossaryReader
+public class GlossaryPoReader extends AbstractGlossaryPushReader
 {
 
    private static final Logger log = LoggerFactory.getLogger(GlossaryPoReader.class);

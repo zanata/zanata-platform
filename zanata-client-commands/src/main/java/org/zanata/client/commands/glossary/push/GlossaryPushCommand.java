@@ -18,7 +18,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.client.commands.pushGlossary;
+package org.zanata.client.commands.glossary.push;
 
 import java.io.File;
 import java.net.URI;
@@ -45,13 +45,13 @@ import org.zanata.rest.dto.Glossary;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class PushGlossaryCommand extends ConfigurableCommand
+public class GlossaryPushCommand extends ConfigurableCommand
 {
-   private static final Logger log = LoggerFactory.getLogger(PushGlossaryCommand.class);
+   private static final Logger log = LoggerFactory.getLogger(GlossaryPushCommand.class);
 
-   private static final Map<String, AbstractPushGlossaryReader> glossaryReaders = new HashMap<String, AbstractPushGlossaryReader>();
+   private static final Map<String, AbstractGlossaryPushReader> glossaryReaders = new HashMap<String, AbstractGlossaryPushReader>();
 
-   private final PushGlossaryOptions opts;
+   private final GlossaryPushOptions opts;
    private final IGlossaryResource glossaryResource;
    private final URI uri;
 
@@ -60,7 +60,7 @@ public class PushGlossaryCommand extends ConfigurableCommand
       glossaryReaders.put("csv", new GlossaryCSVReader());
    }
 
-   public PushGlossaryCommand(PushGlossaryOptions opts, ZanataProxyFactory factory, IGlossaryResource glossaryResource, URI uri)
+   public GlossaryPushCommand(GlossaryPushOptions opts, ZanataProxyFactory factory, IGlossaryResource glossaryResource, URI uri)
    {
       super(opts, factory);
       this.opts = opts;
@@ -68,19 +68,19 @@ public class PushGlossaryCommand extends ConfigurableCommand
       this.uri = uri;
    }
 
-   private PushGlossaryCommand(PushGlossaryOptions opts, ZanataProxyFactory factory)
+   private GlossaryPushCommand(GlossaryPushOptions opts, ZanataProxyFactory factory)
    {
       this(opts, factory, factory.getGlossaryResource(), factory.getGlossaryResourceURI());
    }
 
-   public PushGlossaryCommand(PushGlossaryOptions opts)
+   public GlossaryPushCommand(GlossaryPushOptions opts)
    {
       this(opts, OptionsUtil.createRequestFactory(opts));
    }
 
-   private AbstractPushGlossaryReader getReader(String fileExtension)
+   private AbstractGlossaryPushReader getReader(String fileExtension)
    {
-      AbstractPushGlossaryReader reader = glossaryReaders.get(fileExtension);
+      AbstractGlossaryPushReader reader = glossaryReaders.get(fileExtension);
       if (reader == null)
       {
          throw new RuntimeException("unknown file type: " + fileExtension);
@@ -122,7 +122,7 @@ public class PushGlossaryCommand extends ConfigurableCommand
 
       String fileExtension = validateFileExtensionWithTransLang();
 
-      AbstractPushGlossaryReader reader = getReader(fileExtension);
+      AbstractGlossaryPushReader reader = getReader(fileExtension);
 
       JAXBContext jc = null;
       Marshaller m = null;

@@ -18,7 +18,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.client.commands.pushGlossary;
+package org.zanata.client.commands.glossary.push;
 
 import java.io.File;
 import java.io.FileReader;
@@ -41,7 +41,7 @@ import au.com.bytecode.opencsv.CSVReader;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class GlossaryCSVReader extends AbstractPushGlossaryReader
+public class GlossaryCSVReader extends AbstractGlossaryPushReader
 {
    @Override
    public Glossary extractGlossary(File glossaryFile) throws IOException, RuntimeException
@@ -134,7 +134,7 @@ public class GlossaryCSVReader extends AbstractPushGlossaryReader
 
       for (int row = 0; row < headerRow.length; row++)
       {
-         for(String optsHeader:getOpts().getCommentHeaders())
+         for(String optsHeader:getOpts().getCommentsHeader())
          {
             if(optsHeader.equals(headerRow[row])){
                descMap.put(row,headerRow[row]);

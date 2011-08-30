@@ -1,11 +1,11 @@
-package org.zanata.client.commands.pushGlossary;
+package org.zanata.client.commands.glossary.push;
 
 import java.io.File;
 import java.util.List;
 
 import org.zanata.client.commands.ConfigurableProjectOptions;
 
-public interface PushGlossaryOptions extends ConfigurableProjectOptions
+public interface GlossaryPushOptions extends ConfigurableProjectOptions
 {
    public File getGlossaryFile();
 
@@ -15,5 +15,5 @@ public interface PushGlossaryOptions extends ConfigurableProjectOptions
 
    public boolean getAllTransComments();
 
-   public List<String> getCommentHeaders();
+   public List<String> getCommentsHeader();
 }

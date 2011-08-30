@@ -29,6 +29,8 @@ import org.junit.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import org.zanata.client.commands.glossary.push.GlossaryPoReader;
+import org.zanata.client.commands.glossary.push.GlossaryPushOptions;
 import org.zanata.client.commands.push.PushOptions;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
@@ -47,7 +49,7 @@ public class GlossaryPoReaderTest
    GlossaryPoReader reader = new GlossaryPoReader();
 
    IMocksControl control = EasyMock.createControl();
-   PushGlossaryOptions mockPushOption;
+   GlossaryPushOptions mockPushOption;
 
    private final File sourceFile = new File("src/test/resources/glossary/fuel_hi.po");
 
@@ -72,7 +74,7 @@ public class GlossaryPoReaderTest
    @Test
    public void extractGlossaryTest() throws IOException
    {
-      mockPushOption = createMock("mockPushGlossaryOption", PushGlossaryOptions.class);
+      mockPushOption = createMock("mockPushGlossaryOption", GlossaryPushOptions.class);
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
       EasyMock.expect(mockPushOption.getTransLang()).andReturn("hi").anyTimes();
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
