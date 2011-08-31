@@ -10,7 +10,7 @@ import org.zanata.rest.client.ZanataProxyFactory;
  *
  */
 // FIXME not implemented yet!
-public class ListLocalCommand extends ConfigurableProjectCommand
+public class ListLocalCommand extends ConfigurableProjectCommand<ConfigurableProjectOptions>
 {
    private static final Logger log = LoggerFactory.getLogger(ListLocalCommand.class);
 
