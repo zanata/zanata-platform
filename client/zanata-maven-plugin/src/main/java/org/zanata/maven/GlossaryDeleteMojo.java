@@ -25,7 +25,7 @@ import org.zanata.client.commands.glossary.delete.GlossaryDeleteCommand;
 import org.zanata.client.commands.glossary.delete.GlossaryDeleteOptions;
 
 /**
- * Pushes glossary file into Zanata.
+ * Delete glossary entry from Zanata.
  * 
  * @goal glossary-delete
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -35,14 +35,14 @@ public class GlossaryDeleteMojo extends ConfigurableProjectMojo implements Gloss
 {
 
    /**
-    * locale of glossary to delete
+    * Locale of glossary to delete
     * 
     * @parameter expression="${zanata.lang}"
     */
    private String lang;
 
    /**
-    * delete entire glossaries
+    * Delete entire glossaries
     * 
     * @parameter expression="${zanata.allGlossary}" default-value="false"
     */

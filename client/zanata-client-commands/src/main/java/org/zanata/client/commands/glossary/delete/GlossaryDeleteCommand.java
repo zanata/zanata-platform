@@ -20,16 +20,8 @@
  */
 package org.zanata.client.commands.glossary.delete;
 
-import java.io.File;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +31,6 @@ import org.zanata.common.LocaleId;
 import org.zanata.rest.client.ClientUtility;
 import org.zanata.rest.client.IGlossaryResource;
 import org.zanata.rest.client.ZanataProxyFactory;
-import org.zanata.rest.dto.Glossary;
 
 /**
  *
