@@ -145,22 +145,22 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader
        * Sort out description map according to the value (header name)
        */
       ValueComparator bvc =  new ValueComparator(descMap);
-      TreeMap<Integer,String> sorted_map = new TreeMap(bvc);
+      TreeMap<Integer,String> sorted_map = new TreeMap<Integer, String>(bvc);
       sorted_map.putAll(descMap);
       
       return sorted_map;
    }
    
-   static class ValueComparator implements Comparator {
+   static class ValueComparator implements Comparator<Integer> {
 
-      Map base;
-      public ValueComparator(Map base) {
+      Map<Integer, String> base;
+      public ValueComparator(Map<Integer, String> base) {
           this.base = base;
       }
 
-      public int compare(Object a, Object b) {
-         String strA = (String)base.get(a);
-         String strB = (String)base.get(b);
+      public int compare(Integer a, Integer b) {
+         String strA = base.get(a);
+         String strB = base.get(b);
          
          if (strA == null || strB == null)
          {
