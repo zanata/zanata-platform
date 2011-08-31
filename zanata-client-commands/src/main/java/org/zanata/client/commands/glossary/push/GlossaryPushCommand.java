@@ -45,13 +45,12 @@ import org.zanata.rest.dto.Glossary;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class GlossaryPushCommand extends ConfigurableCommand
+public class GlossaryPushCommand extends ConfigurableCommand<GlossaryPushOptions>
 {
    private static final Logger log = LoggerFactory.getLogger(GlossaryPushCommand.class);
 
    private static final Map<String, AbstractGlossaryPushReader> glossaryReaders = new HashMap<String, AbstractGlossaryPushReader>();
 
-   private final GlossaryPushOptions opts;
    private final IGlossaryResource glossaryResource;
    private final URI uri;
 
@@ -63,7 +62,6 @@ public class GlossaryPushCommand extends ConfigurableCommand
    public GlossaryPushCommand(GlossaryPushOptions opts, ZanataProxyFactory factory, IGlossaryResource glossaryResource, URI uri)
    {
       super(opts, factory);
-      this.opts = opts;
       this.glossaryResource = glossaryResource;
       this.uri = uri;
    }
@@ -85,15 +83,15 @@ public class GlossaryPushCommand extends ConfigurableCommand
       {
          throw new RuntimeException("unknown file type: " + fileExtension);
       }
-      reader.setOpts(opts);
+      reader.setOpts(getOpts());
       return reader;
    }
 
    private String validateFileExtensionWithTransLang() throws RuntimeException
    {
-      String fileExtension = FilenameUtils.getExtension(opts.getGlossaryFile().getName());
+      String fileExtension = FilenameUtils.getExtension(getOpts().getGlossaryFile().getName());
 
-      if (StringUtils.isEmpty(opts.getTransLang()))
+      if (StringUtils.isEmpty(getOpts().getTransLang()))
       {
          if (fileExtension.equals("po"))
          {
@@ -106,14 +104,14 @@ public class GlossaryPushCommand extends ConfigurableCommand
    @Override
    public void run() throws Exception
    {
-      log.info("Server: {}", opts.getUrl());
-      log.info("Username: {}", opts.getUsername());
-      log.info("Source language: {}", opts.getSourceLang());
-      log.info("Translation language: {}", opts.getTransLang());
-      log.info("All translation comment: {}", opts.getAllTransComments());
-      log.info("Glossary file: {}", opts.getGlossaryFile());
+      log.info("Server: {}", getOpts().getUrl());
+      log.info("Username: {}", getOpts().getUsername());
+      log.info("Source language: {}", getOpts().getSourceLang());
+      log.info("Translation language: {}", getOpts().getTransLang());
+      log.info("All translation comment: {}", getOpts().getAllTransComments());
+      log.info("Glossary file: {}", getOpts().getGlossaryFile());
 
-      File glossaryFile = opts.getGlossaryFile();
+      File glossaryFile = getOpts().getGlossaryFile();
 
       if (!glossaryFile.exists())
       {
@@ -127,11 +125,11 @@ public class GlossaryPushCommand extends ConfigurableCommand
       JAXBContext jc = null;
       Marshaller m = null;
 
-      if (opts.isDebugSet())
+      if (getOpts().isDebugSet())
       {
          jc = JAXBContext.newInstance(Glossary.class);
       }
-      if (opts.isDebugSet())
+      if (getOpts().isDebugSet())
       {
          m = jc.createMarshaller();
          m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
