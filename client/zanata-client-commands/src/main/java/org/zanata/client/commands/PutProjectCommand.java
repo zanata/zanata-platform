@@ -17,31 +17,28 @@ import org.zanata.rest.dto.Project;
  * @author Sean Flanigan <sflaniga@redhat.com>
  *
  */
-public class PutProjectCommand extends ConfigurableCommand
+public class PutProjectCommand extends ConfigurableCommand<PutProjectOptions>
 {
    private static final Logger log = LoggerFactory.getLogger(PutProjectCommand.class);
-
-   private final PutProjectOptions opts;
 
    public PutProjectCommand(PutProjectOptions opts)
    {
       super(opts);
-      this.opts = opts;
    }
 
    @Override
    public void run() throws JAXBException, URISyntaxException, IOException
    {
       Project project = new Project();
-      project.setId(opts.getProjectSlug());
-      project.setName(opts.getProjectName());
-      project.setDescription(opts.getProjectDesc());
+      project.setId(getOpts().getProjectSlug());
+      project.setName(getOpts().getProjectName());
+      project.setDescription(getOpts().getProjectDesc());
 
       log.debug("{}", project);
 
       // send project to rest api
-      IProjectResource projResource = getRequestFactory().getProject(opts.getProjectSlug());
-      URI uri = getRequestFactory().getProjectURI(opts.getProjectSlug());
+      IProjectResource projResource = getRequestFactory().getProject(getOpts().getProjectSlug());
+      URI uri = getRequestFactory().getProjectURI(getOpts().getProjectSlug());
       ClientResponse<?> response = projResource.put(project);
       ClientUtility.checkResult(response, uri);
    }

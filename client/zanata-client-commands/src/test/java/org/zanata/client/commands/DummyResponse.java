@@ -33,31 +33,31 @@ class DummyResponse<T> extends ClientResponse<T>
    }
 
    @Override
-   public <T> T getEntity(Class<T> arg0)
+   public <T2> T2 getEntity(Class<T2> arg0)
    {
       return null;
    }
 
    @Override
-   public <T> T getEntity(GenericType<T> arg0)
+   public <T2> T2 getEntity(GenericType<T2> arg0)
    {
       return null;
    }
 
    @Override
-   public <T> T getEntity(Class<T> arg0, Type arg1)
+   public <T2> T2 getEntity(Class<T2> arg0, Type arg1)
    {
       return null;
    }
 
    @Override
-   public <T> T getEntity(GenericType<T> arg0, Annotation[] arg1)
+   public <T2> T2 getEntity(GenericType<T2> arg0, Annotation[] arg1)
    {
       return null;
    }
 
    @Override
-   public <T> T getEntity(Class<T> arg0, Type arg1, Annotation[] arg2)
+   public <T2> T2 getEntity(Class<T2> arg0, Type arg1, Annotation[] arg2)
    {
       return null;
    }

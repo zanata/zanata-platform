@@ -40,19 +40,16 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  * @deprecated
  * @see org.zanata.client.commands.push.PushCommand
  */
-public class PublicanPushCommand extends ConfigurableProjectCommand
+public class PublicanPushCommand extends ConfigurableProjectCommand<PublicanPushOptions>
 {
    private static final Logger log = LoggerFactory.getLogger(PublicanPushCommand.class);
 
-   private final PublicanPushOptions opts;
    private final ITranslationResources translationResources;
    private final URI uri;
-
 
    public PublicanPushCommand(PublicanPushOptions opts, ZanataProxyFactory factory, ITranslationResources translationResources, URI uri)
    {
       super(opts, factory);
-      this.opts = opts;
       this.translationResources = translationResources;
       this.uri = uri;
    }
@@ -76,14 +73,14 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
    @Override
    public void run() throws Exception
    {
-      log.info("Server: {}", opts.getUrl());
-      log.info("Project: {}", opts.getProj());
-      log.info("Version: {}", opts.getProjectVersion());
-      log.info("Username: {}", opts.getUsername());
-      log.info("Source language: {}", opts.getSourceLang());
-      log.info("Copy previous translations: {}", opts.getCopyTrans());
-      log.info("Merge type: {}", opts.getMergeType());
-      if (opts.getImportPo())
+      log.info("Server: {}", getOpts().getUrl());
+      log.info("Project: {}", getOpts().getProj());
+      log.info("Version: {}", getOpts().getProjectVersion());
+      log.info("Username: {}", getOpts().getUsername());
+      log.info("Source language: {}", getOpts().getSourceLang());
+      log.info("Copy previous translations: {}", getOpts().getCopyTrans());
+      log.info("Merge type: {}", getOpts().getMergeType());
+      if (getOpts().getImportPo())
       {
          log.info("Importing source and target documents");
       }
@@ -91,12 +88,12 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       {
          log.info("Importing source documents only");
       }
-      log.info("POT directory (originals): {}", opts.getSrcDirPot());
-      if (opts.getImportPo())
+      log.info("POT directory (originals): {}", getOpts().getSrcDirPot());
+      if (getOpts().getImportPo())
       {
-         log.info("PO base directory (translations): {}", opts.getSrcDir());
+         log.info("PO base directory (translations): {}", getOpts().getSrcDir());
       }
-      File potDir = opts.getSrcDirPot();
+      File potDir = getOpts().getSrcDirPot();
 
       if (!potDir.exists())
       {
@@ -104,23 +101,23 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       }
 
       Console console = System.console();
-      if (opts.isInteractiveMode())
+      if (getOpts().isInteractiveMode())
       {
          if (console == null)
             throw new RuntimeException("console not available: please run maven from a console, or use batch mode (mvn -B)");
       }
 
-      if (opts.getImportPo())
+      if (getOpts().getImportPo())
       {
          log.warn("importPo option is set: existing translations on server will be overwritten/deleted");
-         if (opts.isInteractiveMode())
+         if (getOpts().isInteractiveMode())
          {
             console.printf("This will overwrite/delete any existing documents AND TRANSLATIONS on the server.\n");
             console.printf("Are you sure (y/n)? ");
             expectYes(console);
          }
       }
-      else if (opts.isInteractiveMode())
+      else if (getOpts().isInteractiveMode())
       {
          console.printf("This will overwrite/delete any existing documents on the server.\n");
          console.printf("Are you sure (y/n)? ");
@@ -128,7 +125,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       }
 
       JAXBContext jc = null;
-      if (log.isDebugEnabled() || opts.getValidate())
+      if (log.isDebugEnabled() || getOpts().getValidate())
       {
          jc = JAXBContext.newInstance(Resource.class, TranslationsResource.class);
       }
@@ -167,11 +164,11 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
          }
       }
       List<LocaleMapping> locales = null;
-      if (opts.getImportPo())
+      if (getOpts().getImportPo())
       {
-         if (opts.getLocales() != null)
+         if (getOpts().getLocales() != null)
          {
-            locales = PublicanUtil.findLocales(opts.getSrcDir(), opts.getLocales());
+            locales = PublicanUtil.findLocales(getOpts().getSrcDir(), getOpts().getLocales());
             if (locales.size() == 0)
             {
                log.warn("option 'importPo' is set, but none of the configured locale directories was found (check zanata.xml)");
@@ -179,7 +176,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
          }
          else
          {
-            locales = PublicanUtil.findLocales(opts.getSrcDir());
+            locales = PublicanUtil.findLocales(getOpts().getSrcDir());
             if (locales.size() == 0)
             {
                log.warn("option 'importPo' is set, but no locale directories were found");
@@ -203,7 +200,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
             InputSource potInputSource = new InputSource(bis);
             potInputSource.setEncoding("utf8");
             // load 'srcDoc' from pot/${docID}.pot
-            srcDoc = poReader.extractTemplate(potInputSource, new LocaleId(opts.getSourceLang()), docName);
+            srcDoc = poReader.extractTemplate(potInputSource, new LocaleId(getOpts().getSourceLang()), docName);
          }
          finally
          {
@@ -215,21 +212,21 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
             m.marshal(srcDoc, writer);
             log.debug("{}", writer);
          }
-         if (opts.getValidate())
+         if (getOpts().getValidate())
          {
             JaxbUtil.validateXml(srcDoc, jc);
          }
          StringSet extensions = new StringSet("comment;gettext");
          log.info("pushing source document [name={}] to server", srcDoc.getName());
-         boolean copyTrans = opts.getCopyTrans();
+         boolean copyTrans = getOpts().getCopyTrans();
          ClientResponse<String> putResponse = translationResources.putResource(docUri, srcDoc, extensions, copyTrans );
          ClientUtility.checkResult(putResponse, uri);
 
-         if (opts.getImportPo())
+         if (getOpts().getImportPo())
          {
             for (LocaleMapping locale : locales)
             {
-               File localeDir = new File(opts.getSrcDir(), locale.getLocalLocale());
+               File localeDir = new File(getOpts().getSrcDir(), locale.getLocalLocale());
                File poFile = new File(localeDir, docName + ".po");
                if (poFile.canRead())
                {
@@ -252,12 +249,12 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
                      m.marshal(targetDoc, writer);
                      log.debug("{}", writer);
                   }
-                  if (opts.getValidate())
+                  if (getOpts().getValidate())
                   {
                      JaxbUtil.validateXml(targetDoc, jc);
                   }
                   log.info("pushing target document [name={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), locale.getLocalLocale(), locale.getLocale() });
-                  ClientResponse<String> putTransResponse = translationResources.putTranslations(docUri, new LocaleId(locale.getLocale()), targetDoc, extensions, opts.getMergeType());
+                  ClientResponse<String> putTransResponse = translationResources.putTranslations(docUri, new LocaleId(locale.getLocale()), targetDoc, extensions, getOpts().getMergeType());
                   ClientUtility.checkResult(putTransResponse, uri);
                   String entity = putTransResponse.getEntity(String.class);
                   if (entity != null && !entity.isEmpty())

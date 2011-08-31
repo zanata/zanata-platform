@@ -37,20 +37,16 @@ import org.zanata.rest.client.ZanataProxyFactory;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class GlossaryDeleteCommand extends ConfigurableCommand
+public class GlossaryDeleteCommand extends ConfigurableCommand<GlossaryDeleteOptions>
 {
    private static final Logger log = LoggerFactory.getLogger(GlossaryDeleteCommand.class);
 
-
-   private final GlossaryDeleteOptions opts;
    private final IGlossaryResource glossaryResource;
    private final URI uri;
-
 
    public GlossaryDeleteCommand(GlossaryDeleteOptions opts, ZanataProxyFactory factory, IGlossaryResource glossaryResource, URI uri)
    {
       super(opts, factory);
-      this.opts = opts;
       this.glossaryResource = glossaryResource;
       this.uri = uri;
    }
@@ -69,20 +65,20 @@ public class GlossaryDeleteCommand extends ConfigurableCommand
    @Override
    public void run() throws Exception
    {
-      log.info("Server: {}", opts.getUrl());
-      log.info("Username: {}", opts.getUsername());
-      log.info("Locale to delete: {}", opts.getlang());
-      log.info("Delete entire glossary?: {}", opts.getAllGlossary());
+      log.info("Server: {}", getOpts().getUrl());
+      log.info("Username: {}", getOpts().getUsername());
+      log.info("Locale to delete: {}", getOpts().getlang());
+      log.info("Delete entire glossary?: {}", getOpts().getAllGlossary());
 
       ClientResponse<String> response;
 
-      if (opts.getAllGlossary())
+      if (getOpts().getAllGlossary())
       {
          response = glossaryResource.deleteGlossaries();
       }
       else
       {
-         response = glossaryResource.deleteGlossary(new LocaleId(opts.getlang()));
+         response = glossaryResource.deleteGlossary(new LocaleId(getOpts().getlang()));
       }
 
       ClientUtility.checkResult(response, uri);

@@ -35,7 +35,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * 
  */
-public class PullCommand extends ConfigurableProjectCommand
+public class PullCommand extends ConfigurableProjectCommand<PullOptions>
 {
    private static final Logger log = LoggerFactory.getLogger(PullCommand.class);
 
@@ -50,14 +50,12 @@ public class PullCommand extends ConfigurableProjectCommand
 
    Marshaller m = null;
 
-   private final PullOptions opts;
    private final ITranslationResources translationResources;
    private final URI uri;
 
    public PullCommand(PullOptions opts, ZanataProxyFactory factory, ITranslationResources translationResources, URI uri)
    {
       super(opts, factory);
-      this.opts = opts;
       this.translationResources = translationResources;
       this.uri = uri;
    }
@@ -77,31 +75,31 @@ public class PullCommand extends ConfigurableProjectCommand
       PullStrategy strat = strategies.get(strategyType);
       if (strat == null)
       {
-         throw new RuntimeException("unknown project type: " + opts.getProjectType());
+         throw new RuntimeException("unknown project type: " + getOpts().getProjectType());
       }
-      strat.setPullOptions(opts);
+      strat.setPullOptions(getOpts());
       return strat;
    }
 
    @Override
    public void run() throws Exception
    {
-      log.info("Server: {}", opts.getUrl());
-      log.info("Project: {}", opts.getProj());
-      log.info("Version: {}", opts.getProjectVersion());
-      log.info("Username: {}", opts.getUsername());
-      if (opts.getPullSrc())
+      log.info("Server: {}", getOpts().getUrl());
+      log.info("Project: {}", getOpts().getProj());
+      log.info("Version: {}", getOpts().getProjectVersion());
+      log.info("Username: {}", getOpts().getUsername());
+      if (getOpts().getPullSrc())
       {
          log.info("Pulling source and target (translation) documents");
-         log.info("Source-language directory (originals): {}", opts.getSrcDir());
+         log.info("Source-language directory (originals): {}", getOpts().getSrcDir());
       }
       else
       {
          log.info("Pulling target documents (translations) only");
       }
-      log.info("Target-language base directory (translations): {}", opts.getTransDir());
+      log.info("Target-language base directory (translations): {}", getOpts().getTransDir());
 
-      if (opts.getPullSrc())
+      if (getOpts().getPullSrc())
       {
          log.warn("pullSrc option is set: existing source-language files may be overwritten/deleted");
          confirmWithUser("This will overwrite/delete any existing documents and translations in the above directories.\n");
@@ -110,20 +108,20 @@ public class PullCommand extends ConfigurableProjectCommand
       {
          confirmWithUser("This will overwrite/delete any existing translations in the above directory.\n");
       }
-      PullStrategy strat = getStrategy(opts.getProjectType());
+      PullStrategy strat = getStrategy(getOpts().getProjectType());
 
       JAXBContext jc = null;
-      if (opts.isDebugSet()) // || opts.getValidate())
+      if (getOpts().isDebugSet()) // || opts.getValidate())
       {
          jc = JAXBContext.newInstance(Resource.class, TranslationsResource.class);
       }
-      if (opts.isDebugSet())
+      if (getOpts().isDebugSet())
       {
          m = jc.createMarshaller();
          m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
       }
 
-      LocaleList locales = opts.getLocales();
+      LocaleList locales = getOpts().getLocales();
       if (locales == null)
          throw new ConfigException("no locales specified");
 
@@ -136,13 +134,13 @@ public class PullCommand extends ConfigurableProjectCommand
          String docName = resourceMeta.getName();
          // TODO follow a Link
          String docUri = RestUtil.convertToDocumentURIId(docName);
-         if (strat.needsDocToWriteTrans() || opts.getPullSrc())
+         if (strat.needsDocToWriteTrans() || getOpts().getPullSrc())
          {
             ClientResponse<Resource> resourceResponse = translationResources.getResource(docUri, strat.getExtensions());
             ClientUtility.checkResult(resourceResponse, uri);
             doc = resourceResponse.getEntity();
          }
-         if (opts.getPullSrc())
+         if (getOpts().getPullSrc())
          {
             log.info("writing source file for document {}", docName);
             strat.writeSrcFile(doc);
@@ -171,7 +169,7 @@ public class PullCommand extends ConfigurableProjectCommand
 
    private void confirmWithUser(String message) throws IOException
    {
-      if (opts.isInteractiveMode())
+      if (getOpts().isInteractiveMode())
       {
          Console console = System.console();
          if (console == null)
@@ -194,7 +192,7 @@ public class PullCommand extends ConfigurableProjectCommand
    {
       try
       {
-         if (opts.isDebugSet())
+         if (getOpts().isDebugSet())
          {
             StringWriter writer = new StringWriter();
             m.marshal(jaxbElement, writer);
