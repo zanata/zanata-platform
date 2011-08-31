@@ -60,6 +60,7 @@ public class PublicanPullCommandTest
       return mock;
    }
    
+   @SuppressWarnings("deprecation")
    private void publicanPull(boolean exportPot, boolean mapLocale) throws Exception
    {
       PublicanPullOptions opts = new PublicanPullOptionsImpl();
