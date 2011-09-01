@@ -860,7 +860,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    {
       Set<String> validExtensions = Sets.newHashSet(validExt);
       Set<String> invalidExtensions = null;
-      for (String ext : extensions)
+      for (String ext : validExt)
       {
          if (!validExtensions.contains(ext))
          {
