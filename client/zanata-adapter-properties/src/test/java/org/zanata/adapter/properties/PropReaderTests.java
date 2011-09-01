@@ -32,7 +32,6 @@ public class PropReaderTests
    private static final String TEST_OUTPUT_DIR_STRING = "target/test-output";
    private static final File TEST_OUTPUT_DIR = new File(TEST_OUTPUT_DIR_STRING);
 
-   @SuppressWarnings("deprecation")
    PropReader propReader;
 
    @BeforeMethod

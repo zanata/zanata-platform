@@ -46,8 +46,6 @@ public class XliffReaderTest
    @Test
    public void extractTargetSizeTest() throws FileNotFoundException
    {
-      Resource doc = getTemplateDoc();
-
       File fileTarget = new File(testDir, "/StringResource_de.xml");
       InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
       TranslationsResource tr = reader.extractTarget(inputSource);
@@ -57,8 +55,6 @@ public class XliffReaderTest
    @Test
    public void targetFirstAndLastTextFlowTest() throws FileNotFoundException
    {
-      Resource doc = getTemplateDoc();
-      
       File fileTarget = new File(testDir, "/StringResource_de.xml");
       InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
       TranslationsResource tr = reader.extractTarget(inputSource);
