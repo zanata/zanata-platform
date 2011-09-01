@@ -849,9 +849,16 @@ public class TranslationResourcesService implements TranslationResourcesResource
       throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
    }
 
-   private void validateExtensions(String... extensions)
+   /**
+    * Ensures that any extensions sent with the current query are valid for this
+    * context.
+    * 
+    * @param validExt any number of extension ids that are valid for the context
+    * @throws WebApplicationException if any unsupported extensions are present
+    */
+   private void validateExtensions(String... validExt) throws WebApplicationException
    {
-      Set<String> validExtensions = Sets.newHashSet(extensions);
+      Set<String> validExtensions = Sets.newHashSet(validExt);
       Set<String> invalidExtensions = null;
       for (String ext : extensions)
       {
