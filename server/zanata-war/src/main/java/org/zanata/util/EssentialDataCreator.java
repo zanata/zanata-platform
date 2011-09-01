@@ -112,6 +112,23 @@ public class EssentialDataCreator
             }
          }
 
+         if (!accountRoleDAO.roleExists("glossarist"))
+         {
+            log.info("Creating 'glossarist' role");
+            if (accountRoleDAO.create("glossarist") == null)
+            {
+               throw new RuntimeException("Couldn't create 'glossarist' role");
+            }
+         }
+         if (!accountRoleDAO.roleExists("glossary-admin"))
+         {
+            log.info("Creating 'glossary-admin' role");
+            if (accountRoleDAO.create("glossary-admin") == null)
+            {
+               throw new RuntimeException("Couldn't create 'glossary-admin' role");
+            }
+         }
+
          prepared = true;
       }
       Events.instance().raiseEvent(ESSENTIAL_DATA_CREATED_EVENT);

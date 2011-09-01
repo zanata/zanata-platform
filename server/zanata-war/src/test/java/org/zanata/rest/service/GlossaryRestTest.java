@@ -13,6 +13,7 @@ import org.dbunit.operation.DatabaseOperation;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 import org.junit.Assert;
 import org.testng.annotations.BeforeClass;
@@ -23,7 +24,6 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.dao.LocaleDAO;
-import org.zanata.model.HGlossaryEntry;
 import org.zanata.rest.client.IGlossaryResource;
 import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
@@ -120,8 +120,8 @@ public class GlossaryRestTest extends ZanataRestTest
    @Test
    public void putGlossary()
    {
-      mockIdentity.checkPermission(anyObject(HGlossaryEntry.class), eq("insert"));
-      mockIdentity.checkPermission(anyObject(HGlossaryEntry.class), eq("insert"));
+      mockIdentity.checkPermission(anyObject(String.class), eq("glossary-insert"));
+      mockControl.replay();
 
       Glossary glossary = new Glossary();
       GlossaryEntry glossaryEntry1 = new GlossaryEntry();
@@ -169,6 +169,9 @@ public class GlossaryRestTest extends ZanataRestTest
    @Test
    public void deleteAllGlossaries()
    {
+      mockIdentity.checkPermission(anyObject(String.class), eq("glossary-delete"));
+      mockControl.replay();
+
       ClientResponse<String> response = glossaryService.deleteGlossaries();
       assertThat(response.getStatus(), is(200));
 
@@ -181,6 +184,9 @@ public class GlossaryRestTest extends ZanataRestTest
    @Test
    public void deleteGlossaryTermWithLocale()
    {
+      mockIdentity.checkPermission(anyObject(String.class), eq("glossary-delete"));
+      mockControl.replay();
+
       ClientResponse<String> response = glossaryService.deleteGlossary(LocaleId.ES);
       assertThat(response.getStatus(), is(200));
 
@@ -189,5 +195,4 @@ public class GlossaryRestTest extends ZanataRestTest
 
       assertThat(glossaryEntries.get(0).getGlossaryTerms().size(), is(2));
    }
-
 }

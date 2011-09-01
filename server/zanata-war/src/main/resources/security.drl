@@ -186,25 +186,23 @@ OR of project maintainers
 ******************************************************************************************/
 
 /* 'glossarist' can push */
-/* this should be glossarist */
 rule GlossaristPushGlossary
   no-loop
   activation-group "permissions"
 when
   check: PermissionCheck(action == "glossary-insert" || action == "glossary-update", granted == false)
-  Role(name == "admin")
+  Role(name == "glossarist")
 then
   check.grant();
 end
 
 /* 'glossarist-admin' can delete */
-/* this should be glossarist-admin */
 rule GlossaristDeleteGlossary
   no-loop
   activation-group "permissions"
 when
   check: PermissionCheck(action == "glossary-delete" || action == "glossary-update", granted == false)
-  Role(name == "admin")
+  Role(name == "glossarist-admin")
 then
   check.grant();
 end
