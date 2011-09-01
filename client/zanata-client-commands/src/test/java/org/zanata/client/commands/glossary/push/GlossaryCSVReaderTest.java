@@ -18,10 +18,12 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.client.commands.pushGlossary;
+package org.zanata.client.commands.glossary.push;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
@@ -29,11 +31,12 @@ import org.junit.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-import org.zanata.client.commands.glossary.push.GlossaryPoReader;
+import org.zanata.client.commands.glossary.push.GlossaryCSVReader;
 import org.zanata.client.commands.glossary.push.GlossaryPushOptions;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.rest.dto.Glossary;
+import org.zanata.rest.dto.GlossaryEntry;
 
 /**
  *
@@ -41,16 +44,14 @@ import org.zanata.rest.dto.Glossary;
  *
  **/
 @Test(groups = "unit-tests")
-public class GlossaryPoReaderTest
+public class GlossaryCSVReaderTest
 {
    LocaleList locales = new LocaleList();
 
-   GlossaryPoReader reader = new GlossaryPoReader();
+   GlossaryCSVReader reader = new GlossaryCSVReader();
 
    IMocksControl control = EasyMock.createControl();
    GlossaryPushOptions mockPushOption;
-
-   private final File sourceFile = new File("src/test/resources/glossary/fuel_hi.po");
 
    @BeforeMethod
    void beforeMethod()
@@ -69,22 +70,65 @@ public class GlossaryPoReaderTest
       T mock = control.createMock(name, toMock);
       return mock;
    }
-   
+
    @Test
-   public void extractGlossaryTest() throws IOException
+   public void extractGlossaryTest1() throws IOException
    {
+      File sourceFile = new File("src/test/resources/glossary/translate1.csv");
+      List<String> commentHeaders = new ArrayList<String>();
+      commentHeaders.add("pos");
+      commentHeaders.add("description");
+
       mockPushOption = createMock("mockPushGlossaryOption", GlossaryPushOptions.class);
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
       EasyMock.expect(mockPushOption.getTransLang()).andReturn("hi").anyTimes();
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getAllTransComments()).andReturn(false).anyTimes();
+      EasyMock.expect(mockPushOption.getCommentsHeader()).andReturn(commentHeaders).anyTimes();
 
       reader.setOpts(mockPushOption);
       EasyMock.replay(mockPushOption);
 
       Glossary glossary = reader.extractGlossary(sourceFile);
+      // System.out.println(glossary);
       Assert.assertNotNull(glossary);
-      Assert.assertEquals(578, glossary.getGlossaryEntries().size());
+      Assert.assertEquals(2, glossary.getGlossaryEntries().size());
+
+      for (GlossaryEntry entry : glossary.getGlossaryEntries())
+      {
+         Assert.assertEquals(3, entry.getGlossaryTerms().size());
+      }
+
+   }
+   
+   @Test
+   public void extractGlossaryTest2() throws IOException
+   {
+      File sourceFile = new File("src/test/resources/glossary/translate2.csv");
+      List<String> commentHeaders = new ArrayList<String>();
+      commentHeaders.add("description1");
+      commentHeaders.add("description2");
+      commentHeaders.add("description3"); // this will be ignored
+
+      mockPushOption = createMock("mockPushGlossaryOption", GlossaryPushOptions.class);
+      EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
+      EasyMock.expect(mockPushOption.getTransLang()).andReturn("hi").anyTimes();
+      EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
+      EasyMock.expect(mockPushOption.getAllTransComments()).andReturn(false).anyTimes();
+      EasyMock.expect(mockPushOption.getCommentsHeader()).andReturn(commentHeaders).anyTimes();
+
+      reader.setOpts(mockPushOption);
+      EasyMock.replay(mockPushOption);
+
+      Glossary glossary = reader.extractGlossary(sourceFile);
+      // System.out.println(glossary);
+      Assert.assertNotNull(glossary);
+      Assert.assertEquals(2, glossary.getGlossaryEntries().size());
+
+      for (GlossaryEntry entry : glossary.getGlossaryEntries())
+      {
+         Assert.assertEquals(3, entry.getGlossaryTerms().size());
+      }
 
    }
 }

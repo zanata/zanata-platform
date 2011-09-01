@@ -174,11 +174,14 @@ public class GlossaryService implements GlossaryResource
 
       for (HGlossaryEntry hGlossaryEntry : hGlossaryEntries)
       {
-         for (HGlossaryTerm hGlossaryTerm : hGlossaryEntry.getGlossaryTerms().values())
+         for (HLocale key : hGlossaryEntry.getGlossaryTerms().keySet())
          {
+            HGlossaryTerm hGlossaryTerm = hGlossaryEntry.getGlossaryTerms().get(key);
             if (hGlossaryTerm.getLocale().getLocaleId().equals(targetLocale))
             {
+               // Locale is unique for each entry
                hGlossaryEntry.getGlossaryTerms().remove(hGlossaryTerm.getLocale());
+               break;
             }
          }
 

@@ -142,5 +142,11 @@
         <addAutoIncrement tableName="HTermComment" columnName="id" columnDataType="bigint"/>
     </changeSet>
 
+    <changeSet author="aeng@redhat.com" id="9">
+        <comment>Alter glossary term table - remove constraint</comment>
+        <dropForeignKeyConstraint baseTableName="HTermComment" constraintName="UKtermComment_glossaryTerm" />
+    </changeSet>
+
+
 
 </databaseChangeLog>
