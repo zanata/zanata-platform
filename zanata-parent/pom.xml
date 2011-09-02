@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.zanata</groupId>
 	<artifactId>zanata-parent</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.5-SNAPSHOT</version>
 	<name>Zanata Parent POM</name>
 	<url>http://zanata.org/</url>
 	<packaging>pom</packaging>
@@ -151,10 +150,10 @@
 		<javadoc.skip>true</javadoc.skip>
 
 		<checkstyle.skip>false</checkstyle.skip>
-		<checkstyle.configLocation></checkstyle.configLocation>
-		<checkstyle.propertiesLocation></checkstyle.propertiesLocation>
-		<checkstyle.suppressionsLocation></checkstyle.suppressionsLocation>
-		<checkstyle.suppressionsFileExpression></checkstyle.suppressionsFileExpression>
+		<checkstyle.configLocation />
+		<checkstyle.propertiesLocation />
+		<checkstyle.suppressionsLocation />
+		<checkstyle.suppressionsFileExpression />
 
 		<reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
 		<reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
