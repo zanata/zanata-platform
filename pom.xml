@@ -250,6 +250,7 @@
 				<configuration>
 					<allowTimestampedSnapshots>true</allowTimestampedSnapshots>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<tagNameFormat>zanata-@{project.version}</tagNameFormat>
 					<localCheckout>true</localCheckout>
 					<pushChanges>true</pushChanges>
 				</configuration>
