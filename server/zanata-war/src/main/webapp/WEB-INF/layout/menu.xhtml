@@ -10,16 +10,16 @@
 	<ul class="ui-tabs-nav">
 		<li id="tab_home" class="ui-tabs-nav-issues"><s:link
 			id="home" view="/home.xhtml" propagation="none">
-			<span><img src="#{request.contextPath}/img/silk/home.png" />#{messages['jsf.Home']}</span>
+			<span><img src="#{request.contextPath}/public-img/silk/home.png" />#{messages['jsf.Home']}</span>
 		</s:link> 
 		</li>
 		<li id="tab_projects" class="ui-tabs-nav-issues"><s:link
 			id="Projects" view="/project/home.xhtml" propagation="none">
-			<span><img src="#{request.contextPath}/img/silk/photos.png" />#{messages['jsf.Projects']}</span>
+			<span><img src="#{request.contextPath}/public-img/silk/photos.png" />#{messages['jsf.Projects']}</span>
 		</s:link> </li>
 		<li id="tab_tribes"><s:link id="Languages"
 			view="/language/home.xhtml" propagation="none">
-			<span><img src="#{request.contextPath}/img/silk/world.png" />#{messages['jsf.Languages']}</span>
+			<span><img src="#{request.contextPath}/public-img/silk/world.png" />#{messages['jsf.Languages']}</span>
 		</s:link> <s:div id="tribesTabDiv">
 			<s:fragment rendered="#{memberLanguage.size != 0}">
 				<rich:jQuery selector="#tab_tribes"
@@ -38,7 +38,7 @@
 		<s:fragment rendered="#{s:hasRole('admin')}">
 			<li id="tab_admin" class="ui-tabs-nav-issues"><s:link
 				id="Administration" view="/admin/home.xhtml" propagation="none">
-				<span><img src="#{request.contextPath}/img/silk/wrench.png" />#{messages['jsf.Administration']}
+				<span><img src="#{request.contextPath}/public-img/silk/wrench.png" />#{messages['jsf.Administration']}
 				↓</span>
 			</s:link>
 			<ul>
@@ -54,18 +54,27 @@
 					propagation="none">#{messages['jsf.ManageLanguage']}</s:link></li>
 				<li id="Admin_Manage_search"><s:link id="Admin_Manage_search_a"
 					view="/admin/search.xhtml" propagation="none">#{messages['jsf.ManageSearch']}</s:link></li>
+					
+				<li id="tab_glossary">
+                  <s:link id="Glossary" view="/glossary/view.xhtml" propagation="none">
+                    <span>
+                        <img src="#{request.contextPath}/public-img/crystal_project/_16x16/mimetypes/templates.png" />#{messages['jsf.Glossary']}
+                    </span>
+                  </s:link>
+                </li>
+              	
 			</ul>
 			</li>
 		</s:fragment>
 		<s:fragment rendered="#{identity.loggedIn}">
 			<li id="tab_profile"><s:link id="MyProfile"
 				view="/profile/view.xhtml" propagation="none">
-				<span><img src="#{request.contextPath}/img/silk/user.png" />#{messages['jsf.MyProfile']}</span>
+				<span><img src="#{request.contextPath}/public-img/silk/user.png" />#{messages['jsf.MyProfile']}</span>
 			</s:link></li>
 		</s:fragment>
 		<li id="tab_help" class="ui-tabs-nav-issues"><s:link
 			id="help" view="/help/view.xhtml" propagation="none">
-			<span><img src="#{request.contextPath}/img/silk/help.png" />#{messages['jsf.Help']}</span>
+			<span><img src="#{request.contextPath}/public-img/silk/help.png" />#{messages['jsf.Help']}</span>
 		</s:link> 
 		</li>
 

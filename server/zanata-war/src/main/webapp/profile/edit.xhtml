@@ -25,7 +25,7 @@
               <h:inputText id="name" value="#{profileAction.name}" required="true" >
                 <a4j:support event="onblur" reRender="nameField" ajaxSingle="true"/>
               </h:inputText>
-              <h:graphicImage id="nameHelp" value="../img/msginfo.png" styleClass="input_help">
+              <h:graphicImage id="nameHelp" value="../public-img/msginfo.png" styleClass="input_help">
                 <rich:toolTip>
                   #{messages['jsf.NameToolTip']}
                 </rich:toolTip>
@@ -36,7 +36,7 @@
               <h:inputText id="email" value="#{profileAction.email}" required="true" >
                   <a4j:support event="onblur" reRender="emailField" />
               </h:inputText>
-	       <h:graphicImage id="usernameHelp" value="../img/msginfo.png" styleClass="input_help">
+	       <h:graphicImage id="usernameHelp" value="../public-img/msginfo.png" styleClass="input_help">
                 <rich:toolTip>
                   #{messages['jsf.EmailToolTip']}
                 </rich:toolTip>

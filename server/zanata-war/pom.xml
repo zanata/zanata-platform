@@ -41,7 +41,6 @@
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
 			</resource>
-
 		</resources>
 
 		<plugins>
@@ -205,6 +204,12 @@
 									<directory>src/main/webapp-jboss</directory>
 									<filtering>true</filtering>
 								</resource>
+								<resource>
+                                    <directory>src/main/resources/org/zanata/webtrans/images</directory>
+                                    <includes>
+                                        <include>public-img/**</include>
+                                    </includes>
+                                </resource>
 							</webResources>
 						</configuration>
 					</plugin>
@@ -472,6 +477,12 @@
 									<directory>src/main/webapp-jboss</directory>
 									<filtering>true</filtering>
 								</resource>
+								<resource>
+                                    <directory>src/main/resources/org/zanata/webtrans/images</directory>
+                                    <includes>
+                                        <include>public-img/**</include>
+                                    </includes>
+                                </resource>
 							</webResources>
 						</configuration>
 					</plugin>
