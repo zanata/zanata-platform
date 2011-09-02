@@ -111,9 +111,9 @@
 	</changeSet>
 
 	<changeSet author="aeng@redhat.com" id="7">
+	    <validCheckSum>1484b636bf20f8a55f257622fc9f3cd</validCheckSum>
 		<comment>Alter glossary entry table - remove srcTermId/add srcLocaleId/add sourceRef</comment>
 		<dropForeignKeyConstraint baseTableName="HGlossaryEntry" constraintName="UKglossaryEntry_glossaryTerm" />
-		<dropUniqueConstraint tableName="HGlossaryEntry" constraintName="UKglossaryEntry_glossaryTerm" />
 		<dropColumn tableName="HGlossaryEntry" columnName="srcTermId" />
 
 		<addColumn tableName="HGlossaryEntry">
@@ -131,7 +131,6 @@
         </addColumn>   
 	</changeSet>
 	
-	
 	<changeSet author="aeng@redhat.com" id="8">
         <comment>Alter glossary tables - remove sourceRef/add auto increment</comment>
         
@@ -147,6 +146,7 @@
         <dropForeignKeyConstraint baseTableName="HTermComment" constraintName="UKtermComment_glossaryTerm" />
     </changeSet>
 
+    
 
 
 </databaseChangeLog>
