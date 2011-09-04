@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:rich="http://richfaces.org/rich"       
+    xmlns:s="http://jboss.com/products/seam/taglib">
+
+  <ui:composition template="../WEB-INF/layout/template.xhtml">
+  
+    <ui:define name="center_content">
+    
+        <rich:panel id="glossary-status-panel">
+        <f:facet name="header">#{messages['jsf.GlossaryStatistics']}</f:facet>
+        
+        <h:form>
+            <s:token allowMultiplePosts="true" />
+            <rich:dataTable id="data_table" width="100%" value="#{glossaryStatsAction.getAllStatus().toArray()}" 
+                  var="language" styleClass="iteration_inline_tribes" rowClasses="odd,even">
+                    <rich:column sortBy="#{language.locale}">
+                        <f:facet name="header">#{messages['jsf.Language']}</f:facet>
+                        #{language.locale}
+                    </rich:column>
+                    <rich:column sortBy="#{language.entryCount}">
+                        <f:facet name="header">#{messages['jsf.GlossaryEntries']}</f:facet>
+                        #{language.entryCount}
+                    </rich:column>
+          </rich:dataTable>
+        </h:form>              
+      </rich:panel>
+    
+    </ui:define>
+    
+  </ui:composition>
+</html>
