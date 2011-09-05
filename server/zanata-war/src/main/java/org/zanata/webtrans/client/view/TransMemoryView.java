@@ -160,7 +160,8 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
          resultTable.setText(row, SIMILARITY_COL, similarity + "%");
 
          final Image infoLink = new Image(resources.informationImage());
-         infoLink.setTitle("Info");
+         infoLink.setTitle("Details");
+         infoLink.setStylePrimaryName("pointer");
          infoLink.addClickHandler(new ClickHandler()
          {
             @Override
