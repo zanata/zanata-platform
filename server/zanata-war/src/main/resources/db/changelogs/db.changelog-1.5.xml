@@ -112,6 +112,7 @@
 
 	<changeSet author="aeng@redhat.com" id="7">
 	    <validCheckSum>1484b636bf20f8a55f257622fc9f3cd</validCheckSum>
+	    <validCheckSum>20b6eae675fc802af04aa2ad48fddc83</validCheckSum>
 		<comment>Alter glossary entry table - remove srcTermId/add srcLocaleId/add sourceRef</comment>
 		<dropForeignKeyConstraint baseTableName="HGlossaryEntry" constraintName="UKglossaryEntry_glossaryTerm" />
 		<dropColumn tableName="HGlossaryEntry" columnName="srcTermId" />
