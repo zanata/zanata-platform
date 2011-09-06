@@ -13,7 +13,7 @@ public interface GlossaryPushOptions extends ConfigurableProjectOptions
 
    public String getTransLang();
 
-   public boolean getAllTransComments();
+   public boolean getTreatSourceCommentsAsTarget();
 
-   public List<String> getCommentsHeader();
+   public List<String> getCommentCols();
 }

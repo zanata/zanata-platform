@@ -77,7 +77,7 @@ public class GlossaryPoReaderTest
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
       EasyMock.expect(mockPushOption.getTransLang()).andReturn("hi").anyTimes();
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
-      EasyMock.expect(mockPushOption.getAllTransComments()).andReturn(false).anyTimes();
+      EasyMock.expect(mockPushOption.getTreatSourceCommentsAsTarget()).andReturn(false).anyTimes();
 
       reader.setOpts(mockPushOption);
       EasyMock.replay(mockPushOption);

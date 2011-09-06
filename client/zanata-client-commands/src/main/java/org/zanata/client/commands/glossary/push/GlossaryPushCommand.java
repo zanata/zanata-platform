@@ -108,7 +108,7 @@ public class GlossaryPushCommand extends ConfigurableCommand<GlossaryPushOptions
       log.info("Username: {}", getOpts().getUsername());
       log.info("Source language: {}", getOpts().getSourceLang());
       log.info("Translation language: {}", getOpts().getTransLang());
-      log.info("All translation comment: {}", getOpts().getAllTransComments());
+      log.info("All translation comment: {}", getOpts().getTreatSourceCommentsAsTarget());
       log.info("Glossary file: {}", getOpts().getGlossaryFile());
 
       File glossaryFile = getOpts().getGlossaryFile();
