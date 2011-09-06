@@ -110,7 +110,7 @@ public class GlossaryPoReader extends AbstractGlossaryPushReader
             targetTerm.setContent(message.getMsgstr());
 
             // Treat all comments and source reference as translation comment
-            if (getOpts().getAllTransComments())
+            if (getOpts().getTreatSourceCommentsAsTarget())
             {
                for (String srcRef : message.getSourceReferences())
                {

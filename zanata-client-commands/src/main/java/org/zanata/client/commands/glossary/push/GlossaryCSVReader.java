@@ -134,7 +134,7 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader
 
       for (int row = 0; row < headerRow.length; row++)
       {
-         for(String optsHeader:getOpts().getCommentsHeader())
+         for(String optsHeader:getOpts().getCommentCols())
          {
             if(optsHeader.equals(headerRow[row])){
                descMap.put(row,headerRow[row]);

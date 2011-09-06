@@ -63,22 +63,23 @@ public class GlossaryPushMojo extends ConfigurableProjectMojo implements Glossar
    private File glossaryFile;
 
    /**
-    * Treat all comments and source reference in glossary file as translation
-    * comment
+    * Treat source comments and references as target comments in glossary file
+    * as translation comment
     * 
-    * @parameter expression="${zanata.allTransComments}" default-value="false"
+    * @parameter expression="${zanata.treatSourceCommentsAsTarget}"
+    *            default-value="false"
     */
-   private boolean allTransComments = false;
+   private boolean treatSourceCommentsAsTarget = false;
 
    /**
-    * Customized comment column headers for csv file format. Format of CVS:
+    * Customized comment column headers for csv file format. Format of CSV:
     * {source locale},{locale},{locale}...,pos,description OR {source
     * locale},{locale},{locale}...,description1,description2...
     * 
-    * @parameter expression="${zanata.commentsHeader}"
+    * @parameter expression="${zanata.commentCols}"
     *            default-value="pos,description"
     */
-   private String commentsHeader = "pos,description";
+   private String commentCols = "pos,description";
 
 
    public GlossaryPushMojo() throws Exception
@@ -112,15 +113,15 @@ public class GlossaryPushMojo extends ConfigurableProjectMojo implements Glossar
    }
 
    @Override
-   public boolean getAllTransComments()
+   public boolean getTreatSourceCommentsAsTarget()
    {
-      return allTransComments;
+      return treatSourceCommentsAsTarget;
    }
 
    @Override
-   public List<String> getCommentsHeader()
+   public List<String> getCommentCols()
    {
-      String[] commentHeadersList = StringUtils.split(commentsHeader, ",");
+      String[] commentHeadersList = StringUtils.split(commentCols, ",");
       List<String> list = new ArrayList<String>();
       if (commentHeadersList != null && commentHeadersList.length > 0)
       {
