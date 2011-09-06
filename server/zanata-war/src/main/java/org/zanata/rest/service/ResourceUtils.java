@@ -26,6 +26,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
+import org.zanata.common.ContentState;
 import org.zanata.common.ResourceType;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -96,9 +97,18 @@ public class ResourceUtils
             textFlow.setObsolete(false);
             // avoid changing revision when resurrecting an unchanged TF
             if (transferFromTextFlow(tf, textFlow, enabledExtensions))
-            {
+            {// content has changed
                textFlow.setRevision(nextDocRev);
                changed = true;
+               for (HTextFlowTarget targ : textFlow.getTargets().values())
+               {
+                  // if (targ.getState() != ContentState.New)
+                  if (targ.getState() == ContentState.Approved)
+                  {
+                     targ.setState(ContentState.NeedReview);
+                     targ.setVersionNum(targ.getVersionNum() + 1);
+                  }
+               }
                log.debug("TextFlow with id {0} has changed", tf.getId());
             }
          }
