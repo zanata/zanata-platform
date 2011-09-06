@@ -132,7 +132,7 @@
         </addColumn>   
 	</changeSet>
 	
-	<changeSet author="aeng@redhat.com" id="8">
+	<changeSet author="aeng@redhat.com" id="8" dbms="mysql">
         <comment>Alter glossary tables - remove sourceRef/add auto increment</comment>
         
         <dropColumn tableName="HGlossaryTerm" columnName="sourceRef" />
@@ -142,6 +142,11 @@
         <addAutoIncrement tableName="HTermComment" columnName="id" columnDataType="bigint"/>
     </changeSet>
 
+    <changeSet author="aeng@redhat.com" id="8.5" dbms="h2">
+        <comment>Alter glossary tables - remove sourceRef/add auto increment</comment>
+        <dropColumn tableName="HGlossaryTerm" columnName="sourceRef" />
+    </changeSet>
+    
     <changeSet author="aeng@redhat.com" id="9">
         <comment>Alter glossary term table - remove constraint</comment>
         <dropForeignKeyConstraint baseTableName="HTermComment" constraintName="UKtermComment_glossaryTerm" />
