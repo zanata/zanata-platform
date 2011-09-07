@@ -25,5 +25,16 @@ import org.zanata.model.HLocale;
 
 public interface CopyTransService
 {
+   /**
+    * Copies previous matching translations for the given locale into a
+    * document. Translations are matching if their document id, textflow id and
+    * source content are identical, and their state is approved.
+    * 
+    * The text flow revision for copied targets is set to the current text flow
+    * revision.
+    * 
+    * @param document the document to copy translations into
+    * @param locale the locale of translations to copy
+    */
    void copyTransForLocale(HDocument document, HLocale locale);
 }
