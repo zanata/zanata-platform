@@ -35,9 +35,13 @@
 				<g:south size="150" min-size="45">
 				    <g:LayoutPanel ui:field="southPanelContainer">
 				        <g:layer top="0" bottom="8px">
-					        <g:HorizontalPanel styleName="{style.southHorizontalPanel}">
-	                            <g:LayoutPanel ui:field="tmPanel" styleName="{style.southComponentPanel}"/>
-	                            <g:LayoutPanel ui:field="glossaryPanel" styleName="{style.southComponentPanel}"/>
+				            <g:HorizontalPanel styleName="{style.southHorizontalPanel}">
+				                <g:cell height='100%' width='50%'>
+	                               <g:LayoutPanel ui:field="tmPanel" styleName="{style.southComponentPanel}"/>
+				                </g:cell>
+				                <g:cell height='100%' width='50%'>
+	                               <g:LayoutPanel ui:field="glossaryPanel" styleName="{style.southComponentPanel}"/>
+	                            </g:cell>
 	                        </g:HorizontalPanel>
                         </g:layer>
                         <g:layer right="3px" top="3px" width="15px" height="15px"> 

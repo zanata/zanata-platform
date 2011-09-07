@@ -3,8 +3,10 @@ package org.zanata.dao;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.lucene.queryParser.ParseException;
 import org.dbunit.operation.DatabaseOperation;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
@@ -20,6 +22,7 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
+import org.zanata.webtrans.shared.rpc.GetGlossary.SearchType;
 
 @Test(groups = { "jpa-tests" })
 public class GlossaryDAOTest extends ZanataDbunitJpaTest
@@ -103,5 +106,4 @@ public class GlossaryDAOTest extends ZanataDbunitJpaTest
       Assert.assertNotNull(entry);
       assertThat(entry.getSrcLocale().getLocaleId(), is(LocaleId.EN_US));
    }
-
 }

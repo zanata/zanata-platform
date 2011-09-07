@@ -31,6 +31,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
@@ -52,7 +53,10 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    LayoutPanel sidePanelOuterContainer, southPanelContainer;
 
    @UiField
-   LayoutPanel editorContainer, sidePanelContainer, tmPanel, glossaryPanel;
+   LayoutPanel editorContainer, sidePanelContainer;
+
+   @UiField
+   LayoutPanel glossaryPanel, tmPanel;
 
    @UiField
    SplitLayoutPanel mainSplitPanel;
@@ -85,7 +89,6 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       this.southPanelContainer = new LayoutPanel();
 
       initWidget(uiBinder.createAndBindUi(this));
-
       tmMinimize.setVisible(true);
       sidePanelCollapse.setVisible(true);
       mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) panelWidth);

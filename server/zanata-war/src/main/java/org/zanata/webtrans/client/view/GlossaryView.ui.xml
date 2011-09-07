@@ -4,9 +4,10 @@
 	xmlns:f="urn:import:org.zanata.webtrans.client">
 	<ui:style>
         .headerLabel {
-            padding-right:1px;
+            padding-right:5px;
             padding-top:5px;   
             padding-left:10px; 
+            font-weight:bold;
         }
     </ui:style>
     
@@ -20,7 +21,7 @@
 				<g:Button ui:field="clearButton"/>
 			</g:HorizontalPanel>
 		</g:layer>
-		<g:layer top="25px" bottom="0px" >
+		<g:layer top="25px" bottom="0px" left="10px" right="0">
 			<g:ScrollPanel>
 				<g:FlexTable ui:field="resultTable"/>
 			</g:ScrollPanel>

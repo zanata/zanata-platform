@@ -15,6 +15,8 @@ import org.zanata.ZanataDBUnitSeamTest;
 import org.zanata.rest.client.IGlossaryResource;
 import org.zanata.rest.dto.VersionInfo;
 
+import org.zanata.rest.service.SeamMockClientExecutor;
+
 @Test(groups = { "seam-tests" })
 public abstract class GlossaryServiceSeamTest extends ZanataDBUnitSeamTest
 {

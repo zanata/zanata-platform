@@ -67,13 +67,12 @@ public class GlossaryRestTest extends ZanataRestTest
    protected void prepareResources()
    {
       GlossaryDAO glossaryDAO = new GlossaryDAO(getSession());
-      AccountDAO accountDAO = new AccountDAO(getSession());
 
       LocaleServiceImpl localeService = new LocaleServiceImpl();
       LocaleDAO localeDAO = new LocaleDAO(getSession());
       localeService.setLocaleDAO(localeDAO);
 
-      GlossaryService glossaryService = new GlossaryService(glossaryDAO, accountDAO, mockIdentity, localeService);
+      GlossaryService glossaryService = new GlossaryService(glossaryDAO, mockIdentity, localeService);
 
       resources.add(glossaryService);
    }
