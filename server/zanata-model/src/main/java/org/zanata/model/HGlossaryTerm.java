@@ -33,10 +33,16 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.FilterCacheModeType;
+import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.NotNull;
+import org.zanata.hibernate.search.DefaultNgramAnalyzer;
+import org.zanata.hibernate.search.GlossaryFilterFactory;
 import org.zanata.hibernate.search.LocaleIdBridge;
 
 /**
@@ -45,6 +51,8 @@ import org.zanata.hibernate.search.LocaleIdBridge;
  *
  **/
 @Entity
+@Indexed
+@FullTextFilterDef(name = "glossaryFilter", impl = GlossaryFilterFactory.class, cache = FilterCacheModeType.INSTANCE_ONLY)
 public class HGlossaryTerm extends ModelEntityBase
 {
    private String content;
@@ -64,6 +72,7 @@ public class HGlossaryTerm extends ModelEntityBase
 
    @NotNull
    @Type(type = "text")
+   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
    public String getContent()
    {
       return content;

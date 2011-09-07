@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.TransMemoryCopyEvent;
-import org.zanata.webtrans.client.presenter.TransMemoryDetailsPresenter;
-import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
+import org.zanata.webtrans.client.presenter.GlossaryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
@@ -28,37 +27,34 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TransMemoryView extends Composite implements TransMemoryPresenter.Display
+public class GlossaryView extends Composite implements GlossaryPresenter.Display
 {
+   private static GlossaryViewUiBinder uiBinder = GWT.create(GlossaryViewUiBinder.class);
 
    private static final int CELL_PADDING = 5;
    private static final int HEADER_ROW = 0;
    private static final int SOURCE_COL = 0;
-   private static final int TARGET_COL = 1;
+   private static final int SUGGESTION_COL = 1;
    private static final int SIMILARITY_COL = 2;
-   private static final int INFO_COL = 3;
    private static final int ACTION_COL = 4;
 
-   private static TransMemoryViewUiBinder uiBinder = GWT.create(TransMemoryViewUiBinder.class);
-
-   interface TransMemoryViewUiBinder extends UiBinder<Widget, TransMemoryView>
+   interface GlossaryViewUiBinder extends UiBinder<Widget, GlossaryView>
    {
    }
 
    @UiField
-   TextBox tmTextBox;
+   TextBox glossaryTextBox;
 
    @UiField
-   Label tmHeader;
+   Label glossaryHeader;
 
    @UiField
-   CheckBox phraseButton;
+   CheckBox exactButton;
 
    @UiField
    Button searchButton;
@@ -72,25 +68,23 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    @Inject
    private EventBus eventBus;
 
-   @Inject
-   private TransMemoryDetailsPresenter tmInfoPresenter;
-
    private final Resources resources;
 
    @Inject
-   public TransMemoryView(final UiMessages messages, Resources resources)
+   public GlossaryView(final UiMessages messages, Resources resources)
    {
       this.resources = resources;
       initWidget(uiBinder.createAndBindUi(this));
-      phraseButton.setText(messages.phraseButtonLabel());
+      exactButton.setText(messages.phraseButtonLabel());
+      exactButton.setValue(true);
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
-      tmHeader.setText(messages.tmHeader());
+      glossaryHeader.setText(messages.glossaryHeader());
       Log.info(LocaleInfo.getCurrentLocale().getLocaleName());
    }
 
-   @UiHandler("tmTextBox")
-   void onTmTextBoxKeyUp(KeyUpEvent event)
+   @UiHandler("glossaryTextBox")
+   void onGlossaryTextBoxKeyUp(KeyUpEvent event)
    {
       if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
       {
@@ -101,14 +95,14 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    @UiHandler("clearButton")
    void onClearButtonClicked(ClickEvent event)
    {
-      tmTextBox.setText("");
+      glossaryTextBox.setText("");
       clearResults();
    }
 
    @Override
    public HasValue<Boolean> getExactButton()
    {
-      return phraseButton;
+      return exactButton;
    }
 
    @Override
@@ -117,15 +111,20 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       return searchButton;
    }
 
-   public TextBox getTmTextBox()
+   public TextBox getGlossaryTextBox()
    {
-      return tmTextBox;
+      return glossaryTextBox;
    }
 
    @Override
    public Widget asWidget()
    {
       return this;
+   }
+
+   public void clearResults()
+   {
+      resultTable.removeAllRows();
    }
 
    @Override
@@ -136,17 +135,12 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    }
 
    @Override
-   public void stopProcessing()
-   {
-   }
-
-   @Override
    public void createTable(ArrayList<TranslationMemoryGlossaryItem> memories)
    {
       // TODO most of this should be in TransMemoryPresenter
       clearResults();
       addColumn("Source", SOURCE_COL);
-      addColumn("Target", TARGET_COL);
+      addColumn("Suggestion", SUGGESTION_COL);
       addColumn("Similarity", SIMILARITY_COL);
 
       int row = HEADER_ROW;
@@ -158,21 +152,8 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
          final int similarity = memory.getSimilarityPercent();
 
          resultTable.setWidget(row, SOURCE_COL, new HighlightingLabel(sourceMessage));
-         resultTable.setWidget(row, TARGET_COL, new HighlightingLabel(targetMessage));
+         resultTable.setWidget(row, SUGGESTION_COL, new HighlightingLabel(targetMessage));
          resultTable.setText(row, SIMILARITY_COL, similarity + "%");
-
-         final Image infoLink = new Image(resources.informationImage());
-         infoLink.setTitle("Details");
-         infoLink.setStylePrimaryName("pointer");
-         infoLink.addClickHandler(new ClickHandler()
-         {
-            @Override
-            public void onClick(ClickEvent event)
-            {
-               tmInfoPresenter.show(memory);
-            }
-         });
-         resultTable.setWidget(row, INFO_COL, infoLink);
 
          final Anchor copyLink = new Anchor("Copy");
          copyLink.addClickHandler(new ClickHandler()
@@ -181,7 +162,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
             public void onClick(ClickEvent event)
             {
                eventBus.fireEvent(new TransMemoryCopyEvent(sourceMessage, targetMessage));
-               Log.info("TransMemoryCopyEvent event is sent. (" + targetMessage + ")");
+               Log.info("GlossaryCopyEvent event is sent. (" + targetMessage + ")");
             }
          });
          resultTable.setWidget(row, ACTION_COL, copyLink);
@@ -196,10 +177,5 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       widget.setWidth("100%");
       widget.addStyleName("TransMemoryTableColumnHeader");
       resultTable.setWidget(HEADER_ROW, pos, widget);
-   }
-
-   public void clearResults()
-   {
-      resultTable.removeAllRows();
    }
 }

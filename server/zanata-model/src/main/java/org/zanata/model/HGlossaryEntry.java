@@ -35,6 +35,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 import org.zanata.hibernate.search.LocaleIdBridge;
 
 /**
@@ -42,7 +43,8 @@ import org.zanata.hibernate.search.LocaleIdBridge;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
- @Entity
+@Entity
+@Indexed
 public class HGlossaryEntry extends ModelEntityBase
 {
    private Map<HLocale, HGlossaryTerm> glossaryTerms;

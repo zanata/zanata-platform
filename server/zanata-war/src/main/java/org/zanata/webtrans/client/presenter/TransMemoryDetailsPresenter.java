@@ -5,7 +5,7 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.shared.model.TranslationMemoryItem;
+import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
 import org.zanata.webtrans.shared.rpc.TransMemoryDetails;
 import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
@@ -82,7 +82,7 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
       }));
    }
 
-   public void show(final TranslationMemoryItem item)
+   public void show(final TranslationMemoryGlossaryItem item)
    {
       // request TM details from the server
       dispatcher.execute(new GetTransMemoryDetailsAction(item.getTransUnitIdList()), new AsyncCallback<TransMemoryDetailsList>()

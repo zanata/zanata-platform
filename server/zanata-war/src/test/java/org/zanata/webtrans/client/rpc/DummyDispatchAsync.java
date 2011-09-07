@@ -9,6 +9,8 @@ import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
+import org.zanata.webtrans.shared.rpc.GetGlossary;
+import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.GetProjectStatusCount;
 import org.zanata.webtrans.shared.rpc.GetProjectStatusCountResult;
 import org.zanata.webtrans.shared.rpc.GetStatusCount;
@@ -21,7 +23,7 @@ import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class DummyDispatchAsync extends SeamDispatchAsync
@@ -51,44 +53,49 @@ public class DummyDispatchAsync extends SeamDispatchAsync
       {
          GetTransUnitList gtuAction = (GetTransUnitList) action;
          AsyncCallback<GetTransUnitListResult> gtuCallback = (AsyncCallback<GetTransUnitListResult>) callback;
-         DeferredCommand.addCommand(new DummyGetTransUnitCommand(gtuAction, gtuCallback));
-         DeferredCommand.addCommand(new DummyGetTransUnitCommand(gtuAction, gtuCallback));
+         Scheduler.get().scheduleDeferred(new DummyGetTransUnitCommand(gtuAction, gtuCallback));
       }
       else if (action instanceof GetDocumentList)
       {
          final GetDocumentList gdlAction = (GetDocumentList) action;
          AsyncCallback<GetDocumentListResult> gdlCallback = (AsyncCallback<GetDocumentListResult>) callback;
-         DeferredCommand.addCommand(new DummyGetDocsListCommand(gdlAction, gdlCallback));
+         Scheduler.get().scheduleDeferred(new DummyGetDocsListCommand(gdlAction, gdlCallback));
       }
       else if (action instanceof ActivateWorkspaceAction)
       {
          final ActivateWorkspaceAction gwcAction = (ActivateWorkspaceAction) action;
          AsyncCallback<ActivateWorkspaceResult> gwcCallback = (AsyncCallback<ActivateWorkspaceResult>) callback;
-         DeferredCommand.addCommand(new DummyActivateWorkspaceCommand(gwcAction, gwcCallback));
+         Scheduler.get().scheduleDeferred(new DummyActivateWorkspaceCommand(gwcAction, gwcCallback));
       }
       else if (action instanceof GetTranslatorList)
       {
          final GetTranslatorList _action = (GetTranslatorList) action;
          AsyncCallback<GetTranslatorListResult> _callback = (AsyncCallback<GetTranslatorListResult>) callback;
-         DeferredCommand.addCommand(new DummyGetTranslatorListCommand(_action, _callback));
+         Scheduler.get().scheduleDeferred(new DummyGetTranslatorListCommand(_action, _callback));
       }
       else if (action instanceof GetProjectStatusCount)
       {
          final GetProjectStatusCount _action = (GetProjectStatusCount) action;
          AsyncCallback<GetProjectStatusCountResult> _callback = (AsyncCallback<GetProjectStatusCountResult>) callback;
-         DeferredCommand.addCommand(new DummyGetProjectStatusCountCommand(_action, _callback));
+         Scheduler.get().scheduleDeferred(new DummyGetProjectStatusCountCommand(_action, _callback));
       }
       else if (action instanceof GetStatusCount)
       {
          final GetStatusCount _action = (GetStatusCount) action;
          AsyncCallback<GetStatusCountResult> _callback = (AsyncCallback<GetStatusCountResult>) callback;
-         DeferredCommand.addCommand(new DummyGetStatusCountCommand(_action, _callback));
+         Scheduler.get().scheduleDeferred(new DummyGetStatusCountCommand(_action, _callback));
       }
       else if (action instanceof GetTranslationMemory)
       {
          final GetTranslationMemory _action = (GetTranslationMemory) action;
          AsyncCallback<GetTranslationMemoryResult> _callback = (AsyncCallback<GetTranslationMemoryResult>) callback;
-         DeferredCommand.addCommand(new DummyGetTranslationMemoryCommand(_action, _callback));
+         Scheduler.get().scheduleDeferred(new DummyGetTranslationMemoryCommand(_action, _callback));
+      }
+      else if (action instanceof GetGlossary)
+      {
+         final GetGlossary _action = (GetGlossary) action;
+         AsyncCallback<GetGlossaryResult> _callback = (AsyncCallback<GetGlossaryResult>) callback;
+         Scheduler.get().scheduleDeferred(new DummyGetGlossaryCommand(_action, _callback));
       }
       else
       {

@@ -32,33 +32,33 @@ import org.apache.lucene.util.OpenBitSet;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 
-public class TextFlowIdFilter extends Filter
+public class IdFilter extends Filter
 {
    /**
     * 
     */
    private static final long serialVersionUID = 1L;
-   private List<Long> textFlowIds;
-   private static final Log log = Logging.getLog(TextFlowIdFilter.class);
+   private List<Long> ids;
+   private static final Log log = Logging.getLog(IdFilter.class);
 
-   public void setTextFlowIds(List<Long> var)
+   public void setIds(List<Long> var)
    {
-      log.debug("Setting Translated Ids");
-      this.textFlowIds = var;
+      log.debug("Setting Ids");
+      this.ids = var;
    }
    
-   public List<Long> getTextFlowIds()
+   public List<Long> getIds()
    {
-      return this.textFlowIds;
+      return this.ids;
    }
 
    @Override
    public DocIdSet getDocIdSet(IndexReader reader) throws IOException
    {
       OpenBitSet bitSet = new OpenBitSet(reader.maxDoc());
-      for (Long tfId : textFlowIds)
+      for (Long id : ids)
       {
-         Term term = new Term("id", tfId.toString());
+         Term term = new Term("id", id.toString());
          TermDocs termDocs = reader.termDocs(term);
          while (termDocs.next())
             bitSet.set(termDocs.doc());

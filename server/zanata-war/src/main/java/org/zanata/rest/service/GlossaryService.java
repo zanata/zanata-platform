@@ -239,7 +239,7 @@ public class GlossaryService implements GlossaryResource
 
    private HGlossaryEntry getOrCreateGlossaryEntry(LocaleId srcLocale, String srcContent)
    {
-      HGlossaryEntry hGlossaryEntry = glossaryDAO.getEntryBySrcContentLocale(srcLocale, srcContent);
+      HGlossaryEntry hGlossaryEntry = glossaryDAO.getEntryBySrcLocaleAndContent(srcLocale, srcContent);
 
       if (hGlossaryEntry == null)
       {

@@ -99,7 +99,7 @@ public class GlossaryDAOTest extends ZanataDbunitJpaTest
    public void testGetEntryBySrcContentLocale()
    {
       log.debug("testGetEntryBySrcContentLocale");
-      HGlossaryEntry entry = dao.getEntryBySrcContentLocale(LocaleId.EN_US, "test data content 1 (source lang)");
+      HGlossaryEntry entry = dao.getEntryBySrcLocaleAndContent(LocaleId.EN_US, "test data content 1 (source lang)");
       Assert.assertNotNull(entry);
       assertThat(entry.getSrcLocale().getLocaleId(), is(LocaleId.EN_US));
    }

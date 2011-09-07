@@ -28,34 +28,34 @@ import org.hibernate.search.annotations.Key;
 import org.hibernate.search.filter.FilterKey;
 import org.hibernate.search.filter.StandardFilterKey;
 
-public class TextFlowFilterFactory
+public class GlossaryFilterFactory
 {
 
    @Factory
    public Filter getFilter()
    {
       IdFilter filter = new IdFilter();
-      filter.setIds(this.translatedIds);
+      filter.setIds(this.termIds);
       return filter;
    }
 
-   private List<Long> translatedIds;
+   private List<Long> termIds;
 
-   public List<Long> getTranslatedIds()
+   public List<Long> getTermIds()
    {
-      return translatedIds;
+      return termIds;
    }
 
-   public void setTranslatedIds(List<Long> var)
+   public void setTermIds(List<Long> termIds)
    {
-      this.translatedIds = var;
+      this.termIds = termIds;
    }
 
    @Key
    public FilterKey getKey()
    {
       StandardFilterKey key = new StandardFilterKey();
-      key.addParameter(translatedIds);
+      key.addParameter(termIds);
       return key;
    }
 
