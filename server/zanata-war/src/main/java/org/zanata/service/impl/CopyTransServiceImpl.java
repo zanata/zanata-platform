@@ -43,19 +43,36 @@ import org.zanata.rest.service.TranslationResourcesService;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 
+//TODO unit test suite for this class
+
 @Name("copyTransServiceImpl")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
 public class CopyTransServiceImpl implements CopyTransService
 {
-   @In
    private LocaleService localeServiceImpl;
-   @In
    private TextFlowTargetDAO textFlowTargetDAO;
-   @In
    private DocumentDAO documentDAO;
    @Logger
    Log log;
+
+   @In
+   public void setLocaleService(LocaleService localeService)
+   {
+      this.localeServiceImpl = localeService;
+   }
+
+   @In
+   public void setTextFlowTargetDAO(TextFlowTargetDAO tftDAO)
+   {
+      this.textFlowTargetDAO = tftDAO;
+   }
+
+   @In
+   public void setDocumentDAO(DocumentDAO documentDAO)
+   {
+      this.documentDAO = documentDAO;
+   }
 
 
    @Observer(TranslationResourcesService.EVENT_COPY_TRANS)
@@ -91,6 +108,8 @@ public class CopyTransServiceImpl implements CopyTransService
       return "translation auto-copied from project " + projectname + ", version " + version + ", document " + documentid + ", author " + authorname;
    }
 
+   // TODO unit testing for this method
+   @Override
    public void copyTransForLocale(HDocument document, HLocale locale)
    {
       try
@@ -118,6 +137,7 @@ public class CopyTransServiceImpl implements CopyTransService
                   hTarget.setVersionNum(hTarget.getVersionNum() + 1);
                }
                // NB we don't touch creationDate
+               hTarget.setTextFlowRevision(textFlow.getRevision());
                hTarget.setLastChanged(oldTFT.getLastChanged());
                hTarget.setLastModifiedBy(oldTFT.getLastModifiedBy());
                hTarget.setContent(oldTFT.getContent());
