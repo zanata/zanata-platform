@@ -29,8 +29,6 @@ import org.junit.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-import org.zanata.client.commands.glossary.push.GlossaryPoReader;
-import org.zanata.client.commands.glossary.push.GlossaryPushOptions;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.rest.dto.Glossary;
