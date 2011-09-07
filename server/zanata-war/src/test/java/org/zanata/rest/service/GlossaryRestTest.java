@@ -13,7 +13,6 @@ import org.dbunit.operation.DatabaseOperation;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.jboss.resteasy.client.ClientResponse;
-import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 import org.junit.Assert;
 import org.testng.annotations.BeforeClass;

@@ -35,7 +35,6 @@ import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
 import org.zanata.webtrans.shared.rpc.GetGlossary.SearchType;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
-import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;

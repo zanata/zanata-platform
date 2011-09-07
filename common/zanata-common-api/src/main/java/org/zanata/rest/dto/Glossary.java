@@ -50,6 +50,11 @@ import org.zanata.rest.dto.resource.LocaleList;
 @JsonWriteNullProperties(false)
 public class Glossary implements Serializable, HasMediaType
 {
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 2979294228147882716L;
+
    private List<GlossaryEntry> glossaryEntries;
 
    private LocaleList sourceLocales = new LocaleList();

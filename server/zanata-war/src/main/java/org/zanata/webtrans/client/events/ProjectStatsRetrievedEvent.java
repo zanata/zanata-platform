@@ -2,7 +2,6 @@ package org.zanata.webtrans.client.events;
 
 import java.util.ArrayList;
 
-import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 
 import com.google.gwt.event.shared.GwtEvent;

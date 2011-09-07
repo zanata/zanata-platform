@@ -1,6 +1,5 @@
 package org.zanata.rest.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -15,10 +14,8 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
-import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
-import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.po.HPoHeader;
 import org.zanata.rest.NoSuchEntityException;
