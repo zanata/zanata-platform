@@ -123,11 +123,16 @@ echo url: $url
 echo user: $user
 echo service: $service
 echo targetfile: $targetfile
-#set -x
+
+set -x
+echo stopping app server on $host:
 $ssh $user@$host $service stop
+echo copying $warfile to $host:$targetfile
 $scp $warfile $user@$host:$targetfile
+echo starting app server on $host
 $ssh $user@$host $service start
-#set +x
+set +x
+
 echo $url is now starting up
 
 $DIR/is_server_up.sh $url
