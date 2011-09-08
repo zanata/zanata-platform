@@ -46,9 +46,9 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
 
    private final TranslationStats stats = new TranslationStats();
 
-   protected final WebTransMessages messages;
+   private final WebTransMessages messages;
 
-   protected int approvedPercent = 0;
+   private int approvedPercent = 0;
 
    private int totalWidth = 100;
 
@@ -59,9 +59,15 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
    public TransUnitCountBar(WebTransMessages messages)
    {
       this.messages = messages;
-      tooltipPanel.setStyleName("transUnitCountGraphTooltipPanel");
       initWidget(uiBinder.createAndBindUi(this));
       initLayoutPanelHandler();
+   }
+
+   public TransUnitCountBar(WebTransMessages messages, boolean isGraph)
+   {
+      this.isGraph = isGraph;
+      labelFormat = LabelFormat.PERCENT_COMPLETE;
+      this.messages = messages;
    }
 
    private void initLayoutPanelHandler()
@@ -87,13 +93,6 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
       layoutPanel.sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT);
    }
 
-   public TransUnitCountBar(WebTransMessages messages, boolean isGraph)
-   {
-      tooltipPanel.setStyleName("transUnitCountGraphTooltipPanel");
-      this.isGraph = isGraph;
-      this.messages = messages;
-   }
-
    private void setupLayoutPanel(double undefinedLeft, double undefinedWidth, double approvedLeft, double approvedWidth, double needReviewLeft, double needReviewWidth, double untranslatedLeft, double untranslatedWidth)
    {
       layoutPanel.forceLayout();
@@ -112,7 +111,9 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
       int width = getOffsetWidth();
       if (total == 0)
       {
-         setupLayoutPanel(0.0, 100, 0.0, 0, 0.0, 0, 0.0, 0);
+         undefinedPanel.clear();
+         undefinedPanel.add(new Label(messages.noContent()));
+         setupLayoutPanel(0.0, width, 0.0, 0, 0.0, 0, 0.0, 0);
          label.setText("");
       }
       else
@@ -125,14 +126,8 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
          setLabelText(total, approved, needReview, untranslated);
       }
 
-      if (isGraph)
-      {
-         refreshDisplay(0);
-      }
-      else
-      {
-         refreshDisplay(1000);
-      }
+      int duration = isGraph ? 0 : 1000;
+      refreshDisplay(duration);
    }
 
    private void setLabelText(int total, int approved, int needReview, int untranslated)
@@ -156,7 +151,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
       return approvedPercent;
    }
 
-   protected void refreshDisplay(int duration)
+   private void refreshDisplay(int duration)
    {
       tooltipPanel.refreshData(this);
       layoutPanel.animate(duration);
@@ -207,7 +202,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
       return remainingHours(getWordsNeedReview(), getWordsUntranslated());
    }
 
-   protected double remainingHours(int fuzzyWords, int untranslatedWords)
+   private double remainingHours(int fuzzyWords, int untranslatedWords)
    {
       double untransHours = untranslatedWords / 250.0;
       double fuzzyHours = fuzzyWords / 500.0;
@@ -230,5 +225,12 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
    public void onMouseOut()
    {
       tooltipPanel.hide(true);
+   }
+
+   @Override
+   public int getOffsetWidth()
+   {
+      int offsetWidth = super.getOffsetWidth();
+      return offsetWidth == 0 ? 115 : offsetWidth;
    }
 }

@@ -433,7 +433,7 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
     width:25%;
 }
 
-.transUnitCountGraphTooltipPanel {
+.transUnitCountTooltip {
 	background-color: #F7F488;
 	color: #2A2A04;
 	text-align: center;
@@ -443,12 +443,12 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
 	-webkit-border-radius: 8px;
 }
 
-.transUnitCountGraphTooltipTable {
+.transUnitCountTooltipTable {
 	text-align: center;
 	font-size: 12px
 }
 
-.transUnitCountGraphTooltipTable TD {
+.transUnitCountTooltipTable TD {
 	border: 1px solid #999966;
 	width:75px;
 	-moz-border-radius:4px;
