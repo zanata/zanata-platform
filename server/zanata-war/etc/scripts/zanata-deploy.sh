@@ -126,7 +126,9 @@ echo targetfile: $targetfile
 
 set -x
 echo stopping app server on $host:
-$ssh $user@$host $service stop
+if ! $ssh $user@$host $service stop
+then echo $server stop failed (server not running?); ignoring error
+fi
 echo copying $warfile to $host:$targetfile
 $scp $warfile $user@$host:$targetfile
 echo starting app server on $host
