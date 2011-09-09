@@ -21,7 +21,8 @@
 package org.zanata.util;
 
 import net.sf.okapi.common.LocaleId;
-import net.sf.okapi.steps.wordcount.WordCounter;
+import net.sf.okapi.steps.tokenization.Tokenizer;
+import net.sf.okapi.steps.tokenization.tokens.Tokens;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,11 @@ public class OkapiUtil
     */
    public static long countWords(String s, String bcp47Locale)
    {
+      if (s == null)
+      {
+         log.debug("null string");
+         return 0;
+      }
       try
       {
          LocaleId locale;
@@ -63,11 +69,10 @@ public class OkapiUtil
             log.error("can't understand '{}' as a BCP-47 locale; defaulting to English", bcp47Locale);
             locale = LocaleId.ENGLISH;
          }
-         synchronized (WordCounter.class)
-         {
-            long count = WordCounter.count(s, locale);
-            return count;
-         }
+
+         // new WordCounter().doCount();
+         Tokens tokens = Tokenizer.tokenize(s, locale, "WORD");
+         return tokens.size();
       }
       catch (Exception e)
       {
