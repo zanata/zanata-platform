@@ -40,8 +40,8 @@
 					value="#{messages['jsf.SignIn']}" propagation="none" />
 					<rich:spacer width="10px" />
 					<s:link id="Register" view="/account/register.xhtml"
-					value="#{messages['jsf.Register']}" propagation="none" rendered="#{zanataInit.internalAuthentication}"/>
-					<s:fragment rendered="#{not zanataInit.internalAuthentication}">
+					value="#{messages['jsf.Register']}" propagation="none" rendered="#{applicationConfiguration.internalAuth}"/>
+					<s:fragment rendered="#{not applicationConfiguration.internalAuth}">
 					<a href="#{applicationConfiguration.registerPath}">#{messages['jsf.Register']}</a>
 					</s:fragment>
 					</s:fragment>

@@ -43,6 +43,36 @@
 		</resources>
 
 		<plugins>
+		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>generate-kerberos-webxml</id>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<outputDirectory>${project.build.directory}/generated-resources/kerberos</outputDirectory>
+							<filters>
+								<filter>${basedir}/src/etc/kerberos.properties</filter>
+							</filters>
+							<resources>
+								<resource>
+									<directory>src/main/webapp-jboss/WEB-INF</directory>
+									<filtering>true</filtering>
+									<includes>
+										<include>web.xml</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
@@ -59,6 +89,52 @@
 						</manifestEntries>
 					</archive>
 				</configuration>
+			</plugin>
+			
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>generate-kerberos-war</id>
+						<goals>
+							<goal>war</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+							<warName>${war.name}</warName>
+							<warSourceExcludes>WEB-INF/web.xml</warSourceExcludes>
+							<webappDirectory>${project.build.directory}/${project.build.finalName}-kerberos</webappDirectory>
+							<webXml>${project.build.directory}/generated-resources/kerberos/web.xml</webXml>
+							<classifier>kerberos</classifier>
+							<webResources>
+								<resource>
+									<directory>src/main/webapp-jboss</directory>
+									<filtering>true</filtering>
+									<excludes>
+										<exclude>WEB-INF/web.xml</exclude>
+									</excludes>
+								</resource>
+								<resource>
+                                    <directory>src/main/resources/org/zanata/webtrans/images</directory>
+                                    <includes>
+                                        <include>public-img/**</include>
+                                    </includes>
+                                </resource>
+							</webResources>
+							<archive>
+								<manifest>
+									<addClasspath>true</addClasspath>
+									<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+									<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+								</manifest>
+								<manifestEntries>
+									<Implementation-Build>${maven.build.timestamp}</Implementation-Build>
+									<SCM-Changeset>${changeSet}</SCM-Changeset>
+								</manifestEntries>
+							</archive>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 
 			<plugin>
@@ -624,6 +700,7 @@
 
 		</profile>
 
+		<!-- 
 		<profile>
 			<id>internalauthentication</id>
 			<activation>
@@ -644,7 +721,7 @@
 				<fedora.openId>true</fedora.openId>
 			</properties>
 		</profile>
-
+		-->
 
 		<profile>
 			<id>zanata-test</id>
@@ -652,32 +729,6 @@
 				<war.name>zanata-test</war.name>
 			</properties>
 		</profile>
-
-
-		<profile>
-			<id>kerberos</id>
-			<properties>
-				<spnego.security><![CDATA[
-				-->
-<security-constraint>
-    <web-resource-collection>
-         <web-resource-name>sign in</web-resource-name>
-         <url-pattern>/account/*</url-pattern>
-    </web-resource-collection>
-	<auth-constraint>
-		<role-name>*</role-name>
-	</auth-constraint>
-</security-constraint>	
-
-<login-config>
-    <auth-method>SPNEGO</auth-method>
-</login-config>
-				<!--
-				]]></spnego.security>
-				<spNego.authentication>true</spNego.authentication>
-			</properties>
-		</profile>
-
 
 		<profile>
 			<id>nogwt</id>
@@ -918,12 +969,6 @@
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-xc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.security</groupId>
-			<artifactId>jbosssx</artifactId>
-			<version>2.0.3.SP1</version>
-			<scope>provided</scope>
 		</dependency>
 
 
@@ -1311,6 +1356,24 @@
 			</exclusions>
 		</dependency>
 
+		<dependency>
+			<groupId>jboss</groupId>
+			<artifactId>jbosssx</artifactId>
+			<version>4.2.2.GA</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>jboss</groupId>
+			<artifactId>jboss-jmx</artifactId>
+			<version>4.2.2.GA</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>jboss</groupId>
+			<artifactId>jboss-system</artifactId>
+			<version>4.2.2.GA</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 </project>

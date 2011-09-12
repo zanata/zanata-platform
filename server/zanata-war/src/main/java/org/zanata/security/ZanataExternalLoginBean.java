@@ -36,6 +36,7 @@ import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.Identity;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.ZanataInit;
 
 @Name("zanataExternalLoginBean")
@@ -54,15 +55,15 @@ public class ZanataExternalLoginBean implements Serializable
    private ZanataIdentity identity;
 
    private ZanataJpaIdentityStore identityStore;
-
-   private ZanataInit zanataInit;
+   
+   private ApplicationConfiguration applicationConfiguration;
 
    @Create
    public void init()
    {
       identity = (ZanataIdentity) Component.getInstance(ZanataIdentity.class, ScopeType.SESSION);
       identityStore = (ZanataJpaIdentityStore) Component.getInstance(ZanataJpaIdentityStore.class, ScopeType.APPLICATION);
-      zanataInit = (ZanataInit) Component.getInstance(ZanataInit.class, ScopeType.APPLICATION);
+      applicationConfiguration = (ApplicationConfiguration) Component.getInstance(ApplicationConfiguration.class, ScopeType.APPLICATION);
    }
 
 
@@ -73,7 +74,7 @@ public class ZanataExternalLoginBean implements Serializable
 
    public boolean externalLogin()
    {
-      return !zanataInit.isInternalAuthentication() && !identity.isApiRequest();
+      return !applicationConfiguration.isInternalAuth() && !identity.isApiRequest();
    }
 
    public void applyAuthentication()
@@ -113,7 +114,7 @@ public class ZanataExternalLoginBean implements Serializable
 
    public void spNegoExecute()
    {
-      if (zanataInit.isSpNego())
+      if (applicationConfiguration.isKerberosAuth())
       {
          SpNegoIdentity spNegoIdentity = (SpNegoIdentity) Component.getInstance(SpNegoIdentity.class, ScopeType.SESSION);
          spNegoIdentity.setCredential();
@@ -122,22 +123,22 @@ public class ZanataExternalLoginBean implements Serializable
 
    public String redirect()
    {
-      if (zanataInit.isSpNego() && identity.isLoggedIn() && isNewUser())
+      if (applicationConfiguration.isKerberosAuth() && identity.isLoggedIn() && isNewUser())
       {
          return "edit";
       }
 
-      if (zanataInit.isSpNego() && identity.isLoggedIn() && !isNewUser())
+      if (applicationConfiguration.isKerberosAuth() && identity.isLoggedIn() && !isNewUser())
       {
          return "home";
       }
 
-      if (zanataInit.isSpNego() && !identity.isLoggedIn())
+      if (applicationConfiguration.isKerberosAuth() && !identity.isLoggedIn())
       {
          return "home";
       }
 
-      if (!zanataInit.isSpNego())
+      if (!applicationConfiguration.isKerberosAuth())
       {
          return "login";
       }

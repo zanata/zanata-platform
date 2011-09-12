@@ -15,6 +15,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.ZanataInit;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountRoleDAO;
@@ -41,6 +42,9 @@ public class EssentialDataCreator
 
    @In
    private EntityManager entityManager;
+   
+   @In
+   private ApplicationConfiguration applicationConfiguration;
 
    private boolean prepared;
 
@@ -105,8 +109,7 @@ public class EssentialDataCreator
             adminExists = false;
          }
 
-         ZanataInit zanataInit = (ZanataInit) Component.getInstance(ZanataInit.class);
-         if (!adminExists && zanataInit.isInternalAuthentication())
+         if (!adminExists && applicationConfiguration.isInternalAuth())
          {
             log.warn("No admin users found: creating default user 'admin'");
 

@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
@@ -35,6 +36,7 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.model.HApplicationConfiguration;
+import org.zanata.security.AuthenticationType;
 
 @Name("applicationConfiguration")
 @Scope(ScopeType.APPLICATION)
@@ -49,8 +51,9 @@ public class ApplicationConfiguration
 
    private Map<String, String> configValues = new HashMap<String, String>();
 
-   @Observer( { EVENT_CONFIGURATION_CHANGED, ZanataInit.EVENT_Zanata_Startup })
-   public void reload()
+   @Observer( { EVENT_CONFIGURATION_CHANGED })
+   @Create
+   public void load()
    {
       log.info("Reloading configuration");
       Map<String, String> configValues = new HashMap<String, String>();
@@ -106,6 +109,40 @@ public class ApplicationConfiguration
    public String getHelpContent()
    {
       return configValues.get(HApplicationConfiguration.KEY_HELP_CONTENT);
+   }
+   
+   public String getLoginConfigUrl()
+   {
+      return configValues.get(HApplicationConfiguration.KEY_LOGINCONFIG_URL);
+   }
+   
+   public AuthenticationType getAuthenticationType()
+   {
+      final String authType = configValues.get(HApplicationConfiguration.KEY_AUTHTYPE);
+      
+      if( authType == null ) 
+      {
+         return null;
+      }
+      else
+      {
+         return AuthenticationType.valueOf( authType );
+      }
+   }
+   
+   public boolean isInternalAuth()
+   {
+      return this.getAuthenticationType() == AuthenticationType.INTERNAL;
+   }
+   
+   public boolean isFedoraOpenIdAuth() 
+   {
+      return this.getAuthenticationType() == AuthenticationType.FEDORA_OPENID;
+   }
+   
+   public boolean isKerberosAuth()
+   {
+      return this.getAuthenticationType() == AuthenticationType.KERBEROS;
    }
 
 }

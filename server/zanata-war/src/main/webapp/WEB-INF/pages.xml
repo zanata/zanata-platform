@@ -90,13 +90,13 @@
   </page>
 
   <page view-id="/account/password_reset.xhtml">
-    <restrict>#{zanataInit.internalAuthentication}</restrict>
+    <restrict>#{applicationConfiguration.internalAuth}</restrict>
     <param name="key" value="#{passwordReset.activationKey}" />
     <action execute="#{passwordReset.validateActivationKey}" />
   </page>
 
   <page view-id="/account/changepassword.xhtml" login-required="true">
-    <restrict>#{zanataInit.internalAuthentication}</restrict>
+    <restrict>#{applicationConfiguration.internalAuth}</restrict>
   </page>
 
   <!-- Admin -->
