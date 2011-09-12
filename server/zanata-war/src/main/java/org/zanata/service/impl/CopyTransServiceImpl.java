@@ -50,6 +50,7 @@ import org.zanata.service.LocaleService;
 @Scope(ScopeType.STATELESS)
 public class CopyTransServiceImpl implements CopyTransService
 {
+   
    private LocaleService localeServiceImpl;
    private TextFlowTargetDAO textFlowTargetDAO;
    private DocumentDAO documentDAO;
@@ -57,7 +58,7 @@ public class CopyTransServiceImpl implements CopyTransService
    Log log;
 
    @In
-   public void setLocaleService(LocaleService localeService)
+   public void setLocaleServiceImpl(LocaleService localeService)
    {
       this.localeServiceImpl = localeService;
    }
