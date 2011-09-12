@@ -37,29 +37,28 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
-import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.TextFlowDAO;
+import org.zanata.dao.GlossaryDAO;
+import org.zanata.model.HGlossaryEntry;
+import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
-import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.LevenshteinUtil;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.util.ShortString;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
-import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
-import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
-import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
+import org.zanata.webtrans.shared.rpc.GetGlossary;
+import org.zanata.webtrans.shared.rpc.GetGlossary.SearchType;
+import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 
-@Name("webtrans.gwt.GetTransMemoryHandler")
+@Name("webtrans.gwt.GetGlossaryHandler")
 @Scope(ScopeType.STATELESS)
-@ActionHandlerFor(GetTranslationMemory.class)
-public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationMemory, GetTranslationMemoryResult>
+@ActionHandlerFor(GetGlossary.class)
+public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGlossaryResult>
 {
 
-   private static final int MAX_RESULTS = 10;
+   private static final int MAX_RESULTS = 20;
 
    @Logger
    private Log log;
@@ -68,17 +67,51 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
    private LocaleService localeServiceImpl;
 
    @In
-   private TextFlowDAO textFlowDAO;
+   private GlossaryDAO glossaryDAO;
+
+   /**
+    * Filtered term ids First filter: Entries that contains target locale Second
+    * filter: Source term in filtered entries
+    * 
+    * @param entries
+    */
+   private List<Long> getFilteredSrcTermIds(List<HGlossaryEntry> entries)
+   {
+      List<Long> termIds = new ArrayList<Long>();
+      for (HGlossaryEntry entry : entries)
+      {
+         HGlossaryTerm term = entry.getGlossaryTerms().get(entry.getSrcLocale());
+         if (term != null)
+         {
+            termIds.add(term.getId());
+         }
+      }
+      return termIds;
+   }
+
+   private HGlossaryTerm getTargetTerm(List<HGlossaryEntry> entries, Long id, HLocale locale)
+   {
+      HGlossaryTerm targetTerm = null;
+      for (HGlossaryEntry entry : entries)
+      {
+         if (entry.getId() == id)
+         {
+            return entry.getGlossaryTerms().get(locale);
+         }
+      }
+      return targetTerm;
+
+   }
 
    @Override
-   public GetTranslationMemoryResult execute(GetTranslationMemory action, ExecutionContext context) throws ActionException
+   public GetGlossaryResult execute(GetGlossary action, ExecutionContext context) throws ActionException
    {
       ZanataIdentity.instance().checkLoggedIn();
 
       final String searchText = action.getQuery();
       ShortString abbrev = new ShortString(searchText);
       final SearchType searchType = action.getSearchType();
-      log.info("Fetching TM matches({0}) for \"{1}\"", searchType, abbrev);
+      log.info("Fetching Glossary matches({0}) for \"{1}\"", searchType, abbrev);
 
       LocaleId localeID = action.getLocaleId();
       HLocale hLocale = localeServiceImpl.getByLocaleId(localeID);
@@ -86,46 +119,44 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 
       try
       {
-         List<Long> translatedIds = textFlowDAO.getIdsByTargetState(localeID, ContentState.Approved);
-         List<Object[]> matches = textFlowDAO.getSearchResult(searchText, searchType, translatedIds, MAX_RESULTS);
-         Map<TMKey, TranslationMemoryGlossaryItem> matchesMap = new LinkedHashMap<TMKey, TranslationMemoryGlossaryItem>();
+         List<HGlossaryEntry> entries = glossaryDAO.getEntriesByLocaleId(localeID);
+         List<Long> termIds = getFilteredSrcTermIds(entries);
+
+         List<Object[]> matches = glossaryDAO.getSearchResult(searchText, searchType, termIds, MAX_RESULTS);
+
+         Map<GlossaryKey, TranslationMemoryGlossaryItem> matchesMap = new LinkedHashMap<GlossaryKey, TranslationMemoryGlossaryItem>();
          for (Object[] match : matches)
          {
             float score = (Float) match[0];
-            HTextFlow textFlow = (HTextFlow) match[1];
-            if (textFlow == null)
+            HGlossaryTerm glossaryTerm = (HGlossaryTerm) match[1];
+            if (glossaryTerm == null)
             {
                continue;
             }
-            HTextFlowTarget target = textFlow.getTargets().get(hLocale);
-            // double check in case of caching issues
-            if (target.getState() != ContentState.Approved)
-            {
-               continue;
-            }
-            String textFlowContent = textFlow.getContent();
-            String targetContent = target.getContent();
 
-            int levDistance = LevenshteinUtil.getLevenshteinSubstringDistance(searchText, textFlowContent);
+            String srcTermContent = glossaryTerm.getContent();
+            HGlossaryTerm targetTerm = getTargetTerm(entries, glossaryTerm.getGlossaryEntry().getId(), hLocale);
+            String targetTermContent = targetTerm.getContent();
+
+            int levDistance = LevenshteinUtil.getLevenshteinSubstringDistance(searchText, srcTermContent);
             int maxDistance = searchText.length();
             int percent = 100 * (maxDistance - levDistance) / maxDistance;
 
-            TMKey key = new TMKey(textFlowContent, targetContent);
+            GlossaryKey key = new GlossaryKey(targetTermContent, srcTermContent);
             TranslationMemoryGlossaryItem item = matchesMap.get(key);
             if (item == null)
             {
-               item = new TranslationMemoryGlossaryItem(textFlowContent, targetContent, score, percent);
+               item = new TranslationMemoryGlossaryItem(srcTermContent, targetTermContent, score, percent);
                matchesMap.put(key, item);
             }
-            item.addTransUnitId(textFlow.getId());
          }
          results = new ArrayList<TranslationMemoryGlossaryItem>(matchesMap.values());
       }
       catch (ParseException e)
       {
-         if (searchType == SearchType.RAW)
+         if (searchType == SearchType.FUZZY)
          {
-            log.warn("Can't parse raw query '" + searchText + "'");
+            log.warn("Can't parse fuzzy query '" + searchText + "'");
          }
          else
          {
@@ -141,7 +172,6 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
        */
       Comparator<TranslationMemoryGlossaryItem> comp = new Comparator<TranslationMemoryGlossaryItem>()
       {
-
          @Override
          public int compare(TranslationMemoryGlossaryItem m1, TranslationMemoryGlossaryItem m2)
          {
@@ -181,44 +211,44 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 
       Collections.sort(results, comp);
 
-      log.info("Returning {0} TM matches for \"{1}\"", results.size(), abbrev);
-      return new GetTranslationMemoryResult(results);
+      log.info("Returning {0} Glossary matches for \"{1}\"", results.size(), abbrev);
+      return new GetGlossaryResult(results);
    }
 
    @Override
-   public void rollback(GetTranslationMemory action, GetTranslationMemoryResult result, ExecutionContext context) throws ActionException
+   public void rollback(GetGlossary action, GetGlossaryResult result, ExecutionContext context) throws ActionException
    {
    }
 
-   static class TMKey
+   static class GlossaryKey
    {
 
-      private final String textFlowContent;
-      private final String targetContent;
+      private final String srcTermContent;
+      private final String targetTermContent;
 
-      public TMKey(String textFlowContent, String targetContent)
+      public GlossaryKey(String srcTermContent, String targetTermContent)
       {
-         this.textFlowContent = textFlowContent;
-         this.targetContent = targetContent;
+         this.srcTermContent = srcTermContent;
+         this.targetTermContent = targetTermContent;
       }
 
-      public String getTextFlowContent()
+      public String getSrcTermContent()
       {
-         return textFlowContent;
+         return srcTermContent;
       }
 
-      public String getTargetContent()
+      public String getTargetTermContent()
       {
-         return targetContent;
+         return targetTermContent;
       }
 
       @Override
       public boolean equals(Object obj)
       {
-         if (obj instanceof TMKey)
+         if (obj instanceof GlossaryKey)
          {
-            TMKey o = (TMKey) obj;
-            return equal(textFlowContent, o.textFlowContent) && equal(targetContent, o.targetContent);
+            GlossaryKey o = (GlossaryKey) obj;
+            return equal(srcTermContent, o.srcTermContent) && equal(targetTermContent, o.targetTermContent);
          }
          return false;
       }
@@ -232,8 +262,8 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       public int hashCode()
       {
          int result = 1;
-         result = 37 * result + textFlowContent != null ? textFlowContent.hashCode() : 0;
-         result = 37 * result + targetContent != null ? targetContent.hashCode() : 0;
+         result = 37 * result + srcTermContent != null ? srcTermContent.hashCode() : 0;
+         result = 37 * result + targetTermContent != null ? targetTermContent.hashCode() : 0;
          return result;
       }
 

@@ -13,8 +13,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDBUnitSeamTest;
 import org.zanata.rest.client.IGlossaryResource;
-import org.zanata.rest.client.ITranslationResources;
 import org.zanata.rest.dto.VersionInfo;
+
+import org.zanata.rest.service.SeamMockClientExecutor;
 
 @Test(groups = { "seam-tests" })
 public abstract class GlossaryServiceSeamTest extends ZanataDBUnitSeamTest
@@ -24,8 +25,6 @@ public abstract class GlossaryServiceSeamTest extends ZanataDBUnitSeamTest
    private static final String GLOSSARY_DATA_DBUNIT_XML = "org/zanata/test/model/GlossaryData.dbunit.xml";
 
    protected IGlossaryResource glossaryResource;
-   private String projectSlug = "sample-project";
-   private String iter = "1.1";
 
    private class MetaTypeAccept implements ClientExecutionInterceptor
    {

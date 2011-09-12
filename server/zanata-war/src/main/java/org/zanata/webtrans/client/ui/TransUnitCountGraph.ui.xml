@@ -19,7 +19,6 @@
 		}
 		
 		.undefined {
-			background: #f7f488;
 			z-index: 0;
 		}
 		

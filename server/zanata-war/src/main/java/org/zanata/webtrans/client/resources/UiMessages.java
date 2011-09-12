@@ -28,7 +28,21 @@ import com.google.gwt.i18n.client.Messages;
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
 public interface UiMessages extends Messages
 {
-
    @DefaultMessage("")
    String typeToEnter();
+   
+   @DefaultMessage("Phrase")
+   String phraseButtonLabel();
+
+   @DefaultMessage("Clear")
+   String clearButtonLabel();
+
+   @DefaultMessage("Search")
+   String searchButtonLabel();
+
+   @DefaultMessage("TM")
+   String tmHeader();
+
+   @DefaultMessage("Glossary")
+   String glossaryHeader();
 }

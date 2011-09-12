@@ -5,22 +5,23 @@
 	<ui:style>
         .headerLabel {
             padding-right:5px;
-            padding-top:5px;	
+            padding-top:5px;   
+            padding-left:10px; 
             font-weight:bold;
         }
     </ui:style>
-        
+    
 	<g:LayoutPanel>
 		<g:layer top="0px" height="30px">
 			<g:HorizontalPanel>
-			    <g:Label ui:field="tmHeader" styleName="{style.headerLabel}"/>
-				<g:TextBox ui:field="tmTextBox" />
-				<g:CheckBox ui:field="phraseButton"/>
+			    <g:Label ui:field="glossaryHeader" styleName="{style.headerLabel}"/>
+				<g:TextBox ui:field="glossaryTextBox" />
+				<g:CheckBox ui:field="exactButton"/>
 				<g:Button ui:field="searchButton"/>
 				<g:Button ui:field="clearButton"/>
 			</g:HorizontalPanel>
 		</g:layer>
-		<g:layer top="25px" bottom="0px">
+		<g:layer top="25px" bottom="0px" left="10px" right="0">
 			<g:ScrollPanel>
 				<g:FlexTable ui:field="resultTable"/>
 			</g:ScrollPanel>

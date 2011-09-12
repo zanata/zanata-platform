@@ -11,14 +11,12 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.jboss.seam.annotations.In;
@@ -57,11 +55,6 @@ public class GlossaryService implements GlossaryResource
    @Context
    private Request request;
 
-   private Log log = Logging.getLog(GlossaryService.class);
-
-   @In
-   private AccountDAO accountDAO;
-
    @In
    private GlossaryDAO glossaryDAO;
 
@@ -79,10 +72,9 @@ public class GlossaryService implements GlossaryResource
    {
    }
 
-   public GlossaryService(GlossaryDAO glossaryDAO, AccountDAO accountDAO, Identity identity, LocaleService localeService)
+   public GlossaryService(GlossaryDAO glossaryDAO, Identity identity, LocaleService localeService)
    {
       this.glossaryDAO = glossaryDAO;
-      this.accountDAO = accountDAO;
       this.identity = identity;
       this.localeServiceImpl = localeService;
    }
@@ -239,7 +231,7 @@ public class GlossaryService implements GlossaryResource
 
    private HGlossaryEntry getOrCreateGlossaryEntry(LocaleId srcLocale, String srcContent)
    {
-      HGlossaryEntry hGlossaryEntry = glossaryDAO.getEntryBySrcContentLocale(srcLocale, srcContent);
+      HGlossaryEntry hGlossaryEntry = glossaryDAO.getEntryBySrcLocaleAndContent(srcLocale, srcContent);
 
       if (hGlossaryEntry == null)
       {

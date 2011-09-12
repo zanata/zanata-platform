@@ -50,6 +50,11 @@ import org.zanata.common.Namespaces;
 @JsonWriteNullProperties(false)
 public class GlossaryTerm implements Serializable
 {
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 6140176481272689471L;
+
    @NotNull
    private LocaleId locale;
 

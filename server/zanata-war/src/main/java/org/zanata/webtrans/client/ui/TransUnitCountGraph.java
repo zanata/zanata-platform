@@ -19,13 +19,6 @@ public class TransUnitCountGraph extends TransUnitCountBar
    public TransUnitCountGraph(WebTransMessages messages)
    {
       super(messages, true);
-      this.labelFormat = LabelFormat.PERCENT_COMPLETE;
       initWidget(uiBinder.createAndBindUi(this));
-   }
-
-   @Override
-   public int getOffsetWidth()
-   {
-      return 115;
    }
 }

@@ -31,6 +31,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
@@ -49,10 +50,13 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    final Resources resources;
 
    @UiField(provided = true)
-   LayoutPanel sidePanelOuterContainer, tmPanelContainer;
+   LayoutPanel sidePanelOuterContainer, southPanelContainer;
 
    @UiField
-   LayoutPanel editorContainer, sidePanelContainer, tmPanel;
+   LayoutPanel editorContainer, sidePanelContainer;
+
+   @UiField
+   LayoutPanel glossaryPanel, tmPanel;
 
    @UiField
    SplitLayoutPanel mainSplitPanel;
@@ -82,14 +86,13 @@ public class TranslationView extends Composite implements TranslationPresenter.D
 
       StyleInjector.inject(resources.style().getText(), true);
       this.sidePanelOuterContainer = new LayoutPanel();
-      this.tmPanelContainer = new LayoutPanel();
+      this.southPanelContainer = new LayoutPanel();
 
       initWidget(uiBinder.createAndBindUi(this));
-
       tmMinimize.setVisible(true);
       sidePanelCollapse.setVisible(true);
       mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) panelWidth);
-      mainSplitPanel.setWidgetMinSize(tmPanelContainer, (int) southHeight);
+      mainSplitPanel.setWidgetMinSize(southPanelContainer, (int) southHeight);
 
       sidePanelExpend.setTitle(messages.showTranslationDetailsPanel());
    }
@@ -99,6 +102,13 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    {
       tmPanel.clear();
       tmPanel.add(translationMemoryView);
+   }
+
+   @Override
+   public void setGlossaryView(Widget glossaryView)
+   {
+      glossaryPanel.clear();
+      glossaryPanel.add(glossaryView);
    }
 
    @Override
@@ -162,15 +172,15 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    public void setTmViewVisible(boolean visible)
    {
       mainSplitPanel.forceLayout();
-      Widget splitter = SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel, tmPanelContainer);
+      Widget splitter = SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel, southPanelContainer);
       if (visible)
       {
-         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, tmPanelContainer, southHeight);
+         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, southHeight);
       }
       else
       {
-         southHeight = mainSplitPanel.getWidgetContainerElement(tmPanelContainer).getOffsetHeight();
-         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, tmPanelContainer, 45);
+         southHeight = mainSplitPanel.getWidgetContainerElement(southPanelContainer).getOffsetHeight();
+         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, 45);
       }
       splitter.setVisible(visible);
       mainSplitPanel.animate(500);

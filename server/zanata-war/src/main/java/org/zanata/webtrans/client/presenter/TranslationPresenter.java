@@ -42,6 +42,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 
       void setTranslationMemoryView(Widget translationMemoryView);
 
+      void setGlossaryView(Widget glossaryView);
+
       void setTmViewVisible(boolean visible);
 
       HasClickHandlers getHideTMViewButton();
@@ -63,14 +65,16 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private final TranslationEditorPresenter translationEditorPresenter;
    private final SidePanelPresenter sidePanelPresenter;
    private final TransMemoryPresenter transMemoryPresenter;
+   private final GlossaryPresenter glossaryPresenter;
 
    @Inject
-   public TranslationPresenter(Display display, EventBus eventBus, final TranslationEditorPresenter translationEditorPresenter, final SidePanelPresenter sidePanelPresenter, final TransMemoryPresenter transMemoryPresenter)
+   public TranslationPresenter(Display display, EventBus eventBus, final TranslationEditorPresenter translationEditorPresenter, final SidePanelPresenter sidePanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter)
    {
       super(display, eventBus);
       this.translationEditorPresenter = translationEditorPresenter;
       this.transMemoryPresenter = transMemoryPresenter;
       this.sidePanelPresenter = sidePanelPresenter;
+      this.glossaryPresenter = glossaryPresenter;
    }
 
    @Override
@@ -83,6 +87,9 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
       transMemoryPresenter.bind();
       display.setTranslationMemoryView(transMemoryPresenter.getDisplay().asWidget());
+
+      glossaryPresenter.bind();
+      display.setGlossaryView(glossaryPresenter.getDisplay().asWidget());
 
       translationEditorPresenter.bind();
       display.setEditorView(translationEditorPresenter.getDisplay().asWidget());
@@ -122,6 +129,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          {
             display.setTmViewVisible(false);
             transMemoryPresenter.unbind();
+            glossaryPresenter.unbind();
             display.setShowTMViewButtonVisible(true);
          }
       }));
@@ -133,6 +141,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          public void onClick(ClickEvent event)
          {
             transMemoryPresenter.bind();
+            glossaryPresenter.bind();
+
             display.setTmViewVisible(true);
             display.setShowTMViewButtonVisible(false);
             TransUnit tu = translationEditorPresenter.getSelectedTransUnit();
@@ -148,6 +158,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    protected void onUnbind()
    {
       transMemoryPresenter.unbind();
+      glossaryPresenter.unbind();
       translationEditorPresenter.unbind();
       sidePanelPresenter.unbind();
    }

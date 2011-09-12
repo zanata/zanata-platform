@@ -3,7 +3,7 @@ package org.zanata.webtrans.shared.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class TranslationMemoryItem implements Serializable
+public class TranslationMemoryGlossaryItem implements Serializable
 {
 
    private static final long serialVersionUID = -7381018377520206564L;
@@ -17,11 +17,11 @@ public class TranslationMemoryItem implements Serializable
 
    // for GWT
    @SuppressWarnings("unused")
-   private TranslationMemoryItem()
+   private TranslationMemoryGlossaryItem()
    {
    }
 
-   public TranslationMemoryItem(String source, String memory, float relevanceScore, int similarityPercent)
+   public TranslationMemoryGlossaryItem(String source, String memory, float relevanceScore, int similarityPercent)
    {
       this.source = source;
       this.target = memory;
@@ -78,5 +78,4 @@ public class TranslationMemoryItem implements Serializable
    {
       return source;
    }
-
 }

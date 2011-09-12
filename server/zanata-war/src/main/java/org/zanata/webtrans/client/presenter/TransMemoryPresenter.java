@@ -10,7 +10,7 @@ import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TranslationMemoryItem;
+import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
@@ -38,7 +38,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
       HasText getTmTextBox();
 
-      void createTable(ArrayList<TranslationMemoryItem> memories);
+      void createTable(ArrayList<TranslationMemoryGlossaryItem> memories);
       
       void startProcessing();
       
@@ -101,7 +101,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          @Override
          public void onSuccess(GetTranslationMemoryResult result)
          {
-            ArrayList<TranslationMemoryItem> memories = result.getMemories();
+            ArrayList<TranslationMemoryGlossaryItem> memories = result.getMemories();
             display.createTable(memories);
          }
       });

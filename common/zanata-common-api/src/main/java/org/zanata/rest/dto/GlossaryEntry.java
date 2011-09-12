@@ -47,6 +47,11 @@ import org.zanata.common.LocaleId;
 @JsonWriteNullProperties(false)
 public class GlossaryEntry implements Serializable
 {
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 1685907304736580890L;
+
    private List<GlossaryTerm> glossaryTerms;
 
    private LocaleId srcLang;

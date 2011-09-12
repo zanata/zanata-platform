@@ -22,16 +22,24 @@ package org.zanata.dao;
 
 import java.util.List;
 
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.util.Version;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.FullTextQuery;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.LocaleId;
+import org.zanata.hibernate.search.DefaultNgramAnalyzer;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
+import org.zanata.webtrans.shared.rpc.GetGlossary.SearchType;
 
 /**
  *
@@ -43,6 +51,9 @@ import org.zanata.model.HGlossaryTerm;
 @Scope(ScopeType.STATELESS)
 public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
 {
+   @In
+   private FullTextEntityManager entityManager;
+
    public GlossaryDAO()
    {
       super(HGlossaryEntry.class);
@@ -89,16 +100,45 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
       return query.list();
    }
 
-   public HGlossaryEntry getEntryBySrcContentLocale(LocaleId localeid, String content)
+   /* @formatter:off */
+   public HGlossaryEntry getEntryBySrcLocaleAndContent(LocaleId localeid, String content)
    {
-      Query query = getSession().createQuery("from HGlossaryEntry as e " +
-      		"WHERE e.srcLocale.localeId= :localeid AND e.id IN " +
-      		"(SELECT t.glossaryEntry.id FROM HGlossaryTerm as t " +
-      		"WHERE t.locale.localeId=e.srcLocale.localeId " +
-      		"AND t.content= :content)");
+      Query query = getSession().createQuery("from HGlossaryEntry as e " + 
+            "WHERE e.srcLocale.localeId= :localeid AND e.id IN " + 
+            "(SELECT t.glossaryEntry.id FROM HGlossaryTerm as t " + 
+            "WHERE t.locale.localeId=e.srcLocale.localeId " + 
+            "AND t.content= :content)");
       query.setParameter("localeid", localeid);
       query.setParameter("content", content);
       return (HGlossaryEntry) query.uniqueResult();
+   }
+
+   public List<Object[]> getSearchResult(String searchText, SearchType searchType, List<Long> termIds, final int maxResult) throws ParseException
+   {
+      String queryText;
+      switch (searchType)
+      {
+      case FUZZY:
+         // search by N-grams
+         queryText = QueryParser.escape(searchText);
+         break;
+
+      case EXACT:
+         queryText = "\"" + QueryParser.escape(searchText) + "\"";
+         break;
+
+      default:
+         throw new RuntimeException("Unknown query type: " + searchType);
+      }
+
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "content", new DefaultNgramAnalyzer());
+      org.apache.lucene.search.Query textQuery = parser.parse(queryText);
+      FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HGlossaryTerm.class);
+      ftQuery.enableFullTextFilter("glossaryFilter").setParameter("termIds", termIds);
+      ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
+      @SuppressWarnings("unchecked")
+      List<Object[]> matches = ftQuery.setMaxResults(maxResult).getResultList();
+      return matches;
    }
 }
 
