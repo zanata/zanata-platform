@@ -128,17 +128,21 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          }
       }
 
-      ContentState prevStatus = ContentState.New;
-      if (target == null)
+      boolean targetChanged = false;
+
+      ContentState prevStatus;
+      if (target != null)
       {
+         prevStatus = target.getState();
+      }
+      else
+      {
+         prevStatus = ContentState.New;
          target = new HTextFlowTarget(hTextFlow, hLocale);
          target.setVersionNum(0); // this will be incremented when content is
                                   // set (below)
          hTextFlow.getTargets().put(hLocale, target);
-      }
-      else
-      {
-         prevStatus = target.getState();
+         targetChanged = true;
       }
 
       if (action.getContentState() == ContentState.New && StringUtils.isNotEmpty(action.getContent()))
@@ -154,23 +158,25 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       else
       {
          target.setState(action.getContentState());
+         if (prevStatus != action.getContentState())
+         {
+            targetChanged = true;
+         }
       }
 
-      UpdateTransUnit previous;
-      if (target.getContent() == null)
-      {
-         previous = new UpdateTransUnit(action.getTransUnitId(), "", prevStatus);
-
-      }
-      else
-      {
-         previous = new UpdateTransUnit(action.getTransUnitId(), target.getContent(), prevStatus);
-      }
+      String content = (target.getContent() != null ? target.getContent() : "");
+      UpdateTransUnit previous = new UpdateTransUnit(action.getTransUnitId(), content, prevStatus);
 
       if (!StringUtils.equals(action.getContent(), target.getContent()))
       {
          target.setContent(action.getContent());
+         targetChanged = true;
+      }
+
+      if (targetChanged)
+      {
          target.setVersionNum(target.getVersionNum() + 1);
+         target.setTextFlowRevision(hTextFlow.getRevision());
          log.debug("last modified by :" + authenticatedAccount.getPerson().getName());
          target.setLastModifiedBy(authenticatedAccount.getPerson());
       }
@@ -178,7 +184,13 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       session.flush();
 
       int wordCount = hTextFlow.getWordCount().intValue();
-      TransUnit tu = new TransUnit(action.getTransUnitId(), locale, hTextFlow.getContent(), CommentsUtil.toString(hTextFlow.getComment()), action.getContent(), action.getContentState(), authenticatedAccount.getPerson().getName(), SIMPLE_FORMAT.format(new Date()));
+      // @formatter:off
+      TransUnit tu = new TransUnit(action.getTransUnitId(), locale, hTextFlow.getContent(),
+                                   CommentsUtil.toString(hTextFlow.getComment()),
+                                   action.getContent(), action.getContentState(),
+                                   authenticatedAccount.getPerson().getName(),
+                                   SIMPLE_FORMAT.format(new Date()));
+      // @formatter:on
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu);
 
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
