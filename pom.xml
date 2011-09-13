@@ -9,6 +9,10 @@
 	<url>http://zanata.org/</url>
 	<packaging>pom</packaging>
 
+	<!--
+	  Maven likes to add the artifactIds to these URLs (thus breaking
+	  them), so we have to specify these URLs again in each POM.
+	 -->
 	<scm>
 		<connection>scm:git:git://github.com/zanata/zanata.git</connection>
 		<developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
