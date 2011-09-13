@@ -20,8 +20,8 @@
            <srcDir>${zanata.srcDir}</srcDir>
            <transDir>${zanata.transDir}</transDir>
            <pushTrans>true</pushTrans>
-           <includeFilePattern>StringResource_en_US.xml</includeFilePattern>
-           <excludeFilePattern>StringResource_zh.xml</excludeFilePattern>
+           <includeFilePattern>**/StringResource_en_US.xml</includeFilePattern>
+           <excludeFilePattern>**/StringResource_zh.xml</excludeFilePattern>
 <!-- for instance 
           <importPo>false</importPo>
 -->
