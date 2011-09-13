@@ -45,6 +45,8 @@ ssh=${ssh-ssh}
 scp=${scp-scp}
 mail=${mail-mail}
 
+BUILD_TYPES=(auto internal kerberos fedora nukes)
+
 # functions:
 
 die() {
@@ -59,20 +61,26 @@ arrayGet() {
     echo ${!i}
 }
 
+warn() {
+    echo "WARNING: $1"
+}
+
 
 # main:
-
-warfile=server/zanata-war/target/*.war
 
 echo "BUILD_TAG: $BUILD_TAG"
 echo "GIT_BRANCH: $GIT_BRANCH"
 
-if [[ $JOB_NAME =~ zanata-(build-deploy-)?(([^-][^-]*)-)?(.*) ]]; then
+#if [[ $JOB_NAME =~ zanata-(build-deploy-)?(([^-][^-]*)-)?(.*) ]]; then
    #branch_name=${BASH_REMATCH[3]}
-   auth=${BASH_REMATCH[4]}
-else
-   die "can't find type of build for job name $JOB_NAME, for $BUILD_TAG"
-fi
+   #echo "${BASH_REMATCH[0]}"
+   #echo "${BASH_REMATCH[1]}"
+   #echo "${BASH_REMATCH[2]}"
+   #echo "${BASH_REMATCH[3]}" # version
+   #echo "${BASH_REMATCH[4]}" # type
+#else
+   #die "can't find type of build for job name $JOB_NAME, for $BUILD_TAG"
+#fi
 
 branch_name=$GIT_BRANCH
 
@@ -88,53 +96,74 @@ fi
 
 echo branch: $branch_name
 echo version: $version
-echo auth: $auth
 
 # replace . with _ in version:
 ver=${version//./_}
 
-host=$(arrayGet host ${ver}_${auth})
-if [[ -z $host ]]; then
-   die "no host configured for ver $ver, auth $auth, build $BUILD_TAG"
-fi
+# attempt to deploy for each authentication type
+for buildType in "${BUILD_TYPES[@]}"
+do
+   host=$(arrayGet host ${ver}_${buildType})
+   
+   if [[ -z $host ]]; then
+     warn "no host configured for version $ver, type $buildType, and build $BUILD_TAG"
 
-url=$(arrayGet url ${ver}_${auth})
-if [[ -z $url ]]; then
-   url=http://$host:8080/
-fi
+   elif [[ "$host" != "skip" ]]; then
 
-user=$(arrayGet user ${ver}_${auth})
-if [[ -z $user ]]; then
-   user=jboss
-fi
+      echo "=================================================================================="
+      echo "Deploying: version $ver type $buildType"
+      echo "=================================================================================="
 
-service=$(arrayGet service ${ver}_${auth})
-if [[ -z $service ]]; then
-   service="JBOSS_USER=RUNASIS /etc/init.d/jbossewp5"
-fi
+      url=$(arrayGet url ${ver}_${auth})
+      if [[ -z $url ]]; then
+         url=http://$host:8080/
+      fi
 
-targetfile=$(arrayGet targetfile ${ver}_${auth})
-if [[ -z $targetfile ]]; then
-   targetfile=/opt/jboss-ewp-5.0/jboss-as-web/server/production/deploy/ROOT.war
-fi
+      user=$(arrayGet user ${ver}_${auth})
+      if [[ -z $user ]]; then
+         user=jboss
+      fi
 
-echo host: $host
-echo url: $url
-echo user: $user
-echo service: $service
-echo targetfile: $targetfile
+      service=$(arrayGet service ${ver}_${auth})
+      if [[ -z $service ]]; then
+         service="JBOSS_USER=RUNASIS /etc/init.d/jbossewp5"
+      fi
 
-set -x
-echo stopping app server on $host:
-if ! $ssh $user@$host $service stop
-then echo "$server stop failed (server not running?); ignoring error"
-fi
-echo copying $warfile to $host:$targetfile
-$scp $warfile $user@$host:$targetfile
-echo starting app server on $host
-$ssh $user@$host $service start
-set +x
+      targetfile=$(arrayGet targetfile ${ver}_${auth})
+      if [[ -z $targetfile ]]; then
+         targetfile=/opt/jboss-ewp-5.0/jboss-as-web/server/production/deploy/ROOT.war
+      fi
 
-echo $url is now starting up
+      echo host: $host
+      echo url: $url
+      echo user: $user
+      echo service: $service
+      echo targetfile: $targetfile
 
-$DIR/is_server_up.sh $url
+      set -x
+      echo stopping app server on $host:
+      if ! $ssh $user@$host $service stop
+         then echo "$server stop failed (server not running?); ignoring error"
+      fi
+      set +x
+
+      if [[ $buildType == "kerberos" ]]; then
+         warfile=server/zanata-war/target/zanata-kerberos.war
+      else
+         warfile=server/zanata-war/target/zanata.war
+      fi
+
+      set -x
+      echo copying $warfile to $host:$targetfile
+      $scp $warfile $user@$host:$targetfile
+      echo starting app server on $host
+      $ssh $user@$host $service start
+      set +x
+
+      echo $url is now starting up
+
+      $DIR/is_server_up.sh $url
+
+   fi
+
+done

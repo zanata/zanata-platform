@@ -724,10 +724,7 @@
 		-->
 
 		<profile>
-			<id>zanata-test</id>
-			<properties>
-				<war.name>zanata-test</war.name>
-			</properties>
+			<id>autotest</id>
 		</profile>
 
 		<profile>
