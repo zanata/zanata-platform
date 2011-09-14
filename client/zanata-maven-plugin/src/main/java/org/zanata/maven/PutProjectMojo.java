@@ -16,7 +16,7 @@ public class PutProjectMojo extends ConfigurableMojo implements PutProjectOption
    /**
     * Project slug/ID
     * 
-    * @parameter expression="${zanata.project.slug}"
+    * @parameter expression="${zanata.projectSlug}"
     * @required
     */
    private String projectSlug;
@@ -24,7 +24,7 @@ public class PutProjectMojo extends ConfigurableMojo implements PutProjectOption
    /**
     * Project name
     * 
-    * @parameter expression="${zanata.project.name}"
+    * @parameter expression="${zanata.projectName}"
     * @required
     */
    private String projectName;
@@ -32,7 +32,7 @@ public class PutProjectMojo extends ConfigurableMojo implements PutProjectOption
    /**
     * Project description
     * 
-    * @parameter expression="${zanata.project.desc}"
+    * @parameter expression="${zanata.projectDesc}"
     * @required
     */
    private String projectDesc;
