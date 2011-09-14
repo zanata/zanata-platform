@@ -15,6 +15,7 @@ public class TransUnit implements IsSerializable, Serializable
    private ContentState status;
 
    private TransUnitId id;
+   private String resId;
 
    private LocaleId localeId;
 
@@ -49,21 +50,11 @@ public class TransUnit implements IsSerializable, Serializable
    private TransUnit()
    {
    }
-   
-   public TransUnit(TransUnitId id, LocaleId localeId)
-   {
-      this.id = id;
-      this.localeId = localeId;
-      this.source = "";
-      this.sourceComment = "";
-      this.target = "";
-      this.lastModifiedBy = "";
-      this.lastModifiedTime = "";
-   }
 
-   public TransUnit(TransUnitId id, LocaleId localeId, String source, String sourceComment, String target, ContentState status, String lastModifiedBy, String lastModifiedTime)
+   public TransUnit(TransUnitId id, String resId, LocaleId localeId, String source, String sourceComment, String target, ContentState status, String lastModifiedBy, String lastModifiedTime)
    {
       this.id = id;
+      this.resId = resId;
       this.localeId = localeId;
       this.source = source;
       this.sourceComment = sourceComment;
@@ -75,7 +66,7 @@ public class TransUnit implements IsSerializable, Serializable
 
    public TransUnit(TransUnit other)
    {
-      this(other.id, other.localeId, other.source, other.sourceComment, other.target, other.status, other.lastModifiedBy, other.lastModifiedTime);
+      this(other.id, other.resId, other.localeId, other.source, other.sourceComment, other.target, other.status, other.lastModifiedBy, other.lastModifiedTime);
    }
 
    public static final TransUnit copy(TransUnit other)
@@ -86,6 +77,11 @@ public class TransUnit implements IsSerializable, Serializable
    public TransUnitId getId()
    {
       return id;
+   }
+
+   public String getResId()
+   {
+      return resId;
    }
 
    public LocaleId getLocaleId()

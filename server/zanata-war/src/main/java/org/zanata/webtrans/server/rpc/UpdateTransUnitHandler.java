@@ -178,7 +178,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       session.flush();
 
       int wordCount = hTextFlow.getWordCount().intValue();
-      TransUnit tu = new TransUnit(action.getTransUnitId(), locale, hTextFlow.getContent(), CommentsUtil.toString(hTextFlow.getComment()), action.getContent(), action.getContentState(), authenticatedAccount.getPerson().getName(), SIMPLE_FORMAT.format(new Date()));
+      TransUnit tu = new TransUnit(action.getTransUnitId(), hTextFlow.getResId(), locale, hTextFlow.getContent(), CommentsUtil.toString(hTextFlow.getComment()), action.getContent(), action.getContentState(), authenticatedAccount.getPerson().getName(), SIMPLE_FORMAT.format(new Date()));
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu);
 
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
@@ -241,7 +241,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       session.flush();
 
       int wordCount = hTextFlow.getWordCount().intValue();
-      TransUnit tu = new TransUnit(action.getTransUnitId(), locale, hTextFlow.getContent(), CommentsUtil.toString(hTextFlow.getComment()), target.getContent(), target.getState(), target.getLastModifiedBy().getName(), SIMPLE_FORMAT.format(target.getLastChanged()));
+      TransUnit tu = new TransUnit(action.getTransUnitId(), hTextFlow.getResId(), locale, hTextFlow.getContent(), CommentsUtil.toString(hTextFlow.getComment()), target.getContent(), target.getState(), target.getLastModifiedBy().getName(), SIMPLE_FORMAT.format(target.getLastChanged()));
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu);
 
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
