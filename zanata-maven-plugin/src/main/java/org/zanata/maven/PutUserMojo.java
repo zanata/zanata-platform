@@ -16,7 +16,7 @@ public class PutUserMojo extends ConfigurableMojo implements PutUserOptions
    /**
     * Full name of the user
     * 
-    * @parameter expression="${zanata.user.name}"
+    * @parameter expression="${zanata.userName}"
     * @required
     */
    private String userName;
@@ -24,7 +24,7 @@ public class PutUserMojo extends ConfigurableMojo implements PutUserOptions
    /**
     * Email address of the user
     * 
-    * @parameter expression="${zanata.user.email}"
+    * @parameter expression="${zanata.userEmail}"
     * @required
     */
    private String userEmail;
@@ -32,7 +32,7 @@ public class PutUserMojo extends ConfigurableMojo implements PutUserOptions
    /**
     * Login/username of the user
     * 
-    * @parameter expression="${zanata.user.username}"
+    * @parameter expression="${zanata.userUsername}"
     * @required
     */
    private String userUsername;
@@ -40,7 +40,7 @@ public class PutUserMojo extends ConfigurableMojo implements PutUserOptions
    /**
     * User password hash
     * 
-    * @parameter expression="${zanata.user.passwordhash}"
+    * @parameter expression="${zanata.userPasswordHash}"
     * @required
     */
    private String userPasswordHash;
@@ -48,7 +48,7 @@ public class PutUserMojo extends ConfigurableMojo implements PutUserOptions
    /**
     * User's api key (empty for none)
     * 
-    * @parameter expression="${zanata.user.key}"
+    * @parameter expression="${zanata.userKey}"
     * @required
     */
    private String userKey;
@@ -56,7 +56,7 @@ public class PutUserMojo extends ConfigurableMojo implements PutUserOptions
    /**
     * Security roles for the user
     * 
-    * @parameter expression="${zanata.user.roles}"
+    * @parameter expression="${zanata.userRoles}"
     * @required
     */
    private String userRoles;
@@ -64,7 +64,7 @@ public class PutUserMojo extends ConfigurableMojo implements PutUserOptions
    /**
     * Language teams for the user
     * 
-    * @parameter expression="${zanata.user.langs}"
+    * @parameter expression="${zanata.userLangs}"
     * @required
     */
    private String userLangs;
@@ -72,7 +72,7 @@ public class PutUserMojo extends ConfigurableMojo implements PutUserOptions
    /**
     * Whether the account should be disabled
     * 
-    * @parameter expression="${zanata.user.disabled}"
+    * @parameter expression="${zanata.userDisabled}"
     * @required
     */
    private boolean userDisabled;
