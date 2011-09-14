@@ -30,7 +30,7 @@ public class TransUnitDetailsView extends Composite implements TransUnitDetailsP
    CollapsePanel collapsePanel;
 
    @UiField
-   Label noDetailsLabel, sourceLabel, lastModifiedByLabel, lastModifiedTimeLabel;
+   Label noDetailsLabel, resIdLabel, resId, sourceCommentLabel, sourceComment, lastModifiedByLabel, lastModifiedBy, lastModifiedTimeLabel, lastModifiedTime;
 
    @UiField
    LayoutPanel rootPanel;
@@ -58,17 +58,24 @@ public class TransUnitDetailsView extends Composite implements TransUnitDetailsP
    {
       rootPanel.setWidgetTopHeight(noDetailsLabel, 0, Unit.PX, 0, Unit.PX);
       rootPanel.setWidgetTopBottom(labelPanel, 0, Unit.PX, 0, Unit.PX);
-      sourceLabel.setText("Source Comment: " + transUnit.getSourceComment());
+      resIdLabel.setText("Resource ID: ");
+      resId.setText(transUnit.getResId());
+      sourceCommentLabel.setText("Source Comment: ");
+      sourceComment.setText(transUnit.getSourceComment());
       String person = transUnit.getLastModifiedBy();
       if (person != null && !person.isEmpty())
       {
-         lastModifiedByLabel.setText("Last Modified By:" + person);
-         lastModifiedTimeLabel.setText("Last Modified Time:" + transUnit.getLastModifiedTime());
+         lastModifiedByLabel.setText("Last Modified By:");
+         lastModifiedBy.setText(person);
+         lastModifiedTimeLabel.setText("Last Modified Time:");
+         lastModifiedTime.setText(transUnit.getLastModifiedTime());
       }
       else
       {
          lastModifiedByLabel.setText("");
+         lastModifiedBy.setText("");
          lastModifiedTimeLabel.setText("");
+         lastModifiedTime.setText("");
       }
       noDetailsLabel.setText("Select a Translation Unit to view details.");
    }
