@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.zanata</groupId>
 	<artifactId>zanata-parent</artifactId>
-	<version>1.5-SNAPSHOT</version>
+	<version>1.4-SNAPSHOT</version>
 	<name>Zanata Parent POM</name>
 	<url>http://zanata.org/</url>
 	<packaging>pom</packaging>
@@ -87,6 +88,22 @@
 			<timezone>10</timezone>
 		</developer>
 		<developer>
+			<id>camunoz@redhat.com</id>
+			<name>Carlos Munoz</name>
+			<email>camunoz@redhat.com</email>
+			<organization>Red Hat</organization>
+			<organizationUrl>http://www.redhat.com/</organizationUrl>
+			<timezone>10</timezone>
+		</developer>
+		<developer>
+			<id>damason@redhat.com</id>
+			<name>David Mason</name>
+			<email>damason@redhat.com</email>
+			<organization>Red Hat</organization>
+			<organizationUrl>http://www.redhat.com/</organizationUrl>
+			<timezone>10</timezone>
+		</developer>
+		<developer>
 			<id>hding@redhat.com</id>
 			<name>Helen Ding</name>
 			<email>hding@redhat.com</email>
@@ -150,10 +167,10 @@
 		<javadoc.skip>true</javadoc.skip>
 
 		<checkstyle.skip>false</checkstyle.skip>
-		<checkstyle.configLocation />
-		<checkstyle.propertiesLocation />
-		<checkstyle.suppressionsLocation />
-		<checkstyle.suppressionsFileExpression />
+		<checkstyle.configLocation></checkstyle.configLocation>
+		<checkstyle.propertiesLocation></checkstyle.propertiesLocation>
+		<checkstyle.suppressionsLocation></checkstyle.suppressionsLocation>
+		<checkstyle.suppressionsFileExpression></checkstyle.suppressionsFileExpression>
 
 		<reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
 		<reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
