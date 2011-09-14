@@ -87,6 +87,22 @@
 			<timezone>10</timezone>
 		</developer>
 		<developer>
+			<id>camunoz@redhat.com</id>
+			<name>Carlos Munoz</name>
+			<email>camunoz@redhat.com</email>
+			<organization>Red Hat</organization>
+			<organizationUrl>http://www.redhat.com/</organizationUrl>
+			<timezone>10</timezone>
+		</developer>
+		<developer>
+			<id>damason@redhat.com</id>
+			<name>David Mason</name>
+			<email>damason@redhat.com</email>
+			<organization>Red Hat</organization>
+			<organizationUrl>http://www.redhat.com/</organizationUrl>
+			<timezone>10</timezone>
+		</developer>
+		<developer>
 			<id>hding@redhat.com</id>
 			<name>Helen Ding</name>
 			<email>hding@redhat.com</email>
