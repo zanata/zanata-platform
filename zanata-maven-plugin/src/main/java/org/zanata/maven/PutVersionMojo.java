@@ -16,7 +16,7 @@ public class PutVersionMojo extends ConfigurableMojo implements PutVersionOption
    /**
     * ID of Zanata project
     * 
-    * @parameter expression="${zanata.version.project}"
+    * @parameter expression="${zanata.versionProject}"
     * @required
     */
    private String versionProject;
@@ -24,7 +24,7 @@ public class PutVersionMojo extends ConfigurableMojo implements PutVersionOption
    /**
     * Project version ID
     * 
-    * @parameter expression="${zanata.version.slug}"
+    * @parameter expression="${zanata.versionSlug}"
     * @required
     */
    private String versionSlug;
