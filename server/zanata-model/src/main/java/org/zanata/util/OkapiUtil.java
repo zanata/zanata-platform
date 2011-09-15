@@ -70,8 +70,7 @@ public class OkapiUtil
             locale = LocaleId.ENGLISH;
          }
 
-         // new WordCounter().doCount();
-         Tokens tokens = Tokenizer.tokenize(s, locale, "WORD");
+         Tokens tokens = new StringTokenizer().tokenizeString(s, locale, "WORD");
          return tokens.size();
       }
       catch (Exception e)
@@ -79,6 +78,17 @@ public class OkapiUtil
          Object[] args = new Object[] {s, bcp47Locale, e};
          log.error("unable to count words in string '{}' for locale '{}'", args);
          return 0;
+      }
+   }
+
+   private static class StringTokenizer extends Tokenizer
+   {
+      public Tokens tokenizeString(String text, LocaleId language, String... tokenNames)
+      {
+         synchronized (Tokenizer.class)
+         {
+            return super.tokenizeString(text, language, tokenNames);
+         }
       }
    }
 
