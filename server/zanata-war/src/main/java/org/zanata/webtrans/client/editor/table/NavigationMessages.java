@@ -76,7 +76,7 @@ public interface NavigationMessages extends Messages
    // @DefaultMessage("Clone & Save")
    // String editCloneAndSaveShortcut();
 
-   @DefaultMessage("Copy message from source language")
+   @DefaultMessage("Copy message from source language (Alt+G)")
    String copySourcetoTarget();
 
    @DefaultMessage("{0} ({1})")
