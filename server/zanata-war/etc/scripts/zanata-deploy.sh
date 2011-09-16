@@ -45,7 +45,7 @@ ssh=${ssh-ssh}
 scp=${scp-scp}
 mail=${mail-mail}
 
-BUILD_TYPES=(auto internal kerberos fedora nukes)
+BUILD_TYPES=(autotest internal kerberos fedora jaas)
 
 # functions:
 
@@ -147,11 +147,7 @@ do
       fi
       set +x
 
-      if [[ $buildType == "kerberos" ]]; then
-         warfile=server/zanata-war/target/zanata-kerberos.war
-      else
-         warfile=server/zanata-war/target/zanata.war
-      fi
+      warfile=server/zanata-war/target/zanata-$buildType.war
 
       set -x
       echo copying $warfile to $host:$targetfile

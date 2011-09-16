@@ -13,20 +13,30 @@
 
 	<properties>
 		<jboss.embedded.version>beta3.SP12</jboss.embedded.version>
+		<war.config.dir>${basedir}/src/etc</war.config.dir>
 		<!-- application properties -->
 
 		<env.debug>false</env.debug>
 		<env.import.testdata>false</env.import.testdata>
-		<ds.jndi.name>zanataTestDatasource</ds.jndi.name>
+		<ds.jndi.name>zanataDatasource</ds.jndi.name>
 		<war.name>zanata</war.name>
 		<!-- Default database settings -->
-		<env.dbunit.type>HSQL</env.dbunit.type>
-		<internal.authentication>false</internal.authentication>
-		<spNego.authentication>false</spNego.authentication>
-		<jaas.configure>zanata</jaas.configure>
+		<!-- <env.dbunit.type>MYSQL</env.dbunit.type> -->
 		<zanata.gwt.module>org.zanata.webtrans.Application</zanata.gwt.module>
-		<fedora.openId>false</fedora.openId>
 		<extra.servlets />
+		<!-- Persistence and Datasource settings -->
+		<!-- <env.hibernate.hbm2ddl.auto />
+		<env.hibernate.show_sql>false</env.hibernate.show_sql>
+		<env.hibernate.format_sql>false</env.hibernate.format_sql>
+		<env.hibernate.indexBase>zanatasearchindex</env.hibernate.indexBase>
+
+		<ds.jndi.name>zanataDatasource</ds.jndi.name>
+		<ds.hibernate.dialect>org.zanata.ZanataMySQL5InnoDBDialect</ds.hibernate.dialect>
+		<ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
+		<ds.connection.url>jdbc:h2:mem:zanata;DB_CLOSE_DELAY=-1</ds.connection.url> *-ds.xml
+		<ds.user.name>sa</ds.user.name> *-ds.xml
+		<ds.password /> *-ds.xml
+		-->
 		<!-- Default MySql login -->
 		<mysql.user>root</mysql.user>
 		<mysql.password />
@@ -34,7 +44,7 @@
 
 	<build>
 		<finalName>zanata</finalName>
-
+		
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -43,40 +53,23 @@
 		</resources>
 
 		<plugins>
-		
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>generate-kerberos-webxml</id>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<phase>generate-resources</phase>
-						<configuration>
-							<outputDirectory>${project.build.directory}/generated-resources/kerberos</outputDirectory>
-							<filters>
-								<filter>${basedir}/src/etc/kerberos.properties</filter>
-							</filters>
-							<resources>
-								<resource>
-									<directory>src/main/webapp-jboss/WEB-INF</directory>
-									<filtering>true</filtering>
-									<includes>
-										<include>web.xml</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 			
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
 					<warName>${war.name}</warName>
+					<webResources>
+						<resource>
+							<directory>src/main/webapp-jboss</directory>
+							<filtering>true</filtering>
+						</resource>
+						<resource>
+                            <directory>src/main/resources/org/zanata/webtrans/images</directory>
+                            <includes>
+                                <include>public-img/**</include>
+                            </includes>
+                        </resource>
+					</webResources>
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
@@ -89,50 +82,11 @@
 						</manifestEntries>
 					</archive>
 				</configuration>
-			</plugin>
-			
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
 				<executions>
+					<!-- Disable default execution -->
 					<execution>
-						<id>generate-kerberos-war</id>
-						<goals>
-							<goal>war</goal>
-						</goals>
-						<phase>package</phase>
-						<configuration>
-							<warName>${war.name}</warName>
-							<warSourceExcludes>WEB-INF/web.xml</warSourceExcludes>
-							<webappDirectory>${project.build.directory}/${project.build.finalName}-kerberos</webappDirectory>
-							<webXml>${project.build.directory}/generated-resources/kerberos/web.xml</webXml>
-							<classifier>kerberos</classifier>
-							<webResources>
-								<resource>
-									<directory>src/main/webapp-jboss</directory>
-									<filtering>true</filtering>
-									<excludes>
-										<exclude>WEB-INF/web.xml</exclude>
-									</excludes>
-								</resource>
-								<resource>
-                                    <directory>src/main/resources/org/zanata/webtrans/images</directory>
-                                    <includes>
-                                        <include>public-img/**</include>
-                                    </includes>
-                                </resource>
-							</webResources>
-							<archive>
-								<manifest>
-									<addClasspath>true</addClasspath>
-									<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-									<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-								</manifest>
-								<manifestEntries>
-									<Implementation-Build>${maven.build.timestamp}</Implementation-Build>
-									<SCM-Changeset>${changeSet}</SCM-Changeset>
-								</manifestEntries>
-							</archive>
-						</configuration>
+						<id>default-war</id>
+						<phase>none</phase>
 					</execution>
 				</executions>
 			</plugin>
@@ -240,6 +194,9 @@
 	<profiles>
 		<profile>
 			<id>mysql</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 			<properties>
 				<ds.jndi.name>zanataDatasource</ds.jndi.name>
 			</properties>
@@ -263,31 +220,8 @@
 			<build>
 
 				<resources>
-					<resource>
-						<directory>src/main/resources-jboss</directory>
-						<filtering>true</filtering>
-					</resource>
-
 				</resources>
 				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-war-plugin</artifactId>
-						<configuration>
-							<webResources>
-								<resource>
-									<directory>src/main/webapp-jboss</directory>
-									<filtering>true</filtering>
-								</resource>
-								<resource>
-                                    <directory>src/main/resources/org/zanata/webtrans/images</directory>
-                                    <includes>
-                                        <include>public-img/**</include>
-                                    </includes>
-                                </resource>
-							</webResources>
-						</configuration>
-					</plugin>
 
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
@@ -505,7 +439,7 @@
 									<outputDirectory>${as.deploy}</outputDirectory>
 									<resources>
 										<resource>
-											<directory>${basedir}/src/main/resources-jboss/</directory>
+											<directory>${basedir}/etc</directory>
 											<filtering>true</filtering>
 											<includes>
 												<include>zanata-ds.xml</include>
@@ -532,36 +466,15 @@
 			<properties>
 				<containerId>jboss5x</containerId>
 			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 
 			<build>
 
 				<resources>
-					<resource>
-						<directory>src/main/resources-jboss</directory>
-						<filtering>true</filtering>
-					</resource>
 				</resources>
 
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-war-plugin</artifactId>
-						<configuration>
-							<webResources>
-								<resource>
-									<directory>src/main/webapp-jboss</directory>
-									<filtering>true</filtering>
-								</resource>
-								<resource>
-                                    <directory>src/main/resources/org/zanata/webtrans/images</directory>
-                                    <includes>
-                                        <include>public-img/**</include>
-                                    </includes>
-                                </resource>
-							</webResources>
-						</configuration>
-					</plugin>
-				</plugins>
 			</build>
 
 			<dependencies>
@@ -700,50 +613,180 @@
 
 		</profile>
 
-		<!-- 
 		<profile>
-			<id>internalauthentication</id>
+			<id>internalauth</id>
 			<activation>
 				<property>
 					<name>env</name>
 					<value>dev</value>
 				</property>
+				<activeByDefault>true</activeByDefault>
 			</activation>
-			<properties>
-				<internal.authentication>true</internal.authentication>
-				<jaas.configure>default</jaas.configure>
-			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-war-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>generate-internal-war</id>
+								<goals>
+									<goal>war</goal>
+								</goals>
+								<phase>package</phase>
+								<configuration>
+									<classifier>internal</classifier>
+									<webappDirectory>${project.build.directory}/${project.build.finalName}-internal</webappDirectory>
+									<filters>
+										<filter>${war.config.dir}/internalauth.properties</filter>
+									</filters>
+									<archive>
+										<manifestEntries>
+											<Classifier>internal</Classifier>
+										</manifestEntries>
+									</archive>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 
 		<profile>
 			<id>fedora</id>
-			<properties>
-				<fedora.openId>true</fedora.openId>
-			</properties>
-		</profile>
-		-->
-
-		<profile>
-			<id>autotest</id>
-		</profile>
-
-		<profile>
-			<id>nogwt</id>
 			<activation>
-				<property>
-					<name>env</name>
-					<value>dev</value>
-				</property>
+				<activeByDefault>true</activeByDefault>
 			</activation>
-			<!-- This profile allows you to skip the GWT compilation step -->
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>gwt-maven-plugin</artifactId>
-						<configuration>
-							<skip>true</skip>
-						</configuration>
+						<artifactId>maven-war-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>generate-fedora-war</id>
+								<goals>
+									<goal>war</goal>
+								</goals>
+								<phase>package</phase>
+								<configuration>
+									<classifier>fedora</classifier>
+									<webappDirectory>${project.build.directory}/${project.build.finalName}-fedora</webappDirectory>
+									<filters>
+										<filter>${war.config.dir}/fedora.properties</filter>
+									</filters>
+									<archive>
+										<manifestEntries>
+											<Classifier>fedora</Classifier>
+										</manifestEntries>
+									</archive>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>kerberos</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-war-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>generate-kerberos-war</id>
+								<goals>
+									<goal>war</goal>
+								</goals>
+								<phase>package</phase>
+								<configuration>
+									<classifier>kerberos</classifier>
+									<webappDirectory>${project.build.directory}/${project.build.finalName}-kerberos</webappDirectory>
+									<filters>
+										<filter>${war.config.dir}/kerberos.properties</filter>
+									</filters>
+									<archive>
+										<manifestEntries>
+											<Classifier>kerberos</Classifier>
+										</manifestEntries>
+									</archive>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
+		<profile>
+			<id>jaas</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-war-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>generate-jaas-war</id>
+								<goals>
+									<goal>war</goal>
+								</goals>
+								<phase>package</phase>
+								<configuration>
+									<classifier>jaas</classifier>
+									<webappDirectory>${project.build.directory}/${project.build.finalName}-jaas</webappDirectory>
+									<filters>
+										<filter>${war.config.dir}/jaas.properties</filter>
+									</filters>
+									<archive>
+										<manifestEntries>
+											<Classifier>jaas</Classifier>
+										</manifestEntries>
+									</archive>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>autotest</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-war-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>generate-autotest-war</id>
+								<goals>
+									<goal>war</goal>
+								</goals>
+								<phase>package</phase>
+								<configuration>
+									<classifier>autotest</classifier>
+									<webappDirectory>${project.build.directory}/${project.build.finalName}-autotest</webappDirectory>
+									<filters>
+										<filter>${war.config.dir}/autotest.properties</filter>
+									</filters>
+									<archive>
+										<manifestEntries>
+											<Classifier>autotest</Classifier>
+										</manifestEntries>
+									</archive>
+								</configuration>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>

@@ -40,7 +40,6 @@ public class HApplicationConfiguration extends ModelEntityBase
    public static String KEY_HOME_CONTENT     = "flies.home.content";
    public static String KEY_HELP_CONTENT     = "flies.help.content";
    public static String KEY_LOGINCONFIG_URL  = "zanata.login-config.url";
-   public static String KEY_AUTHTYPE         = "zanata.security.authType";
 
    private String key;
    private String value;

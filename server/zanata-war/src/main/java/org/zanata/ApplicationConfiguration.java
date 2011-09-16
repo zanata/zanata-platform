@@ -50,6 +50,14 @@ public class ApplicationConfiguration
    private static Log log = Logging.getLog(ApplicationConfiguration.class);
 
    private Map<String, String> configValues = new HashMap<String, String>();
+   
+   private boolean debug;
+   private boolean hibernateStatistics = false;
+   private int authenticatedSessionTimeoutMinutes = 0;
+   private String version;
+   private String buildTimestamp;
+   private boolean enableCopyTrans = true;
+   private AuthenticationType authType;
 
    @Observer( { EVENT_CONFIGURATION_CHANGED })
    @Create
@@ -116,33 +124,59 @@ public class ApplicationConfiguration
       return configValues.get(HApplicationConfiguration.KEY_LOGINCONFIG_URL);
    }
    
-   public AuthenticationType getAuthenticationType()
-   {
-      final String authType = configValues.get(HApplicationConfiguration.KEY_AUTHTYPE);
-      
-      if( authType == null ) 
-      {
-         return null;
-      }
-      else
-      {
-         return AuthenticationType.valueOf( authType );
-      }
-   }
-   
    public boolean isInternalAuth()
    {
-      return this.getAuthenticationType() == AuthenticationType.INTERNAL;
+      return this.authType != null && this.authType == AuthenticationType.INTERNAL;
    }
    
    public boolean isFedoraOpenIdAuth() 
    {
-      return this.getAuthenticationType() == AuthenticationType.FEDORA_OPENID;
+      return this.authType != null && this.authType == AuthenticationType.FEDORA_OPENID;
    }
    
    public boolean isKerberosAuth()
    {
-      return this.getAuthenticationType() == AuthenticationType.KERBEROS;
+      return this.authType != null && this.authType == AuthenticationType.KERBEROS;
+   }
+
+   public boolean isDebug()
+   {
+      return debug;
+   }
+
+   public boolean isHibernateStatistics()
+   {
+      return hibernateStatistics;
+   }
+
+   public int getAuthenticatedSessionTimeoutMinutes()
+   {
+      return authenticatedSessionTimeoutMinutes;
+   }
+
+   public String getVersion()
+   {
+      return version;
+   }
+   
+   void setVersion( String version )
+   {
+      this.version = version;
+   }
+
+   public String getBuildTimestamp()
+   {
+      return buildTimestamp;
+   }
+   
+   void setBuildTimestamp( String buildTimestamp )
+   {
+      this.buildTimestamp = buildTimestamp;
+   }
+
+   public boolean getEnableCopyTrans()
+   {
+      return enableCopyTrans;
    }
 
 }

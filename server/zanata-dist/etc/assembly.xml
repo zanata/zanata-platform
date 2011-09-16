@@ -20,17 +20,27 @@
 	<dependencySets>
 		<dependencySet>
 			<includes>
-				<include>org.zanata:zanata-war:war</include>
+				<include>org.zanata:zanata-war:war:jaas</include>
 			</includes>
-			<outputDirectory>generic</outputDirectory>
-			<outputFileNameMapping>zanata.war</outputFileNameMapping>
+			<outputFileNameMapping>zanata${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
 		</dependencySet>
 		<dependencySet>
 			<includes>
 				<include>org.zanata:zanata-war:war:kerberos</include>
 			</includes>
-			<outputDirectory>kerberos</outputDirectory>
-			<outputFileNameMapping>zanata.war</outputFileNameMapping>
+			<outputFileNameMapping>zanata${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
+		</dependencySet>
+		<dependencySet>
+			<includes>
+				<include>org.zanata:zanata-war:war:fedora</include>
+			</includes>
+			<outputFileNameMapping>zanata${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
+		</dependencySet>
+		<dependencySet>
+			<includes>
+				<include>org.zanata:zanata-war:war:internal</include>
+			</includes>
+			<outputFileNameMapping>zanata${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
 		</dependencySet>
 	</dependencySets>
 </assembly>

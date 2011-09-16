@@ -38,6 +38,7 @@
   		<groupId>org.zanata</groupId>
   		<artifactId>zanata-war</artifactId>
   		<type>war</type>
+  		<classifier>jaas</classifier>
   		<version>${project.version}</version>
   	</dependency>
   	<dependency>
@@ -45,6 +46,20 @@
   		<artifactId>zanata-war</artifactId>
   		<type>war</type>
   		<classifier>kerberos</classifier>
+  		<version>${project.version}</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.zanata</groupId>
+  		<artifactId>zanata-war</artifactId>
+  		<type>war</type>
+  		<classifier>fedora</classifier>
+  		<version>${project.version}</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.zanata</groupId>
+  		<artifactId>zanata-war</artifactId>
+  		<type>war</type>
+  		<classifier>internal</classifier>
   		<version>${project.version}</version>
   	</dependency>
   </dependencies>

@@ -54,8 +54,6 @@ import org.jboss.seam.contexts.ServletLifecycle;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.jboss.security.auth.login.XMLLoginConfigMBean;
-import org.zanata.exception.ZanataInitializationException;
-import org.zanata.security.AuthenticationType;
 import org.zanata.util.DBUnitImporter;
 
 /**
@@ -75,24 +73,7 @@ public class ZanataInit
    @Logger
    static Log log;
 
-   private boolean debug;
-   private boolean hibernateStatistics = false;
-   private int authenticatedSessionTimeoutMinutes = 0;
-   private String version;
-   private String buildTimestamp;
-   private boolean enableCopyTrans = true;
    private String[] additionalSecurityDomains;
-
-
-   public boolean getEnableCopyTrans()
-   {
-      return enableCopyTrans;
-   }
-
-   public void setEnableCopyTrans(boolean enableCopyTrans)
-   {
-      this.enableCopyTrans = enableCopyTrans;
-   }
 
    @In(required = false)
    DBUnitImporter dbunitImporter;
@@ -127,8 +108,9 @@ public class ZanataInit
 
          Attributes atts = mf.getMainAttributes();
 
-         version = atts.getValue("Implementation-Version");
-         buildTimestamp = atts.getValue("Implementation-Build");
+         String version = atts.getValue("Implementation-Version");
+         String buildTimestamp = atts.getValue("Implementation-Build");
+         
          if (version == null)
          {
             version = UNKNOWN_VERSION;
@@ -137,19 +119,18 @@ public class ZanataInit
          {
             buildTimestamp = UNKNOWN_VERSION;
          }
+         this.applicationConfiguration.setVersion( version );
+         this.applicationConfiguration.setBuildTimestamp( buildTimestamp );
+         
          log.info("Server version: {0}", version);
          log.info("Server build: {0}", buildTimestamp);
       }
-      if (isDebug())
+      if (this.applicationConfiguration.isDebug())
       {
          log.info("debug: enabled");
       }
       boolean authlogged = false;
       
-      if( applicationConfiguration.getAuthenticationType() == null )
-      {
-         throw new ZanataInitializationException("Authentication type not configured in the Database.");
-      }
       if ( applicationConfiguration.isInternalAuth() )
       {
          log.info("Internal authentication: enabled");
@@ -169,14 +150,14 @@ public class ZanataInit
       {
          log.info("Using JAAS authentication");
       }
-      log.info("Enable copyTrans: {0}", getEnableCopyTrans());
+      log.info("Enable copyTrans: {0}", this.applicationConfiguration.getEnableCopyTrans());
 
       // if (dbunitImporter != null) {
       // log.info("Importing development test data");
       // dbunitImporter.importDatasets();
       // }
 
-      if (hibernateStatistics)
+      if (this.applicationConfiguration.isHibernateStatistics())
       {
          log.info("registering Hibernate statistics MBean");
          try
@@ -208,7 +189,7 @@ public class ZanataInit
    {
       log.info("<<<<<<<<<<<<< Stopping Zanata...");
 
-      if (hibernateStatistics)
+      if (this.applicationConfiguration.isHibernateStatistics())
       {
          log.info("unregistering Hibernate statistics MBean");
          try
@@ -277,46 +258,6 @@ public class ZanataInit
                MBeanServerLocator.locateJBoss());
          config.removeConfigs( this.additionalSecurityDomains );
       }
-   }
-
-   public String getBuildTimestamp()
-   {
-      return buildTimestamp;
-   }
-
-   public String getVersion()
-   {
-      return version;
-   }
-
-   public boolean isDebug()
-   {
-      return debug;
-   }
-
-   public void setDebug(boolean debug)
-   {
-      this.debug = debug;
-   }
-
-   public boolean isHibernateStatistics()
-   {
-      return hibernateStatistics;
-   }
-
-   public void setHibernateStatistics(boolean hibernateStatistics)
-   {
-      this.hibernateStatistics = hibernateStatistics;
-   }
-
-   public int getAuthenticatedSessionTimeoutMinutes()
-   {
-      return authenticatedSessionTimeoutMinutes;
-   }
-
-   public void setAuthenticatedSessionTimeoutMinutes(int authenticatedSessionTimeoutMinutes)
-   {
-      this.authenticatedSessionTimeoutMinutes = authenticatedSessionTimeoutMinutes;
    }
 
    /** Utility to debug JBoss JNDI problems */
@@ -474,5 +415,4 @@ public class ZanataInit
          buffer.append("error while listing context " + ctx.toString() + ": " + ne.toString(true));
       }
    }
-
 }
