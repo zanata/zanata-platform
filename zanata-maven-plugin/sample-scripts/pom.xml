@@ -43,7 +43,7 @@
 		<pluginRepository>
 			<id>jboss-releases</id>
 			<name>jboss-releases</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
+			<url>http://repository.jboss.org/nexus/content/repositories/releases/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -54,7 +54,7 @@
 		<pluginRepository>
 			<id>jboss-thirdparty-releases</id>
 			<name>jboss-thirdparty-releases</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
+			<url>http://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
