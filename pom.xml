@@ -861,7 +861,7 @@
 		<repository>
 			<id>jboss-releases</id>
 			<name>jboss-releases</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
+			<url>http://repository.jboss.org/nexus/content/repositories/releases/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -872,7 +872,7 @@
 		<repository>
 			<id>jboss-thirdparty-releases</id>
 			<name>jboss-thirdparty-releases</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
+			<url>http://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -883,7 +883,7 @@
 		<repository>
 			<id>jboss-snapshots</id>
 			<name>jboss-snapshots</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
+			<url>http://repository.jboss.org/nexus/content/repositories/snapshots/</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
