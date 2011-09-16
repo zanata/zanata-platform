@@ -14,21 +14,30 @@
 			vertical-align:middle;
 			color: grey;
 			}
+	    .tuDetailsLabel {
+	        font-weight: bold;
+	        padding-top: 8px;
+	    }
 	</ui:style>
 	<fui:CollapsePanel ui:field="collapsePanel">
 		<g:LayoutPanel ui:field="rootPanel">
 			<g:layer top="5px" bottom="5px" left="5px" right="5px">
-				<g:Label styleName="{style.tuDetailsInactive}" ui:field="noDetailsLabel">
+				<g:Label ui:field="noDetailsLabel" styleName="{style.tuDetailsInactive}">
 			</g:Label>
 			</g:layer>
 			<g:layer top="0px" height="0px" left="3px" right="3px">
 				<g:VerticalPanel ui:field="labelPanel">
 					<g:FlowPanel height="50%">
-						<g:Label ui:field="sourceLabel" />
+					    <g:Label ui:field="resIdLabel" styleName="{style.tuDetailsLabel}" />
+					    <g:Label ui:field="resId" />
+						<g:Label ui:field="sourceCommentLabel" styleName="{style.tuDetailsLabel}" />
+						<g:Label ui:field="sourceComment" />
 					</g:FlowPanel>
 					<g:FlowPanel>
-						<g:Label ui:field="lastModifiedByLabel" />
-						<g:Label ui:field="lastModifiedTimeLabel" />
+						<g:Label ui:field="lastModifiedByLabel" styleName="{style.tuDetailsLabel}" />
+						<g:Label ui:field="lastModifiedBy" />
+						<g:Label ui:field="lastModifiedTimeLabel" styleName="{style.tuDetailsLabel}" />
+						<g:Label ui:field="lastModifiedTime" />
 					</g:FlowPanel>
 				</g:VerticalPanel>
 			</g:layer>
