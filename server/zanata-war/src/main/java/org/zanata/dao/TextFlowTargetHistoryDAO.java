@@ -21,6 +21,7 @@
 package org.zanata.dao;
 
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
@@ -40,9 +41,9 @@ public class TextFlowTargetHistoryDAO extends AbstractDAOImpl<HTextFlowTargetHis
       super(HTextFlowTargetHistory.class);
    }
 
-   public TextFlowTargetHistoryDAO(Class<HTextFlowTargetHistory> clz)
+   public TextFlowTargetHistoryDAO(Session session)
    {
-      super(clz);
+      super(HTextFlowTargetHistory.class, session);
    }
 
    public boolean findContentInHistory(HTextFlowTarget target, String content)

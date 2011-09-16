@@ -149,7 +149,6 @@ public class SerializationTests
       PotEntryHeader pot = new PotEntryHeader();
       pot.setContext("context");
       pot.getReferences().add("fff");
-      pot.setExtractedComment("extractedComment");
       tf.getExtensions(true).add(comment);
       tf.getExtensions(true).add(pot);
 
