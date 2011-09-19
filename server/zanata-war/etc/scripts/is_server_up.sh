@@ -1,5 +1,6 @@
 #!/bin/sh
 # Test whether the Zanata server is up.
+# Author: dchen@redhat.com
 
 function print_usage(){
     cat << END

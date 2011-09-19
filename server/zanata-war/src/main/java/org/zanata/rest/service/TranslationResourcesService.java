@@ -64,6 +64,7 @@ import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.ZanataInit;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -137,7 +138,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    private UriInfo uri;
 
    @In
-   private ZanataInit zanataInit;
+   private ApplicationConfiguration applicationConfiguration;
 
    @In
    private ProjectIterationDAO projectIterationDAO;
@@ -881,7 +882,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
    public void copyClosestEquivalentTranslation(Long docId, String name, String projectSlug, String iterationSlug)
    {
-      if (zanataInit.getEnableCopyTrans())
+      if (applicationConfiguration.getEnableCopyTrans())
       {
          Events.instance().raiseTransactionSuccessEvent(EVENT_COPY_TRANS, docId, projectSlug, iterationSlug);
       }

@@ -5,7 +5,22 @@
 
 	<!-- sso security -->
 
-	<!-- @spnego.security@ -->
+	<!-- @spnego.security.start@
+	
+	<security-constraint>
+	    <web-resource-collection>
+	         <web-resource-name>sign in</web-resource-name>
+	         <url-pattern>/account/*</url-pattern>
+	    </web-resource-collection>
+		<auth-constraint>
+			<role-name>*</role-name>
+		</auth-constraint>
+	</security-constraint>
+	<login-config>
+	    <auth-method>SPNEGO</auth-method>
+	</login-config>
+	
+	@spnego.security.end@ -->
 
 	<!-- RichFaces -->
 	<context-param>
