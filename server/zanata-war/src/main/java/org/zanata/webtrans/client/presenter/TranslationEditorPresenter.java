@@ -30,6 +30,7 @@ import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasPager;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 
@@ -39,7 +40,6 @@ import com.google.gwt.gen2.table.event.client.PageChangeEvent;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
-//import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -101,7 +101,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
          @Override
          public void onValueChange(ValueChangeEvent<Integer> event)
          {
-            tableEditorPresenter.cancelEdit();
+            tableEditorPresenter.getDisplay().getTargetCellEditor().savePendingChange(true);
             tableEditorPresenter.gotoPage(event.getValue() - 1, false);
          }
       }));
@@ -156,5 +156,4 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    {
       return tableEditorPresenter.getSelectedTransUnit();
    }
-
 }
