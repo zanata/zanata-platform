@@ -12,6 +12,13 @@
 	<packaging>war</packaging>
 	<name>Zanata web application</name>
 
+	<!-- Should be the same as zanata-parent/pom.xml -->
+	<scm>
+		<connection>scm:git:git://github.com/zanata/zanata.git</connection>
+		<developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
+		<url>https://github.com/zanata/zanata</url>
+	</scm>
+
 	<properties>
 		<jboss.embedded.version>beta3.SP12</jboss.embedded.version>
 		<!-- application properties -->
