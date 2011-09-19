@@ -44,6 +44,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -82,7 +83,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       public void onClick(ClickEvent event)
       {
-         saveAsFuzzy();
+         acceptFuzzyEdit();
       }
    };
 
@@ -104,7 +105,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       public void onClick(ClickEvent event)
       {
-         saveApprovedAndNextRow();
+         saveApprovedAndMoveRow(TableConstants.ROW_MOVE.NEXT);
       }
    };
 
@@ -146,11 +147,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     */
    // private static final int MIN_HEIGHT = 48;
 
-   private static final int KEY_G = 'G';
-   private static final int KEY_J = 'J';
-   private static final int KEY_K = 'K';
-   private static final int KEY_S = 'S';
-
    /**
     * Construct a new {@link InlineTargetCellEditor} with the specified images.
     */
@@ -168,7 +164,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       textArea.setStyleName("TableEditorContent-Edit");
       textArea.addValueChangeHandler(new ValueChangeHandler<String>()
       {
-
          @Override
          public void onValueChange(ValueChangeEvent<String> event)
          {
@@ -181,19 +176,17 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          @Override
          public void onBlur(BlurEvent event)
          {
+            Log.debug("text area focus lost");
             isFocused = false;
          }
-
       });
       textArea.addFocusHandler(new FocusHandler()
       {
-
          @Override
          public void onFocus(FocusEvent event)
          {
             isFocused = true;
          }
-
       });
       
       textArea.addKeyDownHandler(new KeyDownHandler()
@@ -204,11 +197,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          {
             int keyCode = event.getNativeKeyCode();
             //using keydown for Ctrl+S in order to override browser Ctrl+S on keydown (chrome)
-            if (event.isControlKeyDown() && keyCode == KEY_S)
+            if (event.isControlKeyDown() && keyCode == TableConstants.KEY_S)
             {
                event.stopPropagation();
                event.preventDefault(); //stop browser save
-               saveAsFuzzy();
+               acceptFuzzyEdit();
             }
          }
 
@@ -225,7 +218,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             // NB: if you change these, please change NavigationConsts too!
             if (event.isControlKeyDown() && keyCode == KeyCodes.KEY_ENTER)
             {
-               saveApprovedAndNextRow();
+               saveApprovedAndMoveRow(TableConstants.ROW_MOVE.NEXT);
             }
             // else if (event.isControlKeyDown() && event.isShiftKeyDown() &&
             // event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
@@ -239,29 +232,33 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             // // } else if(event.isControlKeyDown() && event.getNativeKeyCode()
             // // == KeyCodes.KEY_PAGEDOWN) { // bad in Firefox
             // }
-            else if (event.isAltKeyDown() && keyCode == KEY_G)
+            else if (event.isAltKeyDown() && keyCode == TableConstants.KEY_G)
             {
                Log.info("InlineTargetCellEditor.java: Clone action.");
                textArea.setValue(cellValue.getSource(), true);
                textArea.setFocus(true);
             }
-            else if (event.isAltKeyDown() && (event.isDownArrow() || keyCode == KEY_K))
+            else if (event.isAltKeyDown() && (event.isDownArrow() || keyCode == TableConstants.KEY_K))
             {
-               handleNext();
-               // } else if(event.isControlKeyDown() && event.getNativeKeyCode()
-               // == KeyCodes.KEY_PAGEUP) { // bad in Firefox
+               // alt-down
+               // See editCell() for saving event
+               gotoRow(TableConstants.ROW_MOVE.NEXT);
             }
-            else if (event.isAltKeyDown() && (event.isUpArrow() || keyCode == KEY_J))
+            else if (event.isAltKeyDown() && (event.isUpArrow() || keyCode == TableConstants.KEY_J))
             {
-               handlePrev();
+               // alt-up
+               // See editCell() for saving event
+               gotoRow(TableConstants.ROW_MOVE.PREV);
             }
             else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEDOWN)
-            { // alt-pagedown
-               handleNextState();
+            {
+               // alt-pagedown
+               saveAndMoveNextFuzzy(TableConstants.ROW_MOVE.NEXT);
             }
             else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEUP)
-            { // alt-pageup
-               handlePrevState();
+            {
+               // alt-pageup
+               saveAndMoveNextFuzzy(TableConstants.ROW_MOVE.PREV);
             }
             else if (!event.isAltKeyDown() && !event.isControlKeyDown())
             {
@@ -320,24 +317,28 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       layoutTable.add(operationsPanel);
    }
 
-   private void gotoNextRow(int row)
+   public void gotoRow(TableConstants.ROW_MOVE direction)
    {
-      editRowCallback.gotoNextRow(row);
+      if (direction == TableConstants.ROW_MOVE.NEXT)
+      {
+         editRowCallback.gotoNextRow(curRow);
+      }
+      else if (direction == TableConstants.ROW_MOVE.PREV)
+      {
+         editRowCallback.gotoPrevRow(curRow);
+      }
    }
 
-   private void gotoPrevRow(int row)
+   private void gotoFuzzyRow(TableConstants.ROW_MOVE direction)
    {
-      editRowCallback.gotoPrevRow(row);
-   }
-
-   private void gotoNextFuzzy(int row)
-   {
-      editRowCallback.gotoNextFuzzy(row);
-   }
-
-   private void gotoPrevFuzzy(int row)
-   {
-      editRowCallback.gotoPrevFuzzy(row);
+      if (direction == TableConstants.ROW_MOVE.NEXT)
+      {
+         editRowCallback.gotoNextFuzzy(curRow);
+      }
+      else if (direction == TableConstants.ROW_MOVE.PREV)
+      {
+         editRowCallback.gotoPrevFuzzy(curRow);
+      }
    }
 
    private void restoreView()
@@ -348,11 +349,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          cellViewWidget.getParent().setHeight(cellViewWidget.getOffsetHeight() + "px");
       }
    }
-
-   /*********************
-    * private boolean isDirty() { if (cellValue == null) return false; return
-    * !textArea.getText().equals(cellValue.getTarget()); }
-    ********************/
 
    public boolean isEditing()
    {
@@ -377,15 +373,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
    }
 
+   @Override
    public void editCell(CellEditInfo cellEditInfo, TransUnit cellValue, Callback<TransUnit> callback)
    {
-      // don't allow edits of two cells at once
-      // if (isDirty())
-      // {
-      // callback.onCancel(cellEditInfo);
-      // return;
-      // }
-
       if (isEditing())
       {
          if (cellEditInfo.getCellIndex() == curCol && cellEditInfo.getRowIndex() == curRow)
@@ -396,15 +386,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
 
       // save the content in previous cell before start new editing
-      if (this.cellValue != null && curRow != cellEditInfo.getRowIndex())
+      if (curRow != cellEditInfo.getRowIndex())
       {
-         // if something has changed, save as approved
-         if (!this.cellValue.getTarget().equals(textArea.getText()))
-         {
-            Log.debug("save content of previous cell");
-            this.cellValue.setStatus(ContentState.Approved);
-            acceptEdit();
-         }
+         savePendingChange(false);
       }
 
       Log.debug("starting edit of cell");
@@ -434,40 +418,45 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       DOM.scrollIntoView(table.getCellFormatter().getElement(curRow, curCol));
    }
 
-   // private void refreshStateImage()
-   // {
-   // if (cellValue.getStatus() == ContentState.New)
-   // stateImage.setUrl(resources.newUnit().getURL());
-   // else if (cellValue.getStatus() == ContentState.NeedReview)
-   // stateImage.setUrl(resources.fuzzyUnit().getURL());
-   // else if (cellValue.getStatus() == ContentState.Approved)
-   // stateImage.setUrl(resources.approvedUnit().getURL());
-   // }
-   
-   
-   /**
-    * Save the contents of the cell and set status to fuzzy.
-    */
-   void saveAsFuzzy() {
-	   cellValue.setStatus(ContentState.NeedReview);
-	   cellValue.setTarget(textArea.getText());
-	   curCallback.onComplete(curCellEditInfo, cellValue);
+   public void savePendingChange(boolean cancelIfUnchanged)
+   {
+      Log.info("Saving pending change");
+      // if something has changed, save as approved
+      if (isEditing() && !cellValue.getTarget().equals(textArea.getText()))
+      {
+         Log.debug("save content of previous cell");
+         cellValue.setStatus(ContentState.Approved);
+         acceptEdit();
+      }
+      else
+      {
+         if (cancelIfUnchanged)
+         {
+            cancelEdit();
+         }
+      }
    }
-   
-   
+
+   public void saveAndMoveNextFuzzy(TableConstants.ROW_MOVE direction)
+   {
+      savePendingChange(true);
+      gotoFuzzyRow(direction);
+   }
+
    /**
     * save the contents of the cell as approved and move to the next row.
     */
-   void saveApprovedAndNextRow() {
+   private void saveApprovedAndMoveRow(TableConstants.ROW_MOVE direction)
+   {
 	   cellValue.setStatus(ContentState.Approved);
 	   acceptEdit();
-	   gotoNextRow(curRow);
+      gotoRow(direction);
    }
-   
+
    /**
     * Accept the contents of the cell editor as the new cell value.
     */
-   protected void acceptEdit()
+   public void acceptEdit()
    {
       // Check if we are ready to accept
       if (!onAccept())
@@ -491,13 +480,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       clearSelection();
    }
 
-
-   public void clearSelection()
+   /**
+    * Save the contents of the cell and set status to fuzzy.
+    */
+   protected void acceptFuzzyEdit()
    {
-      curCallback = null;
-      curCellEditInfo = null;
-      cellViewWidget = null;
-      cellValue = null;
+      cellValue.setStatus(ContentState.NeedReview);
+      cellValue.setTarget(textArea.getText());
+      curCallback.onComplete(curCellEditInfo, cellValue);
    }
 
    /**
@@ -524,6 +514,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       clearSelection();
    }
 
+   public void clearSelection()
+   {
+      curCallback = null;
+      curCellEditInfo = null;
+      cellViewWidget = null;
+      cellValue = null;
+   }
+
    /**
     * Called before an accept takes place.
     * 
@@ -542,26 +540,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    protected boolean onCancel()
    {
       return true;
-   }
-
-   public void handleNext()
-   {
-      gotoNextRow(curRow);
-   }
-
-   public void handlePrev()
-   {
-      gotoPrevRow(curRow);
-   }
-
-   public void handleNextState()
-   {
-      gotoNextFuzzy(curRow);
-   }
-
-   public void handlePrevState()
-   {
-      gotoPrevFuzzy(curRow);
    }
 
    public void setTextAreaSize()
@@ -588,6 +566,4 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          textArea.setVisibleLines(textArea.getVisibleLines() + growByLines);
       }
    }
-
-
 }

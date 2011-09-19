@@ -111,7 +111,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
          @Override
          public void onValueChange(ValueChangeEvent<Integer> event)
          {
-            tableEditorPresenter.cancelEdit();
+            tableEditorPresenter.getDisplay().getTargetCellEditor().savePendingChange(true);
             tableEditorPresenter.gotoPage(event.getValue() - 1, false);
          }
       }));
@@ -194,7 +194,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
          wordCount.decrement(event.getPreviousStatus(), event.getWordCount());
 
          display.getTransUnitCount().setStats(statusCount);
-
       }
    };
 
