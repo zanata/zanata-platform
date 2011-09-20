@@ -147,7 +147,7 @@ do
       fi
       set +x
 
-      warfile=server/zanata-war/target/zanata-$buildType.war
+      warfile=server/zanata-war/target/zanata-*-$buildType.war
 
       set -x
       echo copying $warfile to $host:$targetfile

@@ -25,25 +25,10 @@
 
 		<env.debug>false</env.debug>
 		<env.import.testdata>false</env.import.testdata>
-		<!-- <ds.jndi.name>zanataDatasource</ds.jndi.name> -->
 		<war.name>zanata</war.name>
-		<!-- Default database settings -->
-		<!-- <env.dbunit.type>MYSQL</env.dbunit.type> -->
 		<zanata.gwt.module>org.zanata.webtrans.Application</zanata.gwt.module>
 		<extra.servlets />
-		<!-- Persistence and Datasource settings -->
-		<!-- <env.hibernate.hbm2ddl.auto />
-		<env.hibernate.show_sql>false</env.hibernate.show_sql>
-		<env.hibernate.format_sql>false</env.hibernate.format_sql>
-		<env.hibernate.indexBase>zanatasearchindex</env.hibernate.indexBase>
 
-		<ds.jndi.name>zanataDatasource</ds.jndi.name>
-		<ds.hibernate.dialect>org.zanata.ZanataMySQL5InnoDBDialect</ds.hibernate.dialect>
-		<ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
-		<ds.connection.url>jdbc:h2:mem:zanata;DB_CLOSE_DELAY=-1</ds.connection.url> *-ds.xml
-		<ds.user.name>sa</ds.user.name> *-ds.xml
-		<ds.password /> *-ds.xml
-		-->
 		<!-- Default MySql login -->
 		<mysql.user>root</mysql.user>
 		<mysql.password />
@@ -64,7 +49,7 @@
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<warName>${war.name}</warName>
+					<warName>${war.name}-${project.version}</warName>
 					<webResources>
 						<resource>
 							<directory>src/main/webapp-jboss</directory>
@@ -90,10 +75,21 @@
 					</archive>
 				</configuration>
 				<executions>
-					<!-- Disable default execution -->
+					<!-- Default execution is the Internal war -->
 					<execution>
 						<id>default-war</id>
-						<phase>none</phase>
+						<configuration>
+							<classifier>internal</classifier>
+							<webappDirectory>${project.build.directory}/${project.build.finalName}-internal</webappDirectory>
+							<filters>
+								<filter>${war.config.dir}/internalauth.properties</filter>
+							</filters>
+							<archive>
+								<manifestEntries>
+									<Classifier>internal</Classifier>
+								</manifestEntries>
+							</archive>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -251,125 +247,6 @@
 			<properties>
 				<ds.jndi.name>zanataDatasource</ds.jndi.name>
 			</properties>
-		</profile>
-
-		<profile>
-			<id>jboss4</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>dev</value>
-				</property>
-			</activation>
-			<properties>
-				<env.JBOSS_HOME>/opt/jboss-4.2.3.GA-jdk6</env.JBOSS_HOME>
-				<!-- jboss config for the Cargo plugin -->
-				<containerId>jboss42x</containerId>
-				<downloadUrl>http://downloads.sourceforge.net/jboss/jboss-4.2.3.GA-jdk6.zip?big_mirror=1</downloadUrl>
-			</properties>
-
-			<build>
-				
-				<plugins>
-					
-
-				</plugins>
-			</build>
-
-			<!-- <dependencies>
-
-				<dependency>
-					<groupId>commons-codec</groupId>
-					<artifactId>commons-codec</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>commons-collections</groupId>
-					<artifactId>commons-collections</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>commons-httpclient</groupId>
-					<artifactId>commons-httpclient</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.el</groupId>
-					<artifactId>el-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.servlet</groupId>
-					<artifactId>servlet-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.persistence</groupId>
-					<artifactId>persistence-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.ejb</groupId>
-					<artifactId>ejb-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javassist</groupId>
-					<artifactId>javassist</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.faces</groupId>
-					<artifactId>jsf-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.faces</groupId>
-					<artifactId>jsf-impl</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.annotation</groupId>
-					<artifactId>jsr250-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.xml.stream</groupId>
-					<artifactId>stax-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>xpp3</groupId>
-					<artifactId>xpp3_min</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-			</dependencies> -->
-
 		</profile>
 
 		<profile>
@@ -620,25 +497,7 @@
 					<plugin>
 						<artifactId>maven-war-plugin</artifactId>
 						<executions>
-							<execution>
-								<id>generate-internal-war</id>
-								<goals>
-									<goal>war</goal>
-								</goals>
-								<phase>package</phase>
-								<configuration>
-									<classifier>internal</classifier>
-									<webappDirectory>${project.build.directory}/${project.build.finalName}-internal</webappDirectory>
-									<filters>
-										<filter>${war.config.dir}/internalauth.properties</filter>
-									</filters>
-									<archive>
-										<manifestEntries>
-											<Classifier>internal</Classifier>
-										</manifestEntries>
-									</archive>
-								</configuration>
-							</execution>
+							
 						</executions>
 					</plugin>
 				</plugins>
