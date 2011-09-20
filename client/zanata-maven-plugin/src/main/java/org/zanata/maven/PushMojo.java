@@ -45,15 +45,6 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    private File transDir;
 
    /**
-    * Type of project ("properties" = Java .properties, "podir" = publican-style
-    * gettext directories)
-    * 
-    * @parameter expression="${zanata.projectType}"
-    * @required
-    */
-   private String projectType;
-
-   /**
     * Language of source documents
     * 
     * @parameter expression="${zanata.sourceLang}" default-value="en-US"
@@ -126,12 +117,6 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    public File getTransDir()
    {
       return transDir;
-   }
-
-   @Override
-   public String getProjectType()
-   {
-      return projectType;
    }
 
    @Override
