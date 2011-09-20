@@ -54,7 +54,6 @@ import org.jboss.seam.contexts.ServletLifecycle;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.jboss.security.auth.login.XMLLoginConfigMBean;
-import org.zanata.util.DBUnitImporter;
 
 /**
  * Doesn't do much useful stuff except printing a log message and firing the
@@ -75,12 +74,8 @@ public class ZanataInit
 
    private String[] additionalSecurityDomains;
 
-   @In(required = false)
-   DBUnitImporter dbunitImporter;
-   
    @In
    private ApplicationConfiguration applicationConfiguration;
-
    private ObjectName hibernateMBeanName;
 
    @Observer("org.jboss.seam.postInitialization")
@@ -151,11 +146,6 @@ public class ZanataInit
          log.info("Using JAAS authentication");
       }
       log.info("Enable copyTrans: {0}", this.applicationConfiguration.getEnableCopyTrans());
-
-      // if (dbunitImporter != null) {
-      // log.info("Importing development test data");
-      // dbunitImporter.importDatasets();
-      // }
 
       if (this.applicationConfiguration.isHibernateStatistics())
       {

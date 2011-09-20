@@ -126,7 +126,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<suiteXmlFiles>
-						<suiteXmlFile>src/test/resources/AllUnitTests.tng.xml</suiteXmlFile>
+						<suiteXmlFile>src/test/resources/AllNonContainerTests.tng.xml</suiteXmlFile>
 					</suiteXmlFiles>
 				</configuration>
 			</plugin>

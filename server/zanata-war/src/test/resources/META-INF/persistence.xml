@@ -41,7 +41,7 @@
 		<class>org.zanata.model.po.HPoTargetHeader</class>
 		<class>org.zanata.model.po.HPotEntryData</class>
 		<properties>
-			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
 			<property name="hibernate.hbm2ddl.auto" value="create-drop"/>
 

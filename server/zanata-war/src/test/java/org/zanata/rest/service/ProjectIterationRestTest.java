@@ -123,33 +123,19 @@ public class ProjectIterationRestTest extends ZanataRestTest
    }
 
    @Test
-   public void createWithInvalidData()
+   public void putSameProjectIteration()
    {
       ProjectIteration iteration = new ProjectIteration(SLUG);
 
       IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
 
       Response response = resource.put(iteration);
-      assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
+      assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
 
       iteration = new ProjectIteration(SLUG);
       response = resource.put(iteration);
-      assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
-
+      assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
    }
-
-   @Test
-   public void updateWithInvalidData()
-   {
-      create();
-      ProjectIteration iteration = new ProjectIteration(SLUG);
-
-      IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
-
-      Response response = resource.put(iteration);
-      assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
-   }
-
 
    @Test
    public void update()

@@ -22,12 +22,14 @@ import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.fest.assertions.Assertions;
 import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.seam.core.Events;
 import org.jboss.seam.security.Identity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.ZanataInit;
 import org.zanata.ZanataRestTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
@@ -36,8 +38,11 @@ import org.zanata.common.ResourceType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
+import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.dao.TextFlowTargetHistoryDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.RestUtil;
@@ -77,14 +82,22 @@ public class TranslationResourceRestTest extends ZanataRestTest
    IMocksControl mockControl = EasyMock.createControl();
    Identity mockIdentity = mockControl.createMock(Identity.class);
 
+   ZanataInit zanataInit;
    ProjectIterationDAO projectIterationDAO;
    DocumentDAO documentDAO;
-   PersonDAO personDAO;
+   TextFlowDAO textFlowDAO;
    TextFlowTargetDAO textFlowTargetDAO;
    ResourceUtils resourceUtils;
+   Identity identity;
    ETagUtils eTagUtils;
+   PersonDAO personDAO;
+   TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
+   ProjectDAO projectDAO;
+   LocaleServiceImpl localeService;
+   Events events;
 
    ITranslationResources transResource;
+
 
    @BeforeClass
    void beforeClass()
@@ -105,20 +118,56 @@ public class TranslationResourceRestTest extends ZanataRestTest
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
+   @SuppressWarnings("serial")
    @Override
    protected void prepareResources()
    {
+      this.zanataInit = new ZanataInit();
       this.projectIterationDAO = new ProjectIterationDAO(getSession());
       this.documentDAO = new DocumentDAO(getSession());
-      this.personDAO = new PersonDAO(getSession());
+      this.textFlowDAO = new TextFlowDAO(getSession());
       this.textFlowTargetDAO = new TextFlowTargetDAO(getSession());
       this.resourceUtils = new ResourceUtils();
+      this.identity = new Identity()
+      {
+         @Override
+         public boolean tryLogin()
+         {
+            return true;
+         }
+      };
       this.eTagUtils = new ETagUtils(getSession(), documentDAO);
+      this.personDAO = new PersonDAO(getSession());
+      this.textFlowTargetHistoryDAO = new TextFlowTargetHistoryDAO();
 
-      LocaleServiceImpl localeService = new LocaleServiceImpl();
       LocaleDAO localeDAO = new LocaleDAO(getSession());
+      projectDAO = new ProjectDAO(getSession());
+      this.localeService = new LocaleServiceImpl(localeDAO, projectDAO, projectIterationDAO, personDAO);
       localeService.setLocaleDAO(localeDAO);
-      TranslationResourcesService obj = new TranslationResourcesService(projectIterationDAO, documentDAO, personDAO, textFlowTargetDAO, localeService, resourceUtils, mockIdentity, eTagUtils);
+
+      this.events = new Events()
+      {
+         @Override
+         public void raiseTransactionSuccessEvent(String type, Object... parameters)
+         {
+         }
+      };
+
+      // @formatter:off
+      TranslationResourcesService obj = new TranslationResourcesService(
+            zanataInit,
+            projectIterationDAO,
+            documentDAO,
+            textFlowDAO,
+            textFlowTargetDAO,
+            resourceUtils,
+            identity,
+            eTagUtils,
+            personDAO,
+            textFlowTargetHistoryDAO,
+            localeService,
+            events);
+      // @formatter:on
 
       resources.add(obj);
    }
@@ -259,7 +308,8 @@ public class TranslationResourceRestTest extends ZanataRestTest
       assertThat(entity2.getTextFlowTargets().size(), is(entity.getTextFlowTargets().size()));
 
       entity.getTextFlowTargets().clear();
-      response = transResource.putTranslations("my.txt", de_DE, entity, null);
+      // push an empty document
+      response = transResource.putTranslations("my.txt", de_DE, entity, null, MergeType.IMPORT.toString());
 
       assertThat(response.getResponseStatus(), is(Status.OK));
 
@@ -461,6 +511,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TranslationsResource target1 = putTarget1();
       TextFlowTarget tft1 = target1.getTextFlowTargets().get(0);
       tft1.setTextFlowRevision(1);
+      tft1.setRevision(1);
       expectDocs(true, false, doc1);
       expectTarget1(target1);
    }
@@ -476,6 +527,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TranslationsResource target1 = putTarget1();
       TextFlowTarget tft1 = target1.getTextFlowTargets().get(0);
       tft1.setTextFlowRevision(1);
+      tft1.setRevision(1);
       expectDocs(true, false, doc1);
       expectTarget1(target1);
       Resource doc2 = postDoc2(false);
@@ -485,6 +537,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TranslationsResource target2 = putTarget2();
       TextFlowTarget tft2 = target2.getTextFlowTargets().get(0);
       tft2.setTextFlowRevision(1);
+      tft2.setRevision(1);
       expectDocs(true, false, doc1, doc2);
       expectTarget1(target1);
       expectTarget2(target2);
@@ -509,6 +562,8 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TextFlowTarget tft2 = target2.getTextFlowTargets().get(0);
       tft2.setTextFlowRevision(1);
       expectDocs(true, false, doc1, doc2);
+      tft1.setRevision(1);
+      tft2.setRevision(1);
       expectTarget1(target1);
       expectTarget2(target2);
       // this put should have the effect of deleting doc2
@@ -535,6 +590,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TextFlowTarget tft1 = target1.getTextFlowTargets().get(0);
       tft1.setTextFlowRevision(1);
       expectDocs(true, false, doc1);
+      tft1.setRevision(1);
       expectTarget1(target1);
       deleteDoc1(); // doc1 becomes obsolete
       getZero();
@@ -558,6 +614,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TranslationsResource target1 = putTarget1();
       TextFlowTarget tft1 = target1.getTextFlowTargets().get(0);
       tft1.setTextFlowRevision(1);
+      tft1.setRevision(1);
       expectDocs(true, false, doc1);
       expectTarget1(target1);
       putDoc1(false); // docRev still 1
@@ -585,6 +642,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TextFlowTarget tft1 = target1.getTextFlowTargets().get(0);
       tft1.setTextFlowRevision(1);
       expectDocs(true, false, doc1);
+      tft1.setRevision(1);
       expectTarget1(target1);
       deleteDoc1(); // doc1 becomes obsolete
       getZero();
@@ -596,6 +654,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TranslationsResource target1a = putTarget1a();
       TextFlowTarget tft1a = target1a.getTextFlowTargets().get(0);
       tft1a.setTextFlowRevision(tf1a.getRevision());
+      tft1a.setRevision(1);
       expectDocs(true, false, doc1a);
       dontExpectTarget1();
       expectTarget1a(target1a);
@@ -622,6 +681,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TranslationsResource target1 = putTarget1();
       TextFlowTarget tft1 = target1.getTextFlowTargets().get(0);
       tft1.setTextFlowRevision(1);
+      tft1.setRevision(1);
       expectDocs(true, false, doc1);
       expectTarget1(target1);
       // this should completely replace doc1's textflow FOOD with HELLO
@@ -632,6 +692,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TranslationsResource target1a = putTarget1a();
       TextFlowTarget tft1a = target1a.getTextFlowTargets().get(0);
       tft1a.setTextFlowRevision(2);
+      tft1a.setRevision(1);
       expectDocs(true, false, doc1a);
       dontExpectTarget1();
       expectTarget1a(target1a);
@@ -840,7 +901,6 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TextFlow textflow = newTextFlow("FOOD", "Slime Mould", "POT comment");
       PotEntryHeader poData = textflow.getExtensions(true).findOrAddByType(PotEntryHeader.class);
       poData.setContext("context");
-      poData.setExtractedComment("Tag: title");
       List<String> flags = poData.getFlags();
       flags.add("no-c-format");
       flags.add("flag2");
