@@ -68,6 +68,12 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
    }
 
    @Override
+   protected String getProjectType()
+   {
+      return PROJECT_TYPE_PUBLICAN;
+   }
+
+   @Override
    public void run() throws Exception
    {
       log.info("Server: {}", opts.getUrl());

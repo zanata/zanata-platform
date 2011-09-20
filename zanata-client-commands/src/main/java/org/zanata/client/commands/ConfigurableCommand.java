@@ -29,12 +29,12 @@ import org.zanata.rest.client.ZanataProxyFactory;
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 
  */
-public abstract class ConfigurableCommand implements ZanataCommand
+public abstract class ConfigurableCommand<O extends ConfigurableOptions> implements ZanataCommand
 {
-   private final ConfigurableOptions opts;
+   private final O opts;
    private ZanataProxyFactory requestFactory;
 
-   public ConfigurableCommand(ConfigurableOptions opts, ZanataProxyFactory factory)
+   public ConfigurableCommand(O opts, ZanataProxyFactory factory)
    {
       this.opts = opts;
       if (factory != null)
@@ -43,12 +43,12 @@ public abstract class ConfigurableCommand implements ZanataCommand
          this.requestFactory = OptionsUtil.createRequestFactory(opts);
    }
 
-   public ConfigurableCommand(ConfigurableOptions opts)
+   public ConfigurableCommand(O opts)
    {
       this(opts, null);
    }
 
-   public ConfigurableOptions getOpts()
+   public O getOpts()
    {
       return opts;
    }
