@@ -432,7 +432,7 @@
 									<outputDirectory>${as.deploy}</outputDirectory>
 									<resources>
 										<resource>
-											<directory>${basedir}/etc</directory>
+											<directory>${basedir}/src/etc</directory>
 											<filtering>true</filtering>
 											<includes>
 												<include>zanata-ds.xml</include>
