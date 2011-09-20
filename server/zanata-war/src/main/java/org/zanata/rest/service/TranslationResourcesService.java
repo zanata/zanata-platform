@@ -184,7 +184,6 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
 // @formatter:off
    public TranslationResourcesService(
-      ZanataInit zanataInit,
       ProjectIterationDAO projectIterationDAO,
       DocumentDAO documentDAO,
       TextFlowDAO textFlowDAO,
@@ -199,7 +198,6 @@ public class TranslationResourcesService implements TranslationResourcesResource
    )
 // @formatter:on
    {
-      this.zanataInit = zanataInit;
       this.projectIterationDAO = projectIterationDAO;
       this.documentDAO = documentDAO;
       this.textFlowDAO = textFlowDAO;
