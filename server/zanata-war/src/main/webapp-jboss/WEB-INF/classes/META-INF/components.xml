@@ -67,6 +67,7 @@
     <property name="authType">@zanata.authType@</property>
     <property name="hibernateStatistics">false</property>
     <property name="authenticatedSessionTimeoutMinutes">180</property>
+    <property name="useDefaultConfig">@zanata.useDefaultConfig@</property>
   </component>
 
   <!-- Mailserver for notification messages -->

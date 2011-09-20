@@ -32,6 +32,14 @@
       -->
       <property name="deploymentDescriptorRequired">false</property>
       
+      <property name="allowedSuffixes">
+	     <set elementClass="java.lang.String">
+	        <value>class</value>
+	        <value>xml</value>
+	        <value>properties</value>
+	     </set>
+	  </property>
+      
       <property name="ignoredJarsSet">
          <set elementClass="java.lang.String">
             <value>snmp-adaptor.jar</value>

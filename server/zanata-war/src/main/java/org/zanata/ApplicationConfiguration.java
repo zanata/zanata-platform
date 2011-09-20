@@ -58,6 +58,7 @@ public class ApplicationConfiguration
    private String buildTimestamp;
    private boolean enableCopyTrans = true;
    private AuthenticationType authType;
+   private boolean useDefaultConfig = false;
 
    @Observer( { EVENT_CONFIGURATION_CHANGED })
    @Create
@@ -66,12 +67,16 @@ public class ApplicationConfiguration
       log.info("Reloading configuration");
       Map<String, String> configValues = new HashMap<String, String>();
       setDefaults(configValues);
-      ApplicationConfigurationDAO applicationConfigurationDAO = (ApplicationConfigurationDAO) Component.getInstance(ApplicationConfigurationDAO.class, ScopeType.STATELESS);
-      List<HApplicationConfiguration> storedConfigValues = applicationConfigurationDAO.findAll();
-      for (HApplicationConfiguration value : storedConfigValues)
+      
+      if( !this.useDefaultConfig ) 
       {
-         configValues.put(value.getKey(), value.getValue());
-         log.debug("Setting value {0} to {1}", value.getKey(), value.getValue());
+         ApplicationConfigurationDAO applicationConfigurationDAO = (ApplicationConfigurationDAO) Component.getInstance(ApplicationConfigurationDAO.class, ScopeType.STATELESS);
+         List<HApplicationConfiguration> storedConfigValues = applicationConfigurationDAO.findAll();
+         for (HApplicationConfiguration value : storedConfigValues)
+         {
+            configValues.put(value.getKey(), value.getValue());
+            log.debug("Setting value {0} to {1}", value.getKey(), value.getValue());
+         }
       }
       this.configValues = configValues;
    }
@@ -137,6 +142,17 @@ public class ApplicationConfiguration
    public boolean isKerberosAuth()
    {
       return this.authType != null && this.authType == AuthenticationType.KERBEROS;
+   }
+   
+   public String getAuthenticationType()
+   {
+      String authTypeStr = AuthenticationType.JAAS.toString();
+      
+      if( this.authType != null )
+      {
+         authTypeStr = this.authType.toString();
+      }
+      return authTypeStr;
    }
 
    public boolean isDebug()

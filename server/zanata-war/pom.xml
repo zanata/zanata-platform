@@ -25,7 +25,7 @@
 
 		<env.debug>false</env.debug>
 		<env.import.testdata>false</env.import.testdata>
-		<ds.jndi.name>zanataDatasource</ds.jndi.name>
+		<!-- <ds.jndi.name>zanataDatasource</ds.jndi.name> -->
 		<war.name>zanata</war.name>
 		<!-- Default database settings -->
 		<!-- <env.dbunit.type>MYSQL</env.dbunit.type> -->
@@ -130,6 +130,50 @@
 					</suiteXmlFiles>
 				</configuration>
 			</plugin>
+			
+			<!-- Configure Failsafe to run in integration-test phase -->
+			<plugin>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.7.2</version>
+				<executions>
+					<execution>
+						<id>integration-test</id>
+						<goals>
+							<goal>integration-test</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>verify</id>
+						<goals>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<redirectTestOutputToFile>false</redirectTestOutputToFile>
+					<printSummary>true</printSummary>
+					<forkMode>always</forkMode>
+					<suiteXmlFiles>
+						<suiteXmlFile>src/test/resources/AllIntegrationTests.tng.xml</suiteXmlFile>
+					</suiteXmlFiles>
+					<additionalClasspathElements>
+						<additionalClasspathElement>${project.basedir}/src/test/jboss-embedded-bootstrap</additionalClasspathElement>
+						<additionalClasspathElement>${project.build.directory}/zanata-autotest/WEB-INF/classes</additionalClasspathElement>
+						<additionalClasspathElement>${project.build.directory}/zanata-autotest</additionalClasspathElement>
+					</additionalClasspathElements>
+					<childDelegation>true</childDelegation>
+					<useSystemClassLoader>true</useSystemClassLoader>
+					<argLine xml:space="preserve">-Xmx1024m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC
+						-XX:+CMSClassUnloadingEnabled -XX:+HeapDumpOnOutOfMemoryError
+						-XX:HeapDumpPath=${project.build.directory} -Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
+					<classpathDependencyExcludes>
+						<classpathDependencyExclude>
+							<!-- collides with XMLLoginConfigImpl in jboss-embedded-all -->
+							org.jboss.security:jbosssx
+						</classpathDependencyExclude>
+					</classpathDependencyExcludes>
+				</configuration>
+			</plugin>
 
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -225,72 +269,14 @@
 			</properties>
 
 			<build>
-
-				<resources>
-				</resources>
+				
 				<plugins>
-
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>jboss-maven-plugin</artifactId>
-						<version>1.4</version>
-						<configuration>
-							<serverName>default</serverName>
-							<fileNames>
-								<fileName>${project.build.directory}/classes/zanata-ds.xml</fileName>
-								<fileName>${project.build.directory}/${war.name}.war</fileName>
-							</fileNames>
-						</configuration>
-					</plugin>
-
-					<!-- Configure Surefire to run in integration-test phase -->
-					<plugin>
-						<artifactId>maven-failsafe-plugin</artifactId>
-						<version>2.7.2</version>
-						<executions>
-							<execution>
-								<id>integration-test</id>
-								<goals>
-									<goal>integration-test</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>verify</id>
-								<goals>
-									<goal>verify</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<argLine>-Xmx1024m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC
-								-XX:+CMSClassUnloadingEnabled -XX:+HeapDumpOnOutOfMemoryError
-								-XX:HeapDumpPath=${project.build.directory}</argLine>
-							<redirectTestOutputToFile>false</redirectTestOutputToFile>
-							<printSummary>true</printSummary>
-							<forkMode>always</forkMode>
-							<suiteXmlFiles>
-								<suiteXmlFile>src/test/resources/AllIntegrationTests.tng.xml</suiteXmlFile>
-							</suiteXmlFiles>
-							<additionalClasspathElements>
-								<additionalClasspathElement>${project.basedir}/src/test/jboss-embedded-bootstrap</additionalClasspathElement>
-								<additionalClasspathElement>${project.build.directory}/zanata</additionalClasspathElement>
-							</additionalClasspathElements>
-							<childDelegation>true</childDelegation>
-							<useSystemClassLoader>true</useSystemClassLoader>
-							<argLine xml:space="preserve">-Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
-							<classpathDependencyExcludes>
-								<classpathDependencyExclude>
-									<!-- collides with XMLLoginConfigImpl in jboss-embedded-all -->
-									org.jboss.security:jbosssx
-								</classpathDependencyExclude>
-							</classpathDependencyExcludes>
-						</configuration>
-					</plugin>
+					
 
 				</plugins>
 			</build>
 
-			<dependencies>
+			<!-- <dependencies>
 
 				<dependency>
 					<groupId>commons-codec</groupId>
@@ -382,7 +368,7 @@
 					<scope>provided</scope>
 				</dependency>
 
-			</dependencies>
+			</dependencies> -->
 
 		</profile>
 
@@ -425,8 +411,8 @@
 							<deployer>
 								<deployables>
 									<deployable>
-										<pingURL>http://localhost:${port}/${war.name}/</pingURL>
-										<location>${project.build.directory}/zanata</location>
+										<pingURL>http://localhost:${port}/${war.name}-internal/</pingURL>
+										<location>${project.build.directory}/zanata-internal</location>
 									</deployable>
 								</deployables>
 							</deployer>
