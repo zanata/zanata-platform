@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.ZanataRestTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
@@ -81,6 +82,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    IMocksControl mockControl = EasyMock.createControl();
    Identity mockIdentity = mockControl.createMock(Identity.class);
 
+   ApplicationConfiguration applicationConfiguration;
    ProjectIterationDAO projectIterationDAO;
    DocumentDAO documentDAO;
    TextFlowDAO textFlowDAO;
@@ -120,6 +122,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    @Override
    protected void prepareResources()
    {
+      this.applicationConfiguration = new ApplicationConfiguration(true);
       this.projectIterationDAO = new ProjectIterationDAO(getSession());
       this.documentDAO = new DocumentDAO(getSession());
       this.textFlowDAO = new TextFlowDAO(getSession());
@@ -152,6 +155,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
 
       // @formatter:off
       TranslationResourcesService obj = new TranslationResourcesService(
+            applicationConfiguration,
             projectIterationDAO,
             documentDAO,
             textFlowDAO,

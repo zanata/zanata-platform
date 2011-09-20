@@ -65,7 +65,6 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
 import org.zanata.ApplicationConfiguration;
-import org.zanata.ZanataInit;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.Namespaces;
@@ -184,6 +183,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
 // @formatter:off
    public TranslationResourcesService(
+      ApplicationConfiguration applicationConfiguration,
       ProjectIterationDAO projectIterationDAO,
       DocumentDAO documentDAO,
       TextFlowDAO textFlowDAO,
@@ -198,6 +198,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    )
 // @formatter:on
    {
+      this.applicationConfiguration = applicationConfiguration;
       this.projectIterationDAO = projectIterationDAO;
       this.documentDAO = documentDAO;
       this.textFlowDAO = textFlowDAO;
