@@ -65,7 +65,6 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
 import org.zanata.ApplicationConfiguration;
-import org.zanata.ZanataInit;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.Namespaces;
@@ -172,22 +171,45 @@ public class TranslationResourcesService implements TranslationResourcesResource
    @In
    private LocaleService localeServiceImpl;
 
+   @In("org.jboss.seam.core.events")
+   private Events events;
+
 
    public TranslationResourcesService()
    {
    }
 
    // TODO break up this class (too many responsibilities)
-   public TranslationResourcesService(ProjectIterationDAO projectIterationDAO, DocumentDAO documentDAO, PersonDAO personDAO, TextFlowTargetDAO textFlowTargetDAO, LocaleService localeService, ResourceUtils resourceUtils, Identity identity, ETagUtils eTagUtils)
+
+// @formatter:off
+   public TranslationResourcesService(
+      ApplicationConfiguration applicationConfiguration,
+      ProjectIterationDAO projectIterationDAO,
+      DocumentDAO documentDAO,
+      TextFlowDAO textFlowDAO,
+      TextFlowTargetDAO textFlowTargetDAO,
+      ResourceUtils resourceUtils,
+      Identity identity,
+      ETagUtils eTagUtils,
+      PersonDAO personDAO,
+      TextFlowTargetHistoryDAO textFlowTargetHistoryDAO,
+      LocaleService localeService,
+      Events events
+   )
+// @formatter:on
    {
+      this.applicationConfiguration = applicationConfiguration;
       this.projectIterationDAO = projectIterationDAO;
       this.documentDAO = documentDAO;
-      this.personDAO = personDAO;
+      this.textFlowDAO = textFlowDAO;
       this.textFlowTargetDAO = textFlowTargetDAO;
-      this.localeServiceImpl = localeService;
       this.resourceUtils = resourceUtils;
       this.identity = identity;
       this.eTagUtils = eTagUtils;
+      this.personDAO = personDAO;
+      this.textFlowTargetHistoryDAO = textFlowTargetHistoryDAO;
+      this.localeServiceImpl = localeService;
+      this.events = events;
    }
 
    @Override
@@ -884,7 +906,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    {
       if (applicationConfiguration.getEnableCopyTrans())
       {
-         Events.instance().raiseTransactionSuccessEvent(EVENT_COPY_TRANS, docId, projectSlug, iterationSlug);
+         events.raiseTransactionSuccessEvent(EVENT_COPY_TRANS, docId, projectSlug, iterationSlug);
       }
    }
 

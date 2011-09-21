@@ -60,6 +60,16 @@ public class ApplicationConfiguration
    private AuthenticationType authType;
    private boolean useDefaultConfig = false;
 
+   public ApplicationConfiguration()
+   {
+      this(false);
+   }
+
+   public ApplicationConfiguration(boolean useDefaultConfig)
+   {
+      this.useDefaultConfig = useDefaultConfig;
+   }
+
    @Observer( { EVENT_CONFIGURATION_CHANGED })
    @Create
    public void load()
