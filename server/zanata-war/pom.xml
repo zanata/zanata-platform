@@ -98,7 +98,7 @@
 						<goals>
 							<goal>exploded</goal>
 						</goals>
-						<phase>package</phase>
+						<phase>pre-integration-test</phase>
 						<configuration>
 							<webappDirectory>${project.build.directory}/${project.build.finalName}-seamtests</webappDirectory>
 							<filters>
@@ -255,16 +255,6 @@
 	</build>
 
 	<profiles>
-		<profile>
-			<id>mysql</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<ds.jndi.name>zanataDatasource</ds.jndi.name>
-			</properties>
-		</profile>
-
 		<profile>
 			<id>explode</id>
 			<activation>
