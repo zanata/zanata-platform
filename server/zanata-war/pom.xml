@@ -83,6 +83,7 @@
 							<webappDirectory>${project.build.directory}/${project.build.finalName}-internal</webappDirectory>
 							<filters>
 								<filter>${war.config.dir}/internalauth.properties</filter>
+								<filter>${war.config.dir}/mysql.properties</filter>
 							</filters>
 							<archive>
 								<manifestEntries>
@@ -102,6 +103,7 @@
 							<webappDirectory>${project.build.directory}/${project.build.finalName}-seamtests</webappDirectory>
 							<filters>
 								<filter>${war.config.dir}/seamtests.properties</filter>
+								<filter>${war.config.dir}/h2.properties</filter>
 							</filters>
 						</configuration>
 					</execution>
@@ -498,27 +500,6 @@
 		</profile>
 
 		<profile>
-			<id>internalauth</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>dev</value>
-				</property>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-war-plugin</artifactId>
-						<executions>
-							
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<profile>
 			<id>fedora</id>
 			<activation>
 				<property>
@@ -541,6 +522,7 @@
 									<webappDirectory>${project.build.directory}/${project.build.finalName}-fedora</webappDirectory>
 									<filters>
 										<filter>${war.config.dir}/fedora.properties</filter>
+										<filter>${war.config.dir}/mysql.properties</filter>
 									</filters>
 									<archive>
 										<manifestEntries>
@@ -578,6 +560,7 @@
 									<webappDirectory>${project.build.directory}/${project.build.finalName}-kerberos</webappDirectory>
 									<filters>
 										<filter>${war.config.dir}/kerberos.properties</filter>
+										<filter>${war.config.dir}/mysql.properties</filter>
 									</filters>
 									<archive>
 										<manifestEntries>
@@ -615,6 +598,7 @@
 									<webappDirectory>${project.build.directory}/${project.build.finalName}-jaas</webappDirectory>
 									<filters>
 										<filter>${war.config.dir}/jaas.properties</filter>
+										<filter>${war.config.dir}/mysql.properties</filter>
 									</filters>
 									<archive>
 										<manifestEntries>
@@ -652,6 +636,7 @@
 									<webappDirectory>${project.build.directory}/${project.build.finalName}-autotest</webappDirectory>
 									<filters>
 										<filter>${war.config.dir}/autotest.properties</filter>
+										<filter>${war.config.dir}/h2.properties</filter>
 									</filters>
 									<archive>
 										<manifestEntries>
