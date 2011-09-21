@@ -66,6 +66,26 @@ public class LocaleServiceImpl implements LocaleService
    @Logger
    Log log;
 
+   public LocaleServiceImpl()
+   {
+   }
+
+   // @formatter:off
+   public LocaleServiceImpl(
+         LocaleDAO localeDAO,
+         ProjectDAO projectDAO,
+         ProjectIterationDAO projectIterationDAO,
+         PersonDAO personDAO
+         )
+   {
+      setLocaleDAO(localeDAO);
+      setProjectDAO(projectDAO);
+      setProjectIterationDAO(projectIterationDAO);
+      setPersonDAO(personDAO);
+   }
+   // @formatter:on
+
+
    @In
    public void setLocaleDAO(LocaleDAO localeDAO)
    {

@@ -48,10 +48,10 @@ public class PushCommand extends ConfigurableProjectCommand
    }
 
    {
-      strategies.put("xliff", new XliffStrategy());
-      strategies.put("properties", new PropertiesStrategy());
-      strategies.put("podir", new GettextDirStrategy());
-      strategies.put("xml", new XmlStrategy());
+      strategies.put(PROJECT_TYPE_PROPERTIES, new PropertiesStrategy());
+      strategies.put(PROJECT_TYPE_PUBLICAN, new GettextDirStrategy());
+      strategies.put(PROJECT_TYPE_XLIFF, new XliffStrategy());
+      strategies.put(PROJECT_TYPE_XML, new XmlStrategy());
    }
 
    Marshaller m = null;

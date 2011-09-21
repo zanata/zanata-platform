@@ -14,7 +14,7 @@
 			and zanata-war/src/test/resources/META-INF/persistence.xml.
 		 -->
 		<properties>
-			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
 			<property name="hibernate.hbm2ddl.auto" value="create-drop"/>
 

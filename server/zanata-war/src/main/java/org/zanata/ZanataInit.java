@@ -41,7 +41,6 @@ import javax.servlet.ServletContext;
 import org.hibernate.jmx.StatisticsService;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
@@ -49,7 +48,6 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.ServletLifecycle;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
-import org.zanata.util.DBUnitImporter;
 
 /**
  * Doesn't do much useful stuff except printing a log message and firing the
@@ -118,9 +116,6 @@ public class ZanataInit
       this.internalAuthentication = internalAuthentication;
    }
 
-   @In(required = false)
-   DBUnitImporter dbunitImporter;
-
    private ObjectName hibernateMBeanName;
 
    @Observer("org.jboss.seam.postInitialization")
@@ -186,11 +181,6 @@ public class ZanataInit
          log.info("Using JAAS authentication");
       }
       log.info("Enable copyTrans: {0}", getEnableCopyTrans());
-
-      // if (dbunitImporter != null) {
-      // log.info("Importing development test data");
-      // dbunitImporter.importDatasets();
-      // }
 
       if (hibernateStatistics)
       {
