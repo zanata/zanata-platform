@@ -134,11 +134,19 @@ do
          targetfile=/opt/jboss-ewp-5.0/jboss-as-web/server/production/deploy/ROOT.war
       fi
 
+      if [[ $targetfile =~ (.*)/deploy/.* ]]; then
+         logfile=${BASH_REMATCH[1]}/log/server.log
+      else
+         logfile=/dev/null
+      fi
+
+
       echo host: $host
       echo url: $url
       echo user: $user
       echo service: $service
       echo targetfile: $targetfile
+      echo logfile: $logfile
 
       set -x
       echo stopping app server on $host:
@@ -156,9 +164,14 @@ do
       $ssh $user@$host $service start
       set +x
 
-      echo $url is now starting up
-
-      $DIR/is_server_up.sh $url
+      if $DIR/is_server_up.sh $url ; then
+         echo $url has started up; log tail follows:
+         ssh $user@$host tail $logfile
+      else
+         echo $url has failed to start; log tail follows:
+         ssh $user@$host tail -400 $logfile
+         exit 1
+      fi
 
    fi
 
