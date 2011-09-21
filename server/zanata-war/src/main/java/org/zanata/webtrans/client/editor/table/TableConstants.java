@@ -10,10 +10,4 @@ public class TableConstants
    static final int KEY_J = 'J';
    static final int KEY_K = 'K';
    static final int KEY_S = 'S';
-
-   public static enum ROW_MOVE
-   {
-      NEXT, PREV;
-   }
-
 }
