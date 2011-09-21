@@ -41,6 +41,7 @@ import com.google.gwt.gen2.table.event.client.RowSelectionEvent;
 import com.google.gwt.gen2.table.event.client.RowSelectionHandler;
 import com.google.gwt.gen2.table.event.client.TableEvent.Row;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -222,13 +223,13 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    @Override
    public int getCurrentPageNumber()
    {
-      return this.getCurrentPage();
+      return getCurrentPage();
    }
 
    @Override
    public TransUnit getTransUnitValue(int row)
    {
-      return this.getRowValue(row);
+      return getRowValue(row);
    }
 
    @Override

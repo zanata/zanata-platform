@@ -24,6 +24,7 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.EditTransUnitEvent;
+import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -72,7 +73,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    /****************
     * private ClickHandler cloneAndSaveHandler = new ClickHandler() { public
     * void onClick(ClickEvent event) { cloneHandler.onClick(null);
-    * acceptHandler.onClick(null); Log.info("InlineTargetCellEditor.java: Clone-and-save action (The last clone action is called by this action)."
+    * acceptHandler.onClick(null); Log.info(
+    * "InlineTargetCellEditor.java: Clone-and-save action (The last clone action is called by this action)."
     * ); } };
     *****************/
 
@@ -105,7 +107,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       public void onClick(ClickEvent event)
       {
-         saveApprovedAndMoveRow(TableConstants.ROW_MOVE.NEXT);
+         saveApprovedAndMoveRow(NavigationType.NextEntry);
       }
    };
 
@@ -188,7 +190,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             isFocused = true;
          }
       });
-      
+
       textArea.addKeyDownHandler(new KeyDownHandler()
       {
 
@@ -196,11 +198,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          public void onKeyDown(KeyDownEvent event)
          {
             int keyCode = event.getNativeKeyCode();
-            //using keydown for Ctrl+S in order to override browser Ctrl+S on keydown (chrome)
+            // using keydown for Ctrl+S in order to override browser Ctrl+S on
+            // keydown (chrome)
             if (event.isControlKeyDown() && keyCode == TableConstants.KEY_S)
             {
                event.stopPropagation();
-               event.preventDefault(); //stop browser save
+               event.preventDefault(); // stop browser save
                acceptFuzzyEdit();
             }
          }
@@ -214,11 +217,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          {
             eventBus.fireEvent(new EditTransUnitEvent());
             int keyCode = event.getNativeKeyCode();
-            
+
             // NB: if you change these, please change NavigationConsts too!
             if (event.isControlKeyDown() && keyCode == KeyCodes.KEY_ENTER)
             {
-               saveApprovedAndMoveRow(TableConstants.ROW_MOVE.NEXT);
+               saveApprovedAndMoveRow(NavigationType.NextEntry);
             }
             // else if (event.isControlKeyDown() && event.isShiftKeyDown() &&
             // event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
@@ -242,30 +245,31 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             {
                // alt-down
                // See editCell() for saving event
-               gotoRow(TableConstants.ROW_MOVE.NEXT);
+               gotoRow(NavigationType.NextEntry);
             }
             else if (event.isAltKeyDown() && (event.isUpArrow() || keyCode == TableConstants.KEY_J))
             {
                // alt-up
                // See editCell() for saving event
-               gotoRow(TableConstants.ROW_MOVE.PREV);
+               gotoRow(NavigationType.PrevEntry);
             }
             else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEDOWN)
             {
                // alt-pagedown
-               saveAndMoveNextFuzzy(TableConstants.ROW_MOVE.NEXT);
+               saveAndMoveNextFuzzy(NavigationType.NextEntry);
             }
             else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEUP)
             {
                // alt-pageup
-               saveAndMoveNextFuzzy(TableConstants.ROW_MOVE.PREV);
+               saveAndMoveNextFuzzy(NavigationType.PrevEntry);
             }
             else if (!event.isAltKeyDown() && !event.isControlKeyDown())
             {
                autoSize();
             }
 
-            // these shortcuts disabled because they conflict with basic text editing:
+            // these shortcuts disabled because they conflict with basic text
+            // editing:
             // else if (event.isControlKeyDown() && event.getNativeKeyCode() ==
             // KeyCodes.KEY_HOME)
             // { // ctrl-home
@@ -317,25 +321,25 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       layoutTable.add(operationsPanel);
    }
 
-   public void gotoRow(TableConstants.ROW_MOVE direction)
+   public void gotoRow(NavigationType nav)
    {
-      if (direction == TableConstants.ROW_MOVE.NEXT)
+      if (nav == NavigationType.NextEntry)
       {
          editRowCallback.gotoNextRow(curRow);
       }
-      else if (direction == TableConstants.ROW_MOVE.PREV)
+      else if (nav == NavigationType.PrevEntry)
       {
          editRowCallback.gotoPrevRow(curRow);
       }
    }
 
-   private void gotoFuzzyRow(TableConstants.ROW_MOVE direction)
+   private void gotoFuzzyRow(NavigationType nav)
    {
-      if (direction == TableConstants.ROW_MOVE.NEXT)
+      if (nav == NavigationType.NextEntry)
       {
          editRowCallback.gotoNextFuzzy(curRow);
       }
-      else if (direction == TableConstants.ROW_MOVE.PREV)
+      else if (nav == NavigationType.PrevEntry)
       {
          editRowCallback.gotoPrevFuzzy(curRow);
       }
@@ -407,7 +411,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       // layoutTable.setCellWidth(this.operationsPanel, "20px");
       table.setWidget(curRow, curCol, layoutTable);
-      
+
       textArea.setText(cellValue.getTarget());
 
       autoSize();
@@ -420,11 +424,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    public void savePendingChange(boolean cancelIfUnchanged)
    {
-      Log.info("Saving pending change");
       // if something has changed, save as approved
       if (isEditing() && !cellValue.getTarget().equals(textArea.getText()))
       {
-         Log.debug("save content of previous cell");
+         Log.info("savePendingChange - acceptEdit");
          cellValue.setStatus(ContentState.Approved);
          acceptEdit();
       }
@@ -432,25 +435,26 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       {
          if (cancelIfUnchanged)
          {
+            Log.info("savePendingChange- cancel edit");
             cancelEdit();
          }
       }
    }
 
-   public void saveAndMoveNextFuzzy(TableConstants.ROW_MOVE direction)
+   public void saveAndMoveNextFuzzy(NavigationType nav)
    {
       savePendingChange(true);
-      gotoFuzzyRow(direction);
+      gotoFuzzyRow(nav);
    }
 
    /**
     * save the contents of the cell as approved and move to the next row.
     */
-   private void saveApprovedAndMoveRow(TableConstants.ROW_MOVE direction)
+   private void saveApprovedAndMoveRow(NavigationType nav)
    {
-	   cellValue.setStatus(ContentState.Approved);
-	   acceptEdit();
-      gotoRow(direction);
+      cellValue.setStatus(ContentState.Approved);
+      acceptEdit();
+      gotoRow(nav);
    }
 
    /**
@@ -472,7 +476,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          cellValue.setStatus(ContentState.Approved);
 
       restoreView();
-      // disableSaveButton();
+      textArea.setFocus(false);
       isOpened = false;
 
       // Send the new cell value to the callback
@@ -493,7 +497,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    /**
     * Cancel the cell edit.
     */
-   protected void cancelEdit()
+   public void cancelEdit()
    {
       // Fire the event
       if (!onCancel())
@@ -502,6 +506,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
 
       restoreView();
+      textArea.setFocus(false);
       isOpened = false;
 
       // Call the callback

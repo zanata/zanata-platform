@@ -89,6 +89,7 @@ import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -131,9 +132,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       int getPageSize();
 
       void setFindMessage(String findMessage);
-      
+
       void startProcessing();
-      
+
       void stopProcessing();
    }
 
@@ -181,7 +182,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                display.reloadPage();
                eventBus.fireEvent(new UndoFailureEvent(action));
             }
-
 
             @Override
             public void onSuccess(Void result)
@@ -241,7 +241,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          public void onSelection(SelectionEvent<TransUnit> event)
          {
             TransUnit newSelectedItem = event.getSelectedItem();
-            selectTransUnit(newSelectedItem, false);
+            selectTransUnit(newSelectedItem);
          }
       }));
 
@@ -398,22 +398,22 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                // If goto Next or Prev Fuzzy/New Trans Unit
                if (event.getRowType() == NavigationType.PrevEntry)
                {
-                  editor.gotoRow(TableConstants.ROW_MOVE.PREV);
+                  editor.gotoRow(NavigationType.PrevEntry);
                }
 
                if (event.getRowType() == NavigationType.NextEntry)
                {
-                  editor.gotoRow(TableConstants.ROW_MOVE.NEXT);
+                  editor.gotoRow(NavigationType.NextEntry);
                }
 
                if (event.getRowType() == NavigationType.PrevFuzzyOrUntranslated)
                {
-                  editor.saveAndMoveNextFuzzy(TableConstants.ROW_MOVE.PREV);
+                  editor.saveAndMoveNextFuzzy(NavigationType.PrevEntry);
                }
 
                if (event.getRowType() == NavigationType.NextFuzzyOrUntranslated)
                {
-                  editor.saveAndMoveNextFuzzy(TableConstants.ROW_MOVE.NEXT);
+                  editor.saveAndMoveNextFuzzy(NavigationType.NextEntry);
                }
 
             }
@@ -440,7 +440,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
       registerHandler(eventBus.addHandler(CopySourceEvent.getType(), new CopySourceEventHandler()
       {
-
          @Override
          public void onCopySource(CopySourceEvent event)
          {
@@ -478,6 +477,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                boolean shiftKey = nativeEvent.getShiftKey();
                boolean altKey = nativeEvent.getAltKey();
                boolean ctrlKey = nativeEvent.getCtrlKey();
+
                if (nativeEventType.equals("keypress") && !shiftKey && !altKey && !ctrlKey)
                {
                   // PageDown key
@@ -615,7 +615,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                   display.getTableModel().clearCache();
                   display.reloadPage();
                }
-               Log.debug("onSetRowValue");
             }
          });
          stopEditing(rowValue);
@@ -679,8 +678,12 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          int pageNum = rowIndex / (MAX_PAGE_ROW + 1);
          int rowNum = rowIndex % (MAX_PAGE_ROW + 1);
          if (pageNum != curPage)
+         {
             display.gotoPage(pageNum, false);
-         selectTransUnit(display.getTransUnitValue(rowNum), false);
+            // Need to call acceptEdit somehow to refresh the page.
+            display.getTargetCellEditor().acceptEdit();
+         }
+         selectTransUnit(display.getTransUnitValue(rowNum));
          display.gotoRow(rowNum);
       }
    };
@@ -705,7 +708,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
       });
    }
-
 
    boolean isReqComplete = true;
 
@@ -800,7 +802,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             cachePrevFuzzy(cacheCallback);
          }
       }
-      }
+   }
 
    NavigationCacheCallback cacheCallback = new NavigationCacheCallback()
    {
@@ -852,7 +854,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             cacheNextFuzzy(cacheCallback);
          }
       }
-      }
+   }
 
    public TransUnit getSelectedTransUnit()
    {
@@ -916,28 +918,21 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
    /**
     * Selects the given TransUnit and fires associated TU Selection event
+    * 
     * @param transUnit the new TO to select
     */
-   void selectTransUnit(TransUnit transUnit, boolean force)
+   void selectTransUnit(TransUnit transUnit)
    {
-      if (!force)
-      {
-         if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
-         {
-            selectedTransUnit = transUnit;
-            Log.info("SelectedTransUnit " + selectedTransUnit.getId());
-            // Clean the cache when we click the new entry
-            if (!transIdNextFuzzyCache.isEmpty())
-               transIdNextFuzzyCache.clear();
-            if (!transIdPrevFuzzyCache.isEmpty())
-               transIdPrevFuzzyCache.clear();
-
-            eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
-         }
-      }
-      else
+      if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
       {
          selectedTransUnit = transUnit;
+         Log.info("SelectedTransUnit " + selectedTransUnit.getId());
+         // Clean the cache when we click the new entry
+         if (!transIdNextFuzzyCache.isEmpty())
+            transIdNextFuzzyCache.clear();
+         if (!transIdPrevFuzzyCache.isEmpty())
+            transIdPrevFuzzyCache.clear();
+
          eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
       }
    }
