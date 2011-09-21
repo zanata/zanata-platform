@@ -75,7 +75,7 @@
 					</archive>
 				</configuration>
 				<executions>
-					<!-- Default execution is the Internal war -->
+					<!-- Internal auth war -->
 					<execution>
 						<id>default-war</id>
 						<configuration>
@@ -89,6 +89,20 @@
 									<Classifier>internal</Classifier>
 								</manifestEntries>
 							</archive>
+						</configuration>
+					</execution>
+					<!-- Default Seam tests exploded war -->
+					<execution>
+						<id>generate-seamtests-war</id>
+						<goals>
+							<goal>exploded</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+							<webappDirectory>${project.build.directory}/${project.build.finalName}-seamtests</webappDirectory>
+							<filters>
+								<filter>${war.config.dir}/seamtests.properties</filter>
+							</filters>
 						</configuration>
 					</execution>
 				</executions>
@@ -154,8 +168,8 @@
 					</suiteXmlFiles>
 					<additionalClasspathElements>
 						<additionalClasspathElement>${project.basedir}/src/test/jboss-embedded-bootstrap</additionalClasspathElement>
-						<additionalClasspathElement>${project.build.directory}/zanata-autotest/WEB-INF/classes</additionalClasspathElement>
-						<additionalClasspathElement>${project.build.directory}/zanata-autotest</additionalClasspathElement>
+						<additionalClasspathElement>${project.build.directory}/zanata-seamtests/WEB-INF/classes</additionalClasspathElement>
+						<additionalClasspathElement>${project.build.directory}/zanata-seamtests</additionalClasspathElement>
 					</additionalClasspathElements>
 					<childDelegation>true</childDelegation>
 					<useSystemClassLoader>true</useSystemClassLoader>
@@ -507,7 +521,9 @@
 		<profile>
 			<id>fedora</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>!list.profiles</name>
+				</property>
 			</activation>
 			<build>
 				<plugins>
@@ -542,7 +558,9 @@
 		<profile>
 			<id>kerberos</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>!list.profiles</name>
+				</property>
 			</activation>
 			<build>
 				<plugins>
@@ -577,7 +595,9 @@
 		<profile>
 			<id>jaas</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>!list.profiles</name>
+				</property>
 			</activation>
 			<build>
 				<plugins>
@@ -612,7 +632,9 @@
 		<profile>
 			<id>autotest</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>!list.profiles</name>
+				</property>
 			</activation>
 			<build>
 				<plugins>
