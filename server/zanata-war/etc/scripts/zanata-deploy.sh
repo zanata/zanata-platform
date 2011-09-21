@@ -170,6 +170,7 @@ do
       else
          echo $url has failed to start; log tail follows:
          ssh $user@$host tail -400 $logfile
+         exit 1
       fi
 
    fi
