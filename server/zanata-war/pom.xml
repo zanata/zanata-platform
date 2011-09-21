@@ -503,7 +503,7 @@
 			<id>fedora</id>
 			<activation>
 				<property>
-					<name>!list.profiles</name>
+					<name>!internalAuth</name>
 				</property>
 			</activation>
 			<build>
@@ -541,7 +541,7 @@
 			<id>kerberos</id>
 			<activation>
 				<property>
-					<name>!list.profiles</name>
+					<name>!internalAuth</name>
 				</property>
 			</activation>
 			<build>
@@ -579,7 +579,7 @@
 			<id>jaas</id>
 			<activation>
 				<property>
-					<name>!list.profiles</name>
+					<name>!internalAuth</name>
 				</property>
 			</activation>
 			<build>
@@ -617,7 +617,7 @@
 			<id>autotest</id>
 			<activation>
 				<property>
-					<name>!list.profiles</name>
+					<name>!internalAuth</name>
 				</property>
 			</activation>
 			<build>
