@@ -31,11 +31,16 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 
 /**
- * This bean is used to redirect a user after login to a given url. Simply pass
- * the ?continue=URL to the login method to redirect after login
+ * This bean is used to redirect a user after login to a given url.
+ * 
+ * Add {@code continue=URL} to the query string, and have seam capture the
+ * parameter by adding child element
+ * <code>&lt;param name="continue" value="#{userRedirect.encodedUrl}" /></code>
+ * to the login page's {@code <page>} element in pages.xml
  */
 @Name("userRedirect")
-@Scope(ScopeType.PAGE)
+// TODO verify that SESSION scope will not persist this too long
+@Scope(ScopeType.SESSION)
 @AutoCreate
 public class UserRedirectBean implements Serializable
 {
