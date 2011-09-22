@@ -3,6 +3,31 @@ body {
 	background-color: #f8f9fa;
 }
 
+
+/*
+Styling for errors when webtrans fails to load
+*/
+.AppLoadError {
+    margin-top: 20px;
+    margin-left:  30px;
+}
+
+div.AppLoadError {
+    font-weight: bold;
+    font-size: 1.5em;
+    color: #ff2222;
+    margin-bottom: 15px;
+}
+
+a.AppLoadError {
+	display: block;
+	font-size: 1.3em;
+	font-weight: bold;
+	margin-left: 60px;
+	margin-bottom: 15px;
+}
+
+
 /*
 Removes some of the styling on the page-level splitters
 */
