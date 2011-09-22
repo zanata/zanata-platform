@@ -92,7 +92,6 @@ import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -435,7 +434,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             if (display.getTargetCellEditor().isEditing())
             {
                display.getTargetCellEditor().setText(event.getTargetResult());
-               display.getTargetCellEditor().setTextAreaSize();
+               display.getTargetCellEditor().autoSize();
                eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
             }
             else
@@ -462,7 +461,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             }
             tableModelHandler.gotoRow(row);
             display.getTargetCellEditor().setText(event.getTransUnit().getSource());
-            display.getTargetCellEditor().setTextAreaSize();
+            display.getTargetCellEditor().autoSize();
+            // display.getTargetCellEditor().setCellValueTarget("");
          }
 
       }));

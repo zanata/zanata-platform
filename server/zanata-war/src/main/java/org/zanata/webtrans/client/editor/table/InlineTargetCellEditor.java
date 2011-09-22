@@ -46,7 +46,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -374,6 +373,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       if (isEditing())
       {
+         cellValue.setTarget("");
          textArea.setText(text);
       }
    }
@@ -412,7 +412,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       // layoutTable.setCellWidth(this.operationsPanel, "20px");
       table.setWidget(curRow, curCol, layoutTable);
-
       textArea.setText(cellValue.getTarget());
 
       autoSize();
@@ -546,11 +545,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    protected boolean onCancel()
    {
       return true;
-   }
-
-   public void setTextAreaSize()
-   {
-      autoSize();
    }
 
    public int getCurrentRow()
