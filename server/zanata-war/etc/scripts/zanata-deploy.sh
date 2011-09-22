@@ -58,7 +58,7 @@ die() {
 arrayGet() { 
     local array=$1 index=$2
     local i="${array}_${index}"
-    echo ${!i}
+    echo "${!i}"
 }
 
 warn() {
@@ -94,8 +94,8 @@ else
    version=$branch_name
 fi
 
-echo branch: $branch_name
-echo version: $version
+echo "branch: $branch_name"
+echo "version: $version"
 
 # replace . with _ in version:
 ver=${version//./_}
@@ -141,15 +141,15 @@ do
       fi
 
 
-      echo host: $host
-      echo url: $url
-      echo user: $user
-      echo service: $service
-      echo targetfile: $targetfile
-      echo logfile: $logfile
+      echo "host: $host"
+      echo "url: $url"
+      echo "user: $user"
+      echo "service: $service"
+      echo "targetfile: $targetfile"
+      echo "logfile: $logfile"
 
       set -x
-      echo stopping app server on $host:
+      echo "stopping app server on $host:"
       if ! $ssh $user@$host $service stop
          then echo "$server stop failed (server not running?); ignoring error"
       fi
@@ -158,17 +158,17 @@ do
       warfile=server/zanata-war/target/zanata-*-$buildType.war
 
       set -x
-      echo copying $warfile to $host:$targetfile
+      echo "copying $warfile to $host:$targetfile"
       $scp $warfile $user@$host:$targetfile
-      echo starting app server on $host
+      echo "starting app server on $host"
       $ssh $user@$host $service start
       set +x
 
       if $DIR/is_server_up.sh $url ; then
-         echo $url has started up; log tail follows:
+         echo "$url has started up; log tail follows:"
          ssh $user@$host tail $logfile
       else
-         echo $url has failed to start; log tail follows:
+         echo "$url has failed to start; log tail follows:"
          ssh $user@$host tail -400 $logfile
          exit 1
       fi

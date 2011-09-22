@@ -402,22 +402,22 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                // If goto Next or Prev Fuzzy/New Trans Unit
                if (event.getRowType() == NavigationType.PrevEntry)
                {
-                  editor.gotoRow(TableConstants.ROW_MOVE.PREV);
+                  editor.gotoRow(NavigationType.PrevEntry);
                }
 
                if (event.getRowType() == NavigationType.NextEntry)
                {
-                  editor.gotoRow(TableConstants.ROW_MOVE.NEXT);
+                  editor.gotoRow(NavigationType.NextEntry);
                }
 
                if (event.getRowType() == NavigationType.PrevFuzzyOrUntranslated)
                {
-                  editor.saveAndMoveNextFuzzy(TableConstants.ROW_MOVE.PREV);
+                  editor.saveAndMoveNextFuzzy(NavigationType.PrevEntry);
                }
 
                if (event.getRowType() == NavigationType.NextFuzzyOrUntranslated)
                {
-                  editor.saveAndMoveNextFuzzy(TableConstants.ROW_MOVE.NEXT);
+                  editor.saveAndMoveNextFuzzy(NavigationType.NextEntry);
                }
 
             }
@@ -434,7 +434,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             if (display.getTargetCellEditor().isEditing())
             {
                display.getTargetCellEditor().setText(event.getTargetResult());
-               display.getTargetCellEditor().setTextAreaSize();
+               display.getTargetCellEditor().autoSize();
                eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
             }
             else
@@ -444,7 +444,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
       registerHandler(eventBus.addHandler(CopySourceEvent.getType(), new CopySourceEventHandler()
       {
-
          @Override
          public void onCopySource(CopySourceEvent event)
          {
@@ -462,7 +461,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             }
             tableModelHandler.gotoRow(row);
             display.getTargetCellEditor().setText(event.getTransUnit().getSource());
-            display.getTargetCellEditor().setTextAreaSize();
+            display.getTargetCellEditor().autoSize();
+            // display.getTargetCellEditor().setCellValueTarget("");
          }
 
       }));
@@ -493,6 +493,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                boolean shiftKey = nativeEvent.getShiftKey();
                boolean altKey = nativeEvent.getAltKey();
                boolean ctrlKey = nativeEvent.getCtrlKey();
+
                if (nativeEventType.equals("keypress") && !shiftKey && !altKey && !ctrlKey)
                {
                   // PageDown key
@@ -630,7 +631,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                   display.getTableModel().clearCache();
                   display.reloadPage();
                }
-               Log.debug("onSetRowValue");
             }
          });
          stopEditing(rowValue);
@@ -694,7 +694,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          int pageNum = rowIndex / (MAX_PAGE_ROW + 1);
          int rowNum = rowIndex % (MAX_PAGE_ROW + 1);
          if (pageNum != curPage)
+         {
             display.gotoPage(pageNum, false);
+            // Need to call acceptEdit somehow to refresh the page.
+            display.getTargetCellEditor().acceptEdit();
+         }
          selectTransUnit(display.getTransUnitValue(rowNum));
          display.gotoRow(rowNum);
       }

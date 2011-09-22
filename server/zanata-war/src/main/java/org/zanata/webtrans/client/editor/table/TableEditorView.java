@@ -223,13 +223,13 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    @Override
    public int getCurrentPageNumber()
    {
-      return this.getCurrentPage();
+      return getCurrentPage();
    }
 
    @Override
    public TransUnit getTransUnitValue(int row)
    {
-      return this.getRowValue(row);
+      return getRowValue(row);
    }
 
    @Override
