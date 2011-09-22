@@ -61,6 +61,10 @@
                                 <include>public-img/**</include>
                             </includes>
                         </resource>
+                        <!-- Include the GWT generated resources -->
+                        <resource>
+                        	<directory>${project.build.directory}/zanata</directory>
+                        </resource>
 					</webResources>
 					<archive>
 						<manifest>
@@ -345,13 +349,6 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-
-			<build>
-
-				<resources>
-				</resources>
-
-			</build>
 
 			<dependencies>
 
