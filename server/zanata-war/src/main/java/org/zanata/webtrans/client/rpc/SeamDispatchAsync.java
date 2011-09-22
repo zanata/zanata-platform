@@ -8,6 +8,7 @@ import org.zanata.webtrans.shared.DispatchService;
 import org.zanata.webtrans.shared.DispatchServiceAsync;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
+import org.zanata.webtrans.shared.auth.InvalidTokenError;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
@@ -64,7 +65,7 @@ public class SeamDispatchAsync implements CachingDispatchAsync
 
          public void onFailure(final Throwable caught)
          {
-            if (caught instanceof AuthenticationError)
+            if (caught instanceof AuthenticationError || caught instanceof InvalidTokenError)
             {
                Application.redirectToLogin();
             }
