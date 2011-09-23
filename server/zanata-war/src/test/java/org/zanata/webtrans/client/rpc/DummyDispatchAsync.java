@@ -7,6 +7,8 @@ import org.zanata.webtrans.shared.auth.AuthorizationError;
 import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
+import org.zanata.webtrans.shared.rpc.EditingTranslationAction;
+import org.zanata.webtrans.shared.rpc.EditingTranslationResult;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
@@ -21,6 +23,8 @@ import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
+import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
+import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
@@ -96,6 +100,18 @@ public class DummyDispatchAsync extends SeamDispatchAsync
          final GetGlossary _action = (GetGlossary) action;
          AsyncCallback<GetGlossaryResult> _callback = (AsyncCallback<GetGlossaryResult>) callback;
          Scheduler.get().scheduleDeferred(new DummyGetGlossaryCommand(_action, _callback));
+      }
+      else if (action instanceof UpdateTransUnit)
+      {
+         final UpdateTransUnit _action = (UpdateTransUnit) action;
+         AsyncCallback<UpdateTransUnitResult> _callback = (AsyncCallback<UpdateTransUnitResult>) callback;
+         DeferredCommand.addCommand(new DummyUpdateTransUnitCommand(_action, _callback));
+      }
+      else if (action instanceof EditingTranslationAction)
+      {
+         final EditingTranslationAction _action = (EditingTranslationAction) action;
+         AsyncCallback<EditingTranslationResult> _callback = (AsyncCallback<EditingTranslationResult>) callback;
+         DeferredCommand.addCommand(new DummyEditingTranslationCommand(_action, _callback));
       }
       else
       {
