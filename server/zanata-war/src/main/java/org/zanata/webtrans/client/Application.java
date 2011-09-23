@@ -33,6 +33,8 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 public class Application implements EntryPoint
 {
 
+   private static boolean IS_DEBUG = false;
+
    private static String zanataUrl = null;
    private static WorkspaceId workspaceId;
    private static WorkspaceContext workspaceContext;
@@ -231,7 +233,7 @@ public class Application implements EntryPoint
          layoutPanel.add(a);
       }
 
-      if (e != null)
+      if (IS_DEBUG && e != null)
       {
          String stackTrace = "Stack trace for the error:<br/>\n";
          for (StackTraceElement ste : e.getStackTrace())
