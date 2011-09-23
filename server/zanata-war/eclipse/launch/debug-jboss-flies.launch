@@ -9,7 +9,7 @@
 <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
 <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
 </listAttribute>
-<booleanAttribute key="org.eclipse.jdt.launching.ALLOW_TERMINATE" value="true"/>
+<booleanAttribute key="org.eclipse.jdt.launching.ALLOW_TERMINATE" value="false"/>
 <mapAttribute key="org.eclipse.jdt.launching.CONNECT_MAP">
 <mapEntry key="hostname" value="localhost"/>
 <mapEntry key="port" value="8787"/>
