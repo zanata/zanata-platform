@@ -30,6 +30,7 @@ import org.jboss.seam.security.NotLoggedInException;
 import org.jboss.seam.web.ServletContexts;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
+import org.zanata.webtrans.shared.auth.InvalidTokenError;
 import org.zanata.webtrans.shared.rpc.WrappedAction;
 
 @Name("seamDispatch")
@@ -127,7 +128,7 @@ public class SeamDispatch implements Dispatch
       HttpSession session = ServletContexts.instance().getRequest().getSession();
       if (session != null && !session.getId().equals(a.getCsrfToken()))
       {
-         throw new SecurityException("Blocked action without session id (CSRF attack?)");
+         throw new InvalidTokenError("The csrf token sent with this request is not valid. It may be from an expired session, or may have been forged");
       }
       DefaultExecutionContext ctx = new DefaultExecutionContext(this);
       try
