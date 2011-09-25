@@ -188,7 +188,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       TransUnit tu = new TransUnit(action.getTransUnitId(), hTextFlow.getResId(),
                                    locale, hTextFlow.getContent(),
                                    CommentsUtil.toString(hTextFlow.getComment()),
-                                   action.getContent(), action.getContentState(),
+                                   action.getContent(), target.getState(),
                                    authenticatedAccount.getPerson().getName(),
                                    SIMPLE_FORMAT.format(new Date()));
       // @formatter:on

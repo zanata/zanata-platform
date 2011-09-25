@@ -21,6 +21,9 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -31,10 +34,14 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 public class Application implements EntryPoint
 {
 
+   private static boolean IS_DEBUG = false;
+
    private static String zanataUrl = null;
    private static WorkspaceId workspaceId;
    private static WorkspaceContext workspaceContext;
    private static Identity identity;
+
+   private static String APP_LOAD_ERROR_CSS_CLASS = "AppLoadError";
 
    private final WebTransGinjector injector = GWT.create(WebTransGinjector.class);
 
@@ -58,12 +65,16 @@ public class Application implements EntryPoint
             catch (NoSuchWorkspaceException e)
             {
                Log.error("Invalid workspace", e);
-               showError("Invalid Workspace");
+               String errorMessage, linkText, projectListUrl;
+               errorMessage = "Invalid Workspace. Try opening the workspace from the link on the project page.";
+               linkText = "Projects";
+               projectListUrl = getModuleParentBaseUrl() + "project/list";
+               showErrorWithLink(errorMessage, null, linkText, projectListUrl);
             }
             catch (Throwable e)
             {
                Log.error("An unexpected Error occurred", e);
-               showError("An unexpected Error occurred: " + e.getMessage());
+               showErrorWithLink("An unexpected Error occurred: " + e.getMessage(), e, null, null);
             }
          }
 
@@ -199,10 +210,47 @@ public class Application implements EntryPoint
       return GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "");
    }
 
-   public static void showError(String message)
+   /**
+    * Display an error message instead of the web app. Shows a link if both text
+    * and url are provided. Provides a stack trace if a {@link Throwable} is
+    * provided.
+    * 
+    * @param message to display
+    * @param e non-null to provide a stack trace in an expandable view.
+    * @param linkText text to display for link
+    * @param linkUrl href for link
+    */
+   private static void showErrorWithLink(String message, Throwable e, String linkText, String linkUrl)
    {
-      Label label = new Label(message);
-      RootLayoutPanel.get().add(label);
+      Label messageLabel = new Label(message);
+      messageLabel.getElement().addClassName(APP_LOAD_ERROR_CSS_CLASS);
+      FlowPanel layoutPanel = new FlowPanel();
+      layoutPanel.add(messageLabel);
+
+      if (linkText != null && linkText != "" && linkUrl != null && linkUrl != "")
+      {
+         Anchor a = new Anchor(linkText, linkUrl);
+         a.getElement().addClassName(APP_LOAD_ERROR_CSS_CLASS);
+         layoutPanel.add(a);
+      }
+
+      if (IS_DEBUG && e != null)
+      {
+         String stackTrace = "Stack trace for the error:<br/>\n";
+         for (StackTraceElement ste : e.getStackTrace())
+         {
+            stackTrace += ste.toString() + "<br/>\n";
+         }
+         Label stackTraceLabel = new Label();
+         stackTraceLabel.getElement().setInnerHTML(stackTrace);
+
+         DisclosurePanel stackTracePanel = new DisclosurePanel("More detail:");
+         stackTracePanel.getElement().addClassName(APP_LOAD_ERROR_CSS_CLASS);
+         stackTracePanel.add(stackTraceLabel);
+         layoutPanel.add(stackTracePanel);
+      }
+
+      RootLayoutPanel.get().add(layoutPanel);
    }
 
 }

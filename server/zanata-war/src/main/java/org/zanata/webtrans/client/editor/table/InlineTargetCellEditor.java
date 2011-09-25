@@ -452,6 +452,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     */
    private void saveApprovedAndMoveRow(NavigationType nav)
    {
+      // Alex
       cellValue.setStatus(ContentState.Approved);
       acceptEdit();
       gotoRow(nav);
@@ -489,8 +490,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     */
    protected void acceptFuzzyEdit()
    {
-      cellValue.setStatus(ContentState.NeedReview);
-      cellValue.setTarget(textArea.getText());
+      String text = textArea.getText();
+      cellValue.setTarget(text);
+      if (text == null || text.isEmpty())
+         cellValue.setStatus(ContentState.New);
+      else
+         cellValue.setStatus(ContentState.NeedReview);
       curCallback.onComplete(curCellEditInfo, cellValue);
    }
 
