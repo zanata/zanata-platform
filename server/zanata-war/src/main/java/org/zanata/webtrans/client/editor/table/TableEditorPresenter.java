@@ -444,20 +444,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          {
             int rowOffset = getRowOffset(event.getTransUnit().getId());
             int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
-            // display.getTableModel().setRowValueOverride(row,
-            // event.getTransUnit());
-            if (display.getTargetCellEditor().isEditing())
-            {
-               int curRow = display.getTargetCellEditor().getCurrentRow();
-               if (curRow != row)
-               {
-                  display.getTargetCellEditor().acceptEdit();
-               }
-            }
+
             tableModelHandler.gotoRow(row);
             display.getTargetCellEditor().setText(event.getTransUnit().getSource());
             display.getTargetCellEditor().autoSize();
-            // display.getTargetCellEditor().setCellValueTarget("");
          }
 
       }));
@@ -675,16 +665,21 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       @Override
       public void gotoRow(int rowIndex)
       {
+         curPage = display.getCurrentPage();
          int pageNum = rowIndex / (MAX_PAGE_ROW + 1);
          int rowNum = rowIndex % (MAX_PAGE_ROW + 1);
          if (pageNum != curPage)
          {
             display.gotoPage(pageNum, false);
-            // Need to call acceptEdit somehow to refresh the page.
-            display.getTargetCellEditor().acceptEdit();
          }
+
          selectTransUnit(display.getTransUnitValue(rowNum));
          display.gotoRow(rowNum);
+
+         if (pageNum != curPage)
+         {
+            display.getTargetCellEditor().cancelEdit();
+         }
       }
    };
 
@@ -921,7 +916,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
     * 
     * @param transUnit the new TO to select
     */
-   void selectTransUnit(TransUnit transUnit)
+   public void selectTransUnit(TransUnit transUnit)
    {
       if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
       {
