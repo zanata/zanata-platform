@@ -105,13 +105,13 @@ public class DummyDispatchAsync extends SeamDispatchAsync
       {
          final UpdateTransUnit _action = (UpdateTransUnit) action;
          AsyncCallback<UpdateTransUnitResult> _callback = (AsyncCallback<UpdateTransUnitResult>) callback;
-         DeferredCommand.addCommand(new DummyUpdateTransUnitCommand(_action, _callback));
+         Scheduler.get().scheduleDeferred(new DummyUpdateTransUnitCommand(_action, _callback));
       }
       else if (action instanceof EditingTranslationAction)
       {
          final EditingTranslationAction _action = (EditingTranslationAction) action;
          AsyncCallback<EditingTranslationResult> _callback = (AsyncCallback<EditingTranslationResult>) callback;
-         DeferredCommand.addCommand(new DummyEditingTranslationCommand(_action, _callback));
+         Scheduler.get().scheduleDeferred(new DummyEditingTranslationCommand(_action, _callback));
       }
       else
       {
