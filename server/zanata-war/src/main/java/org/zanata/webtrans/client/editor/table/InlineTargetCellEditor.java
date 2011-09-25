@@ -451,7 +451,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     */
    private void saveApprovedAndMoveRow(NavigationType nav)
    {
-      // Alex
       cellValue.setStatus(ContentState.Approved);
       acceptEdit();
       gotoRow(nav);
@@ -460,7 +459,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    /**
     * Accept the contents of the cell editor as the new cell value.
     */
-   public void acceptEdit()
+   private void acceptEdit()
    {
       // Check if we are ready to accept
       if (!onAccept())

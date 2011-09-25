@@ -36,6 +36,7 @@ import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 
@@ -159,10 +160,10 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             @Override
             public void onClick(ClickEvent event)
             {
-               Log.debug("click");
+               Log.debug("source panel click");
                if (targetCellEditor.isOpened())
                {
-                  targetCellEditor.acceptEdit();
+                  targetCellEditor.savePendingChange(true);
                }
             }
 
