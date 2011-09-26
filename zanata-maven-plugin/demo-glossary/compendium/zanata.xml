@@ -3,6 +3,6 @@
 	<url>http://localhost:8080/zanata/</url> 
 	
         <locales>
-                <locale map-from="test">zh</locale>
+                <locale map-from="test">fr</locale>
         </locales>
 </config>
