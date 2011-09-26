@@ -40,6 +40,7 @@ import com.google.gwt.gen2.table.event.client.PageChangeEvent;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
+
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -156,4 +157,5 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    {
       return tableEditorPresenter.getSelectedTransUnit();
    }
+
 }

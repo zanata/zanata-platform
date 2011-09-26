@@ -165,10 +165,10 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             @Override
             public void onClick(ClickEvent event)
             {
-               Log.debug("click");
+               Log.debug("source panel click");
                if (targetCellEditor.isOpened())
                {
-                  targetCellEditor.acceptEdit();
+                  targetCellEditor.savePendingChange(true);
                }
             }
 
