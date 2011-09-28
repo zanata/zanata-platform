@@ -69,6 +69,7 @@ public class ProfileAction implements Serializable
 
    @In
    ApplicationConfiguration applicationConfiguration;
+   
    @Logger
    Log log;
 
@@ -90,7 +91,6 @@ public class ProfileAction implements Serializable
    @In
    RegisterService registerServiceImpl;
 
-
    @Create
    public void onCreate()
    {
@@ -99,9 +99,19 @@ public class ProfileAction implements Serializable
       {
          name = identity.getCredentials().getUsername();
          String domain = applicationConfiguration.getDomainName();
-         email = identity.getCredentials().getUsername() + "@" + domain;
+         if( domain == null )
+         {
+            email = "";
+         }
+         else 
+         {
+            email = identity.getCredentials().getUsername() + "@" + domain;
+         }
+         
          identity.unAuthenticate();
-      }else{
+      }
+      else
+      {
          HPerson person = personDAO.findById(authenticatedAccount.getPerson().getId(), false);
          name = person.getName();
          email = person.getEmail();
@@ -169,13 +179,13 @@ public class ProfileAction implements Serializable
       }
    }
 
-   public String cancel(){
+   public String cancel()
+   {
       if (identityStore.isNewUser(username))
       {
          return "home";
       }
       return "view";
    }
-
 
 }
