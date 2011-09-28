@@ -28,2313 +28,2313 @@ msgstr ""
 
 #: Files:  evolution.csv,  gdmpaneldesktop.csv,  gedit.csv,  gnometerminal.csv,  nautilus.csv,  openoffice.csv,  pidgin.csv,
 msgid "About"
-msgstr "à¤ªà¤°à¤¿à¤šà¤¯"
+msgstr "परिचय"
 
 #: Files:  menu.csv,
 msgid "Accessibility"
-msgstr "à¤ªà¤¹à¥à¤à¤š"
+msgstr "पहुँच"
 
 #: Files:  menu.csv,
 msgid "Accessories"
-msgstr "à¤‰à¤ªà¤¸à¤¾à¤§à¤¨"
+msgstr "उपसाधन"
 
 #: Files:  pidgin.csv,
 msgid "Accounts"
-msgstr "à¤–à¤¾à¤¤à¤¾"
+msgstr "खाता"
 
 #: Files:  menu.csv,
 msgid "Administration"
-msgstr "à¤ªà¥à¤°à¤¶à¤¾à¤¸à¤¨"
+msgstr "प्रशासन"
 
 #: Files:  openoffice.csv,
 msgid "Alignment"
-msgstr "à¤¸à¤‚à¤°à¥‡à¤–à¤£"
+msgstr "संरेखण"
 
 #: Files:  openoffice.csv,
 msgid "Anchor"
-msgstr "à¤²à¤‚à¤—à¤°"
+msgstr "लंगर"
 
 #: Files:  menu.csv,
 msgid "Applications"
-msgstr "à¤…à¤¨à¥à¤ªà¥à¤°à¤¯à¥‹à¤—"
+msgstr "अनुप्रयोग"
 
 #: Files:  evolution.csv,
 msgid "Apply Filters"
-msgstr "à¤«à¤¼à¤¿à¤²à¥à¤Ÿà¤° à¤²à¤¾à¤—à¥‚ à¤•à¤°à¥‡à¤‚"
+msgstr "फ़िल्टर लागू करें"
 
 #: Files:  openoffice.csv,
 msgid "Area"
-msgstr "à¤•à¥à¤·à¥‡à¤¤à¥à¤°"
+msgstr "क्षेत्र"
 
 #: Files:  openoffice.csv,
 msgid "Arrange"
-msgstr "à¤µà¥à¤¯à¤µà¤¸à¥à¤¥à¤¿à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "व्यवस्थित करें"
 
 #: Files:menu
 msgid "Authentication"
-msgstr "à¤¸à¤¤à¥à¤¯à¤¾à¤ªà¤¨"
+msgstr "सत्यापन"
 
 #: Files:  openoffice.csv,
 msgid "AutoCorrect"
-msgstr "à¤¸à¥à¤µà¤¤à¤ƒ à¤¸à¥à¤§à¤¾à¤°"
+msgstr "स्वतः सुधार"
 
 #: Files:  openoffice.csv,
 msgid "Autofit"
-msgstr "à¤¸à¥à¤µà¤¤à¤ƒ à¤«à¤¼à¤¿à¤Ÿ"
+msgstr "स्वतः फ़िट"
 
 #: Files:  openoffice.csv,
 msgid "AutoFormat"
-msgstr "à¤¸à¥à¤µà¤¤à¤ƒ à¤ªà¥à¤°à¤¾à¤°à¥‚à¤ª"
+msgstr "स्वतः प्रारूप"
 
 #: Files:  openoffice.csv,
 msgid "AutoText"
-msgstr "à¤¸à¥à¤µà¤¤à¤ƒ à¤ªà¤¾à¤ "
+msgstr "स्वतः पाठ"
 
 #: Files:  firefox.csv,  openoffice.csv,
 msgid "Back"
-msgstr "à¤ªà¥€à¤›à¥‡"
+msgstr "पीछे"
 
 #: Files:  openoffice.csv,
 msgid "Bookmark"
-msgstr "à¤ªà¥à¤¸à¥à¤¤à¤šà¤¿à¤¹à¥à¤¨"
+msgstr "पुस्तचिह्न"
 
 #: Files:  openoffice.csv,
 msgid "Boundaries"
-msgstr "à¤¸à¥€à¤®à¤¾"
+msgstr "सीमा"
 
 #: Files:  pidgin.csv,
 msgid "Buddies"
-msgstr "à¤¦à¥‹à¤¸à¥à¤¤"
+msgstr "दोस्त"
 
 #: Files:  openoffice.csv,
 msgid "Calculate"
-msgstr "à¤—à¤£à¤¨à¤¾ à¤•à¤°à¥‡à¤‚"
+msgstr "गणना करें"
 
 #: Files:  menu.csv,
 msgid "Calculator"
-msgstr "à¤—à¤£à¤•"
+msgstr "गणक"
 
 #: Files:  menu.csv,
 msgid "Calender"
-msgstr "à¤ªà¤‚à¤šà¤¾à¤‚à¤—"
+msgstr "पंचांग"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Cancel"
-msgstr "à¤°à¤¦à¥à¤¦ à¤•à¤°à¥‡à¤‚"
+msgstr "रद्द करें"
 
 #: Files:  openoffice.csv,
 msgid "Caption"
-msgstr "à¤¶à¥€à¤°à¥à¤·à¤•"
+msgstr "शीर्षक"
 
 #: Files:  openoffice.csv,
 msgid "Cells"
-msgstr "à¤•à¥‹à¤·à¥à¤ "
+msgstr "कोष्ठ"
 
 #: Files:  openoffice.csv,
 msgid "Changes"
-msgstr "à¤ªà¤°à¤¿à¤µà¤°à¥à¤¤à¤¨"
+msgstr "परिवर्तन"
 
 #: Files:  openoffice.csv,
 msgid "Character"
-msgstr "à¤µà¤°à¥à¤£"
+msgstr "वर्ण"
 
 #: Files:  openoffice.csv,
 msgid "Chart"
-msgstr "à¤šà¤¾à¤°à¥à¤Ÿ"
+msgstr "चार्ट"
 
 #: Files:  evolution.csv,
 msgid "Clear"
-msgstr "à¤¸à¤¾à¤«à¤¼ à¤•à¤°à¥‡à¤‚"
+msgstr "साफ़ करें"
 
 #: Files:  gedit.csv,  nautilus.csv,  openoffice.csv,
 msgid "Close"
-msgstr "à¤¬à¤¨à¥à¤¦ à¤•à¤°à¥‡à¤‚"
+msgstr "बन्द करें"
 
 #: Files:  openoffice.csv,
 msgid "Column"
-msgstr "à¤¸à¥à¤¤à¤‚à¤­"
+msgstr "स्तंभ"
 
 #: Files:  menu.csv,  nautilus.csv,
 msgid "Computer"
-msgstr "à¤•à¤‚à¤ªà¥à¤¯à¥‚à¤Ÿà¤°"
+msgstr "कंप्यूटर"
 
 #: Files:  openoffice.csv,
 msgid "Consolidate"
-msgstr "à¤¸à¤®à¥‡à¤•à¤¨"
+msgstr "समेकन"
 
 #: Files:  menu.csv,
 msgid "Contact"
-msgstr "à¤¸à¤‚à¤ªà¤°à¥à¤•"
+msgstr "संपर्क"
 
 #: Files:  evolution.csv,  gedit.csv,  gnometerminal.csv,  nautilus.csv,
 msgid "Contents"
-msgstr "à¤µà¤¿à¤·à¤¯ à¤¸à¥‚à¤šà¥€"
+msgstr "विषय सूची"
 
 #: Files:  openoffice.csv,
 msgid "Control"
-msgstr "à¤¨à¤¿à¤¯à¤‚à¤¤à¥à¤°à¤£"
+msgstr "नियंत्रण"
 
 #: Files:  openoffice.csv,
 msgid "Convert"
-msgstr "à¤¬à¤¦à¤²à¥‡à¤‚"
+msgstr "बदलें"
 
 #: Files:  evolution.csv,  firefox.csv,  gedit.csv,  gnometerminal.csv,  nautilus.csv,  openoffice.csv,
 msgid "Copy"
-msgstr "à¤¨à¤•à¤¼à¤² à¤•à¤°à¥‡à¤‚"
+msgstr "नक़ल करें"
 
 #: Files:  openoffice.csv,
 msgid "Create"
-msgstr "à¤¬à¤¨à¤¾à¤à¤"
+msgstr "बनाएँ"
 
 #: Files:  openoffice.csv,
 msgid "Customize"
-msgstr "à¤®à¤¨à¤ªà¤¸à¤‚à¤¦ à¤¬à¤¨à¤¾à¤à¤"
+msgstr "मनपसंद बनाएँ"
 
 #: Files:  firefox.csv,  gedit.csv,  nautilus.csv,  openoffice.csv,
 msgid "Cut"
-msgstr "à¤•à¤¾à¤Ÿà¥‡à¤‚"
+msgstr "काटें"
 
 #: Files:  openoffice.csv,
 msgid "DataPilot"
-msgstr "à¤†à¤à¤•à¤¡à¤¼à¤¾ à¤ªà¤¾à¤¯à¤²à¤Ÿ"
+msgstr "आँकड़ा पायलट"
 
 #: Files:  evolution.csv,
 msgid "Day"
-msgstr "à¤¦à¤¿à¤¨"
+msgstr "दिन"
 
 #: Files:  evolution.csv,  firefox.csv,  gedit.csv,  openoffice.csv,
 msgid "Delete"
-msgstr "à¤®à¤¿à¤Ÿà¤¾à¤à¤"
+msgstr "मिटाएँ"
 
 #: Files:  menu.csv,
 msgid "Desktop"
-msgstr "à¤¡à¥‡à¤¸à¥à¤•à¤Ÿà¥‰à¤ª"
+msgstr "डेस्कटॉप"
 
 #: Files:  openoffice.csv,
 msgid "Detective"
-msgstr "à¤–à¤¼à¥à¤«à¤¼à¤¿à¤¯à¤¾"
+msgstr "ख़ुफ़िया"
 
 #: Files:  menu.csv,
 msgid "Dictionary"
-msgstr "à¤¶à¤¬à¥à¤¦à¤•à¥‹à¤¶"
+msgstr "शब्दकोश"
 
 #: Files:  menu.csv,
 msgid "Display"
-msgstr "à¤ªà¥à¤°à¤¦à¤°à¥à¤¶à¤¿à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "प्रदर्शित करें"
 
 #: Files:  menu.csv,
 msgid "Documentations"
-msgstr "à¤¦à¤¸à¥à¤¤à¤¾à¤µà¥‡à¤œà¤¼à¥€à¤•à¤°à¤£"
+msgstr "दस्तावेज़ीकरण"
 
 #: Files:  gedit.csv,
 msgid "Documents"
-msgstr "à¤¦à¤¸à¥à¤¤à¤¾à¤µà¥‡à¤œà¤¼"
+msgstr "दस्तावेज़"
 
 #: Files:  firefox.csv,
 msgid "Downloads"
-msgstr "à¤¡à¤¾à¤‰à¤¨à¤²à¥‹à¤¡"
+msgstr "डाउनलोड"
 
 #: Files:  evolution.csv,
 msgid "Drafts"
-msgstr "à¤®à¤¸à¥Œà¤¦à¤¾"
+msgstr "मसौदा"
 
 #: Files:  nautilus.csv,  openoffice.csv,
 msgid "Duplicate"
-msgstr "à¤…à¤¨à¥à¤•à¥ƒà¤¤à¤¿"
+msgstr "अनुकृति"
 
 #: Files:  evolution.csv,  gedit.csv,  nautilus.csv,  openoffice.csv,
 msgid "Edit"
-msgstr "à¤¸à¤‚à¤ªà¤¾à¤¦à¤¨"
+msgstr "संपादन"
 
 #: Files:  openoffice.csv,
 msgid "Envelope"
-msgstr "à¤²à¤¿à¤«à¤¼à¤¾à¤«à¤¼à¤¾"
+msgstr "लिफ़ाफ़ा"
 
 #: Files:  openoffice.csv,
 msgid "Exit"
-msgstr "à¤¬à¤¾à¤¹à¤°"
+msgstr "बाहर"
 
 #: Files:  openoffice.csv,
 msgid "Export"
-msgstr "à¤¨à¤¿à¤°à¥à¤¯à¤¾à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "निर्यात करें"
 
 #: Files:  evolution.csv,
 msgid "Expunge"
-msgstr "à¤¬à¤¿à¤²à¥à¤•à¥à¤² à¤¹à¤Ÿà¤¾ à¤¦à¥‡à¤‚"
+msgstr "बिल्कुल हटा दें"
 
 #: Files:  firefox.csv,
 msgid "Extensions"
-msgstr "à¤µà¤¿à¤¸à¥à¤¤à¤¾à¤°"
+msgstr "विस्तार"
 
 #: Files:  openoffice.csv,
 msgid "Eyedropper"
-msgstr "à¤¡à¥à¤°à¥‰à¤ªà¤°"
+msgstr "ड्रॉपर"
 
 #: Files:  openoffice.csv,
 msgid "Fields"
-msgstr "à¤•à¥à¤·à¥‡à¤¤à¥à¤°"
+msgstr "क्षेत्र"
 
 #: Files:  evolution.csv,  firefox.csv,  gedit.csv,  gnometerminal.csv,  nautilus.csv,  openoffice.csv,
 msgid "File"
-msgstr "à¤«à¤¼à¤¾à¤‡à¤²"
+msgstr "फ़ाइल"
 
 #: Files:  openoffice.csv,
 msgid "Fill"
-msgstr "à¤­à¤°à¥‡à¤‚"
+msgstr "भरें"
 
 #: Files:  openoffice.csv,
 msgid "Filter"
-msgstr "à¤«à¤¼à¤¿à¤²à¥à¤Ÿà¤°"
+msgstr "फ़िल्टर"
 
 #: Files:  gedit.csv,
 msgid "Find"
-msgstr "à¤¢à¥‚à¤à¤¢à¤¼à¥‡à¤‚"
+msgstr "ढूँढ़ें"
 
 #: Files:  openoffice.csv,
 msgid "Flip"
-msgstr "à¤ªà¤²à¤Ÿà¥‡à¤‚"
+msgstr "पलटें"
 
 #: Files:  evolution.csv,
 msgid "Folder"
-msgstr "à¤«à¤¼à¥‹à¤²à¥à¤¡à¤°"
+msgstr "फ़ोल्डर"
 
 #: Files:  menu.csv,
 msgid "Fonts"
-msgstr "à¤«à¤¼à¥‰à¤¨à¥à¤Ÿ"
+msgstr "फ़ॉन्ट"
 
 #: Files:  openoffice.csv,
 msgid "Footer"
-msgstr "à¤ªà¤¾à¤¦à¤¿à¤•à¤¾"
+msgstr "पादिका"
 
 #: Files:  openoffice.csv,
 msgid "Footnotes"
-msgstr "à¤ªà¤¾à¤¦ à¤Ÿà¥€à¤•à¤¾"
+msgstr "पाद टीका"
 
 #: Files:  openoffice.csv,
 msgid "Form"
-msgstr "à¤«à¤¼à¥‰à¤°à¥à¤®"
+msgstr "फ़ॉर्म"
 
 #: Files:  openoffice.csv,
 msgid "Format"
-msgstr "à¤ªà¥à¤°à¤¾à¤°à¥‚à¤ª"
+msgstr "प्रारूप"
 
 #: Files:  openoffice.csv,
 msgid "Formula"
-msgstr "à¤¸à¥‚à¤¤à¥à¤°"
+msgstr "सूत्र"
 
 #: Files:  evolution.csv,  firefox.csv,
 msgid "Forward"
-msgstr "à¤…à¤—à¥à¤°à¥‡à¤·à¤¿à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "अग्रेषित करें"
 
 #: Files:  openoffice.csv,
 msgid "Frame"
-msgstr "à¤¢à¤¾à¤à¤šà¤¾"
+msgstr "ढाँचा"
 
 #: Files:  openoffice.csv,
 msgid "Freeze"
-msgstr "à¤¸à¥à¤¥à¤¿à¤° à¤•à¤°à¥‡à¤‚"
+msgstr "स्थिर करें"
 
 #: Files:  firefox.csv,  gnometerminal.csv,  openoffice.csv,
 msgid "Full Screen"
-msgstr "à¤ªà¥‚à¤°à¥à¤£ à¤¸à¥à¤•à¥à¤°à¥€à¤¨"
+msgstr "पूर्ण स्क्रीन"
 
 #: Files:  openoffice.csv,
 msgid "Function"
-msgstr "à¤ªà¥à¤°à¤•à¤¾à¤°à¥à¤¯"
+msgstr "प्रकार्य"
 
 #: Files:  openoffice.csv,
 msgid "Gallery"
-msgstr "à¤¦à¥€à¤°à¥à¤˜à¤¾"
+msgstr "दीर्घा"
 
 #: Files:  menu.csv,
 msgid "Graphics"
-msgstr "à¤šà¤¿à¤¤à¥à¤°à¤¾à¤¦à¤¿"
+msgstr "चित्रादि"
 
 #: Files:  openoffice.csv,
 msgid "Grid"
-msgstr "à¤œà¤¾à¤²à¥€"
+msgstr "जाली"
 
 #: Files:  openoffice.csv,
 msgid "Group"
-msgstr "à¤¸à¤®à¥‚à¤¹"
+msgstr "समूह"
 
 #: Files:  openoffice.csv,
 msgid "Guides"
-msgstr "à¤¨à¤¿à¤¦à¥‡à¤¶à¤¿à¤•à¤¾"
+msgstr "निदेशिका"
 
 #: Files:  openoffice.csv,
 msgid "Header"
-msgstr "à¤¶à¥€à¤°à¥à¤·à¤¿à¤•à¤¾"
+msgstr "शीर्षिका"
 
 #: Files:  evolution.csv,  firefox.csv,  nautilus.csv,  openoffice.csv,  pidgin.csv,
 msgid "Help"
-msgstr "à¤®à¤¦à¤¦"
+msgstr "मदद"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Hibernate"
-msgstr "à¤µà¤¿à¤¶à¥à¤°à¤¾à¤® à¤¦à¥‡à¤‚"
+msgstr "विश्राम दें"
 
 #: Files:  firefox.csv,
 msgid "History"
-msgstr "à¤‡à¤¤à¤¿à¤¹à¤¾à¤¸"
+msgstr "इतिहास"
 
 #: Files:  firefox.csv,  nautilus.csv,
 msgid "Home"
-msgstr "à¤˜à¤°"
+msgstr "घर"
 
 #: Files:  openoffice.csv,
 msgid "Hyperlink"
-msgstr "à¤¹à¤¾à¤‡à¤ªà¤°à¤²à¤¿à¤‚à¤•"
+msgstr "हाइपरलिंक"
 
 #: Files:  openoffice.csv,
 msgid "ImageMap"
-msgstr "à¤šà¤¿à¤¤à¥à¤° à¤¨à¤•à¤¼à¥à¤¶à¤¾"
+msgstr "चित्र नक़्शा"
 
 #: Files:  evolution.csv,  firefox.csv,
 msgid "Import"
-msgstr "à¤†à¤¯à¤¾à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "आयात करें"
 
 #: Files:  evolution.csv,
 msgid "Inbox"
-msgstr "à¤†à¤ˆ à¤¡à¤¾à¤•"
+msgstr "आई डाक"
 
 #: Files:  menu.csv,
 msgid "Input Method"
-msgstr "à¤‡à¤¨à¤ªà¥à¤Ÿ à¤µà¤¿à¤§à¤¿"
+msgstr "इनपुट विधि"
 
 #: Files:  openoffice.csv,
 msgid "Insert"
-msgstr "à¤˜à¥à¤¸à¤¾à¤à¤"
+msgstr "घुसाएँ"
 
 #: Files:  openoffice.csv,
 msgid "Interaction"
-msgstr "à¤…à¤‚à¤¤à¤ƒà¤•à¥à¤°à¤¿à¤¯à¤¾"
+msgstr "अंतःक्रिया"
 
 #: Files:  menu.csv,
 msgid "Internet"
-msgstr "à¤…à¤‚à¤¤à¤°à¥à¤œà¤¾à¤²"
+msgstr "अंतर्जाल"
 
 #: Files:  evolution.csv,
 msgid "Junk"
-msgstr "à¤•à¤šà¤°à¤¾"
+msgstr "कचरा"
 
 #: Files:  menu.csv,
 msgid "Keyboard"
-msgstr "à¤•à¥à¤‚à¤œà¥€à¤ªà¤Ÿ"
+msgstr "कुंजीपट"
 
 #: Files:  gdmpaneldesktop.csv,  menu.csv,  openoffice.csv,
 msgid "Language"
-msgstr "à¤­à¤¾à¤·à¤¾"
+msgstr "भाषा"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Launch"
-msgstr "à¤²à¥‰à¤¨à¥à¤š"
+msgstr "लॉन्च"
 
 #: Files:  evolution.csv,
 msgid "Layout"
-msgstr "à¤–à¤¼à¤¾à¤•à¤¾"
+msgstr "ख़ाका"
 
 #: Files:  openoffice.csv,
 msgid "Line"
-msgstr "à¤°à¥‡à¤–à¤¾"
+msgstr "रेखा"
 
 #: Files:  openoffice.csv,
 msgid "Links"
-msgstr "à¤•à¤¡à¤¼à¥€"
+msgstr "कड़ी"
 
 #: Files:  evolution.csv,
 msgid "List"
-msgstr "à¤¸à¥‚à¤šà¥€"
+msgstr "सूची"
 
 #: Files:  openoffice.csv,
 msgid "Macros"
-msgstr "à¤®à¥ˆà¤•à¥à¤°à¥‹à¤œ"
+msgstr "मैक्रोज"
 
 #: Files:  openoffice.csv,
 msgid "Master"
-msgstr "à¤®à¤¾à¤¸à¥à¤Ÿà¤°"
+msgstr "मास्टर"
 
 #: Files:  evolution.csv,
 msgid "Message"
-msgstr "à¤¸à¤‚à¤¦à¥‡à¤¶"
+msgstr "संदेश"
 
 #: Files:  evolution.csv,
 msgid "Month"
-msgstr "à¤®à¤¾à¤¹"
+msgstr "माह"
 
 #: Files:  menu.csv,
 msgid "Mouse"
-msgstr "à¤®à¤¾à¤‰à¤¸"
+msgstr "माउस"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Move"
-msgstr "à¤–à¤¿à¤¸à¤•à¤¾à¤à¤"
+msgstr "खिसकाएँ"
 
 #: Files:  openoffice.csv,
 msgid "Names"
-msgstr "à¤¨à¤¾à¤®"
+msgstr "नाम"
 
 #: Files:  openoffice.csv,
 msgid "Navigator"
-msgstr "à¤¸à¤‚à¤šà¤°à¤•"
+msgstr "संचरक"
 
 #: Files:  nautilus.csv,
 msgid "Network"
-msgstr "à¤¸à¤‚à¤œà¤¾à¤²"
+msgstr "संजाल"
 
 #: Files:  evolution.csv,  gedit.csv,  openoffice.csv,
 msgid "New"
-msgstr "à¤¨à¤¯à¤¾"
+msgstr "नया"
 
 #: Files:  evolution.csv,  openoffice.csv,
 msgid "Next"
-msgstr "à¤†à¤—à¥‡"
+msgstr "आगे"
 
 #: Files:  openoffice.csv,
 msgid "Normal"
-msgstr "à¤¸à¤¾à¤®à¤¾à¤¨à¥à¤¯"
+msgstr "सामान्य"
 
 #: Files:  openoffice.csv,
 msgid "Note"
-msgstr "à¤¨à¥‹à¤Ÿ"
+msgstr "नोट"
 
 #: Files:  openoffice.csv,
 msgid "Object"
-msgstr "à¤µà¤¸à¥à¤¤à¥"
+msgstr "वस्तु"
 
 #: Files:  menu.csv,
 msgid "Office"
-msgstr "à¤•à¤¾à¤°à¥à¤¯à¤¾à¤²à¤¯"
+msgstr "कार्यालय"
 
 #: Files:  gedit.csv,  openoffice.csv,
 msgid "Open"
-msgstr "à¤–à¥‹à¤²à¥‡à¤‚"
+msgstr "खोलें"
 
 #: Files:  openoffice.csv,
 msgid "Options"
-msgstr "à¤µà¤¿à¤•à¤²à¥à¤ª"
+msgstr "विकल्प"
 
 #: Files:  evolution.csv,
 msgid "Outbox"
-msgstr "à¤œà¤¾à¤¤à¥€ à¤¡à¤¾à¤•"
+msgstr "जाती डाक"
 
 #: Files:  openoffice.csv,
 msgid "Outline"
-msgstr "à¤°à¥‚à¤ªà¤°à¥‡à¤–à¤¾"
+msgstr "रूपरेखा"
 
 #: Files:  openoffice.csv,
 msgid "Page"
-msgstr "à¤ªà¥ƒà¤·à¥à¤ "
+msgstr "पृष्ठ"
 
 #: Files:  openoffice.csv,
 msgid "Paragraph"
-msgstr "à¤…à¤¨à¥à¤šà¥à¤›à¥‡à¤¦"
+msgstr "अनुच्छेद"
 
 #: Files:gdmpaneldesktop
 msgid "Password"
-msgstr "à¤•à¥‚à¤Ÿà¤¶à¤¬à¥à¤¦"
+msgstr "कूटशब्द"
 
 #: Files:  firefox.csv,  gdmpaneldesktop.csv,  gedit.csv,  gnometerminal.csv,  nautilus.csv,  openoffice.csv,
 msgid "Paste"
-msgstr "à¤šà¤¿à¤ªà¤•à¤¾à¤à¤"
+msgstr "चिपकाएँ"
 
 #: Files:  evolution.csv,
 msgid "Permissions"
-msgstr "à¤…à¤¨à¥à¤®à¤¤à¤¿"
+msgstr "अनुमति"
 
 #: Files:  evolution.csv,
 msgid "Personal"
-msgstr "à¤¨à¤¿à¤œà¥€"
+msgstr "निजी"
 
 #: Files:  openoffice.csv,
 msgid "Picture"
-msgstr "à¤¤à¤¸à¥à¤µà¥€à¤°"
+msgstr "तस्वीर"
 
 #: Files:  menu.csv,  nautilus.csv,
 msgid "Places"
-msgstr "à¤¸à¥à¤¥à¤¾à¤¨"
+msgstr "स्थान"
 
 #: Files:  openoffice.csv,
 msgid "Plug-in"
-msgstr "à¤ªà¥à¤²à¤—-à¤‡à¤¨"
+msgstr "प्लग-इन"
 
 #: Files:  openoffice.csv,
 msgid "Points"
-msgstr "à¤¬à¤¿à¤‚à¤¦à¥"
+msgstr "बिंदु"
 
 #: Files:  evolution.csv,  firefox.csv,  gedit.csv,  menu.csv,  nautilus.csv,  pidgin.csv,
 msgid "Preferences"
-msgstr "à¤µà¤°à¥€à¤¯à¤¤à¤¾"
+msgstr "वरीयता"
 
 #: Files:  menu.csv,
 msgid "Presentation"
-msgstr "à¤ªà¥à¤°à¤¸à¥à¤¤à¥à¤¤à¤¿"
+msgstr "प्रस्तुति"
 
 #: Files:  firefox.csv,
 msgid "preview"
-msgstr "à¤ªà¥‚à¤°à¥à¤µà¤¾à¤µà¤²à¥‹à¤•à¤¨"
+msgstr "पूर्वावलोकन"
 
 #: Files:  evolution.csv,
 msgid "Previous"
-msgstr "à¤ªà¤¿à¤›à¤²à¤¾"
+msgstr "पिछला"
 
 #: Files:  firefox.csv, openoffice.csv, gedit.csv
 msgid "Print "
-msgstr "à¤›à¤¾à¤ªà¥‡à¤‚"
+msgstr "छापें"
 
 #: Files:  menu.csv,
 msgid "Printing"
-msgstr "à¤›à¤ª à¤°à¤¹à¤¾ à¤¹à¥ˆ"
+msgstr "छप रहा है"
 
 #: Files:  pidgin.csv,
 msgid "Privacy"
-msgstr "à¤—à¥‹à¤ªà¤¨à¥€à¤¯à¤¤à¤¾"
+msgstr "गोपनीयता"
 
 #: Files:  gnometerminal.csv,
 msgid "Profiles"
-msgstr "à¤ªà¥à¤°à¥‹à¤«à¤¼à¤¾à¤‡à¤²"
+msgstr "प्रोफ़ाइल"
 
 #: Files:  menu.csv,
 msgid "Programming"
-msgstr "à¤ªà¥à¤°à¥‹à¤—à¥à¤°à¤¾à¤®à¤¿à¤‚à¤—"
+msgstr "प्रोग्रामिंग"
 
 #: Files:  evolution.csv,  gdmpaneldesktop.csv,  nautilus.csv,  openoffice.csv,
 msgid "Properties"
-msgstr "à¤—à¥à¤£"
+msgstr "गुण"
 
 #: Files:  openoffice.csv,
 msgid "Protect Cell"
-msgstr "à¤•à¥‹à¤·à¥à¤  à¤•à¥€ à¤¸à¥à¤°à¤•à¥à¤·à¤¾ à¤•à¤°à¥‡à¤‚"
+msgstr "कोष्ठ की सुरक्षा करें"
 
 #: Files:  evolution.csv,
 msgid "Purge"
-msgstr "à¤¨à¤¿à¤•à¤¾à¤² à¤¦à¥‡à¤‚"
+msgstr "निकाल दें"
 
 #: Files:  evolution.csv,  gedit.csv,  pidgin.csv,
 msgid "Quit"
-msgstr "à¤¬à¤¾à¤¹à¤° à¤œà¤¾à¤à¤"
+msgstr "बाहर जाएँ"
 
 #: Files:  firefox.csv,  gedit.csv,
 msgid "Redo"
-msgstr "à¤«à¤¿à¤° à¤•à¤°à¥‡à¤‚"
+msgstr "फिर करें"
 
 #: Files:  openoffice.csv,
 msgid "Registration"
-msgstr "à¤ªà¤‚à¤œà¥€à¤¯à¤¨"
+msgstr "पंजीयन"
 
 #: Files:  firefox.csv,  nautilus.csv,  openoffice.csv,
 msgid "Reload"
-msgstr "à¤«à¤¿à¤° à¤²à¥‹à¤¡ à¤•à¤°à¥‡à¤‚"
+msgstr "फिर लोड करें"
 
 #: Files:  evolution.csv,  nautilus.csv,
 msgid "Rename"
-msgstr "à¤¨à¤¾à¤® à¤¬à¤¦à¤²à¥‡à¤‚"
+msgstr "नाम बदलें"
 
 #: Files:  openoffice.csv,
 msgid "Repeat"
-msgstr "à¤¦à¥‹à¤¹à¤°à¤¾à¤à¤"
+msgstr "दोहराएँ"
 
 #: Files:  gedit.csv,
 msgid "Replace"
-msgstr "à¤¬à¤¦à¤²à¥‡à¤‚"
+msgstr "बदलें"
 
 #: Files:  gnometerminal.csv,
 msgid "Reset"
-msgstr "à¤«à¤¿à¤° à¤¸à¥‡à¤Ÿ à¤•à¤°à¥‡à¤‚"
+msgstr "फिर सेट करें"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Restart"
-msgstr "à¤ªà¥à¤¨à¤ƒ à¤†à¤°à¤‚à¤­ à¤•à¤°à¥‡à¤‚"
+msgstr "पुनः आरंभ करें"
 
 #: Files:  gedit.csv,
 msgid "Revert"
-msgstr "à¤ªà¥à¤°à¤¾à¤¨à¥€ à¤¸à¥à¤¥à¤¿à¤¤à¤¿ à¤²à¥Œà¤Ÿà¤¾à¤à¤"
+msgstr "पुरानी स्थिति लौटाएँ"
 
 #: Files:  openoffice.csv,
 msgid "Row"
-msgstr "à¤ªà¤‚à¤•à¥à¤¤à¤¿"
+msgstr "पंक्ति"
 
 #: Files:  openoffice.csv,
 msgid "Ruler"
-msgstr "à¤°à¥‚à¤²à¤°"
+msgstr "रूलर"
 
 #: Files:  gedit.csv,  openoffice.csv,
 msgid "Save"
-msgstr "à¤¸à¤¹à¥‡à¤œà¥‡à¤‚"
+msgstr "सहेजें"
 
 #: Files:  openoffice.csv,
 msgid "Scenarios"
-msgstr "à¤ªà¤°à¤¿à¤¦à¥ƒà¤¶à¥à¤¯"
+msgstr "परिदृश्य"
 
 #: Files:  menu.csv,
 msgid "Screensaver"
-msgstr "à¤¸à¥à¤•à¥à¤°à¥€à¤¨à¤¸à¥‡à¤µà¤°"
+msgstr "स्क्रीनसेवर"
 
 #: Files:  openoffice.csv,
 msgid "Script"
-msgstr "à¤¸à¥à¤•à¥à¤°à¤¿à¤ªà¥à¤Ÿ"
+msgstr "स्क्रिप्ट"
 
 #: Files:  evolution.csv,  gedit.csv,  nautilus.csv,
 msgid "Search"
-msgstr "à¤–à¥‹à¤œà¥‡à¤‚"
+msgstr "खोजें"
 
 #: Files:  openoffice.csv,
 msgid "Section"
-msgstr "à¤–à¤‚à¤¡"
+msgstr "खंड"
 
 #: Files:  openoffice.csv,
 msgid "Select"
-msgstr "à¤šà¥à¤¨à¥‡à¤‚"
+msgstr "चुनें"
 
 #: Files:  openoffice.csv,
 msgid "Send"
-msgstr "à¤­à¥‡à¤œà¥‡à¤‚"
+msgstr "भेजें"
 
 #: Files:  evolution.csv,
 msgid "Sent"
-msgstr "à¤—à¤ˆ à¤¡à¤¾à¤•"
+msgstr "गई डाक"
 
 #: Files:  menu.csv,
 msgid "Services"
-msgstr "à¤¸à¥‡à¤µà¤¾à¤à¤"
+msgstr "सेवाएँ"
 
 #: Files:  menu.csv,
 msgid "Sessions"
-msgstr "à¤¸à¤¤à¥à¤°"
+msgstr "सत्र"
 
 #: Files:  openoffice.csv,
 msgid "Sheet"
-msgstr "à¤¶à¥€à¤Ÿ"
+msgstr "शीट"
 
 #: Files:  evolution.csv,
 msgid "Show"
-msgstr "à¤¦à¤¿à¤–à¤¾à¤à¤"
+msgstr "दिखाएँ"
 
 #: Files:  firefox.csv,
 msgid "Sidebar"
-msgstr "à¤¬à¤¾à¤œà¤¼à¥‚ à¤ªà¤Ÿà¥à¤Ÿà¥€"
+msgstr "बाज़ू पट्टी"
 
 #: Files:  openoffice.csv,
 msgid "Slide"
-msgstr "à¤¸à¥à¤²à¤¾à¤‡à¤¡"
+msgstr "स्लाइड"
 
 #: Files:  openoffice.csv,
 msgid "Sort"
-msgstr "à¤›à¤¾à¤Ÿà¥‡à¤‚"
+msgstr "छाटें"
 
 #: Files:  openoffice.csv,
 msgid "Spellcheck"
-msgstr "à¤µà¤°à¥à¤¤à¤¨à¥€ à¤œà¤¾à¤à¤š"
+msgstr "वर्तनी जाँच"
 
 #: Files:  openoffice.csv,
 msgid "Split"
-msgstr "à¤…à¤²à¤—à¤¾à¤à¤"
+msgstr "अलगाएँ"
 
 #: Files:  menu.csv,  openoffice.csv,
 msgid "Spreadsheet"
-msgstr "à¤¸à¥à¤ªà¥à¤°à¥‡à¤¡à¤¶à¥€à¤Ÿ"
+msgstr "स्प्रेडशीट"
 
 #: Files:  firefox.csv,  gedit.csv,
 msgid "Statusbar"
-msgstr "à¤¸à¥à¤¥à¤¿à¤¤à¤¿à¤ªà¤Ÿà¥à¤Ÿà¥€"
+msgstr "स्थितिपट्टी"
 
 #: Files:  evolution.csv,  firefox.csv,  nautilus.csv,
 msgid "Stop"
-msgstr "à¤°à¥‹à¤•à¥‡à¤‚"
+msgstr "रोकें"
 
 #: Files:  evolution.csv,
 msgid "Subscriptions"
-msgstr "à¤¸à¤¦à¤¸à¥à¤¯à¤¤à¤¾"
+msgstr "सदस्यता"
 
 #: Files:  openoffice.csv,
 msgid "Subtotals"
-msgstr "à¤‰à¤ª-à¤¯à¥‹à¤—"
+msgstr "उप-योग"
 
 #: Files:  evolution.csv,
 msgid "Summary"
-msgstr "à¤¸à¤¾à¤°à¤¾à¤‚à¤¶"
+msgstr "सारांश"
 
 #: Files:  openoffice.csv,
 msgid "Support"
-msgstr "à¤¸à¤®à¤°à¥à¤¥à¤¨"
+msgstr "समर्थन"
 
 #: Files:  gdmpaneldesktop.csv,  menu.csv,
 msgid "Suspend"
-msgstr "à¤¸à¥à¤¥à¤—à¤¿à¤¤"
+msgstr "स्थगित"
 
 #: Files:  menu.csv,
 msgid "System"
-msgstr "à¤¤à¤‚à¤¤à¥à¤°"
+msgstr "तंत्र"
 
 #: Files:  openoffice.csv,
 msgid "Table"
-msgstr "à¤¸à¤¾à¤°à¤£à¥€"
+msgstr "सारणी"
 
 #: Files:  evolution.csv,  menu.csv,
 msgid "Tasks"
-msgstr "à¤•à¤¾à¤°à¥à¤¯"
+msgstr "कार्य"
 
 #: Files:  nautilus.csv,  openoffice.csv,
 msgid "Templates"
-msgstr "à¤¨à¤®à¥‚à¤¨à¤¾ à¤–à¤¼à¤¾à¤•à¤¾"
+msgstr "नमूना ख़ाका"
 
 #: Files:  menu.csv,
 msgid "Terminal"
-msgstr "à¤Ÿà¤°à¥à¤®à¤¿à¤¨à¤²"
+msgstr "टर्मिनल"
 
 #: Files:  openoffice.csv,
 msgid "Text"
-msgstr "à¤ªà¤¾à¤ "
+msgstr "पाठ"
 
 #: Files:  firefox.csv,
 msgid "Themes"
-msgstr "à¤ªà¥à¤°à¤¸à¤‚à¤—"
+msgstr "प्रसंग"
 
 #: Files:  openoffice.csv,
 msgid "Toolbars"
-msgstr "à¤”à¤œà¤¼à¤¾à¤°à¤ªà¤Ÿà¥à¤Ÿà¥€"
+msgstr "औज़ारपट्टी"
 
 #: Files:  firefox.csv,  gedit.csv,  openoffice.csv,  pidgin.csv,
 msgid "Tools"
-msgstr "à¤”à¤œà¤¼à¤¾à¤°"
+msgstr "औज़ार"
 
 #: Files:  evolution.csv,  nautilus.csv,
 msgid "Trash"
-msgstr "à¤°à¤¦à¥à¤¦à¥€"
+msgstr "रद्दी"
 
 #: Files:  openoffice.csv,
 msgid "Type"
-msgstr "à¤•à¤¼à¤¿à¤¸à¥à¤®"
+msgstr "क़िस्म"
 
 #: Files:  firefox.csv,  gedit.csv,
 msgid "Undo"
-msgstr "à¤ªà¤¹à¤²à¥‡ à¤œà¥ˆà¤¸à¤¾"
+msgstr "पहले जैसा"
 
 #: Files:  evolution.csv,
 msgid "Unmatched"
-msgstr "à¤¬à¥‡à¤®à¥‡à¤²"
+msgstr "बेमेल"
 
 #: Files:  openoffice.csv,
 msgid "Untitled"
-msgstr "à¤¬à¥‡à¤¨à¤¾à¤®"
+msgstr "बेनाम"
 
 #: Files:  openoffice.csv,
 msgid "Update"
-msgstr "à¤…à¤¦à¥à¤¯à¤¤à¤¨"
+msgstr "अद्यतन"
 
 #: Files:  openoffice.csv,
 msgid "Validity"
-msgstr "à¤µà¥ˆà¤§à¤¤à¤¾"
+msgstr "वैधता"
 
 #: Files:  openoffice.csv,
 msgid "Versions"
-msgstr "à¤¸à¤‚à¤¸à¥à¤•à¤°à¤£"
+msgstr "संस्करण"
 
 #: Files:  evolution.csv,  gedit.csv,  nautilus.csv,  openoffice.csv,
 msgid "View"
-msgstr "à¤¦à¥‡à¤–à¥‡à¤‚"
+msgstr "देखें"
 
 #: Files:  evolution.csv,
 msgid "Week"
-msgstr "à¤¸à¤ªà¥à¤¤à¤¾à¤¹"
+msgstr "सप्ताह"
 
 #: Files:  evolution.csv,
 msgid "Window"
-msgstr "à¤–à¤¿à¤¡à¤¼à¤•à¥€"
+msgstr "खिड़की"
 
 #: Files:  openoffice.csv,
 msgid "Wizards"
-msgstr "à¤¸à¤¹à¤¾à¤¯à¤•"
+msgstr "सहायक"
 
 #: Files:  openoffice.csv,
 msgid "Wrap"
-msgstr "à¤²à¤ªà¥‡à¤Ÿà¥‡à¤‚"
+msgstr "लपेटें"
 
 #: Files:  evolution.csv,  openoffice.csv,
 msgid "Zoom"
-msgstr "à¤›à¥‹à¤Ÿà¤¾-à¤¬à¤¡à¤¼à¤¾ à¤•à¤°à¥‡à¤‚"
+msgstr "छोटा-बड़ा करें"
 
 #: Files:  menu.csv,
 msgid "About GNOME"
-msgstr "à¤—à¥à¤¨à¥‹à¤® à¤ªà¤°à¤¿à¤šà¤¯"
+msgstr "ग्नोम परिचय"
 
 #: Files:  menu.csv,
 msgid "About Me"
-msgstr "à¤®à¥‡à¤°à¤¾ à¤ªà¤°à¤¿à¤šà¤¯"
+msgstr "मेरा परिचय"
 
 #: Files:  firefox.csv,
 msgid "About Mozilla Firefox"
-msgstr "à¤®à¥‹à¤œà¤¼à¤¿à¤²à¤¾ à¤«à¤¼à¤¾à¤¯à¤°à¤«à¤¼à¥‰à¤•à¥à¤¸ à¤ªà¤°à¤¿à¤šà¤¯"
+msgstr "मोज़िला फ़ायरफ़ॉक्स परिचय"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "About Panels"
-msgstr "à¤ªà¤Ÿà¤² à¤ªà¤°à¤¿à¤šà¤¯"
+msgstr "पटल परिचय"
 
 #: Files:  nautilus.csv,
 msgid "Add Bookmark"
-msgstr "à¤ªà¥à¤¸à¥à¤¤à¤šà¤¿à¤¹à¥à¤¨ à¤œà¥‹à¤¡à¤¼à¥‡à¤‚"
+msgstr "पुस्तचिह्न जोड़ें"
 
 #: Files:  pidgin.csv,
 msgid "Add Buddy"
-msgstr "à¤¦à¥‹à¤¸à¥à¤¤ à¤œà¥‹à¤¡à¤¼à¥‡à¤‚"
+msgstr "दोस्त जोड़ें"
 
 #: Files:  pidgin.csv,
 msgid "Add Chat"
-msgstr "à¤¨à¤ˆ à¤—à¤ªà¤¶à¤ª"
+msgstr "नई गपशप"
 
 #: Files:  pidgin.csv,
 msgid "Add Group"
-msgstr "à¤¸à¤®à¥‚à¤¹ à¤œà¥‹à¤¡à¤¼à¥‡à¤‚"
+msgstr "समूह जोड़ें"
 
 #: Files: pidgin.csv,
 msgid "Add/Edit"
-msgstr "à¤œà¥‹à¤¡à¤¼à¥‡à¤‚/à¤¸à¤‚à¤ªà¤¾à¤¦à¤¿à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "जोड़ें/संपादित करें"
 
 #: Files:  evolution.csv,
 msgid "Address Book"
-msgstr "à¤ªà¤¤à¤¾ à¤ªà¥à¤¸à¥à¤¤à¤¿à¤•à¤¾"
+msgstr "पता पुस्तिका"
 
 #: Files:  evolution.csv,
 msgid "Advanced Search"
-msgstr "à¤‰à¤¨à¥à¤¨à¤¤ à¤–à¥‹à¤œ"
+msgstr "उन्नत खोज"
 
 #: Files:  openoffice.csv,
 msgid "Animated Image"
-msgstr "à¤šà¤² à¤›à¤µà¤¿"
+msgstr "चल छवि"
 
 #: Files:  evolution.csv,
 msgid "Any Category"
-msgstr "à¤•à¥‹à¤ˆ à¤¶à¥à¤°à¥‡à¤£à¥€"
+msgstr "कोई श्रेणी"
 
 #: Files:  menu.csv,
 msgid "Archive Manager"
-msgstr "à¤²à¥‡à¤–à¤¾à¤—à¤¾à¤° à¤ªà¥à¤°à¤¬à¤‚à¤§à¤•"
+msgstr "लेखागार प्रबंधक"
 
 #: Files:  nautilus.csv,
 msgid "Arrange Items"
-msgstr "à¤µà¤¸à¥à¤¤à¥à¤à¤ à¤œà¤®à¤¾à¤à¤"
+msgstr "वस्तुएँ जमाएँ"
 
 #: Files:  evolution.csv,
 msgid "Assign Task"
-msgstr "à¤•à¤¾à¤°à¥à¤¯ à¤¨à¤¿à¤¯à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "कार्य नियत करें"
 
 #: Files:  gedit.csv,
 msgid "Autocheck Spelling"
-msgstr "à¤µà¤°à¥à¤¤à¤¨à¥€ à¤¸à¥à¤µà¤šà¤¾à¤²à¤¿à¤¤ à¤œà¤¾à¤à¤šà¥‡à¤‚"
+msgstr "वर्तनी स्वचालित जाँचें"
 
 #: Files:  openoffice.csv,
 msgid "Bibliography Database"
-msgstr "à¤—à¥à¤°à¤¨à¥à¤¥-à¤¸à¥‚à¤šà¥€ à¤¡à¥‡à¤Ÿà¤¾à¤¬à¥‡à¤¸"
+msgstr "ग्रन्थ-सूची डेटाबेस"
 
 #: Files:  openoffice.csv,
 msgid "Bibliography Entry"
-msgstr "à¤—à¥à¤°à¤¨à¥à¤¥-à¤¸à¥‚à¤šà¥€ à¤ªà¥à¤°à¤µà¤¿à¤·à¥à¤Ÿà¤¿"
+msgstr "ग्रन्थ-सूची प्रविष्टि"
 
 #: Files:  gedit.csv,
 msgid "Bottom Pane"
-msgstr "à¤¨à¤¿à¤šà¤²à¤¾ à¤ªà¤Ÿ"
+msgstr "निचला पट"
 
 #: Files:  nautilus.csv,
 msgid "Browse Folders"
-msgstr "à¤«à¤¼à¥‹à¤²à¥à¤¡à¤° à¤¬à¥à¤°à¤¾à¤‰à¤œà¤¼ à¤•à¤°à¥‡à¤‚"
+msgstr "फ़ोल्डर ब्राउज़ करें"
 
 #: Files:  pidgin.csv,
 msgid "Buddy Pounces"
-msgstr "à¤¦à¥‹à¤¸à¥à¤¤ à¤•à¥€ à¤¦à¤¸à¥à¤¤à¤•"
+msgstr "दोस्त की दस्तक"
 
 #: Files:  evolution.csv,
 msgid "By Company"
-msgstr "à¤•à¤‚à¤ªà¤¨à¥€ à¤•à¥‡ à¤…à¤¨à¥à¤¸à¤¾à¤°"
+msgstr "कंपनी के अनुसार"
 
 #: Files: openoffice.csv,
 msgid "Can't Restore"
-msgstr "à¤¬à¤¹à¤¾à¤²à¥€ à¤…à¤¸à¤‚à¤­à¤µ"
+msgstr "बहाली असंभव"
 
 #: Files: openoffice.csv,
 msgid "Can't Undo"
-msgstr "à¤µà¤¾à¤ªà¤¸à¥€ à¤…à¤¸à¤‚à¤­à¤µ"
+msgstr "वापसी असंभव"
 
 #: Files:  evolution.csv,
 msgid "Caret Mode"
-msgstr "à¤¹à¤‚à¤¸à¤ªà¤¦ à¤µà¤¿à¤§à¤¿"
+msgstr "हंसपद विधि"
 
 #: Files:  menu.csv,
 msgid "CD Player"
-msgstr "à¤¸à¥€à¤¡à¥€ à¤ªà¥à¤²à¥‡à¤¯à¤°"
+msgstr "सीडी प्लेयर"
 
 #: Files:  openoffice.csv,
 msgid "Cell Contents"
-msgstr "à¤•à¥‹à¤·à¥à¤  à¤…à¤‚à¤¤à¤°à¥à¤µà¤¸à¥à¤¤à¥"
+msgstr "कोष्ठ अंतर्वस्तु"
 
 #: Files:  openoffice.csv,
 msgid "Change Case"
-msgstr "à¤•à¥‡à¤¸ à¤¬à¤¦à¤²à¥‡à¤‚"
+msgstr "केस बदलें"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Change Language"
-msgstr "à¤­à¤¾à¤·à¤¾ à¤¬à¤¦à¤²à¥‡à¤‚"
+msgstr "भाषा बदलें"
 
 #: Files:  gnometerminal.csv,
 msgid "Change Profile"
-msgstr "à¤ªà¥à¤°à¥‹à¤«à¤¼à¤¾à¤‡à¤² à¤¬à¤¦à¤²à¥‡à¤‚"
+msgstr "प्रोफ़ाइल बदलें"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Change Session"
-msgstr "à¤¸à¤¤à¥à¤° à¤¬à¤¦à¤²à¥‡à¤‚"
+msgstr "सत्र बदलें"
 
 #: Files:  evolution.csv,  firefox.csv,
 msgid "Character Encoding"
-msgstr "à¤µà¤°à¥à¤£ à¤à¤¨à¥à¤•à¥‹à¤¡à¤¿à¤‚à¤—"
+msgstr "वर्ण एन्कोडिंग"
 
 #: Files:  menu.csv,
 msgid "Character Map"
-msgstr "à¤µà¤°à¥à¤£ à¤¤à¤¾à¤²à¤¿à¤•à¤¾"
+msgstr "वर्ण तालिका"
 
 #: Files:  gedit.csv,
 msgid "Check Spelling"
-msgstr "à¤µà¤°à¥à¤¤à¤¨à¥€ à¤œà¤¾à¤à¤šà¥‡à¤‚"
+msgstr "वर्तनी जाँचें"
 
 #: Files:  gedit.csv,
 msgid "Clear Highlight"
-msgstr "à¤†à¤²à¥‹à¤•à¤¨ à¤¹à¤Ÿà¤¾à¤à¤"
+msgstr "आलोकन हटाएँ"
 
 #: Files:  firefox.csv,
 msgid "Clear Private Data"
-msgstr "à¤¨à¤¿à¤œà¥€ à¤†à¤à¤•à¤¡à¤¼à¤¾ à¤¸à¤¾à¤« à¤•à¤°à¥‡à¤‚"
+msgstr "निजी आँकड़ा साफ करें"
 
 #: Files:  gedit.csv,
 msgid "Close All"
-msgstr "à¤¸à¤­à¥€ à¤¬à¤‚à¤¦ à¤•à¤°à¥‡à¤‚"
+msgstr "सभी बंद करें"
 
 #: Files:  firefox.csv,  gnometerminal.csv,
 msgid "Close Tab"
-msgstr "à¤Ÿà¥ˆà¤¬ à¤¬à¤‚à¤¦ à¤•à¤°à¥‡à¤‚"
+msgstr "टैब बंद करें"
 
 #: Files:  evolution.csv,  firefox.csv,  gnometerminal.csv,  openoffice.csv,
 msgid "Close Window"
-msgstr "à¤µà¤¿à¤‚à¤¡à¥‹ à¤¬à¤‚à¤¦ à¤•à¤°à¥‡à¤‚"
+msgstr "विंडो बंद करें"
 
 #: Files: openoffice.csv,
 msgid "Color/Grayscale"
-msgstr "à¤°à¤‚à¤—à¥€à¤¨/à¤§à¥‚à¤¸à¤°"
+msgstr "रंगीन/धूसर"
 
 #: Files:  openoffice.csv,
 msgid "Compare Documents"
-msgstr "à¤¦à¤¸à¥à¤¤à¤¾à¤µà¥‡à¤œà¤¼ à¤•à¥€ à¤¤à¥à¤²à¤¨à¤¾ à¤•à¤°à¥‡à¤‚"
+msgstr "दस्तावेज़ की तुलना करें"
 
 #: Files:  openoffice.csv,
 msgid "Conditional Formatting"
-msgstr "à¤¸à¤¶à¤°à¥à¤¤ à¤ªà¥à¤°à¤¾à¤°à¥‚à¤ªà¤£"
+msgstr "सशर्त प्रारूपण"
 
 #: Files:  menu.csv,
 msgid "Configuration Editor"
-msgstr "à¤µà¤¿à¤¨à¥à¤¯à¤¾à¤¸ à¤¸à¤‚à¤ªà¤¾à¤¦à¤•"
+msgstr "विन्यास संपादक"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Connection Information"
-msgstr "à¤•à¤¨à¥‡à¤•à¥à¤¶à¤¨ à¤¸à¥‚à¤šà¤¨à¤¾"
+msgstr "कनेक्शन सूचना"
 
 #: Files:  evolution.csv,
 msgid "Convert to Task"
-msgstr "à¤•à¤¾à¤°à¥à¤¯ à¤®à¥‡à¤‚ à¤¬à¤¦à¤²à¥‡à¤‚"
+msgstr "कार्य में बदलें"
 
 #: Files:  gdmpaneldesktop.csv,  nautilus.csv,
 msgid "Create Document"
-msgstr "à¤¦à¤¸à¥à¤¤à¤¾à¤µà¥‡à¤œà¤¼ à¤¬à¤¨à¤¾à¤à¤"
+msgstr "दस्तावेज़ बनाएँ"
 
 #: Files:  gdmpaneldesktop.csv,  nautilus.csv,
 msgid "Create Folder"
-msgstr "à¤«à¤¼à¥‹à¤²à¥à¤¡à¤° à¤¬à¤¨à¤¾à¤à¤"
+msgstr "फ़ोल्डर बनाएँ"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Create Launcher"
-msgstr "à¤²à¥‰à¤¨à¥à¤šà¤° à¤¬à¤¨à¤¾à¤à¤"
+msgstr "लॉन्चर बनाएँ"
 
 #: Files:  evolution.csv,
 msgid "Create Rule"
-msgstr "à¤¨à¤¿à¤¯à¤® à¤¬à¤¨à¤¾à¤à¤"
+msgstr "नियम बनाएँ"
 
 #: Files:  openoffice.csv,
 msgid "Cross-reference"
-msgstr "à¤ªà¥à¤°à¤¤à¤¿-à¤¸à¤‚à¤¦à¤°à¥à¤­"
+msgstr "प्रति-संदर्भ"
 
 #: Files:  gnometerminal.csv,
 msgid "Current Locale"
-msgstr "à¤®à¥Œà¤œà¥‚à¤¦à¤¾ à¤²à¥‹à¤•à¥‡à¤²"
+msgstr "मौजूदा लोकेल"
 
 #: Files:  gnometerminal.csv,
 msgid "Current Profile"
-msgstr "à¤®à¥Œà¤œà¥‚à¤¦à¤¾ à¤ªà¥à¤°à¥‹à¤«à¤¼à¤¾à¤‡à¤²"
+msgstr "मौजूदा प्रोफ़ाइल"
 
 #: Files:  evolution.csv,
 msgid "Current View"
-msgstr "à¤®à¥Œà¤œà¥‚à¤¦à¤¾ à¤¦à¥ƒà¤¶à¥à¤¯"
+msgstr "मौजूदा दृश्य"
 
 #: Files:  openoffice.csv,
 msgid "Custom Animation"
-msgstr "à¤®à¤¨à¤ªà¤¸à¤‚à¤¦ à¤šà¤² à¤›à¤µà¤¿"
+msgstr "मनपसंद चल छवि"
 
 #: Files:  evolution.csv,
 msgid "Day View"
-msgstr "à¤¦à¥ˆà¤¨à¤¿à¤• à¤¦à¥ƒà¤¶à¥à¤¯"
+msgstr "दैनिक दृश्य"
 
 #: Files:  pidgin.csv,
 msgid "Debug Window"
-msgstr "à¤¦à¥‹à¤· à¤¸à¥à¤§à¤¾à¤° à¤–à¤¼à¤¿à¤¡à¤¼à¤•à¥€"
+msgstr "दोष सुधार ख़िड़की"
 
 #: Files:  openoffice.csv,
 msgid "Default Formatting"
-msgstr "à¤¤à¤¯à¤¶à¥à¤¦à¤¾ à¤ªà¥à¤°à¤¾à¤°à¥‚à¤ªà¤£"
+msgstr "तयशुदा प्रारूपण"
 
 #: Files:  menu.csv,
 msgid "Default Printer"
-msgstr "à¤¤à¤¯à¤¶à¥à¤¦à¤¾ à¤®à¥à¤¦à¥à¤°à¤•"
+msgstr "तयशुदा मुद्रक"
 
 #: Files:  openoffice.csv,
 msgid "Define Range"
-msgstr "à¤¦à¤¾à¤¯à¤°à¤¾ à¤ªà¤°à¤¿à¤­à¤¾à¤·à¤¿à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "दायरा परिभाषित करें"
 
 #: Files:  evolution.csv,
 msgid "Define Views"
-msgstr "à¤¦à¥ƒà¤¶à¥à¤¯ à¤ªà¤°à¤¿à¤­à¤¾à¤·à¤¿à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "दृश्य परिभाषित करें"
 
 #: Files:  openoffice.csv,
 msgid "Delete Cells"
-msgstr "à¤•à¥‹à¤·à¥à¤  à¤®à¤¿à¤Ÿà¤¾à¤à¤"
+msgstr "कोष्ठ मिटाएँ"
 
 #: Files:  openoffice.csv,
 msgid "Delete Contents"
-msgstr "à¤…à¤‚à¤¤à¤°à¥à¤µà¤¸à¥à¤¤à¥ à¤®à¤¿à¤Ÿà¤¾à¤à¤"
+msgstr "अंतर्वस्तु मिटाएँ"
 
 #: Files:  evolution.csv,
 msgid "Delete Message"
-msgstr "à¤¸à¤‚à¤¦à¥‡à¤¶ à¤®à¤¿à¤Ÿà¤¾à¤à¤"
+msgstr "संदेश मिटाएँ"
 
 #: Files:  openoffice.csv,
 msgid "Delete Slide"
-msgstr "à¤¸à¥à¤²à¤¾à¤‡à¤¡ à¤®à¤¿à¤Ÿà¤¾à¤à¤"
+msgstr "स्लाइड मिटाएँ"
 
 #: Files:  menu.csv,
 msgid "Desktop Background"
-msgstr "à¤¡à¥‡à¤¸à¥à¤•à¤Ÿà¥‰à¤ª à¤ªà¥ƒà¤·à¥à¤ à¤­à¥‚à¤®à¤¿"
+msgstr "डेस्कटॉप पृष्ठभूमि"
 
 #: Files:menu
 msgid "Desktop Effects"
-msgstr "à¤¡à¥‡à¤¸à¥à¤•à¤Ÿà¥‰à¤ª à¤ªà¥à¤°à¤­à¤¾à¤µ"
+msgstr "डेस्कटॉप प्रभाव"
 
 #: Files:  gnometerminal.csv,
 msgid "Detach Tab"
-msgstr "à¤Ÿà¥ˆà¤¬ à¤…à¤²à¤— à¤•à¤°à¥‡à¤‚"
+msgstr "टैब अलग करें"
 
 #: Files:  openoffice.csv,
 msgid "Digital Signatures"
-msgstr "à¤¡à¤¿à¤œà¤¿à¤Ÿà¤² à¤¹à¤¸à¥à¤¤à¤¾à¤•à¥à¤·à¤°"
+msgstr "डिजिटल हस्ताक्षर"
 
 #: Files:  gedit.csv,
 msgid "Document Statistics"
-msgstr "à¤¦à¤¸à¥à¤¤à¤¾à¤µà¥‡à¤œà¤¼ à¤¸à¤¾à¤‚à¤–à¥à¤¯à¤¿à¤•à¥€"
+msgstr "दस्तावेज़ सांख्यिकी"
 
 #: Files:  firefox.csv,
 msgid "DOM Inspector"
-msgstr "à¤¡à¥€à¤“à¤à¤® à¤¨à¤¿à¤°à¥€à¤•à¥à¤·à¤•"
+msgstr "डीओएम निरीक्षक"
 
 #: Files:  openoffice.csv,
 msgid "Duplicate Slide"
-msgstr "à¤¸à¥à¤²à¤¾à¤‡à¤¡ à¤•à¥€ à¤¨à¤•à¤¼à¤²"
+msgstr "स्लाइड की नक़ल"
 
 #: Files:  nautilus.csv,
 msgid "Edit Bookmarks"
-msgstr "à¤ªà¥à¤¸à¥à¤¤à¤šà¤¿à¤¹à¥à¤¨ à¤¸à¤‚à¤ªà¤¾à¤¦à¤¿à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "पुस्तचिह्न संपादित करें"
 
 #: Files:  openoffice.csv,
 msgid "Empty Presentation"
-msgstr "à¤•à¥‹à¤°à¥€ à¤ªà¥à¤°à¤¸à¥à¤¤à¥à¤¤à¤¿"
+msgstr "कोरी प्रस्तुति"
 
 #: Files:  evolution.csv,
 msgid "Empty Trash"
-msgstr "à¤°à¤¦à¥à¤¦à¥€ à¤–à¤¾à¤²à¥€ à¤•à¤°à¥‡à¤‚"
+msgstr "रद्दी खाली करें"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Enable Networking"
-msgstr "à¤¸à¤‚à¤œà¤¾à¤²à¤¨ à¤¸à¤•à¥à¤°à¤¿à¤¯ à¤•à¤°à¥‡à¤‚"
+msgstr "संजालन सक्रिय करें"
 
 #: Files:  openoffice.csv,
 msgid "Exchange Database"
-msgstr "à¤¡à¥‡à¤Ÿà¤¾à¤¬à¥‡à¤¸ à¤µà¤¿à¤¨à¤¿à¤®à¤¯ à¤•à¤°à¥‡à¤‚"
+msgstr "डेटाबेस विनिमय करें"
 
 #: Files:  openoffice.csv,
 msgid "Expand Slide"
-msgstr "à¤¸à¥à¤²à¤¾à¤‡à¤¡ à¤«à¥ˆà¤²à¤¾à¤à¤"
+msgstr "स्लाइड फैलाएँ"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Failsafe Terminal"
-msgstr "à¤«à¤¼à¥‡à¤²à¤¸à¥‡à¤«à¤¼ à¤Ÿà¤°à¥à¤®à¤¿à¤¨à¤²"
+msgstr "फ़ेलसेफ़ टर्मिनल"
 
 #: Files:  openoffice.csv,
 msgid "Field Names"
-msgstr "à¤•à¥à¤·à¥‡à¤¤à¥à¤° à¤¨à¤¾à¤®"
+msgstr "क्षेत्र नाम"
 
 #: Files:  openoffice.csv,
 msgid "Field Shadings"
-msgstr "à¤•à¥à¤·à¥‡à¤¤à¥à¤° à¤°à¤‚à¤—"
+msgstr "क्षेत्र रंग"
 
 #: Files:  menu.csv,
 msgid "File Browser"
-msgstr "à¤«à¤¼à¤¾à¤‡à¤² à¤¬à¥à¤°à¤¾à¤‰à¤œà¤¼à¤°"
+msgstr "फ़ाइल ब्राउज़र"
 
 #: Files:  menu.csv,
 msgid "File Management"
-msgstr "à¤«à¤¼à¤¾à¤‡à¤² à¤ªà¥à¤°à¤¬à¤‚à¤§à¤¨"
+msgstr "फ़ाइल प्रबंधन"
 
 #: Files:  pidgin.csv,
 msgid "File transfers"
-msgstr "à¤«à¤¼à¤¾à¤‡à¤² à¤¹à¤¸à¥à¤¤à¤¾à¤‚à¤¤à¤°à¤£"
+msgstr "फ़ाइल हस्तांतरण"
 
 #: Files:  firefox.csv,
 msgid "Find Again"
-msgstr "à¤«à¤¿à¤° à¤¢à¥‚à¤à¤¢à¥‡à¤‚"
+msgstr "फिर ढूँढें"
 
 #: Files:  gedit.csv,
 msgid "Find Next"
-msgstr "à¤…à¤—à¤²à¤¾ à¤¢à¥‚à¤à¤¢à¥‡à¤‚"
+msgstr "अगला ढूँढें"
 
 #: Files:  evolution.csv,
 msgid "Find Now"
-msgstr "à¤…à¤¬ à¤¢à¤¼à¥‚à¤à¤¢à¥‡à¤‚"
+msgstr "अब ढ़ूँढें"
 
 #: Files:  gedit.csv,
 msgid "Find Previous"
-msgstr "à¤ªà¤¿à¤›à¤²à¤¾ à¤¢à¥‚à¤à¤¢à¤¼à¥‡à¤‚"
+msgstr "पिछला ढूँढ़ें"
 
 #: Files:  openoffice.csv,
 msgid "Floating Frame"
-msgstr "à¤¤à¥ˆà¤°à¤¤à¤¾ à¤«à¤¼à¥à¤°à¥‡à¤®"
+msgstr "तैरता फ़्रेम"
 
 #: Files:  evolution.csv,
 msgid "Forget Passwords"
-msgstr "à¤•à¥‚à¤Ÿà¤¶à¤¬à¥à¤¦ à¤­à¥‚à¤² à¤—à¤"
+msgstr "कूटशब्द भूल गए"
 
 #: Files:  openoffice.csv,
 msgid "Formatting Mark"
-msgstr "à¤ªà¥à¤°à¤¾à¤°à¥‚à¤ªà¤£ à¤šà¤¿à¤¹à¥à¤¨"
+msgstr "प्रारूपण चिह्न"
 
 #: Files:  openoffice.csv,
 msgid "Formula bar"
-msgstr "à¤¸à¥‚à¤¤à¥à¤° à¤ªà¤Ÿà¥à¤Ÿà¥€"
+msgstr "सूत्र पट्टी"
 
 #: Files:  evolution.csv,
 msgid "Forward As"
-msgstr "à¤à¤¸à¥‡ à¤…à¤—à¥à¤°à¥‡à¤·à¤¿à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "ऐसे अग्रेषित करें"
 
 #: Files:  evolution.csv,
 msgid "Forward Contact"
-msgstr "à¤¸à¤‚à¤ªà¤°à¥à¤• à¤…à¤—à¥à¤°à¥‡à¤·à¤¿à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "संपर्क अग्रेषित करें"
 
 #: Files:  openoffice.csv,
 msgid "From template"
-msgstr "à¤¨à¤®à¥‚à¤¨à¤¾ à¤–à¤¼à¤¾à¤•à¤¾ à¤¸à¥‡"
+msgstr "नमूना ख़ाका से"
 
 #: Files:  openoffice.csv,
 msgid "Function List"
-msgstr "à¤ªà¥à¤°à¤•à¤¾à¤°à¥à¤¯ à¤¸à¥‚à¤šà¥€"
+msgstr "प्रकार्य सूची"
 
 #: Files:  openoffice.csv,
 msgid "Glue Points"
-msgstr "à¤—à¥à¤²à¥‚ à¤ªà¥à¤µà¤¾à¤‡à¤‚à¤Ÿ"
+msgstr "ग्लू प्वाइंट"
 
 #: Files:  evolution.csv,
 msgid "Go To"
-msgstr "à¤¯à¤¹à¤¾à¤ à¤œà¤¾à¤à¤"
+msgstr "यहाँ जाएँ"
 
 #: Files:  openoffice.csv,
 msgid "Goal Seek"
-msgstr "à¤²à¤•à¥à¤·à¥à¤¯ à¤–à¥‹à¤œ"
+msgstr "लक्ष्य खोज"
 
 #: Files:  openoffice.csv,
 msgid "Handout Page"
-msgstr "à¤ªà¤°à¤šà¤¾ à¤ªà¥ƒà¤·à¥à¤ "
+msgstr "परचा पृष्ठ"
 
 #: Files:  firefox.csv,
 msgid "Help Contents"
-msgstr "à¤®à¤¦à¤¦ à¤µà¤¿à¤·à¤¯ à¤¸à¥‚à¤šà¥€"
+msgstr "मदद विषय सूची"
 
 #: Files:  openoffice.csv,
 msgid "Hidden Paragraphs"
-msgstr "à¤›à¤¿à¤ªà¥‡ à¤…à¤¨à¥à¤šà¥à¤›à¥‡à¤¦"
+msgstr "छिपे अनुच्छेद"
 
 #: Files:  gedit.csv,
 msgid "Highlight Mode"
-msgstr "à¤†à¤²à¥‹à¤•à¤¨ à¤µà¤¿à¤§à¤¿"
+msgstr "आलोकन विधि"
 
 #: Files:  menu.csv,
 msgid "Home Folder"
-msgstr "à¤˜à¤° à¤«à¤¼à¥‹à¤²à¥à¤¡à¤°"
+msgstr "घर फ़ोल्डर"
 
 #: Files:  openoffice.csv,
 msgid "Horizontal Ruler"
-msgstr "à¤•à¥à¤·à¥ˆà¤¤à¤¿à¤œ à¤°à¥‚à¤²à¤°"
+msgstr "क्षैतिज रूलर"
 
 #: Files:  openoffice.csv,
 msgid "Index Entry"
-msgstr "à¤…à¤¨à¥à¤•à¥à¤°à¤®à¤£à¤¿à¤•à¤¾ à¤ªà¥à¤°à¤µà¤¿à¤·à¥à¤Ÿà¤¿"
+msgstr "अनुक्रमणिका प्रविष्टि"
 
 #: Files:  gedit.csv,
 msgid "Interactive Search"
-msgstr "à¤…à¤‚à¤¤à¤ƒà¤•à¥à¤°à¤¿à¤¯à¤¾à¤¤à¥à¤®à¤• à¤–à¥‹à¤œ"
+msgstr "अंतःक्रियात्मक खोज"
 
 #: Files:  menu.csv,
 msgid "Internet Messenger"
-msgstr "à¤…à¤‚à¤¤à¤°à¥à¤œà¤¾à¤² à¤®à¥ˆà¤¸à¥‡à¤‚à¤œà¤°"
+msgstr "अंतर्जाल मैसेंजर"
 
 #: Files:  firefox.csv,
 msgid "JavaScript Console"
-msgstr "à¤œà¤¾à¤µà¤¾à¤¸à¥à¤•à¥à¤°à¤¿à¤ªà¥à¤Ÿ à¤•à¤‚à¤¸à¥‹à¤²"
+msgstr "जावास्क्रिप्ट कंसोल"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Keep Aligned"
-msgstr "à¤¸à¤‚à¤°à¥‡à¤–à¤¿à¤¤ à¤°à¤–à¥‡à¤‚"
+msgstr "संरेखित रखें"
 
 #: Files:  gnometerminal.csv,  menu.csv,
 msgid "Keyboard Shortcuts"
-msgstr "à¤•à¥à¤‚à¤œà¥€à¤ªà¤Ÿ à¤¶à¥‰à¤°à¥à¤Ÿà¤•à¤Ÿ"
+msgstr "कुंजीपट शॉर्टकट"
 
 #: Files:  menu.csv,
 msgid "Keyring Manager"
-msgstr "à¤•à¥à¤‚à¤œà¥€à¤—à¥à¤šà¥à¤› à¤ªà¥à¤°à¤¬à¤‚à¤§à¤•"
+msgstr "कुंजीगुच्छ प्रबंधक"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Last Session"
-msgstr "à¤ªà¤¿à¤›à¤²à¤¾ à¤¸à¤¤à¥à¤°"
+msgstr "पिछला सत्र"
 
 #: Files:  openoffice.csv,
 msgid "Line Numbering"
-msgstr "à¤ªà¤‚à¤•à¥à¤¤à¤¿ à¤•à¥à¤°à¤®à¤¾à¤‚à¤•à¤£"
+msgstr "पंक्ति क्रमांकण"
 
 #: Files:  evolution.csv,
 msgid "List View"
-msgstr "à¤¸à¥‚à¤šà¥€ à¤¦à¥ƒà¤¶à¥à¤¯"
+msgstr "सूची दृश्य"
 
 #: Files:  evolution.csv,
 msgid "Load Images"
-msgstr "à¤›à¤µà¤¿ à¤²à¥‹à¤¡ à¤•à¤°à¥‡à¤‚"
+msgstr "छवि लोड करें"
 
 #: Files:  menu.csv,
 msgid "Login Screen"
-msgstr "à¤²à¥‰à¤—à¤¿à¤¨ à¤¸à¥à¤•à¥à¤°à¥€à¤¨"
+msgstr "लॉगिन स्क्रीन"
 
 #: Files:  evolution.csv,
 msgid "Mailing List"
-msgstr "à¤¡à¤¾à¤• à¤¸à¥‚à¤šà¥€"
+msgstr "डाक सूची"
 
 #: Files:  nautilus.csv,
 msgid "Make Links"
-msgstr "à¤•à¤¡à¤¼à¥€ à¤¬à¤¨à¤¾à¤à¤"
+msgstr "कड़ी बनाएँ"
 
 #: Files:  firefox.csv,
 msgid "Manage Bookmarks"
-msgstr "à¤ªà¥à¤¸à¥à¤¤à¤šà¤¿à¤¹à¥à¤¨ à¤ªà¥à¤°à¤¬à¤‚à¤§à¤¿à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "पुस्तचिह्न प्रबंधित करें"
 
 #: Files:  openoffice.csv,
 msgid "Manual Break"
-msgstr "à¤¦à¤¸à¥à¤¤à¥€ à¤…à¤‚à¤¤à¤°à¤¾à¤²"
+msgstr "दस्ती अंतराल"
 
 #: Files:  evolution.csv,
 msgid "Mark As"
-msgstr "à¤à¤¸à¥‡ à¤šà¤¿à¤¹à¥à¤¨à¤¿à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "ऐसे चिह्नित करें"
 
 #: Files:  openoffice.csv,
 msgid "Media Player"
-msgstr "à¤®à¥€à¤¡à¤¿à¤¯à¤¾ à¤ªà¥à¤²à¥‡à¤¯à¤°"
+msgstr "मीडिया प्लेयर"
 
 #: Files:  menu.csv,
 msgid "Menu Layout"
-msgstr "à¤®à¥‡à¤¨à¥à¤¯à¥‚ à¤–à¤¼à¤¾à¤•à¤¾"
+msgstr "मेन्यू ख़ाका"
 
 #: Files:  openoffice.csv,
 msgid "Merge Cell"
-msgstr "à¤•à¥‹à¤·à¥à¤  à¤®à¤¿à¤²à¤¾à¤à¤"
+msgstr "कोष्ठ मिलाएँ"
 
 #: Files:  openoffice.csv,
 msgid "Merge Table"
-msgstr "à¤¸à¤¾à¤°à¤£à¥€ à¤®à¤¿à¤²à¤¾à¤à¤"
+msgstr "सारणी मिलाएँ"
 
 #: Files:  evolution.csv,
 msgid "Message Filters"
-msgstr "à¤¸à¤‚à¤¦à¥‡à¤¶ à¤«à¤¼à¤¿à¤²à¥à¤Ÿà¤°"
+msgstr "संदेश फ़िल्टर"
 
 #: Files:  evolution.csv,
 msgid "Message Source"
-msgstr "à¤¸à¤‚à¤¦à¥‡à¤¶ à¤¸à¥à¤°à¥‹à¤¤"
+msgstr "संदेश स्रोत"
 
 #: Files:  evolution.csv,
 msgid "Month View"
-msgstr "à¤®à¤¾à¤¸à¤¿à¤• à¤¦à¥ƒà¤¶à¥à¤¯"
+msgstr "मासिक दृश्य"
 
 #: Files:  menu.csv,
 msgid "More Preferences"
-msgstr "à¤”à¤° à¤µà¤°à¥€à¤¯à¤¤à¤¾à¤à¤"
+msgstr "और वरीयताएँ"
 
 #: Files:  openoffice.csv,
 msgid "Multiple Operations"
-msgstr "à¤¬à¤¹à¥à¤² à¤¸à¤‚à¤•à¥à¤°à¤¿à¤¯à¤¾"
+msgstr "बहुल संक्रिया"
 
 #: Files:  pidgin.csv,
 msgid "Mute Sounds"
-msgstr "à¤®à¥‚à¤• à¤•à¤°à¥‡à¤‚"
+msgstr "मूक करें"
 
 #: Files:  menu.csv,
 msgid "Network Proxy"
-msgstr "à¤¸à¤‚à¤œà¤¾à¤² à¤ªà¥à¤°à¥‰à¤•à¥à¤¸à¥€"
+msgstr "संजाल प्रॉक्सी"
 
 #: Files:  menu.csv,
 msgid "Network Servers"
-msgstr "à¤¸à¤‚à¤œà¤¾à¤² à¤¸à¤°à¥à¤µà¤°"
+msgstr "संजाल सर्वर"
 
 #: Files:  firefox.csv,
 msgid "New Message"
-msgstr "à¤¨à¤¯à¤¾ à¤¸à¤‚à¤¦à¥‡à¤¶"
+msgstr "नया संदेश"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "New Panel"
-msgstr "à¤¨à¤¯à¤¾ à¤ªà¤Ÿà¤²"
+msgstr "नया पटल"
 
 #: Files:  gnometerminal.csv,
 msgid "New Profile"
-msgstr "à¤¨à¤¯à¤¾ à¤ªà¥à¤°à¥‹à¤«à¤¼à¤¾à¤‡à¤²"
+msgstr "नया प्रोफ़ाइल"
 
 #: Files:  firefox.csv,
 msgid "New Tab"
-msgstr "à¤¨à¤¯à¤¾ à¤Ÿà¥ˆà¤¬"
+msgstr "नया टैब"
 
 #: Files:  evolution.csv,  firefox.csv,  openoffice.csv,
 msgid "New Window"
-msgstr "à¤¨à¤¯à¤¾ à¤µà¤¿à¤‚à¤¡à¥‹"
+msgstr "नया विंडो"
 
 #: Files:  gedit.csv,
 msgid "Next Document"
-msgstr "à¤…à¤—à¤²à¤¾ à¤¦à¤¸à¥à¤¤à¤¾à¤µà¥‡à¤œà¤¼"
+msgstr "अगला दस्तावेज़"
 
 #: Files:  gnometerminal.csv,
 msgid "Next Tab"
-msgstr "à¤…à¤—à¤²à¤¾ à¤Ÿà¥ˆà¤¬"
+msgstr "अगला टैब"
 
 #: Files:  openoffice.csv,
 msgid "Nonprinting Characters"
-msgstr "à¤¨ à¤›à¤ªà¤¨à¥‡ à¤µà¤¾à¤²à¥‡ à¤µà¤°à¥à¤£"
+msgstr "न छपने वाले वर्ण"
 
 #: Files:  gnometerminal.csv,  nautilus.csv,
 msgid "Normal Size"
-msgstr "à¤¸à¤¾à¤®à¤¾à¤¨à¥à¤¯ à¤†à¤•à¤¾à¤°"
+msgstr "सामान्य आकार"
 
 #: Files:  openoffice.csv,
 msgid "Notes Page"
-msgstr "à¤¨à¥‹à¤Ÿà¥à¤¸ à¤ªà¥ƒà¤·à¥à¤ "
+msgstr "नोट्स पृष्ठ"
 
 #: Files:  openoffice.csv,
 msgid "Number Format"
-msgstr "à¤¸à¤‚à¤–à¥à¤¯à¤¾ à¤ªà¥à¤°à¤¾à¤°à¥‚à¤ª"
+msgstr "संख्या प्रारूप"
 
 #: Files:  pidgin.csv,
 msgid "Online Help"
-msgstr "à¤‘à¤¨à¤²à¤¾à¤‡à¤¨ à¤®à¤¦à¤¦"
+msgstr "ऑनलाइन मदद"
 
 #: Files:  firefox.csv,
 msgid "Open File"
-msgstr "à¤«à¤¼à¤¾à¤‡à¤² à¤–à¥‹à¤²à¥‡à¤‚"
+msgstr "फ़ाइल खोलें"
 
 #: Files:  firefox.csv,  gedit.csv,  nautilus.csv,
 msgid "Open Location"
-msgstr "à¤¸à¥à¤¥à¤¾à¤¨ à¤–à¥‹à¤²à¥‡à¤‚"
+msgstr "स्थान खोलें"
 
 #: Files:  nautilus.csv,
 msgid "Open Parent"
-msgstr "à¤®à¥‚à¤² à¤–à¥‹à¤²à¥‡à¤‚"
+msgstr "मूल खोलें"
 
 #: Files:  gnometerminal.csv,
 msgid "Open Tab"
-msgstr "à¤Ÿà¥ˆà¤¬ à¤–à¥‹à¤²à¥‡à¤‚"
+msgstr "टैब खोलें"
 
 #: Files:  gdmpaneldesktop.csv,  gnometerminal.csv,
 msgid "Open Terminal"
-msgstr "à¤Ÿà¤°à¥à¤®à¤¿à¤¨à¤² à¤–à¥‹à¤²à¥‡à¤‚"
+msgstr "टर्मिनल खोलें"
 
 #: Files:  openoffice.csv,
 msgid "Outline Numbering"
-msgstr "à¤•à¥à¤°à¤®à¤¾à¤‚à¤•à¤¨ à¤ªà¥à¤°à¤¾à¤°à¥‚à¤ª"
+msgstr "क्रमांकन प्रारूप"
 
 #: Files:  openoffice.csv,
 msgid "Package Manager"
-msgstr "à¤ªà¥ˆà¤•à¥‡à¤œ à¤ªà¥à¤°à¤¬à¤‚à¤§à¤•"
+msgstr "पैकेज प्रबंधक"
 
 #: Files:  firefox.csv,
 msgid "Page Info"
-msgstr "à¤ªà¥ƒà¤·à¥à¤  à¤¸à¥‚à¤šà¤¨à¤¾"
+msgstr "पृष्ठ सूचना"
 
 #: Files:  openoffice.csv,
 msgid "Page Number"
-msgstr "à¤ªà¥ƒà¤·à¥à¤  à¤¸à¤‚à¤–à¥à¤¯à¤¾"
+msgstr "पृष्ठ संख्या"
 
 #: Files:  openoffice.csv,
 msgid "Page Preview"
-msgstr "à¤ªà¥ƒà¤·à¥à¤  à¤ªà¥‚à¤°à¥à¤µà¤¾à¤µà¤²à¥‹à¤•à¤¨"
+msgstr "पृष्ठ पूर्वावलोकन"
 
 #: Files:  firefox.csv,
 msgid "Page Setup"
-msgstr "à¤ªà¥ƒà¤·à¥à¤  à¤¸à¥‡à¤Ÿà¤…à¤ª"
+msgstr "पृष्ठ सेटअप"
 
 #: Files:  firefox.csv,
 msgid "Page Source"
-msgstr "à¤ªà¥ƒà¤·à¥à¤  à¤¸à¥à¤°à¥‹à¤¤"
+msgstr "पृष्ठ स्रोत"
 
 #: Files:  firefox.csv,
 msgid "Page Style"
-msgstr "à¤ªà¥ƒà¤·à¥à¤  à¤¶à¥ˆà¤²à¥€"
+msgstr "पृष्ठ शैली"
 
 #: Files:  menu.csv,
 msgid "PalmOS Devices"
-msgstr "à¤ªà¤¾à¤®à¤“à¤à¤¸ à¤¯à¥à¤•à¥à¤¤à¤¿"
+msgstr "पामओएस युक्ति"
 
 #: Files:  openoffice.csv,
 msgid "Paste Special"
-msgstr "à¤–à¤¼à¤¾à¤¸ à¤¢à¤‚à¤— à¤¸à¥‡ à¤šà¤¿à¤ªà¤•à¤¾à¤à¤"
+msgstr "ख़ास ढंग से चिपकाएँ"
 
 #: Files:  evolution.csv,
 msgid "Phone List"
-msgstr "à¤«à¥‹à¤¨ à¤¸à¥‚à¤šà¥€"
+msgstr "फोन सूची"
 
 #: Files:  menu.csv,
 msgid "Power Management"
-msgstr "à¤¬à¤¿à¤œà¤²à¥€ à¤ªà¥à¤°à¤¬à¤‚à¤§à¤¨"
+msgstr "बिजली प्रबंधन"
 
 #: Files:  menu.csv,
 msgid "Preferred Applications"
-msgstr "à¤ªà¤¸à¤‚à¤¦à¥€à¤¦à¤¾ à¤…à¤¨à¥à¤ªà¥à¤°à¤¯à¥‹à¤—"
+msgstr "पसंदीदा अनुप्रयोग"
 
 #: Files:  openoffice.csv,
 msgid "Presentation Wizard"
-msgstr "à¤ªà¥à¤°à¤¸à¥à¤¤à¥à¤¤à¤¿ à¤¸à¤¹à¤¾à¤¯à¤•"
+msgstr "प्रस्तुति सहायक"
 
 #: Files:  gedit.csv,
 msgid "Previous Document"
-msgstr "à¤ªà¤¿à¤›à¤²à¤¾ à¤¦à¤¸à¥à¤¤à¤¾à¤µà¥‡à¤œà¤¼"
+msgstr "पिछला दस्तावेज़"
 
 #: Files:  gnometerminal.csv,
 msgid "Previous Tab"
-msgstr "à¤ªà¤¿à¤›à¤²à¤¾ à¤Ÿà¥ˆà¤¬"
+msgstr "पिछला टैब"
 
 #: Files:  openoffice.csv,
 msgid "Print Layout"
-msgstr "à¤›à¤ªà¤¾à¤ˆ à¤–à¤¼à¤¾à¤•à¤¾"
+msgstr "छपाई ख़ाका"
 
 #: Files:  firefox.csv,
 msgid "Print preview"
-msgstr "à¤›à¤ªà¤¾à¤ˆ à¤ªà¥‚à¤°à¥à¤µà¤¾à¤µà¤²à¥‹à¤•à¤¨"
+msgstr "छपाई पूर्वावलोकन"
 
 #: Files:  openoffice.csv,
 msgid "Print Ranges"
-msgstr "à¤›à¤ªà¤¾à¤ˆ à¤¦à¤¾à¤¯à¤°à¤¾"
+msgstr "छपाई दायरा"
 
 #: Files:  openoffice.csv,
 msgid "Printer Settings"
-msgstr "à¤ªà¥à¤°à¤¿à¤‚à¤Ÿà¤° à¤¸à¥‡à¤Ÿà¤¿à¤‚à¤—"
+msgstr "प्रिंटर सेटिंग"
 
 #: Files:  menu.csv,
 msgid "Project Management"
-msgstr "à¤ªà¥à¤°à¥‰à¤œà¥‡à¤•à¥à¤Ÿ à¤ªà¥à¤°à¤¬à¤‚à¤§à¤¨"
+msgstr "प्रॉजेक्ट प्रबंधन"
 
 #: Files:  openoffice.csv,
 msgid "Protect Document"
-msgstr "à¤¦à¤¸à¥à¤¤à¤¾à¤µà¥‡à¤œ à¤•à¥€ à¤¸à¥à¤°à¤•à¥à¤·à¤¾ à¤•à¤°à¥‡à¤‚"
+msgstr "दस्तावेज की सुरक्षा करें"
 
 #: Files:  evolution.csv,
 msgid "Quick Reference"
-msgstr "à¤¦à¥à¤°à¥à¤¤ à¤¸à¤‚à¤¦à¤°à¥à¤­"
+msgstr "द्रुत संदर्भ"
 
 #: Files:  firefox.csv,
 msgid "Read Mail"
-msgstr "à¤¡à¤¾à¤• à¤ªà¤¢à¤¼à¥‡à¤‚"
+msgstr "डाक पढ़ें"
 
 #: Files:  openoffice.csv,
 msgid "Recent Documents"
-msgstr "à¤¹à¤¾à¤²à¤¿à¤¯à¤¾ à¤¦à¤¸à¥à¤¤à¤¾à¤µà¥‡à¤œà¤¼"
+msgstr "हालिया दस्तावेज़"
 
 #: Files:  openoffice.csv,
 msgid "Refresh Range"
-msgstr "à¤¦à¤¾à¤¯à¤°à¤¾ à¤¤à¤¾à¤œà¤¼à¤¾ à¤•à¤°à¥‡à¤‚"
+msgstr "दायरा ताज़ा करें"
 
 #: Files:  openoffice.csv,
 msgid "Rehearse Timings"
-msgstr "à¤¸à¤®à¤¯à¤¾à¤­à¥à¤¯à¤¾à¤¸"
+msgstr "समयाभ्यास"
 
 #: Files:  menu.csv,
 msgid "Remote Desktop"
-msgstr "à¤¦à¥‚à¤°à¤¸à¥à¤¥ à¤¡à¥‡à¤¸à¥à¤•à¤Ÿà¥‰à¤ª"
+msgstr "दूरस्थ डेस्कटॉप"
 
 #: Files:  pidgin.csv,
 msgid "Room List"
-msgstr "à¤•à¤•à¥à¤· à¤¸à¥‚à¤šà¥€"
+msgstr "कक्ष सूची"
 
 #: Files:  menu.csv,
 msgid "Root Password"
-msgstr "à¤°à¥‚à¤Ÿ à¤•à¥‚à¤Ÿà¤¶à¤¬à¥à¤¦"
+msgstr "रूट कूटशब्द"
 
 #: Files:  gedit.csv,  openoffice.csv,
 msgid "Save All"
-msgstr "à¤¸à¤­à¥€ à¤¸à¤¹à¥‡à¤œà¥‡à¤‚"
+msgstr "सभी सहेजें"
 
 #: Files:  gedit.csv,  openoffice.csv,
 msgid "Save As"
-msgstr "à¤à¤¸à¥‡ à¤¸à¤¹à¥‡à¤œà¥‡à¤‚"
+msgstr "ऐसे सहेजें"
 
 #: Files:  evolution.csv,
 msgid "Save Search"
-msgstr "à¤–à¥‹à¤œ à¤¸à¤¹à¥‡à¤œà¥‡à¤‚"
+msgstr "खोज सहेजें"
 
 #: Files:  menu.csv,
 msgid "Scanner Tool"
-msgstr "à¤¸à¥à¤•à¥ˆà¤¨à¤° à¤”à¤œà¤¼à¤¾à¤°"
+msgstr "स्कैनर औज़ार"
 
 #: Files:  menu.csv,
 msgid "Screen Resolution"
-msgstr "à¤¸à¥à¤•à¥à¤°à¥€à¤¨ à¤°à¥‡à¤œà¤¼à¥‰à¤²à¥à¤¯à¥‚à¤¶à¤¨"
+msgstr "स्क्रीन रेज़ॉल्यूशन"
 
 #: Files:  evolution.csv,
 msgid "Search Folders"
-msgstr "à¤«à¤¼à¥‹à¤²à¥à¤¡à¤° à¤–à¥‹à¤œà¥‡à¤‚"
+msgstr "फ़ोल्डर खोजें"
 
 #: Files:  firefox.csv,  gedit.csv,  nautilus.csv,  openoffice.csv,
 msgid "Select All"
-msgstr "à¤¸à¤­à¥€ à¤šà¥à¤¨à¥‡à¤‚"
+msgstr "सभी चुनें"
 
 #: Files:  evolution.csv,
 msgid "Select Date"
-msgstr "à¤¤à¤¿à¤¥à¤¿ à¤šà¥à¤¨à¥‡à¤‚"
+msgstr "तिथि चुनें"
 
 #: Files:  nautilus.csv,
 msgid "Select Pattern"
-msgstr "à¤ªà¥ˆà¤Ÿà¤°à¥à¤¨ à¤šà¥à¤¨à¥‡à¤‚"
+msgstr "पैटर्न चुनें"
 
 #: Files:  openoffice.csv,
 msgid "Select Range"
-msgstr "à¤¦à¤¾à¤¯à¤°à¤¾ à¤šà¥à¤¨à¥‡à¤‚"
+msgstr "दायरा चुनें"
 
 #: Files:  openoffice.csv,
 msgid "Select Text"
-msgstr "à¤ªà¤¾à¤  à¤šà¥à¤¨à¥‡à¤‚"
+msgstr "पाठ चुनें"
 
 #: Files:  evolution.csv,
 msgid "Select Today"
-msgstr "à¤†à¤œ à¤šà¥à¤¨à¥‡à¤‚"
+msgstr "आज चुनें"
 
 #: Files:  menu.csv,
 msgid "SELinux Troubleshooter"
-msgstr "à¤à¤¸à¤ˆà¤²à¤¿à¤¨à¤•à¥à¤¸ à¤µà¤¿à¤˜à¥à¤¨à¤¨à¤¿à¤µà¤¾à¤°à¤•"
+msgstr "एसईलिनक्स विघ्ननिवारक"
 
 #: Files:  firefox.csv,
 msgid "Send Link"
-msgstr "à¤•à¤¡à¤¼à¥€ à¤­à¥‡à¤œà¥‡à¤‚"
+msgstr "कड़ी भेजें"
 
 #: Files: evolution.csv,
 msgid "Send/Receive"
-msgstr "à¤­à¥‡à¤œà¥‡à¤‚/à¤ªà¤¾à¤à¤"
+msgstr "भेजें/पाएँ"
 
 #: Files:  gedit.csv,
 msgid "Set Language"
-msgstr "à¤­à¤¾à¤·à¤¾ à¤¤à¤¯ à¤•à¤°à¥‡à¤‚"
+msgstr "भाषा तय करें"
 
 #: Files:  gnometerminal.csv,
 msgid "Set Title"
-msgstr "à¤¶à¥€à¤°à¥à¤·à¤• à¤¤à¤¯ à¤•à¤°à¥‡à¤‚"
+msgstr "शीर्षक तय करें"
 
 #: Files:  gnometerminal.csv,
 msgid "Show Menubar"
-msgstr "à¤®à¥‡à¤¨à¥à¤¯à¥‚à¤ªà¤Ÿà¥à¤Ÿà¥€ à¤¦à¤¿à¤–à¤¾à¤à¤"
+msgstr "मेन्यूपट्टी दिखाएँ"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Shut Down"
-msgstr "à¤¬à¤‚à¤¦ à¤•à¤°à¥‡à¤‚"
+msgstr "बंद करें"
 
 #: Files:  gedit.csv,
 msgid "Side Pane"
-msgstr "à¤¬à¤¾à¤œà¤¼à¥‚ à¤«à¤²à¤•"
+msgstr "बाज़ू फलक"
 
 #: Files:  openoffice.csv,
 msgid "Slide Design"
-msgstr "à¤¸à¥à¤²à¤¾à¤‡à¤¡ à¤¡à¤¿à¤œà¤¼à¤¾à¤‡à¤¨"
+msgstr "स्लाइड डिज़ाइन"
 
 #: Files:  openoffice.csv,
 msgid "Slide Layout"
-msgstr "à¤¸à¥à¤²à¤¾à¤‡à¤¡ à¤–à¤¼à¤¾à¤•à¤¾"
+msgstr "स्लाइड ख़ाका"
 
 #: Files:  openoffice.csv,
 msgid "Slide Pane"
-msgstr "à¤¸à¥à¤²à¤¾à¤‡à¤¡ à¤«à¤²à¤•"
+msgstr "स्लाइड फलक"
 
 #: Files:  openoffice.csv,
 msgid "Slide Show"
-msgstr "à¤¸à¥à¤²à¤¾à¤‡à¤¡ à¤¶à¥‹"
+msgstr "स्लाइड शो"
 
 #: Files:  openoffice.csv,
 msgid "Slide Sorter"
-msgstr "à¤¸à¥à¤²à¤¾à¤‡à¤¡ à¤›à¤¾à¤à¤Ÿà¤•"
+msgstr "स्लाइड छाँटक"
 
 #: Files:  openoffice.csv,
 msgid "Slide Transition"
-msgstr "à¤¸à¥à¤²à¤¾à¤‡à¤¡ à¤¸à¤‚à¤•à¥à¤°à¤®à¤£"
+msgstr "स्लाइड संक्रमण"
 
 #: Files:  menu.csv,
 msgid "Software Updater"
-msgstr "à¤¸à¥‰à¤«à¤¼à¥à¤Ÿà¤µà¥‡à¤¯à¤° à¤…à¤¦à¥à¤¯à¤¤à¤•"
+msgstr "सॉफ़्टवेयर अद्यतक"
 
 #: Files:  pidgin.csv,
 msgid "Sort Buddies"
-msgstr "à¤¦à¥‹à¤¸à¥à¤¤ à¤›à¤¾à¤à¤Ÿà¥‡à¤‚"
+msgstr "दोस्त छाँटें"
 
 #: Files:  openoffice.csv,
 msgid "Special Character"
-msgstr "à¤µà¤¿à¤¶à¥‡à¤· à¤µà¤°à¥à¤£"
+msgstr "विशेष वर्ण"
 
 #: Files:  openoffice.csv,
 msgid "Split Cell"
-msgstr "à¤•à¥‹à¤·à¥à¤  à¤…à¤²à¤—à¤¾à¤à¤"
+msgstr "कोष्ठ अलगाएँ"
 
 #: Files:  openoffice.csv,
 msgid "Split Table"
-msgstr "à¤¸à¤¾à¤°à¤£à¥€ à¤…à¤²à¤—à¤¾à¤à¤"
+msgstr "सारणी अलगाएँ"
 
 #: Files:  nautilus.csv,
 msgid "Stretch Icon"
-msgstr "à¤ªà¥à¤°à¤¤à¥€à¤• à¤«à¥ˆà¤²à¤¾à¤à¤"
+msgstr "प्रतीक फैलाएँ"
 
 #: Files:  openoffice.csv,
 msgid "Summary Slide"
-msgstr "à¤¸à¤¾à¤°à¤¾à¤‚à¤¶ à¤¸à¥à¤²à¤¾à¤‡à¤¡"
+msgstr "सारांश स्लाइड"
 
 #: Files:  evolution.csv,
 msgid "Switcher Appearance"
-msgstr "à¤¸à¥à¤µà¤¿à¤šà¤° à¤°à¥‚à¤ªà¤¾à¤•à¤¾à¤°"
+msgstr "स्विचर रूपाकार"
 
 #: Files:  evolution.csv,
 msgid "Synchronization Options"
-msgstr "à¤¤à¥à¤²à¥à¤¯à¤•à¤¾à¤²à¤¨ à¤µà¤¿à¤•à¤²à¥à¤ª"
+msgstr "तुल्यकालन विकल्प"
 
 #: Files:  menu.csv,  pidgin.csv,
 msgid "System Log"
-msgstr "à¤¤à¤‚à¤¤à¥à¤° à¤²à¥‰à¤—"
+msgstr "तंत्र लॉग"
 
 #: Files:  menu.csv,
 msgid "System Monitor"
-msgstr "à¤¤à¤‚à¤¤à¥à¤° à¤®à¥‰à¤¨à¥€à¤Ÿà¤°"
+msgstr "तंत्र मॉनीटर"
 
 #: Files:  menu.csv,
 msgid "System Tools"
-msgstr "à¤¤à¤‚à¤¤à¥à¤° à¤”à¤œà¤¼à¤¾à¤°"
+msgstr "तंत्र औज़ार"
 
 #: Files:  openoffice.csv,
 msgid "Table Boundaries"
-msgstr "à¤¸à¤¾à¤°à¤£à¥€ à¤¸à¥€à¤®à¤¾"
+msgstr "सारणी सीमा"
 
 #: Files:  openoffice.csv,
 msgid "Table Properties"
-msgstr "à¤¸à¤¾à¤°à¤£à¥€ à¤—à¥à¤£"
+msgstr "सारणी गुण"
 
 #: Files:  menu.csv,
 msgid "Take Screenshot"
-msgstr "à¤¸à¥à¤•à¥à¤°à¥€à¤¨à¤¶à¥‰à¤Ÿ à¤²à¥‡à¤‚"
+msgstr "स्क्रीनशॉट लें"
 
 #: Files:  openoffice.csv,
 msgid "Task Pane"
-msgstr "à¤•à¤¾à¤°à¥à¤¯ à¤«à¤²à¤•"
+msgstr "कार्य फलक"
 
 #: Files:  menu.csv,
 msgid "Text Editor"
-msgstr "à¤ªà¤¾à¤  à¤¸à¤‚à¤ªà¤¾à¤¦à¤•"
+msgstr "पाठ संपादक"
 
 #: Files:  firefox.csv,
 msgid "Text Size"
-msgstr "à¤ªà¤¾à¤  à¤†à¤•à¤¾à¤°"
+msgstr "पाठ आकार"
 
 #: Files:  menu.csv,
 msgid "The GIMP"
-msgstr "à¤—à¤¿à¤®à¥à¤ª"
+msgstr "गिम्प"
 
 #: Files:  menu.csv,
 msgid "Thunderbird Email"
-msgstr "à¤¥à¤‚à¤¡à¤°à¤µà¤°à¥à¤¡ à¤ˆà¤®à¥‡à¤²"
+msgstr "थंडरवर्ड ईमेल"
 
 #: Files:  evolution.csv,
 msgid "Undelete Message"
-msgstr "à¤®à¤¿à¤Ÿà¤¾ à¤¸à¤‚à¤¦à¥‡à¤¶ à¤µà¤¾à¤ªà¤¸ à¤²à¤¾à¤à¤"
+msgstr "मिटा संदेश वापस लाएँ"
 
 #: Files:  gedit.csv,
 msgid "Unsaved Document"
-msgstr "à¤¬à¤¿à¤¨ à¤¸à¤¹à¥‡à¤œà¤¾ à¤¦à¤¸à¥à¤¤à¤¾à¤µà¥‡à¤œà¤¼"
+msgstr "बिन सहेजा दस्तावेज़"
 
 #: Files:gdmpaneldesktop
 msgid "User Name"
-msgstr "à¤‰à¤ªà¤¯à¥‹à¤•à¥à¤¤à¤¾ à¤¨à¤¾à¤®"
+msgstr "उपयोक्ता नाम"
 
 #: Files:  openoffice.csv,
 msgid "Value Highlighting"
-msgstr "à¤®à¤¾à¤¨ à¤†à¤²à¥‹à¤•à¤¨"
+msgstr "मान आलोकन"
 
 #: Files:  menu.csv,
 msgid "Vi Improved"
-msgstr "à¤¬à¥‡à¤¹à¤¤à¤° à¤µà¥€à¤†à¤ˆ"
+msgstr "बेहतर वीआई"
 
 #: Files:  menu.csv,
 msgid "Volume Control"
-msgstr "à¤†à¤µà¤¾à¤œà¤¼ à¤¨à¤¿à¤°à¥à¤§à¤¾à¤°à¤£"
+msgstr "आवाज़ निर्धारण"
 
 #: Files:  firefox.csv,
 msgid "Web Search"
-msgstr "à¤µà¥‡à¤¬ à¤–à¥‹à¤œ"
+msgstr "वेब खोज"
 
 #: Files:  evolution.csv,
 msgid "Week View"
-msgstr "à¤¸à¤¾à¤ªà¥à¤¤à¤¾à¤¹à¤¿à¤• à¤¦à¥ƒà¤¶à¥à¤¯"
+msgstr "साप्ताहिक दृश्य"
 
 #: Files: openoffice.csv,
 msgid "What's This"
-msgstr "à¤¯à¥‡ à¤•à¥à¤¯à¤¾ à¤¹à¥ˆ"
+msgstr "ये क्या है"
 
 #: Files:  evolution.csv,
 msgid "With Status"
-msgstr "à¤¸à¥à¤¥à¤¿à¤¤à¤¿ à¤¸à¤¹à¤¿à¤¤"
+msgstr "स्थिति सहित"
 
 #: Files:  openoffice.csv,
 msgid "Word Count"
-msgstr "à¤¶à¤¬à¥à¤¦ à¤—à¤¿à¤¨à¤¤à¥€"
+msgstr "शब्द गिनती"
 
 #: Files:  menu.csv,
 msgid "Word Processor"
-msgstr "à¤¶à¤¬à¥à¤¦ à¤¸à¤‚à¤¸à¤¾à¤§à¤•"
+msgstr "शब्द संसाधक"
 
 #: Files:  evolution.csv,  firefox.csv,
 msgid "Work Offline"
-msgstr "à¤‘à¤«à¤¼à¤²à¤¾à¤‡à¤¨ à¤•à¤¾à¤® à¤•à¤°à¥‡à¤‚"
+msgstr "ऑफ़लाइन काम करें"
 
 #: Files:evolution
 msgid "Work Week"
-msgstr "à¤•à¤¾à¤°à¥à¤¯ à¤¸à¤ªà¥à¤¤à¤¾à¤¹"
+msgstr "कार्य सप्ताह"
 
 #: Files:  gnometerminal.csv,  nautilus.csv,
 msgid "Zoom In"
-msgstr "à¤¬à¤¡à¤¼à¤¾ à¤•à¤°à¥‡à¤‚"
+msgstr "बड़ा करें"
 
 #: Files:  gnometerminal.csv,  nautilus.csv,
 msgid "Zoom Out"
-msgstr "à¤›à¥‹à¤Ÿà¤¾ à¤•à¤°à¥‡à¤‚"
+msgstr "छोटा करें"
 
 #: Files:  gnometerminal.csv,
 msgid "Add or Remove"
-msgstr "à¤œà¥‹à¤¡à¤¼à¥‡à¤‚ à¤¯à¤¾ à¤¹à¤Ÿà¤¾à¤à¤"
+msgstr "जोड़ें या हटाएँ"
 
 #: Files:  evolution.csv,
 msgid "Add Sender to Address Book"
-msgstr "à¤ªà¤¤à¤¾ à¤ªà¥à¤¸à¥à¤¤à¤¿à¤•à¤¾ à¤®à¥‡à¤‚ à¤ªà¥à¤°à¥‡à¤·à¤• à¤œà¥‹à¤¡à¤¼à¥‡à¤‚"
+msgstr "पता पुस्तिका में प्रेषक जोड़ें"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Add to Panel"
-msgstr "à¤ªà¤Ÿà¤² à¤®à¥‡à¤‚ à¤œà¥‹à¤¡à¥‡à¤‚"
+msgstr "पटल में जोडें"
 
 #: Files: menu.csv,
 msgid "Add/Remove Software"
-msgstr "à¤¸à¥‰à¤«à¤¼à¥à¤Ÿà¤µà¥‡à¤¯à¤° à¤œà¥‹à¤¡à¤¼à¥‡à¤‚/à¤¹à¤Ÿà¤¾à¤à¤"
+msgstr "सॉफ़्टवेयर जोड़ें/हटाएँ"
 
 #: Files:  evolution.csv,
 msgid "Address Book Properties"
-msgstr "à¤ªà¤¤à¤¾ à¤ªà¥à¤¸à¥à¤¤à¤¿à¤•à¤¾ à¤—à¥à¤£"
+msgstr "पता पुस्तिका गुण"
 
 #: Files:  evolution.csv,
 msgid "All Message Headers"
-msgstr "à¤¸à¤­à¥€ à¤¸à¤‚à¤¦à¥‡à¤¶ à¤¶à¥€à¤°à¥à¤·à¤¿à¤•à¤¾à¤à¤"
+msgstr "सभी संदेश शीर्षिकाएँ"
 
 #: Files:  menu.csv,
 msgid "Assistive Technology Preferences"
-msgstr "à¤¸à¤¹à¤¾à¤¯à¤• à¤ªà¥à¤°à¥Œà¤¦à¥à¤¯à¥‹à¤—à¤¿à¤•à¥€ à¤µà¤°à¥€à¤¯à¤¤à¤¾à¤à¤"
+msgstr "सहायक प्रौद्योगिकी वरीयताएँ"
 
 #: Files:  nautilus.csv,
 msgid "Backgrounds and Emblems"
-msgstr "à¤ªà¥ƒà¤·à¥à¤ à¤­à¥‚à¤®à¤¿ à¤”à¤° à¤¨à¤¿à¤¶à¤¾à¤¨"
+msgstr "पृष्ठभूमि और निशान"
 
 #: Files:  firefox.csv,
 msgid "Bookmark All Tabs"
-msgstr "à¤¸à¤­à¥€ à¤Ÿà¥ˆà¤¬ à¤ªà¥à¤¸à¥à¤¤à¤šà¤¿à¤¹à¥à¤¨à¤¿à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "सभी टैब पुस्तचिह्नित करें"
 
 #: Files:  firefox.csv,
 msgid "Bookmark This Page"
-msgstr "à¤¯à¤¹ à¤ªà¥ƒà¤·à¥à¤  à¤ªà¥à¤¸à¥à¤¤à¤šà¤¿à¤¹à¥à¤¨à¤¿à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "यह पृष्ठ पुस्तचिह्नित करें"
 
 #: Files:  openoffice.csv,
 msgid "Bullets and Numbering"
-msgstr "à¤¬à¥à¤²à¥‡à¤Ÿ à¤”à¤° à¤•à¥à¤°à¤®à¤¾à¤‚à¤•à¤¨"
+msgstr "बुलेट और क्रमांकन"
 
 #: Files: menu.csv, nautilus.csv,
 msgid "CD/DVD Creator"
-msgstr "à¤¸à¥€à¤¡à¥€/à¤¡à¥€à¤µà¥€à¤¡à¥€ à¤¸à¤°à¥à¤œà¤•"
+msgstr "सीडी/डीवीडी सर्जक"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Change Desktop Background"
-msgstr "à¤¡à¥‡à¤¸à¥à¤•à¤Ÿà¥‰à¤ª à¤ªà¥ƒà¤·à¥à¤ à¤­à¥‚à¤®à¤¿ à¤¬à¤¦à¤²à¥‡à¤‚"
+msgstr "डेस्कटॉप पृष्ठभूमि बदलें"
 
 #: Files:  evolution.csv,
 msgid "Check for Junk"
-msgstr "à¤•à¤šà¤°à¤¾ à¤¡à¤¾à¤• à¤¦à¥‡à¤–à¥‡à¤‚"
+msgstr "कचरा डाक देखें"
 
 #: Files:  firefox.csv,
 msgid "Check for Updates"
-msgstr "à¤…à¤¦à¥à¤¯à¤¤à¤¨ à¤œà¤¾à¤à¤š"
+msgstr "अद्यतन जाँच"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Clean UP by Name"
-msgstr "à¤¨à¤¾à¤®à¤¾à¤¨à¥à¤¸à¤¾à¤° à¤¸à¤¾à¤« à¤•à¤°à¥‡à¤‚"
+msgstr "नामानुसार साफ करें"
 
 #: Files:  nautilus.csv,
 msgid "Clean Up by Names"
-msgstr "à¤¨à¤¾à¤®à¥‹à¤‚ à¤•à¥‡ à¤…à¤¨à¥à¤¸à¤¾à¤° à¤¸à¤¾à¤« à¤•à¤°à¥‡à¤‚"
+msgstr "नामों के अनुसार साफ करें"
 
 #: Files:  nautilus.csv,
 msgid "Close all Folders"
-msgstr "à¤¸à¤­à¥€ à¤«à¤¼à¥‹à¤²à¥à¤¡à¤° à¤¬à¤‚à¤¦ à¤•à¤°à¥‡à¤‚"
+msgstr "सभी फ़ोल्डर बंद करें"
 
 #: Files:  nautilus.csv,
 msgid "Close Parent Folders"
-msgstr "à¤®à¥‚à¤² à¤«à¤¼à¥‹à¤²à¥à¤¡à¤° à¤¬à¤‚à¤¦ à¤•à¤°à¥‡à¤‚"
+msgstr "मूल फ़ोल्डर बंद करें"
 
 #: Files:  evolution.csv,
 msgid "Collapse All Threads"
-msgstr "à¤¸à¤­à¥€ à¤²à¤¡à¤¼à¤¿à¤¯à¤¾à¤ à¤¸à¤®à¥‡à¤Ÿà¥‡à¤‚"
+msgstr "सभी लड़ियाँ समेटें"
 
 #: Files:  openoffice.csv,
 msgid "Column & Row Headers"
-msgstr "à¤¸à¥à¤¤à¤‚à¤­ à¤µ à¤ªà¤‚à¤•à¥à¤¤à¤¿ à¤¶à¥€à¤°à¥à¤·à¤¿à¤•à¤¾"
+msgstr "स्तंभ व पंक्ति शीर्षिका"
 
 #: Files:  evolution.csv,
 msgid "Compose New Message"
-msgstr "à¤¨à¤¯à¤¾ à¤¸à¤‚à¤¦à¥‡à¤¶ à¤²à¤¿à¤–à¥‡à¤‚"
+msgstr "नया संदेश लिखें"
 
 #: Files:  menu.csv,  nautilus.csv,
 msgid "Connect to Server"
-msgstr "à¤¸à¤°à¥à¤µà¤° à¤¸à¥‡ à¤œà¥à¤¡à¤¼à¥‡à¤‚"
+msgstr "सर्वर से जुड़ें"
 
 #: Files:  evolution.csv,
 msgid "Copy All Contact to"
-msgstr "à¤¸à¤­à¥€ à¤¸à¤‚à¤ªà¤°à¥à¤•à¥‹à¤‚ à¤•à¥€ à¤¨à¤•à¤¼à¤² à¤¯à¤¹à¤¾à¤ à¤²à¥‡à¤‚"
+msgstr "सभी संपर्कों की नक़ल यहाँ लें"
 
 #: Files:  evolution.csv,
 msgid "Copy Contact to"
-msgstr "à¤¸à¤‚à¤ªà¤°à¥à¤• à¤•à¥€ à¤¨à¤•à¤¼à¤² à¤¯à¤¹à¤¾à¤ à¤²à¥‡à¤‚"
+msgstr "संपर्क की नक़ल यहाँ लें"
 
 #: Files:  evolution.csv,
 msgid "Copy Folder To..."
-msgstr "à¤«à¤¼à¥‹à¤²à¥à¤¡à¤° à¤•à¥€ à¤¨à¤•à¤¼à¤² à¤¯à¤¹à¤¾à¤ à¤²à¥‡à¤‚..."
+msgstr "फ़ोल्डर की नक़ल यहाँ लें..."
 
 #: Files:  evolution.csv,
 msgid "Copy to Folder"
-msgstr "à¤«à¤¼à¥‹à¤²à¥à¤¡à¤° à¤®à¥‡à¤‚ à¤¨à¤•à¤¼à¤² à¤²à¥‡à¤‚"
+msgstr "फ़ोल्डर में नक़ल लें"
 
 #: Files:  evolution.csv,
 msgid "Create Search Folder from Search"
-msgstr "à¤–à¥‹à¤œ à¤¸à¥‡ à¤–à¥‹à¤œ à¤«à¥‹à¤²à¥à¤¡à¤° à¤¬à¤¨à¤¾à¤à¤"
+msgstr "खोज से खोज फोल्डर बनाएँ"
 
 #: Files:  openoffice.csv,
 msgid "Custom Slide Show"
-msgstr "à¤®à¤¨à¤ªà¤¸à¤‚à¤¦ à¤¸à¥à¤²à¤¾à¤‡à¤¡ à¤¶à¥‹"
+msgstr "मनपसंद स्लाइड शो"
 
 #: Files:  menu.csv,
 msgid "Date & Time"
-msgstr "à¤¤à¤¿à¤¥à¤¿ à¤µ à¤¸à¤®à¤¯"
+msgstr "तिथि व समय"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Default System Session"
-msgstr "à¤¤à¤¯à¤¶à¥à¤¦à¤¾ à¤¤à¤‚à¤¤à¥à¤° à¤¸à¤¤à¥à¤°"
+msgstr "तयशुदा तंत्र सत्र"
 
 #: Files:  openoffice.csv,
 msgid "Delete Manual Break"
-msgstr "à¤¦à¤¸à¥à¤¤à¥€ à¤…à¤‚à¤¤à¤°à¤¾à¤² à¤®à¤¿à¤Ÿà¤¾à¤à¤"
+msgstr "दस्ती अंतराल मिटाएँ"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Delete This Panel"
-msgstr "à¤¯à¤¹ à¤ªà¤Ÿà¤² à¤®à¤¿à¤Ÿà¤¾à¤à¤"
+msgstr "यह पटल मिटाएँ"
 
 #: Files:  menu.csv,
 msgid "Disk Usage Analyzer"
-msgstr "à¤¡à¤¿à¤¸à¥à¤• à¤‰à¤ªà¤¯à¥‹à¤— à¤µà¤¿à¤¶à¥à¤²à¥‡à¤·à¤•"
+msgstr "डिस्क उपयोग विश्लेषक"
 
 #: Files:  evolution.csv,
 msgid "Edit as New Message"
-msgstr "à¤¨à¤ à¤¸à¤‚à¤¦à¥‡à¤¶ à¤•à¥‡ à¤°à¥‚à¤ª à¤®à¥‡à¤‚ à¤¸à¤‚à¤ªà¤¾à¤¦à¤¿à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "नए संदेश के रूप में संपादित करें"
 
 #: Files:  evolution.csv,
 msgid "Edit Saved Search"
-msgstr "à¤¸à¤¹à¥‡à¤œà¥‡ à¤–à¥‹à¤œ à¤¸à¤‚à¤ªà¤¾à¤¦à¤¿à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "सहेजे खोज संपादित करें"
 
 #: Files:  evolution.csv,
 msgid "Expand All Threads"
-msgstr "à¤¸à¤­à¥€ à¤²à¤¡à¤¼à¤¿à¤¯à¤¾à¤ à¤«à¥ˆà¤²à¤¾à¤à¤"
+msgstr "सभी लड़ियाँ फैलाएँ"
 
 #: Files:  openoffice.csv,
 msgid "Export as PDF"
-msgstr "à¤¬à¤¤à¥Œà¤° à¤ªà¥€à¤¡à¥€à¤à¤«à¤¼ à¤¨à¤¿à¤°à¥à¤¯à¤¾à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "बतौर पीडीएफ़ निर्यात करें"
 
 #: Files:  openoffice.csv,
 msgid "Find & Replace"
-msgstr "à¤¢à¥‚à¤à¤¢à¥‡à¤‚ à¤µ à¤¬à¤¦à¤²à¥‡à¤‚"
+msgstr "ढूँढें व बदलें"
 
 #: Files:  evolution.csv,
 msgid "Find in Message"
-msgstr "à¤¸à¤‚à¤¦à¥‡à¤¶ à¤®à¥‡à¤‚ à¤¢à¥‚à¤à¤¢à¥‡à¤‚"
+msgstr "संदेश में ढूँढें"
 
 #: Files:  firefox.csv,
 msgid "Find in This Page"
-msgstr "à¤‡à¤¸ à¤ªà¥ƒà¤·à¥à¤  à¤®à¥‡à¤‚ à¤¢à¥‚à¤à¤¢à¥‡à¤‚"
+msgstr "इस पृष्ठ में ढूँढें"
 
 #: Files:  menu.csv,
 msgid "Firefox Web Bowser"
-msgstr "à¤«à¤¼à¤¾à¤¯à¤°à¤«à¤¼à¥‰à¤•à¥à¤¸ à¤µà¥‡à¤¬ à¤¬à¥à¤°à¤¾à¤‰à¤œà¤¼à¤°"
+msgstr "फ़ायरफ़ॉक्स वेब ब्राउज़र"
 
 #: Files:  pidgin.csv,
 msgid "Get User Info"
-msgstr "à¤‰à¤ªà¤¯à¥‹à¤•à¥à¤¤à¤¾ à¤¸à¥‚à¤šà¤¨à¤¾ à¤²à¥‡à¤‚"
+msgstr "उपयोक्ता सूचना लें"
 
 #: Files:  gedit.csv,
 msgid "Go to Line"
-msgstr "à¤ªà¤‚à¤•à¥à¤¤à¤¿ à¤ªà¤° à¤œà¤¾à¤à¤"
+msgstr "पंक्ति पर जाएँ"
 
 #: Files:  evolution.csv,
 msgid "Group By Threads"
-msgstr "à¤²à¤¡à¤¼à¥€à¤µà¤¾à¤° à¤¸à¤®à¥‚à¤¹ à¤¬à¤¨à¤¾à¤à¤"
+msgstr "लड़ीवार समूह बनाएँ"
 
 #: Files:  menu.csv,
 msgid "Gthumb Image Viewer"
-msgstr "à¤œà¥€à¤¥à¤‚à¤¬ à¤›à¤µà¤¿ à¤ªà¥à¤°à¤¦à¤°à¥à¤¶à¤•"
+msgstr "जीथंब छवि प्रदर्शक"
 
 #: Files:  openoffice.csv,
 msgid "Headers & Footers"
-msgstr "à¤¶à¥€à¤°à¥à¤·à¤¿à¤•à¤¾ à¤µ à¤ªà¤¾à¤¦à¤¿à¤•à¤¾"
+msgstr "शीर्षिका व पादिका"
 
 #: Files:  evolution.csv,
 msgid "Hide Deleted Messages"
-msgstr "à¤®à¤¿à¤Ÿà¤¾à¤ à¤¸à¤‚à¤¦à¥‡à¤¶ à¤›à¥à¤ªà¤¾à¤à¤"
+msgstr "मिटाए संदेश छुपाएँ"
 
 #: Files:  evolution.csv,
 msgid "Hide Read Messages"
-msgstr "à¤ªà¤ à¤¿à¤¤ à¤¸à¤‚à¤¦à¥‡à¤¶ à¤›à¥à¤ªà¤¾à¤à¤"
+msgstr "पठित संदेश छुपाएँ"
 
 #: Files:  evolution.csv,
 msgid "Hide Selected Messages"
-msgstr "à¤šà¥à¤¨à¥‡ à¤¸à¤‚à¤¦à¥‡à¤¶ à¤›à¤¿à¤ªà¤¾à¤à¤"
+msgstr "चुने संदेश छिपाएँ"
 
 #: Files:  openoffice.csv,
 msgid "Indexes and tables"
-msgstr "à¤…à¤¨à¥à¤•à¥à¤°à¤®à¤£à¤¿à¤•à¤¾ à¤µ à¤¸à¤¾à¤°à¤£à¥€"
+msgstr "अनुक्रमणिका व सारणी"
 
 #: Files:  openoffice.csv,
 msgid "Input Method Status"
-msgstr "à¤‡à¤¨à¤ªà¥à¤Ÿ à¤µà¤¿à¤§à¤¿ à¤¸à¥à¤¥à¤¿à¤¤à¤¿"
+msgstr "इनपुट विधि स्थिति"
 
 #: Files:  gedit.csv,
 msgid "Insert Date and Time"
-msgstr "à¤¤à¤¿à¤¥à¤¿ à¤µ à¤¸à¤®à¤¯ à¤¡à¤¾à¤²à¥‡à¤‚"
+msgstr "तिथि व समय डालें"
 
 #: Files:  menu.csv,
 msgid "IP Telephony, VoIP and Video Conferencing"
-msgstr "à¤†à¤ˆà¤ªà¥€ à¤Ÿà¥‡à¤²à¤¿à¤«à¥‹à¤¨à¥€, à¤µà¥€à¤“à¤†à¤ˆà¤ªà¥€ à¤”à¤° à¤µà¥€à¤¡à¤¿à¤¯à¥‹ à¤¸à¤®à¥à¤®à¥‡à¤²à¤¨"
+msgstr "आईपी टेलिफोनी, वीओआईपी और वीडियो सम्मेलन"
 
 #: Files:  openoffice.csv,
 msgid "Link to External Data"
-msgstr "à¤¬à¤¾à¤¹à¤°à¥€ à¤†à¤à¤•à¤¡à¤¼à¥‡ à¤¸à¥‡ à¤œà¥à¤¡à¤¼à¥‡à¤‚"
+msgstr "बाहरी आँकड़े से जुड़ें"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Lock To Panel"
-msgstr "à¤ªà¤Ÿà¤² à¤®à¥‡à¤‚ à¤¬à¤¾à¤à¤§à¥‡à¤‚"
+msgstr "पटल में बाँधें"
 
 #: Files:  menu.csv,
 msgid "Log Out root"
-msgstr "à¤°à¥‚à¤Ÿ à¤²à¥‰à¤— à¤†à¤‰à¤Ÿ"
+msgstr "रूट लॉग आउट"
 
 #: Files:  menu.csv,
 msgid "Logical Volume Management"
-msgstr "à¤²à¥‰à¤œà¤¿à¤•à¤² à¤†à¤¯à¤¤à¤¨ à¤ªà¥à¤°à¤¬à¤‚à¤§à¤¨"
+msgstr "लॉजिकल आयतन प्रबंधन"
 
 #: Files:  openoffice.csv,
 msgid "Mail Merge Wizard"
-msgstr "à¤¡à¤¾à¤• à¤®à¤¿à¤²à¤¾à¤¨ à¤¸à¤¹à¤¾à¤¯à¤•"
+msgstr "डाक मिलान सहायक"
 
 #: Files:  evolution.csv,
 msgid "Mark All Message as Read"
-msgstr "à¤¸à¤­à¥€ à¤¸à¤‚à¤¦à¥‡à¤¶ à¤¬à¤¤à¥Œà¤° à¤ªà¤ à¤¿à¤¤ à¤šà¤¿à¤¹à¥à¤¨à¤¿à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "सभी संदेश बतौर पठित चिह्नित करें"
 
 #: Files:  menu.csv,
 msgid "Menus & Toolbars"
-msgstr "à¤®à¥‡à¤¨à¥à¤¯à¥‚ à¤µ à¤”à¤œà¤¼à¤¾à¤°à¤ªà¤Ÿà¥à¤Ÿà¥€"
+msgstr "मेन्यू व औज़ारपट्टी"
 
 #: Files:  evolution.csv,
 msgid "Move All Contact to "
-msgstr "à¤¸à¤­à¥€ à¤¸à¤‚à¤ªà¤°à¥à¤• à¤¯à¤¹à¤¾à¤ à¤–à¤¿à¤¸à¤•à¤¾à¤à¤"
+msgstr "सभी संपर्क यहाँ खिसकाएँ"
 
 #: Files:  evolution.csv,
 msgid "Move contact to"
-msgstr "à¤¸à¤‚à¤ªà¤°à¥à¤• à¤¯à¤¹à¤¾à¤ à¤–à¤¿à¤¸à¤•à¤¾à¤à¤"
+msgstr "संपर्क यहाँ खिसकाएँ"
 
 #: Files:  evolution.csv,
 msgid "Move Folder To..."
-msgstr "à¤¯à¤¹à¤¾à¤ à¤«à¤¼à¥‹à¤²à¥à¤¡à¤° à¤–à¤¿à¤¸à¤•à¤¾à¤à¤..."
+msgstr "यहाँ फ़ोल्डर खिसकाएँ..."
 
 #: Files:  gnometerminal.csv,
 msgid "Move tab to the Left"
-msgstr "à¤Ÿà¥ˆà¤¬ à¤¬à¤¾à¤à¤ à¤–à¤¿à¤¸à¤•à¤¾à¤à¤"
+msgstr "टैब बाएँ खिसकाएँ"
 
 #: Files:  gnometerminal.csv,
 msgid "Move tab to the Right"
-msgstr "à¤Ÿà¥ˆà¤¬ à¤¦à¤¾à¤à¤ à¤–à¤¿à¤¸à¤•à¤¾à¤à¤"
+msgstr "टैब दाएँ खिसकाएँ"
 
 #: Files:  evolution.csv,
 msgid "Move to Folder"
-msgstr "à¤«à¤¼à¥‹à¤²à¥à¤¡à¤° à¤®à¥‡à¤‚ à¤²à¥‡ à¤œà¤¾à¤à¤"
+msgstr "फ़ोल्डर में ले जाएँ"
 
 #: Files:  gedit.csv,
 msgid "Move to New Window"
-msgstr "à¤¨à¤ à¤µà¤¿à¤‚à¤¡à¥‹ à¤®à¥‡à¤‚ à¤²à¥‡ à¤œà¤¾à¤à¤"
+msgstr "नए विंडो में ले जाएँ"
 
 #: Files:  nautilus.csv,
 msgid "Move to Trash"
-msgstr "à¤°à¤¦à¥à¤¦à¥€ à¤®à¥‡à¤‚ à¤¡à¤¾à¤²à¥‡à¤‚"
+msgstr "रद्दी में डालें"
 
 #: Files:  openoffice.csv,
 msgid "Movie and Sound"
-msgstr "à¤šà¤²à¤šà¤¿à¤¤à¥à¤° à¤µ à¤§à¥à¤µà¤¨à¤¿"
+msgstr "चलचित्र व ध्वनि"
 
 #: Files:  menu.csv,
 msgid "Multimedia System Selector "
-msgstr "à¤®à¤²à¥à¤Ÿà¥€à¤®à¥€à¤¡à¤¿à¤¯à¤¾ à¤¤à¤‚à¤¤à¥à¤° à¤šà¤¯à¤¨à¤•"
+msgstr "मल्टीमीडिया तंत्र चयनक"
 
 #: Files:  pidgin.csv,
 msgid "New Instant Message"
-msgstr "à¤¨à¤¯à¤¾ à¤«à¤¼à¥Œà¤°à¥€ à¤¸à¤‚à¤¦à¥‡à¤¶"
+msgstr "नया फ़ौरी संदेश"
 
 #: Files:  evolution.csv,
 msgid "On This Computer"
-msgstr "à¤‡à¤¸ à¤•à¤‚à¤ªà¥à¤¯à¥‚à¤Ÿà¤° à¤ªà¤°"
+msgstr "इस कंप्यूटर पर"
 
 #: Files:  openoffice.csv,
 msgid "Open existing presentation"
-msgstr "à¤®à¥Œà¤œà¥‚à¤¦à¤¾ à¤ªà¥à¤°à¤¸à¥à¤¤à¥à¤¤à¤¿ à¤–à¥‹à¤²à¥‡à¤‚"
+msgstr "मौजूदा प्रस्तुति खोलें"
 
 #: Files:  evolution.csv,
 msgid "Open in New Window"
-msgstr "à¤¨à¤ à¤µà¤¿à¤‚à¤¡à¥‹ à¤®à¥‡à¤‚ à¤–à¥‹à¤²à¥‡à¤‚"
+msgstr "नए विंडो में खोलें"
 
 #: Files:  nautilus.csv,
 msgid "Open in Terminal"
-msgstr "à¤Ÿà¤°à¥à¤®à¤¿à¤¨à¤² à¤®à¥‡à¤‚ à¤–à¥‹à¤²à¥‡à¤‚"
+msgstr "टर्मिनल में खोलें"
 
 #: Files:  openoffice.csv,
 msgid "Page Break Preview"
-msgstr "à¤ªà¥ƒà¤·à¥à¤  à¤…à¤‚à¤¤à¤°à¤¾à¤² à¤ªà¥‚à¤°à¥à¤µà¤¾à¤µà¤²à¥‹à¤•à¤¨"
+msgstr "पृष्ठ अंतराल पूर्वावलोकन"
 
 #: Files:  menu.csv,
 msgid "Personal File Sharing"
-msgstr "à¤¨à¤¿à¤œà¥€ à¤«à¤¼à¤¾à¤‡à¤² à¤¸à¤¾à¤à¥‡à¤¦à¤¾à¤°à¥€"
+msgstr "निजी फ़ाइल साझेदारी"
 
 #: Files:  firefox.csv,
 msgid "Personal Toolbar Folder"
-msgstr "à¤¨à¤¿à¤œà¥€ à¤”à¤œà¤¼à¤¾à¤°à¤ªà¤Ÿà¥à¤Ÿà¥€ à¤«à¤¼à¥‹à¤²à¥à¤¡à¤°"
+msgstr "निजी औज़ारपट्टी फ़ोल्डर"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Please enter your user name"
-msgstr "à¤•à¥ƒà¤ªà¤¯à¤¾ à¤…à¤ªà¤¨à¤¾ à¤‰à¤ªà¤¯à¥‹à¤•à¥à¤¤à¤¾ à¤¨à¤¾à¤® à¤­à¤°à¥‡à¤‚"
+msgstr "कृपया अपना उपयोक्ता नाम भरें"
 
 #: Files:  openoffice.csv,
 msgid "Position and Size"
-msgstr "à¤¸à¥à¤¥à¤¿à¤¤à¤¿ à¤”à¤° à¤†à¤•à¤¾à¤°"
+msgstr "स्थिति और आकार"
 
 #: Files:  evolution.csv,
 msgid "Post a Reply"
-msgstr "à¤œà¤µà¤¾à¤¬ à¤¦à¥‡à¤‚"
+msgstr "जवाब दें"
 
 #: Files:  evolution.csv,
 msgid "Post New Message to Folder"
-msgstr "à¤¨à¤¯à¤¾ à¤¸à¤‚à¤¦à¥‡à¤¶ à¤«à¥‹à¤²à¥à¤¡à¤° à¤®à¥‡à¤‚ à¤¡à¤¾à¤²à¥‡à¤‚"
+msgstr "नया संदेश फोल्डर में डालें"
 
 #: Files:  evolution.csv,
 msgid "Publish calender Information"
-msgstr "à¤ªà¤‚à¤šà¤¾à¤‚à¤— à¤¸à¥‚à¤šà¤¨à¤¾ à¤ªà¥à¤°à¤•à¤¾à¤¶à¤¿à¤¤ à¤•à¤°à¥‡à¤‚"
+msgstr "पंचांग सूचना प्रकाशित करें"
 
 #: Files:  menu.csv,
 msgid "Removable Drives and Media"
-msgstr "à¤µà¤¿à¤¸à¥à¤¥à¤¾à¤ªà¤¨à¥€à¤¯ à¤¡à¥à¤°à¤¾à¤‡à¤µ à¤”à¤° à¤®à¥€à¤¡à¤¿à¤¯à¤¾"
+msgstr "विस्थापनीय ड्राइव और मीडिया"
 
 #: Files:  gdmpaneldesktop.csv,
 msgid "Remove From Panel"
-msgstr "à¤ªà¤Ÿà¤² à¤¸à¥‡ à¤®à¤¿à¤Ÿà¤¾à¤à¤"
+msgstr "पटल से मिटाएँ"
 
 #: Files:  evolution.csv,
 msgid "Reply to All"
-msgstr "à¤¸à¤¬à¤•à¥‹ à¤œà¤µà¤¾à¤¬ à¤¦à¥‡à¤‚"
+msgstr "सबको जवाब दें"
 
 #: Files:  evolution.csv,
 msgid "Reply to List"
-msgstr "à¤¸à¥‚à¤šà¥€ à¤•à¥‹ à¤œà¤µà¤¾à¤¬ à¤¦à¥‡à¤‚"
+msgstr "सूची को जवाब दें"
 
 #: Files:  evolution.csv,
 msgid "Reply to Sender"
-msgstr "à¤ªà¥à¤°à¥‡à¤·à¤• à¤•à¥‹ à¤œà¤µà¤¾à¤¬ à¤¦à¥‡à¤‚"
+msgstr "प्रेषक को जवाब दें"
 
 #: Files:firefox
 msgid "Report broken Web Site"
-msgstr "à¤–à¤‚à¤¡à¤¿à¤¤ à¤µà¥‡à¤¬à¤¸à¤¾à¤‡à¤Ÿ à¤°à¤¿à¤ªà¥‹à¤°à¥à¤Ÿ à¤•à¤°à¥‡à¤‚"
+msgstr "खंडित वेबसाइट रिपोर्ट करें"
 
 #: Files:  gnometerminal.csv,
 msgid "Reset and Clear"
-msgstr "à¤°à¥€à¤¸à¥‡à¤Ÿ à¤”à¤° à¤¸à¤¾à¤« à¤•à¤°à¥‡à¤‚"
+msgstr "रीसेट और साफ करें"
 
 #: Files:  nautilus.csv,
 msgid "Reset View to Defaults"
-msgstr "à¤¦à¥ƒà¤¶à¥à¤¯ à¤¤à¤¯à¤¶à¥à¤¦à¤¾ à¤®à¥‡à¤‚ à¤¸à¥‡à¤Ÿ à¤•à¤°à¥‡à¤‚"
+msgstr "दृश्य तयशुदा में सेट करें"
 
 #: Files: nautilus.csv,
 msgid "Restore Icon's Original Size"
-msgstr "à¤ªà¥à¤°à¤¤à¥€à¤• à¤•à¤¾ à¤®à¥Œà¤²à¤¿à¤• à¤†à¤•à¤¾à¤° à¤¬à¤¹à¤¾à¤² à¤•à¤°à¥‡à¤‚"
+msgstr "प्रतीक का मौलिक आकार बहाल करें"
 
 #: Files:  menu.csv,
 msgid "Rhythmbox Music Player"
-msgstr "à¤°à¤¿à¤¦à¤®à¤¬à¥‰à¤•à¥à¤¸ à¤¸à¤‚à¤—à¥€à¤¤ à¤ªà¥à¤²à¥‡à¤¯à¤°"
+msgstr "रिदमबॉक्स संगीत प्लेयर"
 
 #: Files:  firefox.csv,
 msgid "Save Frame As"
-msgstr "à¤«à¤¼à¥à¤°à¥‡à¤® à¤à¤¸à¥‡ à¤¸à¤¹à¥‡à¤œà¥‡à¤‚"
+msgstr "फ़्रेम ऐसे सहेजें"
 
 #: Files:  evolution.csv,
 msgid "Save Message"
-msgstr "à¤¸à¤‚à¤¦à¥‡à¤¶ à¤¸à¤¹à¥‡à¤œà¥‡à¤‚"
+msgstr "संदेश सहेजें"
 
 #: Files:  firefox.csv,
 msgid "Save Page As"
-msgstr "à¤ªà¥ƒà¤·à¥à¤  à¤à¤¸à¥‡ à¤¸à¤¹à¥‡à¤œà¥‡à¤‚"
+msgstr "पृष्ठ ऐसे सहेजें"
 
 #: Files:  menu.csv,
 msgid "SCIM Input Method Setup"
-msgstr "à¤¸à¥à¤•à¤¿à¤® à¤‡à¤¨à¤ªà¥à¤Ÿ à¤µà¤¿à¤§à¤¿ à¤¸à¥‡à¤Ÿà¤…à¤ª"
+msgstr "स्किम इनपुट विधि सेटअप"
 
 #: Files:  menu.csv,
 msgid "Search for files"
-msgstr "à¤«à¤¾à¤‡à¤²à¥‡à¤‚ à¤–à¥‹à¤œà¥‡à¤‚"
+msgstr "फाइलें खोजें"
 
 #: Files:  menu.csv,
 msgid "Security Level and Firewall"
-msgstr "à¤¸à¥à¤°à¤•à¥à¤·à¤¾ à¤¸à¥à¤¤à¤° à¤µ à¤²à¤•à¥à¤·à¥à¤®à¤£ à¤°à¥‡à¤–à¤¾"
+msgstr "सुरक्षा स्तर व लक्ष्मण रेखा"
 
 #: Files:  evolution.csv,
 msgid "Select All Messages"
-msgstr "à¤¸à¤­à¥€ à¤¸à¤‚à¤¦à¥‡à¤¶ à¤šà¥à¤¨à¥‡à¤‚"
+msgstr "सभी संदेश चुनें"
 
 #: Files:  evolution.csv,
 msgid "Select All Text"
-msgstr "à¤¸à¤¾à¤°à¤¾ à¤ªà¤¾à¤  à¤šà¥à¤¨à¥‡à¤‚"
+msgstr "सारा पाठ चुनें"
 
 #: Files:  evolution.csv,
 msgid "Select Message Thread"
-msgstr "à¤¸à¤‚à¤¦à¥‡à¤¶ à¤²à¤¡à¤¼à¥€ à¤šà¥à¤¨à¥‡à¤‚"
+msgstr "संदेश लड़ी चुनें"
 
 #: Files:  evolution.csv,
 msgid "Send Message to Contact"
-msgstr "à¤¸à¤‚à¤ªà¤°à¥à¤• à¤•à¥‹ à¤¸à¤‚à¤¦à¥‡à¤¶ à¤­à¥‡à¤œà¥‡à¤‚"
+msgstr "संपर्क को संदेश भेजें"
 
 #: Files:  gnometerminal.csv,
 msgid "Set Character Encoding"
-msgstr "à¤µà¤°à¥à¤£ à¤à¤¨à¥à¤•à¥‹à¤¡à¤¿à¤‚à¤— à¤¤à¤¯ à¤•à¤°à¥‡à¤‚"
+msgstr "वर्ण ऐन्कोडिंग तय करें"
 
 #: Files:  openoffice.csv,
 msgid "Sheet From File"
-msgstr "à¤«à¤¼à¤¾à¤‡à¤² à¤¸à¥‡ à¤¶à¥€à¤Ÿ"
+msgstr "फ़ाइल से शीट"
 
 #: Files:  pidgin.csv,
 msgid "Show empty groups"
-msgstr "à¤°à¤¿à¤•à¥à¤¤ à¤¸à¤®à¥‚à¤¹ à¤¦à¤¿à¤–à¤¾à¤à¤"
+msgstr "रिक्त समूह दिखाएँ"
 
 #: Files:  nautilus.csv,
 msgid "Show Hidden Files"
-msgstr "à¤›à¥à¤ªà¥€ à¤«à¤¼à¤¾à¤‡à¤²à¥‡à¤‚ à¤¦à¤¿à¤–à¤¾à¤à¤"
+msgstr "छुपी फ़ाइलें दिखाएँ"
 
 #: Files:  evolution.csv,
 msgid "Show Hidden Messages"
-msgstr "à¤›à¥à¤ªà¥‡ à¤¸à¤‚à¤¦à¥‡à¤¶ à¤¦à¤¿à¤–à¤¾à¤à¤"
+msgstr "छुपे संदेश दिखाएँ"
 
 #: Files:  pidgin.csv,
 msgid "Show Idle Times"
-msgstr "à¤¨à¤¿à¤·à¥à¤•à¥à¤°à¤¿à¤¯ à¤¸à¤®à¤¯ à¤¦à¤¿à¤–à¤¾à¤à¤"
+msgstr "निष्क्रिय समय दिखाएँ"
 
 #: Files:  pidgin.csv,
 msgid "Show Offline Buddies"
-msgstr "à¤‘à¤«à¤²à¤¾à¤‡à¤¨ à¤¦à¥‹à¤¸à¥à¤¤ à¤¦à¤¿à¤–à¤¾à¤à¤"
+msgstr "ऑफलाइन दोस्त दिखाएँ"
 
 #: Files: openoffice.csv,
 msgid "Show/Hide Slide"
-msgstr "à¤¸à¥à¤²à¤¾à¤‡à¤¡ à¤¦à¤¿à¤–à¤¾à¤à¤/à¤›à¤¿à¤ªà¤¾à¤à¤"
+msgstr "स्लाइड दिखाएँ/छिपाएँ"
 
 #: Files:  openoffice.csv,
 msgid "Slide show settings"
-msgstr "à¤¸à¥à¤²à¤¾à¤‡à¤¡ à¤¶à¥‹ à¤¸à¥‡à¤Ÿà¤¿à¤‚à¤—"
+msgstr "स्लाइड शो सेटिंग"
 
 #: Files:  menu.csv,
 msgid "Smart Card Manager"
-msgstr "à¤¸à¥à¤®à¤¾à¤°à¥à¤Ÿ à¤•à¤¾à¤°à¥à¤¡ à¤ªà¥à¤°à¤¬à¤‚à¤§à¤•"
+msgstr "स्मार्ट कार्ड प्रबंधक"
 
 #: Files:  menu.csv,
 msgid "Sound & Video"
-msgstr "à¤§à¥à¤µà¤¨à¤¿ à¤µ à¤µà¥€à¤¡à¤¿à¤¯à¥‹"
+msgstr "ध्वनि व वीडियो"
 
 #: Files:  menu.csv,
 msgid "Sound Juicer CD Extractor"
-msgstr "à¤¸à¤¾à¤‰à¤‚à¤¡ à¤œà¥‚à¤¸à¤° à¤¸à¥€à¤¡à¥€ à¤¦à¥‹à¤¹à¤•"
+msgstr "साउंड जूसर सीडी दोहक"
 
 #: Files:  menu.csv,
 msgid "Soundcard Detection"
-msgstr "à¤§à¥à¤µà¤¨à¤¿à¤•à¤¾à¤°à¥à¤¡ à¤ªà¤¹à¤šà¤¾à¤¨"
+msgstr "ध्वनिकार्ड पहचान"
 
 #: Files:  openoffice.csv,
 msgid "Styles and Formatting"
-msgstr "à¤¶à¥ˆà¤²à¥€ à¤µ à¤ªà¥à¤°à¤¾à¤°à¥‚à¤ªà¤£"
+msgstr "शैली व प्रारूपण"
 
 #: Files:  evolution.csv,
 msgid "Submit Bug Report"
-msgstr "à¤¦à¥‹à¤· à¤°à¤ªà¤Ÿ à¤¦à¤°à¥à¤œ à¤•à¤°à¥‡à¤‚"
+msgstr "दोष रपट दर्ज करें"
 
 #: Files: evolution.csv,
 msgid "Subscribe to Other User's Folder"
-msgstr "à¤…à¤¨à¥à¤¯ à¤‰à¤ªà¤¯à¥‹à¤•à¥à¤¤à¤¾ à¤«à¥‹à¤²à¥à¤¡à¤° à¤•à¥€ à¤¸à¤¦à¤¸à¥à¤¯à¤¤à¤¾ à¤²à¥‡à¤‚"
+msgstr "अन्य उपयोक्ता फोल्डर की सदस्यता लें"
 
 #: Files:  menu.csv,
 msgid "Terminal Server Client"
-msgstr "à¤Ÿà¤°à¥à¤®à¤¿à¤¨à¤² à¤¸à¤°à¥à¤µà¤° à¤•à¥à¤²à¤¾à¤à¤‚à¤Ÿ"
+msgstr "टर्मिनल सर्वर क्लाएंट"
 
 #: Files:  menu.csv,
 msgid "Users and Groups"
-msgstr "à¤‰à¤ªà¤¯à¥‹à¤•à¥à¤¤à¤¾ à¤µ à¤¸à¤®à¥‚à¤¹"
+msgstr "उपयोक्ता व समूह"
 
 #: Files:  nautilus.csv,
 msgid "View as Icons"
-msgstr "à¤ªà¥à¤°à¤¤à¥€à¤• à¤°à¥‚à¤ª à¤®à¥‡à¤‚ à¤¦à¥‡à¤–à¥‡à¤‚"
+msgstr "प्रतीक रूप में देखें"
 
 #: Files:  nautilus.csv,
 msgid "View as List"
-msgstr "à¤¸à¥‚à¤šà¥€ à¤°à¥‚à¤ª à¤®à¥‡à¤‚ à¤¦à¥‡à¤–à¥‡à¤‚"
+msgstr "सूची रूप में देखें"
 
 #: Files:  pidgin.csv,
 msgid "View User Log"
-msgstr "à¤‰à¤ªà¤¯à¥‹à¤•à¥à¤¤à¤¾ à¤²à¥‰à¤— à¤¦à¥‡à¤–à¥‡à¤‚"
+msgstr "उपयोक्ता लॉग देखें"
 
 #: Files:  evolution.csv,
 msgid "With Due Date"
-msgstr "à¤¨à¤¿à¤¯à¤¤ à¤¤à¤¿à¤¥à¤¿ à¤¸à¤¹à¤¿à¤¤"
+msgstr "नियत तिथि सहित"
 
 #: Files:  evolution.csv,
 msgid "Work Week View"
-msgstr "à¤•à¤¾à¤°à¥à¤¯ à¤¸à¤ªà¥à¤¤à¤¾à¤¹ à¤¦à¥ƒà¤¶à¥à¤¯"
+msgstr "कार्य सप्ताह दृश्य"
 
 #: Files:  openoffice.csv,
 msgid "XML Filter Settings"
-msgstr "à¤à¤•à¥à¤¸à¤à¤®à¤à¤² à¤«à¤¼à¤¿à¤²à¥à¤Ÿà¤° à¤¸à¥‡à¤Ÿà¤¿à¤‚à¤—"
+msgstr "एक्सएमएल फ़िल्टर सेटिंग"
 

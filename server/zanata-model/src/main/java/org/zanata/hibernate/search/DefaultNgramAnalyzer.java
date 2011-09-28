@@ -32,4 +32,9 @@ public class DefaultNgramAnalyzer extends NgramAnalyzer
       super(Locale.ENGLISH, 3);
    }
 
+   public DefaultNgramAnalyzer(int ngramLength)
+   {
+      super(Locale.ENGLISH, ngramLength);
+   }
+
 }

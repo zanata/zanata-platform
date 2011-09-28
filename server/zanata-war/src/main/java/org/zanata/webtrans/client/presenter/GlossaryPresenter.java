@@ -105,7 +105,7 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    {
       String query = transUnit.getSource();
       display.getGlossaryTextBox().setText("");
-      showResults(query, GetGlossary.SearchType.EXACT);
+      showResults(query, GetGlossary.SearchType.FUZZY);
    }
 
    private void showResults(String query, GetGlossary.SearchType searchType)
