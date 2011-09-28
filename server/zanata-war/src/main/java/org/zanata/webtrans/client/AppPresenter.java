@@ -133,9 +133,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          @Override
          public void onDocumentSelected(DocumentSelectionEvent event)
          {
+            display.setSelectedDocument(event.getDocument());
             if (selectedDocument == null || !event.getDocument().getId().equals(selectedDocument.getId()))
             {
-               display.setSelectedDocument(event.getDocument());
                selectedDocument = event.getDocument();
             }
             display.showInMainView(MainView.Editor);
