@@ -214,4 +214,9 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       return tableEditorPresenter.getSelectedTransUnit();
    }
 
+   public void saveEditorPendingChange()
+   {
+      tableEditorPresenter.getDisplay().getTargetCellEditor().savePendingChange(true);
+   }
+
 }

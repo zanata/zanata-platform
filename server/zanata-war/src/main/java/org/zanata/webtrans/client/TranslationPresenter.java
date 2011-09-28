@@ -57,7 +57,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       HasClickHandlers getShowSidePanelViewButton();
 
       void setShowSidePanelViewButtonVisible(boolean visible);
-
    }
 
    private final TranslationEditorPresenter translationEditorPresenter;
@@ -150,6 +149,11 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       transMemoryPresenter.unbind();
       translationEditorPresenter.unbind();
       sidePanelPresenter.unbind();
+   }
+
+   public void saveEditorPendingChange()
+   {
+      translationEditorPresenter.saveEditorPendingChange();
    }
 
 }

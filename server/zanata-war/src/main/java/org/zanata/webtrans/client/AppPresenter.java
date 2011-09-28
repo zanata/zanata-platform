@@ -158,6 +158,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             }
             else
             {
+               translationPresenter.saveEditorPendingChange();
                display.showInMainView(MainView.Documents);
             }
          }
