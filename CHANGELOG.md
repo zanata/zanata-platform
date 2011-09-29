@@ -1,6 +1,12 @@
 # Zanata change log summary
 
-## zanata-1.4-alpha-1 (unreleased)
+## zanata-1.4
+ * add project-type to zanata.xml for generic push/pull commands
+ * redirect to login from translation editor when required
+ * if domain is left blank by admin, don't populate email address for new users
+ * UI bug fixes
+
+## zanata-1.4-alpha-1
  * create generic push/pull commands, with include/exclude filters
  * add support for Java Properties and XLIFF projects
   * bug fix: mark existing translations of modified XLIFF/Properties strings as fuzzy
