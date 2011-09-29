@@ -10,8 +10,6 @@
 	<ui:param name="untranslated" value="#{status.notApproved - fuzzy}" />
     
 	<ui:param name="total" value="#{status.total}" />
-	<ui:param name="pComplete"
-		value="#{total == 0 ? 0 : 100 * translated / total}" />
 
     <ui:param name="wTranslated" value="#{total == 0 ? 0 : 120 * translated / total}" />
     <ui:param name="wUntranslated" value="#{total == 0 ? 0 : 120 * untranslated / total}" />
