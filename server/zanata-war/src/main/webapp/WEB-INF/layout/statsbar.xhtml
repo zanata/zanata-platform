@@ -22,8 +22,8 @@
         <div class="translationStatusBar statusBar_needReview" style="width:#{wFuzzy}px;"></div>
         <div class="translationStatusBar statusBar_untranslated" style="width:#{wUntranslated}px;"></div>
     </div>
-     <h:outputText value="#{pComplete/100}" rendered="#{status.total > 0}" class="statusBar_percentage">
-        <f:convertNumber type="percent" />
+     <h:outputText value="#{status.per/100}" rendered="#{status.total > 0}" class="statusBar_percentage">
+        <f:convertNumber type="percent"/>
      </h:outputText>	
      <h:outputText rendered="#{status.total eq 0}" class="statusBar_percentage">#{messages['jsf.NoContent']}</h:outputText> 
 </div>

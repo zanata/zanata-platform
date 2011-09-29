@@ -94,7 +94,7 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       this.messages = messages;
       filterTextBox = new ClearableTextBox(resources, uiMessages);
       nodes = new HashMap<DocumentId, DocumentNode>();
-      transUnitCountBar = new TransUnitCountBar(messages);
+      transUnitCountBar = new TransUnitCountBar(messages, true);
       dataProvider = new ListDataProvider<DocumentNode>();
       this.dispatcher = dispatcher;
       this.eventBus = eventBus;

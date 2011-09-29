@@ -61,7 +61,7 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    public TranslationEditorView(final WebTransMessages messages, final Resources resources)
    {
       this.resources = resources;
-      this.transUnitCountBar = new TransUnitCountBar(messages);
+      this.transUnitCountBar = new TransUnitCountBar(messages, true);
       this.pager = new Pager(messages, resources);
 
       initWidget(uiBinder.createAndBindUi(this));
