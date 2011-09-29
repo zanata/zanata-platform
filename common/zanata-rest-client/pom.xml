@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>zanata-parent</artifactId>
 		<groupId>org.zanata</groupId>
-		<version>1.4-alpha-2-SNAPSHOT</version>
+		<version>1.4</version>
 		<relativePath>../../zanata-parent/pom.xml</relativePath>
 	</parent>
 	<packaging>jar</packaging>
