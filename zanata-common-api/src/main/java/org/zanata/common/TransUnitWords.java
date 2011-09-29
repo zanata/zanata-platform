@@ -2,6 +2,9 @@ package org.zanata.common;
 
 import java.io.Serializable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class TransUnitWords implements Serializable
 {
    private static final long serialVersionUID = 1L;
@@ -101,5 +104,19 @@ public class TransUnitWords implements Serializable
    public int getNotApproved()
    {
       return untranslated + needReview;
+   }
+
+   public int getPer()
+   {
+      int total = getTotal();
+      if (total <= 0)
+      {
+         return 0;
+      }
+      else
+      {
+         double per = 100 * approved / total;
+         return (int) Math.ceil(per);
+      }
    }
 }
