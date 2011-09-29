@@ -99,7 +99,7 @@ public class AppView extends Composite implements AppPresenter.Display
 
       // this must be initialized before uiBinder.createAndBindUi(), or an
       // exception will be thrown at runtime
-      translationStatsBar = new TransUnitCountBar(messages);
+      translationStatsBar = new TransUnitCountBar(messages, true);
 
       documentStats = new TranslationStats();
       projectStats = new TranslationStats();

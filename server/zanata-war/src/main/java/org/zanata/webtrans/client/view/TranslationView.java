@@ -205,5 +205,4 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       showTmViewLink.setVisible(visible);
       tmMinimize.setVisible(!visible);
    }
-
 }

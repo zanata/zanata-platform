@@ -54,20 +54,16 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
 
    private boolean isGraph = false;
 
+   private boolean statsByWords = false;
+
 
    @Inject
-   public TransUnitCountBar(WebTransMessages messages)
+   public TransUnitCountBar(WebTransMessages messages, boolean statsByWords)
    {
       this.messages = messages;
+      this.statsByWords = statsByWords;
       initWidget(uiBinder.createAndBindUi(this));
       initLayoutPanelHandler();
-   }
-
-   public TransUnitCountBar(WebTransMessages messages, boolean isGraph)
-   {
-      this.isGraph = isGraph;
-      labelFormat = LabelFormat.PERCENT_COMPLETE;
-      this.messages = messages;
    }
 
    private void initLayoutPanelHandler()
@@ -93,6 +89,15 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
       layoutPanel.sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT);
    }
 
+   public TransUnitCountBar(WebTransMessages messages, boolean isGraph, boolean statsByWords)
+   {
+      this.isGraph = isGraph;
+      this.messages = messages;
+      this.statsByWords = statsByWords;
+
+      labelFormat = LabelFormat.PERCENT_COMPLETE;
+   }
+
    private void setupLayoutPanel(double undefinedLeft, double undefinedWidth, double approvedLeft, double approvedWidth, double needReviewLeft, double needReviewWidth, double untranslatedLeft, double untranslatedWidth)
    {
       layoutPanel.forceLayout();
@@ -104,10 +109,21 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
 
    public void refresh()
    {
-      int approved = getUnitApproved();
-      int needReview = getUnitNeedReview();
-      int untranslated = getUnitUntranslated();
-      int total = getUnitTotal();
+      int approved, needReview, untranslated, total;
+      if (statsByWords)
+      {
+         approved = getWordsApproved();
+         needReview = getWordsNeedReview();
+         untranslated = getWordsUntranslated();
+         total = getWordsTotal();
+      }
+      else
+      {
+         approved = getUnitApproved();
+         needReview = getUnitNeedReview();
+         untranslated = getUnitUntranslated();
+         total = getUnitTotal();
+      }
       int width = getOffsetWidth();
       if (total == 0)
       {
