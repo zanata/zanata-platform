@@ -21,6 +21,7 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.seam.ScopeType;
@@ -35,8 +36,10 @@ import org.jboss.seam.international.StatusMessage.Severity;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
+import org.zanata.model.HPerson;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.service.LocaleService;
 
@@ -45,16 +48,27 @@ import org.zanata.service.LocaleService;
 public class LanguageTeamAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
+   
    @In
    private LanguageTeamService languageTeamServiceImpl;
+   
    @In
    private LocaleService localeServiceImpl;
+   
+   @In
+   private LocaleDAO localeDAO;
+   
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
+   
    @Logger
    Log log;
+   
    @In
    private List<HLocale> memberLanguage;
+   
+   @In(required=false)
+   private HPerson selectedPerson;
 
    private String language;
    private HLocale locale;
@@ -95,6 +109,18 @@ public class LanguageTeamAction implements Serializable
    public HLocale getLocale()
    {
       return locale;
+   }
+   
+   public List<HPerson> getTeamMembers()
+   {
+      return new ArrayList<HPerson>(this.languageTeamServiceImpl.getLanguageTeamMembers( this.language ));
+   }
+   
+   public void addSelectedPersonToTeam()
+   {
+      this.locale.getMembers().add( this.selectedPerson );
+      this.localeDAO.makePersistent( this.locale );
+      this.localeDAO.flush();
    }
 
    @Transactional

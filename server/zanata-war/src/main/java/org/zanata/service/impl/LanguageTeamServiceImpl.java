@@ -1,6 +1,8 @@
 package org.zanata.service.impl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -77,5 +79,19 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
 
       return false;
 
+   }
+   
+   @Override
+   public Set<HPerson> getLanguageTeamCoordinators(String locale)
+   {
+      final HLocale lang = localeDAO.findByLocaleId(new LocaleId(locale));
+      return lang.getCoordinators();
+   }
+   
+   @Override
+   public Set<HPerson> getLanguageTeamMembers(String locale)
+   {
+      final HLocale lang = localeDAO.findByLocaleId(new LocaleId(locale));
+      return lang.getMembers();
    }
 }

@@ -29,6 +29,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import org.hibernate.annotations.FilterJoinTable;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -46,6 +47,7 @@ public class HLocale extends ModelEntityBase implements Serializable
    private LocaleId localeId;
    private boolean active;
    private Set<HPerson> members;
+   private Set<HPerson> coordinators;
    private Set<HProject> supportedProjects;
    private Set<HProjectIteration> supportedIterations;
    
@@ -95,6 +97,23 @@ public class HLocale extends ModelEntityBase implements Serializable
    public void setMembers(Set<HPerson> members)
    {
       this.members = members;
+   }
+   
+   @ManyToMany
+   @JoinTable(name = "HLocale_Member", joinColumns = @JoinColumn(name = "supportedLanguageId"), inverseJoinColumns = @JoinColumn(name = "personId"))
+   @FilterJoinTable(name = "coordinators", condition = "isCoordinator = true")
+   public Set<HPerson> getCoordinators()
+   {
+      if(this.coordinators == null)
+      {
+         this.coordinators = new HashSet<HPerson>();
+      }
+      return this.coordinators;
+   }
+   
+   public void setCoordinators(Set<HPerson> coordinators)
+   {
+      this.coordinators = coordinators;
    }
 
    @ManyToMany

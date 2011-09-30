@@ -86,5 +86,13 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
       query.setParameter("username", username);
       return (HPerson) query.uniqueResult();
    }
+   
+   @SuppressWarnings("unchecked")
+   public List<HPerson> findAllContainingName(String name)
+   {
+      Query query = getSession().createQuery("from HPerson as p where p.account.username like :name or p.name like :name");
+      query.setParameter("name", "%" + name + "%");
+      return query.list();
+   }
 
 }

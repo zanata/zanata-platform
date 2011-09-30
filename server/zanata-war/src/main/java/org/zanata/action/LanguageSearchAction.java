@@ -69,5 +69,10 @@ public class LanguageSearchAction implements Serializable
       localeServiceImpl.enable(zanataLocalePair.getLocaleId());
       Events.instance().raiseEvent("enableLanguage");
    }
+   
+   public String manageMembers(HLocale zanataLocalePair)
+   {
+      return "/language/members.xhtml?id=" + zanataLocalePair.getLocaleId().toString();
+   }
 
 }

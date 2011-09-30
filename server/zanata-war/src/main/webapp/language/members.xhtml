@@ -1,0 +1,78 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"  
+	template="../WEB-INF/layout/template.xhtml">
+	
+	<ui:define name="left_content">
+		<rich:modalPanel id="userAddPanel" width="530" height="320">
+			<f:subview id="personSearch">
+				<a4j:form>
+					<h:inputText value="#{personSearchAction.searchTerm}"/>
+					<a4j:commandButton value="Search" action="#{personSearchAction.search}" reRender="searchResults"/>
+					<h:commandButton value="Close" onclick="#{rich:component('userAddPanel')}.hide(); return false;"/>
+				</a4j:form>
+				
+				<a4j:outputPanel id="searchResults">
+					<h:form>
+						<rich:dataTable id="personTable" value="#{personSearchAction.searchResults}"
+								var="person">
+							<f:facet name="header">Search Results</f:facet>
+							<rich:column sortBy="#{person.name}">
+								<f:facet name="header">Full Name</f:facet>
+				           		#{person.name}
+				       		</rich:column>
+				       		<rich:column sortBy="#{person.account.username}">
+								<f:facet name="header">User Name</f:facet>
+				           		#{person.account.username}
+				       		</rich:column>
+				       		<rich:column>
+				       			<f:facet name="header"></f:facet>
+				       			<h:commandButton value="Add"
+				       				action="#{languageTeamAction.addSelectedPersonToTeam}"/>
+				       		</rich:column>
+						</rich:dataTable>
+					</h:form>
+				</a4j:outputPanel>
+			</f:subview>
+		</rich:modalPanel>
+		
+		<a href="#" onclick="#{rich:component('userAddPanel')}.show()">Add Team Member</a>
+	</ui:define>
+	
+	<ui:define name="center_content">
+		<rich:panel>
+			<f:facet name="header">Language Team: #{languageTeamAction.locale.localeId}</f:facet>
+
+			<a4j:form>
+				<s:token allowMultiplePosts="true" />
+				<rich:dataTable id="members" value="#{languageTeamAction.teamMembers}"
+					var="teamMember">
+					<rich:column>
+						<f:facet name="header">Full Name</f:facet>
+	            		#{teamMember.name}
+	        		</rich:column>
+	        		<rich:column>
+						<f:facet name="header">User Name</f:facet>
+	            		#{teamMember.account.username}
+	        		</rich:column>
+					<rich:column>
+						<f:facet name="header">Coordinator</f:facet>
+						<h:outputText rendered="#{teamMember.isCoordinator(languageTeamAction.locale)}">
+							<div class="checkmark"/>
+						</h:outputText>
+	        		</rich:column>
+					<rich:column>
+						<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+					</rich:column>
+				</rich:dataTable>
+			</a4j:form>
+		</rich:panel>
+	</ui:define>
+	
+</ui:composition>

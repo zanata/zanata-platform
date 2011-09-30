@@ -198,5 +198,20 @@ public class HPerson extends ModelEntityBase implements Serializable
       }
       return false;
    }
+   
+   @Transient
+   public boolean isCoordinator(HLocale locale)
+   {
+      // TODO consider implementing business key equality and using
+      // getLanguageMemberships().contains(locale)
+      for( HPerson p : locale.getCoordinators() )
+      {
+         if(p.getId().equals( this.getId() ))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
 
 }
