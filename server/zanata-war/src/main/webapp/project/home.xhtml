@@ -35,7 +35,7 @@
             value="#{projectAction.projectPagedListDataModel}" var="project">
 				<rich:column>
 				     <f:facet name="header">Project Name</f:facet>
-					       <s:link id="project" styleClass="project_link" value="#{project.name}"  propagation="none"
+					       <s:link id="project" styleClass="table_link" value="#{project.name}"  propagation="none"
 						     view="/project/project.xhtml"> 
 						    <f:param name="slug" value="#{project.slug}"/>
 						</s:link>

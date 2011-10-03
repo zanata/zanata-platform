@@ -17,8 +17,27 @@
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
         <h1>#{messages['jsf.Languages']}</h1>
-        <rich:dataGrid id="latestTribes" value="#{supportedLanguageAction.supportedLanguages}" var="tribe" columns="3" columnClasses="grid_col" styleClass="grid_style">
-          <ui:include src="../WEB-INF/layout/language_view_inline.xhtml" />
-        </rich:dataGrid>
+        <h:form>
+            <rich:dataTable id="latestTribes" value="#{supportedLanguageAction.supportedLanguages}" var="language">
+                <rich:column sortBy="#{language.localeId.id}">
+                    <f:facet name="header">#{messages['jsf.Language']}</f:facet>
+                    <s:link view="/language/language.xhtml" propagation="none" value="#{language.localeId.id}" styleClass="table_link">
+                        <f:param name="id" value="#{language.localeId.id}" />
+                    </s:link>
+                </rich:column>
+                <rich:column sortBy="#{language.retrieveDisplayName()}">
+                    <f:facet name="header">#{messages['jsf.Name']}</f:facet>
+                    #{language.retrieveDisplayName()}
+                </rich:column>
+                <rich:column >
+                    <f:facet name="header">#{messages['jsf.NativeName']}</f:facet>
+                    #{language.retrieveNativeName()}
+                </rich:column>
+                <rich:column sortBy="#{language.members.size}">
+                    <f:facet name="header">#{messages['jsf.Members']}</f:facet>
+                    #{language.members.size}
+                </rich:column>
+            </rich:dataTable>
+        </h:form>
     </ui:define>
 </ui:composition>
