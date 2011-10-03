@@ -314,11 +314,6 @@
     <param name="id" value="#{languageTeamAction.language}" />
     <action execute="#{languageTeamAction.initLocale()}" />
   </page>
-  
-  <page view-id="/language/members.xhtml">
-  	<param name="id" value="#{languageTeamAction.language}" required="true"/>
-    <action execute="#{languageTeamAction.initLocale()}" />
-  </page>
 
   <!-- Exceptions -->
 

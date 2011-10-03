@@ -58,7 +58,7 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
    @SuppressWarnings("unchecked")
    public List<HLocale> getLanguageMembershipByUsername(String userName)
    {
-      Query query = getSession().createQuery("select p.languageMemberships from HPerson as p where p.account.username = :username");
+      Query query = getSession().createQuery("select m.id.supportedLanguage from HLocaleMember as m where m.id.person.account.username = :username");
       query.setParameter("username", userName);
       List<HLocale> re = new ArrayList<HLocale>();
       List<HLocale> su = query.list();

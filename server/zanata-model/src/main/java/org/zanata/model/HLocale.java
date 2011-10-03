@@ -24,10 +24,13 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.FilterJoinTable;
 import org.hibernate.annotations.NaturalId;
@@ -46,10 +49,9 @@ public class HLocale extends ModelEntityBase implements Serializable
    private static final long serialVersionUID = 1L;
    private LocaleId localeId;
    private boolean active;
-   private Set<HPerson> members;
-   private Set<HPerson> coordinators;
    private Set<HProject> supportedProjects;
    private Set<HProjectIteration> supportedIterations;
+   private Set<HLocaleMember> memberships;
    
 
    @NaturalId
@@ -84,36 +86,20 @@ public class HLocale extends ModelEntityBase implements Serializable
    {
       this.localeId = localeId;
    }
-
-   @ManyToMany
-   @JoinTable(name = "HLocale_Member", joinColumns = @JoinColumn(name = "supportedLanguageId"), inverseJoinColumns = @JoinColumn(name = "personId"))
-   public Set<HPerson> getMembers()
-   {
-      if (members == null)
-         members = new HashSet<HPerson>();
-      return members;
-   }
-
-   public void setMembers(Set<HPerson> members)
-   {
-      this.members = members;
-   }
    
-   @ManyToMany
-   @JoinTable(name = "HLocale_Member", joinColumns = @JoinColumn(name = "supportedLanguageId"), inverseJoinColumns = @JoinColumn(name = "personId"))
-   @FilterJoinTable(name = "coordinators", condition = "isCoordinator = true")
-   public Set<HPerson> getCoordinators()
+   @OneToMany(mappedBy="id.supportedLanguage", cascade=CascadeType.ALL)
+   protected Set<HLocaleMember> getMemberships()
    {
-      if(this.coordinators == null)
+      if( this.memberships == null )
       {
-         this.coordinators = new HashSet<HPerson>();
+         this.memberships = new HashSet<HLocaleMember>();
       }
-      return this.coordinators;
+      return this.memberships;
    }
    
-   public void setCoordinators(Set<HPerson> coordinators)
+   protected void setMemberships(Set<HLocaleMember> memberships)
    {
-      this.coordinators = coordinators;
+      this.memberships = memberships;
    }
 
    @ManyToMany
@@ -142,6 +128,41 @@ public class HLocale extends ModelEntityBase implements Serializable
    public void setSupportedIterations(Set<HProjectIteration> supportedIterations)
    {
       this.supportedIterations = supportedIterations;
+   }
+   
+   @Transient
+   public Set<HPerson> getMembers()
+   {
+      final Set<HPerson> members = new HashSet<HPerson>();
+      for( HLocaleMember lm : this.getMemberships() )
+      {
+         members.add( lm.getPerson() );
+      }
+      return members;
+   }
+   
+   @Transient
+   public Set<HPerson> getCoordinators()
+   {
+      final Set<HPerson> coordinators = new HashSet<HPerson>();
+      for( HLocaleMember lm : this.getMemberships() )
+      {
+         if( lm.isCoordinator() )
+         {
+            coordinators.add( lm.getPerson() );
+         }
+      }
+      return coordinators;
+   }
+   
+   public void addMember( HPerson newMember )
+   {
+      this.memberships.add( new HLocaleMember( newMember, this, false ) );
+   }
+   
+   public void addCoordinator( HPerson newCoordinator )
+   {
+      this.memberships.add( new HLocaleMember( newCoordinator, this, true ) );
    }
 
    public String retrieveNativeName()

@@ -29,6 +29,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
@@ -53,7 +54,9 @@ public class HPerson extends ModelEntityBase implements Serializable
 
    private Set<HProject> maintainerProjects;
 
-   private Set<HLocale> languageMemberships;
+   //private Set<HLocale> languageMemberships;
+   
+   private Set<HLocaleMember> languageTeamMemberships;
 
 
    @NotEmpty
@@ -113,18 +116,37 @@ public class HPerson extends ModelEntityBase implements Serializable
       this.maintainerProjects = maintainerProjects;
    }
 
-   @ManyToMany
-   @JoinTable(name = "HLocale_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "supportedLanguageId"))
+   //@ManyToMany
+   //@JoinTable(name = "HLocale_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "supportedLanguageId"))
+   @Transient
    public Set<HLocale> getLanguageMemberships()
    {
-      if (languageMemberships == null)
-         languageMemberships = new HashSet<HLocale>();
-      return languageMemberships;
+      final Set<HLocale> memberships = new HashSet<HLocale>();
+      for( HLocaleMember locMem : this.languageTeamMemberships )
+      {
+         memberships.add( locMem.getSupportedLanguage() );
+      }
+      return memberships;
    }
 
    public void setLanguageMemberships(Set<HLocale> tribeMemberships)
    {
-      this.languageMemberships = tribeMemberships;
+      
+   }
+   
+   @OneToMany(mappedBy="id.person")
+   protected Set<HLocaleMember> getLanguageTeamMemberships()
+   {
+      if( this.languageTeamMemberships == null )
+      {
+         this.languageTeamMemberships = new HashSet<HLocaleMember>();
+      }
+      return languageTeamMemberships;
+   }
+
+   protected void setLanguageTeamMemberships(Set<HLocaleMember> languageTeamMemberships)
+   {
+      this.languageTeamMemberships = languageTeamMemberships;
    }
 
    @Override
