@@ -33,7 +33,7 @@
         <rich:dataTable id="projectList" 
             rows="#{projectAction.pageSize}"  columnsWidth="200px,200px,80px" 
             value="#{projectAction.projectPagedListDataModel}" var="project">
-				<rich:column>
+				<rich:column sortBy="#{project.slug}">
 				     <f:facet name="header">Project Name</f:facet>
 					       <s:link id="project" styleClass="table_link" value="#{project.name}"  propagation="none"
 						     view="/project/project.xhtml"> 
@@ -44,7 +44,7 @@
 				        <f:facet name="header">Description</f:facet>
 						<h:outputText value="#{project.description}" />
 	        		</rich:column>
-				<rich:column>
+				<rich:column sortBy="#{project.creationDate}">
 				        <f:facet name="header">Creation Date</f:facet>
 						<h:outputText value="#{project.creationDate}">
 						   <f:convertDateTime type="date" dateStyle="default"/>
