@@ -33,27 +33,24 @@ import org.zanata.rest.dto.resource.ResourceMeta;
  * @author Sean Flanigan <sflaniga@redhat.com>
  *
  */
-public class ListRemoteCommand extends ConfigurableProjectCommand
+public class ListRemoteCommand extends ConfigurableProjectCommand<ConfigurableProjectOptions>
 {
    private static final Logger log = LoggerFactory.getLogger(ListRemoteCommand.class);
-
-   private final ConfigurableProjectOptions opts;
 
    public ListRemoteCommand(ConfigurableProjectOptions opts)
    {
       super(opts);
-      this.opts = opts;
    }
 
    @Override
    public void run() throws Exception
    {
-      log.info("Server: " + opts.getUrl());
-      log.info("Project: " + opts.getProj());
-      log.info("Version: " + opts.getProjectVersion());
-      ITranslationResources translationResources = getRequestFactory().getTranslationResources(opts.getProj(), opts.getProjectVersion());
+      log.info("Server: " + getOpts().getUrl());
+      log.info("Project: " + getOpts().getProj());
+      log.info("Version: " + getOpts().getProjectVersion());
+      ITranslationResources translationResources = getRequestFactory().getTranslationResources(getOpts().getProj(), getOpts().getProjectVersion());
       ClientResponse<List<ResourceMeta>> response = translationResources.get(null);
-      ClientUtility.checkResult(response, getRequestFactory().getTranslationResourcesURI(opts.getProj(), opts.getProjectVersion()));
+      ClientUtility.checkResult(response, getRequestFactory().getTranslationResourcesURI(getOpts().getProj(), getOpts().getProjectVersion()));
       List<ResourceMeta> list = response.getEntity();
       for (ResourceMeta doc : list)
       {
