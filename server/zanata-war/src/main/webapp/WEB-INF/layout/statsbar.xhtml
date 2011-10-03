@@ -13,17 +13,24 @@
 	<ui:param name="pComplete"
 		value="#{total == 0 ? 0 : 100 * translated / total}" />
 
-    <ui:param name="wTranslated" value="#{total == 0 ? 0 : 120 * translated / total}" />
-    <ui:param name="wUntranslated" value="#{total == 0 ? 0 : 120 * untranslated / total}" />
-    <ui:param name="wFuzzy" value="#{total == 0 ? 0 : 120 * fuzzy / total}" />
+    <ui:param name="wTranslated" value="#{total == 0 ? 0 : 110 * translated / total}" />
+    <ui:param name="wUntranslated" value="#{total == 0 ? 0 : 110 * untranslated / total}" />
+    <ui:param name="wFuzzy" value="#{total == 0 ? 0 : 110 * fuzzy / total}" />
 	   
+	 <s:fragment rendered="#{status.total > 0}">
 	 <div title="Total: #{status.total}, Translated: #{status.approved}, Need Review #{status.needReview}" class="translationStatusDiv">
         <div class="translationStatusBar statusBar_approved" style="width:#{wTranslated}px;"></div>
         <div class="translationStatusBar statusBar_needReview" style="width:#{wFuzzy}px;"></div>
         <div class="translationStatusBar statusBar_untranslated" style="width:#{wUntranslated}px;"></div>
+        <h:outputText value="#{pComplete/100}" rendered="#{status.total > 0}" class="statusBar_percentage">
+            <f:convertNumber type="percent" />
+        </h:outputText>    
     </div>
-     <h:outputText value="#{pComplete/100}" rendered="#{status.total > 0}" class="statusBar_percentage">
-        <f:convertNumber type="percent" />
-     </h:outputText>	
-     <h:outputText rendered="#{status.total eq 0}" class="statusBar_percentage">#{messages['jsf.NoContent']}</h:outputText> 
+    </s:fragment>
+    
+    <s:fragment rendered="#{status.total eq 0}">
+        <div class="statusBar_noContent">
+            <h:outputText value="#{messages['jsf.NoContent']}"/> 
+        </div>
+    </s:fragment>
 </div>
