@@ -69,7 +69,7 @@ public class ApplicationConfiguration
    {
       map.put(HApplicationConfiguration.KEY_REGISTER, "/zanata/account/register");
       map.put(HApplicationConfiguration.KEY_HOST, "http://localhost:8080/zanata");
-      map.put(HApplicationConfiguration.KEY_ADMIN_EMAIL, "no-reply@redhat.com");
+      map.put(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS, "no-reply@redhat.com");
    }
 
    public String getRegisterPath()
@@ -95,6 +95,11 @@ public class ApplicationConfiguration
    public String getAdminEmail()
    {
       return configValues.get(HApplicationConfiguration.KEY_ADMIN_EMAIL);
+   }
+
+   public String getFromEmailAddr()
+   {
+      return configValues.get(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS);
    }
 
    public String getHomeContent()

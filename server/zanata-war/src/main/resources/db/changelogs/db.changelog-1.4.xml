@@ -3,5 +3,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
     
-
+	<changeSet author="damason@redhat.com" id="1">
+		<comment>rename admin email key to zanata from address</comment>
+		<!-- 
+		<sql>update HApplicationConfiguration set key="zanata.email.from.addr" where key="flies.admin.email"</sql>
+		 -->
+		<update tableName="HApplicationConfiguration">
+			<column name="config_key" value="zanata.email.from.addr"/>
+			<where>config_key='flies.admin.email'</where>
+		</update>
+	</changeSet>
+	
 </databaseChangeLog>

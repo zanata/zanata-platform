@@ -190,6 +190,14 @@
   
   <page view-id="/profile/view.xhtml" login-required="true" />
 
+  <!-- Help -->
+  
+  <!-- TODO have this set up the SendEmailAction bean by inserting 'admin' into it for the contact admin page.
+  <page view-id="/help/contact_admin.xhtml">
+  	
+  </page>
+   -->
+  
   <!-- Project -->
 
   <page view-id="/project/project.xhtml">

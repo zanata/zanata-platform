@@ -57,10 +57,12 @@ public class ServerConfigurationBean implements Serializable
    private String serverUrl;
    private String emailDomain;
    private String adminEmail;
+   private String fromEmailAddr;
    private String homeContent;
    private String helpContent;
    @Logger
    Log log;
+
 
    public String getHomeContent()
    {
@@ -93,6 +95,17 @@ public class ServerConfigurationBean implements Serializable
    public void setAdminEmail(String adminEmail)
    {
       this.adminEmail = adminEmail;
+   }
+
+   @Email
+   public String getFromEmailAddr()
+   {
+      return fromEmailAddr;
+   }
+
+   public void setFromEmailAddr(String fromEmailAddr)
+   {
+      this.fromEmailAddr = fromEmailAddr;
    }
 
    public String getEmailDomain()
@@ -206,6 +219,12 @@ public class ServerConfigurationBean implements Serializable
       {
          this.adminEmail = adminEmailValue.getValue();
       }
+      HApplicationConfiguration fromAddressValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS);
+      if (fromAddressValue != null)
+      {
+         this.fromEmailAddr = fromAddressValue.getValue();
+      }
+
    }
 
    @Transactional
@@ -281,6 +300,24 @@ public class ServerConfigurationBean implements Serializable
       {
          adminEmailValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_ADMIN_EMAIL, adminEmail);
          applicationConfigurationDAO.makePersistent(adminEmailValue);
+      }
+
+      HApplicationConfiguration fromEmailAddrValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS);
+      if (fromEmailAddrValue != null)
+      {
+         if (fromEmailAddr == null || fromEmailAddr.isEmpty())
+         {
+            applicationConfigurationDAO.makeTransient(fromEmailAddrValue);
+         }
+         else
+         {
+            fromEmailAddrValue.setValue(fromEmailAddr);
+         }
+      }
+      else if (fromEmailAddr != null && !fromEmailAddr.isEmpty())
+      {
+         fromEmailAddrValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS, fromEmailAddr);
+         applicationConfigurationDAO.makePersistent(fromEmailAddrValue);
       }
 
       applicationConfigurationDAO.flush();
