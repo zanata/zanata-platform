@@ -46,7 +46,23 @@
 		</resources>
 
 		<plugins>
-			
+		<plugin>
+			<artifactId>maven-antrun-plugin</artifactId>
+			<version>1.6</version>
+			<executions>
+			 <execution>
+				<phase>prepare-package</phase>
+				<configuration>
+					<tasks>
+						<mkdir dir="${project.build.directory}/zanata"/>
+					</tasks>
+				</configuration>
+				<goals>
+					<goal>run</goal>
+				</goals>
+			 </execution>
+			</executions>
+		</plugin>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
