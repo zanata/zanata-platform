@@ -7,9 +7,9 @@ be sent to Sean Flanigan <sflaniga@redhat.com>.
 
 Contributor Name <email@address>               Role
 ------------------------------------------------------------------------------
-Asgeir Frimannsson <asgeirf@redhat.com>        Project Founder and Lead
+Asgeir Frimannsson                             Project Founder and former Lead
 James Ni <jni@redhat.com>                      Project Contributor
-Sean Flanigan <sflaniga@redhat.com>            Project Contributor
+Sean Flanigan <sflaniga@redhat.com>            Project Lead
 Ding-Yi Chen <dchen@redhat.com>                Project Contributor
 Caius Carlos Chance <cchance@redhat.com>       Project Contributor
 Helen Ding <hding@redhat.com>                  Project Contributor
