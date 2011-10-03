@@ -656,11 +656,6 @@ table.fullwidth {
 	overflow: hidden;
 }
 
-.grid_col{
-	width: 33%;
-    border: none;
-}
-
 .grid_style{
 	border: none;
 }
@@ -669,55 +664,6 @@ table.fullwidth {
     width: 100%;
     float: left;
     margin: 0px;
-}
-
-.inline_cell_item_top{
-    background:url(../img/cell_top_bg.png) repeat-x left top #c9e9fc;
-    width:100%; 
-    height:32px; 
-    border:solid 1px #c4e5fb; 
-    border-bottom:solid 1px #d5d7d6; 
-    font-weight:bold; 
-    line-height:33px; 
-    font-size:14px;
-    -moz-border-radius-topleft:5px;
-    -webkit-border-top-left-radius:5px;
-    -moz-border-radius-topright:5px;
-    -webkit-border-top-right-radius:5px; 
-	color: #045289;
-}
-
-.inline_cell_item_top span{
-	margin-left:10px;
-}
-
-.inline_cell_item_middle{
-    background:url(../img/cell_middle_bg.png) repeat-x left top #fffdde;
-    border:solid 1px #d5d7d6;
-    width:100%;
-    height:64px; 
-    overflow:auto;
-    overflow-x:hidden; 
-    margin-top:-1px;
-    -moz-border-radius-bottomleft:5px;
-    -webkit-border-bottom-left-radius:5px;
-    -moz-border-radius-bottomright:5px;
-    -webkit-border-bottom-right-radius:5px; 
-}
-
-.inline_cell_item_bottom{
-	background:url(../img/cell_bottom_bg.png) repeat-x left top #ececec;
-	width:100%; 
-	height:32px; 
-	border:solid 1px #d5d7d6; 
-	border-bottom:solid 1px #d5d7d6; 
-	font-weight:bold; 
-	line-height:33px; 
-	margin-top:-1px; 
-	-moz-border-radius-bottomleft:5px;
-	-webkit-border-bottom-left-radius:5px;
-	-moz-border-radius-bottomright:5px;
-	-webkit-border-bottom-right-radius:5px; 
 }
 
 .list_view_header{
@@ -762,7 +708,7 @@ a.action_link {
 	text-align: center;
 }
 
-a.project_link {
+a.table_link {
 	font-size: 130%;
 	font-weight: bold;
 	padding: 4px;	
@@ -864,7 +810,7 @@ a.action_link:hover {
     padding: 3px;
     padding-right: 6px;
     margin-right:5px;
-    width: 120px;
+    width: 142px;
     height: 14px;
     /*text-align: right;
      -moz-border-radius: 6px;
@@ -876,6 +822,16 @@ a.action_link:hover {
 .statusBar_percentage {
     font-size: 12px;
     font-weight: bold;
+    padding-left:2px;
+}
+
+.statusBar_noContent {
+    font-size: 12px;
+    text-align:center;
+    width:142px;
+    padding: 3px;
+    padding-right: 6px;
+    margin-right:5px;
 }
 
 .translationStatusBar {
