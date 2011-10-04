@@ -15,11 +15,14 @@ public abstract class AbstractWorkspaceAction<R extends Result> implements Actio
    private WorkspaceId workspaceId;
    private SessionId sessionId;
 
+
+   // this value is set by SeamDispatchAsync
    public final void setWorkspaceId(WorkspaceId workspaceId)
    {
       this.workspaceId = workspaceId;
    }
 
+   // this value is set by SeamDispatchAsync
    public final void setSessionId(SessionId sessionId)
    {
       this.sessionId = sessionId;

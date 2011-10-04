@@ -28,20 +28,16 @@ import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
-import org.zanata.webtrans.shared.rpc.GetStatusCount;
-import org.zanata.webtrans.shared.rpc.GetStatusCountResult;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
-public class DocumentNode extends Node<DocumentInfo>
+public class DocumentNode extends Composite
 {
 
    private static DocumentNodeUiBinder uiBinder = GWT.create(DocumentNodeUiBinder.class);
@@ -54,12 +50,12 @@ public class DocumentNode extends Node<DocumentInfo>
    TransUnitCountGraph transUnitCountGraph;
 
    final WebTransMessages messages;
-   private final TranslationStats statusCount = new TranslationStats();
    private final CachingDispatchAsync dispatcher;
 
    private ListDataProvider<DocumentNode> dataProvider;
+   private DocumentInfo dataItem;
 
-   public DocumentNode(WebTransMessages messages, CachingDispatchAsync dispatcher, ListDataProvider<DocumentNode> dataProvider)
+   public DocumentNode(WebTransMessages messages, DocumentInfo doc, CachingDispatchAsync dispatcher, EventBus eventBus, ListDataProvider<DocumentNode> dataProvider)
    {
       this.messages = messages;
       this.dispatcher = dispatcher;
@@ -67,17 +63,7 @@ public class DocumentNode extends Node<DocumentInfo>
       this.dataProvider = dataProvider;
 
       initWidget(uiBinder.createAndBindUi(this));
-   }
-
-   public DocumentNode(WebTransMessages messages, DocumentInfo doc, CachingDispatchAsync dispatcher, ListDataProvider<DocumentNode> dataProvider)
-   {
-      this(messages, dispatcher, dataProvider);
       setDataItem(doc);
-   }
-
-   public DocumentNode(WebTransMessages messages, DocumentInfo doc, CachingDispatchAsync dispatcher, EventBus eventBus, ListDataProvider<DocumentNode> dataProvider)
-   {
-      this(messages, doc, dispatcher, dataProvider);
       eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler()
       {
          @Override
@@ -85,8 +71,8 @@ public class DocumentNode extends Node<DocumentInfo>
          {
             if (event.getDocumentId().equals(getDataItem().getId()))
             {
-               TransUnitCount unitCount = statusCount.getUnitCount();
-               TransUnitWords wordCount = statusCount.getWordCount();
+               TransUnitCount unitCount = getStatusCount().getUnitCount();
+               TransUnitWords wordCount = getStatusCount().getWordCount();
                unitCount.decrement(event.getPreviousStatus());
                unitCount.increment(event.getTransUnit().getStatus());
                wordCount.decrement(event.getPreviousStatus(), event.getWordCount());
@@ -97,15 +83,15 @@ public class DocumentNode extends Node<DocumentInfo>
       });
    }
 
-   public void refresh()
+   public DocumentInfo getDataItem()
    {
-      requestStatusCount(getDataItem().getId());
+      return dataItem;
    }
 
-   @Override
-   boolean isDocument()
+   public void setDataItem(DocumentInfo dataItem)
    {
-      return true;
+      this.dataItem = dataItem;
+      updateGraphStatus();
    }
 
    public TransUnitCountGraph getTransUnitCountGraph()
@@ -115,27 +101,19 @@ public class DocumentNode extends Node<DocumentInfo>
 
    private void updateGraphStatus()
    {
-      getTransUnitCountGraph().setStats(statusCount);
+      getTransUnitCountGraph().setStats(getStatusCount());
       dataProvider.refresh();
    }
 
-   private void requestStatusCount(final DocumentId newDocumentId)
+   private TranslationStats getStatusCount()
    {
-      dispatcher.execute(new GetStatusCount(newDocumentId), new AsyncCallback<GetStatusCountResult>()
-      {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            Log.error("error fetching GetStatusCount: " + caught.getMessage());
-         }
+      return dataItem.getStats();
+   }
 
-         @Override
-         public void onSuccess(GetStatusCountResult result)
-         {
-            statusCount.set(result.getCount());
-            updateGraphStatus();
-         }
-      });
+   public void setStats(TranslationStats stats)
+   {
+      getStatusCount().set(stats);
+      updateGraphStatus();
    }
    
 }

@@ -25,6 +25,7 @@ import java.util.HashMap;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.editor.HasTranslationStats;
 import org.zanata.webtrans.client.editor.filter.ContentFilter;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -121,6 +122,7 @@ public class DocumentListView extends Composite implements DocumentListPresenter
          dataProvider.getList().add(documentNode);
       }
    }
+
 
    @Override
    public void setList(ArrayList<DocumentInfo> sortedList)
