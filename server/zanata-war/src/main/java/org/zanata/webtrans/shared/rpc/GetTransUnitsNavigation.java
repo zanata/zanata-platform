@@ -31,18 +31,21 @@ public class GetTransUnitsNavigation extends AbstractWorkspaceAction<GetTransUni
    private Long id;
    private boolean reverse;
    private String phrase;
+   private boolean isFuzzyState, isNewState;
 
    @SuppressWarnings("unused")
    private GetTransUnitsNavigation()
    {
    }
 
-   public GetTransUnitsNavigation(Long id, int count, boolean reverse, String phrase)
+   public GetTransUnitsNavigation(Long id, int count, boolean reverse, String phrase, boolean isFuzzyState, boolean isNewState)
    {
       this.id = id;
       this.count = count;
       this.setReverse(reverse);
       this.phrase = phrase;
+      this.isFuzzyState = isFuzzyState;
+      this.isNewState = isNewState;
    }
 
 
@@ -79,5 +82,15 @@ public class GetTransUnitsNavigation extends AbstractWorkspaceAction<GetTransUni
    public String getPhrase()
    {
       return this.phrase;
+   }
+
+   public boolean isFuzzyState()
+   {
+      return isFuzzyState;
+   }
+
+   public boolean isNewState()
+   {
+      return isNewState;
    }
 }

@@ -407,12 +407,12 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
                if (event.getRowType() == NavigationType.PrevFuzzyOrUntranslated)
                {
-                  editor.saveAndMoveNextFuzzy(NavigationType.PrevEntry);
+                  editor.saveAndMoveNextState(NavigationType.PrevEntry);
                }
 
                if (event.getRowType() == NavigationType.NextFuzzyOrUntranslated)
                {
-                  editor.saveAndMoveNextFuzzy(NavigationType.NextEntry);
+                  editor.saveAndMoveNextState(NavigationType.NextEntry);
                }
 
             }
@@ -616,11 +616,19 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          // stopEditing(rowValue);
       }
 
+      public void updatePageAndRowIndex(int row)
+      {
+         curPage = display.getCurrentPage();
+
+         // Convert row number to row Index in table
+         curRowIndex = curPage * TableConstants.PAGE_SIZE + row;
+         Log.info("Current Row Index" + curRowIndex);
+      }
+
       @Override
       public void gotoNextRow(int row)
       {
-         curPage = display.getCurrentPage();
-         curRowIndex = curPage * TableConstants.PAGE_SIZE + row;
+         updatePageAndRowIndex(row);
          int rowIndex = curPage * TableConstants.PAGE_SIZE + row + 1;
          if (rowIndex < display.getTableModel().getRowCount())
          {
@@ -631,8 +639,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       @Override
       public void gotoPrevRow(int row)
       {
-         curPage = display.getCurrentPage();
-         curRowIndex = curPage * TableConstants.PAGE_SIZE + row;
+         updatePageAndRowIndex(row);
          int rowIndex = curPage * TableConstants.PAGE_SIZE + row - 1;
          if (rowIndex >= 0)
          {
@@ -641,12 +648,26 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       }
 
       @Override
+      public void nextFuzzyNewIndex(int row)
+      {
+         updatePageAndRowIndex(row);
+         if (curRowIndex < display.getTableModel().getRowCount())
+            gotoNextState();
+      }
+
+      @Override
+      public void prevFuzzyNewIndex(int row)
+      {
+         updatePageAndRowIndex(row);
+         if (curRowIndex > 0)
+            gotoPrevState();
+      }
+
+      @Override
       public void nextFuzzyIndex(int row)
       {
-         // Convert row number to row Index in table
-         curPage = display.getCurrentPage();
-         curRowIndex = curPage * TableConstants.PAGE_SIZE + row;
-         Log.info("Current Row Index" + curRowIndex);
+         // TODO: ALEX
+         updatePageAndRowIndex(row);
          if (curRowIndex < display.getTableModel().getRowCount())
             gotoNextState();
       }
@@ -654,10 +675,26 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       @Override
       public void prevFuzzyIndex(int row)
       {
-         // Convert row number to row Index in table
-         curPage = display.getCurrentPage();
-         curRowIndex = curPage * TableConstants.PAGE_SIZE + row;
-         Log.info("Current Row Index" + curRowIndex);
+         // TODO: ALEX
+         updatePageAndRowIndex(row);
+         if (curRowIndex > 0)
+            gotoPrevState();
+      }
+
+      @Override
+      public void nextNewIndex(int row)
+      {
+         // TODO: ALEX
+         updatePageAndRowIndex(row);
+         if (curRowIndex < display.getTableModel().getRowCount())
+            gotoNextState();
+      }
+
+      @Override
+      public void prevNewIndex(int row)
+      {
+         // TODO: ALEX
+         updatePageAndRowIndex(row);
          if (curRowIndex > 0)
             gotoPrevState();
       }
@@ -709,7 +746,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    private void cacheNextFuzzy(final NavigationCacheCallback callBack)
    {
       isReqComplete = false;
-      dispatcher.execute(new GetTransUnitsNavigation(selectedTransUnit.getId().getId(), 3, false, findMessage), new AsyncCallback<GetTransUnitsNavigationResult>()
+      dispatcher.execute(new GetTransUnitsNavigation(selectedTransUnit.getId().getId(), 3, false, findMessage, true, true), new AsyncCallback<GetTransUnitsNavigationResult>()
       {
          @Override
          public void onSuccess(GetTransUnitsNavigationResult result)
@@ -736,7 +773,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    private void cachePrevFuzzy(final NavigationCacheCallback callBack)
    {
       isReqComplete = false;
-      dispatcher.execute(new GetTransUnitsNavigation(selectedTransUnit.getId().getId(), 3, true, findMessage), new AsyncCallback<GetTransUnitsNavigationResult>()
+      dispatcher.execute(new GetTransUnitsNavigation(selectedTransUnit.getId().getId(), 3, true, findMessage, true, true), new AsyncCallback<GetTransUnitsNavigationResult>()
       {
          @Override
          public void onSuccess(GetTransUnitsNavigationResult result)
