@@ -181,8 +181,8 @@ public class SendEmailAction implements Serializable
             FacesMessages.instance().add("#{messages['jsf.email.admin.SentNotification']}");
             log.info("Sent email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'", fromName, fromLoginName, replyEmail, subject, message);
             // TODO navigation should not be handled by the backing bean.
-            return HELP_MAIN_VIEW;
-            // return "success";
+            // return HELP_MAIN_VIEW;
+            return "success";
          }
          else
          {
@@ -194,8 +194,8 @@ public class SendEmailAction implements Serializable
          FacesMessages.instance().add("There was a problem sending the message: " + e.getMessage());
          log.error("Failed to send email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'", e, fromName, fromLoginName, replyEmail, subject, message);
          // TODO navigation should not be handled by the backing bean.
-         return CONTACT_ADMIN_VIEW;
-         // return "failure";
+         // return CONTACT_ADMIN_VIEW;
+         return "failure";
       }
    }
 
@@ -207,7 +207,8 @@ public class SendEmailAction implements Serializable
    {
       log.info("Canceled sending email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'", fromName, fromLoginName, replyEmail, subject, message);
       FacesMessages.instance().add("Sending message canceled");
-      return HELP_MAIN_VIEW;
+      // return HELP_MAIN_VIEW;
+      return "canceled";
    }
 
 }
