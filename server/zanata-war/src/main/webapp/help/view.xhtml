@@ -15,12 +15,14 @@
 </ui:define>
 
 <ui:define name="left_content">
-  <rich:panel id="loggedIn">
+  <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
     <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
     <s:link styleClass="action_link" value="#{messages['jsf.EditHelpPageContent']}"
     		view="/help/edit_help_content.xhtml" propagation="none"
     		rendered="#{s:hasRole('admin')}"></s:link>
-    <s:link styleClass="action_link" value="#{messages['jsf.ContactAdmin']}" view="/help/contact_admin.xhtml" propagation="none"></s:link>
+    <s:link styleClass="action_link" value="#{messages['jsf.ContactAdmin']}" view="/help/contact_admin.xhtml" propagation="none">
+      <f:param name="emailType" value="contact_admin" />
+    </s:link>
   </rich:panel>
 
 </ui:define>

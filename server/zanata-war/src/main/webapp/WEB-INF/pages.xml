@@ -192,11 +192,11 @@
 
   <!-- Help -->
   
-  <!-- TODO have this set up the SendEmailAction bean by inserting 'admin' into it for the contact admin page.
   <page view-id="/help/contact_admin.xhtml">
-  	
+    <restrict>#{identity.loggedIn}</restrict>
+    <param name="emailType" value="#{sendEmail.emailType}" />
   </page>
-   -->
+
   
   <!-- Project -->
 

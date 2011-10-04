@@ -6,13 +6,13 @@
            xmlns:s="http://jboss.com/products/seam/taglib"
            charset="UTF-8" importance="normal">
   <m:from name="#{messages['jsf.Zanata']}" >#{applicationConfiguration.fromEmailAddr}</m:from>
-  <m:to name="#{messages['jsf.Zanata']} #{sendEmail.toName}">#{applicationConfiguration.adminEmail}</m:to>
+  <m:to name="#{messages['jsf.Zanata']} #{messages['jsf.email.admin.Administrator']}">#{applicationConfiguration.adminEmail}</m:to>
   <m:replyTo name="#{sendEmail.fromName}" >#{sendEmail.replyEmail}</m:replyTo>
   <m:subject>#{messages['jsf.email.admin.SubjectPrefix']} #{sendEmail.subject}</m:subject>
   <m:body>
     <html>
     <body>
-    <p>#{messages['jsf.email.DearRecipient']}</p>
+    <p>#{messages['jsf.email.admin.DearAdmin']}</p>
     <p>#{messages['jsf.email.admin.UserMessageIntro']}</p>
     <hr/>
     <h:outputText value="#{sendEmail.htmlMessage}" escape="false" />

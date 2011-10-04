@@ -30,12 +30,15 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
+
+import com.beust.jcommander.ParameterException;
 
 /**
  * Sends an email to a specified role.
@@ -70,35 +73,16 @@ public class SendEmailAction implements Serializable
    private String fromName;
    private String fromLoginName;
    private String replyEmail;
-   private String noReplyEmail;
-   private String toName;
-   private String toEmail;
    private String subject;
    private String message;
+   private String emailType;
 
-   public enum EmailType
-   {
-      CONTACT_ADMIN, CONTACT_LANGUAGE_TEAM, JOIN_LANGUAGE_TEAM
-   }
-   
-   private EmailType type;
-   
    @Create
    public void onCreate()
    {
       fromName = authenticatedAccount.getPerson().getName();
       fromLoginName = authenticatedAccount.getUsername();
       replyEmail = authenticatedAccount.getPerson().getEmail();
-
-      // TODO have these set based on the page
-      type = EmailType.CONTACT_ADMIN;
-
-      // TODO get these from config based on the above
-      toName = "Administrator";
-      toEmail = "damason@redhat.com";
-
-      // TODO get this from config
-      noReplyEmail = "no-reply@zanata.org";
 
       subject = "";
       message = "";
@@ -136,40 +120,6 @@ public class SendEmailAction implements Serializable
       this.replyEmail = replyEmail;
    }
 
-   @Email
-   public String getNoReplyEmail()
-   {
-      return noReplyEmail;
-   }
-
-   @Email
-   public void setNoReplyEmail(String noReplyEmail)
-   {
-      this.noReplyEmail = noReplyEmail;
-   }
-
-   public String getToName()
-   {
-      return toName;
-   }
-
-   public void setRoleName(String roleName)
-   {
-      this.toName = roleName;
-   }
-
-   @Email
-   public String getToEmail()
-   {
-      return toEmail;
-   }
-
-   @Email
-   public void setToEmail(String roleEmail)
-   {
-      this.toEmail = roleEmail;
-   }
-
    public String getSubject()
    {
       return subject;
@@ -201,11 +151,22 @@ public class SendEmailAction implements Serializable
       this.message = encodedMessage;
    }
 
+   public String getEmailType()
+   {
+      return emailType;
+   }
+
+   public void setEmailType(String emailType)
+   {
+      this.emailType = emailType;
+   }
+
    /**
-    * TODO this probably won't actually do the send - that is handled by seam
-    * and jsf.
+    * Sends the email by rendering an appropriate email template with the values
+    * in this bean.
     * 
-    * @return 'success' if it worked, 'failure' otherwise
+    * @return a view to redirect to. This should be replaced with configuration
+    *         in pages.xml
     */
    public String send()
    {
@@ -214,28 +175,27 @@ public class SendEmailAction implements Serializable
 
       try
       {
-         if (type == EmailType.CONTACT_ADMIN)
+         if (emailType != null && emailType.equals("contact_admin"))
          {
             renderer.render(ADMIN_EMAIL_TEMPLATE);
-            // TODO use localizable string here
-            FacesMessages.instance().add("Your message has been sent to the administrator");
-            log.info("Sent email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', toName '{3}', toEmail '{4}', subject '{5}', message '{6}'", fromName, fromLoginName, replyEmail, toName, toEmail, subject, message);
-            // return "success";
+            FacesMessages.instance().add("#{messages['jsf.email.admin.SentNotification']}");
+            log.info("Sent email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'", fromName, fromLoginName, replyEmail, subject, message);
             // TODO navigation should not be handled by the backing bean.
             return HELP_MAIN_VIEW;
+            // return "success";
          }
          else
          {
-            throw new NotImplementedException("Other email types not implemented.");
+            throw new Exception("Invalid email type: " + (emailType != null ? emailType : "null"));
          }
       }
       catch (Exception e)
       {
          FacesMessages.instance().add("There was a problem sending the message: " + e.getMessage());
-         log.error("Failed to send email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', toName '{3}', toEmail '{4}', subject '{5}', message '{6}'", e, fromName, fromLoginName, replyEmail, toName, toEmail, subject, message);
-         // return "failure";
+         log.error("Failed to send email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'", e, fromName, fromLoginName, replyEmail, subject, message);
          // TODO navigation should not be handled by the backing bean.
          return CONTACT_ADMIN_VIEW;
+         // return "failure";
       }
    }
 
@@ -245,34 +205,9 @@ public class SendEmailAction implements Serializable
     */
    public String cancel()
    {
-      log.info("Canceled sending email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', toName '{3}', toEmail '{4}', subject '{5}', message '{6}'", fromName, fromLoginName, replyEmail, toName, toEmail, subject, message);
+      log.info("Canceled sending email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'", fromName, fromLoginName, replyEmail, subject, message);
       FacesMessages.instance().add("Sending message canceled");
       return HELP_MAIN_VIEW;
    }
-
-   // @Transactional
-   // public String validate() throws LoginException
-   // {
-   // if (activationKey != null && !activationKey.isEmpty())
-   // {
-   // KeyParameter keyPair =
-   // EmailChangeActivationService.parseKey(activationKey);
-   //
-   // HPerson person = personDAO.findById(new Long(keyPair.getId()), true);
-   // HAccount account = person.getAccount();
-   // if
-   // (!account.getUsername().equals(identity.getCredentials().getUsername()))
-   // {
-   // throw new LoginException();
-   // }
-   // person.setEmail(keyPair.getEmail());
-   // account.setEnabled(true);
-   // personDAO.makePersistent(person);
-   // personDAO.flush();
-   // FacesMessages.instance().add("You have successfully changed your email account.");
-   // log.info("update email address to {0}  successfully", keyPair.getEmail());
-   // }
-   // return "/home.xhtml";
-   // }
 
 }
