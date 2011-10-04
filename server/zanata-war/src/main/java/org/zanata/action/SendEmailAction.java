@@ -80,6 +80,11 @@ public class SendEmailAction implements Serializable
    @Create
    public void onCreate()
    {
+      if (authenticatedAccount == null)
+      {
+         log.error("SendEmailAction failed to load authenticated account");
+         return;
+      }
       fromName = authenticatedAccount.getPerson().getName();
       fromLoginName = authenticatedAccount.getUsername();
       replyEmail = authenticatedAccount.getPerson().getEmail();
