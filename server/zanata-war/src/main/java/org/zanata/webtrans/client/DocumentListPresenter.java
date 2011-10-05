@@ -67,8 +67,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
       void setSelection(DocumentInfo document);
 
-      void ensureSelectionVisible();
-
       void setFilter(ContentFilter<DocumentInfo> filter);
 
       void removeFilter();
@@ -206,7 +204,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          {
             final ArrayList<DocumentInfo> documents = result.getDocuments();
             Log.info("Received doc list for " + result.getProjectIterationId() + ": " + documents.size() + " elements");
-            display.setList(documents); // TODO server should sort
+            long start = System.currentTimeMillis();
+            display.setList(documents);
+            Log.info("Load doc list view time:" + String.valueOf(System.currentTimeMillis() - start));
             for (DocumentInfo doc : documents)
             {
                projectStats.add(doc.getStats());
