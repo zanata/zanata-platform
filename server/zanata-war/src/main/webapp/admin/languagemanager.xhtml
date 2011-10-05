@@ -60,7 +60,7 @@
 							rendered="#{!language.active}"
 							action="#{languageSearchAction.enable(languageSearchAction.selectedLanguage)}"
 							onclick="return confirmEnable()" />
-						<h:commandButton value="Team Members" 
+						<h:commandButton value="#{messages['jsf.TeamMembers']}" 
 							action="#{languageSearchAction.manageMembers(languageSearchAction.selectedLanguage)}">
 							<f:param name="id" value="#{language.localeId.id}" />
 						</h:commandButton>

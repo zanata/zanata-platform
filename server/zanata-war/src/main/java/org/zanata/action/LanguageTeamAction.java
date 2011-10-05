@@ -169,6 +169,14 @@ public class LanguageTeamAction implements Serializable
    {
       this.localeDAO.makePersistent(this.locale);
       this.localeDAO.flush();
+      if( member.isCoordinator() )
+      {
+         FacesMessages.instance().add("{0} has been made a Team Coordinator", member.getPerson().getAccount().getUsername());
+      }
+      else
+      {
+         FacesMessages.instance().add("{0} has been removed from Team Coordinators", member.getPerson().getAccount().getUsername());
+      }
    }
    
    public void addTeamMember( final Long personId )

@@ -28,24 +28,29 @@
 				    <f:facet name="header">#{messages['jsf.Name']}</f:facet>
 				    #{member.person.name}
 				  </rich:column>
-				  <rich:column width="auto">
+				  <rich:column width="auto" rendered="#{s:hasRole('admin') or languageTeamAction.userIsCoordinator()}">
 				    <f:facet name="header">#{messages['jsf.Email']}</f:facet>
-				    <h:outputText rendered="#{s:hasRole('admin') or member.coordinator or languageTeamAction.userIsCoordinator()}">
+				    <h:outputText>
 				    	#{member.person.email}
 				    </h:outputText>
 				  </rich:column>
-				  <rich:column width="auto">
-				    <f:facet name="header">Coordinator</f:facet>
-				    <h:selectBooleanCheckbox value="#{member.coordinator}">
+				  <rich:column width="auto" styleClass="centered">
+				    <f:facet name="header">#{messages['jsf.Coordinator']}</f:facet>
+				    <h:selectBooleanCheckbox value="#{member.coordinator}"
+				    	rendered="#{s:hasRole('admin') or languageTeamAction.userIsCoordinator()}">
 				    	<a4j:support event="onclick" 
 				    		ajaxSingle="true" 
 				    		reRender="threads" 
 				    		action="#{languageTeamAction.toggleCoordinator(member)}"/>
 				    </h:selectBooleanCheckbox>
+				    <h:outputText rendered="#{not s:hasRole('admin') and not languageTeamAction.userIsCoordinator() and member.coordinator}">
+						<div class="checkmark"/>
+					</h:outputText>
 				  </rich:column>
-				  <rich:column width="auto">
-				  	<f:facet name="header">Actions</f:facet>
-				  	<a4j:commandButton value="Remove"
+				  <rich:column width="auto" styleClass="centered" 
+				  	rendered="#{s:hasRole('admin') or languageTeamAction.userIsCoordinator()}">
+				  	<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+				  	<a4j:commandButton value="#{messages['jsf.Remove']}"
 				  		action="#{languageTeamAction.removeMembership(member)}"
 				  		reRender="threads"
 				  		onclick="this.disabled=true"
@@ -66,11 +71,13 @@
             #{messages['jsf.JoinLanguageTeam']}
             <s:conversationId name="id" value="#{languageTeamAction.language}"/>
           </a4j:commandLink>
-	 	  <a4j:commandLink id="Leave" styleClass="action_link" action="#{languageTeamAction.leaveTribe}" rendered="#{languageTeamAction.contained and s:hasRole('admin')}">
+	 	  <a4j:commandLink id="Leave" styleClass="action_link" action="#{languageTeamAction.leaveTribe}" rendered="#{languageTeamAction.contained}">
             #{messages['jsf.LeaveLanguageTeam']}
             <s:conversationId name="id" value="#{languageTeamAction.language}"/>
           </a4j:commandLink>
-          <a href="#" class="action_link" onclick="#{rich:component('userAddPanel')}.show()">Add Team Member</a>
+          <h:outputText rendered="#{s:hasRole('admin')}">
+          	<a href="#" class="action_link" onclick="#{rich:component('userAddPanel')}.show()">#{messages['jsf.AddTeamMember']}</a>
+          </h:outputText>
         </a4j:form>
       </rich:panel>
 
@@ -78,10 +85,10 @@
 			<f:subview id="personSearch">
 				<a4j:form>
 					<h:inputText value="#{languageTeamAction.searchTerm}" />
-					<a4j:commandButton value="Search"
+					<a4j:commandButton value="#{messages['jsf.Search']}"
 						action="#{languageTeamAction.searchForTeamMembers}"
 						reRender="searchResults" />
-					<h:commandButton value="Close"
+					<h:commandButton value="#{messages['jsf.Close']}"
 						onclick="#{rich:component('userAddPanel')}.hide(); return false;" />
 				</a4j:form>
 
@@ -92,21 +99,21 @@
 					<h:form>
 						<rich:dataTable id="personTable"
 							value="#{languageTeamAction.searchResults}" var="person">
-							<f:facet name="header">Search Results</f:facet>
+							<f:facet name="header">#{messages['jsf.SearchResults']}</f:facet>
 							<rich:column sortBy="#{person.name}">
-								<f:facet name="header">Full Name</f:facet>
+								<f:facet name="header">#{messages['jsf.Name']}</f:facet>
 				           		#{person.name}
 				       		</rich:column>
 							<rich:column sortBy="#{person.account.username}">
-								<f:facet name="header">User Name</f:facet>
+								<f:facet name="header">#{messages['jsf.Username']}</f:facet>
 				           		#{person.account.username}
 				       		</rich:column>
 							<rich:column>
 								<f:facet name="header"></f:facet>
-								<h:commandButton value="Add"
+								<h:commandButton value="#{messages['jsf.Add']}"
 									action="#{languageTeamAction.addTeamMember(person.id)}"
 									rendered="#{!languageTeamAction.isPersonInTeam(person.id)}" />
-								<h:outputText value="Already in Team"
+								<h:outputText value="#{messages['jsf.AlreadyInTeam']}"
 									rendered="#{languageTeamAction.isPersonInTeam(person.id)}" />
 							</rich:column>
 						</rich:dataTable>
