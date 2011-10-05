@@ -1,5 +1,11 @@
 # Zanata change log summary
 
+## zanata-1.4.1
+ * Fixed: % completed should be calculated with words, not messages: https://bugzilla.redhat.com/show_bug.cgi?id=741523
+ * Fixed: Selecting Administration submenu items does not always highlight the parent menu: https://bugzilla.redhat.com/show_bug.cgi?id=724867
+ * Fixed: Change of tile to list view on Language page, make project list sortable: https://bugzilla.redhat.com/show_bug.cgi?id=742111
+ * Performance fix for projects with 1000+ documents: https://bugzilla.redhat.com/show_bug.cgi?id=743179
+
 ## zanata-1.4
  * add project-type to zanata.xml for generic push/pull commands
  * redirect to login from translation editor when required
