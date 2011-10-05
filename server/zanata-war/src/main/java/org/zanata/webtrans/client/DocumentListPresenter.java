@@ -39,6 +39,7 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
@@ -76,13 +77,14 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       HasTranslationStats getTransUnitCountBar();
 
       HasSelectionHandlers<DocumentInfo> getDocumentList();
+
+      TransUnitUpdatedEventHandler getDocumentNode(DocumentId docId);
    }
 
    private final DispatchAsync dispatcher;
    private final WorkspaceContext workspaceContext;
    private DocumentInfo currentDocument;
    private final TranslationStats projectStats = new TranslationStats();
-
    private final WebTransMessages messages;
 
    @Inject
@@ -93,7 +95,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       this.dispatcher = dispatcher;
       this.messages = messages;
       Log.info("DocumentListPresenter()");
-      loadDocumentList();
    }
 
    @Override
@@ -141,9 +142,14 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             projectWords.decrement(event.getPreviousStatus(), event.getWordCount());
             projectWords.increment(event.getTransUnit().getStatus(), event.getWordCount());
             getDisplay().getTransUnitCountBar().setStats(projectStats);
+
+            DocumentId docId = event.getDocumentId();
+            TransUnitUpdatedEventHandler handler = display.getDocumentNode(docId);
+            if (handler != null)
+               handler.onTransUnitUpdated(event);
          }
       }));
-
+      loadDocumentList();
    }
 
    final class BasicContentFilter implements ContentFilter<DocumentInfo>
@@ -202,16 +208,18 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          @Override
          public void onSuccess(GetDocumentListResult result)
          {
+            long start = System.currentTimeMillis();
             final ArrayList<DocumentInfo> documents = result.getDocuments();
             Log.info("Received doc list for " + result.getProjectIterationId() + ": " + documents.size() + " elements");
-            long start = System.currentTimeMillis();
             display.setList(documents);
-            Log.info("Load doc list view time:" + String.valueOf(System.currentTimeMillis() - start));
+            Log.info("Time to load docs into DocListView: " + String.valueOf(System.currentTimeMillis() - start));
+            start = System.currentTimeMillis();
             for (DocumentInfo doc : documents)
             {
                projectStats.add(doc.getStats());
             }
             display.getTransUnitCountBar().setStats(projectStats);
+            Log.info("Time to calculate project stats: " + String.valueOf(System.currentTimeMillis() - start));
          }
       });
    }

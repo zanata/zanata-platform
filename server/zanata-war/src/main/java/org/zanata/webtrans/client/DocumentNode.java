@@ -30,7 +30,7 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 
 import com.google.gwt.view.client.ListDataProvider;
 
-public class DocumentNode
+public class DocumentNode implements TransUnitUpdatedEventHandler
 {
    private TransUnitCountGraph transUnitCountGraph;
    private ListDataProvider<DocumentNode> dataProvider;
@@ -46,26 +46,22 @@ public class DocumentNode
       this.dataProvider = dataProvider;
       this.docInfo = doc;
       transUnitCountGraph.setStats(docInfo.getStats());
-
-      eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler()
-      {
-         @Override
-         public void onTransUnitUpdated(TransUnitUpdatedEvent event)
-         {
-            if (event.getDocumentId().equals(docInfo.getId()))
-            {
-               TransUnitCount unitCount = docInfo.getStats().getUnitCount();
-               TransUnitWords wordCount = docInfo.getStats().getWordCount();
-               unitCount.decrement(event.getPreviousStatus());
-               unitCount.increment(event.getTransUnit().getStatus());
-               wordCount.decrement(event.getPreviousStatus(), event.getWordCount());
-               wordCount.increment(event.getTransUnit().getStatus(), event.getWordCount());
-               updateGraphStatus();
-            }
-         }
-      });
    }
 
+   @Override
+   public void onTransUnitUpdated(TransUnitUpdatedEvent event)
+   {
+      if (event.getDocumentId().equals(docInfo.getId()))
+      {
+         TransUnitCount unitCount = docInfo.getStats().getUnitCount();
+         TransUnitWords wordCount = docInfo.getStats().getWordCount();
+         unitCount.decrement(event.getPreviousStatus());
+         unitCount.increment(event.getTransUnit().getStatus());
+         wordCount.decrement(event.getPreviousStatus(), event.getWordCount());
+         wordCount.increment(event.getTransUnit().getStatus(), event.getWordCount());
+         updateGraphStatus();
+      }
+   }
    public DocumentInfo getDocInfo()
    {
       return docInfo;

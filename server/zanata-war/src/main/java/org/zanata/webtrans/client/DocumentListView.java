@@ -21,15 +21,13 @@
 package org.zanata.webtrans.client;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Timer;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.editor.HasTranslationStats;
 import org.zanata.webtrans.client.editor.filter.ContentFilter;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.ClearableTextBox;
 import org.zanata.webtrans.client.ui.DocumentListTable;
@@ -37,6 +35,7 @@ import org.zanata.webtrans.client.ui.UiMessages;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -112,20 +111,19 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       return this;
    }
 
-   public void clear()
-   {
-      dataProvider.getList().clear();
-      nodes.clear();
-   }
-
    @Override
    public void setList(ArrayList<DocumentInfo> sortedList)
    {
-      clear();
+      dataProvider.getList().clear();
+      nodes = new HashMap<DocumentId, DocumentNode>(sortedList.size());
       int counter = 0;
+      long start = System.currentTimeMillis();
       for (DocumentInfo doc : sortedList)
       {
-         System.out.println(counter);
+         System.out.print(++counter);
+         System.out.print(' ');
+         if (counter % 25 == 0)
+            System.out.println();
          DocumentNode node = new DocumentNode(messages, doc, eventBus, dataProvider);
          if (filter != null)
          {
@@ -136,10 +134,17 @@ public class DocumentListView extends Composite implements DocumentListPresenter
             dataProvider.getList().add(node);
          }
          nodes.put(doc.getId(), node);
-         counter++;
       }
+      System.out.println();
+      Log.info("Time to create DocumentNodes: " + String.valueOf(System.currentTimeMillis() - start));
       documentListTable.setPageSize(dataProvider.getList().size());
       dataProvider.addDataDisplay(documentListTable);
+   }
+
+   @Override
+   public TransUnitUpdatedEventHandler getDocumentNode(DocumentId docId)
+   {
+      return nodes.get(docId);
    }
 
    @Override

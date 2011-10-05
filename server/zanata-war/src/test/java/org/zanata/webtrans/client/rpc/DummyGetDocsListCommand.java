@@ -50,8 +50,8 @@ final class DummyGetDocsListCommand implements Command
       names.add(new DocumentInfo(new DocumentId(3), "path2name1", "path/2", newStats(3)));
       names.add(new DocumentInfo(new DocumentId(4), "path2name2", "path/2", newStats(4)));
       names.add(new DocumentInfo(new DocumentId(5), "name2", "", newStats(5)));
-      names.add(new DocumentInfo(new DocumentId(6), "name1", null, newStats(6)));
-      names.add(new DocumentInfo(new DocumentId(7), "long name, a name which is really quite long, too wide to be displayed without scrolling (in most cases)", null, newStats(7)));
+      names.add(new DocumentInfo(new DocumentId(6), "name1", "", newStats(6)));
+      names.add(new DocumentInfo(new DocumentId(7), "long name, a name which is really quite long, too wide to be displayed without scrolling (in most cases)", "", newStats(7)));
       names.add(new DocumentInfo(new DocumentId(8), "another long name, a name which is really quite long, too wide to be displayed without scrolling (in most cases)", "long path, a path which is, again, really quite long, and also too wide to be displayed without scrolling (in most cases)", newStats(8)));
       for (int n = 10; n < 129; n++)
          // two digit numbers, to make sorting happier
