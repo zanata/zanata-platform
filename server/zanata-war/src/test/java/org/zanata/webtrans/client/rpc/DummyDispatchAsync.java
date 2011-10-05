@@ -11,8 +11,6 @@ import org.zanata.webtrans.shared.rpc.EditingTranslationAction;
 import org.zanata.webtrans.shared.rpc.EditingTranslationResult;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
-import org.zanata.webtrans.shared.rpc.GetProjectStatusCount;
-import org.zanata.webtrans.shared.rpc.GetProjectStatusCountResult;
 import org.zanata.webtrans.shared.rpc.GetStatusCount;
 import org.zanata.webtrans.shared.rpc.GetStatusCountResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
@@ -75,12 +73,6 @@ public class DummyDispatchAsync extends SeamDispatchAsync
          final GetTranslatorList _action = (GetTranslatorList) action;
          AsyncCallback<GetTranslatorListResult> _callback = (AsyncCallback<GetTranslatorListResult>) callback;
          DeferredCommand.addCommand(new DummyGetTranslatorListCommand(_action, _callback));
-      }
-      else if (action instanceof GetProjectStatusCount)
-      {
-         final GetProjectStatusCount _action = (GetProjectStatusCount) action;
-         AsyncCallback<GetProjectStatusCountResult> _callback = (AsyncCallback<GetProjectStatusCountResult>) callback;
-         DeferredCommand.addCommand(new DummyGetProjectStatusCountCommand(_action, _callback));
       }
       else if (action instanceof GetStatusCount)
       {
