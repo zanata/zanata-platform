@@ -11,9 +11,12 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
+import org.zanata.dao.LocaleMemberDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
+import org.zanata.model.HLocaleMember;
+import org.zanata.model.HLocaleMember.HLocaleMemberPk;
 import org.zanata.model.HPerson;
 import org.zanata.service.LanguageTeamService;
 
@@ -25,6 +28,8 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
    private PersonDAO personDAO;
 
    private LocaleDAO localeDAO;
+   
+   private LocaleMemberDAO localeMemberDAO;
 
    @In
    public void setPersonDAO(PersonDAO personDAO)
@@ -38,6 +43,12 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
       this.localeDAO = localeDAO;
    }
    
+   @In
+   public void setLocaleMemberDAO(LocaleMemberDAO localeMemberDAO)
+   {
+      this.localeMemberDAO = localeMemberDAO;
+   }
+   
 
    public List<HLocale> getLanguageMemberships(String userName)
    {
@@ -48,8 +59,9 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
    {
       HLocale lang = localeDAO.findByLocaleId(new LocaleId(locale));
       HPerson currentPerson = personDAO.findById(personId, false);
+      final boolean alreadyJoined = localeMemberDAO.findById(new HLocaleMemberPk(currentPerson, lang), false) == null;
 
-      if (!lang.getMembers().contains(currentPerson))
+      if (!alreadyJoined)
       {
          if (currentPerson.getLanguageMemberships().size() >= MAX_NUMBER_MEMBERSHIP)
          {
@@ -57,8 +69,8 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
          }
          else
          {
-            lang.getMembers().add(currentPerson);
-            localeDAO.flush();
+            localeMemberDAO.makePersistent(new HLocaleMember(currentPerson, lang, false));
+            localeMemberDAO.flush();
             return true;
          }
       }
@@ -69,29 +81,16 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
    {
       HLocale lang = localeDAO.findByLocaleId(new LocaleId(locale));
       HPerson currentPerson = personDAO.findById(personId, false);
+      final HLocaleMember membership = localeMemberDAO.findById(new HLocaleMemberPk(currentPerson, lang), true);
 
-      if (lang.getMembers().contains(currentPerson))
+      if (membership != null)
       {
-         lang.getMembers().remove(currentPerson);
-         localeDAO.flush();
+         localeMemberDAO.makeTransient(membership);
+         localeMemberDAO.flush();
          return true;
       }
 
       return false;
 
-   }
-   
-   @Override
-   public Set<HPerson> getLanguageTeamCoordinators(String locale)
-   {
-      final HLocale lang = localeDAO.findByLocaleId(new LocaleId(locale));
-      return lang.getCoordinators();
-   }
-   
-   @Override
-   public Set<HPerson> getLanguageTeamMembers(String locale)
-   {
-      final HLocale lang = localeDAO.findByLocaleId(new LocaleId(locale));
-      return lang.getMembers();
    }
 }

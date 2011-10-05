@@ -41,7 +41,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  */
 @Entity
 @Table(name="HLocale_Member")
-class HLocaleMember implements Serializable
+public class HLocaleMember implements Serializable
 {
    private static final long serialVersionUID = 1L;
    
@@ -108,13 +108,23 @@ class HLocaleMember implements Serializable
    }
    
    @Embeddable
-   static class HLocaleMemberPk implements Serializable
+   public static class HLocaleMemberPk implements Serializable
    {
       private static final long serialVersionUID = 1L;
 
       private HPerson person;
       
       private HLocale supportedLanguage;
+
+      public HLocaleMemberPk()
+      {
+      }
+      
+      public HLocaleMemberPk(final HPerson person, final HLocale supportedLanguage)
+      {
+         this.person = person;
+         this.supportedLanguage = supportedLanguage;
+      }
 
       @ManyToOne(fetch=FetchType.EAGER, optional=false)
       @JoinColumn(name="personId", nullable=false)
@@ -129,7 +139,7 @@ class HLocaleMember implements Serializable
       }
 
       @ManyToOne(fetch=FetchType.EAGER, optional=false)
-      @JoinColumn(name="supportedLanguageId", nullable=false)
+      @JoinColumn(name="supportedLanguageId")
       public HLocale getSupportedLanguage()
       {
          return supportedLanguage;

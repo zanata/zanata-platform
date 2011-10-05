@@ -32,7 +32,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.FilterJoinTable;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -87,8 +86,9 @@ public class HLocale extends ModelEntityBase implements Serializable
       this.localeId = localeId;
    }
    
-   @OneToMany(mappedBy="id.supportedLanguage", cascade=CascadeType.ALL)
-   protected Set<HLocaleMember> getMemberships()
+   @OneToMany(cascade=CascadeType.ALL)
+   @JoinColumn(name = "supportedLanguageId")
+   public Set<HLocaleMember> getMemberships()
    {
       if( this.memberships == null )
       {
@@ -97,7 +97,7 @@ public class HLocale extends ModelEntityBase implements Serializable
       return this.memberships;
    }
    
-   protected void setMemberships(Set<HLocaleMember> memberships)
+   public void setMemberships(Set<HLocaleMember> memberships)
    {
       this.memberships = memberships;
    }
@@ -128,41 +128,6 @@ public class HLocale extends ModelEntityBase implements Serializable
    public void setSupportedIterations(Set<HProjectIteration> supportedIterations)
    {
       this.supportedIterations = supportedIterations;
-   }
-   
-   @Transient
-   public Set<HPerson> getMembers()
-   {
-      final Set<HPerson> members = new HashSet<HPerson>();
-      for( HLocaleMember lm : this.getMemberships() )
-      {
-         members.add( lm.getPerson() );
-      }
-      return members;
-   }
-   
-   @Transient
-   public Set<HPerson> getCoordinators()
-   {
-      final Set<HPerson> coordinators = new HashSet<HPerson>();
-      for( HLocaleMember lm : this.getMemberships() )
-      {
-         if( lm.isCoordinator() )
-         {
-            coordinators.add( lm.getPerson() );
-         }
-      }
-      return coordinators;
-   }
-   
-   public void addMember( HPerson newMember )
-   {
-      this.memberships.add( new HLocaleMember( newMember, this, false ) );
-   }
-   
-   public void addCoordinator( HPerson newCoordinator )
-   {
-      this.memberships.add( new HLocaleMember( newCoordinator, this, true ) );
    }
 
    public String retrieveNativeName()

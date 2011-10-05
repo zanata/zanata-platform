@@ -53,8 +53,6 @@ public class HPerson extends ModelEntityBase implements Serializable
    private String email;
 
    private Set<HProject> maintainerProjects;
-
-   //private Set<HLocale> languageMemberships;
    
    private Set<HLocaleMember> languageTeamMemberships;
 
@@ -116,8 +114,6 @@ public class HPerson extends ModelEntityBase implements Serializable
       this.maintainerProjects = maintainerProjects;
    }
 
-   //@ManyToMany
-   //@JoinTable(name = "HLocale_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "supportedLanguageId"))
    @Transient
    public Set<HLocale> getLanguageMemberships()
    {
@@ -134,7 +130,8 @@ public class HPerson extends ModelEntityBase implements Serializable
       
    }
    
-   @OneToMany(mappedBy="id.person")
+   @OneToMany
+   @JoinColumn(name = "personId")
    protected Set<HLocaleMember> getLanguageTeamMemberships()
    {
       if( this.languageTeamMemberships == null )
@@ -224,14 +221,12 @@ public class HPerson extends ModelEntityBase implements Serializable
    @Transient
    public boolean isCoordinator(HLocale locale)
    {
-      // TODO consider implementing business key equality and using
-      // getLanguageMemberships().contains(locale)
-      for( HPerson p : locale.getCoordinators() )
+      // TODO consider implementing business key equality
+      for (HLocaleMember membership : locale.getMemberships())
       {
-         if(p.getId().equals( this.getId() ))
-         {
+         if (membership.getPerson().getId().equals( this.getId() ) 
+               && membership.isCoordinator())
             return true;
-         }
       }
       return false;
    }

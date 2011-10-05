@@ -4,31 +4,56 @@
     xmlns:s="http://jboss.com/products/seam/taglib"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:a="http://richfaces.org/a4j"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j"
     template="../WEB-INF/layout/template.xhtml">
 
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
-	<rich:panel id="memberPanel" >
-        <h1>#{languageTeamAction.locale.retrieveNativeName()}</h1>
-        <p>#{messages['jsf.SizeMembers']}</p>
-		<rich:dataTable 
-		    id="threads"
-		    value="#{languageTeamAction.locale.members.toArray()}" 
-		    var="member" rendered="#{languageTeamAction.locale.members.size != 0}">
-
-		  <rich:column width="auto">
-		    <f:facet name="header">#{messages['jsf.Username']}</f:facet>
-		    #{member.account.username}
-		  </rich:column>
-		  <rich:column width="auto">
-		    <f:facet name="header">#{messages['jsf.Name']}</f:facet>
-		    #{member.name}
-		  </rich:column>
-		</rich:dataTable>
-        </rich:panel>
+		<a4j:form>
+			<rich:panel id="memberPanel" >
+		        <h1>#{languageTeamAction.locale.retrieveNativeName()}</h1>
+		        <p>#{messages['jsf.SizeMembers']}</p>
+				<rich:dataTable 
+				    id="threads"
+				    value="#{languageTeamAction.locale.memberships.toArray()}" 
+				    var="member" rendered="#{languageTeamAction.locale.memberships.size != 0}">
+		
+				  <rich:column width="auto">
+				    <f:facet name="header">#{messages['jsf.Username']}</f:facet>
+				    #{member.person.account.username}
+				  </rich:column>
+				  <rich:column width="auto">
+				    <f:facet name="header">#{messages['jsf.Name']}</f:facet>
+				    #{member.person.name}
+				  </rich:column>
+				  <rich:column width="auto">
+				    <f:facet name="header">#{messages['jsf.Email']}</f:facet>
+				    <h:outputText rendered="#{s:hasRole('admin') or member.coordinator or languageTeamAction.userIsCoordinator()}">
+				    	#{member.person.email}
+				    </h:outputText>
+				  </rich:column>
+				  <rich:column width="auto">
+				    <f:facet name="header">Coordinator</f:facet>
+				    <h:selectBooleanCheckbox value="#{member.coordinator}">
+				    	<a4j:support event="onclick" 
+				    		ajaxSingle="true" 
+				    		reRender="threads" 
+				    		action="#{languageTeamAction.toggleCoordinator(member)}"/>
+				    </h:selectBooleanCheckbox>
+				  </rich:column>
+				  <rich:column width="auto">
+				  	<f:facet name="header">Actions</f:facet>
+				  	<a4j:commandButton value="Remove"
+				  		action="#{languageTeamAction.removeMembership(member)}"
+				  		reRender="threads"
+				  		onclick="this.disabled=true"
+				  		oncomplete="this.disabeld=false"/>
+				  </rich:column>
+				</rich:dataTable>
+	        </rich:panel>
+	    </a4j:form>
     </ui:define>
 
     <ui:define name="left_content">
@@ -36,18 +61,60 @@
         <f:facet name="header">
           #{messages['jsf.Actions']}
         </f:facet>
-        <a:form id="Language_team_member_toggle_form" ajaxSubmit="true" reRender="actionPanel,tribesTabDiv,memberPanel">
-          <a:commandLink id="Join" styleClass="action_link" action="#{languageTeamAction.joinTribe}" rendered="#{not languageTeamAction.contained}">
+        <a4j:form id="Language_team_member_toggle_form" ajaxSubmit="true" reRender="actionPanel,tribesTabDiv,memberPanel">
+          <a4j:commandLink id="Join" styleClass="action_link" action="#{languageTeamAction.joinTribe}" rendered="#{not languageTeamAction.contained and s:hasRole('admin')}">
             #{messages['jsf.JoinLanguageTeam']}
             <s:conversationId name="id" value="#{languageTeamAction.language}"/>
-          </a:commandLink>
-	 	  <a:commandLink id="Leave" styleClass="action_link" action="#{languageTeamAction.leaveTribe}" rendered="#{languageTeamAction.contained}">
+          </a4j:commandLink>
+	 	  <a4j:commandLink id="Leave" styleClass="action_link" action="#{languageTeamAction.leaveTribe}" rendered="#{languageTeamAction.contained and s:hasRole('admin')}">
             #{messages['jsf.LeaveLanguageTeam']}
             <s:conversationId name="id" value="#{languageTeamAction.language}"/>
-          </a:commandLink>
-        </a:form>
+          </a4j:commandLink>
+          <a href="#" class="action_link" onclick="#{rich:component('userAddPanel')}.show()">Add Team Member</a>
+        </a4j:form>
       </rich:panel>
-    </ui:define>
+
+		<rich:modalPanel id="userAddPanel" width="530" height="320">
+			<f:subview id="personSearch">
+				<a4j:form>
+					<h:inputText value="#{languageTeamAction.searchTerm}" />
+					<a4j:commandButton value="Search"
+						action="#{languageTeamAction.searchForTeamMembers}"
+						reRender="searchResults" />
+					<h:commandButton value="Close"
+						onclick="#{rich:component('userAddPanel')}.hide(); return false;" />
+				</a4j:form>
+
+				<div>&nbsp;</div>
+
+				<a4j:outputPanel id="searchResults" layout="block"
+					style="overflow:auto;">
+					<h:form>
+						<rich:dataTable id="personTable"
+							value="#{languageTeamAction.searchResults}" var="person">
+							<f:facet name="header">Search Results</f:facet>
+							<rich:column sortBy="#{person.name}">
+								<f:facet name="header">Full Name</f:facet>
+				           		#{person.name}
+				       		</rich:column>
+							<rich:column sortBy="#{person.account.username}">
+								<f:facet name="header">User Name</f:facet>
+				           		#{person.account.username}
+				       		</rich:column>
+							<rich:column>
+								<f:facet name="header"></f:facet>
+								<h:commandButton value="Add"
+									action="#{languageTeamAction.addTeamMember(person.id)}"
+									rendered="#{!languageTeamAction.isPersonInTeam(person.id)}" />
+								<h:outputText value="Already in Team"
+									rendered="#{languageTeamAction.isPersonInTeam(person.id)}" />
+							</rich:column>
+						</rich:dataTable>
+					</h:form>
+				</a4j:outputPanel>
+			</f:subview>
+		</rich:modalPanel>
+	</ui:define>
 
 
 </ui:composition>

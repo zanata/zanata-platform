@@ -17,8 +17,4 @@ public interface LanguageTeamService
    boolean joinLanguageTeam(String locale, Long personId) throws ZanataServiceException;
 
    boolean leaveLanguageTeam(String locale, Long personId);
-   
-   Set<HPerson> getLanguageTeamMembers(String locale);
-   
-   Set<HPerson> getLanguageTeamCoordinators(String locale);
 }
