@@ -30,7 +30,7 @@
 					<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.unitStatus}"/>
 				</g:layer>
                 
-				<g:layer top='50px' bottom="2px">
+				<g:layer top='30px' bottom="2px">
 					<g:ScrollPanel ui:field='documentScrollPanel'>
 					   <c:CellTable ui:field='documentListTable' />
 					</g:ScrollPanel>

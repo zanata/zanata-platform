@@ -212,14 +212,14 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             final ArrayList<DocumentInfo> documents = result.getDocuments();
             Log.info("Received doc list for " + result.getProjectIterationId() + ": " + documents.size() + " elements");
             display.setList(documents);
-            Log.info("Time to load docs into DocListView: " + String.valueOf(System.currentTimeMillis() - start));
+            Log.info("Time to load docs into DocListView: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
             start = System.currentTimeMillis();
             for (DocumentInfo doc : documents)
             {
                projectStats.add(doc.getStats());
             }
             display.getTransUnitCountBar().setStats(projectStats);
-            Log.info("Time to calculate project stats: " + String.valueOf(System.currentTimeMillis() - start));
+            Log.info("Time to calculate project stats: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
          }
       });
    }
