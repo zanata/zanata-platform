@@ -21,8 +21,10 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.hibernate.validator.Email;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
@@ -30,15 +32,14 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.management.IdentityManager;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
-
-import com.beust.jcommander.ParameterException;
+import org.zanata.model.HPerson;
 
 /**
  * Sends an email to a specified role.
@@ -52,14 +53,15 @@ import com.beust.jcommander.ParameterException;
 @Scope(ScopeType.PAGE)
 public class SendEmailAction implements Serializable
 {
-   private static final String HELP_MAIN_VIEW = "/help/view.xhtml";
-   private static final String CONTACT_ADMIN_VIEW = "/help/contact_admin.xhtml";
    private static final String ADMIN_EMAIL_TEMPLATE = "/help/email_admin.xhtml";
 
    private static final long serialVersionUID = 1L;
 
    @In
    PersonDAO personDAO;
+
+   @In
+   IdentityManager identityManager;
 
    @In(required = true, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
@@ -135,17 +137,6 @@ public class SendEmailAction implements Serializable
       this.subject = subject;
    }
 
-   // TODO look at stripping tags to get a plaintext message.
-   public String getMessage()
-   {
-      return message;
-   }
-
-   public void setMessage(String message)
-   {
-      this.message = message;
-   }
-
    public String getHtmlMessage()
    {
       return message;
@@ -166,6 +157,22 @@ public class SendEmailAction implements Serializable
       this.emailType = emailType;
    }
 
+
+   /**
+    * 
+    * @return a list of admin users
+    */
+   // TODO does this method belong in a DAO class rather than here?
+   public List<HPerson> getAdmins()
+   {
+      List<HPerson> admins = new ArrayList<HPerson>();
+      for (Principal admin : identityManager.listMembers("admin"))
+      {
+         admins.add(personDAO.findByUsername(admin.getName()));
+      }
+      return admins;
+   }
+
    /**
     * Sends the email by rendering an appropriate email template with the values
     * in this bean.
@@ -175,9 +182,6 @@ public class SendEmailAction implements Serializable
     */
    public String send()
    {
-      // TODO look at this page:
-      // http://docs.jboss.org/seam/1.1.5.GA/reference/en/html/mail.html
-
       try
       {
          if (emailType != null && emailType.equals("contact_admin"))
@@ -185,8 +189,6 @@ public class SendEmailAction implements Serializable
             renderer.render(ADMIN_EMAIL_TEMPLATE);
             FacesMessages.instance().add("#{messages['jsf.email.admin.SentNotification']}");
             log.info("Sent email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'", fromName, fromLoginName, replyEmail, subject, message);
-            // TODO navigation should not be handled by the backing bean.
-            // return HELP_MAIN_VIEW;
             return "success";
          }
          else
@@ -198,21 +200,17 @@ public class SendEmailAction implements Serializable
       {
          FacesMessages.instance().add("There was a problem sending the message: " + e.getMessage());
          log.error("Failed to send email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'", e, fromName, fromLoginName, replyEmail, subject, message);
-         // TODO navigation should not be handled by the backing bean.
-         // return CONTACT_ADMIN_VIEW;
          return "failure";
       }
    }
 
    /**
-    * 
-    * @return a string indicating something about where to go next?
+    * @return string 'canceled'
     */
    public String cancel()
    {
       log.info("Canceled sending email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'", fromName, fromLoginName, replyEmail, subject, message);
       FacesMessages.instance().add("Sending message canceled");
-      // return HELP_MAIN_VIEW;
       return "canceled";
    }
 

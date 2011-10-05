@@ -59,14 +59,15 @@
             </s:decorate>
 
             <s:decorate id="adminEmailField" template="../WEB-INF/layout/edit.xhtml">
-              <ui:define name="label">#{messages['jsf.AdminEmail']}</ui:define>
-              <h:inputText id="url" value="#{serverConfigurationBean.adminEmail}">
+              <ui:define name="label">#{messages['jsf.config.AdminEmail']}</ui:define>
+              <h:inputText id="adminEml" value="#{serverConfigurationBean.adminEmail}">
                 <a4j:support event="onblur" reRender="adminEmailField" ajaxSingle="false"/>
               </h:inputText>
-              <h:graphicImage id="urlHelp" value="../img/msginfo.png" styleClass="input_help">
+              <h:graphicImage id="adminEmllHelp" value="../img/msginfo.png" styleClass="input_help">
                 <rich:toolTip>
+                  #{messages['jsf.config.AdminEmail.tooltip']}
+                  #{messages['jsf.email.EmailListToolTip']}<br/>
                   #{messages['jsf.EmailToolTip']}<br/>
-                  #{messages['jsf.AdminEmail.tooltip']}
                   <br/>
                 </rich:toolTip>
               </h:graphicImage>
@@ -74,13 +75,13 @@
 
             <s:decorate id="fromEmailField" template="../WEB-INF/layout/edit.xhtml">
               <ui:define name="label">#{messages['jsf.config.FromEmailAddr']}</ui:define>
-              <h:inputText id="url" value="#{serverConfigurationBean.fromEmailAddr}">
+              <h:inputText id="fromEml" value="#{serverConfigurationBean.fromEmailAddr}">
                 <a4j:support event="onblur" reRender="fromEmailField" ajaxSingle="false"/>
               </h:inputText>
-              <h:graphicImage id="urlHelp" value="../img/msginfo.png" styleClass="input_help">
+              <h:graphicImage id="fromEmlHelp" value="../img/msginfo.png" styleClass="input_help">
                 <rich:toolTip>
-                  #{messages['jsf.EmailToolTip']}<br/>
                   #{messages['jsf.config.FromEmailAddr.tooltip']}
+                  #{messages['jsf.EmailToolTip']}<br/>
                   <br/>
                 </rich:toolTip>
               </h:graphicImage>

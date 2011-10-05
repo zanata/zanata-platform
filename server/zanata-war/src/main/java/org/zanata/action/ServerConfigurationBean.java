@@ -35,6 +35,7 @@ import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.action.validator.EmailList;
 import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.model.validator.UrlNoSlash;
@@ -86,7 +87,7 @@ public class ServerConfigurationBean implements Serializable
       this.helpContent = helpContent;
    }
 
-   @Email
+   @EmailList
    public String getAdminEmail()
    {
       return adminEmail;

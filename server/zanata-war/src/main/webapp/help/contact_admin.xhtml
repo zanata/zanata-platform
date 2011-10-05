@@ -19,30 +19,15 @@
          
          <rich:panel>
             
-            <h:messages />
-            
             <s:decorate id="nameField" template="../WEB-INF/layout/edit.xhtml">
                <ui:define name="label">#{messages['jsf.Name']}</ui:define>
                <h:outputText id="senderName" value="#{sendEmail.fromName}"
                              required="true" />
             </s:decorate>
 
-            <!-- reply to: email address field. Default = user email -->
             <s:decorate id="replyEmailField" template="../WEB-INF/layout/edit.xhtml">
                <ui:define name="label">#{messages['jsf.email.ReplyAddress']}</ui:define>
-               <!-- 
-               <h:inputText id="email" value="#{sendEmail.replyEmail}"
-                            required="true">
-                  <a4j:support event="onblur" reRender="replyEmailField" />
-               </h:inputText>
-               <h:graphicImage id="emailHelp" value="../img/msginfo.png"
-                               styleClass="input_help">
-                  <rich:toolTip>
-                     #{messages['jsf.EmailToolTip']}
-                  </rich:toolTip>
-               </h:graphicImage>
-                -->
-                <h:outputText id="email" value="#{sendEmail.replyEmail}" required="true" />
+               <h:outputText id="email" value="#{sendEmail.replyEmail}" required="true" />
             </s:decorate>
 
             <s:decorate id="subjectField"
@@ -60,10 +45,6 @@
                             value="#{sendEmail.htmlMessage}" viewMode="visual"
                             useSeamText="false" configuration="richeditor" theme="advanced">
                </rich:editor>
-               <!-- 
-               <h:inputTextarea id="message" required="true"
-                            value="#{sendEmail.message}" style="width:400px;" />
-             -->
             </s:decorate>
 
             <div style="clear: both"></div>
@@ -77,15 +58,6 @@
 
          </rich:panel>
       </h:form>
-
-            <!-- 
-        <s:decorate id="descriptionField" template="edit.xhtml">
-            <ui:define name="label">#{messages['jsf.Description']}</ui:define>
-            <h:inputText id="description" required="false"
-                         value="#{projectHome.instance.description}" style="width:400px;"/>
-        </s:decorate>
-   
- -->
 
    </ui:define>
 
