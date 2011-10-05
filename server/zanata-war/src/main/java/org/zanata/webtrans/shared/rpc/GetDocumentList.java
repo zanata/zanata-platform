@@ -1,11 +1,9 @@
 package org.zanata.webtrans.shared.rpc;
 
-import net.customware.gwt.dispatch.shared.Action;
-
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 
 
-public class GetDocumentList implements Action<GetDocumentListResult>
+public class GetDocumentList extends AbstractWorkspaceAction<GetDocumentListResult>
 {
 
    private static final long serialVersionUID = 1L;
