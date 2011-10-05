@@ -170,7 +170,10 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
    private void refreshDisplay(int duration)
    {
       tooltipPanel.refreshData(this);
-      layoutPanel.animate(duration);
+      if (duration == 0)
+         layoutPanel.forceLayout();
+      else
+         layoutPanel.animate(duration);
    }
 
    public int getWordsTotal()

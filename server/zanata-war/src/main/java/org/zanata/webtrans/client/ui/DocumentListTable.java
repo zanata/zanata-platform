@@ -59,7 +59,7 @@ public final class DocumentListTable
          @Override
          public String getValue(DocumentNode object)
          {
-            return object.getDataItem().getPath();
+            return object.getDocInfo().getPath();
          }
       };
       folderColumn.setSortable(true);
@@ -74,7 +74,7 @@ public final class DocumentListTable
          @Override
          public String getValue(DocumentNode object)
          {
-            return object.getDataItem().getName();
+            return object.getDocInfo().getName();
          }
       };
       docColumn.setSortable(true);
@@ -160,7 +160,7 @@ public final class DocumentListTable
             DocumentNode selectedNode = selectionModel.getSelectedObject();
             if (selectedNode != null)
             {
-               SelectionEvent.fire(documentListView, selectedNode.getDataItem());
+               SelectionEvent.fire(documentListView, selectedNode.getDocInfo());
             }
          }
       });
@@ -189,13 +189,13 @@ public final class DocumentListTable
       {
          public int compare(DocumentNode o1, DocumentNode o2)
          {
-            if (o1.getDataItem().getPath() == null || o2.getDataItem().getPath() == null)
+            if (o1.getDocInfo().getPath() == null || o2.getDocInfo().getPath() == null)
             {
-               return (o1.getDataItem().getPath() == null) ? -1 : 1;
+               return (o1.getDocInfo().getPath() == null) ? -1 : 1;
             }
             else
             {
-               return o1.getDataItem().getPath().compareTo(o2.getDataItem().getPath());
+               return o1.getDocInfo().getPath().compareTo(o2.getDocInfo().getPath());
             }
          }
       });
@@ -203,7 +203,7 @@ public final class DocumentListTable
       {
          public int compare(DocumentNode o1, DocumentNode o2)
          {
-            return o1.getDataItem().getName().compareTo(o2.getDataItem().getName());
+            return o1.getDocInfo().getName().compareTo(o2.getDocInfo().getName());
          }
       });
       columnSortHandler.setComparator(statisticColumn, new Comparator<DocumentNode>()

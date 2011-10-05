@@ -8,6 +8,7 @@ import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -23,7 +24,9 @@ public class DummyGetTranslatorListCommand implements Command
    @Override
    public void execute()
    {
+      Log.info("ENTER DummyGetTranslatorListCommand.execute()");
       callback.onSuccess(new GetTranslatorListResult(new ArrayList<Person>(Arrays.asList(new Person(new PersonId("personID"), "Some Person with an Incredibly Long Name")))));
+      Log.info("EXIT DummyGetTranslatorListCommand.execute()");
    }
 
 }

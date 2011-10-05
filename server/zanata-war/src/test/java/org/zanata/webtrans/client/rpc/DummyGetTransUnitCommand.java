@@ -13,6 +13,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -31,12 +32,14 @@ final class DummyGetTransUnitCommand implements Command
    @Override
    public void execute()
    {
+      Log.info("ENTER DummyGetTransUnitCommand.execute()");
       DocumentId documentId = action.getDocumentId();
       int count = action.getCount();
       int offset = action.getOffset();
       int totalCount = count * 5;
       GetTransUnitListResult result = new GetTransUnitListResult(documentId, generateTransUnitSampleData(action.getWorkspaceId().getLocaleId(), count, offset), totalCount);
       callback.onSuccess(result);
+      Log.info("EXIT DummyGetTransUnitCommand.execute()");
    }
 
    private ArrayList<TransUnit> generateTransUnitSampleData(LocaleId localeId, int numRows, int start)

@@ -7,6 +7,7 @@ import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -25,6 +26,7 @@ public class DummyGetTranslationMemoryCommand implements Command
    @Override
    public void execute()
    {
+      Log.info("ENTER DummyGetTranslationMemoryCommand.execute()");
       String query = action.getQuery();
       SearchType type = action.getSearchType();
       ArrayList<TranslationMemoryGlossaryItem> matches = new ArrayList<TranslationMemoryGlossaryItem>();
@@ -33,6 +35,7 @@ public class DummyGetTranslationMemoryCommand implements Command
       matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;target3</tr>", new Long(3), 85));
       matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;target3</tr>", new Long(3), 85));
       callback.onSuccess(new GetTranslationMemoryResult(matches));
+      Log.info("EXIT DummyGetTranslationMemoryCommand.execute()");
    }
 
 }

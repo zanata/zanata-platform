@@ -20,8 +20,6 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import java.util.ArrayList;
-
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -46,7 +44,6 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
-import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetStatusCount;
 import org.zanata.webtrans.shared.rpc.GetStatusCountResult;
@@ -215,16 +212,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          @Override
          public void onProjectStatsRetrieved(ProjectStatsRetrievedEvent event)
          {
-            ArrayList<DocumentStatus> liststatus = event.getProjectDocumentStats();
-            // this shouldn't be required at the moment, but will prevent
-            // confusing bugs if project stats are retrieved multiple times in
-            // future
-            projectStats.set(new TranslationStats());
-            for (DocumentStatus doc : liststatus)
-            {
-               projectStats.add(doc.getCount());
-            }
-            display.setStats(StatsType.Project, projectStats);
+            display.setStats(StatsType.Project, event.getProjectStats());
          }
       }));
 

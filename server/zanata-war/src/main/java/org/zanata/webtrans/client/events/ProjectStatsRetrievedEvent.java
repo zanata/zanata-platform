@@ -1,8 +1,7 @@
 package org.zanata.webtrans.client.events;
 
-import java.util.ArrayList;
 
-import org.zanata.webtrans.shared.model.DocumentStatus;
+import org.zanata.common.TranslationStats;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -13,7 +12,7 @@ public class ProjectStatsRetrievedEvent extends GwtEvent<ProjectStatsRetrievedEv
     * Handler type.
     */
    private static Type<ProjectStatsRetrievedEventHandler> TYPE;
-   private ArrayList<DocumentStatus> projectDocStats;
+   private TranslationStats projectStats;
 
    /**
     * Gets the type associated with this event.
@@ -25,14 +24,14 @@ public class ProjectStatsRetrievedEvent extends GwtEvent<ProjectStatsRetrievedEv
       return TYPE != null ? TYPE : (TYPE = new Type<ProjectStatsRetrievedEventHandler>());
    }
 
-   public ProjectStatsRetrievedEvent(ArrayList<DocumentStatus> projectDocStats)
+   public ProjectStatsRetrievedEvent(TranslationStats projectStats)
    {
-      this.projectDocStats = projectDocStats;
+      this.projectStats = projectStats;
    }
 
-   public ArrayList<DocumentStatus> getProjectDocumentStats()
+   public TranslationStats getProjectStats()
    {
-      return projectDocStats;
+      return projectStats;
    }
 
    @Override

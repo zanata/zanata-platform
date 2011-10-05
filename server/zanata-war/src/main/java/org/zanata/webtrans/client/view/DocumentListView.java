@@ -30,6 +30,7 @@ import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.ClearableTextBox;
 import org.zanata.webtrans.client.ui.DocumentListTable;
@@ -37,6 +38,7 @@ import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -92,11 +94,12 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    {
       this.resources = resources;
       this.messages = messages;
+      this.dispatcher = dispatcher;
+      this.eventBus = eventBus;
+
       filterTextBox = new ClearableTextBox(resources, uiMessages);
       nodes = new HashMap<DocumentId, DocumentNode>();
       dataProvider = new ListDataProvider<DocumentNode>();
-      this.dispatcher = dispatcher;
-      this.eventBus = eventBus;
       documentListTable = DocumentListTable.initDocumentListTable(this, resources, messages, dataProvider);
       initWidget(uiBinder.createAndBindUi(this));
    }
@@ -107,38 +110,40 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       return this;
    }
 
-   public void clear()
-   {
-      dataProvider.getList().clear();
-      nodes.clear();
-   }
-
-   public void add(DocumentNode documentNode)
-   {
-      if (documentNode.isVisible())
-      {
-         dataProvider.getList().add(documentNode);
-      }
-   }
-
    @Override
    public void setList(ArrayList<DocumentInfo> sortedList)
    {
-      clear();
-      for (int i = 0; i < sortedList.size(); i++)
+      dataProvider.getList().clear();
+      nodes = new HashMap<DocumentId, DocumentNode>(sortedList.size());
+      int counter = 0;
+      long start = System.currentTimeMillis();
+      for (DocumentInfo doc : sortedList)
       {
-         DocumentInfo doc = sortedList.get(i);
-         DocumentNode node = new DocumentNode(messages, doc, dispatcher, eventBus, dataProvider);
-
-         nodes.put(doc.getId(), node);
+         System.out.print(++counter);
+         System.out.print(' ');
+         if (counter % 25 == 0)
+            System.out.println();
+         DocumentNode node = new DocumentNode(messages, doc, eventBus, dataProvider);
          if (filter != null)
          {
             node.setVisible(filter.accept(doc));
          }
-         add(node);
+         if (node.isVisible())
+         {
+            dataProvider.getList().add(node);
+         }
+         nodes.put(doc.getId(), node);
       }
+      System.out.println();
+      Log.info("Time to create DocumentNodes: " + String.valueOf(System.currentTimeMillis() - start));
       documentListTable.setPageSize(dataProvider.getList().size());
       dataProvider.addDataDisplay(documentListTable);
+   }
+
+   @Override
+   public TransUnitUpdatedEventHandler getDocumentNode(DocumentId docId)
+   {
+      return nodes.get(docId);
    }
 
    @Override
@@ -154,7 +159,7 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    @Override
    public void setSelection(final DocumentInfo document)
    {
-      if (currentSelection != null && currentSelection.getDataItem() == document)
+      if (currentSelection != null && currentSelection.getDocInfo() == document)
       {
          return;
       }
@@ -167,20 +172,13 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    }
 
    @Override
-   public void ensureSelectionVisible()
-   {
-      if (currentSelection != null)
-         documentScrollPanel.ensureVisible(currentSelection);
-   }
-
-   @Override
    public void setFilter(ContentFilter<DocumentInfo> filter)
    {
       this.filter = filter;
       dataProvider.getList().clear();
       for (DocumentNode docNode : nodes.values())
       {
-         docNode.setVisible(filter.accept(docNode.getDataItem()));
+         docNode.setVisible(filter.accept(docNode.getDocInfo()));
          if (docNode.isVisible())
          {
             dataProvider.getList().add(docNode);
