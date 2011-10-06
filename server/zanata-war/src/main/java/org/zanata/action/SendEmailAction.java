@@ -36,6 +36,7 @@ import org.jboss.seam.core.ResourceBundle;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.ApplicationConfiguration;
@@ -175,6 +176,7 @@ public class SendEmailAction implements Serializable
       return toEmailAddr;
    }
 
+   private List<HPerson> admins;
 
    /**
     * 
@@ -182,11 +184,20 @@ public class SendEmailAction implements Serializable
     */
    private List<HPerson> getAdmins()
    {
-      List<HPerson> admins = new ArrayList<HPerson>();
-      for (Principal admin : identityManager.listMembers("admin"))
+      // required to read admin users for a non-admin session
+      new RunAsOperation()
       {
-         admins.add(personDAO.findByUsername(admin.getName()));
-      }
+         @Override
+         public void execute()
+         {
+            admins = new ArrayList<HPerson>();
+            for (Principal admin : identityManager.listMembers("admin"))
+            {
+               admins.add(personDAO.findByUsername(admin.getName()));
+            }
+         }
+      }.addRole("admin").run();
+
       return admins;
    }
 
