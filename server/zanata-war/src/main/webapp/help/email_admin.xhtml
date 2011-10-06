@@ -6,16 +6,7 @@
            xmlns:s="http://jboss.com/products/seam/taglib"
            charset="UTF-8" importance="normal">
   <m:from name="#{messages['jsf.Zanata']}" >#{applicationConfiguration.fromEmailAddr}</m:from>
-  <s:fragment rendered="#{not empty applicationConfiguration.adminEmail}" >
-    <ui:repeat var="adminEml" value="#{applicationConfiguration.adminEmail}">
-      <m:to name="#{messages['jsf.Zanata']} #{messages['jsf.email.admin.Administrator']}">#{adminEml}</m:to>
-    </ui:repeat>
-  </s:fragment>
-  <s:fragment rendered="#{empty applicationConfiguration.adminEmail}" >
-    <ui:repeat var="admin" value="#{sendEmail.admins}">
-      <m:to name="#{admin.name}">#{admin.email}</m:to>
-    </ui:repeat>
-  </s:fragment>
+  <m:to name="#{sendEmail.toName}">#{sendEmail.toEmailAddr}</m:to>
   <m:replyTo name="#{sendEmail.fromName}" >#{sendEmail.replyEmail}</m:replyTo>
   <m:subject>#{messages['jsf.email.admin.SubjectPrefix']} #{sendEmail.subject}</m:subject>
   <m:body>
@@ -26,7 +17,7 @@
     <hr/>
     <h:outputText value="#{sendEmail.htmlMessage}" escape="false" />
     <hr/>
-    <p>#{messages['jsf.email.admin.ReplyInstructions']}</p>
+    <p>#{messages['jsf.email.ReplyInstructions']}</p>
   </body>
   </html>
   </m:body>

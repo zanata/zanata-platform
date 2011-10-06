@@ -32,11 +32,13 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.core.ResourceBundle;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.IdentityManager;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
@@ -53,21 +55,25 @@ import org.zanata.model.HPerson;
 @Scope(ScopeType.PAGE)
 public class SendEmailAction implements Serializable
 {
-   private static final String ADMIN_EMAIL_TEMPLATE = "/help/email_admin.xhtml";
-
    private static final long serialVersionUID = 1L;
 
-   @In
-   PersonDAO personDAO;
+   private static final String EMAIL_TYPE_CONTACT_ADMIN = "contact_admin";
+   private static final String ADMIN_EMAIL_TEMPLATE = "/help/email_admin.xhtml";
 
    @In
-   IdentityManager identityManager;
+   private ApplicationConfiguration applicationConfiguration;
+
+   @In
+   private PersonDAO personDAO;
+
+   @In
+   private IdentityManager identityManager;
 
    @In(required = true, value = JpaIdentityStore.AUTHENTICATED_USER)
-   HAccount authenticatedAccount;
+   private HAccount authenticatedAccount;
 
    @Logger
-   Log log;
+   private Log log;
 
    @In(create = true)
    private Renderer renderer;
@@ -78,6 +84,8 @@ public class SendEmailAction implements Serializable
    private String subject;
    private String message;
    private String emailType;
+   private String toName;
+   private String toEmailAddr;
 
    @Create
    public void onCreate()
@@ -157,13 +165,22 @@ public class SendEmailAction implements Serializable
       this.emailType = emailType;
    }
 
+   public String getToName()
+   {
+      return toName;
+   }
+
+   public String getToEmailAddr()
+   {
+      return toEmailAddr;
+   }
+
 
    /**
     * 
     * @return a list of admin users
     */
-   // TODO does this method belong in a DAO class rather than here?
-   public List<HPerson> getAdmins()
+   private List<HPerson> getAdmins()
    {
       List<HPerson> admins = new ArrayList<HPerson>();
       for (Principal admin : identityManager.listMembers("admin"))
@@ -184,11 +201,9 @@ public class SendEmailAction implements Serializable
    {
       try
       {
-         if (emailType != null && emailType.equals("contact_admin"))
+         if (emailType != null && emailType.equals(EMAIL_TYPE_CONTACT_ADMIN))
          {
-            renderer.render(ADMIN_EMAIL_TEMPLATE);
-            FacesMessages.instance().add("#{messages['jsf.email.admin.SentNotification']}");
-            log.info("Sent email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'", fromName, fromLoginName, replyEmail, subject, message);
+            sendContactAdminEmails();
             return "success";
          }
          else
@@ -202,6 +217,39 @@ public class SendEmailAction implements Serializable
          log.error("Failed to send email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'", e, fromName, fromLoginName, replyEmail, subject, message);
          return "failure";
       }
+   }
+
+   /**
+    * sends emails to configured admin emails for server, or admin users if no
+    * server emails are configured.
+    * 
+    * Throws exception if there is a problem.
+    */
+   private void sendContactAdminEmails()
+   {
+      List<String> adminEmails = applicationConfiguration.getAdminEmail();
+      if (!adminEmails.isEmpty())
+      {
+         String zanata = ResourceBundle.instance().getString("jsf.Zanata");
+         String admin = ResourceBundle.instance().getString("jsf.email.admin.Administrator");
+         toName = zanata + " " + admin;
+         for (String email : adminEmails)
+         {
+            toEmailAddr = email;
+            renderer.render(ADMIN_EMAIL_TEMPLATE);
+         }
+      }
+      else
+      {
+         for (HPerson admin : getAdmins())
+         {
+            toName = admin.getName();
+            toEmailAddr = admin.getEmail();
+            renderer.render(ADMIN_EMAIL_TEMPLATE);
+         }
+      }
+      FacesMessages.instance().add("#{messages['jsf.email.admin.SentNotification']}");
+      log.info("Sent email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'", fromName, fromLoginName, replyEmail, subject, message);
    }
 
    /**
