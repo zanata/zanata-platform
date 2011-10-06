@@ -8,15 +8,22 @@
     xmlns:rich="http://richfaces.org/rich"
     template="/WEB-INF/layout/template.xhtml">
     
-    <ui:define name="center_content">
-        <rich:jQuery selector="#tab_help" query="addClass('ui-tabs-selected')" />
-       <s:formattedText id="project-home-content" value="#{applicationConfiguration.helpContent}"></s:formattedText>
- </ui:define>
+<ui:define name="center_content">
+    <rich:jQuery selector="#tab_help" query="addClass('ui-tabs-selected')" />
+    <!-- should this be project-help-content? -->
+    <s:formattedText id="project-home-content" value="#{applicationConfiguration.helpContent}"></s:formattedText>
+</ui:define>
 
 <ui:define name="left_content">
-  <rich:panel id="loggedIn" rendered="#{s:hasRole('admin')}">
+  <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
     <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-    <s:link styleClass="action_link" value="#{messages['jsf.EditHelpPageContent']}" view="/help/edit_help_content.xhtml" propagation="none">
+    <s:link styleClass="action_link" value="#{messages['jsf.EditHelpPageContent']}"
+    		view="/help/edit_help_content.xhtml" propagation="none"
+    		rendered="#{s:hasRole('admin')}"></s:link>
+    <s:link styleClass="action_link" value="#{messages['jsf.ContactAdmin']}" view="/help/contact_admin.xhtml" propagation="none">
+      <!-- using this param is not as clean as I'd like, but seems to be the only way to get a literal
+           value into a bean. Ideally this should be inserted in pages.xml somehow -->
+      <f:param name="emailType" value="contact_admin" />
     </s:link>
   </rich:panel>
 

@@ -190,6 +190,31 @@
   
   <page view-id="/profile/view.xhtml" login-required="true" />
 
+  <!-- Help -->
+  
+  <page view-id="/help/contact_admin.xhtml">
+    <restrict>#{identity.loggedIn}</restrict>
+    <!-- ideally a literal value should be used for emailType,
+         couldn't figure out a way to do this with seam/jsf.
+         May want to subclass SendEmailAction and set the email template
+         upon construction to achieve this. -->
+    <param name="emailType" value="#{sendEmail.emailType}" />
+    <navigation from-action="#{sendEmail.cancel}">
+      <rule>
+        <redirect view-id="/help/view.xhtml" />
+      </rule>
+    </navigation>
+    <navigation from-action="#{sendEmail.send}">
+      <rule if-outcome="success">
+        <redirect view-id="/help/view.xhtml" />
+      </rule>
+      <rule if-outcome="failure">
+        <redirect view-id="/help/contact_admin.xhtml" />
+      </rule>
+    </navigation>
+  </page>
+
+  
   <!-- Project -->
 
   <page view-id="/project/project.xhtml">
