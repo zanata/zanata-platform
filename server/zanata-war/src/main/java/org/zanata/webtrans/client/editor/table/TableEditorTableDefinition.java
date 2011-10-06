@@ -288,15 +288,39 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          }
 
          @Override
-         public void gotoNextFuzzy(int row)
+         public void gotoNextFuzzyNewRow(int row)
+         {
+            tableModel.gotoNextFuzzyNew(row);
+         }
+
+         @Override
+         public void gotoPrevFuzzyNewRow(int row)
+         {
+            tableModel.gotoPrevFuzzyNew(row);
+         }
+
+         @Override
+         public void gotoNextFuzzyRow(int row)
          {
             tableModel.gotoNextFuzzy(row);
          }
 
          @Override
-         public void gotoPrevFuzzy(int row)
+         public void gotoPrevFuzzyRow(int row)
          {
             tableModel.gotoPrevFuzzy(row);
+         }
+
+         @Override
+         public void gotoNextNewRow(int row)
+         {
+            tableModel.gotoNextNew(row);
+         }
+
+         @Override
+         public void gotoPrevNewRow(int row)
+         {
+            tableModel.gotoPrevNew(row);
          }
       };
       

@@ -20,9 +20,14 @@
  */
 package org.zanata.webtrans.client.view;
 
+
 import org.zanata.webtrans.client.presenter.TransUnitNavigationPresenter;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.Resources;
+
+import java.util.Map;
+
+import org.zanata.common.ContentState;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -43,7 +48,7 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
    }
 
    @UiField
-   Image nextEntry, prevEntry, prevFuzzyOrUntranslated, nextFuzzyOrUntranslated;
+   Image nextEntry, prevEntry, prevFuzzyOrUntranslated, nextFuzzyOrUntranslated, configure;
 
    private final NavigationMessages messages;
 
@@ -59,6 +64,43 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
 
       prevEntry.setTitle(messages.actionToolTip(messages.prevEntry(), messages.prevEntryShortcut()));
       nextEntry.setTitle(messages.actionToolTip(messages.nextEntry(), messages.nextEntryShortcut()));
+      setFuzzyAndUntranslatedModeTooltip();
+      configure.setTitle(messages.configurationButton());
+   }
+
+   public void setNavModeTooltip(Map<ContentState, Boolean> configMap)
+   {
+      boolean isFuzzy = configMap.get(ContentState.NeedReview);
+      boolean isUntranslated = configMap.get(ContentState.New);
+
+      if (isFuzzy && !isUntranslated)
+      {
+         setFuzzyModeTooltip();
+      }
+      else if (isUntranslated && !isFuzzy)
+      {
+         setUntranslatedModeTooltip();
+      }
+      else
+      {
+         setFuzzyAndUntranslatedModeTooltip();
+      }
+   }
+
+   private void setFuzzyModeTooltip()
+   {
+      prevFuzzyOrUntranslated.setTitle(messages.actionToolTip(messages.prevFuzzy(), messages.prevFuzzyOrUntranslatedShortcut()));
+      nextFuzzyOrUntranslated.setTitle(messages.actionToolTip(messages.nextFuzzy(), messages.nextFuzzyOrUntranslatedShortcut()));
+   }
+
+   private void setUntranslatedModeTooltip()
+   {
+      prevFuzzyOrUntranslated.setTitle(messages.actionToolTip(messages.prevUntranslated(), messages.prevFuzzyOrUntranslatedShortcut()));
+      nextFuzzyOrUntranslated.setTitle(messages.actionToolTip(messages.nextUntranslated(), messages.nextFuzzyOrUntranslatedShortcut()));
+   }
+
+   private void setFuzzyAndUntranslatedModeTooltip()
+   {
       prevFuzzyOrUntranslated.setTitle(messages.actionToolTip(messages.prevFuzzyOrUntranslated(), messages.prevFuzzyOrUntranslatedShortcut()));
       nextFuzzyOrUntranslated.setTitle(messages.actionToolTip(messages.nextFuzzyOrUntranslated(), messages.nextFuzzyOrUntranslatedShortcut()));
    }
@@ -92,6 +134,18 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
    public Widget asWidget()
    {
       return this;
+   }
+
+   @Override
+   public HasClickHandlers getConfigureButton()
+   {
+      return configure;
+   }
+
+   @Override
+   public Widget getConfigureButtonObject()
+   {
+      return configure;
    }
 
 }

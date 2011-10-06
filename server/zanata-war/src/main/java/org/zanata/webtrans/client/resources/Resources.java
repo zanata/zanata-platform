@@ -45,6 +45,9 @@ public interface Resources extends ClientBundle
    @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/rightArrow.png")
    ImageResource rightArrowButton();
 
+   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/configure.png")
+   ImageResource configureButton();
+
    @Source("org/zanata/webtrans/images/banner_bg.png")
    DataResource bannerBackground();
 

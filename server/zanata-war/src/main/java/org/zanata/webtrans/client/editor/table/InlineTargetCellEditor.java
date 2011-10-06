@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
+import java.util.Map;
+
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
@@ -256,12 +258,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEDOWN)
             {
                // alt-pagedown
-               saveAndMoveNextFuzzy(NavigationType.NextEntry);
+               saveAndMoveNextState(NavigationType.NextEntry);
             }
             else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEUP)
             {
                // alt-pageup
-               saveAndMoveNextFuzzy(NavigationType.PrevEntry);
+               saveAndMoveNextState(NavigationType.PrevEntry);
             }
             else if (!event.isAltKeyDown() && !event.isControlKeyDown())
             {
@@ -312,7 +314,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       Image fuzzyButton = new Image(images.cellEditorFuzzy());
       fuzzyButton.setStyleName("gwt-Button");
-      fuzzyButton.setTitle(messages.fuzzy());
+      fuzzyButton.setTitle(messages.saveAsFuzzy());
       fuzzyButton.addClickHandler(fuzzyHandler);
 
       operationsPanel.add(saveButton);
@@ -333,15 +335,39 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
    }
 
+   private void gotoNewRow(NavigationType nav)
+   {
+      if (nav == NavigationType.NextEntry)
+      {
+         editRowCallback.gotoNextNewRow(curRow);
+      }
+      else if (nav == NavigationType.PrevEntry)
+      {
+         editRowCallback.gotoPrevNewRow(curRow);
+      }
+   }
+
+   private void gotoFuzzyAndNewRow(NavigationType nav)
+   {
+      if (nav == NavigationType.NextEntry)
+      {
+         editRowCallback.gotoNextFuzzyNewRow(curRow);
+      }
+      else if (nav == NavigationType.PrevEntry)
+      {
+         editRowCallback.gotoPrevFuzzyNewRow(curRow);
+      }
+   }
+
    private void gotoFuzzyRow(NavigationType nav)
    {
       if (nav == NavigationType.NextEntry)
       {
-         editRowCallback.gotoNextFuzzy(curRow);
+         editRowCallback.gotoNextFuzzyRow(curRow);
       }
       else if (nav == NavigationType.PrevEntry)
       {
-         editRowCallback.gotoPrevFuzzy(curRow);
+         editRowCallback.gotoPrevFuzzyRow(curRow);
       }
    }
 
@@ -441,10 +467,24 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
    }
 
-   public void saveAndMoveNextFuzzy(NavigationType nav)
+   private boolean newMode = true, fuzzyMode = true;
+
+   public void saveAndMoveNextState(NavigationType nav)
    {
       savePendingChange(true);
-      gotoFuzzyRow(nav);
+      
+      if (newMode && fuzzyMode)
+      {
+         gotoFuzzyAndNewRow(nav);
+      }
+      else if (newMode)
+      {
+         gotoNewRow(nav);
+      }
+      else if (fuzzyMode)
+      {
+         gotoFuzzyRow(nav);
+      }
    }
 
    /**
@@ -570,9 +610,15 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          textArea.setVisibleLines(textArea.getVisibleLines() + growByLines);
       }
    }
-   
+
    public void setShowOperationButtons(boolean showButtons)
    {
 	   operationsPanel.setVisible(showButtons);
+   }
+
+   public void setNavMode(Map<ContentState, Boolean> configMap)
+   {
+      newMode = configMap.get(ContentState.New);
+      fuzzyMode = configMap.get(ContentState.NeedReview);
    }
 }

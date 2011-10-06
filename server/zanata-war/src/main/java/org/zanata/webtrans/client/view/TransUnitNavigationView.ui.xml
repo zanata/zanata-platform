@@ -11,6 +11,7 @@
 		<nobr>
 			<g:Image resource="{resources.prevUntranslated}" ui:field="prevFuzzyOrUntranslated" styleName="{style.imageAnchor}"/>
 			<g:Image resource="{resources.prevEntry}" ui:field="prevEntry" styleName="{style.imageAnchor}"/>
+			<g:Image resource="{resources.configureButton}" ui:field="configure" styleName="{style.imageAnchor}"/>
 			<g:Image resource="{resources.nextEntry}" ui:field="nextEntry" styleName="{style.imageAnchor}"/>
 			<g:Image resource="{resources.nextUntranslated}" ui:field="nextFuzzyOrUntranslated" styleName="{style.imageAnchor}"/>
 		</nobr>

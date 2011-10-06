@@ -119,10 +119,7 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       long start = System.currentTimeMillis();
       for (DocumentInfo doc : sortedList)
       {
-         System.out.print(++counter);
-         System.out.print(' ');
-         if (counter % 25 == 0)
-            System.out.println();
+         Log.info("Loading document: " + ++counter + " ");
          DocumentNode node = new DocumentNode(messages, doc, eventBus, dataProvider);
          if (filter != null)
          {
@@ -134,8 +131,7 @@ public class DocumentListView extends Composite implements DocumentListPresenter
          }
          nodes.put(doc.getId(), node);
       }
-      System.out.println();
-      Log.info("Time to create DocumentNodes: " + String.valueOf(System.currentTimeMillis() - start));
+      Log.info("Time to create DocumentNodes: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
       documentListTable.setPageSize(dataProvider.getList().size());
       dataProvider.addDataDisplay(documentListTable);
    }
