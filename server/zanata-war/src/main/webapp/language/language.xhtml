@@ -14,7 +14,7 @@
 		<a4j:form>
 			<rich:panel id="memberPanel" >
 		        <h1>#{languageTeamAction.locale.retrieveNativeName()}</h1>
-		        <p>#{messages['jsf.SizeMembers']}</p>
+		        <p>#{languageTeamAction.locale.memberships.size} #{messages['jsf.SizeMembers']}</p>
 				<rich:dataTable 
 				    id="threads"
 				    value="#{languageTeamAction.locale.memberships.toArray()}" 
@@ -75,7 +75,7 @@
             #{messages['jsf.LeaveLanguageTeam']}
             <s:conversationId name="id" value="#{languageTeamAction.language}"/>
           </a4j:commandLink>
-          <h:outputText rendered="#{s:hasRole('admin')}">
+          <h:outputText rendered="#{s:hasRole('admin') or languageTeamAction.userIsCoordinator()}">
           	<a href="#" class="action_link" onclick="#{rich:component('userAddPanel')}.show()">#{messages['jsf.AddTeamMember']}</a>
           </h:outputText>
         </a4j:form>
