@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.editor.table.TableConstants;
 
 import com.google.gwt.event.shared.GwtEvent;
 
