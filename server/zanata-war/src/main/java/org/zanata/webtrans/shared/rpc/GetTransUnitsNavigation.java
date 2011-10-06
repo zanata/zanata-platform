@@ -38,14 +38,14 @@ public class GetTransUnitsNavigation extends AbstractWorkspaceAction<GetTransUni
    {
    }
 
-   public GetTransUnitsNavigation(Long id, int count, boolean reverse, String phrase, boolean isFuzzyState, boolean isNewState)
+   public GetTransUnitsNavigation(Long id, int count, boolean reverse, String phrase, boolean isNewState, boolean isFuzzyState)
    {
       this.id = id;
       this.count = count;
       this.setReverse(reverse);
       this.phrase = phrase;
-      this.isFuzzyState = isFuzzyState;
       this.isNewState = isNewState;
+      this.isFuzzyState = isFuzzyState;
    }
 
 

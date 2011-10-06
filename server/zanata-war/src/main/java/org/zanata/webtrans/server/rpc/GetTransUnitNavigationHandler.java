@@ -94,7 +94,7 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
                step++;
                HTextFlow textFlow = textFlowDAO.findById(textFlowId, false);
                HTextFlowTarget textFlowTarget = textFlow.getTargets().get(hLocale);
-               if (checkStateAndValidate(action.isFuzzyState(), action.isNewState(), textFlowTarget))
+               if (checkStateAndValidate(action.isNewState(), action.isFuzzyState(), textFlowTarget))
                {
                   results.add(step);
                   log.info("add navigation step: " + step);
@@ -118,7 +118,8 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
             {
                step++;
                HTextFlowTarget textFlowTarget = textFlow.getTargets().get(hLocale);
-               if (checkStateAndValidate(action.isFuzzyState(), action.isNewState(), textFlowTarget))
+               log.info(action.isNewState() + ":" + action.isFuzzyState() + ":" + checkStateAndValidate(action.isNewState(), action.isFuzzyState(), textFlowTarget));
+               if (checkStateAndValidate(action.isNewState(), action.isFuzzyState(), textFlowTarget))
                {
                   results.add(step);
                   log.info("add navigation step: " + step);
@@ -140,9 +141,9 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
    {
    }
 
-   private boolean checkStateAndValidate(boolean isFuzzyState, boolean isNewState, HTextFlowTarget textFlowTarget)
+   private boolean checkStateAndValidate(boolean isNewState, boolean isFuzzyState, HTextFlowTarget textFlowTarget)
    {
-      if (isFuzzyState && isNewState)
+      if (isNewState && isFuzzyState)
       {
          return isNewFuzzyState(textFlowTarget);
       }
@@ -159,7 +160,7 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
 
    private boolean isNewFuzzyState(HTextFlowTarget textFlowTarget)
    {
-      return isNewState(textFlowTarget) || isFuzzyState(textFlowTarget);
+      return textFlowTarget == null || textFlowTarget.getState() == ContentState.New || textFlowTarget.getState() == ContentState.NeedReview;
    }
 
    private boolean isFuzzyState(HTextFlowTarget textFlowTarget)

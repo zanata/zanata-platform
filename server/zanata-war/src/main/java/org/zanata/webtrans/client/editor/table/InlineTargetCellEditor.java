@@ -466,23 +466,23 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
    }
 
-   private boolean fuzzyMode = true, newMode = true;
+   private boolean newMode = true, fuzzyMode = true;
 
    public void saveAndMoveNextState(NavigationType nav)
    {
       savePendingChange(true);
       
-      if (fuzzyMode && !newMode)
+      if (newMode && fuzzyMode)
       {
-         gotoFuzzyRow(nav);
+         gotoFuzzyAndNewRow(nav);
       }
-      else if (fuzzyMode && !newMode)
+      else if (newMode)
       {
          gotoNewRow(nav);
       }
-      else
+      else if (fuzzyMode)
       {
-         gotoFuzzyAndNewRow(nav);
+         gotoFuzzyRow(nav);
       }
    }
 
@@ -612,7 +612,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    public void setNavMode(Map<ContentState, Boolean> configMap)
    {
-      fuzzyMode = configMap.get(ContentState.NeedReview);
       newMode = configMap.get(ContentState.New);
+      fuzzyMode = configMap.get(ContentState.NeedReview);
    }
 }

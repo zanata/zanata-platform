@@ -143,8 +143,14 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    private final Identity identity;
    private TransUnit selectedTransUnit;
    // private int lastRowNum;
+   private List<Long> transIdNextNewFuzzyCache = new ArrayList<Long>();
+   private List<Long> transIdPrevNewFuzzyCache = new ArrayList<Long>();
+
    private List<Long> transIdNextFuzzyCache = new ArrayList<Long>();
    private List<Long> transIdPrevFuzzyCache = new ArrayList<Long>();
+
+   private List<Long> transIdNextNewCache = new ArrayList<Long>();
+   private List<Long> transIdPrevNewCache = new ArrayList<Long>();
 
    private int curRowIndex;
    private int curPage;
@@ -293,10 +299,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             if (documentId != null && documentId.equals(event.getDocumentId()))
             {
                // Clear the cache
-               if (!transIdNextFuzzyCache.isEmpty())
-                  transIdNextFuzzyCache.clear();
-               if (!transIdPrevFuzzyCache.isEmpty())
-                  transIdPrevFuzzyCache.clear();
+               if (!transIdNextNewFuzzyCache.isEmpty())
+                  transIdNextNewFuzzyCache.clear();
+               if (!transIdPrevNewFuzzyCache.isEmpty())
+                  transIdPrevNewFuzzyCache.clear();
                // TODO this test never succeeds
                if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
                {
@@ -652,7 +658,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       {
          updatePageAndRowIndex(row);
          if (curRowIndex < display.getTableModel().getRowCount())
-            gotoNextState();
+            gotoNextState(true, true);
       }
 
       @Override
@@ -660,43 +666,39 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       {
          updatePageAndRowIndex(row);
          if (curRowIndex > 0)
-            gotoPrevState();
+            gotoPrevState(true, true);
       }
 
       @Override
       public void nextFuzzyIndex(int row)
       {
-         // TODO: ALEX
          updatePageAndRowIndex(row);
          if (curRowIndex < display.getTableModel().getRowCount())
-            gotoNextState();
+            gotoNextState(false, true);
       }
 
       @Override
       public void prevFuzzyIndex(int row)
       {
-         // TODO: ALEX
          updatePageAndRowIndex(row);
          if (curRowIndex > 0)
-            gotoPrevState();
+            gotoPrevState(false, true);
       }
 
       @Override
       public void nextNewIndex(int row)
       {
-         // TODO: ALEX
          updatePageAndRowIndex(row);
          if (curRowIndex < display.getTableModel().getRowCount())
-            gotoNextState();
+            gotoNextState(true, false);
       }
 
       @Override
       public void prevNewIndex(int row)
       {
-         // TODO: ALEX
          updatePageAndRowIndex(row);
          if (curRowIndex > 0)
-            gotoPrevState();
+            gotoPrevState(true, false);
       }
 
       @Override
@@ -743,10 +745,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
    boolean isReqComplete = true;
 
-   private void cacheNextFuzzy(final NavigationCacheCallback callBack)
+   private void cacheNextState(final NavigationCacheCallback callBack, final List<Long> cacheList, final boolean isNewState, final boolean isFuzzyState)
    {
       isReqComplete = false;
-      dispatcher.execute(new GetTransUnitsNavigation(selectedTransUnit.getId().getId(), 3, false, findMessage, true, true), new AsyncCallback<GetTransUnitsNavigationResult>()
+      dispatcher.execute(new GetTransUnitsNavigation(selectedTransUnit.getId().getId(), 3, false, findMessage, isNewState, isFuzzyState), new AsyncCallback<GetTransUnitsNavigationResult>()
       {
          @Override
          public void onSuccess(GetTransUnitsNavigationResult result)
@@ -756,9 +758,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             {
                for (Long offset : result.getUnits())
                {
-                  transIdNextFuzzyCache.add(offset + curRowIndex);
+                  cacheList.add(offset + curRowIndex);
                }
-               callBack.nextFuzzy();
+               callBack.next(isNewState, isFuzzyState);
             }
          }
 
@@ -770,10 +772,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       });
    }
 
-   private void cachePrevFuzzy(final NavigationCacheCallback callBack)
+   private void cachePrevState(final NavigationCacheCallback callBack, final List<Long> cacheList, final boolean isNewState, final boolean isFuzzyState)
    {
       isReqComplete = false;
-      dispatcher.execute(new GetTransUnitsNavigation(selectedTransUnit.getId().getId(), 3, true, findMessage, true, true), new AsyncCallback<GetTransUnitsNavigationResult>()
+      dispatcher.execute(new GetTransUnitsNavigation(selectedTransUnit.getId().getId(), 3, true, findMessage, isNewState, isFuzzyState), new AsyncCallback<GetTransUnitsNavigationResult>()
       {
          @Override
          public void onSuccess(GetTransUnitsNavigationResult result)
@@ -783,9 +785,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             {
                for (Long offset : result.getUnits())
                {
-                  transIdPrevFuzzyCache.add(curRowIndex - offset);
+                  cacheList.add(curRowIndex - offset);
                }
-               callBack.prevFuzzy();
+               callBack.prev(isNewState, isFuzzyState);
             }
          }
 
@@ -795,95 +797,137 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             Log.error("GetTransUnitsStates failure " + caught, caught);
          }
       });
-   }
-
-   private void gotoPrevState()
-   {
-      Log.info("Previous FuzzyOrUntranslated State");
-
-      // Clean the cache for Next Fuzzy to avoid issues about cache is
-      // obsolete
-      transIdNextFuzzyCache.clear();
-      // If the catch of fuzzy row is empty and request is complete, generate
-      // one
-      if (transIdPrevFuzzyCache.isEmpty())
-      {
-         if (isReqComplete)
-            cachePrevFuzzy(cacheCallback);
-      }
-      else
-      {
-         int size = transIdPrevFuzzyCache.size();
-         int offset = transIdPrevFuzzyCache.get(size - 1).intValue();
-         if (curRowIndex > offset)
-         {
-            for (int i = 0; i < size; i++)
-            {
-               int fuzzyRowIndex = transIdPrevFuzzyCache.get(i).intValue();
-               if (curRowIndex > fuzzyRowIndex)
-               {
-                  display.getTargetCellEditor().cancelEdit();
-                  tableModelHandler.gotoRow(fuzzyRowIndex);
-                  break;
-               }
-            }
-         }
-         else
-         {
-            transIdPrevFuzzyCache.clear();
-            cachePrevFuzzy(cacheCallback);
-         }
-      }
    }
 
    NavigationCacheCallback cacheCallback = new NavigationCacheCallback()
    {
       @Override
-      public void nextFuzzy()
+      public void next(boolean isNewState, boolean isFuzzyState)
       {
-         gotoNextState();
+         gotoNextState(isNewState, isFuzzyState);
       }
 
       @Override
-      public void prevFuzzy()
+      public void prev(boolean isNewState, boolean isFuzzyState)
       {
-         gotoPrevState();
+         gotoPrevState(isNewState, isFuzzyState);
       }
 
    };
 
-   private void gotoNextState()
+   private void gotoNextState(boolean isNewState, boolean isFuzzyState)
    {
-      Log.info("go to Next FuzzyOrUntranslated State");
+      if (isNewState && isFuzzyState)
+      {
+         Log.info("go to Next Fuzzy Or Untranslated State");
+         transIdPrevNewFuzzyCache.clear();
+         gotoNextState(transIdNextNewFuzzyCache, true, true);
+      }
+      else if (isNewState)
+      {
+         Log.info("go to Next Untranslated State");
+         transIdPrevNewCache.clear();
+         gotoNextState(transIdNextNewCache, true, false);
+      }
+      else if (isFuzzyState)
+      {
+         Log.info("go to Next Fuzzy State");
+         transIdPrevFuzzyCache.clear();
+         gotoNextState(transIdNextFuzzyCache, false, true);
+      }
+   }
 
-      transIdPrevFuzzyCache.clear();
-      // If the cache of next fuzzy is empty, generate one
-      if (transIdNextFuzzyCache.isEmpty())
+   private void gotoPrevState(boolean isNewState, boolean isFuzzyState)
+   {
+      if (isNewState && isFuzzyState)
+      {
+         Log.info("go to Prev Fuzzy Or Untranslated State");
+         // Clean the cache for Next Fuzzy to avoid issues about cache is
+         // obsolete
+         transIdNextNewFuzzyCache.clear();
+         gotoPrevState(transIdPrevNewFuzzyCache, true, true);
+      }
+      else if (isNewState)
+      {
+         Log.info("go to Prev Untranslated State");
+         // Clean the cache for Next Fuzzy to avoid issues about cache is
+         // obsolete
+         transIdNextNewCache.clear();
+         gotoPrevState(transIdPrevNewCache, true, false);
+      }
+      else if (isFuzzyState)
+      {
+         Log.info("go to Prev Fuzzy State");
+         // Clean the cache for Next Fuzzy to avoid issues about cache is
+         // obsolete
+         transIdNextFuzzyCache.clear();
+         gotoPrevState(transIdPrevFuzzyCache, false, true);
+      }
+   }
+
+   private void gotoPrevState(List<Long> transIdPrevCache, boolean isNewState, boolean isFuzzyState)
+   {
+      // If the catch of row is empty and request is complete, generate
+      // one
+      if (transIdPrevCache.isEmpty())
       {
          if (isReqComplete)
-            cacheNextFuzzy(cacheCallback);
+            cachePrevState(cacheCallback, transIdPrevCache, isNewState, isFuzzyState);
       }
       else
       {
-         int size = transIdNextFuzzyCache.size();
-         int offset = transIdNextFuzzyCache.get(size - 1).intValue();
-         if (curRowIndex < offset)
+         int size = transIdPrevCache.size();
+         int offset = transIdPrevCache.get(size - 1).intValue();
+         if (curRowIndex > offset)
          {
             for (int i = 0; i < size; i++)
             {
-               int fuzzyRowIndex = transIdNextFuzzyCache.get(i).intValue();
-               if (curRowIndex < fuzzyRowIndex)
+               int newRowIndex = transIdPrevCache.get(i).intValue();
+               if (curRowIndex > newRowIndex)
                {
                   display.getTargetCellEditor().cancelEdit();
-                  tableModelHandler.gotoRow(fuzzyRowIndex);
+                  tableModelHandler.gotoRow(newRowIndex);
                   break;
                }
             }
          }
          else
          {
-            transIdNextFuzzyCache.clear();
-            cacheNextFuzzy(cacheCallback);
+            transIdPrevCache.clear();
+            cachePrevState(cacheCallback, transIdPrevCache, isNewState, isFuzzyState);
+         }
+      }
+   }
+
+   private void gotoNextState(List<Long> transIdNextCache, boolean isNewState, boolean isFuzzyState)
+   {
+      // If the cache of next is empty, generate one
+      if (transIdNextCache.isEmpty())
+      {
+         if (isReqComplete)
+            cacheNextState(cacheCallback, transIdNextCache, isNewState, isFuzzyState);
+      }
+      else
+      {
+         int size = transIdNextCache.size();
+         int offset = transIdNextCache.get(size - 1).intValue();
+         if (curRowIndex < offset)
+         {
+            for (int i = 0; i < size; i++)
+            {
+               int newRowIndex = transIdNextCache.get(i).intValue();
+               if (curRowIndex < newRowIndex)
+               {
+                  display.getTargetCellEditor().cancelEdit();
+                  tableModelHandler.gotoRow(newRowIndex);
+                  break;
+               }
+            }
+         }
+         else
+         {
+            transIdNextCache.clear();
+            cacheNextState(cacheCallback, transIdNextCache, isNewState, isFuzzyState);
          }
       }
    }
@@ -960,10 +1004,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          selectedTransUnit = transUnit;
          Log.info("SelectedTransUnit " + selectedTransUnit.getId());
          // Clean the cache when we click the new entry
-         if (!transIdNextFuzzyCache.isEmpty())
-            transIdNextFuzzyCache.clear();
-         if (!transIdPrevFuzzyCache.isEmpty())
-            transIdPrevFuzzyCache.clear();
+         if (!transIdNextNewFuzzyCache.isEmpty())
+            transIdNextNewFuzzyCache.clear();
+         if (!transIdPrevNewFuzzyCache.isEmpty())
+            transIdPrevNewFuzzyCache.clear();
 
          eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
       }

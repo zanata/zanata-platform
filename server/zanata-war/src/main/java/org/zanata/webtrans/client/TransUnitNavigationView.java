@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.editor.table.NavigationMessages;
-import org.zanata.webtrans.client.editor.table.TableConstants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;

@@ -28,6 +28,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.NavConfigChangeEvent;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -58,7 +59,7 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
       this.eventBus = eventBus;
       init();
       bindEvent();
-      setButtonValue(true, true);
+      setDefaultValue();
    }
 
    private void init()
@@ -84,12 +85,13 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
          {
             if (event.getValue() == false && untranslatedChk.getValue() == false)
             {
-               setButtonValue(true, true);
+               setDefaultValue();
             }
             else
             {
                configMap.put(ContentState.NeedReview, event.getValue());
             }
+            Log.info("Navigation mode changed: Untranslated-" + untranslatedChk.getValue() + " Fuzzy-" + fuzzyChk.getValue());
             eventBus.fireEvent(new NavConfigChangeEvent(configMap));
          }
       });
@@ -101,25 +103,26 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
          {
             if (event.getValue() == false && fuzzyChk.getValue() == false)
             {
-               setButtonValue(true, true);
+               setDefaultValue();
             }
             else
             {
                configMap.put(ContentState.New, event.getValue());
             }
+            Log.info("Navigation mode changed: Untranslated-" + untranslatedChk.getValue() + " Fuzzy-" + fuzzyChk.getValue());
             eventBus.fireEvent(new NavConfigChangeEvent(configMap));
          }
       });
 
    }
 
-   private void setButtonValue(boolean fuzzyValue, boolean untranslatedValue)
+   private void setDefaultValue()
    {
-      fuzzyChk.setValue(fuzzyValue);
-      untranslatedChk.setValue(untranslatedValue);
+      fuzzyChk.setValue(true);
+      untranslatedChk.setValue(true);
 
-      configMap.put(ContentState.NeedReview, fuzzyValue);
-      configMap.put(ContentState.New, untranslatedValue);
+      configMap.put(ContentState.NeedReview, true);
+      configMap.put(ContentState.New, true);
    }
 
    public void toggleDisplay(final UIObject target)
