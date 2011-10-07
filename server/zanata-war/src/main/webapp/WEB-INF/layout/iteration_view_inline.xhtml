@@ -35,7 +35,7 @@
                   rowClasses="odd,even">
     <rich:column id="locale_id">#{tribe.retrieveNativeName()} [#{tribe.localeId.id}]</rich:column>
     <rich:column id="status">
-      <ui:param name="tstatus" value="#{projectIterationDAO.getWordStatsForContainer(_iteration.id, tribe.localeId)}" />
+      <ui:param name="tstatus" value="#{iterationTranslationAction.getWordStatsForContainer(_iteration.id, tribe.localeId)}" />
       <ui:include src="statsbar.xhtml">
         <ui:param name="status" value="#{tstatus}" />
       </ui:include>
