@@ -332,6 +332,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       {
          editRowCallback.gotoPrevRow(curRow);
       }
+      else if (nav == NavigationType.FirstEntry)
+      {
+         editRowCallback.gotoFirstRow(curRow);
+      }
+      else if (nav == NavigationType.LastEntry)
+      {
+         editRowCallback.gotoLastRow(curRow);
+      }
    }
 
    private void gotoNewRow(NavigationType nav)
@@ -464,6 +472,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             cancelEdit();
          }
       }
+   }
+
+   public void saveAndMoveFirstLastRow(NavigationType nav)
+   {
+      savePendingChange(true);
+      gotoRow(nav);
    }
 
    private boolean newMode = true, fuzzyMode = true;

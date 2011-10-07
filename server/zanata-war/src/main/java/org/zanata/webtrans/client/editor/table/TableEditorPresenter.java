@@ -87,6 +87,7 @@ import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -113,8 +114,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       void gotoRow(int row);
 
       void gotoRow(int row, boolean andEdit);
-
-      int getCurrentPageNumber();
 
       TransUnit getTransUnitValue(int row);
 
@@ -411,14 +410,24 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                   editor.gotoRow(NavigationType.NextEntry);
                }
 
-               if (event.getRowType() == NavigationType.PrevFuzzyOrUntranslated)
+               if (event.getRowType() == NavigationType.PrevState)
                {
                   editor.saveAndMoveNextState(NavigationType.PrevEntry);
                }
 
-               if (event.getRowType() == NavigationType.NextFuzzyOrUntranslated)
+               if (event.getRowType() == NavigationType.NextState)
                {
                   editor.saveAndMoveNextState(NavigationType.NextEntry);
+               }
+
+               if (event.getRowType() == NavigationType.FirstEntry)
+               {
+                  editor.saveAndMoveFirstLastRow(NavigationType.FirstEntry);
+               }
+
+               if (event.getRowType() == NavigationType.LastEntry)
+               {
+                  editor.saveAndMoveFirstLastRow(NavigationType.LastEntry);
                }
 
             }
@@ -651,6 +660,20 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          {
             gotoRow(rowIndex);
          }
+      }
+
+      @Override
+      public void gotoFirstRow(int row)
+      {
+         updatePageAndRowIndex(row);
+         gotoRow(0);
+      }
+
+      @Override
+      public void gotoLastRow(int row)
+      {
+         updatePageAndRowIndex(row);
+         gotoRow(display.getTableModel().getRowCount() - 1);
       }
 
       @Override

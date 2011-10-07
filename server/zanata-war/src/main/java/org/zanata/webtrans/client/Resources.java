@@ -84,11 +84,17 @@ public interface Resources extends ClientBundle
    @Source("org/zanata/webtrans/images/prev_fuzzy.png")
    ImageResource prevFuzzy();
 
-   @Source("org/zanata/webtrans/images/next_untranslated.png")
-   ImageResource nextUntranslated();
+   @Source("org/zanata/webtrans/images/next_mode.png")
+   ImageResource nextState();
 
-   @Source("org/zanata/webtrans/images/prev_untranslated.png")
-   ImageResource prevUntranslated();
+   @Source("org/zanata/webtrans/images/prev_mode.png")
+   ImageResource prevState();
+
+   @Source("org/zanata/webtrans/images/first_entry.png")
+   ImageResource firstEntry();
+
+   @Source("org/zanata/webtrans/images/last_entry.png")
+   ImageResource lastEntry();
 
    @Source("org/zanata/webtrans/images/next_approved.png")
    ImageResource nextApproved();

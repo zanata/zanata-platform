@@ -7,7 +7,7 @@ public class NavTransUnitEvent extends GwtEvent<NavTransUnitHandler>
 {
    public enum NavigationType
    {
-      PrevEntry, NextEntry, PrevFuzzyOrUntranslated, NextFuzzyOrUntranslated,
+      PrevEntry, NextEntry, PrevState, NextState, FirstEntry, LastEntry
    }
 
    private static int DEFAULT_STEP = 1;
