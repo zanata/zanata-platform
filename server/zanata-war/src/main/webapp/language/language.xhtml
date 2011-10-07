@@ -14,11 +14,11 @@
 		<a4j:form>
 			<rich:panel id="memberPanel" >
 		        <h1>#{languageTeamAction.locale.retrieveNativeName()}</h1>
-		        <p>#{languageTeamAction.locale.memberships.size} #{messages['jsf.SizeMembers']}</p>
+		        <p>#{messages['jsf.SizeMembers']}</p>
 				<rich:dataTable 
 				    id="threads"
-				    value="#{languageTeamAction.locale.memberships.toArray()}" 
-				    var="member" rendered="#{languageTeamAction.locale.memberships.size != 0}">
+				    value="#{languageTeamAction.locale.members.toArray()}" 
+				    var="member" rendered="#{not empty languageTeamAction.locale.members}">
 		
 				  <rich:column width="auto">
 				    <f:facet name="header">#{messages['jsf.Username']}</f:facet>
@@ -75,6 +75,12 @@
             #{messages['jsf.LeaveLanguageTeam']}
             <s:conversationId name="id" value="#{languageTeamAction.language}"/>
           </a4j:commandLink>
+          <s:link styleClass="action_link" value="#{messages['jsf.contactLanguageTeamCoordinator']}" view="/language/contact_coordinator.xhtml" propagation="none"  rendered="#{identity.loggedIn}">
+            <!-- using this param is not as clean as I'd like, but seems to be the only way to get a literal
+                 value into a bean. Ideally this should be inserted in pages.xml somehow -->
+            <f:param name="emailType" value="contact_coordinator" />
+            <f:param name="id" value="#{languageTeamAction.language}" />
+          </s:link>
           <h:outputText rendered="#{s:hasRole('admin') or languageTeamAction.userIsCoordinator()}">
           	<a href="#" class="action_link" onclick="#{rich:component('userAddPanel')}.show()">#{messages['jsf.AddTeamMember']}</a>
           </h:outputText>

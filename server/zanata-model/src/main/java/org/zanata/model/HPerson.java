@@ -222,7 +222,7 @@ public class HPerson extends ModelEntityBase implements Serializable
    public boolean isCoordinator(HLocale locale)
    {
       // TODO consider implementing business key equality
-      for (HLocaleMember membership : locale.getMemberships())
+      for (HLocaleMember membership : locale.getMembers())
       {
          if (membership.getPerson().getId().equals( this.getId() ) 
                && membership.isCoordinator())

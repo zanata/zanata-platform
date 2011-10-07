@@ -30,7 +30,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -50,7 +49,7 @@ public class HLocale extends ModelEntityBase implements Serializable
    private boolean active;
    private Set<HProject> supportedProjects;
    private Set<HProjectIteration> supportedIterations;
-   private Set<HLocaleMember> memberships;
+   private Set<HLocaleMember> members;
    
 
    @NaturalId
@@ -88,18 +87,18 @@ public class HLocale extends ModelEntityBase implements Serializable
    
    @OneToMany(cascade=CascadeType.ALL)
    @JoinColumn(name = "supportedLanguageId")
-   public Set<HLocaleMember> getMemberships()
+   public Set<HLocaleMember> getMembers()
    {
-      if( this.memberships == null )
+      if( this.members == null )
       {
-         this.memberships = new HashSet<HLocaleMember>();
+         this.members = new HashSet<HLocaleMember>();
       }
-      return this.memberships;
+      return this.members;
    }
    
-   public void setMemberships(Set<HLocaleMember> memberships)
+   public void setMembers(Set<HLocaleMember> members)
    {
-      this.memberships = memberships;
+      this.members = members;
    }
 
    @ManyToMany

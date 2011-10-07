@@ -189,12 +189,12 @@ public class LanguageTeamAction implements Serializable
    public void removeMembership( HLocaleMember member )
    {
       this.languageTeamServiceImpl.leaveLanguageTeam(this.language, member.getPerson().getId());
-      this.locale.getMemberships().remove(member);
+      this.locale.getMembers().remove(member);
    }
    
    public boolean isPersonInTeam( final Long personId )
    {
-      for( HLocaleMember lm : this.locale.getMemberships() )
+      for( HLocaleMember lm : this.locale.getMembers() )
       {
          if( lm.getPerson().getId().equals( personId ) )
          {

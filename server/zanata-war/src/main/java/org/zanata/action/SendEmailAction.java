@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.hibernate.validator.Email;
 import org.jboss.seam.ScopeType;
@@ -35,14 +36,19 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.core.ResourceBundle;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
+import org.jboss.seam.international.LocaleSelector;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.common.LocaleId;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
+import org.zanata.model.HLocale;
+import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
+import org.zanata.service.LocaleService;
 
 /**
  * Sends an email to a specified role.
@@ -59,7 +65,10 @@ public class SendEmailAction implements Serializable
    private static final long serialVersionUID = 1L;
 
    private static final String EMAIL_TYPE_CONTACT_ADMIN = "contact_admin";
+   private static final String EMAIL_TYPE_CONTACT_COORDINATOR = "contact_coordinator";
+
    private static final String ADMIN_EMAIL_TEMPLATE = "/help/email_admin.xhtml";
+   private static final String COORDINATOR_EMAIL_TEMPLATE = "/language/email_coordinator.xhtml";
 
    @In
    private ApplicationConfiguration applicationConfiguration;
@@ -72,6 +81,12 @@ public class SendEmailAction implements Serializable
 
    @In(required = true, value = JpaIdentityStore.AUTHENTICATED_USER)
    private HAccount authenticatedAccount;
+
+   @In
+   private LocaleService localeServiceImpl;
+
+   @In
+   private LocaleSelector localeSelector;
 
    @Logger
    private Log log;
@@ -87,6 +102,8 @@ public class SendEmailAction implements Serializable
    private String emailType;
    private String toName;
    private String toEmailAddr;
+   private String language;
+   private HLocale locale;
 
    @Create
    public void onCreate()
@@ -176,6 +193,38 @@ public class SendEmailAction implements Serializable
       return toEmailAddr;
    }
 
+   public String getLanguage()
+   {
+      return language;
+   }
+
+   public void setLanguage(String language)
+   {
+      this.language = language;
+      locale = localeServiceImpl.getByLocaleId(new LocaleId(language));
+   }
+
+   public HLocale getLocale()
+   {
+      return locale;
+   }
+
+   private List<HPerson> coordinators;
+
+   private List<HPerson> getCoordinators()
+   {
+      coordinators = new ArrayList<HPerson>();
+      
+      for (HLocaleMember member : locale.getMembers())
+      {
+         if (member.isCoordinator())
+         {
+            coordinators.add(member.getPerson());
+         }
+      }
+      return coordinators;
+   }
+
    private List<HPerson> admins;
 
    /**
@@ -210,11 +259,19 @@ public class SendEmailAction implements Serializable
     */
    public String send()
    {
+      Locale pervLocale = localeSelector.getLocale();
+      localeSelector.setLocale(new Locale("en"));
+
       try
       {
          if (emailType != null && emailType.equals(EMAIL_TYPE_CONTACT_ADMIN))
          {
-            sendContactAdminEmails();
+            sendToAdminEmails(ADMIN_EMAIL_TEMPLATE);
+            return "success";
+         }
+         else if (emailType != null && emailType.equals(EMAIL_TYPE_CONTACT_COORDINATOR))
+         {
+            sendToLanguageCoordinators(COORDINATOR_EMAIL_TEMPLATE);
             return "success";
          }
          else
@@ -228,6 +285,31 @@ public class SendEmailAction implements Serializable
          log.error("Failed to send email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'", e, fromName, fromLoginName, replyEmail, subject, message);
          return "failure";
       }
+      finally
+      {
+         localeSelector.setLocale(pervLocale);
+      }
+   }
+
+   private void sendToLanguageCoordinators(String emailTemplate)
+   {
+
+      List<HPerson> coordinators = getCoordinators();
+      if (!coordinators.isEmpty())
+      {
+         for (HPerson coord : coordinators)
+         {
+            toName = coord.getName();
+            toEmailAddr = coord.getEmail();
+            renderer.render(emailTemplate);
+         }
+         log.info("Sent language team coordinator email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}', language '{5}'", fromName, fromLoginName, replyEmail, subject, message, language);
+         FacesMessages.instance().add("#{messages['jsf.email.coordinator.SentNotification']}");
+      }
+      else
+      {
+         sendToAdminEmails(emailTemplate);
+      }
    }
 
    /**
@@ -235,8 +317,10 @@ public class SendEmailAction implements Serializable
     * server emails are configured.
     * 
     * Throws exception if there is a problem.
+    * 
+    * @param emailTemplate
     */
-   private void sendContactAdminEmails()
+   private void sendToAdminEmails(String emailTemplate)
    {
       List<String> adminEmails = applicationConfiguration.getAdminEmail();
       if (!adminEmails.isEmpty())
@@ -247,20 +331,32 @@ public class SendEmailAction implements Serializable
          for (String email : adminEmails)
          {
             toEmailAddr = email;
-            renderer.render(ADMIN_EMAIL_TEMPLATE);
+            renderer.render(emailTemplate);
          }
+         log.info("Sent server admin email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'", fromName, fromLoginName, replyEmail, subject, message);
+         FacesMessages.instance().add("#{messages['jsf.email.admin.SentNotification']}");
       }
       else
       {
-         for (HPerson admin : getAdmins())
-         {
-            toName = admin.getName();
-            toEmailAddr = admin.getEmail();
-            renderer.render(ADMIN_EMAIL_TEMPLATE);
-         }
+         sendToAdminUsers(emailTemplate);
+      }
+   }
+
+   /**
+    * Emails admin users with given template
+    * 
+    * @param emailTemplate
+    */
+   private void sendToAdminUsers(String emailTemplate)
+   {
+      for (HPerson admin : getAdmins())
+      {
+         toName = admin.getName();
+         toEmailAddr = admin.getEmail();
+         renderer.render(emailTemplate);
       }
       FacesMessages.instance().add("#{messages['jsf.email.admin.SentNotification']}");
-      log.info("Sent email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'", fromName, fromLoginName, replyEmail, subject, message);
+      log.info("Sent admin users email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'", fromName, fromLoginName, replyEmail, subject, message);
    }
 
    /**

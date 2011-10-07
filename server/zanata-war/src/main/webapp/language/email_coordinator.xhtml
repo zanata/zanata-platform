@@ -1,0 +1,29 @@
+<m:message xmlns="http://www.w3.org/1999/xhtml"
+           xmlns:m="http://jboss.com/products/seam/mail"
+           xmlns:f="http://java.sun.com/jsf/core"
+           xmlns:h="http://java.sun.com/jsf/html"
+           xmlns:ui="http://java.sun.com/jsf/facelets"
+           xmlns:s="http://jboss.com/products/seam/taglib"
+           charset="UTF-8" importance="normal">
+  <m:from name="#{messages['jsf.Zanata']}" >#{applicationConfiguration.fromEmailAddr}</m:from>
+  <m:to name="#{sendEmail.toName}">#{sendEmail.toEmailAddr}</m:to>
+  <m:replyTo name="#{sendEmail.fromName}" >#{sendEmail.replyEmail}</m:replyTo>
+  <m:subject>#{messages['jsf.email.coordinator.SubjectPrefix']} #{sendEmail.subject}</m:subject>
+  <m:body>
+    <html>
+      <body>
+        <p>#{messages['jsf.email.coordinator.DearCoordinator']}</p>
+        <p>#{messages['jsf.email.coordinator.UserMessageIntro']}</p>
+        <hr/>
+        <h:outputText value="#{sendEmail.htmlMessage}" escape="false" />
+        <hr/>
+        <p>#{messages['jsf.email.coordinator.ResponseInstructions']}</p>
+        <p>
+          <a href="#{applicationConfiguration.serverPath}/language/language.seam?id=#{sendEmail.locale.localeId.id}">
+            #{applicationConfiguration.serverPath}/language/language.seam?id=#{sendEmail.locale.localeId.id}
+          </a>
+        </p>
+      </body>
+    </html>
+  </m:body>
+</m:message>

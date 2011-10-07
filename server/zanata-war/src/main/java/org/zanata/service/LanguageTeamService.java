@@ -1,11 +1,9 @@
 package org.zanata.service;
 
 import java.util.List;
-import java.util.Set;
 
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
-import org.zanata.model.HPerson;
 
 
 public interface LanguageTeamService

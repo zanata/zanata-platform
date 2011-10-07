@@ -339,6 +339,30 @@
     <param name="id" value="#{languageTeamAction.language}" />
     <action execute="#{languageTeamAction.initLocale()}" />
   </page>
+  
+  <page view-id="/language/contact_coordinator.xhtml">
+    <param name="emailType" value="#{sendEmail.emailType}" />
+    <param name="id" value="#{sendEmail.language}" />
+    <navigation from-action="#{sendEmail.send}">
+      <rule if-outcome="success">
+        <redirect view-id="/language/language.xhtml">
+          <param name="id" value="#{sendEmail.language}" />        
+        </redirect>
+      </rule>
+      <rule if-outcome="failure">
+        <redirect view-id="/language/contact_coordinator.xhtml" />
+      </rule>
+    </navigation>
+    <navigation from-action="#{sendEmail.cancel}">
+      <rule>
+        <redirect view-id="/language/language.xhtml">
+          <param name="id" value="#{sendEmail.language}" />
+        </redirect>
+      </rule>
+    </navigation>
+  </page>
+  
+  
 
   <!-- Exceptions -->
 
