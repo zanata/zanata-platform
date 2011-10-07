@@ -15,7 +15,9 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.Identity;
+import org.jboss.seam.security.NotLoggedInException;
 import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.model.HAccountResetPasswordKey;
@@ -111,6 +113,8 @@ public class PasswordResetAction implements Serializable
          throw new KeyNotFoundException();
    }
 
+   private boolean passwordChanged;
+
    @End
    public String changePassword()
    {
@@ -122,20 +126,43 @@ public class PasswordResetAction implements Serializable
       {
          public void execute()
          {
-            identityManager.changePassword(getKey().getAccount().getUsername(), getPassword());
+            try
+            {
+               passwordChanged = identityManager.changePassword(getKey().getAccount().getUsername(), getPassword());
+            }
+            catch (AuthorizationException e)
+            {
+               passwordChanged = false;
+               FacesMessages.instance().add("Error changing password: " + e.getMessage());
+            }
+            catch (NotLoggedInException ex)
+            {
+               passwordChanged = false;
+               FacesMessages.instance().add("Error changing password: " + ex.getMessage());
+            }
          }
       }.addRole("admin").run();
 
       entityManager.remove(getKey());
 
-      FacesMessages.instance().add("Your password has been successfully changed.");
+      if (passwordChanged)
+      {
+         FacesMessages.instance().add("Your password has been successfully changed. Please sign in with your new password.");
 
-      // Login the user
-      identity.getCredentials().setUsername(getKey().getAccount().getUsername());
-      identity.getCredentials().setPassword(getPassword());
-      identity.login();
+         // Login the user
+         // identity.getCredentials().setUsername(getKey().getAccount().getUsername());
+         // identity.getCredentials().setPassword(getPassword());
+         // identity.login();
 
-      return "/home.xhtml";
+         // return "/home.xhtml";
+         return "/account/login.xhtml";
+      }
+      else
+      {
+         FacesMessages.instance().add("There was a problem changing the password. Please try again.");
+         return null;
+      }
+
    }
 
 }
