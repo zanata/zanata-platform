@@ -31,12 +31,18 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.annotation.CachedMethodResult;
+import org.zanata.annotation.CachedMethods;
+import org.zanata.common.LocaleId;
+import org.zanata.common.TransUnitWords;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.service.LocaleService;
 
 @Name("iterationTranslationAction")
 @Scope(ScopeType.PAGE)
+@CachedMethods
 public class IterationTranslationAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
@@ -48,6 +54,9 @@ public class IterationTranslationAction implements Serializable
 
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
+   
+   @In
+   ProjectIterationDAO projectIterationDAO;
 
 
    public List<HLocale> getTranslationLocale(String projectSlug, String iterationSlug)
@@ -57,5 +66,11 @@ public class IterationTranslationAction implements Serializable
          return Collections.emptyList();
       }
       return localeServiceImpl.getTranslation(projectSlug, iterationSlug, authenticatedAccount.getUsername());
+   }
+   
+   @CachedMethodResult(ScopeType.PAGE)
+   public TransUnitWords getWordStatsForContainer(Long iterationId, LocaleId localeId)
+   {
+      return projectIterationDAO.getWordStatsForContainer(iterationId, localeId);
    }
 }
