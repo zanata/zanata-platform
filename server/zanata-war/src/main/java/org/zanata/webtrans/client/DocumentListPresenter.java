@@ -21,10 +21,6 @@
 package org.zanata.webtrans.client;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
@@ -45,12 +41,9 @@ import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
-import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
-import org.zanata.webtrans.shared.rpc.GetProjectStatusCount;
-import org.zanata.webtrans.shared.rpc.GetProjectStatusCountResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -75,8 +68,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
       void setSelection(DocumentInfo document);
 
-      void ensureSelectionVisible();
-
       void setFilter(ContentFilter<DocumentInfo> filter);
 
       void removeFilter();
@@ -86,14 +77,14 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       HasTranslationStats getTransUnitCountBar();
 
       HasSelectionHandlers<DocumentInfo> getDocumentList();
+
+      TransUnitUpdatedEventHandler getDocumentNode(DocumentId docId);
    }
 
    private final DispatchAsync dispatcher;
    private final WorkspaceContext workspaceContext;
-   private final Map<DocumentId, DocumentStatus> statuscache = new HashMap<DocumentId, DocumentStatus>();
    private DocumentInfo currentDocument;
    private final TranslationStats projectStats = new TranslationStats();
-
    private final WebTransMessages messages;
 
    @Inject
@@ -104,7 +95,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       this.dispatcher = dispatcher;
       this.messages = messages;
       Log.info("DocumentListPresenter()");
-      loadDocumentList();
    }
 
    @Override
@@ -121,48 +111,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             fireEvent(new DocumentSelectionEvent(currentDocument));
          }
       }));
-
-      // display.setProjectStatusBar(prStatusPresenter.getDisplay().asWidget());
-
-      registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler()
-      {
-         @Override
-         public void onTransUnitUpdated(TransUnitUpdatedEvent event)
-         {
-            DocumentStatus doc = statuscache.get(event.getDocumentId());
-            if (doc == null)
-               return; // GetProjectStatusCount hasn't returned yet!
-               // ContentState status = event.getPreviousStatus();
-               // doc.setStatus(status, doc.getStatus(status)-1);
-               // status = event.getNewStatus();
-               // doc.setStatus(status, doc.getStatus(status)+1);
-               // TreeNode<DocName> node =
-               // display.getTree().getNodeByKey(doc.getDocumentid());
-               // node.setName(node.getObject().getName() + " ("+
-               // calPercentage(doc.getUntranslated(), doc.getFuzzy(),
-               // doc.getTranslated()) +"%)");
-         }
-
-      }));
-
-      // registerHandler(getDisplay().getTree().addSelectionHandler(new
-      // SelectionHandler<TreeItem>() {
-      // @Override
-      // public void onSelection(SelectionEvent<TreeItem> event) {
-      // DocName selectedDocName = (DocName)
-      // event.getSelectedItem().getUserObject();
-      // if (selectedDocName != null) // folders have null names
-      // setValue(selectedDocName.getId(), true);
-      // }
-      // }));
-      //		
-      // registerHandler(display.getReloadButton().addClickHandler(new
-      // ClickHandler() {
-      // @Override
-      // public void onClick(ClickEvent event) {
-      // refreshDisplay();
-      // }
-      // }));
 
       registerHandler(display.getFilterTextBox().addValueChangeHandler(new ValueChangeHandler<String>()
       {
@@ -194,32 +142,14 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             projectWords.decrement(event.getPreviousStatus(), event.getWordCount());
             projectWords.increment(event.getTransUnit().getStatus(), event.getWordCount());
             getDisplay().getTransUnitCountBar().setStats(projectStats);
+
+            DocumentId docId = event.getDocumentId();
+            TransUnitUpdatedEventHandler handler = display.getDocumentNode(docId);
+            if (handler != null)
+               handler.onTransUnitUpdated(event);
          }
       }));
-
-      // TODO get rid of this
-      // It is fetching stats for all documents in the workspace,
-      // but then it adds them all up
-      // and discards the individual document stats.
-      dispatcher.execute(new GetProjectStatusCount(), new AsyncCallback<GetProjectStatusCountResult>()
-      {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-         }
-
-         @Override
-         public void onSuccess(GetProjectStatusCountResult result)
-         {
-            ArrayList<DocumentStatus> liststatus = result.getStatus();
-            for (DocumentStatus doc : liststatus)
-            {
-               projectStats.add(doc.getCount());
-            }
-            display.getTransUnitCountBar().setStats(projectStats);
-         }
-      });
-
+      loadDocumentList();
    }
 
    final class BasicContentFilter implements ContentFilter<DocumentInfo>
@@ -264,33 +194,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       eventBus.fireEvent(event);
    }
 
-   public void setDocumentList(ArrayList<DocumentInfo> documents)
-   {
-      ArrayList<DocumentInfo> sortedList = new ArrayList<DocumentInfo>(documents);
-
-      Collections.sort(sortedList, new Comparator<DocumentInfo>()
-      {
-         @Override
-         public int compare(DocumentInfo o1, DocumentInfo o2)
-         {
-            String path1 = o1.getPath();
-            if (path1 == null)
-               path1 = "";
-            String path2 = o2.getPath();
-            if (path2 == null)
-               path2 = "";
-            int pathCompare = path1.compareTo(path2);
-            if (pathCompare == 0)
-               return o1.getName().compareTo(o2.getName());
-            return pathCompare;
-         }
-      });
-      display.setList(sortedList);
-   }
-
    private void loadDocumentList()
    {
-      loadDocsStatus();
       // switch doc list to the new project
       dispatcher.execute(new GetDocumentList(workspaceContext.getWorkspaceId().getProjectIterationId()), new AsyncCallback<GetDocumentListResult>()
       {
@@ -303,38 +208,18 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          @Override
          public void onSuccess(GetDocumentListResult result)
          {
+            long start = System.currentTimeMillis();
             final ArrayList<DocumentInfo> documents = result.getDocuments();
             Log.info("Received doc list for " + result.getProjectIterationId() + ": " + documents.size() + " elements");
-            setDocumentList(documents);
-         }
-      });
-   }
-
-   private void loadDocsStatus()
-   {
-      dispatcher.execute(new GetProjectStatusCount(), new AsyncCallback<GetProjectStatusCountResult>()
-      {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            Log.info("load Doc Status failure " + caught.getMessage());
-         }
-
-         @Override
-         public void onSuccess(GetProjectStatusCountResult result)
-         {
-            ArrayList<DocumentStatus> liststatus = result.getStatus();
-            Log.info("Received project status for " + liststatus.size() + " elements");
-            statuscache.clear();
-            for (DocumentStatus doc : liststatus)
+            display.setList(documents);
+            Log.info("Time to load docs into DocListView: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
+            start = System.currentTimeMillis();
+            for (DocumentInfo doc : documents)
             {
-               statuscache.put(doc.getDocumentid(), doc);
-               // TreeNode<DocName> node =
-               // display.getTree().getNodeByKey(doc.getDocumentid());
-               // node.setName(node.getObject().getName() + " ("+
-               // calPercentage(doc.getUntranslated(), doc.getFuzzy(),
-               // doc.getTranslated()) +"%)");
+               projectStats.add(doc.getStats());
             }
+            display.getTransUnitCountBar().setStats(projectStats);
+            Log.info("Time to calculate project stats: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
          }
       });
    }

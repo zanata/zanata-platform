@@ -32,6 +32,8 @@ import org.zanata.webtrans.client.editor.HasTranslationStats;
 import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
+import org.zanata.webtrans.client.events.NavConfigChangeEvent;
+import org.zanata.webtrans.client.events.NavConfigChangeHandler;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -150,6 +152,16 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
          }
       }));
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), updateHandler));
+
+      registerHandler(eventBus.addHandler(NavConfigChangeEvent.getType(), new NavConfigChangeHandler()
+      {
+         @Override
+         public void onValueChanged(NavConfigChangeEvent event)
+         {
+            transUnitNavigationPresenter.getDisplay().setNavModeTooltip(event.getConfigMap());
+            tableEditorPresenter.getDisplay().getTargetCellEditor().setNavMode(event.getConfigMap());
+         }
+      }));
    }
 
    private void requestStatusCount(final DocumentId newDocumentId)

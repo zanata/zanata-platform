@@ -1,4 +1,4 @@
-# NB avoid ignoring anything under src/ (especially directories or .jar files)
+# NB be careful ignoring anything under src/ (especially directories or .jar files)
 # because ignoring files under these directories can make it
 # difficult to debug build problems.  At the very least, we should ensure
 # 'mvn clean' will clean such directories.
@@ -44,6 +44,8 @@ bin/
 #gwt related
 .gwt-log
 *.gwt-tmp
+/server/zanata-war/src/main/webapp/WEB-INF/deploy/
+/server/zanata-war/src/main/webapp/webtrans/
 
 # vim
 *.swp

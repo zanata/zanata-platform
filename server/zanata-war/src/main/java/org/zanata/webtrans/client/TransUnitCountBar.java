@@ -15,6 +15,7 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -54,11 +55,14 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
 
    private boolean isGraph = false;
 
+   private boolean statsByWords = false;
+
 
    @Inject
-   public TransUnitCountBar(WebTransMessages messages)
+   public TransUnitCountBar(WebTransMessages messages, boolean statsByWords)
    {
       this.messages = messages;
+      this.statsByWords = statsByWords;
       tooltipPanel.setStyleName("transUnitCountGraphTooltipPanel");
       initWidget(uiBinder.createAndBindUi(this));
       initLayoutPanelHandler();
@@ -87,11 +91,12 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
       layoutPanel.sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT);
    }
 
-   public TransUnitCountBar(WebTransMessages messages, boolean isGraph)
+   public TransUnitCountBar(WebTransMessages messages, boolean isGraph, boolean statsByWords)
    {
       tooltipPanel.setStyleName("transUnitCountGraphTooltipPanel");
       this.isGraph = isGraph;
       this.messages = messages;
+      this.statsByWords = statsByWords;
    }
 
    private void setupLayoutPanel(double undefinedLeft, double undefinedWidth, double approvedLeft, double approvedWidth, double needReviewLeft, double needReviewWidth, double untranslatedLeft, double untranslatedWidth)
@@ -105,10 +110,21 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
 
    public void refresh()
    {
-      int approved = getUnitApproved();
-      int needReview = getUnitNeedReview();
-      int untranslated = getUnitUntranslated();
-      int total = getUnitTotal();
+      int approved, needReview, untranslated, total;
+      if (statsByWords)
+      {
+         approved = getWordsApproved();
+         needReview = getWordsNeedReview();
+         untranslated = getWordsUntranslated();
+         total = getWordsTotal();
+      }
+      else
+      {
+         approved = getUnitApproved();
+         needReview = getUnitNeedReview();
+         untranslated = getUnitUntranslated();
+         total = getUnitTotal();
+      }
       int width = getOffsetWidth();
       if (total == 0)
       {
@@ -159,7 +175,10 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
    protected void refreshDisplay(int duration)
    {
       tooltipPanel.refreshData(this);
-      layoutPanel.animate(duration);
+      if (duration == 0)
+         layoutPanel.forceLayout();
+      else
+         layoutPanel.animate(duration);
    }
 
    public int getWordsTotal()

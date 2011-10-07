@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.zanata</groupId>
 		<artifactId>zanata-parent</artifactId>
-		<version>1.4-alpha-2-SNAPSHOT</version>
+		<version>1.4.2-SNAPSHOT</version>
 		<relativePath>../../zanata-parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>zanata-war</artifactId>
@@ -51,6 +51,22 @@
 		</resources>
 
 		<plugins>
+			<plugin>
+			    <artifactId>maven-clean-plugin</artifactId>
+			    <version>2.4.1</version>
+			    <configuration>
+			      <!-- Remove extra directories created by GWT DevMode -->
+			      <filesets>
+			        <fileset>
+			          <directory>src/main/webapp/WEB-INF/deploy</directory>
+			        </fileset>
+			        <fileset>
+			          <directory>src/main/webapp/webtrans</directory>
+			        </fileset>
+			      </filesets>
+		          <followSymlinks>false</followSymlinks>
+			    </configuration>
+			</plugin>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
@@ -711,6 +727,7 @@
 						<artifactId>gwt-maven-plugin</artifactId>
 						<configuration>
 							<draftCompile>true</draftCompile>
+							<style>PRETTY</style>
 						</configuration>
 					</plugin>
 				</plugins>
@@ -731,6 +748,7 @@
 						<artifactId>gwt-maven-plugin</artifactId>
 						<configuration>
 							<draftCompile>true</draftCompile>
+							<style>PRETTY</style>
 						</configuration>
 					</plugin>
 				</plugins>

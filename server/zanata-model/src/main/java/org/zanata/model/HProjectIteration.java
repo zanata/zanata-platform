@@ -34,6 +34,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Where;
@@ -138,6 +139,8 @@ public class HProjectIteration extends SlugEntityBase
    @OneToMany(mappedBy = "projectIteration", cascade = CascadeType.ALL)
    @MapKey(name = "docId")
    @Where(clause = "obsolete=0")
+   // TODO add an index for path, name
+   @OrderBy("path, name")
    public Map<String, HDocument> getDocuments()
    {
       if (documents == null)

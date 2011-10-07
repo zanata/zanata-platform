@@ -6,13 +6,13 @@
            xmlns:s="http://jboss.com/products/seam/taglib"
            charset="UTF-8" importance="normal">
   <m:from name="#{messages['jsf.Zanata']}" >#{applicationConfiguration.fromEmailAddr}</m:from>
-  <m:to name="#{register.person.name}">#{profileAction.email}</m:to>
-  <m:subject>#{messages['jsf.ZanataAccountActivation']}</m:subject>
+  <m:to name="#{messages['jsf.email.activation.profile.Name']}">#{profileAction.email}</m:to>
+  <m:subject>#{messages['jsf.email.activation.Subject']}</m:subject>
   <m:body>
     <html>
     <body>
-    <p>#{messages['jsf.DearName']}</p>
-    <p>#{messages['jsf.PleaseClickOnTheFollowingLinkToActivateYourAccount']}</p>
+    <p>#{messages['jsf.email.activation.profile.DearName']}</p>
+    <p>#{messages['jsf.email.activation.ClickLinkToActivateAccount']}</p>
     <p>
       <a href="#{applicationConfiguration.serverPath}/account/activate/#{profileAction.activationKey}">
       #{applicationConfiguration.serverPath}/account/activate/#{profileAction.activationKey}

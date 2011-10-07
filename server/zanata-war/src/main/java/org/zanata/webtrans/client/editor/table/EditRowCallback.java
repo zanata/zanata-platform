@@ -7,7 +7,15 @@ public interface EditRowCallback
 
    void gotoPrevRow(int row);
 
-   void gotoNextFuzzy(int row);
+   void gotoNextFuzzyNewRow(int row);
 
-   void gotoPrevFuzzy(int row);
+   void gotoPrevFuzzyNewRow(int row);
+
+   void gotoNextFuzzyRow(int row);
+
+   void gotoPrevFuzzyRow(int row);
+
+   void gotoNextNewRow(int row);
+
+   void gotoPrevNewRow(int row);
 }

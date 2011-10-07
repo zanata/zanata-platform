@@ -38,6 +38,18 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
          tableModel.gotoPrevRow(row);
    }
 
+   public void gotoNextFuzzyNew(int row)
+   {
+      if (tableModel != null)
+         tableModel.gotoNextFuzzyNew(row);
+   }
+
+   public void gotoPrevFuzzyNew(int row)
+   {
+      if (tableModel != null)
+         tableModel.gotoPrevFuzzyNew(row);
+   }
+
    public void gotoNextFuzzy(int row)
    {
       if (tableModel != null)
@@ -48,6 +60,18 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
    {
       if (tableModel != null)
          tableModel.gotoPrevFuzzy(row);
+   }
+
+   public void gotoNextNew(int row)
+   {
+      if (tableModel != null)
+         tableModel.gotoNextNew(row);
+   }
+
+   public void gotoPrevNew(int row)
+   {
+      if (tableModel != null)
+         tableModel.gotoPrevNew(row);
    }
 
    public void setRowValueOverride(int row, RowType rowValue)
