@@ -108,7 +108,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       public void onClick(ClickEvent event)
       {
-         saveApprovedAndMoveRow(NavigationType.NextEntry);
+         saveApprovedAndMoveNextState(NavigationType.NextEntry);
       }
    };
 
@@ -220,7 +220,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
                {
                   event.stopPropagation();
                   event.preventDefault();
-                  saveApprovedAndMoveRow(NavigationType.NextEntry);
+                  saveApprovedAndMoveNextState(NavigationType.NextEntry);
                }
             }
             else
@@ -229,7 +229,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
                {
                   event.stopPropagation();
                   event.preventDefault();
-                  saveApprovedAndMoveRow(NavigationType.NextEntry);
+                  saveApprovedAndMoveNextState(NavigationType.NextEntry);
                }
             }
          }
@@ -511,11 +511,34 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    /**
     * save the contents of the cell as approved and move to the next row.
     */
-   private void saveApprovedAndMoveRow(NavigationType nav)
+   // private void saveApprovedAndMoveRow(NavigationType nav)
+   // {
+   // cellValue.setStatus(ContentState.Approved);
+   // acceptEdit();
+   // gotoRow(nav);
+   // }
+
+   /**
+    * save the contents of the cell as approved and move to next fuzzy or
+    * untranslated
+    */
+   private void saveApprovedAndMoveNextState(NavigationType nav)
    {
       cellValue.setStatus(ContentState.Approved);
       acceptEdit();
-      gotoRow(nav);
+
+      if (newMode && fuzzyMode)
+      {
+         gotoFuzzyAndNewRow(nav);
+      }
+      else if (newMode)
+      {
+         gotoNewRow(nav);
+      }
+      else if (fuzzyMode)
+      {
+         gotoFuzzyRow(nav);
+      }
    }
 
    /**
