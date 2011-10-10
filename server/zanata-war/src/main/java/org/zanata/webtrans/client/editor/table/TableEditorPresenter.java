@@ -460,17 +460,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
       }));
 
-      registerHandler(eventBus.addHandler(ButtonDisplayChangeEvent.getType(), new ButtonDisplayChangeEventHandler()
-      {
-
-         @Override
-         public void onButtonDisplayChange(ButtonDisplayChangeEvent event)
-         {
-            display.getTargetCellEditor().setShowOperationButtons(event.isShowButtons());
-            display.setShowCopyButtons(event.isShowButtons());
-         }
-      }));
-
       registerHandler(eventBus.addHandler(EnterKeyEnabledEvent.getType(), new EnterKeyEnabledEventHandler()
       {
 
