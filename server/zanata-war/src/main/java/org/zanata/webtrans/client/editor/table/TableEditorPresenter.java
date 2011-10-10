@@ -45,6 +45,8 @@ import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.events.EnterKeyEnabledEvent;
+import org.zanata.webtrans.client.events.EnterKeyEnabledEventHandler;
 import org.zanata.webtrans.client.events.RedoFailureEvent;
 import org.zanata.webtrans.client.events.TransMemoryCopyEvent;
 import org.zanata.webtrans.client.events.TransMemoryCopyHandler;
@@ -454,6 +456,28 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             tableModelHandler.gotoRow(row);
             display.getTargetCellEditor().setText(event.getTransUnit().getSource());
             display.getTargetCellEditor().autoSize();
+         }
+
+      }));
+
+      registerHandler(eventBus.addHandler(ButtonDisplayChangeEvent.getType(), new ButtonDisplayChangeEventHandler()
+      {
+
+         @Override
+         public void onButtonDisplayChange(ButtonDisplayChangeEvent event)
+         {
+            display.getTargetCellEditor().setShowOperationButtons(event.isShowButtons());
+            display.setShowCopyButtons(event.isShowButtons());
+         }
+      }));
+
+      registerHandler(eventBus.addHandler(EnterKeyEnabledEvent.getType(), new EnterKeyEnabledEventHandler()
+      {
+
+         @Override
+         public void onValueChanged(EnterKeyEnabledEvent event)
+         {
+            display.getTargetCellEditor().setEnterKeyEnabled(event.isEnabled());
          }
 
       }));

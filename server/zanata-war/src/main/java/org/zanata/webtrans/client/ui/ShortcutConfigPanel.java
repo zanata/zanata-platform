@@ -26,6 +26,7 @@ import java.util.Map;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.events.EnterKeyEnabledEvent;
 import org.zanata.webtrans.client.events.NavConfigChangeEvent;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -47,6 +48,7 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
 {
    private final CheckBox fuzzyChk = new CheckBox("Fuzzy");
    private final CheckBox untranslatedChk = new CheckBox("Untranslated");
+   private final CheckBox enterChk = new CheckBox("Enter");
 
    private Map<ContentState, Boolean> configMap = new HashMap<ContentState, Boolean>();
 
@@ -60,6 +62,7 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
       init();
       bindEvent();
       setDefaultValue();
+      enterChk.setValue(false);
    }
 
    private void init()
@@ -72,6 +75,13 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
       optionsHP.add(fuzzyChk);
       optionsHP.add(untranslatedChk);
       mainPanel.add(optionsHP);
+
+      mainPanel.add(new Label("Enable 'Enter' Key to save"));
+
+      HorizontalPanel enteroptHP = new HorizontalPanel();
+      enteroptHP.setSpacing(5);
+      enteroptHP.add(enterChk);
+      mainPanel.add(enteroptHP);
 
       this.add(mainPanel);
    }
@@ -114,6 +124,15 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
          }
       });
 
+      enterChk.addValueChangeHandler(new ValueChangeHandler<Boolean>()
+      {
+         @Override
+         public void onValueChange(ValueChangeEvent<Boolean> event)
+         {
+            Log.info("Enable 'Enter' Key to save and move to next string: " + event.getValue());
+            eventBus.fireEvent(new EnterKeyEnabledEvent(event.getValue()));
+         }
+      });
    }
 
    private void setDefaultValue()
