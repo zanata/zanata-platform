@@ -65,8 +65,11 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Alt+PageUp")
    String prevFuzzyOrUntranslatedShortcut();
 
-   @DefaultMessage("Save as Approved (Ctrl+Enter)")
+   @DefaultMessage("Save as Approved (Shift+Enter)")
    String editSaveShortcut();
+
+   @DefaultMessage("Save as Approved (Enter)")
+   String editSavewithEnterShortcut();
 
    @DefaultMessage("Cancel")
    String editCancelShortcut();

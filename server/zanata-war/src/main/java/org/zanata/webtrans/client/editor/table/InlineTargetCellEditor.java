@@ -145,6 +145,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private int curRow;
    private int curCol;
    private HTMLTable table;
+   private boolean newMode = true, fuzzyMode = true;
+
+   private Boolean isEnterKeyEnabled = false;
+   private String saveButtonShortcuts;
+   private String saveButtonwithEnterShortcuts;
+   private Image saveButton;
 
    /*
     * The minimum height of the target editor
@@ -208,6 +214,25 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
                event.preventDefault(); // stop browser save
                acceptFuzzyEdit();
             }
+
+            if (isEnterKeyEnabled)
+            {
+               if (!event.isShiftKeyDown() && keyCode == KeyCodes.KEY_ENTER)
+               {
+                  event.stopPropagation();
+                  event.preventDefault();
+                  saveApprovedAndMoveRow(NavigationType.NextEntry);
+               }
+            }
+            else
+            {
+               if (event.isShiftKeyDown() && keyCode == KeyCodes.KEY_ENTER)
+               {
+                  event.stopPropagation();
+                  event.preventDefault();
+                  saveApprovedAndMoveRow(NavigationType.NextEntry);
+               }
+            }
          }
 
       });
@@ -221,10 +246,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             int keyCode = event.getNativeKeyCode();
 
             // NB: if you change these, please change NavigationConsts too!
-            if (event.isControlKeyDown() && keyCode == KeyCodes.KEY_ENTER)
-            {
-               saveApprovedAndMoveRow(NavigationType.NextEntry);
-            }
+
             // else if (event.isControlKeyDown() && event.isShiftKeyDown() &&
             // event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
             // { // was alt-e
@@ -237,7 +259,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             // // } else if(event.isControlKeyDown() && event.getNativeKeyCode()
             // // == KeyCodes.KEY_PAGEDOWN) { // bad in Firefox
             // }
-            else if (event.isAltKeyDown() && keyCode == TableConstants.KEY_G)
+            if (event.isAltKeyDown() && keyCode == TableConstants.KEY_G)
             {
                Log.info("InlineTargetCellEditor.java: Clone action.");
                textArea.setValue(cellValue.getSource(), true);
@@ -306,11 +328,13 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       cancelButton.setTitle(messages.editCancelShortcut());
       cancelButton.addClickHandler(cancelHandler);
 
-      Image saveButton = new Image(images.cellEditorAccept());
+      saveButton = new Image(images.cellEditorAccept());
       // saveButton.setText(messages.editSave());
       saveButton.setStyleName("gwt-Button");
+      saveButtonShortcuts = messages.editSaveShortcut();
       saveButton.setTitle(messages.editSaveShortcut());
       saveButton.addClickHandler(acceptHandler);
+      saveButtonwithEnterShortcuts = messages.editSavewithEnterShortcut();
 
       Image fuzzyButton = new Image(images.cellEditorFuzzy());
       fuzzyButton.setStyleName("gwt-Button");
@@ -467,8 +491,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
    }
 
-   private boolean newMode = true, fuzzyMode = true;
-
    public void saveAndMoveNextState(NavigationType nav)
    {
       savePendingChange(true);
@@ -620,5 +642,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       newMode = configMap.get(ContentState.New);
       fuzzyMode = configMap.get(ContentState.NeedReview);
+   }
+
+   public void setEnterKeyEnabled(Boolean enabled)
+   {
+      isEnterKeyEnabled = enabled;
+      if (enabled)
+         saveButton.setTitle(saveButtonwithEnterShortcuts);
+      else
+         saveButton.setTitle(saveButtonShortcuts);
    }
 }
