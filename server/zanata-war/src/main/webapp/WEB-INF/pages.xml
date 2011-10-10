@@ -362,6 +362,28 @@
     </navigation>
   </page>
   
+  <page view-id="/language/request_to_join.xhtml">
+    <param name="emailType" value="#{sendEmail.emailType}" />
+    <param name="id" value="#{sendEmail.language}" />
+    <navigation from-action="#{sendEmail.send}">
+      <rule if-outcome="success">
+        <redirect view-id="/language/language.xhtml">
+          <param name="id" value="#{sendEmail.language}" />        
+        </redirect>
+      </rule>
+      <rule if-outcome="failure">
+        <redirect view-id="/language/request_to_join.xhtml" />
+      </rule>
+    </navigation>
+    <navigation from-action="#{sendEmail.cancel}">
+      <rule>
+        <redirect view-id="/language/language.xhtml">
+          <param name="id" value="#{sendEmail.language}" />
+        </redirect>
+      </rule>
+    </navigation>
+  </page>
+  
   
 
   <!-- Exceptions -->

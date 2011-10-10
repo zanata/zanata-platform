@@ -75,6 +75,12 @@
             #{messages['jsf.LeaveLanguageTeam']}
             <s:conversationId name="id" value="#{languageTeamAction.language}"/>
           </a4j:commandLink>
+          <s:link styleClass="action_link" value="#{messages['jsf.RequestToJoinLanguageTeam']}" view="/language/request_to_join.xhtml" propagation="none"  rendered="#{identity.loggedIn and not languageTeamAction.contained}">
+            <!-- using this param is not as clean as I'd like, but seems to be the only way to get a literal
+                 value into a bean. Ideally this should be inserted in pages.xml somehow -->
+            <f:param name="emailType" value="request_to_join_language_team" />
+            <f:param name="id" value="#{languageTeamAction.language}" />
+          </s:link>
           <s:link styleClass="action_link" value="#{messages['jsf.contactLanguageTeamCoordinator']}" view="/language/contact_coordinator.xhtml" propagation="none"  rendered="#{identity.loggedIn}">
             <!-- using this param is not as clean as I'd like, but seems to be the only way to get a literal
                  value into a bean. Ideally this should be inserted in pages.xml somehow -->
