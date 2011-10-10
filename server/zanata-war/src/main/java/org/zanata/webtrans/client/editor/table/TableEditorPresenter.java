@@ -234,6 +234,24 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       this.messages = messages;
    }
 
+   private void clearCacheList()
+   {
+      if (!transIdNextNewFuzzyCache.isEmpty())
+         transIdNextNewFuzzyCache.clear();
+      if (!transIdPrevNewFuzzyCache.isEmpty())
+         transIdPrevNewFuzzyCache.clear();
+
+      if (!transIdNextNewCache.isEmpty())
+         transIdNextNewCache.clear();
+      if (!transIdPrevNewCache.isEmpty())
+         transIdPrevNewCache.clear();
+
+      if (!transIdNextFuzzyCache.isEmpty())
+         transIdNextFuzzyCache.clear();
+      if (!transIdPrevFuzzyCache.isEmpty())
+         transIdPrevFuzzyCache.clear();
+   }
+
    @Override
    protected void onBind()
    {
@@ -298,10 +316,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             if (documentId != null && documentId.equals(event.getDocumentId()))
             {
                // Clear the cache
-               if (!transIdNextNewFuzzyCache.isEmpty())
-                  transIdNextNewFuzzyCache.clear();
-               if (!transIdPrevNewFuzzyCache.isEmpty())
-                  transIdPrevNewFuzzyCache.clear();
+               clearCacheList();
+
                // TODO this test never succeeds
                if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
                {
@@ -1027,10 +1043,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          selectedTransUnit = transUnit;
          Log.info("SelectedTransUnit " + selectedTransUnit.getId());
          // Clean the cache when we click the new entry
-         if (!transIdNextNewFuzzyCache.isEmpty())
-            transIdNextNewFuzzyCache.clear();
-         if (!transIdPrevNewFuzzyCache.isEmpty())
-            transIdPrevNewFuzzyCache.clear();
+         clearCacheList();
 
          eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
       }
