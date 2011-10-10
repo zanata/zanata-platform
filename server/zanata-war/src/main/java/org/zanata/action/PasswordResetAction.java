@@ -16,7 +16,6 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.AuthorizationException;
-import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.NotLoggedInException;
 import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
@@ -38,9 +37,6 @@ public class PasswordResetAction implements Serializable
 
    @In
    private IdentityManager identityManager;
-
-   @In
-   private Identity identity;
 
    private String activationKey;
 
@@ -148,13 +144,6 @@ public class PasswordResetAction implements Serializable
       if (passwordChanged)
       {
          FacesMessages.instance().add("Your password has been successfully changed. Please sign in with your new password.");
-
-         // Login the user
-         // identity.getCredentials().setUsername(getKey().getAccount().getUsername());
-         // identity.getCredentials().setPassword(getPassword());
-         // identity.login();
-
-         // return "/home.xhtml";
          return "/account/login.xhtml";
       }
       else
