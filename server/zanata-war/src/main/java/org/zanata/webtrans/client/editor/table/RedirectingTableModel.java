@@ -79,6 +79,18 @@ public class RedirectingTableModel<RowType> extends MutableTableModel<RowType>
          tableModelHandler.gotoPrevRow(row);
    }
 
+   public void gotoFirstRow(int row)
+   {
+      if (tableModelHandler != null)
+         tableModelHandler.gotoFirstRow(row);
+   }
+
+   public void gotoLastRow(int row)
+   {
+      if (tableModelHandler != null)
+         tableModelHandler.gotoLastRow(row);
+   }
+
    public void gotoNextFuzzyNew(int row)
    {
       if (tableModelHandler != null)

@@ -50,9 +50,13 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
 
       HasClickHandlers getNextEntryButton();
 
-      HasClickHandlers getPrevFuzzyOrUntranslatedButton();
+      HasClickHandlers getFirstEntryButton();
 
-      HasClickHandlers getNextFuzzyOrUntranslatedButton();
+      HasClickHandlers getLastEntryButton();
+
+      HasClickHandlers getPrevStateButton();
+
+      HasClickHandlers getNextStateButton();
 
       HasClickHandlers getConfigureButton();
 
@@ -90,21 +94,39 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
          }
       });
 
-      display.getPrevFuzzyOrUntranslatedButton().addClickHandler(new ClickHandler()
+      display.getFirstEntryButton().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
-            fireEvent(new NavTransUnitEvent(NavigationType.PrevFuzzyOrUntranslated));
+            fireEvent(new NavTransUnitEvent(NavigationType.FirstEntry));
          }
       });
 
-      display.getNextFuzzyOrUntranslatedButton().addClickHandler(new ClickHandler()
+      display.getLastEntryButton().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
-            fireEvent(new NavTransUnitEvent(NavigationType.NextFuzzyOrUntranslated));
+            fireEvent(new NavTransUnitEvent(NavigationType.LastEntry));
+         }
+      });
+
+      display.getPrevStateButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            fireEvent(new NavTransUnitEvent(NavigationType.PrevState));
+         }
+      });
+
+      display.getNextStateButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            fireEvent(new NavTransUnitEvent(NavigationType.NextState));
          }
       });
 

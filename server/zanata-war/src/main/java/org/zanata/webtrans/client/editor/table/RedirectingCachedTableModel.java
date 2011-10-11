@@ -38,6 +38,18 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
          tableModel.gotoPrevRow(row);
    }
 
+   public void gotoFirstRow(int row)
+   {
+      if (tableModel != null)
+         tableModel.gotoFirstRow(row);
+   }
+
+   public void gotoLastRow(int row)
+   {
+      if (tableModel != null)
+         tableModel.gotoLastRow(row);
+   }
+
    public void gotoNextFuzzyNew(int row)
    {
       if (tableModel != null)

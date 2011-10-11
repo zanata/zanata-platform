@@ -25,6 +25,10 @@ public abstract class TableModelHandler<RowType>
 
    abstract void gotoPrevRow(int row);
 
+   abstract void gotoFirstRow(int row);
+
+   abstract void gotoLastRow(int row);
+
    abstract void nextFuzzyNewIndex(int row);
 
    abstract void prevFuzzyNewIndex(int row);

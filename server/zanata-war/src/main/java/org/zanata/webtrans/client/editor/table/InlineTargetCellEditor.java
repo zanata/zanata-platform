@@ -108,7 +108,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       public void onClick(ClickEvent event)
       {
-         saveApprovedAndMoveNextState(NavigationType.NextEntry);
+         saveApprovedAndMoveRow(NavigationType.NextEntry);
       }
    };
 
@@ -268,13 +268,15 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             {
                // alt-down
                // See editCell() for saving event
-               gotoRow(NavigationType.NextEntry);
+               saveAndMoveRow(NavigationType.NextEntry);
+               // gotoRow(NavigationType.NextEntry);
             }
             else if (event.isAltKeyDown() && (event.isUpArrow() || keyCode == TableConstants.KEY_J))
             {
                // alt-up
                // See editCell() for saving event
-               gotoRow(NavigationType.PrevEntry);
+               saveAndMoveRow(NavigationType.PrevEntry);
+               // gotoRow(NavigationType.PrevEntry);
             }
             else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEDOWN)
             {
@@ -355,6 +357,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       else if (nav == NavigationType.PrevEntry)
       {
          editRowCallback.gotoPrevRow(curRow);
+      }
+      else if (nav == NavigationType.FirstEntry)
+      {
+         editRowCallback.gotoFirstRow(curRow);
+      }
+      else if (nav == NavigationType.LastEntry)
+      {
+         editRowCallback.gotoLastRow(curRow);
       }
    }
 
@@ -488,6 +498,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             cancelEdit();
          }
       }
+   }
+
+   public void saveAndMoveRow(NavigationType nav)
+   {
+      savePendingChange(true);
+      gotoRow(nav);
    }
 
    public void saveAndMoveNextState(NavigationType nav)
@@ -633,11 +649,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    protected boolean onCancel()
    {
       return true;
-   }
-
-   public int getCurrentRow()
-   {
-      return curRow;
    }
 
    public void autoSize()
