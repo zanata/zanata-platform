@@ -8,7 +8,6 @@
 <div id="iteration_list_view_item_#{_iteration.slug}"
    class="inline_cell_item" >
   <div class="list_view_header">
-    <h2>#{_iteration.slug}</h2>
     <div class="menu_items">
       <s:link
       	value="#{messages['jsf.ConfigFile']}"
@@ -29,6 +28,7 @@
       </s:link>
     </div>
   </div>
+
   <rich:dataTable id="data_table" width="100%" value="#{iterationTranslationAction.getTranslationLocale(projectHome.instance.slug, _iteration.slug)}"
                   var="tribe"
                   styleClass="iteration_inline_tribes"
@@ -62,6 +62,18 @@
 		<f:param name="locale" value="#{locale.language}" />
 		#{messages['jsf.TranslateGWTDevMode']}
       </h:outputLink>
+      <h:outputLink
+          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation')}"
+          target="_blank"
+          value="#{request.contextPath}/">
+        <f:param name="project" value="#{_iteration.project.slug}"/>
+        <f:param name="iteration" value="#{_iteration.slug}"/>
+        <f:param name="localeId" value="#{tribe.localeId.id}"/>
+        <f:param name="gwt.codesvr" value="127.0.0.1:9997"/>
+        <f:param name="locale" value="#{locale.language}" />
+        #{messages['jsf.DownloadFiles']}
+      </h:outputLink>
+      <h:commandButton value="Test"/>
 
     </rich:column>
   </rich:dataTable>

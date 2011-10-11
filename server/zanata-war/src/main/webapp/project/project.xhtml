@@ -6,7 +6,11 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j"
     template="../WEB-INF/layout/template.xhtml">
+
+<ui:define name="head">
+</ui:define>
 
 <ui:define name="center_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
@@ -20,17 +24,20 @@
     <s:fragment rendered="#{projectHome.retiredIterations.size > 0}">
       <h2>#{messages['jsf.ActiveIterations']}</h2>
     </s:fragment>
-    <rich:dataGrid id="activeIterations" columns="2"
+    <rich:dataGrid id="activeIterations" columns="1"
                    value="#{projectHome.activeIterations}"
                    var="_iteration"
+                   rowKeyVar="_it"
                    columnClasses="grid_col_one_third_width"
                    >
-      <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
+      <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}">
+        <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
+      </rich:simpleTogglePanel>
     </rich:dataGrid>
 
     <s:fragment rendered="#{projectHome.retiredIterations.size > 0}">
       <h2>#{messages['RetiredIterations']}</h2>
-      <rich:dataGrid id="retiredIterations" columns="2"
+      <rich:dataGrid id="retiredIterations" columns="1"
                      value="#{projectHome.retiredIterations}"
                      var="_iteration"
                      columnClasses="grid_col_one_third_width">
