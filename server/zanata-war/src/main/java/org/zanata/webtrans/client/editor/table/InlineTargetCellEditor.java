@@ -47,6 +47,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -246,13 +247,15 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             {
                // alt-down
                // See editCell() for saving event
-               gotoRow(NavigationType.NextEntry);
+               saveAndMoveRow(NavigationType.NextEntry);
+               // gotoRow(NavigationType.NextEntry);
             }
             else if (event.isAltKeyDown() && (event.isUpArrow() || keyCode == TableConstants.KEY_J))
             {
                // alt-up
                // See editCell() for saving event
-               gotoRow(NavigationType.PrevEntry);
+               saveAndMoveRow(NavigationType.PrevEntry);
+               // gotoRow(NavigationType.PrevEntry);
             }
             else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEDOWN)
             {
@@ -474,7 +477,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
    }
 
-   public void saveAndMoveFirstLastRow(NavigationType nav)
+   public void saveAndMoveRow(NavigationType nav)
    {
       savePendingChange(true);
       gotoRow(nav);
@@ -602,11 +605,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    protected boolean onCancel()
    {
       return true;
-   }
-
-   public int getCurrentRow()
-   {
-      return curRow;
    }
 
    public void autoSize()
