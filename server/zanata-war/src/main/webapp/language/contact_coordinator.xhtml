@@ -18,13 +18,13 @@
          <h1>#{messages['jsf.contactLanguageTeamCoordinatorForLocale']}</h1>
          <rich:panel>
             
-            <s:decorate id="nameField" template="../WEB-INF/layout/edit.xhtml">
+            <s:decorate id="nameField" template="../WEB-INF/layout/display.xhtml">
                <ui:define name="label">#{messages['jsf.Name']}</ui:define>
                <h:outputText id="senderName" value="#{sendEmail.fromName}"
                              required="true" />
             </s:decorate>
 
-            <s:decorate id="replyEmailField" template="../WEB-INF/layout/edit.xhtml">
+            <s:decorate id="replyEmailField" template="../WEB-INF/layout/display.xhtml">
                <ui:define name="label">#{messages['jsf.email.ReplyAddress']}</ui:define>
                <h:outputText id="email" value="#{sendEmail.replyEmail}" required="true" />
             </s:decorate>
