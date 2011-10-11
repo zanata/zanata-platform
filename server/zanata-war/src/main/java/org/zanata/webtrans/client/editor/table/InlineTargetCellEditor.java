@@ -108,7 +108,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       public void onClick(ClickEvent event)
       {
-         saveApprovedAndMoveRow(NavigationType.NextEntry);
+         saveApprovedAndMoveNextState(NavigationType.NextEntry);
       }
    };
 
