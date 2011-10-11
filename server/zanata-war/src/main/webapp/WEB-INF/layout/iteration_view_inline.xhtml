@@ -62,18 +62,16 @@
 		<f:param name="locale" value="#{locale.language}" />
 		#{messages['jsf.TranslateGWTDevMode']}
       </h:outputLink>
-      <h:outputLink
+      <rich:spacer width="10px" />
+      <s:link
           rendered="#{s:hasPermission(projectHome.instance, 'modify-translation')}"
-          target="_blank"
-          value="#{request.contextPath}/">
+          view="/project/iteration_files.xhtml"
+          propagation="none"
+          value="#{messages['jsf.Files']}">
         <f:param name="project" value="#{_iteration.project.slug}"/>
         <f:param name="iteration" value="#{_iteration.slug}"/>
         <f:param name="localeId" value="#{tribe.localeId.id}"/>
-        <f:param name="gwt.codesvr" value="127.0.0.1:9997"/>
-        <f:param name="locale" value="#{locale.language}" />
-        #{messages['jsf.DownloadFiles']}
-      </h:outputLink>
-      <h:commandButton value="Test"/>
+      </s:link>
 
     </rich:column>
   </rich:dataTable>

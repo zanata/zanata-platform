@@ -1,0 +1,63 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="../WEB-INF/layout/template.xhtml">
+
+	<ui:define name="center_content">
+	    <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
+	
+	    <h1>#{messages['jsf.ProjectId']}: #{projectIterationFilesAction.projectSlug}</h1>
+        <h1>#{messages['jsf.Iteration']}: #{projectIterationFilesAction.iterationSlug}</h1>
+        <h1>#{messages['jsf.iteration.files.LocaleId']}: #{projectIterationFilesAction.localeId}</h1>
+	
+	    <rich:panel id="iteration-files-panel">
+	        <f:facet name="header">
+	            #{messages['jsf.iteration.files.PanelTitle']}
+	        </f:facet>
+	        <h:messages />
+	        
+	        <h:form>
+	          <s:token allowMultiplePosts="true" />
+	          <rich:dataTable id="data_table" width="100%" value="#{projectIterationFilesAction.iterationDocuments}" 
+	                  var="doc"
+	                  styleClass="iteration_inline_tribes"
+	                  rowClasses="odd,even">
+	                <rich:column sortOrder="ASCENDING" filterBy="#{doc.name}" filterEvent="onkeyup">
+	                    <f:facet name="header">#{messages['jsf.Name']}</f:facet>
+	                    #{doc.name}
+	                </rich:column>
+	                <rich:column>
+	                    <f:facet name="header">#{messages['jsf.iteration.files.Path']}</f:facet>
+	                    #{doc.path}
+	                </rich:column>
+	                <rich:column>
+	                    <f:facet name="header">#{messages['jsf.iteration.files.ContentType']}</f:facet>
+	                    #{doc.contentType}
+	                </rich:column>
+	                <!-- <rich:column>
+	                    <f:facet name="header">Percentage</f:facet>
+	                    <ui:param name="tstatus" value="#{language.words}" />
+	                    <ui:include src="../WEB-INF/layout/statsbar.xhtml">
+	                        <ui:param name="status" value="#{tstatus}" />
+	                    </ui:include>
+	                </rich:column> -->
+	          </rich:dataTable>
+	        </h:form>              
+	    </rich:panel>
+	</ui:define>
+	
+	<ui:define name="left_content">
+	   
+	   <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
+	    <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+	    <s:link styleClass="action_link" rendered="#{true}" value="#{messages['jsf.iteration.files.DownloadAllFiles']}" view="/project/edit.xhtml" propagation="none"/>
+	  </rich:panel>
+	   
+	</ui:define>
+
+</ui:composition>

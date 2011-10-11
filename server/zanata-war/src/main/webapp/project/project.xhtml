@@ -21,6 +21,7 @@
     <s:formattedText id="project-home-content" value="#{projectHome.instance.homeContent}"></s:formattedText>
     <h:outputText value="#{projectHome.instance.description}" rendered="#{empty projectHome.instance.homeContent}"/>
 
+    <rich:spacer height="10px" />
     <s:fragment rendered="#{projectHome.retiredIterations.size > 0}">
       <h2>#{messages['jsf.ActiveIterations']}</h2>
     </s:fragment>
@@ -30,7 +31,7 @@
                    rowKeyVar="_it"
                    columnClasses="grid_col_one_third_width"
                    >
-      <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}">
+      <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" opened="#{false}">
         <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
       </rich:simpleTogglePanel>
     </rich:dataGrid>
@@ -41,7 +42,9 @@
                      value="#{projectHome.retiredIterations}"
                      var="_iteration"
                      columnClasses="grid_col_one_third_width">
-        <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
+        <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" opened="#{false}">
+          <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
+        </rich:simpleTogglePanel>
       </rich:dataGrid>
     </s:fragment>
 </ui:define>

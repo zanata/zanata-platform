@@ -137,5 +137,21 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
          textFlow.setRevision(revision);
       }
    }
+   
+   public List<HDocument> getAllByProjectIterationAndLocale(final String projectSlug, final String iterationSlug, final LocaleId localeId)
+   {
+      Session session = getSession();
+      
+      @SuppressWarnings("unchecked")
+      final List<HDocument> documents =
+         session.createQuery("from HDocument d where d.projectIteration.slug = :iterationSlug " +
+         		"and d.projectIteration.project.slug = :projectSlug " +
+         		"and d.locale.localeId = :localeId")
+         		.setParameter("iterationSlug", iterationSlug)
+         		.setParameter("projectSlug", projectSlug)
+         		.setParameter("localeId", localeId)
+         		.list();
+      return documents;
+   }
 
 }
