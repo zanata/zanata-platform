@@ -262,63 +262,63 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       EditRowCallback transValueCallBack = new EditRowCallback()
       {
          @Override
-         public void gotoNextRow(int row)
+         public void gotoNextRow()
          {
-            tableModel.gotoNextRow(row);
+            tableModel.gotoNextRow();
          }
 
          @Override
-         public void gotoPrevRow(int row)
+         public void gotoPrevRow()
          {
-            tableModel.gotoPrevRow(row);
+            tableModel.gotoPrevRow();
          }
 
          @Override
-         public void gotoFirstRow(int row)
+         public void gotoFirstRow()
          {
-            tableModel.gotoFirstRow(row);
+            tableModel.gotoFirstRow();
          }
 
          @Override
-         public void gotoLastRow(int row)
+         public void gotoLastRow()
          {
-            tableModel.gotoLastRow(row);
+            tableModel.gotoLastRow();
          }
 
          @Override
-         public void gotoNextFuzzyNewRow(int row)
+         public void gotoNextFuzzyNewRow()
          {
-            tableModel.gotoNextFuzzyNew(row);
+            tableModel.gotoNextFuzzyNew();
          }
 
          @Override
-         public void gotoPrevFuzzyNewRow(int row)
+         public void gotoPrevFuzzyNewRow()
          {
-            tableModel.gotoPrevFuzzyNew(row);
+            tableModel.gotoPrevFuzzyNew();
          }
 
          @Override
-         public void gotoNextFuzzyRow(int row)
+         public void gotoNextFuzzyRow()
          {
-            tableModel.gotoNextFuzzy(row);
+            tableModel.gotoNextFuzzy();
          }
 
          @Override
-         public void gotoPrevFuzzyRow(int row)
+         public void gotoPrevFuzzyRow()
          {
-            tableModel.gotoPrevFuzzy(row);
+            tableModel.gotoPrevFuzzy();
          }
 
          @Override
-         public void gotoNextNewRow(int row)
+         public void gotoNextNewRow()
          {
-            tableModel.gotoNextNew(row);
+            tableModel.gotoNextNew();
          }
 
          @Override
-         public void gotoPrevNewRow(int row)
+         public void gotoPrevNewRow()
          {
-            tableModel.gotoPrevNew(row);
+            tableModel.gotoPrevNew();
          }
       };
       

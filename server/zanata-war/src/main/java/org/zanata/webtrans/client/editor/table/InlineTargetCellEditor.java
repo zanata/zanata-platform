@@ -352,19 +352,19 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       if (nav == NavigationType.NextEntry)
       {
-         editRowCallback.gotoNextRow(curRow);
+         editRowCallback.gotoNextRow();
       }
       else if (nav == NavigationType.PrevEntry)
       {
-         editRowCallback.gotoPrevRow(curRow);
+         editRowCallback.gotoPrevRow();
       }
       else if (nav == NavigationType.FirstEntry)
       {
-         editRowCallback.gotoFirstRow(curRow);
+         editRowCallback.gotoFirstRow();
       }
       else if (nav == NavigationType.LastEntry)
       {
-         editRowCallback.gotoLastRow(curRow);
+         editRowCallback.gotoLastRow();
       }
    }
 
@@ -372,11 +372,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       if (nav == NavigationType.NextEntry)
       {
-         editRowCallback.gotoNextNewRow(curRow);
+         editRowCallback.gotoNextNewRow();
       }
       else if (nav == NavigationType.PrevEntry)
       {
-         editRowCallback.gotoPrevNewRow(curRow);
+         editRowCallback.gotoPrevNewRow();
       }
    }
 
@@ -384,11 +384,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       if (nav == NavigationType.NextEntry)
       {
-         editRowCallback.gotoNextFuzzyNewRow(curRow);
+         editRowCallback.gotoNextFuzzyNewRow();
       }
       else if (nav == NavigationType.PrevEntry)
       {
-         editRowCallback.gotoPrevFuzzyNewRow(curRow);
+         editRowCallback.gotoPrevFuzzyNewRow();
       }
    }
 
@@ -396,11 +396,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       if (nav == NavigationType.NextEntry)
       {
-         editRowCallback.gotoNextFuzzyRow(curRow);
+         editRowCallback.gotoNextFuzzyRow();
       }
       else if (nav == NavigationType.PrevEntry)
       {
-         editRowCallback.gotoPrevFuzzyRow(curRow);
+         editRowCallback.gotoPrevFuzzyRow();
       }
    }
 

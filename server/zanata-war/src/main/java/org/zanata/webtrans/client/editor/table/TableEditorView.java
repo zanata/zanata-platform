@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.editor.table;
 
 import java.util.List;
+import java.util.Set;
 
 import net.customware.gwt.presenter.client.EventBus;
 
@@ -216,6 +217,20 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
       {
          if (row < getDataTable().getRowCount())
             DOM.scrollIntoView(getDataTable().getWidget(row, TableEditorTableDefinition.TARGET_COL).getElement());
+      }
+   }
+
+   @Override
+   public int getSelectedRowIndex()
+   {
+      Set<Integer> selectedRows = super.getDataTable().getSelectedRows();
+      if (selectedRows.isEmpty())
+      {
+         return 0;
+      }
+      else
+      {
+         return selectedRows.iterator().next();
       }
    }
 

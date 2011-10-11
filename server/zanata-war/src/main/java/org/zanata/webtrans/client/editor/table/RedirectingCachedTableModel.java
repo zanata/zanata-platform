@@ -26,64 +26,64 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
          tableModel.onCancel(cellValue);
    }
 
-   public void gotoNextRow(int row)
+   public void gotoNextRow()
    {
       if (tableModel != null)
-         tableModel.gotoNextRow(row);
+         tableModel.gotoNextRow();
    }
 
-   public void gotoPrevRow(int row)
+   public void gotoPrevRow()
    {
       if (tableModel != null)
-         tableModel.gotoPrevRow(row);
+         tableModel.gotoPrevRow();
    }
 
-   public void gotoFirstRow(int row)
+   public void gotoFirstRow()
    {
       if (tableModel != null)
-         tableModel.gotoFirstRow(row);
+         tableModel.gotoFirstRow();
    }
 
-   public void gotoLastRow(int row)
+   public void gotoLastRow()
    {
       if (tableModel != null)
-         tableModel.gotoLastRow(row);
+         tableModel.gotoLastRow();
    }
 
-   public void gotoNextFuzzyNew(int row)
+   public void gotoNextFuzzyNew()
    {
       if (tableModel != null)
-         tableModel.gotoNextFuzzyNew(row);
+         tableModel.gotoNextFuzzyNew();
    }
 
-   public void gotoPrevFuzzyNew(int row)
+   public void gotoPrevFuzzyNew()
    {
       if (tableModel != null)
-         tableModel.gotoPrevFuzzyNew(row);
+         tableModel.gotoPrevFuzzyNew();
    }
 
-   public void gotoNextFuzzy(int row)
+   public void gotoNextFuzzy()
    {
       if (tableModel != null)
-         tableModel.gotoNextFuzzy(row);
+         tableModel.gotoNextFuzzy();
    }
 
-   public void gotoPrevFuzzy(int row)
+   public void gotoPrevFuzzy()
    {
       if (tableModel != null)
-         tableModel.gotoPrevFuzzy(row);
+         tableModel.gotoPrevFuzzy();
    }
 
-   public void gotoNextNew(int row)
+   public void gotoNextNew()
    {
       if (tableModel != null)
-         tableModel.gotoNextNew(row);
+         tableModel.gotoNextNew();
    }
 
-   public void gotoPrevNew(int row)
+   public void gotoPrevNew()
    {
       if (tableModel != null)
-         tableModel.gotoPrevNew(row);
+         tableModel.gotoPrevNew();
    }
 
    public void setRowValueOverride(int row, RowType rowValue)
