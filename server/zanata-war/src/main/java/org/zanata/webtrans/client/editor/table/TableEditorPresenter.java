@@ -40,6 +40,8 @@ import org.zanata.webtrans.client.events.CopySourceEvent;
 import org.zanata.webtrans.client.events.CopySourceEventHandler;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
+import org.zanata.webtrans.client.events.EnterKeyEnabledEvent;
+import org.zanata.webtrans.client.events.EnterKeyEnabledEventHandler;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
@@ -47,8 +49,6 @@ import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
-import org.zanata.webtrans.client.events.EnterKeyEnabledEvent;
-import org.zanata.webtrans.client.events.EnterKeyEnabledEventHandler;
 import org.zanata.webtrans.client.events.RedoFailureEvent;
 import org.zanata.webtrans.client.events.TransMemoryCopyEvent;
 import org.zanata.webtrans.client.events.TransMemoryCopyHandler;
@@ -140,6 +140,12 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       void startProcessing();
 
       void stopProcessing();
+
+      /**
+       * @return The index of the 'selected' row on the currently displayed
+       *         page, or 0 if no row is selected
+       */
+      int getSelectedRowNumber();
    }
 
    private DocumentId documentId;
@@ -673,95 +679,95 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          // stopEditing(rowValue);
       }
 
-      public void updatePageAndRowIndex(int row)
+      public void updatePageAndRowIndex()
       {
          curPage = display.getCurrentPage();
 
          // Convert row number to row Index in table
-         curRowIndex = curPage * TableConstants.PAGE_SIZE + row;
+         curRowIndex = curPage * TableConstants.PAGE_SIZE + display.getSelectedRowNumber();
          Log.info("Current Row Index" + curRowIndex);
       }
 
       @Override
-      public void gotoNextRow(int row)
+      public void gotoNextRow()
       {
-         updatePageAndRowIndex(row);
-         int rowIndex = curPage * TableConstants.PAGE_SIZE + row + 1;
-         if (rowIndex < display.getTableModel().getRowCount())
+         updatePageAndRowIndex();
+         int newRowIndex = curRowIndex + 1;
+         if (newRowIndex < display.getTableModel().getRowCount())
          {
-            gotoRow(rowIndex);
+            gotoRow(newRowIndex);
          }
       }
 
       @Override
-      public void gotoPrevRow(int row)
+      public void gotoPrevRow()
       {
-         updatePageAndRowIndex(row);
-         int rowIndex = curPage * TableConstants.PAGE_SIZE + row - 1;
-         if (rowIndex >= 0)
+         updatePageAndRowIndex();
+         int newRowIndex = curRowIndex - 1;
+         if (newRowIndex >= 0)
          {
-            gotoRow(rowIndex);
+            gotoRow(newRowIndex);
          }
       }
 
       @Override
-      public void gotoFirstRow(int row)
+      public void gotoFirstRow()
       {
-         updatePageAndRowIndex(row);
+         updatePageAndRowIndex();
          gotoRow(0);
       }
 
       @Override
-      public void gotoLastRow(int row)
+      public void gotoLastRow()
       {
-         updatePageAndRowIndex(row);
+         updatePageAndRowIndex();
          gotoRow(display.getTableModel().getRowCount() - 1);
       }
 
       @Override
-      public void nextFuzzyNewIndex(int row)
+      public void nextFuzzyNewIndex()
       {
-         updatePageAndRowIndex(row);
+         updatePageAndRowIndex();
          if (curRowIndex < display.getTableModel().getRowCount())
             gotoNextState(true, true);
       }
 
       @Override
-      public void prevFuzzyNewIndex(int row)
+      public void prevFuzzyNewIndex()
       {
-         updatePageAndRowIndex(row);
+         updatePageAndRowIndex();
          if (curRowIndex > 0)
             gotoPrevState(true, true);
       }
 
       @Override
-      public void nextFuzzyIndex(int row)
+      public void nextFuzzyIndex()
       {
-         updatePageAndRowIndex(row);
+         updatePageAndRowIndex();
          if (curRowIndex < display.getTableModel().getRowCount())
             gotoNextState(false, true);
       }
 
       @Override
-      public void prevFuzzyIndex(int row)
+      public void prevFuzzyIndex()
       {
-         updatePageAndRowIndex(row);
+         updatePageAndRowIndex();
          if (curRowIndex > 0)
             gotoPrevState(false, true);
       }
 
       @Override
-      public void nextNewIndex(int row)
+      public void nextNewIndex()
       {
-         updatePageAndRowIndex(row);
+         updatePageAndRowIndex();
          if (curRowIndex < display.getTableModel().getRowCount())
             gotoNextState(true, false);
       }
 
       @Override
-      public void prevNewIndex(int row)
+      public void prevNewIndex()
       {
-         updatePageAndRowIndex(row);
+         updatePageAndRowIndex();
          if (curRowIndex > 0)
             gotoPrevState(true, false);
       }
