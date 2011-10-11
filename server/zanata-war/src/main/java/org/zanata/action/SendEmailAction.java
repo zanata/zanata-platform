@@ -266,24 +266,24 @@ public class SendEmailAction implements Serializable
 
       try
       {
-         if (emailType != null && emailType.equals(EMAIL_TYPE_CONTACT_ADMIN))
+         if (emailType.equals(EMAIL_TYPE_CONTACT_ADMIN))
          {
             sendToAdminEmails(ADMIN_EMAIL_TEMPLATE);
             return "success";
          }
-         else if (emailType != null && emailType.equals(EMAIL_TYPE_CONTACT_COORDINATOR))
+         else if (emailType.equals(EMAIL_TYPE_CONTACT_COORDINATOR))
          {
             sendToLanguageCoordinators(COORDINATOR_EMAIL_TEMPLATE);
             return "success";
          }
-         else if (emailType != null && emailType.equals(EMAIL_TYPE_REQUEST_TO_JOIN))
+         else if (emailType.equals(EMAIL_TYPE_REQUEST_TO_JOIN))
          {
             sendToLanguageCoordinators(REQUEST_TO_JOIN_EMAIL_TEMPLATE);
             return "success";
          }
          else
          {
-            throw new Exception("Invalid email type: " + (emailType != null ? emailType : "null"));
+            throw new Exception("Invalid email type: " + emailType);
          }
       }
       catch (Exception e)
@@ -332,9 +332,7 @@ public class SendEmailAction implements Serializable
       List<String> adminEmails = applicationConfiguration.getAdminEmail();
       if (!adminEmails.isEmpty())
       {
-         String zanata = ResourceBundle.instance().getString("jsf.Zanata");
-         String admin = ResourceBundle.instance().getString("jsf.email.admin.Administrator");
-         toName = zanata + " " + admin;
+         toName = ResourceBundle.instance().getString("jsf.ZanataAdministrator");
          for (String email : adminEmails)
          {
             toEmailAddr = email;

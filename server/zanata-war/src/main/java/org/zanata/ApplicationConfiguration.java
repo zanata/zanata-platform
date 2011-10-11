@@ -101,13 +101,8 @@ public class ApplicationConfiguration
       {
          return new ArrayList<String>();
       }
-      String[] ss = s.split(",");
-      ArrayList<String> adminEmails = new ArrayList<String>(Arrays.asList(ss));
-      for (int i = 0; i < adminEmails.size(); i++)
-      {
-         adminEmails.set(i, adminEmails.get(i).trim());
-      }
-      return adminEmails;
+      String[] ss = s.trim().split("\\s*,\\s*");
+      return new ArrayList<String>(Arrays.asList(ss));
    }
 
    public String getFromEmailAddr()

@@ -41,14 +41,12 @@ public class EmailListValidator implements Validator<EmailList>, Serializable
       if (s.length() == 0)
          return true;
 
-      String eml;
-      for (String email : s.split(","))
+      // trim still required to prevent leading whitespace invalidating the
+      // first email address
+      for (String email : s.trim().split("\\s*,\\s*"))
       {
-         eml = email.trim();
-         if (eml == null || eml.isEmpty() || !emailValidator.isValid(eml))
-         {
+         if (!emailValidator.isValid(email))
             return false;
-         }
       }
       return true;
    }
