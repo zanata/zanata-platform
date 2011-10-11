@@ -45,7 +45,7 @@ public interface Resources extends ClientBundle
    @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/rightArrow.png")
    ImageResource rightArrowButton();
 
-   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/configure.png")
+   @Source("org/zanata/webtrans/images/configure.png")
    ImageResource configureButton();
 
    @Source("org/zanata/webtrans/images/banner_bg.png")
@@ -84,11 +84,17 @@ public interface Resources extends ClientBundle
    @Source("org/zanata/webtrans/images/prev_fuzzy.png")
    ImageResource prevFuzzy();
 
-   @Source("org/zanata/webtrans/images/next_untranslated.png")
-   ImageResource nextUntranslated();
+   @Source("org/zanata/webtrans/images/next_mode.png")
+   ImageResource nextState();
 
-   @Source("org/zanata/webtrans/images/prev_untranslated.png")
-   ImageResource prevUntranslated();
+   @Source("org/zanata/webtrans/images/prev_mode.png")
+   ImageResource prevState();
+
+   @Source("org/zanata/webtrans/images/first_entry.png")
+   ImageResource firstEntry();
+
+   @Source("org/zanata/webtrans/images/last_entry.png")
+   ImageResource lastEntry();
 
    @Source("org/zanata/webtrans/images/next_approved.png")
    ImageResource nextApproved();

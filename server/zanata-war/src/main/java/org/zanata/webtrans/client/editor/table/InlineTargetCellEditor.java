@@ -109,7 +109,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       public void onClick(ClickEvent event)
       {
-         saveApprovedAndMoveRow(NavigationType.NextEntry);
+         saveApprovedAndMoveNextState(NavigationType.NextEntry);
       }
    };
 
@@ -221,7 +221,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
                {
                   event.stopPropagation();
                   event.preventDefault();
-                  saveApprovedAndMoveRow(NavigationType.NextEntry);
+                  saveApprovedAndMoveNextState(NavigationType.NextEntry);
                }
             }
             else
@@ -230,7 +230,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
                {
                   event.stopPropagation();
                   event.preventDefault();
-                  saveApprovedAndMoveRow(NavigationType.NextEntry);
+                  saveApprovedAndMoveNextState(NavigationType.NextEntry);
                }
             }
          }
@@ -269,13 +269,15 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             {
                // alt-down
                // See editCell() for saving event
-               gotoRow(NavigationType.NextEntry);
+               saveAndMoveRow(NavigationType.NextEntry);
+               // gotoRow(NavigationType.NextEntry);
             }
             else if (event.isAltKeyDown() && (event.isUpArrow() || keyCode == TableConstants.KEY_J))
             {
                // alt-up
                // See editCell() for saving event
-               gotoRow(NavigationType.PrevEntry);
+               saveAndMoveRow(NavigationType.PrevEntry);
+               // gotoRow(NavigationType.PrevEntry);
             }
             else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEDOWN)
             {
@@ -356,6 +358,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       else if (nav == NavigationType.PrevEntry)
       {
          editRowCallback.gotoPrevRow(curRow);
+      }
+      else if (nav == NavigationType.FirstEntry)
+      {
+         editRowCallback.gotoFirstRow(curRow);
+      }
+      else if (nav == NavigationType.LastEntry)
+      {
+         editRowCallback.gotoLastRow(curRow);
       }
    }
 
@@ -491,6 +501,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
    }
 
+   public void saveAndMoveRow(NavigationType nav)
+   {
+      savePendingChange(true);
+      gotoRow(nav);
+   }
+
    public void saveAndMoveNextState(NavigationType nav)
    {
       savePendingChange(true);
@@ -512,11 +528,34 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    /**
     * save the contents of the cell as approved and move to the next row.
     */
-   private void saveApprovedAndMoveRow(NavigationType nav)
+   // private void saveApprovedAndMoveRow(NavigationType nav)
+   // {
+   // cellValue.setStatus(ContentState.Approved);
+   // acceptEdit();
+   // gotoRow(nav);
+   // }
+
+   /**
+    * save the contents of the cell as approved and move to next fuzzy or
+    * untranslated
+    */
+   private void saveApprovedAndMoveNextState(NavigationType nav)
    {
       cellValue.setStatus(ContentState.Approved);
       acceptEdit();
-      gotoRow(nav);
+
+      if (newMode && fuzzyMode)
+      {
+         gotoFuzzyAndNewRow(nav);
+      }
+      else if (newMode)
+      {
+         gotoNewRow(nav);
+      }
+      else if (fuzzyMode)
+      {
+         gotoFuzzyRow(nav);
+      }
    }
 
    /**
@@ -611,11 +650,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    protected boolean onCancel()
    {
       return true;
-   }
-
-   public int getCurrentRow()
-   {
-      return curRow;
    }
 
    public void autoSize()

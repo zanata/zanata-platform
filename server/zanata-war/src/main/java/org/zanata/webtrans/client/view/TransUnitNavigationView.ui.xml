@@ -9,11 +9,13 @@
 	</ui:style>
 	<g:HTMLPanel>
 		<nobr>
-			<g:Image resource="{resources.prevUntranslated}" ui:field="prevFuzzyOrUntranslated" styleName="{style.imageAnchor}"/>
+		    <g:Image resource="{resources.firstEntry}" ui:field="firstEntry" styleName="{style.imageAnchor}"/>
+			<g:Image resource="{resources.prevState}" ui:field="prevState" styleName="{style.imageAnchor}"/>
 			<g:Image resource="{resources.prevEntry}" ui:field="prevEntry" styleName="{style.imageAnchor}"/>
 			<g:Image resource="{resources.configureButton}" ui:field="configure" styleName="{style.imageAnchor}"/>
 			<g:Image resource="{resources.nextEntry}" ui:field="nextEntry" styleName="{style.imageAnchor}"/>
-			<g:Image resource="{resources.nextUntranslated}" ui:field="nextFuzzyOrUntranslated" styleName="{style.imageAnchor}"/>
+			<g:Image resource="{resources.nextState}" ui:field="nextState" styleName="{style.imageAnchor}"/>
+		    <g:Image resource="{resources.lastEntry}" ui:field="lastEntry" styleName="{style.imageAnchor}"/>
 		</nobr>
 	</g:HTMLPanel>
 </ui:UiBinder> 

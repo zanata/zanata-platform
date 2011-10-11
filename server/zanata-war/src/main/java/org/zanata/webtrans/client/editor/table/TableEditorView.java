@@ -221,12 +221,6 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    }
 
    @Override
-   public int getCurrentPageNumber()
-   {
-      return getCurrentPage();
-   }
-
-   @Override
    public TransUnit getTransUnitValue(int row)
    {
       return getRowValue(row);
@@ -244,5 +238,4 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    {
       this.tableDefinition.setShowCopyButtons(showButtons);
    }
-
 }

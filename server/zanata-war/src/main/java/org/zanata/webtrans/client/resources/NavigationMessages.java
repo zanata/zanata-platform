@@ -41,6 +41,12 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Alt+Up")
    String prevEntryShortcut();
 
+   @DefaultMessage("First Entry")
+   String firstEntry();
+
+   @DefaultMessage("Last Entry")
+   String lastEntry();
+
    @DefaultMessage("Next Fuzzy")
    String nextFuzzy();
 
