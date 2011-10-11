@@ -140,7 +140,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
        * @return The index of the 'selected' row on the currently displayed
        *         page, or 0 if no row is selected
        */
-      int getSelectedRowIndex();
+      int getSelectedRowNumber();
    }
 
    private DocumentId documentId;
@@ -668,7 +668,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          curPage = display.getCurrentPage();
 
          // Convert row number to row Index in table
-         curRowIndex = curPage * TableConstants.PAGE_SIZE + display.getSelectedRowIndex();
+         curRowIndex = curPage * TableConstants.PAGE_SIZE + display.getSelectedRowNumber();
          Log.info("Current Row Index" + curRowIndex);
       }
 

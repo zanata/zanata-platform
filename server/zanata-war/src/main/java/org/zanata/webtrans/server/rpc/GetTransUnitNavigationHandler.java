@@ -118,7 +118,7 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
             {
                step++;
                HTextFlowTarget textFlowTarget = textFlow.getTargets().get(hLocale);
-               log.info(action.isNewState() + ":" + action.isFuzzyState() + ":" + checkStateAndValidate(action.isNewState(), action.isFuzzyState(), textFlowTarget));
+               log.debug(action.isNewState() + ":" + action.isFuzzyState() + ":" + checkStateAndValidate(action.isNewState(), action.isFuzzyState(), textFlowTarget));
                if (checkStateAndValidate(action.isNewState(), action.isFuzzyState(), textFlowTarget))
                {
                   results.add(step);

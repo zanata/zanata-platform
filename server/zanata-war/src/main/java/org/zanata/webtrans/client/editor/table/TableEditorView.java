@@ -221,7 +221,7 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    }
 
    @Override
-   public int getSelectedRowIndex()
+   public int getSelectedRowNumber()
    {
       Set<Integer> selectedRows = super.getDataTable().getSelectedRows();
       if (selectedRows.isEmpty())
