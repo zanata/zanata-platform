@@ -226,7 +226,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             }
             else
             {
-               if (event.isShiftKeyDown() && keyCode == KeyCodes.KEY_ENTER)
+               if (event.isControlKeyDown() && keyCode == KeyCodes.KEY_ENTER)
                {
                   event.stopPropagation();
                   event.preventDefault();
