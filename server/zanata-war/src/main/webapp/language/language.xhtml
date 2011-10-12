@@ -18,12 +18,14 @@
                 <rich:dataTable
                     id="threads"
                     value="#{languageTeamAction.locale.members.toArray()}"
-                    var="member" rendered="#{not empty languageTeamAction.locale.members}">
-                  <rich:column width="auto">
+                    var="member" 
+                    rendered="#{not empty languageTeamAction.locale.members}"
+                    sortMode="single">
+                  <rich:column id="usernameCol" width="auto" sortBy="#{member.person.account.username}" sortOrder="ASCENDING">
                     <f:facet name="header">#{messages['jsf.Username']}</f:facet>
                     #{member.person.account.username}
                   </rich:column>
-                  <rich:column width="auto">
+                  <rich:column width="auto" sortBy="#{member.person.name}">
                     <f:facet name="header">#{messages['jsf.Name']}</f:facet>
                     #{member.person.name}
                   </rich:column>
