@@ -26,6 +26,7 @@
 		<class>org.zanata.model.HDocument</class>
 		<class>org.zanata.model.HIterationProject</class>
 		<class>org.zanata.model.HLocale</class>
+		<class>org.zanata.model.HLocaleMember</class>
 		<class>org.zanata.model.HPerson</class>
 		<class>org.zanata.model.HProjectIteration</class>
 		<class>org.zanata.model.HProject</class>
