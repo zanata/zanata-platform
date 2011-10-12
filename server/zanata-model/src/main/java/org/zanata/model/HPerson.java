@@ -29,6 +29,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
@@ -52,8 +53,8 @@ public class HPerson extends ModelEntityBase implements Serializable
    private String email;
 
    private Set<HProject> maintainerProjects;
-
-   private Set<HLocale> languageMemberships;
+   
+   private Set<HLocaleMember> languageTeamMemberships;
 
 
    @NotEmpty
@@ -113,18 +114,36 @@ public class HPerson extends ModelEntityBase implements Serializable
       this.maintainerProjects = maintainerProjects;
    }
 
-   @ManyToMany
-   @JoinTable(name = "HLocale_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "supportedLanguageId"))
+   @Transient
    public Set<HLocale> getLanguageMemberships()
    {
-      if (languageMemberships == null)
-         languageMemberships = new HashSet<HLocale>();
-      return languageMemberships;
+      final Set<HLocale> memberships = new HashSet<HLocale>();
+      for( HLocaleMember locMem : this.languageTeamMemberships )
+      {
+         memberships.add( locMem.getSupportedLanguage() );
+      }
+      return memberships;
    }
 
    public void setLanguageMemberships(Set<HLocale> tribeMemberships)
    {
-      this.languageMemberships = tribeMemberships;
+      
+   }
+   
+   @OneToMany
+   @JoinColumn(name = "personId")
+   protected Set<HLocaleMember> getLanguageTeamMemberships()
+   {
+      if( this.languageTeamMemberships == null )
+      {
+         this.languageTeamMemberships = new HashSet<HLocaleMember>();
+      }
+      return languageTeamMemberships;
+   }
+
+   protected void setLanguageTeamMemberships(Set<HLocaleMember> languageTeamMemberships)
+   {
+      this.languageTeamMemberships = languageTeamMemberships;
    }
 
    @Override
@@ -194,6 +213,19 @@ public class HPerson extends ModelEntityBase implements Serializable
       for (HProject maintProj : getMaintainerProjects())
       {
          if (maintProj.getId().equals(proj.getId()))
+            return true;
+      }
+      return false;
+   }
+   
+   @Transient
+   public boolean isCoordinator(HLocale locale)
+   {
+      // TODO consider implementing business key equality
+      for (HLocaleMember membership : locale.getMembers())
+      {
+         if (membership.getPerson().getId().equals( this.getId() ) 
+               && membership.isCoordinator())
             return true;
       }
       return false;

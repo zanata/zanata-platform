@@ -1,0 +1,21 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:s="http://jboss.com/products/seam/taglib">
+
+	<div id="tribe_list_view_item_#{tribe.localeId.id}"
+		class="inline_cell_item">
+
+	<div class="inline_cell_item_top"><s:link
+		view="/language/language.xhtml" propagation="none">
+	    #{tribe.retrieveNativeName()}
+	    <f:param name="id" value="#{tribe.localeId.id}" />
+	</s:link></div>
+	<div class="inline_cell_item_middle">
+	<p><em>#{tribe.retrieveDisplayName()}</em> [#{tribe.localeId.id}] -
+	#{tribe.memberships.size} #{messages['jsf.Members']}</p>
+	</div>
+
+	</div>
+</ui:composition>
