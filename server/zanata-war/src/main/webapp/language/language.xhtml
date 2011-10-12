@@ -42,7 +42,7 @@
                         <a4j:support event="onclick"
                             ajaxSingle="true"
                             reRender="threads"
-                            action="#{languageTeamAction.toggleCoordinator(member)}"/>
+                            action="#{languageTeamAction.saveTeamCoordinator(member)}"/>
                     </h:selectBooleanCheckbox>
                     <h:outputText rendered="#{not s:hasRole('admin') and not languageTeamAction.userIsCoordinator() and member.coordinator}">
                         <div class="checkmark"/>

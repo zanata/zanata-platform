@@ -165,7 +165,7 @@ public class LanguageTeamAction implements Serializable
       FacesMessages.instance().add("You have left the {0} language team", this.locale.retrieveNativeName());
    }
    
-   public void toggleCoordinator( HLocaleMember member )
+   public void saveTeamCoordinator( HLocaleMember member )
    {
       this.localeDAO.makePersistent(this.locale);
       this.localeDAO.flush();
