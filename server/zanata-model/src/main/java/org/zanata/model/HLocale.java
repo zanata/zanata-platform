@@ -24,10 +24,12 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -45,9 +47,9 @@ public class HLocale extends ModelEntityBase implements Serializable
    private static final long serialVersionUID = 1L;
    private LocaleId localeId;
    private boolean active;
-   private Set<HPerson> members;
    private Set<HProject> supportedProjects;
    private Set<HProjectIteration> supportedIterations;
+   private Set<HLocaleMember> members;
    
 
    @NaturalId
@@ -82,17 +84,19 @@ public class HLocale extends ModelEntityBase implements Serializable
    {
       this.localeId = localeId;
    }
-
-   @ManyToMany
-   @JoinTable(name = "HLocale_Member", joinColumns = @JoinColumn(name = "supportedLanguageId"), inverseJoinColumns = @JoinColumn(name = "personId"))
-   public Set<HPerson> getMembers()
+   
+   @OneToMany(cascade=CascadeType.ALL)
+   @JoinColumn(name = "supportedLanguageId")
+   public Set<HLocaleMember> getMembers()
    {
-      if (members == null)
-         members = new HashSet<HPerson>();
-      return members;
+      if( this.members == null )
+      {
+         this.members = new HashSet<HLocaleMember>();
+      }
+      return this.members;
    }
-
-   public void setMembers(Set<HPerson> members)
+   
+   public void setMembers(Set<HLocaleMember> members)
    {
       this.members = members;
    }

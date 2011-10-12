@@ -1,0 +1,64 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:s="http://jboss.com/products/seam/taglib"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:a4j="http://richfaces.org/a4j"
+   xmlns:rich="http://richfaces.org/rich"
+   template="/WEB-INF/layout/template.xhtml">
+
+   <ui:param name="showGlobalMessages" value="true"/>
+   
+   <ui:define name="center_content">
+      <rich:jQuery selector="#tab_help" query="addClass('ui-tabs-selected')" />
+      <h:form>
+         <s:token allowMultiplePosts="true" />
+         <h1>#{messages['jsf.ContactAdmin']}</h1>
+         
+         <rich:panel>
+            
+            <s:decorate id="nameField" template="../WEB-INF/layout/display.xhtml">
+               <ui:define name="label">#{messages['jsf.Name']}</ui:define>
+               <h:outputText id="senderName" value="#{sendEmail.fromName}"
+                             required="true" />
+            </s:decorate>
+
+            <s:decorate id="replyEmailField" template="../WEB-INF/layout/display.xhtml">
+               <ui:define name="label">#{messages['jsf.email.ReplyAddress']}</ui:define>
+               <h:outputText id="email" value="#{sendEmail.replyEmail}" required="true" />
+            </s:decorate>
+
+            <s:decorate id="subjectField"
+                        template="../WEB-INF/layout/edit.xhtml">
+               <ui:define name="label">#{messages['jsf.email.Subject']}</ui:define>
+               <h:inputText id="subject" value="#{sendEmail.subject}"
+                            required="true" />
+            </s:decorate>
+
+            <s:decorate id="messageField"
+                        template="../WEB-INF/layout/edit.xhtml">
+               <ui:define name="label">#{messages['jsf.email.MessageBody']}</ui:define>
+               <rich:editor id="message" width="400" height="300"
+                            style="width:400px;" required="true"
+                            value="#{sendEmail.htmlMessage}" viewMode="visual"
+                            useSeamText="false" configuration="richeditor" theme="advanced">
+               </rich:editor>
+            </s:decorate>
+
+            <div style="clear: both"></div>
+            <div class="actionButtons">
+               <h:commandButton id="send" value="#{messages['jsf.email.Send']}"
+                                action="#{sendEmail.send}" />
+
+               <s:button id="cancel" value="#{messages['jsf.Cancel']}"
+                         propagation="none" action="#{sendEmail.cancel}" />
+            </div>
+
+         </rich:panel>
+      </h:form>
+
+   </ui:define>
+
+</ui:composition>

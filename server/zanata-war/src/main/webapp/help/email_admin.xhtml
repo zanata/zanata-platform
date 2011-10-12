@@ -6,18 +6,18 @@
            xmlns:s="http://jboss.com/products/seam/taglib"
            charset="UTF-8" importance="normal">
   <m:from name="#{messages['jsf.Zanata']}" >#{applicationConfiguration.fromEmailAddr}</m:from>
-  <m:to name="#{messages['jsf.email.activation.profile.Name']}">#{profileAction.email}</m:to>
-  <m:subject>#{messages['jsf.email.activation.Subject']}</m:subject>
+  <m:to name="#{sendEmail.toName}">#{sendEmail.toEmailAddr}</m:to>
+  <m:replyTo name="#{sendEmail.fromName}" >#{sendEmail.replyEmail}</m:replyTo>
+  <m:subject>#{messages['jsf.email.admin.SubjectPrefix']} #{sendEmail.subject}</m:subject>
   <m:body>
     <html>
     <body>
-    <p>#{messages['jsf.email.activation.profile.DearName']}</p>
-    <p>#{messages['jsf.email.activation.ClickLinkToActivateAccount']}</p>
-    <p>
-      <a href="#{applicationConfiguration.serverPath}/account/activate/#{profileAction.activationKey}">
-      #{applicationConfiguration.serverPath}/account/activate/#{profileAction.activationKey}
-      </a>
-    </p>
+    <p>#{messages['jsf.email.admin.DearAdmin']}</p>
+    <p>#{messages['jsf.email.admin.UserMessageIntro']}</p>
+    <hr/>
+    <h:outputText value="#{sendEmail.htmlMessage}" escape="false" />
+    <hr/>
+    <p>#{messages['jsf.email.ReplyInstructions']}</p>
   </body>
   </html>
   </m:body>
