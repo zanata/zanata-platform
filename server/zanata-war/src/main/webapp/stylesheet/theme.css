@@ -709,7 +709,7 @@ a.action_link {
 }
 
 a.table_link {
-	font-size: 130%;
+	font-size: 14px;
 	font-weight: bold;
 	padding: 4px;	
 	-moz-border-radius: 5px;

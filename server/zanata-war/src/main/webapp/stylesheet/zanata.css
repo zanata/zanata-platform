@@ -333,3 +333,19 @@ h1, h2, h3, h4, h5, h6 {
 	font-size:smaller;
 	color:red;
 }
+
+.noBorderTable .rich-table {
+ border-width: 0px;
+}
+ 
+.noBorderTable .rich-table-headercell {
+ border-width: 0px;
+}
+ 
+.noBorderTable .rich-table-cell {
+ border-width: 0px;
+}
+
+.code{
+	color:grey;
+}

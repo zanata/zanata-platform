@@ -21,6 +21,10 @@
 package org.zanata.action;
 
 
+import javax.faces.context.ExternalContext;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -42,6 +46,9 @@ public class PersonHome extends EntityHome<HPerson>
     * 
     */
    private static final long serialVersionUID = 1L;
+
+   private ExternalContext context = javax.faces.context.FacesContext.getCurrentInstance().getExternalContext();
+   private HttpServletRequest request = (HttpServletRequest) context.getRequest();
 
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
@@ -70,4 +77,42 @@ public class PersonHome extends EntityHome<HPerson>
       log.info("Reset API key for {0}", getInstance().getAccount().getUsername());
    }
 
+   public String getUrlKeyLabel()
+   {
+      return getKeyPrefix(request.getServerName()) + ".url=";
+   }
+
+   public String getApiKeyLabel()
+   {
+      return getKeyPrefix(request.getServerName()) + ".key=";
+   }
+
+   public String getUsernameKeyLabel()
+   {
+      return getKeyPrefix(request.getServerName()) + ".username=";
+   }
+
+   /*
+    * Replace server name that contains '.' to '_'
+    */
+   private String getKeyPrefix(String serverName)
+   {
+      if (serverName == null)
+      {
+         return "";
+      }
+      return serverName.replace(".", "_");
+   }
+
+   public String getHost()
+   {
+      /*
+       * eg. requestURL = http://localhost:8080/zanata/profile/view.seam
+       * servletPath = /profile/view.seam
+       */
+      String requestURL = request.getRequestURL().toString();
+      String servletPath = request.getServletPath().substring(1);
+
+      return requestURL.replace(servletPath, "");
+   }
 }
