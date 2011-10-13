@@ -22,5 +22,6 @@
     <module>zanata-common-api</module>
     <module>zanata-common-util</module>
     <module>zanata-rest-client</module>
+    <module>zanata-adapter-po</module>
   </modules>
 </project>
