@@ -62,7 +62,7 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
 
       Widget getConfigureButtonObject();
 
-      void setNavModeTooltip(Map<ContentState, Boolean> configMap);
+      void setNavModeTooltip(Map<String, Boolean> configMap);
    }
 
    @Inject

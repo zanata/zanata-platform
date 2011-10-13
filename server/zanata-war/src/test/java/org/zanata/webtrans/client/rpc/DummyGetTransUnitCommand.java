@@ -49,7 +49,7 @@ final class DummyGetTransUnitCommand implements Command
       {
          int stateNum = Random.nextInt(ContentState.values().length);
          ContentState state = ContentState.values()[stateNum];
-         String source = "<hellow num=\"" + (i + 1) + "\" />";
+         String source = "<hellow \nnum=\"" + (i + 1) + "\" />";
          String sourceComment = "comment " + (i + 1);
          String target = "";
          if (state != ContentState.New)

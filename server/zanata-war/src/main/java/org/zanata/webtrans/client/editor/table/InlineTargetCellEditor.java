@@ -28,6 +28,8 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.EditTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.resources.NavigationMessages;
+import org.zanata.webtrans.client.ui.UserConfigConstants;
+
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -672,10 +674,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 	   operationsPanel.setVisible(showButtons);
    }
 
-   public void setNavMode(Map<ContentState, Boolean> configMap)
+   public void setNavMode(Map<String, Boolean> configMap)
    {
-      newMode = configMap.get(ContentState.New);
-      fuzzyMode = configMap.get(ContentState.NeedReview);
+      newMode = configMap.get(UserConfigConstants.UNTRANSLATED_BUTTON);
+      fuzzyMode = configMap.get(UserConfigConstants.FUZZY_BUTTON);
    }
 
    public void setEnterKeyEnabled(Boolean enabled)

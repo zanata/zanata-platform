@@ -25,9 +25,7 @@ import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.events.EnterKeyEnabledEvent;
-import org.zanata.webtrans.client.events.NavConfigChangeEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -46,14 +44,13 @@ import com.google.gwt.user.client.ui.UIObject;
  **/
 public class ShortcutConfigPanel extends DecoratedPopupPanel
 {
-   private final CheckBox fuzzyChk = new CheckBox("Fuzzy");
-   private final CheckBox untranslatedChk = new CheckBox("Untranslated");
-   private final CheckBox enterChk = new CheckBox("Enter");
+   private final CheckBox fuzzyChk = new CheckBox(UserConfigConstants.FUZZY_BUTTON);
+   private final CheckBox untranslatedChk = new CheckBox(UserConfigConstants.UNTRANSLATED_BUTTON);
+   private final CheckBox enterChk = new CheckBox(UserConfigConstants.ENTER_BUTTON);
 
-   private Map<ContentState, Boolean> configMap = new HashMap<ContentState, Boolean>();
+   private Map<String, Boolean> configMap = new HashMap<String, Boolean>();
 
    private EventBus eventBus;
-   private boolean isHidden = true;
 
    public ShortcutConfigPanel(boolean autoHide, EventBus eventBus)
    {
@@ -62,7 +59,7 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
       init();
       bindEvent();
       setDefaultValue();
-      enterChk.setValue(false);
+
    }
 
    private void init()
@@ -99,10 +96,10 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
             }
             else
             {
-               configMap.put(ContentState.NeedReview, event.getValue());
+               configMap.put(UserConfigConstants.FUZZY_BUTTON, event.getValue());
             }
             Log.info("Navigation mode changed: Untranslated-" + untranslatedChk.getValue() + " Fuzzy-" + fuzzyChk.getValue());
-            eventBus.fireEvent(new NavConfigChangeEvent(configMap));
+            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
          }
       });
 
@@ -117,10 +114,10 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
             }
             else
             {
-               configMap.put(ContentState.New, event.getValue());
+               configMap.put(UserConfigConstants.UNTRANSLATED_BUTTON, event.getValue());
             }
             Log.info("Navigation mode changed: Untranslated-" + untranslatedChk.getValue() + " Fuzzy-" + fuzzyChk.getValue());
-            eventBus.fireEvent(new NavConfigChangeEvent(configMap));
+            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
          }
       });
 
@@ -130,7 +127,8 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
             Log.info("Enable 'Enter' Key to save and move to next string: " + event.getValue());
-            eventBus.fireEvent(new EnterKeyEnabledEvent(event.getValue()));
+            configMap.put(UserConfigConstants.ENTER_BUTTON, event.getValue());
+            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
          }
       });
    }
@@ -139,23 +137,24 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
    {
       fuzzyChk.setValue(true);
       untranslatedChk.setValue(true);
+      enterChk.setValue(false);
 
-      configMap.put(ContentState.NeedReview, true);
-      configMap.put(ContentState.New, true);
+      configMap.put(UserConfigConstants.FUZZY_BUTTON, true);
+      configMap.put(UserConfigConstants.UNTRANSLATED_BUTTON, true);
+      configMap.put(UserConfigConstants.ENTER_BUTTON, false);
    }
+
 
    public void toggleDisplay(final UIObject target)
    {
-      if (isHidden)
+      if (!isShowing())
       {
-         isHidden = false;
          showRelativeTo(target);
       }
-      else
-      {
-         isHidden = true;
+       else if (isShowing())
+       {
          hide();
-      }
+       }
    }
 }
 

@@ -165,7 +165,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             @Override
             public void onClick(ClickEvent event)
             {
-               Log.debug("source panel click");
                if (targetCellEditor.isOpened())
                {
                   targetCellEditor.savePendingChange(true);
