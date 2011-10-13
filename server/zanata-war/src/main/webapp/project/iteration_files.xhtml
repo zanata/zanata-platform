@@ -29,7 +29,9 @@
 	                  rowClasses="odd,even">
 	                <rich:column sortOrder="ASCENDING" filterBy="#{doc.name}" filterEvent="onkeyup">
 	                    <f:facet name="header">#{messages['jsf.Name']}</f:facet>
-	                    #{doc.name}
+	                    <s:link view="/rest/projects/p/#{projectIterationFilesAction.projectSlug}/iterations/i/#{projectIterationFilesAction.iterationSlug}/file/#{doc.docId}">
+	                       #{doc.name}
+	                    </s:link> 
 	                </rich:column>
 	                <rich:column>
 	                    <f:facet name="header">#{messages['jsf.iteration.files.Path']}</f:facet>
