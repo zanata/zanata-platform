@@ -50,17 +50,20 @@
 						<f:facet name="header">#{messages['jsf.NativeName']}</f:facet>
 	            		#{language.retrieveNativeName()}
 	        		</rich:column>
-					<rich:column rendered="#{language.active}">
+					<rich:column>
 						<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-						<h:commandButton value="#{messages['jsf.Disabled']}" 
+						<h:commandButton value="#{messages['jsf.Disabled']}"
+							rendered="#{language.active}" 
 							action="#{languageSearchAction.disable(languageSearchAction.selectedLanguage)}"
 							onclick="return confirmDisable()" />
-					</rich:column>
-					<rich:column rendered="#{!language.active}">
-						<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
 						<h:commandButton value="#{messages['jsf.Enable']}" 
+							rendered="#{!language.active}"
 							action="#{languageSearchAction.enable(languageSearchAction.selectedLanguage)}"
 							onclick="return confirmEnable()" />
+						<h:commandButton value="#{messages['jsf.TeamMembers']}" 
+							action="#{languageSearchAction.manageMembers(languageSearchAction.selectedLanguage)}">
+							<f:param name="id" value="#{language.localeId.id}" />
+						</h:commandButton>
 					</rich:column>
 				</rich:dataTable>
 			</a4j:form>

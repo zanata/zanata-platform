@@ -232,6 +232,10 @@ td.action a {
 	padding-right: 1px;
 }
 
+td.centered {
+	text-align: center;
+}
+
 #zanata_name {
 	float: left;
 	text-align: left;

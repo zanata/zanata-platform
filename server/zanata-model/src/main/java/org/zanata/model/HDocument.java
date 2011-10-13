@@ -40,6 +40,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.Where;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
@@ -51,6 +52,7 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.ContentType;
 import org.zanata.model.po.HPoHeader;
 import org.zanata.model.po.HPoTargetHeader;
+import org.zanata.model.type.ContentTypeType;
 import org.zanata.rest.dto.resource.AbstractResourceMeta;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
@@ -64,6 +66,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  * 
  */
 @Entity
+@TypeDef(name = "contentType", typeClass = ContentTypeType.class)
 public class HDocument extends ModelEntityBase implements IDocumentHistory
 {
 
