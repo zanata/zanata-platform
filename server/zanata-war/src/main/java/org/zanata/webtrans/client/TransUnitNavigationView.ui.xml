@@ -6,16 +6,19 @@
 		.imageAnchor{
 			cursor: pointer;
 			}
+		.configButton {
+	       cursor: pointer;
+	       margin-left:20px;
+	       margin-right:20px;
+            }
 	</ui:style>
 	<g:HTMLPanel>
-		<nobr>
 		    <g:Image resource="{resources.firstEntry}" ui:field="firstEntry" styleName="{style.imageAnchor}"/>
 			<g:Image resource="{resources.prevState}" ui:field="prevState" styleName="{style.imageAnchor}"/>
 			<g:Image resource="{resources.prevEntry}" ui:field="prevEntry" styleName="{style.imageAnchor}"/>
-			<g:Image resource="{resources.configureButton}" ui:field="configure" styleName="{style.imageAnchor}"/>
 			<g:Image resource="{resources.nextEntry}" ui:field="nextEntry" styleName="{style.imageAnchor}"/>
 			<g:Image resource="{resources.nextState}" ui:field="nextState" styleName="{style.imageAnchor}"/>
 		    <g:Image resource="{resources.lastEntry}" ui:field="lastEntry" styleName="{style.imageAnchor}"/>
-		</nobr>
+			<g:Image resource="{resources.configureButton}" ui:field="configure" styleName="{style.configButton}"/>
 	</g:HTMLPanel>
 </ui:UiBinder> 
