@@ -20,20 +20,23 @@
  */
 package org.zanata.rest.service;
 
-import java.io.InputStream;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
 
 public interface TranslationFileResource
 {
 
-   public static final String FILE_NAME_TEMPLATE = "/{docId:[a-zA-Z0-9]+([a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?}";
+   public static final String FILE_NAME_TEMPLATE = "/{docId}";
+   public static final String LOCALE_TEMPLATE = "/{locale}";
+   public static final String FILE_EXTENSION_TEMPLATE = ".{fileExt}";
+   public static final String FILE_DOWNLOAD_TEMPLATE = LOCALE_TEMPLATE + FILE_NAME_TEMPLATE + FILE_EXTENSION_TEMPLATE;
    
    @GET
-   @Path(FILE_NAME_TEMPLATE)
-   // /file/{docId}
-   public InputStream downloadTranslationFile( @PathParam("docId") String docId );
+   @Path(FILE_DOWNLOAD_TEMPLATE)
+   // /file/{locale}/{docId}.{fileExt}
+   public Response downloadTranslationFile( @PathParam("locale") String locale, @PathParam("docId") String docId, 
+         @PathParam("fileExt") String fileExtension );
    
 }

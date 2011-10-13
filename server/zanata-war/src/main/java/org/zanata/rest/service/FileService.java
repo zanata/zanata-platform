@@ -20,20 +20,35 @@
  */
 package org.zanata.rest.service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.StreamingOutput;
 
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.zanata.adapter.po.PoWriter2;
+import org.zanata.common.LocaleId;
+import org.zanata.dao.DocumentDAO;
+import org.zanata.model.HDocument;
+import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlow;
+import org.zanata.rest.dto.extensions.gettext.PoHeader;
+import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
+import org.zanata.rest.dto.resource.Resource;
+import org.zanata.rest.dto.resource.TextFlow;
+import org.zanata.rest.dto.resource.TranslationsResource;
 
 @Name("fileService")
 @Path(FileService.SERVICE_PATH)
@@ -43,27 +58,89 @@ public class FileService implements TranslationFileResource
 {
    public static final String SERVICE_PATH = ProjectIterationService.SERVICE_PATH + "/file";
    
+   @PathParam("projectSlug")
+   private String projectSlug;
+
+   @PathParam("iterationSlug")
+   private String iterationSlug;
+   
+   @In
+   private DocumentDAO documentDAO;
+   
+   @In(create=true)
+   private TranslationResourcesService translationResourcesService;
+   
+   @In
+   private ResourceUtils resourceUtils;
+   
+   public FileService()
+   {
+   }
+   
+   public FileService( final DocumentDAO documentDAO )
+   {
+      this.documentDAO = documentDAO;
+   }
+   
    @Override
    @GET
-   @Path(FILE_NAME_TEMPLATE)
-   // /file/{docId}
-   public InputStream downloadTranslationFile(@PathParam("docId") String docId)
+   @Path(FILE_DOWNLOAD_TEMPLATE)
+   // /file/{locale}/{docId}.{fileExt}
+   public Response downloadTranslationFile( @PathParam("locale") String locale, @PathParam("docId") String docId, 
+         @PathParam("fileExt") String fileExtension )
    {
-      try
+      final Response response; 
+      StreamingOutput output = this.getStreamForFileExtension(fileExtension, docId, locale);
+      
+      if( output == null )
       {
-         File f = File.createTempFile(docId, ".txt");
-         return new FileInputStream(f);
+         response = Response.status(Status.NOT_FOUND).build();
       }
-      catch (FileNotFoundException e)
+      else
       {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+         response = Response.ok().entity(output).build();
       }
-      catch (IOException e)
+      
+      return response;
+   }
+   
+   
+   private StreamingOutput getStreamForFileExtension( String fileExt, String docId, String locale )
+   {
+      if( fileExt.equalsIgnoreCase("po") )
       {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+         HDocument document = this.documentDAO.getByProjectIterationAndDocId(this.projectSlug, this.iterationSlug, docId);
+         
+         // Perform translation of Hibernate DTOs to JAXB DTOs
+         TranslationsResource transRes = 
+               (TranslationsResource)this.translationResourcesService.getTranslations(docId, new LocaleId(locale)).getEntity();
+         Resource res = this.resourceUtils.buildResource(document);
+               
+         return new POStreamingOutput(res, transRes);
       }
       return null;
+   }
+   
+   
+   /*
+    * Private class that implements PO file writing of a document
+    */
+   private class POStreamingOutput implements StreamingOutput
+   {
+      private Resource resource;
+      private TranslationsResource transRes;
+      
+      public POStreamingOutput( Resource resource, TranslationsResource transRes )
+      {
+         this.resource = resource;
+         this.transRes = transRes;
+      }
+      
+      @Override
+      public void write(OutputStream output) throws IOException, WebApplicationException
+      {         
+         PoWriter2 writer = new PoWriter2();
+         writer.writePo(output, this.resource, this.transRes);
+      }
    }
 }

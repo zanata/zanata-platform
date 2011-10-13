@@ -31,7 +31,7 @@
                    rowKeyVar="_it"
                    columnClasses="grid_col_one_third_width"
                    >
-      <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" opened="#{false}">
+      <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" headerClass="iterationHeader_active">
         <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
       </rich:simpleTogglePanel>
     </rich:dataGrid>
@@ -42,7 +42,7 @@
                      value="#{projectHome.retiredIterations}"
                      var="_iteration"
                      columnClasses="grid_col_one_third_width">
-        <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" opened="#{false}">
+        <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" headerClass="iterationHeader_retired" opened="#{false}">
           <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
         </rich:simpleTogglePanel>
       </rich:dataGrid>

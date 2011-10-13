@@ -23,28 +23,21 @@ package org.zanata.action;
 import java.util.List;
 
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.web.RequestParameter;
-import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
-import org.zanata.model.HProjectIteration;
 
 @Name("projectIterationFilesAction")
 @Scope(ScopeType.PAGE)
 public class ProjectIterationFilesAction
 {
 
-   @RequestParameter("project")
    private String projectSlug;
    
-   @RequestParameter("iteration")
    private String iterationSlug;
-   
-   @RequestParameter
+
    private String localeId;
    
    @In
@@ -52,12 +45,26 @@ public class ProjectIterationFilesAction
    
    private List<HDocument> iterationDocuments;
    
+   private String documentNameFilter;
    
-   @Create
+   
    public void initialize()
    {
-      this.iterationDocuments = this.documentDAO.getAllByProjectIterationAndLocale(this.projectSlug, this.iterationSlug, 
-            new LocaleId(this.localeId));
+      this.iterationDocuments = this.documentDAO.getAllByProjectIteration(this.projectSlug, this.iterationSlug);
+   }
+   
+   public boolean filterDocumentByName( Object docObject )
+   {
+      final HDocument document = (HDocument)docObject;
+      
+      if( this.documentNameFilter != null && this.documentNameFilter.length() > 0 )
+      {
+         return document.getName().toLowerCase().contains( this.documentNameFilter.toLowerCase() );
+      }
+      else
+      {
+         return true;
+      }
    }
 
    public List<HDocument> getIterationDocuments()
@@ -98,6 +105,16 @@ public class ProjectIterationFilesAction
    public void setLocaleId(String localeId)
    {
       this.localeId = localeId;
+   }
+
+   public String getDocumentNameFilter()
+   {
+      return documentNameFilter;
+   }
+
+   public void setDocumentNameFilter(String documentNameFilter)
+   {
+      this.documentNameFilter = documentNameFilter;
    }
    
 }

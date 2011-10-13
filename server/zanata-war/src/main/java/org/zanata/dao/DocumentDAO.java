@@ -138,18 +138,31 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       }
    }
    
-   public List<HDocument> getAllByProjectIterationAndLocale(final String projectSlug, final String iterationSlug, final LocaleId localeId)
+   public HDocument getByProjectIterationAndDocId(final String projectSlug, final String iterationSlug, final String docId)
+   {
+      Session session = getSession();
+      
+      final HDocument doc = (HDocument)
+         session.createQuery("from HDocument d where d.projectIteration.slug = :iterationSlug " +
+               "and d.projectIteration.project.slug = :projectSlug " +
+               "and d.docId = :docId")
+               .setParameter("iterationSlug", iterationSlug)
+               .setParameter("projectSlug", projectSlug)
+               .setParameter("docId", docId)
+               .uniqueResult();
+      return doc;
+   }
+   
+   public List<HDocument> getAllByProjectIteration(final String projectSlug, final String iterationSlug)
    {
       Session session = getSession();
       
       @SuppressWarnings("unchecked")
       final List<HDocument> documents =
          session.createQuery("from HDocument d where d.projectIteration.slug = :iterationSlug " +
-         		"and d.projectIteration.project.slug = :projectSlug " +
-         		"and d.locale.localeId = :localeId")
+         		"and d.projectIteration.project.slug = :projectSlug")
          		.setParameter("iterationSlug", iterationSlug)
          		.setParameter("projectSlug", projectSlug)
-         		.setParameter("localeId", localeId)
          		.list();
       return documents;
    }

@@ -864,6 +864,13 @@
 			<artifactId>zanata-model</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-adapter-po</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
 		<!-- Seam Dependencies -->
 
 		<dependency>
@@ -1324,7 +1331,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
+		
 	</dependencies>
 
 </project>

@@ -6,6 +6,7 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j"
     template="../WEB-INF/layout/template.xhtml">
 
 	<ui:define name="center_content">
@@ -23,13 +24,26 @@
 	        
 	        <h:form>
 	          <s:token allowMultiplePosts="true" />
+	          <rich:datascroller id="data_table_scroller" align="center" for="data_table" 
+	                   rendered="#{projectIterationFilesAction.iterationDocuments.size() > 20}">
+	          </rich:datascroller>
+              <rich:spacer height="20" />
 	          <rich:dataTable id="data_table" width="100%" value="#{projectIterationFilesAction.iterationDocuments}" 
 	                  var="doc"
 	                  styleClass="iteration_inline_tribes"
-	                  rowClasses="odd,even">
-	                <rich:column sortOrder="ASCENDING" filterBy="#{doc.name}" filterEvent="onkeyup">
-	                    <f:facet name="header">#{messages['jsf.Name']}</f:facet>
-	                    <s:link view="/rest/projects/p/#{projectIterationFilesAction.projectSlug}/iterations/i/#{projectIterationFilesAction.iterationSlug}/file/#{doc.docId}">
+	                  rowClasses="odd,even"
+	                  rows="20">
+	                <rich:column sortOrder="ASCENDING" filterMethod="#{projectIterationFilesAction.filterDocumentByName}">
+	                    <f:facet name="header">
+	                       <h:panelGroup>
+	                           <h:outputText value="#{messages['jsf.Name']}"/>
+	                           <br/>
+	                           <h:inputText value="#{projectIterationFilesAction.documentNameFilter}" id="name_filter_input">
+                                    <a4j:support event="onkeyup" reRender="data_table,data_table_scroller" ignoreDupResponses="true" requestDelay="700" focus="name_filter_input" />
+                               </h:inputText>
+                           </h:panelGroup>
+	                    </f:facet>
+	                    <s:link view="/rest/projects/p/#{projectIterationFilesAction.projectSlug}/iterations/i/#{projectIterationFilesAction.iterationSlug}/file/#{projectIterationFilesAction.localeId}/#{doc.docId}.po">
 	                       #{doc.name}
 	                    </s:link> 
 	                </rich:column>

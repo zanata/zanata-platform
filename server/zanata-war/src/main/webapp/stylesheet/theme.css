@@ -388,6 +388,22 @@ tr.active-row {
 	white-space: inherit;
 }
 
+.iterationHeader_active {
+	background-image: none;
+	border-width: medium;
+	background-color: #ffffff;
+	color: #000000;
+	border-color: #ffffff;
+}
+
+.iterationHeader_retired {
+    background-image: none;
+    border-width: medium;
+    background-color: #e5e5e5;
+    color: #000000;
+    border-color: #e5e5e5;
+}
+
 #iteration-status-panel {
     width:880px;
 }
