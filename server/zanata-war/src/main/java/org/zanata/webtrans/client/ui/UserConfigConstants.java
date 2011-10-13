@@ -30,6 +30,7 @@ public class UserConfigConstants
    public static final String FUZZY_BUTTON = "Fuzzy";
    public static final String UNTRANSLATED_BUTTON = "Untranslated";
    public static final String ENTER_BUTTON = "Enter";
+   public static final String ENABLE = "Enable";
 
 }
 
