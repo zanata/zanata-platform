@@ -38,8 +38,6 @@ import org.zanata.webtrans.client.events.CopySourceEvent;
 import org.zanata.webtrans.client.events.CopySourceEventHandler;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
-import org.zanata.webtrans.client.events.EnterKeyEnabledEvent;
-import org.zanata.webtrans.client.events.EnterKeyEnabledEventHandler;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
@@ -493,17 +491,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             tableModelHandler.gotoRow(row);
             display.getTargetCellEditor().setText(event.getTransUnit().getSource());
             display.getTargetCellEditor().autoSize();
-         }
-
-      }));
-
-      registerHandler(eventBus.addHandler(EnterKeyEnabledEvent.getType(), new EnterKeyEnabledEventHandler()
-      {
-
-         @Override
-         public void onValueChanged(EnterKeyEnabledEvent event)
-         {
-            display.getTargetCellEditor().setEnterKeyEnabled(event.isEnabled());
          }
 
       }));
