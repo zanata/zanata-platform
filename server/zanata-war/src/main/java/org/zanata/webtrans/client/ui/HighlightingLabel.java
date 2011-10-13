@@ -55,7 +55,7 @@ public class HighlightingLabel extends Label
    private void highlight()
    {
       Element element = getElement();
-      String text = plainText == null ? "" : plainText;
+      String text = plainText == null ? "" : plainText.replaceAll("\n", "¶\n");
       CodeMirror.doHighlight(text, element);
    }
 
