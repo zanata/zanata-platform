@@ -53,7 +53,6 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
    private Map<ContentState, Boolean> configMap = new HashMap<ContentState, Boolean>();
 
    private EventBus eventBus;
-   private boolean isHidden = true;
 
    public ShortcutConfigPanel(boolean autoHide, EventBus eventBus)
    {
@@ -144,18 +143,17 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
       configMap.put(ContentState.New, true);
    }
 
+
    public void toggleDisplay(final UIObject target)
    {
-      if (isHidden)
+      if (!isShowing())
       {
-         isHidden = false;
          showRelativeTo(target);
       }
-      else
-      {
-         isHidden = true;
+       else if (isShowing())
+       {
          hide();
-      }
+       }
    }
 }
 
