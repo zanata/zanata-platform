@@ -46,7 +46,7 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
 {
    private final CheckBox fuzzyChk = new CheckBox(UserConfigConstants.FUZZY_BUTTON);
    private final CheckBox untranslatedChk = new CheckBox(UserConfigConstants.UNTRANSLATED_BUTTON);
-   private final CheckBox enterChk = new CheckBox(UserConfigConstants.ENTER_BUTTON);
+   private final CheckBox enterChk = new CheckBox(UserConfigConstants.ENABLE);
 
    private Map<String, Boolean> configMap = new HashMap<String, Boolean>();
 
@@ -65,7 +65,7 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
    private void init()
    {
       FlowPanel mainPanel = new FlowPanel();
-      mainPanel.add(new Label("Select navigation options:"));
+      mainPanel.add(new Label("Navigation key/button options:"));
 
       HorizontalPanel optionsHP = new HorizontalPanel();
       optionsHP.setSpacing(5);
@@ -73,7 +73,7 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
       optionsHP.add(untranslatedChk);
       mainPanel.add(optionsHP);
 
-      mainPanel.add(new Label("Enable 'Enter' Key to save"));
+      mainPanel.add(new Label("'Enter' key to save:"));
 
       HorizontalPanel enteroptHP = new HorizontalPanel();
       enteroptHP.setSpacing(5);

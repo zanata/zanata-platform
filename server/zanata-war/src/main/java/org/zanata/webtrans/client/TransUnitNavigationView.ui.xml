@@ -8,8 +8,7 @@
 			}
 		.configButton {
 	       cursor: pointer;
-	       margin-left:20px;
-	       margin-right:20px;
+	       margin-left:40px;
             }
 	</ui:style>
 	<g:HTMLPanel>

@@ -80,7 +80,7 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Cancel")
    String editCancelShortcut();
 
-   @DefaultMessage("Configure navigation shortcut key")
+   @DefaultMessage("Configure key/button behaviour")
    String configurationButton();
 
    // @DefaultMessage("Copy")
