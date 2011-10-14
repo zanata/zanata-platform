@@ -147,7 +147,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private int curRow;
    private int curCol;
    private HTMLTable table;
-   private boolean newMode = true, fuzzyMode = true;
+   private boolean untranslatedMode = true, fuzzyMode = true;
 
    private Boolean isEnterKeyEnabled = false;
    private String saveButtonShortcuts;
@@ -513,11 +513,15 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       savePendingChange(true);
       
-      if (newMode && fuzzyMode)
+      if (untranslatedMode && fuzzyMode)
       {
          gotoFuzzyAndNewRow(nav);
       }
-      else if (newMode)
+      else if (!untranslatedMode && !fuzzyMode)
+      {
+         gotoRow(nav);
+      }
+      else if (untranslatedMode)
       {
          gotoNewRow(nav);
       }
@@ -546,11 +550,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       cellValue.setStatus(ContentState.Approved);
       acceptEdit();
 
-      if (newMode && fuzzyMode)
+      if (untranslatedMode && fuzzyMode)
       {
          gotoFuzzyAndNewRow(nav);
       }
-      else if (newMode)
+      else if (untranslatedMode)
       {
          gotoNewRow(nav);
       }
@@ -676,8 +680,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    public void setNavMode(Map<String, Boolean> configMap)
    {
-      newMode = configMap.get(UserConfigConstants.UNTRANSLATED_BUTTON);
-      fuzzyMode = configMap.get(UserConfigConstants.FUZZY_BUTTON);
+      untranslatedMode = configMap.get(UserConfigConstants.BUTTON_UNTRANSLATED);
+      fuzzyMode = configMap.get(UserConfigConstants.BUTTON_FUZZY);
    }
 
    public void setEnterKeyEnabled(Boolean enabled)
