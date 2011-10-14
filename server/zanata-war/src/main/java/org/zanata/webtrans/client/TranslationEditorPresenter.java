@@ -161,7 +161,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
          {
             transUnitNavigationPresenter.getDisplay().setNavModeTooltip(event.getConfigMap());
             tableEditorPresenter.getDisplay().getTargetCellEditor().setNavMode(event.getConfigMap());
-            tableEditorPresenter.getDisplay().getTargetCellEditor().setEnterKeyEnabled(event.getConfigMap().get(UserConfigConstants.ENTER_BUTTON));
+            tableEditorPresenter.getDisplay().getTargetCellEditor().setEnterKeyEnabled(event.getConfigMap().get(UserConfigConstants.BUTTON_ENTER));
          }
       }));
    }

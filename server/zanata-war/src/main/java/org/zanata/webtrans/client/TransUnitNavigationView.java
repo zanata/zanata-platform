@@ -62,27 +62,37 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
       nextEntry.setTitle(messages.actionToolTip(messages.nextEntry(), messages.nextEntryShortcut()));
       firstEntry.setTitle(messages.firstEntry());
       lastEntry.setTitle(messages.lastEntry());
-      setFuzzyAndUntranslatedModeTooltip();
+      setFuzzyUntranslatedModeTooltip();
       configure.setTitle(messages.configurationButton());
    }
 
    public void setNavModeTooltip(Map<String, Boolean> configMap)
    {
-      boolean isFuzzy = configMap.get(UserConfigConstants.FUZZY_BUTTON);
-      boolean isUntranslated = configMap.get(UserConfigConstants.UNTRANSLATED_BUTTON);
+      boolean fuzzyMode = configMap.get(UserConfigConstants.BUTTON_FUZZY);
+      boolean untranslatedMode = configMap.get(UserConfigConstants.BUTTON_UNTRANSLATED);
 
-      if (isFuzzy && !isUntranslated)
+      if (fuzzyMode && !untranslatedMode)
       {
          setFuzzyModeTooltip();
       }
-      else if (isUntranslated && !isFuzzy)
+      else if (untranslatedMode && !fuzzyMode)
       {
          setUntranslatedModeTooltip();
       }
-      else
+      else if (untranslatedMode && fuzzyMode)
       {
-         setFuzzyAndUntranslatedModeTooltip();
+         setFuzzyUntranslatedModeTooltip();
       }
+      else if (!untranslatedMode && !fuzzyMode)
+      {
+         setNextEntryModeTooltip();
+      }
+   }
+
+   private void setNextEntryModeTooltip()
+   {
+      prevState.setTitle(messages.actionToolTip(messages.prevEntry(), messages.prevFuzzyOrUntranslatedShortcut()));
+      nextState.setTitle(messages.actionToolTip(messages.nextEntry(), messages.nextFuzzyOrUntranslatedShortcut()));
    }
 
    private void setFuzzyModeTooltip()
@@ -97,7 +107,7 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
       nextState.setTitle(messages.actionToolTip(messages.nextUntranslated(), messages.nextFuzzyOrUntranslatedShortcut()));
    }
 
-   private void setFuzzyAndUntranslatedModeTooltip()
+   private void setFuzzyUntranslatedModeTooltip()
    {
       prevState.setTitle(messages.actionToolTip(messages.prevFuzzyOrUntranslated(), messages.prevFuzzyOrUntranslatedShortcut()));
       nextState.setTitle(messages.actionToolTip(messages.nextFuzzyOrUntranslated(), messages.nextFuzzyOrUntranslatedShortcut()));
