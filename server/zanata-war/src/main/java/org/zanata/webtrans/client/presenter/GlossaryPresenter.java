@@ -76,29 +76,36 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
       void createTable(ArrayList<TranslationMemoryGlossaryItem> memories);
    }
 
+   /*
+    * temporary disable glossary functionalities
+    */
+   boolean disableGlossary = true;
 
    @Override
    protected void onBind()
    {
-      display.getSearchButton().addClickHandler(new ClickHandler()
+      if (!disableGlossary)
       {
-         @Override
-         public void onClick(ClickEvent event)
+         display.getSearchButton().addClickHandler(new ClickHandler()
          {
-            String query = display.getGlossaryTextBox().getText();
-            GetGlossary.SearchType searchType = display.getExactButton().getValue() ? SearchType.EXACT : SearchType.FUZZY;
-            showResults(query, searchType);
-         }
-      });
+            @Override
+            public void onClick(ClickEvent event)
+            {
+               String query = display.getGlossaryTextBox().getText();
+               GetGlossary.SearchType searchType = display.getExactButton().getValue() ? SearchType.EXACT : SearchType.FUZZY;
+               showResults(query, searchType);
+            }
+         });
 
-      registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), new TransUnitSelectionHandler()
-      {
-         @Override
-         public void onTransUnitSelected(TransUnitSelectionEvent event)
+         registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), new TransUnitSelectionHandler()
          {
-            showResultsFor(event.getSelection());
-         }
-      }));
+            @Override
+            public void onTransUnitSelected(TransUnitSelectionEvent event)
+            {
+               showResultsFor(event.getSelection());
+            }
+         }));
+      }
    }
 
    public void showResultsFor(TransUnit transUnit)
