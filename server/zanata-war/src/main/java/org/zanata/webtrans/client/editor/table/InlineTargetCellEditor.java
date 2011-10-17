@@ -263,23 +263,19 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             // }
             if (event.isAltKeyDown() && keyCode == TableConstants.KEY_G)
             {
-               Log.info("InlineTargetCellEditor.java: Clone action.");
-               textArea.setValue(cellValue.getSource(), true);
-               textArea.setFocus(true);
+               cloneAction();
             }
             else if (event.isAltKeyDown() && (event.isDownArrow() || keyCode == TableConstants.KEY_K))
             {
                // alt-down
                // See editCell() for saving event
                saveAndMoveRow(NavigationType.NextEntry);
-               // gotoRow(NavigationType.NextEntry);
             }
             else if (event.isAltKeyDown() && (event.isUpArrow() || keyCode == TableConstants.KEY_J))
             {
                // alt-up
                // See editCell() for saving event
                saveAndMoveRow(NavigationType.PrevEntry);
-               // gotoRow(NavigationType.PrevEntry);
             }
             else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEDOWN)
             {
@@ -349,6 +345,13 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       operationsPanel.add(fuzzyButton);
       operationsPanel.add(cancelButton);
       layoutTable.add(operationsPanel);
+   }
+
+   public void cloneAction()
+   {
+      Log.info("InlineTargetCellEditor.java: Clone action.");
+      textArea.setValue(cellValue.getSource(), true);
+      textArea.setFocus(true);
    }
 
    public void gotoRow(NavigationType nav)
@@ -530,16 +533,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          gotoFuzzyRow(nav);
       }
    }
-
-   /**
-    * save the contents of the cell as approved and move to the next row.
-    */
-   // private void saveApprovedAndMoveRow(NavigationType nav)
-   // {
-   // cellValue.setStatus(ContentState.Approved);
-   // acceptEdit();
-   // gotoRow(nav);
-   // }
 
    /**
     * save the contents of the cell as approved and move to next fuzzy or

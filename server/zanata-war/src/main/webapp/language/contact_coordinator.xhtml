@@ -19,13 +19,13 @@
          <rich:panel>
             
             <s:decorate id="nameField" template="../WEB-INF/layout/display.xhtml">
-               <ui:define name="label">#{messages['jsf.Name']}</ui:define>
+               <ui:define name="label">#{messages['jsf.email.From']}</ui:define>
                <h:outputText id="senderName" value="#{sendEmail.fromName}"
                              required="true" />
             </s:decorate>
 
             <s:decorate id="replyEmailField" template="../WEB-INF/layout/display.xhtml">
-               <ui:define name="label">#{messages['jsf.email.ReplyAddress']}</ui:define>
+               <ui:define name="label">#{messages['jsf.email.ReplyAddress']}<br/>#{messages['jsf.email.ReplyAddress.description']}</ui:define>
                <h:outputText id="email" value="#{sendEmail.replyEmail}" required="true" />
             </s:decorate>
 

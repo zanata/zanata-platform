@@ -217,7 +217,10 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
       else
       {
          if (row < getDataTable().getRowCount())
+         {
+            getDataTable().selectRow(row, true);
             DOM.scrollIntoView(getDataTable().getWidget(row, TableEditorTableDefinition.TARGET_COL).getElement());
+         }
       }
    }
 
