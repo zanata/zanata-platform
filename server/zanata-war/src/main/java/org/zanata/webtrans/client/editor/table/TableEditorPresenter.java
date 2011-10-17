@@ -495,6 +495,13 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
       }));
 
+      /** @formatter:off
+       * Navigation mode shortcuts key
+       * ALT+UP arrow or J - Previous entry
+       * ALT+DOWN arrow or K - Next entry
+       * ALT+G copy from source
+       * Enter - Open editor
+       */
       Event.addNativePreviewHandler(new NativePreviewHandler()
       {
          @Override
@@ -511,27 +518,36 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                boolean altKey = nativeEvent.getAltKey();
                boolean ctrlKey = nativeEvent.getCtrlKey();
 
-               if (nativeEventType.equals("keydown") && altKey)
+               if (nativeEventType.equals("keydown"))
                {
-                  if (keyCode == KeyCodes.KEY_UP || keyCode == TableConstants.KEY_J)
+                  if ((altKey && keyCode == KeyCodes.KEY_UP) || keyCode == TableConstants.KEY_J)
                   {
                      Log.info("Go to previous entry");
                      tableModelHandler.gotoPrevRow(false);
                      event.cancel();
                   }
-                  else if (keyCode == KeyCodes.KEY_DOWN || keyCode == TableConstants.KEY_K)
+                  else if ((altKey && keyCode == KeyCodes.KEY_DOWN) || keyCode == TableConstants.KEY_K)
                   {
                      Log.info("Go to next entry");
                      tableModelHandler.gotoNextRow(false);
                      event.cancel();
                   }
-                  else if (keyCode == TableConstants.KEY_G)
+                  else if (altKey && keyCode == TableConstants.KEY_G)
                   {
                      if (selectedTransUnit != null)
                      {
                         Log.info("Copy from source");
                         tableModelHandler.gotoRow(curRowIndex);
                         display.getTargetCellEditor().cloneAction();
+                        event.cancel();
+                     }
+                  }
+                  else if(keyCode == KeyCodes.KEY_ENTER){
+                     if (selectedTransUnit != null)
+                     {
+                        Log.info("open editor");
+                        tableModelHandler.gotoRow(curRowIndex);
+                        event.cancel();
                      }
                   }
                }

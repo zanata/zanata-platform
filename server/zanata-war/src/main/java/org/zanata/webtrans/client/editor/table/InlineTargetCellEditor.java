@@ -186,7 +186,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          @Override
          public void onBlur(BlurEvent event)
          {
-            Log.debug("text area focus lost");
             isFocused = false;
          }
       });

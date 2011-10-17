@@ -56,8 +56,7 @@ final class DummyGetDocsListCommand implements Command
       for (int n = 10; n < 129; n++)
       {
          // two digit numbers, to make sorting happier
-         // names.add(new DocumentInfo(new DocumentId(n), "multi" + n, "",
-         // newStats(n)));
+         names.add(new DocumentInfo(new DocumentId(n), "multi" + n, "", newStats(n)));
       }
       return names;
    }
