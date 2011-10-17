@@ -21,9 +21,9 @@ public abstract class TableModelHandler<RowType>
       return true;
    }
 
-   abstract void gotoNextRow();
+   abstract void gotoNextRow(boolean andEdit);
 
-   abstract void gotoPrevRow();
+   abstract void gotoPrevRow(boolean andEdit);
 
    abstract void gotoFirstRow();
 
@@ -42,4 +42,9 @@ public abstract class TableModelHandler<RowType>
    abstract void prevNewIndex();
 
    abstract void gotoRow(int row);
+
+   abstract void gotoRow(int rowIndex, boolean andEdit);
+
+   abstract void updatePageAndRowIndex();
+
 }

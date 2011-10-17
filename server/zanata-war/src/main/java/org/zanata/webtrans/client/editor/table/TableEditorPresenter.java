@@ -511,33 +511,57 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                boolean altKey = nativeEvent.getAltKey();
                boolean ctrlKey = nativeEvent.getCtrlKey();
 
-               if (nativeEventType.equals("keypress") && !shiftKey && !altKey && !ctrlKey)
+               if (nativeEventType.equals("keydown") && altKey)
+               {
+                  if (keyCode == KeyCodes.KEY_UP || keyCode == TableConstants.KEY_J)
+                  {
+                     Log.info("Go to previous entry");
+                     tableModelHandler.gotoPrevRow(false);
+                     event.cancel();
+                  }
+                  else if (keyCode == KeyCodes.KEY_DOWN || keyCode == TableConstants.KEY_K)
+                  {
+                     Log.info("Go to next entry");
+                     tableModelHandler.gotoNextRow(false);
+                     event.cancel();
+                  }
+                  else if (keyCode == TableConstants.KEY_G)
+                  {
+                     if (selectedTransUnit != null)
+                     {
+                        Log.info("Copy from source");
+                        tableModelHandler.gotoRow(curRowIndex);
+                        display.getTargetCellEditor().cloneAction();
+                     }
+                  }
+               }
+               else if (nativeEventType.equals("keypress") && !shiftKey && !altKey && !ctrlKey)
                {
                   // PageDown key
                   switch (keyCode)
                   {
                   case KeyCodes.KEY_PAGEDOWN:
-                     Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
+                     Log.info("Go to next page");
                      if (!display.isLastPage())
                         gotoNextPage();
                      event.cancel();
                      break;
                   // PageUp key
                   case KeyCodes.KEY_PAGEUP:
-                     Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
+                     Log.info("Go to previous page");
                      if (!display.isFirstPage())
                         gotoPreviousPage();
                      event.cancel();
                      break;
                   // Home
                   case KeyCodes.KEY_HOME:
-                     Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
+                     Log.info("Go to first page");
                      display.gotoFirstPage();
                      event.cancel();
                      break;
                   // End
                   case KeyCodes.KEY_END:
-                     Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
+                     Log.info("Go to last page");
                      display.gotoLastPage();
                      event.cancel();
                      break;
@@ -650,6 +674,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          // stopEditing(rowValue);
       }
 
+      @Override
       public void updatePageAndRowIndex()
       {
          curPage = display.getCurrentPage();
@@ -660,24 +685,38 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       }
 
       @Override
-      public void gotoNextRow()
+      public void gotoNextRow(boolean andEdit)
       {
          updatePageAndRowIndex();
          int newRowIndex = curRowIndex + 1;
          if (newRowIndex < display.getTableModel().getRowCount())
          {
-            gotoRow(newRowIndex);
+            if (andEdit)
+            {
+               gotoRow(newRowIndex);
+            }
+            else
+            {
+               gotoRow(newRowIndex, andEdit);
+            }
          }
       }
 
       @Override
-      public void gotoPrevRow()
+      public void gotoPrevRow(boolean andEdit)
       {
          updatePageAndRowIndex();
          int newRowIndex = curRowIndex - 1;
          if (newRowIndex >= 0)
          {
-            gotoRow(newRowIndex);
+            if (andEdit)
+            {
+               gotoRow(newRowIndex);
+            }
+            else
+            {
+               gotoRow(newRowIndex, andEdit);
+            }
          }
       }
 
@@ -761,6 +800,21 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          {
             display.getTargetCellEditor().cancelEdit();
          }
+      }
+
+      @Override
+      public void gotoRow(int rowIndex, boolean andEdit)
+      {
+         curPage = display.getCurrentPage();
+         int pageNum = rowIndex / (MAX_PAGE_ROW + 1);
+         int rowNum = rowIndex % (MAX_PAGE_ROW + 1);
+         if (pageNum != curPage)
+         {
+            display.gotoPage(pageNum, false);
+         }
+
+         selectTransUnit(display.getTransUnitValue(rowNum));
+         display.gotoRow(rowNum, andEdit);
       }
    };
 
@@ -1041,6 +1095,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
     */
    public void selectTransUnit(TransUnit transUnit)
    {
+      tableModelHandler.updatePageAndRowIndex();
       if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
       {
          selectedTransUnit = transUnit;
