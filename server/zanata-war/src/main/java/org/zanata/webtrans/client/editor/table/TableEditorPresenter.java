@@ -504,53 +504,69 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
        */
       Event.addNativePreviewHandler(new NativePreviewHandler()
       {
+         public void stopDefaultAction(NativePreviewEvent event){
+            event.cancel();
+            event.getNativeEvent().stopPropagation();
+            event.getNativeEvent().preventDefault();
+         }
+         
          @Override
          public void onPreviewNativeEvent(NativePreviewEvent event)
          {
-            // Only when the Table is showed and editor is closed, the keyboard
-            // event will be processed.
+            /**
+             * keyup is used because TargetCellEditor will intercept the event again (Firefox)  
+             * See textArea.addKeyDownHandler@InlineTargetCellEditor
+             * 
+             * Only when the Table is showed and editor is closed, the keyboard
+             * event will be processed.
+             **/
             if (display.asWidget().isVisible() && !display.getTargetCellEditor().isFocused())
             {
                NativeEvent nativeEvent = event.getNativeEvent();
-               String nativeEventType = nativeEvent.getType();
                int keyCode = nativeEvent.getKeyCode();
+               String nativeEventType = nativeEvent.getType();
+               
                boolean shiftKey = nativeEvent.getShiftKey();
                boolean altKey = nativeEvent.getAltKey();
                boolean ctrlKey = nativeEvent.getCtrlKey();
 
-               if (nativeEventType.equals("keydown"))
+               if (nativeEventType.equals("keyup"))
                {
                   if ((altKey && keyCode == KeyCodes.KEY_UP) || keyCode == TableConstants.KEY_J)
                   {
                      Log.info("Go to previous entry");
+                     stopDefaultAction(event);
                      tableModelHandler.gotoPrevRow(false);
-                     event.cancel();
                   }
                   else if ((altKey && keyCode == KeyCodes.KEY_DOWN) || keyCode == TableConstants.KEY_K)
                   {
                      Log.info("Go to next entry");
+                     stopDefaultAction(event);
                      tableModelHandler.gotoNextRow(false);
-                     event.cancel();
                   }
                   else if (altKey && keyCode == TableConstants.KEY_G)
                   {
                      if (selectedTransUnit != null)
                      {
                         Log.info("Copy from source");
+                        stopDefaultAction(event);
                         tableModelHandler.gotoRow(curRowIndex);
                         display.getTargetCellEditor().cloneAction();
-                        event.cancel();
                      }
                   }
                   else if(keyCode == KeyCodes.KEY_ENTER){
                      if (selectedTransUnit != null)
                      {
-                        Log.info("open editor");
-                        tableModelHandler.gotoRow(curRowIndex);
-                        event.cancel();
+                        if(!display.getTargetCellEditor().isCancelButtonFocused()){
+                           Log.info("open editor");
+                           stopDefaultAction(event);
+                           tableModelHandler.gotoRow(curRowIndex);
+                        } 
+                        display.getTargetCellEditor().setCancelButtonFocused(false);
                      }
                   }
                }
+               //Currently not working
                else if (nativeEventType.equals("keypress") && !shiftKey && !altKey && !ctrlKey)
                {
                   // PageDown key
