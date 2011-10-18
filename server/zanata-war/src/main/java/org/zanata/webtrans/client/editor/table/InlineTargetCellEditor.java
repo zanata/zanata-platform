@@ -43,8 +43,6 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
@@ -53,6 +51,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 
 public class InlineTargetCellEditor implements CellEditor<TransUnit>
@@ -143,6 +142,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private boolean isFocused = false;
    private boolean isOpened = false;
+   private boolean isCancelButtonFocused = false;
 
    private int curRow;
    private int curCol;
@@ -152,7 +152,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private Boolean isEnterKeyEnabled = false;
    private String saveButtonShortcuts;
    private String saveButtonwithEnterShortcuts;
-   private Image saveButton;
+   private PushButton saveButton, fuzzyButton, cancelButton;
 
    /*
     * The minimum height of the target editor
@@ -202,24 +202,57 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       textArea.addKeyDownHandler(new KeyDownHandler()
       {
-
          @Override
          public void onKeyDown(KeyDownEvent event)
          {
+            eventBus.fireEvent(new EditTransUnitEvent());
             int keyCode = event.getNativeKeyCode();
-            // using keydown for Ctrl+S in order to override browser Ctrl+S on
-            // keydown (chrome)
-            if (event.isControlKeyDown() && keyCode == TableConstants.KEY_S)
+
+            if (event.isAltKeyDown() && keyCode == TableConstants.KEY_G)
             {
+               // ALT+G
+               cloneAction();
+            }
+            else if (event.isAltKeyDown() && (event.isDownArrow() || keyCode == TableConstants.KEY_K))
+            {
+               // ALT+ Down/K
+               // See editCell() for saving event
+               saveAndMoveRow(NavigationType.NextEntry);
+            }
+            else if (event.isAltKeyDown() && (event.isUpArrow() || keyCode == TableConstants.KEY_J))
+            {
+               // ALT+ Up/J
+               // See editCell() for saving event
+               saveAndMoveRow(NavigationType.PrevEntry);
+            }
+            else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEDOWN)
+            {
+               // ALT+Pagedown
+               saveAndMoveNextState(NavigationType.NextEntry);
+            }
+            else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEUP)
+            {
+               // ALT+Pageup
+               saveAndMoveNextState(NavigationType.PrevEntry);
+            }
+            else if (event.isControlKeyDown() && keyCode == TableConstants.KEY_S)
+            {
+               // CTRL+S
                event.stopPropagation();
                event.preventDefault(); // stop browser save
                acceptFuzzyEdit();
+            }
+            else if (!event.isAltKeyDown() && !event.isControlKeyDown())
+            {
+               // Resize as user types
+               autoSize();
             }
 
             if (isEnterKeyEnabled)
             {
                if (!event.isShiftKeyDown() && keyCode == KeyCodes.KEY_ENTER)
                {
+                  // Enter
                   event.stopPropagation();
                   event.preventDefault();
                   saveApprovedAndMoveNextState(NavigationType.NextEntry);
@@ -227,6 +260,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             }
             else
             {
+               // CTRL+ENTER
                if (event.isControlKeyDown() && keyCode == KeyCodes.KEY_ENTER)
                {
                   event.stopPropagation();
@@ -235,110 +269,47 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
                }
             }
          }
-
       });
-
-      textArea.addKeyUpHandler(new KeyUpHandler()
-      {
-         @Override
-         public void onKeyUp(KeyUpEvent event)
-         {
-            eventBus.fireEvent(new EditTransUnitEvent());
-            int keyCode = event.getNativeKeyCode();
-
-            // NB: if you change these, please change NavigationConsts too!
-
-            // else if (event.isControlKeyDown() && event.isShiftKeyDown() &&
-            // event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
-            // { // was alt-e
-            // handleNextState(ContentState.NeedReview);
-            // }
-            // else if (event.isControlKeyDown() && event.isShiftKeyDown() &&
-            // event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP)
-            // { // was alt-m
-            // handlePrevState(ContentState.NeedReview);
-            // // } else if(event.isControlKeyDown() && event.getNativeKeyCode()
-            // // == KeyCodes.KEY_PAGEDOWN) { // bad in Firefox
-            // }
-            if (event.isAltKeyDown() && keyCode == TableConstants.KEY_G)
-            {
-               cloneAction();
-            }
-            else if (event.isAltKeyDown() && (event.isDownArrow() || keyCode == TableConstants.KEY_K))
-            {
-               // alt-down
-               // See editCell() for saving event
-               saveAndMoveRow(NavigationType.NextEntry);
-            }
-            else if (event.isAltKeyDown() && (event.isUpArrow() || keyCode == TableConstants.KEY_J))
-            {
-               // alt-up
-               // See editCell() for saving event
-               saveAndMoveRow(NavigationType.PrevEntry);
-            }
-            else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEDOWN)
-            {
-               // alt-pagedown
-               saveAndMoveNextState(NavigationType.NextEntry);
-            }
-            else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEUP)
-            {
-               // alt-pageup
-               saveAndMoveNextState(NavigationType.PrevEntry);
-            }
-            else if (!event.isAltKeyDown() && !event.isControlKeyDown())
-            {
-               autoSize();
-            }
-
-            // these shortcuts disabled because they conflict with basic text
-            // editing:
-            // else if (event.isControlKeyDown() && event.getNativeKeyCode() ==
-            // KeyCodes.KEY_HOME)
-            // { // ctrl-home
-            // cloneHandler.onClick(null);
-            // }
-            // else if (event.isControlKeyDown() && event.getNativeKeyCode() ==
-            // KeyCodes.KEY_END)
-            // { // ctrl-end
-            // cloneAndSaveHandler.onClick(null);
-            // }
-         }
-
-      });
-
       layoutTable.add(textArea);
 
       operationsPanel = new HorizontalPanel();
 
       operationsPanel.addStyleName("float-right-div");
       operationsPanel.setSpacing(4);
-      // layoutTable.add(operationsPanel);
 
-      // icon as the current state of the unit
-      // stateImage = new Image(resources.newUnit());
-      // operationsPanel.add(stateImage);
-
-      // PushButton doesn't allow to have images and text at the same time
       TableResources images = GWT.create(TableResources.class);
-      Image cancelButton = new Image(images.cellEditorCancel());
-      // cancelButton.setText(messages.editCancel());
-      cancelButton.setStyleName("gwt-Button");
-      cancelButton.setTitle(messages.editCancelShortcut());
-      cancelButton.addClickHandler(cancelHandler);
 
-      saveButton = new Image(images.cellEditorAccept());
-      // saveButton.setText(messages.editSave());
+      saveButton = new PushButton(new Image(images.cellEditorAccept()));
       saveButton.setStyleName("gwt-Button");
       saveButtonShortcuts = messages.editSaveShortcut();
       saveButton.setTitle(messages.editSaveShortcut());
       saveButton.addClickHandler(acceptHandler);
       saveButtonwithEnterShortcuts = messages.editSavewithEnterShortcut();
 
-      Image fuzzyButton = new Image(images.cellEditorFuzzy());
+      fuzzyButton = new PushButton(new Image(images.cellEditorFuzzy()));
       fuzzyButton.setStyleName("gwt-Button");
       fuzzyButton.setTitle(messages.saveAsFuzzy());
       fuzzyButton.addClickHandler(fuzzyHandler);
+
+      cancelButton = new PushButton(new Image(images.cellEditorCancel()));
+      cancelButton.setStyleName("gwt-Button");
+      cancelButton.setTitle(messages.editCancelShortcut());
+      cancelButton.addClickHandler(cancelHandler);
+      cancelButton.addFocusHandler(new FocusHandler(){
+         @Override
+         public void onFocus(FocusEvent event)
+         {
+            isCancelButtonFocused = true;
+         }
+      });
+      cancelButton.addBlurHandler(new BlurHandler(){
+
+         @Override
+         public void onBlur(BlurEvent event)
+         {
+            isCancelButtonFocused = false;
+         }
+      });
 
       operationsPanel.add(saveButton);
       operationsPanel.add(fuzzyButton);
@@ -683,5 +654,16 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          saveButton.setTitle(saveButtonwithEnterShortcuts);
       else
          saveButton.setTitle(saveButtonShortcuts);
+   }
+
+   public boolean isCancelButtonFocused()
+   {
+      return isCancelButtonFocused;
+   }
+
+   public void setCancelButtonFocused(boolean isCancelButtonFocused)
+   {
+      this.isCancelButtonFocused = isCancelButtonFocused;
+      cancelButton.setFocus(isCancelButtonFocused);
    }
 }
