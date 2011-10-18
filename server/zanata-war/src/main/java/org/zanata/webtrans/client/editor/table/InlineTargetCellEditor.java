@@ -25,6 +25,8 @@ import java.util.Map;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.editor.CheckKey;
+import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.events.EditTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.resources.NavigationMessages;
@@ -40,7 +42,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -144,12 +145,13 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private boolean isOpened = false;
    private boolean isCancelButtonFocused = false;
 
+   private boolean untranslatedMode = true, fuzzyMode = true;
+   private boolean isEnterKeySavesEnabled = false, isEscKeyCloseEditor = false;
+
    private int curRow;
    private int curCol;
    private HTMLTable table;
-   private boolean untranslatedMode = true, fuzzyMode = true;
 
-   private Boolean isEnterKeyEnabled = false;
    private String saveButtonShortcuts;
    private String saveButtonwithEnterShortcuts;
    private PushButton saveButton, fuzzyButton, cancelButton;
@@ -164,6 +166,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     */
    public InlineTargetCellEditor(final NavigationMessages messages, CancelCallback<TransUnit> callback, EditRowCallback rowCallback, final EventBus eventBus)
    {
+      final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       // Wrap contents in a table
       layoutTable = new FlowPanel();
       layoutTable.setWidth("100%");
@@ -206,67 +209,50 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          public void onKeyDown(KeyDownEvent event)
          {
             eventBus.fireEvent(new EditTransUnitEvent());
-            int keyCode = event.getNativeKeyCode();
+            checkKey.init(event.getNativeEvent());
 
-            if (event.isAltKeyDown() && keyCode == TableConstants.KEY_G)
+            if (checkKey.isCopyFromSourceKey())
             {
-               // ALT+G
                cloneAction();
             }
-            else if (event.isAltKeyDown() && (event.isDownArrow() || keyCode == TableConstants.KEY_K))
+            else if (checkKey.isNextEntryKey())
             {
-               // ALT+ Down/K
                // See editCell() for saving event
                saveAndMoveRow(NavigationType.NextEntry);
             }
-            else if (event.isAltKeyDown() && (event.isUpArrow() || keyCode == TableConstants.KEY_J))
+            else if (checkKey.isPreviousEntryKey())
             {
-               // ALT+ Up/J
                // See editCell() for saving event
                saveAndMoveRow(NavigationType.PrevEntry);
             }
-            else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEDOWN)
+            else if (checkKey.isNextStateEntryKey())
             {
-               // ALT+Pagedown
                saveAndMoveNextState(NavigationType.NextEntry);
             }
-            else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEUP)
+            else if (checkKey.isPreviousStateEntryKey())
             {
-               // ALT+Pageup
                saveAndMoveNextState(NavigationType.PrevEntry);
             }
-            else if (event.isControlKeyDown() && keyCode == TableConstants.KEY_S)
+            else if (checkKey.isSaveAsFuzzyKey())
             {
-               // CTRL+S
                event.stopPropagation();
                event.preventDefault(); // stop browser save
                acceptFuzzyEdit();
             }
-            else if (!event.isAltKeyDown() && !event.isControlKeyDown())
+            else if (checkKey.isSaveAsApprovedKey(isEnterKeySavesEnabled))
+            {
+               event.stopPropagation();
+               event.preventDefault();
+               saveApprovedAndMoveNextState(NavigationType.NextEntry);
+            }
+            else if (checkKey.isCloseEditorKey(isEscKeyCloseEditor))
+            {
+               cancelEdit();
+            }
+            else if (checkKey.isUserTyping())
             {
                // Resize as user types
                autoSize();
-            }
-
-            if (isEnterKeyEnabled)
-            {
-               if (!event.isShiftKeyDown() && keyCode == KeyCodes.KEY_ENTER)
-               {
-                  // Enter
-                  event.stopPropagation();
-                  event.preventDefault();
-                  saveApprovedAndMoveNextState(NavigationType.NextEntry);
-               }
-            }
-            else
-            {
-               // CTRL+ENTER
-               if (event.isControlKeyDown() && keyCode == KeyCodes.KEY_ENTER)
-               {
-                  event.stopPropagation();
-                  event.preventDefault();
-                  saveApprovedAndMoveNextState(NavigationType.NextEntry);
-               }
             }
          }
       });
@@ -582,6 +568,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       restoreView();
       textArea.setFocus(false);
       isOpened = false;
+      isFocused = false;
 
       // Call the callback
       if (curCallback != null)
@@ -641,19 +628,22 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 	   operationsPanel.setVisible(showButtons);
    }
 
-   public void setNavMode(Map<String, Boolean> configMap)
+   public void updateKeyBehaviour(Map<String, Boolean> configMap)
    {
       untranslatedMode = configMap.get(UserConfigConstants.BUTTON_UNTRANSLATED);
       fuzzyMode = configMap.get(UserConfigConstants.BUTTON_FUZZY);
-   }
 
-   public void setEnterKeyEnabled(Boolean enabled)
-   {
-      isEnterKeyEnabled = enabled;
-      if (enabled)
+      isEnterKeySavesEnabled = configMap.get(UserConfigConstants.BUTTON_ENTER);
+      if (isEnterKeySavesEnabled)
+      {
          saveButton.setTitle(saveButtonwithEnterShortcuts);
+      }
       else
+      {
          saveButton.setTitle(saveButtonShortcuts);
+      }
+
+      isEscKeyCloseEditor = configMap.get(UserConfigConstants.BUTTON_ESC);
    }
 
    public boolean isCancelButtonFocused()

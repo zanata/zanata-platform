@@ -28,14 +28,10 @@ import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
-import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
-import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasPager;
-import org.zanata.webtrans.client.ui.UserConfigConstants;
-import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 
@@ -45,7 +41,6 @@ import com.google.gwt.gen2.table.event.client.PageChangeEvent;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
-
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -151,8 +146,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
          public void onValueChanged(UserConfigChangeEvent event)
          {
             transUnitNavigationPresenter.getDisplay().setNavModeTooltip(event.getConfigMap());
-            tableEditorPresenter.getDisplay().getTargetCellEditor().setNavMode(event.getConfigMap());
-            tableEditorPresenter.getDisplay().getTargetCellEditor().setEnterKeyEnabled(event.getConfigMap().get(UserConfigConstants.BUTTON_ENTER));
+            tableEditorPresenter.getDisplay().getTargetCellEditor().updateKeyBehaviour(event.getConfigMap());
          }
       }));
    }
