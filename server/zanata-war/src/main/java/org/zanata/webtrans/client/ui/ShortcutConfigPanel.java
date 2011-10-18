@@ -48,6 +48,7 @@ import com.google.gwt.user.client.ui.UIObject;
 public class ShortcutConfigPanel extends DecoratedPopupPanel
 {
    private final CheckBox enterChk = new CheckBox(UserConfigConstants.LABEL_ENTER_BUTTON_SAVE);
+   private final CheckBox escChk = new CheckBox(UserConfigConstants.LABEL_ESC_KEY_CLOSE);
    private ListBox optionsList = new ListBox();
 
    private Map<String, Boolean> configMap = new HashMap<String, Boolean>();
@@ -79,6 +80,11 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
       enteroptHP.setSpacing(5);
       enteroptHP.add(enterChk);
       mainPanel.add(enteroptHP);
+
+      HorizontalPanel escoptHP = new HorizontalPanel();
+      escoptHP.setSpacing(5);
+      escoptHP.add(escChk);
+      mainPanel.add(escoptHP);
 
       this.add(mainPanel);
    }
@@ -125,16 +131,29 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
             eventBus.fireEvent(new UserConfigChangeEvent(configMap));
          }
       });
+
+      escChk.addValueChangeHandler(new ValueChangeHandler<Boolean>()
+      {
+         @Override
+         public void onValueChange(ValueChangeEvent<Boolean> event)
+         {
+            Log.info("Enable 'Esc' Key to close editor: " + event.getValue());
+            configMap.put(UserConfigConstants.BUTTON_ESC, event.getValue());
+            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
+         }
+      });
    }
 
    private void setDefaultValue()
    {
       optionsList.setSelectedIndex(0);
       enterChk.setValue(false);
+      escChk.setValue(false);
 
       configMap.put(UserConfigConstants.BUTTON_FUZZY, true);
       configMap.put(UserConfigConstants.BUTTON_UNTRANSLATED, true);
       configMap.put(UserConfigConstants.BUTTON_ENTER, false);
+      configMap.put(UserConfigConstants.BUTTON_ESC, false);
    }
 
    public void toggleDisplay(final UIObject target)

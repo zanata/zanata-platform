@@ -38,7 +38,6 @@ import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasPager;
-import org.zanata.webtrans.client.ui.UserConfigConstants;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -160,8 +159,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
          public void onValueChanged(UserConfigChangeEvent event)
          {
             transUnitNavigationPresenter.getDisplay().setNavModeTooltip(event.getConfigMap());
-            tableEditorPresenter.getDisplay().getTargetCellEditor().setNavMode(event.getConfigMap());
-            tableEditorPresenter.getDisplay().getTargetCellEditor().setEnterKeyEnabled(event.getConfigMap().get(UserConfigConstants.BUTTON_ENTER));
+            tableEditorPresenter.getDisplay().getTargetCellEditor().updateKeyBehaviour(event.getConfigMap());
          }
       }));
    }

@@ -30,8 +30,10 @@ public class UserConfigConstants
    public static final String BUTTON_FUZZY = "Fuzzy";
    public static final String BUTTON_UNTRANSLATED = "Untranslated";
    public static final String BUTTON_ENTER = "Enter";
+   public static final String BUTTON_ESC = "Esc";
 
    public static final String LABEL_ENTER_BUTTON_SAVE = "'Enter' key saves immediately";
+   public static final String LABEL_ESC_KEY_CLOSE = "'Esc' key closes editor";
    public static final String LABEL_NAV_OPTION = "Navigation key/button options:";
    
    public static final String OPTION_FUZZY_UNTRANSLATED = "Next Fuzzy/Untranslated";

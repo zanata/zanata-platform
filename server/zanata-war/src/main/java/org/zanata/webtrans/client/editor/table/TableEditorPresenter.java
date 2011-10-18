@@ -32,6 +32,8 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import org.zanata.common.EditState;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateAction;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateHandler;
+import org.zanata.webtrans.client.editor.CheckKey;
+import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.editor.DocumentEditorPresenter;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.events.CopySourceEvent;
@@ -73,8 +75,6 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -495,13 +495,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
       }));
 
-      /** @formatter:off
-       * Navigation mode shortcuts key
-       * ALT+UP arrow or J - Previous entry
-       * ALT+DOWN arrow or K - Next entry
-       * ALT+G copy from source
-       * Enter - Open editor
-       */
+      final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Navigation);
+      
       Event.addNativePreviewHandler(new NativePreviewHandler()
       {
          public void stopDefaultAction(NativePreviewEvent event){
@@ -520,31 +515,26 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
              * Only when the Table is showed and editor is closed, the keyboard
              * event will be processed.
              **/
+
             if (display.asWidget().isVisible() && !display.getTargetCellEditor().isFocused())
             {
-               NativeEvent nativeEvent = event.getNativeEvent();
-               int keyCode = nativeEvent.getKeyCode();
-               String nativeEventType = nativeEvent.getType();
+               checkKey.init(event.getNativeEvent());
                
-               boolean shiftKey = nativeEvent.getShiftKey();
-               boolean altKey = nativeEvent.getAltKey();
-               boolean ctrlKey = nativeEvent.getCtrlKey();
-
-               if (nativeEventType.equals("keyup"))
+               if (event.getNativeEvent().getType().equals("keyup"))
                {
-                  if ((altKey && keyCode == KeyCodes.KEY_UP) || keyCode == TableConstants.KEY_J)
+                  if (checkKey.isPreviousEntryKey())
                   {
                      Log.info("Go to previous entry");
                      stopDefaultAction(event);
                      tableModelHandler.gotoPrevRow(false);
                   }
-                  else if ((altKey && keyCode == KeyCodes.KEY_DOWN) || keyCode == TableConstants.KEY_K)
+                  else if (checkKey.isNextEntryKey())
                   {
                      Log.info("Go to next entry");
                      stopDefaultAction(event);
                      tableModelHandler.gotoNextRow(false);
                   }
-                  else if (altKey && keyCode == TableConstants.KEY_G)
+                  else if (checkKey.isCopyFromSourceKey())
                   {
                      if (selectedTransUnit != null)
                      {
@@ -554,7 +544,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                         display.getTargetCellEditor().cloneAction();
                      }
                   }
-                  else if(keyCode == KeyCodes.KEY_ENTER){
+                  else if (checkKey.isEnterKey())
+                  {
                      if (selectedTransUnit != null)
                      {
                         if(!display.getTargetCellEditor().isCancelButtonFocused()){
@@ -564,41 +555,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                         } 
                         display.getTargetCellEditor().setCancelButtonFocused(false);
                      }
-                  }
-               }
-               //Currently not working
-               else if (nativeEventType.equals("keypress") && !shiftKey && !altKey && !ctrlKey)
-               {
-                  // PageDown key
-                  switch (keyCode)
-                  {
-                  case KeyCodes.KEY_PAGEDOWN:
-                     Log.info("Go to next page");
-                     if (!display.isLastPage())
-                        gotoNextPage();
-                     event.cancel();
-                     break;
-                  // PageUp key
-                  case KeyCodes.KEY_PAGEUP:
-                     Log.info("Go to previous page");
-                     if (!display.isFirstPage())
-                        gotoPreviousPage();
-                     event.cancel();
-                     break;
-                  // Home
-                  case KeyCodes.KEY_HOME:
-                     Log.info("Go to first page");
-                     display.gotoFirstPage();
-                     event.cancel();
-                     break;
-                  // End
-                  case KeyCodes.KEY_END:
-                     Log.info("Go to last page");
-                     display.gotoLastPage();
-                     event.cancel();
-                     break;
-                  default:
-                     break;
                   }
                }
             }
