@@ -15,7 +15,7 @@ import org.zanata.client.commands.PublicanPushOptions;
  * @deprecated
  * @see PushMojo
  */
-public class PublicanPushMojo extends ConfigurableProjectMojo implements PublicanPushOptions
+public class PublicanPushMojo extends ConfigurableProjectMojo<PublicanPushOptions> implements PublicanPushOptions
 {
 
    public PublicanPushMojo() throws Exception

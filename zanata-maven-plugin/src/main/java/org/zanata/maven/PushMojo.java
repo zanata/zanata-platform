@@ -16,7 +16,7 @@ import org.zanata.client.commands.push.PushOptions;
  * @requiresProject true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class PushMojo extends ConfigurableProjectMojo implements PushOptions
+public class PushMojo extends ConfigurableProjectMojo<PushOptions> implements PushOptions
 {
 
    public PushMojo() throws Exception

@@ -13,7 +13,7 @@ import org.zanata.client.commands.pull.PullOptions;
  * @requiresProject true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class PullMojo extends ConfigurableProjectMojo implements PullOptions
+public class PullMojo extends ConfigurableProjectMojo<PullOptions> implements PullOptions
 {
 
    /**

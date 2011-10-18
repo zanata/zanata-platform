@@ -1,5 +1,6 @@
 package org.zanata.maven;
 
+import org.zanata.client.commands.ConfigurableProjectOptions;
 import org.zanata.client.commands.ListLocalCommand;
 
 /* Javadoc disabled so that maven won't include this unfinished mojo in the plugin:
@@ -11,7 +12,7 @@ import org.zanata.client.commands.ListLocalCommand;
  * @requiresProject true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class ListLocalMojo extends ConfigurableProjectMojo
+public class ListLocalMojo extends ConfigurableProjectMojo<ConfigurableProjectOptions>
 {
 
    public ListLocalMojo() throws Exception

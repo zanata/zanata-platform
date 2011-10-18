@@ -10,7 +10,7 @@ import org.zanata.client.commands.PutVersionOptions;
  * @requiresProject false
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class PutVersionMojo extends ConfigurableMojo implements PutVersionOptions
+public class PutVersionMojo extends ConfigurableMojo<PutVersionOptions> implements PutVersionOptions
 {
 
    /**
