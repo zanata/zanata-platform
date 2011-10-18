@@ -10,7 +10,7 @@ import org.zanata.client.commands.PutUserOptions;
  * @requiresProject false
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class PutUserMojo extends ConfigurableMojo implements PutUserOptions
+public class PutUserMojo extends ConfigurableMojo<PutUserOptions> implements PutUserOptions
 {
 
    /**

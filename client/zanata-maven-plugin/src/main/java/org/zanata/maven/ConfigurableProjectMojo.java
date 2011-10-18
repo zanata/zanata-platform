@@ -1,5 +1,6 @@
 package org.zanata.maven;
 
+import org.zanata.client.commands.ConfigurableOptions;
 import org.zanata.client.commands.ConfigurableProjectOptions;
 import org.zanata.client.config.LocaleList;
 
@@ -10,7 +11,7 @@ import org.zanata.client.config.LocaleList;
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 
  */
-public abstract class ConfigurableProjectMojo extends ConfigurableMojo implements ConfigurableProjectOptions
+public abstract class ConfigurableProjectMojo<O extends ConfigurableOptions> extends ConfigurableMojo<O> implements ConfigurableProjectOptions
 {
 
    // @formatter:off

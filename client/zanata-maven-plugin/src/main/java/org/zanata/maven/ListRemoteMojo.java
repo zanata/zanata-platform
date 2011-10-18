@@ -1,5 +1,6 @@
 package org.zanata.maven;
 
+import org.zanata.client.commands.ConfigurableProjectOptions;
 import org.zanata.client.commands.ListRemoteCommand;
 
 /**
@@ -9,7 +10,7 @@ import org.zanata.client.commands.ListRemoteCommand;
  * @requiresProject false
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class ListRemoteMojo extends ConfigurableProjectMojo
+public class ListRemoteMojo extends ConfigurableProjectMojo<ConfigurableProjectOptions>
 {
 
    private static final String ZANATA_SERVER_PROJECT_TYPE = "remote";
@@ -23,7 +24,6 @@ public class ListRemoteMojo extends ConfigurableProjectMojo
    {
       return new ListRemoteCommand(this);
    }
-
 
    @Override
    public String getProjectType()
