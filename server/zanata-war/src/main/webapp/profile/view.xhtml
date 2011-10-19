@@ -53,12 +53,12 @@
         <h2>#{messages['jsf.MaintainedProjects']}</h2>
         <h:outputText value="None Available" rendered="#{empty personHome.instance.maintainerProjects}"/>
          <h:form>
-            <a4j:repeat value="#{personHome.instance.maintainerProjects.toArray()}" var="project">
-                <s:link id="project" styleClass="table_link" value="#{project.name} " propagation="none"
+             <rich:dataGrid value="#{personHome.instance.maintainerProjects.toArray()}" var="project" columns="2" styleClass="noBorderTable" style="border:0px">
+                 <s:link id="project" styleClass="table_link" value="#{project.name} " propagation="none"
                               view="/project/project.xhtml">
                     <f:param name="slug" value="#{project.slug}"/>
                 </s:link>
-            </a4j:repeat>
+             </rich:dataGrid>
         </h:form>
         <br/>
         <br/>
