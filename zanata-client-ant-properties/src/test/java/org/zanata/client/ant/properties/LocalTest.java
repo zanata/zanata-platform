@@ -14,7 +14,7 @@ public class LocalTest extends AbstractBuildTest
     * build.xml
     */
    @SuppressWarnings("unchecked")
-   static Class[] testedClasses = { Props2DocsTask.class, Docs2PropsTask.class };
+   static Class<?>[] testedClasses = { Props2DocsTask.class, Docs2PropsTask.class };
 
    public LocalTest(String name)
    {
@@ -30,7 +30,8 @@ public class LocalTest extends AbstractBuildTest
    public static Test suite()
    {
       TestSuite suite = new TestSuite(LocalTest.class.getName());
-      // FIXME
+      suite.addTest(new LocalTest("dummy"));
+      // FIXME get the other tests working
       // suite.addTest(new LocalTest("props2docs"));
       // suite.addTest(new LocalTest("docs2props"));
       // suite.addTest(new LocalTest("roundtriplocal"));
