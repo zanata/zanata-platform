@@ -15,6 +15,10 @@
 	<property name="iter" value="1.1" />
 
 
+	<target name="dummy">
+		<!-- FIXME get the other tests working -->
+	</target>
+
 	<target name="uploadpo">
 		<ant antfile="uploadpo.xml" target="_uploadpo">
 			<property name="docsUrl" value="${out.dir}/project.xml" />

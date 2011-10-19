@@ -1,5 +1,5 @@
 <project>
 	<target name="_uploadpo">
-		<uploadpo user="bob" apiKey="${bob.key}" dst="${docsUrl}" srcDir="${in.dir}" debug="true" />
+		<uploadpo username="bob" key="${bob.key}" dst="${docsUrl}" srcDir="${in.dir}" debug="true" />
 	</target>
 </project>
