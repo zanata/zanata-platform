@@ -42,7 +42,7 @@
     </rich:column>
     <rich:column id="translate">
       <h:outputLink
-          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation') and !zanataInit.debug}"
+          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation', tribe) and !zanataInit.debug}"
           target="_blank"
           value="#{request.contextPath}/webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
@@ -52,7 +52,7 @@
 		#{messages['jsf.Translate']}
       </h:outputLink>
       <h:outputLink
-          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation') and zanataInit.debug}"
+          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation', tribe) and zanataInit.debug}"
           target="_blank"
           value="#{request.contextPath}/webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
