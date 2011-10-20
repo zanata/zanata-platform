@@ -285,6 +285,14 @@ div.checkmark {
 	margin-right: auto;
 }
 
+div.tick {
+	background: url(../img/silk/tick.png) top left no-repeat;
+	width: 16px;
+    height: 16px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 div.cross {
 	background: url(../img/cross.png) top left no-repeat;
 	width: 14px;
