@@ -203,6 +203,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          }
       });
 
+      // KeyDown is used to override browser event
       textArea.addKeyDownHandler(new KeyDownHandler()
       {
          @Override
@@ -534,6 +535,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       restoreView();
       textArea.setFocus(false);
       isOpened = false;
+      isFocused = false;
 
       // Send the new cell value to the callback
       curCallback.onComplete(curCellEditInfo, cellValue);
@@ -567,6 +569,32 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       restoreView();
       textArea.setFocus(false);
+      isOpened = false;
+      isFocused = false;
+
+      // Call the callback
+      if (curCallback != null)
+      {
+         // curCallback.onCancel(curCellEditInfo);
+         cancelCallback.onCancel(cellValue);
+      }
+
+      clearSelection();
+   }
+
+   public void cancelEdit(boolean closeEditor)
+   {
+      // Fire the event
+      if (!onCancel())
+      {
+         return;
+      }
+
+      if (closeEditor)
+      {
+         restoreView();
+         textArea.setFocus(false);
+      }
       isOpened = false;
       isFocused = false;
 

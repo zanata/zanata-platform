@@ -340,12 +340,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                // TODO this test never succeeds
                if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
                {
-                  // handle change in current selection
-                  // eventBus.fireEvent(new NotificationEvent(Severity.Warning,
-                  // "Someone else updated this translation unit. you're in trouble..."));
-                  // display.getTableModel().setRowValue(row, rowValue);
-                  Log.info("selected TU updated; cancelling edit");
-                  display.getTargetCellEditor().cancelEdit();
+                  // Log.info("selected TU updated; cancelling edit");
+                  // display.getTargetCellEditor().cancelEdit(false);
 
                   // TODO reload page and return
                }
@@ -539,19 +535,7 @@ Event.addNativePreviewHandler(new NativePreviewHandler()
                
                if (event.getNativeEvent().getType().equals("keyup"))
                {
-                  if (checkKey.isPreviousEntryKey())
-                  {
-                     Log.info("Go to previous entry");
-                     stopDefaultAction(event);
-                     tableModelHandler.gotoPrevRow(false);
-                  }
-                  else if (checkKey.isNextEntryKey())
-                  {
-                     Log.info("Go to next entry");
-                     stopDefaultAction(event);
-                     tableModelHandler.gotoNextRow(false);
-                  }
-                  else if (checkKey.isCopyFromSourceKey())
+                  if (checkKey.isCopyFromSourceKey())
                   {
                      if (selectedTransUnit != null)
                      {
@@ -572,6 +556,21 @@ Event.addNativePreviewHandler(new NativePreviewHandler()
                         } 
                         display.getTargetCellEditor().setCancelButtonFocused(false);
                      }
+                  }
+               }
+               if (event.getNativeEvent().getType().equals("keydown"))
+               {
+                  if (checkKey.isPreviousEntryKey())
+                  {
+                     Log.info("Go to previous entry");
+                     stopDefaultAction(event);
+                     tableModelHandler.gotoPrevRow(false);
+                  }
+                  else if (checkKey.isNextEntryKey())
+                  {
+                     Log.info("Go to next entry");
+                     stopDefaultAction(event);
+                     tableModelHandler.gotoNextRow(false);
                   }
                }
             }
@@ -683,8 +682,12 @@ Event.addNativePreviewHandler(new NativePreviewHandler()
       public void updatePageAndRowIndex()
       {
          curPage = display.getCurrentPage();
+         updateRowIndex(curPage);
+      }
 
-         // Convert row number to row Index in table
+      @Override
+      public void updateRowIndex(int curPage)
+      {
          curRowIndex = curPage * TableConstants.PAGE_SIZE + display.getSelectedRowNumber();
          Log.info("Current Row Index" + curRowIndex);
       }
@@ -1100,7 +1103,7 @@ Event.addNativePreviewHandler(new NativePreviewHandler()
     */
    public void selectTransUnit(TransUnit transUnit)
    {
-      tableModelHandler.updatePageAndRowIndex();
+      tableModelHandler.updateRowIndex(display.getCurrentPage());
       if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
       {
          selectedTransUnit = transUnit;
