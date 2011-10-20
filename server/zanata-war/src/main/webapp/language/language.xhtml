@@ -29,7 +29,7 @@
                     <f:facet name="header">#{messages['jsf.Name']}</f:facet>
                     #{member.person.name}
                   </rich:column>
-                  <rich:column width="auto" rendered="#{s:hasRole('admin') or languageTeamAction.userIsCoordinator()}">
+                  <rich:column width="auto" rendered="#{languageTeamAction.checkLocalePermission('manage-language-team')}">
                     <f:facet name="header">#{messages['jsf.Email']}</f:facet>
                     <h:outputText>
                         #{member.person.email}
@@ -38,18 +38,18 @@
                   <rich:column width="auto" styleClass="centered">
                     <f:facet name="header">#{messages['jsf.Coordinator']}</f:facet>
                     <h:selectBooleanCheckbox value="#{member.coordinator}"
-                        rendered="#{s:hasRole('admin') or languageTeamAction.userIsCoordinator()}">
+                        rendered="#{languageTeamAction.checkLocalePermission('manage-language-team')}">
                         <a4j:support event="onclick"
                             ajaxSingle="true"
                             reRender="threads"
                             action="#{languageTeamAction.saveTeamCoordinator(member)}"/>
                     </h:selectBooleanCheckbox>
-                    <h:outputText rendered="#{not s:hasRole('admin') and not languageTeamAction.userIsCoordinator() and member.coordinator}">
-                        <div class="checkmark"/>
+                    <h:outputText rendered="#{not languageTeamAction.checkLocalePermission('manage-language-team') and member.coordinator}">
+                        <div class="tick"/>
                     </h:outputText>
                   </rich:column>
                   <rich:column width="auto" styleClass="centered"
-                      rendered="#{s:hasRole('admin') or languageTeamAction.userIsCoordinator()}">
+                      rendered="#{languageTeamAction.checkLocalePermission('manage-language-team')}">
                       <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
                       <a4j:commandButton value="#{messages['jsf.Remove']}"
                           action="#{languageTeamAction.removeMembership(member)}"
@@ -87,7 +87,7 @@
           </s:link>
                  -->
           <s:link styleClass="action_link" value="#{messages['jsf.contactLanguageTeamCoordinator']}" view="/language/contact/#{languageTeamAction.language}" propagation="none"  rendered="#{identity.loggedIn}" />
-          <h:outputText rendered="#{s:hasRole('admin') or languageTeamAction.userIsCoordinator()}">
+          <h:outputText rendered="#{languageTeamAction.checkLocalePermission('manage-language-team')}">
             <a href="#" class="action_link" onclick="#{rich:component('userAddPanel')}.show()">#{messages['jsf.AddTeamMember']}</a>
           </h:outputText>
         </a4j:form>

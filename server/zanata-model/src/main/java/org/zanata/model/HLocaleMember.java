@@ -34,6 +34,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.jboss.seam.annotations.security.Restrict;
 
 /**
  * @author camunoz@redhat.com
@@ -41,6 +42,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  */
 @Entity
 @Table(name="HLocale_Member")
+@Restrict
 public class HLocaleMember implements Serializable
 {
    private static final long serialVersionUID = 1L;
