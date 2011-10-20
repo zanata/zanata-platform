@@ -33,6 +33,7 @@ import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage.Severity;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
@@ -64,6 +65,9 @@ public class LanguageTeamAction implements Serializable
    
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
+   
+   @In
+   Identity identity;
    
    @Logger
    Log log;
@@ -207,11 +211,11 @@ public class LanguageTeamAction implements Serializable
    public void searchForTeamMembers()
    {
       this.searchResults = this.personDAO.findAllContainingName( this.searchTerm );
-   }
+   }   
    
-   public boolean userIsCoordinator()
+   public boolean checkLocalePermission( String action )
    {
-      return this.authenticatedAccount != null && this.authenticatedAccount.getPerson().isCoordinator(this.locale);
+      return identity.hasPermission(this.locale, action);
    }
 
 }

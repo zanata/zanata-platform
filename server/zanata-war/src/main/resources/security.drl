@@ -2,6 +2,8 @@ package ZanataPermissions;
 
 import java.security.Principal;
 import org.zanata.model.HAccount;
+import org.zanata.model.HLocale;
+import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -162,20 +164,39 @@ end
   
 ******************************************************************************************/
 
-/* 'translator' can add a translation */
-rule TranslateAddTranslation
+/* Language Team members can add a translation */
+
+rule LangTeamMemberAddTranslation
   no-loop
   activation-group "permissions"
 when
   check: PermissionCheck(action == "add-translation" || action == "modify-translation", granted == false)
-  Role(name == "translator")
+  authenticatedPerson: HPerson() 
+  eval(authenticatedPerson != null)
+  $locale: HLocale(
+    eval(authenticatedPerson.isMember($locale))
+  )
 then
   check.grant();
 end
 
+/* Project Maintainers can add a translation
+   Currently INACTIVE */
+
 /*
-TODO grant permission check: if user is a member of the language team,
-OR of project maintainers
+rule ProjectCoordinatorAddTranslation
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(action == "add-translation" || action == "modify-translation", granted == false)
+  authenticatedPerson: HPerson() 
+  eval(authenticatedPerson != null)
+  $project: HProject(
+    eval(authenticatedPerson.isMaintainer($project))
+  )
+then
+  check.grant();
+end
 */
 
 
@@ -208,3 +229,45 @@ then
 end
 
 
+/*****************************************************************************************
+
+  Language Team Coordinator rules
+  
+******************************************************************************************/
+
+/* 'team coordinator' can manage language teams */
+
+rule TeamCoordinatorManageLanguageTeam
+  no-loop
+  activation-group "permissions"
+when
+  authenticatedPerson: HPerson() 
+  eval(authenticatedPerson != null)
+  $locale: HLocale(
+    eval(authenticatedPerson.isCoordinator($locale))
+  )
+  check: PermissionCheck(action == "manage-language-team", granted == false)
+then
+  check.grant();
+end
+
+
+
+/* 'team coordinator' can insert/update/delete language team members */
+
+rule TeamCoordinatorModifyLanguageTeamMembers
+  no-loop
+  activation-group "permissions"
+when
+  authenticatedPerson: HPerson() 
+  eval(authenticatedPerson != null)
+  $member: HLocaleMember(
+    $locale: supportedLanguage -> (authenticatedPerson.isCoordinator($locale))
+  )
+  check: PermissionCheck(
+    target == $member, 
+    action == "insert" || action == "update" || action == "delete", 
+    granted == false)
+then
+  check.grant();
+end
