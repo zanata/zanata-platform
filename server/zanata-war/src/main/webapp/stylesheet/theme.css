@@ -32,10 +32,8 @@ table{
 }
 
 input, textarea {
-	-moz-border-radius-bottomleft: 3px;
-	-moz-border-radius-bottomright: 3px;
-	-moz-border-radius-topleft: 3px;
-	-moz-border-radius-topright: 3px;
+	-moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
 	border:1px solid #BBBBBB;
 	padding: 3px;
 	color: #222222;
@@ -50,12 +48,17 @@ button, input[type="checkbox"], input[type="radio"], input[type="reset"], input[
 
 button, input[type="reset"], input[type="submit"], input[type="button"]  {
 	background-color: #fafafa;
-	
+	-webkit-border-radius:3px;
+	-moz-border-radius: 3px;
 }
+
 input.with_icon {
 	background-position:5px 50%;
 	background-repeat:no-repeat;
 	padding-left: 25px;
+	height:18px;
+	-webkit-border-radius:5px;
+	-moz-border-radius: 5px;
 }
 
 .search_icon{
@@ -71,17 +74,6 @@ input.with_icon {
 
 .input_nohelp{
 	display: inline;
-}
-.tableControl,.actionButtons {
-	width: 100%;
-}
-
-.tableControl a {
-	padding-left: 10px;
-}
-
-.tableControl {
-	text-align: right;
 }
 
 .rich-table {
@@ -111,6 +103,7 @@ input.with_icon {
 	margin-top: 2px;
 	margin-bottom: 2px;
 	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
 }
 
 .message li.infomsg {
@@ -186,18 +179,6 @@ img.errors {
 	margin-bottom: 0;
 }
 
-.tableControl input[type=submit],.tableControl input[type=button],.tableControl select
-	{
-	margin: 5px 0 5px 5px;
-}
-
-/* I don't know why this is necessary, but the select is off by a pixel on the top and is padding too much on the left */
-.tableControl select {
-	margin-left: 2px;
-	position: relative;
-	top: 1px;
-}
-
 .actionButtons {
 	padding-top: 10px;
 	padding-right: 10px;
@@ -270,14 +251,6 @@ td.centered {
 	float: right;
 	padding: 10px 20px;
 	margin: 0px;
-	/*
-	background-color: #f4f4f4;
-	border-bottom: 1px solid #f4f4f4;
-	border-left: 1px solid #f4f4f4;
-	color: #999999;
-	-moz-border-radius-bottomleft:10px;
-    -webkit-border-bottom-left-radius:10px; 
-    */
 }
 
 #tabs_menu_wrapper {
@@ -288,20 +261,6 @@ td.centered {
 	position: fixed;
 	right: 2px;
 	top: 2px;
-}
-
-#breadcrumbs {
-	display: block;
-	margin: 5px;
-	padding: 3px;
-	font-size: 77%;
-	color: #cdcddf;
-}
-
-#breadcrumbs a {
-	text-decoration: none;
-	font-weight: bold;
-	color: #cdcddf;
 }
 
 /* Footer styles */
@@ -347,51 +306,6 @@ tr.hover-row {
 	cursor: pointer;
 }
 
-tr.active-row {
-	background-color: #FFF9F9;
-	cursor: inherit;
-	border: 2px solid #FFCCCC;
-	-moz-border-radius: 5px;
-}
-
-
-.tuEditMode{
-	display: none;
-}
-
-.tuViewMode{
-	
-}
-
-.tuSourceContent, .tuTargetContent{
-	padding: 3px;
-	text-align: left;
-	font-family: Arial,Verdana,sans-serif;
-	font-size : 13px;
-	font-weight: normal;
-}
-.tuTargetContent .tuViewMode{
-	border: 2px solid grey;
-	-moz-border-radius: 5px;
-}
-
-.tuActionButtons {
-	position: absolute; 
-	right:17px; 
-	bottom:5px;
-	padding: 3px;
-	border: 1px solid #dadadf;
-	background-color: #fafaff;
-	margin: 0px;
-	width: auto;
-	display: inline;
-	-moz-border-radius: 3px;
-}
-.extdt-cell-div {
-	overflow: inherit;
-	white-space: inherit;
-}
-
 #iteration-status-panel {
     width:880px;
 }
@@ -411,10 +325,9 @@ table.fullwidth {
 #search_panel {
 	float: right;
 	clear: right;
-	padding-top: 20px;
+	padding-top: 0px;
+	padding-bottom: 5px;
 	color: #999999;
-	-moz-border-radius: 10px;
-		
 }
 
 #projectList h3 {
@@ -429,95 +342,8 @@ table.fullwidth {
 	color: #777777;
 }
 
-.resource-by-category-panel {
-	background-color: #fafafa;
-	border: 1px solid #efefef;
-	padding: 4px;
-	-moz-border-radius: 8px;
-	overflow: hidden;
-	margin-top: 10px;
-	margin-bottom: 5px;
-}
-
-.resource-by-category-panel .header {
-	display: block;
-	padding: 0px;
-	margin: 0px;
-	margin-bottom: 5px;
-	width: 100%;
-}
-
-.resource-by-category-panel .header h2 {
-	float: left;
-	margin: 0px;
-	padding: 0px;
-	padding-right: 10px;
-}
-
-.resource-by-category-panel .header h2.cat-documentation {
-	padding-left: 24px;
-	background: transparent url("../img/cat-documentation.png") no-repeat;
-}
-
-.resource-by-category-panel .summary {
-	display: block;
-	font-style: italic;
-	margin-top: 2px;
-	margin-bottom: 4px;
-	font-size: 77%;
-	color: grey;
-}
-
-.resource-by-category-panel .header .status-bar {
-	float: right;
-	margin: 0px;
-	padding: 0px;
-}
-
-.resource-by-category-panel .toolbar {
-	display: block;
-	width: 100%;
-	margin-bottom: 5px;
-}
-
-.resource-by-category-panel .toolbar .actions {
-	float: left;
-}
-
-.resource-by-category-panel .toolbar .expand {
-	float: right;
-	font-style: italic;
-	color: grey;
-}
-
-.resource-name {
-	font-size: 108%;
-	color: grey;
-	font-style: italic;
-}
-
-.resources-panel {
-	margin: 0px;
-	padding: 0px;
-	border: none;
-}
-
 .actions {
 	float: left;
-}
-
-.resource-by-category-panel .toolbar .expand img {
-	margin-bottom: -5px;
-}
-
-.resource-by-category-panel .expanded-content {
-	padding: 5px;
-	margin-top: 10px;
-}
-
-.translation-status {
-	float: right;
-	color: grey;
 }
 
 .projectList td {
@@ -534,107 +360,24 @@ table.fullwidth {
 	margin-right: 0px;
 }
 
-#language-chooser {
-	color: grey;
-	position: absolute;
-	left: 400px;
-	top: 10px;
-	font-size: 77%;
-}
-
 .rich-panel {
 	position: relative;
-	-moz-border-radius-topleft: 10px;
-	-moz-border-radius-topright: 10px;
-	-moz-border-radius-bottomleft: 10px;
-    -moz-border-radius-bottomright: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
 	margin-bottom: 10px;
 }
 
 .rich-panel-header {
 	-moz-border-radius-topleft: 10px;
 	-moz-border-radius-topright: 10px;
+	-webkit-border-top-left-radius:10px;
+	-webkit-border-top-right-radius:10px;
 	text-align: center;
-}
-
-.dr-pnl {
-	background-color: inherit;
-	border: none;
-}
-
-.dr-pnl-b {
-    font-family: inherit;
-    font-size: inherit;
-    background-color: white;
-}
-
-.dr-tbpnl-cntnt {
-    font-family: inherit;
-    font-size: inherit;
-    background-color: inherit;
-    padding: 10px;
-}
-
-.dr-tbpnl-tb{
-    font-family: inherit;
-    font-size: 100%;
-}
-
-.dr-tbpnl-tb-act{
-    font-weight: bold;
-    background-image: none;
-    background-color: #fbfbfb;
-    -moz-border-radius-topright: 8px;
-    -moz-border-radius-topleft: 8px;
-}
-
-.dr-tbpnl-tb-inact {
-    background-image: none;
-    background-color: #fbfbfb;
 }
 
 .rich-panel-body {
 	border: 1px solid;
 	border-color: #f4f4f4;
-}
-
-.dr-pnl-h {
-	background-color: #f4f4f4;
-	background-image: none;
-	border-color: #f4f4f4;
-	color: #999999;
-	font-family: inherit;
-	font-size: 100%;
-	font-weight: bold;
-}
-
-.dr-table{
-	border: none;
-}
-.dr-table-cell{
-	border: none; /*1px solid #f4f4f4;*/
-	font-size: inherit;
-	vertical-align: top;
-}
-
-.dr-table-header{
-	background-color: #f4f4f4;
-	background-image: none;
-	border-color: #f4f4f4;
-	color: #999999;
-	font-family: inherit;
-	font-size: 100%;
-	font-weight: bold;
-}
-
-.dr-table-footer{
-	background-color: #f4f4f4;
-}
-
-.datacsr-mini{
-	padding:0px;
-	margin:0px;
-	font-size: 77%;	
 }
 
 .rich-datalist {
@@ -647,16 +390,8 @@ table.fullwidth {
 	padding-bottom: 4px;
 }
 
-.dr-dscr{
-	background-color: #f4f4f4;
-}
-
 .panel-body-no-padding{
 	padding: 0px;
-	overflow: hidden;
-}
-
-.docrow{
 	overflow: hidden;
 }
 
@@ -706,6 +441,7 @@ a.action_link {
 	border: 2px solid #E6E9F7;
 	padding: 4px;	
 	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
 	color: #7092C3;
 	text-decoration: none;
 	margin: 1px;
@@ -717,6 +453,7 @@ a.table_link {
 	font-weight: bold;
 	padding: 4px;	
 	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
 	color: #7092C3;
 	text-decoration: none;
 	margin: 1px;
@@ -738,48 +475,6 @@ a.action_link:hover {
     height: 15px;
     background-color: #f2fbfb;
     border: 2px solid #e2ebeb;  
-}
-
-#TransArea{
-	border: 2px solid #F4F4F4;
-	-moz-border-radius: 5px;
-	
-}
-
-#TransAreaHeader{
-	background-color: #F4F4F4;
-	padding: 2px;
-}
-#TransAreaContent{
-	padding: 10px;
-	height: 100%; 
-	width: auto; 
-	overflow-y:scroll;
-	overflow-x:hidden;
-}
-#TransAreaFooter{
-	position: relative;
-	background-color: #F4F4F4;
-	padding-top: 2px;
-}
-
-#TransAreaFooterLeft{
-	position: absolute; 
-	left:0px; 
-	top:0px;
-}
-#TransAreaFooterCenter{
-}
-
-#TransAreaFooterRight{
-	position: absolute; 
-	right:0px; 
-	top:0px;
-}
-
-.TransAreaDataScroller{
-	background-color: inherit;
-	clear: none;
 }
 
 #LeftAndCenterSplitter {
@@ -806,7 +501,6 @@ a.action_link:hover {
 	overflow-x: hidden;
 	overflow-y: auto;
 }
-
 
 .translationStatusDiv{
 	float:left;
