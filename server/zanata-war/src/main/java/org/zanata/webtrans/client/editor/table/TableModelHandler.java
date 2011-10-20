@@ -47,4 +47,5 @@ public abstract class TableModelHandler<RowType>
 
    abstract void updatePageAndRowIndex();
 
+   abstract void updateRowIndex(int curPage);
 }
