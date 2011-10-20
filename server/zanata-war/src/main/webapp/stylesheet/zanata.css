@@ -32,6 +32,7 @@ h1, h2, h3, h4, h5, h6 {
 	float: left;
 	width: 900px;
 	background: #ffffff;
+	padding-bottom:5px;
 }
 
 #banner-menu {
@@ -93,8 +94,6 @@ h1, h2, h3, h4, h5, h6 {
 	float: left;
 	width: 100px;
 }
-
-
 
 #content {
 	float: left;
@@ -163,151 +162,6 @@ h1, h2, h3, h4, h5, h6 {
     float: left;
     margin: 0px;
 }
-
-.dr-table {
-    background-color: #FFFFFF;
-    border-collapse: collapse;
-    border-left: 1px solid #C0C0C0;
-    border-top: 1px solid #C0C0C0;
-    empty-cells: show;
-}
-.dr-table-cell {
-    border-bottom: 1px solid #C0C0C0;
-    border-right: 1px solid #C0C0C0;
-    color: #000000;
-    font-family: Arial,Verdana,sans-serif;
-    font-size: 11px;
-    padding: 5px;
-}
-.dr-subtable-cell {
-    border-bottom: 1px solid #C0C0C0;
-    border-right: 1px solid #C0C0C0;
-    color: #000000;
-    font-family: Arial,Verdana,sans-serif;
-    font-size: 11px;
-    padding: 4px;
-}
-.dr-table-header {
-    background-color: #4A75B5;
-    background-image: url("/a4j/g/3_3_1.GAorg.richfaces.renderkit.html.GradientA/DATB/eAF7emTy1lIvJgASigOz");
-    background-position: left top;
-    background-repeat: repeat-x;
-}
-.dr-table-header-continue {
-    background-color: #4A75B5;
-}
-.dr-table-headercell {
-    border-bottom: 1px solid #C0C0C0;
-    border-right: 1px solid #C0C0C0;
-    color: #FFFFFF;
-    font-family: Arial,Verdana,sans-serif;
-    font-size: 11px;
-    font-weight: bold;
-    padding: 4px;
-    text-align: center;
-}
-.dr-table-subheader {
-    background-color: #EAF0F8;
-}
-.dr-table-thead {
-    border-bottom: 1px solid #C0C0C0;
-}
-.dr-table-subheadercell {
-    border-right: 1px solid #C0C0C0;
-    color: #000000;
-    font-family: Arial,Verdana,sans-serif;
-    font-size: 11px;
-    padding: 4px;
-    text-align: center;
-    white-space: nowrap;
-}
-.dr-table-sortable-header {
-    background-position: right center;
-    background-repeat: no-repeat;
-    white-space: nowrap;
-}
-.dr-table-cursor-pointer {
-    cursor: pointer;
-}
-.rich-inplace-edit, .rich-inplace-view {
-    cursor: default;
-}
-.dr-table-header-sort-img {
-    vertical-align: middle;
-}
-.dr-table-footer {
-    background-color: #CCCCCC;
-}
-.dr-table-footer-continue {
-    background-color: #CCCCCC;
-}
-.dr-table-footercell {
-    border-bottom: 1px solid #C0C0C0;
-    border-right: 1px solid #C0C0C0;
-    color: #000000;
-    font-family: Arial,Verdana,sans-serif;
-    font-size: 11px;
-    font-weight: bold;
-    padding: 4px;
-    text-align: left;
-}
-.dr-table-subfooter {
-    background-color: #F1F1F1;
-}
-.dr-table-subfootercell {
-    border-bottom: 1px solid #C0C0C0;
-    border-right: 1px solid #C0C0C0;
-    color: #000000;
-    font-family: Arial,Verdana,sans-serif;
-    font-size: 11px;
-    padding: 4px;
-    text-align: left;
-}
-.dr-subtable-header {
-    background-color: #EAF0F8;
-}
-.dr-subtable-headercell {
-    border-bottom: 1px solid #C0C0C0;
-    border-right: 1px solid #C0C0C0;
-    color: #000000;
-    font-family: Arial,Verdana,sans-serif;
-    font-size: 11px;
-    padding: 4px;
-    text-align: center;
-}
-.dr-subtable-footer {
-    background-color: #F1F1F1;
-}
-.dr-subtable-footercell {
-    border-bottom: 1px solid #C0C0C0;
-    border-right: 1px solid #C0C0C0;
-    padding: 4px;
-    text-align: left;
-}
-
-.dr-table{
-	border: none;
-}
-.dr-table-cell{
-	border: none; /*1px solid #f4f4f4;*/
-	font-size: inherit;
-	vertical-align: top;
-}
-
-.dr-table-header{
-	background-color: #f4f4f4;
-	background-image: none;
-	border-color: #f4f4f4;
-	color: #999999;
-	font-family: inherit;
-	font-size: 100%;
-	font-weight: bold;
-}
-
-.dr-table-footer{
-	background-color: #f4f4f4;
-}
-
 
 /* for the benefit of richfaces' rich:editor */
 .bold-larger {

@@ -55,7 +55,7 @@
 					</f:facet>
 					</a:status>
 				</div>
-				<ui:include src="search_panel.xhtml" />
+				
 			</div>
 	
 			<div id="tabs-menu">
@@ -63,8 +63,11 @@
 				<ui:param name="projectName" value="zanata" />
 				</ui:include>
 			</div>
+			
+			     
 
 			<div id="bd">
+			    <ui:include src="search_panel.xhtml" />
 				<div id="yui-main">
 					<div class="yui-b">
 						<a:outputPanel ajaxRendered="true">
