@@ -108,8 +108,8 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       {
          throw new ActionException(e.getMessage());
       }
-      HProject hProject = hTextFlow.getDocument().getProjectIteration().getProject();
-      identity.checkPermission(hProject, ACTION_MODIFY_TRANSLATION);
+
+      identity.checkPermission(hLocale, ACTION_MODIFY_TRANSLATION);
 
       HTextFlowTarget target = hTextFlow.getTargets().get(hLocale);
 
