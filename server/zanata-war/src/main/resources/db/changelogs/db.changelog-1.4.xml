@@ -23,4 +23,30 @@
 		</update>
 	</changeSet>
 	
+	<changeSet author="camunoz@redhat.com" id="2">
+	   <preConditions onFail="MARK_RAN">
+           <sqlCheck expectedResult="0">
+              select count(*) from HAccountRoleGroup arg, HAccountRole ac1, HAccountRole ac2 
+              where arg.roleId = ac1.id and arg.memberOf = ac2.id and ac1.name = 'user' and ac2.name = 'translator'
+           </sqlCheck>
+       </preConditions>
+       <comment>
+          Remove language team memberships from all non-translator users. 
+          Only done when users are not part of the translator group by default.
+       </comment>
+       <delete tableName="HLocale_Member">
+           <where>
+               personId in
+			   (
+			       select id from HPerson where accountId not in 
+		           (
+                       select am.accountId from HAccountMembership am, HAccountRole ar 
+                       where am.memberOf = ar.id
+                       and (ar.name = 'translator' or ar.name = 'admin')
+                   )
+                )
+           </where>
+       </delete>
+	</changeSet>
+	
 </databaseChangeLog>
