@@ -73,7 +73,6 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
       optionsList.addItem(UserConfigConstants.OPTION_FUZZY_UNTRANSLATED);
       optionsList.addItem(UserConfigConstants.OPTION_FUZZY);
       optionsList.addItem(UserConfigConstants.OPTION_UNTRANSLATED);
-      optionsList.addItem(UserConfigConstants.OPTION_NEXT);
       mainPanel.add(optionsList);
 
       HorizontalPanel enteroptHP = new HorizontalPanel();
@@ -111,11 +110,6 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
             {
                configMap.put(UserConfigConstants.BUTTON_FUZZY, false);
                configMap.put(UserConfigConstants.BUTTON_UNTRANSLATED, true);
-            }
-            else if (selectedOption.equals(UserConfigConstants.OPTION_NEXT))
-            {
-               configMap.put(UserConfigConstants.BUTTON_FUZZY, false);
-               configMap.put(UserConfigConstants.BUTTON_UNTRANSLATED, false);
             }
             eventBus.fireEvent(new UserConfigChangeEvent(configMap));
          }

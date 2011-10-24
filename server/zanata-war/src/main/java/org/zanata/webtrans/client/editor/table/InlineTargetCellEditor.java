@@ -109,7 +109,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       public void onClick(ClickEvent event)
       {
-         saveApprovedAndMoveNextState(NavigationType.NextEntry);
+         saveAndMoveRow(NavigationType.NextEntry);
       }
    };
 
@@ -242,7 +242,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             {
                event.stopPropagation();
                event.preventDefault();
-               saveApprovedAndMoveNextState(NavigationType.NextEntry);
+               saveAndMoveRow(NavigationType.NextEntry);
             }
             else if (checkKey.isCloseEditorKey(isEscKeyCloseEditor))
             {
@@ -474,10 +474,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       if (untranslatedMode && fuzzyMode)
       {
          gotoFuzzyAndNewRow(nav);
-      }
-      else if (!untranslatedMode && !fuzzyMode)
-      {
-         gotoRow(nav);
       }
       else if (untranslatedMode)
       {

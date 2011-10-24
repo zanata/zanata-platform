@@ -39,7 +39,6 @@ public class UserConfigConstants
    public static final String OPTION_FUZZY_UNTRANSLATED = "Next Fuzzy/Untranslated";
    public static final String OPTION_FUZZY = "Next Fuzzy";
    public static final String OPTION_UNTRANSLATED = "Next Untranslated";
-   public static final String OPTION_NEXT = "Next Entry";
 }
 
 
