@@ -263,9 +263,11 @@
 							</execution>
 						</executions>
 						<configuration>
-							<argLine>-Xmx1024m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC
+							<argLine xml:space="preserve">-Xmx1024m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC
 								-XX:+CMSClassUnloadingEnabled -XX:+HeapDumpOnOutOfMemoryError
-								-XX:HeapDumpPath=${project.build.directory}</argLine>
+								-XX:HeapDumpPath=${project.build.directory}
+								-Dsun.lang.ClassLoader.allowArraySyntax=true
+						    </argLine>
 							<redirectTestOutputToFile>false</redirectTestOutputToFile>
 							<printSummary>true</printSummary>
 							<forkMode>always</forkMode>
@@ -278,7 +280,6 @@
 							</additionalClasspathElements>
 							<childDelegation>true</childDelegation>
 							<useSystemClassLoader>true</useSystemClassLoader>
-							<argLine xml:space="preserve">-Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
 							<classpathDependencyExcludes>
 								<classpathDependencyExclude>
 									<!-- collides with XMLLoginConfigImpl in jboss-embedded-all -->
