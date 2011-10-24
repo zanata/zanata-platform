@@ -86,16 +86,6 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
       {
          setFuzzyUntranslatedModeTooltip();
       }
-      else if (!untranslatedMode && !fuzzyMode)
-      {
-         setNextEntryModeTooltip();
-      }
-   }
-
-   private void setNextEntryModeTooltip()
-   {
-      prevState.setTitle(messages.actionToolTip(messages.prevEntry(), messages.prevFuzzyOrUntranslatedShortcut()));
-      nextState.setTitle(messages.actionToolTip(messages.nextEntry(), messages.nextFuzzyOrUntranslatedShortcut()));
    }
 
    private void setFuzzyModeTooltip()

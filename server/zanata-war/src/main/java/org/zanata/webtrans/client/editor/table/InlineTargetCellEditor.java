@@ -111,7 +111,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       public void onClick(ClickEvent event)
       {
-         saveApprovedAndMoveNextState(NavigationType.NextEntry);
+         saveAndMoveRow(NavigationType.NextEntry);
       }
    };
 
@@ -244,7 +244,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             {
                event.stopPropagation();
                event.preventDefault();
-               saveApprovedAndMoveNextState(NavigationType.NextEntry);
+               saveAndMoveRow(NavigationType.NextEntry);
             }
             else if (checkKey.isCloseEditorKey(isEscKeyCloseEditor))
             {
@@ -477,10 +477,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       {
          gotoFuzzyAndNewRow(nav);
       }
-      else if (!untranslatedMode && !fuzzyMode)
-      {
-         gotoRow(nav);
-      }
       else if (untranslatedMode)
       {
          gotoNewRow(nav);
@@ -569,32 +565,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       restoreView();
       textArea.setFocus(false);
-      isOpened = false;
-      isFocused = false;
-
-      // Call the callback
-      if (curCallback != null)
-      {
-         // curCallback.onCancel(curCellEditInfo);
-         cancelCallback.onCancel(cellValue);
-      }
-
-      clearSelection();
-   }
-
-   public void cancelEdit(boolean closeEditor)
-   {
-      // Fire the event
-      if (!onCancel())
-      {
-         return;
-      }
-
-      if (closeEditor)
-      {
-         restoreView();
-         textArea.setFocus(false);
-      }
       isOpened = false;
       isFocused = false;
 

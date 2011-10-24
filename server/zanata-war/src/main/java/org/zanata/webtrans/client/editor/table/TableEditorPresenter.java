@@ -340,10 +340,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                // TODO this test never succeeds
                if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
                {
-                  // Log.info("selected TU updated; cancelling edit");
-                  // display.getTargetCellEditor().cancelEdit(false);
-
-                  // TODO reload page and return
+                  Log.info("selected TU updated; clear selection");
+                  display.getTargetCellEditor().cancelEdit();
                }
 
                final Integer rowOffset = getRowOffset(event.getTransUnit().getId());
@@ -390,6 +388,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                   {
                      reloadPage();
                   }
+               }
+
+               if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
+               {
+                  tableModelHandler.gotoRow(curRowIndex);
                }
             }
          }
