@@ -580,32 +580,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       clearSelection();
    }
 
-   public void cancelEdit(boolean closeEditor)
-   {
-      // Fire the event
-      if (!onCancel())
-      {
-         return;
-      }
-
-      if (closeEditor)
-      {
-         restoreView();
-         textArea.setFocus(false);
-      }
-      isOpened = false;
-      isFocused = false;
-
-      // Call the callback
-      if (curCallback != null)
-      {
-         // curCallback.onCancel(curCellEditInfo);
-         cancelCallback.onCancel(cellValue);
-      }
-
-      clearSelection();
-   }
-
    public void clearSelection()
    {
       curCallback = null;
