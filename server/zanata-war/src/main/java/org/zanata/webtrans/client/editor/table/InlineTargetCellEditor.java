@@ -111,7 +111,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       public void onClick(ClickEvent event)
       {
-         saveAndMoveRow(NavigationType.NextEntry);
+         saveApprovedAndMoveRow(NavigationType.NextEntry);
       }
    };
 
@@ -244,7 +244,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             {
                event.stopPropagation();
                event.preventDefault();
-               saveAndMoveRow(NavigationType.NextEntry);
+               saveApprovedAndMoveRow(NavigationType.NextEntry);
             }
             else if (checkKey.isCloseEditorKey(isEscKeyCloseEditor))
             {
@@ -491,23 +491,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     * save the contents of the cell as approved and move to next fuzzy or
     * untranslated
     */
-   private void saveApprovedAndMoveNextState(NavigationType nav)
+   private void saveApprovedAndMoveRow(NavigationType nav)
    {
       cellValue.setStatus(ContentState.Approved);
       acceptEdit();
-
-      if (untranslatedMode && fuzzyMode)
-      {
-         gotoFuzzyAndNewRow(nav);
-      }
-      else if (untranslatedMode)
-      {
-         gotoNewRow(nav);
-      }
-      else if (fuzzyMode)
-      {
-         gotoFuzzyRow(nav);
-      }
+      gotoRow(nav);
    }
 
    /**
