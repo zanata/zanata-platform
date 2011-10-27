@@ -15,10 +15,17 @@
                  
         <a4j:form>
             <s:token allowMultiplePosts="true" />
-	        <a4j:commandButton id="reindex"
-	       		value="#{messages['jsf.ReindexFullTextSearchDatabase']}"
-	      		action="#{adminAction.reindexDatabase}"/>
-	    </a4j:form>
+            <a4j:commandButton id="reindex"
+                value="#{messages['jsf.ReindexFullTextSearchDatabase']}"
+                action="#{adminAction.reindexDatabase}"
+                status="reindexStatus"/>
+        </a4j:form>
+
+        <a4j:region>
+            <a4j:status id="reindexStatus" layout="block" startStyleClass="reindexStatusIndicator"
+                        startText="#{messages['jsf.ReindexingInProgress']}" stopText="" />
+        </a4j:region>
+
     </ui:define>
     
 </ui:composition>

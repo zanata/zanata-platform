@@ -150,6 +150,12 @@ h1, h2, h3, h4, h5, h6 {
 	width: 680px !important;
 }
 
+.reindexStatusIndicator {
+    margin-top: 10px;
+    font-weight: bold;
+    font-style: italic;
+    margin-left: 20px;
+}
 
 /** theme.css **/
 
