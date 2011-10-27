@@ -42,7 +42,6 @@ import org.jboss.seam.annotations.security.Restrict;
  */
 @Entity
 @Table(name="HLocale_Member")
-@Restrict
 public class HLocaleMember implements Serializable
 {
    private static final long serialVersionUID = 1L;
