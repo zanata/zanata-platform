@@ -34,8 +34,17 @@ public abstract class BaseSecurityChecker implements SecurityChecker
    @In
    protected Identity identity;
    
+   /**
+    * Returns the object that is to be checked for permissions.
+    */
    public abstract Object getSecuredEntity();
    
+   /**
+    * Checks for permissions to the indicated operation on the object returned by the
+    * <code>getSecuredEntity</code> method.
+    * 
+    * @see SecurityChecker#checkPermission(String)
+    */
    @Override
    public boolean checkPermission(String operation)
    {
