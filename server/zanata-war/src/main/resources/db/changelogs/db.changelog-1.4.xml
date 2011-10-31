@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+    
+    <changeSet author="camunoz@redhat.com" id="1">
+    	<comment>Add a flag indicating when a member of a Language team (locale) is a team coordinator.</comment>
+		<addColumn tableName="HLocale_Member">
+			<column name="isCoordinator" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+    </changeSet>
+
+	<changeSet author="damason@redhat.com" id="1">
+		<comment>rename admin email key to zanata from address</comment>
+		<!-- 
+		<sql>update HApplicationConfiguration set key="zanata.email.from.addr" where key="flies.admin.email"</sql>
+		 -->
+		<update tableName="HApplicationConfiguration">
+			<column name="config_key" value="zanata.email.from.addr"/>
+			<where>config_key='flies.admin.email'</where>
+		</update>
+	</changeSet>
+	
+	<changeSet author="camunoz@redhat.com" id="2">
+	   <preConditions onFail="MARK_RAN">
+           <sqlCheck expectedResult="0">
+              select count(*) from HAccountRoleGroup arg, HAccountRole ac1, HAccountRole ac2 
+              where arg.roleId = ac1.id and arg.memberOf = ac2.id and ac1.name = 'user' and ac2.name = 'translator'
+           </sqlCheck>
+       </preConditions>
+       <comment>
+          Remove language team memberships from all non-translator users. 
+          Only done when users are not part of the translator group by default.
+       </comment>
+       <delete tableName="HLocale_Member">
+           <where>
+               personId in
+			   (
+			       select id from HPerson where accountId not in 
+		           (
+                       select am.accountId from HAccountMembership am, HAccountRole ar 
+                       where am.memberOf = ar.id
+                       and (ar.name = 'translator' or ar.name = 'admin')
+                   )
+                )
+           </where>
+       </delete>
+	</changeSet>
+	
+</databaseChangeLog>

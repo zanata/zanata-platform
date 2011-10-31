@@ -26,52 +26,64 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
          tableModel.onCancel(cellValue);
    }
 
-   public void gotoNextRow(int row)
+   public void gotoNextRow()
    {
       if (tableModel != null)
-         tableModel.gotoNextRow(row);
+         tableModel.gotoNextRow();
    }
 
-   public void gotoPrevRow(int row)
+   public void gotoPrevRow()
    {
       if (tableModel != null)
-         tableModel.gotoPrevRow(row);
+         tableModel.gotoPrevRow();
    }
 
-   public void gotoNextFuzzyNew(int row)
+   public void gotoFirstRow()
    {
       if (tableModel != null)
-         tableModel.gotoNextFuzzyNew(row);
+         tableModel.gotoFirstRow();
    }
 
-   public void gotoPrevFuzzyNew(int row)
+   public void gotoLastRow()
    {
       if (tableModel != null)
-         tableModel.gotoPrevFuzzyNew(row);
+         tableModel.gotoLastRow();
    }
 
-   public void gotoNextFuzzy(int row)
+   public void gotoNextFuzzyNew()
    {
       if (tableModel != null)
-         tableModel.gotoNextFuzzy(row);
+         tableModel.gotoNextFuzzyNew();
    }
 
-   public void gotoPrevFuzzy(int row)
+   public void gotoPrevFuzzyNew()
    {
       if (tableModel != null)
-         tableModel.gotoPrevFuzzy(row);
+         tableModel.gotoPrevFuzzyNew();
    }
 
-   public void gotoNextNew(int row)
+   public void gotoNextFuzzy()
    {
       if (tableModel != null)
-         tableModel.gotoNextNew(row);
+         tableModel.gotoNextFuzzy();
    }
 
-   public void gotoPrevNew(int row)
+   public void gotoPrevFuzzy()
    {
       if (tableModel != null)
-         tableModel.gotoPrevNew(row);
+         tableModel.gotoPrevFuzzy();
+   }
+
+   public void gotoNextNew()
+   {
+      if (tableModel != null)
+         tableModel.gotoNextNew();
+   }
+
+   public void gotoPrevNew()
+   {
+      if (tableModel != null)
+         tableModel.gotoPrevNew();
    }
 
    public void setRowValueOverride(int row, RowType rowValue)

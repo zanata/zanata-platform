@@ -25,10 +25,11 @@ import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.events.NavConfigChangeEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -36,6 +37,7 @@ import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.UIObject;
 
 /**
@@ -45,13 +47,13 @@ import com.google.gwt.user.client.ui.UIObject;
  **/
 public class ShortcutConfigPanel extends DecoratedPopupPanel
 {
-   private final CheckBox fuzzyChk = new CheckBox("Fuzzy");
-   private final CheckBox untranslatedChk = new CheckBox("Untranslated");
+   private final CheckBox enterChk = new CheckBox(UserConfigConstants.LABEL_ENTER_BUTTON_SAVE);
+   private final CheckBox escChk = new CheckBox(UserConfigConstants.LABEL_ESC_KEY_CLOSE);
+   private ListBox optionsList = new ListBox();
 
-   private Map<ContentState, Boolean> configMap = new HashMap<ContentState, Boolean>();
+   private Map<String, Boolean> configMap = new HashMap<String, Boolean>();
 
    private EventBus eventBus;
-   private boolean isHidden = true;
 
    public ShortcutConfigPanel(boolean autoHide, EventBus eventBus)
    {
@@ -65,78 +67,99 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
    private void init()
    {
       FlowPanel mainPanel = new FlowPanel();
-      mainPanel.add(new Label("Select navigation options:"));
+      mainPanel.add(new Label(UserConfigConstants.LABEL_NAV_OPTION));
 
-      HorizontalPanel optionsHP = new HorizontalPanel();
-      optionsHP.setSpacing(5);
-      optionsHP.add(fuzzyChk);
-      optionsHP.add(untranslatedChk);
-      mainPanel.add(optionsHP);
+      optionsList.clear();
+      optionsList.addItem(UserConfigConstants.OPTION_FUZZY_UNTRANSLATED);
+      optionsList.addItem(UserConfigConstants.OPTION_FUZZY);
+      optionsList.addItem(UserConfigConstants.OPTION_UNTRANSLATED);
+      mainPanel.add(optionsList);
+
+      HorizontalPanel enteroptHP = new HorizontalPanel();
+      enteroptHP.setSpacing(5);
+      enteroptHP.add(enterChk);
+      mainPanel.add(enteroptHP);
+
+      HorizontalPanel escoptHP = new HorizontalPanel();
+      escoptHP.setSpacing(5);
+      escoptHP.add(escChk);
+      mainPanel.add(escoptHP);
 
       this.add(mainPanel);
    }
 
    private void bindEvent()
    {
-      fuzzyChk.addValueChangeHandler(new ValueChangeHandler<Boolean>()
+      optionsList.addChangeHandler(new ChangeHandler()
+      {
+         @Override
+         public void onChange(ChangeEvent event)
+         {
+            String selectedOption = optionsList.getItemText(optionsList.getSelectedIndex());
+            if (selectedOption.equals(UserConfigConstants.OPTION_FUZZY_UNTRANSLATED))
+            {
+               configMap.put(UserConfigConstants.BUTTON_UNTRANSLATED, true);
+               configMap.put(UserConfigConstants.BUTTON_FUZZY, true);
+            }
+            else if (selectedOption.equals(UserConfigConstants.OPTION_FUZZY))
+            {
+               configMap.put(UserConfigConstants.BUTTON_FUZZY, true);
+               configMap.put(UserConfigConstants.BUTTON_UNTRANSLATED, false);
+            }
+            else if (selectedOption.equals(UserConfigConstants.OPTION_UNTRANSLATED))
+            {
+               configMap.put(UserConfigConstants.BUTTON_FUZZY, false);
+               configMap.put(UserConfigConstants.BUTTON_UNTRANSLATED, true);
+            }
+            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
+         }
+      });
+
+      enterChk.addValueChangeHandler(new ValueChangeHandler<Boolean>()
       {
          @Override
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
-            if (event.getValue() == false && untranslatedChk.getValue() == false)
-            {
-               setDefaultValue();
-            }
-            else
-            {
-               configMap.put(ContentState.NeedReview, event.getValue());
-            }
-            Log.info("Navigation mode changed: Untranslated-" + untranslatedChk.getValue() + " Fuzzy-" + fuzzyChk.getValue());
-            eventBus.fireEvent(new NavConfigChangeEvent(configMap));
+            Log.info("Enable 'Enter' Key to save and move to next string: " + event.getValue());
+            configMap.put(UserConfigConstants.BUTTON_ENTER, event.getValue());
+            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
          }
       });
 
-      untranslatedChk.addValueChangeHandler(new ValueChangeHandler<Boolean>()
+      escChk.addValueChangeHandler(new ValueChangeHandler<Boolean>()
       {
          @Override
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
-            if (event.getValue() == false && fuzzyChk.getValue() == false)
-            {
-               setDefaultValue();
-            }
-            else
-            {
-               configMap.put(ContentState.New, event.getValue());
-            }
-            Log.info("Navigation mode changed: Untranslated-" + untranslatedChk.getValue() + " Fuzzy-" + fuzzyChk.getValue());
-            eventBus.fireEvent(new NavConfigChangeEvent(configMap));
+            Log.info("Enable 'Esc' Key to close editor: " + event.getValue());
+            configMap.put(UserConfigConstants.BUTTON_ESC, event.getValue());
+            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
          }
       });
-
    }
 
    private void setDefaultValue()
    {
-      fuzzyChk.setValue(true);
-      untranslatedChk.setValue(true);
+      optionsList.setSelectedIndex(0);
+      enterChk.setValue(false);
+      escChk.setValue(false);
 
-      configMap.put(ContentState.NeedReview, true);
-      configMap.put(ContentState.New, true);
+      configMap.put(UserConfigConstants.BUTTON_FUZZY, true);
+      configMap.put(UserConfigConstants.BUTTON_UNTRANSLATED, true);
+      configMap.put(UserConfigConstants.BUTTON_ENTER, false);
+      configMap.put(UserConfigConstants.BUTTON_ESC, false);
    }
 
    public void toggleDisplay(final UIObject target)
    {
-      if (isHidden)
+      if (!isShowing())
       {
-         isHidden = false;
          showRelativeTo(target);
       }
-      else
-      {
-         isHidden = true;
+       else if (isShowing())
+       {
          hide();
-      }
+       }
    }
 }
 

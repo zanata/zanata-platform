@@ -41,6 +41,12 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Alt+Up")
    String prevEntryShortcut();
 
+   @DefaultMessage("First Entry")
+   String firstEntry();
+
+   @DefaultMessage("Last Entry")
+   String lastEntry();
+
    @DefaultMessage("Next Fuzzy")
    String nextFuzzy();
 
@@ -68,10 +74,13 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Save as Approved (Ctrl+Enter)")
    String editSaveShortcut();
 
+   @DefaultMessage("Save as Approved (Enter)")
+   String editSavewithEnterShortcut();
+
    @DefaultMessage("Cancel")
    String editCancelShortcut();
 
-   @DefaultMessage("Configure navigation shortcut key")
+   @DefaultMessage("Configure key/button behaviour")
    String configurationButton();
 
    // @DefaultMessage("Copy")

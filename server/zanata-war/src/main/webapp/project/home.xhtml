@@ -33,7 +33,7 @@
         <rich:dataTable id="projectList" 
             rows="#{projectAction.pageSize}"  columnsWidth="200px,200px,80px" 
             value="#{projectAction.projectPagedListDataModel}" var="project">
-				<rich:column sortBy="#{project.slug}">
+				<rich:column sortBy="#{project.name}">
 				     <f:facet name="header">Project Name</f:facet>
 					       <s:link id="project" styleClass="table_link" value="#{project.name}"  propagation="none"
 						     view="/project/project.xhtml"> 
@@ -51,6 +51,7 @@
 						</h:outputText>	            		
 	        		</rich:column>
         </rich:dataTable>
+        <rich:spacer height="15" />
 	 <rich:datascroller align="center" for="projectList" maxPages="10"
 		    page="#{projectAction.scrollerPage}" id="sc2" reRender="scroller" />    
 	</a4j:form>

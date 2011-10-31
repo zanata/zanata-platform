@@ -1,5 +1,22 @@
 # Zanata change log summary
 
+## zanata-1.4.2
+ * Language team coordinator: https://bugzilla.redhat.com/show_bug.cgi?id=742083
+  * Users now have to ask before joining a language team
+  * Coordinator can add and remove team members
+  * Contact coordinators
+ * Contact server admins: https://bugzilla.redhat.com/show_bug.cgi?id=742854
+ * First/last entry button: https://bugzilla.redhat.com/show_bug.cgi?id=743783
+ * Load project pages faster: https://bugzilla.redhat.com/show_bug.cgi?id=744114
+ * Option for Enter to save translation: https://bugzilla.redhat.com/show_bug.cgi?id=744671
+ * Sort projects by name, not ID: https://bugzilla.redhat.com/show_bug.cgi?id=746859
+ * Make newlines visible to reduce newline mismatch errors in translations: https://bugzilla.redhat.com/show_bug.cgi?id=740122
+ * Improve shortcut keys: https://bugzilla.redhat.com/show_bug.cgi?id=740191
+ * Fix tab order: editor cell -> Save as Approved -> Save as Fuzzy -> Cancel
+ * Save as Fuzzy now leaves the cell editor open: https://bugzilla.redhat.com/show_bug.cgi?id=746870
+ * Modal navigation: next fuzzy, untranslated, fuzzy or untranslated: https://bugzilla.redhat.com/show_bug.cgi?id=743134
+ * Rearrange various UI elements to be more logical (profile page, document stats, project search field)
+
 ## zanata-1.4.1
  * Fixed: % completed should be calculated with words, not messages: https://bugzilla.redhat.com/show_bug.cgi?id=741523
  * Fixed: Selecting Administration submenu items does not always highlight the parent menu: https://bugzilla.redhat.com/show_bug.cgi?id=724867

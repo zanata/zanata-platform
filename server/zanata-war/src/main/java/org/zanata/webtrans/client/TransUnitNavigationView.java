@@ -22,8 +22,8 @@ package org.zanata.webtrans.client;
 
 import java.util.Map;
 
-import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.editor.table.NavigationMessages;
+import org.zanata.webtrans.client.ui.UserConfigConstants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -44,7 +44,7 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
    }
 
    @UiField
-   Image nextEntry, prevEntry, prevFuzzyOrUntranslated, nextFuzzyOrUntranslated, configure;
+   Image nextEntry, prevEntry, prevState, nextState, configure, firstEntry, lastEntry;
 
    private final NavigationMessages messages;
 
@@ -60,45 +60,47 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
 
       prevEntry.setTitle(messages.actionToolTip(messages.prevEntry(), messages.prevEntryShortcut()));
       nextEntry.setTitle(messages.actionToolTip(messages.nextEntry(), messages.nextEntryShortcut()));
-      setFuzzyAndUntranslatedModeTooltip();
+      firstEntry.setTitle(messages.firstEntry());
+      lastEntry.setTitle(messages.lastEntry());
+      setFuzzyUntranslatedModeTooltip();
       configure.setTitle(messages.configurationButton());
    }
 
-   public void setNavModeTooltip(Map<ContentState, Boolean> configMap)
+   public void setNavModeTooltip(Map<String, Boolean> configMap)
    {
-      boolean isFuzzy = configMap.get(ContentState.NeedReview);
-      boolean isUntranslated = configMap.get(ContentState.New);
+      boolean fuzzyMode = configMap.get(UserConfigConstants.BUTTON_FUZZY);
+      boolean untranslatedMode = configMap.get(UserConfigConstants.BUTTON_UNTRANSLATED);
 
-      if (isFuzzy && !isUntranslated)
+      if (fuzzyMode && !untranslatedMode)
       {
          setFuzzyModeTooltip();
       }
-      else if (isUntranslated && !isFuzzy)
+      else if (untranslatedMode && !fuzzyMode)
       {
          setUntranslatedModeTooltip();
       }
-      else
+      else if (untranslatedMode && fuzzyMode)
       {
-         setFuzzyAndUntranslatedModeTooltip();
+         setFuzzyUntranslatedModeTooltip();
       }
    }
 
    private void setFuzzyModeTooltip()
    {
-      prevFuzzyOrUntranslated.setTitle(messages.actionToolTip(messages.prevFuzzy(), messages.prevFuzzyOrUntranslatedShortcut()));
-      nextFuzzyOrUntranslated.setTitle(messages.actionToolTip(messages.nextFuzzy(), messages.nextFuzzyOrUntranslatedShortcut()));
+      prevState.setTitle(messages.actionToolTip(messages.prevFuzzy(), messages.prevFuzzyOrUntranslatedShortcut()));
+      nextState.setTitle(messages.actionToolTip(messages.nextFuzzy(), messages.nextFuzzyOrUntranslatedShortcut()));
    }
 
    private void setUntranslatedModeTooltip()
    {
-      prevFuzzyOrUntranslated.setTitle(messages.actionToolTip(messages.prevUntranslated(), messages.prevFuzzyOrUntranslatedShortcut()));
-      nextFuzzyOrUntranslated.setTitle(messages.actionToolTip(messages.nextUntranslated(), messages.nextFuzzyOrUntranslatedShortcut()));
+      prevState.setTitle(messages.actionToolTip(messages.prevUntranslated(), messages.prevFuzzyOrUntranslatedShortcut()));
+      nextState.setTitle(messages.actionToolTip(messages.nextUntranslated(), messages.nextFuzzyOrUntranslatedShortcut()));
    }
 
-   private void setFuzzyAndUntranslatedModeTooltip()
+   private void setFuzzyUntranslatedModeTooltip()
    {
-      prevFuzzyOrUntranslated.setTitle(messages.actionToolTip(messages.prevFuzzyOrUntranslated(), messages.prevFuzzyOrUntranslatedShortcut()));
-      nextFuzzyOrUntranslated.setTitle(messages.actionToolTip(messages.nextFuzzyOrUntranslated(), messages.nextFuzzyOrUntranslatedShortcut()));
+      prevState.setTitle(messages.actionToolTip(messages.prevFuzzyOrUntranslated(), messages.prevFuzzyOrUntranslatedShortcut()));
+      nextState.setTitle(messages.actionToolTip(messages.nextFuzzyOrUntranslated(), messages.nextFuzzyOrUntranslatedShortcut()));
    }
 
    @Override
@@ -114,15 +116,27 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
    }
 
    @Override
-   public HasClickHandlers getPrevFuzzyOrUntranslatedButton()
+   public HasClickHandlers getPrevStateButton()
    {
-      return prevFuzzyOrUntranslated;
+      return prevState;
    }
 
    @Override
-   public HasClickHandlers getNextFuzzyOrUntranslatedButton()
+   public HasClickHandlers getNextStateButton()
    {
-      return nextFuzzyOrUntranslated;
+      return nextState;
+   }
+
+   @Override
+   public HasClickHandlers getFirstEntryButton()
+   {
+      return firstEntry;
+   }
+
+   @Override
+   public HasClickHandlers getLastEntryButton()
+   {
+      return lastEntry;
    }
 
 

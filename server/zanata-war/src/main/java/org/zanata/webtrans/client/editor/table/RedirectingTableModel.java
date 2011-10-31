@@ -67,51 +67,63 @@ public class RedirectingTableModel<RowType> extends MutableTableModel<RowType>
       return tableModelHandler;
    }
 
-   public void gotoNextRow(int row)
+   public void gotoNextRow()
    {
       if (tableModelHandler != null)
-         tableModelHandler.gotoNextRow(row);
+         tableModelHandler.gotoNextRow(true);
    }
 
-   public void gotoPrevRow(int row)
+   public void gotoPrevRow()
    {
       if (tableModelHandler != null)
-         tableModelHandler.gotoPrevRow(row);
+         tableModelHandler.gotoPrevRow(true);
    }
 
-   public void gotoNextFuzzyNew(int row)
+   public void gotoFirstRow()
    {
       if (tableModelHandler != null)
-         tableModelHandler.nextFuzzyNewIndex(row);
+         tableModelHandler.gotoFirstRow();
    }
 
-   public void gotoPrevFuzzyNew(int row)
+   public void gotoLastRow()
    {
       if (tableModelHandler != null)
-         tableModelHandler.prevFuzzyNewIndex(row);
+         tableModelHandler.gotoLastRow();
    }
 
-   public void gotoNextFuzzy(int row)
+   public void gotoNextFuzzyNew()
    {
       if (tableModelHandler != null)
-         tableModelHandler.nextFuzzyIndex(row);
+         tableModelHandler.nextFuzzyNewIndex();
    }
 
-   public void gotoPrevFuzzy(int row)
+   public void gotoPrevFuzzyNew()
    {
       if (tableModelHandler != null)
-         tableModelHandler.prevFuzzyIndex(row);
+         tableModelHandler.prevFuzzyNewIndex();
    }
 
-   public void gotoNextNew(int row)
+   public void gotoNextFuzzy()
    {
       if (tableModelHandler != null)
-         tableModelHandler.nextNewIndex(row);
+         tableModelHandler.nextFuzzyIndex();
    }
 
-   public void gotoPrevNew(int row)
+   public void gotoPrevFuzzy()
    {
       if (tableModelHandler != null)
-         tableModelHandler.prevNewIndex(row);
+         tableModelHandler.prevFuzzyIndex();
+   }
+
+   public void gotoNextNew()
+   {
+      if (tableModelHandler != null)
+         tableModelHandler.nextNewIndex();
+   }
+
+   public void gotoPrevNew()
+   {
+      if (tableModelHandler != null)
+         tableModelHandler.prevNewIndex();
    }
 }

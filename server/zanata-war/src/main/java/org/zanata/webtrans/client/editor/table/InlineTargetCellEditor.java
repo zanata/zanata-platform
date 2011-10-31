@@ -25,8 +25,11 @@ import java.util.Map;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.editor.CheckKey;
+import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.events.EditTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
+import org.zanata.webtrans.client.ui.UserConfigConstants;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -37,11 +40,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
@@ -50,6 +50,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 
 public class InlineTargetCellEditor implements CellEditor<TransUnit>
@@ -140,10 +141,18 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private boolean isFocused = false;
    private boolean isOpened = false;
+   private boolean isCancelButtonFocused = false;
+
+   private boolean untranslatedMode = true, fuzzyMode = true;
+   private boolean isEnterKeySavesEnabled = false, isEscKeyCloseEditor = false;
 
    private int curRow;
    private int curCol;
    private HTMLTable table;
+
+   private String saveButtonShortcuts;
+   private String saveButtonwithEnterShortcuts;
+   private PushButton saveButton, fuzzyButton, cancelButton;
 
    /*
     * The minimum height of the target editor
@@ -155,6 +164,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     */
    public InlineTargetCellEditor(final NavigationMessages messages, CancelCallback<TransUnit> callback, EditRowCallback rowCallback, final EventBus eventBus)
    {
+      final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       // Wrap contents in a table
       layoutTable = new FlowPanel();
       layoutTable.setWidth("100%");
@@ -179,7 +189,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          @Override
          public void onBlur(BlurEvent event)
          {
-            Log.debug("text area focus lost");
             isFocused = false;
          }
       });
@@ -192,129 +201,100 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          }
       });
 
+      // KeyDown is used to override browser event
       textArea.addKeyDownHandler(new KeyDownHandler()
       {
-
          @Override
          public void onKeyDown(KeyDownEvent event)
          {
-            int keyCode = event.getNativeKeyCode();
-            // using keydown for Ctrl+S in order to override browser Ctrl+S on
-            // keydown (chrome)
-            if (event.isControlKeyDown() && keyCode == TableConstants.KEY_S)
+            eventBus.fireEvent(new EditTransUnitEvent());
+            checkKey.init(event.getNativeEvent());
+
+            if (checkKey.isCopyFromSourceKey())
+            {
+               cloneAction();
+            }
+            else if (checkKey.isNextEntryKey())
+            {
+               // See editCell() for saving event
+               saveAndMoveRow(NavigationType.NextEntry);
+            }
+            else if (checkKey.isPreviousEntryKey())
+            {
+               // See editCell() for saving event
+               saveAndMoveRow(NavigationType.PrevEntry);
+            }
+            else if (checkKey.isNextStateEntryKey())
+            {
+               saveAndMoveNextState(NavigationType.NextEntry);
+            }
+            else if (checkKey.isPreviousStateEntryKey())
+            {
+               saveAndMoveNextState(NavigationType.PrevEntry);
+            }
+            else if (checkKey.isSaveAsFuzzyKey())
             {
                event.stopPropagation();
                event.preventDefault(); // stop browser save
                acceptFuzzyEdit();
             }
-         }
-
-      });
-
-      textArea.addKeyUpHandler(new KeyUpHandler()
-      {
-         @Override
-         public void onKeyUp(KeyUpEvent event)
-         {
-            eventBus.fireEvent(new EditTransUnitEvent());
-            int keyCode = event.getNativeKeyCode();
-
-            // NB: if you change these, please change NavigationConsts too!
-            if (event.isControlKeyDown() && keyCode == KeyCodes.KEY_ENTER)
+            else if (checkKey.isSaveAsApprovedKey(isEnterKeySavesEnabled))
             {
+               event.stopPropagation();
+               event.preventDefault();
                saveApprovedAndMoveRow(NavigationType.NextEntry);
             }
-            // else if (event.isControlKeyDown() && event.isShiftKeyDown() &&
-            // event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
-            // { // was alt-e
-            // handleNextState(ContentState.NeedReview);
-            // }
-            // else if (event.isControlKeyDown() && event.isShiftKeyDown() &&
-            // event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP)
-            // { // was alt-m
-            // handlePrevState(ContentState.NeedReview);
-            // // } else if(event.isControlKeyDown() && event.getNativeKeyCode()
-            // // == KeyCodes.KEY_PAGEDOWN) { // bad in Firefox
-            // }
-            else if (event.isAltKeyDown() && keyCode == TableConstants.KEY_G)
+            else if (checkKey.isCloseEditorKey(isEscKeyCloseEditor))
             {
-               Log.info("InlineTargetCellEditor.java: Clone action.");
-               textArea.setValue(cellValue.getSource(), true);
-               textArea.setFocus(true);
+               cancelEdit();
             }
-            else if (event.isAltKeyDown() && (event.isDownArrow() || keyCode == TableConstants.KEY_K))
+            else if (checkKey.isUserTyping())
             {
-               // alt-down
-               // See editCell() for saving event
-               gotoRow(NavigationType.NextEntry);
-            }
-            else if (event.isAltKeyDown() && (event.isUpArrow() || keyCode == TableConstants.KEY_J))
-            {
-               // alt-up
-               // See editCell() for saving event
-               gotoRow(NavigationType.PrevEntry);
-            }
-            else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEDOWN)
-            {
-               // alt-pagedown
-               saveAndMoveNextState(NavigationType.NextEntry);
-            }
-            else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEUP)
-            {
-               // alt-pageup
-               saveAndMoveNextState(NavigationType.PrevEntry);
-            }
-            else if (!event.isAltKeyDown() && !event.isControlKeyDown())
-            {
+               // Resize as user types
                autoSize();
             }
-
-            // these shortcuts disabled because they conflict with basic text
-            // editing:
-            // else if (event.isControlKeyDown() && event.getNativeKeyCode() ==
-            // KeyCodes.KEY_HOME)
-            // { // ctrl-home
-            // cloneHandler.onClick(null);
-            // }
-            // else if (event.isControlKeyDown() && event.getNativeKeyCode() ==
-            // KeyCodes.KEY_END)
-            // { // ctrl-end
-            // cloneAndSaveHandler.onClick(null);
-            // }
          }
-
       });
-
       layoutTable.add(textArea);
 
       operationsPanel = new HorizontalPanel();
 
       operationsPanel.addStyleName("float-right-div");
       operationsPanel.setSpacing(4);
-      // layoutTable.add(operationsPanel);
 
-      // icon as the current state of the unit
-      // stateImage = new Image(resources.newUnit());
-      // operationsPanel.add(stateImage);
-
-      // PushButton doesn't allow to have images and text at the same time
       TableResources images = GWT.create(TableResources.class);
-      Image cancelButton = new Image(images.cellEditorCancel());
-      // cancelButton.setText(messages.editCancel());
-      cancelButton.setStyleName("gwt-Button");
-      cancelButton.setTitle(messages.editCancelShortcut());
-      cancelButton.addClickHandler(cancelHandler);
 
-      Image saveButton = new Image(images.cellEditorAccept());
-      // saveButton.setText(messages.editSave());
+      saveButton = new PushButton(new Image(images.cellEditorAccept()));
       saveButton.setStyleName("gwt-Button");
+      saveButtonShortcuts = messages.editSaveShortcut();
       saveButton.setTitle(messages.editSaveShortcut());
       saveButton.addClickHandler(acceptHandler);
+      saveButtonwithEnterShortcuts = messages.editSavewithEnterShortcut();
 
-      Image fuzzyButton = new Image(images.cellEditorFuzzy());
+      fuzzyButton = new PushButton(new Image(images.cellEditorFuzzy()));
       fuzzyButton.setStyleName("gwt-Button");
       fuzzyButton.setTitle(messages.saveAsFuzzy());
       fuzzyButton.addClickHandler(fuzzyHandler);
+
+      cancelButton = new PushButton(new Image(images.cellEditorCancel()));
+      cancelButton.setStyleName("gwt-Button");
+      cancelButton.setTitle(messages.editCancelShortcut());
+      cancelButton.addClickHandler(cancelHandler);
+      cancelButton.addFocusHandler(new FocusHandler(){
+         @Override
+         public void onFocus(FocusEvent event)
+         {
+            isCancelButtonFocused = true;
+         }
+      });
+      cancelButton.addBlurHandler(new BlurHandler(){
+
+         @Override
+         public void onBlur(BlurEvent event)
+         {
+            isCancelButtonFocused = false;
+         }
+      });
 
       operationsPanel.add(saveButton);
       operationsPanel.add(fuzzyButton);
@@ -322,15 +302,30 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       layoutTable.add(operationsPanel);
    }
 
+   public void cloneAction()
+   {
+      Log.info("InlineTargetCellEditor.java: Clone action.");
+      textArea.setValue(cellValue.getSource(), true);
+      textArea.setFocus(true);
+   }
+
    public void gotoRow(NavigationType nav)
    {
       if (nav == NavigationType.NextEntry)
       {
-         editRowCallback.gotoNextRow(curRow);
+         editRowCallback.gotoNextRow();
       }
       else if (nav == NavigationType.PrevEntry)
       {
-         editRowCallback.gotoPrevRow(curRow);
+         editRowCallback.gotoPrevRow();
+      }
+      else if (nav == NavigationType.FirstEntry)
+      {
+         editRowCallback.gotoFirstRow();
+      }
+      else if (nav == NavigationType.LastEntry)
+      {
+         editRowCallback.gotoLastRow();
       }
    }
 
@@ -338,11 +333,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       if (nav == NavigationType.NextEntry)
       {
-         editRowCallback.gotoNextNewRow(curRow);
+         editRowCallback.gotoNextNewRow();
       }
       else if (nav == NavigationType.PrevEntry)
       {
-         editRowCallback.gotoPrevNewRow(curRow);
+         editRowCallback.gotoPrevNewRow();
       }
    }
 
@@ -350,11 +345,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       if (nav == NavigationType.NextEntry)
       {
-         editRowCallback.gotoNextFuzzyNewRow(curRow);
+         editRowCallback.gotoNextFuzzyNewRow();
       }
       else if (nav == NavigationType.PrevEntry)
       {
-         editRowCallback.gotoPrevFuzzyNewRow(curRow);
+         editRowCallback.gotoPrevFuzzyNewRow();
       }
    }
 
@@ -362,11 +357,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       if (nav == NavigationType.NextEntry)
       {
-         editRowCallback.gotoNextFuzzyRow(curRow);
+         editRowCallback.gotoNextFuzzyRow();
       }
       else if (nav == NavigationType.PrevEntry)
       {
-         editRowCallback.gotoPrevFuzzyRow(curRow);
+         editRowCallback.gotoPrevFuzzyRow();
       }
    }
 
@@ -466,17 +461,21 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
    }
 
-   private boolean newMode = true, fuzzyMode = true;
+   public void saveAndMoveRow(NavigationType nav)
+   {
+      savePendingChange(true);
+      gotoRow(nav);
+   }
 
    public void saveAndMoveNextState(NavigationType nav)
    {
       savePendingChange(true);
       
-      if (newMode && fuzzyMode)
+      if (untranslatedMode && fuzzyMode)
       {
          gotoFuzzyAndNewRow(nav);
       }
-      else if (newMode)
+      else if (untranslatedMode)
       {
          gotoNewRow(nav);
       }
@@ -487,7 +486,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    }
 
    /**
-    * save the contents of the cell as approved and move to the next row.
+    * save the contents of the cell as approved and move to next fuzzy or
+    * untranslated
     */
    private void saveApprovedAndMoveRow(NavigationType nav)
    {
@@ -517,6 +517,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       restoreView();
       textArea.setFocus(false);
       isOpened = false;
+      isFocused = false;
 
       // Send the new cell value to the callback
       curCallback.onComplete(curCellEditInfo, cellValue);
@@ -551,6 +552,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       restoreView();
       textArea.setFocus(false);
       isOpened = false;
+      isFocused = false;
 
       // Call the callback
       if (curCallback != null)
@@ -590,11 +592,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       return true;
    }
 
-   public int getCurrentRow()
-   {
-      return curRow;
-   }
-
    public void autoSize()
    {
       int initialLines = 3;
@@ -610,9 +607,32 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
    }
 
-   public void setNavMode(Map<ContentState, Boolean> configMap)
+   public void updateKeyBehaviour(Map<String, Boolean> configMap)
    {
-      newMode = configMap.get(ContentState.New);
-      fuzzyMode = configMap.get(ContentState.NeedReview);
+      untranslatedMode = configMap.get(UserConfigConstants.BUTTON_UNTRANSLATED);
+      fuzzyMode = configMap.get(UserConfigConstants.BUTTON_FUZZY);
+
+      isEnterKeySavesEnabled = configMap.get(UserConfigConstants.BUTTON_ENTER);
+      if (isEnterKeySavesEnabled)
+      {
+         saveButton.setTitle(saveButtonwithEnterShortcuts);
+      }
+      else
+      {
+         saveButton.setTitle(saveButtonShortcuts);
+      }
+
+      isEscKeyCloseEditor = configMap.get(UserConfigConstants.BUTTON_ESC);
+   }
+
+   public boolean isCancelButtonFocused()
+   {
+      return isCancelButtonFocused;
+   }
+
+   public void setCancelButtonFocused(boolean isCancelButtonFocused)
+   {
+      this.isCancelButtonFocused = isCancelButtonFocused;
+      cancelButton.setFocus(isCancelButtonFocused);
    }
 }

@@ -28,68 +28,48 @@
         <rich:jQuery selector="#tab_profile" query="addClass('ui-tabs-selected')" />
         <h1>#{personHome.instance.account.username}</h1>
         <br/>
-        <h2>#{messages['jsf.MyProjects']}</h2>
-        <h:outputText value="None Available" rendered="#{empty personHome.instance.maintainerProjects}"/>
-         <h:form>
-         <rich:dataTable columnsWidth="200px,200px,80px" 
-            value="#{personHome.instance.maintainerProjects.toArray()}" var="project">
-                <rich:column sortBy="#{project.slug}">
-                     <f:facet name="header">Project Name</f:facet>
-                           <s:link id="project" styleClass="table_link" value="#{project.name}"  propagation="none"
-                             view="/project/project.xhtml"> 
-                            <f:param name="slug" value="#{project.slug}"/>
-                        </s:link>
-                    </rich:column>
-                <rich:column>
-                        <f:facet name="header">Description</f:facet>
-                        <h:outputText value="#{project.description}" />
-                    </rich:column>
-                <rich:column>
-                        <f:facet name="header">Iterations</f:facet>
-                        <ui:repeat value="#{project.projectIterations}" var="t">
-                            <span style="margin-right: 1pt; margin-left: 1pt;">#{t.slug}</span>
-                        </ui:repeat>                   
-                    </rich:column>
-        </rich:dataTable>
-        </h:form>
-        <br/>
-        <h2>#{messages['jsf.MyLanguages']}</h2>
-        <h:outputText value="None Available" rendered="#{empty personHome.instance.languageMemberships}"/>
-        <h:form>
-            <rich:dataTable value="#{personHome.instance.languageMemberships.toArray()}" var="language">
-                <rich:column sortBy="#{language.localeId.id}">
-                    <f:facet name="header">#{messages['jsf.Language']}</f:facet>
-                    <s:link view="/language/language.xhtml" propagation="none" value="#{language.localeId.id}" styleClass="table_link">
-                        <f:param name="id" value="#{language.localeId.id}" />
-                    </s:link>
-                </rich:column>
-                <rich:column sortBy="#{language.retrieveDisplayName()}">
-                    <f:facet name="header">#{messages['jsf.Name']}</f:facet>
-                    #{language.retrieveDisplayName()}
-                </rich:column>
-                <rich:column >
-                    <f:facet name="header">#{messages['jsf.NativeName']}</f:facet>
-                    #{language.retrieveNativeName()}
-                </rich:column>
-                <rich:column sortBy="#{language.members.size}">
-                    <f:facet name="header">#{messages['jsf.Members']}</f:facet>
-                    #{language.members.size}
-                </rich:column>
-            </rich:dataTable>
-        </h:form>
-        <br/>
+       
         <h2>#{messages['jsf.ApiKey']}</h2>
         <h:form>
           <s:token allowMultiplePosts="true" />
-          <s:span id="no_api_key" rendered="#{personHome.instance.account.apiKey == null}">#{messages['jsf.NotGenerated']}</s:span>
-          <s:fragment id="api_key" rendered="#{personHome.instance.account.apiKey != null}"> 
-            <p>#{messages['jsf.YourCurrentApiKeyIs']}
-              <code>#{personHome.instance.account.apiKey}</code> 
-            </p>
-          </s:fragment>
           <h:commandButton action="#{personHome.regenerateApiKey}"
               value="Regenerate API Key" reRender="api_key,no_api_key"
               onclick="if (!confirm('Are you sure you want to regenerate your API Key?')) return false" />
-	    </h:form>
+          <br/><br/>
+          <s:span id="no_api_key" rendered="#{personHome.instance.account.apiKey == null}">#{messages['jsf.NotGenerated']}</s:span>
+          <s:fragment id="api_key" rendered="#{personHome.instance.account.apiKey != null}"> 
+            <p>#{messages['jsf.YourCurrentApiKeyIs']}
+              <code class="bold-larger">#{personHome.instance.account.apiKey}</code> 
+            </p>
+            <div class="code">
+                <div>[servers]</div>
+                <div>#{personHome.urlKeyLabel}#{personHome.host}</div>
+                <div>#{personHome.usernameKeyLabel}#{personHome.instance.account.username}</div>
+                <div>#{personHome.apiKeyLabel}#{personHome.instance.account.apiKey}</div>
+            </div>
+          </s:fragment>
+        </h:form>
+        <br/>
+        <h2>#{messages['jsf.MaintainedProjects']}</h2>
+        <h:outputText value="None Available" rendered="#{empty personHome.instance.maintainerProjects}"/>
+         <h:form>
+             <rich:dataGrid value="#{personHome.instance.maintainerProjects.toArray()}" var="project" columns="2" styleClass="noBorderTable" style="border:0px">
+                 <s:link id="project" styleClass="table_link" value="#{project.name} " propagation="none"
+                              view="/project/project.xhtml">
+                    <f:param name="slug" value="#{project.slug}"/>
+                </s:link>
+             </rich:dataGrid>
+        </h:form>
+        <br/>
+        <br/>
+        <h2>#{messages['jsf.LanguageTeams']}</h2>
+        <h:outputText value="None Available" rendered="#{empty personHome.instance.languageMemberships}"/>
+        <h:form>
+            <rich:dataGrid value="#{personHome.instance.languageMemberships.toArray()}" var="language" columns="6" styleClass="noBorderTable" style="border:0px">
+                <s:link view="/language/language.xhtml" propagation="none" value="#{language.localeId.id}" styleClass="table_link">
+                        <f:param name="id" value="#{language.localeId.id}" />
+                    </s:link>
+            </rich:dataGrid>
+        </h:form>
     </ui:define>
 </ui:composition>

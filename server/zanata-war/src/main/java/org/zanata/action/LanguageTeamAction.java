@@ -33,10 +33,15 @@ import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage.Severity;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.LocaleDAO;
+import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
+import org.zanata.model.HLocaleMember;
+import org.zanata.model.HPerson;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.service.LocaleService;
 
@@ -45,21 +50,36 @@ import org.zanata.service.LocaleService;
 public class LanguageTeamAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
+   
    @In
    private LanguageTeamService languageTeamServiceImpl;
+   
+   @In
+   private LocaleDAO localeDAO;
+   
+   @In
+   private PersonDAO personDAO;
+   
    @In
    private LocaleService localeServiceImpl;
+   
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
+   
+   @In
+   Identity identity;
+   
    @Logger
    Log log;
+   
    @In
    private List<HLocale> memberLanguage;
 
    private String language;
    private HLocale locale;
    private boolean contained;
-
+   private String searchTerm;
+   private List<HPerson> searchResults;
 
    public String getLanguage()
    {
@@ -69,6 +89,21 @@ public class LanguageTeamAction implements Serializable
    public void setLanguage(String language)
    {
       this.language = language;
+   }
+   
+   public String getSearchTerm()
+   {
+      return searchTerm;
+   }
+
+   public void setSearchTerm(String searchTerm)
+   {
+      this.searchTerm = searchTerm;
+   }
+
+   public List<HPerson> getSearchResults()
+   {
+      return searchResults;
    }
 
    public void initLocale()
@@ -132,6 +167,55 @@ public class LanguageTeamAction implements Serializable
       Events.instance().raiseEvent("personLeftTribe");
       log.info("{0} left tribe {1}", authenticatedAccount.getUsername(), this.language);
       FacesMessages.instance().add("You have left the {0} language team", this.locale.retrieveNativeName());
+   }
+   
+   public void saveTeamCoordinator( HLocaleMember member )
+   {
+      this.localeDAO.makePersistent(this.locale);
+      this.localeDAO.flush();
+      if( member.isCoordinator() )
+      {
+         FacesMessages.instance().add("{0} has been made a Team Coordinator", member.getPerson().getAccount().getUsername());
+      }
+      else
+      {
+         FacesMessages.instance().add("{0} has been removed from Team Coordinators", member.getPerson().getAccount().getUsername());
+      }
+   }
+   
+   public void addTeamMember( final Long personId )
+   {
+      this.languageTeamServiceImpl.joinLanguageTeam(this.language, personId);
+      // reload the locale for changes
+      this.locale = localeServiceImpl.getByLocaleId(new LocaleId(language));
+   }
+   
+   public void removeMembership( HLocaleMember member )
+   {
+      this.languageTeamServiceImpl.leaveLanguageTeam(this.language, member.getPerson().getId());
+      this.locale.getMembers().remove(member);
+   }
+   
+   public boolean isPersonInTeam( final Long personId )
+   {
+      for( HLocaleMember lm : this.locale.getMembers() )
+      {
+         if( lm.getPerson().getId().equals( personId ) )
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+   
+   public void searchForTeamMembers()
+   {
+      this.searchResults = this.personDAO.findAllContainingName( this.searchTerm );
+   }   
+   
+   public boolean checkLocalePermission( String action )
+   {
+      return identity.hasPermission(this.locale, action);
    }
 
 }

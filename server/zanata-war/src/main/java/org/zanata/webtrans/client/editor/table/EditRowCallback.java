@@ -3,19 +3,23 @@ package org.zanata.webtrans.client.editor.table;
 
 public interface EditRowCallback
 {
-   void gotoNextRow(int row);
+   void gotoNextRow();
 
-   void gotoPrevRow(int row);
+   void gotoPrevRow();
 
-   void gotoNextFuzzyNewRow(int row);
+   void gotoFirstRow();
 
-   void gotoPrevFuzzyNewRow(int row);
+   void gotoLastRow();
 
-   void gotoNextFuzzyRow(int row);
+   void gotoNextFuzzyNewRow();
 
-   void gotoPrevFuzzyRow(int row);
+   void gotoPrevFuzzyNewRow();
 
-   void gotoNextNewRow(int row);
+   void gotoNextFuzzyRow();
 
-   void gotoPrevNewRow(int row);
+   void gotoPrevFuzzyRow();
+
+   void gotoNextNewRow();
+
+   void gotoPrevNewRow();
 }
