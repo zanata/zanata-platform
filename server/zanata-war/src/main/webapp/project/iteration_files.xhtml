@@ -12,9 +12,24 @@
 	<ui:define name="center_content">
 	    <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 	
-	    <h1>#{messages['jsf.ProjectId']}: #{projectIterationFilesAction.projectSlug}</h1>
-        <h1>#{messages['jsf.Iteration']}: #{projectIterationFilesAction.iterationSlug}</h1>
-        <h1>#{messages['jsf.iteration.files.LocaleId']}: #{projectIterationFilesAction.localeId}</h1>
+	    <h1>
+	       #{messages['jsf.ProjectId']}:&nbsp;
+	       <s:link view="/project/view/#{projectIterationFilesAction.projectSlug}">
+	           #{projectIterationFilesAction.projectSlug}
+	       </s:link>
+	    </h1>
+        <h1>
+            #{messages['jsf.Iteration']}:&nbsp;
+            <s:link view="/project/view/#{projectIterationFilesAction.projectSlug}">
+                #{projectIterationFilesAction.iterationSlug}
+            </s:link>
+        </h1>
+        <h1>
+            #{messages['jsf.iteration.files.LocaleId']}:&nbsp;
+            <s:link view="/language/view/#{projectIterationFilesAction.localeId}">
+                #{projectIterationFilesAction.localeId}
+            </s:link>
+        </h1>
 	
 	    <rich:panel id="iteration-files-panel">
 	        <f:facet name="header">
@@ -71,7 +86,7 @@
 	   
 	   <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
 	    <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-	    <s:link styleClass="action_link" rendered="#{true}" value="#{messages['jsf.iteration.files.DownloadAllFiles']}" view="/project/edit.xhtml" propagation="none"/>
+	    <s:link styleClass="action_link" rendered="#{true}" value="#{messages['jsf.iteration.files.DownloadAllFiles']}" view="/rest/projects/p/#{projectIterationFilesAction.projectSlug}/iterations/i/#{projectIterationFilesAction.iterationSlug}/file/#{projectIterationFilesAction.localeId}" propagation="none"/>
 	  </rich:panel>
 	   
 	</ui:define>

@@ -22,6 +22,9 @@ package org.zanata.rest.service;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -104,9 +107,34 @@ public class FileService implements TranslationFileResource
       return response;
    }
    
+   @Override
+   @GET
+   @Path(ALL_FILES_DOWNLOAD_TEMPLATE)
+   // /file/{locale}
+   public Response downloadAllFiles( @PathParam("locale") String locale )
+   {
+      final Response response; 
+      StreamingOutput output = this.getStreamForFileExtension("zip", null, locale);
+      
+      if( output == null )
+      {
+         response = Response.status(Status.NOT_FOUND).build();
+      }
+      else
+      {
+         response = Response.ok()
+               .header("Content-Disposition", "attachment; filename=\"" + this.iterationSlug + "-" + locale + "\"")
+               .entity(output)
+               .build();
+      }
+      
+      return response;
+   }
+   
    
    private StreamingOutput getStreamForFileExtension( String fileExt, String docId, String locale )
    {
+      // PO files
       if( fileExt.equalsIgnoreCase("po") )
       {
          HDocument document = this.documentDAO.getByProjectIterationAndDocId(this.projectSlug, this.iterationSlug, docId);
@@ -118,12 +146,27 @@ public class FileService implements TranslationFileResource
                
          return new POStreamingOutput(res, transRes);
       }
+      // Zip files for the whole iteration
+      else if( fileExt.equalsIgnoreCase("zip") && docId == null )
+      {
+         final List<HDocument> allIterationDocs = this.documentDAO.getAllByProjectIteration(this.projectSlug, this.iterationSlug);
+         
+         final TranslationsResource[] transRes = this.translationResourcesService.loadTranslations(allIterationDocs, new LocaleId(locale));
+         final Resource[] res = new Resource[ allIterationDocs.size() ];
+         
+         for( int i=0; i<allIterationDocs.size(); i++ )
+         {
+            res[i] = this.resourceUtils.buildResource( allIterationDocs.get(i) );
+         }
+         
+         return new ZippedPOStreamingOutput(res, transRes);
+      }
       return null;
    }
    
    
    /*
-    * Private class that implements PO file writing of a document
+    * Private class that implements PO file streaming of a document.
     */
    private class POStreamingOutput implements StreamingOutput
    {
@@ -141,6 +184,46 @@ public class FileService implements TranslationFileResource
       {         
          PoWriter2 writer = new PoWriter2();
          writer.writePo(output, this.resource, this.transRes);
+      }
+   }
+   
+   
+   /*
+    * Private class that implements multi-file (as a zip archive) streaming for sets of PO files.
+    */
+   private class ZippedPOStreamingOutput implements StreamingOutput
+   {
+      private Resource[] resources;
+      private TranslationsResource[] transResources;
+      
+      public ZippedPOStreamingOutput( Resource[] resources, TranslationsResource[] transResources )
+      {
+         if( resources.length != transResources.length )
+         {
+            throw new RuntimeException("The number of resources must match the number of Translation Resources");
+         }
+         
+         this.resources = resources;
+         this.transResources = transResources;
+      }
+      
+      @Override
+      public void write(OutputStream output) throws IOException, WebApplicationException
+      {
+         final ZipOutputStream zipOutput = new ZipOutputStream(output);
+         zipOutput.setLevel(9);
+         zipOutput.setMethod(ZipOutputStream.DEFLATED);
+         final PoWriter2 poWriter = new PoWriter2();
+         
+         for( int i=0; i<this.resources.length; i++ )
+         {
+            zipOutput.putNextEntry( new ZipEntry( this.resources[i].getName() + ".po" ) );
+            poWriter.writePo(zipOutput, this.resources[i], this.transResources[i]);
+            zipOutput.closeEntry();
+         }
+         
+         zipOutput.flush();
+         zipOutput.close();
       }
    }
 }

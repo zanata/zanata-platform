@@ -1,6 +1,10 @@
 package org.zanata.dao;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -74,6 +78,39 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
             .setParameter("state", ContentState.New)
             .list();      
       // @formatter:on
+   }
+   
+   @SuppressWarnings("unchecked")
+   public Map<HDocument, List<HTextFlowTarget>> findTranslations(Collection<HDocument> documents, LocaleId localeId)
+   {
+      // @formatter:off
+      List<HTextFlowTarget> targets = getSession().createQuery(
+         "select t from HTextFlowTarget t where " + 
+         "t.textFlow.document in (:documents) " +
+         "and t.locale.localeId =:localeId " + 
+         "and t.state !=:state " +
+         "and t.textFlow.obsolete=false " + 
+         "order by t.textFlow.pos")
+            .setParameterList("documents", documents)
+            .setParameter("localeId", localeId)
+            .setParameter("state", ContentState.New)
+            .list();      
+      // @formatter:on
+      
+      // Pre-fill the result map with empty lists
+      final Map<HDocument, List<HTextFlowTarget>> mappedResults = new HashMap<HDocument, List<HTextFlowTarget>>();
+      for( HDocument doc : documents )
+      {
+         mappedResults.put(doc, new ArrayList<HTextFlowTarget>());
+      }
+      
+      for( HTextFlowTarget t : targets )
+      {
+         String docId = t.getTextFlow().getDocument().getDocId();
+         mappedResults.get(docId).add(t);
+      }
+      
+      return mappedResults;
    }
    
    public HTextFlowTarget findLatestEquivalentTranslation(HTextFlow textFlow, HLocale locale)

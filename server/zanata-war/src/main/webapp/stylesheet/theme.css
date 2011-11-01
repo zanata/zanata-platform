@@ -165,6 +165,12 @@ img.errors {
 	padding-left: 2px;
 }
 
+.rich-stglpanel {
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
 .rich-stglpanel-body {
 	overflow: auto;
 }

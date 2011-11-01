@@ -64,7 +64,7 @@
       </h:outputLink>
       <rich:spacer width="10px" />
       <s:link
-          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation')}"
+          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation', tribe)}"
           view="/project/iteration_files.xhtml"
           propagation="none"
           value="#{messages['jsf.Files']}">

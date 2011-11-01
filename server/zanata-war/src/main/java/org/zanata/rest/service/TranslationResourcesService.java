@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
@@ -607,17 +608,33 @@ public class TranslationResourcesService implements TranslationResourcesResource
          return Response.status(Status.NOT_FOUND).build();
       }
 
-      HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
+      TranslationsResource translationResource = this.loadTranslations(id, locale);
 
-      List<HTextFlowTarget> hTargets = textFlowTargetDAO.findTranslations(document, locale);
-      TranslationsResource translationResource = new TranslationsResource();
-      resourceUtils.transferToTranslationsResourceExtensions(document, translationResource.getExtensions(true), extensions, hLocale, hTargets);
-
-      if (hTargets.isEmpty() && translationResource.getExtensions(true).isEmpty())
+      if (translationResource.getTextFlowTargets().isEmpty() && translationResource.getExtensions(true).isEmpty())
       {
          return Response.status(Status.NOT_FOUND).build();
       }
 
+      // TODO lastChanged
+      return Response.ok().entity(translationResource).tag(etag).build();
+
+   }
+   
+   /**
+    * Load a set of translations. 
+    * @param id The Document's id.
+    * @param locale The locale for the translated document.
+    * @return A set of Translation Resources loaded from the database.
+    */
+   public TranslationsResource loadTranslations(String id, LocaleId locale)
+   {
+      HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
+      HDocument document = documentDAO.getByDocId(this.retrieveIteration(), id);
+      List<HTextFlowTarget> hTargets = textFlowTargetDAO.findTranslations(document, locale);
+      TranslationsResource translationResource = new TranslationsResource();
+      
+      resourceUtils.transferToTranslationsResourceExtensions(document, translationResource.getExtensions(true), extensions, hLocale, hTargets);
+      
       for (HTextFlowTarget hTarget : hTargets)
       {
          TextFlowTarget target = new TextFlowTarget();
@@ -626,10 +643,45 @@ public class TranslationResourcesService implements TranslationResourcesResource
          resourceUtils.transferToTextFlowTargetExtensions(hTarget, target.getExtensions(true), extensions);
          translationResource.getTextFlowTargets().add(target);
       }
-
-      // TODO lastChanged
-      return Response.ok().entity(translationResource).tag(etag).build();
-
+      
+      return translationResource;
+   }
+   
+   /**
+    * Load a set of translations for multiple documents. This method is aimed at being 
+    * vastly efficient over calling {@link TranslationResourcesService#loadTranslations(String, LocaleId)} 
+    * multiple times.
+    *  
+    * @param documents The documents for which to load translations.
+    * @param locale The locale for the translated document.
+    * @return A set of Translation Resources loaded from the database and ordered to match the provided document list.
+    */
+   public TranslationsResource[] loadTranslations(List<HDocument> documents, LocaleId locale)
+   {
+      HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
+      Map<HDocument, List<HTextFlowTarget>> hTargets = textFlowTargetDAO.findTranslations(documents, locale);
+      TranslationsResource[] translationResources = new TranslationsResource[ documents.size() ];
+      int i = 0;
+      
+      for( HDocument doc : documents )
+      {
+         List<HTextFlowTarget> docTargets = hTargets.get( doc );
+         TranslationsResource transRes = new TranslationsResource();
+         translationResources[i++] = transRes;
+         resourceUtils.transferToTranslationsResourceExtensions(doc, transRes.getExtensions(true), extensions, 
+               hLocale, docTargets);
+         
+         for (HTextFlowTarget hTarget : docTargets)
+         {
+            TextFlowTarget target = new TextFlowTarget();
+            target.setResId(hTarget.getTextFlow().getResId());
+            resourceUtils.transferToTextFlowTarget(hTarget, target);
+            resourceUtils.transferToTextFlowTargetExtensions(hTarget, target.getExtensions(true), extensions);
+            transRes.getTextFlowTargets().add(target);
+         }
+      }
+      
+      return translationResources;
    }
 
    @Override

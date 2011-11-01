@@ -1,6 +1,7 @@
 package org.zanata.dao;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -159,7 +160,8 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       
       @SuppressWarnings("unchecked")
       final List<HDocument> documents =
-         session.createQuery("from HDocument d where d.projectIteration.slug = :iterationSlug " +
+         session.createQuery("from HDocument d " +
+         		"where d.projectIteration.slug = :iterationSlug " +
          		"and d.projectIteration.project.slug = :projectSlug")
          		.setParameter("iterationSlug", iterationSlug)
          		.setParameter("projectSlug", projectSlug)
