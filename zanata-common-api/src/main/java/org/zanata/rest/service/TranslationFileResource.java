@@ -31,7 +31,9 @@ public interface TranslationFileResource
    public static final String FILE_NAME_TEMPLATE = "/{docId}";
    public static final String LOCALE_TEMPLATE = "/{locale}";
    public static final String FILE_EXTENSION_TEMPLATE = ".{fileExt}";
+   
    public static final String FILE_DOWNLOAD_TEMPLATE = LOCALE_TEMPLATE + FILE_NAME_TEMPLATE + FILE_EXTENSION_TEMPLATE;
+   public static final String ALL_FILES_DOWNLOAD_TEMPLATE = LOCALE_TEMPLATE; 
    
    @GET
    @Path(FILE_DOWNLOAD_TEMPLATE)
@@ -39,4 +41,8 @@ public interface TranslationFileResource
    public Response downloadTranslationFile( @PathParam("locale") String locale, @PathParam("docId") String docId, 
          @PathParam("fileExt") String fileExtension );
    
+   @GET
+   @Path(ALL_FILES_DOWNLOAD_TEMPLATE)
+   // /file/{locale}
+   public Response downloadAllFiles( @PathParam("locale") String locale );
 }
