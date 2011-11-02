@@ -30,6 +30,8 @@
 					<g:FlowPanel height="50%">
 					    <g:Label ui:field="resIdLabel" styleName="{style.tuDetailsLabel}" />
 					    <g:Label ui:field="resId" />
+					    <g:Label ui:field="msgContextLabel" styleName="{style.tuDetailsLabel}" />
+                        <g:Label ui:field="msgContext" />
 						<g:Label ui:field="sourceCommentLabel" styleName="{style.tuDetailsLabel}" />
 						<g:Label ui:field="sourceComment" />
 					</g:FlowPanel>
