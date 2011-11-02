@@ -554,22 +554,10 @@
 				<version>3.0</version>
 			</dependency>
 
-
-			<!-- These snapshots include support for shared sessions http://code.google.com/p/gwteventservice/issues/detail?id=15 -->
 			<dependency>
 				<groupId>com.google.code.gwteventservice</groupId>
 				<artifactId>gwteventservice</artifactId>
-				<version>1.2.0-20100906.075839-2</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.code.gwteventservice</groupId>
-				<artifactId>eventservice-rpc</artifactId>
-				<version>1.2.0-20100906.075839-4</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.code.gwteventservice</groupId>
-				<artifactId>eventservice</artifactId>
-				<version>1.2.0-20100906.075839-2</version>
+				<version>1.2.0-RC1</version>
 			</dependency>
 
 			<dependency>
