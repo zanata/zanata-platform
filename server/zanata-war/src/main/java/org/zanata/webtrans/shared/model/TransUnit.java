@@ -22,6 +22,7 @@ public class TransUnit implements IsSerializable, Serializable
    private String source;
    private String sourceComment;
    private String target;
+   private String msgContext;
    private String lastModifiedBy;
    private String lastModifiedTime;
 
@@ -51,7 +52,7 @@ public class TransUnit implements IsSerializable, Serializable
    {
    }
 
-   public TransUnit(TransUnitId id, String resId, LocaleId localeId, String source, String sourceComment, String target, ContentState status, String lastModifiedBy, String lastModifiedTime)
+   public TransUnit(TransUnitId id, String resId, LocaleId localeId, String source, String sourceComment, String target, ContentState status, String lastModifiedBy, String lastModifiedTime, String msgContext)
    {
       this.id = id;
       this.resId = resId;
@@ -62,11 +63,12 @@ public class TransUnit implements IsSerializable, Serializable
       this.status = status;
       this.lastModifiedBy = lastModifiedBy;
       this.lastModifiedTime = lastModifiedTime;
+      this.msgContext = msgContext;
    }
 
    public TransUnit(TransUnit other)
    {
-      this(other.id, other.resId, other.localeId, other.source, other.sourceComment, other.target, other.status, other.lastModifiedBy, other.lastModifiedTime);
+      this(other.id, other.resId, other.localeId, other.source, other.sourceComment, other.target, other.status, other.lastModifiedBy, other.lastModifiedTime, other.msgContext);
    }
 
    public static final TransUnit copy(TransUnit other)
@@ -127,5 +129,15 @@ public class TransUnit implements IsSerializable, Serializable
    public void setStatus(ContentState status)
    {
       this.status = status;
+   }
+
+   public String getMsgContext()
+   {
+      return msgContext;
+   }
+
+   public void setMsgContext(String msgContext)
+   {
+      this.msgContext = msgContext;
    }
 }

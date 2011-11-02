@@ -55,7 +55,7 @@ final class DummyGetTransUnitCommand implements Command
          if (state != ContentState.New)
             target = "<world> \"" + (i + 1) + "\"</world>";
          TransUnitId tuid = new TransUnitId(i + 1);
-         TransUnit unit = new TransUnit(tuid, tuid.toString(), localeId, source, sourceComment, target, state, "peter", "");
+         TransUnit unit = new TransUnit(tuid, tuid.toString(), localeId, source, sourceComment, target, state, "peter", "", "msgContext");
          units.add(unit);
       }
       return units;
