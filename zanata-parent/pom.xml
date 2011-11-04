@@ -153,17 +153,14 @@
 		<gwt.version>2.2.0</gwt.version>
 		<gwt-incubator.version>2.2.0-zanata-0</gwt-incubator.version>
 		<!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
-		<hibernate.version>3.6.8.Final</hibernate.version>
-		<hibernate.search.version>3.4.1.Final</hibernate.search.version>
+		<hibernate.scope>provided</hibernate.scope>
+		<hibernate.version>3.3.2.GA</hibernate.version>
+		<hibernate.jmx.version>${hibernate.version}</hibernate.jmx.version>
+		<hibernate.search.version>3.1.1.GA</hibernate.search.version>
 		<hibernate.validator.version>3.1.0.GA</hibernate.validator.version>
-		<!-- if this is used, <artifactId>hibernate-validator-legacy</artifactId>
-		     may need to be added to each dependency element for validator.
-		     Make a note to remove -legacy from artifactId when moving to 4.2.0.GA for real
-		<hibernate.validator.version>4.2.0.Final</hibernate.validator.version>
-		 -->
-		<hibernate.annotations.version>3.5.6-Final</hibernate.annotations.version>
-		<hibernate.entitymanager.version>3.6.8.Final</hibernate.entitymanager.version>
-		<hibernate.jmx.version>3.5.6-Final</hibernate.jmx.version>
+		<hibernate.annotations.version>3.4.0.GA</hibernate.annotations.version>
+		<hibernate.entitymanager.version>3.4.0.GA</hibernate.entitymanager.version>
+		<lucene.version>2.9.2</lucene.version>
 		<resteasy.version>2.1.0.GA</resteasy.version>
 		<richfaces.version>3.3.3.Final</richfaces.version>
 		<seam.version>2.2.0.GA</seam.version>
@@ -346,6 +343,30 @@
 	</build>
 
 	<profiles>
+
+		<profile>
+			<!-- Profile to use more recent versions of hibernate etc. for jboss 7 -->
+			<id>jboss7</id>
+			<properties>
+				<hibernate.scope>compile</hibernate.scope>
+				<!-- more recent hibernate versions -->
+				<hibernate.version>3.6.8.Final</hibernate.version>
+				<hibernate.search.version>3.4.1.Final</hibernate.search.version>
+				<hibernate.validator.version>3.1.0.GA</hibernate.validator.version>
+				<!-- if this is used, <artifactId>hibernate-validator-legacy</artifactId>
+					may need to be added to each dependency element for validator.
+					If this is done, make a note to remove -legacy from artifactId when
+					moving to 4.2.0.GA for real
+				<hibernate.validator.version>4.2.0.Final</hibernate.validator.version>
+				 -->
+				<hibernate.annotations.version>3.5.6-Final</hibernate.annotations.version>
+				<hibernate.entitymanager.version>3.6.8.Final</hibernate.entitymanager.version>
+				<hibernate.jmx.version>3.5.6-Final</hibernate.jmx.version>
+
+				<lucene.version>3.0.0</lucene.version>
+			</properties>
+		</profile>
+
 		<profile>
 			<!-- This profile lets us skip unit tests (but not integration tests) 
 				with a) -PskipUnitTests, or b) -Dit.test=<integration-test-name> The option 
