@@ -468,6 +468,11 @@ a.table_link {
 	text-align: right;
 }
 
+a.obsolete_link{
+	font-style: italic;
+	color:#0A315D;
+}
+
 a.action_link:hover {
 	background-color: #F5F8FF;
 	border: 2px solid #F6F9F7;

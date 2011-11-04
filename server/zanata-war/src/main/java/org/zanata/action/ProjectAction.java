@@ -29,8 +29,12 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.Identity;
 import org.zanata.dao.ProjectDAO;
+import org.zanata.model.HIterationProject;
+import org.zanata.model.HProject;
 
 
 @Name("projectAction")
@@ -38,23 +42,52 @@ import org.zanata.dao.ProjectDAO;
 public class ProjectAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
-   private ProjectPagedListDataModel projectPagedListDataModel = new ProjectPagedListDataModel();
+   private ProjectPagedListDataModel projectPagedListDataModel = new ProjectPagedListDataModel(false);
+   private ProjectPagedListDataModel filteredProjectPagedListDataModel = new ProjectPagedListDataModel(true);
+
    private int scrollerPage = 1;
+
+   private HIterationProject hIterationProject = new HIterationProject();
    @Logger
    Log log;
+
    @In
    private ProjectDAO projectDAO;
+   
+   @In
+   Identity identity;
+
+   private boolean showObsolete = false;
+
+   public boolean checkUpdateProjectPermission()
+   {
+      return identity.hasPermission(hIterationProject, "update");
+   }
 
    public boolean getEmpty()
    {
-      return projectDAO.getProjectSize() == 0;
+      if (checkUpdateProjectPermission() && showObsolete)
+      {
+         return projectDAO.getProjectSize() == 0;
+
+      }
+      else
+      {
+         return projectDAO.getFilteredProjectSize() == 0;
+      }
    }
 
    public int getPageSize()
    {
-      return projectPagedListDataModel.getPageSize();
+      if (checkUpdateProjectPermission() && showObsolete)
+      {
+         return filteredProjectPagedListDataModel.getPageSize();
+      }
+      else
+      {
+         return projectPagedListDataModel.getPageSize();
+      }
    }
-
 
    public int getScrollerPage()
    {
@@ -68,7 +101,38 @@ public class ProjectAction implements Serializable
 
    public DataModel getProjectPagedListDataModel()
    {
-      return projectPagedListDataModel;
+      if (checkUpdateProjectPermission() && showObsolete)
+      {
+         return filteredProjectPagedListDataModel;
+      }
+      else
+      {
+         return projectPagedListDataModel;
+      }
    }
 
+   public void updateProjectStatus(HProject project)
+   {
+      projectDAO.makePersistent(project);
+      projectDAO.flush();
+
+      if (project.isObsolete())
+      {
+         FacesMessages.instance().add("Updated {0} status to obsolete", project.getName());
+      }
+      else
+      {
+         FacesMessages.instance().add("Updated {0} status to active", project.getName());
+      }
+   }
+
+   public boolean isShowObsolete()
+   {
+      return showObsolete;
+   }
+
+   public void setShowObsolete(boolean showObsolete)
+   {
+      this.showObsolete = showObsolete;
+   }
 }

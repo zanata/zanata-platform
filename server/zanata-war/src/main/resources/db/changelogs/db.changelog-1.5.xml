@@ -152,7 +152,23 @@
         <dropForeignKeyConstraint baseTableName="HTermComment" constraintName="UKtermComment_glossaryTerm" />
     </changeSet>
 
+    <changeSet author="aeng@redhat.com" id="10">
+        <comment>Add obsolete column to HProject</comment>
+        <addColumn tableName="HProject">
+            <column name="obsolete" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
     
+    <changeSet author="aeng@redhat.com" id="11">
+        <comment>Add obsolete column to HProjectIteration</comment>
+        <addColumn tableName="HProjectIteration">
+            <column name="obsolete" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
 
 
 </databaseChangeLog>

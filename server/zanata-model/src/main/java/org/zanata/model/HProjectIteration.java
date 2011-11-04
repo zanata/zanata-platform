@@ -65,6 +65,7 @@ public class HProjectIteration extends SlugEntityBase
    private boolean overrideLocales = false;
    private Set<HLocale> customizedLocales;
 
+   private boolean obsolete = false;
 
    public void setActive(boolean active)
    {
@@ -166,6 +167,20 @@ public class HProjectIteration extends SlugEntityBase
    public void setDocuments(Map<String, HDocument> documents)
    {
       this.documents = documents;
+   }
+
+   public boolean isObsolete()
+   {
+      return obsolete;
+   }
+
+   /**
+    * 
+    * @param obsolete
+    */
+   public void setObsolete(boolean obsolete)
+   {
+      this.obsolete = obsolete;
    }
 
    @Override
