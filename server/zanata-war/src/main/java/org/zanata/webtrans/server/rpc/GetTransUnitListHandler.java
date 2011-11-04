@@ -122,7 +122,14 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       {
 
          TransUnitId tuId = new TransUnitId(textFlow.getId());
-         TransUnit tu = new TransUnit(tuId, textFlow.getResId(), action.getWorkspaceId().getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New, "", "", textFlow.getPotEntryData().getContext());
+
+         String msgContext = null;
+         if (textFlow.getPotEntryData() != null)
+         {
+            msgContext = textFlow.getPotEntryData().getContext();
+         }
+
+         TransUnit tu = new TransUnit(tuId, textFlow.getResId(), action.getWorkspaceId().getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New, "", "", msgContext);
          HTextFlowTarget target = textFlow.getTargets().get(hLocale);
          if (target != null)
          {
