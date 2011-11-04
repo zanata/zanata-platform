@@ -23,13 +23,15 @@ package org.zanata.action;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.jboss.seam.framework.EntityHome;
+import org.jboss.seam.security.Identity;
+import org.zanata.security.SecurityChecker;
 
 /**
  * This implementation uses a field 'slug' to refer to the id of the object.
  * 
  * @author asgeirf
  */
-public abstract class SlugHome<E> extends EntityHome<E>
+public abstract class SlugHome<E> extends EntityHome<E> implements SecurityChecker
 {
 
    private static final long serialVersionUID = 1L;
@@ -49,5 +51,11 @@ public abstract class SlugHome<E> extends EntityHome<E>
 
    @Override
    public abstract Object getId();
+   
+   @Override
+   public boolean checkPermission(String operation)
+   {
+      return Identity.instance() != null && Identity.instance().hasPermission(this.getInstance(), operation);
+   }
 
 }

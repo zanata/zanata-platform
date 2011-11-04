@@ -11,6 +11,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.zanata.dao.AccountDAO;
@@ -18,10 +19,11 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
+import org.zanata.security.BaseSecurityChecker;
 
 @Name("projectMaintainerManageAction")
 @Scope(ScopeType.PAGE)
-public class ProjectMaintainerManageAction implements Serializable
+public class ProjectMaintainerManageAction extends BaseSecurityChecker implements Serializable
 {
    private static final long serialVersionUID = 1L;
    @DataModel
@@ -63,6 +65,7 @@ public class ProjectMaintainerManageAction implements Serializable
       return projectDAO.getBySlug(this.slug);
    }
 
+   @Restrict("#{projectMaintainerManageAction.checkPermission('update')}")
    public void deleteMaintainer(HPerson person)
    {
       log.debug("try to delete maintainer {0} from slug {1}", person.getName(), this.slug);
@@ -82,6 +85,7 @@ public class ProjectMaintainerManageAction implements Serializable
       projectDAO.flush();
    }
 
+   @Restrict("#{projectMaintainerManageAction.checkPermission('update')}")
    public String addMaintainers(String account)
    {
       HAccount a = accountDAO.getByUsername(account);
@@ -102,6 +106,12 @@ public class ProjectMaintainerManageAction implements Serializable
    public String cancel()
    {
       return "cancel";
+   }
+   
+   @Override
+   public Object getSecuredEntity()
+   {
+      return this.getProject();
    }
 
 }

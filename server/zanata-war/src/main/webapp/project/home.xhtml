@@ -13,7 +13,7 @@
     <rich:panel rendered="#{identity.loggedIn}">
       <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
       <s:link styleClass="action_link"
-      				rendered="#{s:hasPermission(projectHome.instance, 'insert')}"
+      				rendered="#{projectHome.checkPermission('insert')}"
       				value="#{messages['jsf.CreateProject']}"
                     view="/project/create_project.xhtml"
                     propagation="none"/>
@@ -33,7 +33,7 @@
 		    page="#{projectAction.scrollerPage}" id="scroller" reRender="sc2" />
 	<rich:spacer height="15" />
         
-         <s:div rendered="#{projectAction.checkUpdateProjectPermission()}" styleClass="showObsoleteOption">
+         <s:div rendered="#{projectAction.checkPermission('mark-obsolete')}" styleClass="showObsoleteOption">
             <a4j:region>
             <h:selectBooleanCheckbox title="Show obsolete projects" value="#{projectAction.showObsolete}" >
                 <a4j:support event="onchange" reRender="main_content" />
@@ -69,12 +69,12 @@
                         </h:outputText>                     
                     </rich:column>
                     
-                    <rich:column styleClass="centered" width="60px" sortBy="#{project.obsolete}" rendered="#{projectAction.checkUpdateProjectPermission() and projectAction.showObsolete}">
+                    <rich:column styleClass="centered" width="60px" sortBy="#{project.obsolete}" rendered="#{projectAction.checkPermission('HProject', 'mark-obsolete') and projectAction.showObsolete}">
                         <f:facet name="header">Obsolete</f:facet>
                         <h:selectBooleanCheckbox id="obsolete" value="#{project.obsolete}">
                             <a4j:support event="onclick"
                             ajaxSingle="true" reRender="content"
-                            action="#{projectAction.updateProjectStatus(project)}"/>
+                            action="#{projectAction.markObsolete(project)}"/>
                         </h:selectBooleanCheckbox>                     
                     </rich:column>
         </rich:dataTable>

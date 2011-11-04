@@ -174,10 +174,6 @@ public class HProjectIteration extends SlugEntityBase
       return obsolete;
    }
 
-   /**
-    * 
-    * @param obsolete
-    */
    public void setObsolete(boolean obsolete)
    {
       this.obsolete = obsolete;

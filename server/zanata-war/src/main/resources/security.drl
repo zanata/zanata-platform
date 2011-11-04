@@ -235,12 +235,26 @@ end
   
 ******************************************************************************************/
 
+/* Anyone can read Locale members */
+
+rule ReadLocaleMembers
+  no-loop
+  activation-group "permissions"
+when
+  $member: HLocaleMember()
+  check: PermissionCheck(target == $member, action == "read", granted == false)
+then
+  check.grant();
+end
+
+
 /* 'team coordinator' can manage language teams */
 
 rule TeamCoordinatorManageLanguageTeam
   no-loop
   activation-group "permissions"
 when
+  PermissionCheck(action == "manage-language-team")
   authenticatedPerson: HPerson() 
   eval(authenticatedPerson != null)
   $locale: HLocale(
@@ -259,6 +273,9 @@ rule TeamCoordinatorModifyLanguageTeamMembers
   no-loop
   activation-group "permissions"
 when
+  PermissionCheck(action == "insert" || action == "update" || action == "delete", 
+    granted == false)
+  HLocaleMember()
   authenticatedPerson: HPerson() 
   eval(authenticatedPerson != null)
   $member: HLocaleMember(
@@ -268,6 +285,37 @@ when
     target == $member, 
     action == "insert" || action == "update" || action == "delete", 
     granted == false)
+then
+  check.grant();
+end
+
+
+/*****************************************************************************************
+
+  Mark Project and Project Iteration Obsolete rules
+  
+******************************************************************************************/
+
+/* Mark Obsolete on Projects - checking role = 'admin' only */
+rule MarkProjectObsolete
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(target == "HProject", action == "mark-obsolete", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+
+/* Mark Obsolete on Project Iteration - checking role = 'admin' only */
+rule MarkProjectIterationObsolete
+  no-loop
+  activation-group "permissions"
+when
+  $iter: HProjectIteration()
+  check: PermissionCheck(target == "HProjectIteration", action == "mark-obsolete", granted == false)
+  Role(name == "admin")
 then
   check.grant();
 end

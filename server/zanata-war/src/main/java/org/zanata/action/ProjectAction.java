@@ -29,17 +29,18 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 import org.zanata.dao.ProjectDAO;
-import org.zanata.model.HIterationProject;
 import org.zanata.model.HProject;
+import org.zanata.security.BaseSecurityChecker;
 
 
 @Name("projectAction")
 @Scope(ScopeType.PAGE)
-public class ProjectAction implements Serializable
+public class ProjectAction extends BaseSecurityChecker implements Serializable
 {
    private static final long serialVersionUID = 1L;
    private ProjectPagedListDataModel projectPagedListDataModel = new ProjectPagedListDataModel(false);
@@ -47,7 +48,6 @@ public class ProjectAction implements Serializable
 
    private int scrollerPage = 1;
 
-   private HIterationProject hIterationProject = new HIterationProject();
    @Logger
    Log log;
 
@@ -59,14 +59,9 @@ public class ProjectAction implements Serializable
 
    private boolean showObsolete = false;
 
-   public boolean checkUpdateProjectPermission()
-   {
-      return identity.hasPermission(hIterationProject, "update");
-   }
-
    public boolean getEmpty()
    {
-      if (checkUpdateProjectPermission() && showObsolete)
+      if (checkPermission("HProject", "mark-obsolete") && showObsolete)
       {
          return projectDAO.getProjectSize() == 0;
 
@@ -79,7 +74,7 @@ public class ProjectAction implements Serializable
 
    public int getPageSize()
    {
-      if (checkUpdateProjectPermission() && showObsolete)
+      if (checkPermission("HProject", "mark-obsolete") && showObsolete)
       {
          return filteredProjectPagedListDataModel.getPageSize();
       }
@@ -101,7 +96,7 @@ public class ProjectAction implements Serializable
 
    public DataModel getProjectPagedListDataModel()
    {
-      if (checkUpdateProjectPermission() && showObsolete)
+      if (checkPermission("HProject", "mark-obsolete") && showObsolete)
       {
          return filteredProjectPagedListDataModel;
       }
@@ -111,7 +106,8 @@ public class ProjectAction implements Serializable
       }
    }
 
-   public void updateProjectStatus(HProject project)
+   @Restrict("#{languageTeamAction.checkPermission('HProject', 'mark-obsolete')}")
+   public void markObsolete(HProject project)
    {
       projectDAO.makePersistent(project);
       projectDAO.flush();
@@ -134,5 +130,12 @@ public class ProjectAction implements Serializable
    public void setShowObsolete(boolean showObsolete)
    {
       this.showObsolete = showObsolete;
+   }
+
+   @Override
+   public Object getSecuredEntity()
+   {
+      // return null will fail security check by default
+      return new Object();
    }
 }
