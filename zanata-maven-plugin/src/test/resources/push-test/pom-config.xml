@@ -1,0 +1,21 @@
+<project>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>zanata-maven-plugin</artifactId>
+        <configuration>
+           <srcDir>srcDir</srcDir>
+           <transDir>transDir</transDir>
+           <sourceLang>es</sourceLang>
+           <pushTrans>true</pushTrans>
+           <copyTrans>false</copyTrans>
+           <merge>import</merge>
+           <useSrcOrder>true</useSrcOrder>
+           <includes>includes</includes>
+           <excludes>excludes</excludes>
+           <defaultExcludes>false</defaultExcludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
