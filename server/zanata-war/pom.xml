@@ -1050,6 +1050,13 @@
 			<groupId>org.fedorahosted.openprops</groupId>
 			<artifactId>openprops</artifactId>
 		</dependency>
+		
+		<!-- Quartz -->
+		
+		<dependency>
+            <groupId>quartz</groupId>
+            <artifactId>quartz</artifactId>
+        </dependency>
 
 		<!-- okapi-lib-search would otherwise use lucene 3.0.0 -->
 		<dependency>

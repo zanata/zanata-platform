@@ -23,14 +23,20 @@ package org.zanata.action;
 import java.util.List;
 
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Begin;
+import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.security.Identity;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
+import org.zanata.process.IterationZipFileBuildProcess;
+import org.zanata.process.IterationZipFileBuildProcessHandle;
+import org.zanata.process.ProcessHandle;
 
 @Name("projectIterationFilesAction")
-@Scope(ScopeType.PAGE)
+@Scope(ScopeType.CONVERSATION)
 public class ProjectIterationFilesAction
 {
 
@@ -43,9 +49,14 @@ public class ProjectIterationFilesAction
    @In
    private DocumentDAO documentDAO;
    
+   @In
+   private IterationZipFileBuildProcess iterationZipFileBuildProcess; 
+   
    private List<HDocument> iterationDocuments;
    
    private String documentNameFilter;
+   
+   private ProcessHandle zipFilePrepHandle;
    
    
    public void initialize()
@@ -64,6 +75,37 @@ public class ProjectIterationFilesAction
       else
       {
          return true;
+      }
+   }
+   
+   @Begin(join = true)
+   public void prepareIterationZipFile()
+   {
+      if( this.zipFilePrepHandle != null && this.zipFilePrepHandle.isInProgress() )
+      {
+         // Cancel any other processes
+         this.zipFilePrepHandle.setShouldStop(true);
+      }
+      
+      // Build a background process Handle
+      IterationZipFileBuildProcessHandle processHandle =
+            new IterationZipFileBuildProcessHandle();
+      processHandle.setProjectSlug( this.projectSlug );
+      processHandle.setIterationSlug( this.iterationSlug );
+      processHandle.setLocaleId( this.localeId );
+      processHandle.setInitiatingUserName( Identity.instance().getCredentials().getUsername() );
+      
+      // Fire the zip file building process
+      this.iterationZipFileBuildProcess.startProcess( processHandle );
+      this.zipFilePrepHandle = processHandle;
+   }
+   
+   @End
+   public void cancelFileDownload()
+   {
+      if( this.zipFilePrepHandle.isInProgress() )
+      {
+         this.zipFilePrepHandle.setShouldStop(true);
       }
    }
 
@@ -115,6 +157,16 @@ public class ProjectIterationFilesAction
    public void setDocumentNameFilter(String documentNameFilter)
    {
       this.documentNameFilter = documentNameFilter;
+   }
+
+   public ProcessHandle getZipFilePrepHandle()
+   {
+      return zipFilePrepHandle;
+   }
+
+   public void setZipFilePrepHandle(ProcessHandle zipFilePrepProgress)
+   {
+      this.zipFilePrepHandle = zipFilePrepProgress;
    }
    
 }

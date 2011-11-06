@@ -20,22 +20,21 @@
  */
 package org.zanata.rest.service;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import java.util.Properties;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
@@ -45,33 +44,26 @@ import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
-import org.zanata.model.HProjectIteration;
-import org.zanata.model.HTextFlow;
-import org.zanata.rest.dto.extensions.gettext.PoHeader;
-import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
 import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.service.FileSystemService;
+import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
 
 @Name("fileService")
-@Path(FileService.SERVICE_PATH)
+@Path(FileResource.FILE_RESOURCE)
 @Produces( { MediaType.APPLICATION_OCTET_STREAM })
 @Consumes( { MediaType.APPLICATION_OCTET_STREAM })
-public class FileService implements TranslationFileResource
+public class FileService implements FileResource
 {
-   public static final String SERVICE_PATH = ProjectIterationService.SERVICE_PATH + "/file";
-   
-   @PathParam("projectSlug")
-   private String projectSlug;
-
-   @PathParam("iterationSlug")
-   private String iterationSlug;
    
    @In
    private DocumentDAO documentDAO;
    
    @In(create=true)
    private TranslationResourcesService translationResourcesService;
+   
+   @In
+   private FileSystemService fileSystemServiceImpl;
    
    @In
    private ResourceUtils resourceUtils;
@@ -85,83 +77,77 @@ public class FileService implements TranslationFileResource
       this.documentDAO = documentDAO;
    }
    
-   @Override
    @GET
    @Path(FILE_DOWNLOAD_TEMPLATE)
-   // /file/{locale}/{docId}.{fileExt}
-   public Response downloadTranslationFile( @PathParam("locale") String locale, @PathParam("docId") String docId, 
-         @PathParam("fileExt") String fileExtension )
+   // /file/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType}?docId={docId}
+   public Response downloadTranslationFile( @PathParam("projectSlug") String projectSlug,
+                                            @PathParam("iterationSlug") String iterationSlug,
+                                            @PathParam("locale") String locale,
+                                            @PathParam("fileType") String fileExtension,
+                                            @QueryParam("docId") String docId )
    {
       final Response response; 
-      StreamingOutput output = this.getStreamForFileExtension(fileExtension, docId, locale);
+      HDocument document = this.documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
       
-      if( output == null )
+      if( document == null )
       {
          response = Response.status(Status.NOT_FOUND).build();
       }
       else
       {
-         response = Response.ok().entity(output).build();
-      }
-      
-      return response;
-   }
-   
-   @Override
-   @GET
-   @Path(ALL_FILES_DOWNLOAD_TEMPLATE)
-   // /file/{locale}
-   public Response downloadAllFiles( @PathParam("locale") String locale )
-   {
-      final Response response; 
-      StreamingOutput output = this.getStreamForFileExtension("zip", null, locale);
-      
-      if( output == null )
-      {
-         response = Response.status(Status.NOT_FOUND).build();
-      }
-      else
-      {
-         response = Response.ok()
-               .header("Content-Disposition", "attachment; filename=\"" + this.iterationSlug + "-" + locale + "\"")
-               .entity(output)
-               .build();
-      }
-      
-      return response;
-   }
-   
-   
-   private StreamingOutput getStreamForFileExtension( String fileExt, String docId, String locale )
-   {
-      // PO files
-      if( fileExt.equalsIgnoreCase("po") )
-      {
-         HDocument document = this.documentDAO.getByProjectIterationAndDocId(this.projectSlug, this.iterationSlug, docId);
-         
          // Perform translation of Hibernate DTOs to JAXB DTOs
          TranslationsResource transRes = 
                (TranslationsResource)this.translationResourcesService.getTranslations(docId, new LocaleId(locale)).getEntity();
          Resource res = this.resourceUtils.buildResource(document);
                
-         return new POStreamingOutput(res, transRes);
+         StreamingOutput output = new POStreamingOutput(res, transRes);
+         response = Response.ok()
+               .header("Content-Disposition", "attachment; filename=\"" + document.getName() + ".po\"")
+               .entity(output).build();
       }
-      // Zip files for the whole iteration
-      else if( fileExt.equalsIgnoreCase("zip") && docId == null )
+      
+      return response;
+   }
+   
+   @Override
+   @GET
+   @Path(DOWNLOAD_TEMPLATE)
+   // /file/download/{downloadId}
+   public Response download( @PathParam("downloadId") String downloadId )
+   {
+      try
       {
-         final List<HDocument> allIterationDocs = this.documentDAO.getAllByProjectIteration(this.projectSlug, this.iterationSlug);
+         // Check that the download exists by looking at the download descriptor
+         Properties descriptorProps = this.fileSystemServiceImpl.findDownloadDescriptorProperties(downloadId);
          
-         final TranslationsResource[] transRes = this.translationResourcesService.loadTranslations(allIterationDocs, new LocaleId(locale));
-         final Resource[] res = new Resource[ allIterationDocs.size() ];
-         
-         for( int i=0; i<allIterationDocs.size(); i++ )
+         if( descriptorProps == null )
          {
-            res[i] = this.resourceUtils.buildResource( allIterationDocs.get(i) );
+            return Response.status(Status.NOT_FOUND).build(); 
          }
-         
-         return new ZippedPOStreamingOutput(res, transRes);
+         else
+         {
+            File toDownload = this.fileSystemServiceImpl.findDownloadFile(downloadId);
+            
+            if( toDownload == null )
+            {
+               return Response.status(Status.NOT_FOUND).build(); 
+            }
+            else
+            {
+               return Response.ok()
+                     .header("Content-Disposition", "attachment; filename=\"" 
+                           + descriptorProps.getProperty(DownloadDescriptorProperties.DownloadFileName.toString()) 
+                           + "\"")
+                     .header("Content-Length", toDownload.length())
+                     .entity( new FileStreamingOutput(toDownload) )
+                     .build();
+            }
+         }
       }
-      return null;
+      catch (IOException e)
+      {
+         return Response.serverError().status( Status.INTERNAL_SERVER_ERROR ).build();
+      }
    }
    
    
@@ -187,43 +173,29 @@ public class FileService implements TranslationFileResource
       }
    }
    
-   
    /*
-    * Private class that implements multi-file (as a zip archive) streaming for sets of PO files.
+    * Private class that implements downloading from a previously prepared file. 
     */
-   private class ZippedPOStreamingOutput implements StreamingOutput
+   private class FileStreamingOutput implements StreamingOutput
    {
-      private Resource[] resources;
-      private TranslationsResource[] transResources;
+      private File file;
       
-      public ZippedPOStreamingOutput( Resource[] resources, TranslationsResource[] transResources )
+      public FileStreamingOutput( File file )
       {
-         if( resources.length != transResources.length )
-         {
-            throw new RuntimeException("The number of resources must match the number of Translation Resources");
-         }
-         
-         this.resources = resources;
-         this.transResources = transResources;
+         this.file = file;
       }
       
       @Override
       public void write(OutputStream output) throws IOException, WebApplicationException
       {
-         final ZipOutputStream zipOutput = new ZipOutputStream(output);
-         zipOutput.setLevel(9);
-         zipOutput.setMethod(ZipOutputStream.DEFLATED);
-         final PoWriter2 poWriter = new PoWriter2();
-         
-         for( int i=0; i<this.resources.length; i++ )
+         FileInputStream input = new FileInputStream(this.file);
+         byte[] buffer = new byte[4096]; // To hold file contents
+         int bytesRead; // How many bytes in buffer
+
+         while ((bytesRead = input.read(buffer)) != -1)
          {
-            zipOutput.putNextEntry( new ZipEntry( this.resources[i].getName() + ".po" ) );
-            poWriter.writePo(zipOutput, this.resources[i], this.transResources[i]);
-            zipOutput.closeEntry();
+            output.write(buffer, 0, bytesRead);
          }
-         
-         zipOutput.flush();
-         zipOutput.close();
       }
    }
 }

@@ -15,9 +15,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang.StringUtils;
@@ -33,7 +31,6 @@ import org.zanata.common.ResourceType;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
-import org.zanata.model.HProjectIteration;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
@@ -55,6 +52,7 @@ import org.zanata.rest.dto.resource.ExtensionSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
+import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.StringUtil;
 
 @Name("resourceUtils")
@@ -832,25 +830,39 @@ public class ResourceUtils
    
    public Resource buildResource( HDocument document )
    {
-      //validateExtensions(PoHeader.ID, PotEntryHeader.ID);
       Set<String> extensions = new HashSet<String>();
       extensions.add("gettext");
       extensions.add("comment");
 
       Resource entity = new Resource(document.getDocId());
       this.transferToResource(document, entity);
+      // handle extensions
+      this.transferToResourceExtensions(document, entity.getExtensions(true), extensions);
 
       for (HTextFlow htf : document.getTextFlows())
       {
          TextFlow tf = new TextFlow(htf.getResId(), document.getLocale().getLocaleId());
-         this.transferToTextFlow(htf, tf);
          this.transferToTextFlowExtensions(htf, tf.getExtensions(true), extensions);
+         this.transferToTextFlow(htf, tf);
          entity.getTextFlows().add(tf);
       }
 
-      // handle extensions
-      this.transferToResourceExtensions(document, entity.getExtensions(true), extensions);
       return entity;
+   }
+   
+   public void transferToTranslationsResource(TranslationsResource transRes, HDocument document, 
+         HLocale locale, Set<String> enabledExtensions, List<HTextFlowTarget> hTargets)
+   {      
+      this.transferToTranslationsResourceExtensions(document, transRes.getExtensions(true), enabledExtensions, locale, hTargets);
+      
+      for (HTextFlowTarget hTarget : hTargets)
+      {
+         TextFlowTarget target = new TextFlowTarget();
+         target.setResId(hTarget.getTextFlow().getResId());
+         this.transferToTextFlowTarget(hTarget, target);
+         this.transferToTextFlowTargetExtensions(hTarget, target.getExtensions(true), enabledExtensions);
+         transRes.getTextFlowTargets().add(target);
+      }
    }
 
 }

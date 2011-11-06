@@ -146,7 +146,8 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       final HDocument doc = (HDocument)
          session.createQuery("from HDocument d where d.projectIteration.slug = :iterationSlug " +
                "and d.projectIteration.project.slug = :projectSlug " +
-               "and d.docId = :docId")
+               "and d.docId = :docId " +
+               "and d.obsolete = false")
                .setParameter("iterationSlug", iterationSlug)
                .setParameter("projectSlug", projectSlug)
                .setParameter("docId", docId)
@@ -162,7 +163,8 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       final List<HDocument> documents =
          session.createQuery("from HDocument d " +
          		"where d.projectIteration.slug = :iterationSlug " +
-         		"and d.projectIteration.project.slug = :projectSlug")
+         		"and d.projectIteration.project.slug = :projectSlug " +
+         		"and d.obsolete = false")
          		.setParameter("iterationSlug", iterationSlug)
          		.setParameter("projectSlug", projectSlug)
          		.list();

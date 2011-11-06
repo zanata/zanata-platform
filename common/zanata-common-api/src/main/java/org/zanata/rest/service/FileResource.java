@@ -23,26 +23,27 @@ package org.zanata.rest.service;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-public interface TranslationFileResource
+public interface FileResource
 {
 
-   public static final String FILE_NAME_TEMPLATE = "/{docId}";
-   public static final String LOCALE_TEMPLATE = "/{locale}";
-   public static final String FILE_EXTENSION_TEMPLATE = ".{fileExt}";
-   
-   public static final String FILE_DOWNLOAD_TEMPLATE = LOCALE_TEMPLATE + FILE_NAME_TEMPLATE + FILE_EXTENSION_TEMPLATE;
-   public static final String ALL_FILES_DOWNLOAD_TEMPLATE = LOCALE_TEMPLATE; 
+   public static final String FILE_RESOURCE = "/file";
+   public static final String DOWNLOAD_TEMPLATE = "/download/{downloadId}";
+   public static final String FILE_DOWNLOAD_TEMPLATE = "/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType}" ;
    
    @GET
    @Path(FILE_DOWNLOAD_TEMPLATE)
-   // /file/{locale}/{docId}.{fileExt}
-   public Response downloadTranslationFile( @PathParam("locale") String locale, @PathParam("docId") String docId, 
-         @PathParam("fileExt") String fileExtension );
+   // /file/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType}?docId={docId}
+   public Response downloadTranslationFile( @PathParam("projectSlug") String projectSlug,
+                                            @PathParam("iterationSlug") String iterationSlug,
+                                            @PathParam("locale") String locale,
+                                            @PathParam("fileType") String fileExtension,
+                                            @QueryParam("docId") String docId );
    
    @GET
-   @Path(ALL_FILES_DOWNLOAD_TEMPLATE)
-   // /file/{locale}
-   public Response downloadAllFiles( @PathParam("locale") String locale );
+   @Path(DOWNLOAD_TEMPLATE)
+   // /file/download/{downloadId}
+   public Response download( @PathParam("downloadId") String downloadId );
 }

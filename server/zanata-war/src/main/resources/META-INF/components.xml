@@ -11,6 +11,7 @@
     xmlns:framework="http://jboss.com/products/seam/framework"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:resteasy="http://jboss.com/products/seam/resteasy"
+    xmlns:async="http://jboss.com/products/seam/async"
     xsi:schemaLocation=
         "http://jboss.com/products/seam/core http://jboss.com/products/seam/core-2.1.xsd
          http://jboss.com/products/seam/persistence http://jboss.com/products/seam/persistence-2.1.xsd
@@ -20,7 +21,8 @@
          http://jboss.com/products/seam/mail http://jboss.com/products/seam/mail-2.1.xsd
          http://jboss.com/products/seam/web http://jboss.com/products/seam/web-2.1.xsd
          http://jboss.com/products/seam/components http://jboss.com/products/seam/components-2.1.xsd
-         http://jboss.com/products/seam/resteasy http://jboss.com/products/seam/resteasy-2.1.xsd">
+         http://jboss.com/products/seam/resteasy http://jboss.com/products/seam/resteasy-2.1.xsd
+         http://jboss.com/products/seam/async http://jboss.com/products/seam/async-2.1.xsd">
  
   <core:init
       debug="@env.debug@"
@@ -32,6 +34,9 @@
   <core:manager concurrent-request-timeout="4000"
       conversation-timeout="1200000"
       conversation-id-parameter="cid" parent-conversation-id-parameter="pid"/>
+      
+  <!-- Asynchronous processing -->
+  <async:quartz-dispatcher />
 
   <resteasy:application resource-path-prefix="/restv1" />
   
@@ -107,6 +112,11 @@
     <property name="fedoraOpenId">@fedora.openId@</property>
     <property name="authenticatedSessionTimeoutMinutes">180</property>
   </component>
+  
+  <!-- Zanata Background Job scheduler.
+       Comment out this line if you want to disable background jobs.  
+   -->
+  <component name="zanataJobScheduler" class="org.zanata.job.ZanataJobScheduler"/>
 
   <!-- Mailserver for notification messages -->
   <mail:mail-session host="localhost" port="25" ssl="false" tls="false"/>
