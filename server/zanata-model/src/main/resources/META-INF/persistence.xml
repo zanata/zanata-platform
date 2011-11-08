@@ -7,6 +7,8 @@
   <persistence-unit name="${ds.jndi.name}" transaction-type="JTA">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>java:${ds.jndi.name}</jta-data-source>
+    <!-- Need to specify mapping file explicitly since it's outside the archive -->
+    <mapping-file>META-INF/orm.xml</mapping-file>
     <properties>
       <!--    
           Binds the EntityManagerFactory to JNDI where Seam can look it up. This is only relevant when 
