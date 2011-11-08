@@ -61,7 +61,7 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    public boolean getEmpty()
    {
-      if (checkPermission("HProject", "mark-obsolete") && showObsolete)
+      if (checkProjectPermission("view-obsolete") && showObsolete)
       {
          return projectDAO.getProjectSize() == 0;
 
@@ -74,7 +74,7 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    public int getPageSize()
    {
-      if (checkPermission("HProject", "mark-obsolete") && showObsolete)
+      if (checkProjectPermission("view-obsolete") && showObsolete)
       {
          return filteredProjectPagedListDataModel.getPageSize();
       }
@@ -96,7 +96,7 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    public DataModel getProjectPagedListDataModel()
    {
-      if (checkPermission("HProject", "mark-obsolete") && showObsolete)
+      if (checkProjectPermission("view-obsolete") && showObsolete)
       {
          return filteredProjectPagedListDataModel;
       }
@@ -142,15 +142,15 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
       return securedEntity;
    }
 
-
    /**
-    * Checks for permissions to the indicated operation on the Permission String
-    * by the <code>getSecuredEntity</code> method.
+    * Check permission with target object name and operation
     * 
+    * @param operation
+    * @return
     */
-   public boolean checkPermission(String name, String operation)
+   public boolean checkProjectPermission(String operation)
    {
-      return identity != null && identity.hasPermission(name, operation, null);
+      return identity != null && identity.hasPermission("HProject", operation, null);
    }
 
 }

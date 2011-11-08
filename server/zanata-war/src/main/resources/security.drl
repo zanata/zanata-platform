@@ -296,18 +296,18 @@ end
   
 ******************************************************************************************/
 
-/* Mark Obsolete on Projects - checking role = 'admin' only */
-rule MarkProjectObsoleteWithTargetName
+/* View Obsolete on Projects - checking role = 'admin' only */
+rule ViewProjectObsolete
   no-loop
   activation-group "permissions"
 when
-  check: PermissionCheck(target == "HProject", action == "mark-obsolete", granted == false)
+  check: PermissionCheck(target == "HProject", action == "view-obsolete", granted == false)
   Role(name == "admin")
 then
   check.grant();
 end
 
-rule MarkProjectObsoleteWithTargetObject
+rule MarkProjectObsolete
   no-loop
   activation-group "permissions"
 when
@@ -320,7 +320,7 @@ end
 
 
 /* Mark Obsolete on Project Iteration - checking role = 'admin' only */
-rule MarkProjectIterationObsoleteWithTargetName
+rule ViewProjectIterationObsolete
   no-loop
   activation-group "permissions"
 when
@@ -330,7 +330,7 @@ then
   check.grant();
 end
 
-rule MarkProjectIterationObsoleteWithTargetObject
+rule MarkProjectIterationObsolete
   no-loop
   activation-group "permissions"
 when

@@ -37,6 +37,7 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationProject;
@@ -211,5 +212,16 @@ public class ProjectHome extends SlugHome<HIterationProject>
    {
       getInstance().setObsolete(false);
       super.update();
+   }
+
+   /**
+    * Check permission with target object name and operation
+    * 
+    * @param operation
+    * @return
+    */
+   public boolean checkProjectPermission(String operation)
+   {
+      return Identity.instance() != null && Identity.instance().hasPermission("HProject", operation, null);
    }
 }

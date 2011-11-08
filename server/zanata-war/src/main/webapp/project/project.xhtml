@@ -13,8 +13,15 @@
     <s:decorate id="main_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 
-    <h1>#{messages['jsf.ProjectId']}: #{projectHome.instance.slug}</h1>
-    <h1>#{messages['jsf.Name']}: #{projectHome.instance.name}</h1>
+    <s:fragment rendered="#{!projectHome.instance.obsolete}">
+        <h1>#{messages['jsf.ProjectId']}: #{projectHome.instance.slug}</h1>
+        <h1>#{messages['jsf.Name']}: #{projectHome.instance.name}</h1>
+    </s:fragment>
+    
+    <s:fragment rendered="#{projectHome.instance.obsolete}">
+        <h1>#{messages['jsf.ProjectId']}: <span class="obsolete">#{projectHome.instance.slug}</span></h1>
+        <h1>#{messages['jsf.Name']}: <span class="obsolete">#{projectHome.instance.name}</span></h1>
+    </s:fragment>
 
     <s:formattedText id="project-home-content" value="#{projectHome.instance.homeContent}"></s:formattedText>
     <h:outputText value="#{projectHome.instance.description}" rendered="#{empty projectHome.instance.homeContent}"/>
@@ -57,12 +64,12 @@
     </s:link>
     <a4j:form>        
 		    <a4j:commandLink styleClass="action_link" action="#{projectHome.markProjectObsolete}" 
-		                     reRender="loggedIn,main_content" rendered="#{projectHome.checkPermission('mark-obsolete') and !projectHome.instance.obsolete}" >
+		                     reRender="loggedIn,main_content" rendered="#{projectHome.checkPermission('mark-obsolete') and projectHome.checkProjectPermission('view-obsolete') and !projectHome.instance.obsolete}" >
                             #{messages['jsf.MarkProjectObsolete']}
             </a4j:commandLink>
             
             <a4j:commandLink styleClass="action_link" action="#{projectHome.markProjectActive}" 
-                             reRender="loggedIn,main_content" rendered="#{projectHome.checkPermission('mark-obsolete') and projectHome.instance.obsolete}" >
+                             reRender="loggedIn,main_content" rendered="#{projectHome.checkPermission('mark-obsolete') and projectHome.checkProjectPermission('view-obsolete') and projectHome.instance.obsolete}" >
                             #{messages['jsf.MarkProjectActive']}
             </a4j:commandLink>
             

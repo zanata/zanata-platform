@@ -468,9 +468,15 @@ a.table_link {
 	text-align: right;
 }
 
-a.obsolete_link{
-	font-style: italic;
-	color:#0A315D;
+.obsolete{
+    font-style: italic;
+    text-decoration: line-through;
+}
+
+a.obsolete_link, a.obsolete_link:visited, a.obsolete_link:link{
+    font-style: italic;
+    color:#0A315D;
+    text-decoration: line-through;
 }
 
 a.action_link:hover {
