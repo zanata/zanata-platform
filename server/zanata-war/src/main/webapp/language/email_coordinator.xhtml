@@ -1,17 +1,19 @@
-<m:message xmlns="http://www.w3.org/1999/xhtml"
-           xmlns:m="http://jboss.com/products/seam/mail"
-           xmlns:f="http://java.sun.com/jsf/core"
-           xmlns:h="http://java.sun.com/jsf/html"
-           xmlns:ui="http://java.sun.com/jsf/facelets"
-           xmlns:s="http://jboss.com/products/seam/taglib"
-           charset="UTF-8" importance="normal">
-  <m:from name="#{messages['jsf.Zanata']}" >#{applicationConfiguration.fromEmailAddr}</m:from>
-  <m:to name="#{sendEmail.toName}">#{sendEmail.toEmailAddr}</m:to>
-  <m:replyTo name="#{sendEmail.fromName}" >#{sendEmail.replyEmail}</m:replyTo>
-  <m:subject>#{messages['jsf.email.coordinator.SubjectPrefix']} #{sendEmail.subject}</m:subject>
-  <m:body>
-    <html>
-      <body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:s="http://jboss.com/products/seam/taglib"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:a4j="http://richfaces.org/a4j"
+   xmlns:rich="http://richfaces.org/rich"
+   template="/WEB-INF/facelets/email/template_email.xhtml">
+   
+  <ui:param name="toName" value="#{sendEmail.toName}" />
+  <ui:param name="toEmailAddr" value="#{sendEmail.toEmailAddr}" />
+  <ui:param name="replyToName" value="#{sendEmail.fromName}" />
+  <ui:param name="replyToEmail" value="#{sendEmail.replyEmail}" />
+  <ui:param name="subject" value="#{messages['jsf.email.coordinator.SubjectPrefix']} #{sendEmail.subject}" />
+  
+  <ui:define name="body">
         <p>#{messages['jsf.email.coordinator.DearCoordinator']}</p>
         <p>#{messages['jsf.email.coordinator.UserMessageIntro']}</p>
         <hr/>
@@ -23,7 +25,6 @@
             #{applicationConfiguration.serverPath}/language/view/#{sendEmail.locale.localeId.id}
           </a>
         </p>
-      </body>
-    </html>
-  </m:body>
-</m:message>
+  </ui:define>
+  
+</ui:composition>
