@@ -276,8 +276,10 @@ rule TranslatorsDownloadFiles
   activation-group "permissions"
 when
   authenticatedPerson: HPerson()
-  HProjectIteration: HProjectIteration()
-  check: PermissionCheck(action == "download-single" || action == "download-all",
+  $iteration: HProjectIteration()
+  check: PermissionCheck(
+    target == $iteration, 
+    action == "download-single" || action == "download-all",
     granted == false)
 then
   check.grant();

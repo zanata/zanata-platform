@@ -28,16 +28,19 @@ import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.Identity;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HDocument;
 import org.zanata.process.IterationZipFileBuildProcess;
 import org.zanata.process.IterationZipFileBuildProcessHandle;
 import org.zanata.process.ProcessHandle;
+import org.zanata.security.BaseSecurityChecker;
 
 @Name("projectIterationFilesAction")
 @Scope(ScopeType.CONVERSATION)
-public class ProjectIterationFilesAction
+public class ProjectIterationFilesAction extends BaseSecurityChecker
 {
 
    private String projectSlug;
@@ -48,6 +51,9 @@ public class ProjectIterationFilesAction
    
    @In
    private DocumentDAO documentDAO;
+   
+   @In
+   private ProjectIterationDAO projectIterationDAO;
    
    @In
    private IterationZipFileBuildProcess iterationZipFileBuildProcess; 
@@ -79,6 +85,7 @@ public class ProjectIterationFilesAction
    }
    
    @Begin(join = true)
+   @Restrict("#{projectIterationFilesAction.checkPermission('download-all')}")
    public void prepareIterationZipFile()
    {
       if( this.zipFilePrepHandle != null && this.zipFilePrepHandle.isInProgress() )
@@ -107,6 +114,12 @@ public class ProjectIterationFilesAction
       {
          this.zipFilePrepHandle.setShouldStop(true);
       }
+   }
+   
+   @Override
+   public Object getSecuredEntity()
+   {
+      return this.projectIterationDAO.getBySlug(this.projectSlug, this.iterationSlug);
    }
 
    public List<HDocument> getIterationDocuments()
