@@ -846,6 +846,15 @@
 			<artifactId>zanata-model</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+	   <dependency>
+	      <groupId>org.zanata</groupId>
+	      <artifactId>zanata-rest-client</artifactId>
+	      <version>${version}</version>
+	      <type>test-jar</type>
+	      <scope>test</scope>
+	   </dependency>
+
 		<!-- Seam Dependencies -->
 
 		<dependency>

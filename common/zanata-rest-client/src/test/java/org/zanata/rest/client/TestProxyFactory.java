@@ -1,4 +1,4 @@
-package org.zanata.rest.service;
+package org.zanata.rest.client;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,13 +15,19 @@ import org.zanata.rest.dto.VersionInfo;
 
 public class TestProxyFactory extends ZanataProxyFactory
 {
+   private static final Logger log = LoggerFactory.getLogger(TestProxyFactory.class);
+   private static final String AUTH_KEY = "b6d7044e9ee3b2447c28fb7c50d86d98";
+   private static final String USERNAME = "admin";
+
    public TestProxyFactory(URI base, String username, String apiKey, ClientExecutor executor, VersionInfo ver)
    {
       super(base, username, apiKey, executor, ver);
    }
 
-   private static final Logger log = LoggerFactory.getLogger(TestProxyFactory.class);
-
+   public TestProxyFactory(ClientExecutor executor) throws URISyntaxException
+   {
+      this(new URI("http://example.com/"), USERNAME, AUTH_KEY, executor, new VersionInfo("SNAPSHOT", ""));
+   }
 
    public IProjectIterationResource getProjectIteration(final URI uri)
    {
@@ -50,7 +56,7 @@ public class TestProxyFactory extends ZanataProxyFactory
    }
 
    @Override
-   protected IVersion createIVersion()
+   public IVersion createIVersion()
    {
       try
       {
