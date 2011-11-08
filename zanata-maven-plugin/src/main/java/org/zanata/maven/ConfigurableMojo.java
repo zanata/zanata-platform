@@ -81,6 +81,9 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends Ab
     */
    private boolean interactiveMode = true;
 
+   /** @parameter expression="${settings.offline}" */
+   private boolean offline;
+
    public ConfigurableMojo()
    {
    }
@@ -120,8 +123,7 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends Ab
       try
       {
          OptionsUtil.applyConfigFiles(this);
-         ZanataCommand command = initCommand();
-         command.run();
+         runCommand();
       }
       catch (Exception e)
       {
@@ -130,6 +132,19 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends Ab
       finally
       {
          MavenLogAppender.endPluginLog(this);
+      }
+   }
+
+   protected void runCommand() throws Exception
+   {
+      if (offline)
+      {
+         throw new MojoExecutionException("goal not supported in offline mode");
+      }
+      else
+      {
+         ZanataCommand command = initCommand();
+         command.run();
       }
    }
 
