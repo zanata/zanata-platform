@@ -164,7 +164,8 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
          session.createQuery("from HDocument d " +
          		"where d.projectIteration.slug = :iterationSlug " +
          		"and d.projectIteration.project.slug = :projectSlug " +
-         		"and d.obsolete = false")
+         		"and d.obsolete = false " +
+         		"order by d.name")
          		.setParameter("iterationSlug", iterationSlug)
          		.setParameter("projectSlug", projectSlug)
          		.list();

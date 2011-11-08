@@ -461,6 +461,7 @@ table.fullwidth {
 	float: right;
 	display: inline;
 	text-align: right;
+	margin-bottom: 6px;
 }
 
 

@@ -68,7 +68,11 @@
 	                  rowClasses="odd,even"
 	                  rows="20"
 	                  rendered="#{projectIterationFilesAction.iterationDocuments.size() gt 0}">
-	                <rich:column sortOrder="ASCENDING" filterMethod="#{projectIterationFilesAction.filterDocumentByName}">
+	                <rich:column>
+                        <f:facet name="header">#{messages['jsf.iteration.files.Path']}</f:facet>
+                        #{doc.path}
+                    </rich:column>
+	                <rich:column filterMethod="#{projectIterationFilesAction.filterDocumentByName}">
 	                    <f:facet name="header">
 	                       <h:panelGroup>
 	                           <h:outputText value="#{messages['jsf.Name']}"/>
@@ -82,10 +86,6 @@
 	                       <f:param name="docId" value="#{doc.docId}"/>
 	                       <h:outputText value="#{doc.name}"/>
 	                    </s:link> 
-	                </rich:column>
-	                <rich:column>
-	                    <f:facet name="header">#{messages['jsf.iteration.files.Path']}</f:facet>
-	                    #{doc.path}
 	                </rich:column>
 	                <rich:column>
 	                    <f:facet name="header">#{messages['jsf.iteration.files.ContentType']}</f:facet>
@@ -112,23 +112,23 @@
 	       </f:facet>
 	       <a4j:form>
 		       <rich:progressBar id="downloadProgressBar"
-		            value="#{projectIterationFilesAction.zipFilePrepHandle.currentProgress}"
+		            value="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress}"
 	                interval="500" 
-	                label="#{projectIterationFilesAction.zipFilePrepHandle.currentProgress} of #{projectIterationFilesAction.zipFilePrepHandle.maxProgress}"
+	                label="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress} of #{projectIterationZipFileAction.zipFilePrepHandle.maxProgress}"
 	                minValue="-1" 
-	                maxValue="#{projectIterationFilesAction.zipFilePrepHandle.maxProgress - 1}"
-	                enabled="#{projectIterationFilesAction.zipFilePrepHandle.inProgress}"
+	                maxValue="#{projectIterationZipFileAction.zipFilePrepHandle.maxProgress - 1}"
+	                enabled="#{projectIterationZipFileAction.zipFilePrepHandle.inProgress}"
 	                reRenderAfterComplete="downloadProgressBar">
 	                <f:facet name="complete">
 	                    <script type="text/javascript">
 	                        #{rich:component('downloadProgressPanel')}.hide();
-	                        window.location = "#{facesContext.externalContext.requestContextPath}/rest/file/download/#{projectIterationFilesAction.zipFilePrepHandle.downloadId}";
+	                        window.location = "#{facesContext.externalContext.requestContextPath}/rest/file/download/#{projectIterationZipFileAction.zipFilePrepHandle.downloadId}";
 	                    </script>
 	                </f:facet>
 	           </rich:progressBar>
 	           <div align="right">
 	               <a4j:commandButton id="closeProgressPanelButton" 
-	                    action="#{projectIterationFilesAction.cancelFileDownload}"
+	                    action="#{projectIterationZipFileAction.cancelFileDownload}"
 	                    value="#{messages['jsf.Cancel']}"
 	                    reRender="downloadProgressBar">
 	                    <rich:componentControl for="downloadProgressPanel" 
@@ -146,7 +146,7 @@
 	      <a4j:form>
 		      <a4j:commandLink styleClass="action_link"
 		         value="#{messages['jsf.iteration.files.DownloadAllFiles']}"
-	             action="#{projectIterationFilesAction.prepareIterationZipFile}"
+	             action="#{projectIterationZipFileAction.prepareIterationZipFile}"
 	             onclick="if(!downloadAllFilesClick()){ return false; }"
 	             reRender="downloadProgressBar"/>
 	      </a4j:form>

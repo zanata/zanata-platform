@@ -39,8 +39,8 @@ import org.zanata.process.ProcessHandle;
 import org.zanata.security.BaseSecurityChecker;
 
 @Name("projectIterationFilesAction")
-@Scope(ScopeType.CONVERSATION)
-public class ProjectIterationFilesAction extends BaseSecurityChecker
+@Scope(ScopeType.PAGE)
+public class ProjectIterationFilesAction
 {
 
    private String projectSlug;
@@ -52,17 +52,9 @@ public class ProjectIterationFilesAction extends BaseSecurityChecker
    @In
    private DocumentDAO documentDAO;
    
-   @In
-   private ProjectIterationDAO projectIterationDAO;
-   
-   @In
-   private IterationZipFileBuildProcess iterationZipFileBuildProcess; 
-   
    private List<HDocument> iterationDocuments;
    
    private String documentNameFilter;
-   
-   private ProcessHandle zipFilePrepHandle;
    
    
    public void initialize()
@@ -82,44 +74,6 @@ public class ProjectIterationFilesAction extends BaseSecurityChecker
       {
          return true;
       }
-   }
-   
-   @Begin(join = true)
-   @Restrict("#{projectIterationFilesAction.checkPermission('download-all')}")
-   public void prepareIterationZipFile()
-   {
-      if( this.zipFilePrepHandle != null && this.zipFilePrepHandle.isInProgress() )
-      {
-         // Cancel any other processes
-         this.zipFilePrepHandle.setShouldStop(true);
-      }
-      
-      // Build a background process Handle
-      IterationZipFileBuildProcessHandle processHandle =
-            new IterationZipFileBuildProcessHandle();
-      processHandle.setProjectSlug( this.projectSlug );
-      processHandle.setIterationSlug( this.iterationSlug );
-      processHandle.setLocaleId( this.localeId );
-      processHandle.setInitiatingUserName( Identity.instance().getCredentials().getUsername() );
-      
-      // Fire the zip file building process
-      this.iterationZipFileBuildProcess.startProcess( processHandle );
-      this.zipFilePrepHandle = processHandle;
-   }
-   
-   @End
-   public void cancelFileDownload()
-   {
-      if( this.zipFilePrepHandle.isInProgress() )
-      {
-         this.zipFilePrepHandle.setShouldStop(true);
-      }
-   }
-   
-   @Override
-   public Object getSecuredEntity()
-   {
-      return this.projectIterationDAO.getBySlug(this.projectSlug, this.iterationSlug);
    }
 
    public List<HDocument> getIterationDocuments()
@@ -170,16 +124,6 @@ public class ProjectIterationFilesAction extends BaseSecurityChecker
    public void setDocumentNameFilter(String documentNameFilter)
    {
       this.documentNameFilter = documentNameFilter;
-   }
-
-   public ProcessHandle getZipFilePrepHandle()
-   {
-      return zipFilePrepHandle;
-   }
-
-   public void setZipFilePrepHandle(ProcessHandle zipFilePrepProgress)
-   {
-      this.zipFilePrepHandle = zipFilePrepProgress;
    }
    
 }

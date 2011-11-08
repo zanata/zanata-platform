@@ -34,12 +34,6 @@
                   styleClass="iteration_inline_tribes"
                   rowClasses="odd,even">
     <rich:column id="locale_id">#{tribe.retrieveNativeName()} [#{tribe.localeId.id}]</rich:column>
-    <rich:column id="status">
-      <ui:param name="tstatus" value="#{iterationTranslationAction.getWordStatsForContainer(_iteration.id, tribe.localeId)}" />
-      <ui:include src="statsbar.xhtml">
-        <ui:param name="status" value="#{tstatus}" />
-      </ui:include>
-    </rich:column>
     <rich:column id="translate">
       <h:outputLink
           rendered="#{s:hasPermission(projectHome.instance, 'modify-translation', tribe) and !zanataInit.debug}"
@@ -62,7 +56,8 @@
 		<f:param name="locale" value="#{locale.language}" />
 		#{messages['jsf.TranslateGWTDevMode']}
       </h:outputLink>
-      <rich:spacer width="10px" />
+    </rich:column>
+    <rich:column id="files">
       <s:link
           rendered="#{s:hasPermission(projectHome.instance, 'modify-translation', tribe)}"
           view="/project/iteration_files.xhtml"
@@ -72,7 +67,12 @@
         <f:param name="iteration" value="#{_iteration.slug}"/>
         <f:param name="localeId" value="#{tribe.localeId.id}"/>
       </s:link>
-
+    </rich:column>
+    <rich:column id="status">
+      <ui:param name="tstatus" value="#{iterationTranslationAction.getWordStatsForContainer(_iteration.id, tribe.localeId)}" />
+      <ui:include src="statsbar.xhtml">
+        <ui:param name="status" value="#{tstatus}" />
+      </ui:include>
     </rich:column>
   </rich:dataTable>
 </div>
