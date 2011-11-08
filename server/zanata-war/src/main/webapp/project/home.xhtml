@@ -33,7 +33,7 @@
 		    page="#{projectAction.scrollerPage}" id="scroller" reRender="sc2" />
 	<rich:spacer height="15" />
         
-         <s:div rendered="#{projectAction.checkPermission('mark-obsolete')}" styleClass="showObsoleteOption">
+         <s:div rendered="#{projectAction.checkPermission('HProject', 'mark-obsolete')}" styleClass="showObsoleteOption">
             <a4j:region>
             <h:selectBooleanCheckbox title="Show obsolete projects" value="#{projectAction.showObsolete}" >
                 <a4j:support event="onchange" reRender="main_content" />
@@ -73,7 +73,7 @@
                         <f:facet name="header">Obsolete</f:facet>
                         <h:selectBooleanCheckbox id="obsolete" value="#{project.obsolete}">
                             <a4j:support event="onclick"
-                            ajaxSingle="true" reRender="content"
+                            ajaxSingle="true" reRender="main_content"
                             action="#{projectAction.markObsolete(project)}"/>
                         </h:selectBooleanCheckbox>                     
                     </rich:column>

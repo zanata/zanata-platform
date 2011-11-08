@@ -6,9 +6,11 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j"
     template="../WEB-INF/layout/template.xhtml">
 
 <ui:define name="center_content">
+    <s:decorate id="main_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 
     <h1>#{messages['jsf.ProjectId']}: #{projectHome.instance.slug}</h1>
@@ -37,6 +39,7 @@
         <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
       </rich:dataGrid>
     </s:fragment>
+    </s:decorate>
 </ui:define>
 
 <ui:define name="left_content">
@@ -52,6 +55,18 @@
     <s:link styleClass="action_link" rendered="#{projectHome.checkPermission('update')}" view="/project/assign_maintainer.xhtml" value="#{messages['jsf.ManageMaintainers']}" propagation="none">
     	<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
     </s:link>
+    <a4j:form>        
+		    <a4j:commandLink styleClass="action_link" action="#{projectHome.markProjectObsolete}" 
+		                     reRender="loggedIn,main_content" rendered="#{projectHome.checkPermission('mark-obsolete') and !projectHome.instance.obsolete}" >
+                            #{messages['jsf.MarkProjectObsolete']}
+            </a4j:commandLink>
+            
+            <a4j:commandLink styleClass="action_link" action="#{projectHome.markProjectActive}" 
+                             reRender="loggedIn,main_content" rendered="#{projectHome.checkPermission('mark-obsolete') and projectHome.instance.obsolete}" >
+                            #{messages['jsf.MarkProjectActive']}
+            </a4j:commandLink>
+            
+    </a4j:form>
   </rich:panel>
 
   <rich:panel>

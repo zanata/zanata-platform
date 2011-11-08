@@ -29,14 +29,12 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HProject;
 import org.zanata.security.BaseSecurityChecker;
-
 
 @Name("projectAction")
 @Scope(ScopeType.PAGE)
@@ -53,11 +51,13 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    @In
    private ProjectDAO projectDAO;
-   
+
    @In
    Identity identity;
 
    private boolean showObsolete = false;
+
+   private HProject securedEntity = null;
 
    public boolean getEmpty()
    {
@@ -106,27 +106,31 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
       }
    }
 
-   @Restrict("#{languageTeamAction.checkPermission('HProject', 'mark-obsolete')}")
    public void markObsolete(HProject project)
    {
-      projectDAO.makePersistent(project);
-      projectDAO.flush();
+      securedEntity = project;
+      if (checkPermission("mark-obsolete"))
+      {
+         projectDAO.makePersistent(project);
+         projectDAO.flush();
 
-      if (project.isObsolete())
-      {
-         FacesMessages.instance().add("Updated {0} status to obsolete", project.getName());
+         if (project.isObsolete())
+         {
+            FacesMessages.instance().add("Updated {0} to obsolete", project.getName());
+         }
+         else
+         {
+            FacesMessages.instance().add("Updated {0} to active", project.getName());
+         }
       }
-      else
-      {
-         FacesMessages.instance().add("Updated {0} status to active", project.getName());
-      }
+      securedEntity = null;
    }
 
    public boolean isShowObsolete()
    {
       return showObsolete;
    }
-
+   
    public void setShowObsolete(boolean showObsolete)
    {
       this.showObsolete = showObsolete;
@@ -135,7 +139,18 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
    @Override
    public Object getSecuredEntity()
    {
-      // return null will fail security check by default
-      return new Object();
+      return securedEntity;
    }
+
+
+   /**
+    * Checks for permissions to the indicated operation on the Permission String
+    * by the <code>getSecuredEntity</code> method.
+    * 
+    */
+   public boolean checkPermission(String name, String operation)
+   {
+      return identity != null && identity.hasPermission(name, operation, null);
+   }
+
 }

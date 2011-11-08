@@ -297,7 +297,7 @@ end
 ******************************************************************************************/
 
 /* Mark Obsolete on Projects - checking role = 'admin' only */
-rule MarkProjectObsolete
+rule MarkProjectObsoleteWithTargetName
   no-loop
   activation-group "permissions"
 when
@@ -307,14 +307,35 @@ then
   check.grant();
 end
 
+rule MarkProjectObsoleteWithTargetObject
+  no-loop
+  activation-group "permissions"
+when
+  $project: HProject()
+  check: PermissionCheck(target == $project, action == "mark-obsolete", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
 
 /* Mark Obsolete on Project Iteration - checking role = 'admin' only */
-rule MarkProjectIterationObsolete
+rule MarkProjectIterationObsoleteWithTargetName
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(target == "HProjectIteration", action == "mark-obsolete", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+rule MarkProjectIterationObsoleteWithTargetObject
   no-loop
   activation-group "permissions"
 when
   $iter: HProjectIteration()
-  check: PermissionCheck(target == "HProjectIteration", action == "mark-obsolete", granted == false)
+  check: PermissionCheck(target == $iter, action == "mark-obsolete", granted == false)
   Role(name == "admin")
 then
   check.grant();

@@ -216,7 +216,6 @@
 
   
   <!-- Project -->
-
   <page view-id="/project/project.xhtml">
     <param name="slug" value="#{projectHome.slug}" />
     <action execute="#{projectHome.validateSuppliedId}" />

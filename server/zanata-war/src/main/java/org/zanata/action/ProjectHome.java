@@ -33,6 +33,7 @@ import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
@@ -198,4 +199,17 @@ public class ProjectHome extends SlugHome<HIterationProject>
       }
    }
 
+   @Restrict("#{projectHome.checkPermission('mark-obsolete')}")
+   public void markProjectObsolete()
+   {
+      getInstance().setObsolete(true);
+      super.update();
+   }
+
+   @Restrict("#{projectHome.checkPermission('mark-obsolete')}")
+   public void markProjectActive()
+   {
+      getInstance().setObsolete(false);
+      super.update();
+   }
 }

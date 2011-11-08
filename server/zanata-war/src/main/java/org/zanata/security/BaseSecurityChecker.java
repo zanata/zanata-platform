@@ -50,15 +50,4 @@ public abstract class BaseSecurityChecker implements SecurityChecker
    {
       return identity != null && identity.hasPermission(getSecuredEntity(), operation);
    }
-   
-   /**
-    * Checks for permissions to the indicated operation on the Permission String
-    * by the <code>getSecuredEntity</code> method.
-    * 
-    */
-   public boolean checkPermission(String name, String operation)
-   {
-      return identity != null && identity.hasPermission(name, operation, null);
-   }
-
 }
