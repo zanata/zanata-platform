@@ -1,16 +1,17 @@
-<m:message xmlns="http://www.w3.org/1999/xhtml"
-           xmlns:m="http://jboss.com/products/seam/mail"
-           xmlns:f="http://java.sun.com/jsf/core"
-           xmlns:h="http://java.sun.com/jsf/html"
-           xmlns:ui="http://java.sun.com/jsf/facelets"
-           xmlns:s="http://jboss.com/products/seam/taglib"
-           charset="UTF-8" importance="normal">
-  <m:from name="#{messages['jsf.Zanata']}" >#{applicationConfiguration.fromEmailAddr}</m:from>
-  <m:to name="#{messages['jsf.email.accountchange.Name']}">#{profileAction.email}</m:to>
-  <m:subject>#{messages['jsf.email.accountchange.Subject']}</m:subject>
-  <m:body>
-    <html>
-    <body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:s="http://jboss.com/products/seam/taglib"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:a4j="http://richfaces.org/a4j"
+   xmlns:rich="http://richfaces.org/rich"
+   template="/WEB-INF/facelets/email/template_email.xhtml">
+   
+  <ui:param name="toName" value="#{messages['jsf.email.accountchange.Name']}" />
+  <ui:param name="toEmailAddr" value="#{profileAction.email}" />
+  <ui:param name="subject" value="#{messages['jsf.email.accountchange.Subject']}" />
+
+  <ui:define name="body">
     <p>#{messages['jsf.email.accountchange.DearName']}</p>
     <p>#{messages['jsf.email.accountchange.ClickLinkToActivateEmailChange']}</p>
     <p>
@@ -18,7 +19,6 @@
       #{applicationConfiguration.serverPath}/account/validate_email/#{profileAction.activationKey}
       </a>
     </p>
-  </body>
-  </html>
-  </m:body>
-</m:message>
+  </ui:define>
+  
+</ui:composition>
