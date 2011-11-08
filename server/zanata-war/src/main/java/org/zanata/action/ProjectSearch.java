@@ -96,7 +96,7 @@ public class ProjectSearch
    private FullTextQuery searchQuery(String searchQuery) throws ParseException
    {
       String[] projectFields = { "slug", "name", "description" };
-      QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_29, projectFields, new StandardAnalyzer());
+      QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_29, projectFields, new StandardAnalyzer(Version.LUCENE_24));
       parser.setAllowLeadingWildcard(true);
       Query luceneQuery = parser.parse(QueryParser.escape(searchQuery));
       return ((FullTextEntityManager) entityManager).createFullTextQuery(luceneQuery, HProject.class);
