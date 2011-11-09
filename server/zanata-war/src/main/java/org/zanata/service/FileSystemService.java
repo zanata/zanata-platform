@@ -46,6 +46,15 @@ public interface FileSystemService
    throws IOException;
    
    /**
+    * Deletes a previously created Download descriptor file.
+    * 
+    * @param downloadId The download identifier.
+    * @return True, if the file was successfully removed.
+    * @throws IOException
+    */
+   boolean deleteDownloadDescriptorFile(String downloadId) throws IOException;
+   
+   /**
     * Returns a writable file where a generated download can be built/staged while it's being
     * prepared.
     * 

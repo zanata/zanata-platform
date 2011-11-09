@@ -58,7 +58,13 @@ public class FileSystemServiceImpl implements FileSystemService
    public String createDownloadDescriptorFile(File physicalFile, String downloadFileName, String generatingUser)
    throws IOException
    {
-      File descriptorFile = new File( STAGING_DIR, physicalFile.getName() + DOWNLOAD_FILE_DESCRIPTOR_SUFFIX );
+      String descriptorFileName = physicalFile.getName();
+      if( descriptorFileName.indexOf('.') > 0 )
+      {
+         descriptorFileName = descriptorFileName.substring(0, descriptorFileName.lastIndexOf('.'));
+      }
+      
+      File descriptorFile = new File( STAGING_DIR, descriptorFileName + DOWNLOAD_FILE_DESCRIPTOR_SUFFIX );
       Properties descriptorProps = new Properties();
       descriptorProps.put(DownloadDescriptorProperties.DownloadFileName.toString(), downloadFileName);
       descriptorProps.put(DownloadDescriptorProperties.PhysicalFileName.toString(), physicalFile.getName());
@@ -67,11 +73,25 @@ public class FileSystemServiceImpl implements FileSystemService
       descriptorProps.storeToXML(new FileOutputStream( descriptorFile ), "Zanata Download Descriptor");
       
       // Generate the download Id based on the File name
-      String downloadId = descriptorFile.getName();
-      downloadId = downloadId.substring( 0, downloadId.lastIndexOf('.') );
+      String downloadId = descriptorFileName;
       
       return downloadId;
    }
+   
+   @Override
+	public boolean deleteDownloadDescriptorFile(String downloadId) throws IOException 
+	{
+		File descriptorFile = new File(STAGING_DIR, downloadId + DOWNLOAD_FILE_DESCRIPTOR_SUFFIX);
+		
+		if( descriptorFile.exists() )
+		{
+		   return descriptorFile.delete();
+		}
+		else
+		{
+		   return false;
+		}
+	}
    
    /**
     * @see org.zanata.service.FileSystemService#createDownloadStagingFile(java.lang.String)

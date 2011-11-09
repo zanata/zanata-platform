@@ -89,6 +89,12 @@ public class IterationZipFileBuildProcess extends BackgroundProcess
       final PoWriter2 poWriter = new PoWriter2();
       final Set<String> extensions = new HashSet<String>();
       
+      // Generate the download descriptor file
+      String downloadId = this.fileSystemServiceImpl.createDownloadDescriptorFile(downloadFile, 
+            this.projectSlug + "_" + this.iterationSlug + "_" + this.localeId + ".zip",
+            this.userName);
+      ((IterationZipFileBuildProcessHandle)super.processHandle).setDownloadId( downloadId );
+      
       this.processHandle.setMaxProgress( allIterationDocs.size() );
       
       for( int i=0; i<allIterationDocs.size(); i++ )
@@ -98,6 +104,7 @@ public class IterationZipFileBuildProcess extends BackgroundProcess
          {
             zipOutput.close();
             downloadFile.delete();
+            this.fileSystemServiceImpl.deleteDownloadDescriptorFile(downloadId);
             return;
          }
             
@@ -117,12 +124,6 @@ public class IterationZipFileBuildProcess extends BackgroundProcess
       
       zipOutput.flush();
       zipOutput.close();
-      
-      // Generate the download descriptor file
-      String downloadId = this.fileSystemServiceImpl.createDownloadDescriptorFile(downloadFile, 
-            this.projectSlug + "_" + this.iterationSlug + "_" + this.localeId + ".zip",
-            this.userName);
-      ((IterationZipFileBuildProcessHandle)super.processHandle).setDownloadId( downloadId );
    }
 
    @Override
