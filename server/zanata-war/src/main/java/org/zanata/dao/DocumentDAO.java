@@ -1,6 +1,7 @@
 package org.zanata.dao;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -136,6 +137,39 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       {
          textFlow.setRevision(revision);
       }
+   }
+   
+   public HDocument getByProjectIterationAndDocId(final String projectSlug, final String iterationSlug, final String docId)
+   {
+      Session session = getSession();
+      
+      final HDocument doc = (HDocument)
+         session.createQuery("from HDocument d where d.projectIteration.slug = :iterationSlug " +
+               "and d.projectIteration.project.slug = :projectSlug " +
+               "and d.docId = :docId " +
+               "and d.obsolete = false")
+               .setParameter("iterationSlug", iterationSlug)
+               .setParameter("projectSlug", projectSlug)
+               .setParameter("docId", docId)
+               .uniqueResult();
+      return doc;
+   }
+   
+   public List<HDocument> getAllByProjectIteration(final String projectSlug, final String iterationSlug)
+   {
+      Session session = getSession();
+      
+      @SuppressWarnings("unchecked")
+      final List<HDocument> documents =
+         session.createQuery("from HDocument d " +
+         		"where d.projectIteration.slug = :iterationSlug " +
+         		"and d.projectIteration.project.slug = :projectSlug " +
+         		"and d.obsolete = false " +
+         		"order by d.name")
+         		.setParameter("iterationSlug", iterationSlug)
+         		.setParameter("projectSlug", projectSlug)
+         		.list();
+      return documents;
    }
 
 }

@@ -42,7 +42,7 @@
       <property name="jboss.entity.manager.factory.jndi.name" value="java:/zanataEntityManagerFactory"/>
       
       
-      <property name="hibernate.dialect" value="${ds.hibernate.dialect}"/>
+      <property name="hibernate.dialect_resolvers" value="org.zanata.ZanataDialectResolver" />
       <!-- Automatic schema export and drop -->
       <property name="hibernate.hbm2ddl.auto" value="${env.hibernate.hbm2ddl.auto}"/>
       

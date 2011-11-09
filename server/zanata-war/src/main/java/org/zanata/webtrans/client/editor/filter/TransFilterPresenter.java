@@ -36,6 +36,8 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
    public interface Display extends WidgetDisplay
    {
       HasValue<String> getFilterText();
+
+      boolean isFocused();
    }
 
    @Inject

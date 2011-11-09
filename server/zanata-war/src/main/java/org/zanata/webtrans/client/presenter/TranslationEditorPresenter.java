@@ -82,14 +82,15 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    @Override
    protected void onBind()
    {
+      transFilterPresenter.bind();
+      display.setFilterView(transFilterPresenter.getDisplay().asWidget());
+
       tableEditorPresenter.bind();
+      tableEditorPresenter.setTransFilterView(transFilterPresenter.getDisplay());
       display.setEditorView(tableEditorPresenter.getDisplay().asWidget());
 
       transUnitNavigationPresenter.bind();
       display.setTransUnitNavigation(transUnitNavigationPresenter.getDisplay().asWidget());
-
-      transFilterPresenter.bind();
-      display.setFilterView(transFilterPresenter.getDisplay().asWidget());
 
       // undoRedoPresenter.bind();
       // display.setUndoRedo(undoRedoPresenter.getDisplay().asWidget());

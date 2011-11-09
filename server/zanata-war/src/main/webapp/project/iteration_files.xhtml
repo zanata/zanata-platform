@@ -1,0 +1,153 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j"
+    template="../WEB-INF/layout/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+        function downloadAllFilesClick()
+        {
+            if( confirm("#{messages['jsf.iteration.files.ConfirmDownloadAllFiles']}") )
+            {
+        	    #{rich:component('downloadProgressPanel')}.show();
+        	    return true;
+            }
+            else
+            {
+                return false;	
+            }
+        }
+        </script>
+    </ui:define>
+
+	<ui:define name="center_content">
+	    <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
+	
+	    <h1>
+	       #{messages['jsf.ProjectId']}:&nbsp;
+	       <s:link view="/project/view/#{projectIterationFilesAction.projectSlug}">
+	           #{projectIterationFilesAction.projectSlug}
+	       </s:link>
+	    </h1>
+        <h1>
+            #{messages['jsf.Iteration']}:&nbsp;
+            <s:link view="/project/view/#{projectIterationFilesAction.projectSlug}">
+                #{projectIterationFilesAction.iterationSlug}
+            </s:link>
+        </h1>
+        <h1>
+            #{messages['jsf.iteration.files.LocaleId']}:&nbsp;
+            <s:link view="/language/view/#{projectIterationFilesAction.localeId}">
+                #{projectIterationFilesAction.localeId}
+            </s:link>
+        </h1>
+	
+	    <rich:panel id="iteration-files-panel">
+	        <f:facet name="header">
+	            #{messages['jsf.iteration.files.PanelTitle']}
+	        </f:facet>
+	        <h:messages />
+	        
+	        <h:form>
+	          <s:token allowMultiplePosts="true" />
+	          <rich:datascroller id="data_table_scroller" align="center" for="data_table" 
+	                   rendered="#{projectIterationFilesAction.iterationDocuments.size() > 20}">
+	          </rich:datascroller>
+              <rich:spacer height="20" />
+              <h:outputText value="#{messages['jsf.iteration.files.NoFiles']}" 
+                      rendered="#{projectIterationFilesAction.iterationDocuments.size() == 0}"/>
+	          <rich:dataTable id="data_table" width="100%" value="#{projectIterationFilesAction.iterationDocuments}" 
+	                  var="doc"
+	                  styleClass="iteration_inline_tribes"
+	                  rowClasses="odd,even"
+	                  rows="20"
+	                  rendered="#{projectIterationFilesAction.iterationDocuments.size() gt 0}">
+	                <rich:column>
+                        <f:facet name="header">#{messages['jsf.iteration.files.Path']}</f:facet>
+                        #{doc.path}
+                    </rich:column>
+	                <rich:column filterMethod="#{projectIterationFilesAction.filterDocumentByName}">
+	                    <f:facet name="header">
+	                       <h:panelGroup>
+	                           <h:outputText value="#{messages['jsf.Name']}"/>
+	                           <br/>
+	                           <h:inputText value="#{projectIterationFilesAction.documentNameFilter}" id="name_filter_input">
+                                    <a4j:support event="onkeyup" reRender="data_table,data_table_scroller" ignoreDupResponses="true" requestDelay="700" focus="name_filter_input" />
+                               </h:inputText>
+                           </h:panelGroup>
+	                    </f:facet>
+	                    <s:link view="/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/po">
+	                       <f:param name="docId" value="#{doc.docId}"/>
+	                       <h:outputText value="#{doc.name}"/>
+	                    </s:link> 
+	                </rich:column>
+	                <rich:column>
+	                    <f:facet name="header">#{messages['jsf.iteration.files.Statistics']}</f:facet>
+	                    <ui:param name="tstatus" value="#{projectIterationFilesAction.getTransUnitWordsForDocument(doc)}" />
+	                    <ui:include src="../WEB-INF/layout/statsbar.xhtml">
+	                        <ui:param name="status" value="#{tstatus}" />
+	                    </ui:include>
+	                </rich:column>
+	          </rich:dataTable>
+	        </h:form>              
+	    </rich:panel>
+	    
+	    <rich:modalPanel id="downloadProgressPanel"
+	       moveable="#{false}"
+           resizeable="#{false}"
+           autosized="#{true}">
+	       
+	       <f:facet name="header">
+	           <h:outputText value="#{messages['jsf.iteration.files.ProcessDlgTitle']}"/>
+	       </f:facet>
+	       <a4j:form>
+		       <rich:progressBar id="downloadProgressBar"
+		            value="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress}"
+	                interval="500" 
+	                label="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress} of #{projectIterationZipFileAction.zipFilePrepHandle.maxProgress}"
+	                minValue="-1" 
+	                maxValue="#{projectIterationZipFileAction.zipFilePrepHandle.maxProgress - 1}"
+	                enabled="#{projectIterationZipFileAction.zipFilePrepHandle.inProgress}"
+	                reRenderAfterComplete="downloadProgressBar">
+	                <f:facet name="complete">
+	                    <script type="text/javascript">
+	                        #{rich:component('downloadProgressPanel')}.hide();
+	                        window.location = "#{facesContext.externalContext.requestContextPath}/rest/file/download/#{projectIterationZipFileAction.zipFilePrepHandle.downloadId}";
+	                    </script>
+	                </f:facet>
+	           </rich:progressBar>
+	           <div align="right">
+	               <a4j:commandButton id="closeProgressPanelButton" 
+	                    action="#{projectIterationZipFileAction.cancelFileDownload}"
+	                    value="#{messages['jsf.Cancel']}"
+	                    reRender="downloadProgressBar">
+	                    <rich:componentControl for="downloadProgressPanel" 
+	                       attachTo="closeProgressPanelButton" operation="hide" event="onclick"/>
+	               </a4j:commandButton>
+	           </div>
+	       </a4j:form>
+	    </rich:modalPanel>
+	</ui:define>
+	
+	<ui:define name="left_content">
+	   
+	   <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
+	      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+	      <a4j:form>
+		      <a4j:commandLink styleClass="action_link"
+		         value="#{messages['jsf.iteration.files.DownloadAllFiles']}"
+	             action="#{projectIterationZipFileAction.prepareIterationZipFile}"
+	             onclick="if(!downloadAllFilesClick()){ return false; }"
+	             reRender="downloadProgressBar"/>
+	      </a4j:form>
+	   </rich:panel>
+	   
+	</ui:define>
+
+</ui:composition>

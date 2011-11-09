@@ -131,7 +131,7 @@ do
 
       targetfile=$(arrayGet targetfile ${ver}_${auth})
       if [[ -z $targetfile ]]; then
-         targetfile=/opt/jboss-ewp-5.0/jboss-as-web/server/production/deploy/ROOT.war
+         targetfile=/opt/jboss-ewp-5.1/jboss-as-web/server/production/deploy/ROOT.war
       fi
 
       if [[ $targetfile =~ (.*)/deploy/.* ]]; then

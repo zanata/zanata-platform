@@ -608,23 +608,14 @@ public class TranslationResourcesService implements TranslationResourcesResource
       }
 
       HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
-
-      List<HTextFlowTarget> hTargets = textFlowTargetDAO.findTranslations(document, locale);
       TranslationsResource translationResource = new TranslationsResource();
-      resourceUtils.transferToTranslationsResourceExtensions(document, translationResource.getExtensions(true), extensions, hLocale, hTargets);
+      resourceUtils.transferToTranslationsResource(
+            translationResource, document, hLocale, this.extensions, 
+            textFlowTargetDAO.findTranslations(document, hLocale));
 
-      if (hTargets.isEmpty() && translationResource.getExtensions(true).isEmpty())
+      if (translationResource.getTextFlowTargets().isEmpty() && translationResource.getExtensions(true).isEmpty())
       {
          return Response.status(Status.NOT_FOUND).build();
-      }
-
-      for (HTextFlowTarget hTarget : hTargets)
-      {
-         TextFlowTarget target = new TextFlowTarget();
-         target.setResId(hTarget.getTextFlow().getResId());
-         resourceUtils.transferToTextFlowTarget(hTarget, target);
-         resourceUtils.transferToTextFlowTargetExtensions(hTarget, target.getExtensions(true), extensions);
-         translationResource.getTextFlowTargets().add(target);
       }
 
       // TODO lastChanged

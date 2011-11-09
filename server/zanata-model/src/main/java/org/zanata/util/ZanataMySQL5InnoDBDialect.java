@@ -1,4 +1,4 @@
-package org.zanata;
+package org.zanata.util;
 
 import java.sql.Types;
 

@@ -59,18 +59,19 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<HTextFlowTarget> findTranslations(HDocument document, LocaleId localeId)
+   public List<HTextFlowTarget> findTranslations(HDocument document, HLocale locale)
    {
       // @formatter:off
       return getSession().createQuery(
-         "select t from HTextFlowTarget t where " + 
+         "select t " +
+         "from HTextFlowTarget t where " + 
          "t.textFlow.document =:document " +
-         "and t.locale.localeId =:localeId " + 
+         "and t.locale =:locale " + 
          "and t.state !=:state " +
          "and t.textFlow.obsolete=false " + 
          "order by t.textFlow.pos")
             .setParameter("document", document)
-            .setParameter("localeId", localeId)
+            .setParameter("locale", locale)
             .setParameter("state", ContentState.New)
             .list();      
       // @formatter:on

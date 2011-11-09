@@ -340,3 +340,28 @@ when
 then
   check.grant();
 end
+
+
+/*****************************************************************************************
+
+  File Download rules
+  
+******************************************************************************************/
+
+/* Permissions to download files.
+   NOTE: Currently any authenticated user can download files
+ */
+
+rule TranslatorsDownloadFiles
+  no-loop
+  activation-group "permissions"
+when
+  authenticatedPerson: HPerson()
+  $iteration: HProjectIteration()
+  check: PermissionCheck(
+    target == $iteration, 
+    action == "download-single" || action == "download-all",
+    granted == false)
+then
+  check.grant();
+end
