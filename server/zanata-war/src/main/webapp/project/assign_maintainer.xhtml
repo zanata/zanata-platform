@@ -23,7 +23,7 @@
           return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisPersonThisActionCannotBeUndone']}");
         }
       </script>
-      <rich:panel rendered="#{s:hasPermission(projectHome.instance, 'update')}">
+      <rich:panel rendered="#{projectMaintainerManageAction.checkPermission('update')}">
         <f:facet name="header">#{messages['jsf.ProjectMaintainerManager']}</f:facet>
 		<h:messages />
 		

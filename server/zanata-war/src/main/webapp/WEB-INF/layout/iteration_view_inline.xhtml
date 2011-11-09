@@ -8,7 +8,6 @@
 <div id="iteration_list_view_item_#{_iteration.slug}"
    class="inline_cell_item" >
   <div class="list_view_header">
-    <h2>#{_iteration.slug}</h2>
     <div class="menu_items">
       <s:link
       	value="#{messages['jsf.ConfigFile']}"
@@ -29,17 +28,12 @@
       </s:link>
     </div>
   </div>
+
   <rich:dataTable id="data_table" width="100%" value="#{iterationTranslationAction.getTranslationLocale(projectHome.instance.slug, _iteration.slug)}"
                   var="tribe"
                   styleClass="iteration_inline_tribes"
                   rowClasses="odd,even">
     <rich:column id="locale_id">#{tribe.retrieveNativeName()} [#{tribe.localeId.id}]</rich:column>
-    <rich:column id="status">
-      <ui:param name="tstatus" value="#{iterationTranslationAction.getWordStatsForContainer(_iteration.id, tribe.localeId)}" />
-      <ui:include src="statsbar.xhtml">
-        <ui:param name="status" value="#{tstatus}" />
-      </ui:include>
-    </rich:column>
     <rich:column id="translate">
       <h:outputLink
           rendered="#{s:hasPermission(projectHome.instance, 'modify-translation', tribe) and !applicationConfiguration.debug}"
@@ -62,7 +56,23 @@
 		<f:param name="locale" value="#{locale.language}" />
 		#{messages['jsf.TranslateGWTDevMode']}
       </h:outputLink>
-
+    </rich:column>
+    <rich:column id="files">
+      <s:link
+          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation', tribe)}"
+          view="/project/iteration_files.xhtml"
+          propagation="none"
+          value="#{messages['jsf.Files']}">
+        <f:param name="project" value="#{_iteration.project.slug}"/>
+        <f:param name="iteration" value="#{_iteration.slug}"/>
+        <f:param name="localeId" value="#{tribe.localeId.id}"/>
+      </s:link>
+    </rich:column>
+    <rich:column id="status">
+      <ui:param name="tstatus" value="#{iterationTranslationAction.getWordStatsForContainer(_iteration.id, tribe.localeId)}" />
+      <ui:include src="statsbar.xhtml">
+        <ui:param name="status" value="#{tstatus}" />
+      </ui:include>
     </rich:column>
   </rich:dataTable>
 </div>

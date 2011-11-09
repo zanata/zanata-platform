@@ -235,12 +235,26 @@ end
   
 ******************************************************************************************/
 
+/* Anyone can read Locale members */
+
+rule ReadLocaleMembers
+  no-loop
+  activation-group "permissions"
+when
+  $member: HLocaleMember()
+  check: PermissionCheck(target == $member, action == "read", granted == false)
+then
+  check.grant();
+end
+
+
 /* 'team coordinator' can manage language teams */
 
 rule TeamCoordinatorManageLanguageTeam
   no-loop
   activation-group "permissions"
 when
+  PermissionCheck(action == "manage-language-team")
   authenticatedPerson: HPerson() 
   eval(authenticatedPerson != null)
   $locale: HLocale(
@@ -259,6 +273,9 @@ rule TeamCoordinatorModifyLanguageTeamMembers
   no-loop
   activation-group "permissions"
 when
+  PermissionCheck(action == "insert" || action == "update" || action == "delete", 
+    granted == false)
+  HLocaleMember()
   authenticatedPerson: HPerson() 
   eval(authenticatedPerson != null)
   $member: HLocaleMember(
@@ -267,6 +284,31 @@ when
   check: PermissionCheck(
     target == $member, 
     action == "insert" || action == "update" || action == "delete", 
+    granted == false)
+then
+  check.grant();
+end
+
+
+/*****************************************************************************************
+
+  File Download rules
+  
+******************************************************************************************/
+
+/* Permissions to download files.
+   NOTE: Currently any authenticated user can download files
+ */
+
+rule TranslatorsDownloadFiles
+  no-loop
+  activation-group "permissions"
+when
+  authenticatedPerson: HPerson()
+  $iteration: HProjectIteration()
+  check: PermissionCheck(
+    target == $iteration, 
+    action == "download-single" || action == "download-all",
     granted == false)
 then
   check.grant();

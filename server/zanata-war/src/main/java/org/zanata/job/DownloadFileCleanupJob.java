@@ -18,44 +18,48 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.action;
+package org.zanata.job;
 
-import org.hibernate.Session;
-import org.hibernate.criterion.NaturalIdentifier;
-import org.jboss.seam.framework.EntityHome;
-import org.jboss.seam.security.Identity;
-import org.zanata.security.SecurityChecker;
+import java.io.File;
+import java.io.FileFilter;
+import java.util.Calendar;
+
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.log.Log;
+import org.zanata.service.FileSystemService;
 
 /**
- * This implementation uses a field 'slug' to refer to the id of the object.
+ * Scheduled job that cleans up old files remaining from the Download process.
  * 
- * @author asgeirf
+ * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public abstract class SlugHome<E> extends EntityHome<E> implements SecurityChecker
+@Name("downloadFileCleanupJob")
+public class DownloadFileCleanupJob extends ZanataSchedulableJob
 {
-
-   private static final long serialVersionUID = 1L;
-
-   @SuppressWarnings("unchecked")
-   @Override
-   protected E loadInstance()
-   {
-      Session session = (Session) getEntityManager().getDelegate();
-      return (E) session.createCriteria(getEntityClass()).add(getNaturalId()).uniqueResult();
-   }
-
-   public abstract NaturalIdentifier getNaturalId();
-
-   @Override
-   public abstract boolean isIdDefined();
-
-   @Override
-   public abstract Object getId();
+   @Logger
+   private Log log;
+   
+   @In
+   private FileSystemService fileSystemServiceImpl;
    
    @Override
-   public boolean checkPermission(String operation)
+   public String getName()
    {
-      return Identity.instance() != null && Identity.instance().hasPermission(this.getInstance(), operation);
+      return "Download File Cleanup";
    }
-
+   
+   @Override
+   protected void execute() throws Exception
+   {
+      File[] toRemove = this.fileSystemServiceImpl.getAllExpiredDownloadFiles();
+      
+      // Remove all files that match the filter
+      for( File f : toRemove )
+      {
+         log.debug("Removing file {0}", f.getName());
+         f.delete();
+      }
+   }
 }
