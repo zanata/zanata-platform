@@ -88,16 +88,12 @@
 	                    </s:link> 
 	                </rich:column>
 	                <rich:column>
-	                    <f:facet name="header">#{messages['jsf.iteration.files.ContentType']}</f:facet>
-	                    #{doc.contentType}
-	                </rich:column>
-	                <!-- <rich:column>
-	                    <f:facet name="header">Percentage</f:facet>
-	                    <ui:param name="tstatus" value="#{language.words}" />
+	                    <f:facet name="header">#{messages['jsf.iteration.files.Statistics']}</f:facet>
+	                    <ui:param name="tstatus" value="#{projectIterationFilesAction.getTransUnitWordsForDocument(doc)}" />
 	                    <ui:include src="../WEB-INF/layout/statsbar.xhtml">
 	                        <ui:param name="status" value="#{tstatus}" />
 	                    </ui:include>
-	                </rich:column> -->
+	                </rich:column>
 	          </rich:dataTable>
 	        </h:form>              
 	    </rich:panel>

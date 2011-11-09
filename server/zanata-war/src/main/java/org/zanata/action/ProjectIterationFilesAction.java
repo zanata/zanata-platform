@@ -30,6 +30,9 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.Identity;
+import org.zanata.common.LocaleId;
+import org.zanata.common.TransUnitWords;
+import org.zanata.common.TranslationStats;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HDocument;
@@ -74,6 +77,12 @@ public class ProjectIterationFilesAction
       {
          return true;
       }
+   }
+   
+   public TransUnitWords getTransUnitWordsForDocument(HDocument doc)
+   {
+      TranslationStats documentStats = this.documentDAO.getStatistics(doc.getId(), new LocaleId(this.localeId));
+      return documentStats.getWordCount();
    }
 
    public List<HDocument> getIterationDocuments()
