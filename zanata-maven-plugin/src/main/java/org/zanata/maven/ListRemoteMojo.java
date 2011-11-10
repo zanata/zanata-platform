@@ -8,6 +8,7 @@ import org.zanata.client.commands.ListRemoteCommand;
  * 
  * @goal listremote
  * @requiresProject false
+ * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
 public class ListRemoteMojo extends ConfigurableProjectMojo<ConfigurableProjectOptions>

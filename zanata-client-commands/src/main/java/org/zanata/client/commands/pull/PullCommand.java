@@ -1,23 +1,16 @@
 package org.zanata.client.commands.pull;
 
-import java.io.Console;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.client.commands.ConfigurableProjectCommand;
-import org.zanata.client.commands.OptionsUtil;
+import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
@@ -35,7 +28,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * 
  */
-public class PullCommand extends ConfigurableProjectCommand<PullOptions>
+public class PullCommand extends PushPullCommand<PullOptions>
 {
    private static final Logger log = LoggerFactory.getLogger(PullCommand.class);
 
@@ -48,26 +41,14 @@ public class PullCommand extends ConfigurableProjectCommand<PullOptions>
       strategies.put(PROJECT_TYPE_XML, new XmlStrategy());
    }
 
-   Marshaller m = null;
-
-   private final ITranslationResources translationResources;
-   private final URI uri;
+   public PullCommand(PullOptions opts)
+   {
+      super(opts);
+   }
 
    public PullCommand(PullOptions opts, ZanataProxyFactory factory, ITranslationResources translationResources, URI uri)
    {
-      super(opts, factory);
-      this.translationResources = translationResources;
-      this.uri = uri;
-   }
-
-   private PullCommand(PullOptions opts, ZanataProxyFactory factory)
-   {
-      this(opts, factory, factory.getTranslationResources(opts.getProj(), opts.getProjectVersion()), factory.getTranslationResourcesURI(opts.getProj(), opts.getProjectVersion()));
-   }
-
-   public PullCommand(PullOptions opts)
-   {
-      this(opts, OptionsUtil.createRequestFactory(opts));
+      super(opts, factory, translationResources, uri);
    }
 
    private PullStrategy getStrategy(String strategyType)
@@ -109,17 +90,6 @@ public class PullCommand extends ConfigurableProjectCommand<PullOptions>
          confirmWithUser("This will overwrite/delete any existing translations in the above directory.\n");
       }
       PullStrategy strat = getStrategy(getOpts().getProjectType());
-
-      JAXBContext jc = null;
-      if (getOpts().isDebugSet()) // || opts.getValidate())
-      {
-         jc = JAXBContext.newInstance(Resource.class, TranslationsResource.class);
-      }
-      if (getOpts().isDebugSet())
-      {
-         m = jc.createMarshaller();
-         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-      }
 
       LocaleList locales = getOpts().getLocales();
       if (locales == null)
@@ -165,44 +135,6 @@ public class PullCommand extends ConfigurableProjectCommand<PullOptions>
          }
       }
 
-   }
-
-   private void confirmWithUser(String message) throws IOException
-   {
-      if (getOpts().isInteractiveMode())
-      {
-         Console console = System.console();
-         if (console == null)
-            throw new RuntimeException("console not available: please run Maven from a console, or use batch mode (mvn -B)");
-         console.printf(message + "\nAre you sure (y/n)? ");
-         expectYes(console);
-      }
-   }
-
-   protected static void expectYes(Console console) throws IOException
-   {
-      String line = console.readLine();
-      if (line == null)
-         throw new IOException("console stream closed");
-      if (!line.toLowerCase().equals("y") && !line.toLowerCase().equals("yes"))
-         throw new RuntimeException("operation aborted by user");
-   }
-
-   protected void debug(Object jaxbElement)
-   {
-      try
-      {
-         if (getOpts().isDebugSet())
-         {
-            StringWriter writer = new StringWriter();
-            m.marshal(jaxbElement, writer);
-            log.debug("{}", writer);
-         }
-      }
-      catch (JAXBException e)
-      {
-         log.debug(e.toString(), e);
-      }
    }
 
 }

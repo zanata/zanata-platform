@@ -81,9 +81,6 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends Ab
     */
    private boolean interactiveMode = true;
 
-   /** @parameter expression="${settings.offline}" */
-   private boolean offline;
-
    public ConfigurableMojo()
    {
    }
@@ -137,15 +134,8 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends Ab
 
    protected void runCommand() throws Exception
    {
-      if (offline)
-      {
-         throw new MojoExecutionException("goal not supported in offline mode");
-      }
-      else
-      {
-         ZanataCommand command = initCommand();
-         command.run();
-      }
+      ZanataCommand command = initCommand();
+      command.run();
    }
 
    public abstract ConfigurableCommand<O> initCommand();

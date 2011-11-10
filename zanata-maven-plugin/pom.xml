@@ -40,9 +40,28 @@
         <artifactId>zanata-client-commands</artifactId>
         <version>${project.version}</version>
     </dependency>
+   <dependency>
+     <groupId>org.zanata</groupId>
+     <artifactId>zanata-rest-client</artifactId>
+     <version>${version}</version>
+     <type>test-jar</type>
+     <!--
+     <scope>test</scope>
+      -->
+   </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-project</artifactId>
+      <version>2.0</version>
     </dependency>
     <dependency>
        <groupId>org.easymock</groupId>

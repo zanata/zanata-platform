@@ -8,6 +8,7 @@ import org.zanata.client.commands.PutUserOptions;
  * 
  * @goal putuser
  * @requiresProject false
+ * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
 public class PutUserMojo extends ConfigurableMojo<PutUserOptions> implements PutUserOptions

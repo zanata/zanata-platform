@@ -1,24 +1,16 @@
 package org.zanata.client.commands.push;
 
-import java.io.Console;
 import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.client.commands.ConfigurableProjectCommand;
-import org.zanata.client.commands.OptionsUtil;
+import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.common.LocaleId;
@@ -36,7 +28,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * 
  */
-public class PushCommand extends ConfigurableProjectCommand<PushOptions>
+public class PushCommand extends PushPullCommand<PushOptions>
 {
    private static final Logger log = LoggerFactory.getLogger(PushCommand.class);
 
@@ -54,26 +46,14 @@ public class PushCommand extends ConfigurableProjectCommand<PushOptions>
       strategies.put(PROJECT_TYPE_XML, new XmlStrategy());
    }
 
-   Marshaller m = null;
-
-   private final ITranslationResources translationResources;
-   private final URI uri;
+   public PushCommand(PushOptions opts)
+   {
+      super(opts);
+   }
 
    public PushCommand(PushOptions opts, ZanataProxyFactory factory, ITranslationResources translationResources, URI uri)
    {
-      super(opts, factory);
-      this.translationResources = translationResources;
-      this.uri = uri;
-   }
-
-   private PushCommand(PushOptions opts, ZanataProxyFactory factory)
-   {
-      this(opts, factory, factory.getTranslationResources(opts.getProj(), opts.getProjectVersion()), factory.getTranslationResourcesURI(opts.getProj(), opts.getProjectVersion()));
-   }
-
-   public PushCommand(PushOptions opts)
-   {
-      this(opts, OptionsUtil.createRequestFactory(opts));
+      super(opts, factory, translationResources, uri);
    }
 
    private AbstractPushStrategy getStrategy(String strategyType)
@@ -156,17 +136,6 @@ public class PushCommand extends ConfigurableProjectCommand<PushOptions>
 
       AbstractPushStrategy strat = getStrategy(getOpts().getProjectType());
 
-      JAXBContext jc = null;
-      if (getOpts().isDebugSet()) // || opts.getValidate())
-      {
-         jc = JAXBContext.newInstance(Resource.class, TranslationsResource.class);
-      }
-      if (getOpts().isDebugSet())
-      {
-         m = jc.createMarshaller();
-         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-      }
-
       // NB we don't load all the docs into a HashMap, because that would waste
       // memory
 
@@ -182,10 +151,6 @@ public class PushCommand extends ConfigurableProjectCommand<PushOptions>
          final String docUri = RestUtil.convertToDocumentURIId(docName);
          final Resource srcDoc = strat.loadSrcDoc(sourceDir, docName);
          debug(srcDoc);
-         // if (opts.getValidate())
-         // {
-         // JaxbUtil.validateXml(srcDoc, jc);
-         // }
 
          final StringSet extensions = strat.getExtensions();
          log.info("pushing source document [name={}] to server", srcDoc.getName());
@@ -201,10 +166,6 @@ public class PushCommand extends ConfigurableProjectCommand<PushOptions>
                public void visit(LocaleMapping locale, TranslationsResource targetDoc)
                {
                   debug(targetDoc);
-                  // if (opts.getValidate())
-                  // {
-                  // JaxbUtil.validateXml(targetDoc, jc);
-                  // }
                   log.info("pushing target document [name={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), locale.getLocalLocale(), locale.getLocale() });
                   ClientResponse<String> putTransResponse = translationResources.putTranslations(docUri, new LocaleId(locale.getLocale()), targetDoc, extensions, getOpts().getMergeType());
                   ClientUtility.checkResult(putTransResponse, uri);
@@ -235,44 +196,6 @@ public class PushCommand extends ConfigurableProjectCommand<PushOptions>
             ClientResponse<String> deleteResponse = translationResources.deleteResource(docUri);
             ClientUtility.checkResult(deleteResponse, uri);
          }
-      }
-   }
-
-   private void confirmWithUser(String message) throws IOException
-   {
-      if (getOpts().isInteractiveMode())
-      {
-         Console console = System.console();
-         if (console == null)
-            throw new RuntimeException("console not available: please run Maven from a console, or use batch mode (mvn -B)");
-         console.printf(message + "\nAre you sure (y/n)? ");
-         expectYes(console);
-      }
-   }
-
-   protected static void expectYes(Console console) throws IOException
-   {
-      String line = console.readLine();
-      if (line == null)
-         throw new IOException("console stream closed");
-      if (!line.toLowerCase().equals("y") && !line.toLowerCase().equals("yes"))
-         throw new RuntimeException("operation aborted by user");
-   }
-
-   protected void debug(Object jaxbElement)
-   {
-      try
-      {
-         if (getOpts().isDebugSet())
-         {
-            StringWriter writer = new StringWriter();
-            m.marshal(jaxbElement, writer);
-            log.debug("{}", writer);
-         }
-      }
-      catch (JAXBException e)
-      {
-         log.debug(e.toString(), e);
       }
    }
 

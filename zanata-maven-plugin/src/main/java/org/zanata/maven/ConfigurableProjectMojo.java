@@ -1,5 +1,7 @@
 package org.zanata.maven;
 
+import java.io.File;
+
 import org.zanata.client.commands.ConfigurableOptions;
 import org.zanata.client.commands.ConfigurableProjectOptions;
 import org.zanata.client.config.LocaleList;
@@ -28,7 +30,7 @@ public abstract class ConfigurableProjectMojo<O extends ConfigurableOptions> ext
     * @parameter expression="${zanata.projectConfig}"
     *            default-value="${basedir}/zanata.xml"
     */
-   private String projectConfig;
+   private File projectConfig;
 
    /**
     * Project slug (id) within Zanata server.
@@ -60,13 +62,13 @@ public abstract class ConfigurableProjectMojo<O extends ConfigurableOptions> ext
    }
 
    @Override
-   public String getProjectConfig()
+   public File getProjectConfig()
    {
       return projectConfig;
    }
 
    @Override
-   public void setProjectConfig(String projectConfig)
+   public void setProjectConfig(File projectConfig)
    {
       this.projectConfig = projectConfig;
    }

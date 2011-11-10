@@ -8,6 +8,7 @@ import org.zanata.client.commands.PutProjectOptions;
  * 
  * @goal putproject
  * @requiresProject false
+ * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
 public class PutProjectMojo extends ConfigurableMojo<PutProjectOptions> implements PutProjectOptions

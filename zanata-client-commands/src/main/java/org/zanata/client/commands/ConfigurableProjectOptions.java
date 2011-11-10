@@ -1,6 +1,8 @@
 package org.zanata.client.commands;
 
 
+import java.io.File;
+
 import org.kohsuke.args4j.Option;
 import org.zanata.client.config.LocaleList;
 
@@ -20,7 +22,7 @@ public interface ConfigurableProjectOptions extends ConfigurableOptions
    public void setProj(String projectSlug);
 
    @Option(name = "--project-config", metaVar = "FILENAME", usage = "Project configuration file, eg zanata.xml", required = false)
-   public void setProjectConfig(String projectConfig);
+   public void setProjectConfig(File projectConfig);
 
    public String getProjectVersion();
 
@@ -32,7 +34,7 @@ public interface ConfigurableProjectOptions extends ConfigurableOptions
    @Option(name = "--project-type", metaVar = "PROJTYPE", usage = "Project type  This value is required unless specified in zanata.xml.")
    public void setProjectType(String projectType);
 
-   public String getProjectConfig();
+   public File getProjectConfig();
 
    public LocaleList getLocales();
 

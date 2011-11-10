@@ -19,15 +19,19 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.client.commands.pull;
+package org.zanata.client.commands;
 
-import org.zanata.client.commands.PushPullOptions;
+import java.io.File;
+
+import org.zanata.client.commands.ConfigurableProjectOptions;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface PullOptions extends PushPullOptions
+public interface PushPullOptions extends ConfigurableProjectOptions
 {
-   boolean getPullSrc();
+   File getSrcDir();
+   File getTransDir();
+   boolean isModules();
 }
