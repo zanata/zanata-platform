@@ -218,6 +218,14 @@ public class LanguageTeamAction extends BaseSecurityChecker implements Serializa
    @Override
    public Object getSecuredEntity()
    {
+      /*
+       * Preload the HLocaleMember objects.
+       * This line is needed as Hibernate has problems when invoking lazily loaded collections
+       * from postLoad entity listener methods. In this case, the drools engine will attempt to
+       * access the 'members' collection from inside the security listener's postLoad method to
+       * evaluate rules.
+       */
+      this.locale.getMembers();
       return this.locale;
    }
 
