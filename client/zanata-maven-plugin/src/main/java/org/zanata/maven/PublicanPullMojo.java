@@ -10,7 +10,8 @@ import org.zanata.client.commands.PublicanPullOptions;
  * goal.
  * 
  * @goal publican-pull
- * @requiresProject true
+ * @requiresProject false
+ * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  * @deprecated
  * @see PullMojo

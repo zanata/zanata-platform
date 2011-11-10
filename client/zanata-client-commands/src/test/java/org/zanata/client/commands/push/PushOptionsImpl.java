@@ -139,4 +139,11 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
       this.pushTrans = pushTrans;
    }
 
+   @Override
+   public boolean isModules()
+   {
+      // modules are currently only supported by Maven Mojos:
+      return false;
+   }
+
 }

@@ -1,6 +1,5 @@
 package org.zanata.maven;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,10 +12,11 @@ import org.zanata.client.commands.push.PushOptions;
  * Pushes source text to a Zanata project version so that it can be translated.
  * 
  * @goal push
- * @requiresProject true
+ * @requiresProject false
+ * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class PushMojo extends ConfigurableProjectMojo<PushOptions> implements PushOptions
+public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
 {
 
    public PushMojo() throws Exception
@@ -29,20 +29,6 @@ public class PushMojo extends ConfigurableProjectMojo<PushOptions> implements Pu
    {
       return new PushCommand(this);
    }
-
-   /**
-    * Base directory for source-language files
-    * 
-    * @parameter expression="${zanata.srcDir}" default-value="."
-    */
-   private File srcDir;
-
-   /**
-    * Base directory for target-language files (translations)
-    * 
-    * @parameter expression="${zanata.transDir}" default-value="."
-    */
-   private File transDir;
 
    /**
     * Language of source documents
@@ -106,18 +92,6 @@ public class PushMojo extends ConfigurableProjectMojo<PushOptions> implements Pu
     * @parameter expression="${zanata.defaultExcludes}" default-value="true"
     */
    private boolean defaultExcludes = true;
-
-   @Override
-   public File getSrcDir()
-   {
-      return srcDir;
-   }
-
-   @Override
-   public File getTransDir()
-   {
-      return transDir;
-   }
 
    @Override
    public String getSourceLang()
