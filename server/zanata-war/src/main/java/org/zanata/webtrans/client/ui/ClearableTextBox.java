@@ -5,8 +5,10 @@ import org.zanata.webtrans.client.resources.UiMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -32,6 +34,7 @@ public class ClearableTextBox extends Composite
       String emptyBox();
    }
 
+   private boolean isFocused;
    String emptyText;
 
    @UiField
@@ -55,6 +58,25 @@ public class ClearableTextBox extends Composite
       xButton.setVisible(!textBox.getValue().isEmpty());
       textBox.setText(emptyText);
       textBox.addStyleName(style.emptyBox());
+      
+      textBox.addFocusHandler(new FocusHandler()
+      {
+         @Override
+         public void onFocus(FocusEvent event)
+         {
+            isFocused = true;
+         }
+      });
+
+      textBox.addBlurHandler(new BlurHandler()
+      {
+
+         @Override
+         public void onBlur(BlurEvent event)
+         {
+            isFocused = false;
+         }
+      });
    }
 
    @UiHandler("xButton")
@@ -106,6 +128,11 @@ public class ClearableTextBox extends Composite
    public TextBox getTextBox()
    {
       return textBox;
+   }
+
+   public boolean isFocused()
+   {
+      return isFocused;
    }
 
 }

@@ -165,6 +165,12 @@ img.errors {
 	padding-left: 2px;
 }
 
+.rich-stglpanel {
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
 .rich-stglpanel-body {
 	overflow: auto;
 }
@@ -314,6 +320,23 @@ tr.hover-row {
 	cursor: pointer;
 }
 
+
+.iterationHeader_active {
+	background-image: none;
+	border-width: medium;
+	background-color: #ffffff;
+	color: #000000;
+	border-color: #ffffff;
+}
+
+.iterationHeader_retired {
+    background-image: none;
+    border-width: medium;
+    background-color: #e5e5e5;
+    color: #000000;
+    border-color: #e5e5e5;
+}
+
 #iteration-status-panel {
     width:880px;
 }
@@ -438,6 +461,7 @@ table.fullwidth {
 	float: right;
 	display: inline;
 	text-align: right;
+	margin-bottom: 6px;
 }
 
 
@@ -506,7 +530,7 @@ a.action_link:hover {
     padding: 3px;
     padding-right: 6px;
     margin-right:5px;
-    width: 142px;
+    width: 144px;
     height: 14px;
 }
 

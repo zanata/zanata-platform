@@ -331,6 +331,18 @@
     <param name="projectSlug" value="#{viewAllStatusAction.projectSlug}" />
     <param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
   </page>
+  
+  <page view-id="/project/iteration_files.xhtml">
+    <param name="project" value="#{projectIterationFilesAction.projectSlug}" />
+    <param name="iteration" value="#{projectIterationFilesAction.iterationSlug}" />
+    <param name="localeId" value="#{projectIterationFilesAction.localeId}" />
+    
+    <param name="project" value="#{projectIterationZipFileAction.projectSlug}" />
+    <param name="iteration" value="#{projectIterationZipFileAction.iterationSlug}" />
+    <param name="localeId" value="#{projectIterationZipFileAction.localeId}" />
+    
+    <action execute="#{projectIterationFilesAction.initialize()}" />
+  </page>
 
 
   <!-- Language -->

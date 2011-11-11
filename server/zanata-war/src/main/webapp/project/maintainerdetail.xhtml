@@ -12,7 +12,7 @@
 	<ui:define name="center_content" >
 	    <h:form>
   	    <s:token allowMultiplePosts="true" />
-            <rich:panel rendered="#{s:hasPermission(projectMaintainerManageAction.project, 'update')}">
+            <rich:panel rendered="#{projectMaintainerManageAction.checkPermission('update')}">
 	    <h:panelGrid>
 	      <f:facet name="header">#{messages['jsf.AddMaintainer']}</f:facet>
 		<s:decorate id="userField"

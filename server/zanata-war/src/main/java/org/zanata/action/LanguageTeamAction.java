@@ -29,11 +29,11 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage.Severity;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
@@ -42,12 +42,13 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
+import org.zanata.security.BaseSecurityChecker;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.service.LocaleService;
 
 @Name("languageTeamAction")
 @Scope(ScopeType.PAGE)
-public class LanguageTeamAction implements Serializable
+public class LanguageTeamAction extends BaseSecurityChecker implements Serializable
 {
    private static final long serialVersionUID = 1L;
    
@@ -65,9 +66,6 @@ public class LanguageTeamAction implements Serializable
    
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
-   
-   @In
-   Identity identity;
    
    @Logger
    Log log;
@@ -133,6 +131,7 @@ public class LanguageTeamAction implements Serializable
    }
 
    @Transactional
+   @Restrict("#{s:hasRole('admin')}")
    public void joinTribe()
    {
       log.debug("starting join tribe");
@@ -169,6 +168,7 @@ public class LanguageTeamAction implements Serializable
       FacesMessages.instance().add("You have left the {0} language team", this.locale.retrieveNativeName());
    }
    
+   @Restrict("#{languageTeamAction.checkPermission('manage-language-team')}")
    public void saveTeamCoordinator( HLocaleMember member )
    {
       this.localeDAO.makePersistent(this.locale);
@@ -183,6 +183,7 @@ public class LanguageTeamAction implements Serializable
       }
    }
    
+   @Restrict("#{languageTeamAction.checkPermission('manage-language-team')}")
    public void addTeamMember( final Long personId )
    {
       this.languageTeamServiceImpl.joinLanguageTeam(this.language, personId);
@@ -190,6 +191,7 @@ public class LanguageTeamAction implements Serializable
       this.locale = localeServiceImpl.getByLocaleId(new LocaleId(language));
    }
    
+   @Restrict("#{languageTeamAction.checkPermission('manage-language-team')}")
    public void removeMembership( HLocaleMember member )
    {
       this.languageTeamServiceImpl.leaveLanguageTeam(this.language, member.getPerson().getId());
@@ -211,11 +213,20 @@ public class LanguageTeamAction implements Serializable
    public void searchForTeamMembers()
    {
       this.searchResults = this.personDAO.findAllContainingName( this.searchTerm );
-   }   
+   }
    
-   public boolean checkLocalePermission( String action )
+   @Override
+   public Object getSecuredEntity()
    {
-      return identity.hasPermission(this.locale, action);
+      /*
+       * Preload the HLocaleMember objects.
+       * This line is needed as Hibernate has problems when invoking lazily loaded collections
+       * from postLoad entity listener methods. In this case, the drools engine will attempt to
+       * access the 'members' collection from inside the security listener's postLoad method to
+       * evaluate rules.
+       */
+      this.locale.getMembers();
+      return this.locale;
    }
 
 }

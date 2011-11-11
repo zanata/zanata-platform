@@ -98,6 +98,21 @@ public class PoWriter2
       OutputSource outputSource = new OutputSource(poFile);
       write(outputSource, doc, targetDoc);
    }
+   
+   /**
+    * Generates a po file from a Resource and a TranslationsResource, writing it
+    * directly to an output stream.
+    * 
+    * @param stream
+    * @param doc
+    * @param targetDoc
+    * @throws IOException
+    */
+   public void writePo(OutputStream stream, Resource doc, TranslationsResource targetDoc) throws IOException
+   {
+      OutputSource outputSource = new OutputSource(stream);
+      write(outputSource, doc, targetDoc);
+   }
 
    /**
     * Generates a pot or po file from a Resource and/or TranslationsResource,

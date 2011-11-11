@@ -248,7 +248,8 @@
 						<exclude>**/seam-deployment.properties</exclude>
 						<exclude>**/eventservice.properties</exclude>
 					</excludes>
-					<outputDirectory>src/main/resources</outputDirectory>
+					<inputDirectory>src/main/resources</inputDirectory>
+                    <outputDirectory>${project.build.outputDirectory}</outputDirectory>
 				</configuration>
 			</plugin>
 
@@ -650,6 +651,13 @@
 			<artifactId>zanata-model</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-adapter-po</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
 		<!-- Seam Dependencies -->
 
 		<dependency>
@@ -834,6 +842,13 @@
 			<groupId>org.fedorahosted.openprops</groupId>
 			<artifactId>openprops</artifactId>
 		</dependency>
+		
+		<!-- Quartz -->
+		
+		<dependency>
+            <groupId>quartz</groupId>
+            <artifactId>quartz</artifactId>
+        </dependency>
 
 		<dependency>
 			<groupId>org.apache.lucene</groupId>

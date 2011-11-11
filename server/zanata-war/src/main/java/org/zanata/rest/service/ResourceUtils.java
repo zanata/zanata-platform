@@ -52,6 +52,7 @@ import org.zanata.rest.dto.resource.ExtensionSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
+import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.StringUtil;
 
 @Name("resourceUtils")
@@ -824,6 +825,43 @@ public class ResourceUtils
       if (translator != null)
       {
          to.setTranslator(new Person(translator.getEmail(), translator.getName()));
+      }
+   }
+   
+   public Resource buildResource( HDocument document )
+   {
+      Set<String> extensions = new HashSet<String>();
+      extensions.add("gettext");
+      extensions.add("comment");
+
+      Resource entity = new Resource(document.getDocId());
+      this.transferToResource(document, entity);
+      // handle extensions
+      this.transferToResourceExtensions(document, entity.getExtensions(true), extensions);
+
+      for (HTextFlow htf : document.getTextFlows())
+      {
+         TextFlow tf = new TextFlow(htf.getResId(), document.getLocale().getLocaleId());
+         this.transferToTextFlowExtensions(htf, tf.getExtensions(true), extensions);
+         this.transferToTextFlow(htf, tf);
+         entity.getTextFlows().add(tf);
+      }
+
+      return entity;
+   }
+   
+   public void transferToTranslationsResource(TranslationsResource transRes, HDocument document, 
+         HLocale locale, Set<String> enabledExtensions, List<HTextFlowTarget> hTargets)
+   {      
+      this.transferToTranslationsResourceExtensions(document, transRes.getExtensions(true), enabledExtensions, locale, hTargets);
+      
+      for (HTextFlowTarget hTarget : hTargets)
+      {
+         TextFlowTarget target = new TextFlowTarget();
+         target.setResId(hTarget.getTextFlow().getResId());
+         this.transferToTextFlowTarget(hTarget, target);
+         this.transferToTextFlowTargetExtensions(hTarget, target.getExtensions(true), enabledExtensions);
+         transRes.getTextFlowTargets().add(target);
       }
    }
 
