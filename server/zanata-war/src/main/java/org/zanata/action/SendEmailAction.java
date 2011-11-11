@@ -68,9 +68,9 @@ public class SendEmailAction implements Serializable
    private static final String EMAIL_TYPE_CONTACT_COORDINATOR = "contact_coordinator";
    private static final String EMAIL_TYPE_REQUEST_TO_JOIN = "request_to_join_language_team";
 
-   private static final String ADMIN_EMAIL_TEMPLATE = "/help/email_admin.xhtml";
-   private static final String COORDINATOR_EMAIL_TEMPLATE = "/language/email_coordinator.xhtml";
-   private static final String REQUEST_TO_JOIN_EMAIL_TEMPLATE = "/language/email_request_to_join.xhtml";
+   private static final String ADMIN_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_admin.xhtml";
+   private static final String COORDINATOR_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_coordinator.xhtml";
+   private static final String REQUEST_TO_JOIN_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_request_to_join.xhtml";
 
    @In
    private ApplicationConfiguration applicationConfiguration;
