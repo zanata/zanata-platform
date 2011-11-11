@@ -29,6 +29,7 @@ import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.editor.HasTranslationStats;
+import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
@@ -78,6 +79,8 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    private final TableEditorPresenter tableEditorPresenter;
    private final UndoRedoPresenter undoRedoPresenter;
 
+   private TransFilterPresenter.Display transFilterView;
+
    private DocumentInfo currentDocument;
    private final TranslationStats statusCount = new TranslationStats();
 
@@ -93,10 +96,17 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       this.undoRedoPresenter = undoRedoPresenter;
    }
 
+   public void bind(TransFilterPresenter.Display transFilterView)
+   {
+      this.transFilterView = transFilterView;
+      super.bind();
+   }
+
    @Override
    protected void onBind()
    {
       tableEditorPresenter.bind();
+      tableEditorPresenter.setTransFilterView(transFilterView);
       display.setEditorView(tableEditorPresenter.getDisplay().asWidget());
 
       transUnitNavigationPresenter.bind();

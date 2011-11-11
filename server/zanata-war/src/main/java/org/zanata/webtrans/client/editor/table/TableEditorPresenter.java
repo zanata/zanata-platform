@@ -36,6 +36,7 @@ import org.zanata.webtrans.client.editor.CheckKey;
 import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.editor.DocumentEditorPresenter;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
+import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.events.CopySourceEvent;
 import org.zanata.webtrans.client.events.CopySourceEventHandler;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
@@ -142,6 +143,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    }
 
    private DocumentId documentId;
+
+   private TransFilterPresenter.Display transFilterDisplay;
 
    private final CachingDispatchAsync dispatcher;
    private final Identity identity;
@@ -535,7 +538,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                   {
                      if (selectedTransUnit != null)
                      {
-                        if(!display.getTargetCellEditor().isCancelButtonFocused()){
+                        if (!display.getTargetCellEditor().isCancelButtonFocused() && !transFilterDisplay.isFocused())
+                        {
                            Log.info("open editor");
                            stopDefaultAction(event);
                            tableModelHandler.gotoRow(curRowIndex);
@@ -1099,5 +1103,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
          eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
       }
+   }
+
+   public void setTransFilterView(TransFilterPresenter.Display display)
+   {
+      transFilterDisplay = display;
    }
 }

@@ -24,6 +24,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -63,6 +64,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private final SidePanelPresenter sidePanelPresenter;
    private final TransMemoryPresenter transMemoryPresenter;
 
+   private TransFilterPresenter.Display transFilterView;
+
    @Inject
    public TranslationPresenter(Display display, EventBus eventBus, final TranslationEditorPresenter translationEditorPresenter, final SidePanelPresenter sidePanelPresenter, final TransMemoryPresenter transMemoryPresenter)
    {
@@ -77,13 +80,19 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
    }
 
+   public void bind(TransFilterPresenter.Display transFilterView)
+   {
+      this.transFilterView = transFilterView;
+      super.bind();
+   }
+
    @Override
    protected void onBind()
    {
       transMemoryPresenter.bind();
       display.setTranslationMemoryView(transMemoryPresenter.getDisplay().asWidget());
 
-      translationEditorPresenter.bind();
+      translationEditorPresenter.bind(transFilterView);
       display.setEditorView(translationEditorPresenter.getDisplay().asWidget());
 
       sidePanelPresenter.bind();
@@ -155,5 +164,4 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
       translationEditorPresenter.saveEditorPendingChange();
    }
-
 }

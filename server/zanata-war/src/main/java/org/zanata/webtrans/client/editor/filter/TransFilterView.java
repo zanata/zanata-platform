@@ -69,4 +69,10 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
       return filterTextBox.getTextBox();
    }
 
+   @Override
+   public boolean isFocused()
+   {
+      return filterTextBox.isFocused();
+   }
+
 }
