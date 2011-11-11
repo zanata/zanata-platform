@@ -30,31 +30,41 @@
     <h:outputText value="#{projectHome.instance.description}" rendered="#{empty projectHome.instance.homeContent}"/>
 
     <rich:spacer height="10px" />
-    <s:fragment rendered="#{projectHome.retiredIterations.size > 0}">
-      <h2>#{messages['jsf.ActiveIterations']}</h2>
+    
+    <s:fragment rendered="#{projectHome.activeIterations.size > 0}">
+        <h2>#{messages['jsf.ActiveIterations']}</h2>
+	    <rich:dataGrid id="activeIterations" columns="1"
+	                   value="#{projectHome.activeIterations}"
+	                   var="_iteration"
+	                   rowKeyVar="_it" >
+	      <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" headerClass="iterationHeader_active">
+	        <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
+	      </rich:simpleTogglePanel>
+	    </rich:dataGrid>
     </s:fragment>
-    <rich:dataGrid id="activeIterations" columns="1"
-                   value="#{projectHome.activeIterations}"
-                   var="_iteration"
-                   rowKeyVar="_it"
-                   columnClasses="grid_col_one_third_width"
-                   >
-      <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" headerClass="iterationHeader_active">
-        <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
-      </rich:simpleTogglePanel>
-    </rich:dataGrid>
 
     <s:fragment rendered="#{projectHome.retiredIterations.size > 0}">
       <h2>#{messages['jsf.RetiredIterations']}</h2>
       <rich:dataGrid id="retiredIterations" columns="1"
                      value="#{projectHome.retiredIterations}"
-                     var="_iteration"
-                     columnClasses="grid_col_one_third_width">
+                     var="_iteration">
         <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" headerClass="iterationHeader_retired" opened="#{false}">
           <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
         </rich:simpleTogglePanel>
       </rich:dataGrid>
     </s:fragment>
+    
+    <s:fragment rendered="#{projectHome.obsoleteIterations.size > 0}">
+      <h2>#{messages['jsf.ObsoleteIterations']}</h2>
+      <rich:dataGrid id="obsoleteIterations" columns="1"
+                     value="#{projectHome.obsoleteIterations}"
+                     var="_iteration">
+        <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" headerClass="iterationHeader_obsolete" opened="#{false}">
+          <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
+        </rich:simpleTogglePanel>
+      </rich:dataGrid>
+    </s:fragment>
+    
     </s:decorate>
 </ui:define>
 
@@ -71,18 +81,7 @@
     <s:link styleClass="action_link" rendered="#{projectHome.checkPermission('update')}" view="/project/assign_maintainer.xhtml" value="#{messages['jsf.ManageMaintainers']}" propagation="none">
     	<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
     </s:link>
-    <a4j:form>        
-		    <a4j:commandLink styleClass="action_link" action="#{projectHome.markProjectObsolete}" 
-		                     reRender="loggedIn,main_content" rendered="#{projectHome.checkPermission('mark-obsolete') and projectHome.checkProjectPermission('view-obsolete') and !projectHome.instance.obsolete}" >
-                            #{messages['jsf.MarkProjectObsolete']}
-            </a4j:commandLink>
-            
-            <a4j:commandLink styleClass="action_link" action="#{projectHome.markProjectActive}" 
-                             reRender="loggedIn,main_content" rendered="#{projectHome.checkPermission('mark-obsolete') and projectHome.checkProjectPermission('view-obsolete') and projectHome.instance.obsolete}" >
-                            #{messages['jsf.MarkProjectActive']}
-            </a4j:commandLink>
-            
-    </a4j:form>
+
   </rich:panel>
 
   <rich:panel>

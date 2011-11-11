@@ -329,7 +329,7 @@ tr.hover-row {
 	border-color: #ffffff;
 }
 
-.iterationHeader_retired {
+.iterationHeader_retired,.iterationHeader_obsolete{
     background-image: none;
     border-width: medium;
     background-color: #e5e5e5;

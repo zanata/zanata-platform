@@ -61,7 +61,7 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    public boolean getEmpty()
    {
-      if (checkProjectPermission("view-obsolete") && showObsolete)
+      if (checkViewObsoletePermission() && showObsolete)
       {
          return projectDAO.getProjectSize() == 0;
 
@@ -74,7 +74,7 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    public int getPageSize()
    {
-      if (checkProjectPermission("view-obsolete") && showObsolete)
+      if (checkViewObsoletePermission() && showObsolete)
       {
          return filteredProjectPagedListDataModel.getPageSize();
       }
@@ -96,7 +96,7 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    public DataModel getProjectPagedListDataModel()
    {
-      if (checkProjectPermission("view-obsolete") && showObsolete)
+      if (checkViewObsoletePermission() && showObsolete)
       {
          return filteredProjectPagedListDataModel;
       }
@@ -106,7 +106,7 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
       }
    }
 
-   public void markObsolete(HProject project)
+   public void updateObsolete(HProject project)
    {
       securedEntity = project;
       if (checkPermission("mark-obsolete"))
@@ -116,11 +116,11 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
          if (project.isObsolete())
          {
-            FacesMessages.instance().add("Updated {0} to obsolete", project.getName());
+            FacesMessages.instance().add("Marked {0} as obsolete", project.getName());
          }
          else
          {
-            FacesMessages.instance().add("Updated {0} to active", project.getName());
+            FacesMessages.instance().add("Marked {0} as current", project.getName());
          }
       }
       securedEntity = null;
@@ -148,9 +148,9 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
     * @param operation
     * @return
     */
-   public boolean checkProjectPermission(String operation)
+   public boolean checkViewObsoletePermission()
    {
-      return identity != null && identity.hasPermission("HProject", operation, null);
+      return identity != null && identity.hasPermission("HProject", "view-obsolete", null);
    }
 
 }

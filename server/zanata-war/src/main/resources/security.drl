@@ -324,7 +324,7 @@ rule ViewProjectIterationObsolete
   no-loop
   activation-group "permissions"
 when
-  check: PermissionCheck(target == "HProjectIteration", action == "mark-obsolete", granted == false)
+  check: PermissionCheck(target == "HProjectIteration", action == "view-obsolete", granted == false)
   Role(name == "admin")
 then
   check.grant();

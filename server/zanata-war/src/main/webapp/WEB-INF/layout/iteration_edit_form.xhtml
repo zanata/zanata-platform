@@ -27,6 +27,12 @@
             <h:selectBooleanCheckbox id="acvite"
                          value="#{projectIterationHome.instance.active}"/>
         </s:decorate>
+        
+        <s:decorate id="obsoleteField" template="edit.xhtml" rendered="#{projectIterationHome.checkPermission('mark-obsolete')}">
+            <ui:define name="label">#{messages['jsf.Obsolete']}</ui:define>
+            <h:selectBooleanCheckbox id="obsolete"
+                         value="#{projectIterationHome.instance.obsolete}"/>
+        </s:decorate>
 
         <div style="clear:both"/>
 

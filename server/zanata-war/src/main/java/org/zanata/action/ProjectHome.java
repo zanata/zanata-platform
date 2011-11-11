@@ -33,11 +33,9 @@ import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationProject;
@@ -133,13 +131,19 @@ public class ProjectHome extends SlugHome<HIterationProject>
    @SuppressWarnings("unchecked")
    public List<HProjectIteration> getActiveIterations()
    {
-      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.active = true").setParameter("projectSlug", slug).getResultList();
+      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.active = true and t.obsolete = false").setParameter("projectSlug", slug).getResultList();
    }
 
    @SuppressWarnings("unchecked")
    public List<HProjectIteration> getRetiredIterations()
    {
-      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.active = false").setParameter("projectSlug", slug).getResultList();
+      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.active = false and t.obsolete = false").setParameter("projectSlug", slug).getResultList();
+   }
+
+   @SuppressWarnings("unchecked")
+   public List<HProjectIteration> getObsoleteIterations()
+   {
+      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.obsolete = true").setParameter("projectSlug", slug).getResultList();
    }
 
    public String cancel()
@@ -200,28 +204,23 @@ public class ProjectHome extends SlugHome<HIterationProject>
       }
    }
 
-   @Restrict("#{projectHome.checkPermission('mark-obsolete')}")
-   public void markProjectObsolete()
-   {
-      getInstance().setObsolete(true);
-      super.update();
-   }
+   // @Restrict("#{projectHome.checkPermission('mark-obsolete')}")
+   // public void markProjectObsolete()
+   // {
+   // getInstance().setObsolete(true);
+   // super.update();
+   // }
+   //
+   // @Restrict("#{projectHome.checkPermission('mark-obsolete')}")
+   // public void markProjectCurrent()
+   // {
+   // getInstance().setObsolete(false);
+   // super.update();
+   // }
 
-   @Restrict("#{projectHome.checkPermission('mark-obsolete')}")
-   public void markProjectActive()
-   {
-      getInstance().setObsolete(false);
-      super.update();
-   }
-
-   /**
-    * Check permission with target object name and operation
-    * 
-    * @param operation
-    * @return
-    */
-   public boolean checkProjectPermission(String operation)
-   {
-      return Identity.instance() != null && Identity.instance().hasPermission("HProject", operation, null);
-   }
+   // public boolean checkViewObsoletePermission()
+   // {
+   // return Identity.instance() != null &&
+   // Identity.instance().hasPermission("HProject", "view-obsolete", null);
+   // }
 }
