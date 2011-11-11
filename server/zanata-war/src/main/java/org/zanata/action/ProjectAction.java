@@ -61,7 +61,7 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    public boolean getEmpty()
    {
-      if (checkViewObsoletePermission() && showObsolete)
+      if (checkViewObsoleteOption() && showObsolete)
       {
          return projectDAO.getProjectSize() == 0;
 
@@ -74,7 +74,7 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    public int getPageSize()
    {
-      if (checkViewObsoletePermission() && showObsolete)
+      if (checkViewObsoleteOption() && showObsolete)
       {
          return filteredProjectPagedListDataModel.getPageSize();
       }
@@ -96,7 +96,7 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    public DataModel getProjectPagedListDataModel()
    {
-      if (checkViewObsoletePermission() && showObsolete)
+      if (checkViewObsoleteOption() && showObsolete)
       {
          return filteredProjectPagedListDataModel;
       }
@@ -148,9 +148,9 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
     * @param operation
     * @return
     */
-   public boolean checkViewObsoletePermission()
+   public boolean checkViewObsoleteOption()
    {
-      return identity != null && identity.hasPermission("HProject", "view-obsolete", null);
+      return identity != null && identity.hasPermission("HProject", "view-obsolete-option", null);
    }
 
 }

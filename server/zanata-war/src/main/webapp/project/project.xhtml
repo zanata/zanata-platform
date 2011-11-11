@@ -54,7 +54,7 @@
       </rich:dataGrid>
     </s:fragment>
     
-    <s:fragment rendered="#{projectHome.obsoleteIterations.size > 0}">
+    <s:fragment rendered="#{projectHome.obsoleteIterations.size > 0 and projectIterationAction.checkViewObsolete()}">
       <h2>#{messages['jsf.ObsoleteIterations']}</h2>
       <rich:dataGrid id="obsoleteIterations" columns="1"
                      value="#{projectHome.obsoleteIterations}"

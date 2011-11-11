@@ -124,7 +124,14 @@ public class TranslationWorkspaceManager
    private TranslationWorkspace createWorkspace(WorkspaceId workspaceId) throws NoSuchWorkspaceException
    {
       Session session = (Session) Component.getInstance("session");
-      String workspaceName = (String) session.createQuery("select it.project.name || ' (' || it.slug || ')' " + "from HProjectIteration it " + "where it.slug = :slug " + "and it.project.slug = :pslug").setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug()).setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug()).uniqueResult();
+
+      boolean isProjectObsolete = (Boolean) session.createQuery("select p.obsolete from HProject as p where p.slug = :slug").setParameter("slug", workspaceId.getProjectIterationId().getProjectSlug()).uniqueResult();
+      if (isProjectObsolete)
+      {
+         throw new NoSuchWorkspaceException("Invalid workspace Id");
+      }
+
+      String workspaceName = (String) session.createQuery("select it.project.name || ' (' || it.slug || ')' " + "from HProjectIteration it " + "where it.slug = :slug " + "and it.project.slug = :pslug " + "and it.obsolete = false").setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug()).setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug()).uniqueResult();
       if (workspaceName == null)
       {
          throw new NoSuchWorkspaceException("Invalid workspace Id");

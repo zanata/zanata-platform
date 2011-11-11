@@ -77,9 +77,14 @@ public class ProjectIterationAction extends BaseSecurityChecker implements Seria
       }
    }
 
-   public boolean checkViewObsoletePermission()
+   public boolean checkViewObsolete()
    {
       return Identity.instance() != null && Identity.instance().hasPermission("HProjectIteration", "view-obsolete", null);
+   }
+
+   public boolean checkViewObsoleteOption()
+   {
+      return Identity.instance() != null && Identity.instance().hasPermission("HProjectIteration", "view-obsolete-option", null);
    }
 
    @Override

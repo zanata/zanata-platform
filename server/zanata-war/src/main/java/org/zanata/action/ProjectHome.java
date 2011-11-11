@@ -203,24 +203,4 @@ public class ProjectHome extends SlugHome<HIterationProject>
          }
       }
    }
-
-   // @Restrict("#{projectHome.checkPermission('mark-obsolete')}")
-   // public void markProjectObsolete()
-   // {
-   // getInstance().setObsolete(true);
-   // super.update();
-   // }
-   //
-   // @Restrict("#{projectHome.checkPermission('mark-obsolete')}")
-   // public void markProjectCurrent()
-   // {
-   // getInstance().setObsolete(false);
-   // super.update();
-   // }
-
-   // public boolean checkViewObsoletePermission()
-   // {
-   // return Identity.instance() != null &&
-   // Identity.instance().hasPermission("HProject", "view-obsolete", null);
-   // }
 }
