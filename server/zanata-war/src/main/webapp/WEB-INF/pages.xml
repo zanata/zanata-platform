@@ -257,6 +257,29 @@
       </redirect>
     </navigation>
   </page>
+  
+  <!-- Admin only home page code editor. -->
+  <page view-id="/project/homepage_edit.xhtml">
+    <param name="slug" value="#{projectHome.slug}" />
+    <param name="slug" value="#{localeListAction.slug}" />
+    
+    <!-- we can't use <restrict> on projectHome.instance because it creates
+         a brand-new HProject instead of loading the existing one
+         (at some stages of the JSF lifecycle)
+      -->
+    <action execute="#{identity.checkPermission(projectHome.instance, 'update')}" />
+    
+    <navigation from-action="#{projectHome.update}">
+      <redirect view-id="/project/project.xhtml">
+        <param name="slug" value="#{projectHome.slug}" />
+      </redirect>
+    </navigation>
+    <navigation from-action="#{projectHome.cancel}">
+      <redirect view-id="/project/project.xhtml">
+        <param name="slug" value="#{projectHome.slug}" />
+      </redirect>
+    </navigation>
+  </page>
 
   <page view-id="/project/assign_maintainer.xhtml" >
     <param name="projectSlug" value="#{projectMaintainerManageAction.slug}" />
