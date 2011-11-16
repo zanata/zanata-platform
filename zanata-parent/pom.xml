@@ -270,7 +270,7 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.1</version>
 				<configuration>
-					<allowTimestampedSnapshots>true</allowTimestampedSnapshots>
+					<allowTimestampedSnapshots>false</allowTimestampedSnapshots>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<tagNameFormat>zanata-@{project.version}</tagNameFormat>
 					<localCheckout>true</localCheckout>

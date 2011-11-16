@@ -56,6 +56,9 @@
     <s:link styleClass="action_link" rendered="#{projectHome.checkPermission('update')}" value="#{messages['jsf.EditProject']}" view="/project/edit.xhtml" propagation="none">
       <f:param name="slug" value="#{projectHome.instance.slug}"/>
     </s:link>
+    <s:link styleClass="action_link" rendered="#{s:hasRole('admin')}" value="#{messages['jsf.project.EditHomePage.label']}" view="/project/homepage_edit.xhtml" title="#{messages['jsf.project.EditHomePage.tooltip']}" propagation="none">
+      <f:param name="slug" value="#{projectHome.instance.slug}"/>
+    </s:link>
     <s:link styleClass="action_link" rendered="#{projectHome.checkPermission('add-iteration')}" view="/project/add_iteration.xhtml" value="#{messages['jsf.CreateVersion']}" propagation="none">
     	<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
     </s:link>
