@@ -45,7 +45,7 @@
                             action="#{languageTeamAction.saveTeamCoordinator(member)}"/>
                     </h:selectBooleanCheckbox>
                     <h:outputText rendered="#{not languageTeamAction.checkPermission('manage-language-team') and member.coordinator}">
-                        <div class="tick"/>
+                        <div class="checkmark"/>
                     </h:outputText>
                   </rich:column>
                   <rich:column width="auto" styleClass="centered"

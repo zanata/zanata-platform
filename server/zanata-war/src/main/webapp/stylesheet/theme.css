@@ -178,6 +178,7 @@ img.errors {
 /* the specificity here is necessary to override the defaults */
 .rich-panel .rich-panel-header,.rich-stglpanel .rich-stglpanel-header {
 	padding: 2px 3px;
+	/*background-image: url("../img/panel-header-bg.png");*/
 }
 
 .rich-panel input[type=submit],.rich-panel input[type=button],.rich-tabpanel input[type=submit],.rich-tabpanel input[type=button]
@@ -285,24 +286,16 @@ td.centered {
 /* Styles from the security-stuff in seamspace*/
 div.checkmark {
 	background: url(../public-img/silk/tick.png) top left no-repeat;
-	width: 14px;
-	height: 15px;
+	width: 16px;
+	height: 16px;
 	margin-left: auto;
 	margin-right: auto;
 }
 
-div.tick {
-	background: url(../img/silk/tick.png) top left no-repeat;
-	width: 16px;
-    height: 16px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
 div.cross {
 	background: url(../public-img/silk/cross.png) top left no-repeat;
-	width: 14px;
-	height: 15px;
+	width: 16px;
+	height: 16px;
 	margin-left: auto;
 	margin-right: auto;
 }
