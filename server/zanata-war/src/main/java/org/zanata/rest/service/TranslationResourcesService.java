@@ -70,6 +70,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.Namespaces;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
+import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
@@ -78,6 +79,7 @@ import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
@@ -141,6 +143,9 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
    @In
    private ProjectIterationDAO projectIterationDAO;
+
+   @In
+   private ProjectDAO projectDAO;
 
    @In
    private DocumentDAO documentDAO;
@@ -855,7 +860,9 @@ public class TranslationResourcesService implements TranslationResourcesResource
    {
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 
-      if (hProjectIteration != null)
+      HProject hProject = projectDAO.getBySlug(projectSlug);
+
+      if (hProjectIteration != null && !hProjectIteration.isObsolete() && !hProject.isObsolete())
       {
          return hProjectIteration;
       }
