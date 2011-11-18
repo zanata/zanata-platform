@@ -124,6 +124,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    {
       this.applicationConfiguration = new ApplicationConfiguration(true);
       this.projectIterationDAO = new ProjectIterationDAO(getSession());
+      this.projectDAO = new ProjectDAO(getSession());
       this.documentDAO = new DocumentDAO(getSession());
       this.textFlowDAO = new TextFlowDAO(getSession());
       this.textFlowTargetDAO = new TextFlowTargetDAO(getSession());
@@ -157,6 +158,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TranslationResourcesService obj = new TranslationResourcesService(
             applicationConfiguration,
             projectIterationDAO,
+            projectDAO,
             documentDAO,
             textFlowDAO,
             textFlowTargetDAO,

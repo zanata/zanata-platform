@@ -190,6 +190,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    public TranslationResourcesService(
       ApplicationConfiguration applicationConfiguration,
       ProjectIterationDAO projectIterationDAO,
+      ProjectDAO projectDAO,
       DocumentDAO documentDAO,
       TextFlowDAO textFlowDAO,
       TextFlowTargetDAO textFlowTargetDAO,
@@ -205,6 +206,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    {
       this.applicationConfiguration = applicationConfiguration;
       this.projectIterationDAO = projectIterationDAO;
+      this.projectDAO = projectDAO;
       this.documentDAO = documentDAO;
       this.textFlowDAO = textFlowDAO;
       this.textFlowTargetDAO = textFlowTargetDAO;
