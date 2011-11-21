@@ -277,6 +277,8 @@ Removes some of the styling on the page-level splitters
 
 td.TableEditorCell {
 	border-top: 1px solid #e0e0e0;
+	padding-top:10px;
+	padding-bottom:10px;
 }
 
 td.TableEditorCell-Source {
@@ -296,7 +298,6 @@ tr.TableEditorRow.highlighted td.TableEditorCell {
 	background-color: #f1f2f6; */
 	
 	border-color: #AAA;
-	border-bottom: 1px solid #AAA;
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell-Source {
@@ -349,6 +350,7 @@ tr.TableEditorRow.selected {
 tr.TableEditorRow.selected td.TableEditorCell {
 	border-top: 3px solid #666666;
 	border-bottom: 3px solid #666666;
+
 }
 
 tr.TableEditorRow.selected td.TableEditorCell-Source {
