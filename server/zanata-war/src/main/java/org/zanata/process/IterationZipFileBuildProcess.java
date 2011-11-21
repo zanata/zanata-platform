@@ -42,6 +42,7 @@ import org.zanata.model.HLocale;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceUtils;
+import org.zanata.service.ConfigurationService;
 import org.zanata.service.FileSystemService;
 
 /**
@@ -76,11 +77,16 @@ public class IterationZipFileBuildProcess extends BackgroundProcess
    
    @In
    private FileSystemService fileSystemServiceImpl;
+   
+   @In
+   private ConfigurationService configurationServiceImpl;
 
    @Override
    protected void runProcess() throws Exception
    {
       final List<HDocument> allIterationDocs = this.documentDAO.getAllByProjectIteration(this.projectSlug, this.iterationSlug);
+      this.processHandle.setMaxProgress( allIterationDocs.size() );
+      
       final HLocale hLocale = this.localeDAO.findByLocaleId(new LocaleId(this.localeId));
       final File downloadFile = this.fileSystemServiceImpl.createDownloadStagingFile("zip");
       final FileOutputStream output = new FileOutputStream( downloadFile );
@@ -89,13 +95,20 @@ public class IterationZipFileBuildProcess extends BackgroundProcess
       final PoWriter2 poWriter = new PoWriter2();
       final Set<String> extensions = new HashSet<String>();
       
+      extensions.add("gettext");
+      extensions.add("comment");
+      
       // Generate the download descriptor file
       String downloadId = this.fileSystemServiceImpl.createDownloadDescriptorFile(downloadFile, 
             this.projectSlug + "_" + this.iterationSlug + "_" + this.localeId + ".zip",
             this.userName);
       ((IterationZipFileBuildProcessHandle)super.processHandle).setDownloadId( downloadId );
       
-      this.processHandle.setMaxProgress( allIterationDocs.size() );
+      // Add the config file at the root of the archive
+      zipOutput.putNextEntry( new ZipEntry( this.configurationServiceImpl.getConfigurationFileName() ) );
+      zipOutput.write( 
+            this.configurationServiceImpl.getConfigurationFileContents(this.projectSlug, this.iterationSlug).getBytes() );
+      zipOutput.closeEntry();
       
       for( int i=0; i<allIterationDocs.size(); i++ )
       {

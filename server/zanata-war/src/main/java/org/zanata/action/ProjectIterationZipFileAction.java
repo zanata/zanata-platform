@@ -46,6 +46,7 @@ public class ProjectIterationZipFileAction extends BaseSecurityChecker
       // Build a background process Handle
       IterationZipFileBuildProcessHandle processHandle =
             new IterationZipFileBuildProcessHandle();
+      this.zipFilePrepHandle = processHandle;      
       processHandle.setProjectSlug( this.projectSlug );
       processHandle.setIterationSlug( this.iterationSlug );
       processHandle.setLocaleId( this.localeId );
@@ -53,7 +54,6 @@ public class ProjectIterationZipFileAction extends BaseSecurityChecker
       
       // Fire the zip file building process
       this.iterationZipFileBuildProcess.startProcess( processHandle );
-      this.zipFilePrepHandle = processHandle;
    }
    
    @End

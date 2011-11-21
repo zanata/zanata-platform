@@ -21,7 +21,6 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletOutputStream;
@@ -34,10 +33,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.log.Log;
-import org.zanata.ApplicationConfiguration;
-import org.zanata.common.Namespaces;
-import org.zanata.model.HLocale;
-import org.zanata.service.LocaleService;
+import org.zanata.service.ConfigurationService;
 
 @Name("configurationAction")
 @Scope(ScopeType.EVENT)
@@ -48,54 +44,25 @@ public class ConfigurationAction implements Serializable
    private String iterationSlug;
    @RequestParameter
    private String projectSlug;
-   private static String FILE_NAME = "zanata.xml";
+
    @Logger
    Log log;
    @In
-   LocaleService localeServiceImpl;
-   @In
-   ApplicationConfiguration applicationConfiguration;
+   ConfigurationService configurationServiceImpl;
 
    public void getData()
    {
       HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
       response.setContentType("application/xml");
-      response.addHeader("Content-disposition", "attachment; filename=\"" + FILE_NAME + "\"");
+      response.addHeader("Content-disposition", "attachment; filename=\"" 
+                                    + this.configurationServiceImpl.getConfigurationFileName() + "\"");
       response.setCharacterEncoding("UTF-8");
       try
       {
          ServletOutputStream os = response.getOutputStream();
-         StringBuilder var = new StringBuilder(
-               "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-               "<config xmlns=\"" + Namespaces.ZANATA_CONFIG + "\">\n");
-         var.append("  <url>" + applicationConfiguration.getServerPath() + "/</url>\n");
-         var.append("  <project>" + projectSlug + "</project>\n");
-         var.append("  <project-version>" + iterationSlug + "</project-version>\n\n");
 
-         List<HLocale> locales = localeServiceImpl.getSupportedLangugeByProjectIteration(projectSlug, iterationSlug);
-         HLocale source = localeServiceImpl.getSourceLocale(projectSlug, iterationSlug);
-         
-         if(locales!=null){
-            boolean first=true;
-            for(HLocale op: locales){
-               if(!op.equals(source)){
-                  if (first)
-                  {
-                     var.append("  <locales>\n");
-                  }
-                  var.append("    <locale>" + op.getLocaleId().getId() + "</locale>\n");
-                  first = false;
-               }
-            }
-            if (!first)
-            {
-               var.append("  </locales>\n\n");
-            }
-         }
-         
-         var.append("</config>\n");
-
-         os.write(var.toString().getBytes());
+         os.write( 
+               this.configurationServiceImpl.getConfigurationFileContents(this.projectSlug, this.iterationSlug).getBytes() );
          os.flush();
          os.close();
          FacesContext.getCurrentInstance().responseComplete();

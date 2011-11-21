@@ -68,7 +68,7 @@
 	                  rowClasses="odd,even"
 	                  rows="20"
 	                  rendered="#{projectIterationFilesAction.iterationDocuments.size() gt 0}">
-	                <rich:column>
+	                <rich:column sortOrder="ASCENDING">
                         <f:facet name="header">#{messages['jsf.iteration.files.Path']}</f:facet>
                         #{doc.path}
                     </rich:column>
