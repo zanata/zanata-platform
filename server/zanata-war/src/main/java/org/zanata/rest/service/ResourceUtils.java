@@ -6,9 +6,11 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,6 +43,7 @@ import org.zanata.model.po.HPotEntryData;
 import org.zanata.rest.dto.Person;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.AbstractResourceMetaExtension;
+import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.rest.dto.extensions.gettext.PoTargetHeader;
 import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
@@ -67,6 +70,8 @@ public class ResourceUtils
    private static final char NEWLINE = '\n';
 
    private static final String ZANATA_TAG = "#zanata";
+   
+   private static final String PO_DATE_FORMAT = "yyyy-MM-dd hh:mmZ";
 
    private static final Log log = Logging.getLog(ResourceUtils.class);
 
@@ -629,8 +634,91 @@ public class ResourceUtils
    private void transferToPoTargetHeader(HPoTargetHeader from, PoTargetHeader to, List<HTextFlowTarget> hTargets)
    {
       pullPoTargetComment(from, to, hTargets);
-      to.getEntries().addAll(PoUtility.headerToList(from.getEntries()));
+      to.getEntries().addAll(this.headerToList(from.getEntries(), hTargets));
 
+   }
+   
+   /**
+    * Transforms a set of header entries from a String to a list of POJOs.
+    * 
+    * @param entries The header entries' string.
+    * @param hTargets The Text Flow Targets that the header applies to.
+    */
+   private List<HeaderEntry> headerToList( final String entries, final List<HTextFlowTarget> hTargets )
+   {
+      List<HeaderEntry> convertedEntries = PoUtility.headerToList( entries );
+      
+      // Custom tweaks to the converted entries
+      for( HeaderEntry entry : convertedEntries )
+      {
+         if( entry.getKey().equalsIgnoreCase("Last-Translator") )
+         {
+            entry.setValue( this.getLastTranslator(hTargets) );
+         }
+         else if( entry.getKey().equalsIgnoreCase("PO-Revision-Date") )
+         {
+            entry.setValue( this.getLastModifiedDate(hTargets) );
+         }
+      }
+      
+      return convertedEntries;
+   }
+   
+   /**
+    * Gets the last translator for a set of Text Flow targets.
+    * 
+    * @param translations The text flow targets.
+    * @return A string with the value of the last translator for the given set of
+    * translations.
+    */
+   private String getLastTranslator( final List<HTextFlowTarget> translations )
+   {
+      Date lastUpdate = new Date(Long.MIN_VALUE);
+      String lastTranslator = "";
+      
+      for( HTextFlowTarget trans : translations )
+      {
+         if( trans.getLastChanged().after( lastUpdate ) )
+         {
+            HPerson lastModifiedBy = trans.getLastModifiedBy();
+            if( lastModifiedBy != null )
+            {
+               lastTranslator = lastModifiedBy.getName() + " <" + lastModifiedBy.getEmail() + ">";
+            }
+         }
+      }
+      
+      return lastTranslator;
+   }
+   
+   /**
+    * Gets the last date of modification for a set of Text Flow targets.
+    * 
+    * @param translations The text flow targets.
+    * @return A string with the value of the Last modified date for the given set of
+    * translations.
+    */
+   private String getLastModifiedDate( final List<HTextFlowTarget> translations )
+   {
+      Date lastUpdate = null;
+      
+      for( HTextFlowTarget trans : translations )
+      {
+         if( lastUpdate == null || trans.getLastChanged().after( lastUpdate ) )
+         {
+            lastUpdate = trans.getLastChanged();
+         }
+      }
+      
+      if( lastUpdate == null )
+      {
+         return null;
+      }
+      else
+      {
+         SimpleDateFormat dateFormat = new SimpleDateFormat( PO_DATE_FORMAT );
+         return dateFormat.format( lastUpdate );
+      }
    }
 
    /**
@@ -760,9 +848,19 @@ public class ResourceUtils
    private void transferToPotEntryHeader(HPotEntryData from, PotEntryHeader to)
    {
       to.setContext(from.getContext());
-      List<String> flags = StringUtil.split(from.getFlags(), ",");
+      
+      List<String> flags = new ArrayList<String>(0);
+      if( from.getFlags() != null && !from.getFlags().trim().isEmpty() )
+      {
+         flags = StringUtil.split(from.getFlags(), ",");
+      }
       to.getFlags().addAll(flags);
-      List<String> refs = StringUtil.split(from.getReferences(), ",");
+      
+      List<String> refs = new ArrayList<String>(0);
+      if( from.getReferences() != null && !from.getReferences().trim().isEmpty() )
+      {
+         StringUtil.split(from.getReferences(), ",");
+      }
       to.getReferences().addAll(refs);
    }
 
