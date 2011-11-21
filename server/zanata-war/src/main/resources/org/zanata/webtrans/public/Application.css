@@ -298,6 +298,7 @@ tr.TableEditorRow.highlighted td.TableEditorCell {
 	background-color: #f1f2f6; */
 	
 	border-color: #AAA;
+	border-bottom: 1px solid #AAA;
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell-Source {
@@ -350,7 +351,6 @@ tr.TableEditorRow.selected {
 tr.TableEditorRow.selected td.TableEditorCell {
 	border-top: 3px solid #666666;
 	border-bottom: 3px solid #666666;
-
 }
 
 tr.TableEditorRow.selected td.TableEditorCell-Source {
