@@ -93,7 +93,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
          {
             float score = (Float) match[0];
             HTextFlow textFlow = (HTextFlow) match[1];
-            if (textFlow == null)
+            if (textFlow == null || textFlow.getDocument().getProjectIteration().isObsolete() || textFlow.getDocument().getProjectIteration().getProject().isObsolete())
             {
                continue;
             }
