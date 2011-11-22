@@ -77,7 +77,7 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    }
 
    /*
-    * temporary disable glossary functionalities
+    * TODO: temporary disable glossary functionalities
     */
    boolean disableGlossary = true;
 

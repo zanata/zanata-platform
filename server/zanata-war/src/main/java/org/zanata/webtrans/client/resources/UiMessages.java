@@ -40,7 +40,7 @@ public interface UiMessages extends Messages
    @DefaultMessage("Search")
    String searchButtonLabel();
 
-   @DefaultMessage("TM")
+   @DefaultMessage("Translation Memory")
    String tmHeader();
 
    @DefaultMessage("Glossary")

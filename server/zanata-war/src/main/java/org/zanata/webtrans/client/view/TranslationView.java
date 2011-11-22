@@ -56,7 +56,13 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    LayoutPanel editorContainer, sidePanelContainer;
 
    @UiField
-   LayoutPanel glossaryPanel, tmPanel;
+   LayoutPanel tmPanel;
+
+   /*
+    * TODO: temporary disable glossary functionalities
+    */
+   // @UiField
+   LayoutPanel glossaryPanel;
 
    @UiField
    SplitLayoutPanel mainSplitPanel;
@@ -104,11 +110,19 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       tmPanel.add(translationMemoryView);
    }
 
+   /*
+    * TODO: temporary disable glossary functionalities
+    */
+   boolean disableGlossary = true;
+
    @Override
    public void setGlossaryView(Widget glossaryView)
    {
-      glossaryPanel.clear();
-      glossaryPanel.add(glossaryView);
+      if (!disableGlossary)
+      {
+         glossaryPanel.clear();
+         glossaryPanel.add(glossaryView);
+      }
    }
 
    @Override
