@@ -137,4 +137,23 @@ public final class CheckKeyImpl implements CheckKey
       }
       return false;
    }
+
+   @Override
+   public boolean isShiftKey()
+   {
+      return shiftKey;
+   }
+
+   @Override
+   public boolean isAltKey()
+   {
+      return altKey;
+   }
+
+   @Override
+   public boolean isCtrlKey()
+   {
+      return ctrlKey;
+   }
+
 }
