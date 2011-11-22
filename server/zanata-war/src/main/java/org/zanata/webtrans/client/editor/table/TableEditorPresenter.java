@@ -91,6 +91,7 @@ import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -551,7 +552,7 @@ Event.addNativePreviewHandler(new NativePreviewHandler()
                         display.getTargetCellEditor().cloneAction();
                      }
                   }
-                  else if (checkKey.isEnterKey())
+                  else if (checkKey.isEnterKey() && !checkKey.isCtrlKey())
                   {
                      if (selectedTransUnit != null)
                      {
