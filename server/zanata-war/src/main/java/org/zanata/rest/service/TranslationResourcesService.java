@@ -586,6 +586,18 @@ public class TranslationResourcesService implements TranslationResourcesResource
    // /r/{id}/translations/{locale}
    public Response getTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
    {
+      return this.getTranslations(idNoSlash, locale, this.extensions);
+   }
+   
+   /**
+    * Returns a set of translations for a given locale and extension set.
+    * @param idNoSlash The document Id.
+    * @param locale The locale for which to get translations.
+    * @param extensions The extensions to bring over.
+    * @return Response
+    */
+   public Response getTranslations( String idNoSlash, LocaleId locale, Set<String> extensions )
+   {
       log.debug("start to get translation");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
@@ -620,7 +632,6 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
       // TODO lastChanged
       return Response.ok().entity(translationResource).tag(etag).build();
-
    }
 
    @Override

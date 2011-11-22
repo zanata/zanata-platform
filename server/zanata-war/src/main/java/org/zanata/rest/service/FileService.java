@@ -24,7 +24,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -95,9 +97,13 @@ public class FileService implements FileResource
       }
       else
       {
+         final Set<String> extensions = new HashSet<String>();
+         extensions.add("gettext");
+         extensions.add("comment");
+         
          // Perform translation of Hibernate DTOs to JAXB DTOs
          TranslationsResource transRes = 
-               (TranslationsResource)this.translationResourcesService.getTranslations(docId, new LocaleId(locale)).getEntity();
+               (TranslationsResource)this.translationResourcesService.getTranslations(docId, new LocaleId(locale), extensions).getEntity();
          Resource res = this.resourceUtils.buildResource(document);
                
          StreamingOutput output = new POStreamingOutput(res, transRes);
