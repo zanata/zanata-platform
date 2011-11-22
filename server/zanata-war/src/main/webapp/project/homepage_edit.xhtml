@@ -1,0 +1,45 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="../WEB-INF/layout/template.xhtml">
+
+	<ui:define name="center_content">
+	    <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
+	    <h1>#{projectHome.instance.name}</h1>
+	
+	    <h:form>
+		    <rich:panel>
+		      
+		      <div class="prop">
+	            <s:label styleClass="name">#{messages['jsf.HomepageContent']}</s:label>
+	            <h:inputTextarea id="homeContent"
+	                required="false"
+	                value="#{projectHome.instance.homeContent}"
+	                styleClass="code_editor" />
+	          </div>		
+	          
+		    </rich:panel>
+		
+		    <div class="actionButtons">
+		        <h:commandButton id="update"
+		                      value="#{messages['jsf.Update']}"
+		                     action="#{projectHome.update}"
+		                   rendered="#{projectHome.managed}"/>
+		        <s:button id="cancel"
+		                      value="#{messages['jsf.Cancel']}"
+		                propagation="none"
+		                     action="#{projectHome.cancel}"/>
+		    </div>
+	    </h:form>
+	
+	</ui:define>
+	
+	<ui:define name="left_content">
+	</ui:define>
+
+</ui:composition>
