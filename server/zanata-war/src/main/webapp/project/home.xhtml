@@ -20,42 +20,71 @@
     </rich:panel>
   </ui:define>
 
-  <ui:define name="center_content">
+  <ui:define name="center_content" >
+    <s:decorate id="main_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
     <s:fragment rendered="#{projectAction.getEmpty()}">
 	<h:outputText value="#{messages['jsf.NoProjectExists']}" />
     </s:fragment>
     <s:fragment rendered="#{!projectAction.getEmpty()}">
       <a4j:form>
+      
 	 <rich:datascroller align="center" for="projectList" maxPages="10"
 		    page="#{projectAction.scrollerPage}" id="scroller" reRender="sc2" />
 	<rich:spacer height="15" />
+        
+         <s:div rendered="#{projectAction.checkViewObsoleteOption()}" styleClass="showObsoleteOption">
+            <a4j:region>
+            <h:selectBooleanCheckbox title="Show obsolete projects" value="#{projectAction.showObsolete}" >
+                <a4j:support event="onchange" reRender="main_content" />
+            </h:selectBooleanCheckbox>
+            </a4j:region>
+            <h:outputText value="#{messages['jsf.ShowObsolete']}"/>
+        </s:div>
+        
         <rich:dataTable id="projectList" 
-            rows="#{projectAction.pageSize}"  columnsWidth="200px,200px,80px" 
+            rows="#{projectAction.pageSize}"
             value="#{projectAction.projectPagedListDataModel}" var="project">
-				<rich:column sortBy="#{project.name}">
-				     <f:facet name="header">Project Name</f:facet>
-					       <s:link id="project" styleClass="table_link" value="#{project.name}"  propagation="none"
-						     view="/project/project.xhtml"> 
-						    <f:param name="slug" value="#{project.slug}"/>
-						</s:link>
-	        		</rich:column>
-				<rich:column>
-				        <f:facet name="header">Description</f:facet>
-						<h:outputText value="#{project.description}" />
-	        		</rich:column>
-				<rich:column sortBy="#{project.creationDate}">
-				        <f:facet name="header">Creation Date</f:facet>
-						<h:outputText value="#{project.creationDate}">
-						   <f:convertDateTime type="date" dateStyle="default"/>
-						</h:outputText>	            		
-	        		</rich:column>
+                <rich:column width="270px" sortBy="#{project.name}">
+                     <f:facet name="header">Project Name</f:facet>
+                           
+                        <s:link id="project" styleClass="table_link" value="#{project.name}"  propagation="none"
+                             view="/project/project.xhtml" rendered="#{!project.obsolete}"> 
+                            <f:param name="slug" value="#{project.slug}"/>
+                        </s:link>
+                        
+                        <s:link id="obsoleteProject" styleClass="table_link obsolete_link" value="#{project.name}"  propagation="none"
+                             view="/project/project.xhtml" rendered="#{project.obsolete}"> 
+                            <f:param name="slug" value="#{project.slug}"/>
+                        </s:link>
+                    </rich:column>
+                <rich:column width="270px">
+                        <f:facet name="header">Description</f:facet>
+                        <h:outputText value="#{project.description}" />
+                    </rich:column>
+                <rich:column sortBy="#{project.creationDate}" width="auto">
+                        <f:facet name="header">Creation Date</f:facet>
+                        <h:outputText value="#{project.creationDate}">
+                           <f:convertDateTime type="date" dateStyle="default"/>
+                        </h:outputText>                     
+                    </rich:column>
+                    
+                    <rich:column styleClass="centered" width="60px" sortBy="#{project.obsolete}" rendered="#{projectAction.checkViewObsoleteOption() and projectAction.showObsolete}">
+                        <f:facet name="header">Obsolete</f:facet>
+                        <h:selectBooleanCheckbox id="obsolete" value="#{project.obsolete}">
+                            <a4j:support event="onclick"
+                            ajaxSingle="true" reRender="main_content"
+                            action="#{projectAction.updateObsolete(project)}"/>
+                        </h:selectBooleanCheckbox>                     
+                    </rich:column>
         </rich:dataTable>
+        
         <rich:spacer height="15" />
 	 <rich:datascroller align="center" for="projectList" maxPages="10"
 		    page="#{projectAction.scrollerPage}" id="sc2" reRender="scroller" />    
 	</a4j:form>
 </s:fragment>
+    </s:decorate>
   </ui:define>
 
 </ui:composition>

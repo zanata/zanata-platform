@@ -60,6 +60,8 @@ public abstract class HProject extends SlugEntityBase implements Serializable
 
    private Set<HPerson> maintainers;
 
+   private boolean obsolete = false;
+
    @Length(max = 80)
    @NotEmpty
    @Field(index = Index.TOKENIZED)
@@ -132,6 +134,20 @@ public abstract class HProject extends SlugEntityBase implements Serializable
    public void setCustomizedLocales(Set<HLocale> locales)
    {
       this.customizedLocales = locales;
+   }
+
+   public boolean isObsolete()
+   {
+      return obsolete;
+   }
+
+   /**
+    * 
+    * @param obsolete
+    */
+   public void setObsolete(boolean obsolete)
+   {
+      this.obsolete = obsolete;
    }
 
    @Override

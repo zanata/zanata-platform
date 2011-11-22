@@ -3,11 +3,12 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:rich="http://richfaces.org/rich" >
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j" >
 
-<div id="iteration_list_view_item_#{_iteration.slug}"
-   class="inline_cell_item" >
+<div id="iteration_list_view_item_#{_iteration.slug}" class="inline_cell_item" >
   <div class="list_view_header">
+    <a4j:form>  
     <div class="menu_items">
       <s:link
       	value="#{messages['jsf.ConfigFile']}"
@@ -26,7 +27,19 @@
         <f:param name="slug" value="#{_iteration.slug}"/>
         <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
       </s:link>
+      <rich:spacer width="10px" />
+      
+      <a4j:commandLink action="#{projectIterationAction.markProjectIterationObsolete(_iteration)}" 
+                             reRender="main_content" rendered="#{projectIterationAction.checkViewObsoleteOption() and !_iteration.obsolete}" >
+                            #{messages['jsf.MarkObsolete']}
+      </a4j:commandLink>
+        
+      <a4j:commandLink action="#{projectIterationAction.markProjectIterationCurrent(_iteration)}" 
+                             reRender="main_content" rendered="#{projectIterationAction.checkViewObsoleteOption() and _iteration.obsolete}" >
+                            #{messages['jsf.MarkCurrent']}
+      </a4j:commandLink>
     </div>
+    </a4j:form>     
   </div>
 
   <rich:dataTable id="data_table" width="100%" value="#{iterationTranslationAction.getTranslationLocale(projectHome.instance.slug, _iteration.slug)}"

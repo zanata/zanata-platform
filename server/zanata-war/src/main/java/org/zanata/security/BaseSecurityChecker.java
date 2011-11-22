@@ -50,5 +50,4 @@ public abstract class BaseSecurityChecker implements SecurityChecker
    {
       return identity != null && identity.hasPermission(getSecuredEntity(), operation);
    }
-
 }

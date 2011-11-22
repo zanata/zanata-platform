@@ -292,6 +292,76 @@ end
 
 /*****************************************************************************************
 
+  Mark Project and Project Iteration Obsolete rules
+  
+******************************************************************************************/
+
+rule ViewObsoleteProject
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(target == "HProject", action == "view-obsolete", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+rule ViewProjectObsoleteOption
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(target == "HProject", action == "view-obsolete-option", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+rule MarkProjectObsolete
+  no-loop
+  activation-group "permissions"
+when
+  $project: HProject()
+  check: PermissionCheck(target == $project, action == "mark-obsolete", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+
+rule ViewObsoleteProjectIteration
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(target == "HProjectIteration", action == "view-obsolete", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+rule ViewObsoleteProjectIterationOption
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(target == "HProjectIteration", action == "view-obsolete-option", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+rule MarkProjectIterationObsolete
+  no-loop
+  activation-group "permissions"
+when
+  $iter: HProjectIteration()
+  check: PermissionCheck(target == $iter, action == "mark-obsolete", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+
+/*****************************************************************************************
+
   File Download rules
   
 ******************************************************************************************/

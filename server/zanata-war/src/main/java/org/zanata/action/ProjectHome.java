@@ -131,13 +131,19 @@ public class ProjectHome extends SlugHome<HIterationProject>
    @SuppressWarnings("unchecked")
    public List<HProjectIteration> getActiveIterations()
    {
-      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.active = true").setParameter("projectSlug", slug).getResultList();
+      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.active = true and t.obsolete = false").setParameter("projectSlug", slug).getResultList();
    }
 
    @SuppressWarnings("unchecked")
    public List<HProjectIteration> getRetiredIterations()
    {
-      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.active = false").setParameter("projectSlug", slug).getResultList();
+      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.active = false and t.obsolete = false").setParameter("projectSlug", slug).getResultList();
+   }
+
+   @SuppressWarnings("unchecked")
+   public List<HProjectIteration> getObsoleteIterations()
+   {
+      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.obsolete = true").setParameter("projectSlug", slug).getResultList();
    }
 
    public String cancel()
@@ -197,5 +203,4 @@ public class ProjectHome extends SlugHome<HIterationProject>
          }
       }
    }
-
 }

@@ -277,6 +277,8 @@ Removes some of the styling on the page-level splitters
 
 td.TableEditorCell {
 	border-top: 1px solid #e0e0e0;
+	padding-top:10px;
+	padding-bottom:10px;
 }
 
 td.TableEditorCell-Source {

@@ -118,6 +118,24 @@ public interface CheckKey
     * 
     */
    boolean isSaveAsApprovedKey(boolean isEnterKeySavesEnabled);
+
+
+   /**
+    * Shift key presssed
+    */
+   boolean isShiftKey();
+
+
+   /**
+    * ALT key presssed
+    */
+   boolean isAltKey();
+
+
+   /**
+    * Ctrl key presssed
+    */
+   boolean isCtrlKey();
 }
 
 

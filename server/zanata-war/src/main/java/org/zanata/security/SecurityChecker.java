@@ -37,5 +37,4 @@ public interface SecurityChecker
     * @return The result of the permission validation.
     */
    public boolean checkPermission(String operation);
-   
 }

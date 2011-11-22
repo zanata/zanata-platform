@@ -321,7 +321,7 @@ tr.hover-row {
 	border-color: #ffffff;
 }
 
-.iterationHeader_retired {
+.iterationHeader_retired,.iterationHeader_obsolete{
     background-image: none;
     border-width: medium;
     background-color: #e5e5e5;
@@ -482,6 +482,17 @@ a.table_link {
 	text-decoration: none;
 	margin: 1px;
 	text-align: right;
+}
+
+.obsolete{
+    font-style: italic;
+    text-decoration: line-through;
+}
+
+a.obsolete_link, a.obsolete_link:visited, a.obsolete_link:link{
+    font-style: italic;
+    color:#0A315D;
+    text-decoration: line-through;
 }
 
 a.action_link:hover {
