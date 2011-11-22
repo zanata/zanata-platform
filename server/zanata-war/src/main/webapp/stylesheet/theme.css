@@ -178,7 +178,6 @@ img.errors {
 /* the specificity here is necessary to override the defaults */
 .rich-panel .rich-panel-header,.rich-stglpanel .rich-stglpanel-header {
 	padding: 2px 3px;
-	/*background-image: url("../img/panel-header-bg.png");*/
 }
 
 .rich-panel input[type=submit],.rich-panel input[type=button],.rich-tabpanel input[type=submit],.rich-tabpanel input[type=button]
