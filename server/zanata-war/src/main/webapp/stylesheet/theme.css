@@ -61,6 +61,14 @@ input.with_icon {
 	-moz-border-radius: 5px;
 }
 
+textarea.code_editor {
+	font-family: Courier;
+	font-size: 11px;
+	font-weight: normal;
+	width: 450px;
+	height: 300px;
+}
+
 .search_icon{
 	background-image: url(../public-img/silk/zoom.png);
 }
