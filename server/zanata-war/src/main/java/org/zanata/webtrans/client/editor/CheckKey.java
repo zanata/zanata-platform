@@ -77,14 +77,14 @@ public interface CheckKey
    /**
     * Move to previous entry: 
     * Edit: ALT+(Up/J)
-    * Navigation: ALT+Up or J
+    * Navigation: ALT+(Up/J)
     */
    boolean isPreviousEntryKey();
 
    /**
     * Move to next entry: 
     * Edit: ALT+(Down/K)
-    * Navigation: ALT+Down or K
+    * Navigation: ALT+(Down/K)
     */
    boolean isNextEntryKey();
 

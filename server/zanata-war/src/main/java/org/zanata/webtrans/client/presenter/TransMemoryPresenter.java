@@ -43,6 +43,8 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       void startProcessing();
       
       void stopProcessing();
+
+      boolean isFocused();
    }
 
    @Inject

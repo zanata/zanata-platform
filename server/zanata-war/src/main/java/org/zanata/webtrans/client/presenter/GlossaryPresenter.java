@@ -74,6 +74,8 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
       void startProcessing();
 
       void createTable(ArrayList<TranslationMemoryGlossaryItem> memories);
+
+      boolean isFocused();
    }
 
    /*
