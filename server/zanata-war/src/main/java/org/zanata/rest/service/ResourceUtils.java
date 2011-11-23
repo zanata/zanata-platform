@@ -416,14 +416,24 @@ public class ResourceUtils
          to.setContext(from.getContext());
       }
 
+      List<String> flagList = from.getFlags();
       String flags = StringUtil.concat(from.getFlags(), ',');
+      if( flagList.isEmpty() )
+      {
+         flags = null;
+      }
       if (!equals(flags, to.getFlags()))
       {
          changed = true;
          to.setFlags(flags);
       }
 
+      List<String> refList = from.getReferences();
       String refs = StringUtil.concat(from.getReferences(), ',');
+      if( refList.isEmpty() )
+      {
+         refs = null;
+      }
       if (!equals(refs, to.getReferences()))
       {
          changed = true;
@@ -850,16 +860,16 @@ public class ResourceUtils
       to.setContext(from.getContext());
       
       List<String> flags = new ArrayList<String>(0);
-      if( from.getFlags() != null && !from.getFlags().trim().isEmpty() )
+      if( from.getFlags() != null )
       {
          flags = StringUtil.split(from.getFlags(), ",");
       }
       to.getFlags().addAll(flags);
       
       List<String> refs = new ArrayList<String>(0);
-      if( from.getReferences() != null && !from.getReferences().trim().isEmpty() )
+      if( from.getReferences() != null )
       {
-         StringUtil.split(from.getReferences(), ",");
+         refs = StringUtil.split(from.getReferences(), ",");
       }
       to.getReferences().addAll(refs);
    }
