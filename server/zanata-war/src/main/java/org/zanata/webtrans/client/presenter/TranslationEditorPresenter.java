@@ -25,6 +25,7 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
+import org.zanata.webtrans.client.editor.table.InlineTargetCellEditor;
 import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
@@ -86,7 +87,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       display.setFilterView(transFilterPresenter.getDisplay().asWidget());
 
       tableEditorPresenter.bind();
-      tableEditorPresenter.setTransFilterView(transFilterPresenter.getDisplay());
       display.setEditorView(tableEditorPresenter.getDisplay().asWidget());
 
       transUnitNavigationPresenter.bind();
@@ -174,4 +174,43 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       tableEditorPresenter.getDisplay().getTargetCellEditor().savePendingChange(true);
    }
 
+   public void cloneAction()
+   {
+      tableEditorPresenter.getDisplay().getTargetCellEditor().cloneAction();
+   }
+
+   public boolean isTargetCellEditorFocused()
+   {
+      return tableEditorPresenter.getDisplay().getTargetCellEditor().isFocused();
+   }
+
+   public boolean isCancelButtonFocused()
+   {
+      return tableEditorPresenter.getDisplay().getTargetCellEditor().isCancelButtonFocused();
+   }
+
+   public void setCancelButtonFocused(boolean isCancelButtonFocused)
+   {
+      tableEditorPresenter.getDisplay().getTargetCellEditor().setCancelButtonFocused(isCancelButtonFocused);
+   }
+
+   public boolean isTransFilterFocused()
+   {
+      return transFilterPresenter.getDisplay().isFocused();
+   }
+
+   public void gotoCurrentRow()
+   {
+      tableEditorPresenter.gotoCurrentRow();
+   }
+
+   public void gotoPrevRow(boolean andEdit)
+   {
+      tableEditorPresenter.gotoPrevRow(andEdit);
+   }
+
+   public void gotoNextRow(boolean andEdit)
+   {
+      tableEditorPresenter.gotoNextRow(andEdit);
+   }
 }

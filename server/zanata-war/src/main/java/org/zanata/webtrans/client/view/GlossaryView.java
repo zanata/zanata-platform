@@ -13,8 +13,10 @@ import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.i18n.client.LocaleInfo;
@@ -70,6 +72,8 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
 
    private final Resources resources;
 
+   private boolean isFocused;
+
    @Inject
    public GlossaryView(final UiMessages messages, Resources resources)
    {
@@ -90,6 +94,18 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       {
          searchButton.click();
       }
+   }
+
+   @UiHandler("glossaryTextBox")
+   public void onGlossaryTextBoxFocus(FocusEvent event)
+   {
+      isFocused = true;
+   }
+
+   @UiHandler("glossaryTextBox")
+   public void onGlossaryTextBoxBlur(BlurEvent event)
+   {
+      isFocused = false;
    }
 
    @UiHandler("clearButton")
@@ -177,5 +193,11 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       widget.setWidth("100%");
       widget.addStyleName("TransMemoryTableColumnHeader");
       resultTable.setWidget(HEADER_ROW, pos, widget);
+   }
+
+   @Override
+   public boolean isFocused()
+   {
+      return isFocused;
    }
 }
