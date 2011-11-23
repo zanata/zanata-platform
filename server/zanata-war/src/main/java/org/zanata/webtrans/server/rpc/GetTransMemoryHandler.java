@@ -106,10 +106,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
             String textFlowContent = textFlow.getContent();
             String targetContent = target.getContent();
 
-            int levDistance = LevenshteinUtil.getLevenshteinSubstringDistance(searchText, textFlowContent);
-            int maxDistance = searchText.length();
-            int percent = 100 * (maxDistance - levDistance) / maxDistance;
-
+            int percent = (int) (100 * LevenshteinUtil.getSimilarity(searchText, textFlowContent));
             TMKey key = new TMKey(textFlowContent, targetContent);
             TranslationMemoryItem item = matchesMap.get(key);
             if (item == null)
