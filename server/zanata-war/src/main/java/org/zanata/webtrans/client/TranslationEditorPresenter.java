@@ -73,6 +73,8 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
 
       void setUndoRedo(Widget undoRedoWidget);
 
+      boolean isPagerFocused();
+
    }
 
    private final TransUnitNavigationPresenter transUnitNavigationPresenter;
