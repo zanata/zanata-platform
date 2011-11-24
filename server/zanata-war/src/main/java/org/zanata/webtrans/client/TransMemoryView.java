@@ -10,8 +10,10 @@ import org.zanata.webtrans.shared.model.TranslationMemoryItem;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.i18n.client.LocaleInfo;
@@ -70,6 +72,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 
    private final TransMemoryMessages messages;
    private final Resources resources;
+   private boolean isFocused;
 
    @Inject
    public TransMemoryView(final TransMemoryMessages messages, Resources resources)
@@ -81,6 +84,18 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       clearButton.setText(messages.tmClearButtonLabel());
       searchButton.setText(messages.tmSearchButtonLabel());
       Log.info(LocaleInfo.getCurrentLocale().getLocaleName());
+   }
+
+   @UiHandler("tmTextBox")
+   public void onTmTextBoxFocus(FocusEvent event)
+   {
+      isFocused = true;
+   }
+
+   @UiHandler("tmTextBox")
+   public void onTmTextBoxBlur(BlurEvent event)
+   {
+      isFocused = false;
    }
 
    @UiHandler("tmTextBox")
@@ -194,5 +209,12 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    public void clearResults()
    {
       resultTable.removeAllRows();
+   }
+
+
+   @Override
+   public boolean isFocused()
+   {
+      return isFocused;
    }
 }

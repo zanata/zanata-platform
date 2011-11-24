@@ -80,7 +80,7 @@ public final class CheckKeyImpl implements CheckKey
       }
       else
       {
-         return (altKey && keyCode == KeyCodes.KEY_UP) || keyCode == KEY_J;
+         return altKey && (keyCode == KeyCodes.KEY_UP || keyCode == KEY_J);
       }
    }
 
@@ -93,7 +93,7 @@ public final class CheckKeyImpl implements CheckKey
       }
       else
       {
-         return (altKey && keyCode == KeyCodes.KEY_DOWN) || keyCode == KEY_K;
+         return altKey && (keyCode == KeyCodes.KEY_DOWN || keyCode == KEY_K);
       }
    }
 

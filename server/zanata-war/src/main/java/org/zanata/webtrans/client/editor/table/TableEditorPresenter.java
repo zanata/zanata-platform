@@ -32,8 +32,6 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import org.zanata.common.EditState;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateAction;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateHandler;
-import org.zanata.webtrans.client.editor.CheckKey;
-import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.editor.DocumentEditorPresenter;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
@@ -87,10 +85,6 @@ import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
 import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -497,76 +491,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          }
 
       }));
-
-      final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Navigation);
-      
-      Event.addNativePreviewHandler(new NativePreviewHandler()
-      {
-         public void stopDefaultAction(NativePreviewEvent event){
-            event.cancel();
-            event.getNativeEvent().stopPropagation();
-            event.getNativeEvent().preventDefault();
-         }
-         
-         @Override
-         public void onPreviewNativeEvent(NativePreviewEvent event)
-         {
-            /**
-             * keyup is used because TargetCellEditor will intercept the event again (Firefox)  
-             * See textArea.addKeyDownHandler@InlineTargetCellEditor
-             * 
-             * Only when the Table is showed and editor is closed, the keyboard
-             * event will be processed.
-             **/
-
-            if (display.asWidget().isVisible() && !display.getTargetCellEditor().isFocused())
-            {
-               checkKey.init(event.getNativeEvent());
-               
-               if (event.getNativeEvent().getType().equals("keyup"))
-               {
-                  if (checkKey.isCopyFromSourceKey())
-                  {
-                     if (selectedTransUnit != null)
-                     {
-                        Log.info("Copy from source");
-                        stopDefaultAction(event);
-                        tableModelHandler.gotoRow(curRowIndex);
-                        display.getTargetCellEditor().cloneAction();
-                     }
-                  }
-                  else if (checkKey.isEnterKey() && !checkKey.isCtrlKey())
-                  {
-                     if (selectedTransUnit != null)
-                     {
-                        if (!display.getTargetCellEditor().isCancelButtonFocused() && !transFilterDisplay.isFocused())
-                        {
-                           Log.info("open editor");
-                           stopDefaultAction(event);
-                           tableModelHandler.gotoRow(curRowIndex);
-                        } 
-                        display.getTargetCellEditor().setCancelButtonFocused(false);
-                     }
-                  }
-               }
-               if (event.getNativeEvent().getType().equals("keydown"))
-               {
-                  if (checkKey.isPreviousEntryKey())
-                  {
-                     Log.info("Go to previous entry");
-                     stopDefaultAction(event);
-                     tableModelHandler.gotoPrevRow(false);
-                  }
-                  else if (checkKey.isNextEntryKey())
-                  {
-                     Log.info("Go to next entry");
-                     stopDefaultAction(event);
-                     tableModelHandler.gotoNextRow(false);
-                  }
-               }
-            }
-         }
-      });
 
       display.gotoFirstPage();
    }
@@ -1106,8 +1030,18 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       }
    }
 
-   public void setTransFilterView(TransFilterPresenter.Display display)
+   public void gotoCurrentRow()
    {
-      transFilterDisplay = display;
+      tableModelHandler.gotoRow(curRowIndex);
+   }
+
+   public void gotoPrevRow(boolean andEdit)
+   {
+      tableModelHandler.gotoPrevRow(andEdit);
+   }
+
+   public void gotoNextRow(boolean andEdit)
+   {
+      tableModelHandler.gotoNextRow(andEdit);
    }
 }

@@ -57,25 +57,6 @@ public class ClearableTextBox extends Composite
       xButton.setVisible(!textBox.getValue().isEmpty());
       textBox.setText(emptyText);
       textBox.addStyleName(style.emptyBox());
-
-      textBox.addFocusHandler(new FocusHandler()
-      {
-         @Override
-         public void onFocus(FocusEvent event)
-         {
-            isFocused = true;
-         }
-      });
-
-      textBox.addBlurHandler(new BlurHandler()
-      {
-
-         @Override
-         public void onBlur(BlurEvent event)
-         {
-            isFocused = false;
-         }
-      });
    }
 
    @UiHandler("xButton")
@@ -95,6 +76,7 @@ public class ClearableTextBox extends Composite
    @UiHandler("textBox")
    public void onTextBoxFocus(FocusEvent event)
    {
+      isFocused = true;
       if (textBox.getStyleName().contains(style.emptyBox()))
       {
          textBox.setValue("");
@@ -105,6 +87,7 @@ public class ClearableTextBox extends Composite
    @UiHandler("textBox")
    public void onTextBoxBlur(BlurEvent event)
    {
+      isFocused = false;
       refresh();
    }
 

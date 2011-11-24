@@ -106,7 +106,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    protected void onBind()
    {
       tableEditorPresenter.bind();
-      tableEditorPresenter.setTransFilterView(transFilterView);
       display.setEditorView(tableEditorPresenter.getDisplay().asWidget());
 
       transUnitNavigationPresenter.bind();
@@ -239,6 +238,41 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    public void saveEditorPendingChange()
    {
       tableEditorPresenter.getDisplay().getTargetCellEditor().savePendingChange(true);
+   }
+
+   public void cloneAction()
+   {
+      tableEditorPresenter.getDisplay().getTargetCellEditor().cloneAction();
+   }
+
+   public boolean isTargetCellEditorFocused()
+   {
+      return tableEditorPresenter.getDisplay().getTargetCellEditor().isFocused();
+   }
+
+   public boolean isCancelButtonFocused()
+   {
+      return tableEditorPresenter.getDisplay().getTargetCellEditor().isCancelButtonFocused();
+   }
+
+   public void setCancelButtonFocused(boolean isCancelButtonFocused)
+   {
+      tableEditorPresenter.getDisplay().getTargetCellEditor().setCancelButtonFocused(isCancelButtonFocused);
+   }
+
+   public void gotoCurrentRow()
+   {
+      tableEditorPresenter.gotoCurrentRow();
+   }
+
+   public void gotoPrevRow(boolean andEdit)
+   {
+      tableEditorPresenter.gotoPrevRow(andEdit);
+   }
+
+   public void gotoNextRow(boolean andEdit)
+   {
+      tableEditorPresenter.gotoNextRow(andEdit);
    }
 
 }
