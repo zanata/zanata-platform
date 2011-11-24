@@ -4,8 +4,10 @@ import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -14,6 +16,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -47,6 +50,7 @@ public class Pager extends Composite implements HasPager
 
    private int pageCount = PAGECOUNT_UNKNOWN;
    private int currentPage;
+   private boolean isFocused;
 
    public static final int PAGECOUNT_UNKNOWN = -1;
 
@@ -60,6 +64,18 @@ public class Pager extends Composite implements HasPager
       prevPage.setTitle(messages.tooltipsWithShortcut(messages.prevPage(), messages.prevPageShortcut()));
       nextPage.setTitle(messages.tooltipsWithShortcut(messages.nextPage(), messages.nextPageShortcut()));
       lastPage.setTitle(messages.tooltipsWithShortcut(messages.lastPage(), messages.lastPageShortcut()));
+   }
+
+   @UiHandler("gotoPage")
+   public void onGotoPageFocus(FocusEvent event)
+   {
+      isFocused = true;
+   }
+
+   @UiHandler("gotoPage")
+   public void onGotoPageBlur(BlurEvent event)
+   {
+      isFocused = false;
    }
 
    @Override
@@ -178,5 +194,10 @@ public class Pager extends Composite implements HasPager
    {
       link.setVisible(enabled);
       disabledLink.setVisible(!enabled);
+   }
+
+   public boolean isFocused()
+   {
+      return isFocused;
    }
 }

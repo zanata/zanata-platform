@@ -177,7 +177,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
                   !translationEditorPresenter.isTargetCellEditorFocused() && 
                   !translationEditorPresenter.isTransFilterFocused() && 
                   !transMemoryPresenter.getDisplay().isFocused() && 
-                  !glossaryPresenter.getDisplay().isFocused())
+                  !glossaryPresenter.getDisplay().isFocused() &&
+                  !translationEditorPresenter.getDisplay().isPagerFocused())
             {
                //@formatter:on
                checkKey.init(event.getNativeEvent());

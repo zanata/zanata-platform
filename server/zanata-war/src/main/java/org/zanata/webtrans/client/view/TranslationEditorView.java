@@ -113,4 +113,10 @@ public class TranslationEditorView extends Composite implements TranslationEdito
       filterPanelContainer.setWidgetTopBottom(filterView, 0, Unit.PX, 0, Unit.PX);
       // this.filterView = filterView;
    }
+
+   @Override
+   public boolean isPagerFocused()
+   {
+      return pager.isFocused();
+   }
 }
