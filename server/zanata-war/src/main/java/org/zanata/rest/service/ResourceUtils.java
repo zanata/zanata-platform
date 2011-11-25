@@ -944,12 +944,15 @@ public class ResourceUtils
          log.debug("PoTargetHeader requested");
          PoTargetHeader poTargetHeader = new PoTargetHeader();
          HPoTargetHeader fromHeader = from.getPoTargetHeaders().get(locale);
-         if (fromHeader != null)
+         if( fromHeader == null )
          {
-            log.debug("PoTargetHeader found");
-            transferToPoTargetHeader(fromHeader, poTargetHeader, hTargets);
-            to.add(poTargetHeader);
+            // If no header is found, use a default empty header for generation purposes
+            fromHeader = new HPoTargetHeader();
+            fromHeader.setEntries("");
          }
+         log.debug("PoTargetHeader found");
+         transferToPoTargetHeader(fromHeader, poTargetHeader, hTargets);
+         to.add(poTargetHeader);
       }
    }
 
