@@ -85,6 +85,7 @@ import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
 import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -255,15 +256,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          transIdPrevFuzzyCache.clear();
    }
 
-   private void reloadPage()
-   {
-      if (curPage != display.getCurrentPage())
-      {
-         display.getTargetCellEditor().cancelEdit();
-         display.getTableModel().clearCache();
-         display.reloadPage();
-      }
-   }
    @Override
    protected void onBind()
    {
@@ -356,15 +348,20 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                   }
                   else
                   {
-                     reloadPage();
+                     if (curPage != display.getCurrentPage())
+                     {
+                        display.getTargetCellEditor().cancelEdit();
+                        display.getTableModel().clearCache();
+                        display.reloadPage();
+                     }
                   }
                }
                else
                {
-                  display.getTableModel().clearCache();
-                  display.getTargetCellEditor().cancelEdit();
                   if (inProcessing != null)
                   {
+                     display.getTableModel().clearCache();
+                     display.getTargetCellEditor().cancelEdit();
                      if (inProcessing.getAction().getTransUnitId().equals(event.getTransUnit().getId()))
                      {
                         int pageNum = inProcessing.getCurrentPage();
@@ -376,10 +373,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                         eventBus.fireEvent(new UndoRedoFinishEvent(inProcessing));
                         inProcessing = null;
                      }
-                  }
-                  else
-                  {
-                     reloadPage();
                   }
                }
 
