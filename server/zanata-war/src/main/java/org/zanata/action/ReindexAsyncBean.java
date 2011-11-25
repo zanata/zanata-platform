@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.persistence.EntityManagerFactory;
 
 import org.hibernate.CacheMode;
+import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
@@ -33,10 +34,6 @@ public class ReindexAsyncBean
 {
 
    private static final int BATCH_SIZE = 500;
-
-   // TODO add fields for progress indicator
-   // TODO add getters/setters for progress indicators
-
    @Logger
    private Log log;
 
@@ -122,12 +119,12 @@ public class ReindexAsyncBean
 
          while (!processedAllResults)
          {
-            results = session.createCriteria(clazz).setFirstResult(currentBatchIndex).setMaxResults(BATCH_SIZE).setFetchSize(BATCH_SIZE).scroll(ScrollMode.FORWARD_ONLY);
+            Criteria criteria = session.createCriteria(clazz).setFirstResult(currentBatchIndex).setMaxResults(BATCH_SIZE);
+            results = criteria.setFetchSize(BATCH_SIZE).scroll(ScrollMode.FORWARD_ONLY);
 
             int index = 0;
             while (results.next())
             {
-               // TODO increment currentProgress indicator
                objectProgress++;
                index++;
                session.index(results.get(0)); // index each element
