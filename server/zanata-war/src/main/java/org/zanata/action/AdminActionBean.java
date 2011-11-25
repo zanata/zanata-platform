@@ -1,17 +1,5 @@
 package org.zanata.action;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.EntityManagerFactory;
-
-import org.hibernate.CacheMode;
-import org.hibernate.FlushMode;
-import org.hibernate.ScrollMode;
-import org.hibernate.ScrollableResults;
-import org.hibernate.Session;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -19,40 +7,27 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.annotations.async.Asynchronous;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
-import org.zanata.model.HAccount;
-import org.zanata.model.HIterationProject;
-import org.zanata.model.HTextFlow;
 
 @Name("adminAction")
 @Scope(ScopeType.APPLICATION)
 @Startup
-// @Restrict("#{s:hasRole('admin')}")
+@Restrict("#{s:hasRole('admin')}")
 public class AdminActionBean
 {
-
-   private static final int BATCH_SIZE = 500;
 
    @Logger
    private Log log;
 
    @In
-   EntityManagerFactory entityManagerFactory;
-
-   private FullTextSession session;
-
-   private Set<Class<?>> indexables = new HashSet<Class<?>>();
+   ReindexAsyncBean reindexAsync;
 
    @Create
    public void create()
    {
-      // TODO: find a version of this that works:
-//      indexables.addAll(StandardDeploymentStrategy.instance().getAnnotatedClasses().get(Indexed.class.getName()));
-      indexables.add(HIterationProject.class);
-      indexables.add(HAccount.class);
-      indexables.add(HTextFlow.class);
+
    }
 
    /*
@@ -60,62 +35,35 @@ public class AdminActionBean
     * to disable the button if the job is already running
     */
 
-   @Asynchronous
    public void reindexDatabase()
    {
-      log.info("Re-indexing started");
-
-      session = Search.getFullTextSession((Session) entityManagerFactory.createEntityManager().getDelegate());
-
-      // reindex all @Indexed entities
-      for (Class<?> clazz : indexables)
+      if (reindexAsync.isReindexing())
       {
-         reindex(clazz);
+         FacesMessages.instance().add("Reindexing already in progress, did not start reindexing.");
+         return;
       }
+      reindexAsync.reindexDatabase();
 
-      log.info("Re-indexing finished");
+      // TODO: the following will be replaced with a progress bar and
+      // disabling/hiding the reindex button
+      FacesMessages.instance().add("Started reindexing. See server log for progress");
 
-      // TODO: this will be replaced with a progress bar and an indicator of
-      // when there is no reindexing operation underway
-      FacesMessages.instance().add("Re-indexing finished");
-   }
-
-   private void reindex(Class<?> clazz)
-   {
-      log.info("Re-indexing {0}", clazz);
-      try
+      boolean finished = false;
+      while (!finished)
       {
-         session.purgeAll(clazz);
-         session.setFlushMode(FlushMode.MANUAL);
-         session.setCacheMode(CacheMode.IGNORE);
-         ScrollableResults results;
-         Boolean processedAllResults = false;
-         int currentBatchIndex = 0;
-
-         while (!processedAllResults)
+         try
          {
-            results = session.createCriteria(clazz).setFirstResult(currentBatchIndex).setMaxResults(BATCH_SIZE).setFetchSize(BATCH_SIZE).scroll(ScrollMode.FORWARD_ONLY);
-
-            int index = 0;
-            while (results.next())
-            {
-               index++;
-               session.index(results.get(0)); // index each element
-               if (index % BATCH_SIZE == 0)
-               {
-                  session.flushToIndexes(); // apply changes to indexes
-                  session.clear(); // clear since the queue is processed
-               }
-            }
-            results.close();
-            processedAllResults = (index < BATCH_SIZE);
-            currentBatchIndex += BATCH_SIZE;
+            Thread.sleep(5000);
+            log.info("Reindexing: {0}, done {1} of {2}", reindexAsync.isReindexing(), reindexAsync.getObjectProgress(), reindexAsync.getObjectCount());
+            finished = !reindexAsync.isReindexing();
+         }
+         catch (Throwable t)
+         {
+            finished = true;
          }
       }
-      catch (Exception e)
-      {
-         log.warn("Unable to index objects of type {0}", e, clazz.getName());
-      }
+
    }
+
 
 }
