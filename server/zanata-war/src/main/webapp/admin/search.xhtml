@@ -11,14 +11,39 @@
 
     <ui:define name="center_content">
       <rich:jQuery selector="#tab_admin" query="addClass('ui-tabs-selected')" />
+      <rich:panel>
       <h1>#{messages['jsf.Search']}</h1>
                  
+        <!-- TODO reformat indentation, change button label id to match progress message id -->
         <a4j:form>
-            <s:token allowMultiplePosts="true" />
-	        <a4j:commandButton id="reindex"
-	       		value="#{messages['jsf.ReindexFullTextSearchDatabase']}"
-	      		action="#{adminAction.reindexDatabase}"/>
-	    </a4j:form>
+          <s:token allowMultiplePosts="true" />
+          <a4j:region>
+            <a4j:outputPanel id="reindexPanel">
+              <h:outputText rendered="#{adminAction.reindexError}" escape="false">
+                <p>#{messages['jsf.search.reindex.ErrorMessage']}</p>
+              </h:outputText>
+              <h:outputText rendered="#{adminAction.reindexError}" escape="false">
+                <p>#{messages['jsf.search.reindex.PleaseReindex']}</p>
+              </h:outputText>
+              <a4j:commandButton id="reindex"
+                  value="#{messages['jsf.ReindexFullTextSearchDatabase']}"
+                  action="#{adminAction.reindexDatabase}"
+                  rendered="#{!adminAction.reindexing}"
+                  reRender="reindexPanel"/>
+              <!-- minValue is -1 because of a bug when 0 is used -->
+              <rich:progressBar id="reindexProgressBar"
+                    value="#{adminAction.reindexProgress}"
+                    interval="1000"
+                    label="#{messages['jsf.search.reindex.ProgressMessage']}"
+                    minValue="-1"
+                    maxValue="#{adminAction.reindexCount - 1}"
+                    enabled="#{adminAction.reindexing}"
+                    reRenderAfterComplete="reindexPanel">
+              </rich:progressBar>
+            </a4j:outputPanel>
+          </a4j:region>
+        </a4j:form>
+      </rich:panel>
     </ui:define>
     
 </ui:composition>
