@@ -19,6 +19,12 @@
           <s:token allowMultiplePosts="true" />
           <a4j:region>
             <a4j:outputPanel id="reindexPanel">
+              <h:outputText rendered="#{adminAction.reindexError}" escape="false">
+                <p>#{messages['jsf.search.reindex.ErrorMessage']}</p>
+              </h:outputText>
+              <h:outputText rendered="#{adminAction.reindexError}" escape="false">
+                <p>#{messages['jsf.search.reindex.PleaseReindex']}</p>
+              </h:outputText>
               <a4j:commandButton id="reindex"
                   value="#{messages['jsf.ReindexFullTextSearchDatabase']}"
                   action="#{adminAction.reindexDatabase}"

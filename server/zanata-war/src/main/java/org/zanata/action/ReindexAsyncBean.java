@@ -6,7 +6,6 @@ import java.util.Set;
 import javax.persistence.EntityManagerFactory;
 
 import org.hibernate.CacheMode;
-import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
@@ -48,11 +47,16 @@ public class ReindexAsyncBean
 
    private int objectCount;
    private int objectProgress;
+   private boolean hasError;
 
    @Create
    public void create()
    {
       reindexing = false;
+      hasError = false;
+
+      objectCount = 0;
+      objectProgress = 0;
 
       // TODO: find a version of this that works:
       // indexables.addAll(StandardDeploymentStrategy.instance().getAnnotatedClasses().get(Indexed.class.getName()));
@@ -62,16 +66,17 @@ public class ReindexAsyncBean
    }
 
    /**
-    * Begin reindexing lucene search index. This method should not be called
-    * when isReindexing() returns true.
+    * Prepare to reindex lucene search index. This ensures that progress counts
+    * are properly initialised before the asynchronous startReindex() method is
+    * called.
     */
-   @Asynchronous
-   public void reindexDatabase()
+   public void prepareReindex()
    {
       // TODO print message? throw exception?
       if (reindexing)
          return;
 
+      hasError = false;
       reindexing = true;
       log.info("Re-indexing started");
 
@@ -84,6 +89,19 @@ public class ReindexAsyncBean
          objectCount += (Integer) session.createCriteria(clazz).setProjection(Projections.rowCount()).list().get(0);
       }
       objectProgress = 0;
+   }
+
+   /**
+    * Begin reindexing lucene search index. This method should only be called
+    * after a single call to prepareReindex()
+    */
+   @Asynchronous
+   public void startReindex()
+   {
+      if (!reindexing)
+      {
+         throw new RuntimeException("startReindex() must not be called before prepareReindex()");
+      }
 
       // reindex all @Indexed entities
       for (Class<?> clazz : indexables)
@@ -100,48 +118,45 @@ public class ReindexAsyncBean
          // @formatter: on
       }
 
-      log.info("Re-indexing finished");
+      log.info("Re-indexing finished" + (hasError ? " with errors" : ""));
       reindexing = false;
    }
 
    private void reindex(Class<?> clazz)
    {
       log.info("Re-indexing {0}", clazz);
+
+      ScrollableResults results = null;
       try
       {
          session.purgeAll(clazz);
          session.setFlushMode(FlushMode.MANUAL);
          session.setCacheMode(CacheMode.IGNORE);
-         ScrollableResults results;
-         Boolean processedAllResults = false;
-         int currentBatchIndex = 0;
 
+         results = session.createCriteria(clazz).setFetchSize(BATCH_SIZE).scroll(ScrollMode.FORWARD_ONLY);
 
-         while (!processedAllResults)
+         int index = 0;
+         while (results.next())
          {
-            Criteria criteria = session.createCriteria(clazz).setFirstResult(currentBatchIndex).setMaxResults(BATCH_SIZE);
-            results = criteria.setFetchSize(BATCH_SIZE).scroll(ScrollMode.FORWARD_ONLY);
-
-            int index = 0;
-            while (results.next())
+            objectProgress++;
+            index++;
+            session.index(results.get(0)); // index each element
+            if (index % BATCH_SIZE == 0)
             {
-               objectProgress++;
-               index++;
-               session.index(results.get(0)); // index each element
-               if (index % BATCH_SIZE == 0)
-               {
-                  session.flushToIndexes(); // apply changes to indexes
-                  session.clear(); // clear since the queue is processed
-               }
+               session.flushToIndexes(); // apply changes to indexes
+               session.clear(); // clear since the queue is processed
             }
-            results.close();
-            processedAllResults = (index < BATCH_SIZE);
-            currentBatchIndex += BATCH_SIZE;
          }
       }
       catch (Exception e)
       {
          log.warn("Unable to index objects of type {0}", e, clazz.getName());
+         hasError = true;
+      }
+      finally
+      {
+         if (results != null)
+            results.close();
       }
    }
 
@@ -151,6 +166,11 @@ public class ReindexAsyncBean
    public boolean isReindexing()
    {
       return reindexing;
+   }
+
+   public boolean hasError()
+   {
+      return hasError;
    }
 
    /**

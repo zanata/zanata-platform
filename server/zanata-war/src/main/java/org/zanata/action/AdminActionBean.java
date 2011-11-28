@@ -22,6 +22,11 @@ public class AdminActionBean
       return reindexAsync.isReindexing();
    }
 
+   public boolean isReindexError()
+   {
+      return reindexAsync.hasError();
+   }
+
    public int getReindexCount()
    {
       return reindexAsync.getObjectCount();
@@ -36,9 +41,9 @@ public class AdminActionBean
    {
       if (!reindexAsync.isReindexing())
       {
-         reindexAsync.reindexDatabase();
+         reindexAsync.prepareReindex();
+         reindexAsync.startReindex();
       }
    }
-
 
 }
