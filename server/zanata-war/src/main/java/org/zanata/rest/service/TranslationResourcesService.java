@@ -84,6 +84,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.NoSuchEntityException;
+import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
 import org.zanata.rest.dto.resource.Resource;
@@ -414,7 +415,8 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
       Resource entity = RestUtils.unmarshall(Resource.class, messageBody, requestContentType, headers.getRequestHeaders());
       log.debug("resource details: {0}", entity);
-
+      validateResourceEncoding(entity);
+      
       HDocument document = documentDAO.getByDocId(hProjectIteration, id);
       HLocale hLocale = validateSourceLocale(entity.getLang());
       int nextDocRev;
@@ -629,7 +631,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
       HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
       TranslationsResource translationResource = new TranslationsResource();
       resourceUtils.transferToTranslationsResource(
-            translationResource, document, hLocale, this.extensions, 
+            translationResource, document, hLocale, extensions, 
             textFlowTargetDAO.findTranslations(document, hLocale));
 
       if (translationResource.getTextFlowTargets().isEmpty() && translationResource.getExtensions(true).isEmpty())
@@ -909,6 +911,14 @@ public class TranslationResourcesService implements TranslationResourcesResource
       if (invalidExtensions != null)
       {
          throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("Unsupported Extensions within this context: " + StringUtils.join(invalidExtensions, ",")).build());
+      }
+   }
+   
+   private void validateResourceEncoding(Resource res) throws WebApplicationException
+   {
+      if( !this.resourceUtils.validateResourceEncoding(res) )
+      {
+         throw new WebApplicationException(Response.status(Status.UNSUPPORTED_MEDIA_TYPE).entity("Unsupported Encoding: ").build());
       }
    }
    

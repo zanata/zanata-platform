@@ -130,7 +130,7 @@ public class IterationZipFileBuildProcess extends BackgroundProcess
          Resource res = this.resourceUtils.buildResource( document );
          
          zipOutput.putNextEntry( new ZipEntry( document.getDocId() + ".po" ) );
-         poWriter.writePo(zipOutput, res, translationResource);
+         poWriter.writePo(zipOutput, "UTF-8", res, translationResource);
          zipOutput.closeEntry();
          this.processHandle.incrementProgress(1);
       }

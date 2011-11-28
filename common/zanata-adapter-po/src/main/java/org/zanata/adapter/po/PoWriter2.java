@@ -1,14 +1,11 @@
 package org.zanata.adapter.po;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +15,6 @@ import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.fedorahosted.tennera.jgettext.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.resources.OutputSource;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
@@ -75,8 +71,8 @@ public class PoWriter2
       // write the POT file to $potDir/$name.pot
       File potFile = new File(potDir, doc.getName() + ".pot");
       PathUtil.makeParents(potFile);
-      OutputSource outputSource = new OutputSource(potFile);
-      write(outputSource, doc, null);
+      FileWriter fWriter = new FileWriter(potFile);
+      write(fWriter, doc, null);
    }
 
    /**
@@ -95,8 +91,8 @@ public class PoWriter2
       File localeDir = new File(baseDir, locale);
       File poFile = new File(localeDir, doc.getName() + ".po");
       mkdirs(poFile.getParentFile());
-      OutputSource outputSource = new OutputSource(poFile);
-      write(outputSource, doc, targetDoc);
+      FileWriter fWriter = new FileWriter(poFile);
+      write(fWriter, doc, targetDoc);
    }
    
    /**
@@ -108,10 +104,10 @@ public class PoWriter2
     * @param targetDoc
     * @throws IOException
     */
-   public void writePo(OutputStream stream, Resource doc, TranslationsResource targetDoc) throws IOException
+   public void writePo(OutputStream stream, String charset, Resource doc, TranslationsResource targetDoc) throws IOException
    {
-      OutputSource outputSource = new OutputSource(stream);
-      write(outputSource, doc, targetDoc);
+      OutputStreamWriter osWriter = new OutputStreamWriter(stream, charset);
+      write(osWriter, doc, targetDoc);
    }
 
    /**
@@ -120,15 +116,13 @@ public class PoWriter2
     * will be generated from Resource+TranslationsResource, otherwise a pot file
     * will be generated from the Resource only.
     * 
-    * @param outputSource
+    * @param writer
     * @param document
     * @param targetDoc
     * @throws IOException
     */
-   private void write(OutputSource outputSource, Resource document, TranslationsResource targetDoc) throws IOException
+   private void write(Writer writer, Resource document, TranslationsResource targetDoc) throws IOException
    {
-      Writer writer = createWriter(outputSource);
-
       PoHeader poHeader = document.getExtensions(true).findByType(PoHeader.class);
       HeaderFields hf = new HeaderFields();
       if (poHeader == null)
@@ -148,6 +142,7 @@ public class PoWriter2
          {
             copyToHeaderFields(hf, poTargetHeader.getEntries());
             headerMessage = hf.unwrap();
+            headerMessage.setFuzzy(false); // By default, header message unwraps as fuzzy, so avoid it
             copyTargetHeaderComments(headerMessage, poTargetHeader);
          }
       }
@@ -225,48 +220,6 @@ public class PoWriter2
          poWriter.write(message, writer);
          writer.write("\n");
       }
-   }
-
-   static Writer createWriter(OutputSource outputSource)
-   {
-      Writer writer;
-
-      // the writer has first priority
-      if (outputSource.getWriter() != null)
-         writer = outputSource.getWriter();
-      else if (outputSource.getOutputStream() != null)
-      { // outputstream has 2nd priority
-         if (outputSource.getEncoding() != null)
-         {
-            writer = new OutputStreamWriter(outputSource.getOutputStream(), Charset.forName(outputSource.getEncoding()));
-         }
-         else
-         {
-            writer = new OutputStreamWriter(outputSource.getOutputStream(), Charset.forName("UTF-8"));
-         }
-      }
-      else if (outputSource.getFile() != null)
-      { // file has 3rd priority
-         try
-         {
-            OutputStream os = new BufferedOutputStream(new FileOutputStream(outputSource.getFile()));
-            if (outputSource.getEncoding() != null)
-            {
-               writer = new OutputStreamWriter(os, Charset.forName(outputSource.getEncoding()));
-            }
-            else
-            {
-               writer = new OutputStreamWriter(os, Charset.forName("UTF-8"));
-            }
-         }
-         catch (FileNotFoundException fnf)
-         {
-            throw new IllegalArgumentException("outputSource", fnf);
-         }
-      }
-      else
-         throw new IllegalArgumentException("outputSource");
-      return writer;
    }
 
    private static void copyTargetHeaderComments(Message headerMessage, PoTargetHeader poTargetHeader)
