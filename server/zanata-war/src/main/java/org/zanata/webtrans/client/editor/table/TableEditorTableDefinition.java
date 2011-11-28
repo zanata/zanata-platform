@@ -218,8 +218,10 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          // will be closed
          // targetCellEditor.isEditing not suitable since when we click the save
          // button, cellValue is not null.
-         if (targetCellEditor.isOpened())
+         if (targetCellEditor.isOpened() && targetCellEditor.getTargetCell().getId().equals(rowValue))
+         {
             return;
+         }
 
          if (rowValue.getTarget().isEmpty())
          {

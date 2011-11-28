@@ -49,6 +49,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -641,5 +642,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       this.isCancelButtonFocused = isCancelButtonFocused;
       cancelButton.setFocus(isCancelButtonFocused);
+   }
+
+   public TransUnit getTargetCell()
+   {
+      return cellValue;
    }
 }
