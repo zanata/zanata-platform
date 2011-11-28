@@ -544,7 +544,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     */
    public void cancelEdit()
    {
-      Window.alert("cancelEdit");
       // Fire the event
       if (!onCancel())
       {
@@ -636,5 +635,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       this.isCancelButtonFocused = isCancelButtonFocused;
       cancelButton.setFocus(isCancelButtonFocused);
+   }
+
+   public TransUnit getTargetCell()
+   {
+      return cellValue;
    }
 }

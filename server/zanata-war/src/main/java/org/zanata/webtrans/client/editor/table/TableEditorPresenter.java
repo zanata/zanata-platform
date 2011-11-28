@@ -322,7 +322,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                // Clear the cache
                clearCacheList();
 
-               // TODO this test never succeeds
                if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
                {
                   Log.info("selected TU updated; clear selection");
