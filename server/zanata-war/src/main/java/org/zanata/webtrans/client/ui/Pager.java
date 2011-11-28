@@ -34,7 +34,7 @@ public class Pager extends Composite implements HasPager
    }
 
    @UiField
-   Anchor firstPage, lastPage, nextPage, prevPage;
+   Image firstPage, lastPage, nextPage, prevPage;
 
    @UiField
    Image firstPageDisabled, lastPageDisabled, nextPageDisabled, prevPageDisabled;
@@ -190,9 +190,9 @@ public class Pager extends Composite implements HasPager
       }
    };
 
-   private void setEnabled(Anchor link, Image disabledLink, boolean enabled)
+   private void setEnabled(Image enabledLink, Image disabledLink, boolean enabled)
    {
-      link.setVisible(enabled);
+      enabledLink.setVisible(enabled);
       disabledLink.setVisible(!enabled);
    }
 
