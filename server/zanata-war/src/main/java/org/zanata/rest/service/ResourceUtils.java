@@ -849,9 +849,16 @@ public class ResourceUtils
     */
    private String getSystemVersion()
    {
-      return ZANATA_GENERATOR_PREFIX + " " +
-             ((ApplicationConfiguration)Component.getInstance(ApplicationConfiguration.class, ScopeType.APPLICATION))
-                  .getVersion();
+      try
+      {
+         return ZANATA_GENERATOR_PREFIX + " " +
+                ((ApplicationConfiguration)Component.getInstance(ApplicationConfiguration.class, ScopeType.APPLICATION))
+                     .getVersion();
+      }
+      catch (Exception e)
+      {
+         return ZANATA_GENERATOR_PREFIX + " UNKNOWN"; 
+      }
    }
 
    /**

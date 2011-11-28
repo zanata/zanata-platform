@@ -915,6 +915,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       poHeader.setComment("poheader comment");
       List<HeaderEntry> poEntries = poHeader.getEntries();
       poEntries.add(new HeaderEntry("Project-Id-Version", "en"));
+      poEntries.add(new HeaderEntry("Content-Type", "application/x-publican; charset=UTF-8\n"));
 
       log.debug("{}", doc);
       Response response = transResource.putResource(id, doc, extGettextComment);
