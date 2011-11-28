@@ -175,7 +175,7 @@ public class FileService implements FileResource
       public void write(OutputStream output) throws IOException, WebApplicationException
       {         
          PoWriter2 writer = new PoWriter2();
-         writer.writePo(output, this.resource, this.transRes);
+         writer.writePo(output, "UTF-8", this.resource, this.transRes);
       }
    }
    
