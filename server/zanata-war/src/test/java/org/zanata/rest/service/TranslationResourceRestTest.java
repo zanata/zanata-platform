@@ -806,7 +806,11 @@ public class TranslationResourceRestTest extends ZanataRestTest
          ResourceTestUtil.clearRevs(actualDoc);
          ResourceTestUtil.clearRevs(expectedDoc);
       }
-      Assertions.assertThat(actualDoc.toString()).isEqualTo(expectedDoc.toString());
+      
+      //Assertions.assertThat(actualDoc.toString()).isEqualTo(expectedDoc.toString());
+      // Note: Cannot do literal String comparisons anymore since PO headers are being customized by Zanata.
+      // Instead, need to compare individual properties
+      ResourceTestUtil.assertEquals(expectedDoc, actualDoc);
    }
 
    private Resource createSourceDoc(String name, boolean withTextFlow)

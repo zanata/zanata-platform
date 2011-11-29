@@ -98,13 +98,12 @@ public class ResourceUtils
 
    private static final Log log = Logging.getLog(ResourceUtils.class);
    
-   private Properties pluralForms;
+   private Properties pluralForms = new Properties();
    
    
    @PostConstruct
    public void create()
    {
-      pluralForms = new Properties();
       try
       {
          pluralForms.load( this.getClass().getClassLoader().getResourceAsStream( "pluralforms.properties" ) );
