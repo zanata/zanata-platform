@@ -247,6 +247,7 @@
 						<exclude>**/seam.properties</exclude>
 						<exclude>**/seam-deployment.properties</exclude>
 						<exclude>**/eventservice.properties</exclude>
+						<exclude>**/pluralforms.properties</exclude>
 					</excludes>
 					<inputDirectory>src/main/resources</inputDirectory>
                     <outputDirectory>${project.build.outputDirectory}</outputDirectory>
