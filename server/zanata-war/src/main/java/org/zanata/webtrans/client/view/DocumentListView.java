@@ -153,17 +153,20 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    }
 
    @Override
-   public void setSelection(final DocumentInfo document)
+   public void setSelection(final DocumentId documentId)
    {
-      if (currentSelection != null && currentSelection.getDocInfo() == document)
+      if (currentSelection != null && currentSelection.getDocInfo().getId() == documentId)
       {
          return;
       }
       clearSelection();
-      DocumentNode node = nodes.get(document.getId());
+      DocumentNode node = nodes.get(documentId);
       if (node != null)
       {
          currentSelection = node;
+         // required to have document selected in doclist when loading from
+         // bookmarked history token
+         documentListTable.getSelectionModel().setSelected(node, true);
       }
    }
 
@@ -211,5 +214,12 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    public HandlerRegistration addSelectionHandler(SelectionHandler<DocumentInfo> handler)
    {
       return addHandler(handler, SelectionEvent.getType());
+   }
+
+   @Override
+   public DocumentInfo getDocumentInfo(DocumentId docId)
+   {
+      DocumentNode node = nodes.get(docId);
+      return (node == null ? null : node.getDocInfo());
    }
 }

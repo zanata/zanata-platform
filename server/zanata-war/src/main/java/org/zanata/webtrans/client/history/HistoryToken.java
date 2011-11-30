@@ -25,6 +25,7 @@ public class HistoryToken
 
    private Map<String, String> members;
 
+
    public HistoryToken()
    {
       members = new HashMap<String, String>();
@@ -58,6 +59,11 @@ public class HistoryToken
       return historyToken;
    }
 
+   public boolean hasDocumentId()
+   {
+      return members.containsKey(HistoryToken.KEY_DOCUMENT);
+   }
+
    public DocumentId getDocumentId()
    {
       try
@@ -77,6 +83,11 @@ public class HistoryToken
    public void setDocumentId(DocumentId docId)
    {
       members.put(HistoryToken.KEY_DOCUMENT, docId.toString());
+   }
+
+   public boolean hasView()
+   {
+      return members.containsKey(HistoryToken.KEY_VIEW);
    }
 
    public AppPresenter.Display.MainView getView()
@@ -117,7 +128,6 @@ public class HistoryToken
       {
          members.put(HistoryToken.KEY_VIEW, VALUE_DOCLIST_VIEW);
       }
-      // TODO log a warning
    }
 
    /**
