@@ -27,8 +27,6 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.common.TransUnitCount;
-import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.editor.filter.ContentFilter;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
@@ -38,6 +36,8 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.ProjectStatsRetrievedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
+import org.zanata.webtrans.client.history.HistoryToken;
+import org.zanata.webtrans.client.presenter.AppPresenter.Display.MainView;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -54,6 +54,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
@@ -67,7 +68,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
       void clearSelection();
 
-      void setSelection(DocumentInfo document);
+      void setSelection(DocumentId documentId);
 
       void setFilter(ContentFilter<DocumentInfo> filter);
 
@@ -78,6 +79,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       HasSelectionHandlers<DocumentInfo> getDocumentList();
 
       TransUnitUpdatedEventHandler getDocumentNode(DocumentId docId);
+
+      DocumentInfo getDocumentInfo(DocumentId docId);
    }
 
    private final DispatchAsync dispatcher;
@@ -104,9 +107,49 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          @Override
          public void onSelection(SelectionEvent<DocumentInfo> event)
          {
-            currentDocument = event.getSelectedItem();
-            display.setSelection(currentDocument);
-            fireEvent(new DocumentSelectionEvent(currentDocument));
+            // generate history token
+            HistoryToken token = HistoryToken.fromTokenString(History.getToken());
+
+            // prevent feedback loops between history and selection
+            boolean isNewSelection;
+            if (token.hasDocumentId())
+            {
+               try
+               {
+                  isNewSelection = event.getSelectedItem().getId().getId() != token.getDocumentId().getId();
+               }
+               catch (Throwable t)
+               {
+                  Log.info("got exception determining whether selection is new", t);
+                  isNewSelection = false;
+               }
+            }
+            else
+            {
+               isNewSelection = true;
+            }
+
+            if (isNewSelection)
+            {
+               currentDocument = event.getSelectedItem();
+               token.setDocumentId(currentDocument.getId());
+               token.setView(MainView.Editor);
+               History.newItem(token.toTokenString());
+            }
+         }
+      }));
+
+      registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler()
+      {
+         @Override
+         public void onDocumentSelected(DocumentSelectionEvent event)
+         {
+            // match bookmarked selection, but prevent selection feedback loop
+            // from history
+            if (event.getDocumentId() != (currentDocument == null ? null : currentDocument.getId()))
+            {
+               display.setSelection(event.getDocumentId());
+            }
          }
       }));
 
@@ -204,6 +247,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             display.setList(documents);
             Log.info("Time to load docs into DocListView: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
             start = System.currentTimeMillis();
+
+            History.fireCurrentHistoryState();
+
             TranslationStats projectStats = new TranslationStats(); // projStats
                                                                     // = 0
             for (DocumentInfo doc : documents)

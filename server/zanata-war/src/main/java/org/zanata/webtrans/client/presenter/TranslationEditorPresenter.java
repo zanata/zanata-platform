@@ -25,15 +25,11 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
-import org.zanata.webtrans.client.editor.table.InlineTargetCellEditor;
 import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
-import org.zanata.webtrans.client.events.DocumentSelectionEvent;
-import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasPager;
-import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -70,7 +66,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    // private final UndoRedoPresenter undoRedoPresenter;
    private final TransFilterPresenter transFilterPresenter;
 
-   private DocumentInfo currentDocument;
 
    @Inject
    public TranslationEditorPresenter(Display display, EventBus eventBus, final CachingDispatchAsync dispatcher, final TableEditorPresenter tableEditorPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter, final UndoRedoPresenter undoRedoPresenter, final TransFilterPresenter transFilterPresenter)
@@ -129,19 +124,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
             display.getPageNavigation().setPageCount(event.getNewPageCount());
          }
       });
-
-      registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler()
-      {
-         @Override
-         public void onDocumentSelected(DocumentSelectionEvent event)
-         {
-            if (currentDocument != null && currentDocument.getId().equals(event.getDocument().getId()))
-            {
-               return;
-            }
-            currentDocument = event.getDocument();
-         }
-      }));
 
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.getType(), new UserConfigChangeHandler()
       {

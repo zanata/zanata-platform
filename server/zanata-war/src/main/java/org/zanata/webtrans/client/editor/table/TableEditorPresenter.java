@@ -34,7 +34,6 @@ import org.zanata.webtrans.client.action.UndoableTransUnitUpdateAction;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateHandler;
 import org.zanata.webtrans.client.editor.DocumentEditorPresenter;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
-import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
 import org.zanata.webtrans.client.events.ButtonDisplayChangeEventHandler;
 import org.zanata.webtrans.client.events.CopySourceEvent;
@@ -88,7 +87,7 @@ import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
 import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -145,7 +144,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
    private DocumentId documentId;
 
-   private TransFilterPresenter.Display transFilterDisplay;
+   // private TransFilterPresenter.Display transFilterDisplay;
 
    private final CachingDispatchAsync dispatcher;
    private final Identity identity;
@@ -281,15 +280,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          @Override
          public void onDocumentSelected(DocumentSelectionEvent event)
          {
-            if (!event.getDocument().getId().equals(documentId))
-            {
-               display.startProcessing();
-               documentId = event.getDocument().getId();
-               display.getTableModel().clearCache();
-               display.getTableModel().setRowCount(TableModel.UNKNOWN_ROW_COUNT);
-               display.gotoPage(0, true);
-               display.stopProcessing();
-            }
+            loadDocument(event.getDocumentId());
          }
       }));
 
@@ -500,6 +491,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          }
       }));
       display.gotoFirstPage();
+
+      History.fireCurrentHistoryState();
    }
 
    public Integer getRowOffset(TransUnitId transUnitId)
@@ -1051,5 +1044,23 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    public void gotoNextRow(boolean andEdit)
    {
       tableModelHandler.gotoNextRow(andEdit);
+   }
+
+   /**
+    * Load a document into the editor
+    * 
+    * @param selectDocId id of the document to select
+    */
+   private void loadDocument(DocumentId selectDocId)
+   {
+      if (!selectDocId.equals(documentId))
+      {
+         display.startProcessing();
+         documentId = selectDocId;
+         display.getTableModel().clearCache();
+         display.getTableModel().setRowCount(TableModel.UNKNOWN_ROW_COUNT);
+         display.gotoPage(0, true);
+         display.stopProcessing();
+      }
    }
 }
