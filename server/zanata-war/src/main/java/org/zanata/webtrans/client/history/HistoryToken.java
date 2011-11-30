@@ -15,13 +15,13 @@ import org.zanata.webtrans.shared.model.DocumentId;
 public class HistoryToken
 {
    private static final String KEY_VALUE_SEPARATOR = ":";
-   private static final String PAIR_SEPARATOR = ",";
+   private static final String PAIR_SEPARATOR = ";";
 
-   public static final String KEY_DOCUMENT = "doc";
    public static final String KEY_VIEW = "view";
+   public static final String KEY_DOCUMENT = "doc";
 
-   public static final String VALUE_DOCLIST_VIEW = "doclist";
-   public static final String VALUE_EDITOR_VIEW = "editor";
+   public static final String VALUE_DOCLIST_VIEW = "list";
+   public static final String VALUE_EDITOR_VIEW = "doc";
 
    private Map<String, String> members;
 
