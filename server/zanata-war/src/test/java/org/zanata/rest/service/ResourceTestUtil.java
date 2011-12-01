@@ -1,7 +1,10 @@
 package org.zanata.rest.service;
 
+import java.util.Iterator;
 import java.util.List;
 
+import org.zanata.rest.dto.extensions.gettext.PoTargetHeader;
+import org.zanata.rest.dto.extensions.gettext.TranslationsResourceExtension;
 import org.zanata.rest.dto.resource.AbstractResourceMeta;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
@@ -36,6 +39,21 @@ class ResourceTestUtil
       {
          tft.setRevision(null);
          tft.setTextFlowRevision(null);
+      }
+   }
+   
+   static void clearPoTargetHeaders(TranslationsResource ... docs)
+   {
+      for( TranslationsResource doc : docs )
+      {
+         Iterator<TranslationsResourceExtension> it = doc.getExtensions(true).iterator();
+         while( it.hasNext() )
+         {
+            if( it.next() instanceof PoTargetHeader )
+            {
+               it.remove();
+            }
+         }
       }
    }
 
