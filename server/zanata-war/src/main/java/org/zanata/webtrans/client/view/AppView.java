@@ -210,8 +210,7 @@ public class AppView extends Composite implements AppPresenter.Display
    @Override
    public void setSelectedDocument(DocumentInfo document)
    {
-      String path = document.getPath().isEmpty() ? "" : document.getPath() + "/";
-      selectedDocumentPathSpan.setInnerText(path);
+      selectedDocumentPathSpan.setInnerText(document.getPath());
       selectedDocumentSpan.setInnerText(document.getName());
    }
 
