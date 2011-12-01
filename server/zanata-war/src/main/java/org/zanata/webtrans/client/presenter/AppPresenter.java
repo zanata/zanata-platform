@@ -183,7 +183,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          @Override
          public void onDocumentSelected(DocumentSelectionEvent event)
          {
-            DocumentInfo docInfo = documentListPresenter.getDisplay().getDocumentInfo(event.getDocumentId());
+            DocumentInfo docInfo = documentListPresenter.getDocumentInfo(event.getDocumentId());
 
             if (docInfo != null && (selectedDocument == null || !event.getDocumentId().equals(selectedDocument.getId())))
             {
