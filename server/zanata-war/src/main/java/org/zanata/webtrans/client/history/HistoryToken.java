@@ -43,17 +43,20 @@ public class HistoryToken
 
       String[] pair;
 
-      try
+      if (!token.isEmpty() && token != null)
       {
-         for (String pairString : token.split(PAIR_SEPARATOR))
+         try
          {
-            pair = pairString.split(KEY_VALUE_SEPARATOR);
-            historyToken.members.put(pair[0], pair[1]);
+            for (String pairString : token.split(PAIR_SEPARATOR))
+            {
+               pair = pairString.split(KEY_VALUE_SEPARATOR);
+               historyToken.members.put(pair[0], pair[1]);
+            }
          }
-      }
-      catch (IllegalArgumentException e)
-      {
-         throw new IllegalArgumentException("token must be a list of key-value pairs in the form key1:value1,key2:value2,...", e);
+         catch (IllegalArgumentException e)
+         {
+            throw new IllegalArgumentException("token must be a list of key-value pairs in the form key1:value1,key2:value2,...", e);
+         }
       }
 
       return historyToken;
