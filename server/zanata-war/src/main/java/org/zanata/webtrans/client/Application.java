@@ -164,7 +164,7 @@ public class Application implements EntryPoint
 
    public static void redirectToLogin()
    {
-      redirectToUrl(getModuleParentBaseUrl() + "account/sign_in?continue=" + URL.encodeComponent(Window.Location.getHref()));
+      redirectToUrl(getModuleParentBaseUrl() + "account/sign_in?continue=" + URL.encodeQueryString(Window.Location.getHref()));
    }
 
    public static void redirectToLogout()
