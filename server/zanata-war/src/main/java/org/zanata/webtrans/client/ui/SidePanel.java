@@ -29,10 +29,10 @@ import org.zanata.webtrans.shared.model.Person;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.StackLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -61,6 +61,8 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display
 
    private final WebTransMessages messages;
 
+   private ScrollPanel userPanelScrollPanel;
+
 
    @Inject
    public SidePanel(WebTransMessages messages)
@@ -71,14 +73,18 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display
 
       userListPanel = new FlowPanel();
 
+      userPanelScrollPanel = new ScrollPanel();
+
       this.messages = messages;
 
       rootPanel = uiBinder.createAndBindUi(this);
       initWidget(rootPanel);
 
-      usersPanelContainer.add(userListPanel);
+      userPanelScrollPanel.add(userListPanel);
+      usersPanelContainer.add(userPanelScrollPanel);
 
       mainPanel.add(transUnitDetailContainer, messages.transUnitDetailsHeading(), 20);
+      mainPanel.add(validationDetailContainer, messages.validationDetailsHeading(), 20);
       mainPanel.add(usersPanelContainer, messages.nUsersOnline(0), 20);
    }
 
@@ -112,7 +118,7 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display
          userListPanel.add(item);
       }
 
-      mainPanel.setHeaderText(1, messages.nUsersOnline(userList.size()));
+      mainPanel.setHeaderText(2, messages.nUsersOnline(userList.size()));
    }
 
    @Override

@@ -71,6 +71,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Translation Unit Details")
    String transUnitDetailsHeading();
 
+   @DefaultMessage("Validation Details")
+   String validationDetailsHeading();
+
    @DefaultMessage("Source or Target content")
    String findSourceOrTargetString();
 

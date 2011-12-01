@@ -25,28 +25,5 @@
 	       <g:StackLayoutPanel ui:field="mainPanel"/>
 	    </g:layer>
     </g:LayoutPanel>
-    
-    
-<!-- 	<g:LayoutPanel styleName="{style.sidePanel}"> -->
-<!-- 		<g:layer top="0" bottom="0px"> -->
-<!-- 			<g:LayoutPanel> -->
-<!-- 				<g:layer top='0' height="40%"> -->
-<!-- 					<g:LayoutPanel ui:field="transUnitDetailContainer" /> -->
-<!-- 				</g:layer> -->
-<!-- 			</g:LayoutPanel> -->
-<!-- 		</g:layer> -->
-		
-<!-- 		<g:layer top="0" bottom="0px"> -->
-<!-- 		<g:LayoutPanel> -->
-<!--                 <g:layer top='0' height="30%"> -->
-<!--                     <g:LayoutPanel ui:field="validationDetailContainer" /> -->
-<!--                 </g:layer> -->
-<!--             </g:LayoutPanel> -->
-<!--         </g:layer>     -->
-            
-<!-- 		<g:layer bottom='0px' height='20px'> -->
-<!-- 			<g:LayoutPanel ui:field="usersPanelContainer" /> -->
-<!-- 		</g:layer> -->
-<!-- 	</g:LayoutPanel> -->
 
 </ui:UiBinder> 

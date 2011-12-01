@@ -1,0 +1,18 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+    ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+    ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+    ui:generateLocales="en">
+	<ui:style>
+
+        
+	</ui:style>
+		<g:LayoutPanel ui:field="rootPanel">
+			<g:layer>
+			    <g:ScrollPanel>
+				    <g:VerticalPanel ui:field="contentPanel"/>
+				</g:ScrollPanel>
+			</g:layer>
+		</g:LayoutPanel>
+</ui:UiBinder> 

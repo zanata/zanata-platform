@@ -44,7 +44,6 @@ import com.google.inject.Inject;
 
 public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Display>
 {
-
    public interface Display extends WidgetDisplay
    {
       void setTransUnitDetailView(Widget widget);
@@ -56,12 +55,14 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
 
    private final DispatchAsync dispatcher;
    private final TransUnitDetailsPresenter transUnitDetailsPresenter;
+   private final ValidationDetailsPresenter validationDetailsPresenter;
    
    @Inject
-   public SidePanelPresenter(final Display display, final EventBus eventBus, CachingDispatchAsync dispatcher, final TransUnitDetailsPresenter transUnitDetailsPresenter, final TransFilterPresenter transFilterPresenter)
+   public SidePanelPresenter(final Display display, final EventBus eventBus, CachingDispatchAsync dispatcher, final TransUnitDetailsPresenter transUnitDetailsPresenter, final ValidationDetailsPresenter validationDetailsPresenter, final TransFilterPresenter transFilterPresenter)
    {
       super(display, eventBus);
       this.transUnitDetailsPresenter = transUnitDetailsPresenter;
+      this.validationDetailsPresenter = validationDetailsPresenter;
       this.dispatcher = dispatcher;
    }
 
@@ -70,6 +71,9 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
    {
       transUnitDetailsPresenter.bind();
       display.setTransUnitDetailView(transUnitDetailsPresenter.getDisplay().asWidget());
+
+      validationDetailsPresenter.bind();
+      display.setValidationDetailView(validationDetailsPresenter.getDisplay().asWidget());
 
       registerHandler(eventBus.addHandler(ExitWorkspaceEvent.getType(), new ExitWorkspaceEventHandler()
       {

@@ -6,7 +6,6 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -30,16 +29,10 @@ public class TransUnitDetailsView extends Composite implements TransUnitDetailsP
    Label resIdLabel, resId, sourceCommentLabel, sourceComment, msgContextLabel, msgContext, lastModifiedByLabel, lastModifiedBy, lastModifiedTimeLabel, lastModifiedTime;
 
    @UiField
-   LayoutPanel rootPanel;
-
-   @UiField
    VerticalPanel labelPanel;
 
    @UiField
    Label emptyLabel;
-
-   @UiField
-   FlowPanel emptyFlowPanel;
 
    @Inject
    public TransUnitDetailsView(WebTransMessages messages, Resources resources)
@@ -57,7 +50,7 @@ public class TransUnitDetailsView extends Composite implements TransUnitDetailsP
    @Override
    public void showDetails(TransUnit transUnit)
    {
-      emptyFlowPanel.setVisible(false);
+      emptyLabel.setVisible(false);
       resIdLabel.setText("Resource ID: ");
       resId.setText(transUnit.getResId());
       

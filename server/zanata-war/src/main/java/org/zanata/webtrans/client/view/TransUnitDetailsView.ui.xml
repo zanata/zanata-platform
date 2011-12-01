@@ -1,38 +1,33 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-    ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
-    ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
-    ui:generateLocales="en">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="en">
 	<ui:style>
-
-	    .tuDetailsLabel {
-	        font-weight: bold;
-	        padding-top: 8px;
-	    }
-        
+		.tuDetailsLabel {
+			font-weight: bold;
+			padding-top: 8px;
+		}
 	</ui:style>
-		<g:LayoutPanel ui:field="rootPanel">
-			<g:layer>
+
+	<g:LayoutPanel>
+		<g:layer>
+			<g:ScrollPanel>
 				<g:VerticalPanel ui:field="labelPanel">
-				    <g:FlowPanel ui:field="emptyFlowPanel">
-				        <g:Label ui:field="emptyLabel" styleName="{style.tuDetailsLabel}" />
-				    </g:FlowPanel>
-					<g:FlowPanel>
-					    <g:Label ui:field="resIdLabel" styleName="{style.tuDetailsLabel}" />
-					    <g:Label ui:field="resId" />
-					    <g:Label ui:field="msgContextLabel" styleName="{style.tuDetailsLabel}" />
-                        <g:Label ui:field="msgContext" />
-						<g:Label ui:field="sourceCommentLabel" styleName="{style.tuDetailsLabel}" />
-						<g:Label ui:field="sourceComment" />
-					</g:FlowPanel>
-					<g:FlowPanel>
-						<g:Label ui:field="lastModifiedByLabel" styleName="{style.tuDetailsLabel}" />
-						<g:Label ui:field="lastModifiedBy" />
-						<g:Label ui:field="lastModifiedTimeLabel" styleName="{style.tuDetailsLabel}" />
-						<g:Label ui:field="lastModifiedTime" />
-					</g:FlowPanel>
+					<g:Label ui:field="emptyLabel" styleName="{style.tuDetailsLabel}" />
+					<g:Label ui:field="resIdLabel" styleName="{style.tuDetailsLabel}" />
+					<g:Label ui:field="resId" />
+					<g:Label ui:field="msgContextLabel" styleName="{style.tuDetailsLabel}" />
+					<g:Label ui:field="msgContext" />
+					<g:Label ui:field="sourceCommentLabel" styleName="{style.tuDetailsLabel}" />
+					<g:Label ui:field="sourceComment" />
+					<g:Label ui:field="lastModifiedByLabel" styleName="{style.tuDetailsLabel}" />
+					<g:Label ui:field="lastModifiedBy" />
+					<g:Label ui:field="lastModifiedTimeLabel" styleName="{style.tuDetailsLabel}" />
+					<g:Label ui:field="lastModifiedTime" />
 				</g:VerticalPanel>
-			</g:layer>
-		</g:LayoutPanel>
+			</g:ScrollPanel>
+		</g:layer>
+
+	</g:LayoutPanel>
 </ui:UiBinder> 
