@@ -60,7 +60,8 @@ public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTe
       log.debug("actual:" + get.toString());
       ResourceTestUtil.clearRevs(sr);
       ResourceTestUtil.clearRevs(get);
-      ResourceTestUtil.assertEquals(get, sr);
+      ResourceTestUtil.clearPoTargetHeaders(sr, get);
+      assertThat(sr.toString(), is(get.toString()));
    }
 
    @Test(dataProvider = "TranslationTestData")
@@ -76,7 +77,8 @@ public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTe
       ResourceTestUtil.clearRevs(get);
       log.debug("expect:" + base.toString());
       log.debug("actual:" + get.toString());
-      ResourceTestUtil.assertEquals(get, base);
+      ResourceTestUtil.clearPoTargetHeaders(base, get);
+      assertThat(base.toString(), is(get.toString()));
    }
 
    @Test(dataProvider = "TranslationTestData")
@@ -92,7 +94,8 @@ public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTe
       ResourceTestUtil.clearRevs(get);
       log.debug("expect:" + base.toString());
       log.debug("actual:" + get.toString());
-      ResourceTestUtil.assertEquals(get, base);
+      ResourceTestUtil.clearPoTargetHeaders(base, get);
+      assertThat(base.toString(), is(get.toString()));
    }
 
    @Test(dataProvider = "TranslationTestData")
@@ -108,7 +111,8 @@ public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTe
       ResourceTestUtil.clearRevs(get);
       log.debug("expect:" + base.toString());
       log.debug("actual:" + get.toString());
-      ResourceTestUtil.assertEquals(get, base);
+      ResourceTestUtil.clearPoTargetHeaders(base, get);
+      assertThat(base.toString(), is(get.toString()));
    }
 
 }

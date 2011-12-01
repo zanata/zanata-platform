@@ -1,8 +1,10 @@
 package org.zanata.rest.service;
 
+import java.util.Iterator;
 import java.util.List;
 
-import org.fest.assertions.Assertions;
+import org.zanata.rest.dto.extensions.gettext.PoTargetHeader;
+import org.zanata.rest.dto.extensions.gettext.TranslationsResourceExtension;
 import org.zanata.rest.dto.resource.AbstractResourceMeta;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
@@ -40,23 +42,19 @@ class ResourceTestUtil
       }
    }
    
-   static void assertEquals(TranslationsResource expected, TranslationsResource actual)
+   static void clearPoTargetHeaders(TranslationsResource ... docs)
    {
-      Assertions.assertThat( toStringIfNull(expected.getLinks()) ).isEqualTo( toStringIfNull(actual.getLinks()) );
-      Assertions.assertThat(expected.getRevision()).isEqualTo(actual.getRevision());
-      Assertions.assertThat(expected.getTextFlowTargets().toString()).isEqualTo(actual.getTextFlowTargets().toString());
-   }
-   
-   /**
-    * Turns an object to String even if it is null. It uses the object's toString
-    * method. If the object is null, returns an empty string.
-    */
-   private static String toStringIfNull( Object obj )
-   {
-      if( obj == null )
-         return "";
-      
-      return obj.toString();
+      for( TranslationsResource doc : docs )
+      {
+         Iterator<TranslationsResourceExtension> it = doc.getExtensions(true).iterator();
+         while( it.hasNext() )
+         {
+            if( it.next() instanceof PoTargetHeader )
+            {
+               it.remove();
+            }
+         }
+      }
    }
 
 }
