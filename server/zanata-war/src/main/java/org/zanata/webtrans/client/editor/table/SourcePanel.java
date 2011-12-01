@@ -45,12 +45,9 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
    private final Label sourceLabel;
    private TransUnit value;
 
-   private final NavigationMessages messages;
-
    public SourcePanel(TransUnit value, NavigationMessages messages)
    {
       this.value = value;
-      this.messages = messages;
       panel = new HorizontalPanel();
       panel.setSize("100%", "100%");
 
