@@ -806,6 +806,10 @@ public class TranslationResourceRestTest extends ZanataRestTest
          ResourceTestUtil.clearRevs(actualDoc);
          ResourceTestUtil.clearRevs(expectedDoc);
       }
+      
+      // Clear Po Headers since Zanata will generate custom ones
+      ResourceTestUtil.clearPoTargetHeaders(actualDoc, expectedDoc);
+
       Assertions.assertThat(actualDoc.toString()).isEqualTo(expectedDoc.toString());
    }
 
@@ -911,10 +915,12 @@ public class TranslationResourceRestTest extends ZanataRestTest
       refs.add("ref1.xml:21");
 
       Resource doc = newDoc(id, textflow);
-      PoHeader poHeader = doc.getExtensions(true).findOrAddByType(PoHeader.class);
+      PoHeader poHeader = new PoHeader(); 
       poHeader.setComment("poheader comment");
       List<HeaderEntry> poEntries = poHeader.getEntries();
       poEntries.add(new HeaderEntry("Project-Id-Version", "en"));
+      poEntries.add(new HeaderEntry("Content-Type", "application/x-publican; charset=UTF-8\n"));
+      doc.getExtensions(true).add(poHeader);
 
       log.debug("{}", doc);
       Response response = transResource.putResource(id, doc, extGettextComment);
@@ -929,10 +935,11 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TextFlowTarget target = newTextFlowTarget("FOOD", "Sauerkraut", "translator comment");
       tr.getTextFlowTargets().add(target);
 
-      PoTargetHeader targetHeader = tr.getExtensions(true).findOrAddByType(PoTargetHeader.class);
+      PoTargetHeader targetHeader = new PoTargetHeader();
       targetHeader.setComment("target comment");
       List<HeaderEntry> entries = targetHeader.getEntries();
       entries.add(new HeaderEntry("Project-Id-Version", "ja"));
+      tr.getExtensions(true).add(targetHeader);
 
       transResource.putTranslations(id, DE, tr, extGettextComment);
 

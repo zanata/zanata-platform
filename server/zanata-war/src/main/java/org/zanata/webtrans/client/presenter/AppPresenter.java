@@ -37,6 +37,7 @@ import org.zanata.webtrans.client.events.ProjectStatsRetrievedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsRetrievedEventHandler;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
+import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display.MainView;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display.StatsType;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -52,13 +53,16 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
+public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implements ValueChangeHandler<String>
 {
    // javac seems confused about which Display is which.
    // somehow, qualifying WidgetDisplay helps!
@@ -91,7 +95,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       HasClickHandlers getDocumentsLink();
 
       HasClickHandlers getEditorButtonsCheckbox();
-      
+
       void setUserLabel(String userLabel);
 
       void setWorkspaceNameLabel(String workspaceNameLabel);
@@ -174,20 +178,19 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       display.showInMainView(MainView.Documents);
 
-
       registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler()
       {
          @Override
          public void onDocumentSelected(DocumentSelectionEvent event)
          {
-            display.setSelectedDocument(event.getDocument());
-            if (selectedDocument == null || !event.getDocument().getId().equals(selectedDocument.getId()))
+            DocumentInfo docInfo = documentListPresenter.getDisplay().getDocumentInfo(event.getDocumentId());
+
+            if (docInfo != null && (selectedDocument == null || !event.getDocumentId().equals(selectedDocument.getId())))
             {
-               selectedDocument = event.getDocument();
+               selectedDocument = docInfo;
                requestDocumentStats(selectedDocument.getId());
+               display.setSelectedDocument(selectedDocument);
             }
-            display.setSelectedDocument(selectedDocument);
-            display.showInMainView(MainView.Editor);
          }
       }));
 
@@ -216,27 +219,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          }
       }));
 
-      registerHandler(display.getDocumentsLink().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            if (display.getCurrentView().equals(MainView.Documents))
-            {
-               if (selectedDocument != null)
-               {
-                  display.setSelectedDocument(selectedDocument);
-                  display.showInMainView(MainView.Editor);
-               }
-            }
-            else
-            {
-               translationPresenter.saveEditorPendingChange();
-               display.showInMainView(MainView.Documents);
-            }
-         }
-      }));
-
       registerHandler(display.getSignOutLink().addClickHandler(new ClickHandler()
       {
          @Override
@@ -257,7 +239,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             // Application.redirectToZanataProjectHome(workspaceContext.getWorkspaceId());
          }
       }));
-      
+
       registerHandler(display.getEditorButtonsCheckbox().addClickHandler(new ClickHandler()
       {
          @Override
@@ -267,14 +249,16 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             eventBus.fireEvent(new ButtonDisplayChangeEvent(showButtons));
          }
       }));
-      
-      
 
       display.setUserLabel(identity.getPerson().getName());
 
       display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName());
 
       Window.setTitle(messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
+
+      History.addValueChangeHandler(this);
+
+      History.fireCurrentHistoryState();
    }
 
    @Override
@@ -319,4 +303,49 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       wordCount.increment(Updateevent.getTransUnit().getStatus(), Updateevent.getWordCount());
       wordCount.decrement(Updateevent.getPreviousStatus(), Updateevent.getWordCount());
    }
+
+   @Override
+   public void onValueChange(ValueChangeEvent<String> event)
+   {
+
+      Log.info("Responding to history token: " + event.getValue());
+
+      HistoryToken token = HistoryToken.fromTokenString(event.getValue());
+
+      DocumentId docId = token.getDocumentId();
+
+      // comparing longs here as DocumentId objects don't seem to compare
+      // properly
+      if (token.hasDocumentId() && (selectedDocument == null || selectedDocument.getId().getId() != docId.getId()))
+      {
+         Log.info("Firing document selection event");
+         try
+         {
+            eventBus.fireEvent(new DocumentSelectionEvent(docId));
+         }
+         catch (Throwable t)
+         {
+            Log.info("got exception from document selection event", t);
+         }
+         Log.info("Fired document selection event for " + docId.getId());
+      }
+
+      if (token.hasView() && token.getView() != display.getCurrentView())
+      {
+         if (display.getCurrentView().equals(MainView.Editor))
+         {
+            translationPresenter.saveEditorPendingChange();
+         }
+         else
+         { // document list view
+            if (selectedDocument != null)
+            {
+               display.setSelectedDocument(selectedDocument);
+            }
+         }
+         display.showInMainView(token.getView());
+      }
+
+   }
+
 }

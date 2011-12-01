@@ -15,9 +15,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.annotation.PostConstruct;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -33,6 +35,7 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.ContentState;
+import org.zanata.common.LocaleId;
 import org.zanata.common.ResourceType;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -95,6 +98,21 @@ public class ResourceUtils
 
    private static final Log log = Logging.getLog(ResourceUtils.class);
    
+   private Properties pluralForms = new Properties();
+   
+   
+   @PostConstruct
+   public void create()
+   {
+      try
+      {
+         pluralForms.load( this.getClass().getClassLoader().getResourceAsStream( "pluralforms.properties" ) );
+      }
+      catch (IOException e)
+      {
+         log.error("There was an error loading plural forms.", e);
+      }
+   }
    
    /**
     * Merges the list of TextFlows into the target HDocument, adding and obsoleting TextFlows as necessary.
@@ -658,14 +676,16 @@ public class ResourceUtils
     * 
     * @param from
     * @param to
+    * @param hTargets
+    * @param locale
     * @see #transferToTranslationsResourceExtensions
     * @see #transferFromPoTargetHeader
     */
-   private void transferToPoTargetHeader(HPoTargetHeader from, PoTargetHeader to, List<HTextFlowTarget> hTargets)
+   private void transferToPoTargetHeader(HPoTargetHeader from, PoTargetHeader to, List<HTextFlowTarget> hTargets, HLocale locale)
    {
       pullPoTargetComment(from, to, hTargets);
       to.getEntries().addAll(this.headerToList(from.getEntries()));
-      populateHeaderEntries(to.getEntries(), hTargets);
+      populateHeaderEntries(to.getEntries(), hTargets, locale);
    }
    
    /**
@@ -684,8 +704,10 @@ public class ResourceUtils
     * 
     * @param headerEntries The header entries to be populated.
     * @param hTargets The Text Flow Targets that the header applies to.
+    * @param locale The locale that is bein
     */
-   private void populateHeaderEntries( final List<HeaderEntry> headerEntries, final List<HTextFlowTarget> hTargets )
+   private void populateHeaderEntries( final List<HeaderEntry> headerEntries, final List<HTextFlowTarget> hTargets,
+                                       final HLocale locale)
    {
       final Map<String, HeaderEntry> containedHeaders = new HashMap<String, HeaderEntry>( headerEntries.size() );
       
@@ -748,7 +770,13 @@ public class ResourceUtils
          headerEntry.setValue( this.getLanguage(hTargets) );
       }
       
-      // TODO Plural Forms Header  
+      headerEntry = containedHeaders.get( PLURAL_FORMS_HDR );
+      if( headerEntry == null )
+      {
+         headerEntry = new HeaderEntry(PLURAL_FORMS_HDR, this.getPluralForms(locale));
+         headerEntries.add(headerEntry);
+      }
+      // Keep the original if provided
    }
    
    /**
@@ -849,9 +877,44 @@ public class ResourceUtils
     */
    private String getSystemVersion()
    {
-      return ZANATA_GENERATOR_PREFIX + " " +
-             ((ApplicationConfiguration)Component.getInstance(ApplicationConfiguration.class, ScopeType.APPLICATION))
-                  .getVersion();
+      try
+      {
+         return ZANATA_GENERATOR_PREFIX + " " +
+                ((ApplicationConfiguration)Component.getInstance(ApplicationConfiguration.class, ScopeType.APPLICATION))
+                     .getVersion();
+      }
+      catch (Exception e)
+      {
+         return ZANATA_GENERATOR_PREFIX + " UNKNOWN"; 
+      }
+   }
+   
+   /**
+    * Returns the appropriate plural form for a given Locale.
+    */
+   private String getPluralForms(HLocale locale)
+   {
+      LocaleId localeId = locale.getLocaleId();
+      String javaLocale = localeId.toJavaName().toLowerCase();
+      
+      if( pluralForms.containsKey( javaLocale ) )
+      {
+         return pluralForms.getProperty( javaLocale );
+      }
+      
+      // Try out every combination. e.g: for xxx_yyy_zzz, try xxx_yyyy_zzz, then xxx_yyy, then xxx
+      while( javaLocale.indexOf('_') > 0 )
+      {
+         javaLocale = javaLocale.substring(0, javaLocale.indexOf('_'));
+         
+         if( pluralForms.containsKey( javaLocale ) )
+         {
+            return pluralForms.getProperty( javaLocale );
+         }
+      }
+      
+      // Not found, return null
+      return null;
    }
 
    /**
@@ -951,7 +1014,7 @@ public class ResourceUtils
             fromHeader.setEntries("");
          }
          log.debug("PoTargetHeader found");
-         transferToPoTargetHeader(fromHeader, poTargetHeader, hTargets);
+         transferToPoTargetHeader(fromHeader, poTargetHeader, hTargets, locale);
          to.add(poTargetHeader);
       }
    }

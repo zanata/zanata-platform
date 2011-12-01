@@ -56,7 +56,8 @@ public class ResourceTestObjectFactory
    {
       Resource sr = getTextFlowTest();
 
-      PoHeader poHeaderExt = new PoHeader("comment", new HeaderEntry("h1", "v1"), new HeaderEntry("h2", "v2"));
+      PoHeader poHeaderExt = new PoHeader("comment", new HeaderEntry("h1", "v1"), new HeaderEntry("h2", "v2"),
+            new HeaderEntry("Content-Type","charset=UTF-8"));
       sr.getExtensions(true).add(poHeaderExt);
       return sr;
    }
