@@ -49,6 +49,9 @@ import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -58,6 +61,7 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
@@ -75,6 +79,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       HasSelectionHandlers<DocumentInfo> getDocumentList();
 
       HasData<DocumentNode> getDocumentListTable();
+
+      HasClickHandlers getFullTextSearchCheckbox();
 
       ListDataProvider<DocumentNode> getDataProvider();
    }
@@ -172,9 +178,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             }
             else
             {
-               boolean fakeFullTextFlag = false;
-
-               filter.setFullText(fakeFullTextFlag);
+               filter.setFullText(((CheckBox) display.getFullTextSearchCheckbox()).getValue());
                filter.setPattern(event.getValue());
                runFilter();
             }
@@ -192,6 +196,18 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
                handler.onTransUnitUpdated(event);
          }
       }));
+
+      registerHandler(display.getFullTextSearchCheckbox().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            filter.setFullText(((CheckBox) display.getFullTextSearchCheckbox()).getValue());
+            filter.setPattern(display.getFilterTextBox().getValue());
+            runFilter();
+         }
+      }));
+
       loadDocumentList();
    }
 

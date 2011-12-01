@@ -33,6 +33,7 @@ import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -40,6 +41,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.LayoutPanel;
@@ -63,6 +65,9 @@ public class DocumentListView extends Composite implements DocumentListPresenter
 
    @UiField(provided = true)
    ClearableTextBox filterTextBox;
+
+   @UiField
+   CheckBox fullTextSearchCheckBox;
 
    @UiField(provided = true)
    final CellTable<DocumentNode> documentListTable;
@@ -122,5 +127,11 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    public ListDataProvider<DocumentNode> getDataProvider()
    {
       return dataProvider;
+   }
+
+   @Override
+   public HasClickHandlers getFullTextSearchCheckbox()
+   {
+      return fullTextSearchCheckBox;
    }
 }
