@@ -87,7 +87,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
    private ListDataProvider<DocumentNode> dataProvider;
    private HashMap<DocumentId, DocumentNode> nodes;
-   private ContentFilter<DocumentInfo> filter;
+
+   // private ContentFilter<DocumentInfo> filter;
+   private final PathDocumentFilter filter = new PathDocumentFilter();
 
    @Inject
    public DocumentListPresenter(Display display, EventBus eventBus, WorkspaceContext workspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages)
@@ -170,8 +172,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             }
             else
             {
-               basicContentFilter.setPattern(event.getValue());
-               setFilter(basicContentFilter);
+               boolean fakeFullTextFlag = false;
+
+               filter.setFullText(fakeFullTextFlag);
+               filter.setPattern(event.getValue());
+               runFilter();
             }
          }
       }));
@@ -190,23 +195,31 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       loadDocumentList();
    }
 
-   final class BasicContentFilter implements ContentFilter<DocumentInfo>
+   final class PathDocumentFilter implements ContentFilter<DocumentInfo>
    {
       private String pattern = "";
+      private boolean isFullText = false;
 
       @Override
       public boolean accept(DocumentInfo value)
       {
-         return value.getName().contains(pattern);
+         String fullPath = value.getPath() + value.getName();
+         if (isFullText)
+            return fullPath.equals(pattern);
+         else
+            return fullPath.contains(pattern);
       }
 
       public void setPattern(String pattern)
       {
          this.pattern = pattern;
       }
-   }
 
-   private final BasicContentFilter basicContentFilter = new BasicContentFilter();
+      public void setFullText(boolean fullText)
+      {
+         isFullText = fullText;
+      }
+   }
 
    @Override
    protected void onUnbind()
@@ -217,7 +230,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    public void onRevealDisplay()
    {
       // TODO Auto-generated method stub
-
    }
 
    @Override
@@ -294,9 +306,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       dataProvider.addDataDisplay(display.getDocumentListTable());
    }
 
-   private void setFilter(ContentFilter<DocumentInfo> filter)
+   private void runFilter()
    {
-      this.filter = filter;
       dataProvider.getList().clear();
       for (DocumentNode docNode : nodes.values())
       {
