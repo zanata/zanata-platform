@@ -29,7 +29,6 @@ public class TransUnitDetailsPresenter extends WidgetPresenter<TransUnitDetailsP
    {
       registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), new TransUnitSelectionHandler()
       {
-
          @Override
          public void onTransUnitSelected(TransUnitSelectionEvent event)
          {

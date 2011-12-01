@@ -42,7 +42,6 @@ import org.zanata.webtrans.client.presenter.TransUnitNavigationPresenter;
 import org.zanata.webtrans.client.presenter.TranslationEditorPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.presenter.UndoRedoPresenter;
-import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -58,7 +57,6 @@ import org.zanata.webtrans.client.view.TransUnitNavigationView;
 import org.zanata.webtrans.client.view.TranslationEditorView;
 import org.zanata.webtrans.client.view.TranslationView;
 import org.zanata.webtrans.client.view.UndoRedoView;
-import org.zanata.webtrans.client.view.WorkspaceUsersView;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 
@@ -84,7 +82,6 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(TranslationPresenter.class, TranslationPresenter.Display.class, TranslationView.class);
       bindPresenter(TransFilterPresenter.class, TransFilterPresenter.Display.class, TransFilterView.class);
       bindPresenter(TableEditorPresenter.class, TableEditorPresenter.Display.class, TableEditorView.class);
-      bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);
       bindPresenter(TransMemoryPresenter.class, TransMemoryPresenter.Display.class, TransMemoryView.class);
       bindPresenter(GlossaryPresenter.class, GlossaryPresenter.Display.class, GlossaryView.class);
       bindPresenter(TransMemoryDetailsPresenter.class, TransMemoryDetailsPresenter.Display.class, TransMemoryDetailsView.class);

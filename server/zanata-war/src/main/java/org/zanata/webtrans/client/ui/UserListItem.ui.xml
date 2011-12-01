@@ -3,7 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
 		.userListItem {
-			border: 1px solid #99ccff;
+			border-bottom: 1px solid #99ccff;
 			text-align: center;
 			padding: 10px;
 		}

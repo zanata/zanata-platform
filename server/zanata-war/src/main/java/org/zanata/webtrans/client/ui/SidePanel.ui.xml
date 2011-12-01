@@ -7,24 +7,46 @@
 	<ui:style>
 		.sidePanel {
 			background-color: #ffffff;
-			border: 3px solid #e0e8ee;
-			-moz-border-radius: 7px;
-			-webkit-border-radius: 7px;
+			border: 2px solid #e0e8ee;
+			border-radius: 5px;
 		}
 		
+		.mainPanel {
+	       font-size:13px;
+	       font-weight:bold;
+	       text-align:center;
+	       cursor:pointer;
+           padding:3px;
+        }
+		
 	</ui:style>
-
 	<g:LayoutPanel styleName="{style.sidePanel}">
-		<g:layer top="0" bottom="0px">
-			<g:LayoutPanel>
-				<g:layer top='0' height="100%">
-					<g:LayoutPanel ui:field="transUnitDetailContainer" />
-				</g:layer>
-			</g:LayoutPanel>
-		</g:layer>
-		<g:layer bottom='0px' height='20px'>
-			<g:LayoutPanel ui:field="usersPanelContainer" />
-		</g:layer>
-	</g:LayoutPanel>
+	   <g:layer top="0" bottom="0">
+	       <g:StackLayoutPanel ui:field="mainPanel"/>
+	    </g:layer>
+    </g:LayoutPanel>
+    
+    
+<!-- 	<g:LayoutPanel styleName="{style.sidePanel}"> -->
+<!-- 		<g:layer top="0" bottom="0px"> -->
+<!-- 			<g:LayoutPanel> -->
+<!-- 				<g:layer top='0' height="40%"> -->
+<!-- 					<g:LayoutPanel ui:field="transUnitDetailContainer" /> -->
+<!-- 				</g:layer> -->
+<!-- 			</g:LayoutPanel> -->
+<!-- 		</g:layer> -->
+		
+<!-- 		<g:layer top="0" bottom="0px"> -->
+<!-- 		<g:LayoutPanel> -->
+<!--                 <g:layer top='0' height="30%"> -->
+<!--                     <g:LayoutPanel ui:field="validationDetailContainer" /> -->
+<!--                 </g:layer> -->
+<!--             </g:LayoutPanel> -->
+<!--         </g:layer>     -->
+            
+<!-- 		<g:layer bottom='0px' height='20px'> -->
+<!-- 			<g:LayoutPanel ui:field="usersPanelContainer" /> -->
+<!-- 		</g:layer> -->
+<!-- 	</g:LayoutPanel> -->
 
 </ui:UiBinder> 

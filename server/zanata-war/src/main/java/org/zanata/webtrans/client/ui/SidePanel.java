@@ -20,16 +20,20 @@
  */
 package org.zanata.webtrans.client.ui;
 
+import java.util.ArrayList;
+
 import org.zanata.webtrans.client.presenter.SidePanelPresenter;
+import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.shared.model.Person;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.StackLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -42,71 +46,42 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display
    {
    }
 
-   @UiField(provided = true)
-   LayoutPanel usersPanelContainer;
+   private final LayoutPanel usersPanelContainer;
+
+   private final LayoutPanel transUnitDetailContainer;
+
+   private final LayoutPanel validationDetailContainer;
+
+   private final FlowPanel userListPanel;
 
    @UiField
-   LayoutPanel transUnitDetailContainer;
-
-   private final int HEIGHT_USERPANEL_EXPANDED = 200;
-   private final int HEIGHT_USERPANEL_COLLAPSED = 20;
-   private final int USERPANEL_COLLAPSE_DELAY = 1;
+   StackLayoutPanel mainPanel;
 
    private final LayoutPanel rootPanel;
 
-   private final Timer collapseTimer = new Timer()
-   {
-      @Override
-      public void run()
-      {
-         collapseUsersPanel();
-      }
-   };
+   private final WebTransMessages messages;
 
-   private boolean collapseTriggered = false;
-   private boolean collapsed = true;
 
    @Inject
-   public SidePanel()
+   public SidePanel(WebTransMessages messages)
    {
-      usersPanelContainer = new LayoutPanel()
-      {
-         @Override
-         public void onBrowserEvent(Event event)
-         {
-            if (event.getTypeInt() == Event.ONMOUSEOUT)
-            {
-               if (!collapsed)
-               {
-                  collapseUsersPanelSoon();
-               }
-            }
-            else if (event.getTypeInt() == Event.ONMOUSEOVER)
-            {
-               if (collapsed)
-               {
-                  expandUsersPanel();
-               }
-               else
-               {
-                  cancelCollapseUsersPanel();
-               }
-            }
-            super.onBrowserEvent(event);
-         }
-      };
+      transUnitDetailContainer = new LayoutPanel();
+      usersPanelContainer = new LayoutPanel();
+      validationDetailContainer = new LayoutPanel();
+
+      userListPanel = new FlowPanel();
+
+      this.messages = messages;
+
       rootPanel = uiBinder.createAndBindUi(this);
       initWidget(rootPanel);
-      usersPanelContainer.sinkEvents(Event.ONMOUSEOUT | Event.ONMOUSEOVER);
+
+      usersPanelContainer.add(userListPanel);
+
+      mainPanel.add(transUnitDetailContainer, messages.transUnitDetailsHeading(), 20);
+      mainPanel.add(usersPanelContainer, messages.nUsersOnline(0), 20);
    }
 
-
-   @Override
-   public void setWorkspaceUsersView(Widget widget)
-   {
-      usersPanelContainer.clear();
-      usersPanelContainer.add(widget);
-   }
 
    @Override
    public void setTransUnitDetailView(Widget widget)
@@ -115,46 +90,29 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display
       transUnitDetailContainer.add(widget);
    }
 
-   private void cancelCollapseUsersPanel()
+   @Override
+   public void setValidationDetailView(Widget widget)
    {
-      if (collapseTriggered)
+      validationDetailContainer.clear();
+      validationDetailContainer.add(widget);
+   }
+
+   @Override
+   public void updateUserList(ArrayList<Person> userList)
+   {
+      int existingCount = userListPanel.getWidgetCount();
+      for (int i = 0; i < existingCount; i++)
       {
-         collapseTimer.cancel();
-         collapseTriggered = false;
+         userListPanel.remove(0);
       }
-   }
 
-   private void collapseUsersPanelSoon()
-   {
-      collapseTriggered = true;
-      collapseTimer.schedule(USERPANEL_COLLAPSE_DELAY);
-   }
+      for (int i = 0; i < userList.size(); i++)
+      {
+         UserListItem item = new UserListItem(userList.get(i));
+         userListPanel.add(item);
+      }
 
-   @Override
-   public void collapseUsersPanel()
-   {
-      if (collapsed)
-         return;
-      toggleUsersPanel();
-   }
-
-   private void toggleUsersPanel()
-   {
-      rootPanel.forceLayout();
-      collapsed = !collapsed;
-
-      int bottomHeight = collapsed ? HEIGHT_USERPANEL_COLLAPSED : HEIGHT_USERPANEL_EXPANDED;
-      rootPanel.setWidgetBottomHeight(usersPanelContainer, 0, Unit.PX, bottomHeight, Unit.PX);
-      rootPanel.animate(250);
-   }
-
-   @Override
-   public void expandUsersPanel()
-   {
-      cancelCollapseUsersPanel();
-      if (!collapsed)
-         return;
-      toggleUsersPanel();
+      mainPanel.setHeaderText(1, messages.nUsersOnline(userList.size()));
    }
 
    @Override

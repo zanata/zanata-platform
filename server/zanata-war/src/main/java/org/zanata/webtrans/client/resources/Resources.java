@@ -105,12 +105,6 @@ public interface Resources extends ClientBundle
    @Source("org/zanata/webtrans/images/tm_view.png")
    ImageResource tmViewButton();
 
-   @Source("org/zanata/webtrans/images/collapse_open.png")
-   ImageResource collapseOpen();
-
-   @Source("org/zanata/webtrans/images/collapse_closed.png")
-   ImageResource collapseClosed();
-
    @Source("org/zanata/webtrans/images/first_page.png")
    ImageResource firstPageImage();
 

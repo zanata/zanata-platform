@@ -178,7 +178,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
          SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, sidePanelOuterContainer, 0);
       }
       splitter.setVisible(visible);
-      mainSplitPanel.animate(500);
+      mainSplitPanel.animate(200);
 
    }
 
@@ -197,7 +197,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
          SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, 45);
       }
       splitter.setVisible(visible);
-      mainSplitPanel.animate(500);
+      mainSplitPanel.animate(200);
 
    }
 

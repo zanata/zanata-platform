@@ -20,12 +20,25 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
+
+import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
+import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
+import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
+import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
+import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.shared.model.Person;
+import org.zanata.webtrans.shared.rpc.GetTranslatorList;
+import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -34,36 +47,67 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
 
    public interface Display extends WidgetDisplay
    {
-      void setWorkspaceUsersView(Widget widget);
-
       void setTransUnitDetailView(Widget widget);
+      
+      void setValidationDetailView(Widget widget);
 
-      void collapseUsersPanel();
-
-      void expandUsersPanel();
+      void updateUserList(ArrayList<Person> userList);
    }
 
-   private final WorkspaceUsersPresenter workspaceUsersPresenter;
+   private final DispatchAsync dispatcher;
    private final TransUnitDetailsPresenter transUnitDetailsPresenter;
-
+   
    @Inject
-   public SidePanelPresenter(final Display display, final EventBus eventBus, final TransUnitDetailsPresenter transUnitDetailsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, final TransFilterPresenter transFilterPresenter)
+   public SidePanelPresenter(final Display display, final EventBus eventBus, CachingDispatchAsync dispatcher, final TransUnitDetailsPresenter transUnitDetailsPresenter, final TransFilterPresenter transFilterPresenter)
    {
       super(display, eventBus);
-      this.workspaceUsersPresenter = workspaceUsersPresenter;
       this.transUnitDetailsPresenter = transUnitDetailsPresenter;
+      this.dispatcher = dispatcher;
    }
 
    @Override
    protected void onBind()
    {
-
       transUnitDetailsPresenter.bind();
       display.setTransUnitDetailView(transUnitDetailsPresenter.getDisplay().asWidget());
 
-      workspaceUsersPresenter.bind();
-      display.setWorkspaceUsersView(workspaceUsersPresenter.getDisplay().asWidget());
+      registerHandler(eventBus.addHandler(ExitWorkspaceEvent.getType(), new ExitWorkspaceEventHandler()
+      {
+         @Override
+         public void onExitWorkspace(ExitWorkspaceEvent event)
+         {
+            loadTranslatorList();
+         }
+      }));
 
+      registerHandler(eventBus.addHandler(EnterWorkspaceEvent.getType(), new EnterWorkspaceEventHandler()
+      {
+         @Override
+         public void onEnterWorkspace(EnterWorkspaceEvent event)
+         {
+            loadTranslatorList();
+         }
+      }));
+
+      loadTranslatorList();
+   }
+
+   private void loadTranslatorList()
+   {
+      dispatcher.execute(new GetTranslatorList(), new AsyncCallback<GetTranslatorListResult>()
+      {
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            Log.error("error fetching translators list: " + caught.getMessage());
+         }
+
+         @Override
+         public void onSuccess(GetTranslatorListResult result)
+         {
+            display.updateUserList(result.getTranslatorList());
+         }
+      });
    }
 
    @Override

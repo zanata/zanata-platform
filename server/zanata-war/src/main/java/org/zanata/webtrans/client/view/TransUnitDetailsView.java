@@ -3,7 +3,6 @@ package org.zanata.webtrans.client.view;
 import org.zanata.webtrans.client.presenter.TransUnitDetailsPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.ui.CollapsePanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.gwt.core.client.GWT;
@@ -11,6 +10,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -26,11 +26,8 @@ public class TransUnitDetailsView extends Composite implements TransUnitDetailsP
    {
    }
 
-   @UiField(provided = true)
-   CollapsePanel collapsePanel;
-
    @UiField
-   Label noDetailsLabel, resIdLabel, resId, sourceCommentLabel, sourceComment, msgContextLabel, msgContext, lastModifiedByLabel, lastModifiedBy, lastModifiedTimeLabel, lastModifiedTime;
+   Label resIdLabel, resId, sourceCommentLabel, sourceComment, msgContextLabel, msgContext, lastModifiedByLabel, lastModifiedBy, lastModifiedTimeLabel, lastModifiedTime;
 
    @UiField
    LayoutPanel rootPanel;
@@ -38,13 +35,17 @@ public class TransUnitDetailsView extends Composite implements TransUnitDetailsP
    @UiField
    VerticalPanel labelPanel;
 
+   @UiField
+   Label emptyLabel;
+
+   @UiField
+   FlowPanel emptyFlowPanel;
 
    @Inject
    public TransUnitDetailsView(WebTransMessages messages, Resources resources)
    {
-      collapsePanel = new CollapsePanel(resources);
-      collapsePanel.setHeading(messages.transUnitDetailsHeading());
       initWidget(uiBinder.createAndBindUi(this));
+      emptyLabel.setText("Select a Translation Unit to view details.");
    }
 
    @Override
@@ -56,8 +57,7 @@ public class TransUnitDetailsView extends Composite implements TransUnitDetailsP
    @Override
    public void showDetails(TransUnit transUnit)
    {
-      rootPanel.setWidgetTopHeight(noDetailsLabel, 0, Unit.PX, 0, Unit.PX);
-      rootPanel.setWidgetTopBottom(labelPanel, 0, Unit.PX, 0, Unit.PX);
+      emptyFlowPanel.setVisible(false);
       resIdLabel.setText("Resource ID: ");
       resId.setText(transUnit.getResId());
       
@@ -92,8 +92,5 @@ public class TransUnitDetailsView extends Composite implements TransUnitDetailsP
          lastModifiedTimeLabel.setText("");
          lastModifiedTime.setText("");
       }
-      noDetailsLabel.setText("Select a Translation Unit to view details.");
    }
-
-
 }

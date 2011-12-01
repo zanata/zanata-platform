@@ -71,7 +71,7 @@
 						</g:layer>
 					</g:LayoutPanel>
 				</g:center>
-				<g:east size="205" min-size="20">
+				<g:east size="208" min-size="20">
 					<g:LayoutPanel ui:field="sidePanelOuterContainer">
 						<g:layer top="0px" bottom="0px">
 							<g:LayoutPanel ui:field="sidePanelContainer" />
