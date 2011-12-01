@@ -3,8 +3,12 @@ package org.zanata.webtrans.client.view;
 import org.zanata.webtrans.client.presenter.ValidationDetailsPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.validation.ValidationService;
+import org.zanata.webtrans.shared.validation.action.ValidationAction;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -17,6 +21,7 @@ import com.google.inject.Inject;
 public class ValidationDetailsView extends Composite implements ValidationDetailsPresenter.Display
 {
 
+   private final ValidationService validationService;
    private static ValidationDetailsViewUiBinder uiBinder = GWT.create(ValidationDetailsViewUiBinder.class);
 
    interface ValidationDetailsViewUiBinder extends UiBinder<Widget, ValidationDetailsView>
@@ -28,15 +33,27 @@ public class ValidationDetailsView extends Composite implements ValidationDetail
 
    @UiField
    VerticalPanel contentPanel;
-   
-   private CheckBox htmlXML;
 
    @Inject
-   public ValidationDetailsView(WebTransMessages messages, Resources resources)
+   public ValidationDetailsView(WebTransMessages messages, Resources resources, final ValidationService validationService)
    {
       initWidget(uiBinder.createAndBindUi(this));
-      htmlXML = new CheckBox("HTML and XML");
-      contentPanel.add(htmlXML);
+      this.validationService = validationService;
+
+      for (final ValidationAction action : validationService.getValidationList())
+      {
+         CheckBox chk = new CheckBox(action.getId());
+         chk.addValueChangeHandler(new ValueChangeHandler<Boolean>()
+         {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event)
+            {
+               validationService.updateStatus(action.getId(), event.getValue());
+            }
+         });
+         chk.setTitle(action.getDescription());
+         contentPanel.add(chk);
+      }
    }
 
    @Override
@@ -45,4 +62,9 @@ public class ValidationDetailsView extends Composite implements ValidationDetail
       return this;
    }
 
+   @Override
+   public ValidationService getValidationService()
+   {
+      return validationService;
+   }
 }

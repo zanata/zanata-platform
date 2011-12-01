@@ -34,22 +34,27 @@ import org.zanata.webtrans.shared.model.TransUnit;
  **/
 public abstract class ValidationAction
 {
+   private String id;
    private boolean isEnabled;
    
+   private final String description;
+
    private final EventBus eventBus;
    private final TableEditorMessages messages;
 
    public abstract void execute(TransUnit tu);
 
-   public ValidationAction(final EventBus eventBus, final TableEditorMessages messages)
+   public ValidationAction(String id, String description, final EventBus eventBus, final TableEditorMessages messages)
    {
+      this.id = id;
+      this.description = description;
       this.eventBus = eventBus;
       this.messages = messages;
    }
 
    public void displayValidationError(String errorMessage)
    {
-      eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyValidationError(errorMessage)));
+      eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyValidationError(getId(), errorMessage)));
    }
 
    public boolean isEnabled()
@@ -60,6 +65,16 @@ public abstract class ValidationAction
    public void setEnabled(boolean isEnabled)
    {
       this.isEnabled = isEnabled;
+   }
+
+   public String getId()
+   {
+      return id;
+   }
+
+   public String getDescription()
+   {
+      return description;
    }
 }
 

@@ -18,62 +18,63 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.validation;
-
-import java.util.HashMap;
-import java.util.Map;
+package org.zanata.webtrans.client.validation.action;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
-import org.zanata.webtrans.shared.validation.action.ValidationAction;
 
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-
-public class ValidationService
+public abstract class ValidationAction
 {
-   private final Map<String, ValidationAction> validationMap = new HashMap<String, ValidationAction>();
-
-   public ValidationService(final EventBus eventBus, final TableEditorMessages messages)
-   {
-      validationMap.put("htmlxmlValidation", new HtmlXmlTagValidation(eventBus, messages));
-   }
-
-   /**
-    * Execute list of validation actions if the action is enabled
-    * 
-    * @param tu
-    */
-   public void execute(TransUnit tu)
-   {
-      for (String key : validationMap.keySet())
-      {
-         ValidationAction action = validationMap.get(key);
-
-         if (action != null && action.isEnabled())
-         {
-            validationMap.get(key).execute(tu);
-         }
-      }
-   }
+   private String id;
+   private boolean isEnabled;
    
-   /**
-    * enable/disable validation action from UI
-    * 
-    * @param key
-    * @param isEnabled
-    */
-   public void updateStatus(String key, boolean isEnabled)
+   private final String description;
+
+   private final EventBus eventBus;
+   private final TableEditorMessages messages;
+
+   public abstract void execute(TransUnit tu);
+
+   public ValidationAction(String id, String description, final EventBus eventBus, final TableEditorMessages messages)
    {
-      ValidationAction action = validationMap.get(key);
-      action.setEnabled(isEnabled);
-      validationMap.put(key, action);
+      this.id = id;
+      this.description = description;
+      this.eventBus = eventBus;
+      this.messages = messages;
+   }
+
+   public void displayValidationError(String errorMessage)
+   {
+      eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyValidationError(getId(), errorMessage)));
+   }
+
+   public boolean isEnabled()
+   {
+      return isEnabled;
+   }
+
+   public void setEnabled(boolean isEnabled)
+   {
+      this.isEnabled = isEnabled;
+   }
+
+   public String getId()
+   {
+      return id;
+   }
+
+   public String getDescription()
+   {
+      return description;
    }
 }
 

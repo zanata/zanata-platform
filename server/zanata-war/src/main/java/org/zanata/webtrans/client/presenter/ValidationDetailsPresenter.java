@@ -24,6 +24,8 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.validation.ValidationService;
+
 import com.google.inject.Inject;
 
 /**
@@ -35,6 +37,7 @@ public class ValidationDetailsPresenter extends WidgetPresenter<ValidationDetail
 {
    public interface Display extends WidgetDisplay
    {
+      ValidationService getValidationService();
    }
 
    @Inject
@@ -46,7 +49,8 @@ public class ValidationDetailsPresenter extends WidgetPresenter<ValidationDetail
    @Override
    protected void onBind()
    {
-      // TODO Auto-generated method stub
+      // listen to event, run
+      // display.getValidationService().execute(selectedTU);
    }
 
    @Override
