@@ -19,14 +19,12 @@ import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.inject.Inject;
 
 public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPresenter.Display>
 {
 
    private final DispatchAsync dispatcher;
-   private final WorkspaceContext workspaceContext;
 
    public interface Display extends WidgetDisplay
    {
@@ -37,7 +35,6 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
    public WorkspaceUsersPresenter(final Display display, final EventBus eventBus, CachingDispatchAsync dispatcher, WorkspaceContext workspaceContext)
    {
       super(display, eventBus);
-      this.workspaceContext = workspaceContext;
       this.dispatcher = dispatcher;
       // loadTranslatorList();
    }
@@ -45,8 +42,6 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
    @Override
    protected void onBind()
    {
-
-      final DecoratedPopupPanel userPopupPanel = new DecoratedPopupPanel(true);
 
       registerHandler(eventBus.addHandler(ExitWorkspaceEvent.getType(), new ExitWorkspaceEventHandler()
       {

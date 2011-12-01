@@ -70,14 +70,11 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    @Inject
    private EventBus eventBus;
 
-   private final Resources resources;
-
    private boolean isFocused;
 
    @Inject
    public GlossaryView(final UiMessages messages, Resources resources)
    {
-      this.resources = resources;
       initWidget(uiBinder.createAndBindUi(this));
       exactButton.setText(messages.phraseButtonLabel());
       exactButton.setValue(true);
