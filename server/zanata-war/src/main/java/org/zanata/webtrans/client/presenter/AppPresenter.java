@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implements ValueChangeHandler<String>
+public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 {
    // javac seems confused about which Display is which.
    // somehow, qualifying WidgetDisplay helps!
@@ -256,7 +256,15 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       Window.setTitle(messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
 
-      History.addValueChangeHandler(this);
+      History.addValueChangeHandler(new ValueChangeHandler<String>()
+      {
+
+         @Override
+         public void onValueChange(ValueChangeEvent<String> event)
+         {
+            processHistoryEvent(event);
+         }
+      });
 
       History.fireCurrentHistoryState();
    }
@@ -304,9 +312,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       wordCount.decrement(Updateevent.getPreviousStatus(), Updateevent.getWordCount());
    }
 
-   @Override
-   public void onValueChange(ValueChangeEvent<String> event)
+   private void processHistoryEvent(ValueChangeEvent<String> event)
    {
+
+      // TODO keep track of previous history token like in DocumentListPresenter
 
       Log.info("Responding to history token: " + event.getValue());
 
@@ -345,7 +354,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
          display.showInMainView(token.getView());
       }
-
    }
 
 }

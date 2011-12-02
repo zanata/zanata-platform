@@ -67,7 +67,6 @@ public class HistoryToken
                {
                   historyToken.setDocumentId(null);
                }
-
             }
             else if (key == HistoryToken.KEY_VIEW)
             {
@@ -90,7 +89,6 @@ public class HistoryToken
                   historyToken.setDocFilterExact(true);
                else if (value == VALUE_DOC_FILTER_INEXACT)
                   historyToken.setDocFilterExact(false);
-
             }
             else if (key == HistoryToken.KEY_DOC_FILTER_TEXT)
             {
@@ -150,7 +148,7 @@ public class HistoryToken
       return docFilterExact;
    }
 
-   public void setDocFilterExact(boolean exactMatch)
+   public void setDocFilterExact(Boolean exactMatch)
    {
       docFilterExact = exactMatch;
    }

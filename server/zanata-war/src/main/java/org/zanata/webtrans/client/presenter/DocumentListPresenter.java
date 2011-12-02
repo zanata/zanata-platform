@@ -94,6 +94,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    // private ContentFilter<DocumentInfo> filter;
    private final PathDocumentFilter filter = new PathDocumentFilter();
 
+   // used to determine whether to re-run filter
+   private HistoryToken currentHistoryState = null;
+
    @Inject
    public DocumentListPresenter(Display display, EventBus eventBus, WorkspaceContext workspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages)
    {
@@ -169,8 +172,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          @Override
          public void onValueChange(ValueChangeEvent<String> event)
          {
-            filter.setPattern(event.getValue());
-            runFilter();
+            HistoryToken token = HistoryToken.fromTokenString(History.getToken());
+            if (event.getValue() != token.getDocFilterText())
+            {
+               token.setDocFilterText(event.getValue());
+               History.newItem(token.toTokenString());
+            }
          }
       }));
 
@@ -179,10 +186,68 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          @Override
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
-            filter.setFullText(event.getValue());
-            runFilter();
+            HistoryToken token = HistoryToken.fromTokenString(History.getToken());
+            if (event.getValue() != token.getDocFilterExact())
+            {
+               token.setDocFilterExact(event.getValue());
+               History.newItem(token.toTokenString());
+            }
          }
       }));
+
+      History.addValueChangeHandler(new ValueChangeHandler<String>()
+      {
+
+         @Override
+         public void onValueChange(ValueChangeEvent<String> event)
+         {
+            boolean filterChanged = false;
+            HistoryToken token = HistoryToken.fromTokenString(event.getValue());
+            if (token.hasDocFilterText())
+            {
+               if (!token.getDocFilterText().equals(display.getFilterTextBox().getValue()))
+               {
+                  display.getFilterTextBox().setValue(token.getDocFilterText());
+               }
+
+               boolean patternChanged;
+               if (currentHistoryState == null)
+                  patternChanged = true;
+               else
+                  patternChanged = !token.getDocFilterText().equals(currentHistoryState.getDocFilterText());
+               if (patternChanged)
+               {
+                  filter.setPattern(token.getDocFilterText());
+                  filterChanged = true;
+               }
+            }
+
+            if (token.hasDocFilterExact())
+            {
+               if (!token.getDocFilterExact() == display.getExactSearchCheckbox().getValue())
+               {
+                  display.getExactSearchCheckbox().setValue(token.getDocFilterExact());
+               }
+
+               boolean flagChanged;
+               if (currentHistoryState == null)
+                  flagChanged = true;
+               else
+                  flagChanged = !token.getDocFilterExact().equals(currentHistoryState.getDocFilterExact());
+
+               if (flagChanged)
+               {
+                  filter.setFullText(token.getDocFilterExact());
+                  filterChanged = true;
+               }
+            }
+
+            currentHistoryState = token;
+
+            if (filterChanged)
+               runFilter();
+         }
+      });
 
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler()
       {
@@ -283,6 +348,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    private void loadDocumentList()
    {
       // switch doc list to the new project
+      // TODO this is the place to add document pre-filter parameters
       dispatcher.execute(new GetDocumentList(workspaceContext.getWorkspaceId().getProjectIterationId()), new AsyncCallback<GetDocumentListResult>()
       {
          @Override
