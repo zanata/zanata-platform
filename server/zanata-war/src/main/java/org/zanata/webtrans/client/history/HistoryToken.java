@@ -1,10 +1,9 @@
 package org.zanata.webtrans.client.history;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.shared.model.DocumentId;
+
+import com.allen_sauer.gwt.log.client.Log;
 
 /**
  * Encapsulates a string token of key-value pairs for GWT history operations.
@@ -14,22 +13,25 @@ import org.zanata.webtrans.shared.model.DocumentId;
  */
 public class HistoryToken
 {
-   private static final String KEY_VALUE_SEPARATOR = ":";
+   private static final String DELIMITER_K_V = ":";
    private static final String PAIR_SEPARATOR = ";";
 
-   public static final String KEY_VIEW = "view";
    public static final String KEY_DOCUMENT = "doc";
 
+   public static final String KEY_VIEW = "view";
    public static final String VALUE_DOCLIST_VIEW = "list";
    public static final String VALUE_EDITOR_VIEW = "doc";
 
-   private Map<String, String> members;
+   public static final String KEY_DOC_FILTER_TEXT = "filter";
 
+   public static final String KEY_DOC_FILTER_OPTION = "filtertype";
+   public static final String VALUE_DOC_FILTER_EXACT = "exact";
+   public static final String VALUE_DOC_FILTER_INEXACT = "substr";
 
-   public HistoryToken()
-   {
-      members = new HashMap<String, String>();
-   }
+   private AppPresenter.Display.MainView view = null;
+   private DocumentId docId = null;
+   private Boolean docFilterExact = null;
+   private String docFilterText = null;
 
 
    /**
@@ -47,8 +49,57 @@ public class HistoryToken
       {
          for (String pairString : token.split(PAIR_SEPARATOR))
          {
-            pair = pairString.split(KEY_VALUE_SEPARATOR);
-            historyToken.members.put(pair[0], pair[1]);
+            pair = pairString.split(DELIMITER_K_V);
+            String key = pair[0];
+            String value = pair[1];
+
+            if (key == HistoryToken.KEY_DOCUMENT)
+            {
+               try
+               {
+                  historyToken.setDocumentId(new DocumentId(Long.parseLong(value)));
+               }
+               catch (NullPointerException e)
+               {
+                  historyToken.setDocumentId(null);
+               }
+               catch (NumberFormatException e)
+               {
+                  historyToken.setDocumentId(null);
+               }
+
+            }
+            else if (key == HistoryToken.KEY_VIEW)
+            {
+               if (value.equals(VALUE_EDITOR_VIEW))
+               {
+                  historyToken.setView(AppPresenter.Display.MainView.Editor);
+               }
+               else if (value.equals(VALUE_DOCLIST_VIEW))
+               {
+                  historyToken.setView(AppPresenter.Display.MainView.Documents);
+               }
+               else
+               { // invalid view
+                  historyToken.setView(null);
+               }
+            }
+            else if (key == HistoryToken.KEY_DOC_FILTER_OPTION)
+            {
+               if (value == VALUE_DOC_FILTER_EXACT)
+                  historyToken.setDocFilterExact(true);
+               else if (value == VALUE_DOC_FILTER_INEXACT)
+                  historyToken.setDocFilterExact(false);
+
+            }
+            else if (key == HistoryToken.KEY_DOC_FILTER_TEXT)
+            {
+               historyToken.setDocFilterText(value);
+            }
+
+            else
+               Log.info("unrecognised history key: " + key);
+
          }
       }
       catch (IllegalArgumentException e)
@@ -61,74 +112,64 @@ public class HistoryToken
 
    public boolean hasDocumentId()
    {
-      return members.containsKey(HistoryToken.KEY_DOCUMENT);
+      return docId != null;
    }
 
    public DocumentId getDocumentId()
    {
-      try
-      {
-         return new DocumentId(Long.parseLong(members.get(HistoryToken.KEY_DOCUMENT)));
-      }
-      catch (NullPointerException e)
-      {
-         return null;
-      }
-      catch (NumberFormatException e)
-      {
-         return null;
-      }
+      return docId;
    }
 
    public void setDocumentId(DocumentId docId)
    {
-      members.put(HistoryToken.KEY_DOCUMENT, docId.toString());
+      this.docId = docId;
    }
 
    public boolean hasView()
    {
-      return members.containsKey(HistoryToken.KEY_VIEW);
+      return view != null;
    }
 
    public AppPresenter.Display.MainView getView()
    {
-      try
-      {
-         String view = members.get(KEY_VIEW);
-         if (view.equals(VALUE_EDITOR_VIEW))
-         {
-            return AppPresenter.Display.MainView.Editor;
-         }
-         else if (view.equals(VALUE_DOCLIST_VIEW))
-         {
-            return AppPresenter.Display.MainView.Documents;
-         }
-         else
-         { // invalid view
-            return null;
-         }
-      }
-      catch (ClassCastException e)
-      {
-         return null;
-      }
-      catch (NullPointerException e)
-      {
-         return null;
-      }
+      return view;
    }
 
    public void setView(AppPresenter.Display.MainView view)
    {
-      if (view == AppPresenter.Display.MainView.Editor)
-      {
-         members.put(HistoryToken.KEY_VIEW, VALUE_EDITOR_VIEW);
-      }
-      else if (view == AppPresenter.Display.MainView.Documents)
-      {
-         members.put(HistoryToken.KEY_VIEW, VALUE_DOCLIST_VIEW);
-      }
+      this.view = view;
    }
+
+   public boolean hasDocFilterExact()
+   {
+      return docFilterExact != null;
+   }
+
+   public Boolean getDocFilterExact()
+   {
+      return docFilterExact;
+   }
+
+   public void setDocFilterExact(boolean exactMatch)
+   {
+      docFilterExact = exactMatch;
+   }
+
+   public boolean hasDocFilterText()
+   {
+      return docFilterText != null;
+   }
+
+   public String getDocFilterText()
+   {
+      return docFilterText;
+   }
+
+   public void setDocFilterText(String value)
+   {
+      this.docFilterText = value;
+   }
+
 
    /**
     * @return a token string for use with
@@ -136,20 +177,55 @@ public class HistoryToken
     */
    public String toTokenString()
    {
+      // TODO put old setter logic in here
       String token = "";
       boolean first = true;
-      for (Map.Entry<String, String> pair : members.entrySet())
+
+      if (hasView())
       {
-         if (pair.getKey() != null && pair.getKey() != "" && pair.getValue() != null && pair.getValue() != "")
+         if (first)
+            first = false;
+         else
+            token += PAIR_SEPARATOR;
+         token += KEY_VIEW + DELIMITER_K_V;
+         if (view == AppPresenter.Display.MainView.Editor)
          {
-            if (first)
-               first = false;
-            else
-               token += PAIR_SEPARATOR;
-            token += pair.getKey() + KEY_VALUE_SEPARATOR + pair.getValue();
+            token += VALUE_EDITOR_VIEW;
+         }
+         else if (view == AppPresenter.Display.MainView.Documents)
+         {
+            token += VALUE_DOCLIST_VIEW;
          }
       }
+
+      if (hasDocumentId())
+      {
+         if (first)
+            first = false;
+         else
+            token += PAIR_SEPARATOR;
+         token += KEY_DOCUMENT + DELIMITER_K_V + docId.toString();
+      }
+
+      if (hasDocFilterExact())
+      {
+         if (first)
+            first = false;
+         else
+            token += PAIR_SEPARATOR;
+         token += KEY_DOC_FILTER_OPTION + DELIMITER_K_V;
+         token += docFilterExact ? VALUE_DOC_FILTER_EXACT : VALUE_DOC_FILTER_INEXACT;
+      }
+
+      if (hasDocFilterText())
+      {
+         if (first)
+            first = false;
+         else
+            token += PAIR_SEPARATOR;
+         token += KEY_DOC_FILTER_TEXT + DELIMITER_K_V + docFilterText;
+      }
+
       return token;
    }
-
 }
