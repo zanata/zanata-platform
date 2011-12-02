@@ -22,6 +22,7 @@ package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
@@ -49,9 +50,6 @@ import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -61,7 +59,6 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
@@ -76,11 +73,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
       HasValue<String> getFilterTextBox();
 
+      HasValue<Boolean> getExactSearchCheckbox();
+
       HasSelectionHandlers<DocumentInfo> getDocumentList();
 
       HasData<DocumentNode> getDocumentListTable();
-
-      HasClickHandlers getFullTextSearchCheckbox();
 
       ListDataProvider<DocumentNode> getDataProvider();
    }
@@ -172,16 +169,18 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          @Override
          public void onValueChange(ValueChangeEvent<String> event)
          {
-            if (event.getValue().isEmpty())
-            {
-               removeFilter();
-            }
-            else
-            {
-               filter.setFullText(((CheckBox) display.getFullTextSearchCheckbox()).getValue());
-               filter.setPattern(event.getValue());
-               runFilter();
-            }
+            filter.setPattern(event.getValue());
+            runFilter();
+         }
+      }));
+
+      registerHandler(display.getExactSearchCheckbox().addValueChangeHandler(new ValueChangeHandler<Boolean>()
+      {
+         @Override
+         public void onValueChange(ValueChangeEvent<Boolean> event)
+         {
+            filter.setFullText(event.getValue());
+            runFilter();
          }
       }));
 
@@ -197,38 +196,59 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          }
       }));
 
-      registerHandler(display.getFullTextSearchCheckbox().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            filter.setFullText(((CheckBox) display.getFullTextSearchCheckbox()).getValue());
-            filter.setPattern(display.getFilterTextBox().getValue());
-            runFilter();
-         }
-      }));
-
       loadDocumentList();
    }
 
+   /**
+    * Filters documents by their full path + name, with substring and exact
+    * modes.
+    * 
+    * If there is no pattern set, this filter will accept all documents.
+    * 
+    * @author David Mason, damason@redhat.com
+    * 
+    */
    final class PathDocumentFilter implements ContentFilter<DocumentInfo>
    {
-      private String pattern = "";
+      private static final String DOCUMENT_FILTER_LIST_DELIMITER = ",";
+
+      private HashSet<String> patterns = new HashSet<String>();
       private boolean isFullText = false;
 
       @Override
       public boolean accept(DocumentInfo value)
       {
+         if (patterns.isEmpty())
+            return true;
          String fullPath = value.getPath() + value.getName();
-         if (isFullText)
-            return fullPath.equals(pattern);
-         else
-            return fullPath.contains(pattern);
+         for (String pattern : patterns)
+         {
+            if (isFullText)
+            {
+               if (fullPath.equals(pattern))
+                  return true;
+            }
+            else if (fullPath.contains(pattern))
+            {
+               return true;
+            }
+         }
+         return false; // didn't match any patterns
       }
 
       public void setPattern(String pattern)
       {
-         this.pattern = pattern;
+         patterns.clear();
+         String[] patternCandidates = pattern.split(DOCUMENT_FILTER_LIST_DELIMITER);
+         for (String candidate : patternCandidates)
+         {
+            // TODO check whether trimming is appropriate
+            candidate = candidate.trim();
+            if (candidate.length() != 0)
+            {
+               patterns.add(candidate);
+            }
+         }
       }
 
       public void setFullText(boolean fullText)
@@ -322,6 +342,10 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       dataProvider.addDataDisplay(display.getDocumentListTable());
    }
 
+   /**
+    * Filter the document list based on the current filter patterns. Empty
+    * filter patterns will show all documents.
+    */
    private void runFilter()
    {
       dataProvider.getList().clear();
@@ -332,17 +356,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          {
             dataProvider.getList().add(docNode);
          }
-      }
-      dataProvider.refresh();
-   }
-
-   private void removeFilter()
-   {
-      dataProvider.getList().clear();
-      for (DocumentNode docNode : nodes.values())
-      {
-         docNode.setVisible(true);
-         dataProvider.getList().add(docNode);
       }
       dataProvider.refresh();
    }
@@ -373,8 +386,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       if (node != null)
       {
          currentSelection = node;
-         // required to have document selected in doclist when loading from
-         // bookmarked history token
+         // required in order to show the document selected in doclist when
+         // loading from bookmarked history token
          display.getDocumentListTable().getSelectionModel().setSelected(node, true);
       }
    }

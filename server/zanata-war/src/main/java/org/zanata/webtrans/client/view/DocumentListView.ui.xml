@@ -28,7 +28,7 @@
                             <fui:ClearableTextBox ui:field='filterTextBox'/>
                         </g:layer>
                         <g:layer top="0px" height="20px" right="0px" width="200px">
-                            <g:CheckBox ui:field="fullTextSearchCheckBox"><ui:msg>Full-text match only</ui:msg></g:CheckBox>
+                            <g:CheckBox ui:field="exactSearchCheckBox"><ui:msg>Exact match only</ui:msg></g:CheckBox>
                         </g:layer>
                     </g:LayoutPanel>
                 </g:layer>
