@@ -18,37 +18,22 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.validation.action;
-
-import net.customware.gwt.presenter.client.EventBus;
-
-import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.shared.model.TransUnit;
+package org.zanata.webtrans.shared.validation;
 
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class HtmlXmlTagValidation extends ValidationAction
+public interface ValidationObject
 {
-   /**
-    * @param eventBus
-    * @param messages
-    */
-   public HtmlXmlTagValidation(final EventBus eventBus, final TableEditorMessages messages)
-   {
-      super("HTML/XML tag", "HTML/XML tag validation", eventBus, messages);
-   }
+   String getId();
 
-   @Override
-   public void execute(TransUnit tu)
-   {
-      if (tu.getSource() == null || tu.getSource().isEmpty())
-      {
-         displayValidationError("html tag error");
-      }
-   }
+   String getDescription();
+
+   boolean isEnabled();
+
+   boolean hasError();
 }
 
 

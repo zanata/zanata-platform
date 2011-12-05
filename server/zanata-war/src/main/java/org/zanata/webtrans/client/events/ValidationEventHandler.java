@@ -1,5 +1,5 @@
 /*
- * Copyright 2011, Red Hat, Inc. and individual contributors
+ * Copyright 2010, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,36 +18,11 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.validation.action;
+package org.zanata.webtrans.client.events;
 
-import net.customware.gwt.presenter.client.EventBus;
+import com.google.gwt.event.shared.EventHandler;
 
-import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.shared.model.TransUnit;
-
-/**
- *
- * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
- **/
-public class HtmlXmlTagValidation extends ValidationAction
+public interface ValidationEventHandler extends EventHandler
 {
-   public HtmlXmlTagValidation(String id, String description, final EventBus eventBus, final TableEditorMessages messages)
-   {
-      super(id, description, eventBus, messages);
-   }
-
-   @Override
-   public void execute(TransUnit tu)
-   {
-      clearMessage();
-
-      if (tu.getSource().equals(tu.getSource()))
-      {
-         showError("sample test on validation");
-      }
-   }
+   void onValidate(ValidationEvent event);
 }
-
-
- 

@@ -29,6 +29,7 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.validation.ValidationObject;
 import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
 import org.zanata.webtrans.shared.validation.action.ValidationAction;
 
@@ -43,15 +44,12 @@ import com.google.inject.Inject;
 public class ValidationService
 {
    private final Map<String, ValidationAction> validationMap = new HashMap<String, ValidationAction>();
-   private final List<ValidationAction> validationList;
    
    @Inject
    public ValidationService(final EventBus eventBus, final TableEditorMessages messages)
    {
-      HtmlXmlTagValidation htmlxmlValidation = new HtmlXmlTagValidation(eventBus, messages);
+      HtmlXmlTagValidation htmlxmlValidation = new HtmlXmlTagValidation("HTML/XML tag", "HTML/XML tag validation", eventBus, messages);
       validationMap.put(htmlxmlValidation.getId(), htmlxmlValidation);
-
-      validationList = new ArrayList<ValidationAction>(validationMap.values());
    }
 
    /**
@@ -85,9 +83,22 @@ public class ValidationService
       validationMap.put(key, action);
    }
 
-   public List<ValidationAction> getValidationList()
+   public List<ValidationObject> getValidationList()
    {
-      return validationList;
+      return new ArrayList<ValidationObject>(validationMap.values());
+   }
+
+   public void clearAllMessage()
+   {
+      for (String key : validationMap.keySet())
+      {
+         ValidationAction action = validationMap.get(key);
+
+         if (action != null)
+         {
+            action.clearMessage();
+         }
+      }
    }
 }
 

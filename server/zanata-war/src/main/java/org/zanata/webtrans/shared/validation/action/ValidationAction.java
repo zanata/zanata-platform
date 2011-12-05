@@ -26,13 +26,14 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.validation.ValidationObject;
 
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public abstract class ValidationAction
+public abstract class ValidationAction implements ValidationObject
 {
    private String id;
    private boolean isEnabled;
@@ -41,6 +42,8 @@ public abstract class ValidationAction
 
    private final EventBus eventBus;
    private final TableEditorMessages messages;
+
+   private String errorMsg;
 
    public abstract void execute(TransUnit tu);
 
@@ -52,11 +55,14 @@ public abstract class ValidationAction
       this.messages = messages;
    }
 
-   public void displayValidationError(String errorMessage)
+   public void showError(String errorMessage)
    {
-      eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyValidationError(getId(), errorMessage)));
+      errorMsg = messages.notifyValidationError(getId(), errorMessage);
+
+      eventBus.fireEvent(new NotificationEvent(Severity.Info, errorMsg));
    }
 
+   @Override
    public boolean isEnabled()
    {
       return isEnabled;
@@ -67,14 +73,27 @@ public abstract class ValidationAction
       this.isEnabled = isEnabled;
    }
 
+   @Override
    public String getId()
    {
       return id;
    }
 
+   @Override
    public String getDescription()
    {
       return description;
+   }
+
+   @Override
+   public boolean hasError()
+   {
+      return errorMsg != null;
+   }
+
+   public void clearMessage()
+   {
+      errorMsg = null;
    }
 }
 

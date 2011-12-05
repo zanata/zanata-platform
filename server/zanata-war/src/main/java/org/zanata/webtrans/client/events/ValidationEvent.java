@@ -18,34 +18,58 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.validation.action;
+package org.zanata.webtrans.client.events;
 
-import net.customware.gwt.presenter.client.EventBus;
-
-import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.shared.model.TransUnit;
+
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class HtmlXmlTagValidation extends ValidationAction
+public class ValidationEvent extends GwtEvent<ValidationEventHandler>
 {
-   public HtmlXmlTagValidation(String id, String description, final EventBus eventBus, final TableEditorMessages messages)
+   /**
+    * Handler type.
+    */
+   private static Type<ValidationEventHandler> TYPE;
+
+   /**
+    * Gets the type associated with this event.
+    * 
+    * @return returns the handler type
+    */
+   public static Type<ValidationEventHandler> getType()
    {
-      super(id, description, eventBus, messages);
+      return TYPE != null ? TYPE : (TYPE = new Type<ValidationEventHandler>());
+   }
+
+   // TransUnit that to be validate
+   private TransUnit transUnit;
+
+   public ValidationEvent(TransUnit tu)
+   {
+      this.transUnit = tu;
    }
 
    @Override
-   public void execute(TransUnit tu)
+   public Type<ValidationEventHandler> getAssociatedType()
    {
-      clearMessage();
+      return getType();
+   }
 
-      if (tu.getSource().equals(tu.getSource()))
-      {
-         showError("sample test on validation");
-      }
+
+   @Override
+   protected void dispatch(ValidationEventHandler handler)
+   {
+      handler.onValidate(this);
+   }
+
+   public TransUnit getTransUnit()
+   {
+      return transUnit;
    }
 }
 

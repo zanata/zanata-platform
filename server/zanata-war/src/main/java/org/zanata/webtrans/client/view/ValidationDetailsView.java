@@ -4,7 +4,8 @@ import org.zanata.webtrans.client.presenter.ValidationDetailsPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.validation.ValidationService;
-import org.zanata.webtrans.shared.validation.action.ValidationAction;
+import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.validation.ValidationObject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -40,9 +41,10 @@ public class ValidationDetailsView extends Composite implements ValidationDetail
       initWidget(uiBinder.createAndBindUi(this));
       this.validationService = validationService;
 
-      for (final ValidationAction action : validationService.getValidationList())
+      for (final ValidationObject action : validationService.getValidationList())
       {
          CheckBox chk = new CheckBox(action.getId());
+         chk.setValue(action.isEnabled());
          chk.addValueChangeHandler(new ValueChangeHandler<Boolean>()
          {
             @Override
@@ -63,8 +65,14 @@ public class ValidationDetailsView extends Composite implements ValidationDetail
    }
 
    @Override
-   public ValidationService getValidationService()
+   public void validate(TransUnit tu)
    {
-      return validationService;
+      validationService.execute(tu);
+   }
+
+   @Override
+   public void clearAllMessage()
+   {
+      validationService.clearAllMessage();
    }
 }
