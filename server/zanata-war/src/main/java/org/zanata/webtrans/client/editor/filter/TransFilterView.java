@@ -45,12 +45,9 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
    @UiField(provided = true)
    ClearableTextBox filterTextBox;
 
-   private final TransFilterMessages messages;
-
    @Inject
    public TransFilterView(final Resources resources, final TransFilterMessages messages, final UiMessages uiMessages)
    {
-      this.messages = messages;
       this.filterTextBox = new ClearableTextBox(resources, uiMessages);
       filterTextBox.setEmptyText(messages.findSourceOrTargetString());
       initWidget(uiBinder.createAndBindUi(this));

@@ -7,6 +7,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class WrappedAction<R extends Result> implements Action<R>, IsSerializable
 {
+   // generated
+   private static final long serialVersionUID = 4059317550536068556L;
+
    private Action<R> action;
    private String csrfToken;
 

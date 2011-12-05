@@ -7,6 +7,9 @@ import org.zanata.webtrans.shared.model.Identifier;
 
 public final class SessionId implements Identifier<String>, Serializable
 {
+   // generated
+   private static final long serialVersionUID = 6713691712353126602L;
+
    private String id;
 
    @SuppressWarnings("unused")
