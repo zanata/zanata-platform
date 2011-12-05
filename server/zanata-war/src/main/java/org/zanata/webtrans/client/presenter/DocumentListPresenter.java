@@ -445,6 +445,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             dataProvider.getList().add(docNode);
          }
       }
+      display.setPageSize(dataProvider.getList().size());
       dataProvider.refresh();
    }
 
