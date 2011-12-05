@@ -2,7 +2,6 @@ package org.zanata.rest.dto.extensions.comment;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
@@ -21,7 +20,6 @@ import org.zanata.rest.dto.extensions.gettext.TextFlowTargetExtension;
  * 
  */
 @XmlType(name = "simpleCommentExtension", propOrder = {})
-@XmlRootElement(name = "comment")
 @JsonTypeName(value = "comment")
 public class SimpleComment implements TextFlowExtension, TextFlowTargetExtension
 {

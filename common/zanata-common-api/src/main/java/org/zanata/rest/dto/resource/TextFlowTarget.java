@@ -4,9 +4,7 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -21,7 +19,6 @@ import org.zanata.rest.dto.Person;
 import org.zanata.rest.dto.extensions.gettext.TextFlowTargetExtension;
 
 @XmlType(name = "textFlowTargetType", propOrder = { "description", "translator", "content", "extensions" })
-@XmlRootElement(name = "text-flow-target")
 @JsonPropertyOrder( { "resId", "state", "translator", "content", "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
@@ -47,7 +44,7 @@ public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetEx
       this.resId = resId;
    }
 
-   @XmlElementRef
+   @XmlElement(name = "person")
    public Person getTranslator()
    {
       return translator;

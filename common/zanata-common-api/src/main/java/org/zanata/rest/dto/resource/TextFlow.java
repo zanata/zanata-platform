@@ -5,7 +5,6 @@ import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -24,7 +23,6 @@ import org.zanata.rest.dto.LocaleIdAdapter;
 import org.zanata.rest.dto.extensions.gettext.TextFlowExtension;
 
 @XmlType(name = "textFlowType", propOrder = { "content", "extensions" })
-@XmlRootElement(name = "text-flow")
 @JsonPropertyOrder( { "id", "lang", "content", "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)

@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.zanata.rest.dto.DTOUtil;
@@ -35,7 +34,6 @@ import org.zanata.rest.dto.DTOUtil;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-@XmlRootElement(name = "locales")
 @XmlType(name = "localesType")
 public class LocaleList implements List<String>
 {

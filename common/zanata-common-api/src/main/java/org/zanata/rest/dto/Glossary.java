@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -86,7 +85,7 @@ public class Glossary implements Serializable, HasMediaType
    }
 
    @XmlElementWrapper(name = "glossary-entries")
-   @XmlElementRef
+   @XmlElement(name = "glossary-entry")
    public List<GlossaryEntry> getGlossaryEntries()
    {
       if (glossaryEntries == null)
