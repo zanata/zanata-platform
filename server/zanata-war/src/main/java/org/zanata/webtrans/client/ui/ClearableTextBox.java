@@ -70,6 +70,18 @@ public class ClearableTextBox extends Composite
    public void onTextBoxValueChange(ValueChangeEvent<String> event)
    {
       xButton.setVisible(!event.getValue().isEmpty());
+
+      boolean empty = event.getValue().isEmpty() || event.getValue().equals(emptyText);
+
+      if (empty && !textBox.getStyleName().contains(style.emptyBox()))
+      {
+         textBox.addStyleName(style.emptyBox());
+         refresh();
+      }
+      if (!empty && textBox.getStyleName().contains(style.emptyBox()))
+      {
+         textBox.removeStyleName(style.emptyBox());
+      }
    }
 
    @UiHandler("textBox")

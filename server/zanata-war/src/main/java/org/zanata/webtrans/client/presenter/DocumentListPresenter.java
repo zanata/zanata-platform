@@ -205,9 +205,10 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             HistoryToken token = HistoryToken.fromTokenString(event.getValue());
             if (token.hasDocFilterText())
             {
+               // update textbox to match new history state
                if (!token.getDocFilterText().equals(display.getFilterTextBox().getValue()))
                {
-                  display.getFilterTextBox().setValue(token.getDocFilterText());
+                  display.getFilterTextBox().setValue(token.getDocFilterText(), true);
                }
 
                boolean patternChanged;
@@ -221,10 +222,21 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
                   filterChanged = true;
                }
             }
+            else
+            {
+               if (currentHistoryState != null && currentHistoryState.hasDocFilterText())
+               {
+                  // not using default
+                  filter.setPattern("");
+                  filterChanged = true;
+               }
+               // else was already using blank filter
+            }
 
             if (token.hasDocFilterExact())
             {
-               if (!token.getDocFilterExact() == display.getExactSearchCheckbox().getValue())
+               // update checkbox to match new history state
+               if (token.getDocFilterExact() != display.getExactSearchCheckbox().getValue())
                {
                   display.getExactSearchCheckbox().setValue(token.getDocFilterExact());
                }
@@ -240,6 +252,16 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
                   filter.setFullText(token.getDocFilterExact());
                   filterChanged = true;
                }
+            }
+            else
+            {
+               if (currentHistoryState != null && currentHistoryState.hasDocFilterExact() && currentHistoryState.getDocFilterExact() == true)
+               {
+                  // not using default
+                  filter.setFullText(false);
+                  filterChanged = true;
+               }
+               // else was already using substring match
             }
 
             currentHistoryState = token;
