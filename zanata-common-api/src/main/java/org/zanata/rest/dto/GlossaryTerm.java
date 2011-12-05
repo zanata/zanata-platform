@@ -26,7 +26,6 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -43,7 +42,6 @@ import org.zanata.common.Namespaces;
  *
  **/
 
-@XmlRootElement(name = "glossary-term")
 @XmlType(name = "glossaryTermType", propOrder = { "comments", "content" })
 @JsonPropertyOrder({ "content", "comments", "locale" })
 @JsonIgnoreProperties(ignoreUnknown = true)

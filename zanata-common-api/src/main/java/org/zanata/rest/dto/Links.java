@@ -4,11 +4,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name = "linksType", propOrder = {})
-@XmlRootElement(name = "links")
 public class Links extends ArrayList<Link>
 {
 

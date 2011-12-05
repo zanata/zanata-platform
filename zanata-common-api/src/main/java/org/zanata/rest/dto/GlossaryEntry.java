@@ -26,7 +26,6 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -40,7 +39,6 @@ import org.zanata.common.LocaleId;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-@XmlRootElement(name = "glossary-entry")
 @XmlType(name = "glossaryEntryType", propOrder = { "sourcereference", "glossaryTerms" })
 @JsonPropertyOrder({ "srcLang", "sourcereference", "glossaryTerms" })
 @JsonIgnoreProperties(ignoreUnknown = true)

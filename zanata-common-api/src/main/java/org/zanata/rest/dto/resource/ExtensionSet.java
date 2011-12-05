@@ -5,15 +5,12 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.zanata.rest.dto.DTOUtil;
 import org.zanata.rest.dto.ExtensionValue;
 
 
-@XmlRootElement(name = "extension-set")
 public class ExtensionSet<T extends ExtensionValue> extends AbstractCollection<T>
 {
 
