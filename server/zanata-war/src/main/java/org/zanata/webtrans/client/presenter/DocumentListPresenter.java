@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
@@ -40,6 +41,7 @@ import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display.MainView;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
@@ -57,6 +59,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display> implements HasDocumentSelectionHandlers
@@ -64,29 +68,26 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
    public interface Display extends WidgetDisplay
    {
-      void setList(ArrayList<DocumentInfo> sortedList);
-
-      void clearSelection();
-
-      void setSelection(DocumentId documentId);
-
-      void setFilter(ContentFilter<DocumentInfo> filter);
-
-      void removeFilter();
+      void setPageSize(int pageSize);
 
       HasValue<String> getFilterTextBox();
 
       HasSelectionHandlers<DocumentInfo> getDocumentList();
 
-      TransUnitUpdatedEventHandler getDocumentNode(DocumentId docId);
+      HasData<DocumentNode> getDocumentListTable();
 
-      DocumentInfo getDocumentInfo(DocumentId docId);
+      ListDataProvider<DocumentNode> getDataProvider();
    }
 
    private final DispatchAsync dispatcher;
    private final WorkspaceContext workspaceContext;
    private DocumentInfo currentDocument;
+   private DocumentNode currentSelection;
    private final WebTransMessages messages;
+
+   private ListDataProvider<DocumentNode> dataProvider;
+   private HashMap<DocumentId, DocumentNode> nodes;
+   private ContentFilter<DocumentInfo> filter;
 
    @Inject
    public DocumentListPresenter(Display display, EventBus eventBus, WorkspaceContext workspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages)
@@ -95,6 +96,10 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       this.workspaceContext = workspaceContext;
       this.dispatcher = dispatcher;
       this.messages = messages;
+
+      dataProvider = display.getDataProvider();
+      nodes = new HashMap<DocumentId, DocumentNode>();
+
       Log.info("DocumentListPresenter()");
    }
 
@@ -148,7 +153,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             // from history
             if (event.getDocumentId() != (currentDocument == null ? null : currentDocument.getId()))
             {
-               display.setSelection(event.getDocumentId());
+               setSelection(event.getDocumentId());
             }
          }
       }));
@@ -161,12 +166,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          {
             if (event.getValue().isEmpty())
             {
-               display.removeFilter();
+               removeFilter();
             }
             else
             {
                basicContentFilter.setPattern(event.getValue());
-               display.setFilter(basicContentFilter);
+               setFilter(basicContentFilter);
             }
          }
       }));
@@ -177,7 +182,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          public void onTransUnitUpdated(TransUnitUpdatedEvent event)
          {
             DocumentId docId = event.getDocumentId();
-            TransUnitUpdatedEventHandler handler = display.getDocumentNode(docId);
+            TransUnitUpdatedEventHandler handler = nodes.get(docId);
             if (handler != null)
                handler.onTransUnitUpdated(event);
          }
@@ -244,7 +249,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             long start = System.currentTimeMillis();
             final ArrayList<DocumentInfo> documents = result.getDocuments();
             Log.info("Received doc list for " + result.getProjectIterationId() + ": " + documents.size() + " elements");
-            display.setList(documents);
+            setList(documents);
             Log.info("Time to load docs into DocListView: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
             start = System.currentTimeMillis();
 
@@ -264,4 +269,86 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       });
    }
 
+   private void setList(ArrayList<DocumentInfo> sortedList)
+   {
+      dataProvider.getList().clear();
+      nodes = new HashMap<DocumentId, DocumentNode>(sortedList.size());
+      int counter = 0;
+      long start = System.currentTimeMillis();
+      for (DocumentInfo doc : sortedList)
+      {
+         Log.info("Loading document: " + ++counter + " ");
+         DocumentNode node = new DocumentNode(messages, doc, eventBus, dataProvider);
+         if (filter != null)
+         {
+            node.setVisible(filter.accept(doc));
+         }
+         if (node.isVisible())
+         {
+            dataProvider.getList().add(node);
+         }
+         nodes.put(doc.getId(), node);
+      }
+      Log.info("Time to create DocumentNodes: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
+      display.setPageSize(dataProvider.getList().size());
+      dataProvider.addDataDisplay(display.getDocumentListTable());
+   }
+
+   private void setFilter(ContentFilter<DocumentInfo> filter)
+   {
+      this.filter = filter;
+      dataProvider.getList().clear();
+      for (DocumentNode docNode : nodes.values())
+      {
+         docNode.setVisible(filter.accept(docNode.getDocInfo()));
+         if (docNode.isVisible())
+         {
+            dataProvider.getList().add(docNode);
+         }
+      }
+      dataProvider.refresh();
+   }
+
+   private void removeFilter()
+   {
+      dataProvider.getList().clear();
+      for (DocumentNode docNode : nodes.values())
+      {
+         docNode.setVisible(true);
+         dataProvider.getList().add(docNode);
+      }
+      dataProvider.refresh();
+   }
+
+   public DocumentInfo getDocumentInfo(DocumentId docId)
+   {
+      DocumentNode node = nodes.get(docId);
+      return (node == null ? null : node.getDocInfo());
+   }
+
+   private void clearSelection()
+   {
+      if (currentSelection == null)
+      {
+         return;
+      }
+      currentSelection = null;
+   }
+
+   private void setSelection(final DocumentId documentId)
+   {
+      if (currentSelection != null && currentSelection.getDocInfo().getId() == documentId)
+      {
+         return;
+      }
+      clearSelection();
+      DocumentNode node = nodes.get(documentId);
+      if (node != null)
+      {
+         currentSelection = node;
+         // required to have document selected in doclist when loading from
+         // bookmarked history token
+         display.getDocumentListTable().getSelectionModel().setSelected(node, true);
+      }
+   }
 }
