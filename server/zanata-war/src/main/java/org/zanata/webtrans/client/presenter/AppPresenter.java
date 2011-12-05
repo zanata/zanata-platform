@@ -58,6 +58,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -354,6 +355,27 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          }
          display.showInMainView(token.getView());
       }
+      // TODO set defaults in history rather than having this block.
+      else if (!token.hasView())
+      {
+         // default view.
+         display.showInMainView(MainView.Documents);
+      }
+
+      // TODO use a cloned token below when the current token is stored. Ok to
+      // modify current token for now. (add clone method when doing this)
+
+      // update toggle link with alternate view latest history state
+      if (token.hasView() && token.getView().equals(MainView.Editor))
+      {
+         token.setView(MainView.Documents);
+      }
+      else
+      { // doclist is default
+         token.setView(MainView.Editor);
+      }
+      ((Anchor) display.getDocumentsLink()).setHref("#" + token.toTokenString());
+
    }
 
 }
