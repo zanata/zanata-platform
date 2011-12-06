@@ -38,7 +38,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
       HasText getTmTextBox();
 
-      void createTable(ArrayList<TranslationMemoryItem> memories);
+      void createTable(String query, ArrayList<TranslationMemoryItem> memories);
       
       void startProcessing();
       
@@ -88,7 +88,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       showResults(query, searchType);
    }
 
-   private void showResults(String query, GetTranslationMemory.SearchType searchType)
+   private void showResults(final String query, GetTranslationMemory.SearchType searchType)
    {
       display.startProcessing();
       final GetTranslationMemory action = new GetTranslationMemory(query, workspaceContext.getWorkspaceId().getLocaleId(), searchType);
@@ -104,7 +104,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          public void onSuccess(GetTranslationMemoryResult result)
          {
             ArrayList<TranslationMemoryItem> memories = result.getMemories();
-            display.createTable(memories);
+            display.createTable(query, memories);
          }
       });
    }

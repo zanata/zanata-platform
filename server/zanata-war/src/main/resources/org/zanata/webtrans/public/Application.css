@@ -440,6 +440,20 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
 	font-weight: bold
 }
 
+.diff-equal {
+	background:yellow;
+}
+
+.diff-insert {
+	background:#e6ffe6;
+	text-decoration: none;
+}
+
+.diff-delete {
+	background:#ffe6e6;
+	text-decoration: none;
+}
+
 .DocumentListTable {
 	width: 100%;
 	font-size:16px;

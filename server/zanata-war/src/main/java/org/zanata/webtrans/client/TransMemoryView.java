@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.TransMemoryCopyEvent;
+import org.zanata.webtrans.client.ui.DiffMatchPatchLabel;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TranslationMemoryItem;
 
@@ -150,7 +151,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    }
 
    @Override
-   public void createTable(ArrayList<TranslationMemoryItem> memories)
+   public void createTable(String query, ArrayList<TranslationMemoryItem> memories)
    {
       // TODO most of this should be in TransMemoryPresenter
       clearResults();
@@ -166,7 +167,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
          final String targetMessage = memory.getTarget();
          final int similarity = memory.getSimilarityPercent();
 
-         resultTable.setWidget(row, SOURCE_COL, new HighlightingLabel(sourceMessage));
+         resultTable.setWidget(row, SOURCE_COL, new DiffMatchPatchLabel(query, sourceMessage));
          resultTable.setWidget(row, TARGET_COL, new HighlightingLabel(targetMessage));
          resultTable.setText(row, SIMILARITY_COL, similarity + "%");
 
