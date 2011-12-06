@@ -12,13 +12,14 @@ import com.allen_sauer.gwt.log.client.Log;
  */
 public class HistoryToken
 {
+
    private static final String DELIMITER_K_V = ":";
    private static final String PAIR_SEPARATOR = ";";
 
    public static final String KEY_DOCUMENT = "doc";
 
    public static final String KEY_VIEW = "view";
-   public static final String VALUE_DOCLIST_VIEW = "list";
+   // public static final String VALUE_DOCLIST_VIEW = "list";
    public static final String VALUE_EDITOR_VIEW = "doc";
 
    public static final String KEY_DOC_FILTER_TEXT = "filter";
@@ -27,14 +28,29 @@ public class HistoryToken
    public static final String VALUE_DOC_FILTER_EXACT = "exact";
    public static final String VALUE_DOC_FILTER_INEXACT = "substr";
 
-   private AppPresenter.Display.MainView view = null;
-   private String fullDocPath = null;
-   private Boolean docFilterExact = null;
-   private String docFilterText = null;
+   // defaults
+   private static final String DEFAULT_DOCUMENT_PATH = "";
+   private static final String DEFAULT_DOC_FILTER_TEXT = "";
+   private static final boolean DEFAULT_DOC_FILTER_EXACT = false;
+   private static final AppPresenter.Display.MainView DEFAULT_VIEW = AppPresenter.Display.MainView.Documents;
 
+   private AppPresenter.Display.MainView view;
+   private String fullDocPath;
+   private boolean docFilterExact;
+   private String docFilterText;
+
+   public HistoryToken()
+   {
+      view = DEFAULT_VIEW;
+      fullDocPath = DEFAULT_DOCUMENT_PATH;
+      docFilterText = DEFAULT_DOC_FILTER_TEXT;
+      docFilterExact = DEFAULT_DOC_FILTER_EXACT;
+   }
 
    /**
-    * Generate a history token from the given token string
+    * Generates a history token from the given token string. Default values will
+    * be used for any keys that are not present or do not have a valid value
+    * associated with them.
     * 
     * @param token A GWT history token in the form key1:value1,key2:value2,...
     */
@@ -54,46 +70,25 @@ public class HistoryToken
 
             if (key == HistoryToken.KEY_DOCUMENT)
             {
-               try
-               {
+               if (value != null && value.length() > 0)
                   historyToken.setDocumentPath((value));
-               }
-               catch (NullPointerException e)
-               {
-                  historyToken.setDocumentPath(null);
-               }
-               catch (NumberFormatException e)
-               {
-                  historyToken.setDocumentPath(null);
-               }
             }
             else if (key == HistoryToken.KEY_VIEW)
             {
                if (value.equals(VALUE_EDITOR_VIEW))
-               {
                   historyToken.setView(AppPresenter.Display.MainView.Editor);
-               }
-               else if (value.equals(VALUE_DOCLIST_VIEW))
-               {
-                  historyToken.setView(AppPresenter.Display.MainView.Documents);
-               }
-               else
-               { // invalid view
-                  historyToken.setView(null);
-               }
+               // else assume document list
+            }
+            else if (key == HistoryToken.KEY_DOC_FILTER_TEXT)
+            {
+               if (value != null && value.length() > 0)
+                  historyToken.setDocFilterText(value);
             }
             else if (key == HistoryToken.KEY_DOC_FILTER_OPTION)
             {
                if (value == VALUE_DOC_FILTER_EXACT)
                   historyToken.setDocFilterExact(true);
-               else if (value == VALUE_DOC_FILTER_INEXACT)
-                  historyToken.setDocFilterExact(false);
             }
-            else if (key == HistoryToken.KEY_DOC_FILTER_TEXT)
-            {
-               historyToken.setDocFilterText(value);
-            }
-
             else
                Log.info("unrecognised history key: " + key);
 
@@ -107,13 +102,14 @@ public class HistoryToken
       return historyToken;
    }
 
-   public boolean hasDocumentPath()
-   {
-      return fullDocPath != null && fullDocPath.length() > 0;
-   }
-
+   /**
+    * 
+    * @return the document path, may be an empty string, will not be null
+    */
    public String getDocumentPath()
    {
+      if (fullDocPath == null)
+         return DEFAULT_DOCUMENT_PATH;
       return fullDocPath;
    }
 
@@ -122,13 +118,14 @@ public class HistoryToken
       this.fullDocPath = fullDocPath;
    }
 
-   public boolean hasView()
-   {
-      return view != null;
-   }
-
+   /**
+    * 
+    * @return the current view, will never return null
+    */
    public AppPresenter.Display.MainView getView()
    {
+      if (view == null)
+         return DEFAULT_VIEW;
       return view;
    }
 
@@ -137,28 +134,29 @@ public class HistoryToken
       this.view = view;
    }
 
-   public boolean hasDocFilterExact()
-   {
-      return docFilterExact != null;
-   }
-
-   public Boolean getDocFilterExact()
+   /**
+    * 
+    * @return true if document filter should accept only an exact match
+    */
+   public boolean getDocFilterExact()
    {
       return docFilterExact;
    }
 
-   public void setDocFilterExact(Boolean exactMatch)
+   public void setDocFilterExact(boolean exactMatch)
    {
       docFilterExact = exactMatch;
    }
 
-   public boolean hasDocFilterText()
-   {
-      return docFilterText != null;
-   }
-
+   /**
+    * 
+    * @return the string against which to filter the document list. May be an
+    *         empty string, will never be null.
+    */
    public String getDocFilterText()
    {
+      if (docFilterText == null)
+         return DEFAULT_DOC_FILTER_TEXT;
       return docFilterText;
    }
 
@@ -169,6 +167,9 @@ public class HistoryToken
 
 
    /**
+    * Generates a token string to represent this {@link HistoryToken}. Fields
+    * that have their default value are not included in the string.
+    * 
     * @return a token string for use with
     *         {@link com.google.gwt.user.client.History}
     */
@@ -177,43 +178,41 @@ public class HistoryToken
       String token = "";
       boolean first = true;
 
-      if (hasView())
+      if (getView() != DEFAULT_VIEW)
       {
          if (first)
             first = false;
          else
             token += PAIR_SEPARATOR;
          token += KEY_VIEW + DELIMITER_K_V;
+         // this conditional is unnecessary
          if (view == AppPresenter.Display.MainView.Editor)
          {
             token += VALUE_EDITOR_VIEW;
          }
-         else if (view == AppPresenter.Display.MainView.Documents)
-         {
-            token += VALUE_DOCLIST_VIEW;
-         }
       }
 
-      if (hasDocumentPath())
+      if (!getDocumentPath().equals(DEFAULT_DOCUMENT_PATH))
       {
          if (first)
             first = false;
          else
             token += PAIR_SEPARATOR;
-         token += KEY_DOCUMENT + DELIMITER_K_V + fullDocPath.toString();
+         token += KEY_DOCUMENT + DELIMITER_K_V + fullDocPath;
       }
 
-      if (hasDocFilterExact())
+      if (getDocFilterExact() != DEFAULT_DOC_FILTER_EXACT)
       {
          if (first)
             first = false;
          else
             token += PAIR_SEPARATOR;
          token += KEY_DOC_FILTER_OPTION + DELIMITER_K_V;
+         // this is redundant if defaults don't change
          token += docFilterExact ? VALUE_DOC_FILTER_EXACT : VALUE_DOC_FILTER_INEXACT;
       }
 
-      if (hasDocFilterText())
+      if (!getDocFilterText().equals(DEFAULT_DOC_FILTER_TEXT))
       {
          if (first)
             first = false;
@@ -223,5 +222,16 @@ public class HistoryToken
       }
 
       return token;
+   }
+
+   public Object clone()
+   {
+      HistoryToken newToken = new HistoryToken();
+      newToken.view = this.view;
+      newToken.fullDocPath = this.fullDocPath;
+      newToken.docFilterText = this.docFilterText;
+      newToken.docFilterExact = this.docFilterExact;
+
+      return newToken;
    }
 }
