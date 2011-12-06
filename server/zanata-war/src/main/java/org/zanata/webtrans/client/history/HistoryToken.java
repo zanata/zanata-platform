@@ -1,7 +1,6 @@
 package org.zanata.webtrans.client.history;
 
 import org.zanata.webtrans.client.presenter.AppPresenter;
-import org.zanata.webtrans.shared.model.DocumentId;
 
 import com.allen_sauer.gwt.log.client.Log;
 
@@ -29,7 +28,7 @@ public class HistoryToken
    public static final String VALUE_DOC_FILTER_INEXACT = "substr";
 
    private AppPresenter.Display.MainView view = null;
-   private DocumentId docId = null;
+   private String fullDocPath = null;
    private Boolean docFilterExact = null;
    private String docFilterText = null;
 
@@ -57,15 +56,15 @@ public class HistoryToken
             {
                try
                {
-                  historyToken.setDocumentId(new DocumentId(Long.parseLong(value)));
+                  historyToken.setDocumentPath((value));
                }
                catch (NullPointerException e)
                {
-                  historyToken.setDocumentId(null);
+                  historyToken.setDocumentPath(null);
                }
                catch (NumberFormatException e)
                {
-                  historyToken.setDocumentId(null);
+                  historyToken.setDocumentPath(null);
                }
             }
             else if (key == HistoryToken.KEY_VIEW)
@@ -108,19 +107,19 @@ public class HistoryToken
       return historyToken;
    }
 
-   public boolean hasDocumentId()
+   public boolean hasDocumentPath()
    {
-      return docId != null;
+      return fullDocPath != null && fullDocPath.length() > 0;
    }
 
-   public DocumentId getDocumentId()
+   public String getDocumentPath()
    {
-      return docId;
+      return fullDocPath;
    }
 
-   public void setDocumentId(DocumentId docId)
+   public void setDocumentPath(String fullDocPath)
    {
-      this.docId = docId;
+      this.fullDocPath = fullDocPath;
    }
 
    public boolean hasView()
@@ -195,13 +194,13 @@ public class HistoryToken
          }
       }
 
-      if (hasDocumentId())
+      if (hasDocumentPath())
       {
          if (first)
             first = false;
          else
             token += PAIR_SEPARATOR;
-         token += KEY_DOCUMENT + DELIMITER_K_V + docId.toString();
+         token += KEY_DOCUMENT + DELIMITER_K_V + fullDocPath.toString();
       }
 
       if (hasDocFilterExact())

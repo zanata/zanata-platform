@@ -93,6 +93,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    private ListDataProvider<DocumentNode> dataProvider;
    private HashMap<DocumentId, DocumentNode> nodes;
 
+   /**
+    * For quick lookup of document id by full path (including document name).
+    * Primarily for use with history token.
+    */
+   private HashMap<String, DocumentId> idsByPath;
+
    // private ContentFilter<DocumentInfo> filter;
    private final PathDocumentFilter filter = new PathDocumentFilter();
 
@@ -129,11 +135,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
             // prevent feedback loops between history and selection
             boolean isNewSelection;
-            if (token.hasDocumentId())
+            if (token.hasDocumentPath())
             {
                try
                {
-                  isNewSelection = event.getSelectedItem().getId().getId() != token.getDocumentId().getId();
+                  isNewSelection = event.getSelectedItem().getId().getId() != getDocumentId(token.getDocumentPath()).getId();
                }
                catch (Throwable t)
                {
@@ -149,7 +155,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             if (isNewSelection)
             {
                currentDocument = event.getSelectedItem();
-               token.setDocumentId(currentDocument.getId());
+               token.setDocumentPath(event.getSelectedItem().getPath() + event.getSelectedItem().getName());
                token.setView(MainView.Editor);
                History.newItem(token.toTokenString());
             }
@@ -333,7 +339,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          String[] patternCandidates = pattern.split(DOCUMENT_FILTER_LIST_DELIMITER);
          for (String candidate : patternCandidates)
          {
-            // TODO check whether trimming is appropriate
             candidate = candidate.trim();
             if (candidate.length() != 0)
             {
@@ -420,11 +425,13 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    {
       dataProvider.getList().clear();
       nodes = new HashMap<DocumentId, DocumentNode>(sortedList.size());
+      idsByPath = new HashMap<String, DocumentId>(sortedList.size());
       int counter = 0;
       long start = System.currentTimeMillis();
       for (DocumentInfo doc : sortedList)
       {
          Log.info("Loading document: " + ++counter + " ");
+         idsByPath.put(doc.getPath() + doc.getName(), doc.getId());
          DocumentNode node = new DocumentNode(messages, doc, eventBus, dataProvider);
          if (filter != null)
          {
@@ -460,10 +467,27 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       dataProvider.refresh();
    }
 
+   /**
+    * 
+    * @param docId the id of the document
+    * @return document info corresponding to the id, or null if the document is
+    *         not in the document list
+    */
    public DocumentInfo getDocumentInfo(DocumentId docId)
    {
       DocumentNode node = nodes.get(docId);
       return (node == null ? null : node.getDocInfo());
+   }
+
+   /**
+    * 
+    * @param fullPathAndName document path + document name
+    * @return the id for the document, or null if the document is not in the
+    *         document list
+    */
+   public DocumentId getDocumentId(String fullPathAndName)
+   {
+      return idsByPath.get(fullPathAndName);
    }
 
    private void clearSelection()

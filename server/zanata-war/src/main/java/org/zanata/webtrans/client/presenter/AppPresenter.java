@@ -326,11 +326,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       HistoryToken token = HistoryToken.fromTokenString(event.getValue());
 
-      DocumentId docId = token.getDocumentId();
+      DocumentId docId = documentListPresenter.getDocumentId(token.getDocumentPath());
 
-      // comparing longs here as DocumentId objects don't seem to compare
-      // properly
-      if (token.hasDocumentId() && (selectedDocument == null || selectedDocument.getId().getId() != docId.getId()))
+      if (token.hasDocumentPath() && (selectedDocument == null || !selectedDocument.getId().equals(docId)))
       {
          Log.info("Firing document selection event");
          try
