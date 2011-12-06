@@ -147,6 +147,8 @@ public class ReindexAsyncBean
                session.clear(); // clear since the queue is processed
             }
          }
+         session.flushToIndexes(); // apply changes to indexes
+         session.clear(); // clear since the queue is processed
       }
       catch (Exception e)
       {

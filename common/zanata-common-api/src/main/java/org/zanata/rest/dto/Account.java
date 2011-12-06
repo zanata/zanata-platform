@@ -6,7 +6,6 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -20,7 +19,6 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.MediaTypes.Format;
 
 @XmlType(name = "accountType")
-@XmlRootElement(name = "account")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder(
 {"email", "name", "username", "password"})

@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -18,7 +17,6 @@ import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.zanata.rest.dto.DTOUtil;
 import org.zanata.rest.dto.Extensible;
 import org.zanata.rest.dto.HasSample;
-import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Links;
 import org.zanata.rest.dto.extensions.gettext.TranslationsResourceExtension;
 
@@ -59,7 +57,7 @@ public class TranslationsResource implements Serializable, HasSample<Translation
    }
 
    @XmlElementWrapper(name = "targets", required = false)
-   @XmlElementRef
+   @XmlElement(name = "text-flow-target")
    public List<TextFlowTarget> getTextFlowTargets()
    {
       if (textFlowTargets == null)
@@ -70,7 +68,7 @@ public class TranslationsResource implements Serializable, HasSample<Translation
    }
 
 
-   @XmlElementRef(type = Link.class)
+   @XmlElement(name = "links")
    public Links getLinks()
    {
       return links;
