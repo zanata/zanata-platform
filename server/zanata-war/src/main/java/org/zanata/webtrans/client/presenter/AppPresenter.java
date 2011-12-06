@@ -58,11 +58,12 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implements ValueChangeHandler<String>
+public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 {
    // javac seems confused about which Display is which.
    // somehow, qualifying WidgetDisplay helps!
@@ -98,7 +99,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       void setUserLabel(String userLabel);
 
-      void setWorkspaceNameLabel(String workspaceNameLabel);
+      void setWorkspaceNameLabel(String workspaceNameLabel, String workspaceTitle);
 
       void setSelectedDocument(DocumentInfo document);
 
@@ -141,6 +142,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
    private final TranslationStats selectedDocumentStats = new TranslationStats();
    private final TranslationStats projectStats = new TranslationStats();
+
+   private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
    @Inject
    public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
@@ -252,11 +255,21 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       display.setUserLabel(identity.getPerson().getName());
 
-      display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName());
+      String workspaceTitle = Window.Location.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
+
+      display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName(), workspaceTitle);
 
       Window.setTitle(messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
 
-      History.addValueChangeHandler(this);
+      History.addValueChangeHandler(new ValueChangeHandler<String>()
+      {
+
+         @Override
+         public void onValueChange(ValueChangeEvent<String> event)
+         {
+            processHistoryEvent(event);
+         }
+      });
 
       History.fireCurrentHistoryState();
    }
@@ -304,9 +317,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       wordCount.decrement(Updateevent.getPreviousStatus(), Updateevent.getWordCount());
    }
 
-   @Override
-   public void onValueChange(ValueChangeEvent<String> event)
+   private void processHistoryEvent(ValueChangeEvent<String> event)
    {
+
+      // TODO keep track of previous history token like in DocumentListPresenter
 
       Log.info("Responding to history token: " + event.getValue());
 
@@ -345,6 +359,26 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
          display.showInMainView(token.getView());
       }
+      // TODO set defaults in history rather than having this block.
+      else if (!token.hasView())
+      {
+         // default view.
+         display.showInMainView(MainView.Documents);
+      }
+
+      // TODO use a cloned token below when the current token is stored. Ok to
+      // modify current token for now. (add clone method when doing this)
+
+      // update toggle link with alternate view latest history state
+      if (token.hasView() && token.getView().equals(MainView.Editor))
+      {
+         token.setView(MainView.Documents);
+      }
+      else
+      { // doclist is default
+         token.setView(MainView.Editor);
+      }
+      ((Anchor) display.getDocumentsLink()).setHref("#" + token.toTokenString());
 
    }
 

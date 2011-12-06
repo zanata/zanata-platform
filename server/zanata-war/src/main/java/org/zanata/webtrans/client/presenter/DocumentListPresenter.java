@@ -22,6 +22,8 @@ package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
@@ -57,6 +59,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.view.client.HasData;
@@ -71,6 +74,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       void setPageSize(int pageSize);
 
       HasValue<String> getFilterTextBox();
+
+      HasValue<Boolean> getExactSearchCheckbox();
 
       HasSelectionHandlers<DocumentInfo> getDocumentList();
 
@@ -87,7 +92,14 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
    private ListDataProvider<DocumentNode> dataProvider;
    private HashMap<DocumentId, DocumentNode> nodes;
-   private ContentFilter<DocumentInfo> filter;
+
+   // private ContentFilter<DocumentInfo> filter;
+   private final PathDocumentFilter filter = new PathDocumentFilter();
+
+   // used to determine whether to re-run filter
+   private HistoryToken currentHistoryState = null;
+
+   private static final String PRE_FILTER_QUERY_PARAMETER_KEY = "doc";
 
    @Inject
    public DocumentListPresenter(Display display, EventBus eventBus, WorkspaceContext workspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages)
@@ -164,17 +176,104 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          @Override
          public void onValueChange(ValueChangeEvent<String> event)
          {
-            if (event.getValue().isEmpty())
+            HistoryToken token = HistoryToken.fromTokenString(History.getToken());
+            if (event.getValue() != token.getDocFilterText())
             {
-               removeFilter();
-            }
-            else
-            {
-               basicContentFilter.setPattern(event.getValue());
-               setFilter(basicContentFilter);
+               token.setDocFilterText(event.getValue());
+               History.newItem(token.toTokenString());
             }
          }
       }));
+
+      registerHandler(display.getExactSearchCheckbox().addValueChangeHandler(new ValueChangeHandler<Boolean>()
+      {
+         @Override
+         public void onValueChange(ValueChangeEvent<Boolean> event)
+         {
+            HistoryToken token = HistoryToken.fromTokenString(History.getToken());
+            if (event.getValue() != token.getDocFilterExact())
+            {
+               token.setDocFilterExact(event.getValue());
+               History.newItem(token.toTokenString());
+            }
+         }
+      }));
+
+      History.addValueChangeHandler(new ValueChangeHandler<String>()
+      {
+
+         @Override
+         public void onValueChange(ValueChangeEvent<String> event)
+         {
+            boolean filterChanged = false;
+            HistoryToken token = HistoryToken.fromTokenString(event.getValue());
+            if (token.hasDocFilterText())
+            {
+               // update textbox to match new history state
+               if (!token.getDocFilterText().equals(display.getFilterTextBox().getValue()))
+               {
+                  display.getFilterTextBox().setValue(token.getDocFilterText(), true);
+               }
+
+               boolean patternChanged;
+               if (currentHistoryState == null)
+                  patternChanged = true;
+               else
+                  patternChanged = !token.getDocFilterText().equals(currentHistoryState.getDocFilterText());
+               if (patternChanged)
+               {
+                  filter.setPattern(token.getDocFilterText());
+                  filterChanged = true;
+               }
+            }
+            else
+            {
+               if (currentHistoryState != null && currentHistoryState.hasDocFilterText())
+               {
+                  // not using default
+                  filter.setPattern("");
+                  filterChanged = true;
+               }
+               // else was already using blank filter
+            }
+
+            if (token.hasDocFilterExact())
+            {
+               // update checkbox to match new history state
+               if (token.getDocFilterExact() != display.getExactSearchCheckbox().getValue())
+               {
+                  display.getExactSearchCheckbox().setValue(token.getDocFilterExact());
+               }
+
+               boolean flagChanged;
+               if (currentHistoryState == null)
+                  flagChanged = true;
+               else
+                  flagChanged = !token.getDocFilterExact().equals(currentHistoryState.getDocFilterExact());
+
+               if (flagChanged)
+               {
+                  filter.setFullText(token.getDocFilterExact());
+                  filterChanged = true;
+               }
+            }
+            else
+            {
+               if (currentHistoryState != null && currentHistoryState.hasDocFilterExact() && currentHistoryState.getDocFilterExact() == true)
+               {
+                  // not using default
+                  filter.setFullText(false);
+                  filterChanged = true;
+               }
+               // else was already using substring match
+            }
+
+            currentHistoryState = token;
+
+            if (filterChanged)
+               runFilter();
+         }
+      });
 
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler()
       {
@@ -187,26 +286,67 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
                handler.onTransUnitUpdated(event);
          }
       }));
+
       loadDocumentList();
    }
 
-   final class BasicContentFilter implements ContentFilter<DocumentInfo>
+   /**
+    * Filters documents by their full path + name, with substring and exact
+    * modes.
+    * 
+    * If there is no pattern set, this filter will accept all documents.
+    * 
+    * @author David Mason, damason@redhat.com
+    * 
+    */
+   final class PathDocumentFilter implements ContentFilter<DocumentInfo>
    {
-      private String pattern = "";
+      private static final String DOCUMENT_FILTER_LIST_DELIMITER = ",";
+
+      private HashSet<String> patterns = new HashSet<String>();
+      private boolean isFullText = false;
 
       @Override
       public boolean accept(DocumentInfo value)
       {
-         return value.getName().contains(pattern);
+         if (patterns.isEmpty())
+            return true;
+         String fullPath = value.getPath() + value.getName();
+         for (String pattern : patterns)
+         {
+            if (isFullText)
+            {
+               if (fullPath.equals(pattern))
+                  return true;
+            }
+            else if (fullPath.contains(pattern))
+            {
+               return true;
+            }
+         }
+         return false; // didn't match any patterns
       }
 
       public void setPattern(String pattern)
       {
-         this.pattern = pattern;
+         patterns.clear();
+         String[] patternCandidates = pattern.split(DOCUMENT_FILTER_LIST_DELIMITER);
+         for (String candidate : patternCandidates)
+         {
+            // TODO check whether trimming is appropriate
+            candidate = candidate.trim();
+            if (candidate.length() != 0)
+            {
+               patterns.add(candidate);
+            }
+         }
+      }
+
+      public void setFullText(boolean fullText)
+      {
+         isFullText = fullText;
       }
    }
-
-   private final BasicContentFilter basicContentFilter = new BasicContentFilter();
 
    @Override
    protected void onUnbind()
@@ -217,7 +357,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    public void onRevealDisplay()
    {
       // TODO Auto-generated method stub
-
    }
 
    @Override
@@ -234,8 +373,16 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
    private void loadDocumentList()
    {
+      // generate filter from query string if present
+      ArrayList<String> filterDocs = null;
+      List<String> queryDocs = Window.Location.getParameterMap().get(PRE_FILTER_QUERY_PARAMETER_KEY);
+      if (queryDocs != null && !queryDocs.isEmpty())
+      {
+         filterDocs = new ArrayList<String>(queryDocs);
+      }
+
       // switch doc list to the new project
-      dispatcher.execute(new GetDocumentList(workspaceContext.getWorkspaceId().getProjectIterationId()), new AsyncCallback<GetDocumentListResult>()
+      dispatcher.execute(new GetDocumentList(workspaceContext.getWorkspaceId().getProjectIterationId(), filterDocs), new AsyncCallback<GetDocumentListResult>()
       {
          @Override
          public void onFailure(Throwable caught)
@@ -294,9 +441,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       dataProvider.addDataDisplay(display.getDocumentListTable());
    }
 
-   private void setFilter(ContentFilter<DocumentInfo> filter)
+   /**
+    * Filter the document list based on the current filter patterns. Empty
+    * filter patterns will show all documents.
+    */
+   private void runFilter()
    {
-      this.filter = filter;
       dataProvider.getList().clear();
       for (DocumentNode docNode : nodes.values())
       {
@@ -306,17 +456,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             dataProvider.getList().add(docNode);
          }
       }
-      dataProvider.refresh();
-   }
-
-   private void removeFilter()
-   {
-      dataProvider.getList().clear();
-      for (DocumentNode docNode : nodes.values())
-      {
-         docNode.setVisible(true);
-         dataProvider.getList().add(docNode);
-      }
+      display.setPageSize(dataProvider.getList().size());
       dataProvider.refresh();
    }
 
@@ -346,8 +486,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       if (node != null)
       {
          currentSelection = node;
-         // required to have document selected in doclist when loading from
-         // bookmarked history token
+         // required in order to show the document selected in doclist when
+         // loading from bookmarked history token
          display.getDocumentListTable().getSelectionModel().setSelected(node, true);
       }
    }

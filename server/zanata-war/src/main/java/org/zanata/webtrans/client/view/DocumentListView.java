@@ -40,6 +40,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.LayoutPanel;
@@ -63,6 +64,9 @@ public class DocumentListView extends Composite implements DocumentListPresenter
 
    @UiField(provided = true)
    ClearableTextBox filterTextBox;
+
+   @UiField
+   CheckBox exactSearchCheckBox;
 
    @UiField(provided = true)
    final CellTable<DocumentNode> documentListTable;
@@ -122,5 +126,11 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    public ListDataProvider<DocumentNode> getDataProvider()
    {
       return dataProvider;
+   }
+
+   @Override
+   public HasValue<Boolean> getExactSearchCheckbox()
+   {
+      return exactSearchCheckBox;
    }
 }
