@@ -270,8 +270,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          @Override
          public void onSelection(SelectionEvent<TransUnit> event)
          {
-            TransUnit newSelectedItem = event.getSelectedItem();
-            selectTransUnit(newSelectedItem);
+            if (event.getSelectedItem() != null)
+            {
+               selectTransUnit(event.getSelectedItem());
+            }
          }
       }));
 
@@ -604,7 +606,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       public void updateRowIndex(int curPage)
       {
          curRowIndex = curPage * TableConstants.PAGE_SIZE + display.getSelectedRowNumber();
-         Log.info("Current Row Index" + curRowIndex);
+         Log.info("Current Row Index: " + curRowIndex);
       }
 
       @Override
@@ -735,6 +737,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          {
             display.gotoPage(pageNum, false);
          }
+
 
          selectTransUnit(display.getTransUnitValue(rowNum));
          display.gotoRow(rowNum, andEdit);
@@ -1019,6 +1022,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    public void selectTransUnit(TransUnit transUnit)
    {
       tableModelHandler.updateRowIndex(display.getCurrentPage());
+
       if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
       {
          selectedTransUnit = transUnit;
