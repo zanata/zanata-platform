@@ -21,6 +21,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 public class PropReaderTests
 {
    private static final Logger log = LoggerFactory.getLogger(PropReaderTests.class);
+   static final String ISO_8859_1 = "ISO-8859-1";
 
    @SuppressWarnings("deprecation")
    PropReader propReader = new PropReader();
@@ -42,9 +43,9 @@ public class PropReaderTests
       Unmarshaller unmarshal = jc.createUnmarshaller();
       Resource docIn = (Resource) unmarshal.unmarshal(new StringReader(sw.toString()));
 
-      PropWriter.write(docIn, new File("target/test-output"));
+      PropWriter.write(docIn, new File("target/test-output"), ISO_8859_1);
 
-      // TODO check output files against input
+      // FIXME check output files against input
    }
 
    @Test
@@ -65,9 +66,9 @@ public class PropReaderTests
       Unmarshaller unmarshal = jc.createUnmarshaller();
       TranslationsResource docIn = (TranslationsResource) unmarshal.unmarshal(new StringReader(sw.toString()));
 
-      PropWriter.write(docIn, new File("target/test-output"), "test", locale);
+      PropWriter.write(docIn, new File("target/test-output"), "test", locale, ISO_8859_1);
 
-      // TODO check output files against input
+      // FIXME check output files against input
    }
 
    private InputStream getResourceAsStream(String relativeResourceName) throws FileNotFoundException
