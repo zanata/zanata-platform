@@ -171,15 +171,12 @@ Removes some of the styling on the page-level splitters
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
-	color:#FFFFFF;
-	background:#4a75b5;
 	cursor:pointer;
 	border-top-left-radius:5px;
 	border-top-right-radius:5px;
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected {
-	background: #0f3560;
     cursor:default;
     border-top-left-radius:5px;
     border-top-right-radius:5px;
