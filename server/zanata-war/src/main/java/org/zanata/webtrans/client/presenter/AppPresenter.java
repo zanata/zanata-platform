@@ -42,6 +42,8 @@ import org.zanata.webtrans.client.presenter.AppPresenter.Display.MainView;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display.StatsType;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.ui.ShortcutConfigPanel;
+import org.zanata.webtrans.client.ui.UserOptionsPanel;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -94,7 +96,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       HasClickHandlers getDocumentsLink();
 
-      HasClickHandlers getEditorButtonsCheckbox();
+      HasClickHandlers getOptionsLink();
+
+      Widget getOptionsLinkObject();
 
       void setUserLabel(String userLabel);
 
@@ -142,6 +146,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private final TranslationStats selectedDocumentStats = new TranslationStats();
    private final TranslationStats projectStats = new TranslationStats();
 
+   private final UserOptionsPanel userOptionsPanel = new UserOptionsPanel(true, eventBus);
+
    @Inject
    public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
    {
@@ -153,6 +159,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       this.translationPresenter = translationPresenter;
       this.workspaceContext = workspaceContext;
    }
+
 
    @Override
    protected void onBind()
@@ -240,15 +247,26 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
 
-      registerHandler(display.getEditorButtonsCheckbox().addClickHandler(new ClickHandler()
+      registerHandler(display.getOptionsLink().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
-            boolean showButtons = ((CheckBox) display.getEditorButtonsCheckbox()).getValue();
-            eventBus.fireEvent(new ButtonDisplayChangeEvent(showButtons));
+            userOptionsPanel.toggleDisplay(display.getOptionsLinkObject());
          }
       }));
+
+      // registerHandler(display.getEditorButtonsCheckbox().addClickHandler(new
+      // ClickHandler()
+      // {
+      // @Override
+      // public void onClick(ClickEvent event)
+      // {
+      // boolean showButtons = ((CheckBox)
+      // display.getEditorButtonsCheckbox()).getValue();
+      // eventBus.fireEvent(new ButtonDisplayChangeEvent(showButtons));
+      // }
+      // }));
 
       display.setUserLabel(identity.getPerson().getName());
 

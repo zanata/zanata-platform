@@ -48,6 +48,7 @@ public class UserOptionsPanel extends DecoratedPopupPanel
    private final CheckBox enterChk = new CheckBox(UserConfigConstants.LABEL_ENTER_BUTTON_SAVE);
    private final CheckBox escChk = new CheckBox(UserConfigConstants.LABEL_ESC_KEY_CLOSE);
    private final CheckBox editorButtonsChk = new CheckBox(UserConfigConstants.LABEL_EDITOR_BUTTONS);
+   private final CheckBox liveValidationChk = new CheckBox(UserConfigConstants.LABEL_LIVE_VALIDATION);
 
    private Map<String, Boolean> configMap = new HashMap<String, Boolean>();
 
@@ -71,6 +72,11 @@ public class UserOptionsPanel extends DecoratedPopupPanel
       editorButtonsHP.setSpacing(5);
       editorButtonsHP.add(editorButtonsChk);
       mainPanel.add(editorButtonsHP);
+
+      HorizontalPanel liveValidationButtonsHP = new HorizontalPanel();
+      liveValidationButtonsHP.setSpacing(5);
+      liveValidationButtonsHP.add(liveValidationChk);
+      // mainPanel.add(liveValidationButtonsHP);
 
       HorizontalPanel enteroptHP = new HorizontalPanel();
       enteroptHP.setSpacing(5);
@@ -118,6 +124,16 @@ public class UserOptionsPanel extends DecoratedPopupPanel
             eventBus.fireEvent(new UserConfigChangeEvent(configMap));
          }
       });
+
+      liveValidationChk.addValueChangeHandler(new ValueChangeHandler<Boolean>()
+      {
+         @Override
+         public void onValueChange(ValueChangeEvent<Boolean> event)
+         {
+            Log.info("Enable live validation: " + event.getValue());
+         }
+      });
+
    }
 
    private void setDefaultValue()
@@ -125,6 +141,7 @@ public class UserOptionsPanel extends DecoratedPopupPanel
       enterChk.setValue(false);
       escChk.setValue(false);
       editorButtonsChk.setValue(true);
+      liveValidationChk.setValue(false);
 
       configMap.put(UserConfigConstants.BUTTON_ENTER, false);
       configMap.put(UserConfigConstants.BUTTON_ESC, false);

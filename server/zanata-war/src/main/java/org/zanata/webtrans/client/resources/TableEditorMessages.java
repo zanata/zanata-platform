@@ -36,8 +36,8 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Saved change to Translation Unit")
    String notifyUpdateSaved();
 
-   @DefaultMessage("Validation error: {0}- {1}")
-   String notifyValidationError(String name, String errorMessage);
+   @DefaultMessage("Validation error - see Validation details for more info")
+   String notifyValidationError();
 
    @DefaultMessage("Failed to Stop Editing TransUnit")
    String notifyStopFailed();

@@ -40,7 +40,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -58,7 +57,7 @@ public class AppView extends Composite implements AppPresenter.Display
    private final int NOTIFICATION_TIME = 2500;
 
    @UiField
-   Anchor signOutLink, leaveLink, helpLink, documentsLink;
+   Anchor signOutLink, leaveLink, helpLink, documentsLink, optionsLink;
 
    @UiField(provided = true)
    TransUnitCountBar translationStatsBar;
@@ -66,8 +65,8 @@ public class AppView extends Composite implements AppPresenter.Display
    private final TranslationStats documentStats, projectStats;
    private StatsType showingStats;
 
-   @UiField
-   CheckBox editorButtonsCheckbox;
+   // @UiField
+   // CheckBox editorButtonsCheckbox;
 
    @UiField
    Label notificationMessage;
@@ -113,7 +112,7 @@ public class AppView extends Composite implements AppPresenter.Display
       helpLink.setHref(messages.hrefHelpLink());
       helpLink.setTarget("_BLANK");
 
-      editorButtonsCheckbox.setValue(true);
+      // editorButtonsCheckbox.setValue(true);
 
    }
 
@@ -178,12 +177,6 @@ public class AppView extends Composite implements AppPresenter.Display
    }
    
    @Override
-   public HasClickHandlers getEditorButtonsCheckbox()
-   {
-      return editorButtonsCheckbox;
-   }
-
-   @Override
    public HasClickHandlers getSignOutLink()
    {
       return signOutLink;
@@ -193,6 +186,12 @@ public class AppView extends Composite implements AppPresenter.Display
    public HasClickHandlers getDocumentsLink()
    {
       return documentsLink;
+   }
+
+   @Override
+   public HasClickHandlers getOptionsLink()
+   {
+      return optionsLink;
    }
 
    @Override
@@ -297,5 +296,11 @@ public class AppView extends Composite implements AppPresenter.Display
          translationStatsBar.setStats(projectStats);
          break;
       }
+   }
+
+   @Override
+   public Widget getOptionsLinkObject()
+   {
+      return optionsLink;
    }
 }

@@ -35,10 +35,14 @@ public class UserConfigConstants
    public static final String LABEL_ENTER_BUTTON_SAVE = "'Enter' key saves immediately";
    public static final String LABEL_ESC_KEY_CLOSE = "'Esc' key closes editor";
    public static final String LABEL_NAV_OPTION = "Navigation key/button options:";
+   public static final String LABEL_EDITOR_BUTTONS = "Editor Buttons";
+   public static final String LABEL_USER_OPTIONS = "User Options";
+   public static final String LABEL_LIVE_VALIDATION = "Live Validation";
    
    public static final String OPTION_FUZZY_UNTRANSLATED = "Next Fuzzy/Untranslated";
    public static final String OPTION_FUZZY = "Next Fuzzy";
    public static final String OPTION_UNTRANSLATED = "Next Untranslated";
+
 }
 
 

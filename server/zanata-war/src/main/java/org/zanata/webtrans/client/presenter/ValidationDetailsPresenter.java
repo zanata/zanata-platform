@@ -24,19 +24,13 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
-import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
-import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.ValidationEvent;
 import org.zanata.webtrans.client.events.ValidationEventHandler;
-import org.zanata.webtrans.client.presenter.AppPresenter.Display.StatsType;
-import org.zanata.webtrans.shared.model.TransUnit;
 
-import com.google.gwt.user.client.Window;
 import com.google.inject.Inject;
 
 /**
@@ -48,7 +42,7 @@ public class ValidationDetailsPresenter extends WidgetPresenter<ValidationDetail
 {
    public interface Display extends WidgetDisplay
    {
-      void validate(TransUnit tu);
+      void validate(String source, String target);
 
       void clearAllMessage();
    }
@@ -62,30 +56,21 @@ public class ValidationDetailsPresenter extends WidgetPresenter<ValidationDetail
    @Override
    protected void onBind()
    {
-      registerHandler(eventBus.addHandler(ValidationEvent.getType(), new ValidationEventHandler()
-      {
-         @Override
-         public void onValidate(ValidationEvent event)
-         {
-            display.validate(event.getTransUnit());
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler()
-      {
-         @Override
-         public void onTransUnitUpdated(TransUnitUpdatedEvent event)
-         {
-            eventBus.fireEvent(new ValidationEvent(event.getTransUnit()));
-         }
-      }));
-
       registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), new TransUnitSelectionHandler()
       {
          @Override
          public void onTransUnitSelected(TransUnitSelectionEvent event)
          {
             display.clearAllMessage();
+         }
+      }));
+
+      registerHandler(eventBus.addHandler(ValidationEvent.getType(), new ValidationEventHandler()
+      {
+         @Override
+         public void onValidate(ValidationEvent event)
+         {
+            display.validate(event.getSource(), event.getTarget());
          }
       }));
 

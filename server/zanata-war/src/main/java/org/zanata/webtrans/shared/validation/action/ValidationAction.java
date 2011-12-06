@@ -20,12 +20,14 @@
  */
 package org.zanata.webtrans.shared.validation.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.validation.ValidationObject;
 
 /**
@@ -43,9 +45,9 @@ public abstract class ValidationAction implements ValidationObject
    private final EventBus eventBus;
    private final TableEditorMessages messages;
 
-   private String errorMsg;
+   private List<String> errorList = new ArrayList<String>();
 
-   public abstract void execute(TransUnit tu);
+   public abstract void validate(String source, String target);
 
    public ValidationAction(String id, String description, final EventBus eventBus, final TableEditorMessages messages)
    {
@@ -55,11 +57,12 @@ public abstract class ValidationAction implements ValidationObject
       this.messages = messages;
    }
 
-   public void showError(String errorMessage)
+   public void showErrorMessage()
    {
-      errorMsg = messages.notifyValidationError(getId(), errorMessage);
-
-      eventBus.fireEvent(new NotificationEvent(Severity.Info, errorMsg));
+      if (hasError())
+      {
+         eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyValidationError()));
+      }
    }
 
    @Override
@@ -88,12 +91,23 @@ public abstract class ValidationAction implements ValidationObject
    @Override
    public boolean hasError()
    {
-      return errorMsg != null;
+      return !errorList.isEmpty();
    }
 
-   public void clearMessage()
+   @Override
+   public List<String> getError()
    {
-      errorMsg = null;
+      return errorList;
+   }
+
+   public void clearErrorMessage()
+   {
+      errorList.clear();
+   }
+
+   public void addError(String error)
+   {
+      errorList.add(error);
    }
 }
 

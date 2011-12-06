@@ -20,15 +20,21 @@
  */
 package org.zanata.webtrans.shared.validation.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.shared.model.TransUnit;
+
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 
 /**
- *
+ * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
+ * 
  **/
 public class HtmlXmlTagValidation extends ValidationAction
 {
@@ -37,17 +43,28 @@ public class HtmlXmlTagValidation extends ValidationAction
       super(id, description, eventBus, messages);
    }
 
-   @Override
-   public void execute(TransUnit tu)
-   {
-      clearMessage();
+   // private final static String tagRegex = "<[^>]+>[^<]*</[^>]+>";
+   private final static String tagRegex = "<[^>]+>";
+   // private final static String tagRegex = "<[^>]+>";
 
-      if (tu.getSource().equals(tu.getSource()))
+   private final static RegExp regExp = RegExp.compile(tagRegex, "g");
+
+   @Override
+   public void validate(String source, String target)
+   {
+      Log.info("Source:" + source);
+      Log.info("target:" + target);
+
+      MatchResult result = regExp.exec(source);
+      while (result != null)
       {
-         showError("sample test on validation");
+         String node = result.getGroup(0);
+         Log.info("Found Node:" + node);
+         if (!target.contains(node))
+         {
+            addError("Tag " + node + " not found in target");
+         }
+         result = regExp.exec(source);
       }
    }
 }
-
-
- 

@@ -20,8 +20,6 @@
  */
 package org.zanata.webtrans.client.events;
 
-import org.zanata.webtrans.shared.model.TransUnit;
-
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
@@ -46,12 +44,12 @@ public class ValidationEvent extends GwtEvent<ValidationEventHandler>
       return TYPE != null ? TYPE : (TYPE = new Type<ValidationEventHandler>());
    }
 
-   // TransUnit that to be validate
-   private TransUnit transUnit;
+   private String source, target;
 
-   public ValidationEvent(TransUnit tu)
+   public ValidationEvent(String source, String target)
    {
-      this.transUnit = tu;
+      this.source = source;
+      this.target = target;
    }
 
    @Override
@@ -67,9 +65,14 @@ public class ValidationEvent extends GwtEvent<ValidationEventHandler>
       handler.onValidate(this);
    }
 
-   public TransUnit getTransUnit()
+   public String getSource()
    {
-      return transUnit;
+      return source;
+   }
+
+   public String getTarget()
+   {
+      return target;
    }
 }
 

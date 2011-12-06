@@ -27,15 +27,10 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.UIObject;
@@ -47,8 +42,6 @@ import com.google.gwt.user.client.ui.UIObject;
  **/
 public class ShortcutConfigPanel extends DecoratedPopupPanel
 {
-   private final CheckBox enterChk = new CheckBox(UserConfigConstants.LABEL_ENTER_BUTTON_SAVE);
-   private final CheckBox escChk = new CheckBox(UserConfigConstants.LABEL_ESC_KEY_CLOSE);
    private ListBox optionsList = new ListBox();
 
    private Map<String, Boolean> configMap = new HashMap<String, Boolean>();
@@ -74,16 +67,6 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
       optionsList.addItem(UserConfigConstants.OPTION_FUZZY);
       optionsList.addItem(UserConfigConstants.OPTION_UNTRANSLATED);
       mainPanel.add(optionsList);
-
-      HorizontalPanel enteroptHP = new HorizontalPanel();
-      enteroptHP.setSpacing(5);
-      enteroptHP.add(enterChk);
-      mainPanel.add(enteroptHP);
-
-      HorizontalPanel escoptHP = new HorizontalPanel();
-      escoptHP.setSpacing(5);
-      escoptHP.add(escChk);
-      mainPanel.add(escoptHP);
 
       this.add(mainPanel);
    }
@@ -114,40 +97,14 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
             eventBus.fireEvent(new UserConfigChangeEvent(configMap));
          }
       });
-
-      enterChk.addValueChangeHandler(new ValueChangeHandler<Boolean>()
-      {
-         @Override
-         public void onValueChange(ValueChangeEvent<Boolean> event)
-         {
-            Log.info("Enable 'Enter' Key to save and move to next string: " + event.getValue());
-            configMap.put(UserConfigConstants.BUTTON_ENTER, event.getValue());
-            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
-         }
-      });
-
-      escChk.addValueChangeHandler(new ValueChangeHandler<Boolean>()
-      {
-         @Override
-         public void onValueChange(ValueChangeEvent<Boolean> event)
-         {
-            Log.info("Enable 'Esc' Key to close editor: " + event.getValue());
-            configMap.put(UserConfigConstants.BUTTON_ESC, event.getValue());
-            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
-         }
-      });
    }
 
    private void setDefaultValue()
    {
       optionsList.setSelectedIndex(0);
-      enterChk.setValue(false);
-      escChk.setValue(false);
 
       configMap.put(UserConfigConstants.BUTTON_FUZZY, true);
       configMap.put(UserConfigConstants.BUTTON_UNTRANSLATED, true);
-      configMap.put(UserConfigConstants.BUTTON_ENTER, false);
-      configMap.put(UserConfigConstants.BUTTON_ESC, false);
    }
 
    public void toggleDisplay(final UIObject target)

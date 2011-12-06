@@ -20,7 +20,6 @@
  */
 package org.zanata.webtrans.client.view;
 
-
 import java.util.Map;
 
 import org.zanata.webtrans.client.presenter.TransUnitNavigationPresenter;
@@ -71,20 +70,23 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
 
    public void setNavModeTooltip(Map<String, Boolean> configMap)
    {
-      boolean fuzzyMode = configMap.get(UserConfigConstants.BUTTON_FUZZY);
-      boolean untranslatedMode = configMap.get(UserConfigConstants.BUTTON_UNTRANSLATED);
+      if (configMap.containsKey(UserConfigConstants.BUTTON_FUZZY) && configMap.containsKey(UserConfigConstants.BUTTON_UNTRANSLATED))
+      {
+         boolean fuzzyMode = configMap.get(UserConfigConstants.BUTTON_FUZZY);
+         boolean untranslatedMode = configMap.get(UserConfigConstants.BUTTON_UNTRANSLATED);
 
-      if (fuzzyMode && !untranslatedMode)
-      {
-         setFuzzyModeTooltip();
-      }
-      else if (untranslatedMode && !fuzzyMode)
-      {
-         setUntranslatedModeTooltip();
-      }
-      else if (untranslatedMode && fuzzyMode)
-      {
-         setFuzzyUntranslatedModeTooltip();
+         if (fuzzyMode && !untranslatedMode)
+         {
+            setFuzzyModeTooltip();
+         }
+         else if (untranslatedMode && !fuzzyMode)
+         {
+            setUntranslatedModeTooltip();
+         }
+         else if (untranslatedMode && fuzzyMode)
+         {
+            setFuzzyUntranslatedModeTooltip();
+         }
       }
    }
 
@@ -141,7 +143,6 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
    {
       return lastEntry;
    }
-
 
    @Override
    public Widget asWidget()

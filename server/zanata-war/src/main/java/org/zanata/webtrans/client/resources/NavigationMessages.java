@@ -117,4 +117,10 @@ public interface NavigationMessages extends Messages
 
    @DefaultMessage("Click here to start translating")
    String clickHere();
+
+   @DefaultMessage("Click here for more info")
+   String clickHereForMoreInfo();
+
+   @DefaultMessage("Run Validation")
+   String runValidation();
 }

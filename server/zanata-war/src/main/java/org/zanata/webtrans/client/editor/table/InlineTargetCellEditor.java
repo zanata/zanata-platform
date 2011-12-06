@@ -28,6 +28,7 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.editor.CheckKey;
 import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.events.EditTransUnitEvent;
+import org.zanata.webtrans.client.events.ValidationEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.UserConfigConstants;
@@ -48,6 +49,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -153,7 +155,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private String saveButtonShortcuts;
    private String saveButtonwithEnterShortcuts;
-   private PushButton saveButton, fuzzyButton, cancelButton;
+   private PushButton saveButton, fuzzyButton, cancelButton, validateButton;
 
    /*
     * The minimum height of the target editor
@@ -265,6 +267,21 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       TableResources images = GWT.create(TableResources.class);
 
+      validateButton = new PushButton(new Image(images.cellEditorValidate()));
+      validateButton.setStyleName("gwt-Button");
+      validateButton.setTitle(messages.runValidation());
+      validateButton.addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            if (cellValue != null)
+            {
+               eventBus.fireEvent(new ValidationEvent(cellValue.getSource(), textArea.getText()));
+            }
+         }
+      });
+
       saveButton = new PushButton(new Image(images.cellEditorAccept()));
       saveButton.setStyleName("gwt-Button");
       saveButtonShortcuts = messages.editSaveShortcut();
@@ -281,14 +298,16 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       cancelButton.setStyleName("gwt-Button");
       cancelButton.setTitle(messages.editCancelShortcut());
       cancelButton.addClickHandler(cancelHandler);
-      cancelButton.addFocusHandler(new FocusHandler(){
+      cancelButton.addFocusHandler(new FocusHandler()
+      {
          @Override
          public void onFocus(FocusEvent event)
          {
             isCancelButtonFocused = true;
          }
       });
-      cancelButton.addBlurHandler(new BlurHandler(){
+      cancelButton.addBlurHandler(new BlurHandler()
+      {
 
          @Override
          public void onBlur(BlurEvent event)
@@ -297,6 +316,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          }
       });
 
+      operationsPanel.add(validateButton);
       operationsPanel.add(saveButton);
       operationsPanel.add(fuzzyButton);
       operationsPanel.add(cancelButton);
@@ -471,7 +491,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    public void saveAndMoveNextState(NavigationType nav)
    {
       savePendingChange(true);
-      
+
       if (untranslatedMode && fuzzyMode)
       {
          gotoFuzzyAndNewRow(nav);
@@ -610,25 +630,35 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    public void setShowOperationButtons(boolean showButtons)
    {
-	   operationsPanel.setVisible(showButtons);
+      operationsPanel.setVisible(showButtons);
    }
 
    public void updateKeyBehaviour(Map<String, Boolean> configMap)
    {
-      untranslatedMode = configMap.get(UserConfigConstants.BUTTON_UNTRANSLATED);
-      fuzzyMode = configMap.get(UserConfigConstants.BUTTON_FUZZY);
-
-      isEnterKeySavesEnabled = configMap.get(UserConfigConstants.BUTTON_ENTER);
-      if (isEnterKeySavesEnabled)
+      if (configMap.containsKey(UserConfigConstants.BUTTON_FUZZY) && configMap.containsKey(UserConfigConstants.BUTTON_UNTRANSLATED))
       {
-         saveButton.setTitle(saveButtonwithEnterShortcuts);
-      }
-      else
-      {
-         saveButton.setTitle(saveButtonShortcuts);
+         untranslatedMode = configMap.get(UserConfigConstants.BUTTON_UNTRANSLATED);
+         fuzzyMode = configMap.get(UserConfigConstants.BUTTON_FUZZY);
       }
 
-      isEscKeyCloseEditor = configMap.get(UserConfigConstants.BUTTON_ESC);
+      if (configMap.containsKey(UserConfigConstants.BUTTON_ENTER))
+      {
+         isEnterKeySavesEnabled = configMap.get(UserConfigConstants.BUTTON_ENTER);
+         if (isEnterKeySavesEnabled)
+         {
+            saveButton.setTitle(saveButtonwithEnterShortcuts);
+         }
+         else
+         {
+            saveButton.setTitle(saveButtonShortcuts);
+         }
+      }
+
+      if (configMap.containsKey(UserConfigConstants.BUTTON_ESC))
+      {
+         isEscKeyCloseEditor = configMap.get(UserConfigConstants.BUTTON_ESC);
+      }
+
    }
 
    public boolean isCancelButtonFocused()

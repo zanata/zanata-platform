@@ -57,7 +57,7 @@ public class ValidationService
     * 
     * @param tu
     */
-   public void execute(TransUnit tu)
+   public void execute(String source, String target)
    {
       for (String key : validationMap.keySet())
       {
@@ -65,7 +65,9 @@ public class ValidationService
 
          if (action != null && action.isEnabled())
          {
-            validationMap.get(key).execute(tu);
+            action.clearErrorMessage();
+            action.validate(source, target);
+            action.showErrorMessage();
          }
       }
    }
@@ -88,6 +90,9 @@ public class ValidationService
       return new ArrayList<ValidationObject>(validationMap.values());
    }
 
+   /**
+    * Clear all validation plugin's error message
+    */
    public void clearAllMessage()
    {
       for (String key : validationMap.keySet())
@@ -96,7 +101,7 @@ public class ValidationService
 
          if (action != null)
          {
-            action.clearMessage();
+            action.clearErrorMessage();
          }
       }
    }
