@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.presenter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
@@ -58,6 +59,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.view.client.HasData;
@@ -96,6 +98,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
    // used to determine whether to re-run filter
    private HistoryToken currentHistoryState = null;
+
+   private static final String PRE_FILTER_QUERY_PARAMETER_KEY = "doc";
 
    @Inject
    public DocumentListPresenter(Display display, EventBus eventBus, WorkspaceContext workspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages)
@@ -369,9 +373,16 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
    private void loadDocumentList()
    {
+      // generate filter from query string if present
+      ArrayList<String> filterDocs = null;
+      List<String> queryDocs = Window.Location.getParameterMap().get(PRE_FILTER_QUERY_PARAMETER_KEY);
+      if (queryDocs != null && !queryDocs.isEmpty())
+      {
+         filterDocs = new ArrayList<String>(queryDocs);
+      }
+
       // switch doc list to the new project
-      // TODO this is the place to add document pre-filter parameters
-      dispatcher.execute(new GetDocumentList(workspaceContext.getWorkspaceId().getProjectIterationId()), new AsyncCallback<GetDocumentListResult>()
+      dispatcher.execute(new GetDocumentList(workspaceContext.getWorkspaceId().getProjectIterationId(), filterDocs), new AsyncCallback<GetDocumentListResult>()
       {
          @Override
          public void onFailure(Throwable caught)

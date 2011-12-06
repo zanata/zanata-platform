@@ -195,9 +195,12 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public void setWorkspaceNameLabel(String workspaceNameLabel)
+   public void setWorkspaceNameLabel(String workspaceNameLabel, String workspaceTitle)
    {
-      documentsLink.setText(workspaceNameLabel);
+      if (workspaceTitle == null || workspaceTitle.length() == 0)
+         documentsLink.setText(workspaceNameLabel);
+      else
+         documentsLink.setText(workspaceNameLabel + " - " + workspaceTitle);
    }
 
    @Override

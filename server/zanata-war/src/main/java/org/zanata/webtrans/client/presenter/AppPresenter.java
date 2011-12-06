@@ -99,7 +99,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       void setUserLabel(String userLabel);
 
-      void setWorkspaceNameLabel(String workspaceNameLabel);
+      void setWorkspaceNameLabel(String workspaceNameLabel, String workspaceTitle);
 
       void setSelectedDocument(DocumentInfo document);
 
@@ -142,6 +142,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
    private final TranslationStats selectedDocumentStats = new TranslationStats();
    private final TranslationStats projectStats = new TranslationStats();
+
+   private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
    @Inject
    public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
@@ -253,7 +255,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       display.setUserLabel(identity.getPerson().getName());
 
-      display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName());
+      String workspaceTitle = Window.Location.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
+
+      display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName(), workspaceTitle);
 
       Window.setTitle(messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
 
