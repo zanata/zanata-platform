@@ -34,8 +34,9 @@ import org.zanata.rest.client.ZanataProxyFactory;
 public abstract class ConfigurableProjectCommand<O extends ConfigurableProjectOptions> extends ConfigurableCommand<O>
 {
 
-   protected static final String PROJECT_TYPE_PUBLICAN = "podir";
+   protected static final String PROJECT_TYPE_UTF8_PROPERTIES = "utf8properties";
    protected static final String PROJECT_TYPE_PROPERTIES = "properties";
+   protected static final String PROJECT_TYPE_PUBLICAN = "podir";
    protected static final String PROJECT_TYPE_XLIFF = "xliff";
    protected static final String PROJECT_TYPE_XML = "xml";
 
