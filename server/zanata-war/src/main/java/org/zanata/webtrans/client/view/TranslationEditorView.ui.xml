@@ -8,9 +8,8 @@
 	<ui:style>
 		.editor {
 			background-color: #ffffff;
-			border: 3px solid #e0e8ee;
-			-moz-border-radius: 7px;
-			-webkit-border-radius: 7px;
+			border: 2px solid #e0e8ee;
+			border-radius: 5px;
 		}
 		
 		.unitStatus {

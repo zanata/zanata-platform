@@ -1,0 +1,21 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+    xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+    <ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources"/>
+
+    <ui:style>
+
+        
+    </ui:style>
+
+    <g:LayoutPanel>
+        <g:layer top='0px' bottom='0px'>
+            <g:ScrollPanel>
+                <g:FlowPanel ui:field='userListPanel' />
+            </g:ScrollPanel>
+        </g:layer>
+    </g:LayoutPanel>
+    
+    
+</ui:UiBinder> 

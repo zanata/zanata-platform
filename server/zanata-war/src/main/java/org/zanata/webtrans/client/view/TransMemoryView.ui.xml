@@ -13,7 +13,6 @@
 	<g:LayoutPanel>
 		<g:layer top="0px" height="30px">
 			<g:HorizontalPanel>
-			    <g:Label ui:field="tmHeader" styleName="{style.headerLabel}"/>
 				<g:TextBox ui:field="tmTextBox" />
 				<g:CheckBox ui:field="phraseButton"/>
 				<g:Button ui:field="searchButton"/>

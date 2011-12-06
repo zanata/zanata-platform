@@ -57,9 +57,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    TextBox tmTextBox;
 
    @UiField
-   Label tmHeader;
-
-   @UiField
    CheckBox phraseButton;
 
    @UiField
@@ -88,7 +85,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       phraseButton.setText(messages.phraseButtonLabel());
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
-      tmHeader.setText(messages.tmHeader());
       Log.info(LocaleInfo.getCurrentLocale().getLocaleName());
    }
 

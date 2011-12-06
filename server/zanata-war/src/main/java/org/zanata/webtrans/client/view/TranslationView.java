@@ -34,6 +34,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -52,10 +53,12 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    LayoutPanel sidePanelOuterContainer, southPanelContainer;
 
    @UiField
-   LayoutPanel editorContainer, sidePanelContainer;
+   TabLayoutPanel southPanelTab;
 
    @UiField
-   LayoutPanel tmPanel;
+   LayoutPanel editorContainer, sidePanelContainer;
+
+   LayoutPanel tmPanel, userPanel;
 
    /*
     * TODO: temporary disable glossary functionalities
@@ -73,15 +76,17 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    Image sidePanelExpend;
 
    @UiField
-   Image tmMinimize;
+   Image southPanelMinimize;
 
    @UiField
-   Image showTmViewLink;
+   Image showSouthPanelViewLink;
 
    final WebTransMessages messages;
 
    private double panelWidth = 20;
-   private double southHeight = 45;
+   private double southHeight = 30;
+
+   boolean disableGlossary = true;
 
    @Inject
    public TranslationView(Resources resources, WebTransMessages messages)
@@ -90,16 +95,26 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       this.messages = messages;
 
       StyleInjector.inject(resources.style().getText(), true);
-      this.sidePanelOuterContainer = new LayoutPanel();
-      this.southPanelContainer = new LayoutPanel();
+      sidePanelOuterContainer = new LayoutPanel();
+      southPanelContainer = new LayoutPanel();
 
+      tmPanel = new LayoutPanel();
+      userPanel = new LayoutPanel();
+      
       initWidget(uiBinder.createAndBindUi(this));
-      tmMinimize.setVisible(true);
+      southPanelMinimize.setVisible(true);
       sidePanelCollapse.setVisible(true);
       mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) panelWidth);
       mainSplitPanel.setWidgetMinSize(southPanelContainer, (int) southHeight);
 
       sidePanelExpend.setTitle(messages.showTranslationDetailsPanel());
+
+      southPanelTab.add(tmPanel, "Translation Memory");
+      if (!disableGlossary)
+      {
+         southPanelTab.add(glossaryPanel, "glossary");
+      }
+      southPanelTab.add(userPanel, messages.nUsersOnline(0));
    }
 
    @Override
@@ -109,10 +124,17 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       tmPanel.add(translationMemoryView);
    }
 
+   @Override
+   public void setWorkspaceUsersView(Widget workspaceUsersView)
+   {
+      userPanel.clear();
+      userPanel.add(workspaceUsersView);
+   }
+
    /*
     * TODO: temporary disable glossary functionalities
     */
-   boolean disableGlossary = true;
+
 
    @Override
    public void setGlossaryView(Widget glossaryView)
@@ -182,7 +204,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    }
 
    @Override
-   public void setTmViewVisible(boolean visible)
+   public void setSouthPanelViewVisible(boolean visible)
    {
       mainSplitPanel.forceLayout();
       Widget splitter = SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel, southPanelContainer);
@@ -193,7 +215,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       else
       {
          southHeight = mainSplitPanel.getWidgetContainerElement(southPanelContainer).getOffsetHeight();
-         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, 45);
+         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, 30);
       }
       splitter.setVisible(visible);
       mainSplitPanel.animate(200);
@@ -201,21 +223,27 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    }
 
    @Override
-   public HasClickHandlers getHideTMViewButton()
+   public HasClickHandlers getHideSouthPanelButton()
    {
-      return tmMinimize;
+      return southPanelMinimize;
    }
 
    @Override
-   public HasClickHandlers getShowTMViewButton()
+   public HasClickHandlers getShowSouthPanelButton()
    {
-      return showTmViewLink;
+      return showSouthPanelViewLink;
    }
 
    @Override
-   public void setShowTMViewButtonVisible(boolean visible)
+   public void setShowSouthPanelButtonVisible(boolean visible)
    {
-      showTmViewLink.setVisible(visible);
-      tmMinimize.setVisible(!visible);
+      showSouthPanelViewLink.setVisible(visible);
+      southPanelMinimize.setVisible(!visible);
+   }
+
+   @Override
+   public void updateWorkspaceUsersTitle(String title)
+   {
+      southPanelTab.setTabText(1, title);
    }
 }

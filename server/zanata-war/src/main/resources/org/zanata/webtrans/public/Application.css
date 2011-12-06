@@ -164,10 +164,31 @@ Removes some of the styling on the page-level splitters
 	color:#FFFFFF;
 }
 
-.gwt-StackLayoutPanel .gwt-StackLayoutPanelContent{
+.gwt-StackLayoutPanel .gwt-StackLayoutPanelContent {
 	margin-left:3px;
 	margin-right:3px;
 	border:0px;
+}
+
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
+	color:#FFFFFF;
+	background:#4a75b5;
+	cursor:pointer;
+	border-top-left-radius:5px;
+	border-top-right-radius:5px;
+}
+
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected {
+	background: #0f3560;
+    cursor:default;
+    border-top-left-radius:5px;
+    border-top-right-radius:5px;
+}
+
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
+	border: 2px solid #e0e8ee; 
+	background:#FFFFFF;
+	border-radius:5px;
 }
 
 .WebTransEditor-Outer tr.middle td.middleCenter {

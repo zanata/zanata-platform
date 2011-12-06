@@ -46,13 +46,10 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display
    {
    }
 
-   private final LayoutPanel usersPanelContainer;
-
    private final LayoutPanel transUnitDetailContainer;
 
    private final LayoutPanel validationDetailContainer;
 
-   private final FlowPanel userListPanel;
 
    @UiField
    StackLayoutPanel mainPanel;
@@ -61,31 +58,19 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display
 
    private final WebTransMessages messages;
 
-   private ScrollPanel userPanelScrollPanel;
-
-
    @Inject
    public SidePanel(WebTransMessages messages)
    {
       transUnitDetailContainer = new LayoutPanel();
-      usersPanelContainer = new LayoutPanel();
       validationDetailContainer = new LayoutPanel();
-
-      userListPanel = new FlowPanel();
-
-      userPanelScrollPanel = new ScrollPanel();
 
       this.messages = messages;
 
       rootPanel = uiBinder.createAndBindUi(this);
       initWidget(rootPanel);
 
-      userPanelScrollPanel.add(userListPanel);
-      usersPanelContainer.add(userPanelScrollPanel);
-
       mainPanel.add(transUnitDetailContainer, messages.transUnitDetailsHeading(), 20);
       mainPanel.add(validationDetailContainer, messages.validationDetailsHeading(), 20);
-      mainPanel.add(usersPanelContainer, messages.nUsersOnline(0), 20);
    }
 
 
@@ -101,24 +86,6 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display
    {
       validationDetailContainer.clear();
       validationDetailContainer.add(widget);
-   }
-
-   @Override
-   public void updateUserList(ArrayList<Person> userList)
-   {
-      int existingCount = userListPanel.getWidgetCount();
-      for (int i = 0; i < existingCount; i++)
-      {
-         userListPanel.remove(0);
-      }
-
-      for (int i = 0; i < userList.size(); i++)
-      {
-         UserListItem item = new UserListItem(userList.get(i));
-         userListPanel.add(item);
-      }
-
-      mainPanel.setHeaderText(2, messages.nUsersOnline(userList.size()));
    }
 
    @Override

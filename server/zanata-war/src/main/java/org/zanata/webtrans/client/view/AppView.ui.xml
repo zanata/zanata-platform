@@ -56,22 +56,14 @@
 			color: #e0e0e0;	
 		}
 		
-		.editor {
-			padding-left: 7px;
-			background-color: #b4e2ff;
-			border: 2px solid #99ccff;
-			-moz-border-radius: 10px;
-		}
-
-		
 	</ui:style>
 	<g:LayoutPanel>
-		<g:layer top="0px" height="30px">
+		<g:layer top="0px" height="25px">
 			<g:LayoutPanel styleName="{style.header}">
-				<g:layer top="6px" left="6px" width="18px" height="18px">
+				<g:layer top="5px" left="6px" width="18px" height="18px">
 					<g:Image resource="{resources.logo}"/>
 				</g:layer>
-				<g:layer top="6px" height="100%" left="25px" right="6px">
+				<g:layer top="5px" height="100%" left="25px" right="6px">
 					<g:FlowPanel>
 						<g:HTMLPanel styleName="{style.topPanel-Navigation}">
 							<nobr>
@@ -90,7 +82,7 @@
 				</g:layer>
 			</g:LayoutPanel>
 		</g:layer>
-		<g:layer top="30px" height="30px">
+		<g:layer top="25px" height="28px">
 		<g:LayoutPanel ui:field='topPanel' styleName="{resources.style.banner}">
 			<g:layer left="0px" right="520px">
 			<g:HorizontalPanel width="100%">
@@ -115,7 +107,7 @@
 			</g:layer>
 		</g:LayoutPanel>
 		</g:layer>
-		<g:layer top="66px" bottom="0px" left='7px' right='7px' >
+		<g:layer top="58px" bottom="0px" left='7px' right='7px' >
 		   <g:LayoutPanel ui:field="container" />
 		</g:layer>
 	</g:LayoutPanel>
