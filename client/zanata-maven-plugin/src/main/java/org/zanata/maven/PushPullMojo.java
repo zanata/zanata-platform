@@ -74,9 +74,16 @@ public abstract class PushPullMojo<O extends PushPullOptions> extends Configurab
    }
 
    /**
+    * Whether module processing should be enabled
     * @parameter expression="${zanata.modules}"
     */
    private boolean modules = false;
+
+   /**
+    * Dry run: don't change any data, on the server or on the filesystem.
+    * @parameter expression="${dryRun}"
+    */
+   private boolean dryRun = false;
 
    /**
     * Base directory of the project.
@@ -126,6 +133,14 @@ public abstract class PushPullMojo<O extends PushPullOptions> extends Configurab
    public PushPullMojo() throws Exception
    {
       super();
+   }
+
+   /**
+    * @return the dryRun
+    */
+   public boolean isDryRun()
+   {
+      return dryRun;
    }
 
    public boolean isModules()

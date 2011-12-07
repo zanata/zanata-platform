@@ -34,4 +34,5 @@ public interface PushPullOptions extends ConfigurableProjectOptions
    File getSrcDir();
    File getTransDir();
    boolean isModules();
+   boolean isDryRun();
 }

@@ -82,6 +82,10 @@ public class PullCommand extends PushPullCommand<PullOptions>
       }
       log.info("Target-language base directory (translations): {}", getOpts().getTransDir());
 
+      if (getOpts().isDryRun())
+      {
+         log.info("DRY RUN: no permanent changes will be made");
+      }
       if (getOpts().getPullSrc())
       {
          log.warn("pullSrc option is set: existing source-language files may be overwritten/deleted");
@@ -114,8 +118,15 @@ public class PullCommand extends PushPullCommand<PullOptions>
          }
          if (getOpts().getPullSrc())
          {
-            log.info("writing source file for document {}", docName);
-            strat.writeSrcFile(doc);
+            if (!getOpts().isDryRun())
+            {
+               log.info("writing source file for document {}", docName);
+               strat.writeSrcFile(doc);
+            }
+            else
+            {
+               log.info("writing source file for document {} (skipped due to dry run)", docName);
+            }
          }
 
          for (LocaleMapping locMapping : locales)
@@ -132,8 +143,15 @@ public class PullCommand extends PushPullCommand<PullOptions>
             ClientUtility.checkResult(transResponse, uri);
             TranslationsResource targetDoc = transResponse.getEntity();
 
-            log.info("writing translation file in locale {} for document {}", locMapping.getLocalLocale(), docName);
-            strat.writeTransFile(doc, docName, locMapping, targetDoc);
+            if (!getOpts().isDryRun())
+            {
+               log.info("writing translation file in locale {} for document {}", locMapping.getLocalLocale(), docName);
+               strat.writeTransFile(doc, docName, locMapping, targetDoc);
+            }
+            else
+            {
+               log.info("writing translation file in locale {} for document {} (skipped due to dry run)", locMapping.getLocalLocale(), docName);
+            }
          }
       }
 
