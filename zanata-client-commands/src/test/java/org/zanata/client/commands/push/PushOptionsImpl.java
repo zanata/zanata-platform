@@ -146,4 +146,11 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
       return false;
    }
 
+   @Override
+   public boolean isDryRun()
+   {
+      // not supported yet
+      return false;
+   }
+
 }

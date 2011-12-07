@@ -124,6 +124,10 @@ public class PushCommand extends PushPullCommand<PushOptions>
          throw new RuntimeException("directory '" + sourceDir + "' does not exist - check sourceDir option");
       }
 
+      if (getOpts().isDryRun())
+      {
+         log.info("DRY RUN: no permanent changes will be made");
+      }
       if (getOpts().getPushTrans())
       {
          if (getOpts().getLocales() == null)
@@ -155,10 +159,17 @@ public class PushCommand extends PushPullCommand<PushOptions>
          debug(srcDoc);
 
          final StringSet extensions = strat.getExtensions();
-         log.info("pushing source document [name={}] to server", srcDoc.getName());
-         boolean copyTrans = getOpts().getCopyTrans();
-         ClientResponse<String> putResponse = translationResources.putResource(docUri, srcDoc, extensions, copyTrans);
-         ClientUtility.checkResult(putResponse, uri);
+         if (!getOpts().isDryRun())
+         {
+            log.info("pushing source document [name={}] to server", srcDoc.getName());
+            boolean copyTrans = getOpts().getCopyTrans();
+            ClientResponse<String> putResponse = translationResources.putResource(docUri, srcDoc, extensions, copyTrans);
+            ClientUtility.checkResult(putResponse, uri);
+         }
+         else
+         {
+            log.info("pushing source document [name={}] to server (skipped due to dry run)", srcDoc.getName());
+         }
 
          if (getOpts().getPushTrans())
          {
@@ -168,13 +179,20 @@ public class PushCommand extends PushPullCommand<PushOptions>
                public void visit(LocaleMapping locale, TranslationsResource targetDoc)
                {
                   debug(targetDoc);
-                  log.info("pushing target document [name={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), locale.getLocalLocale(), locale.getLocale() });
-                  ClientResponse<String> putTransResponse = translationResources.putTranslations(docUri, new LocaleId(locale.getLocale()), targetDoc, extensions, getOpts().getMergeType());
-                  ClientUtility.checkResult(putTransResponse, uri);
-                  String entity = putTransResponse.getEntity(String.class);
-                  if (entity != null && !entity.isEmpty())
+                  if (!getOpts().isDryRun())
                   {
-                     log.warn("{}", entity);
+                     log.info("pushing target document [name={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), locale.getLocalLocale(), locale.getLocale() });
+                     ClientResponse<String> putTransResponse = translationResources.putTranslations(docUri, new LocaleId(locale.getLocale()), targetDoc, extensions, getOpts().getMergeType());
+                     ClientUtility.checkResult(putTransResponse, uri);
+                     String entity = putTransResponse.getEntity(String.class);
+                     if (entity != null && !entity.isEmpty())
+                     {
+                        log.warn("{}", entity);
+                     }
+                  }
+                  else
+                  {
+                     log.info("pushing target document [name={} client-locale={}] to server [locale={}] (skipped due to dry run)", new Object[] { srcDoc.getName(), locale.getLocalLocale(), locale.getLocale() });
                   }
                }
             });
@@ -194,9 +212,16 @@ public class PushCommand extends PushPullCommand<PushOptions>
          String docUri = RestUtil.convertToDocumentURIId(docName);
          if (!localDocNames.contains(docName))
          {
-            log.info("deleting resource {} from server", docName);
-            ClientResponse<String> deleteResponse = translationResources.deleteResource(docUri);
-            ClientUtility.checkResult(deleteResponse, uri);
+            if (!getOpts().isDryRun())
+            {
+               log.info("deleting resource {} from server", docName);
+               ClientResponse<String> deleteResponse = translationResources.deleteResource(docUri);
+               ClientUtility.checkResult(deleteResponse, uri);
+            }
+            else
+            {
+               log.info("deleting resource {} from server (skipped due to dry run)", docName);
+            }
          }
       }
    }
