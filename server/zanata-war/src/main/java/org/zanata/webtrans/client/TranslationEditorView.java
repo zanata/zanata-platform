@@ -106,4 +106,10 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    {
       return pager;
    }
+
+   @Override
+   public boolean isPagerFocused()
+   {
+      return pager.isFocused();
+   }
 }

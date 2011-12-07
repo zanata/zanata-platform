@@ -29,11 +29,14 @@ import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.editor.HasTranslationStats;
+import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -70,11 +73,15 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
 
       void setUndoRedo(Widget undoRedoWidget);
 
+      boolean isPagerFocused();
+
    }
 
    private final TransUnitNavigationPresenter transUnitNavigationPresenter;
    private final TableEditorPresenter tableEditorPresenter;
    private final UndoRedoPresenter undoRedoPresenter;
+
+   private TransFilterPresenter.Display transFilterView;
 
    private DocumentInfo currentDocument;
    private final TranslationStats statusCount = new TranslationStats();
@@ -89,6 +96,12 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       this.tableEditorPresenter = tableEditorPresenter;
       this.transUnitNavigationPresenter = transUnitNavigationPresenter;
       this.undoRedoPresenter = undoRedoPresenter;
+   }
+
+   public void bind(TransFilterPresenter.Display transFilterView)
+   {
+      this.transFilterView = transFilterView;
+      super.bind();
    }
 
    @Override
@@ -150,6 +163,16 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
          }
       }));
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), updateHandler));
+
+      registerHandler(eventBus.addHandler(UserConfigChangeEvent.getType(), new UserConfigChangeHandler()
+      {
+         @Override
+         public void onValueChanged(UserConfigChangeEvent event)
+         {
+            transUnitNavigationPresenter.getDisplay().setNavModeTooltip(event.getConfigMap());
+            tableEditorPresenter.getDisplay().getTargetCellEditor().updateKeyBehaviour(event.getConfigMap());
+         }
+      }));
    }
 
    private void requestStatusCount(final DocumentId newDocumentId)
@@ -217,6 +240,41 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    public void saveEditorPendingChange()
    {
       tableEditorPresenter.getDisplay().getTargetCellEditor().savePendingChange(true);
+   }
+
+   public void cloneAction()
+   {
+      tableEditorPresenter.getDisplay().getTargetCellEditor().cloneAction();
+   }
+
+   public boolean isTargetCellEditorFocused()
+   {
+      return tableEditorPresenter.getDisplay().getTargetCellEditor().isFocused();
+   }
+
+   public boolean isCancelButtonFocused()
+   {
+      return tableEditorPresenter.getDisplay().getTargetCellEditor().isCancelButtonFocused();
+   }
+
+   public void setCancelButtonFocused(boolean isCancelButtonFocused)
+   {
+      tableEditorPresenter.getDisplay().getTargetCellEditor().setCancelButtonFocused(isCancelButtonFocused);
+   }
+
+   public void gotoCurrentRow()
+   {
+      tableEditorPresenter.gotoCurrentRow();
+   }
+
+   public void gotoPrevRow(boolean andEdit)
+   {
+      tableEditorPresenter.gotoPrevRow(andEdit);
+   }
+
+   public void gotoNextRow(boolean andEdit)
+   {
+      tableEditorPresenter.gotoNextRow(andEdit);
    }
 
 }

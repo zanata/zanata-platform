@@ -4,50 +4,141 @@
     xmlns:s="http://jboss.com/products/seam/taglib"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:a="http://richfaces.org/a4j"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j"
     template="../WEB-INF/layout/template.xhtml">
 
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
-	<rich:panel id="memberPanel" >
-        <h1>#{languageTeamAction.locale.retrieveNativeName()}</h1>
-        <p>#{messages['jsf.SizeMembers']}</p>
-		<rich:dataTable 
-		    id="threads"
-		    value="#{languageTeamAction.locale.members.toArray()}" 
-		    var="member" rendered="#{languageTeamAction.locale.members.size != 0}">
-
-		  <rich:column width="auto">
-		    <f:facet name="header">#{messages['jsf.Username']}</f:facet>
-		    #{member.account.username}
-		  </rich:column>
-		  <rich:column width="auto">
-		    <f:facet name="header">#{messages['jsf.Name']}</f:facet>
-		    #{member.name}
-		  </rich:column>
-		</rich:dataTable>
-        </rich:panel>
+        <a4j:form>
+            <rich:panel id="memberPanel" >
+                <h1>#{languageTeamAction.locale.retrieveNativeName()}</h1>
+                <p>#{messages['jsf.SizeMembers']}</p>
+                <rich:dataTable
+                    id="threads"
+                    value="#{languageTeamAction.locale.members.toArray()}"
+                    var="member" 
+                    rendered="#{not empty languageTeamAction.locale.members}"
+                    sortMode="single">
+                  <rich:column id="usernameCol" width="auto" sortBy="#{member.person.account.username}" sortOrder="ASCENDING">
+                    <f:facet name="header">#{messages['jsf.Username']}</f:facet>
+                    #{member.person.account.username}
+                  </rich:column>
+                  <rich:column width="auto" sortBy="#{member.person.name}">
+                    <f:facet name="header">#{messages['jsf.Name']}</f:facet>
+                    #{member.person.name}
+                  </rich:column>
+                  <rich:column width="auto" rendered="#{languageTeamAction.checkLocalePermission('manage-language-team')}">
+                    <f:facet name="header">#{messages['jsf.Email']}</f:facet>
+                    <h:outputText>
+                        #{member.person.email}
+                    </h:outputText>
+                  </rich:column>
+                  <rich:column width="auto" styleClass="centered">
+                    <f:facet name="header">#{messages['jsf.Coordinator']}</f:facet>
+                    <h:selectBooleanCheckbox value="#{member.coordinator}"
+                        rendered="#{languageTeamAction.checkLocalePermission('manage-language-team')}">
+                        <a4j:support event="onclick"
+                            ajaxSingle="true"
+                            reRender="threads"
+                            action="#{languageTeamAction.saveTeamCoordinator(member)}"/>
+                    </h:selectBooleanCheckbox>
+                    <h:outputText rendered="#{not languageTeamAction.checkLocalePermission('manage-language-team') and member.coordinator}">
+                        <div class="tick"/>
+                    </h:outputText>
+                  </rich:column>
+                  <rich:column width="auto" styleClass="centered"
+                      rendered="#{languageTeamAction.checkLocalePermission('manage-language-team')}">
+                      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+                      <a4j:commandButton value="#{messages['jsf.Remove']}"
+                          action="#{languageTeamAction.removeMembership(member)}"
+                          reRender="threads"
+                          onclick="this.disabled=true"
+                          oncomplete="this.disabeld=false"/>
+                  </rich:column>
+                </rich:dataTable>
+            </rich:panel>
+        </a4j:form>
     </ui:define>
 
     <ui:define name="left_content">
+
       <rich:panel id="actionPanel" rendered="#{identity.loggedIn}">
         <f:facet name="header">
           #{messages['jsf.Actions']}
         </f:facet>
-        <a:form id="Language_team_member_toggle_form" ajaxSubmit="true" reRender="actionPanel,tribesTabDiv,memberPanel">
-          <a:commandLink id="Join" styleClass="action_link" action="#{languageTeamAction.joinTribe}" rendered="#{not languageTeamAction.contained}">
+        <a4j:form id="Language_team_member_toggle_form" ajaxSubmit="true" reRender="actionPanel,tribesTabDiv,memberPanel">
+          <a4j:commandLink id="Join" styleClass="action_link" action="#{languageTeamAction.joinTribe}" rendered="#{not languageTeamAction.contained and s:hasRole('admin')}">
             #{messages['jsf.JoinLanguageTeam']}
             <s:conversationId name="id" value="#{languageTeamAction.language}"/>
-          </a:commandLink>
-	 	  <a:commandLink id="Leave" styleClass="action_link" action="#{languageTeamAction.leaveTribe}" rendered="#{languageTeamAction.contained}">
+          </a4j:commandLink>
+          <a4j:commandLink id="Leave" styleClass="action_link" action="#{languageTeamAction.leaveTribe}" rendered="#{languageTeamAction.contained}">
             #{messages['jsf.LeaveLanguageTeam']}
             <s:conversationId name="id" value="#{languageTeamAction.language}"/>
-          </a:commandLink>
-        </a:form>
+          </a4j:commandLink>
+          <s:link styleClass="action_link" value="#{messages['jsf.RequestToJoinLanguageTeam']}" view="/language/join/#{languageTeamAction.language}" rendered="#{identity.loggedIn and not languageTeamAction.contained}" />
+            <!--
+          <s:link styleClass="action_link" value="#{messages['jsf.contactLanguageTeamCoordinator']}" view="/language/contact_coordinator.xhtml" propagation="none"  rendered="#{identity.loggedIn}">
+            using this param is not as clean as I'd like, but seems to be the only way to get a literal
+                 value into a bean. Ideally this should be inserted in pages.xml somehow
+            <f:param name="emailType" value="contact_coordinator" />
+            <f:param name="id" value="#{languageTeamAction.language}" />
+          </s:link>
+                 -->
+          <s:link styleClass="action_link" value="#{messages['jsf.contactLanguageTeamCoordinator']}" view="/language/contact/#{languageTeamAction.language}" propagation="none"  rendered="#{identity.loggedIn}" />
+          <h:outputText rendered="#{languageTeamAction.checkLocalePermission('manage-language-team')}">
+            <a href="#" class="action_link" onclick="#{rich:component('userAddPanel')}.show()">#{messages['jsf.AddTeamMember']}</a>
+          </h:outputText>
+        </a4j:form>
       </rich:panel>
-    </ui:define>
 
+      <rich:modalPanel id="userAddPanel" width="530" height="320">
+        <f:subview id="personSearch">
+          <a4j:form>
+            <h1>Find Users To Add</h1>
+            <p>
+              <h:inputText value="#{languageTeamAction.searchTerm}" />
+              <a4j:commandButton value="#{messages['jsf.Search']}"
+                                 action="#{languageTeamAction.searchForTeamMembers}"
+                                 reRender="searchResults"
+                                 status="searchStatus" />
+              <h:commandButton value="#{messages['jsf.Close']}"
+                               onclick="#{rich:component('userAddPanel')}.hide(); return false;" />
+            </p>
+          </a4j:form>
+          <a4j:region>
+            <a4j:status id="searchStatus" startText="Searching..." stopText="" />
+            <a4j:outputPanel id="searchResults" layout="block"
+                             style="overflow:auto;">
+              <h:outputText id="noResultsMessage" rendered="#{empty languageTeamAction.searchResults}" value="No results to display." />
+              <h:form rendered="#{not empty languageTeamAction.searchResults}">
+                <rich:dataTable id="personTable"
+                                value="#{languageTeamAction.searchResults}" var="person">
+                  <f:facet name="header">#{messages['jsf.SearchResults']}</f:facet>
+                  <rich:column sortBy="#{person.name}">
+                    <f:facet name="header">#{messages['jsf.Name']}</f:facet>
+                    #{person.name}
+                  </rich:column>
+                  <rich:column sortBy="#{person.account.username}">
+                    <f:facet name="header">#{messages['jsf.Username']}</f:facet>
+                    #{person.account.username}
+                  </rich:column>
+                  <rich:column>
+                    <f:facet name="header"></f:facet>
+                    <h:commandButton value="#{messages['jsf.Add']}"
+                                     action="#{languageTeamAction.addTeamMember(person.id)}"
+                                     rendered="#{!languageTeamAction.isPersonInTeam(person.id)}" />
+                    <h:outputText value="#{messages['jsf.AlreadyInTeam']}"
+                                  rendered="#{languageTeamAction.isPersonInTeam(person.id)}" />
+                  </rich:column>
+                </rich:dataTable>
+              </h:form>
+            </a4j:outputPanel>
+          </a4j:region>
+        </f:subview>
+      </rich:modalPanel>
+
+    </ui:define>
 
 </ui:composition>

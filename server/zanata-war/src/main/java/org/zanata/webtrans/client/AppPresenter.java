@@ -118,8 +118,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       Window.enableScrolling(false);
 
       documentListPresenter.bind();
-      translationPresenter.bind();
       transFilterPresenter.bind();
+      translationPresenter.bind(transFilterPresenter.getDisplay());
 
       display.setDocumentListView(documentListPresenter.getDisplay().asWidget());
       display.setTranslationView(translationPresenter.getDisplay().asWidget());

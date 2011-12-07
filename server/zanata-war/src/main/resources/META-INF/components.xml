@@ -22,6 +22,12 @@
          http://jboss.com/products/seam/components http://jboss.com/products/seam/components-2.1.xsd
          http://jboss.com/products/seam/resteasy http://jboss.com/products/seam/resteasy-2.1.xsd">
  
+  <core:init
+      debug="@env.debug@"
+      transaction-management-enabled="true"
+      jndi-pattern="#{ejbName}/local" 
+      distributable="false"/> 
+ 
   <!-- Conversation timeout: 20 minutes -->
   <core:manager concurrent-request-timeout="4000"
       conversation-timeout="1200000"
@@ -43,9 +49,40 @@
     </drools:rule-files>
   </drools:rule-base>
   
-  
-
   <security:rule-based-permission-resolver security-rules="#{securityRules}"/> 
+  
+  <!-- Persistence stuff -->
+
+  <!-- 
+      BOOTSTRAPPING A JPA ENTITYMANAGERFACTORY, SiA-9.3.1-p362
+      installed=true for JBoss 4.2.3 or newer
+      To have Seam defer loading of the persistence unit until it's needed, perhaps for a quicker 
+      deployment turnaround, you can  disable the startup behavior of this component, SiA-9.3.1-p363
+      
+      entity-manager-factory name is also referenced in in persistence.xml 
+  -->
+  <!-- FIXME zanataDatabase vs testDatabase -->
+  <persistence:entity-manager-factory
+      name="entityManagerFactory"
+      persistence-unit-name="@persistence-unit-name@"
+      installed="true"
+      startup="true" />
+      
+  <!--
+      If Seam loads the persistence unit (JBoss 4.x), the
+      EntityManagerFactory will be resolved from #{${app.entity.manager.factory.name}}. 
+      On JBoss AS 5, the EntityManagerFactory is retrieved from JNDI (the
+      binding occurs during application deployment), SiA-9.3.1-p362.
+      
+      By default, the Seam-managed persistence context components are defined with the autocreate 
+      feature disabled. By enabling this feature, you can inject these components using an 
+      @In@ annotation without having to supply the create attribute, SiA-9.3.2-p366.
+  -->
+  <persistence:managed-persistence-context
+      name="entityManager"
+      auto-create="true"
+      entity-manager-factory="#{entityManagerFactory}"
+      persistence-unit-jndi-name="java:/zanataEntityManagerFactory" />
    
   <security:jpa-identity-store 
       user-class="org.zanata.model.HAccount"

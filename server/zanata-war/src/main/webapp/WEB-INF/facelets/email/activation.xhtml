@@ -1,24 +1,24 @@
-<m:message xmlns="http://www.w3.org/1999/xhtml"
-           xmlns:m="http://jboss.com/products/seam/mail"
-           xmlns:f="http://java.sun.com/jsf/core"
-           xmlns:h="http://java.sun.com/jsf/html"
-           xmlns:ui="http://java.sun.com/jsf/facelets"
-           xmlns:s="http://jboss.com/products/seam/taglib"
-           charset="UTF-8" importance="normal">
-  <m:from name="#{messages['jsf.Zanata']}" >#{applicationConfiguration.adminEmail}</m:from>
-  <m:to name="#{register.person.name}">#{register.person.email}</m:to>
-  <m:subject>#{messages['jsf.ZanataAccountActivation']}</m:subject>
-  <m:body>
-    <html>
-    <body>
-    <p>#{messages['jsf.DearName']}</p>
-    <p>#{messages['jsf.PleaseClickOnTheFollowingLinkToActivateYourAccount']}</p>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:s="http://jboss.com/products/seam/taglib"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:a4j="http://richfaces.org/a4j"
+   xmlns:rich="http://richfaces.org/rich"
+   template="/WEB-INF/facelets/email/template_email.xhtml">
+   
+  <ui:param name="toName" value="#{messages['jsf.email.activation.register.Name']}" />
+  <ui:param name="toEmailAddr" value="#{register.person.email}" />
+  <ui:param name="subject" value="#{messages['jsf.email.activation.Subject']}" />
+  
+  <ui:define name="body">
+    <p>#{messages['jsf.email.activation.register.DearName']}</p>
+    <p>#{messages['jsf.email.activation.ClickLinkToActivateAccount']}</p>
     <p>
       <a href="#{applicationConfiguration.serverPath}/account/activate/#{register.activationKey}">
       #{applicationConfiguration.serverPath}/account/activate/#{register.activationKey}
       </a>
     </p>
-  </body>
-  </html>
-  </m:body>
-</m:message>
+  </ui:define>
+  
+</ui:composition>

@@ -24,11 +24,18 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.editor.CheckKey;
+import org.zanata.webtrans.client.editor.CheckKeyImpl;
+import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.shared.model.TransUnit;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -63,6 +70,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private final SidePanelPresenter sidePanelPresenter;
    private final TransMemoryPresenter transMemoryPresenter;
 
+   private TransFilterPresenter.Display transFilterView;
+
    @Inject
    public TranslationPresenter(Display display, EventBus eventBus, final TranslationEditorPresenter translationEditorPresenter, final SidePanelPresenter sidePanelPresenter, final TransMemoryPresenter transMemoryPresenter)
    {
@@ -77,13 +86,19 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
    }
 
+   public void bind(TransFilterPresenter.Display transFilterView)
+   {
+      this.transFilterView = transFilterView;
+      super.bind();
+   }
+
    @Override
    protected void onBind()
    {
       transMemoryPresenter.bind();
       display.setTranslationMemoryView(transMemoryPresenter.getDisplay().asWidget());
 
-      translationEditorPresenter.bind();
+      translationEditorPresenter.bind(transFilterView);
       display.setEditorView(translationEditorPresenter.getDisplay().asWidget());
 
       sidePanelPresenter.bind();
@@ -141,6 +156,82 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
             }
          }
       });
+
+      final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Navigation);
+
+      Event.addNativePreviewHandler(new NativePreviewHandler()
+      {
+         @Override
+         public void onPreviewNativeEvent(NativePreviewEvent event)
+         {
+            /**
+             * @formatter:off
+             * keyup is used because TargetCellEditor will intercept the event
+             * again (Firefox) See textArea.addKeyDownHandler@InlineTargetCellEditor
+             * 
+             * Only when the Table is showed,editor is closed, search field not
+             * focused, the keyboard event will be processed.
+             **/
+            if (display.asWidget().isVisible() && 
+                  !translationEditorPresenter.isTargetCellEditorFocused() && 
+                  !transFilterView.isFocused() && 
+                  !transMemoryPresenter.getDisplay().isFocused() && 
+                  !translationEditorPresenter.getDisplay().isPagerFocused())
+            {
+               //@formatter:on
+               checkKey.init(event.getNativeEvent());
+
+               if (event.getNativeEvent().getType().equals("keyup"))
+               {
+                  if (checkKey.isCopyFromSourceKey())
+                  {
+                     if (translationEditorPresenter.getSelectedTransUnit() != null)
+                     {
+                        Log.info("Copy from source");
+                        stopDefaultAction(event);
+                        translationEditorPresenter.gotoCurrentRow();
+                        translationEditorPresenter.cloneAction();
+                     }
+                  }
+                  else if (checkKey.isEnterKey() && !checkKey.isCtrlKey())
+                  {
+                     if (translationEditorPresenter.getSelectedTransUnit() != null)
+                     {
+                        if (!translationEditorPresenter.isCancelButtonFocused())
+                        {
+                           Log.info("open editor");
+                           stopDefaultAction(event);
+                           translationEditorPresenter.gotoCurrentRow();
+                        }
+                        translationEditorPresenter.setCancelButtonFocused(false);
+                     }
+                  }
+               }
+               if (event.getNativeEvent().getType().equals("keydown"))
+               {
+                  if (checkKey.isPreviousEntryKey())
+                  {
+                     Log.info("Go to previous entry");
+                     stopDefaultAction(event);
+                     translationEditorPresenter.gotoPrevRow(false);
+                  }
+                  else if (checkKey.isNextEntryKey())
+                  {
+                     Log.info("Go to next entry");
+                     stopDefaultAction(event);
+                     translationEditorPresenter.gotoNextRow(false);
+                  }
+               }
+            }
+         }
+
+         public void stopDefaultAction(NativePreviewEvent event)
+         {
+            event.cancel();
+            event.getNativeEvent().stopPropagation();
+            event.getNativeEvent().preventDefault();
+         }
+      });
    }
 
    @Override
@@ -155,5 +246,4 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
       translationEditorPresenter.saveEditorPendingChange();
    }
-
 }

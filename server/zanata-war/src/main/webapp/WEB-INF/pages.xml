@@ -34,6 +34,10 @@
     <restrict>#{s:hasRole('admin')}</restrict>
   </page>
   
+  <page view-id="/edit_home_content_code.xhtml">
+    <restrict>#{s:hasRole('admin')}</restrict>
+  </page>
+  
   <page view-id="/search.xhtml" action="#{projectSearch.search}">
     <param name="q" value="#{projectSearch.searchQuery}" />
     <param name="page" value="#{projectSearch.currentPage}" />
@@ -190,6 +194,31 @@
   
   <page view-id="/profile/view.xhtml" login-required="true" />
 
+  <!-- Help -->
+  
+  <page view-id="/help/contact_admin.xhtml">
+    <restrict>#{identity.loggedIn}</restrict>
+    <!-- ideally a literal value should be used for emailType,
+         couldn't figure out a way to do this with seam/jsf.
+         May want to subclass SendEmailAction and set the email template
+         upon construction to achieve this. -->
+    <param name="emailType" value="#{sendEmail.emailType}" />
+    <navigation from-action="#{sendEmail.cancel}">
+      <rule>
+        <redirect view-id="/help/view.xhtml" />
+      </rule>
+    </navigation>
+    <navigation from-action="#{sendEmail.send}">
+      <rule if-outcome="success">
+        <redirect view-id="/help/view.xhtml" />
+      </rule>
+      <rule if-outcome="failure">
+        <redirect view-id="/help/contact_admin.xhtml" />
+      </rule>
+    </navigation>
+  </page>
+
+  
   <!-- Project -->
 
   <page view-id="/project/project.xhtml">
@@ -221,6 +250,29 @@
       -->
     <action execute="#{identity.checkPermission(projectHome.instance, 'update')}" />
         
+    <navigation from-action="#{projectHome.update}">
+      <redirect view-id="/project/project.xhtml">
+        <param name="slug" value="#{projectHome.slug}" />
+      </redirect>
+    </navigation>
+    <navigation from-action="#{projectHome.cancel}">
+      <redirect view-id="/project/project.xhtml">
+        <param name="slug" value="#{projectHome.slug}" />
+      </redirect>
+    </navigation>
+  </page>
+  
+  <!-- Admin only home page code editor. -->
+  <page view-id="/project/homepage_edit.xhtml">
+    <param name="slug" value="#{projectHome.slug}" />
+    <param name="slug" value="#{localeListAction.slug}" />
+    
+    <!-- we can't use <restrict> on projectHome.instance because it creates
+         a brand-new HProject instead of loading the existing one
+         (at some stages of the JSF lifecycle)
+      -->
+    <action execute="#{identity.checkPermission(projectHome.instance, 'update')}" />
+    
     <navigation from-action="#{projectHome.update}">
       <redirect view-id="/project/project.xhtml">
         <param name="slug" value="#{projectHome.slug}" />
@@ -314,6 +366,52 @@
     <param name="id" value="#{languageTeamAction.language}" />
     <action execute="#{languageTeamAction.initLocale()}" />
   </page>
+  
+  <page view-id="/language/contact_coordinator.xhtml">
+    <param name="emailType" value="#{sendEmail.emailType}" />
+    <param name="id" value="#{sendEmail.language}" />
+    <navigation from-action="#{sendEmail.send}">
+      <rule if-outcome="success">
+        <redirect view-id="/language/language.xhtml">
+          <param name="id" value="#{sendEmail.language}" />        
+        </redirect>
+      </rule>
+      <rule if-outcome="failure">
+        <redirect view-id="/language/contact_coordinator.xhtml" />
+      </rule>
+    </navigation>
+    <navigation from-action="#{sendEmail.cancel}">
+      <rule>
+        <redirect view-id="/language/language.xhtml">
+          <param name="id" value="#{sendEmail.language}" />
+        </redirect>
+      </rule>
+    </navigation>
+  </page>
+  
+  <page view-id="/language/request_to_join.xhtml">
+    <param name="emailType" value="#{sendEmail.emailType}" />
+    <param name="id" value="#{sendEmail.language}" />
+    <navigation from-action="#{sendEmail.send}">
+      <rule if-outcome="success">
+        <redirect view-id="/language/language.xhtml">
+          <param name="id" value="#{sendEmail.language}" />        
+        </redirect>
+      </rule>
+      <rule if-outcome="failure">
+        <redirect view-id="/language/request_to_join.xhtml" />
+      </rule>
+    </navigation>
+    <navigation from-action="#{sendEmail.cancel}">
+      <rule>
+        <redirect view-id="/language/language.xhtml">
+          <param name="id" value="#{sendEmail.language}" />
+        </redirect>
+      </rule>
+    </navigation>
+  </page>
+  
+  
 
   <!-- Exceptions -->
 

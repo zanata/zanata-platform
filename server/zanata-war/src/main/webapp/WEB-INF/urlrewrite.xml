@@ -36,6 +36,16 @@
     <from casesensitive="true">^/language/list(.+)?$</from>
     <to last="true">/language/home.seam$1</to>
   </rule>
+  
+  <rule>
+    <from casesensitive="true">^/language/join/(.+)$</from>
+    <to last="true">/language/request_to_join.seam\?emailType=request_to_join_language_team&amp;id=$1</to>
+  </rule>
+  
+  <rule>
+    <from casesensitive="true">^/language/contact/(.+)$</from>
+    <to last="true">/language/contact_coordinator.seam\?emailType=contact_coordinator&amp;id=$1</to>
+  </rule>
 
   <!-- Project Rules -->
 
@@ -135,7 +145,14 @@
   <rule>
     <from casesensitive="true">^/help/view(.+)?$</from>
     <to last="true">/help/view.seam$1</to>
-  </rule>  
+  </rule>
+  
+  <rule>
+    <from casesensitive="true">^/help/contact(.+)?$</from>
+    <!-- TODO need to make this smart enough to deal with any query parameters...
+    for now just ignore them (don't put $1 on the end) -->
+    <to last="true">/help/contact_admin.seam\?emailType=contact_admin</to>
+  </rule>
 
   <!-- ROOT / -->
   <rule>

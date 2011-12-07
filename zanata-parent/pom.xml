@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.zanata</groupId>
 	<artifactId>zanata-parent</artifactId>
-	<version>1.4.1-SNAPSHOT</version>
+	<version>1.4.4-SNAPSHOT</version>
 	<name>Zanata Parent POM</name>
 	<url>http://zanata.org/</url>
 	<packaging>pom</packaging>
@@ -165,6 +165,7 @@
 		<guava.version>r06</guava.version>
 		<jackson.version>1.5.0</jackson.version>
 		<icu4j.version>4.8</icu4j.version>
+		<ant.version>1.8.2</ant.version>
 
 		<cobertura.halt.failure>false</cobertura.halt.failure>
 		<javadoc.skip>true</javadoc.skip>
@@ -275,7 +276,7 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.1</version>
 				<configuration>
-					<allowTimestampedSnapshots>true</allowTimestampedSnapshots>
+					<allowTimestampedSnapshots>false</allowTimestampedSnapshots>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<tagNameFormat>zanata-@{project.version}</tagNameFormat>
 					<localCheckout>true</localCheckout>
@@ -549,22 +550,10 @@
 				<version>3.0</version>
 			</dependency>
 
-
-			<!-- These snapshots include support for shared sessions http://code.google.com/p/gwteventservice/issues/detail?id=15 -->
 			<dependency>
 				<groupId>com.google.code.gwteventservice</groupId>
 				<artifactId>gwteventservice</artifactId>
-				<version>1.2.0-20100906.075839-2</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.code.gwteventservice</groupId>
-				<artifactId>eventservice-rpc</artifactId>
-				<version>1.2.0-20100906.075839-4</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.code.gwteventservice</groupId>
-				<artifactId>eventservice</artifactId>
-				<version>1.2.0-20100906.075839-2</version>
+				<version>1.2.0-RC1</version>
 			</dependency>
 
 			<dependency>
@@ -823,6 +812,31 @@
 				<artifactId>commons-lang</artifactId>
 				<version>2.5</version>
 			</dependency>
+
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>${ant.version}</version>
+        </dependency>
+        <!--
+            If only it were released! (want
+            org.apache.ant.antunit.junit3.AntUnitSuite)
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-antunit</artifactId> <version>1.2</version>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-launcher</artifactId>
+            <version>${ant.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-testutil</artifactId>
+            <version>${ant.version}</version>
+        </dependency>
+
 		</dependencies>
 	</dependencyManagement>
 

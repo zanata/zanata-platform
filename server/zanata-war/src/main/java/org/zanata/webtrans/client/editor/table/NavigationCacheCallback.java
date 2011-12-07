@@ -23,7 +23,7 @@ package org.zanata.webtrans.client.editor.table;
 
 public interface NavigationCacheCallback
 {
-   void nextFuzzy();
+   void next(boolean isNewState, boolean isFuzzyState);
 
-   void prevFuzzy();
+   void prev(boolean isNewState, boolean isFuzzyState);
 }

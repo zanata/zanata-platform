@@ -108,8 +108,8 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       {
          throw new ActionException(e.getMessage());
       }
-      HProject hProject = hTextFlow.getDocument().getProjectIteration().getProject();
-      identity.checkPermission(hProject, ACTION_MODIFY_TRANSLATION);
+
+      identity.checkPermission(hLocale, ACTION_MODIFY_TRANSLATION);
 
       HTextFlowTarget target = hTextFlow.getTargets().get(hLocale);
 
@@ -185,12 +185,19 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
       int wordCount = hTextFlow.getWordCount().intValue();
       // @formatter:off
+      
+      String msgContext = null;
+      if(hTextFlow.getPotEntryData() != null) 
+      {
+         msgContext = hTextFlow.getPotEntryData().getContext();
+      }
+      
       TransUnit tu = new TransUnit(action.getTransUnitId(), hTextFlow.getResId(),
                                    locale, hTextFlow.getContent(),
                                    CommentsUtil.toString(hTextFlow.getComment()),
                                    action.getContent(), target.getState(),
                                    authenticatedAccount.getPerson().getName(),
-                                   SIMPLE_FORMAT.format(new Date()));
+                                   SIMPLE_FORMAT.format(new Date()), msgContext);
       // @formatter:on
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu);
 
@@ -254,13 +261,19 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       session.flush();
 
       int wordCount = hTextFlow.getWordCount().intValue();
+      String msgContext = null;
+      if (hTextFlow.getPotEntryData() != null)
+      {
+         msgContext = hTextFlow.getPotEntryData().getContext();
+      }
+
       // @formatter:off
       TransUnit tu = new TransUnit(action.getTransUnitId(), hTextFlow.getResId(),
                                    locale, hTextFlow.getContent(),
                                    CommentsUtil.toString(hTextFlow.getComment()),
                                    target.getContent(), target.getState(),
                                    target.getLastModifiedBy().getName(),
-                                   SIMPLE_FORMAT.format(target.getLastChanged()));
+                                   SIMPLE_FORMAT.format(target.getLastChanged()), msgContext);
       // @formatter:on
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu);
 

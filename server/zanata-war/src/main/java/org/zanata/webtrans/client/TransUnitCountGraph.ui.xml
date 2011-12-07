@@ -3,6 +3,13 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
 	<ui:style>
+		.unitStatus {
+            float: left;
+            padding-right:25px;
+            width: 123px;
+            height: 1.2em;
+        }
+        
 		.approved {
 			background: #099b09;
 			z-index: 0;
@@ -32,7 +39,7 @@
 	</ui:style>
 
 
-	<g:LayoutPanel ui:field='layoutPanel'>
+	<g:LayoutPanel ui:field='layoutPanel' styleName="{style.unitStatus}">
 		<g:layer left='0' width='0'>
 			<g:FlowPanel ui:field='approvedPanel' styleName="{style.approved}" />
 		</g:layer>

@@ -35,14 +35,14 @@
                   rowClasses="odd,even">
     <rich:column id="locale_id">#{tribe.retrieveNativeName()} [#{tribe.localeId.id}]</rich:column>
     <rich:column id="status">
-      <ui:param name="tstatus" value="#{projectIterationDAO.getWordStatsForContainer(_iteration.id, tribe.localeId)}" />
+      <ui:param name="tstatus" value="#{iterationTranslationAction.getWordStatsForContainer(_iteration.id, tribe.localeId)}" />
       <ui:include src="statsbar.xhtml">
         <ui:param name="status" value="#{tstatus}" />
       </ui:include>
     </rich:column>
     <rich:column id="translate">
       <h:outputLink
-          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation') and !zanataInit.debug}"
+          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation', tribe) and !zanataInit.debug}"
           target="_blank"
           value="#{request.contextPath}/webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
@@ -52,7 +52,7 @@
 		#{messages['jsf.Translate']}
       </h:outputLink>
       <h:outputLink
-          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation') and zanataInit.debug}"
+          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation', tribe) and zanataInit.debug}"
           target="_blank"
           value="#{request.contextPath}/webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>

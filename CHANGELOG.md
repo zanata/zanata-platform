@@ -1,5 +1,39 @@
 # Zanata change log summary
 
+## zanata-1.4.3
+ * Show message context in editor info panel: https://bugzilla.redhat.com/show_bug.cgi?id=750690
+ * Update gwteventservice to 1.2.0-RC1
+ * Modify email templates to include server URL
+ * Fix problems with editor table when searching or switching pages: https://bugzilla.redhat.com/show_bug.cgi?id=751264
+ * Add failsafe editor in case of Seam Text problems: https://bugzilla.redhat.com/show_bug.cgi?id=727716
+ * Change string similarity algorithm so that only identical strings (not substrings) can get 100%: https://bugzilla.redhat.com/show_bug.cgi?id=730189
+ * Bugfix: 'J' and 'K' navigation keys trigger when entering text in the TM search box: https://bugzilla.redhat.com/show_bug.cgi?id=754637
+ * Bugfix: Not able to work in parallel on the same workbench: https://bugzilla.redhat.com/show_bug.cgi?id=756293
+ * Show progress during re-index operations; avoid timeout for large databases: https://bugzilla.redhat.com/show_bug.cgi?id=747836
+ 
+## zanata-1.4.2
+ * Language team coordinator: https://bugzilla.redhat.com/show_bug.cgi?id=742083
+  * Users now have to ask before joining a language team
+  * Coordinator can add and remove team members
+  * Contact coordinators
+ * Contact server admins: https://bugzilla.redhat.com/show_bug.cgi?id=742854
+ * First/last entry button: https://bugzilla.redhat.com/show_bug.cgi?id=743783
+ * Load project pages faster: https://bugzilla.redhat.com/show_bug.cgi?id=744114
+ * Option for Enter to save translation: https://bugzilla.redhat.com/show_bug.cgi?id=744671
+ * Sort projects by name, not ID: https://bugzilla.redhat.com/show_bug.cgi?id=746859
+ * Make newlines visible to reduce newline mismatch errors in translations: https://bugzilla.redhat.com/show_bug.cgi?id=740122
+ * Improve shortcut keys: https://bugzilla.redhat.com/show_bug.cgi?id=740191
+ * Fix tab order: editor cell -> Save as Approved -> Save as Fuzzy -> Cancel
+ * Save as Fuzzy now leaves the cell editor open: https://bugzilla.redhat.com/show_bug.cgi?id=746870
+ * Modal navigation: next fuzzy, untranslated, fuzzy or untranslated: https://bugzilla.redhat.com/show_bug.cgi?id=743134
+ * Rearrange various UI elements to be more logical (profile page, document stats, project search field)
+
+## zanata-1.4.1
+ * Fixed: % completed should be calculated with words, not messages: https://bugzilla.redhat.com/show_bug.cgi?id=741523
+ * Fixed: Selecting Administration submenu items does not always highlight the parent menu: https://bugzilla.redhat.com/show_bug.cgi?id=724867
+ * Fixed: Change of tile to list view on Language page, make project list sortable: https://bugzilla.redhat.com/show_bug.cgi?id=742111
+ * Performance fix for projects with 1000+ documents: https://bugzilla.redhat.com/show_bug.cgi?id=743179
+
 ## zanata-1.4
  * add project-type to zanata.xml for generic push/pull commands
  * redirect to login from translation editor when required

@@ -1,0 +1,28 @@
+<m:message xmlns="http://www.w3.org/1999/xhtml"
+           xmlns:m="http://jboss.com/products/seam/mail"
+           xmlns:f="http://java.sun.com/jsf/core"
+           xmlns:h="http://java.sun.com/jsf/html"
+           xmlns:ui="http://java.sun.com/jsf/facelets"
+           xmlns:s="http://jboss.com/products/seam/taglib"
+           charset="UTF-8" importance="normal">
+  <m:from name="#{messages['jsf.Zanata']}" >#{applicationConfiguration.fromEmailAddr}</m:from>
+  <m:to name="#{toName}">#{toEmailAddr}</m:to>
+  <!-- use this if replyTo is still rendered.
+  Add a message about requiring both
+  <s:fragment rendered="#{!empty replyToName && !empty replyToEmail}">
+  </s:fragment>
+  -->
+  <m:replyTo rendered="#{not empty replyToName and not empty replyToEmail}" name="#{replyToName}" >#{replyToEmail}</m:replyTo>    
+  <m:subject>#{subject}</m:subject>
+  <m:body>
+    <html>
+      <body>
+        <ui:insert name="body">No email body template specified.</ui:insert>
+        <hr/>
+        <p>#{messages['jsf.email.GeneratedFromZanataServerAt']}
+          <a href="#{applicationConfiguration.serverPath}">#{applicationConfiguration.serverPath}</a>
+        </p>
+      </body>
+    </html>
+  </m:body>
+</m:message>

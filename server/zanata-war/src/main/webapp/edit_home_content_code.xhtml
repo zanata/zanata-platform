@@ -1,0 +1,40 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    template="/WEB-INF/layout/template.xhtml">
+
+<ui:define name="center_content" >
+    <h1>#{messages['jsf.HomepageContent']}</h1>
+
+<a4j:form>
+    <s:token allowMultiplePosts="true" />
+    <rich:panel id="loggedIn" >
+	    <h:inputTextarea id="homeContent"
+	           required="false"
+	           value="#{serverConfigurationBean.homeContent}"
+	           styleClass="code_editor" />
+
+        <div style="clear:both"></div>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+        <h:commandButton id="update" 
+                      value="#{messages['jsf.Update']}"
+                     action="#{serverConfigurationBean.updateHomeContent}" />
+        <s:button id="cancel" view="/home.xhtml"
+                        value="#{messages['jsf.Cancel']}"
+                        propagation="none"
+                       action="#{serverConfigurationBean.cancel}"/>
+    </div>
+
+</a4j:form>
+</ui:define>
+
+</ui:composition>

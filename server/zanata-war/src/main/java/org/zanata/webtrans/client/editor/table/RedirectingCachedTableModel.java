@@ -26,28 +26,64 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
          tableModel.onCancel(cellValue);
    }
 
-   public void gotoNextRow(int row)
+   public void gotoNextRow()
    {
       if (tableModel != null)
-         tableModel.gotoNextRow(row);
+         tableModel.gotoNextRow();
    }
 
-   public void gotoPrevRow(int row)
+   public void gotoPrevRow()
    {
       if (tableModel != null)
-         tableModel.gotoPrevRow(row);
+         tableModel.gotoPrevRow();
    }
 
-   public void gotoNextFuzzy(int row)
+   public void gotoFirstRow()
    {
       if (tableModel != null)
-         tableModel.gotoNextFuzzy(row);
+         tableModel.gotoFirstRow();
    }
 
-   public void gotoPrevFuzzy(int row)
+   public void gotoLastRow()
    {
       if (tableModel != null)
-         tableModel.gotoPrevFuzzy(row);
+         tableModel.gotoLastRow();
+   }
+
+   public void gotoNextFuzzyNew()
+   {
+      if (tableModel != null)
+         tableModel.gotoNextFuzzyNew();
+   }
+
+   public void gotoPrevFuzzyNew()
+   {
+      if (tableModel != null)
+         tableModel.gotoPrevFuzzyNew();
+   }
+
+   public void gotoNextFuzzy()
+   {
+      if (tableModel != null)
+         tableModel.gotoNextFuzzy();
+   }
+
+   public void gotoPrevFuzzy()
+   {
+      if (tableModel != null)
+         tableModel.gotoPrevFuzzy();
+   }
+
+   public void gotoNextNew()
+   {
+      if (tableModel != null)
+         tableModel.gotoNextNew();
+   }
+
+   public void gotoPrevNew()
+   {
+      if (tableModel != null)
+         tableModel.gotoPrevNew();
    }
 
    public void setRowValueOverride(int row, RowType rowValue)

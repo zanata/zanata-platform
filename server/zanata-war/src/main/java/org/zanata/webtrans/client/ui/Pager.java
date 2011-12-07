@@ -4,16 +4,19 @@ import org.zanata.webtrans.client.Resources;
 import org.zanata.webtrans.client.WebTransMessages;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -47,6 +50,7 @@ public class Pager extends Composite implements HasPager
 
    private int pageCount = PAGECOUNT_UNKNOWN;
    private int currentPage;
+   private boolean isFocused;
 
    public static final int PAGECOUNT_UNKNOWN = -1;
 
@@ -62,15 +66,26 @@ public class Pager extends Composite implements HasPager
       lastPage.setTitle(messages.tooltipsWithShortcut(messages.lastPage(), messages.lastPageShortcut()));
    }
 
+   @UiHandler("gotoPage")
+   public void onGotoPageFocus(FocusEvent event)
+   {
+      isFocused = true;
+   }
+
+   @UiHandler("gotoPage")
+   public void onGotoPageBlur(BlurEvent event)
+   {
+      isFocused = false;
+   }
+
    @Override
    protected void onLoad()
    {
       super.onLoad();
-      gotoPage.addKeyUpHandler(new KeyUpHandler()
+      gotoPage.addKeyDownHandler(new KeyDownHandler()
       {
-
          @Override
-         public void onKeyUp(KeyUpEvent event)
+         public void onKeyDown(KeyDownEvent event)
          {
             if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
             {
@@ -179,5 +194,10 @@ public class Pager extends Composite implements HasPager
    {
       link.setVisible(enabled);
       disabledLink.setVisible(!enabled);
+   }
+
+   public boolean isFocused()
+   {
+      return isFocused;
    }
 }

@@ -12,6 +12,9 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
+import org.zanata.common.LocaleId;
+import org.zanata.common.TranslationStats;
+import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
@@ -35,12 +38,16 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
    @In
    ProjectIterationDAO projectIterationDAO;
 
+   @In
+   DocumentDAO documentDAO;
+
    @Override
    public GetDocumentListResult execute(GetDocumentList action, ExecutionContext context) throws ActionException
    {
 
       ZanataIdentity.instance().checkLoggedIn();
 
+      LocaleId localeId = action.getWorkspaceId().getLocaleId();
       ProjectIterationId iterationId = action.getProjectIterationId();
       ArrayList<DocumentInfo> docs = new ArrayList<DocumentInfo>();
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(iterationId.getProjectSlug(), iterationId.getIterationSlug());
@@ -48,7 +55,8 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
       for (HDocument hDoc : hDocs)
       {
          DocumentId docId = new DocumentId(hDoc.getId());
-         DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath());
+         TranslationStats stats = documentDAO.getStatistics(hDoc.getId(), localeId);
+         DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), stats);
          docs.add(doc);
       }
       return new GetDocumentListResult(iterationId, docs);

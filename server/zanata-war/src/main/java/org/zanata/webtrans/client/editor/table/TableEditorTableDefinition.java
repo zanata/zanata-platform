@@ -159,7 +159,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             @Override
             public void onClick(ClickEvent event)
             {
-               Log.debug("source panel click");
                if (targetCellEditor.isOpened())
                {
                   targetCellEditor.savePendingChange(true);
@@ -205,8 +204,10 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          // will be closed
          // targetCellEditor.isEditing not suitable since when we click the save
          // button, cellValue is not null.
-         if (targetCellEditor.isOpened())
+         if (targetCellEditor.isOpened() && targetCellEditor.getTargetCell().getId().equals(rowValue))
+         {
             return;
+         }
 
          if (rowValue.getTarget().isEmpty())
          {
@@ -262,27 +263,63 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       EditRowCallback transValueCallBack = new EditRowCallback()
       {
          @Override
-         public void gotoNextRow(int row)
+         public void gotoNextRow()
          {
-            tableModel.gotoNextRow(row);
+            tableModel.gotoNextRow();
          }
 
          @Override
-         public void gotoPrevRow(int row)
+         public void gotoPrevRow()
          {
-            tableModel.gotoPrevRow(row);
+            tableModel.gotoPrevRow();
          }
 
          @Override
-         public void gotoNextFuzzy(int row)
+         public void gotoFirstRow()
          {
-            tableModel.gotoNextFuzzy(row);
+            tableModel.gotoFirstRow();
          }
 
          @Override
-         public void gotoPrevFuzzy(int row)
+         public void gotoLastRow()
          {
-            tableModel.gotoPrevFuzzy(row);
+            tableModel.gotoLastRow();
+         }
+
+         @Override
+         public void gotoNextFuzzyNewRow()
+         {
+            tableModel.gotoNextFuzzyNew();
+         }
+
+         @Override
+         public void gotoPrevFuzzyNewRow()
+         {
+            tableModel.gotoPrevFuzzyNew();
+         }
+
+         @Override
+         public void gotoNextFuzzyRow()
+         {
+            tableModel.gotoNextFuzzy();
+         }
+
+         @Override
+         public void gotoPrevFuzzyRow()
+         {
+            tableModel.gotoPrevFuzzy();
+         }
+
+         @Override
+         public void gotoNextNewRow()
+         {
+            tableModel.gotoNextNew();
+         }
+
+         @Override
+         public void gotoPrevNewRow()
+         {
+            tableModel.gotoPrevNew();
          }
       };
       

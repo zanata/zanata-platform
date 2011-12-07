@@ -20,6 +20,8 @@
  */
 package org.zanata;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +71,7 @@ public class ApplicationConfiguration
    {
       map.put(HApplicationConfiguration.KEY_REGISTER, "/zanata/account/register");
       map.put(HApplicationConfiguration.KEY_HOST, "http://localhost:8080/zanata");
-      map.put(HApplicationConfiguration.KEY_ADMIN_EMAIL, "no-reply@redhat.com");
+      map.put(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS, "no-reply@redhat.com");
    }
 
    public String getRegisterPath()
@@ -92,9 +94,20 @@ public class ApplicationConfiguration
       return configValues.get(HApplicationConfiguration.KEY_DOMAIN);
    }
 
-   public String getAdminEmail()
+   public List<String> getAdminEmail()
    {
-      return configValues.get(HApplicationConfiguration.KEY_ADMIN_EMAIL);
+      String s = configValues.get(HApplicationConfiguration.KEY_ADMIN_EMAIL);
+      if (s == null || s.trim().length() == 0)
+      {
+         return new ArrayList<String>();
+      }
+      String[] ss = s.trim().split("\\s*,\\s*");
+      return new ArrayList<String>(Arrays.asList(ss));
+   }
+
+   public String getFromEmailAddr()
+   {
+      return configValues.get(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS);
    }
 
    public String getHomeContent()

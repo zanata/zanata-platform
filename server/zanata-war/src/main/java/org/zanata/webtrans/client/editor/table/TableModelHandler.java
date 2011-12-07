@@ -21,13 +21,31 @@ public abstract class TableModelHandler<RowType>
       return true;
    }
 
-   abstract void gotoNextRow(int row);
+   abstract void gotoNextRow(boolean andEdit);
 
-   abstract void gotoPrevRow(int row);
+   abstract void gotoPrevRow(boolean andEdit);
 
-   abstract void nextFuzzyIndex(int row);
+   abstract void gotoFirstRow();
 
-   abstract void prevFuzzyIndex(int row);
+   abstract void gotoLastRow();
+
+   abstract void nextFuzzyNewIndex();
+
+   abstract void prevFuzzyNewIndex();
+
+   abstract void nextFuzzyIndex();
+
+   abstract void prevFuzzyIndex();
+
+   abstract void nextNewIndex();
+
+   abstract void prevNewIndex();
 
    abstract void gotoRow(int row);
+
+   abstract void gotoRow(int rowIndex, boolean andEdit);
+
+   abstract void updatePageAndRowIndex();
+
+   abstract void updateRowIndex(int curPage);
 }

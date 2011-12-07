@@ -19,6 +19,13 @@
       <property name="remoteProxyFactoryRegistry"><inject bean="EJB3RemoteProxyFactoryRegistry" /></property>
       <property name="persistenceManagerFactoryRegistry"><inject bean="EJB3PersistenceManagerFactoryRegistry" /></property>
       
+      <property name="allowedSuffixes">
+        <set elementClass="java.lang.String">
+            <value>class</value>
+            <value>xml</value>
+        </set>
+      </property>
+      
       <!-- 
    
       Configure the deployer to optionally require a deployment 

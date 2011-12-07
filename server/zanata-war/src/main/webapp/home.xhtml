@@ -18,7 +18,9 @@
 <ui:define name="left_content">
   <rich:panel id="loggedIn" rendered="#{s:hasRole('admin')}">
     <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-    <s:link styleClass="action_link" value="#{messages['jsf.EditHomepageContent']}" view="/edit_home_content.xhtml" propagation="none">
+    <s:link styleClass="action_link" value="#{messages['jsf.server.EditHomePage.label']}" view="/edit_home_content.xhtml" propagation="none">
+    </s:link>
+    <s:link styleClass="action_link" value="#{messages['jsf.server.EditHomePageCode.label']}" view="/edit_home_content_code.xhtml" title="#{messages['jsf.server.EditHomePageCode.tooltip']}" propagation="none">
     </s:link>
   </rich:panel>
 

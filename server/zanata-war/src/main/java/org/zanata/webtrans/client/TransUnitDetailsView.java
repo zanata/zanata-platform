@@ -27,7 +27,7 @@ public class TransUnitDetailsView extends Composite implements TransUnitDetailsP
    CollapsePanel collapsePanel;
 
    @UiField
-   Label noDetailsLabel, resIdLabel, resId, sourceCommentLabel, sourceComment, lastModifiedByLabel, lastModifiedBy, lastModifiedTimeLabel, lastModifiedTime;
+   Label noDetailsLabel, resIdLabel, resId, sourceCommentLabel, sourceComment, msgContextLabel, msgContext, lastModifiedByLabel, lastModifiedBy, lastModifiedTimeLabel, lastModifiedTime;
 
    @UiField
    LayoutPanel rootPanel;
@@ -57,6 +57,21 @@ public class TransUnitDetailsView extends Composite implements TransUnitDetailsP
       rootPanel.setWidgetTopBottom(labelPanel, 0, Unit.PX, 0, Unit.PX);
       resIdLabel.setText("Resource ID: ");
       resId.setText(transUnit.getResId());
+      
+      String context = transUnit.getMsgContext();
+      if (context != null)
+      {
+         msgContextLabel.setText("Message Context: ");
+         msgContext.setText(context);
+         msgContextLabel.setVisible(true);
+         msgContext.setVisible(true);
+      }
+      else
+      {
+         msgContextLabel.setVisible(false);
+         msgContext.setVisible(false);
+      }
+      
       sourceCommentLabel.setText("Source Comment: ");
       sourceComment.setText(transUnit.getSourceComment());
       String person = transUnit.getLastModifiedBy();

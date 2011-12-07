@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.zanata</groupId>
 		<artifactId>zanata-parent</artifactId>
-		<version>1.4.1-SNAPSHOT</version>
+		<version>1.4.4-SNAPSHOT</version>
 		<relativePath>../../zanata-parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>zanata-war</artifactId>
@@ -51,6 +51,22 @@
 		</resources>
 
 		<plugins>
+			<plugin>
+			    <artifactId>maven-clean-plugin</artifactId>
+			    <version>2.4.1</version>
+			    <configuration>
+			      <!-- Remove extra directories created by GWT DevMode -->
+			      <filesets>
+			        <fileset>
+			          <directory>src/main/webapp/WEB-INF/deploy</directory>
+			        </fileset>
+			        <fileset>
+			          <directory>src/main/webapp/webtrans</directory>
+			        </fileset>
+			      </filesets>
+		          <followSymlinks>false</followSymlinks>
+			    </configuration>
+			</plugin>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
@@ -247,9 +263,11 @@
 							</execution>
 						</executions>
 						<configuration>
-							<argLine>-Xmx1024m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC
+							<argLine xml:space="preserve">-Xmx1024m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC
 								-XX:+CMSClassUnloadingEnabled -XX:+HeapDumpOnOutOfMemoryError
-								-XX:HeapDumpPath=${project.build.directory}</argLine>
+								-XX:HeapDumpPath=${project.build.directory}
+								-Dsun.lang.ClassLoader.allowArraySyntax=true
+						    </argLine>
 							<redirectTestOutputToFile>false</redirectTestOutputToFile>
 							<printSummary>true</printSummary>
 							<forkMode>always</forkMode>
@@ -262,7 +280,6 @@
 							</additionalClasspathElements>
 							<childDelegation>true</childDelegation>
 							<useSystemClassLoader>true</useSystemClassLoader>
-							<argLine xml:space="preserve">-Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
 							<classpathDependencyExcludes>
 								<classpathDependencyExclude>
 									<!-- collides with XMLLoginConfigImpl in jboss-embedded-all -->
@@ -711,6 +728,7 @@
 						<artifactId>gwt-maven-plugin</artifactId>
 						<configuration>
 							<draftCompile>true</draftCompile>
+							<style>PRETTY</style>
 						</configuration>
 					</plugin>
 				</plugins>
@@ -731,6 +749,7 @@
 						<artifactId>gwt-maven-plugin</artifactId>
 						<configuration>
 							<draftCompile>true</draftCompile>
+							<style>PRETTY</style>
 						</configuration>
 					</plugin>
 				</plugins>
@@ -924,13 +943,6 @@
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-xc</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.jboss.security</groupId>
-			<artifactId>jbosssx</artifactId>
-			<version>2.0.3.SP1</version>
-			<scope>provided</scope>
-		</dependency>
-
 
 		<!-- Drools -->
 
@@ -1047,6 +1059,89 @@
 			<artifactId>lucene-core</artifactId>
 			<version>2.9.2</version>
 		</dependency>
+		
+		<!-- Testing dependencies -->
+
+        <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-rest-client</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.embedded</groupId>
+            <artifactId>jboss-embedded-all</artifactId>
+            <version>${jboss.embedded.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.microcontainer</groupId>
+                    <artifactId>jboss-deployers-client-spi</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.embedded</groupId>
+                    <artifactId>jboss-embedded</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.embedded</groupId>
+            <artifactId>thirdparty-all</artifactId>
+            <version>${jboss.embedded.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.seam.embedded</groupId>
+            <artifactId>jboss-embedded-api</artifactId>
+            <version>${jboss.embedded.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.microcontainer</groupId>
+                    <artifactId>jboss-deployers-client-spi</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.9</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+			<scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <!-- We use testng in DBUnitImporter so can't use test scope here -->
+        </dependency>
 
 		<!-- Container dependencies - provided by jboss -->
 
@@ -1117,89 +1212,13 @@
 			<groupId>xpp3</groupId>
 			<artifactId>xpp3_min</artifactId>
 		</dependency>
-
-		<!-- Testing dependencies -->
-
+		
 		<dependency>
-			<groupId>org.zanata</groupId>
-			<artifactId>zanata-rest-client</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.embedded</groupId>
-			<artifactId>jboss-embedded-all</artifactId>
-			<version>${jboss.embedded.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.jboss.microcontainer</groupId>
-					<artifactId>jboss-deployers-client-spi</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.jboss.embedded</groupId>
-					<artifactId>jboss-embedded</artifactId>
-				</exclusion>
-			</exclusions>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.embedded</groupId>
-			<artifactId>thirdparty-all</artifactId>
-			<version>${jboss.embedded.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.seam.embedded</groupId>
-			<artifactId>jboss-embedded-api</artifactId>
-			<version>${jboss.embedded.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.jboss.microcontainer</groupId>
-					<artifactId>jboss-deployers-client-spi</artifactId>
-				</exclusion>
-			</exclusions>
-			<scope>test</scope>
-		</dependency>
-
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.9</version>
-            <scope>test</scope>
+            <groupId>org.jboss.security</groupId>
+            <artifactId>jbosssx</artifactId>
+            <version>2.0.3.SP1</version>
+            <scope>provided</scope>
         </dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.easytesting</groupId>
-			<artifactId>fest-assert</artifactId>
-			<version>1.3</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-all</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<!-- We use testng in DBUnitImporter so can't use test scope here -->
-		</dependency>
 
 		<!-- GWT related dependencies -->
 
