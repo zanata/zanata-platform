@@ -143,9 +143,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    private final TranslationStats selectedDocumentStats = new TranslationStats();
    private final TranslationStats projectStats = new TranslationStats();
 
-   // used to determine whether history state has changed
-   private HistoryToken currentHistoryState = null;
-
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
    @Inject
@@ -322,20 +319,30 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
    private void processHistoryEvent(ValueChangeEvent<String> event)
    {
+
+      // TODO keep track of previous history token like in DocumentListPresenter
+
       Log.info("Responding to history token: " + event.getValue());
 
       HistoryToken token = HistoryToken.fromTokenString(event.getValue());
 
       DocumentId docId = documentListPresenter.getDocumentId(token.getDocumentPath());
 
-      if (docId != null && (selectedDocument == null || !selectedDocument.getId().equals(docId)))
+      if (token.hasDocumentPath() && (selectedDocument == null || !selectedDocument.getId().equals(docId)))
       {
-         Log.info("Firing document selection event for document " + docId.getId());
-         eventBus.fireEvent(new DocumentSelectionEvent(docId));
+         Log.info("Firing document selection event");
+         try
+         {
+            eventBus.fireEvent(new DocumentSelectionEvent(docId));
+         }
+         catch (Throwable t)
+         {
+            Log.info("got exception from document selection event", t);
+         }
+         Log.info("Fired document selection event for " + docId.getId());
       }
 
-
-      if (token.getView() != currentHistoryState.getView())
+      if (token.hasView() && token.getView() != display.getCurrentView())
       {
          if (display.getCurrentView().equals(MainView.Editor))
          {
@@ -350,20 +357,27 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          }
          display.showInMainView(token.getView());
       }
+      // TODO set defaults in history rather than having this block.
+      else if (!token.hasView())
+      {
+         // default view.
+         display.showInMainView(MainView.Documents);
+      }
 
-      currentHistoryState = token;
+      // TODO use a cloned token below when the current token is stored. Ok to
+      // modify current token for now. (add clone method when doing this)
 
       // update toggle link with alternate view latest history state
-      HistoryToken toggleToken = (HistoryToken) token.clone();
-      if (toggleToken.getView().equals(MainView.Editor))
+      if (token.hasView() && token.getView().equals(MainView.Editor))
       {
-         toggleToken.setView(MainView.Documents);
+         token.setView(MainView.Documents);
       }
       else
-      {
-         toggleToken.setView(MainView.Editor);
+      { // doclist is default
+         token.setView(MainView.Editor);
       }
-      ((Anchor) display.getDocumentsLink()).setHref("#" + toggleToken.toTokenString());
+      ((Anchor) display.getDocumentsLink()).setHref("#" + token.toTokenString());
+
    }
 
 }

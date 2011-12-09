@@ -134,8 +134,25 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             HistoryToken token = HistoryToken.fromTokenString(History.getToken());
 
             // prevent feedback loops between history and selection
-            DocumentId docId = getDocumentId(token.getDocumentPath());
-            if (event.getSelectedItem().getId().equals(docId))
+            boolean isNewSelection;
+            if (token.hasDocumentPath())
+            {
+               try
+               {
+                  isNewSelection = event.getSelectedItem().getId().getId() != getDocumentId(token.getDocumentPath()).getId();
+               }
+               catch (Throwable t)
+               {
+                  Log.info("got exception determining whether selection is new", t);
+                  isNewSelection = false;
+               }
+            }
+            else
+            {
+               isNewSelection = true;
+            }
+
+            if (isNewSelection)
             {
                currentDocument = event.getSelectedItem();
                token.setDocumentPath(event.getSelectedItem().getPath() + event.getSelectedItem().getName());
@@ -166,7 +183,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          public void onValueChange(ValueChangeEvent<String> event)
          {
             HistoryToken token = HistoryToken.fromTokenString(History.getToken());
-            if (!token.getDocFilterText().equals(event.getValue()))
+            if (event.getValue() != token.getDocFilterText())
             {
                token.setDocFilterText(event.getValue());
                History.newItem(token.toTokenString());
@@ -194,30 +211,72 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          @Override
          public void onValueChange(ValueChangeEvent<String> event)
          {
+            boolean filterChanged = false;
             HistoryToken token = HistoryToken.fromTokenString(event.getValue());
-            // update textbox to match new history state
-            if (!token.getDocFilterText().equals(display.getFilterTextBox().getValue()))
-               display.getFilterTextBox().setValue(token.getDocFilterText(), true);
+            if (token.hasDocFilterText())
+            {
+               // update textbox to match new history state
+               if (!token.getDocFilterText().equals(display.getFilterTextBox().getValue()))
+               {
+                  display.getFilterTextBox().setValue(token.getDocFilterText(), true);
+               }
 
-            boolean patternChanged = true;
-            if (currentHistoryState != null)
-               patternChanged = !token.getDocFilterText().equals(currentHistoryState.getDocFilterText());
-            if (patternChanged)
-               filter.setPattern(token.getDocFilterText());
+               boolean patternChanged;
+               if (currentHistoryState == null)
+                  patternChanged = true;
+               else
+                  patternChanged = !token.getDocFilterText().equals(currentHistoryState.getDocFilterText());
+               if (patternChanged)
+               {
+                  filter.setPattern(token.getDocFilterText());
+                  filterChanged = true;
+               }
+            }
+            else
+            {
+               if (currentHistoryState != null && currentHistoryState.hasDocFilterText())
+               {
+                  // not using default
+                  filter.setPattern("");
+                  filterChanged = true;
+               }
+               // else was already using blank filter
+            }
 
-            // update checkbox to match new history state
-            if (token.getDocFilterExact() != display.getExactSearchCheckbox().getValue())
-               display.getExactSearchCheckbox().setValue(token.getDocFilterExact());
+            if (token.hasDocFilterExact())
+            {
+               // update checkbox to match new history state
+               if (token.getDocFilterExact() != display.getExactSearchCheckbox().getValue())
+               {
+                  display.getExactSearchCheckbox().setValue(token.getDocFilterExact());
+               }
 
-            boolean flagChanged = true;
-            if (currentHistoryState != null)
-               flagChanged = token.getDocFilterExact() != currentHistoryState.getDocFilterExact();
-            if (flagChanged)
-               filter.setFullText(token.getDocFilterExact());
+               boolean flagChanged;
+               if (currentHistoryState == null)
+                  flagChanged = true;
+               else
+                  flagChanged = !token.getDocFilterExact().equals(currentHistoryState.getDocFilterExact());
+
+               if (flagChanged)
+               {
+                  filter.setFullText(token.getDocFilterExact());
+                  filterChanged = true;
+               }
+            }
+            else
+            {
+               if (currentHistoryState != null && currentHistoryState.hasDocFilterExact() && currentHistoryState.getDocFilterExact() == true)
+               {
+                  // not using default
+                  filter.setFullText(false);
+                  filterChanged = true;
+               }
+               // else was already using substring match
+            }
 
             currentHistoryState = token;
 
-            if (patternChanged || flagChanged)
+            if (filterChanged)
                runFilter();
          }
       });
