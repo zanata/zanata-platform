@@ -319,6 +319,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
    private void processHistoryEvent(ValueChangeEvent<String> event)
    {
+      try
+      {
 
       // TODO keep track of previous history token like in DocumentListPresenter
 
@@ -328,7 +330,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       DocumentId docId = documentListPresenter.getDocumentId(token.getDocumentPath());
 
-      if (token.hasDocumentPath() && (selectedDocument == null || !selectedDocument.getId().equals(docId)))
+      if (docId != null && (selectedDocument == null || !selectedDocument.getId().equals(docId)))
       {
          Log.info("Firing document selection event");
          try
@@ -377,6 +379,12 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          token.setView(MainView.Editor);
       }
       ((Anchor) display.getDocumentsLink()).setHref("#" + token.toTokenString());
+
+      }
+      catch (Throwable t)
+      {
+         Log.error("exception while responding to history token", t);
+      }
 
    }
 

@@ -27,11 +27,24 @@ public class HistoryToken
    public static final String VALUE_DOC_FILTER_EXACT = "exact";
    public static final String VALUE_DOC_FILTER_INEXACT = "substr";
 
-   private AppPresenter.Display.MainView view = null;
-   private String fullDocPath = null;
-   private Boolean docFilterExact = null;
-   private String docFilterText = null;
+   private AppPresenter.Display.MainView view;
+   private String fullDocPath;
+   private Boolean docFilterExact;
+   private String docFilterText;
 
+   // defaults
+   private static final AppPresenter.Display.MainView DEFAULT_VIEW = AppPresenter.Display.MainView.Documents;
+   private static final String DEFAULT_DOCUMENT_PATH = "";
+   private static final String DEFAULT_DOC_FILTER_TEXT = "";
+   private static final boolean DEFAULT_DOC_FILTER_EXACT = false;
+
+   public HistoryToken()
+   {
+      view = DEFAULT_VIEW;
+      fullDocPath = DEFAULT_DOCUMENT_PATH;
+      docFilterText = DEFAULT_DOC_FILTER_TEXT;
+      docFilterExact = DEFAULT_DOC_FILTER_EXACT;
+   }
 
    /**
     * Generate a history token from the given token string
@@ -42,74 +55,65 @@ public class HistoryToken
    {
       HistoryToken historyToken = new HistoryToken();
 
-      String[] pair;
 
-      try
+      if (token == null || token.length() == 0)
       {
-         for (String pairString : token.split(PAIR_SEPARATOR))
-         {
-            pair = pairString.split(DELIMITER_K_V);
-            String key = pair[0];
-            String value = pair[1];
-
-            if (key == HistoryToken.KEY_DOCUMENT)
-            {
-               try
-               {
-                  historyToken.setDocumentPath((value));
-               }
-               catch (NullPointerException e)
-               {
-                  historyToken.setDocumentPath(null);
-               }
-               catch (NumberFormatException e)
-               {
-                  historyToken.setDocumentPath(null);
-               }
-            }
-            else if (key == HistoryToken.KEY_VIEW)
-            {
-               if (value.equals(VALUE_EDITOR_VIEW))
-               {
-                  historyToken.setView(AppPresenter.Display.MainView.Editor);
-               }
-               else if (value.equals(VALUE_DOCLIST_VIEW))
-               {
-                  historyToken.setView(AppPresenter.Display.MainView.Documents);
-               }
-               else
-               { // invalid view
-                  historyToken.setView(null);
-               }
-            }
-            else if (key == HistoryToken.KEY_DOC_FILTER_OPTION)
-            {
-               if (value == VALUE_DOC_FILTER_EXACT)
-                  historyToken.setDocFilterExact(true);
-               else if (value == VALUE_DOC_FILTER_INEXACT)
-                  historyToken.setDocFilterExact(false);
-            }
-            else if (key == HistoryToken.KEY_DOC_FILTER_TEXT)
-            {
-               historyToken.setDocFilterText(value);
-            }
-
-            else
-               Log.info("unrecognised history key: " + key);
-
-         }
+         return historyToken;
       }
-      catch (IllegalArgumentException e)
+
+      String[] pair;
+      for (String pairString : token.split(PAIR_SEPARATOR))
       {
-         throw new IllegalArgumentException("token must be a list of key-value pairs in the form key1:value1,key2:value2,...", e);
+         pair = pairString.split(DELIMITER_K_V);
+         String key;
+         String value;
+         try
+         {
+            key = pair[0];
+            value = pair[1];
+         }
+         catch (ArrayIndexOutOfBoundsException e)
+         {
+            continue;
+         }
+
+         if (key == HistoryToken.KEY_DOCUMENT)
+         {
+            historyToken.setDocumentPath(value);
+         }
+         else if (key == HistoryToken.KEY_VIEW)
+         {
+            if (value.equals(VALUE_EDITOR_VIEW))
+            {
+               historyToken.setView(AppPresenter.Display.MainView.Editor);
+            }
+            else if (value.equals(VALUE_DOCLIST_VIEW))
+            {
+               historyToken.setView(AppPresenter.Display.MainView.Documents);
+            }
+            else
+            { // invalid view
+               historyToken.setView(null);
+            }
+         }
+         else if (key == HistoryToken.KEY_DOC_FILTER_OPTION)
+         {
+            if (value == VALUE_DOC_FILTER_EXACT)
+               historyToken.setDocFilterExact(true);
+            else if (value == VALUE_DOC_FILTER_INEXACT)
+               historyToken.setDocFilterExact(false);
+         }
+         else if (key == HistoryToken.KEY_DOC_FILTER_TEXT)
+         {
+            historyToken.setDocFilterText(value);
+         }
+
+         else
+            Log.info("unrecognised history key: " + key);
+
       }
 
       return historyToken;
-   }
-
-   public boolean hasDocumentPath()
-   {
-      return fullDocPath != null && fullDocPath.length() > 0;
    }
 
    public String getDocumentPath()
@@ -119,7 +123,10 @@ public class HistoryToken
 
    public void setDocumentPath(String fullDocPath)
    {
-      this.fullDocPath = fullDocPath;
+      if (fullDocPath == null)
+         this.fullDocPath = DEFAULT_DOCUMENT_PATH;
+      else
+         this.fullDocPath = fullDocPath;
    }
 
    public boolean hasView()
@@ -194,13 +201,13 @@ public class HistoryToken
          }
       }
 
-      if (hasDocumentPath())
+      if (!fullDocPath.equals(DEFAULT_DOCUMENT_PATH))
       {
          if (first)
             first = false;
          else
             token += PAIR_SEPARATOR;
-         token += KEY_DOCUMENT + DELIMITER_K_V + fullDocPath.toString();
+         token += KEY_DOCUMENT + DELIMITER_K_V + fullDocPath;
       }
 
       if (hasDocFilterExact())
