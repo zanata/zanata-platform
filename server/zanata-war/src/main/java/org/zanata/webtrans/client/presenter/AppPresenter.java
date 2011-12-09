@@ -319,16 +319,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
    private void processHistoryEvent(ValueChangeEvent<String> event)
    {
-
-      // TODO keep track of previous history token like in DocumentListPresenter
-
       Log.info("Responding to history token: " + event.getValue());
 
       HistoryToken token = HistoryToken.fromTokenString(event.getValue());
 
       DocumentId docId = documentListPresenter.getDocumentId(token.getDocumentPath());
 
-      if (token.hasDocumentPath() && (selectedDocument == null || !selectedDocument.getId().equals(docId)))
+      if (docId != null && (selectedDocument == null || !selectedDocument.getId().equals(docId)))
       {
          Log.info("Firing document selection event");
          try
@@ -342,7 +339,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          Log.info("Fired document selection event for " + docId.getId());
       }
 
-      if (token.hasView() && token.getView() != display.getCurrentView())
+      // if there is no valid document, don't show the editor
+      if (docId == null)
+      {
+         token.setView(MainView.Documents);
+      }
+
+      if (token.getView() != display.getCurrentView())
       {
          if (display.getCurrentView().equals(MainView.Editor))
          {
@@ -357,27 +360,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          }
          display.showInMainView(token.getView());
       }
-      // TODO set defaults in history rather than having this block.
-      else if (!token.hasView())
-      {
-         // default view.
-         display.showInMainView(MainView.Documents);
-      }
 
-      // TODO use a cloned token below when the current token is stored. Ok to
-      // modify current token for now. (add clone method when doing this)
-
-      // update toggle link with alternate view latest history state
-      if (token.hasView() && token.getView().equals(MainView.Editor))
-      {
+      // update toggle link with alternate view, or doc list if no doc is
+      // loaded
+      if (docId == null || token.getView().equals(MainView.Editor))
          token.setView(MainView.Documents);
-      }
       else
-      { // doclist is default
          token.setView(MainView.Editor);
-      }
       ((Anchor) display.getDocumentsLink()).setHref("#" + token.toTokenString());
-
    }
-
 }
