@@ -46,8 +46,6 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display
    {
    }
 
-   private final LayoutPanel transUnitDetailContainer;
-
    private final LayoutPanel validationDetailContainer;
 
 
@@ -61,7 +59,6 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display
    @Inject
    public SidePanel(WebTransMessages messages)
    {
-      transUnitDetailContainer = new LayoutPanel();
       validationDetailContainer = new LayoutPanel();
 
       this.messages = messages;
@@ -69,16 +66,7 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display
       rootPanel = uiBinder.createAndBindUi(this);
       initWidget(rootPanel);
 
-      mainPanel.add(transUnitDetailContainer, messages.transUnitDetailsHeading(), 20);
       mainPanel.add(validationDetailContainer, messages.validationDetailsHeading(), 20);
-   }
-
-
-   @Override
-   public void setTransUnitDetailView(Widget widget)
-   {
-      transUnitDetailContainer.clear();
-      transUnitDetailContainer.add(widget);
    }
 
    @Override

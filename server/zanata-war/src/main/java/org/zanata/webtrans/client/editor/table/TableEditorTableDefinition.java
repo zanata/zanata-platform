@@ -153,7 +153,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
          });
          
-         sourcePanel = new SourcePanel(rowValue, messages);
+         sourcePanel = new SourcePanel(rowValue, images, messages);
          
          if (findMessage != null && !findMessage.isEmpty())
          {

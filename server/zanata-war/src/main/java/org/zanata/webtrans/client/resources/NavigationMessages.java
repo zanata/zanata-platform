@@ -22,6 +22,7 @@ package org.zanata.webtrans.client.resources;
 
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
+import com.google.gwt.i18n.client.Messages.DefaultMessage;
 import com.google.gwt.i18n.client.Messages;
 
 @DefaultLocale
@@ -123,4 +124,7 @@ public interface NavigationMessages extends Messages
 
    @DefaultMessage("Run Validation")
    String runValidation();
+
+   @DefaultMessage("Translation Unit Details")
+   String transUnitDetailsHeading();
 }
