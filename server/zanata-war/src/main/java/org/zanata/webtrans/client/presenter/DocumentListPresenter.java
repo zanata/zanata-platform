@@ -142,7 +142,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             }
             else
             {
-               isNewSelection = docId.equals(event.getSelectedItem().getId());
+               isNewSelection = !docId.equals(event.getSelectedItem().getId());
             }
 
             if (isNewSelection)

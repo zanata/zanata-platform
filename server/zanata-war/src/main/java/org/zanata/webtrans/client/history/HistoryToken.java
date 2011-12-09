@@ -55,16 +55,14 @@ public class HistoryToken
    {
       HistoryToken historyToken = new HistoryToken();
 
-
       if (token == null || token.length() == 0)
       {
          return historyToken;
       }
 
-      String[] pair;
       for (String pairString : token.split(PAIR_SEPARATOR))
       {
-         pair = pairString.split(DELIMITER_K_V);
+         String[] pair = pairString.split(DELIMITER_K_V);
          String key;
          String value;
          try
@@ -87,14 +85,7 @@ public class HistoryToken
             {
                historyToken.setView(AppPresenter.Display.MainView.Editor);
             }
-            else if (value.equals(VALUE_DOCLIST_VIEW))
-            {
-               historyToken.setView(AppPresenter.Display.MainView.Documents);
-            }
-            else
-            { // invalid view
-               historyToken.setView(null);
-            }
+            // else default will be used
          }
          else if (key == HistoryToken.KEY_DOC_FILTER_OPTION)
          {
@@ -129,11 +120,6 @@ public class HistoryToken
          this.fullDocPath = fullDocPath;
    }
 
-   public boolean hasView()
-   {
-      return view != null;
-   }
-
    public AppPresenter.Display.MainView getView()
    {
       return view;
@@ -141,7 +127,10 @@ public class HistoryToken
 
    public void setView(AppPresenter.Display.MainView view)
    {
-      this.view = view;
+      if (view == null)
+         this.view = DEFAULT_VIEW;
+      else
+         this.view = view;
    }
 
    public boolean hasDocFilterExact()
@@ -174,7 +163,6 @@ public class HistoryToken
       this.docFilterText = value;
    }
 
-
    /**
     * @return a token string for use with
     *         {@link com.google.gwt.user.client.History}
@@ -184,21 +172,14 @@ public class HistoryToken
       String token = "";
       boolean first = true;
 
-      if (hasView())
+      if (view != DEFAULT_VIEW)
       {
          if (first)
             first = false;
          else
             token += PAIR_SEPARATOR;
-         token += KEY_VIEW + DELIMITER_K_V;
-         if (view == AppPresenter.Display.MainView.Editor)
-         {
-            token += VALUE_EDITOR_VIEW;
-         }
-         else if (view == AppPresenter.Display.MainView.Documents)
-         {
-            token += VALUE_DOCLIST_VIEW;
-         }
+         // editor is the only non-default view
+         token += KEY_VIEW + DELIMITER_K_V + VALUE_EDITOR_VIEW;
       }
 
       if (!fullDocPath.equals(DEFAULT_DOCUMENT_PATH))

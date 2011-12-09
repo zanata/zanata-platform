@@ -321,65 +321,48 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    {
       try
       {
+         Log.info("Responding to history token: " + event.getValue());
 
-      // TODO keep track of previous history token like in DocumentListPresenter
+         HistoryToken token = HistoryToken.fromTokenString(event.getValue());
 
-      Log.info("Responding to history token: " + event.getValue());
+         DocumentId docId = documentListPresenter.getDocumentId(token.getDocumentPath());
 
-      HistoryToken token = HistoryToken.fromTokenString(event.getValue());
-
-      DocumentId docId = documentListPresenter.getDocumentId(token.getDocumentPath());
-
-      if (docId != null && (selectedDocument == null || !selectedDocument.getId().equals(docId)))
-      {
-         Log.info("Firing document selection event");
-         try
+         if (docId != null && (selectedDocument == null || !selectedDocument.getId().equals(docId)))
          {
-            eventBus.fireEvent(new DocumentSelectionEvent(docId));
-         }
-         catch (Throwable t)
-         {
-            Log.info("got exception from document selection event", t);
-         }
-         Log.info("Fired document selection event for " + docId.getId());
-      }
-
-      if (token.hasView() && token.getView() != display.getCurrentView())
-      {
-         if (display.getCurrentView().equals(MainView.Editor))
-         {
-            translationPresenter.saveEditorPendingChange();
-         }
-         else
-         { // document list view
-            if (selectedDocument != null)
+            Log.info("Firing document selection event");
+            try
             {
-               display.setSelectedDocument(selectedDocument);
+               eventBus.fireEvent(new DocumentSelectionEvent(docId));
             }
+            catch (Throwable t)
+            {
+               Log.info("got exception from document selection event", t);
+            }
+            Log.info("Fired document selection event for " + docId.getId());
          }
-         display.showInMainView(token.getView());
-      }
-      // TODO set defaults in history rather than having this block.
-      else if (!token.hasView())
-      {
-         // default view.
-         display.showInMainView(MainView.Documents);
-      }
 
-      // TODO use a cloned token below when the current token is stored. Ok to
-      // modify current token for now. (add clone method when doing this)
+         if (token.getView() != display.getCurrentView())
+         {
+            if (display.getCurrentView().equals(MainView.Editor))
+            {
+               translationPresenter.saveEditorPendingChange();
+            }
+            else
+            { // document list view
+               if (selectedDocument != null)
+               {
+                  display.setSelectedDocument(selectedDocument);
+               }
+            }
+            display.showInMainView(token.getView());
+         }
 
-      // update toggle link with alternate view latest history state
-      if (token.hasView() && token.getView().equals(MainView.Editor))
-      {
-         token.setView(MainView.Documents);
-      }
-      else
-      { // doclist is default
-         token.setView(MainView.Editor);
-      }
-      ((Anchor) display.getDocumentsLink()).setHref("#" + token.toTokenString());
-
+         // update toggle link with alternate view latest history state
+         if (token.getView().equals(MainView.Editor))
+            token.setView(MainView.Documents);
+         else
+            token.setView(MainView.Editor);
+         ((Anchor) display.getDocumentsLink()).setHref("#" + token.toTokenString());
       }
       catch (Throwable t)
       {
