@@ -319,56 +319,54 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
    private void processHistoryEvent(ValueChangeEvent<String> event)
    {
-      try
+      Log.info("Responding to history token: " + event.getValue());
+
+      HistoryToken token = HistoryToken.fromTokenString(event.getValue());
+
+      DocumentId docId = documentListPresenter.getDocumentId(token.getDocumentPath());
+
+      if (docId != null && (selectedDocument == null || !selectedDocument.getId().equals(docId)))
       {
-         Log.info("Responding to history token: " + event.getValue());
-
-         HistoryToken token = HistoryToken.fromTokenString(event.getValue());
-
-         DocumentId docId = documentListPresenter.getDocumentId(token.getDocumentPath());
-
-         if (docId != null && (selectedDocument == null || !selectedDocument.getId().equals(docId)))
+         Log.info("Firing document selection event");
+         try
          {
-            Log.info("Firing document selection event");
-            try
-            {
-               eventBus.fireEvent(new DocumentSelectionEvent(docId));
-            }
-            catch (Throwable t)
-            {
-               Log.info("got exception from document selection event", t);
-            }
-            Log.info("Fired document selection event for " + docId.getId());
+            eventBus.fireEvent(new DocumentSelectionEvent(docId));
          }
-
-         if (token.getView() != display.getCurrentView())
+         catch (Throwable t)
          {
-            if (display.getCurrentView().equals(MainView.Editor))
-            {
-               translationPresenter.saveEditorPendingChange();
-            }
-            else
-            { // document list view
-               if (selectedDocument != null)
-               {
-                  display.setSelectedDocument(selectedDocument);
-               }
-            }
-            display.showInMainView(token.getView());
+            Log.info("got exception from document selection event", t);
          }
+         Log.info("Fired document selection event for " + docId.getId());
+      }
 
-         // update toggle link with alternate view latest history state
-         if (token.getView().equals(MainView.Editor))
-            token.setView(MainView.Documents);
+      // if there is no valid document, don't show the editor
+      if (docId == null)
+      {
+         token.setView(MainView.Documents);
+      }
+
+      if (token.getView() != display.getCurrentView())
+      {
+         if (display.getCurrentView().equals(MainView.Editor))
+         {
+            translationPresenter.saveEditorPendingChange();
+         }
          else
-            token.setView(MainView.Editor);
-         ((Anchor) display.getDocumentsLink()).setHref("#" + token.toTokenString());
-      }
-      catch (Throwable t)
-      {
-         Log.error("exception while responding to history token", t);
+         { // document list view
+            if (selectedDocument != null)
+            {
+               display.setSelectedDocument(selectedDocument);
+            }
+         }
+         display.showInMainView(token.getView());
       }
 
+      // update toggle link with alternate view, or doc list if no doc is
+      // loaded
+      if (docId == null || token.getView().equals(MainView.Editor))
+         token.setView(MainView.Documents);
+      else
+         token.setView(MainView.Editor);
+      ((Anchor) display.getDocumentsLink()).setHref("#" + token.toTokenString());
    }
-
 }

@@ -204,47 +204,40 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          @Override
          public void onValueChange(ValueChangeEvent<String> event)
          {
-            try
+            if (currentHistoryState == null)
+               currentHistoryState = new HistoryToken(); // default values
+
+            boolean filterChanged = false;
+            HistoryToken token = HistoryToken.fromTokenString(event.getValue());
+            // update textbox to match new history state
+            if (!token.getDocFilterText().equals(display.getFilterTextBox().getValue()))
             {
-               if (currentHistoryState == null)
-                  currentHistoryState = new HistoryToken(); // default values
-
-               boolean filterChanged = false;
-               HistoryToken token = HistoryToken.fromTokenString(event.getValue());
-               // update textbox to match new history state
-               if (!token.getDocFilterText().equals(display.getFilterTextBox().getValue()))
-               {
-                  display.getFilterTextBox().setValue(token.getDocFilterText(), true);
-               }
-
-               if (!token.getDocFilterText().equals(currentHistoryState.getDocFilterText()))
-               {
-                  // different pattern
-                  filter.setPattern(token.getDocFilterText());
-                  filterChanged = true;
-               }
-
-               // update checkbox to match new history state
-               if (token.getDocFilterExact() != display.getExactSearchCheckbox().getValue())
-               {
-                  display.getExactSearchCheckbox().setValue(token.getDocFilterExact());
-               }
-
-               if (token.getDocFilterExact() != currentHistoryState.getDocFilterExact())
-               {
-                  filter.setFullText(token.getDocFilterExact());
-                  filterChanged = true;
-               }
-
-               currentHistoryState = token;
-
-               if (filterChanged)
-                  runFilter();
+               display.getFilterTextBox().setValue(token.getDocFilterText(), true);
             }
-            catch (Throwable t)
+
+            if (!token.getDocFilterText().equals(currentHistoryState.getDocFilterText()))
             {
-               Log.error("exception with doclistpresenter responding to histroy token", t);
+               // different pattern
+               filter.setPattern(token.getDocFilterText());
+               filterChanged = true;
             }
+
+            // update checkbox to match new history state
+            if (token.getDocFilterExact() != display.getExactSearchCheckbox().getValue())
+            {
+               display.getExactSearchCheckbox().setValue(token.getDocFilterExact());
+            }
+
+            if (token.getDocFilterExact() != currentHistoryState.getDocFilterExact())
+            {
+               filter.setFullText(token.getDocFilterExact());
+               filterChanged = true;
+            }
+
+            currentHistoryState = token;
+
+            if (filterChanged)
+               runFilter();
          }
       });
 
