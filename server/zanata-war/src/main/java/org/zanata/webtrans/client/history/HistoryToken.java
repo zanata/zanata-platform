@@ -148,11 +148,6 @@ public class HistoryToken
       docFilterExact = exactMatch;
    }
 
-   public boolean hasDocFilterText()
-   {
-      return docFilterText != null;
-   }
-
    public String getDocFilterText()
    {
       return docFilterText;
@@ -160,7 +155,10 @@ public class HistoryToken
 
    public void setDocFilterText(String value)
    {
-      this.docFilterText = value;
+      if (value == null || value.length() == 0)
+         this.docFilterText = DEFAULT_DOC_FILTER_TEXT;
+      else
+         this.docFilterText = value;
    }
 
    /**
@@ -201,7 +199,7 @@ public class HistoryToken
          token += docFilterExact ? VALUE_DOC_FILTER_EXACT : VALUE_DOC_FILTER_INEXACT;
       }
 
-      if (hasDocFilterText())
+      if (!docFilterText.equals(DEFAULT_DOC_FILTER_TEXT))
       {
          if (first)
             first = false;

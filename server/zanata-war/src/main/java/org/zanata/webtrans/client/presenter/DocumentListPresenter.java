@@ -206,36 +206,22 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          {
             try
             {
+               if (currentHistoryState == null)
+                  currentHistoryState = new HistoryToken(); // default values
+
                boolean filterChanged = false;
                HistoryToken token = HistoryToken.fromTokenString(event.getValue());
-               if (token.hasDocFilterText())
+               // update textbox to match new history state
+               if (!token.getDocFilterText().equals(display.getFilterTextBox().getValue()))
                {
-                  // update textbox to match new history state
-                  if (!token.getDocFilterText().equals(display.getFilterTextBox().getValue()))
-                  {
-                     display.getFilterTextBox().setValue(token.getDocFilterText(), true);
-                  }
-
-                  boolean patternChanged;
-                  if (currentHistoryState == null)
-                     patternChanged = true;
-                  else
-                     patternChanged = !token.getDocFilterText().equals(currentHistoryState.getDocFilterText());
-                  if (patternChanged)
-                  {
-                     filter.setPattern(token.getDocFilterText());
-                     filterChanged = true;
-                  }
+                  display.getFilterTextBox().setValue(token.getDocFilterText(), true);
                }
-               else
+
+               if (!token.getDocFilterText().equals(currentHistoryState.getDocFilterText()))
                {
-                  if (currentHistoryState != null && currentHistoryState.hasDocFilterText())
-                  {
-                     // not using default
-                     filter.setPattern("");
-                     filterChanged = true;
-                  }
-                  // else was already using blank filter
+                  // different pattern
+                  filter.setPattern(token.getDocFilterText());
+                  filterChanged = true;
                }
 
                if (token.hasDocFilterExact())
