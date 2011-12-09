@@ -93,6 +93,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    private ListDataProvider<DocumentNode> dataProvider;
    private HashMap<DocumentId, DocumentNode> nodes;
 
+   /**
+    * For quick lookup of document id by full path (including document name).
+    * Primarily for use with history token.
+    */
+   private HashMap<String, DocumentId> idsByPath;
+
    // private ContentFilter<DocumentInfo> filter;
    private final PathDocumentFilter filter = new PathDocumentFilter();
 
@@ -129,27 +135,20 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
             // prevent feedback loops between history and selection
             boolean isNewSelection;
-            if (token.hasDocumentId())
+            DocumentId docId = getDocumentId(token.getDocumentPath());
+            if (docId == null)
             {
-               try
-               {
-                  isNewSelection = event.getSelectedItem().getId().getId() != token.getDocumentId().getId();
-               }
-               catch (Throwable t)
-               {
-                  Log.info("got exception determining whether selection is new", t);
-                  isNewSelection = false;
-               }
+               isNewSelection = true;
             }
             else
             {
-               isNewSelection = true;
+               isNewSelection = !docId.equals(event.getSelectedItem().getId());
             }
 
             if (isNewSelection)
             {
                currentDocument = event.getSelectedItem();
-               token.setDocumentId(currentDocument.getId());
+               token.setDocumentPath(event.getSelectedItem().getPath() + event.getSelectedItem().getName());
                token.setView(MainView.Editor);
                History.newItem(token.toTokenString());
             }
@@ -205,67 +204,34 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          @Override
          public void onValueChange(ValueChangeEvent<String> event)
          {
+            if (currentHistoryState == null)
+               currentHistoryState = new HistoryToken(); // default values
+
             boolean filterChanged = false;
             HistoryToken token = HistoryToken.fromTokenString(event.getValue());
-            if (token.hasDocFilterText())
+            // update textbox to match new history state
+            if (!token.getDocFilterText().equals(display.getFilterTextBox().getValue()))
             {
-               // update textbox to match new history state
-               if (!token.getDocFilterText().equals(display.getFilterTextBox().getValue()))
-               {
-                  display.getFilterTextBox().setValue(token.getDocFilterText(), true);
-               }
-
-               boolean patternChanged;
-               if (currentHistoryState == null)
-                  patternChanged = true;
-               else
-                  patternChanged = !token.getDocFilterText().equals(currentHistoryState.getDocFilterText());
-               if (patternChanged)
-               {
-                  filter.setPattern(token.getDocFilterText());
-                  filterChanged = true;
-               }
-            }
-            else
-            {
-               if (currentHistoryState != null && currentHistoryState.hasDocFilterText())
-               {
-                  // not using default
-                  filter.setPattern("");
-                  filterChanged = true;
-               }
-               // else was already using blank filter
+               display.getFilterTextBox().setValue(token.getDocFilterText(), true);
             }
 
-            if (token.hasDocFilterExact())
+            if (!token.getDocFilterText().equals(currentHistoryState.getDocFilterText()))
             {
-               // update checkbox to match new history state
-               if (token.getDocFilterExact() != display.getExactSearchCheckbox().getValue())
-               {
-                  display.getExactSearchCheckbox().setValue(token.getDocFilterExact());
-               }
-
-               boolean flagChanged;
-               if (currentHistoryState == null)
-                  flagChanged = true;
-               else
-                  flagChanged = !token.getDocFilterExact().equals(currentHistoryState.getDocFilterExact());
-
-               if (flagChanged)
-               {
-                  filter.setFullText(token.getDocFilterExact());
-                  filterChanged = true;
-               }
+               // different pattern
+               filter.setPattern(token.getDocFilterText());
+               filterChanged = true;
             }
-            else
+
+            // update checkbox to match new history state
+            if (token.getDocFilterExact() != display.getExactSearchCheckbox().getValue())
             {
-               if (currentHistoryState != null && currentHistoryState.hasDocFilterExact() && currentHistoryState.getDocFilterExact() == true)
-               {
-                  // not using default
-                  filter.setFullText(false);
-                  filterChanged = true;
-               }
-               // else was already using substring match
+               display.getExactSearchCheckbox().setValue(token.getDocFilterExact());
+            }
+
+            if (token.getDocFilterExact() != currentHistoryState.getDocFilterExact())
+            {
+               filter.setFullText(token.getDocFilterExact());
+               filterChanged = true;
             }
 
             currentHistoryState = token;
@@ -333,7 +299,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          String[] patternCandidates = pattern.split(DOCUMENT_FILTER_LIST_DELIMITER);
          for (String candidate : patternCandidates)
          {
-            // TODO check whether trimming is appropriate
             candidate = candidate.trim();
             if (candidate.length() != 0)
             {
@@ -420,11 +385,13 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    {
       dataProvider.getList().clear();
       nodes = new HashMap<DocumentId, DocumentNode>(sortedList.size());
+      idsByPath = new HashMap<String, DocumentId>(sortedList.size());
       int counter = 0;
       long start = System.currentTimeMillis();
       for (DocumentInfo doc : sortedList)
       {
          Log.info("Loading document: " + ++counter + " ");
+         idsByPath.put(doc.getPath() + doc.getName(), doc.getId());
          DocumentNode node = new DocumentNode(messages, doc, eventBus, dataProvider);
          if (filter != null)
          {
@@ -460,10 +427,31 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       dataProvider.refresh();
    }
 
+   /**
+    * 
+    * @param docId the id of the document
+    * @return document info corresponding to the id, or null if the document is
+    *         not in the document list
+    */
    public DocumentInfo getDocumentInfo(DocumentId docId)
    {
       DocumentNode node = nodes.get(docId);
       return (node == null ? null : node.getDocInfo());
+   }
+
+   /**
+    * 
+    * @param fullPathAndName document path + document name
+    * @return the id for the document, or null if the document is not in the
+    *         document list or there is no document list
+    */
+   public DocumentId getDocumentId(String fullPathAndName)
+   {
+      if (idsByPath != null)
+      {
+         return idsByPath.get(fullPathAndName);
+      }
+      return null;
    }
 
    private void clearSelection()
