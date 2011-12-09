@@ -18,18 +18,18 @@ public class HistoryToken
    public static final String KEY_DOCUMENT = "doc";
 
    public static final String KEY_VIEW = "view";
-   public static final String VALUE_DOCLIST_VIEW = "list";
+   // public static final String VALUE_DOCLIST_VIEW = "list";
    public static final String VALUE_EDITOR_VIEW = "doc";
 
    public static final String KEY_DOC_FILTER_TEXT = "filter";
 
    public static final String KEY_DOC_FILTER_OPTION = "filtertype";
    public static final String VALUE_DOC_FILTER_EXACT = "exact";
-   public static final String VALUE_DOC_FILTER_INEXACT = "substr";
+   // public static final String VALUE_DOC_FILTER_INEXACT = "substr";
 
    private AppPresenter.Display.MainView view;
    private String fullDocPath;
-   private Boolean docFilterExact;
+   private boolean docFilterExact;
    private String docFilterText;
 
    // defaults
@@ -91,8 +91,7 @@ public class HistoryToken
          {
             if (value == VALUE_DOC_FILTER_EXACT)
                historyToken.setDocFilterExact(true);
-            else if (value == VALUE_DOC_FILTER_INEXACT)
-               historyToken.setDocFilterExact(false);
+            // else default used
          }
          else if (key == HistoryToken.KEY_DOC_FILTER_TEXT)
          {
@@ -133,17 +132,12 @@ public class HistoryToken
          this.view = view;
    }
 
-   public boolean hasDocFilterExact()
-   {
-      return docFilterExact != null;
-   }
-
    public Boolean getDocFilterExact()
    {
       return docFilterExact;
    }
 
-   public void setDocFilterExact(Boolean exactMatch)
+   public void setDocFilterExact(boolean exactMatch)
    {
       docFilterExact = exactMatch;
    }
@@ -189,14 +183,14 @@ public class HistoryToken
          token += KEY_DOCUMENT + DELIMITER_K_V + fullDocPath;
       }
 
-      if (hasDocFilterExact())
+      if (docFilterExact != DEFAULT_DOC_FILTER_EXACT)
       {
          if (first)
             first = false;
          else
             token += PAIR_SEPARATOR;
-         token += KEY_DOC_FILTER_OPTION + DELIMITER_K_V;
-         token += docFilterExact ? VALUE_DOC_FILTER_EXACT : VALUE_DOC_FILTER_INEXACT;
+         // exact is the only non-default filter value
+         token += KEY_DOC_FILTER_OPTION + DELIMITER_K_V + VALUE_DOC_FILTER_EXACT;
       }
 
       if (!docFilterText.equals(DEFAULT_DOC_FILTER_TEXT))

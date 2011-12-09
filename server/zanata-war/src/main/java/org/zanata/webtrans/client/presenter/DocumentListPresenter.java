@@ -224,35 +224,16 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
                   filterChanged = true;
                }
 
-               if (token.hasDocFilterExact())
+               // update checkbox to match new history state
+               if (token.getDocFilterExact() != display.getExactSearchCheckbox().getValue())
                {
-                  // update checkbox to match new history state
-                  if (token.getDocFilterExact() != display.getExactSearchCheckbox().getValue())
-                  {
-                     display.getExactSearchCheckbox().setValue(token.getDocFilterExact());
-                  }
-
-                  boolean flagChanged;
-                  if (currentHistoryState == null)
-                     flagChanged = true;
-                  else
-                     flagChanged = !token.getDocFilterExact().equals(currentHistoryState.getDocFilterExact());
-
-                  if (flagChanged)
-                  {
-                     filter.setFullText(token.getDocFilterExact());
-                     filterChanged = true;
-                  }
+                  display.getExactSearchCheckbox().setValue(token.getDocFilterExact());
                }
-               else
+
+               if (token.getDocFilterExact() != currentHistoryState.getDocFilterExact())
                {
-                  if (currentHistoryState != null && currentHistoryState.hasDocFilterExact() && currentHistoryState.getDocFilterExact() == true)
-                  {
-                     // not using default
-                     filter.setFullText(false);
-                     filterChanged = true;
-                  }
-                  // else was already using substring match
+                  filter.setFullText(token.getDocFilterExact());
+                  filterChanged = true;
                }
 
                currentHistoryState = token;
