@@ -1,5 +1,21 @@
 # Zanata change log summary
 
+## zanata-1.5
+ * Allow bookmarking of selected document, document list filter and current view: https://bugzilla.redhat.com/show_bug.cgi?id=757621
+ * Add workspace query string parameters for generating a custom doclist with a custom title: https://bugzilla.redhat.com/show_bug.cgi?id=758587
+  * e.g. &title=Custom%20title&doc=full/path/of/first/doc&doc=full/path/of/second/doc
+
+## zanata-1.4.3
+ * Show message context in editor info panel: https://bugzilla.redhat.com/show_bug.cgi?id=750690
+ * Update gwteventservice to 1.2.0-RC1
+ * Modify email templates to include server URL
+ * Fix problems with editor table when searching or switching pages: https://bugzilla.redhat.com/show_bug.cgi?id=751264
+ * Add failsafe editor in case of Seam Text problems: https://bugzilla.redhat.com/show_bug.cgi?id=727716
+ * Change string similarity algorithm so that only identical strings (not substrings) can get 100%: https://bugzilla.redhat.com/show_bug.cgi?id=730189
+ * Bugfix: 'J' and 'K' navigation keys trigger when entering text in the TM search box: https://bugzilla.redhat.com/show_bug.cgi?id=754637
+ * Bugfix: Not able to work in parallel on the same workbench: https://bugzilla.redhat.com/show_bug.cgi?id=756293
+ * Show progress during re-index operations; avoid timeout for large databases: https://bugzilla.redhat.com/show_bug.cgi?id=747836
+ 
 ## zanata-1.4.2
  * Language team coordinator: https://bugzilla.redhat.com/show_bug.cgi?id=742083
   * Users now have to ask before joining a language team

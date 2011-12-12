@@ -58,11 +58,12 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implements ValueChangeHandler<String>
+public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 {
    // javac seems confused about which Display is which.
    // somehow, qualifying WidgetDisplay helps!
@@ -98,7 +99,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       void setUserLabel(String userLabel);
 
-      void setWorkspaceNameLabel(String workspaceNameLabel);
+      void setWorkspaceNameLabel(String workspaceNameLabel, String workspaceTitle);
 
       void setSelectedDocument(DocumentInfo document);
 
@@ -141,6 +142,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
    private final TranslationStats selectedDocumentStats = new TranslationStats();
    private final TranslationStats projectStats = new TranslationStats();
+
+   private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
    @Inject
    public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
@@ -252,11 +255,21 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       display.setUserLabel(identity.getPerson().getName());
 
-      display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName());
+      String workspaceTitle = Window.Location.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
+
+      display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName(), workspaceTitle);
 
       Window.setTitle(messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
 
-      History.addValueChangeHandler(this);
+      History.addValueChangeHandler(new ValueChangeHandler<String>()
+      {
+
+         @Override
+         public void onValueChange(ValueChangeEvent<String> event)
+         {
+            processHistoryEvent(event);
+         }
+      });
 
       History.fireCurrentHistoryState();
    }
@@ -304,19 +317,15 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       wordCount.decrement(Updateevent.getPreviousStatus(), Updateevent.getWordCount());
    }
 
-   @Override
-   public void onValueChange(ValueChangeEvent<String> event)
+   private void processHistoryEvent(ValueChangeEvent<String> event)
    {
-
       Log.info("Responding to history token: " + event.getValue());
 
       HistoryToken token = HistoryToken.fromTokenString(event.getValue());
 
-      DocumentId docId = token.getDocumentId();
+      DocumentId docId = documentListPresenter.getDocumentId(token.getDocumentPath());
 
-      // comparing longs here as DocumentId objects don't seem to compare
-      // properly
-      if (token.hasDocumentId() && (selectedDocument == null || selectedDocument.getId().getId() != docId.getId()))
+      if (docId != null && (selectedDocument == null || !selectedDocument.getId().equals(docId)))
       {
          Log.info("Firing document selection event");
          try
@@ -330,7 +339,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          Log.info("Fired document selection event for " + docId.getId());
       }
 
-      if (token.hasView() && token.getView() != display.getCurrentView())
+      // if there is no valid document, don't show the editor
+      if (docId == null)
+      {
+         token.setView(MainView.Documents);
+      }
+
+      if (token.getView() != display.getCurrentView())
       {
          if (display.getCurrentView().equals(MainView.Editor))
          {
@@ -346,6 +361,12 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          display.showInMainView(token.getView());
       }
 
+      // update toggle link with alternate view, or doc list if no doc is
+      // loaded
+      if (docId == null || token.getView().equals(MainView.Editor))
+         token.setView(MainView.Documents);
+      else
+         token.setView(MainView.Editor);
+      ((Anchor) display.getDocumentsLink()).setHref("#" + token.toTokenString());
    }
-
 }

@@ -17,14 +17,20 @@
             -moz-border-radius: 7px;
             -webkit-border-radius: 7px;
         }
-      
         
     </ui:style>
     <g:LayoutPanel>
         <g:layer top="0px" bottom="8px">
             <g:LayoutPanel styleName="{style.mainPanel}">
-                <g:layer top='2px' height='20px' left="2px" right="205px">
-                    <fui:ClearableTextBox ui:field='filterTextBox'/>
+                <g:layer top='2px' height='20px' left="2px" right="2px">
+                    <g:LayoutPanel>
+                        <g:layer top="0px" height="20px" left="0px" right="210px">
+                            <fui:ClearableTextBox ui:field='filterTextBox'/>
+                        </g:layer>
+                        <g:layer top="0px" height="20px" right="0px" width="200px">
+                            <g:CheckBox ui:field="exactSearchCheckBox"><ui:msg>Exact match only</ui:msg></g:CheckBox>
+                        </g:layer>
+                    </g:LayoutPanel>
                 </g:layer>
                 <g:layer top='50px' bottom="2px">
                     <g:ScrollPanel ui:field='documentScrollPanel'>

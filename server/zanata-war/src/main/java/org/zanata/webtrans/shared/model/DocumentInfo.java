@@ -55,4 +55,15 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, Serializable
       return "DocumentInfo(name=" + name + ",path=" + path + ",id=" + id + ")";
    }
 
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (obj == null)
+         return false;
+      if (!(obj instanceof DocumentInfo))
+         return false;
+      DocumentInfo other = (DocumentInfo) obj;
+      return (id.equals(other.getId()));
+   }
+
 }
