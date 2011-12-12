@@ -164,15 +164,43 @@ do
       $ssh $user@$host $service start
       set +x
 
-      if $DIR/is_server_up.sh $url ; then
-         echo "$url has started up; log tail follows:"
-         ssh $user@$host tail $logfile
-      else
-         echo "$url has failed to start; log tail follows:"
-         ssh $user@$host tail -400 $logfile
-         exit 1
-      fi
+   fi
+done
 
+# Check that each server is up and running
+for buildType in "${BUILD_TYPES[@]}"
+do
+
+   host=$(arrayGet host ${ver}_${buildType})
+
+   echo "=================================================================================="
+   echo "Checking host: $host"
+   echo "=================================================================================="
+
+   url=$(arrayGet url ${ver}_${auth})
+   if [[ -z $url ]]; then
+      url=http://$host:8080/
+   fi
+
+   user=$(arrayGet user ${ver}_${auth})
+   if [[ -z $user ]]; then
+      user=jboss
+   fi
+
+   if [[ $targetfile =~ (.*)/deploy/.* ]]; then
+      logfile=${BASH_REMATCH[1]}/log/server.log
+   else
+      logfile=/dev/null
+   fi
+
+   
+   if $DIR/is_server_up.sh $url ; then
+      echo "$url has started up; log tail follows:"
+      ssh $user@$host tail $logfile
+   else
+      echo "$url has failed to start; log tail follows:"
+      ssh $user@$host tail -400 $logfile
+      exit 1
    fi
 
 done
