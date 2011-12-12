@@ -56,8 +56,6 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -66,7 +64,7 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
 
-public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display> implements HasDocumentSelectionHandlers
+public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display>
 {
 
    public interface Display extends WidgetDisplay
@@ -322,18 +320,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    public void onRevealDisplay()
    {
       // TODO Auto-generated method stub
-   }
-
-   @Override
-   public HandlerRegistration addDocumentSelectionHandler(DocumentSelectionHandler handler)
-   {
-      return eventBus.addHandler(DocumentSelectionEvent.getType(), handler);
-   }
-
-   @Override
-   public void fireEvent(GwtEvent<?> event)
-   {
-      eventBus.fireEvent(event);
    }
 
    private void loadDocumentList()
