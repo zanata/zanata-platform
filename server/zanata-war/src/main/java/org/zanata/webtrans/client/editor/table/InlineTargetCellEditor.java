@@ -30,6 +30,7 @@ import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.events.EditTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.RunValidationEvent;
+import org.zanata.webtrans.client.events.UpdateValidationErrorEvent;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.UserConfigConstants;
 import org.zanata.webtrans.client.ui.ValidationMessagePanel;
@@ -164,6 +165,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private PushButton saveButton, fuzzyButton, cancelButton, validateButton;
    private ValidationMessagePanel validationMessagePanel;
 
+   private final EventBus eventBus;
+
    /*
     * The minimum height of the target editor
     */
@@ -184,7 +187,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       topLayoutPanel = new FlowPanel();
       topLayoutPanel.setWidth("100%");
 
-      // this.eventBus = eventBus;
+      this.eventBus = eventBus;
       cancelCallback = callback;
       editRowCallback = rowCallback;
       textArea = new EditorTextArea();
@@ -470,7 +473,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       cellViewWidget = table.getWidget(curRow, curCol);
 
-      // layoutTable.setCellWidth(this.operationsPanel, "20px");
       table.setWidget(curRow, curCol, verticalPanel);
 
       textArea.setText(cellValue.getTarget());
@@ -481,6 +483,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       textArea.setFocus(true);
       isOpened = true;
       DOM.scrollIntoView(table.getCellFormatter().getElement(curRow, curCol));
+
+      eventBus.fireEvent(new UpdateValidationErrorEvent(cellValue.getId(), true));
    }
 
    public void savePendingChange(boolean cancelIfUnchanged)
@@ -699,7 +703,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    public void updateValidationMessagePanel(ValidationMessagePanel panel)
    {
-      validationMessagePanel.clear();
       validationMessagePanel.setContent(panel.getErrors());
+   }
+
+   public void clearValidationMessagePanel()
+   {
+      validationMessagePanel.clear();
    }
 }

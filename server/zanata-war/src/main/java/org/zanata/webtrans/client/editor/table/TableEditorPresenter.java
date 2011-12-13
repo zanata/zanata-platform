@@ -90,6 +90,7 @@ import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -277,7 +278,13 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          public void onSelection(SelectionEvent<TransUnit> event)
          {
             TransUnit newSelectedItem = event.getSelectedItem();
-            display.getTargetCellEditor().updateValidationMessagePanel(display.getValidationPanel(newSelectedItem.getId()));
+            if (display.getTargetCellEditor().getTargetCell() != null)
+            {
+               if (display.getTargetCellEditor().getTargetCell().getId().equals(newSelectedItem.getId()))
+               {
+                  // display.getTargetCellEditor().updateValidationMessagePanel(display.getValidationPanel(newSelectedItem.getId()));
+               }
+            }
             selectTransUnit(newSelectedItem);
          }
       }));
@@ -503,7 +510,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          @Override
          public void onUpdate(UpdateValidationErrorEvent event)
          {
-            display.updateValidationError(event.getId(), event.getErrors());
+            if (!event.isUpdateEditorOnly())
+            {
+               display.updateValidationError(event.getId(), event.getErrors());
+            }
             display.getTargetCellEditor().updateValidationMessagePanel(display.getValidationPanel(event.getId()));
          }
       }));

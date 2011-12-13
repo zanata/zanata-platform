@@ -50,11 +50,18 @@ public class UpdateValidationErrorEvent extends GwtEvent<UpdateValidationErrorEv
 
    private TransUnitId id;
    private List<String> errors;
+   private boolean updateEditorOnly = false;
 
    public UpdateValidationErrorEvent(TransUnitId id, List<String> errors)
    {
       this.id = id;
       this.errors = errors;
+   }
+
+   public UpdateValidationErrorEvent(TransUnitId id, boolean updateEditorOnly)
+   {
+      this.id = id;
+      this.updateEditorOnly = updateEditorOnly;
    }
 
    @Override
@@ -78,6 +85,11 @@ public class UpdateValidationErrorEvent extends GwtEvent<UpdateValidationErrorEv
    public List<String> getErrors()
    {
       return errors;
+   }
+
+   public boolean isUpdateEditorOnly()
+   {
+      return updateEditorOnly;
    }
 }
 
