@@ -15,10 +15,10 @@ public class GwtTestSample extends GWTTestCase
 
    public void testSomething()
    {
-      // Not much to actually test in this sample app
-      // Ideally you would test your Controller here (NOT YOUR UI)
-      // (Make calls to RPC services, test client side model objects, test
-      // client side logic, etc)
+      // Note: GWT test cases are very slow to run and should be
+      // avoided wherever possible in favour of plain JUnit tests.
+      // Only code that requires a DOM should be tested with these
+      // (e.g. most view classes).
       Assert.assertTrue(true);
    }
 }

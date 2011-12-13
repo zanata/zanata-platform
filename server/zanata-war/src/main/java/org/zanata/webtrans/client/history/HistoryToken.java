@@ -1,10 +1,8 @@
 package org.zanata.webtrans.client.history;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.zanata.webtrans.client.presenter.AppPresenter;
-import org.zanata.webtrans.shared.model.DocumentId;
+
+import com.allen_sauer.gwt.log.client.Log;
 
 /**
  * Encapsulates a string token of key-value pairs for GWT history operations.
@@ -14,23 +12,37 @@ import org.zanata.webtrans.shared.model.DocumentId;
  */
 public class HistoryToken
 {
-   private static final String KEY_VALUE_SEPARATOR = ":";
+   private static final String DELIMITER_K_V = ":";
    private static final String PAIR_SEPARATOR = ";";
 
-   public static final String KEY_VIEW = "view";
    public static final String KEY_DOCUMENT = "doc";
 
-   public static final String VALUE_DOCLIST_VIEW = "list";
+   public static final String KEY_VIEW = "view";
    public static final String VALUE_EDITOR_VIEW = "doc";
 
-   private Map<String, String> members;
+   public static final String KEY_DOC_FILTER_TEXT = "filter";
 
+   public static final String KEY_DOC_FILTER_OPTION = "filtertype";
+   public static final String VALUE_DOC_FILTER_EXACT = "exact";
+
+   private AppPresenter.Display.MainView view;
+   private String fullDocPath;
+   private boolean docFilterExact;
+   private String docFilterText;
+
+   // defaults
+   private static final AppPresenter.Display.MainView DEFAULT_VIEW = AppPresenter.Display.MainView.Documents;
+   private static final String DEFAULT_DOCUMENT_PATH = "";
+   private static final String DEFAULT_DOC_FILTER_TEXT = "";
+   private static final boolean DEFAULT_DOC_FILTER_EXACT = false;
 
    public HistoryToken()
    {
-      members = new HashMap<String, String>();
+      view = DEFAULT_VIEW;
+      fullDocPath = DEFAULT_DOCUMENT_PATH;
+      docFilterText = DEFAULT_DOC_FILTER_TEXT;
+      docFilterExact = DEFAULT_DOC_FILTER_EXACT;
    }
-
 
    /**
     * Generate a history token from the given token string
@@ -41,96 +53,106 @@ public class HistoryToken
    {
       HistoryToken historyToken = new HistoryToken();
 
-      String[] pair;
-
-      if (!token.isEmpty() && token != null)
+      if (token == null || token.length() == 0)
       {
+         return historyToken;
+      }
+
+      for (String pairString : token.split(PAIR_SEPARATOR))
+      {
+         String[] pair = pairString.split(DELIMITER_K_V);
+         String key;
+         String value;
          try
          {
-            for (String pairString : token.split(PAIR_SEPARATOR))
-            {
-               pair = pairString.split(KEY_VALUE_SEPARATOR);
-               historyToken.members.put(pair[0], pair[1]);
-            }
+            key = pair[0];
+            value = pair[1];
          }
-         catch (IllegalArgumentException e)
+         catch (ArrayIndexOutOfBoundsException e)
          {
-            throw new IllegalArgumentException("token must be a list of key-value pairs in the form key1:value1,key2:value2,...", e);
+            continue;
          }
+
+         if (key.equals(HistoryToken.KEY_DOCUMENT))
+         {
+            historyToken.setDocumentPath(value);
+         }
+         else if (key.equals(HistoryToken.KEY_VIEW))
+         {
+            if (value.equals(VALUE_EDITOR_VIEW))
+            {
+               historyToken.setView(AppPresenter.Display.MainView.Editor);
+            }
+            // else default will be used
+         }
+         else if (key.equals(KEY_DOC_FILTER_OPTION))
+         {
+            if (value.equals(VALUE_DOC_FILTER_EXACT))
+            {
+               historyToken.setDocFilterExact(true);
+            }
+            // else default used
+         }
+         else if (key.equals(HistoryToken.KEY_DOC_FILTER_TEXT))
+         {
+            historyToken.setDocFilterText(value);
+         }
+
+         else
+            Log.info("unrecognised history key: " + key);
+
       }
 
       return historyToken;
    }
 
-   public boolean hasDocumentId()
+   public String getDocumentPath()
    {
-      return members.containsKey(HistoryToken.KEY_DOCUMENT);
+      return fullDocPath;
    }
 
-   public DocumentId getDocumentId()
+   public void setDocumentPath(String fullDocPath)
    {
-      try
-      {
-         return new DocumentId(Long.parseLong(members.get(HistoryToken.KEY_DOCUMENT)));
-      }
-      catch (NullPointerException e)
-      {
-         return null;
-      }
-      catch (NumberFormatException e)
-      {
-         return null;
-      }
-   }
-
-   public void setDocumentId(DocumentId docId)
-   {
-      members.put(HistoryToken.KEY_DOCUMENT, docId.toString());
-   }
-
-   public boolean hasView()
-   {
-      return members.containsKey(HistoryToken.KEY_VIEW);
+      if (fullDocPath == null)
+         this.fullDocPath = DEFAULT_DOCUMENT_PATH;
+      else
+         this.fullDocPath = fullDocPath;
    }
 
    public AppPresenter.Display.MainView getView()
    {
-      try
-      {
-         String view = members.get(KEY_VIEW);
-         if (view.equals(VALUE_EDITOR_VIEW))
-         {
-            return AppPresenter.Display.MainView.Editor;
-         }
-         else if (view.equals(VALUE_DOCLIST_VIEW))
-         {
-            return AppPresenter.Display.MainView.Documents;
-         }
-         else
-         { // invalid view
-            return null;
-         }
-      }
-      catch (ClassCastException e)
-      {
-         return null;
-      }
-      catch (NullPointerException e)
-      {
-         return null;
-      }
+      return view;
    }
 
    public void setView(AppPresenter.Display.MainView view)
    {
-      if (view == AppPresenter.Display.MainView.Editor)
-      {
-         members.put(HistoryToken.KEY_VIEW, VALUE_EDITOR_VIEW);
-      }
-      else if (view == AppPresenter.Display.MainView.Documents)
-      {
-         members.put(HistoryToken.KEY_VIEW, VALUE_DOCLIST_VIEW);
-      }
+      if (view == null)
+         this.view = DEFAULT_VIEW;
+      else
+         this.view = view;
+   }
+
+   public boolean getDocFilterExact()
+   {
+      return docFilterExact;
+   }
+
+   public void setDocFilterExact(boolean exactMatch)
+   {
+      docFilterExact = exactMatch;
+   }
+
+   public String getDocFilterText()
+   {
+      return docFilterText;
+   }
+
+   public void setDocFilterText(String value)
+   {
+      if (value == null || value.length() == 0)
+         this.docFilterText = DEFAULT_DOC_FILTER_TEXT;
+      else
+         this.docFilterText = value;
    }
 
    /**
@@ -141,18 +163,45 @@ public class HistoryToken
    {
       String token = "";
       boolean first = true;
-      for (Map.Entry<String, String> pair : members.entrySet())
+
+      if (view != DEFAULT_VIEW)
       {
-         if (pair.getKey() != null && pair.getKey() != "" && pair.getValue() != null && pair.getValue() != "")
-         {
-            if (first)
-               first = false;
-            else
-               token += PAIR_SEPARATOR;
-            token += pair.getKey() + KEY_VALUE_SEPARATOR + pair.getValue();
-         }
+         if (first)
+            first = false;
+         else
+            token += PAIR_SEPARATOR;
+         // editor is the only non-default view
+         token += KEY_VIEW + DELIMITER_K_V + VALUE_EDITOR_VIEW;
       }
+
+      if (!fullDocPath.equals(DEFAULT_DOCUMENT_PATH))
+      {
+         if (first)
+            first = false;
+         else
+            token += PAIR_SEPARATOR;
+         token += KEY_DOCUMENT + DELIMITER_K_V + fullDocPath;
+      }
+
+      if (docFilterExact != DEFAULT_DOC_FILTER_EXACT)
+      {
+         if (first)
+            first = false;
+         else
+            token += PAIR_SEPARATOR;
+         // exact is the only non-default filter value
+         token += KEY_DOC_FILTER_OPTION + DELIMITER_K_V + VALUE_DOC_FILTER_EXACT;
+      }
+
+      if (!docFilterText.equals(DEFAULT_DOC_FILTER_TEXT))
+      {
+         if (first)
+            first = false;
+         else
+            token += PAIR_SEPARATOR;
+         token += KEY_DOC_FILTER_TEXT + DELIMITER_K_V + docFilterText;
+      }
+
       return token;
    }
-
 }

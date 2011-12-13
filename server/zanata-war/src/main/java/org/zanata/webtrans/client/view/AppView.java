@@ -21,7 +21,6 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.common.TranslationStats;
-import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -37,7 +36,6 @@ import com.google.gwt.layout.client.Layout.AnimationCallback;
 import com.google.gwt.layout.client.Layout.Layer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
@@ -64,9 +62,6 @@ public class AppView extends Composite implements AppPresenter.Display
 
    private final TranslationStats documentStats, projectStats;
    private StatsType showingStats;
-
-   // @UiField
-   // CheckBox editorButtonsCheckbox;
 
    @UiField
    Label notificationMessage;
@@ -111,9 +106,6 @@ public class AppView extends Composite implements AppPresenter.Display
 
       helpLink.setHref(messages.hrefHelpLink());
       helpLink.setTarget("_BLANK");
-
-      // editorButtonsCheckbox.setValue(true);
-
    }
 
    @Override
@@ -125,7 +117,6 @@ public class AppView extends Composite implements AppPresenter.Display
    @Override
    public void showInMainView(MainView view)
    {
-      HistoryToken token = HistoryToken.fromTokenString(History.getToken());
       switch (view)
       {
       case Documents:
@@ -135,7 +126,6 @@ public class AppView extends Composite implements AppPresenter.Display
          showStats(StatsType.Project);
          setStatsVisible(true);
          currentView = MainView.Documents;
-         token.setView(MainView.Editor);
          break;
       case Editor:
          container.setWidgetTopBottom(translationView, 0, Unit.PX, 0, Unit.PX);
@@ -143,11 +133,8 @@ public class AppView extends Composite implements AppPresenter.Display
          showStats(StatsType.Document);
          setStatsVisible(true);
          currentView = MainView.Editor;
-         token.setView(MainView.Documents);
          break;
       }
-      // ensure view toggle uses the correct token
-      documentsLink.setHref("#" + token.toTokenString());
    }
 
    @Override
@@ -175,7 +162,7 @@ public class AppView extends Composite implements AppPresenter.Display
    {
       return leaveLink;
    }
-   
+
    @Override
    public HasClickHandlers getSignOutLink()
    {
@@ -201,16 +188,18 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public void setWorkspaceNameLabel(String workspaceNameLabel)
+   public void setWorkspaceNameLabel(String workspaceNameLabel, String workspaceTitle)
    {
-      documentsLink.setText(workspaceNameLabel);
+      if (workspaceTitle == null || workspaceTitle.length() == 0)
+         documentsLink.setText(workspaceNameLabel);
+      else
+         documentsLink.setText(workspaceNameLabel + " - " + workspaceTitle);
    }
 
    @Override
    public void setSelectedDocument(DocumentInfo document)
    {
-      String path = document.getPath().isEmpty() ? "" : document.getPath() + "/";
-      selectedDocumentPathSpan.setInnerText(path);
+      selectedDocumentPathSpan.setInnerText(document.getPath());
       selectedDocumentSpan.setInnerText(document.getName());
    }
 

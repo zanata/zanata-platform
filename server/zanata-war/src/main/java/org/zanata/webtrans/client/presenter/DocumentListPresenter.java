@@ -22,6 +22,8 @@ package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
@@ -37,7 +39,9 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.ProjectStatsRetrievedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
+import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
+import org.zanata.webtrans.client.history.WindowLocation;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display.MainView;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -54,16 +58,13 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
 
-public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display> implements HasDocumentSelectionHandlers
+public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display>
 {
 
    public interface Display extends WidgetDisplay
@@ -71,6 +72,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       void setPageSize(int pageSize);
 
       HasValue<String> getFilterTextBox();
+
+      HasValue<Boolean> getExactSearchCheckbox();
 
       HasSelectionHandlers<DocumentInfo> getDocumentList();
 
@@ -84,18 +87,35 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    private DocumentInfo currentDocument;
    private DocumentNode currentSelection;
    private final WebTransMessages messages;
+   private final History history;
+   private final WindowLocation windowLocation;
 
    private ListDataProvider<DocumentNode> dataProvider;
    private HashMap<DocumentId, DocumentNode> nodes;
-   private ContentFilter<DocumentInfo> filter;
+
+   /**
+    * For quick lookup of document id by full path (including document name).
+    * Primarily for use with history token.
+    */
+   private HashMap<String, DocumentId> idsByPath;
+
+   // private ContentFilter<DocumentInfo> filter;
+   private final PathDocumentFilter filter = new PathDocumentFilter();
+
+   // used to determine whether to re-run filter
+   private HistoryToken currentHistoryState = null;
+
+   private static final String PRE_FILTER_QUERY_PARAMETER_KEY = "doc";
 
    @Inject
-   public DocumentListPresenter(Display display, EventBus eventBus, WorkspaceContext workspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages)
+   public DocumentListPresenter(Display display, EventBus eventBus, WorkspaceContext workspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages, History history, WindowLocation windowLocation)
    {
       super(display, eventBus);
       this.workspaceContext = workspaceContext;
       this.dispatcher = dispatcher;
       this.messages = messages;
+      this.history = history;
+      this.windowLocation = windowLocation;
 
       dataProvider = display.getDataProvider();
       nodes = new HashMap<DocumentId, DocumentNode>();
@@ -113,33 +133,26 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          public void onSelection(SelectionEvent<DocumentInfo> event)
          {
             // generate history token
-            HistoryToken token = HistoryToken.fromTokenString(History.getToken());
+            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
 
             // prevent feedback loops between history and selection
             boolean isNewSelection;
-            if (token.hasDocumentId())
+            DocumentId docId = getDocumentId(token.getDocumentPath());
+            if (docId == null)
             {
-               try
-               {
-                  isNewSelection = event.getSelectedItem().getId().getId() != token.getDocumentId().getId();
-               }
-               catch (Throwable t)
-               {
-                  Log.info("got exception determining whether selection is new", t);
-                  isNewSelection = false;
-               }
+               isNewSelection = true;
             }
             else
             {
-               isNewSelection = true;
+               isNewSelection = !docId.equals(event.getSelectedItem().getId());
             }
 
             if (isNewSelection)
             {
                currentDocument = event.getSelectedItem();
-               token.setDocumentId(currentDocument.getId());
+               token.setDocumentPath(event.getSelectedItem().getPath() + event.getSelectedItem().getName());
                token.setView(MainView.Editor);
-               History.newItem(token.toTokenString());
+               history.newItem(token.toTokenString());
             }
          }
       }));
@@ -164,17 +177,71 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          @Override
          public void onValueChange(ValueChangeEvent<String> event)
          {
-            if (event.getValue().isEmpty())
+            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+            if (event.getValue() != token.getDocFilterText())
             {
-               removeFilter();
-            }
-            else
-            {
-               basicContentFilter.setPattern(event.getValue());
-               setFilter(basicContentFilter);
+               token.setDocFilterText(event.getValue());
+               history.newItem(token.toTokenString());
             }
          }
       }));
+
+      registerHandler(display.getExactSearchCheckbox().addValueChangeHandler(new ValueChangeHandler<Boolean>()
+      {
+         @Override
+         public void onValueChange(ValueChangeEvent<Boolean> event)
+         {
+            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+            if (event.getValue() != token.getDocFilterExact())
+            {
+               token.setDocFilterExact(event.getValue());
+               history.newItem(token.toTokenString());
+            }
+         }
+      }));
+
+      history.addValueChangeHandler(new ValueChangeHandler<String>()
+      {
+
+         @Override
+         public void onValueChange(ValueChangeEvent<String> event)
+         {
+            if (currentHistoryState == null)
+               currentHistoryState = new HistoryToken(); // default values
+
+            boolean filterChanged = false;
+            HistoryToken token = HistoryToken.fromTokenString(event.getValue());
+            // update textbox to match new history state
+            if (!token.getDocFilterText().equals(display.getFilterTextBox().getValue()))
+            {
+               display.getFilterTextBox().setValue(token.getDocFilterText(), true);
+            }
+
+            if (!token.getDocFilterText().equals(currentHistoryState.getDocFilterText()))
+            {
+               // different pattern
+               filter.setPattern(token.getDocFilterText());
+               filterChanged = true;
+            }
+
+            // update checkbox to match new history state
+            if (token.getDocFilterExact() != display.getExactSearchCheckbox().getValue())
+            {
+               display.getExactSearchCheckbox().setValue(token.getDocFilterExact());
+            }
+
+            if (token.getDocFilterExact() != currentHistoryState.getDocFilterExact())
+            {
+               filter.setFullText(token.getDocFilterExact());
+               filterChanged = true;
+            }
+
+            currentHistoryState = token;
+
+            if (filterChanged)
+               runFilter();
+         }
+      });
 
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler()
       {
@@ -187,26 +254,66 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
                handler.onTransUnitUpdated(event);
          }
       }));
+
       loadDocumentList();
    }
 
-   final class BasicContentFilter implements ContentFilter<DocumentInfo>
+   /**
+    * Filters documents by their full path + name, with substring and exact
+    * modes.
+    * 
+    * If there is no pattern set, this filter will accept all documents.
+    * 
+    * @author David Mason, damason@redhat.com
+    * 
+    */
+   final class PathDocumentFilter implements ContentFilter<DocumentInfo>
    {
-      private String pattern = "";
+      private static final String DOCUMENT_FILTER_LIST_DELIMITER = ",";
+
+      private HashSet<String> patterns = new HashSet<String>();
+      private boolean isFullText = false;
 
       @Override
       public boolean accept(DocumentInfo value)
       {
-         return value.getName().contains(pattern);
+         if (patterns.isEmpty())
+            return true;
+         String fullPath = value.getPath() + value.getName();
+         for (String pattern : patterns)
+         {
+            if (isFullText)
+            {
+               if (fullPath.equals(pattern))
+                  return true;
+            }
+            else if (fullPath.contains(pattern))
+            {
+               return true;
+            }
+         }
+         return false; // didn't match any patterns
       }
 
       public void setPattern(String pattern)
       {
-         this.pattern = pattern;
+         patterns.clear();
+         String[] patternCandidates = pattern.split(DOCUMENT_FILTER_LIST_DELIMITER);
+         for (String candidate : patternCandidates)
+         {
+            candidate = candidate.trim();
+            if (candidate.length() != 0)
+            {
+               patterns.add(candidate);
+            }
+         }
+      }
+
+      public void setFullText(boolean fullText)
+      {
+         isFullText = fullText;
       }
    }
-
-   private final BasicContentFilter basicContentFilter = new BasicContentFilter();
 
    @Override
    protected void onUnbind()
@@ -217,25 +324,20 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    public void onRevealDisplay()
    {
       // TODO Auto-generated method stub
-
-   }
-
-   @Override
-   public HandlerRegistration addDocumentSelectionHandler(DocumentSelectionHandler handler)
-   {
-      return eventBus.addHandler(DocumentSelectionEvent.getType(), handler);
-   }
-
-   @Override
-   public void fireEvent(GwtEvent<?> event)
-   {
-      eventBus.fireEvent(event);
    }
 
    private void loadDocumentList()
    {
+      // generate filter from query string if present
+      ArrayList<String> filterDocs = null;
+      List<String> queryDocs = windowLocation.getParameterMap().get(PRE_FILTER_QUERY_PARAMETER_KEY);
+      if (queryDocs != null && !queryDocs.isEmpty())
+      {
+         filterDocs = new ArrayList<String>(queryDocs);
+      }
+
       // switch doc list to the new project
-      dispatcher.execute(new GetDocumentList(workspaceContext.getWorkspaceId().getProjectIterationId()), new AsyncCallback<GetDocumentListResult>()
+      dispatcher.execute(new GetDocumentList(workspaceContext.getWorkspaceId().getProjectIterationId(), filterDocs), new AsyncCallback<GetDocumentListResult>()
       {
          @Override
          public void onFailure(Throwable caught)
@@ -253,7 +355,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             Log.info("Time to load docs into DocListView: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
             start = System.currentTimeMillis();
 
-            History.fireCurrentHistoryState();
+            history.fireCurrentHistoryState();
 
             TranslationStats projectStats = new TranslationStats(); // projStats
                                                                     // = 0
@@ -273,11 +375,13 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    {
       dataProvider.getList().clear();
       nodes = new HashMap<DocumentId, DocumentNode>(sortedList.size());
+      idsByPath = new HashMap<String, DocumentId>(sortedList.size());
       int counter = 0;
       long start = System.currentTimeMillis();
       for (DocumentInfo doc : sortedList)
       {
          Log.info("Loading document: " + ++counter + " ");
+         idsByPath.put(doc.getPath() + doc.getName(), doc.getId());
          DocumentNode node = new DocumentNode(messages, doc, eventBus, dataProvider);
          if (filter != null)
          {
@@ -294,9 +398,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       dataProvider.addDataDisplay(display.getDocumentListTable());
    }
 
-   private void setFilter(ContentFilter<DocumentInfo> filter)
+   /**
+    * Filter the document list based on the current filter patterns. Empty
+    * filter patterns will show all documents.
+    */
+   private void runFilter()
    {
-      this.filter = filter;
       dataProvider.getList().clear();
       for (DocumentNode docNode : nodes.values())
       {
@@ -306,24 +413,35 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             dataProvider.getList().add(docNode);
          }
       }
+      display.setPageSize(dataProvider.getList().size());
       dataProvider.refresh();
    }
 
-   private void removeFilter()
-   {
-      dataProvider.getList().clear();
-      for (DocumentNode docNode : nodes.values())
-      {
-         docNode.setVisible(true);
-         dataProvider.getList().add(docNode);
-      }
-      dataProvider.refresh();
-   }
-
+   /**
+    * 
+    * @param docId the id of the document
+    * @return document info corresponding to the id, or null if the document is
+    *         not in the document list
+    */
    public DocumentInfo getDocumentInfo(DocumentId docId)
    {
       DocumentNode node = nodes.get(docId);
       return (node == null ? null : node.getDocInfo());
+   }
+
+   /**
+    * 
+    * @param fullPathAndName document path + document name
+    * @return the id for the document, or null if the document is not in the
+    *         document list or there is no document list
+    */
+   public DocumentId getDocumentId(String fullPathAndName)
+   {
+      if (idsByPath != null)
+      {
+         return idsByPath.get(fullPathAndName);
+      }
+      return null;
    }
 
    private void clearSelection()
@@ -346,8 +464,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       if (node != null)
       {
          currentSelection = node;
-         // required to have document selected in doclist when loading from
-         // bookmarked history token
+         // required in order to show the document selected in doclist when
+         // loading from bookmarked history token
          display.getDocumentListTable().getSelectionModel().setSelected(node, true);
       }
    }

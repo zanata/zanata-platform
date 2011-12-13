@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.editor.table;
 
 import static org.zanata.webtrans.client.editor.table.TableConstants.MAX_PAGE_ROW;
+import static org.zanata.webtrans.client.editor.table.TableConstants.PAGE_SIZE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +91,6 @@ import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -277,15 +277,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          @Override
          public void onSelection(SelectionEvent<TransUnit> event)
          {
-            TransUnit newSelectedItem = event.getSelectedItem();
-            if (display.getTargetCellEditor().getTargetCell() != null)
+            if (event.getSelectedItem() != null)
             {
-               if (display.getTargetCellEditor().getTargetCell().getId().equals(newSelectedItem.getId()))
-               {
-                  // display.getTargetCellEditor().updateValidationMessagePanel(display.getValidationPanel(newSelectedItem.getId()));
-               }
+               selectTransUnit(event.getSelectedItem());
             }
-            selectTransUnit(newSelectedItem);
          }
       }));
 
@@ -764,6 +759,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             display.gotoPage(pageNum, false);
          }
 
+
          selectTransUnit(display.getTransUnitValue(rowNum));
          display.gotoRow(rowNum, andEdit);
       }
@@ -1047,6 +1043,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    public void selectTransUnit(TransUnit transUnit)
    {
       tableModelHandler.updateRowIndex(display.getCurrentPage());
+
       if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
       {
          selectedTransUnit = transUnit;
