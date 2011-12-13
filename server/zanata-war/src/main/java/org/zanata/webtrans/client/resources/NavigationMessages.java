@@ -127,4 +127,7 @@ public interface NavigationMessages extends Messages
 
    @DefaultMessage("Translation Unit Details")
    String transUnitDetailsHeading();
+
+   @DefaultMessage("Validation Message")
+   String validationMessageHeading();
 }

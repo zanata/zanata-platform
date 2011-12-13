@@ -311,8 +311,8 @@ Removes some of the styling on the page-level splitters
 
 td.TableEditorCell {
 	border-top: 1px solid #e0e0e0;
-	padding-top:5px;
-	padding-bottom:5px;
+	padding-top:10px;
+	padding-bottom:10px;
 }
 
 td.TableEditorCell-Source {
@@ -320,8 +320,7 @@ td.TableEditorCell-Source {
 }
 
 td.TableEditorCell-Target {
-	/*TODO: put this back on when middle colmun is removed.
-/*     padding-left:20px; */
+    height:20px;
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell {

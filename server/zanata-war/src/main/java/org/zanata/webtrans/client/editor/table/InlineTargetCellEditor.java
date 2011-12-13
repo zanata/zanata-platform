@@ -29,10 +29,12 @@ import org.zanata.webtrans.client.editor.CheckKey;
 import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.events.EditTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
-import org.zanata.webtrans.client.events.ValidationEvent;
+import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.UserConfigConstants;
+import org.zanata.webtrans.client.ui.ValidationMessagePanel;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -49,10 +51,13 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class InlineTargetCellEditor implements CellEditor<TransUnit>
@@ -132,7 +137,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    /**
     * The main grid used for layout.
     */
-   private FlowPanel layoutTable;
+   private FlowPanel topLayoutPanel;
+
+   private VerticalPanel verticalPanel;
 
    private Widget cellViewWidget;
 
@@ -155,6 +162,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private String saveButtonShortcuts;
    private String saveButtonwithEnterShortcuts;
    private PushButton saveButton, fuzzyButton, cancelButton, validateButton;
+   private ValidationMessagePanel validationMessagePanel;
 
    /*
     * The minimum height of the target editor
@@ -168,9 +176,13 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       // Wrap contents in a table
-      layoutTable = new FlowPanel();
-      layoutTable.setWidth("100%");
-      // layoutTable.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+
+      verticalPanel = new VerticalPanel();
+      verticalPanel.setWidth("100%");
+      verticalPanel.setHeight("100%");
+
+      topLayoutPanel = new FlowPanel();
+      topLayoutPanel.setWidth("100%");
 
       // this.eventBus = eventBus;
       cancelCallback = callback;
@@ -257,7 +269,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             }
          }
       });
-      layoutTable.add(textArea);
+      topLayoutPanel.add(textArea);
 
       operationsPanel = new HorizontalPanel();
 
@@ -276,7 +288,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          {
             if (cellValue != null)
             {
-               eventBus.fireEvent(new ValidationEvent(cellValue.getSource(), textArea.getText()));
+               eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSource(), textArea.getText()));
             }
          }
       });
@@ -319,7 +331,15 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       operationsPanel.add(saveButton);
       operationsPanel.add(fuzzyButton);
       operationsPanel.add(cancelButton);
-      layoutTable.add(operationsPanel);
+      topLayoutPanel.add(operationsPanel);
+
+      verticalPanel.add(topLayoutPanel);
+
+      validationMessagePanel = new ValidationMessagePanel(true);
+      validationMessagePanel.setHeader(messages.validationMessageHeading());
+
+      verticalPanel.add(validationMessagePanel);
+      verticalPanel.setCellVerticalAlignment(validationMessagePanel, HasVerticalAlignment.ALIGN_BOTTOM);
    }
 
    public void cloneAction()
@@ -451,7 +471,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       cellViewWidget = table.getWidget(curRow, curCol);
 
       // layoutTable.setCellWidth(this.operationsPanel, "20px");
-      table.setWidget(curRow, curCol, layoutTable);
+      table.setWidget(curRow, curCol, verticalPanel);
+
       textArea.setText(cellValue.getTarget());
 
       autoSize();
@@ -674,5 +695,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    public TransUnit getTargetCell()
    {
       return cellValue;
+   }
+
+   public void updateValidationMessagePanel(ValidationMessagePanel panel)
+   {
+      validationMessagePanel.clear();
+      validationMessagePanel.setContent(panel.getErrors());
    }
 }

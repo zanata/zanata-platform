@@ -11,7 +11,7 @@
 		<g:LayoutPanel ui:field="rootPanel">
 			<g:layer>
 			    <g:ScrollPanel>
-				    <g:VerticalPanel ui:field="contentPanel"/>
+				    <g:VerticalPanel ui:field="contentPanel" width="100%" height="100%"/>
 				</g:ScrollPanel>
 			</g:layer>
 		</g:LayoutPanel>

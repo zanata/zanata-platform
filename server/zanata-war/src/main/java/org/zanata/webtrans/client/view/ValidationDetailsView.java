@@ -1,9 +1,13 @@
 package org.zanata.webtrans.client.view;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.zanata.webtrans.client.presenter.ValidationDetailsPresenter;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.validation.ValidationService;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.validation.ValidationObject;
 
 import com.google.gwt.core.client.GWT;
@@ -50,14 +54,12 @@ public class ValidationDetailsView extends Composite implements ValidationDetail
       this.validationService = validationService;
       this.resources = resources;
       this.messages = messages;
-      refreshValidationList();
+      initValidationList();
 
    }
 
-   private void refreshValidationList()
+   private void initValidationList()
    {
-      contentPanel.clear();
-
       for (final ValidationObject action : validationService.getValidationList())
       {
          HorizontalPanel hp = new HorizontalPanel();
@@ -75,36 +77,7 @@ public class ValidationDetailsView extends Composite implements ValidationDetail
          });
          chk.setTitle(action.getDescription());
 
-         PushButton btn = new PushButton(new Image(resources.alertButton()));
-         btn.setStyleName("gwt-Button");
-         btn.setTitle(messages.clickHereForMoreInfo());
-
-         if (action.hasError())
-         {
-            btn.addClickHandler(new ClickHandler()
-            {
-               @Override
-               public void onClick(ClickEvent event)
-               {
-                  StringBuilder sb = new StringBuilder();
-                  for (String error : action.getError())
-                  {
-                     sb.append(error);
-                     sb.append("\n");
-                  }
-                  Window.alert(sb.toString());
-               }
-            });
-            btn.setVisible(true);
-         }
-         else
-         {
-            btn.setVisible(false);
-         }
-
          hp.add(chk);
-         hp.add(btn);
-         
          contentPanel.add(hp);
       }
    }
@@ -116,16 +89,14 @@ public class ValidationDetailsView extends Composite implements ValidationDetail
    }
 
    @Override
-   public void validate(String source, String target)
+   public void validate(TransUnitId id, String source, String target)
    {
-      validationService.execute(source, target);
-      refreshValidationList();
+      validationService.execute(id, source, target);
    }
 
    @Override
    public void clearAllMessage()
    {
       validationService.clearAllMessage();
-      refreshValidationList();
    }
 }

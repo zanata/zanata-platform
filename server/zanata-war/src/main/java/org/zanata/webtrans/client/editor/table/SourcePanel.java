@@ -21,7 +21,6 @@
 package org.zanata.webtrans.client.editor.table;
 
 import org.zanata.webtrans.client.resources.NavigationMessages;
-import org.zanata.webtrans.client.ui.CollapsiblePanel;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -33,8 +32,10 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -48,7 +49,7 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
    private final HorizontalPanel topRightPanel;
    private final Label sourceLabel;
    private TransUnit value;
-   private final TransUnitDetailsPanel transUnitDetailsPanel;
+   private final TransUnitDetailsPanel transUnitDetailsContent;
 
    public SourcePanel(TransUnit value, TableResources resources, NavigationMessages messages)
    {
@@ -73,11 +74,12 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
       topPanel.add(sourceLabel);
       topPanel.add(topRightPanel);
 
-      transUnitDetailsPanel = new TransUnitDetailsPanel(resources, messages, value);
-      transUnitDetailsPanel.setHeader(messages.transUnitDetailsHeading());
+      transUnitDetailsContent = new TransUnitDetailsPanel(value);
+      transUnitDetailsContent.setHeader(messages.transUnitDetailsHeading());
 
       panel.add(topPanel);
-      panel.add(transUnitDetailsPanel);
+      panel.add(transUnitDetailsContent);
+      panel.setCellVerticalAlignment(transUnitDetailsContent, HasVerticalAlignment.ALIGN_BOTTOM);
    }
 
 

@@ -18,78 +18,66 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.validation.action;
+package org.zanata.webtrans.client.events;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.zanata.webtrans.shared.validation.ValidationObject;
+import org.zanata.webtrans.shared.model.TransUnitId;
+
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public abstract class ValidationAction implements ValidationObject
+public class UpdateValidationErrorEvent extends GwtEvent<UpdateValidationErrorEventHandler>
 {
-   private String id;
-   private boolean isEnabled;
-   
-   private final String description;
+   /**
+    * Handler type.
+    */
+   private static Type<UpdateValidationErrorEventHandler> TYPE;
 
-   private List<String> errorList = new ArrayList<String>();
+   /**
+    * Gets the type associated with this event.
+    * 
+    * @return returns the handler type
+    */
+   public static Type<UpdateValidationErrorEventHandler> getType()
+   {
+      return TYPE != null ? TYPE : (TYPE = new Type<UpdateValidationErrorEventHandler>());
+   }
 
-   public abstract void validate(String source, String target);
+   private TransUnitId id;
+   private List<String> errors;
 
-   public ValidationAction(String id, String description)
+   public UpdateValidationErrorEvent(TransUnitId id, List<String> errors)
    {
       this.id = id;
-      this.description = description;
+      this.errors = errors;
    }
 
    @Override
-   public boolean isEnabled()
+   public Type<UpdateValidationErrorEventHandler> getAssociatedType()
    {
-      return isEnabled;
+      return getType();
    }
 
-   public void setEnabled(boolean isEnabled)
-   {
-      this.isEnabled = isEnabled;
-   }
 
    @Override
-   public String getId()
+   protected void dispatch(UpdateValidationErrorEventHandler handler)
+   {
+      handler.onUpdate(this);
+   }
+
+   public TransUnitId getId()
    {
       return id;
    }
 
-   @Override
-   public String getDescription()
+   public List<String> getErrors()
    {
-      return description;
-   }
-
-   @Override
-   public boolean hasError()
-   {
-      return !errorList.isEmpty();
-   }
-
-   @Override
-   public List<String> getError()
-   {
-      return errorList;
-   }
-
-   public void clearErrorMessage()
-   {
-      errorList.clear();
-   }
-
-   public void addError(String error)
-   {
-      errorList.add(error);
+      return errors;
    }
 }
 

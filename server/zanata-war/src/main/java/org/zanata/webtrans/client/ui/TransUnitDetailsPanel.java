@@ -1,7 +1,5 @@
 package org.zanata.webtrans.client.ui;
 
-import org.zanata.webtrans.client.editor.table.TableResources;
-import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.gwt.core.client.GWT;
@@ -10,6 +8,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -17,21 +16,15 @@ import com.google.gwt.user.client.ui.Widget;
 public class TransUnitDetailsPanel extends Composite
 {
    private final TransUnit transUnit;
-   private final NavigationMessages messages;
-
-   enum State
-   {
-      IS_HIDDEN, IS_SHOWN;
-   }
-
-   @UiField(provided = true)
-   TableResources resources;
 
    @UiField
    Label headerLabel;
 
    @UiField
    LayoutPanel contentPanel;
+
+   @UiField
+   HorizontalPanel msgContextPanel;
 
    private static TransUnitDetailsPanelUiBinder uiBinder = GWT.create(TransUnitDetailsPanelUiBinder.class);
 
@@ -40,13 +33,11 @@ public class TransUnitDetailsPanel extends Composite
    }
 
    @UiField
-   Label resIdLabel, resId, sourceCommentLabel, sourceComment, msgContextLabel, msgContext, lastModifiedByLabel, lastModifiedBy, lastModifiedTimeLabel, lastModifiedTime;
+   Label resIdLabel, resId, sourceCommentLabel, msgContextLabel, msgContext, sourceComment, lastModifiedByLabel, lastModifiedBy, lastModifiedTimeLabel, lastModifiedTime;
 
-   public TransUnitDetailsPanel(final TableResources resources, final NavigationMessages messages, TransUnit transUnit)
+   public TransUnitDetailsPanel(TransUnit transUnit)
    {
       this.transUnit = transUnit;
-      this.resources = resources;
-      this.messages = messages;
 
       initWidget(uiBinder.createAndBindUi(this));
       setDetails();
@@ -59,19 +50,20 @@ public class TransUnitDetailsPanel extends Composite
       resId.setText(transUnit.getResId());
       
       String context = transUnit.getMsgContext();
-      if (context != null)
+
+      if (context == null)
       {
-         msgContextLabel.setText("Message Context: ");
-         msgContext.setText(context);
-         msgContextLabel.setVisible(true);
-         msgContext.setVisible(true);
+         msgContextPanel.setVisible(false);
       }
       else
       {
-         msgContextLabel.setVisible(false);
-         msgContext.setVisible(false);
+         msgContextLabel.setText("Message Context: ");
+         msgContext.setText(context);
+         
+         msgContextPanel.setVisible(true);
       }
-      
+
+
       sourceCommentLabel.setText("Source Comment: ");
       sourceComment.setText(transUnit.getSourceComment());
       String person = transUnit.getLastModifiedBy();

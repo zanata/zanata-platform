@@ -20,19 +20,14 @@
  */
 package org.zanata.webtrans.client.ui;
 
-import java.util.ArrayList;
-
 import org.zanata.webtrans.client.presenter.SidePanelPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.shared.model.Person;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.StackLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;

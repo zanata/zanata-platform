@@ -27,8 +27,11 @@ import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.events.UpdateValidationErrorEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.validation.ValidationObject;
 import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
 import org.zanata.webtrans.shared.validation.action.ValidationAction;
@@ -44,11 +47,16 @@ import com.google.inject.Inject;
 public class ValidationService
 {
    private final Map<String, ValidationAction> validationMap = new HashMap<String, ValidationAction>();
+   private final EventBus eventBus;
+   private final TableEditorMessages messages;
    
    @Inject
    public ValidationService(final EventBus eventBus, final TableEditorMessages messages)
    {
-      HtmlXmlTagValidation htmlxmlValidation = new HtmlXmlTagValidation("HTML/XML tag", "HTML/XML tag validation", eventBus, messages);
+      this.eventBus = eventBus;
+      this.messages = messages;
+
+      HtmlXmlTagValidation htmlxmlValidation = new HtmlXmlTagValidation("HTML/XML tag", "HTML/XML tag validation");
       validationMap.put(htmlxmlValidation.getId(), htmlxmlValidation);
    }
 
@@ -57,8 +65,10 @@ public class ValidationService
     * 
     * @param tu
     */
-   public void execute(String source, String target)
+   public void execute(TransUnitId id, String source, String target)
    {
+      List<String> errors = new ArrayList<String>();
+      
       for (String key : validationMap.keySet())
       {
          ValidationAction action = validationMap.get(key);
@@ -67,9 +77,10 @@ public class ValidationService
          {
             action.clearErrorMessage();
             action.validate(source, target);
-            action.showErrorMessage();
+            errors.addAll(action.getError());
          }
       }
+      fireErrorMessage(id, errors);
    }
    
    /**
@@ -104,6 +115,15 @@ public class ValidationService
             action.clearErrorMessage();
          }
       }
+   }
+
+   public void fireErrorMessage(TransUnitId id, List<String> errors)
+   {
+      if (!errors.isEmpty())
+      {
+         eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyValidationError()));
+      }
+      eventBus.fireEvent(new UpdateValidationErrorEvent(id, errors));
    }
 }
 

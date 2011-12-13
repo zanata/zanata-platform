@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.client.events;
 
+import org.zanata.webtrans.shared.model.TransUnitId;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
@@ -27,40 +29,42 @@ import com.google.gwt.event.shared.GwtEvent;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class ValidationEvent extends GwtEvent<ValidationEventHandler>
+public class RunValidationEvent extends GwtEvent<RunValidationEventHandler>
 {
    /**
     * Handler type.
     */
-   private static Type<ValidationEventHandler> TYPE;
+   private static Type<RunValidationEventHandler> TYPE;
 
    /**
     * Gets the type associated with this event.
     * 
     * @return returns the handler type
     */
-   public static Type<ValidationEventHandler> getType()
+   public static Type<RunValidationEventHandler> getType()
    {
-      return TYPE != null ? TYPE : (TYPE = new Type<ValidationEventHandler>());
+      return TYPE != null ? TYPE : (TYPE = new Type<RunValidationEventHandler>());
    }
 
    private String source, target;
+   private TransUnitId id;
 
-   public ValidationEvent(String source, String target)
+   public RunValidationEvent(TransUnitId id, String source, String target)
    {
+      this.id = id;
       this.source = source;
       this.target = target;
    }
 
    @Override
-   public Type<ValidationEventHandler> getAssociatedType()
+   public Type<RunValidationEventHandler> getAssociatedType()
    {
       return getType();
    }
 
 
    @Override
-   protected void dispatch(ValidationEventHandler handler)
+   protected void dispatch(RunValidationEventHandler handler)
    {
       handler.onValidate(this);
    }
@@ -73,6 +77,11 @@ public class ValidationEvent extends GwtEvent<ValidationEventHandler>
    public String getTarget()
    {
       return target;
+   }
+
+   public TransUnitId getId()
+   {
+      return id;
    }
 }
 

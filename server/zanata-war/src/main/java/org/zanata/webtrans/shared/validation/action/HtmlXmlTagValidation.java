@@ -20,13 +20,6 @@
  */
 package org.zanata.webtrans.shared.validation.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.customware.gwt.presenter.client.EventBus;
-
-import org.zanata.webtrans.client.resources.TableEditorMessages;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
@@ -38,14 +31,13 @@ import com.google.gwt.regexp.shared.RegExp;
  **/
 public class HtmlXmlTagValidation extends ValidationAction
 {
-   public HtmlXmlTagValidation(String id, String description, final EventBus eventBus, final TableEditorMessages messages)
+   public HtmlXmlTagValidation(String id, String description)
    {
-      super(id, description, eventBus, messages);
+      super(id, description);
    }
 
    // private final static String tagRegex = "<[^>]+>[^<]*</[^>]+>";
    private final static String tagRegex = "<[^>]+>";
-   // private final static String tagRegex = "<[^>]+>";
 
    private final static RegExp regExp = RegExp.compile(tagRegex, "g");
 
@@ -62,7 +54,7 @@ public class HtmlXmlTagValidation extends ValidationAction
          Log.info("Found Node:" + node);
          if (!target.contains(node))
          {
-            addError("Tag " + node + " not found in target");
+            addError(getId() + ":" + node + " not found in target");
          }
          result = regExp.exec(source);
       }

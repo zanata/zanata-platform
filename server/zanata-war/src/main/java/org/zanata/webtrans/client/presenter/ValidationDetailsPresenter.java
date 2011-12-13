@@ -28,8 +28,9 @@ import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
-import org.zanata.webtrans.client.events.ValidationEvent;
-import org.zanata.webtrans.client.events.ValidationEventHandler;
+import org.zanata.webtrans.client.events.RunValidationEvent;
+import org.zanata.webtrans.client.events.RunValidationEventHandler;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.inject.Inject;
 
@@ -42,7 +43,7 @@ public class ValidationDetailsPresenter extends WidgetPresenter<ValidationDetail
 {
    public interface Display extends WidgetDisplay
    {
-      void validate(String source, String target);
+      void validate(TransUnitId id, String source, String target);
 
       void clearAllMessage();
    }
@@ -65,12 +66,12 @@ public class ValidationDetailsPresenter extends WidgetPresenter<ValidationDetail
          }
       }));
 
-      registerHandler(eventBus.addHandler(ValidationEvent.getType(), new ValidationEventHandler()
+      registerHandler(eventBus.addHandler(RunValidationEvent.getType(), new RunValidationEventHandler()
       {
          @Override
-         public void onValidate(ValidationEvent event)
+         public void onValidate(RunValidationEvent event)
          {
-            display.validate(event.getSource(), event.getTarget());
+            display.validate(event.getId(), event.getSource(), event.getTarget());
          }
       }));
 
