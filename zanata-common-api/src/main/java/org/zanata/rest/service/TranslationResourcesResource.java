@@ -21,20 +21,25 @@
 
 package org.zanata.rest.service;
 
-import java.io.InputStream;
+import java.util.Set;
 
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.zanata.common.LocaleId;
 import org.zanata.common.Namespaces;
+import org.zanata.rest.dto.resource.Resource;
+import org.zanata.rest.dto.resource.ResourceMeta;
+import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -55,20 +60,20 @@ public interface TranslationResourcesResource
     */
    @GET
    @Wrapped(element = "resources", namespace = Namespaces.ZANATA_API)
-   public Response get();
+   public Response get(@QueryParam("ext") Set<String> extensions);
 
    @POST
-   public Response post(InputStream messageBody);
+   public Response post(Resource resource, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
 
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
-   public Response getResource(@PathParam("id") String idNoSlash);
+   public Response getResource(@PathParam("id") String idNoSlash, @QueryParam("ext") Set<String> extensions);
 
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
-   public Response putResource(@PathParam("id") String idNoSlash, InputStream messageBody);
+   public Response putResource(@PathParam("id") String idNoSlash, Resource resource, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
 
    @DELETE
    @Path(RESOURCE_SLUG_TEMPLATE)
@@ -78,17 +83,17 @@ public interface TranslationResourcesResource
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
    // /r/{id}/meta
-   public Response getResourceMeta(@PathParam("id") String idNoSlash);
+   public Response getResourceMeta(@PathParam("id") String idNoSlash, @QueryParam("ext") Set<String> extensions);
 
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
    // /r/{id}/meta
-   public Response putResourceMeta(@PathParam("id") String idNoSlash, InputStream messageBody);
+   public Response putResourceMeta(@PathParam("id") String idNoSlash, ResourceMeta messageBody, @QueryParam("ext") Set<String> extensions);
 
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
-   public Response getTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale);
+   public Response getTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, @QueryParam("ext") Set<String> extensions);
 
    @DELETE
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
@@ -98,6 +103,6 @@ public interface TranslationResourcesResource
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
-   public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, @PathParam("merge") String merge, InputStream messageBody);
+   public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") Set<String> extensions, @QueryParam("merge") String merge);
 
 }
