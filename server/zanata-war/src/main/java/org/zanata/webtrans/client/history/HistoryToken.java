@@ -18,14 +18,12 @@ public class HistoryToken
    public static final String KEY_DOCUMENT = "doc";
 
    public static final String KEY_VIEW = "view";
-   // public static final String VALUE_DOCLIST_VIEW = "list";
    public static final String VALUE_EDITOR_VIEW = "doc";
 
    public static final String KEY_DOC_FILTER_TEXT = "filter";
 
    public static final String KEY_DOC_FILTER_OPTION = "filtertype";
    public static final String VALUE_DOC_FILTER_EXACT = "exact";
-   // public static final String VALUE_DOC_FILTER_INEXACT = "substr";
 
    private AppPresenter.Display.MainView view;
    private String fullDocPath;
@@ -75,11 +73,11 @@ public class HistoryToken
             continue;
          }
 
-         if (key == HistoryToken.KEY_DOCUMENT)
+         if (key.equals(HistoryToken.KEY_DOCUMENT))
          {
             historyToken.setDocumentPath(value);
          }
-         else if (key == HistoryToken.KEY_VIEW)
+         else if (key.equals(HistoryToken.KEY_VIEW))
          {
             if (value.equals(VALUE_EDITOR_VIEW))
             {
@@ -87,13 +85,15 @@ public class HistoryToken
             }
             // else default will be used
          }
-         else if (key == HistoryToken.KEY_DOC_FILTER_OPTION)
+         else if (key.equals(KEY_DOC_FILTER_OPTION))
          {
-            if (value == VALUE_DOC_FILTER_EXACT)
+            if (value.equals(VALUE_DOC_FILTER_EXACT))
+            {
                historyToken.setDocFilterExact(true);
+            }
             // else default used
          }
-         else if (key == HistoryToken.KEY_DOC_FILTER_TEXT)
+         else if (key.equals(HistoryToken.KEY_DOC_FILTER_TEXT))
          {
             historyToken.setDocFilterText(value);
          }
@@ -132,7 +132,7 @@ public class HistoryToken
          this.view = view;
    }
 
-   public Boolean getDocFilterExact()
+   public boolean getDocFilterExact()
    {
       return docFilterExact;
    }
