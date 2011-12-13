@@ -22,7 +22,9 @@
 package org.zanata.client.commands.push;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.zanata.client.commands.ConfigurableProjectOptionsImpl;
 import org.zanata.client.commands.ZanataCommand;
@@ -140,7 +142,7 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
    }
 
    @Override
-   public boolean isModules()
+   public boolean getEnableModules()
    {
       // modules are currently only supported by Maven Mojos:
       return false;
@@ -151,6 +153,24 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
    {
       // not supported yet
       return false;
+   }
+
+   @Override
+   public boolean isRootModule()
+   {
+      return false;
+   }
+
+   @Override
+   public String getCurrentModule()
+   {
+      return "";
+   }
+
+   @Override
+   public Set<String> getAllModules()
+   {
+      return Collections.emptySet();
    }
 
 }

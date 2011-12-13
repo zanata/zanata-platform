@@ -12,9 +12,6 @@ import org.zanata.client.config.LocaleList;
 
 public class DownloadPoTask extends ConfigurableProjectTask implements PublicanPullOptions
 {
-   private String project;
-   private String projectVersion;
-   private LocaleList locales;
    private File dstDir;
    private File dstDirPot;
    private boolean exportPot;
@@ -41,40 +38,6 @@ public class DownloadPoTask extends ConfigurableProjectTask implements PublicanP
    public ZanataCommand initCommand()
    {
       return new PublicanPullCommand(this);
-   }
-
-   public String getProj()
-   {
-      return project;
-   }
-
-   public void setProj(String projectSlug)
-   {
-      this.project = projectSlug;
-   }
-
-   @Override
-   public String getProjectVersion()
-   {
-      return projectVersion;
-   }
-
-   @Override
-   public void setProjectVersion(String versionSlug)
-   {
-      this.projectVersion = versionSlug;
-   }
-
-   @Override
-   public LocaleList getLocales()
-   {
-      return locales;
-   }
-
-   @Override
-   public void setLocales(LocaleList locales)
-   {
-      this.locales = locales;
    }
 
    @Override

@@ -65,7 +65,7 @@ public class PullCommand extends PushPullCommand<PullOptions>
    }
 
    @Override
-   public void run() throws Exception
+   protected void runNonModule() throws Exception
    {
       log.info("Server: {}", getOpts().getUrl());
       log.info("Project: {}", getOpts().getProj());
