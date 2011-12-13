@@ -191,7 +191,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    {
       Resource sr = createSourceResource("my.txt");
 
-      ClientResponse<String> response = transResource.post(sr, null);
+      ClientResponse<String> response = transResource.post(sr, null, true);
       assertThat(response.getResponseStatus(), is(Status.CREATED));
       List<String> locationHeader = response.getHeaders().get("Location");
       assertThat(locationHeader.size(), is(1));
@@ -207,9 +207,9 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TextFlow stf = new TextFlow("tf1", LocaleId.EN, "tf1");
       sr.getTextFlows().add(stf);
 
-      ClientResponse<String> postResponse = transResource.post(sr, null);
+      ClientResponse<String> postResponse = transResource.post(sr, null, true);
       assertThat(postResponse.getResponseStatus(), is(Status.CREATED));
-      postResponse = transResource.post(sr, null);
+      postResponse = transResource.post(sr, null, true);
 
       ClientResponse<Resource> resourceGetResponse = transResource.getResource("my.txt", null);
       assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
@@ -259,7 +259,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       */
       // @formatter:on
 
-      ClientResponse<String> postResponse = transResource.post(sr, null); // new
+      ClientResponse<String> postResponse = transResource.post(sr, null, true); // new
                                                                    // StringSet(PoHeader.ID));
       assertThat(postResponse.getResponseStatus(), is(Status.CREATED));
       doGetandAssertThatResourceListContainsNItems(1);
@@ -310,9 +310,8 @@ public class TranslationResourceRestTest extends ZanataRestTest
       assertThat(entity2.getTextFlowTargets().size(), is(entity.getTextFlowTargets().size()));
 
       entity.getTextFlowTargets().clear();
-      // push an empty document
+      // push an empty document      
       response = transResource.putTranslations("my.txt", de_DE, entity, null, MergeType.IMPORT.toString());
-
       assertThat(response.getResponseStatus(), is(Status.OK));
 
       getResponse = transResource.getTranslations("my.txt", de_DE, null);
@@ -1050,7 +1049,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    {
       String id = DOC2_NAME;
       Resource doc = newDoc(id, newTextFlow("HELLO", "Hello World", "hello comment"));
-      Response response = transResource.post(doc, extComment);
+      Response response = transResource.post(doc, extComment, true);
       assertThat(response.getStatus(), is(201));
 
       if (putTarget)
