@@ -25,6 +25,8 @@ import java.io.Console;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -64,6 +66,44 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends Configu
    public PushPullCommand(O opts)
    {
       this(opts, OptionsUtil.createRequestFactory(opts));
+   }
+
+   @Override
+   public void run() throws Exception
+   {
+      if (getOpts().getEnableModules())
+      {
+
+         Set<String> allModules = getOpts().getAllModules();
+         if (getOpts().isRootModule())
+         {
+            runRootModule();
+         }
+         else
+         {
+            runSubmodule();
+         }
+      }
+      else
+      {
+         runNonModule();
+      }
+
+   }
+
+   protected abstract void runNonModule() throws Exception;
+
+   private void runSubmodule()
+   {
+      // TODO Auto-generated method stub
+
+   }
+
+   private void runRootModule()
+   {
+      // TODO get doc list from server
+      // convert doc names to modules, add to serverModules
+      // offer to delete documents from obsolete serverModules
    }
 
    protected void confirmWithUser(String message) throws IOException

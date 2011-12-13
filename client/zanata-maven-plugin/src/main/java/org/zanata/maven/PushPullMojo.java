@@ -13,7 +13,7 @@ import org.zanata.client.commands.PushPullOptions;
 /**
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public abstract class PushPullMojo<O extends PushPullOptions> extends ConfigurableProjectMojo<O>
+public abstract class PushPullMojo<O extends PushPullOptions> extends ConfigurableProjectMojo<O> implements PushPullOptions
 {
 
    @Override
@@ -24,36 +24,25 @@ public abstract class PushPullMojo<O extends PushPullOptions> extends Configurab
          getLog().info("skipping");
          return;
       }
-      if (modules)
-      {
-         runModule();
-      }
-      else
-      {
-         //         getLog().info("run non-module");
-         super.runCommand();
-      }
+
    }
 
-   private void runModule()
+   @Override
+   public boolean isRootModule()
    {
-      if (isRootModule())
-      {
-         runRootModule();
-      }
-      else
-      {
-         runSubmodule();
-      }
+      return session.getExecutionRootDirectory().equalsIgnoreCase(basedir.toString());
    }
 
-   private void runSubmodule()
+   @Override
+   public String getCurrentModule()
    {
-      // TODO Auto-generated method stub
-
+      if (project == null || !enableModules)
+         return "";
+      return project.getGroupId() + ":" + project.getArtifactId();
    }
 
-   private void runRootModule()
+   @Override
+   public Set<String> getAllModules()
    {
       Set<String> localModules = new HashSet<String>();
       for (MavenProject module : reactorProjects)
@@ -62,22 +51,20 @@ public abstract class PushPullMojo<O extends PushPullOptions> extends Configurab
          localModules.add(modID);
       }
       getLog().info("modules in the reactor: " + localModules);
-
-      // TODO get doc list from server
-      // convert doc names to modules, add to serverModules
-      // offer to delete documents from obsolete serverModules
-   }
-
-   private boolean isRootModule()
-   {
-      return session.getExecutionRootDirectory().equalsIgnoreCase(basedir.toString());
+      return localModules;
    }
 
    /**
     * Whether module processing should be enabled
-    * @parameter expression="${zanata.modules}"
+    * @parameter expression="${zanata.enableModules}"
     */
-   private boolean modules = false;
+   private boolean enableModules = false;
+
+   /**
+    * @parameter expression="${project}"
+    * @readonly
+    */
+   private MavenProject project;
 
    /**
     * Dry run: don't change any data, on the server or on the filesystem.
@@ -101,7 +88,7 @@ public abstract class PushPullMojo<O extends PushPullOptions> extends Configurab
     * @required
     * @readonly
     */
-   protected MavenSession session;
+   private MavenSession session;
 
    /**
     * @parameter skip
@@ -138,21 +125,25 @@ public abstract class PushPullMojo<O extends PushPullOptions> extends Configurab
    /**
     * @return the dryRun
     */
+   @Override
    public boolean isDryRun()
    {
       return dryRun;
    }
 
-   public boolean isModules()
+   @Override
+   public boolean getEnableModules()
    {
-      return modules;
+      return enableModules;
    }
 
+   @Override
    public File getSrcDir()
    {
       return srcDir;
    }
 
+   @Override
    public File getTransDir()
    {
       return transDir;

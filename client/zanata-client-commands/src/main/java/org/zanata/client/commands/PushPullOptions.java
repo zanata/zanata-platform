@@ -22,8 +22,7 @@
 package org.zanata.client.commands;
 
 import java.io.File;
-
-import org.zanata.client.commands.ConfigurableProjectOptions;
+import java.util.Set;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -31,8 +30,11 @@ import org.zanata.client.commands.ConfigurableProjectOptions;
  */
 public interface PushPullOptions extends ConfigurableProjectOptions
 {
+   boolean isDryRun();
    File getSrcDir();
    File getTransDir();
-   boolean isModules();
-   boolean isDryRun();
+   boolean getEnableModules();
+   boolean isRootModule();
+   String getCurrentModule();
+   Set<String> getAllModules();
 }
