@@ -1,20 +1,25 @@
 package org.zanata.maven;
 
 import java.io.File;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.zanata.client.commands.PushPullOptions;
-
 
 /**
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
 public abstract class PushPullMojo<O extends PushPullOptions> extends ConfigurableProjectMojo<O> implements PushPullOptions
 {
+
+   /**
+    * Separator used between components of the module ID
+    */
+   private static final char MODULE_SEPARATOR = '/';
+
+   private static final char MODULE_SUFFIX = '/';
 
    @Override
    protected void runCommand() throws Exception
@@ -24,34 +29,55 @@ public abstract class PushPullMojo<O extends PushPullOptions> extends Configurab
          getLog().info("skipping");
          return;
       }
-
+      super.runCommand();
    }
 
    @Override
    public boolean isRootModule()
    {
-      return session.getExecutionRootDirectory().equalsIgnoreCase(basedir.toString());
+      return project.isExecutionRoot();
    }
 
    @Override
    public String getCurrentModule()
    {
       if (project == null || !enableModules)
+      {
          return "";
-      return project.getGroupId() + ":" + project.getArtifactId();
+      }
+      else
+      {
+         return toModuleID(project);
+      }
    }
 
    @Override
+   public String getModuleSuffix()
+   {
+      return "" + MODULE_SUFFIX;
+   }
+
+   @Override
+   public String getDocNameRegex()
+   {
+      return "^([^/]+/[^" + MODULE_SUFFIX + "]+)" + MODULE_SUFFIX + "(.+)";
+   }
+
+   //   @Override
    public Set<String> getAllModules()
    {
-      Set<String> localModules = new HashSet<String>();
+      Set<String> localModules = new LinkedHashSet<String>();
       for (MavenProject module : reactorProjects)
       {
-         String modID = module.getGroupId() + ':' + module.getArtifactId();
+         String modID = toModuleID(module);
          localModules.add(modID);
       }
-      getLog().info("modules in the reactor: " + localModules);
       return localModules;
+   }
+
+   private String toModuleID(MavenProject module)
+   {
+      return module.getGroupId() + MODULE_SEPARATOR + module.getArtifactId();
    }
 
    /**
@@ -73,25 +99,7 @@ public abstract class PushPullMojo<O extends PushPullOptions> extends Configurab
    private boolean dryRun = false;
 
    /**
-    * Base directory of the project.
-    *
-    * @parameter expression="${basedir}"
-    * @required
-    * @readonly
-    */
-   private File basedir;
-
-   /**
-    * The Maven Session.
-    *
-    * @parameter expression="${session}"
-    * @required
-    * @readonly
-    */
-   private MavenSession session;
-
-   /**
-    * @parameter skip
+    * @parameter expression="${zanata.skip}"
     */
    private boolean skip;
 

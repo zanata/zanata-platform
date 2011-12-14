@@ -30,6 +30,18 @@ import java.util.Set;
  */
 public interface PushPullOptions extends ConfigurableProjectOptions
 {
+
+   /**
+    * Character or characters which must appear after moduleIDs when constructing qualified document names
+    * @return
+    */
+   String getModuleSuffix();
+
+   /**
+    * A regex for document names, which captures the module ID as group 1 and the unqualified docname as group 2.
+    * This regex should broadly follow the pattern "(moduleID)moduleSuffix(localDocName)".
+    */
+   String getDocNameRegex();
    boolean isDryRun();
    File getSrcDir();
    File getTransDir();

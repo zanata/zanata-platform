@@ -18,14 +18,15 @@ public interface PullStrategy
     * @param doc
     * @throws IOException
     */
-   void writeSrcFile(Resource doc) throws IOException;
+   void writeSrcFile(Resource docWithLocalName) throws IOException;
 
    /**
-    * @param doc may be null if needsDocToWriteTrans() returns false
-    * @param docName
+    * pre: docWithLocalName.getName() must match docName if docWithLocalName is not null
+    * @param docName may be null if needsDocToWriteTrans() returns false
     * @param localeMapping
     * @param targetDoc
+    * @param localDocName
     * @throws IOException
     */
-   void writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException;
+   void writeTransFile(Resource docWithLocalName, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException;
 }
