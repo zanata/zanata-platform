@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDBUnitSeamTest;
-import org.zanata.rest.client.IVersion;
+import org.zanata.rest.client.IVersionResource;
 import org.zanata.rest.dto.VersionInfo;
 
 
@@ -18,7 +18,7 @@ public class VersionSeamTest extends ZanataDBUnitSeamTest
 {
    private static final String AUTH_KEY = "b6d7044e9ee3b2447c28fb7c50d86d98";
    private static final String USERNAME = "admin";
-   private IVersion version;
+   private IVersionResource version;
    private final Logger log = LoggerFactory.getLogger(VersionSeamTest.class);
 
    @Override
@@ -31,7 +31,7 @@ public class VersionSeamTest extends ZanataDBUnitSeamTest
    {
       log.debug("setup test version service");
       TestProxyFactory clientRequestFactory = new TestProxyFactory(new URI("http://example.com/"), USERNAME, AUTH_KEY, new SeamMockClientExecutor(this), new VersionInfo("SNAPSHOT", ""));
-      version = clientRequestFactory.createIVersion();
+      version = clientRequestFactory.createIVersionResource();
    }
 
    @Test

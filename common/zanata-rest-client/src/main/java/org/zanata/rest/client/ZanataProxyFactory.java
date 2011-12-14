@@ -42,7 +42,7 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
       registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey, clientApiVersion.getVersionNo()));
       String clientVer = clientApiVersion.getVersionNo();
       String clientTimestamp = clientApiVersion.getBuildTimeStamp();
-      IVersion iversion = createIVersion();
+      IVersionResource iversion = createIVersionResource();
       VersionInfo serverVersionInfo = iversion.get();
       String serverVer = serverVersionInfo.getVersionNo();
       String serverTimestamp = serverVersionInfo.getBuildTimeStamp();
@@ -215,13 +215,13 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
       crf.getPrefixInterceptors().registerInterceptor(interceptor);
    }
    
-   protected IVersion createIVersion()
+   protected IVersionResource createIVersionResource()
    {
       URL url;
       try
       {
          url = new URL(crf.getBase().toURL(), RESOURCE_PREFIX + "/version");
-         return createProxy(IVersion.class, url.toURI());
+         return createProxy(IVersionResource.class, url.toURI());
       }
       catch (MalformedURLException e)
       {
