@@ -39,7 +39,9 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.ProjectStatsRetrievedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
+import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
+import org.zanata.webtrans.client.history.WindowLocation;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display.MainView;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -56,17 +58,13 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
 
-public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display> implements HasDocumentSelectionHandlers
+public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display>
 {
 
    public interface Display extends WidgetDisplay
@@ -89,6 +87,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    private DocumentInfo currentDocument;
    private DocumentNode currentSelection;
    private final WebTransMessages messages;
+   private final History history;
+   private final WindowLocation windowLocation;
 
    private ListDataProvider<DocumentNode> dataProvider;
    private HashMap<DocumentId, DocumentNode> nodes;
@@ -108,12 +108,14 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    private static final String PRE_FILTER_QUERY_PARAMETER_KEY = "doc";
 
    @Inject
-   public DocumentListPresenter(Display display, EventBus eventBus, WorkspaceContext workspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages)
+   public DocumentListPresenter(Display display, EventBus eventBus, WorkspaceContext workspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages, History history, WindowLocation windowLocation)
    {
       super(display, eventBus);
       this.workspaceContext = workspaceContext;
       this.dispatcher = dispatcher;
       this.messages = messages;
+      this.history = history;
+      this.windowLocation = windowLocation;
 
       dataProvider = display.getDataProvider();
       nodes = new HashMap<DocumentId, DocumentNode>();
@@ -131,7 +133,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          public void onSelection(SelectionEvent<DocumentInfo> event)
          {
             // generate history token
-            HistoryToken token = HistoryToken.fromTokenString(History.getToken());
+            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
 
             // prevent feedback loops between history and selection
             boolean isNewSelection;
@@ -150,7 +152,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
                currentDocument = event.getSelectedItem();
                token.setDocumentPath(event.getSelectedItem().getPath() + event.getSelectedItem().getName());
                token.setView(MainView.Editor);
-               History.newItem(token.toTokenString());
+               history.newItem(token.toTokenString());
             }
          }
       }));
@@ -175,11 +177,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          @Override
          public void onValueChange(ValueChangeEvent<String> event)
          {
-            HistoryToken token = HistoryToken.fromTokenString(History.getToken());
+            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
             if (event.getValue() != token.getDocFilterText())
             {
                token.setDocFilterText(event.getValue());
-               History.newItem(token.toTokenString());
+               history.newItem(token.toTokenString());
             }
          }
       }));
@@ -189,16 +191,16 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          @Override
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
-            HistoryToken token = HistoryToken.fromTokenString(History.getToken());
+            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
             if (event.getValue() != token.getDocFilterExact())
             {
                token.setDocFilterExact(event.getValue());
-               History.newItem(token.toTokenString());
+               history.newItem(token.toTokenString());
             }
          }
       }));
 
-      History.addValueChangeHandler(new ValueChangeHandler<String>()
+      history.addValueChangeHandler(new ValueChangeHandler<String>()
       {
 
          @Override
@@ -324,23 +326,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       // TODO Auto-generated method stub
    }
 
-   @Override
-   public HandlerRegistration addDocumentSelectionHandler(DocumentSelectionHandler handler)
-   {
-      return eventBus.addHandler(DocumentSelectionEvent.getType(), handler);
-   }
-
-   @Override
-   public void fireEvent(GwtEvent<?> event)
-   {
-      eventBus.fireEvent(event);
-   }
-
    private void loadDocumentList()
    {
       // generate filter from query string if present
       ArrayList<String> filterDocs = null;
-      List<String> queryDocs = Window.Location.getParameterMap().get(PRE_FILTER_QUERY_PARAMETER_KEY);
+      List<String> queryDocs = windowLocation.getParameterMap().get(PRE_FILTER_QUERY_PARAMETER_KEY);
       if (queryDocs != null && !queryDocs.isEmpty())
       {
          filterDocs = new ArrayList<String>(queryDocs);
@@ -365,7 +355,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             Log.info("Time to load docs into DocListView: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
             start = System.currentTimeMillis();
 
-            History.fireCurrentHistoryState();
+            history.fireCurrentHistoryState();
 
             TranslationStats projectStats = new TranslationStats(); // projStats
                                                                     // = 0
