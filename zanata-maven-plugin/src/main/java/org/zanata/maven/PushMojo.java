@@ -9,10 +9,12 @@ import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptions;
 
 /**
- * Pushes source text to a Zanata project version so that it can be translated.
+ * Pushes source text to a Zanata project version so that it can be translated, and optionally push translated text as well.
+ * NB: Any documents which exist on the server but not locally will be deleted as obsolete.
+ * If deleteObsoleteModules is true, documents belonging to unknown/obsolete modules will be deleted as well.
  * 
  * @goal push
- * @requiresProject false
+ * @requiresProject true
  * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
@@ -93,6 +95,11 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
     */
    private boolean defaultExcludes = true;
 
+   /**
+    * @parameter expression="${zanata.deleteObsoleteModules}" default-value="false"
+    */
+   private boolean deleteObsoleteModules;
+
    @Override
    public String getSourceLang()
    {
@@ -121,6 +128,12 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    public boolean getUseSrcOrder()
    {
       return useSrcOrder;
+   }
+
+   @Override
+   public boolean getDeleteObsoleteModules()
+   {
+      return this.deleteObsoleteModules;
    }
 
    @Override

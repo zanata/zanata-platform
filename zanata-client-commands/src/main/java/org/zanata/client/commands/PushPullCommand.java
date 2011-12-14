@@ -25,18 +25,20 @@ import java.io.Console;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URI;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.rest.client.ClientUtility;
 import org.zanata.rest.client.ITranslationResources;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.resource.Resource;
+import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
@@ -50,12 +52,14 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends Configu
    protected final ITranslationResources translationResources;
    protected URI uri;
    private Marshaller marshaller;
+   private String modulePrefix;
 
    public PushPullCommand(O opts, ZanataProxyFactory factory, ITranslationResources translationResources, URI uri)
    {
       super(opts, factory);
       this.translationResources = translationResources;
       this.uri = uri;
+      this.modulePrefix = opts.getEnableModules() ? getOpts().getCurrentModule() + opts.getModuleSuffix() : "";
    }
 
    private PushPullCommand(O opts, ZanataProxyFactory factory)
@@ -66,44 +70,6 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends Configu
    public PushPullCommand(O opts)
    {
       this(opts, OptionsUtil.createRequestFactory(opts));
-   }
-
-   @Override
-   public void run() throws Exception
-   {
-      if (getOpts().getEnableModules())
-      {
-
-         Set<String> allModules = getOpts().getAllModules();
-         if (getOpts().isRootModule())
-         {
-            runRootModule();
-         }
-         else
-         {
-            runSubmodule();
-         }
-      }
-      else
-      {
-         runNonModule();
-      }
-
-   }
-
-   protected abstract void runNonModule() throws Exception;
-
-   private void runSubmodule()
-   {
-      // TODO Auto-generated method stub
-
-   }
-
-   private void runRootModule()
-   {
-      // TODO get doc list from server
-      // convert doc names to modules, add to serverModules
-      // offer to delete documents from obsolete serverModules
    }
 
    protected void confirmWithUser(String message) throws IOException
@@ -157,6 +123,32 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends Configu
          marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
       }
       return marshaller;
+   }
+
+   protected String qualifiedDocName(String localDocName)
+   {
+      String qualifiedDocName = modulePrefix + localDocName;
+      return qualifiedDocName;
+   }
+
+   protected String unqualifiedDocName(String qualifiedDocName)
+   {
+      assert qualifiedDocName.startsWith(modulePrefix);
+      return qualifiedDocName.substring(modulePrefix.length());
+   }
+
+   protected boolean belongsToCurrentModule(String qualifiedDocName)
+   {
+      return qualifiedDocName.startsWith(modulePrefix);
+   }
+
+   // TODO use a cache which will be accessible to all invocations
+   protected List<ResourceMeta> getDocListForProjectIterationFromServer()
+   {
+      ClientResponse<List<ResourceMeta>> getResponse = translationResources.get(null);
+      ClientUtility.checkResult(getResponse, uri);
+      List<ResourceMeta> remoteDocList = getResponse.getEntity();
+      return remoteDocList;
    }
 
 }

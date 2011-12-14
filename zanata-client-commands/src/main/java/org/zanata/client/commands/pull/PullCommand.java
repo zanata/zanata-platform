@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,13 +65,26 @@ public class PullCommand extends PushPullCommand<PullOptions>
       return strat;
    }
 
-   @Override
-   protected void runNonModule() throws Exception
+   private void logOptions()
    {
       log.info("Server: {}", getOpts().getUrl());
       log.info("Project: {}", getOpts().getProj());
       log.info("Version: {}", getOpts().getProjectVersion());
       log.info("Username: {}", getOpts().getUsername());
+      log.info("Project type: {}", getOpts().getProjectType());
+      log.info("Enable modules: {}", getOpts().getEnableModules());
+      if (getOpts().getEnableModules())
+      {
+         log.info("Current Module: {}", getOpts().getCurrentModule());
+         if (getOpts().isRootModule())
+         {
+            log.info("Root module: YES");
+            if (log.isDebugEnabled())
+            {
+               log.debug("Modules: {}", StringUtils.join(getOpts().getAllModules(), ", "));
+            }
+         }
+      }
       if (getOpts().getPullSrc())
       {
          log.info("Pulling source and target (translation) documents");
@@ -86,6 +100,16 @@ public class PullCommand extends PushPullCommand<PullOptions>
       {
          log.info("DRY RUN: no permanent changes will be made");
       }
+   }
+
+   @Override
+   public void run() throws Exception
+   {
+      logOptions();
+
+      if (getOpts().getEnableModules() && !getOpts().isDryRun())
+         throw new RuntimeException("module support not implemented");
+
       if (getOpts().getPullSrc())
       {
          log.warn("pullSrc option is set: existing source-language files may be overwritten/deleted");
@@ -107,9 +131,15 @@ public class PullCommand extends PushPullCommand<PullOptions>
       for (ResourceMeta resourceMeta : resourceMetaList)
       {
          Resource doc = null;
-         String docName = resourceMeta.getName();
+         String qualifiedDocName = resourceMeta.getName();
+         if (!belongsToCurrentModule(qualifiedDocName))
+         {
+            log.debug("skipping extra-modular document: {}", qualifiedDocName);
+            continue;
+         }
+         String localDocName = unqualifiedDocName(qualifiedDocName);
          // TODO follow a Link
-         String docUri = RestUtil.convertToDocumentURIId(docName);
+         String docUri = RestUtil.convertToDocumentURIId(qualifiedDocName);
          if (strat.needsDocToWriteTrans() || getOpts().getPullSrc())
          {
             ClientResponse<Resource> resourceResponse = translationResources.getResource(docUri, strat.getExtensions());
@@ -120,12 +150,12 @@ public class PullCommand extends PushPullCommand<PullOptions>
          {
             if (!getOpts().isDryRun())
             {
-               log.info("writing source file for document {}", docName);
+               log.info("writing source file for document {}", localDocName);
                strat.writeSrcFile(doc);
             }
             else
             {
-               log.info("writing source file for document {} (skipped due to dry run)", docName);
+               log.info("writing source file for document {} (skipped due to dry run)", localDocName);
             }
          }
 
@@ -137,7 +167,7 @@ public class PullCommand extends PushPullCommand<PullOptions>
             // ignore 404 (no translation yet for specified document)
             if (transResponse.getResponseStatus() == Response.Status.NOT_FOUND)
             {
-               log.info("no translations found in locale {} for document {}", locale, docName);
+               log.info("no translations found in locale {} for document {}", locale, localDocName);
                continue;
             }
             ClientUtility.checkResult(transResponse, uri);
@@ -145,12 +175,12 @@ public class PullCommand extends PushPullCommand<PullOptions>
 
             if (!getOpts().isDryRun())
             {
-               log.info("writing translation file in locale {} for document {}", locMapping.getLocalLocale(), docName);
-               strat.writeTransFile(doc, docName, locMapping, targetDoc);
+               log.info("writing translation file in locale {} for document {}", locMapping.getLocalLocale(), localDocName);
+               strat.writeTransFile(doc, localDocName, locMapping, targetDoc);
             }
             else
             {
-               log.info("writing translation file in locale {} for document {} (skipped due to dry run)", locMapping.getLocalLocale(), docName);
+               log.info("writing translation file in locale {} for document {} (skipped due to dry run)", locMapping.getLocalLocale(), localDocName);
             }
          }
       }

@@ -7,7 +7,7 @@ import org.zanata.client.commands.pull.PullOptions;
  * Pulls translated text from Zanata.
  * 
  * @goal pull
- * @requiresProject false
+ * @requiresProject true
  * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */

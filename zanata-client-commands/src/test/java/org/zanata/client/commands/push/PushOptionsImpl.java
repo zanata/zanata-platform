@@ -173,4 +173,25 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
       return Collections.emptySet();
    }
 
+   @Override
+   public boolean getDeleteObsoleteModules()
+   {
+      // modules are currently only supported by Maven Mojos:
+      return false;
+   }
+
+   @Override
+   public String getDocNameRegex()
+   {
+      // modules are currently only supported by Maven Mojos:
+      return null;
+   }
+
+   @Override
+   public String getModuleSuffix()
+   {
+      // modules are currently only supported by Maven Mojos:
+      return null;
+   }
+
 }

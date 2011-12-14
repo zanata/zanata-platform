@@ -2,13 +2,11 @@ package org.zanata.client.ant.po;
 
 import java.io.File;
 
-
 import org.kohsuke.args4j.Option;
 import org.zanata.client.commands.ArgsUtil;
 import org.zanata.client.commands.PublicanPullCommand;
 import org.zanata.client.commands.PublicanPullOptions;
 import org.zanata.client.commands.ZanataCommand;
-import org.zanata.client.config.LocaleList;
 
 public class DownloadPoTask extends ConfigurableProjectTask implements PublicanPullOptions
 {
