@@ -35,10 +35,10 @@ import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.UserConfigConstants;
 import org.zanata.webtrans.client.ui.ValidationMessagePanel;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -52,7 +52,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -167,16 +167,27 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private final EventBus eventBus;
 
-   /*
-    * The minimum height of the target editor
-    */
-   // private static final int MIN_HEIGHT = 48;
+   private final int REFRESH_INTERVAL = 5000; // ms
+
+   private Timer runValidationTimer = new Timer()
+   {
+      @Override
+      public void run()
+      {
+         eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSource(), textArea.getText()));
+      }
+   };
+
 
    /**
     * Construct a new {@link InlineTargetCellEditor} with the specified images.
     */
    public InlineTargetCellEditor(final NavigationMessages messages, CancelCallback<TransUnit> callback, EditRowCallback rowCallback, final EventBus eventBus)
    {
+      runValidationTimer.scheduleRepeating(REFRESH_INTERVAL);
+      runValidationTimer.cancel();
+
+      
       final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       // Wrap contents in a table
 
@@ -267,7 +278,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             }
             else if (checkKey.isUserTyping())
             {
-               // Resize as user types
+               Log.info("user typing:" + textArea.getText());
                autoSize();
             }
          }
@@ -338,8 +349,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       verticalPanel.add(topLayoutPanel);
 
-      validationMessagePanel = new ValidationMessagePanel(true);
-      validationMessagePanel.setHeader(messages.validationMessageHeading());
+      validationMessagePanel = new ValidationMessagePanel(messages.validationMessageHeading(), true);
 
       verticalPanel.add(validationMessagePanel);
       verticalPanel.setCellVerticalAlignment(validationMessagePanel, HasVerticalAlignment.ALIGN_BOTTOM);
@@ -704,10 +714,5 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    public void updateValidationMessagePanel(ValidationMessagePanel panel)
    {
       validationMessagePanel.setContent(panel.getErrors());
-   }
-
-   public void clearValidationMessagePanel()
-   {
-      validationMessagePanel.clear();
    }
 }

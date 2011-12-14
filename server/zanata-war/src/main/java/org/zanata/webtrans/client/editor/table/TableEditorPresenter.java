@@ -21,7 +21,6 @@
 package org.zanata.webtrans.client.editor.table;
 
 import static org.zanata.webtrans.client.editor.table.TableConstants.MAX_PAGE_ROW;
-import static org.zanata.webtrans.client.editor.table.TableConstants.PAGE_SIZE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,6 +146,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       void updateValidationError(TransUnitId id, List<String> errors);
 
       ValidationMessagePanel getValidationPanel(TransUnitId id);
+
+      void setTransUnitDetails(TransUnit selectedTransUnit);
+
+      void setValidationMessageVisible(TransUnitId id);
    }
 
    private DocumentId documentId;
@@ -279,6 +282,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          {
             if (event.getSelectedItem() != null)
             {
+               display.setTransUnitDetails(event.getSelectedItem());
+               display.setValidationMessageVisible(event.getSelectedItem().getId());
                selectTransUnit(event.getSelectedItem());
             }
          }

@@ -22,7 +22,6 @@ package org.zanata.webtrans.client.editor.table;
 
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
-import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -32,61 +31,46 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class SourcePanel extends Composite implements HasValue<TransUnit>, HasClickHandlers
 {
 
-   private final VerticalPanel panel;
-   private final HorizontalPanel topPanel;
-   private final HorizontalPanel topRightPanel;
+   private final HorizontalPanel panel;
+   private final HorizontalPanel rightPanel;
    private final Label sourceLabel;
    private TransUnit value;
-   private final TransUnitDetailsPanel transUnitDetailsContent;
 
    public SourcePanel(TransUnit value, TableResources resources, NavigationMessages messages)
    {
       this.value = value;
-      panel = new VerticalPanel();
+      panel = new HorizontalPanel();
       panel.setSize("100%", "100%");
-
-      topPanel = new HorizontalPanel();
-      topPanel.setSize("100%", "100%");
 
       initWidget(panel);
       setStylePrimaryName("TableEditorSource");
 
-      topRightPanel = new HorizontalPanel();
-      topRightPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-      topRightPanel.setSize("100%", "100%");
+      rightPanel = new HorizontalPanel();
+      rightPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+      rightPanel.setSize("100%", "100%");
 
       sourceLabel = new HighlightingLabel(value.getSource());
       sourceLabel.setStylePrimaryName("TableEditorContent");
       sourceLabel.setTitle(messages.sourceCommentLabel() + value.getSourceComment());
 
-      topPanel.add(sourceLabel);
-      topPanel.add(topRightPanel);
-
-      transUnitDetailsContent = new TransUnitDetailsPanel(value);
-      transUnitDetailsContent.setHeader(messages.transUnitDetailsHeading());
-
-      panel.add(topPanel);
-      panel.add(transUnitDetailsContent);
-      panel.setCellVerticalAlignment(transUnitDetailsContent, HasVerticalAlignment.ALIGN_BOTTOM);
+      panel.add(sourceLabel);
+      panel.add(rightPanel);
    }
 
 
 
    public void add(Widget w)
    {
-      topRightPanel.add(w);
+      rightPanel.add(w);
    }
 
    public Label getLabel()

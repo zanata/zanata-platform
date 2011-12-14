@@ -60,21 +60,11 @@ public class ValidationMessagePanel extends Composite
    private List<String> errors = new ArrayList<String>();
 
 
-   public ValidationMessagePanel(boolean collapsible)
+   public ValidationMessagePanel(String header, boolean collapsible)
    {
       initWidget(uiBinder.createAndBindUi(this));
       setCollapsible(collapsible);
-      collapse();
-   }
-
-   public void setHeader(String header)
-   {
       headerLabel.setText(header);
-   }
-
-   public void clear()
-   {
-      contentPanel.clear();
       collapse();
    }
 

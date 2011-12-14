@@ -15,8 +15,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class TransUnitDetailsPanel extends Composite
 {
-   private final TransUnit transUnit;
-
    @UiField
    Label headerLabel;
 
@@ -35,16 +33,13 @@ public class TransUnitDetailsPanel extends Composite
    @UiField
    Label resIdLabel, resId, sourceCommentLabel, msgContextLabel, msgContext, sourceComment, lastModifiedByLabel, lastModifiedBy, lastModifiedTimeLabel, lastModifiedTime;
 
-   public TransUnitDetailsPanel(TransUnit transUnit)
+   public TransUnitDetailsPanel(String header)
    {
-      this.transUnit = transUnit;
-
       initWidget(uiBinder.createAndBindUi(this));
-      setDetails();
-      expand();
+      headerLabel.setText(header);
    }
 
-   public void setDetails()
+   public void setDetails(TransUnit transUnit)
    {
       resIdLabel.setText("Resource ID: ");
       resId.setText(transUnit.getResId());
@@ -81,11 +76,8 @@ public class TransUnitDetailsPanel extends Composite
          lastModifiedTimeLabel.setText("");
          lastModifiedTime.setText("");
       }
-   }
 
-   public void setHeader(String header)
-   {
-      headerLabel.setText(header);
+      expand();
    }
 
    @UiHandler("headerLabel")

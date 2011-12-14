@@ -30,6 +30,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import org.zanata.webtrans.client.events.CopySourceEvent;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
+import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
 import org.zanata.webtrans.client.ui.ValidationMessagePanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -44,9 +45,11 @@ import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit>
@@ -61,6 +64,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    private ArrayList<Image> copyButtons;
    private boolean showingCopyButtons;
    private EventBus eventBus;
+   
+   private TransUnitDetailsPanel transUnitDetailsContent;
 
    private final RowRenderer<TransUnit> rowRenderer = new RowRenderer<TransUnit>()
    {
@@ -136,6 +141,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       }
    };
 
+   private Map<TransUnitId, VerticalPanel> sourcePanelMap = new HashMap<TransUnitId, VerticalPanel>();
+
    private final CellRenderer<TransUnit, TransUnit> sourceCellRenderer = new CellRenderer<TransUnit, TransUnit>()
    {
       @Override
@@ -143,10 +150,12 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       {
          view.setStyleName("TableEditorCell TableEditorCell-Source");
          
+         VerticalPanel panel = new VerticalPanel();
+         panel.setSize("100%", "100%");
+
          TableResources images = GWT.create(TableResources.class);
          final Image copyButton = new Image(images.copySrcButton());
          copyButton.setStyleName("gwt-Button");
-         // copyButton.setStyleName("gwt-Button-display-onhover");
          copyButton.setTitle(messages.copySourcetoTarget());
          copyButton.setVisible(showingCopyButtons);
          copyButton.addClickHandler(new ClickHandler()
@@ -182,7 +191,11 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          
          sourcePanel.add(copyButton);
          copyButtons.add(copyButton);
-         view.setWidget(sourcePanel);
+         
+         panel.add(sourcePanel);
+         sourcePanelMap.put(rowValue.getId(), panel);
+
+         view.setWidget(panel);
       }
    };
 
@@ -212,7 +225,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
    };
 
-   private Map<TransUnitId, ValidationMessagePanel> msgPanelMap = new HashMap<TransUnitId, ValidationMessagePanel>();
+   private Map<TransUnitId, ValidationMessagePanel> messagePanelMap = new HashMap<TransUnitId, ValidationMessagePanel>();
 
    private final CellRenderer<TransUnit, TransUnit> targetCellRenderer = new CellRenderer<TransUnit, TransUnit>()
    {
@@ -251,13 +264,14 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          label.setTitle(messages.clickHere());
          targetPanel.add(label);
 
-         ValidationMessagePanel msgPanel = msgPanelMap.get(rowValue.getId());
+         ValidationMessagePanel msgPanel = messagePanelMap.get(rowValue.getId());
          if (msgPanel == null)
          {
-            msgPanel = new ValidationMessagePanel(false);
-            msgPanel.setHeader(messages.validationMessageHeading());
+            msgPanel = new ValidationMessagePanel(messages.validationMessageHeading(), false);
          }
-         msgPanelMap.put(rowValue.getId(), msgPanel);
+         msgPanel.setVisible(false);
+
+         messagePanelMap.put(rowValue.getId(), msgPanel);
 
          targetPanel.add(msgPanel);
 
@@ -282,10 +296,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       this.messages = messages;
       this.eventBus = eventBus;
       setRowRenderer(rowRenderer);
-      // indicatorColumnDefinition.setMaximumColumnWidth(15);
-      // indicatorColumnDefinition.setPreferredColumnWidth(15);
-      // indicatorColumnDefinition.setMinimumColumnWidth(15);
-      // indicatorColumnDefinition.setCellRenderer(indicatorCellRenderer);
       sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
       targetColumnDefinition.setCellRenderer(targetCellRenderer);
       CancelCallback<TransUnit> cancelCallBack = new CancelCallback<TransUnit>()
@@ -360,6 +370,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       };
       
       this.targetCellEditor = new InlineTargetCellEditor(messages, cancelCallBack, transValueCallBack, eventBus);
+      this.transUnitDetailsContent = new TransUnitDetailsPanel(messages.transUnitDetailsHeading());
       targetColumnDefinition.setCellEditor(targetCellEditor);
       // See _INDEX consts above if modifying!
       // addColumnDefinition(indicatorColumnDefinition);
@@ -375,28 +386,53 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       return targetCellEditor;
    }
 
-
    public void updateValidationMessage(TransUnitId id, List<String> errors)
    {
-      ValidationMessagePanel messagePanel = msgPanelMap.get(id);
+      ValidationMessagePanel messagePanel = messagePanelMap.get(id);
       if (messagePanel != null)
       {
          Log.info("Validation error: " + errors.toString());
          messagePanel.setContent(errors);
-         msgPanelMap.put(id, messagePanel);
+         messagePanelMap.put(id, messagePanel);
       }
    }
 
-   public ValidationMessagePanel getValidationPanel(TransUnitId id)
+   public ValidationMessagePanel getValidationMessagePanel(TransUnitId id)
    {
-      ValidationMessagePanel panel = msgPanelMap.get(id);
+      ValidationMessagePanel panel = messagePanelMap.get(id);
 
       if (panel == null)
       {
-         panel = new ValidationMessagePanel(false);
-         msgPanelMap.put(id, panel);
+         panel = new ValidationMessagePanel(messages.validationMessageHeading(), false);
+         messagePanelMap.put(id, panel);
       }
       return panel;
+   }
+
+   public void setValidationMessageVisible(TransUnitId id)
+   {
+      for (Map.Entry<TransUnitId, ValidationMessagePanel> entry : messagePanelMap.entrySet())
+      {
+         if (entry.getKey().equals(id))
+         {
+            entry.getValue().setVisible(true);
+         }
+         else
+         {
+            entry.getValue().setVisible(false);
+         }
+      }
+   }
+
+   public void setTransUnitDetails(TransUnit selectedTransUnit)
+   {
+      VerticalPanel sourcePanel = sourcePanelMap.get(selectedTransUnit.getId());
+      if (sourcePanel != null)
+      {
+         transUnitDetailsContent.setDetails(selectedTransUnit);
+         sourcePanel.add(transUnitDetailsContent);
+         sourcePanel.setCellVerticalAlignment(transUnitDetailsContent,HasVerticalAlignment.ALIGN_BOTTOM);
+      }
    }
 
 }

@@ -269,6 +269,20 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    @Override
    public ValidationMessagePanel getValidationPanel(TransUnitId id)
    {
-      return this.tableDefinition.getValidationPanel(id);
+      return this.tableDefinition.getValidationMessagePanel(id);
+   }
+
+   @Override
+   public void setTransUnitDetails(TransUnit selectedTransUnit)
+   {
+      this.tableDefinition.setTransUnitDetails(selectedTransUnit);
+
+   }
+
+   @Override
+   public void setValidationMessageVisible(TransUnitId id)
+   {
+      this.tableDefinition.setValidationMessageVisible(id);
+
    }
 }
