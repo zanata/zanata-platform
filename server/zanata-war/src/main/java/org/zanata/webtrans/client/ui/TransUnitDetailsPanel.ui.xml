@@ -22,12 +22,14 @@
         }
         
         .content {
-           border-bottom:1px solid #E0E8EE;
-           border-left:1px solid #E0E8EE;
-           border-right:1px solid #E0E8EE;
            height:100%;
         }
         
+        .scrollSection {
+           border-bottom:1px solid #E0E8EE;
+           border-left:1px solid #E0E8EE;
+           border-right:1px solid #E0E8EE;
+        }
 		
 		.tuDetailsLabel {
 			font-weight: bold;
@@ -47,10 +49,10 @@
     <g:VerticalPanel styleName="{style.container}">
         <g:Label ui:field="headerLabel" styleName="{style.header}"/>
         
-        <g:ScrollPanel>
+        <g:ScrollPanel styleName="{style.scrollSection}">
         <g:LayoutPanel ui:field="contentPanel" styleName="{style.content}">
 	        <g:layer width="100%">
-	                        <g:VerticalPanel width="100%" height="100%">
+	                        <g:VerticalPanel height="100%">
 	                            <g:HorizontalPanel>
 	                                <g:Label ui:field="resIdLabel" styleName="{style.tuDetailsLabel}" />
 	                                <g:Label ui:field="resId" styleName="{style.tuDetails}"/>

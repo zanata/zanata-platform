@@ -43,7 +43,7 @@ public class ValidationDetailsPresenter extends WidgetPresenter<ValidationDetail
 {
    public interface Display extends WidgetDisplay
    {
-      void validate(TransUnitId id, String source, String target);
+      void validate(TransUnitId id, String source, String target, boolean fireNotification);
 
       void clearAllMessage();
    }
@@ -71,7 +71,7 @@ public class ValidationDetailsPresenter extends WidgetPresenter<ValidationDetail
          @Override
          public void onValidate(RunValidationEvent event)
          {
-            display.validate(event.getId(), event.getSource(), event.getTarget());
+            display.validate(event.getId(), event.getSource(), event.getTarget(), event.isFireNotification());
          }
       }));
 

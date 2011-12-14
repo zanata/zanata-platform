@@ -48,12 +48,21 @@ public class RunValidationEvent extends GwtEvent<RunValidationEventHandler>
 
    private String source, target;
    private TransUnitId id;
+   private boolean fireNotification = true;
 
    public RunValidationEvent(TransUnitId id, String source, String target)
    {
       this.id = id;
       this.source = source;
       this.target = target;
+   }
+
+   public RunValidationEvent(TransUnitId id, String source, String target, boolean fireNotification)
+   {
+      this.id = id;
+      this.source = source;
+      this.target = target;
+      this.fireNotification = fireNotification;
    }
 
    @Override
@@ -82,6 +91,11 @@ public class RunValidationEvent extends GwtEvent<RunValidationEventHandler>
    public TransUnitId getId()
    {
       return id;
+   }
+
+   public boolean isFireNotification()
+   {
+      return fireNotification;
    }
 }
 

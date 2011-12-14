@@ -47,6 +47,7 @@ import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RedoFailureEvent;
+import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TransMemoryCopyEvent;
 import org.zanata.webtrans.client.events.TransMemoryCopyHandler;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
@@ -284,6 +285,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             {
                display.setTransUnitDetails(event.getSelectedItem());
                display.setValidationMessageVisible(event.getSelectedItem().getId());
+               display.getTargetCellEditor().savePendingChange(true);
                selectTransUnit(event.getSelectedItem());
             }
          }
@@ -336,6 +338,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                {
                   Log.info("selected TU updated; clear selection");
                   display.getTargetCellEditor().cancelEdit();
+                  eventBus.fireEvent(new RunValidationEvent(event.getTransUnit().getId(), event.getTransUnit().getSource(), event.getTransUnit().getTarget()));
                }
 
                final Integer rowOffset = getRowOffset(event.getTransUnit().getId());

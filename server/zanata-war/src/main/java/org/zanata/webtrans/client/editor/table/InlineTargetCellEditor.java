@@ -38,7 +38,6 @@ import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -47,6 +46,8 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
@@ -167,27 +168,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private final EventBus eventBus;
 
-   private final int REFRESH_INTERVAL = 5000; // ms
-
-   private Timer runValidationTimer = new Timer()
-   {
-      @Override
-      public void run()
-      {
-         eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSource(), textArea.getText()));
-      }
-   };
-
-
    /**
     * Construct a new {@link InlineTargetCellEditor} with the specified images.
     */
    public InlineTargetCellEditor(final NavigationMessages messages, CancelCallback<TransUnit> callback, EditRowCallback rowCallback, final EventBus eventBus)
    {
-      runValidationTimer.scheduleRepeating(REFRESH_INTERVAL);
-      runValidationTimer.cancel();
-
-      
       final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       // Wrap contents in a table
 
@@ -226,6 +211,32 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          public void onFocus(FocusEvent event)
          {
             isFocused = true;
+         }
+      });
+
+      final int DELAY_INTERVAL = 1000; // ms
+      final Timer runValidationTimer = new Timer()
+      {
+         @Override
+         public void run()
+         {
+            if (isEditing() && isOpened() && isFocused())
+            {
+               eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSource(), textArea.getText(), false));
+            }
+         }
+      };
+
+      textArea.addKeyUpHandler(new KeyUpHandler()
+      {
+         @Override
+         public void onKeyUp(KeyUpEvent event)
+         {
+            checkKey.init(event.getNativeEvent());
+            if (checkKey.isUserTyping())
+            {
+               runValidationTimer.schedule(DELAY_INTERVAL);
+            }
          }
       });
 
@@ -278,7 +289,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             }
             else if (checkKey.isUserTyping())
             {
-               Log.info("user typing:" + textArea.getText());
                autoSize();
             }
          }

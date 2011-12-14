@@ -44,14 +44,14 @@ public class HtmlXmlTagValidation extends ValidationAction
    @Override
    public void validate(String source, String target)
    {
-      Log.info("Source:" + source);
-      Log.info("target:" + target);
+      Log.debug("Source:" + source);
+      Log.debug("target:" + target);
 
       MatchResult result = regExp.exec(source);
       while (result != null)
       {
          String node = result.getGroup(0);
-         Log.info("Found Node:" + node);
+         Log.debug("Found Node:" + node);
          if (!target.contains(node))
          {
             addError(getId() + ":" + node + " not found in target");

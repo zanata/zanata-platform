@@ -89,9 +89,9 @@ public class ValidationDetailsView extends Composite implements ValidationDetail
    }
 
    @Override
-   public void validate(TransUnitId id, String source, String target)
+   public void validate(TransUnitId id, String source, String target, boolean fireNotification)
    {
-      validationService.execute(id, source, target);
+      validationService.execute(id, source, target, fireNotification);
    }
 
    @Override

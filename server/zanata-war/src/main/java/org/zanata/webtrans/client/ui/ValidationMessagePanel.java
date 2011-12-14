@@ -27,6 +27,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -51,7 +52,9 @@ public class ValidationMessagePanel extends Composite
    Label headerLabel;
 
    @UiField
-   VerticalPanel contentPanel;
+   FlowPanel contentPanel;
+
+   VerticalPanel contents;
    
    @UiField
    Styles style;
@@ -62,6 +65,7 @@ public class ValidationMessagePanel extends Composite
 
    public ValidationMessagePanel(String header, boolean collapsible)
    {
+      contents = new VerticalPanel();
       initWidget(uiBinder.createAndBindUi(this));
       setCollapsible(collapsible);
       headerLabel.setText(header);
@@ -72,10 +76,13 @@ public class ValidationMessagePanel extends Composite
    {
       this.errors = errors;
       contentPanel.clear();
+      contents.clear();
+
       for (String error : errors)
       {
-         contentPanel.add(new Label(error));
+         contents.add(new Label(error));
       }
+      contentPanel.add(contents);
       expand();
    }
 
@@ -97,7 +104,7 @@ public class ValidationMessagePanel extends Composite
 
    public void expand()
    {
-      if (contentPanel.getWidgetCount() > 0)
+      if (contents.getWidgetCount() > 0)
       {
          contentPanel.setHeight("95px");
          contentPanel.setVisible(true);

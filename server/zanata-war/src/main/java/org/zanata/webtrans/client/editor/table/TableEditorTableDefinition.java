@@ -49,7 +49,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit>
@@ -60,7 +59,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    public static final int TARGET_COL = 1;
 
    private String findMessage;
-   private SourcePanel sourcePanel;
+   private SourcePanel topSourcePanel;
    private ArrayList<Image> copyButtons;
    private boolean showingCopyButtons;
    private EventBus eventBus;
@@ -149,7 +148,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       public void renderRowValue(final TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
       {
          view.setStyleName("TableEditorCell TableEditorCell-Source");
-         
          VerticalPanel panel = new VerticalPanel();
          panel.setSize("100%", "100%");
 
@@ -169,14 +167,14 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
          });
          
-         sourcePanel = new SourcePanel(rowValue, images, messages);
+         topSourcePanel = new SourcePanel(rowValue, images, messages);
          
          if (findMessage != null && !findMessage.isEmpty())
          {
-            sourcePanel.highlightSearch(findMessage);
+            topSourcePanel.highlightSearch(findMessage);
          }
-         sourcePanel.getLabel().sinkEvents(Event.ONCLICK);
-         sourcePanel.getLabel().addClickHandler(new ClickHandler()
+         topSourcePanel.getLabel().sinkEvents(Event.ONCLICK);
+         topSourcePanel.getLabel().addClickHandler(new ClickHandler()
          {
             @Override
             public void onClick(ClickEvent event)
@@ -189,10 +187,10 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
          });
          
-         sourcePanel.add(copyButton);
+         topSourcePanel.add(copyButton);
          copyButtons.add(copyButton);
          
-         panel.add(sourcePanel);
+         panel.add(topSourcePanel);
          sourcePanelMap.put(rowValue.getId(), panel);
 
          view.setWidget(panel);

@@ -65,7 +65,7 @@ public class ValidationService
     * 
     * @param tu
     */
-   public void execute(TransUnitId id, String source, String target)
+   public void execute(TransUnitId id, String source, String target, boolean fireNotification)
    {
       List<String> errors = new ArrayList<String>();
       
@@ -80,7 +80,7 @@ public class ValidationService
             errors.addAll(action.getError());
          }
       }
-      fireErrorMessage(id, errors);
+      fireErrorMessage(id, errors, fireNotification);
    }
    
    /**
@@ -117,9 +117,9 @@ public class ValidationService
       }
    }
 
-   public void fireErrorMessage(TransUnitId id, List<String> errors)
+   public void fireErrorMessage(TransUnitId id, List<String> errors, boolean fireNotification)
    {
-      if (!errors.isEmpty())
+      if (!errors.isEmpty() && fireNotification)
       {
          eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyValidationError()));
       }

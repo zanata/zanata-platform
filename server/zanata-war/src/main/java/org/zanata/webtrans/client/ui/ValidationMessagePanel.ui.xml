@@ -30,21 +30,23 @@
         }
         
         .content {
-	       border-bottom:1px solid #E0E8EE;
-           border-left:1px solid #E0E8EE;
-           border-right:1px solid #E0E8EE;
            height:100%;
            color:#686868;
            font-style:normal;
-           width:100%;
+        }
+        
+        .scrollSection {
+	       border-bottom:1px solid #E0E8EE;
+           border-left:1px solid #E0E8EE;
+           border-right:1px solid #E0E8EE;
         }
         
     </ui:style>
     
     <g:VerticalPanel styleName="{style.container}">
         <g:Label ui:field="headerLabel"/>
-        <g:ScrollPanel>
-            <g:VerticalPanel ui:field="contentPanel" styleName="{style.content}"/>
+        <g:ScrollPanel styleName="{style.scrollSection}">
+            <g:FlowPanel ui:field="contentPanel" styleName="{style.content}"/>
         </g:ScrollPanel>
     
     </g:VerticalPanel>
