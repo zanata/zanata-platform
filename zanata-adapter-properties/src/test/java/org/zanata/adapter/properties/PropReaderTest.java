@@ -10,17 +10,17 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
-public class PropReaderTests
+public class PropReaderTest
 {
-   private static final Logger log = LoggerFactory.getLogger(PropReaderTests.class);
+   private static final Logger log = LoggerFactory.getLogger(PropReaderTest.class);
    static final String ISO_8859_1 = "ISO-8859-1";
 
    @SuppressWarnings("deprecation")
@@ -73,7 +73,7 @@ public class PropReaderTests
 
    private InputStream getResourceAsStream(String relativeResourceName) throws FileNotFoundException
    {
-      InputStream stream = PropReaderTests.class.getResourceAsStream(relativeResourceName);
+      InputStream stream = PropReaderTest.class.getResourceAsStream(relativeResourceName);
       if (stream == null)
          throw new FileNotFoundException(relativeResourceName);
       return stream;
