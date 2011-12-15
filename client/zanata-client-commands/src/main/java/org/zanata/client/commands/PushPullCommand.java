@@ -25,6 +25,7 @@ import java.io.Console;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -140,6 +141,33 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends Configu
    protected boolean belongsToCurrentModule(String qualifiedDocName)
    {
       return qualifiedDocName.startsWith(modulePrefix);
+   }
+
+   protected List<String> getQualifiedDocNamesForCurrentModuleFromServer()
+   {
+      List<ResourceMeta> remoteDocList = getDocListForProjectIterationFromServer();
+      List<String> docNames = new ArrayList<String>();
+      for (ResourceMeta doc : remoteDocList)
+      {
+         // NB ResourceMeta.name = HDocument.docId
+         String qualifiedDocName = doc.getName();
+         if (getOpts().getEnableModules())
+         {
+            if (belongsToCurrentModule(qualifiedDocName))
+            {
+               docNames.add(qualifiedDocName);
+            }
+            else
+            {
+               log.debug("found extra-modular document: {}", qualifiedDocName);
+            }
+         }
+         else
+         {
+            docNames.add(qualifiedDocName);
+         }
+      }
+      return docNames;
    }
 
    // TODO use a cache which will be accessible to all invocations

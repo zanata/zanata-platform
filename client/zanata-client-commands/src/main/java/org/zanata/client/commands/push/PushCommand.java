@@ -110,6 +110,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       if (getOpts().getPushTrans())
       {
          log.info("Pushing source and target documents");
+         log.info("Locales to push: {}", getOpts().getLocales());
       }
       else
       {
@@ -232,7 +233,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       }
       else
       {
-         log.warn("Found {} obsolete docs on the server which will be DELETED");
+         log.warn("Found {} obsolete docs on the server which will be DELETED", obsoleteDocs.size());
          log.info("Obsolete docs: {}", obsoleteDocs);
       }
 
@@ -352,33 +353,6 @@ public class PushCommand extends PushPullCommand<PushOptions>
       {
          log.info("deleting resource {} from server (skipped due to dry run)", qualifiedDocName);
       }
-   }
-
-   private List<String> getQualifiedDocNamesForCurrentModuleFromServer()
-   {
-      List<ResourceMeta> remoteDocList = getDocListForProjectIterationFromServer();
-      List<String> docNames = new ArrayList<String>();
-      for (ResourceMeta doc : remoteDocList)
-      {
-         // NB ResourceMeta.name = HDocument.docId
-         String qualifiedDocName = doc.getName();
-         if (getOpts().getEnableModules())
-         {
-            if (belongsToCurrentModule(qualifiedDocName))
-            {
-               docNames.add(qualifiedDocName);
-            }
-            else
-            {
-               log.debug("found extra-modular document: {}", qualifiedDocName);
-            }
-         }
-         else
-         {
-            docNames.add(qualifiedDocName);
-         }
-      }
-      return docNames;
    }
 
 }
