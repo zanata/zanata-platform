@@ -65,6 +65,12 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Hide Editor Options")
    String hideEditorOptions();
 
+   @DefaultMessage("Options >>")
+   String showEditorOptionsLabel();
+
+   @DefaultMessage("<< Options")
+   String hideEditorOptionsLabel();
+
    @DefaultMessage("Find")
    String findButton();
 

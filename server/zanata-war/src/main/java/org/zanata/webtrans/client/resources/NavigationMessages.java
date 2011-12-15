@@ -81,9 +81,6 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Cancel")
    String editCancelShortcut();
 
-   @DefaultMessage("Configure key/button behaviour")
-   String configurationButton();
-
    // @DefaultMessage("Copy")
    // String editClone();
 

@@ -30,6 +30,8 @@ import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -37,6 +39,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -58,10 +61,13 @@ public class EditorOptionsPanel extends Composite
    VerticalPanel contentPanel;
 
    @UiField
-   Label header;
+   Label header, navOptionHeader;
 
    @UiField
    CheckBox enterChk, escChk, editorButtonsChk;
+
+   @UiField
+   ListBox optionsList;
 
    private Map<String, Boolean> configMap = new HashMap<String, Boolean>();
 
@@ -73,13 +79,22 @@ public class EditorOptionsPanel extends Composite
       enterChk.setText(EditorConfigConstants.LABEL_ENTER_BUTTON_SAVE);
       escChk.setText(EditorConfigConstants.LABEL_ESC_KEY_CLOSE);
       editorButtonsChk.setText(EditorConfigConstants.LABEL_EDITOR_BUTTONS);
+      navOptionHeader.setText(EditorConfigConstants.LABEL_NAV_OPTION);
 
       enterChk.setValue(false);
       escChk.setValue(false);
       editorButtonsChk.setValue(true);
 
+      optionsList.addItem(EditorConfigConstants.OPTION_FUZZY_UNTRANSLATED);
+      optionsList.addItem(EditorConfigConstants.OPTION_FUZZY);
+      optionsList.addItem(EditorConfigConstants.OPTION_UNTRANSLATED);
+
+      optionsList.setSelectedIndex(0);
+
       configMap.put(EditorConfigConstants.BUTTON_ENTER, false);
       configMap.put(EditorConfigConstants.BUTTON_ESC, false);
+      configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
+      configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
 
       enterChk.addValueChangeHandler(new ValueChangeHandler<Boolean>()
       {
@@ -109,6 +124,31 @@ public class EditorOptionsPanel extends Composite
          {
             Log.info("Enable 'Esc' Key to close editor: " + event.getValue());
             configMap.put(EditorConfigConstants.BUTTON_ESC, event.getValue());
+            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
+         }
+      });
+
+      optionsList.addChangeHandler(new ChangeHandler()
+      {
+         @Override
+         public void onChange(ChangeEvent event)
+         {
+            String selectedOption = optionsList.getItemText(optionsList.getSelectedIndex());
+            if (selectedOption.equals(EditorConfigConstants.OPTION_FUZZY_UNTRANSLATED))
+            {
+               configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
+               configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
+            }
+            else if (selectedOption.equals(EditorConfigConstants.OPTION_FUZZY))
+            {
+               configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
+               configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, false);
+            }
+            else if (selectedOption.equals(EditorConfigConstants.OPTION_UNTRANSLATED))
+            {
+               configMap.put(EditorConfigConstants.BUTTON_FUZZY, false);
+               configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
+            }
             eventBus.fireEvent(new UserConfigChangeEvent(configMap));
          }
       });

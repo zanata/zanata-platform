@@ -18,6 +18,5 @@
 			<g:Image resource="{resources.nextEntry}" ui:field="nextEntry" styleName="{style.imageAnchor}"/>
 			<g:Image resource="{resources.nextState}" ui:field="nextState" styleName="{style.imageAnchor}"/>
 		    <g:Image resource="{resources.lastEntry}" ui:field="lastEntry" styleName="{style.imageAnchor}"/>
-			<g:Image resource="{resources.configureButton}" ui:field="configure" styleName="{style.configButton}"/>
 	</g:HTMLPanel>
 </ui:UiBinder> 

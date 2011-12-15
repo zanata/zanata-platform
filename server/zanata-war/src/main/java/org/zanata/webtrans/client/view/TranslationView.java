@@ -111,7 +111,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) panelWidth);
       mainSplitPanel.setWidgetMinSize(southPanelContainer, (int) southHeight);
 
-      toogleOptionsButton.setText("Options");
+      toogleOptionsButton.setText(messages.showEditorOptionsLabel());
       toogleOptionsButton.setTitle(messages.showEditorOptions());
       toogleOptionsButton.setDown(true);
 

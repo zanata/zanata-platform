@@ -29,7 +29,6 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
-import org.zanata.webtrans.client.ui.ShortcutConfigPanel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -56,10 +55,6 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
 
       HasClickHandlers getNextStateButton();
 
-      HasClickHandlers getConfigureButton();
-
-      Widget getConfigureButtonObject();
-
       void setNavModeTooltip(Map<String, Boolean> configMap);
    }
 
@@ -68,8 +63,6 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
    {
       super(display, eventBus);
    }
-
-   final ShortcutConfigPanel shortcutConfigPanel = new ShortcutConfigPanel(true, eventBus);
 
    @Override
    protected void onBind()
@@ -125,15 +118,6 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
          public void onClick(ClickEvent event)
          {
             fireEvent(new NavTransUnitEvent(NavigationType.NextState));
-         }
-      });
-
-      display.getConfigureButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            shortcutConfigPanel.toggleDisplay(display.getConfigureButtonObject());
          }
       });
 

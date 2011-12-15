@@ -176,12 +176,14 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
             if (display.getToogleOptionsButton().isDown())
             {
                display.setSidePanelViewVisible(true);
-               display.getToogleOptionsButton().setTitle(messages.showEditorOptions());
+               display.getToogleOptionsButton().setTitle(messages.hideEditorOptions());
+               display.getToogleOptionsButton().setText(messages.showEditorOptionsLabel());
             }
             else
             {
                display.setSidePanelViewVisible(false);
-               display.getToogleOptionsButton().setTitle(messages.hideEditorOptions());
+               display.getToogleOptionsButton().setTitle(messages.showEditorOptions());
+               display.getToogleOptionsButton().setText(messages.hideEditorOptionsLabel());
             }
          }
       }));

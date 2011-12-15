@@ -46,7 +46,7 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
    }
 
    @UiField
-   Image nextEntry, prevEntry, prevState, nextState, configure, firstEntry, lastEntry;
+   Image nextEntry, prevEntry, prevState, nextState, firstEntry, lastEntry;
 
    private final NavigationMessages messages;
 
@@ -65,7 +65,6 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
       firstEntry.setTitle(messages.firstEntry());
       lastEntry.setTitle(messages.lastEntry());
       setFuzzyUntranslatedModeTooltip();
-      configure.setTitle(messages.configurationButton());
    }
 
    public void setNavModeTooltip(Map<String, Boolean> configMap)
@@ -149,17 +148,4 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
    {
       return this;
    }
-
-   @Override
-   public HasClickHandlers getConfigureButton()
-   {
-      return configure;
-   }
-
-   @Override
-   public Widget getConfigureButtonObject()
-   {
-      return configure;
-   }
-
 }

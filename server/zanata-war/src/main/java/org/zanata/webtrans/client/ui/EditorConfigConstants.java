@@ -34,7 +34,7 @@ public class EditorConfigConstants
 
    public static final String LABEL_ENTER_BUTTON_SAVE = "'Enter' key saves immediately";
    public static final String LABEL_ESC_KEY_CLOSE = "'Esc' key closes editor";
-   public static final String LABEL_NAV_OPTION = "Navigation key/button options:";
+   public static final String LABEL_NAV_OPTION = "Navigation key/button:";
    public static final String LABEL_EDITOR_BUTTONS = "Editor Buttons";
    public static final String LABEL_EDITOR_OPTIONS = "Editor Options";
    
