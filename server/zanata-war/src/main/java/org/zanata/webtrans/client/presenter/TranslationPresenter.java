@@ -179,7 +179,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
                display.getToogleOptionsButton().setTitle(messages.hideEditorOptions());
                display.getToogleOptionsButton().setText(messages.showEditorOptionsLabel());
             }
-            else
+            else if (!display.getToogleOptionsButton().isDown())
             {
                display.setSidePanelViewVisible(false);
                display.getToogleOptionsButton().setTitle(messages.showEditorOptions());
