@@ -25,7 +25,7 @@ package org.zanata.webtrans.client.ui;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class UserConfigConstants
+public class EditorConfigConstants
 {
    public static final String BUTTON_FUZZY = "Fuzzy";
    public static final String BUTTON_UNTRANSLATED = "Untranslated";
@@ -36,8 +36,7 @@ public class UserConfigConstants
    public static final String LABEL_ESC_KEY_CLOSE = "'Esc' key closes editor";
    public static final String LABEL_NAV_OPTION = "Navigation key/button options:";
    public static final String LABEL_EDITOR_BUTTONS = "Editor Buttons";
-   public static final String LABEL_USER_OPTIONS = "User Options";
-   public static final String LABEL_LIVE_VALIDATION = "Live Validation";
+   public static final String LABEL_EDITOR_OPTIONS = "Editor Options";
    
    public static final String OPTION_FUZZY_UNTRANSLATED = "Next Fuzzy/Untranslated";
    public static final String OPTION_FUZZY = "Next Fuzzy";

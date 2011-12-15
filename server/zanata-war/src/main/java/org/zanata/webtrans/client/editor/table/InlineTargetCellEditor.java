@@ -32,7 +32,7 @@ import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.UpdateValidationErrorEvent;
 import org.zanata.webtrans.client.resources.NavigationMessages;
-import org.zanata.webtrans.client.ui.UserConfigConstants;
+import org.zanata.webtrans.client.ui.EditorConfigConstants;
 import org.zanata.webtrans.client.ui.ValidationMessagePanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
@@ -176,6 +176,19 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       // Wrap contents in a table
 
+      final int REFRESH_INTERVAL = 1000; // ms
+      final Timer runValidationTimer = new Timer()
+      {
+         @Override
+         public void run()
+         {
+            if (isEditing() && isOpened())
+            {
+               eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSource(), textArea.getText(), false));
+            }
+         }
+      };
+
       verticalPanel = new VerticalPanel();
       verticalPanel.setWidth("100%");
       verticalPanel.setHeight("100%");
@@ -194,6 +207,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          public void onValueChange(ValueChangeEvent<String> event)
          {
             autoSize();
+            runValidationTimer.schedule(REFRESH_INTERVAL);
          }
 
       });
@@ -214,18 +228,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          }
       });
 
-      final int DELAY_INTERVAL = 1000; // ms
-      final Timer runValidationTimer = new Timer()
-      {
-         @Override
-         public void run()
-         {
-            if (isEditing() && isOpened() && isFocused())
-            {
-               eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSource(), textArea.getText(), false));
-            }
-         }
-      };
+     
 
       textArea.addKeyUpHandler(new KeyUpHandler()
       {
@@ -235,7 +238,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             checkKey.init(event.getNativeEvent());
             if (checkKey.isUserTyping())
             {
-               runValidationTimer.schedule(DELAY_INTERVAL);
+               runValidationTimer.schedule(REFRESH_INTERVAL);
             }
          }
       });
@@ -679,15 +682,15 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    public void updateKeyBehaviour(Map<String, Boolean> configMap)
    {
-      if (configMap.containsKey(UserConfigConstants.BUTTON_FUZZY) && configMap.containsKey(UserConfigConstants.BUTTON_UNTRANSLATED))
+      if (configMap.containsKey(EditorConfigConstants.BUTTON_FUZZY) && configMap.containsKey(EditorConfigConstants.BUTTON_UNTRANSLATED))
       {
-         untranslatedMode = configMap.get(UserConfigConstants.BUTTON_UNTRANSLATED);
-         fuzzyMode = configMap.get(UserConfigConstants.BUTTON_FUZZY);
+         untranslatedMode = configMap.get(EditorConfigConstants.BUTTON_UNTRANSLATED);
+         fuzzyMode = configMap.get(EditorConfigConstants.BUTTON_FUZZY);
       }
 
-      if (configMap.containsKey(UserConfigConstants.BUTTON_ENTER))
+      if (configMap.containsKey(EditorConfigConstants.BUTTON_ENTER))
       {
-         isEnterKeySavesEnabled = configMap.get(UserConfigConstants.BUTTON_ENTER);
+         isEnterKeySavesEnabled = configMap.get(EditorConfigConstants.BUTTON_ENTER);
          if (isEnterKeySavesEnabled)
          {
             saveButton.setTitle(saveButtonwithEnterShortcuts);
@@ -698,9 +701,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          }
       }
 
-      if (configMap.containsKey(UserConfigConstants.BUTTON_ESC))
+      if (configMap.containsKey(EditorConfigConstants.BUTTON_ESC))
       {
-         isEscKeyCloseEditor = configMap.get(UserConfigConstants.BUTTON_ESC);
+         isEscKeyCloseEditor = configMap.get(EditorConfigConstants.BUTTON_ESC);
       }
 
    }

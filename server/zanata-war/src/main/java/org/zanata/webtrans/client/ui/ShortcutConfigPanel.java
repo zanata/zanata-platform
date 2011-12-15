@@ -60,12 +60,12 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
    private void init()
    {
       FlowPanel mainPanel = new FlowPanel();
-      mainPanel.add(new Label(UserConfigConstants.LABEL_NAV_OPTION));
+      mainPanel.add(new Label(EditorConfigConstants.LABEL_NAV_OPTION));
 
       optionsList.clear();
-      optionsList.addItem(UserConfigConstants.OPTION_FUZZY_UNTRANSLATED);
-      optionsList.addItem(UserConfigConstants.OPTION_FUZZY);
-      optionsList.addItem(UserConfigConstants.OPTION_UNTRANSLATED);
+      optionsList.addItem(EditorConfigConstants.OPTION_FUZZY_UNTRANSLATED);
+      optionsList.addItem(EditorConfigConstants.OPTION_FUZZY);
+      optionsList.addItem(EditorConfigConstants.OPTION_UNTRANSLATED);
       mainPanel.add(optionsList);
 
       this.add(mainPanel);
@@ -79,20 +79,20 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
          public void onChange(ChangeEvent event)
          {
             String selectedOption = optionsList.getItemText(optionsList.getSelectedIndex());
-            if (selectedOption.equals(UserConfigConstants.OPTION_FUZZY_UNTRANSLATED))
+            if (selectedOption.equals(EditorConfigConstants.OPTION_FUZZY_UNTRANSLATED))
             {
-               configMap.put(UserConfigConstants.BUTTON_UNTRANSLATED, true);
-               configMap.put(UserConfigConstants.BUTTON_FUZZY, true);
+               configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
+               configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
             }
-            else if (selectedOption.equals(UserConfigConstants.OPTION_FUZZY))
+            else if (selectedOption.equals(EditorConfigConstants.OPTION_FUZZY))
             {
-               configMap.put(UserConfigConstants.BUTTON_FUZZY, true);
-               configMap.put(UserConfigConstants.BUTTON_UNTRANSLATED, false);
+               configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
+               configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, false);
             }
-            else if (selectedOption.equals(UserConfigConstants.OPTION_UNTRANSLATED))
+            else if (selectedOption.equals(EditorConfigConstants.OPTION_UNTRANSLATED))
             {
-               configMap.put(UserConfigConstants.BUTTON_FUZZY, false);
-               configMap.put(UserConfigConstants.BUTTON_UNTRANSLATED, true);
+               configMap.put(EditorConfigConstants.BUTTON_FUZZY, false);
+               configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
             }
             eventBus.fireEvent(new UserConfigChangeEvent(configMap));
          }
@@ -103,8 +103,8 @@ public class ShortcutConfigPanel extends DecoratedPopupPanel
    {
       optionsList.setSelectedIndex(0);
 
-      configMap.put(UserConfigConstants.BUTTON_FUZZY, true);
-      configMap.put(UserConfigConstants.BUTTON_UNTRANSLATED, true);
+      configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
+      configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
    }
 
    public void toggleDisplay(final UIObject target)

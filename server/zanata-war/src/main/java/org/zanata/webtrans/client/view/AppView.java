@@ -55,7 +55,7 @@ public class AppView extends Composite implements AppPresenter.Display
    private final int NOTIFICATION_TIME = 2500;
 
    @UiField
-   Anchor signOutLink, leaveLink, helpLink, documentsLink, optionsLink;
+   Anchor signOutLink, leaveLink, helpLink, documentsLink;
 
    @UiField(provided = true)
    TransUnitCountBar translationStatsBar;
@@ -67,7 +67,10 @@ public class AppView extends Composite implements AppPresenter.Display
    Label notificationMessage;
 
    @UiField
-   SpanElement user, selectedDocumentSpan, selectedDocumentPathSpan;
+   SpanElement selectedDocumentSpan, selectedDocumentPathSpan;
+
+   @UiField
+   Label user;
 
    @UiField
    LayoutPanel container, topPanel;
@@ -176,15 +179,10 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public HasClickHandlers getOptionsLink()
-   {
-      return optionsLink;
-   }
-
-   @Override
    public void setUserLabel(String userLabel)
    {
-      user.setInnerText(userLabel);
+      user.setText(userLabel);
+      user.setTitle("Username");
    }
 
    @Override
@@ -285,11 +283,5 @@ public class AppView extends Composite implements AppPresenter.Display
          translationStatsBar.setStats(projectStats);
          break;
       }
-   }
-
-   @Override
-   public Widget getOptionsLinkObject()
-   {
-      return optionsLink;
    }
 }

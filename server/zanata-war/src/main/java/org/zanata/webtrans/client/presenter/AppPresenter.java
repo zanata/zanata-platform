@@ -28,7 +28,6 @@ import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.Application;
-import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -42,8 +41,6 @@ import org.zanata.webtrans.client.presenter.AppPresenter.Display.MainView;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display.StatsType;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.ui.ShortcutConfigPanel;
-import org.zanata.webtrans.client.ui.UserOptionsPanel;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -61,7 +58,6 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -96,10 +92,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       HasClickHandlers getHelpLink();
 
       HasClickHandlers getDocumentsLink();
-
-      HasClickHandlers getOptionsLink();
-
-      Widget getOptionsLinkObject();
 
       void setUserLabel(String userLabel);
 
@@ -149,8 +141,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
    
-   private final UserOptionsPanel userOptionsPanel = new UserOptionsPanel(true, eventBus);
-
    @Inject
    public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
    {
@@ -246,15 +236,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             // As the editor was created at new window, it should be closed
             // rather than redirected to project home.
             // Application.redirectToZanataProjectHome(workspaceContext.getWorkspaceId());
-         }
-      }));
-
-      registerHandler(display.getOptionsLink().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            userOptionsPanel.toggleDisplay(display.getOptionsLinkObject());
          }
       }));
 

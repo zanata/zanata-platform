@@ -39,9 +39,6 @@ public interface Resources extends ClientBundle
    @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/downArrow.png")
    ImageResource downArrowButton();
 
-   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/leftArrow.png")
-   ImageResource leftArrowButton();
-
    @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/rightArrow.png")
    ImageResource rightArrowButton();
 

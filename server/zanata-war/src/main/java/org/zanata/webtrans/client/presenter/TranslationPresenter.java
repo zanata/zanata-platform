@@ -31,6 +31,7 @@ import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
 import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
@@ -44,6 +45,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -71,13 +73,9 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 
       void setSidePanelViewVisible(boolean visible);
 
-      HasClickHandlers getHideSidePanelViewButton();
-
-      HasClickHandlers getShowSidePanelViewButton();
-
-      void setShowSidePanelViewButtonVisible(boolean visible);
-
       void updateWorkspaceUsersTitle(String title);
+
+      ToggleButton getToogleOptionsButton();
    }
 
    private final DispatchAsync dispatcher;
@@ -88,10 +86,13 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private final GlossaryPresenter glossaryPresenter;
    private final WorkspaceUsersPresenter workspaceUsersPresenter;
 
+   private final WebTransMessages messages;
+
    @Inject
-   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final SidePanelPresenter sidePanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter)
+   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final SidePanelPresenter sidePanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages)
    {
       super(display, eventBus);
+      this.messages = messages;
       this.translationEditorPresenter = translationEditorPresenter;
       this.workspaceUsersPresenter = workspaceUsersPresenter;
       this.transMemoryPresenter = transMemoryPresenter;
@@ -167,30 +168,23 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       // Thus we load the translator list here.
       loadTranslatorList();
 
-      registerHandler(display.getHideSidePanelViewButton().addClickHandler(new ClickHandler()
+      registerHandler(display.getToogleOptionsButton().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
-            display.setSidePanelViewVisible(false);
-            // sidePanelPresenter.unbind();
-            // translationEditorPresenter.unbind();
-            display.setShowSidePanelViewButtonVisible(true);
+            if (display.getToogleOptionsButton().isDown())
+            {
+               display.setSidePanelViewVisible(true);
+               display.getToogleOptionsButton().setTitle(messages.showEditorOptions());
+            }
+            else
+            {
+               display.setSidePanelViewVisible(false);
+               display.getToogleOptionsButton().setTitle(messages.hideEditorOptions());
+            }
          }
       }));
-
-      display.setShowSidePanelViewButtonVisible(false);
-      display.getShowSidePanelViewButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            // sidePanelPresenter.bind();
-            // translationEditorPresenter.bind();
-            display.setSidePanelViewVisible(true);
-            display.setShowSidePanelViewButtonVisible(false);
-         }
-      });
 
       registerHandler(display.getHideSouthPanelButton().addClickHandler(new ClickHandler()
       {

@@ -45,7 +45,7 @@ import org.zanata.webtrans.client.presenter.TransUnitNavigationPresenter;
 import org.zanata.webtrans.client.presenter.TranslationEditorPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.presenter.UndoRedoPresenter;
-import org.zanata.webtrans.client.presenter.ValidationDetailsPresenter;
+import org.zanata.webtrans.client.presenter.ValidationOptionsPresenter;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -62,7 +62,7 @@ import org.zanata.webtrans.client.view.TransUnitNavigationView;
 import org.zanata.webtrans.client.view.TranslationEditorView;
 import org.zanata.webtrans.client.view.TranslationView;
 import org.zanata.webtrans.client.view.UndoRedoView;
-import org.zanata.webtrans.client.view.ValidationDetailsView;
+import org.zanata.webtrans.client.view.ValidationOptionsView;
 import org.zanata.webtrans.client.view.WorkspaceUsersView;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
@@ -97,7 +97,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(TransUnitNavigationPresenter.class, TransUnitNavigationPresenter.Display.class, TransUnitNavigationView.class);
       bindPresenter(SidePanelPresenter.class, SidePanelPresenter.Display.class, SidePanel.class);
       bindPresenter(TranslationEditorPresenter.class, TranslationEditorPresenter.Display.class, TranslationEditorView.class);
-      bindPresenter(ValidationDetailsPresenter.class, ValidationDetailsPresenter.Display.class, ValidationDetailsView.class);
+      bindPresenter(ValidationOptionsPresenter.class, ValidationOptionsPresenter.Display.class, ValidationOptionsView.class);
       bindPresenter(UndoRedoPresenter.class, UndoRedoPresenter.Display.class, UndoRedoView.class);
 
       bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);

@@ -25,7 +25,7 @@ import java.util.Map;
 import org.zanata.webtrans.client.presenter.TransUnitNavigationPresenter;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.Resources;
-import org.zanata.webtrans.client.ui.UserConfigConstants;
+import org.zanata.webtrans.client.ui.EditorConfigConstants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -70,10 +70,10 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
 
    public void setNavModeTooltip(Map<String, Boolean> configMap)
    {
-      if (configMap.containsKey(UserConfigConstants.BUTTON_FUZZY) && configMap.containsKey(UserConfigConstants.BUTTON_UNTRANSLATED))
+      if (configMap.containsKey(EditorConfigConstants.BUTTON_FUZZY) && configMap.containsKey(EditorConfigConstants.BUTTON_UNTRANSLATED))
       {
-         boolean fuzzyMode = configMap.get(UserConfigConstants.BUTTON_FUZZY);
-         boolean untranslatedMode = configMap.get(UserConfigConstants.BUTTON_UNTRANSLATED);
+         boolean fuzzyMode = configMap.get(EditorConfigConstants.BUTTON_FUZZY);
+         boolean untranslatedMode = configMap.get(EditorConfigConstants.BUTTON_UNTRANSLATED);
 
          if (fuzzyMode && !untranslatedMode)
          {

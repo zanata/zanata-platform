@@ -154,22 +154,6 @@ Removes some of the styling on the page-level splitters
 	color: white;
 }
 
-.gwt-StackLayoutPanel .gwt-StackLayoutPanelHeader {
-	cursor:pointer;
-	font-weight:bold;
-	font-size:13px;
-	padding:2px;
-	background:#4a75b5;
-	text-align:center;
-	color:#FFFFFF;
-}
-
-.gwt-StackLayoutPanel .gwt-StackLayoutPanelContent {
-	margin-left:3px;
-	margin-right:3px;
-	border:0px;
-}
-
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
 	cursor:pointer;
 	border-top-left-radius:5px;

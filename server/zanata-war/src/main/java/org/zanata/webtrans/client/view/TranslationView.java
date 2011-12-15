@@ -35,6 +35,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
+import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -58,6 +59,9 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    @UiField
    LayoutPanel editorContainer, sidePanelContainer;
 
+   @UiField
+   ToggleButton toogleOptionsButton;
+
    LayoutPanel tmPanel, userPanel;
 
    /*
@@ -69,11 +73,11 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    @UiField
    SplitLayoutPanel mainSplitPanel;
 
-   @UiField
-   Image sidePanelCollapse;
+   // @UiField
+   // Image sidePanelCollapse;
 
-   @UiField
-   Image sidePanelExpend;
+   // @UiField
+   // Image sidePanelExpend;
 
    @UiField
    Image southPanelMinimize;
@@ -103,11 +107,13 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       
       initWidget(uiBinder.createAndBindUi(this));
       southPanelMinimize.setVisible(true);
-      sidePanelCollapse.setVisible(true);
+      // sidePanelCollapse.setVisible(true);
       mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) panelWidth);
       mainSplitPanel.setWidgetMinSize(southPanelContainer, (int) southHeight);
 
-      sidePanelExpend.setTitle(messages.showTranslationDetailsPanel());
+      toogleOptionsButton.setText("Options");
+      toogleOptionsButton.setTitle(messages.showEditorOptions());
+      toogleOptionsButton.setDown(true);
 
       southPanelTab.add(tmPanel, "Translation Memory");
       if (!disableGlossary)
@@ -144,25 +150,6 @@ public class TranslationView extends Composite implements TranslationPresenter.D
          glossaryPanel.clear();
          glossaryPanel.add(glossaryView);
       }
-   }
-
-   @Override
-   public HasClickHandlers getHideSidePanelViewButton()
-   {
-      return sidePanelCollapse;
-   }
-
-   @Override
-   public HasClickHandlers getShowSidePanelViewButton()
-   {
-      return sidePanelExpend;
-   }
-
-   @Override
-   public void setShowSidePanelViewButtonVisible(boolean visible)
-   {
-      sidePanelExpend.setVisible(visible);
-      sidePanelCollapse.setVisible(!visible);
    }
 
    @Override
@@ -220,6 +207,12 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       splitter.setVisible(visible);
       mainSplitPanel.animate(200);
 
+   }
+
+   @Override
+   public ToggleButton getToogleOptionsButton()
+   {
+      return toogleOptionsButton;
    }
 
    @Override

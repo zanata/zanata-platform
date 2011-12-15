@@ -10,17 +10,20 @@
 	<ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources"/>
 	
 	<ui:style>
-		.header {
-			background-color: #ffffff;
+	
+		.topPanel-Navigation {
+
 		}
 		
-		.topPanel-Navigation {
-			float: right;
-			color: #0203ad;
-		}
 		.topPanel-Navigation a {
 			text-decoration: none;
 		}
+		
+		.topPanel-Navigation td {
+            border-right:1px solid #e0e0e0; 
+            padding-right:10px;
+            padding-left:10px;
+        }
 
 		.topPanel-Workspace {
 			font-size: 1.2em;
@@ -54,35 +57,46 @@
 		
 		.divider {
 			color: #e0e0e0;	
+			padding-left:3px;
+			padding-right:3px;
 		}
+		
+		.logo {
+	       margin-left:6px;
+        }
+        
+        .topPanel-right-menu {
+	       margin-right:6px;
+        }
 		
 	</ui:style>
 	<g:LayoutPanel>
-		<g:layer top="0px" height="25px">
-			<g:LayoutPanel styleName="{style.header}">
-				<g:layer top="5px" left="6px" width="18px" height="18px">
-					<g:Image resource="{resources.logo}"/>
-				</g:layer>
-				<g:layer top="5px" height="100%" left="25px" right="6px">
-					<g:FlowPanel>
-						<g:HTMLPanel styleName="{style.topPanel-Navigation}">
-							<nobr>
-								<span ui:field="user" class="{style.userName}"><ui:msg>User Name</ui:msg></span>
-								<span class="{style.divider}">|</span>
-								<g:Anchor href="#" ui:field="helpLink"><ui:msg>Help</ui:msg></g:Anchor>
-								<span class="{style.divider}">|</span>
-								<g:Anchor href="#" ui:field="optionsLink"><ui:msg>Options</ui:msg></g:Anchor>
-								<span class="{style.divider}">|</span>
-								<g:Anchor href="#" ui:field="leaveLink"><ui:msg>Leave Workspace</ui:msg></g:Anchor>
-								<span class="{style.divider}">|</span>
-								<g:Anchor href="#" ui:field="signOutLink"><ui:msg>Sign Out</ui:msg></g:Anchor>
-							</nobr>
-						</g:HTMLPanel>
-					</g:FlowPanel>
-				</g:layer>
-			</g:LayoutPanel>
+		<g:layer top="5px" height="28px">
+		    <g:HorizontalPanel width="100%">
+		      <g:cell horizontalAlignment="ALIGN_LEFT">
+		          <g:Image resource="{resources.logo}" styleName="{style.logo}"/>
+		      </g:cell>
+		       <g:cell horizontalAlignment="ALIGN_RIGHT">
+                    <g:FlowPanel styleName="{style.topPanel-right-menu}">
+                        <g:HorizontalPanel styleName="{style.topPanel-Navigation}">
+                                 <g:cell horizontalAlignment="ALIGN_CENTER">
+                                    <g:Label ui:field="user" styleName="{style.userName}"/>
+                                 </g:cell>
+                                 <g:cell horizontalAlignment="ALIGN_CENTER">
+                                    <g:Anchor href="#" ui:field="helpLink"><ui:msg>Help</ui:msg></g:Anchor>
+                                 </g:cell>
+                                 <g:cell horizontalAlignment="ALIGN_CENTER">
+                                    <g:Anchor href="#" ui:field="leaveLink"><ui:msg>Leave Workspace</ui:msg></g:Anchor>
+                                 </g:cell>
+                                 <g:cell horizontalAlignment="ALIGN_CENTER">
+                                    <g:Anchor href="#" ui:field="signOutLink"><ui:msg>Sign Out</ui:msg></g:Anchor>
+                                 </g:cell>
+                        </g:HorizontalPanel>
+                    </g:FlowPanel>
+              </g:cell>
+		    </g:HorizontalPanel>
 		</g:layer>
-		<g:layer top="25px" height="28px">
+		<g:layer top="28px" height="28px">
 		<g:LayoutPanel ui:field='topPanel' styleName="{resources.style.banner}">
 			<g:layer left="0px" right="520px">
 			<g:HorizontalPanel width="100%">
@@ -102,8 +116,8 @@
 				</g:FlowPanel>
 			</g:HorizontalPanel>
 			</g:layer>
-			<g:layer right="7px" width="200px">
-			    <fui:TransUnitCountBar ui:field="translationStatsBar" styleName="{style.translationStats}"/>
+			<g:layer right="7px" width="200px">	      
+			      <fui:TransUnitCountBar ui:field="translationStatsBar" styleName="{style.translationStats}"/>
 			</g:layer>
 		</g:LayoutPanel>
 		</g:layer>

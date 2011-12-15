@@ -34,10 +34,9 @@
 							<g:LayoutPanel ui:field="editorContainer" />
 						</g:layer>
 
-						<g:layer height="16px" width="16px" right="4px" top="6px">
+						<g:layer height="100%" width="60px" right="5px" top="2px">
 							<g:FlowPanel>
-								<g:Image resource="{resources.leftArrowButton}"
-									ui:field="sidePanelExpend" styleName="{style.imageButton}" />
+							    <g:ToggleButton ui:field="toogleOptionsButton"/>
 							</g:FlowPanel>
 						</g:layer>
 					</g:LayoutPanel>
@@ -46,10 +45,6 @@
 					<g:LayoutPanel ui:field="sidePanelOuterContainer">
 						<g:layer top="0px" bottom="0px">
 							<g:LayoutPanel ui:field="sidePanelContainer" />
-						</g:layer>
-						<g:layer right="3px" top="4px" width="15px" height="15px">
-							<g:Image resource="{resources.minimizeButton}" ui:field="sidePanelCollapse"
-								styleName="{style.imageButton}" />
 						</g:layer>
 					</g:LayoutPanel>
 				</g:east>

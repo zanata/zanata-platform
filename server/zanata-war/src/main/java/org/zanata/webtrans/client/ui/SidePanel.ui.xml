@@ -11,19 +11,17 @@
 			border-radius: 5px;
 		}
 		
-		.mainPanel {
-	       font-size:13px;
-	       font-weight:bold;
-	       text-align:center;
-	       cursor:pointer;
-           padding:3px;
-        }
-		
 	</ui:style>
-	<g:LayoutPanel styleName="{style.sidePanel}">
-	   <g:layer top="0" bottom="0">
-	       <g:StackLayoutPanel ui:field="mainPanel"/>
-	    </g:layer>
-    </g:LayoutPanel>
+	
+	
+	       <g:SplitLayoutPanel ui:field="mainPanel" styleName="{style.sidePanel}">
+	           <g:center size="200" min-height="20px">
+                   <g:LayoutPanel ui:field="editorOptionsContainer"/>
+               </g:center>
+	           <g:south size="200" min-height="20px">
+	               <g:LayoutPanel ui:field="validationOptionsContainer"/>
+	           </g:south>
+	       </g:SplitLayoutPanel>
+
 
 </ui:UiBinder> 

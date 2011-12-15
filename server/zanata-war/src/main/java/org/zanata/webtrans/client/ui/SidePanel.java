@@ -28,7 +28,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.StackLayoutPanel;
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -37,38 +37,39 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display
 
    private static SidePanelUiBinder uiBinder = GWT.create(SidePanelUiBinder.class);
 
-   interface SidePanelUiBinder extends UiBinder<LayoutPanel, SidePanel>
+   interface SidePanelUiBinder extends UiBinder<SplitLayoutPanel, SidePanel>
    {
    }
 
-   private final LayoutPanel validationDetailContainer;
-
+   @UiField
+   SplitLayoutPanel mainPanel;
 
    @UiField
-   StackLayoutPanel mainPanel;
+   LayoutPanel validationOptionsContainer;
 
-   private final LayoutPanel rootPanel;
+   @UiField
+   LayoutPanel editorOptionsContainer;
 
-   private final WebTransMessages messages;
+
 
    @Inject
    public SidePanel(WebTransMessages messages)
    {
-      validationDetailContainer = new LayoutPanel();
-
-      this.messages = messages;
-
-      rootPanel = uiBinder.createAndBindUi(this);
-      initWidget(rootPanel);
-
-      mainPanel.add(validationDetailContainer, messages.validationDetailsHeading(), 20);
+      initWidget(uiBinder.createAndBindUi(this));
    }
 
    @Override
-   public void setValidationDetailView(Widget widget)
+   public void setValidationOptionsView(Widget widget)
    {
-      validationDetailContainer.clear();
-      validationDetailContainer.add(widget);
+      validationOptionsContainer.clear();
+      validationOptionsContainer.add(widget);
+   }
+
+   @Override
+   public void setEditorOptionsPanel(Widget widget)
+   {
+      editorOptionsContainer.clear();
+      editorOptionsContainer.add(widget);
    }
 
    @Override
@@ -76,5 +77,8 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display
    {
       return this;
    }
+
+
+
 
 }

@@ -39,7 +39,7 @@ import com.google.inject.Inject;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class ValidationDetailsPresenter extends WidgetPresenter<ValidationDetailsPresenter.Display>
+public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsPresenter.Display>
 {
    public interface Display extends WidgetDisplay
    {
@@ -49,7 +49,7 @@ public class ValidationDetailsPresenter extends WidgetPresenter<ValidationDetail
    }
 
    @Inject
-   public ValidationDetailsPresenter(Display display, EventBus eventBus)
+   public ValidationOptionsPresenter(Display display, EventBus eventBus)
    {
       super(display, eventBus);
    }

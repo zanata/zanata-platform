@@ -27,6 +27,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.ui.EditorOptionsPanel;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -35,25 +36,31 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
 {
    public interface Display extends WidgetDisplay
    {
-      void setValidationDetailView(Widget widget);
+      void setValidationOptionsView(Widget widget);
+
+      void setEditorOptionsPanel(Widget widget);
    }
 
    private final DispatchAsync dispatcher;
-   private final ValidationDetailsPresenter validationDetailsPresenter;
+   private final ValidationOptionsPresenter validationOptionsPresenter;
+   private final EditorOptionsPanel editorOptionsPanel;
    
    @Inject
-   public SidePanelPresenter(final Display display, final EventBus eventBus, CachingDispatchAsync dispatcher, final ValidationDetailsPresenter validationDetailsPresenter, final TransFilterPresenter transFilterPresenter)
+   public SidePanelPresenter(final Display display, final EventBus eventBus, CachingDispatchAsync dispatcher, final ValidationOptionsPresenter validationDetailsPresenter, final TransFilterPresenter transFilterPresenter)
    {
       super(display, eventBus);
-      this.validationDetailsPresenter = validationDetailsPresenter;
+      this.editorOptionsPanel = new EditorOptionsPanel(eventBus);
+      this.validationOptionsPresenter = validationDetailsPresenter;
       this.dispatcher = dispatcher;
    }
 
    @Override
    protected void onBind()
    {
-      validationDetailsPresenter.bind();
-      display.setValidationDetailView(validationDetailsPresenter.getDisplay().asWidget());
+      validationOptionsPresenter.bind();
+      display.setValidationOptionsView(validationOptionsPresenter.getDisplay().asWidget());
+
+      display.setEditorOptionsPanel(editorOptionsPanel);
    }
 
 
