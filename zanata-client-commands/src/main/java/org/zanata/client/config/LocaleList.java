@@ -9,21 +9,34 @@ import java.util.ListIterator;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.zanata.rest.dto.DTOUtil;
-
 
 @XmlRootElement(name = "locales")
 @XmlType(name = "localesType")
 public class LocaleList implements List<LocaleMapping>
 {
-   // private String mapping;
-
    private final List<LocaleMapping> locales = new ArrayList<LocaleMapping>();
 
    @Override
    public String toString()
    {
-      return DTOUtil.toXML(this);
+      StringBuilder sb = new StringBuilder();
+      sb.append('[');
+      for (Iterator<LocaleMapping> iter = locales.iterator(); iter.hasNext();)
+      {
+         LocaleMapping loc = iter.next();
+         sb.append(loc.getLocale());
+         String localLocale = loc.getLocalLocale();
+         if (!localLocale.equals(loc.getLocale()))
+         {
+            sb.append('(');
+            sb.append(localLocale);
+            sb.append(')');
+         }
+         if (iter.hasNext())
+            sb.append(", ");
+      }
+      sb.append(']');
+      return sb.toString();
    }
 
    /**

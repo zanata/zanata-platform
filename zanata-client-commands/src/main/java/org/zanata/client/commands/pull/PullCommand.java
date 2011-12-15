@@ -1,5 +1,6 @@
 package org.zanata.client.commands.pull;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +22,6 @@ import org.zanata.rest.client.ClientUtility;
 import org.zanata.rest.client.ITranslationResources;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
@@ -85,6 +85,7 @@ public class PullCommand extends PushPullCommand<PullOptions>
             }
          }
       }
+      log.info("Locales to pull: {}", getOpts().getLocales());
       if (getOpts().getPullSrc())
       {
          log.info("Pulling source and target (translation) documents");
@@ -107,56 +108,47 @@ public class PullCommand extends PushPullCommand<PullOptions>
    {
       logOptions();
 
-      if (getOpts().getEnableModules() && !getOpts().isDryRun())
-         throw new RuntimeException("module support not implemented");
+      LocaleList locales = getOpts().getLocales();
+      if (locales == null)
+         throw new ConfigException("no locales specified");
+      PullStrategy strat = getStrategy(getOpts().getProjectType());
+      List<String> docNamesForModule = getQualifiedDocNamesForCurrentModuleFromServer();
+
+      // TODO compare docNamesForModule with localDocNames, offer to delete obsolete translations from filesystem
+      if (docNamesForModule.isEmpty())
+      {
+         log.info("No documents in remote module: {}; nothing to do", getOpts().getCurrentModule());
+         return;
+      }
+      log.info("Pulling {} docs for this module from the server", docNamesForModule.size());
+      log.debug("Doc names: {}", docNamesForModule);
 
       if (getOpts().getPullSrc())
       {
-         log.warn("pullSrc option is set: existing source-language files may be overwritten/deleted");
+         log.warn("The pullSrc option is set: existing source-language files may be overwritten/deleted");
          confirmWithUser("This will overwrite/delete any existing documents and translations in the above directories.\n");
       }
       else
       {
          confirmWithUser("This will overwrite/delete any existing translations in the above directory.\n");
       }
-      PullStrategy strat = getStrategy(getOpts().getProjectType());
 
-      LocaleList locales = getOpts().getLocales();
-      if (locales == null)
-         throw new ConfigException("no locales specified");
-
-      ClientResponse<List<ResourceMeta>> listResponse = translationResources.get(null);
-      ClientUtility.checkResult(listResponse, uri);
-      List<ResourceMeta> resourceMetaList = listResponse.getEntity();
-      for (ResourceMeta resourceMeta : resourceMetaList)
+      for (String qualifiedDocName : docNamesForModule)
       {
          Resource doc = null;
-         String qualifiedDocName = resourceMeta.getName();
-         if (!belongsToCurrentModule(qualifiedDocName))
-         {
-            log.debug("skipping extra-modular document: {}", qualifiedDocName);
-            continue;
-         }
          String localDocName = unqualifiedDocName(qualifiedDocName);
-         // TODO follow a Link
+         // TODO follow a Link instead of generating the URI
          String docUri = RestUtil.convertToDocumentURIId(qualifiedDocName);
          if (strat.needsDocToWriteTrans() || getOpts().getPullSrc())
          {
             ClientResponse<Resource> resourceResponse = translationResources.getResource(docUri, strat.getExtensions());
             ClientUtility.checkResult(resourceResponse, uri);
             doc = resourceResponse.getEntity();
+            doc.setName(localDocName);
          }
          if (getOpts().getPullSrc())
          {
-            if (!getOpts().isDryRun())
-            {
-               log.info("writing source file for document {}", localDocName);
-               strat.writeSrcFile(doc);
-            }
-            else
-            {
-               log.info("writing source file for document {} (skipped due to dry run)", localDocName);
-            }
+            writeSrcDoc(strat, doc);
          }
 
          for (LocaleMapping locMapping : locales)
@@ -167,24 +159,42 @@ public class PullCommand extends PushPullCommand<PullOptions>
             // ignore 404 (no translation yet for specified document)
             if (transResponse.getResponseStatus() == Response.Status.NOT_FOUND)
             {
-               log.info("no translations found in locale {} for document {}", locale, localDocName);
+               log.info("No translations found in locale {} for document {}", locale, localDocName);
                continue;
             }
             ClientUtility.checkResult(transResponse, uri);
             TranslationsResource targetDoc = transResponse.getEntity();
 
-            if (!getOpts().isDryRun())
-            {
-               log.info("writing translation file in locale {} for document {}", locMapping.getLocalLocale(), localDocName);
-               strat.writeTransFile(doc, localDocName, locMapping, targetDoc);
-            }
-            else
-            {
-               log.info("writing translation file in locale {} for document {} (skipped due to dry run)", locMapping.getLocalLocale(), localDocName);
-            }
+            writeTargetDoc(strat, localDocName, locMapping, doc, targetDoc);
          }
       }
 
+   }
+
+   private void writeSrcDoc(PullStrategy strat, Resource doc) throws IOException
+   {
+      if (!getOpts().isDryRun())
+      {
+         log.info("Writing source file for document {}", doc.getName());
+         strat.writeSrcFile(doc);
+      }
+      else
+      {
+         log.info("Writing source file for document {} (skipped due to dry run)", doc.getName());
+      }
+   }
+
+   private void writeTargetDoc(PullStrategy strat, String localDocName, LocaleMapping locMapping, Resource doc, TranslationsResource targetDoc) throws IOException
+   {
+      if (!getOpts().isDryRun())
+      {
+         log.info("Writing translation file in locale {} for document {}", locMapping.getLocalLocale(), localDocName);
+         strat.writeTransFile(doc, localDocName, locMapping, targetDoc);
+      }
+      else
+      {
+         log.info("Writing translation file in locale {} for document {} (skipped due to dry run)", locMapping.getLocalLocale(), localDocName);
+      }
    }
 
 }
