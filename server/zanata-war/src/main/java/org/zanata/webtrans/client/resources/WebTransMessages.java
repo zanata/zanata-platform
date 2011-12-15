@@ -80,6 +80,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Translation Unit Details")
    String transUnitDetailsHeading();
 
+   @DefaultMessage("Translation Memory")
+   String translationMemoryHeading();
+
    @DefaultMessage("Validation Details")
    String validationDetailsHeading();
 

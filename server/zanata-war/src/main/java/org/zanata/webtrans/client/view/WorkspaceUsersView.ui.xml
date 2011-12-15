@@ -5,14 +5,19 @@
     <ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources"/>
 
     <ui:style>
-
+        .userListTable td{
+	       border-bottom: 1px solid #99ccff;
+	       padding-top: 5px;
+	       padding-left: 5px;
+	       width:100%;
+        }
         
     </ui:style>
 
     <g:LayoutPanel>
         <g:layer top='0px' bottom='0px'>
             <g:ScrollPanel>
-                <g:FlowPanel ui:field='userListPanel' />
+                <g:VerticalPanel ui:field='userListPanel' styleName="{style.userListTable}" width="100%" />
             </g:ScrollPanel>
         </g:layer>
     </g:LayoutPanel>

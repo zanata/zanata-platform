@@ -4,15 +4,15 @@ import java.util.ArrayList;
 
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.ui.UserListItem;
 import org.zanata.webtrans.shared.model.Person;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -26,7 +26,7 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    }
 
    @UiField
-   FlowPanel userListPanel;
+   VerticalPanel userListPanel;
 
    private final WebTransMessages messages;
 
@@ -54,7 +54,7 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
 
       for (int i = 0; i < userList.size(); i++)
       {
-         UserListItem item = new UserListItem(userList.get(i));
+         Label item = new Label(userList.get(i).getName());
          userListPanel.add(item);
       }
 

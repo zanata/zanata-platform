@@ -23,9 +23,9 @@ package org.zanata.webtrans.client.view;
 import java.util.Map;
 
 import org.zanata.webtrans.client.presenter.TransUnitNavigationPresenter;
+import org.zanata.webtrans.client.resources.EditorConfigConstants;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.Resources;
-import org.zanata.webtrans.client.ui.EditorConfigConstants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;

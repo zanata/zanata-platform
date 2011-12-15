@@ -73,12 +73,6 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    @UiField
    SplitLayoutPanel mainSplitPanel;
 
-   // @UiField
-   // Image sidePanelCollapse;
-
-   // @UiField
-   // Image sidePanelExpend;
-
    @UiField
    Image southPanelMinimize;
 
@@ -107,18 +101,17 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       
       initWidget(uiBinder.createAndBindUi(this));
       southPanelMinimize.setVisible(true);
-      // sidePanelCollapse.setVisible(true);
       mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) panelWidth);
       mainSplitPanel.setWidgetMinSize(southPanelContainer, (int) southHeight);
 
       toogleOptionsButton.setText(messages.showEditorOptionsLabel());
-      toogleOptionsButton.setTitle(messages.showEditorOptions());
+      toogleOptionsButton.setTitle(messages.hideEditorOptions());
       toogleOptionsButton.setDown(true);
 
-      southPanelTab.add(tmPanel, "Translation Memory");
+      southPanelTab.add(tmPanel, messages.translationMemoryHeading());
       if (!disableGlossary)
       {
-         southPanelTab.add(glossaryPanel, "glossary");
+         southPanelTab.add(glossaryPanel, "Glossary");
       }
       southPanelTab.add(userPanel, messages.nUsersOnline(0));
    }
@@ -140,8 +133,6 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    /*
     * TODO: temporary disable glossary functionalities
     */
-
-
    @Override
    public void setGlossaryView(Widget glossaryView)
    {

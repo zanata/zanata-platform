@@ -27,6 +27,7 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.resources.EditorConfigConstants;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
