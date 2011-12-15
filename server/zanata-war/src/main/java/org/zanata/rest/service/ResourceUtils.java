@@ -82,7 +82,7 @@ public class ResourceUtils
    
    private static final String   PO_DATE_FORMAT = "yyyy-MM-dd hh:mmZ";
    
-   private static final String[] PO_VALID_CONTENT_TYPES = {"charset=UTF-8", "charset=utf-8", "charset=ASCII"};
+   private static final String[] PO_VALID_CONTENT_TYPES = {"charset=UTF-8", "charset=UTF8", "charset=ASCII", "charset=CHARSET"};
 
    
    /**
@@ -1173,7 +1173,8 @@ public class ResourceUtils
             {
                for( String acceptedContentType : PO_VALID_CONTENT_TYPES )
                {
-                  if( entry.getValue().contains( acceptedContentType ) )
+                  // Case-insensitive check
+                  if( entry.getValue().toLowerCase().contains( acceptedContentType.toLowerCase() ) )
                   {
                      return true;
                   }
