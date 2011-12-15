@@ -3,7 +3,7 @@ package org.zanata.util;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class TestShortString
 {
