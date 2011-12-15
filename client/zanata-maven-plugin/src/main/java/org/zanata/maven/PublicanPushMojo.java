@@ -10,12 +10,13 @@ import org.zanata.client.commands.PublicanPushOptions;
  * translated. DEPRECATED: please use generic "push" goal.
  * 
  * @goal publican-push
- * @requiresProject true
+ * @requiresProject false
+ * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  * @deprecated
  * @see PushMojo
  */
-public class PublicanPushMojo extends ConfigurableProjectMojo implements PublicanPushOptions
+public class PublicanPushMojo extends ConfigurableProjectMojo<PublicanPushOptions> implements PublicanPushOptions
 {
 
    public PublicanPushMojo() throws Exception

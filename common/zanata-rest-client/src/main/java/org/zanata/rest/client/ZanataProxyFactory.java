@@ -61,7 +61,9 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
    public <T> T createProxy(Class<T> clazz, URI baseUri)
    {
       log.debug("{} proxy uri: {}", clazz.getSimpleName(), baseUri);
-      return crf.createProxy(clazz, baseUri);
+      T proxy = crf.createProxy(clazz, baseUri);
+      //      CacheFactory.makeCacheable(proxy);
+      return proxy;
    }
 
    private static URI fixBase(URI base)

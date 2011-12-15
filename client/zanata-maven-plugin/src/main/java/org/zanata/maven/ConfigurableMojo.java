@@ -8,6 +8,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.client.commands.ConfigurableCommand;
 import org.zanata.client.commands.ConfigurableOptions;
 import org.zanata.client.commands.OptionsUtil;
 import org.zanata.client.commands.ZanataCommand;
@@ -21,7 +22,7 @@ import com.pyx4j.log4j.MavenLogAppender;
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 
  */
-public abstract class ConfigurableMojo extends AbstractMojo implements ConfigurableOptions
+public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends AbstractMojo implements ConfigurableOptions
 {
    private static final Logger log = LoggerFactory.getLogger(ConfigurableMojo.class);
 
@@ -119,8 +120,7 @@ public abstract class ConfigurableMojo extends AbstractMojo implements Configura
       try
       {
          OptionsUtil.applyConfigFiles(this);
-         ZanataCommand command = initCommand();
-         command.run();
+         runCommand();
       }
       catch (Exception e)
       {
@@ -132,7 +132,13 @@ public abstract class ConfigurableMojo extends AbstractMojo implements Configura
       }
    }
 
-   public abstract ZanataCommand initCommand();
+   protected void runCommand() throws Exception
+   {
+      ZanataCommand command = initCommand();
+      command.run();
+   }
+
+   public abstract ConfigurableCommand<O> initCommand();
 
    // These options don't apply to Mojos (since they duplicate Maven's built-in
    // mechanisms)

@@ -1,8 +1,6 @@
 package org.zanata.rest.service;
 
 
-import java.net.URI;
-
 import javax.ws.rs.core.MediaType;
 
 import org.dbunit.operation.DatabaseOperation;
@@ -13,13 +11,11 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDBUnitSeamTest;
 import org.zanata.rest.client.ITranslationResources;
-import org.zanata.rest.dto.VersionInfo;
+import org.zanata.rest.client.TestProxyFactory;
 
 @Test(groups = { "seam-tests" })
 public abstract class ResourceTranslationServiceSeamTest extends ZanataDBUnitSeamTest
 {
-   private static final String AUTH_KEY = "b6d7044e9ee3b2447c28fb7c50d86d98";
-   private static final String USERNAME = "admin";
    private static final String DOCUMENTS_DATA_DBUNIT_XML = "org/zanata/test/model/DocumentsData.dbunit.xml";
    private static final String LOCALE_DATA_DBUNIT_XML = "META-INF/testdata/LocalesData.dbunit.xml";
    private static final String PROJECTS_DATA_DBUNIT_XML = "org/zanata/test/model/ProjectsData.dbunit.xml";
@@ -47,7 +43,7 @@ public abstract class ResourceTranslationServiceSeamTest extends ZanataDBUnitSea
    @BeforeMethod
    public void setup() throws Exception
    {
-      TestProxyFactory clientRequestFactory = new TestProxyFactory(new URI("http://example.com/"), USERNAME, AUTH_KEY, new SeamMockClientExecutor(this), new VersionInfo("SNAPSHOT", ""));
+      TestProxyFactory clientRequestFactory = new TestProxyFactory(new SeamMockClientExecutor(this));
       clientRequestFactory.registerPrefixInterceptor(new MetaTypeAccept());
       translationResource = clientRequestFactory.getTranslationResources(projectSlug, iter);
    }

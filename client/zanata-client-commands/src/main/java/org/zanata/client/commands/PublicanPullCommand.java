@@ -29,18 +29,16 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  * @deprecated
  * @see org.zanata.client.commands.pull.PullCommand
  */
-public class PublicanPullCommand extends ConfigurableProjectCommand
+public class PublicanPullCommand extends ConfigurableProjectCommand<PublicanPullOptions>
 {
    private static final Logger log = LoggerFactory.getLogger(PublicanPullCommand.class);
 
-   private final PublicanPullOptions opts;
    private final ITranslationResources translationResources;
    private final URI uri;
 
    public PublicanPullCommand(PublicanPullOptions opts, ZanataProxyFactory factory, ITranslationResources translationResources, URI uri)
    {
       super(opts, factory);
-      this.opts = opts;
       this.translationResources = translationResources;
       this.uri = uri;
    }
@@ -64,22 +62,22 @@ public class PublicanPullCommand extends ConfigurableProjectCommand
    @Override
    public void run() throws Exception
    {
-      log.info("Server: {}", opts.getUrl());
-      log.info("Project: {}", opts.getProj());
-      log.info("Version: {}", opts.getProjectVersion());
-      log.info("Username: {}", opts.getUsername());
-      if (opts.getExportPot())
+      log.info("Server: {}", getOpts().getUrl());
+      log.info("Project: {}", getOpts().getProj());
+      log.info("Version: {}", getOpts().getProjectVersion());
+      log.info("Username: {}", getOpts().getUsername());
+      if (getOpts().getExportPot())
       {
          log.info("Exporting source and target (translation) documents");
-         log.info("POT directory (originals): {}", opts.getDstDirPot());
+         log.info("POT directory (originals): {}", getOpts().getDstDirPot());
       }
       else
       {
          log.info("Exporting target documents (translations) only");
       }
-      log.info("PO base directory (translations): {}", opts.getDstDir());
+      log.info("PO base directory (translations): {}", getOpts().getDstDir());
 
-      LocaleList locales = opts.getLocales();
+      LocaleList locales = getOpts().getLocales();
       if (locales == null)
          throw new ConfigException("no locales specified");
       PoWriter2 poWriter = new PoWriter2();
@@ -96,10 +94,10 @@ public class PublicanPullCommand extends ConfigurableProjectCommand
          ClientResponse<Resource> resourceResponse = translationResources.getResource(docUri, extensions);
          ClientUtility.checkResult(resourceResponse, uri);
          Resource doc = resourceResponse.getEntity();
-         if (opts.getExportPot())
+         if (getOpts().getExportPot())
          {
             log.info("writing POT for document {}", docName);
-            poWriter.writePotToDir(opts.getDstDirPot(), doc);
+            poWriter.writePotToDir(getOpts().getDstDirPot(), doc);
          }
 
          for (LocaleMapping locMapping : locales)
@@ -118,7 +116,7 @@ public class PublicanPullCommand extends ConfigurableProjectCommand
 
             String localeDir = locMapping.getLocalLocale();
             log.info("writing PO translations in locale {} for document {}", locale, docName);
-            poWriter.writePo(opts.getDstDir(), doc, localeDir, targetDoc);
+            poWriter.writePo(getOpts().getDstDir(), doc, localeDir, targetDoc);
          }
       }
 

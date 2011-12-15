@@ -8,9 +8,10 @@ import org.zanata.client.commands.PutVersionOptions;
  * 
  * @goal putversion
  * @requiresProject false
+ * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class PutVersionMojo extends ConfigurableMojo implements PutVersionOptions
+public class PutVersionMojo extends ConfigurableMojo<PutVersionOptions> implements PutVersionOptions
 {
 
    /**

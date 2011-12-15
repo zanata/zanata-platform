@@ -56,12 +56,16 @@
 	</build>
 
   <dependencies>
-        <dependency>
-	      <groupId>junit</groupId>
-    	  <artifactId>junit</artifactId>
-     	  <scope>test</scope>
-        </dependency>
-
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.zanata</groupId>
 			<artifactId>zanata-common-api</artifactId>
