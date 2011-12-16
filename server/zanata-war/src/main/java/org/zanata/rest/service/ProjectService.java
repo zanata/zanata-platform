@@ -166,8 +166,6 @@ public class ProjectService implements ProjectResource
       }
 
       transfer(project, hProject);
-      // TODO Move this to an MessageBodyReaderInterceptor
-      RestUtils.validateEntity(hProject);
 
       hProject = projectDAO.makePersistent(hProject);
       projectDAO.flush();

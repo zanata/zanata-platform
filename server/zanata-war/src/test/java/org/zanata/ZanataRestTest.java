@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.core.executors.InMemoryClientExecutor;
@@ -15,6 +16,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.zanata.rest.AuthorizationExceptionMapper;
 import org.zanata.rest.HibernateExceptionMapper;
+import org.zanata.rest.HibernateValidationInterceptor;
 import org.zanata.rest.InvalidStateExceptionMapper;
 import org.zanata.rest.NoSuchEntityExceptionMapper;
 import org.zanata.rest.NotLoggedInExceptionMapper;
@@ -27,6 +29,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest
    private ClientRequestFactory clientRequestFactory;
    protected final Set<Class<? extends ExceptionMapper<? extends Throwable>>> exceptionMappers = new HashSet<Class<? extends ExceptionMapper<? extends Throwable>>>();
    protected final Set<Object> resources = new HashSet<Object>();
+   protected final Set<Class<?>> providers = new HashSet<Class<?>>();
 
    @BeforeMethod
    public final void prepareRestEasyFramework()
@@ -35,6 +38,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest
       Dispatcher dispatcher = MockDispatcherFactory.createDispatcher();
       prepareResources();
       prepareExceptionMappers();
+      prepareProviders();
 
       for (Object obj : resources)
       {
@@ -47,6 +51,13 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest
       {
          dispatcher.getProviderFactory().addExceptionMapper(mapper);
       }
+      
+      // register Providers
+      for(Class<?> provider: providers)
+      {
+         dispatcher.getProviderFactory().registerProvider(provider);
+      }
+      
       InMemoryClientExecutor executor = new InMemoryClientExecutor(dispatcher);
       executor.setBaseUri(MOCK_BASE_URI);
       clientRequestFactory = new ClientRequestFactory(executor, MOCK_BASE_URI);
@@ -58,6 +69,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest
    {
       exceptionMappers.clear();
       resources.clear();
+      providers.clear();
    }
 
    /**
@@ -77,6 +89,16 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest
       exceptionMappers.add(InvalidStateExceptionMapper.class);
       exceptionMappers.add(NoSuchEntityExceptionMapper.class);
       exceptionMappers.add(NotLoggedInExceptionMapper.class);
+   }
+   
+   /**
+    * Override this method to add custom server-side Providers for the test.
+    * Note: Provider classes should be annotated with the {@link Provider} and any other
+    * relevant annotations. 
+    */
+   protected void prepareProviders()
+   {
+      providers.add(HibernateValidationInterceptor.class);
    }
 
    /**
