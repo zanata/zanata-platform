@@ -32,8 +32,8 @@ public class PropReaderTests
    private static final Logger log = LoggerFactory.getLogger(PropReaderTests.class);
    private static final String TEST_OUTPUT_DIR_STRING = "target/test-output";
    private static final File TEST_OUTPUT_DIR = new File(TEST_OUTPUT_DIR_STRING);
-
    PropReader propReader;
+   static final String ISO_8859_1 = "ISO-8859-1";
 
    @BeforeMethod
    public void resetReader()
@@ -45,7 +45,6 @@ public class PropReaderTests
    public void roundtripSrcPropsToDocXmlToProps() throws Exception
    {
       String docName = "test.properties";
-
       Resource srcDoc = new Resource("test");
       InputStream testStream = getResourceAsStream(docName);
 
@@ -60,7 +59,7 @@ public class PropReaderTests
       Unmarshaller unmarshal = jc.createUnmarshaller();
       Resource docIn = (Resource) unmarshal.unmarshal(new StringReader(sw.toString()));
 
-      PropWriter.write(docIn, TEST_OUTPUT_DIR);
+      PropWriter.write(docIn, TEST_OUTPUT_DIR, ISO_8859_1);
 
       assertInputAndOutputDocContentSame(docName);
    }
@@ -84,8 +83,8 @@ public class PropReaderTests
       Unmarshaller unmarshal = jc.createUnmarshaller();
       TranslationsResource docIn = (TranslationsResource) unmarshal.unmarshal(new StringReader(sw.toString()));
 
-      PropWriter.write(docIn, TEST_OUTPUT_DIR, "test", locale);
-      
+      PropWriter.write(docIn, TEST_OUTPUT_DIR, "test", locale, ISO_8859_1);
+
       assertInputAndOutputDocContentSame(docName);
    }
 
