@@ -35,8 +35,22 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  */
 public class PropertiesStrategy implements PullStrategy
 {
+   // "8859_1" is used in Properties.java...
+   private static final String ISO_8859_1 = "ISO-8859-1";
+
    StringSet extensions = new StringSet("comment");
    private PullOptions opts;
+   private final String charset;
+
+   public PropertiesStrategy()
+   {
+      this(ISO_8859_1);
+   }
+
+   public PropertiesStrategy(String charset)
+   {
+      this.charset = charset;
+   }
 
    @Override
    public void setPullOptions(PullOptions opts)
@@ -59,13 +73,13 @@ public class PropertiesStrategy implements PullStrategy
    @Override
    public void writeSrcFile(Resource doc) throws IOException
    {
-      PropWriter.write(doc, opts.getSrcDir());
+      PropWriter.write(doc, opts.getSrcDir(), charset);
    }
 
    @Override
    public void writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
    {
-      PropWriter.write(targetDoc, opts.getTransDir(), docName, localeMapping.getJavaLocale());
+      PropWriter.write(targetDoc, opts.getTransDir(), docName, localeMapping.getJavaLocale(), charset);
    }
 
 }

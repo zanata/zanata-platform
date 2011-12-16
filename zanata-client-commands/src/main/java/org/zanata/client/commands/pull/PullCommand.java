@@ -38,10 +38,12 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 public class PullCommand extends ConfigurableProjectCommand<PullOptions>
 {
    private static final Logger log = LoggerFactory.getLogger(PullCommand.class);
+   private static final String UTF_8 = "UTF-8";
 
    private static final Map<String, PullStrategy> strategies = new HashMap<String, PullStrategy>();
 
    {
+      strategies.put(PROJECT_TYPE_UTF8_PROPERTIES, new PropertiesStrategy(UTF_8));
       strategies.put(PROJECT_TYPE_PROPERTIES, new PropertiesStrategy());
       strategies.put(PROJECT_TYPE_PUBLICAN, new GettextDirStrategy());
       strategies.put(PROJECT_TYPE_XLIFF, new XliffStrategy());
