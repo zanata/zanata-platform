@@ -34,7 +34,7 @@
 							<g:LayoutPanel ui:field="editorContainer" />
 						</g:layer>
 
-						<g:layer height="100%" width="80px" right="5px" top="2px">
+						<g:layer height="23px" width="80px" right="5px" top="2px">
 							<g:FlowPanel>
 							    <g:ToggleButton ui:field="toogleOptionsButton"/>
 							</g:FlowPanel>
