@@ -19,15 +19,34 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.client.commands.pull;
+package org.zanata.client.commands;
 
-import org.zanata.client.commands.PushPullOptions;
+import java.io.File;
+import java.util.Set;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface PullOptions extends PushPullOptions
+public interface PushPullOptions extends ConfigurableProjectOptions
 {
-   boolean getPullSrc();
+
+   /**
+    * Character or characters which must appear after moduleIDs when constructing qualified document names
+    * @return
+    */
+   String getModuleSuffix();
+
+   /**
+    * A regex for document names, which captures the module ID as group 1 and the unqualified docname as group 2.
+    * This regex should broadly follow the pattern "(moduleID)moduleSuffix(localDocName)".
+    */
+   String getDocNameRegex();
+   boolean isDryRun();
+   File getSrcDir();
+   File getTransDir();
+   boolean getEnableModules();
+   boolean isRootModule();
+   String getCurrentModule();
+   Set<String> getAllModules();
 }

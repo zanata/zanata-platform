@@ -1,5 +1,8 @@
 package org.zanata.maven;
 
+import java.io.File;
+
+import org.zanata.client.commands.ConfigurableOptions;
 import org.zanata.client.commands.ConfigurableProjectOptions;
 import org.zanata.client.config.LocaleList;
 
@@ -10,7 +13,7 @@ import org.zanata.client.config.LocaleList;
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 
  */
-public abstract class ConfigurableProjectMojo extends ConfigurableMojo implements ConfigurableProjectOptions
+public abstract class ConfigurableProjectMojo<O extends ConfigurableOptions> extends ConfigurableMojo<O> implements ConfigurableProjectOptions
 {
 
    // @formatter:off
@@ -27,7 +30,7 @@ public abstract class ConfigurableProjectMojo extends ConfigurableMojo implement
     * @parameter expression="${zanata.projectConfig}"
     *            default-value="${basedir}/zanata.xml"
     */
-   private String projectConfig;
+   private File projectConfig;
 
    /**
     * Project slug (id) within Zanata server.
@@ -59,13 +62,13 @@ public abstract class ConfigurableProjectMojo extends ConfigurableMojo implement
    }
 
    @Override
-   public String getProjectConfig()
+   public File getProjectConfig()
    {
       return projectConfig;
    }
 
    @Override
-   public void setProjectConfig(String projectConfig)
+   public void setProjectConfig(File projectConfig)
    {
       this.projectConfig = projectConfig;
    }
