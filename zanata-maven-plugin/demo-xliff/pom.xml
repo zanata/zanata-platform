@@ -14,7 +14,7 @@
       <plugin>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-maven-plugin</artifactId>
-        <version>1.4-SNAPSHOT</version>
+        <version>1.5-SNAPSHOT</version>
         <configuration>
            <projectType>xliff</projectType>
            <srcDir>${zanata.srcDir}</srcDir>

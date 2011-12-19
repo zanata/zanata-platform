@@ -36,9 +36,10 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * 
  */
-public class PushCommand extends ConfigurableProjectCommand
+public class PushCommand extends ConfigurableProjectCommand<PushOptions>
 {
    private static final Logger log = LoggerFactory.getLogger(PushCommand.class);
+   private static final String UTF_8 = "UTF-8";
 
    private static final Map<String, AbstractPushStrategy> strategies = new HashMap<String, AbstractPushStrategy>();
 
@@ -48,6 +49,7 @@ public class PushCommand extends ConfigurableProjectCommand
    }
 
    {
+      strategies.put(PROJECT_TYPE_UTF8_PROPERTIES, new PropertiesStrategy(UTF_8));
       strategies.put(PROJECT_TYPE_PROPERTIES, new PropertiesStrategy());
       strategies.put(PROJECT_TYPE_PUBLICAN, new GettextDirStrategy());
       strategies.put(PROJECT_TYPE_XLIFF, new XliffStrategy());
@@ -56,14 +58,12 @@ public class PushCommand extends ConfigurableProjectCommand
 
    Marshaller m = null;
 
-   private final PushOptions opts;
    private final ITranslationResources translationResources;
    private final URI uri;
 
    public PushCommand(PushOptions opts, ZanataProxyFactory factory, ITranslationResources translationResources, URI uri)
    {
       super(opts, factory);
-      this.opts = opts;
       this.translationResources = translationResources;
       this.uri = uri;
    }
@@ -83,28 +83,28 @@ public class PushCommand extends ConfigurableProjectCommand
       AbstractPushStrategy strat = strategies.get(strategyType);
       if (strat == null)
       {
-         throw new RuntimeException("unknown project type: " + opts.getProjectType());
+         throw new RuntimeException("unknown project type: " + getOpts().getProjectType());
       }
-      strat.setPushOptions(opts);
+      strat.setPushOptions(getOpts());
       return strat;
    }
 
    @Override
    public void run() throws Exception
    {
-      log.info("Server: {}", opts.getUrl());
-      log.info("Project: {}", opts.getProj());
-      log.info("Version: {}", opts.getProjectVersion());
-      log.info("Username: {}", opts.getUsername());
-      log.info("Project type: {}", opts.getProjectType());
-      log.info("Source language: {}", opts.getSourceLang());
-      log.info("Copy previous translations: {}", opts.getCopyTrans());
-      log.info("Merge type: {}", opts.getMergeType());
+      log.info("Server: {}", getOpts().getUrl());
+      log.info("Project: {}", getOpts().getProj());
+      log.info("Version: {}", getOpts().getProjectVersion());
+      log.info("Username: {}", getOpts().getUsername());
+      log.info("Project type: {}", getOpts().getProjectType());
+      log.info("Source language: {}", getOpts().getSourceLang());
+      log.info("Copy previous translations: {}", getOpts().getCopyTrans());
+      log.info("Merge type: {}", getOpts().getMergeType());
 
-      if (!opts.getIncludes().isEmpty())
+      if (!getOpts().getIncludes().isEmpty())
       {
          StringBuilder sb = new StringBuilder();
-         for (String pattern : opts.getIncludes())
+         for (String pattern : getOpts().getIncludes())
          {
             sb.append(pattern);
             sb.append(" ");
@@ -112,19 +112,19 @@ public class PushCommand extends ConfigurableProjectCommand
          log.info("Include patterns: {}", sb.toString());
       }
 
-      if (!opts.getExcludes().isEmpty())
+      if (!getOpts().getExcludes().isEmpty())
       {
          StringBuilder sb = new StringBuilder();
-         for(String pattern:opts.getExcludes())
+         for(String pattern:getOpts().getExcludes())
          {
             sb.append(pattern);
             sb.append(" ");
          }
          log.info("Exclude patterns: {}", sb.toString());
       }
-      log.info("Default exclude: {}", opts.getDefaultExcludes());
+      log.info("Default exclude: {}", getOpts().getDefaultExcludes());
 
-      if (opts.getPushTrans())
+      if (getOpts().getPushTrans())
       {
          log.info("Pushing source and target documents");
       }
@@ -132,21 +132,21 @@ public class PushCommand extends ConfigurableProjectCommand
       {
          log.info("Pushing source documents only");
       }
-      log.info("Source directory (originals): {}", opts.getSrcDir());
-      if (opts.getPushTrans())
+      log.info("Source directory (originals): {}", getOpts().getSrcDir());
+      if (getOpts().getPushTrans())
       {
-         log.info("Target base directory (translations): {}", opts.getTransDir());
+         log.info("Target base directory (translations): {}", getOpts().getTransDir());
       }
-      File sourceDir = opts.getSrcDir();
+      File sourceDir = getOpts().getSrcDir();
 
       if (!sourceDir.exists())
       {
          throw new RuntimeException("directory '" + sourceDir + "' does not exist - check sourceDir option");
       }
 
-      if (opts.getPushTrans())
+      if (getOpts().getPushTrans())
       {
-         if (opts.getLocales() == null)
+         if (getOpts().getLocales() == null)
             throw new ConfigException("pushTrans option set, but zanata.xml contains no <locales>");
          log.warn("pushTrans option is set: existing translations on server may be overwritten/deleted");
          confirmWithUser("This will overwrite/delete any existing documents AND TRANSLATIONS on the server.\n");
@@ -156,14 +156,14 @@ public class PushCommand extends ConfigurableProjectCommand
          confirmWithUser("This will overwrite/delete any existing documents on the server.\n");
       }
 
-      AbstractPushStrategy strat = getStrategy(opts.getProjectType());
+      AbstractPushStrategy strat = getStrategy(getOpts().getProjectType());
 
       JAXBContext jc = null;
-      if (opts.isDebugSet()) // || opts.getValidate())
+      if (getOpts().isDebugSet()) // || opts.getValidate())
       {
          jc = JAXBContext.newInstance(Resource.class, TranslationsResource.class);
       }
-      if (opts.isDebugSet())
+      if (getOpts().isDebugSet())
       {
          m = jc.createMarshaller();
          m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -172,7 +172,7 @@ public class PushCommand extends ConfigurableProjectCommand
       // NB we don't load all the docs into a HashMap, because that would waste
       // memory
 
-      Set<String> localDocNames = strat.findDocNames(sourceDir, opts.getIncludes(), opts.getExcludes(), opts.getDefaultExcludes());
+      Set<String> localDocNames = strat.findDocNames(sourceDir, getOpts().getIncludes(), getOpts().getExcludes(), getOpts().getDefaultExcludes());
       for (String docName : localDocNames)
       {
          log.info("Source file to be uploaded: {}", docName);
@@ -191,11 +191,11 @@ public class PushCommand extends ConfigurableProjectCommand
 
          final StringSet extensions = strat.getExtensions();
          log.info("pushing source document [name={}] to server", srcDoc.getName());
-         boolean copyTrans = opts.getCopyTrans();
+         boolean copyTrans = getOpts().getCopyTrans();
          ClientResponse<String> putResponse = translationResources.putResource(docUri, srcDoc, extensions, copyTrans);
          ClientUtility.checkResult(putResponse, uri);
 
-         if (opts.getPushTrans())
+         if (getOpts().getPushTrans())
          {
             strat.visitTranslationResources(docName, srcDoc, new TranslationResourcesVisitor()
             {
@@ -208,7 +208,7 @@ public class PushCommand extends ConfigurableProjectCommand
                   // JaxbUtil.validateXml(targetDoc, jc);
                   // }
                   log.info("pushing target document [name={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), locale.getLocalLocale(), locale.getLocale() });
-                  ClientResponse<String> putTransResponse = translationResources.putTranslations(docUri, new LocaleId(locale.getLocale()), targetDoc, extensions, opts.getMergeType());
+                  ClientResponse<String> putTransResponse = translationResources.putTranslations(docUri, new LocaleId(locale.getLocale()), targetDoc, extensions, getOpts().getMergeType());
                   ClientUtility.checkResult(putTransResponse, uri);
                   String entity = putTransResponse.getEntity(String.class);
                   if (entity != null && !entity.isEmpty())
@@ -242,7 +242,7 @@ public class PushCommand extends ConfigurableProjectCommand
 
    private void confirmWithUser(String message) throws IOException
    {
-      if (opts.isInteractiveMode())
+      if (getOpts().isInteractiveMode())
       {
          Console console = System.console();
          if (console == null)
@@ -265,7 +265,7 @@ public class PushCommand extends ConfigurableProjectCommand
    {
       try
       {
-         if (opts.isDebugSet())
+         if (getOpts().isDebugSet())
          {
             StringWriter writer = new StringWriter();
             m.marshal(jaxbElement, writer);

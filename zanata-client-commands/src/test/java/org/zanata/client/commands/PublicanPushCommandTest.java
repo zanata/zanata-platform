@@ -65,6 +65,7 @@ public class PublicanPushCommandTest
       return mock;
    }
    
+   @SuppressWarnings("deprecation")
    private void publicanPush(boolean importPo, boolean mapLocale) throws Exception
    {
       PublicanPushOptionsImpl opts = new PublicanPushOptionsImpl();

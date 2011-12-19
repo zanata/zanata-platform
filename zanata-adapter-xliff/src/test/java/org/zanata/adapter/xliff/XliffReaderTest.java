@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import org.xml.sax.InputSource;
 import org.zanata.common.LocaleId;
@@ -19,15 +20,22 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 @Test(groups = { "unit-tests" })
 public class XliffReaderTest
 {
-   private String testDir = "src/test/resources/";
+   private static final String TEST_DIR = "src/test/resources/";
+   private static final String DOC_NAME = "StringResource_en_US.xml";
    private XliffReader reader;
+
+   @BeforeTest
+   public void resetReader()
+   {
+      reader = new XliffReader();
+   }
 
    @Test
    public void extractTemplateSizeTest() throws FileNotFoundException
    {
       Resource doc = getTemplateDoc();
 
-      assertThat(doc.getName(), equalTo("StringResource_en_US.xml"));
+      assertThat(doc.getName(), equalTo(DOC_NAME));
       assertThat(doc.getTextFlows().size(), is(3));
    }
 
@@ -46,9 +54,7 @@ public class XliffReaderTest
    @Test
    public void extractTargetSizeTest() throws FileNotFoundException
    {
-      Resource doc = getTemplateDoc();
-
-      File fileTarget = new File(testDir, "/StringResource_de.xml");
+      File fileTarget = new File(TEST_DIR, "/StringResource_de.xml");
       InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
       TranslationsResource tr = reader.extractTarget(inputSource);
       assertThat(tr.getTextFlowTargets().size(), is(2));
@@ -57,9 +63,7 @@ public class XliffReaderTest
    @Test
    public void targetFirstAndLastTextFlowTest() throws FileNotFoundException
    {
-      Resource doc = getTemplateDoc();
-      
-      File fileTarget = new File(testDir, "/StringResource_de.xml");
+      File fileTarget = new File(TEST_DIR, "/StringResource_de.xml");
       InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
       TranslationsResource tr = reader.extractTarget(inputSource);
 
@@ -73,11 +77,8 @@ public class XliffReaderTest
 
    private Resource getTemplateDoc() throws FileNotFoundException
    {
-      reader = new XliffReader();
-      String docName = "StringResource_en_US.xml";
-
-      File file = new File(testDir, "/" + docName);
+      File file = new File(TEST_DIR, File.separator + DOC_NAME);
       InputSource inputSource = new InputSource(new FileInputStream(file));
-      return reader.extractTemplate(inputSource, LocaleId.EN_US, docName);
+      return reader.extractTemplate(inputSource, LocaleId.EN_US, DOC_NAME);
    }
 }

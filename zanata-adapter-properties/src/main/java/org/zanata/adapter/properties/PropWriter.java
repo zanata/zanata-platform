@@ -3,7 +3,8 @@ package org.zanata.adapter.properties;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 import org.fedorahosted.openprops.Properties;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
@@ -27,7 +28,15 @@ public class PropWriter
          parentFile.mkdirs();
    }
 
-   public static void write(final Resource doc, final File baseDir) throws IOException
+   /**
+    * Writes a properties file representation of the given {@link Resource} to
+    * the given directory.
+    * 
+    * @param doc
+    * @param baseDir
+    * @throws IOException
+    */
+   public static void write(final Resource doc, final File baseDir, String charset) throws IOException
    {
       File baseFile = new File(baseDir, doc.getName() + ".properties");
       makeParentDirs(baseFile);
@@ -42,13 +51,19 @@ public class PropWriter
             props.setComment(textFlow.getId(), simpleComment.getValue());
       }
       // props.store(System.out, null);
-      PrintStream out = new PrintStream(new FileOutputStream(baseFile));
-      props.store(out, null);
+      Writer out = new OutputStreamWriter(new FileOutputStream(baseFile), charset);
+      try
+      {
+         props.store(out, null);
+      }
+      finally
+      {
+         out.close();
+      }
    }
 
-   public static void write(final TranslationsResource doc, final File baseDir, String bundleName, String locale) throws IOException
+   public static void write(final TranslationsResource doc, final File baseDir, String bundleName, String locale, String charset) throws IOException
    {
-
       Properties targetProp = new Properties();
       for (TextFlowTarget target : doc.getTextFlowTargets())
       {
@@ -62,8 +77,15 @@ public class PropWriter
       makeParentDirs(langFile);
       logVerbose("Creating target file " + langFile);
       // targetProp.store(System.out, null);
-      PrintStream out2 = new PrintStream(new FileOutputStream(langFile));
-      targetProp.store(out2, null);
+      Writer out2 = new OutputStreamWriter(new FileOutputStream(langFile), charset);
+      try
+      {
+         targetProp.store(out2, null);
+      }
+      finally
+      {
+         out2.close();
+      }
    }
 
 }
