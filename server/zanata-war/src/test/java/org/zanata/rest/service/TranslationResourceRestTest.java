@@ -3,6 +3,7 @@ package org.zanata.rest.service;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isOneOf;
 import static org.hamcrest.Matchers.notNullValue;
@@ -705,6 +706,37 @@ public class TranslationResourceRestTest extends ZanataRestTest
       // target 1 should be resurrected
       expectTarget1(target1);
       dontExpectTarget1a();
+   }
+   
+   @Test
+   public void testZanataGeneratedPoHeaders() throws Exception
+   {
+      LocaleId de_DE = new LocaleId("de");
+      getZero();
+      publishTranslations(); // push some translations (with no headers)
+      // Get the translations with PO headers
+      ClientResponse<TranslationsResource> response = transResource.getTranslations("my.txt", de_DE, new StringSet("gettext"));
+      
+      TranslationsResource translations = response.getEntity();
+      assertThat(translations.getExtensions().size(), greaterThan(0));
+      
+      // List of custom Zanata headers that should be present
+      final String[] requiredHeaders = new String[]{"Last-Translator", "PO-Revision-Date", "Language-Team", "X-Generator",
+            "Language"};
+      
+      for( String reqHeader : requiredHeaders )
+      {
+         boolean headerFound = false;
+         for( HeaderEntry entry : translations.getExtensions().findByType(PoTargetHeader.class).getEntries() )
+         {
+            if( entry.getKey().equals(reqHeader) )
+            {
+               headerFound = true;
+            }
+         }
+         
+         assertThat("PO Target Header '" + reqHeader + "' was not present when pulling translations.", headerFound, is(true));
+      }
    }
 
    @Test

@@ -40,6 +40,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest
       prepareExceptionMappers();
       prepareProviders();
 
+      // register resources
       for (Object obj : resources)
       {
          ResourceFactory factory = new MockResourceFactory(obj);

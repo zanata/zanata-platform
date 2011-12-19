@@ -74,11 +74,22 @@ public class FileService implements FileResource
    {
    }
    
-   public FileService( final DocumentDAO documentDAO )
+   /* @formatter: off */
+   public FileService(DocumentDAO documentDAO, 
+                      TranslationResourcesService translationResourcesService, 
+                      FileSystemService fileSystemServiceImpl, 
+                      ResourceUtils resourceUtils)
    {
+      super();
       this.documentDAO = documentDAO;
+      this.translationResourcesService = translationResourcesService;
+      this.fileSystemServiceImpl = fileSystemServiceImpl;
+      this.resourceUtils = resourceUtils;
    }
-   
+   /* @formatter: on */
+
+
+   @Override
    @GET
    @Path(FILE_DOWNLOAD_TEMPLATE)
    // /file/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType}?docId={docId}
