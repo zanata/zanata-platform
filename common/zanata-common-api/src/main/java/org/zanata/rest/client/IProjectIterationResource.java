@@ -8,15 +8,18 @@ import javax.ws.rs.Produces;
 import org.jboss.resteasy.client.ClientResponse;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.ProjectIteration;
+import org.zanata.rest.service.ProjectIterationResource;
 
 //@Path("/i/{iterationSlug}")
-public interface IProjectIterationResource
+public interface IProjectIterationResource extends ProjectIterationResource
 {
 
+   @Override
    @GET
    @Produces( { MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON })
    public ClientResponse<ProjectIteration> get();
 
+   @Override
    @PUT
    @Consumes( { MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON })
    public ClientResponse put(ProjectIteration project);

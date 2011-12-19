@@ -20,8 +20,6 @@
  */
 package org.zanata.rest.service;
 
-import java.io.InputStream;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -151,7 +149,7 @@ public class ProjectIterationService implements ProjectIterationResource
    @Override
    @PUT
    @Consumes( { MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   public Response put(InputStream messageBody)
+   public Response put(ProjectIteration project)
    {
 
       ResponseBuilder response;
