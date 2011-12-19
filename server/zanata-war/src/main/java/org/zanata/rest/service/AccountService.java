@@ -103,7 +103,7 @@ public class AccountService implements AccountResource
    {
       log.debug("HTTP PUT {0} : \n{1}", request.getRequestURL(), account);
 
-      RestUtils.validateEntity(account);
+      //RestUtils.validateEntity(account);
       HAccount hAccount = accountDAO.getByUsername(username);
       ResponseBuilder response;
       String operation;
