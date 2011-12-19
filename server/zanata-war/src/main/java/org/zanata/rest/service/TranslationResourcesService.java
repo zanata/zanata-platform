@@ -429,6 +429,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
             return response.build();
          }
          changed = true;
+         // TODO check that entity name matches id parameter
          document = new HDocument(entity.getName(), entity.getContentType(), hLocale);
          document.setProjectIteration(hProjectIteration);
          hProjectIteration.getDocuments().put(id, document);

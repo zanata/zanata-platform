@@ -20,6 +20,7 @@
  */
 package org.zanata.maven;
 
+import org.zanata.client.commands.ConfigurableCommand;
 import org.zanata.client.commands.ZanataCommand;
 import org.zanata.client.commands.glossary.delete.GlossaryDeleteCommand;
 import org.zanata.client.commands.glossary.delete.GlossaryDeleteOptions;
@@ -63,7 +64,7 @@ public class GlossaryDeleteMojo extends ConfigurableProjectMojo implements Gloss
 
 
    @Override
-   public ZanataCommand initCommand()
+   public ConfigurableCommand initCommand()
    {
       return new GlossaryDeleteCommand(this);
    }

@@ -21,6 +21,8 @@
 package org.zanata.client.commands;
 
 
+import java.io.File;
+
 import org.kohsuke.args4j.Option;
 import org.zanata.client.config.LocaleList;
 
@@ -40,7 +42,7 @@ public abstract class ConfigurableProjectOptionsImpl extends ConfigurableOptions
    // When used as a CLI command, the default path (specified here) is relative
    // to CWD. ConfigurableProjectMojo specifies another default, which is
    // relative to project's basedir.
-   private String projectConfig = "zanata.xml";
+   private File projectConfig = new File("zanata.xml");
 
    private String project;
    private String projectVersion;
@@ -62,7 +64,7 @@ public abstract class ConfigurableProjectOptionsImpl extends ConfigurableOptions
 
    @Override
    @Option(name = "--project-config", metaVar = "FILENAME", usage = "Project configuration file, eg zanata.xml", required = false)
-   public void setProjectConfig(String projectConfig)
+   public void setProjectConfig(File projectConfig)
    {
       this.projectConfig = projectConfig;
    }
@@ -94,7 +96,7 @@ public abstract class ConfigurableProjectOptionsImpl extends ConfigurableOptions
    }
 
    @Override
-   public String getProjectConfig()
+   public File getProjectConfig()
    {
       return projectConfig;
    }

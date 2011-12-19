@@ -15,12 +15,12 @@ import org.jboss.resteasy.util.GenericType;
  *
  * @param <T>
  */
-class DummyResponse<T> extends ClientResponse<T>
+public class DummyResponse<T> extends ClientResponse<T>
 {
    private final Status status;
    private final T entity;
 
-   protected DummyResponse(Status status, T entity)
+   public DummyResponse(Status status, T entity)
    {
       this.status = status;
       this.entity = entity;
