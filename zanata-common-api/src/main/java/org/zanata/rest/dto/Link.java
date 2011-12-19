@@ -3,11 +3,9 @@ package org.zanata.rest.dto;
 import java.net.URI;
 
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name = "linkType")
-@XmlRootElement(name = "link")
 public class Link
 {
 

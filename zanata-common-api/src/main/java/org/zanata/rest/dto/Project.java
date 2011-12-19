@@ -109,7 +109,8 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       this.description = description;
    }
 
-   @XmlElementRef(type = Link.class)
+   @XmlElementWrapper(name = "links")
+   @XmlElement(name = "link")
    public Links getLinks()
    {
       return links;

@@ -6,7 +6,7 @@ import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonValue;
 
 
-public final class LocaleId implements Serializable
+public class LocaleId implements Serializable
 {
 
    private static final long serialVersionUID = -7977805381672178179L;
@@ -22,7 +22,7 @@ public final class LocaleId implements Serializable
 
    // JaxB needs a no-arg constructor :(
    @SuppressWarnings("unused")
-   private LocaleId()
+   public LocaleId()
    {
       id = null;
    }
