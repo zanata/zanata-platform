@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>zanata-adapter-po</artifactId>
+  <name>Zanata Adapter for Gettext PO</name>
+  <parent>
+    <groupId>org.zanata</groupId>
+    <artifactId>zanata-parent</artifactId>
+    <version>1.5-SNAPSHOT</version>
+    <relativePath>../../zanata-parent/pom.xml</relativePath>
+  </parent>
+  <packaging>jar</packaging>
+
+	<!-- Should be the same as zanata-parent/pom.xml -->
+	<scm>
+		<connection>scm:git:git://github.com/zanata/zanata.git</connection>
+		<developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
+		<url>https://github.com/zanata/zanata</url>
+	</scm>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-common-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+	<dependency>
+		<groupId>org.zanata</groupId>
+		<artifactId>zanata-common-util</artifactId>
+		<version>${project.version}</version>
+	</dependency>
+    <dependency>
+      <groupId>org.fedorahosted.tennera</groupId>
+      <artifactId>jgettext</artifactId>
+      <version>${tennera.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>    
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
