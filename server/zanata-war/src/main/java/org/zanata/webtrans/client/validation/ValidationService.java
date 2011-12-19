@@ -34,6 +34,7 @@ import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.validation.ValidationObject;
 import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
+import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
 import org.zanata.webtrans.shared.validation.action.ValidationAction;
 
 import com.google.inject.Inject;
@@ -56,8 +57,11 @@ public class ValidationService
       this.eventBus = eventBus;
       this.messages = messages;
 
-      HtmlXmlTagValidation htmlxmlValidation = new HtmlXmlTagValidation("HTML/XML tag", "HTML/XML tag validation");
+      HtmlXmlTagValidation htmlxmlValidation = new HtmlXmlTagValidation("HTML/XML tag", "Matching HTML/XML tag validation");
+      NewlineLeadTrailValidation newlineLeadTrailValidation = new NewlineLeadTrailValidation("Newline lead/trail", "Newline lead/trail validation");
+
       validationMap.put(htmlxmlValidation.getId(), htmlxmlValidation);
+      validationMap.put(newlineLeadTrailValidation.getId(), newlineLeadTrailValidation);
    }
 
    /**

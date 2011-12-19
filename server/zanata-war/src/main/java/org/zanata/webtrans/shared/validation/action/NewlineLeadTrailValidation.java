@@ -29,36 +29,42 @@ import com.google.gwt.regexp.shared.RegExp;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class HtmlXmlTagValidation extends ValidationAction
+public class NewlineLeadTrailValidation extends ValidationAction
 {
-   public HtmlXmlTagValidation(String id, String description)
+   public NewlineLeadTrailValidation(String id, String description)
    {
       super(id, description);
    }
 
-   // private final static String tagRegex = "<[^>]+>[^<]*</[^>]+>";
-   private final static String tagRegex = "<[^>]+>";
+   private final static String leadNewlineRegex = "^\n";
+   private final static String endNewlineRegex = "\n$";
 
-   private final static RegExp regExp = RegExp.compile(tagRegex, "g");
+   private final static RegExp leadRegExp = RegExp.compile(leadNewlineRegex);
+   private final static RegExp endRegExp = RegExp.compile(endNewlineRegex);
 
    @Override
    public void validate(String source, String target)
    {
-      String tmp = target;
-      MatchResult result = regExp.exec(source);
-      while (result != null)
+      MatchResult sourceResult = leadRegExp.exec(source);
+      if (sourceResult != null)
       {
-         String node = result.getGroup(0);
-         Log.debug("Found Node:" + node);
-         if (!tmp.contains(node))
+         Log.debug("Found leading newline in source");
+         MatchResult targetResult = leadRegExp.exec(target);
+         if (targetResult == null)
          {
-            addError(getId() + ":" + node + " not found in target");
+            addError(getId() + ": Leading newline not found in target");
          }
-         else
+      }
+
+      sourceResult = endRegExp.exec(source);
+      if (sourceResult != null)
+      {
+         Log.debug("Found trailing newline in source");
+         MatchResult targetResult = endRegExp.exec(target);
+         if (targetResult == null)
          {
-            tmp = tmp.replaceFirst(node, ""); // remove matched node from target
+            addError(getId() + ": Trailing newline not found in target");
          }
-         result = regExp.exec(source);
       }
    }
 }
