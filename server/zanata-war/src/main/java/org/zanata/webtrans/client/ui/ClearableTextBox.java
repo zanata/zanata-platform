@@ -1,13 +1,12 @@
 package org.zanata.webtrans.client.ui;
 
-import org.zanata.webtrans.client.Resources;
+import org.zanata.webtrans.client.resources.Resources;
+import org.zanata.webtrans.client.resources.UiMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -71,6 +70,18 @@ public class ClearableTextBox extends Composite
    public void onTextBoxValueChange(ValueChangeEvent<String> event)
    {
       xButton.setVisible(!event.getValue().isEmpty());
+
+      boolean empty = event.getValue().isEmpty() || event.getValue().equals(emptyText);
+
+      if (empty && !textBox.getStyleName().contains(style.emptyBox()))
+      {
+         textBox.addStyleName(style.emptyBox());
+         refresh();
+      }
+      if (!empty && textBox.getStyleName().contains(style.emptyBox()))
+      {
+         textBox.removeStyleName(style.emptyBox());
+      }
    }
 
    @UiHandler("textBox")

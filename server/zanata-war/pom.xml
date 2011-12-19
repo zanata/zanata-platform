@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.zanata</groupId>
 		<artifactId>zanata-parent</artifactId>
-		<version>1.4.4-SNAPSHOT</version>
+		<version>1.5-SNAPSHOT</version>
 		<relativePath>../../zanata-parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>zanata-war</artifactId>
@@ -20,20 +20,16 @@
 
 	<properties>
 		<jboss.embedded.version>beta3.SP12</jboss.embedded.version>
+		<war.config.dir>${basedir}/src/etc</war.config.dir>
+		<containerId>jboss5x</containerId>
+		
 		<!-- application properties -->
-
 		<env.debug>false</env.debug>
-		<env.import.testdata>false</env.import.testdata>
-		<ds.jndi.name>zanataTestDatasource</ds.jndi.name>
+		<env.hibernate.indexBase>zanatasearchindex</env.hibernate.indexBase>
 		<war.name>zanata</war.name>
-		<!-- Default database settings -->
-		<env.dbunit.type>HSQL</env.dbunit.type>
-		<internal.authentication>false</internal.authentication>
-		<spNego.authentication>false</spNego.authentication>
-		<jaas.configure>zanata</jaas.configure>
 		<zanata.gwt.module>org.zanata.webtrans.Application</zanata.gwt.module>
-		<fedora.openId>false</fedora.openId>
 		<extra.servlets />
+
 		<!-- Default MySql login -->
 		<mysql.user>root</mysql.user>
 		<mysql.password />
@@ -41,16 +37,32 @@
 
 	<build>
 		<finalName>zanata</finalName>
-
+		
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
 			</resource>
-
 		</resources>
 
 		<plugins>
+		<plugin>
+			<artifactId>maven-antrun-plugin</artifactId>
+			<version>1.6</version>
+			<executions>
+			 <execution>
+				<phase>prepare-package</phase>
+				<configuration>
+					<tasks>
+						<mkdir dir="${project.build.directory}/zanata"/>
+					</tasks>
+				</configuration>
+				<goals>
+					<goal>run</goal>
+				</goals>
+			 </execution>
+			</executions>
+		</plugin>
 			<plugin>
 			    <artifactId>maven-clean-plugin</artifactId>
 			    <version>2.4.1</version>
@@ -70,7 +82,23 @@
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<warName>${war.name}</warName>
+					<warName>${war.name}-${project.version}</warName>
+					<webResources>
+						<resource>
+							<directory>src/main/webapp-jboss</directory>
+							<filtering>true</filtering>
+						</resource>
+						<resource>
+                            <directory>src/main/resources/org/zanata/webtrans/images</directory>
+                            <includes>
+                                <include>public-img/**</include>
+                            </includes>
+                        </resource>
+                        <!-- Include the GWT generated resources -->
+                        <resource>
+                        	<directory>${project.build.directory}/zanata</directory>
+                        </resource>
+					</webResources>
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
@@ -83,6 +111,40 @@
 						</manifestEntries>
 					</archive>
 				</configuration>
+				<executions>
+					<!-- Internal auth war -->
+					<execution>
+						<id>default-war</id>
+						<configuration>
+							<classifier>internal</classifier>
+							<webappDirectory>${project.build.directory}/${project.build.finalName}-internal</webappDirectory>
+							<filters>
+								<filter>${war.config.dir}/internalauth.properties</filter>
+								<filter>${war.config.dir}/mysql.properties</filter>
+							</filters>
+							<archive>
+								<manifestEntries>
+									<Classifier>internal</Classifier>
+								</manifestEntries>
+							</archive>
+						</configuration>
+					</execution>
+					<!-- Default Seam tests exploded war -->
+					<execution>
+						<id>generate-seamtests-war</id>
+						<goals>
+							<goal>exploded</goal>
+						</goals>
+						<phase>pre-integration-test</phase>
+						<configuration>
+							<webappDirectory>${project.build.directory}/${project.build.finalName}-seamtests</webappDirectory>
+							<filters>
+								<filter>${war.config.dir}/seamtests.properties</filter>
+								<filter>${war.config.dir}/h2.properties</filter>
+							</filters>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 
 			<plugin>
@@ -117,6 +179,50 @@
 					</suiteXmlFiles>
 				</configuration>
 			</plugin>
+			
+			<!-- Configure Failsafe to run in integration-test phase -->
+			<plugin>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.7.2</version>
+				<executions>
+					<execution>
+						<id>integration-test</id>
+						<goals>
+							<goal>integration-test</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>verify</id>
+						<goals>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<redirectTestOutputToFile>false</redirectTestOutputToFile>
+					<printSummary>true</printSummary>
+					<forkMode>always</forkMode>
+					<suiteXmlFiles>
+						<suiteXmlFile>src/test/resources/AllIntegrationTests.tng.xml</suiteXmlFile>
+					</suiteXmlFiles>
+					<additionalClasspathElements>
+						<additionalClasspathElement>${project.basedir}/src/test/jboss-embedded-bootstrap</additionalClasspathElement>
+						<additionalClasspathElement>${project.build.directory}/zanata-seamtests/WEB-INF/classes</additionalClasspathElement>
+						<additionalClasspathElement>${project.build.directory}/zanata-seamtests</additionalClasspathElement>
+					</additionalClasspathElements>
+					<childDelegation>true</childDelegation>
+					<useSystemClassLoader>true</useSystemClassLoader>
+					<argLine xml:space="preserve">-Xmx1024m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC
+						-XX:+CMSClassUnloadingEnabled -XX:+HeapDumpOnOutOfMemoryError
+						-XX:HeapDumpPath=${project.build.directory} -Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
+					<classpathDependencyExcludes>
+						<classpathDependencyExclude>
+							<!-- collides with XMLLoginConfigImpl in jboss-embedded-all -->
+							org.jboss.security:jbosssx
+						</classpathDependencyExclude>
+					</classpathDependencyExcludes>
+				</configuration>
+			</plugin>
 
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -141,8 +247,10 @@
 						<exclude>**/seam.properties</exclude>
 						<exclude>**/seam-deployment.properties</exclude>
 						<exclude>**/eventservice.properties</exclude>
+						<exclude>**/pluralforms.properties</exclude>
 					</excludes>
-					<outputDirectory>src/main/resources</outputDirectory>
+					<inputDirectory>src/main/resources</inputDirectory>
+                    <outputDirectory>${project.build.outputDirectory}</outputDirectory>
 				</configuration>
 			</plugin>
 
@@ -174,7 +282,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore />
+										<ignore></ignore>
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
@@ -186,208 +294,6 @@
 	</build>
 
 	<profiles>
-		<profile>
-			<id>mysql</id>
-			<properties>
-				<ds.jndi.name>zanataDatasource</ds.jndi.name>
-			</properties>
-		</profile>
-
-		<profile>
-			<id>jboss4</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>dev</value>
-				</property>
-			</activation>
-			<properties>
-				<env.JBOSS_HOME>/opt/jboss-4.2.3.GA-jdk6</env.JBOSS_HOME>
-				<!-- jboss config for the Cargo plugin -->
-				<containerId>jboss42x</containerId>
-				<downloadUrl>http://downloads.sourceforge.net/jboss/jboss-4.2.3.GA-jdk6.zip?big_mirror=1</downloadUrl>
-			</properties>
-
-			<build>
-
-				<resources>
-					<resource>
-						<directory>src/main/resources-jboss</directory>
-						<filtering>true</filtering>
-					</resource>
-
-				</resources>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-war-plugin</artifactId>
-						<configuration>
-							<webResources>
-								<resource>
-									<directory>src/main/webapp-jboss</directory>
-									<filtering>true</filtering>
-								</resource>
-							</webResources>
-						</configuration>
-					</plugin>
-
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>jboss-maven-plugin</artifactId>
-						<version>1.4</version>
-						<configuration>
-							<serverName>default</serverName>
-							<fileNames>
-								<fileName>${project.build.directory}/classes/zanata-ds.xml</fileName>
-								<fileName>${project.build.directory}/${war.name}.war</fileName>
-							</fileNames>
-						</configuration>
-					</plugin>
-
-					<!-- Configure Surefire to run in integration-test phase -->
-					<plugin>
-						<artifactId>maven-failsafe-plugin</artifactId>
-						<version>2.7.2</version>
-						<executions>
-							<execution>
-								<id>integration-test</id>
-								<goals>
-									<goal>integration-test</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>verify</id>
-								<goals>
-									<goal>verify</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<argLine xml:space="preserve">-Xmx1024m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC
-								-XX:+CMSClassUnloadingEnabled -XX:+HeapDumpOnOutOfMemoryError
-								-XX:HeapDumpPath=${project.build.directory}
-								-Dsun.lang.ClassLoader.allowArraySyntax=true
-						    </argLine>
-							<redirectTestOutputToFile>false</redirectTestOutputToFile>
-							<printSummary>true</printSummary>
-							<forkMode>always</forkMode>
-							<suiteXmlFiles>
-								<suiteXmlFile>src/test/resources/AllIntegrationTests.tng.xml</suiteXmlFile>
-							</suiteXmlFiles>
-							<additionalClasspathElements>
-								<additionalClasspathElement>${project.basedir}/src/test/jboss-embedded-bootstrap</additionalClasspathElement>
-								<additionalClasspathElement>${project.build.directory}/zanata</additionalClasspathElement>
-							</additionalClasspathElements>
-							<childDelegation>true</childDelegation>
-							<useSystemClassLoader>true</useSystemClassLoader>
-							<classpathDependencyExcludes>
-								<classpathDependencyExclude>
-									<!-- collides with XMLLoginConfigImpl in jboss-embedded-all -->
-									org.jboss.security:jbosssx
-								</classpathDependencyExclude>
-							</classpathDependencyExcludes>
-						</configuration>
-					</plugin>
-
-				</plugins>
-			</build>
-
-			<dependencies>
-
-				<dependency>
-					<groupId>commons-codec</groupId>
-					<artifactId>commons-codec</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>commons-collections</groupId>
-					<artifactId>commons-collections</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>commons-httpclient</groupId>
-					<artifactId>commons-httpclient</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.el</groupId>
-					<artifactId>el-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.servlet</groupId>
-					<artifactId>servlet-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.persistence</groupId>
-					<artifactId>persistence-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.ejb</groupId>
-					<artifactId>ejb-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javassist</groupId>
-					<artifactId>javassist</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.faces</groupId>
-					<artifactId>jsf-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.faces</groupId>
-					<artifactId>jsf-impl</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.annotation</groupId>
-					<artifactId>jsr250-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.xml.stream</groupId>
-					<artifactId>stax-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>xpp3</groupId>
-					<artifactId>xpp3_min</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-			</dependencies>
-
-		</profile>
-
 		<profile>
 			<id>explode</id>
 			<activation>
@@ -427,8 +333,11 @@
 							<deployer>
 								<deployables>
 									<deployable>
-										<pingURL>http://localhost:${port}/${war.name}/</pingURL>
-										<location>${project.build.directory}/zanata</location>
+										<pingURL>http://localhost:${port}/${war.name}-internal/</pingURL>
+										<location>${project.build.directory}/zanata-internal</location>
+										<properties>
+											<context>zanata</context>
+										</properties>
 									</deployable>
 								</deployables>
 							</deployer>
@@ -448,7 +357,7 @@
 									<outputDirectory>${as.deploy}</outputDirectory>
 									<resources>
 										<resource>
-											<directory>${basedir}/src/main/resources-jboss/</directory>
+											<directory>${basedir}/src/etc</directory>
 											<filtering>true</filtering>
 											<includes>
 												<include>zanata-ds.xml</include>
@@ -469,246 +378,161 @@
 				</plugins>
 			</build>
 		</profile>
-
+		
 		<profile>
-			<id>jboss5</id>
+			<id>nogwt</id>
 			<properties>
-				<containerId>jboss5x</containerId>
-			</properties>
-
-			<build>
-
-				<resources>
-					<resource>
-						<directory>src/main/resources-jboss</directory>
-						<filtering>true</filtering>
-					</resource>
-				</resources>
-
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-war-plugin</artifactId>
-						<configuration>
-							<webResources>
-								<resource>
-									<directory>src/main/webapp-jboss</directory>
-									<filtering>true</filtering>
-								</resource>
-							</webResources>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-
-			<dependencies>
-
-				<dependency>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-search</artifactId>
-					<exclusions>
-						<exclusion>
-							<groupId>org.hibernate</groupId>
-							<artifactId>hibernate-commons-annotations</artifactId>
-						</exclusion>
-						<exclusion>
-							<groupId>org.hibernate</groupId>
-							<artifactId>ejb3-persistence</artifactId>
-						</exclusion>
-					</exclusions>
-				</dependency>
-
-				<dependency>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-core</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-validator</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-annotations</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>org.hibernate</groupId>
-					<artifactId>ejb3-persistence</artifactId>
-					<version>1.0.2.GA</version>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-entitymanager</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-jmx</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>commons-collections</groupId>
-					<artifactId>commons-collections</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.el</groupId>
-					<artifactId>el-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.servlet</groupId>
-					<artifactId>servlet-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.persistence</groupId>
-					<artifactId>persistence-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.ejb</groupId>
-					<artifactId>ejb-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javassist</groupId>
-					<artifactId>javassist</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.faces</groupId>
-					<artifactId>jsf-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.faces</groupId>
-					<artifactId>jsf-impl</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.annotation</groupId>
-					<artifactId>jsr250-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>javax.xml.stream</groupId>
-					<artifactId>stax-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>xpp3</groupId>
-					<artifactId>xpp3_min</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
-			</dependencies>
-
-		</profile>
-
-		<profile>
-			<id>internalauthentication</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>dev</value>
-				</property>
-			</activation>
-			<properties>
-				<internal.authentication>true</internal.authentication>
-				<jaas.configure>default</jaas.configure>
+				<gwt.compiler.skip>true</gwt.compiler.skip>
 			</properties>
 		</profile>
 
 		<profile>
 			<id>fedora</id>
-			<properties>
-				<fedora.openId>true</fedora.openId>
-			</properties>
-		</profile>
-
-
-		<profile>
-			<id>zanata-test</id>
-			<properties>
-				<war.name>zanata-test</war.name>
-			</properties>
-		</profile>
-
-
-		<profile>
-			<id>kerberos</id>
-			<properties>
-				<spnego.security><![CDATA[
-				-->
-<security-constraint>
-    <web-resource-collection>
-         <web-resource-name>sign in</web-resource-name>
-         <url-pattern>/account/*</url-pattern>
-    </web-resource-collection>
-	<auth-constraint>
-		<role-name>*</role-name>
-	</auth-constraint>
-</security-constraint>	
-
-<login-config>
-    <auth-method>SPNEGO</auth-method>
-</login-config>
-				<!--
-				]]></spnego.security>
-				<spNego.authentication>true</spNego.authentication>
-			</properties>
-		</profile>
-
-
-		<profile>
-			<id>nogwt</id>
 			<activation>
 				<property>
-					<name>env</name>
-					<value>dev</value>
+					<name>!internalAuth</name>
 				</property>
 			</activation>
-			<!-- This profile allows you to skip the GWT compilation step -->
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>gwt-maven-plugin</artifactId>
-						<configuration>
-							<skip>true</skip>
-						</configuration>
+						<artifactId>maven-war-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>generate-fedora-war</id>
+								<goals>
+									<goal>war</goal>
+								</goals>
+								<phase>package</phase>
+								<configuration>
+									<classifier>fedora</classifier>
+									<webappDirectory>${project.build.directory}/${project.build.finalName}-fedora</webappDirectory>
+									<filters>
+										<filter>${war.config.dir}/fedora.properties</filter>
+										<filter>${war.config.dir}/mysql.properties</filter>
+									</filters>
+									<archive>
+										<manifestEntries>
+											<Classifier>fedora</Classifier>
+										</manifestEntries>
+									</archive>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>kerberos</id>
+			<activation>
+				<property>
+					<name>!internalAuth</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-war-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>generate-kerberos-war</id>
+								<goals>
+									<goal>war</goal>
+								</goals>
+								<phase>package</phase>
+								<configuration>
+									<classifier>kerberos</classifier>
+									<webappDirectory>${project.build.directory}/${project.build.finalName}-kerberos</webappDirectory>
+									<filters>
+										<filter>${war.config.dir}/kerberos.properties</filter>
+										<filter>${war.config.dir}/mysql.properties</filter>
+									</filters>
+									<archive>
+										<manifestEntries>
+											<Classifier>kerberos</Classifier>
+										</manifestEntries>
+									</archive>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
+		<profile>
+			<id>jaas</id>
+			<activation>
+				<property>
+					<name>!internalAuth</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-war-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>generate-jaas-war</id>
+								<goals>
+									<goal>war</goal>
+								</goals>
+								<phase>package</phase>
+								<configuration>
+									<classifier>jaas</classifier>
+									<webappDirectory>${project.build.directory}/${project.build.finalName}-jaas</webappDirectory>
+									<filters>
+										<filter>${war.config.dir}/jaas.properties</filter>
+										<filter>${war.config.dir}/mysql.properties</filter>
+									</filters>
+									<archive>
+										<manifestEntries>
+											<Classifier>jaas</Classifier>
+										</manifestEntries>
+									</archive>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>autotest</id>
+			<activation>
+				<property>
+					<name>!internalAuth</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-war-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>generate-autotest-war</id>
+								<goals>
+									<goal>war</goal>
+								</goals>
+								<phase>package</phase>
+								<configuration>
+									<classifier>autotest</classifier>
+									<webappDirectory>${project.build.directory}/${project.build.finalName}-autotest</webappDirectory>
+									<filters>
+										<filter>${war.config.dir}/autotest.properties</filter>
+										<filter>${war.config.dir}/h2.properties</filter>
+									</filters>
+									<archive>
+										<manifestEntries>
+											<Classifier>autotest</Classifier>
+										</manifestEntries>
+									</archive>
+								</configuration>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>
@@ -805,43 +629,6 @@
 			</build>
 		</profile>
 
-		<profile>
-			<id>prod</id>
-			<properties>
-				<env.debug>false</env.debug>
-				<env.import.testdata>false</env.import.testdata>
-				<env.hibernate.show_sql>false</env.hibernate.show_sql>
-				<env.hibernate.format_sql>false</env.hibernate.format_sql>
-			</properties>
-		</profile>
-
-		<profile>
-			<id>dev</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>dev</value>
-				</property>
-			</activation>
-			<properties>
-				<env.debug>true</env.debug>
-				<env.import.testdata>true</env.import.testdata>
-				<env.hibernate.show_sql>true</env.hibernate.show_sql>
-				<env.hibernate.format_sql>true</env.hibernate.format_sql>
-				<extra.servlets><![CDATA[-->
-	<servlet>
-		<servlet-name>H2Console</servlet-name>
-		<servlet-class>org.h2.server.web.WebServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>H2Console</servlet-name>
-		<url-pattern>/console/*</url-pattern>
-	</servlet-mapping>
-				<!--]]></extra.servlets>
-			</properties>
-		</profile>
-
 	</profiles>
 
 	<dependencies>
@@ -865,6 +652,13 @@
 			<artifactId>zanata-model</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-adapter-po</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
 		<!-- Seam Dependencies -->
 
 		<dependency>
@@ -935,6 +729,7 @@
 			<artifactId>jackson-xc</artifactId>
 		</dependency>
 
+
 		<!-- Drools -->
 
 		<dependency>
@@ -974,26 +769,31 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
+			<scope>${hibernate.scope}</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
+			<scope>${hibernate.scope}</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-annotations</artifactId>
+			<scope>${hibernate.scope}</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
+			<scope>${hibernate.scope}</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-jmx</artifactId>
+			<scope>${hibernate.scope}</scope>
 		</dependency>
 
 		<dependency>
@@ -1043,90 +843,122 @@
 			<groupId>org.fedorahosted.openprops</groupId>
 			<artifactId>openprops</artifactId>
 		</dependency>
+		
+		<!-- Quartz -->
+		
+		<dependency>
+            <groupId>quartz</groupId>
+            <artifactId>quartz</artifactId>
+        </dependency>
 
-		<!-- okapi-lib-search would otherwise use lucene 3.0.0 -->
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>2.9.2</version>
+			<!-- okapi-lib-search would otherwise use lucene 3.0.0 -->
+			<version>${lucene.version}</version>
 		</dependency>
 		
-		<!-- Testing dependencies -->
+		<!-- JBoss 5 Provided Dependencies -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-search</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate-commons-annotations</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.hibernate</groupId>
+					<artifactId>ejb3-persistence</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
-        <dependency>
-            <groupId>org.zanata</groupId>
-            <artifactId>zanata-rest-client</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>ejb3-persistence</artifactId>
+			<version>1.0.2.GA</version>
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.jboss.embedded</groupId>
-            <artifactId>jboss-embedded-all</artifactId>
-            <version>${jboss.embedded.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.jboss.microcontainer</groupId>
-                    <artifactId>jboss-deployers-client-spi</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.jboss.embedded</groupId>
-                    <artifactId>jboss-embedded</artifactId>
-                </exclusion>
-            </exclusions>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.jboss.embedded</groupId>
-            <artifactId>thirdparty-all</artifactId>
-            <version>${jboss.embedded.version}</version>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.jboss.seam.embedded</groupId>
-            <artifactId>jboss-embedded-api</artifactId>
-            <version>${jboss.embedded.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.jboss.microcontainer</groupId>
-                    <artifactId>jboss-deployers-client-spi</artifactId>
-                </exclusion>
-            </exclusions>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>javax.el</groupId>
+			<artifactId>el-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.9</version>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>persistence-api</artifactId>
+			<!-- TODO does this need to use ${hibernate.scope} for jboss7 profile? -->
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.easytesting</groupId>
-            <artifactId>fest-assert</artifactId>
-            <version>1.3</version>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>javax.ejb</groupId>
+			<artifactId>ejb-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <!-- We use testng in DBUnitImporter so can't use test scope here -->
-        </dependency>
+		<dependency>
+			<groupId>javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.faces</groupId>
+			<artifactId>jsf-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.faces</groupId>
+			<artifactId>jsf-impl</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>jsr250-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.xml.stream</groupId>
+			<artifactId>stax-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>xpp3</groupId>
+			<artifactId>xpp3_min</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- Container dependencies - provided by jboss -->
 
@@ -1147,7 +979,7 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>javax.persistence</groupId>
 			<artifactId>persistence-api</artifactId>
 		</dependency>
@@ -1165,7 +997,7 @@
 		<dependency>
 			<groupId>javassist</groupId>
 			<artifactId>javassist</artifactId>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -1173,7 +1005,7 @@
 			<!-- we should probably use scope test -->
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>javax.faces</groupId>
 			<artifactId>jsf-api</artifactId>
 		</dependency>
@@ -1196,14 +1028,84 @@
 		<dependency>
 			<groupId>xpp3</groupId>
 			<artifactId>xpp3_min</artifactId>
-		</dependency>
-		
+		</dependency> -->
+
+		<!-- Testing dependencies -->
+
 		<dependency>
-            <groupId>org.jboss.security</groupId>
-            <artifactId>jbosssx</artifactId>
-            <version>2.0.3.SP1</version>
-            <scope>provided</scope>
+			<groupId>org.zanata</groupId>
+			<artifactId>zanata-rest-client</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.embedded</groupId>
+			<artifactId>jboss-embedded-all</artifactId>
+			<version>${jboss.embedded.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jboss.microcontainer</groupId>
+					<artifactId>jboss-deployers-client-spi</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jboss.embedded</groupId>
+					<artifactId>jboss-embedded</artifactId>
+				</exclusion>
+			</exclusions>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.embedded</groupId>
+			<artifactId>thirdparty-all</artifactId>
+			<version>${jboss.embedded.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.seam.embedded</groupId>
+			<artifactId>jboss-embedded-api</artifactId>
+			<version>${jboss.embedded.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jboss.microcontainer</groupId>
+					<artifactId>jboss-deployers-client-spi</artifactId>
+				</exclusion>
+			</exclusions>
+			<scope>test</scope>
+		</dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.9</version>
+            <scope>test</scope>
         </dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.easytesting</groupId>
+			<artifactId>fest-assert</artifactId>
+			<version>1.3</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<!-- We use testng in DBUnitImporter so can't use test scope here -->
+		</dependency>
 
 		<!-- GWT related dependencies -->
 
@@ -1326,6 +1228,24 @@
 			</exclusions>
 		</dependency>
 
+		<dependency>
+			<groupId>jboss</groupId>
+			<artifactId>jbosssx</artifactId>
+			<version>4.2.2.GA</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>jboss</groupId>
+			<artifactId>jboss-jmx</artifactId>
+			<version>4.2.2.GA</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>jboss</groupId>
+			<artifactId>jboss-system</artifactId>
+			<version>4.2.2.GA</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 </project>

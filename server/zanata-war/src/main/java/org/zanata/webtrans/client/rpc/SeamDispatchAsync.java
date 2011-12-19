@@ -4,6 +4,7 @@ import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
 
 import org.zanata.webtrans.client.Application;
+import org.zanata.webtrans.client.resources.RpcMessages;
 import org.zanata.webtrans.shared.DispatchService;
 import org.zanata.webtrans.shared.DispatchServiceAsync;
 import org.zanata.webtrans.shared.auth.AuthenticationError;

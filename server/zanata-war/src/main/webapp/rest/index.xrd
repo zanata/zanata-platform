@@ -26,4 +26,10 @@
   <Link
     type="application/vnd.zanata.project.iteration.document+xml"
     template="projects/p/{projectSlug}/iterations/i/{iterationSlug}/r"/>
+	
+      <!-- GlossaryService -->
+  <Link
+    type="application/vnd.zanata.glossary+xml"
+    template="glossary/{locale}"/>
+
 </XRD>

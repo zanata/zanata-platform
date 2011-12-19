@@ -86,6 +86,28 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
       return base;
    }
 
+   public IGlossaryResource getGlossaryResource()
+   {
+      return createProxy(IGlossaryResource.class, getGlossaryResourceURI());
+   }
+
+   public URI getGlossaryResourceURI()
+   {
+      try
+      {
+         URL url = new URL(crf.getBase().toURL(), RESOURCE_PREFIX + "/glossary");
+         return url.toURI();
+      }
+      catch (MalformedURLException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (URISyntaxException e)
+      {
+         throw new RuntimeException(e);
+      }
+   }
+
    public IAccountResource getAccount(String username)
    {
       return createProxy(IAccountResource.class, getAccountURI(username));

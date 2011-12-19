@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
@@ -37,6 +38,7 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.model.HApplicationConfiguration;
+import org.zanata.security.AuthenticationType;
 
 @Name("applicationConfiguration")
 @Scope(ScopeType.APPLICATION)
@@ -50,19 +52,43 @@ public class ApplicationConfiguration
    private static Log log = Logging.getLog(ApplicationConfiguration.class);
 
    private Map<String, String> configValues = new HashMap<String, String>();
+   
+   private boolean debug;
+   private boolean hibernateStatistics = false;
+   private int authenticatedSessionTimeoutMinutes = 0;
+   private String version;
+   private String buildTimestamp;
+   private boolean enableCopyTrans = true;
+   private AuthenticationType authType;
+   private boolean useDefaultConfig = false;
 
-   @Observer( { EVENT_CONFIGURATION_CHANGED, ZanataInit.EVENT_Zanata_Startup })
-   public void reload()
+   public ApplicationConfiguration()
+   {
+      this(false);
+   }
+
+   public ApplicationConfiguration(boolean useDefaultConfig)
+   {
+      this.useDefaultConfig = useDefaultConfig;
+   }
+
+   @Observer( { EVENT_CONFIGURATION_CHANGED })
+   @Create
+   public void load()
    {
       log.info("Reloading configuration");
       Map<String, String> configValues = new HashMap<String, String>();
       setDefaults(configValues);
-      ApplicationConfigurationDAO applicationConfigurationDAO = (ApplicationConfigurationDAO) Component.getInstance(ApplicationConfigurationDAO.class, ScopeType.STATELESS);
-      List<HApplicationConfiguration> storedConfigValues = applicationConfigurationDAO.findAll();
-      for (HApplicationConfiguration value : storedConfigValues)
+      
+      if( !this.useDefaultConfig ) 
       {
-         configValues.put(value.getKey(), value.getValue());
-         log.debug("Setting value {0} to {1}", value.getKey(), value.getValue());
+         ApplicationConfigurationDAO applicationConfigurationDAO = (ApplicationConfigurationDAO) Component.getInstance(ApplicationConfigurationDAO.class, ScopeType.STATELESS);
+         List<HApplicationConfiguration> storedConfigValues = applicationConfigurationDAO.findAll();
+         for (HApplicationConfiguration value : storedConfigValues)
+         {
+            configValues.put(value.getKey(), value.getValue());
+            log.debug("Setting value {0} to {1}", value.getKey(), value.getValue());
+         }
       }
       this.configValues = configValues;
    }
@@ -118,6 +144,77 @@ public class ApplicationConfiguration
    public String getHelpContent()
    {
       return configValues.get(HApplicationConfiguration.KEY_HELP_CONTENT);
+   }
+   
+   public String getLoginConfigUrl()
+   {
+      return configValues.get(HApplicationConfiguration.KEY_LOGINCONFIG_URL);
+   }
+   
+   public boolean isInternalAuth()
+   {
+      return this.authType != null && this.authType == AuthenticationType.INTERNAL;
+   }
+   
+   public boolean isFedoraOpenIdAuth() 
+   {
+      return this.authType != null && this.authType == AuthenticationType.FEDORA_OPENID;
+   }
+   
+   public boolean isKerberosAuth()
+   {
+      return this.authType != null && this.authType == AuthenticationType.KERBEROS;
+   }
+   
+   public String getAuthenticationType()
+   {
+      String authTypeStr = AuthenticationType.JAAS.toString();
+      
+      if( this.authType != null )
+      {
+         authTypeStr = this.authType.toString();
+      }
+      return authTypeStr;
+   }
+
+   public boolean isDebug()
+   {
+      return debug;
+   }
+
+   public boolean isHibernateStatistics()
+   {
+      return hibernateStatistics;
+   }
+
+   public int getAuthenticatedSessionTimeoutMinutes()
+   {
+      return authenticatedSessionTimeoutMinutes;
+   }
+
+   public String getVersion()
+   {
+      return version;
+   }
+   
+   void setVersion( String version )
+   {
+      this.version = version;
+   }
+
+   public String getBuildTimestamp()
+   {
+      return buildTimestamp;
+   }
+   
+   void setBuildTimestamp( String buildTimestamp )
+   {
+      this.buildTimestamp = buildTimestamp;
+   }
+
+   public boolean getEnableCopyTrans()
+   {
+      return enableCopyTrans;
    }
 
 }

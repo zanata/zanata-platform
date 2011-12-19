@@ -1,0 +1,20 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>null</groupId>
+  <artifactId>null</artifactId>
+  <version>0</version>
+ 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-maven-plugin</artifactId>
+        <version>1.5-SNAPSHOT</version>
+        <configuration>
+           <glossaryFile>fuel_hi.po</glossaryFile>
+           <transLang>hi</transLang>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

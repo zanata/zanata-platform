@@ -14,12 +14,13 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>#{messages['jsf.ZanataMainTitle']}</title>
 		<link rel="shortcut icon"
-		  href="#{request.contextPath}/img/favicon.ico" type="image/x-icon" />
+		  href="#{request.contextPath}/public-img/favicon.ico" type="image/x-icon" />
 		<a:loadStyle src="/stylesheet/reset-fonts-grids.css" />
 		<a:loadStyle src="/stylesheet/base-min.css" />
 		<a:loadStyle src="/stylesheet/theme.css" />
 		<a:loadStyle src="/stylesheet/zanata.css" />
 		<a:loadStyle src="/stylesheet/tabs.css" />
+		<a:loadStyle src="/stylesheet/zanata-theme.css" />
 		<ui:insert name="head" />
 	</head>
 
@@ -29,7 +30,7 @@
 			<div id="banner">
         		<div id="headerlogo">
 					<s:link view="/home.xhtml" propagation="none">
-						<img src="#{requestContextPath}/img/logo.png" alt="#{messages['jsf.ZanataMainDescription']}" />
+						<img src="#{requestContextPath}/public-img/logo.png" alt="#{messages['jsf.ZanataMainDescription']}" />
 					</s:link>
 				</div>
         		<div id="header_top_right">
@@ -40,8 +41,8 @@
 					value="#{messages['jsf.SignIn']}" propagation="none" />
 					<rich:spacer width="10px" />
 					<s:link id="Register" view="/account/register.xhtml"
-					value="#{messages['jsf.Register']}" propagation="none" rendered="#{zanataInit.internalAuthentication}"/>
-					<s:fragment rendered="#{not zanataInit.internalAuthentication}">
+					value="#{messages['jsf.Register']}" propagation="none" rendered="#{applicationConfiguration.internalAuth}"/>
+					<s:fragment rendered="#{not applicationConfiguration.internalAuth}">
 					<a href="#{applicationConfiguration.registerPath}">#{messages['jsf.Register']}</a>
 					</s:fragment>
 					</s:fragment>
@@ -51,7 +52,7 @@
 				<div id="loading_top_right">
 					<a:status>
 					<f:facet name="start">
-					<h:graphicImage value="/img/loading.gif" />
+					<h:graphicImage value="/public-img/loading.gif" />
 					</f:facet>
 					</a:status>
 				</div>
@@ -63,8 +64,7 @@
 				<ui:param name="projectName" value="zanata" />
 				</ui:include>
 			</div>
-			
-			     
+			   
 
 			<div id="bd">
 			    <ui:include src="search_panel.xhtml" />

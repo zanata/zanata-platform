@@ -10,10 +10,8 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
-import org.zanata.model.HTextFlow;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
-import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.rpc.EditingTranslationAction;
 import org.zanata.webtrans.shared.rpc.EditingTranslationResult;
@@ -37,9 +35,11 @@ public class EditTransUnitHandler extends AbstractActionHandler<EditingTranslati
    public EditingTranslationResult execute(EditingTranslationAction action, ExecutionContext context) throws ActionException
    {
       ZanataIdentity.instance().checkLoggedIn();
-      HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
+      // HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class,
+      // action.getTransUnitId().getValue());
 
-      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
+      // TranslationWorkspace workspace =
+      // translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
 
       // If TransUnit is not editing, you can start editing now.
       // if(!workspace.containTransUnit(action.getTransUnitId()) &&

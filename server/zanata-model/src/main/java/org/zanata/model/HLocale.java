@@ -143,21 +143,35 @@ public class HLocale extends ModelEntityBase implements Serializable
    {
       return new ULocale(this.localeId.getId());
    }
+   
+   @Override
+   public String toString()
+   {
+      return "HLocale(id="+id+" "+localeId.getId()+")";
+   }
 
    @Override
    public int hashCode()
    {
-      return localeId == null ? super.hashCode() : localeId.hashCode();
+      final int prime = 31;
+      int result = super.hashCode();
+      result = prime * result + (active ? 1231 : 1237);
+      result = prime * result + ((localeId == null) ? 0 : localeId.hashCode());
+      return result;
    }
 
-   @Override
+    @Override
    public boolean equals(Object obj)
    {
       if (this == obj)
          return true;
+      if (!super.equals(obj))
+         return false;
       if (getClass() != obj.getClass())
          return false;
       HLocale other = (HLocale) obj;
+      if (active != other.active)
+         return false;
       if (localeId == null)
       {
          if (other.localeId != null)
@@ -166,12 +180,6 @@ public class HLocale extends ModelEntityBase implements Serializable
       else if (!localeId.equals(other.localeId))
          return false;
       return true;
-   }
-   
-   @Override
-   public String toString()
-   {
-      return "HLocale(id="+id+" "+localeId.getId()+")";
    }
 
 }

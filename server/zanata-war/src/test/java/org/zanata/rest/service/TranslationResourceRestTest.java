@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.ZanataInit;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.ZanataRestTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
@@ -82,7 +82,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    IMocksControl mockControl = EasyMock.createControl();
    Identity mockIdentity = mockControl.createMock(Identity.class);
 
-   ZanataInit zanataInit;
+   ApplicationConfiguration applicationConfiguration;
    ProjectIterationDAO projectIterationDAO;
    DocumentDAO documentDAO;
    TextFlowDAO textFlowDAO;
@@ -114,16 +114,17 @@ public class TranslationResourceRestTest extends ZanataRestTest
    @Override
    protected void prepareDBUnitOperations()
    {
-      beforeTestOperations.add(new DataSetOperation("META-INF/testdata/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("META-INF/testdata/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
    @SuppressWarnings("serial")
    @Override
    protected void prepareResources()
    {
-      this.zanataInit = new ZanataInit();
+      this.applicationConfiguration = new ApplicationConfiguration(true);
       this.projectIterationDAO = new ProjectIterationDAO(getSession());
+      this.projectDAO = new ProjectDAO(getSession());
       this.documentDAO = new DocumentDAO(getSession());
       this.textFlowDAO = new TextFlowDAO(getSession());
       this.textFlowTargetDAO = new TextFlowTargetDAO(getSession());
@@ -155,8 +156,9 @@ public class TranslationResourceRestTest extends ZanataRestTest
 
       // @formatter:off
       TranslationResourcesService obj = new TranslationResourcesService(
-            zanataInit,
+            applicationConfiguration,
             projectIterationDAO,
+            projectDAO,
             documentDAO,
             textFlowDAO,
             textFlowTargetDAO,
@@ -713,8 +715,22 @@ public class TranslationResourceRestTest extends ZanataRestTest
       ClientResponse<List<ResourceMeta>> response = badTransResource.get(null);
       assertThat(response.getStatus(), is(404));
    }
+   
+   @Test
+   public void putUnexpectedEncodingDocument() throws Exception
+   {
+      Resource doc = this.createSourceDoc("DocumentWithUnexpectedEncoding", true);
+      ResourceTestUtil.addPoHeader(doc, "Content-Type", "application/x-publican; charset=UNACCEPTABLE");
+      ClientResponse<String> response = this.putResource(doc, "gettext");
+      assertThat(response.getEntity(), containsString("warning"));
+   }
 
    // END of tests
+   
+   private ClientResponse<String> putResource( Resource res, String extensions )
+   {
+      return transResource.putResource(res.getName(), res, new StringSet( extensions ));
+   }
 
    private void expectDocs(boolean checkRevs, boolean checkLinksIgnored, Resource... docs)
    {
@@ -804,6 +820,10 @@ public class TranslationResourceRestTest extends ZanataRestTest
          ResourceTestUtil.clearRevs(actualDoc);
          ResourceTestUtil.clearRevs(expectedDoc);
       }
+      
+      // Clear Po Headers since Zanata will generate custom ones
+      ResourceTestUtil.clearPoTargetHeaders(actualDoc, expectedDoc);
+
       Assertions.assertThat(actualDoc.toString()).isEqualTo(expectedDoc.toString());
    }
 
@@ -909,10 +929,12 @@ public class TranslationResourceRestTest extends ZanataRestTest
       refs.add("ref1.xml:21");
 
       Resource doc = newDoc(id, textflow);
-      PoHeader poHeader = doc.getExtensions(true).findOrAddByType(PoHeader.class);
+      PoHeader poHeader = new PoHeader(); 
       poHeader.setComment("poheader comment");
       List<HeaderEntry> poEntries = poHeader.getEntries();
       poEntries.add(new HeaderEntry("Project-Id-Version", "en"));
+      poEntries.add(new HeaderEntry("Content-Type", "application/x-publican; charset=UTF-8\n"));
+      doc.getExtensions(true).add(poHeader);
 
       log.debug("{}", doc);
       Response response = transResource.putResource(id, doc, extGettextComment);
@@ -927,10 +949,11 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TextFlowTarget target = newTextFlowTarget("FOOD", "Sauerkraut", "translator comment");
       tr.getTextFlowTargets().add(target);
 
-      PoTargetHeader targetHeader = tr.getExtensions(true).findOrAddByType(PoTargetHeader.class);
+      PoTargetHeader targetHeader = new PoTargetHeader();
       targetHeader.setComment("target comment");
       List<HeaderEntry> entries = targetHeader.getEntries();
       entries.add(new HeaderEntry("Project-Id-Version", "ja"));
+      tr.getExtensions(true).add(targetHeader);
 
       transResource.putTranslations(id, DE, tr, extGettextComment);
 

@@ -1,0 +1,28 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:f="urn:import:org.zanata.webtrans.client">
+	<ui:style>
+        .headerLabel {
+            padding-right:5px;
+            padding-top:5px;	
+            font-weight:bold;
+        }
+    </ui:style>
+        
+	<g:LayoutPanel>
+		<g:layer top="0px" height="30px">
+			<g:HorizontalPanel>
+				<g:TextBox ui:field="tmTextBox" />
+				<g:CheckBox ui:field="phraseButton"/>
+				<g:Button ui:field="searchButton"/>
+				<g:Button ui:field="clearButton"/>
+			</g:HorizontalPanel>
+		</g:layer>
+		<g:layer top="25px" bottom="0px">
+			<g:ScrollPanel>
+				<g:FlexTable ui:field="resultTable"/>
+			</g:ScrollPanel>
+		</g:layer>
+	</g:LayoutPanel>
+</ui:UiBinder> 

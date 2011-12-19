@@ -20,9 +20,6 @@
  */
 package org.zanata.webtrans.client.editor;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 

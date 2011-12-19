@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>1.4.4-SNAPSHOT</version>
+    <version>1.5-SNAPSHOT</version>
     <relativePath>../zanata-parent/pom.xml</relativePath>
   </parent>
 
@@ -19,7 +19,6 @@
 	</scm>
 
   <modules>
-    <module>zanata-adapter-po</module>
     <module>zanata-adapter-properties</module>
     <module>zanata-adapter-xliff</module>
     <module>zanata-client-commands</module>

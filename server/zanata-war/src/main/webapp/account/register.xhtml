@@ -10,7 +10,7 @@
     template="../WEB-INF/layout/template.xhtml">
 
   <ui:define name="center_content">
-    <a4j:form id="registerForm" rendered="#{zanataInit.internalAuthentication}">
+    <a4j:form id="registerForm" rendered="#{applicationConfiguration.internalAuth}">
       <s:token allowMultiplePosts="true" />
       <rich:panel>
         <f:facet name="header">#{messages['jsf.SignUp']}</f:facet>
@@ -21,7 +21,7 @@
                       value="#{register.person.name}">
                <a4j:support event="onblur" reRender="nameField" ajaxSingle="true"/>
             </h:inputText>
-            <h:graphicImage id="nameHelp" value="../img/msginfo.png" styleClass="input_help">
+            <h:graphicImage id="nameHelp" value="../public-img/msginfo.png" styleClass="input_help">
               <rich:toolTip>
                 #{messages['jsf.NameToolTip']}
               </rich:toolTip>
@@ -34,7 +34,7 @@
                       value="#{register.person.email}">
                <a4j:support event="onblur" reRender="emailField" ajaxSingle="true"/>
             </h:inputText>
-            <h:graphicImage id="emailHelp" value="../img/msginfo.png" styleClass="input_help">
+            <h:graphicImage id="emailHelp" value="../public-img/msginfo.png" styleClass="input_help">
               <rich:toolTip>
                 #{messages['jsf.EmailToolTip']}
               </rich:toolTip>
@@ -47,7 +47,7 @@
                       value="#{register.username}">
                <a4j:support event="onblur" reRender="usernameField" ajaxSingle="true"/>
             </h:inputText>
-            <h:graphicImage id="usernameHelp" value="../img/msginfo.png" styleClass="input_help">
+            <h:graphicImage id="usernameHelp" value="../public-img/msginfo.png" styleClass="input_help">
               <rich:toolTip>
                 #{messages['jsf.UsernameToolTip']}
               </rich:toolTip>
@@ -90,7 +90,7 @@
       </rich:panel>
     </a4j:form>
     
-    <rich:modalPanel id="termsOfUse" width="640" height="480" rendered="#{not identity.loggedIn and zanataInit.internalAuthentication}" >
+    <rich:modalPanel id="termsOfUse" width="640" height="480" rendered="#{not identity.loggedIn and applicationConfiguration.internalAuth}" >
       <f:facet name="header">
         <h:panelGroup>
           <h:outputText value="#{messages['jsf.TermsOfUse']}"/>
@@ -98,7 +98,7 @@
       </f:facet>
       <f:facet name="controls">
         <h:panelGroup>
-          <h:graphicImage value="../img/close.gif" styleClass="hidelink" id="hideTermsLink"/>
+          <h:graphicImage value="../public-img/close.gif" styleClass="hidelink" id="hideTermsLink"/>
           <rich:componentControl for="termsOfUse" attachTo="hideTermsLink" operation="hide" event="onclick"/>
         </h:panelGroup>
       </f:facet>
@@ -111,7 +111,7 @@
       </h:panelGroup>
     </rich:modalPanel>
  
-    <rich:panel rendered="#{not zanataInit.internalAuthentication}">
+    <rich:panel rendered="#{not applicationConfiguration.internalAuth}">
           <h:outputText value="#{messages['jsf.PleaseContactAdministrationToGetRegistrationLink']}"/>
     </rich:panel>
    

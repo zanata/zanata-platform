@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
+import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
@@ -44,12 +45,9 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
    private final Label sourceLabel;
    private TransUnit value;
 
-   private final NavigationMessages messages;
-
-   public SourcePanel(TransUnit value, NavigationMessages messages)
+   public SourcePanel(TransUnit value, TableResources resources, NavigationMessages messages)
    {
       this.value = value;
-      this.messages = messages;
       panel = new HorizontalPanel();
       panel.setSize("100%", "100%");
 

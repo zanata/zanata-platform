@@ -30,6 +30,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.type.ImmutableType;
 import org.hibernate.type.LiteralType;
+import org.hibernate.type.StringType;
 import org.zanata.common.LocaleId;
 
 public class LocaleIdType extends ImmutableType implements LiteralType
@@ -40,13 +41,13 @@ public class LocaleIdType extends ImmutableType implements LiteralType
    @Override
    public Object get(ResultSet rs, String name) throws HibernateException, SQLException
    {
-      return fromStringValue((String) Hibernate.STRING.get(rs, name));
+      return fromStringValue((String) new StringType().get(rs, name));
    }
 
    @Override
    public void set(PreparedStatement st, Object value, int index) throws HibernateException, SQLException
    {
-      Hibernate.STRING.set(st, value.toString(), index);
+      new StringType().set(st, value.toString(), index);
    }
 
    @Override
@@ -71,7 +72,7 @@ public class LocaleIdType extends ImmutableType implements LiteralType
    @Override
    public int sqlType()
    {
-      return Hibernate.STRING.sqlType();
+      return new StringType().sqlType();
    }
 
    @Override
@@ -95,7 +96,7 @@ public class LocaleIdType extends ImmutableType implements LiteralType
    @Override
    public String objectToSQLString(Object value, Dialect dialect) throws Exception
    {
-      return ((LiteralType) Hibernate.STRING).objectToSQLString(value.toString(), dialect);
+      return ((LiteralType) new StringType()).objectToSQLString(value.toString(), dialect);
    }
 
 }

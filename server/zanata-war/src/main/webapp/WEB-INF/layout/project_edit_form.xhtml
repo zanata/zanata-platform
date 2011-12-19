@@ -19,7 +19,7 @@
                          valueChangeListener="#{projectHome.verifySlugAvailable}">
               <a4j:support event="onblur" reRender="slugField" ajaxSingle="true"/>
             </h:inputText>
-            <h:graphicImage id="slugHelp" value="/img/msginfo.png" styleClass="input_help">
+            <h:graphicImage id="slugHelp" value="/public-img/msginfo.png" styleClass="input_help">
 	        <rich:toolTip>
 	          <em><code>#{messages['jsf.ProjectIdExample']}</code></em>
 	        </rich:toolTip>
@@ -51,6 +51,11 @@
             </rich:editor>
         </s:decorate>
 	
+	    <s:decorate id="obsoleteField" template="edit.xhtml" rendered="#{projectHome.checkPermission('mark-obsolete')}">
+	        <ui:define name="label">#{messages['jsf.Obsolete']}</ui:define>
+	        <h:selectBooleanCheckbox id="obsolete" value="#{projectHome.instance.obsolete}"/>
+	    </s:decorate>
+                        
         <div style="clear:both"></div>
 
     </rich:panel>

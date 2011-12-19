@@ -63,7 +63,7 @@ public class TranslationsResourceTestObjectFactory
    public TranslationsResource getPoTargetHeaderTextFlowTargetTest()
    {
       TranslationsResource sr = getTestObject();
-      PoTargetHeader poTargetHeader = new PoTargetHeader("target header comment\nAdmin user <root@localhost>, 2011. #zanata", new HeaderEntry("ht", "vt1"), new HeaderEntry("th2", "tv2"));
+      PoTargetHeader poTargetHeader = new PoTargetHeader("target header comment\nAdmin user <root@localhost>, 2011. #zanata", new HeaderEntry("ht", "vt1"), new HeaderEntry("th2", "tv2"), new HeaderEntry("Content-Type","charset=UTF-8"));
 
       sr.getExtensions(true).add(poTargetHeader);
       return sr;

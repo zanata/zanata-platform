@@ -48,7 +48,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.util.ShortString;
 import org.zanata.webtrans.server.ActionHandlerFor;
-import org.zanata.webtrans.shared.model.TranslationMemoryItem;
+import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
@@ -82,18 +82,18 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 
       LocaleId localeID = action.getLocaleId();
       HLocale hLocale = localeServiceImpl.getByLocaleId(localeID);
-      ArrayList<TranslationMemoryItem> results;
+      ArrayList<TranslationMemoryGlossaryItem> results;
 
       try
       {
          List<Long> translatedIds = textFlowDAO.getIdsByTargetState(localeID, ContentState.Approved);
          List<Object[]> matches = textFlowDAO.getSearchResult(searchText, searchType, translatedIds, MAX_RESULTS);
-         Map<TMKey, TranslationMemoryItem> matchesMap = new LinkedHashMap<TMKey, TranslationMemoryItem>();
+         Map<TMKey, TranslationMemoryGlossaryItem> matchesMap = new LinkedHashMap<TMKey, TranslationMemoryGlossaryItem>();
          for (Object[] match : matches)
          {
             float score = (Float) match[0];
             HTextFlow textFlow = (HTextFlow) match[1];
-            if (textFlow == null)
+            if (textFlow == null || textFlow.getDocument().getProjectIteration().isObsolete() || textFlow.getDocument().getProjectIteration().getProject().isObsolete())
             {
                continue;
             }
@@ -108,15 +108,15 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 
             int percent = (int) (100 * LevenshteinUtil.getSimilarity(searchText, textFlowContent));
             TMKey key = new TMKey(textFlowContent, targetContent);
-            TranslationMemoryItem item = matchesMap.get(key);
+            TranslationMemoryGlossaryItem item = matchesMap.get(key);
             if (item == null)
             {
-               item = new TranslationMemoryItem(textFlowContent, targetContent, score, percent);
+               item = new TranslationMemoryGlossaryItem(textFlowContent, targetContent, score, percent);
                matchesMap.put(key, item);
             }
             item.addTransUnitId(textFlow.getId());
          }
-         results = new ArrayList<TranslationMemoryItem>(matchesMap.values());
+         results = new ArrayList<TranslationMemoryGlossaryItem>(matchesMap.values());
       }
       catch (ParseException e)
       {
@@ -129,18 +129,18 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
             // escaping failed!
             log.error("Can't parse query '" + searchText + "'", e);
          }
-         results = new ArrayList<TranslationMemoryItem>(0);
+         results = new ArrayList<TranslationMemoryGlossaryItem>(0);
       }
 
       /**
        * NB just because this Comparator returns 0 doesn't mean the matches are
        * identical.
        */
-      Comparator<TranslationMemoryItem> comp = new Comparator<TranslationMemoryItem>()
+      Comparator<TranslationMemoryGlossaryItem> comp = new Comparator<TranslationMemoryGlossaryItem>()
       {
 
          @Override
-         public int compare(TranslationMemoryItem m1, TranslationMemoryItem m2)
+         public int compare(TranslationMemoryGlossaryItem m1, TranslationMemoryGlossaryItem m2)
          {
             int result;
             result = compare(m1.getSimilarityPercent(), m2.getSimilarityPercent());

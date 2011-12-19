@@ -34,8 +34,8 @@ public class TextFlowFilterFactory
    @Factory
    public Filter getFilter()
    {
-      TextFlowIdFilter filter = new TextFlowIdFilter();
-      filter.setTextFlowIds(this.translatedIds);
+      IdFilter filter = new IdFilter();
+      filter.setIds(this.translatedIds);
       return filter;
    }
 

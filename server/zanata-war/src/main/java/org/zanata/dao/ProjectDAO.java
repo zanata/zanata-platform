@@ -45,7 +45,21 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
    @SuppressWarnings("unchecked")
    public List<HProject> getOffsetListByCreateDate(int offset, int count)
    {
-      return getSession().createCriteria(HProject.class).addOrder(Order.desc(ORDERBY_TIMESTAMP)).setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getOffsetListByCreateDate").list();
+      return getSession().createCriteria(HProject.class).addOrder(Order.desc(ORDERBY_TIMESTAMP)).setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getAllProjectOffsetListByCreateDate").list();
+   }
+
+   @SuppressWarnings("unchecked")
+   public List<HProject> getFilteredOffsetListByCreateDate(int offset, int count)
+   {
+      return getSession().createCriteria(HProject.class).addOrder(Order.desc(ORDERBY_TIMESTAMP)).add(Restrictions.eq("obsolete", false)).setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getOffsetListByCreateDate").list();
+   }
+
+   public int getFilteredProjectSize()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HProject as p where p.obsolete = :obsolete").setParameter("obsolete", false).uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
    }
 
    public int getProjectSize()

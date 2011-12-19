@@ -2,11 +2,11 @@ package org.zanata.webtrans.client.ui;
 
 import java.util.Comparator;
 
-import org.zanata.webtrans.client.DocumentListView;
-import org.zanata.webtrans.client.DocumentNode;
-import org.zanata.webtrans.client.Resources;
-import org.zanata.webtrans.client.TransUnitCountGraph;
-import org.zanata.webtrans.client.WebTransMessages;
+import org.zanata.webtrans.client.history.HistoryToken;
+import org.zanata.webtrans.client.presenter.AppPresenter.Display.MainView;
+import org.zanata.webtrans.client.resources.Resources;
+import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.view.DocumentListView;
 import org.zanata.webtrans.shared.util.ObjectUtil;
 
 import com.google.gwt.cell.client.AbstractCell;
@@ -21,6 +21,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.History;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -149,8 +150,10 @@ public final class DocumentListTable
          {
             if (selected && ObjectUtil.equals(object, super.getSelectedObject()))
             {
-               // fire event on re-selection
-               SelectionChangeEvent.fire(this);
+               // switch to editor (via history) on re-selection
+               HistoryToken token = HistoryToken.fromTokenString(History.getToken());
+               token.setView(MainView.Editor);
+               History.newItem(token.toTokenString());
             }
             super.setSelected(object, selected);
          }

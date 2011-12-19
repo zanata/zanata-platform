@@ -103,8 +103,6 @@
 }
 .ui-tabs-nav a, .ui-tabs-nav a span {
     display: block;
-
-    /*background: transparent url(../img/tab_grey.png) no-repeat;*/
 }
 .ui-tabs-nav li a {
     margin: 1px 0 0; /* position: relative makes opacity fail for disabled tab in IE */
@@ -187,7 +185,7 @@
 }
 .ui-tabs-loading em {
     padding: 0 0 0 20px;
-    background: url(../img/loading.gif) no-repeat 0 50%;
+    background: url(../public-img/loading.gif) no-repeat 0 50%;
 }
 
 /* Additional IE specific bug fixes... */
@@ -280,4 +278,4 @@
 .menu ul{ margin-left:10px; height:40px; line-height:40px;}
 .menu ul li a:link,.menu ul li a:visited{ display:inline-block; width:150px; text-align:center; /*color:#fff*/}
 .menu ul li a:hover{ /* color:#FFF;*/ text-decoration:none;}
-.menu ul li a:link.selected,.menu ul li a:visited.selected{ background:url(../img/menu_active_bg.png) repeat-x left top; font-weight:bold}
+.menu ul li a:link.selected,.menu ul li a:visited.selected{ background:url(../public-img/menu_active_bg.png) repeat-x left top; font-weight:bold}

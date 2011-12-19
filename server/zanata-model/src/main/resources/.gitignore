@@ -1,0 +1,2 @@
+# this file makes git accept an empty directory, otherwise it will
+# automatically remove it, which is invalid for maven.

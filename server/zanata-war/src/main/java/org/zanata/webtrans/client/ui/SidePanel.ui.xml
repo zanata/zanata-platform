@@ -1,0 +1,27 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:f="urn:import:org.zanata.webtrans.client">
+
+	<ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources" />
+
+	<ui:style>
+		.sidePanel {
+			background-color: #ffffff;
+			border: 2px solid #e0e8ee;
+			border-radius: 5px;
+		}
+		
+	</ui:style>
+	
+	
+	       <g:SplitLayoutPanel ui:field="mainPanel" styleName="{style.sidePanel}">
+	           <g:center size="200" min-height="20px">
+                   <g:LayoutPanel ui:field="editorOptionsContainer"/>
+               </g:center>
+	           <g:south size="200" min-height="20px">
+	               <g:LayoutPanel ui:field="validationOptionsContainer"/>
+	           </g:south>
+	       </g:SplitLayoutPanel>
+
+
+</ui:UiBinder> 

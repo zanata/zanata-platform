@@ -6,55 +6,85 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j"
     template="../WEB-INF/layout/template.xhtml">
 
+<ui:define name="head">
+</ui:define>
+
 <ui:define name="center_content">
+    <s:decorate id="main_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 
-    <h1>#{messages['jsf.ProjectId']}: #{projectHome.instance.slug}</h1>
-    <h1>#{messages['jsf.Name']}: #{projectHome.instance.name}</h1>
+    <s:fragment rendered="#{!projectHome.instance.obsolete}">
+        <h1>#{messages['jsf.ProjectId']}: #{projectHome.instance.slug}</h1>
+        <h1>#{messages['jsf.Name']}: #{projectHome.instance.name}</h1>
+    </s:fragment>
+    
+    <s:fragment rendered="#{projectHome.instance.obsolete}">
+        <h1>#{messages['jsf.ProjectId']}: <span class="obsolete">#{projectHome.instance.slug}</span></h1>
+        <h1>#{messages['jsf.Name']}: <span class="obsolete">#{projectHome.instance.name}</span></h1>
+    </s:fragment>
 
     <s:formattedText id="project-home-content" value="#{projectHome.instance.homeContent}"></s:formattedText>
     <h:outputText value="#{projectHome.instance.description}" rendered="#{empty projectHome.instance.homeContent}"/>
 
-    <s:fragment rendered="#{projectHome.retiredIterations.size > 0}">
-      <h2>#{messages['jsf.ActiveIterations']}</h2>
+    <rich:spacer height="10px" />
+    
+    <s:fragment rendered="#{projectHome.activeIterations.size > 0}">
+        <h2>#{messages['jsf.ActiveIterations']}</h2>
+	    <rich:dataGrid id="activeIterations" columns="1"
+	                   value="#{projectHome.activeIterations}"
+	                   var="_iteration"
+	                   rowKeyVar="_it" >
+	      <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" headerClass="iterationHeader_active">
+	        <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
+	      </rich:simpleTogglePanel>
+	    </rich:dataGrid>
     </s:fragment>
-    <rich:dataGrid id="activeIterations" columns="2"
-                   value="#{projectHome.activeIterations}"
-                   var="_iteration"
-                   columnClasses="grid_col_one_third_width"
-                   >
-      <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
-    </rich:dataGrid>
 
     <s:fragment rendered="#{projectHome.retiredIterations.size > 0}">
-      <h2>#{messages['RetiredIterations']}</h2>
-      <rich:dataGrid id="retiredIterations" columns="2"
+      <h2>#{messages['jsf.RetiredIterations']}</h2>
+      <rich:dataGrid id="retiredIterations" columns="1"
                      value="#{projectHome.retiredIterations}"
-                     var="_iteration"
-                     columnClasses="grid_col_one_third_width">
-        <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
+                     var="_iteration">
+        <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" headerClass="iterationHeader_retired" opened="#{false}">
+          <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
+        </rich:simpleTogglePanel>
       </rich:dataGrid>
     </s:fragment>
+    
+    <s:fragment rendered="#{projectHome.obsoleteIterations.size > 0 and projectIterationAction.checkViewObsolete()}">
+      <h2>#{messages['jsf.ObsoleteIterations']}</h2>
+      <rich:dataGrid id="obsoleteIterations" columns="1"
+                     value="#{projectHome.obsoleteIterations}"
+                     var="_iteration">
+        <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" headerClass="iterationHeader_obsolete" opened="#{false}">
+          <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
+        </rich:simpleTogglePanel>
+      </rich:dataGrid>
+    </s:fragment>
+    
+    </s:decorate>
 </ui:define>
 
 <ui:define name="left_content">
 
   <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
     <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-    <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'update')}" value="#{messages['jsf.EditProject']}" view="/project/edit.xhtml" propagation="none">
+    <s:link styleClass="action_link" rendered="#{projectHome.checkPermission('update')}" value="#{messages['jsf.EditProject']}" view="/project/edit.xhtml" propagation="none">
       <f:param name="slug" value="#{projectHome.instance.slug}"/>
     </s:link>
     <s:link styleClass="action_link" rendered="#{s:hasRole('admin')}" value="#{messages['jsf.project.EditHomePage.label']}" view="/project/homepage_edit.xhtml" title="#{messages['jsf.project.EditHomePage.tooltip']}" propagation="none">
       <f:param name="slug" value="#{projectHome.instance.slug}"/>
     </s:link>
-    <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'add-iteration')}" view="/project/add_iteration.xhtml" value="#{messages['jsf.CreateVersion']}" propagation="none">
+    <s:link styleClass="action_link" rendered="#{projectHome.checkPermission('add-iteration')}" view="/project/add_iteration.xhtml" value="#{messages['jsf.CreateVersion']}" propagation="none">
     	<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
     </s:link>
-    <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'update')}" view="/project/assign_maintainer.xhtml" value="#{messages['jsf.ManageMaintainers']}" propagation="none">
+    <s:link styleClass="action_link" rendered="#{projectHome.checkPermission('update')}" view="/project/assign_maintainer.xhtml" value="#{messages['jsf.ManageMaintainers']}" propagation="none">
     	<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
     </s:link>
+
   </rich:panel>
 
   <rich:panel>

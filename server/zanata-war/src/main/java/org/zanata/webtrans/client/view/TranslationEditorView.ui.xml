@@ -1,0 +1,51 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:f="urn:import:org.zanata.webtrans.client"
+	xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
+	
+	<ui:with field="resources" type="org.zanata.webtrans.client.resources.Resources" />
+	<ui:style>
+		.editor {
+			background-color: #ffffff;
+			border: 2px solid #e0e8ee;
+			border-radius: 5px;
+		}
+		
+		.unitStatus {
+			float: right;
+			width: 100px;
+			height: 1.2em;
+		}
+		
+		.rightText{
+			text-align: right;
+		}
+
+		.centerText{
+			text-align: center;
+		}
+		
+		.pager {
+			text-align: center;
+			display: inline;
+			}
+				
+	</ui:style>
+			<g:LayoutPanel styleName="{style.editor}">
+	            <g:layer left="7px" width="40%" top="2px" height="23px">
+		            <g:LayoutPanel ui:field="filterPanelContainer" />			    
+	            </g:layer>
+				<g:layer width="50%" right="30px" top="2px" height="23px">
+						<g:FlowPanel ui:field="transUnitNavigationContainer"  styleName="{style.centerText}"/>
+				</g:layer>
+				<g:layer top="25px" bottom="2em">
+					<g:LayoutPanel ui:field="editor" />
+				</g:layer>
+				<g:layer bottom="0px" height="2em" left="30px" right="30px">
+					<g:FlowPanel styleName="{style.pager}">
+						<fui:Pager ui:field="pager"/>
+					</g:FlowPanel>
+				</g:layer>
+			</g:LayoutPanel>
+</ui:UiBinder> 

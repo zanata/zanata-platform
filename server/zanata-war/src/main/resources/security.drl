@@ -202,9 +202,51 @@ end
 
 /*****************************************************************************************
 
+  Glossary rules
+  
+******************************************************************************************/
+
+/* 'glossarist' can push */
+rule GlossaristPushGlossary
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(action == "glossary-insert" || action == "glossary-update", granted == false)
+  Role(name == "glossarist")
+then
+  check.grant();
+end
+
+/* 'glossarist-admin' can delete */
+rule GlossaristDeleteGlossary
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(action == "glossary-delete" || action == "glossary-update", granted == false)
+  Role(name == "glossarist-admin")
+then
+  check.grant();
+end
+
+
+/*****************************************************************************************
+
   Language Team Coordinator rules
   
 ******************************************************************************************/
+
+/* Anyone can read Locale members */
+
+rule ReadLocaleMembers
+  no-loop
+  activation-group "permissions"
+when
+  $member: HLocaleMember()
+  check: PermissionCheck(target == $member, action == "read", granted == false)
+then
+  check.grant();
+end
+
 
 /* 'team coordinator' can manage language teams */
 
@@ -212,6 +254,7 @@ rule TeamCoordinatorManageLanguageTeam
   no-loop
   activation-group "permissions"
 when
+  PermissionCheck(action == "manage-language-team")
   authenticatedPerson: HPerson() 
   eval(authenticatedPerson != null)
   $locale: HLocale(
@@ -230,6 +273,9 @@ rule TeamCoordinatorModifyLanguageTeamMembers
   no-loop
   activation-group "permissions"
 when
+  PermissionCheck(action == "insert" || action == "update" || action == "delete", 
+    granted == false)
+  HLocaleMember()
   authenticatedPerson: HPerson() 
   eval(authenticatedPerson != null)
   $member: HLocaleMember(
@@ -238,6 +284,101 @@ when
   check: PermissionCheck(
     target == $member, 
     action == "insert" || action == "update" || action == "delete", 
+    granted == false)
+then
+  check.grant();
+end
+
+
+/*****************************************************************************************
+
+  Mark Project and Project Iteration Obsolete rules
+  
+******************************************************************************************/
+
+rule ViewObsoleteProject
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(target == "HProject", action == "view-obsolete", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+rule ViewProjectObsoleteOption
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(target == "HProject", action == "view-obsolete-option", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+rule MarkProjectObsolete
+  no-loop
+  activation-group "permissions"
+when
+  $project: HProject()
+  check: PermissionCheck(target == $project, action == "mark-obsolete", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+
+rule ViewObsoleteProjectIteration
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(target == "HProjectIteration", action == "view-obsolete", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+rule ViewObsoleteProjectIterationOption
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(target == "HProjectIteration", action == "view-obsolete-option", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+rule MarkProjectIterationObsolete
+  no-loop
+  activation-group "permissions"
+when
+  $iter: HProjectIteration()
+  check: PermissionCheck(target == $iter, action == "mark-obsolete", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+
+/*****************************************************************************************
+
+  File Download rules
+  
+******************************************************************************************/
+
+/* Permissions to download files.
+   NOTE: Currently any authenticated user can download files
+ */
+
+rule TranslatorsDownloadFiles
+  no-loop
+  activation-group "permissions"
+when
+  authenticatedPerson: HPerson()
+  $iteration: HProjectIteration()
+  check: PermissionCheck(
+    target == $iteration, 
+    action == "download-single" || action == "download-all",
     granted == false)
 then
   check.grant();

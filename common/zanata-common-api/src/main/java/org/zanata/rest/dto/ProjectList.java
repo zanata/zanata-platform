@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonValue;
@@ -18,7 +17,6 @@ import org.codehaus.jackson.annotate.JsonValue;
  * 
  */
 @XmlType(name = "projectListType", propOrder = { "projects" })
-@XmlRootElement(name = "projects")
 public class ProjectList implements Serializable, HasSample<ProjectList>
 {
 

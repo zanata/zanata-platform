@@ -1,0 +1,56 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+    xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    
+    <ui:style type="org.zanata.webtrans.client.ui.ValidationMessagePanel.Styles">
+        .container {
+           width:500px;
+        }
+        
+        .header {
+            font-size: 11px;
+            font-weight:bold;
+            text-align:center;
+            background:#F3F2F2;
+            border:1px solid #E0E8EE;
+            color:#686868;
+            font-style:normal;
+            
+        }
+        
+         .header_clickable {
+            font-size: 11px;
+            font-weight:bold;
+            text-align:center;
+            cursor:pointer;
+            background:#F3F2F2;
+            border:1px solid #E0E8EE;
+            color:#686868;
+            font-style:normal;
+        }
+        
+        .content {
+           height:100%;
+           color:#686868;
+           font-style:normal;
+        }
+        
+        .scrollSection {
+	       border-bottom:1px solid #E0E8EE;
+           border-left:1px solid #E0E8EE;
+           border-right:1px solid #E0E8EE;
+        }
+        
+    </ui:style>
+    
+    <g:VerticalPanel styleName="{style.container}">
+        <g:Label ui:field="headerLabel"/>
+        <g:ScrollPanel styleName="{style.scrollSection}">
+            <g:FlowPanel ui:field="contentPanel" styleName="{style.content}"/>
+        </g:ScrollPanel>
+    
+    </g:VerticalPanel>
+    
+    
+
+</ui:UiBinder>

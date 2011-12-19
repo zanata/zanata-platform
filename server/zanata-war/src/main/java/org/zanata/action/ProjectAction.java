@@ -29,32 +29,60 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.Identity;
 import org.zanata.dao.ProjectDAO;
-
+import org.zanata.model.HProject;
+import org.zanata.security.BaseSecurityChecker;
 
 @Name("projectAction")
 @Scope(ScopeType.PAGE)
-public class ProjectAction implements Serializable
+public class ProjectAction extends BaseSecurityChecker implements Serializable
 {
    private static final long serialVersionUID = 1L;
-   private ProjectPagedListDataModel projectPagedListDataModel = new ProjectPagedListDataModel();
+   private ProjectPagedListDataModel projectPagedListDataModel = new ProjectPagedListDataModel(false);
+   private ProjectPagedListDataModel filteredProjectPagedListDataModel = new ProjectPagedListDataModel(true);
+
    private int scrollerPage = 1;
+
    @Logger
    Log log;
+
    @In
    private ProjectDAO projectDAO;
 
+   @In
+   Identity identity;
+
+   private boolean showObsolete = false;
+
+   private HProject securedEntity = null;
+
    public boolean getEmpty()
    {
-      return projectDAO.getProjectSize() == 0;
+      if (checkViewObsoleteOption() && showObsolete)
+      {
+         return projectDAO.getProjectSize() == 0;
+
+      }
+      else
+      {
+         return projectDAO.getFilteredProjectSize() == 0;
+      }
    }
 
    public int getPageSize()
    {
-      return projectPagedListDataModel.getPageSize();
+      if (checkViewObsoleteOption() && showObsolete)
+      {
+         return filteredProjectPagedListDataModel.getPageSize();
+      }
+      else
+      {
+         return projectPagedListDataModel.getPageSize();
+      }
    }
-
 
    public int getScrollerPage()
    {
@@ -68,7 +96,61 @@ public class ProjectAction implements Serializable
 
    public DataModel getProjectPagedListDataModel()
    {
-      return projectPagedListDataModel;
+      if (checkViewObsoleteOption() && showObsolete)
+      {
+         return filteredProjectPagedListDataModel;
+      }
+      else
+      {
+         return projectPagedListDataModel;
+      }
+   }
+
+   public void updateObsolete(HProject project)
+   {
+      securedEntity = project;
+      if (checkPermission("mark-obsolete"))
+      {
+         projectDAO.makePersistent(project);
+         projectDAO.flush();
+
+         if (project.isObsolete())
+         {
+            FacesMessages.instance().add("Marked {0} as obsolete", project.getName());
+         }
+         else
+         {
+            FacesMessages.instance().add("Marked {0} as current", project.getName());
+         }
+      }
+      securedEntity = null;
+   }
+
+   public boolean isShowObsolete()
+   {
+      return showObsolete;
+   }
+   
+   public void setShowObsolete(boolean showObsolete)
+   {
+      this.showObsolete = showObsolete;
+   }
+
+   @Override
+   public Object getSecuredEntity()
+   {
+      return securedEntity;
+   }
+
+   /**
+    * Check permission with target object name and operation
+    * 
+    * @param operation
+    * @return
+    */
+   public boolean checkViewObsoleteOption()
+   {
+      return identity != null && identity.hasPermission("HProject", "view-obsolete-option", null);
    }
 
 }

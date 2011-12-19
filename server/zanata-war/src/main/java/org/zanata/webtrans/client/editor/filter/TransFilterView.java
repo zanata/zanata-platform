@@ -20,9 +20,9 @@
  */
 package org.zanata.webtrans.client.editor.filter;
 
-import org.zanata.webtrans.client.Resources;
+import org.zanata.webtrans.client.resources.Resources;
+import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.ClearableTextBox;
-import org.zanata.webtrans.client.ui.UiMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -45,12 +45,9 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
    @UiField(provided = true)
    ClearableTextBox filterTextBox;
 
-   private final TransFilterMessages messages;
-
    @Inject
    public TransFilterView(final Resources resources, final TransFilterMessages messages, final UiMessages uiMessages)
    {
-      this.messages = messages;
       this.filterTextBox = new ClearableTextBox(resources, uiMessages);
       filterTextBox.setEmptyText(messages.findSourceOrTargetString());
       initWidget(uiBinder.createAndBindUi(this));

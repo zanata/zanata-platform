@@ -1,7 +1,7 @@
 package org.zanata.webtrans.client.ui;
 
-import org.zanata.webtrans.client.Resources;
-import org.zanata.webtrans.client.WebTransMessages;
+import org.zanata.webtrans.client.resources.Resources;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -17,7 +17,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -34,7 +33,7 @@ public class Pager extends Composite implements HasPager
    }
 
    @UiField
-   Anchor firstPage, lastPage, nextPage, prevPage;
+   Image firstPage, lastPage, nextPage, prevPage;
 
    @UiField
    Image firstPageDisabled, lastPageDisabled, nextPageDisabled, prevPageDisabled;
@@ -190,9 +189,9 @@ public class Pager extends Composite implements HasPager
       }
    };
 
-   private void setEnabled(Anchor link, Image disabledLink, boolean enabled)
+   private void setEnabled(Image enabledLink, Image disabledLink, boolean enabled)
    {
-      link.setVisible(enabled);
+      enabledLink.setVisible(enabled);
       disabledLink.setVisible(!enabled);
    }
 

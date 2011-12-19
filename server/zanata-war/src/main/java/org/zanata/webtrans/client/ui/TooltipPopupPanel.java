@@ -1,6 +1,5 @@
 package org.zanata.webtrans.client.ui;
 
-import org.zanata.webtrans.client.TransUnitCountBar;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.i18n.client.LocaleInfo;
@@ -23,6 +22,7 @@ public class TooltipPopupPanel extends PopupPanel
    public TooltipPopupPanel(boolean autoHide)
    {
       super(autoHide);
+      this.setStyleName("transUnitCountTooltip");
       this.setWidget(popUpPanelContents);
    }
 
@@ -30,7 +30,7 @@ public class TooltipPopupPanel extends PopupPanel
    {
       StringBuilder sb = new StringBuilder();
 
-      sb.append("<table class='transUnitCountGraphTooltipTable'>");
+      sb.append("<table class='transUnitCountTooltipTable'>");
 
       // header
       sb.append("<tr>");

@@ -1,0 +1,59 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style>
+		.unitStatus {
+            float: left;
+            padding-right:25px;
+            width: 123px;
+            height: 1.2em;
+        }
+        
+		.approved {
+			background: #099b09;
+			z-index: 0;
+		}
+		
+		.needReview {
+			background: #ffc000;
+			z-index: 0;
+		}
+		
+		.untranslated {
+			background: #e5e5e5;
+			z-index: 0;
+		}
+		
+		.undefined {
+			z-index: 0;
+		}
+		
+		.label {
+			font-weight: bold;
+			text-align: right;
+			font-size: 12px;
+		}
+	
+	</ui:style>
+
+
+	<g:LayoutPanel ui:field='layoutPanel' styleName="{style.unitStatus}">
+		<g:layer left='0' width='0'>
+			<g:FlowPanel ui:field='approvedPanel' styleName="{style.approved}" />
+		</g:layer>
+		<g:layer left='0' width='0'>
+			<g:FlowPanel ui:field='needReviewPanel' styleName="{style.needReview}" />
+		</g:layer>
+		<g:layer left='0' width='0'>
+			<g:FlowPanel ui:field='untranslatedPanel' styleName="{style.untranslated}" />
+		</g:layer>
+		<g:layer left='0' width='100%'>
+			<g:FlowPanel ui:field='undefinedPanel' styleName="{style.undefined}" />
+		</g:layer>
+		<g:layer right='2px' margin-left="auto" width="30px" top="3px" bottom="0">
+			<g:Label ui:field='label' styleName='{style.label}' />
+		</g:layer>
+	</g:LayoutPanel>
+
+</ui:UiBinder> 

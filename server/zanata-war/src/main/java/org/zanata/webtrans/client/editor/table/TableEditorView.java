@@ -26,7 +26,10 @@ import java.util.Set;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.editor.HasPageNavigation;
+import org.zanata.webtrans.client.resources.NavigationMessages;
+import org.zanata.webtrans.client.ui.ValidationMessagePanel;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -248,5 +251,38 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    {
       super.gotoPage(page, forced);
       gotoRow(0, false);
+   }
+
+   @Override
+   public void setShowCopyButtons(boolean showButtons)
+   {
+      this.tableDefinition.setShowCopyButtons(showButtons);
+   }
+
+   @Override
+   public void updateValidationError(TransUnitId id, List<String> errors)
+   {
+      this.tableDefinition.updateValidationMessage(id, errors);
+   }
+
+
+   @Override
+   public ValidationMessagePanel getValidationPanel(TransUnitId id)
+   {
+      return this.tableDefinition.getValidationMessagePanel(id);
+   }
+
+   @Override
+   public void setTransUnitDetails(TransUnit selectedTransUnit)
+   {
+      this.tableDefinition.setTransUnitDetails(selectedTransUnit);
+
+   }
+
+   @Override
+   public void setValidationMessageVisible(TransUnitId id)
+   {
+      this.tableDefinition.setValidationMessageVisible(id);
+
    }
 }

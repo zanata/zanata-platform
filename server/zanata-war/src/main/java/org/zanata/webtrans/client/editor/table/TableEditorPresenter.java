@@ -21,7 +21,6 @@
 package org.zanata.webtrans.client.editor.table;
 
 import static org.zanata.webtrans.client.editor.table.TableConstants.MAX_PAGE_ROW;
-import static org.zanata.webtrans.client.editor.table.TableConstants.PAGE_SIZE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,8 @@ import org.zanata.webtrans.client.action.UndoableTransUnitUpdateAction;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateHandler;
 import org.zanata.webtrans.client.editor.DocumentEditorPresenter;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
-import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
+import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
+import org.zanata.webtrans.client.events.ButtonDisplayChangeEventHandler;
 import org.zanata.webtrans.client.events.CopySourceEvent;
 import org.zanata.webtrans.client.events.CopySourceEventHandler;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
@@ -47,6 +47,7 @@ import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RedoFailureEvent;
+import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TransMemoryCopyEvent;
 import org.zanata.webtrans.client.events.TransMemoryCopyHandler;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
@@ -57,7 +58,11 @@ import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.UndoAddEvent;
 import org.zanata.webtrans.client.events.UndoFailureEvent;
 import org.zanata.webtrans.client.events.UndoRedoFinishEvent;
+import org.zanata.webtrans.client.events.UpdateValidationErrorEvent;
+import org.zanata.webtrans.client.events.UpdateValidationErrorEventHandler;
+import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.ui.ValidationMessagePanel;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
 import org.zanata.webtrans.shared.auth.Identity;
@@ -85,7 +90,7 @@ import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
 import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -125,6 +130,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
       int getPageSize();
 
+      void setShowCopyButtons(boolean showButtons);
+
       void setFindMessage(String findMessage);
 
       void startProcessing();
@@ -136,11 +143,19 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
        *         page, or 0 if no row is selected
        */
       int getSelectedRowNumber();
+
+      void updateValidationError(TransUnitId id, List<String> errors);
+
+      ValidationMessagePanel getValidationPanel(TransUnitId id);
+
+      void setTransUnitDetails(TransUnit selectedTransUnit);
+
+      void setValidationMessageVisible(TransUnitId id);
    }
 
    private DocumentId documentId;
 
-   private TransFilterPresenter.Display transFilterDisplay;
+   // private TransFilterPresenter.Display transFilterDisplay;
 
    private final CachingDispatchAsync dispatcher;
    private final Identity identity;
@@ -266,8 +281,13 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          @Override
          public void onSelection(SelectionEvent<TransUnit> event)
          {
-            TransUnit newSelectedItem = event.getSelectedItem();
-            selectTransUnit(newSelectedItem);
+            if (event.getSelectedItem() != null)
+            {
+               display.setTransUnitDetails(event.getSelectedItem());
+               display.setValidationMessageVisible(event.getSelectedItem().getId());
+               display.getTargetCellEditor().savePendingChange(true);
+               selectTransUnit(event.getSelectedItem());
+            }
          }
       }));
 
@@ -276,15 +296,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          @Override
          public void onDocumentSelected(DocumentSelectionEvent event)
          {
-            if (!event.getDocument().getId().equals(documentId))
-            {
-               display.startProcessing();
-               documentId = event.getDocument().getId();
-               display.getTableModel().clearCache();
-               display.getTableModel().setRowCount(TableModel.UNKNOWN_ROW_COUNT);
-               display.gotoPage(0, true);
-               display.stopProcessing();
-            }
+            loadDocument(event.getDocumentId());
          }
       }));
 
@@ -326,6 +338,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                {
                   Log.info("selected TU updated; clear selection");
                   display.getTargetCellEditor().cancelEdit();
+                  eventBus.fireEvent(new RunValidationEvent(event.getTransUnit().getId(), event.getTransUnit().getSource(), event.getTransUnit().getTarget()));
                }
 
                final Integer rowOffset = getRowOffset(event.getTransUnit().getId());
@@ -365,7 +378,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                      {
                         int pageNum = inProcessing.getCurrentPage();
                         int rowNum = inProcessing.getRowNum();
-                        int row = pageNum * PAGE_SIZE + rowNum;
+                        int row = pageNum * display.getPageSize() + rowNum;
                         Log.info("go to row:" + row);
                         Log.info("go to page:" + pageNum);
                         tableModelHandler.gotoRow(row);
@@ -484,7 +497,33 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
       }));
 
+      registerHandler(eventBus.addHandler(ButtonDisplayChangeEvent.getType(), new ButtonDisplayChangeEventHandler()
+      {
+
+         @Override
+         public void onButtonDisplayChange(ButtonDisplayChangeEvent event)
+         {
+            display.getTargetCellEditor().setShowOperationButtons(event.isShowButtons());
+            display.setShowCopyButtons(event.isShowButtons());
+         }
+      }));
+
+      registerHandler(eventBus.addHandler(UpdateValidationErrorEvent.getType(), new UpdateValidationErrorEventHandler()
+      {
+         @Override
+         public void onUpdate(UpdateValidationErrorEvent event)
+         {
+            if (!event.isUpdateEditorOnly())
+            {
+               display.updateValidationError(event.getId(), event.getErrors());
+            }
+            display.getTargetCellEditor().updateValidationMessagePanel(display.getValidationPanel(event.getId()));
+         }
+      }));
+
       display.gotoFirstPage();
+
+      History.fireCurrentHistoryState();
    }
 
    public Integer getRowOffset(TransUnitId transUnitId)
@@ -595,7 +634,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       @Override
       public void updateRowIndex(int curPage)
       {
-         curRowIndex = curPage * TableConstants.PAGE_SIZE + display.getSelectedRowNumber();
+         curRowIndex = curPage * display.getPageSize() + display.getSelectedRowNumber();
          Log.info("Current Row Index" + curRowIndex);
       }
 
@@ -727,6 +766,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          {
             display.gotoPage(pageNum, false);
          }
+
 
          selectTransUnit(display.getTransUnitValue(rowNum));
          display.gotoRow(rowNum, andEdit);
@@ -1011,6 +1051,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    public void selectTransUnit(TransUnit transUnit)
    {
       tableModelHandler.updateRowIndex(display.getCurrentPage());
+
       if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
       {
          selectedTransUnit = transUnit;
@@ -1030,10 +1071,29 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    public void gotoPrevRow(boolean andEdit)
    {
       tableModelHandler.gotoPrevRow(andEdit);
+
    }
 
    public void gotoNextRow(boolean andEdit)
    {
       tableModelHandler.gotoNextRow(andEdit);
+   }
+
+   /**
+    * Load a document into the editor
+    * 
+    * @param selectDocId id of the document to select
+    */
+   private void loadDocument(DocumentId selectDocId)
+   {
+      if (!selectDocId.equals(documentId))
+      {
+         display.startProcessing();
+         documentId = selectDocId;
+         display.getTableModel().clearCache();
+         display.getTableModel().setRowCount(TableModel.UNKNOWN_ROW_COUNT);
+         display.gotoPage(0, true);
+         display.stopProcessing();
+      }
    }
 }

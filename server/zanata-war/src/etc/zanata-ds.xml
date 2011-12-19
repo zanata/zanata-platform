@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE datasources
+    PUBLIC "-//JBoss//DTD JBOSS JCA Config 1.5//EN"
+    "http://www.jboss.org/j2ee/dtd/jboss-ds_1_5.dtd">
+<datasources>
+  <local-tx-datasource>
+	<jndi-name>zanataDatasource</jndi-name>
+	<connection-url>jdbc:mysql://localhost:3306/zanata?characterEncoding=UTF-8</connection-url>
+    <driver-class>com.mysql.jdbc.Driver</driver-class>
+    <user-name>${mysql.user}</user-name>
+    <password>${mysql.password}</password>
+  </local-tx-datasource>
+</datasources>
+
+<!--
+The three transaction types you can use are:
+
+  local-tx-datasource : Identifies a data source that uses transactions, even distributed 
+                        transactions within the local application server, but does not use 
+                        distributed transactions among multiple application servers.
+                        
+  no-tx-datasource    : Identifies a data source that does not use transactions. This option is not 
+                        shown in the example, but would appear in place of the <local-tx-datasource> 
+                        tag. 
+  
+  xa-datasource       : Identifies a data source that uses distributed transaction among multiple 
+                        application servers. This option is not shown in the example, but would 
+                        appear in place of the <local-tx-datasource> tag. 
+                        
+                        So which transaction type should you use? In most cases you will use  
+                        <local-tx-datasource> because it handles transactions within a single 
+                        application server. If you are clustering your application servers, or want 
+                        to use distributed transactions among multiple application servers, then you 
+                        should use  <xa-datasource>. Note that both  <local-tx-datasource> and  
+                        <xa-datasource> handle distributed transactions which involve multiple 
+                        datasources. The difference is that  <local-tx-datasource> handles them only 
+                        within a single running application server, while  <xa-datasource> handles 
+                        them among many running application servers. On the other end of the 
+                        spectrum, if your applications only read from the database, then using 
+                        <no-tx-datasource> would be appropriate. 
+                        
+                        WHAT IS XA? 
+                        XA is an API defined by The Open Group's Distributed Transaction Processing 
+                        model. This model provides communications mechanisms between a Transaction 
+                        Monitor and several resource managers which perform updates against 
+                        databases. The Transaction Monitor is responsible for coordinating the 
+                        individual transactions handled by the resource managers to ensure 
+                        transactional semantics when multiple resource managers are involved in a 
+                        single transaction. 
+
+                        
+Within the transaction type, you can specify a wide variety of configuration options. The following
+describes the various configuration options in the *-ds.xml file. A complete set of configuration 
+options, along with a description of each option, can be found in the  docs/dtd/jboss-ds_1_5.dtd file.                         
+  
+  jndi-name           : The name used to reference the data source in your application configurations. 
+                        The name is used to look up the data source in the JNDI namespace. The 
+                        "java:" prefix is automatically added to this name, so datasources are not 
+                        available outside the virtual machine.
+                        
+  connection-url      : The database-specific URL to the server.
+                        
+  driver-class        : The driver you are using for your database.
+  
+  xa-datasource-class : The class name for the distributed transaction data source. 
+                        Valid only for xa-datasource
+                        
+  user-name           : The username that is defined to access this data source. In general,
+                        do not use the root username.
+                        
+  password            : The password for the corresponding username.
+  
+  min-pool-size       : The starting pool size for the number of database connections to be allowed 
+                        by the application server, default=0. Note that the application server does 
+                        not open any connections until the first request for a connection, at which 
+                        time it opens this many connections. One way of forcing the connections to be 
+                        established when the application server is started is to write a simple 
+                        service that does nothing but ask for a connection. 
+                        
+  max-pool-size       : The maximum number of open connections maintained by the application server,
+                        default=20. If the application server runs out of connections, it allocates 
+                        a new connection to fulfill that request, until it hits the maximum number of 
+                        connections. At that point it queues the requests until connections are freed. 
+                        Therefore, it is very important that applications close any connections that 
+                        they obtain.
+                        NOTE: The max-pool-zize value must not exceed the max-connections porperty
+                        value in MySql.
+                        
+  idle-timeout-minutes: The amount of time before the connection times out.
+                        If a surplus connection is not in use for this many minutes, then that 
+                        connection is closed. Note that the number of open connections never goes 
+                        below the <min-pool-size>, default=0
+  blocking-timeout-
+  millis              : The amount of time a thread waits on a connection, if all of the connections 
+                        are in use and the maximum connections have been allocated. On a timeout 
+                        the requestor will gett an exception.
+                        
+  track-statements    : A Boolean (true/false) that has the data source monitor for unclosed 
+                        Statements or ResultSets when the connection is returned to the pool, this 
+                        is a debugging feature that should be turned off in production.
+                        
+  new-connection-sql  : An sql statement that is executed against each new connection. 
+                        This can be used to set the connection schema, etc.
+  check-valid-
+  connection-sql      : Identifies a SQL to be executed when the connection is established to 
+                        verify that the connection is valid, e.g. SELECT 1
+                        JBoss will run the SQL statement before handing out the connection from 
+                        the pool. If the SQL fails, the connection will be destroyed/closed and 
+                        new ones will be created. 
+                        MySQLValidConnectionChecker is preferred for newer drivers. This will be run 
+                        before a managed connection is removed from the pool for use by a client. 
+                        See: valid-connection-checker-class-name
+  valid-connection-
+  checker-class-name  : A class that determines if a connection is valid before it is handed out 
+                        from the pool. Should only be used on drivers after 3.22.1 with "ping" 
+                        support. The class specified must implement the 
+                        org.jboss.resource.adapter.jdbc.ValidConnectionChecker interface. Use this 
+                        option instead of check-valid-connection-sql when you want to use more than 
+                        a single SQL statement to check the validity of the connection. Be aware 
+                        that any application making a connection request that causes a connection to 
+                        be established must wait until the connection checker is finished
+                        For MySql the class name is:
+                        org.jboss.resource.adapter.jdbc.vendor.MySQLValidConnectionChecker
+  exception-sorter-
+  class-name          : Identifies a class used to determine if an error number returned by the 
+                        database is fatal. For MySql the class name is:
+                        org.jboss.resource.adapter.jdbc.vendor.MySQLExceptionSorter
+                        
+  type-mapping        : Used by the container-managed persistence (CMP) code to identify the 
+                        database and adjust its database handling accordingly. The name use 
+                        must match one of the names in the standardjbosscmp-jdbc.xml file. 
+                        Additionally, you can add new entries to the standardjbosscmp-jdbc.xml 
+                        to customize the database interaction. 
+                        NOTE that this is used ONLY for EJB 2.1, NOT for EJB 3.
+                        
+  config-property:      Identifies a property to pass to the java.sql.Driver when establishing a 
+                        database connection. Refer to the documentation for your JDBC driver for the 
+                        valid properties. You can provide multiple config-property entries. Valid 
+                        only for local-tx-datasource and no-tx-datasource.    
+  xa-datasource-
+  property            : Identifies a property to pass to the javax.sql.DataSource when establishing 
+                        a database connection. Refer to the documentation for the JDBC driver for 
+                        the valid properties. You can provide multiple xa-datasource-property 
+                        entries. Valid only for xa-datasource.                        
+  prepared-statement-
+  cache-size          : The number of prepared statements to hold in the cache, default=0
+  
+  share-prepared-
+  statements          : If a request creates the same prepared statement more than once in a
+                        given request, should the same prepared statement object be used. Note
+                        that reusing the prepared statement in this case could cause the
+                        application to get unintended results if the application requested the result
+                        set from the first prepared statement after creating the second prepared
+                        statement, default=false
+  transaction-
+  isolation           : Specifies the java.sql.Connection transaction isolation level to use,
+                        unspecified means use the default provided by the database. 
+                        The constants defined in the Connection interface are the possible element 
+                        content values and include:
+                          TRANSACTION_READ_UNCOMMITTED
+                          TRANSACTION_READ_COMMITTED
+                          TRANSACTION_REPEATABLE_READ
+                          TRANSACTION_SERIALIZABLE
+                          TRANSACTION_NONE
+                          
+                        Refer to your database JDBC documentation for a description of each level 
+                        and which levels your database supports.
+                        
+  Notes for MySql:
+  * Use UTF8 charset when creating the database:
+      CREATE DATABASE my_database CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT CHARSET utf8;
+    
+  * Use InnoDb for tables
+      In persistence.xml add this property for hbm2ddl: 
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
+      
+      or if you creates the tables by writing the SQL DDL by hand (you little machocist:):
+        CREATE TABLE `my_database`.`my_table` (
+          `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+          `text` VARCHAR(256) NOT NULL DEFAULT '',
+          PRIMARY KEY (`id`)
+        ) ENGINE = InnoDB;
+
+
+    MySql example:
+    
+    <local-tx-datasource>
+
+        <jndi-name>seam-refimplDatasource</jndi-name>
+        <connection-url>jdbc:mysql://localhost/refimpl_db?characterEncoding=UTF-8</connection-url>
+        <driver-class>com.mysql.jdbc.Driver</driver-class>
+        <user-name>root</user-name>
+        <password></password>
+
+        <min-pool-size>20</min-pool-size>
+
+        // Make sure your MySQL config has that many max_connections!
+             This is the max_threads in default Tomcat server.xml on JBoss AS. //
+        <max-pool-size>250</max-pool-size>
+
+        <blocking-timeout-millis>5000</blocking-timeout-millis>
+
+        // Needs to be smaller than wait_timeout (which is in seconds) in /etc/my.cnf! //
+        <idle-timeout-minutes>2</idle-timeout-minutes>
+
+        // These are the secret ingredients that make it stable! A simple check-valid-connection-sql won't be enough! //
+        <exception-sorter-class-name>com.mysql.jdbc.integration.jboss.ExtendedMysqlExceptionSorter</exception-sorter-class-name>
+        <valid-connection-checker-class-name>com.mysql.jdbc.integration.jboss.MysqlValidConnectionChecker</valid-connection-checker-class-name>
+
+    </local-tx-datasource>
+        
+-->

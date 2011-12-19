@@ -10,6 +10,7 @@
 		  homeContent=""
 		  name="Sample Project"
 		  overrideLocales="FALSE"
+		  obsolete="FALSE"
 	    />
         <HProjectIteration id="1"
 				          versionNum="1"
@@ -20,6 +21,7 @@
                            parentId="[NULL]"
                            project_id="1"
 						  overrideLocales="FALSE"
+						  obsolete="FALSE"
         />
 	   	<HProjectIteration id="2"
 				          versionNum="1"
@@ -30,6 +32,7 @@
                            parentId="[NULL]"
                            project_id="1"
 						  overrideLocales="FALSE"
+						  obsolete="FALSE"
         />
 	    <HProject_Maintainer personId="3" 
                              projectId="1"

@@ -30,12 +30,30 @@ import org.zanata.model.HProject;
 
 public class ProjectPagedListDataModel extends PagedListDataModel<HProject>
 {
+   boolean selectAll = false;
+
+   public ProjectPagedListDataModel(boolean selectAll)
+   {
+      this.selectAll = selectAll;
+   }
+
    @Override
    public DataPage<HProject> fetchPage(int startRow, int pageSize)
    {
       ProjectDAO projectDAO = (ProjectDAO) Component.getInstance(ProjectDAO.class, ScopeType.STATELESS);
-      List<HProject> proj = projectDAO.getOffsetListByCreateDate(startRow, pageSize);
-      return new DataPage<HProject>(projectDAO.getProjectSize(), startRow, proj);
+      List<HProject> proj = null;
+
+      if (selectAll)
+      {
+         proj = projectDAO.getOffsetListByCreateDate(startRow, pageSize);
+         return new DataPage<HProject>(projectDAO.getProjectSize(), startRow, proj);
+      }
+      else
+      {
+         proj = projectDAO.getFilteredOffsetListByCreateDate(startRow, pageSize);
+         return new DataPage<HProject>(projectDAO.getFilteredProjectSize(), startRow, proj);
+      }
+
    }
 
 }

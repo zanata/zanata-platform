@@ -3,7 +3,7 @@ package org.zanata.rest.dto.resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -34,7 +34,7 @@ public class Resource extends AbstractResourceMeta
    }
 
    @XmlElementWrapper(name = "text-flows", required = false)
-   @XmlElementRef
+   @XmlElement(name = "text-flow")
    public List<TextFlow> getTextFlows()
    {
       if (textFlows == null)

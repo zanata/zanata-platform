@@ -5,7 +5,22 @@
 
 	<!-- sso security -->
 
-	<!-- @spnego.security@ -->
+	<!-- @spnego.security.start@
+	
+	<security-constraint>
+	    <web-resource-collection>
+	         <web-resource-name>sign in</web-resource-name>
+	         <url-pattern>/account/*</url-pattern>
+	    </web-resource-collection>
+		<auth-constraint>
+			<role-name>*</role-name>
+		</auth-constraint>
+	</security-constraint>
+	<login-config>
+	    <auth-method>SPNEGO</auth-method>
+	</login-config>
+	
+	@spnego.security.end@ -->
 
 	<!-- RichFaces -->
 	<context-param>
@@ -175,7 +190,19 @@
 		<url-pattern>/webtrans/gwteventservice</url-pattern>
 	</servlet-mapping>
 
-	<!-- @extra.servlets@ -->
+	<!-- @h2console.servlet.start@
+	
+	<servlet>
+		<servlet-name>H2Console</servlet-name>
+		<servlet-class>org.h2.server.web.WebServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>H2Console</servlet-name>
+		<url-pattern>/console/*</url-pattern>
+	</servlet-mapping>
+	
+	@h2console.servlet.end@ -->
 
 	<security-constraint>
 		<display-name>Restrict raw XHTML Documents</display-name>

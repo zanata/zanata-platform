@@ -54,10 +54,13 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
       Collection<HDocument> hDocs = hProjectIteration.getDocuments().values();
       for (HDocument hDoc : hDocs)
       {
-         DocumentId docId = new DocumentId(hDoc.getId());
-         TranslationStats stats = documentDAO.getStatistics(hDoc.getId(), localeId);
-         DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), stats);
-         docs.add(doc);
+         if (action.getFilters() == null || action.getFilters().contains(hDoc.getPath() + hDoc.getName()))
+         {
+            DocumentId docId = new DocumentId(hDoc.getId());
+            TranslationStats stats = documentDAO.getStatistics(hDoc.getId(), localeId);
+            DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), stats);
+            docs.add(doc);
+         }
       }
       return new GetDocumentListResult(iterationId, docs);
    }

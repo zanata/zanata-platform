@@ -29,7 +29,11 @@ import org.zanata.webtrans.client.editor.CheckKey;
 import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.events.EditTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
-import org.zanata.webtrans.client.ui.UserConfigConstants;
+import org.zanata.webtrans.client.events.RunValidationEvent;
+import org.zanata.webtrans.client.events.UpdateValidationErrorEvent;
+import org.zanata.webtrans.client.resources.EditorConfigConstants;
+import org.zanata.webtrans.client.resources.NavigationMessages;
+import org.zanata.webtrans.client.ui.ValidationMessagePanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -42,16 +46,20 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class InlineTargetCellEditor implements CellEditor<TransUnit>
@@ -131,7 +139,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    /**
     * The main grid used for layout.
     */
-   private FlowPanel layoutTable;
+   private FlowPanel topLayoutPanel;
+
+   private VerticalPanel verticalPanel;
 
    private Widget cellViewWidget;
 
@@ -153,12 +163,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private String saveButtonShortcuts;
    private String saveButtonwithEnterShortcuts;
-   private PushButton saveButton, fuzzyButton, cancelButton;
+   private PushButton saveButton, fuzzyButton, cancelButton, validateButton;
+   private ValidationMessagePanel validationMessagePanel;
 
-   /*
-    * The minimum height of the target editor
-    */
-   // private static final int MIN_HEIGHT = 48;
+   private final EventBus eventBus;
 
    /**
     * Construct a new {@link InlineTargetCellEditor} with the specified images.
@@ -167,11 +175,28 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       // Wrap contents in a table
-      layoutTable = new FlowPanel();
-      layoutTable.setWidth("100%");
-      // layoutTable.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
-      // this.eventBus = eventBus;
+      final int REFRESH_INTERVAL = 1000; // ms
+      final Timer runValidationTimer = new Timer()
+      {
+         @Override
+         public void run()
+         {
+            if (isEditing() && isOpened())
+            {
+               eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSource(), textArea.getText(), false));
+            }
+         }
+      };
+
+      verticalPanel = new VerticalPanel();
+      verticalPanel.setWidth("100%");
+      verticalPanel.setHeight("100%");
+
+      topLayoutPanel = new FlowPanel();
+      topLayoutPanel.setWidth("100%");
+
+      this.eventBus = eventBus;
       cancelCallback = callback;
       editRowCallback = rowCallback;
       textArea = new EditorTextArea();
@@ -182,6 +207,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          public void onValueChange(ValueChangeEvent<String> event)
          {
             autoSize();
+            runValidationTimer.schedule(REFRESH_INTERVAL);
          }
 
       });
@@ -199,6 +225,21 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          public void onFocus(FocusEvent event)
          {
             isFocused = true;
+         }
+      });
+
+     
+
+      textArea.addKeyUpHandler(new KeyUpHandler()
+      {
+         @Override
+         public void onKeyUp(KeyUpEvent event)
+         {
+            checkKey.init(event.getNativeEvent());
+            if (checkKey.isUserTyping())
+            {
+               runValidationTimer.schedule(REFRESH_INTERVAL);
+            }
          }
       });
 
@@ -251,12 +292,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             }
             else if (checkKey.isUserTyping())
             {
-               // Resize as user types
                autoSize();
             }
          }
       });
-      layoutTable.add(textArea);
+      topLayoutPanel.add(textArea);
 
       operationsPanel = new HorizontalPanel();
 
@@ -264,6 +304,21 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       operationsPanel.setSpacing(4);
 
       TableResources images = GWT.create(TableResources.class);
+
+      validateButton = new PushButton(new Image(images.cellEditorValidate()));
+      validateButton.setStyleName("gwt-Button");
+      validateButton.setTitle(messages.runValidation());
+      validateButton.addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            if (cellValue != null)
+            {
+               eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSource(), textArea.getText()));
+            }
+         }
+      });
 
       saveButton = new PushButton(new Image(images.cellEditorAccept()));
       saveButton.setStyleName("gwt-Button");
@@ -281,14 +336,16 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       cancelButton.setStyleName("gwt-Button");
       cancelButton.setTitle(messages.editCancelShortcut());
       cancelButton.addClickHandler(cancelHandler);
-      cancelButton.addFocusHandler(new FocusHandler(){
+      cancelButton.addFocusHandler(new FocusHandler()
+      {
          @Override
          public void onFocus(FocusEvent event)
          {
             isCancelButtonFocused = true;
          }
       });
-      cancelButton.addBlurHandler(new BlurHandler(){
+      cancelButton.addBlurHandler(new BlurHandler()
+      {
 
          @Override
          public void onBlur(BlurEvent event)
@@ -297,10 +354,18 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          }
       });
 
+      operationsPanel.add(validateButton);
       operationsPanel.add(saveButton);
       operationsPanel.add(fuzzyButton);
       operationsPanel.add(cancelButton);
-      layoutTable.add(operationsPanel);
+      topLayoutPanel.add(operationsPanel);
+
+      verticalPanel.add(topLayoutPanel);
+
+      validationMessagePanel = new ValidationMessagePanel(messages.validationMessageHeading(), true);
+
+      verticalPanel.add(validationMessagePanel);
+      verticalPanel.setCellVerticalAlignment(validationMessagePanel, HasVerticalAlignment.ALIGN_BOTTOM);
    }
 
    public void cloneAction()
@@ -431,8 +496,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       cellViewWidget = table.getWidget(curRow, curCol);
 
-      // layoutTable.setCellWidth(this.operationsPanel, "20px");
-      table.setWidget(curRow, curCol, layoutTable);
+      table.setWidget(curRow, curCol, verticalPanel);
+
       textArea.setText(cellValue.getTarget());
 
       autoSize();
@@ -441,6 +506,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       textArea.setFocus(true);
       isOpened = true;
       DOM.scrollIntoView(table.getCellFormatter().getElement(curRow, curCol));
+
+      eventBus.fireEvent(new UpdateValidationErrorEvent(cellValue.getId(), true));
    }
 
    public void savePendingChange(boolean cancelIfUnchanged)
@@ -471,7 +538,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    public void saveAndMoveNextState(NavigationType nav)
    {
       savePendingChange(true);
-      
+
       if (untranslatedMode && fuzzyMode)
       {
          gotoFuzzyAndNewRow(nav);
@@ -608,22 +675,37 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
    }
 
+   public void setShowOperationButtons(boolean showButtons)
+   {
+      operationsPanel.setVisible(showButtons);
+   }
+
    public void updateKeyBehaviour(Map<String, Boolean> configMap)
    {
-      untranslatedMode = configMap.get(UserConfigConstants.BUTTON_UNTRANSLATED);
-      fuzzyMode = configMap.get(UserConfigConstants.BUTTON_FUZZY);
-
-      isEnterKeySavesEnabled = configMap.get(UserConfigConstants.BUTTON_ENTER);
-      if (isEnterKeySavesEnabled)
+      if (configMap.containsKey(EditorConfigConstants.BUTTON_FUZZY) && configMap.containsKey(EditorConfigConstants.BUTTON_UNTRANSLATED))
       {
-         saveButton.setTitle(saveButtonwithEnterShortcuts);
-      }
-      else
-      {
-         saveButton.setTitle(saveButtonShortcuts);
+         untranslatedMode = configMap.get(EditorConfigConstants.BUTTON_UNTRANSLATED);
+         fuzzyMode = configMap.get(EditorConfigConstants.BUTTON_FUZZY);
       }
 
-      isEscKeyCloseEditor = configMap.get(UserConfigConstants.BUTTON_ESC);
+      if (configMap.containsKey(EditorConfigConstants.BUTTON_ENTER))
+      {
+         isEnterKeySavesEnabled = configMap.get(EditorConfigConstants.BUTTON_ENTER);
+         if (isEnterKeySavesEnabled)
+         {
+            saveButton.setTitle(saveButtonwithEnterShortcuts);
+         }
+         else
+         {
+            saveButton.setTitle(saveButtonShortcuts);
+         }
+      }
+
+      if (configMap.containsKey(EditorConfigConstants.BUTTON_ESC))
+      {
+         isEscKeyCloseEditor = configMap.get(EditorConfigConstants.BUTTON_ESC);
+      }
+
    }
 
    public boolean isCancelButtonFocused()
@@ -640,5 +722,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    public TransUnit getTargetCell()
    {
       return cellValue;
+   }
+
+   public void updateValidationMessagePanel(ValidationMessagePanel panel)
+   {
+      validationMessagePanel.setContent(panel.getErrors());
    }
 }

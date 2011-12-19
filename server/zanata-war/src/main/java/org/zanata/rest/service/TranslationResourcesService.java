@@ -64,12 +64,13 @@ import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
-import org.zanata.ZanataInit;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.Namespaces;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
+import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
@@ -78,10 +79,12 @@ import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.NoSuchEntityException;
+import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
 import org.zanata.rest.dto.resource.Resource;
@@ -137,10 +140,13 @@ public class TranslationResourcesService implements TranslationResourcesResource
    private UriInfo uri;
 
    @In
-   private ZanataInit zanataInit;
+   private ApplicationConfiguration applicationConfiguration;
 
    @In
    private ProjectIterationDAO projectIterationDAO;
+
+   @In
+   private ProjectDAO projectDAO;
 
    @In
    private DocumentDAO documentDAO;
@@ -183,8 +189,9 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
 // @formatter:off
    public TranslationResourcesService(
-      ZanataInit zanataInit,
+      ApplicationConfiguration applicationConfiguration,
       ProjectIterationDAO projectIterationDAO,
+      ProjectDAO projectDAO,
       DocumentDAO documentDAO,
       TextFlowDAO textFlowDAO,
       TextFlowTargetDAO textFlowTargetDAO,
@@ -198,8 +205,9 @@ public class TranslationResourcesService implements TranslationResourcesResource
    )
 // @formatter:on
    {
-      this.zanataInit = zanataInit;
+      this.applicationConfiguration = applicationConfiguration;
       this.projectIterationDAO = projectIterationDAO;
+      this.projectDAO = projectDAO;
       this.documentDAO = documentDAO;
       this.textFlowDAO = textFlowDAO;
       this.textFlowTargetDAO = textFlowTargetDAO;
@@ -407,7 +415,8 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
       Resource entity = RestUtils.unmarshall(Resource.class, messageBody, requestContentType, headers.getRequestHeaders());
       log.debug("resource details: {0}", entity);
-
+      boolean validResourceEnc = this.resourceUtils.validateResourceEncoding(entity);
+      
       HDocument document = documentDAO.getByDocId(hProjectIteration, id);
       HLocale hLocale = validateSourceLocale(entity.getLang());
       int nextDocRev;
@@ -466,6 +475,11 @@ public class TranslationResourcesService implements TranslationResourcesResource
       if (copytrans && nextDocRev == 1)
       {
          copyClosestEquivalentTranslation(document.getId(), entity.getName(), projectSlug, iterationSlug);
+      }
+      
+      if( !validResourceEnc )
+      {
+         response.entity("warning: potentially incompatible character encoding.");
       }
             
       log.debug("put resource successfully");
@@ -586,6 +600,18 @@ public class TranslationResourcesService implements TranslationResourcesResource
    // /r/{id}/translations/{locale}
    public Response getTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
    {
+      return this.getTranslations(idNoSlash, locale, this.extensions);
+   }
+   
+   /**
+    * Returns a set of translations for a given locale and extension set.
+    * @param idNoSlash The document Id.
+    * @param locale The locale for which to get translations.
+    * @param extensions The extensions to bring over.
+    * @return Response
+    */
+   public Response getTranslations( String idNoSlash, LocaleId locale, Set<String> extensions )
+   {
       log.debug("start to get translation");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
@@ -608,28 +634,18 @@ public class TranslationResourcesService implements TranslationResourcesResource
       }
 
       HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
-
-      List<HTextFlowTarget> hTargets = textFlowTargetDAO.findTranslations(document, locale);
       TranslationsResource translationResource = new TranslationsResource();
-      resourceUtils.transferToTranslationsResourceExtensions(document, translationResource.getExtensions(true), extensions, hLocale, hTargets);
+      resourceUtils.transferToTranslationsResource(
+            translationResource, document, hLocale, extensions, 
+            textFlowTargetDAO.findTranslations(document, hLocale));
 
-      if (hTargets.isEmpty() && translationResource.getExtensions(true).isEmpty())
+      if (translationResource.getTextFlowTargets().isEmpty() && translationResource.getExtensions(true).isEmpty())
       {
          return Response.status(Status.NOT_FOUND).build();
       }
 
-      for (HTextFlowTarget hTarget : hTargets)
-      {
-         TextFlowTarget target = new TextFlowTarget();
-         target.setResId(hTarget.getTextFlow().getResId());
-         resourceUtils.transferToTextFlowTarget(hTarget, target);
-         resourceUtils.transferToTextFlowTargetExtensions(hTarget, target.getExtensions(true), extensions);
-         translationResource.getTextFlowTargets().add(target);
-      }
-
       // TODO lastChanged
       return Response.ok().entity(translationResource).tag(etag).build();
-
    }
 
    @Override
@@ -864,7 +880,9 @@ public class TranslationResourcesService implements TranslationResourcesResource
    {
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 
-      if (hProjectIteration != null)
+      HProject hProject = projectDAO.getBySlug(projectSlug);
+
+      if (hProjectIteration != null && !hProjectIteration.isObsolete() && !hProject.isObsolete())
       {
          return hProjectIteration;
       }
@@ -872,11 +890,18 @@ public class TranslationResourcesService implements TranslationResourcesResource
       throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
    }
 
-   private void validateExtensions(String... extensions)
+   /**
+    * Ensures that any extensions sent with the current query are valid for this
+    * context.
+    * 
+    * @param validExt any number of extension ids that are valid for the context
+    * @throws WebApplicationException if any unsupported extensions are present
+    */
+   private void validateExtensions(String... validExt) throws WebApplicationException
    {
-      Set<String> validExtensions = Sets.newHashSet(extensions);
+      Set<String> validExtensions = Sets.newHashSet(validExt);
       Set<String> invalidExtensions = null;
-      for (String ext : extensions)
+      for (String ext : validExt)
       {
          if (!validExtensions.contains(ext))
          {
@@ -897,7 +922,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
    public void copyClosestEquivalentTranslation(Long docId, String name, String projectSlug, String iterationSlug)
    {
-      if (zanataInit.getEnableCopyTrans())
+      if (applicationConfiguration.getEnableCopyTrans())
       {
          events.raiseTransactionSuccessEvent(EVENT_COPY_TRANS, docId, projectSlug, iterationSlug);
       }

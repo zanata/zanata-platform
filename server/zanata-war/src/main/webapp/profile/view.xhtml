@@ -17,7 +17,7 @@
           <s:link styleClass="action_link" view="/profile/edit.xhtml" propagation="none">
             #{messages['jsf.EditProfile']}
           </s:link>
-          <s:link styleClass="action_link" view="/account/changepassword.xhtml" propagation="none" rendered="#{zanataInit.internalAuthentication}">
+          <s:link styleClass="action_link" view="/account/changepassword.xhtml" propagation="none" rendered="#{applicationConfiguration.internalAuth}">
             #{messages['jsf.ChangePassword']}
           </s:link>
         </rich:panel>

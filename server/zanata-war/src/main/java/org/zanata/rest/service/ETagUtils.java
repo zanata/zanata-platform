@@ -46,6 +46,11 @@ public class ETagUtils
       this.documentDAO = documentDAO;
    }
 
+   public ETagUtils(Session session)
+   {
+      this.session = session;
+   }
+
    /**
     * Retrieves the ETag for the Project
     * 
@@ -112,5 +117,4 @@ public class ETagUtils
 
       return EntityTag.valueOf(String.valueOf(hashcode));
    }
-
 }

@@ -95,13 +95,13 @@
   </page>
 
   <page view-id="/account/password_reset.xhtml">
-    <restrict>#{zanataInit.internalAuthentication}</restrict>
+    <restrict>#{applicationConfiguration.internalAuth}</restrict>
     <param name="key" value="#{passwordReset.activationKey}" />
     <action execute="#{passwordReset.validateActivationKey}" />
   </page>
 
   <page view-id="/account/changepassword.xhtml" login-required="true">
-    <restrict>#{zanataInit.internalAuthentication}</restrict>
+    <restrict>#{applicationConfiguration.internalAuth}</restrict>
   </page>
 
   <!-- Admin -->
@@ -220,7 +220,6 @@
 
   
   <!-- Project -->
-
   <page view-id="/project/project.xhtml">
     <param name="slug" value="#{projectHome.slug}" />
     <action execute="#{projectHome.validateSuppliedId}" />
@@ -357,6 +356,18 @@
   <page view-id="/project/iteration_status.xhtml" >
     <param name="projectSlug" value="#{viewAllStatusAction.projectSlug}" />
     <param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
+  </page>
+  
+  <page view-id="/project/iteration_files.xhtml">
+    <param name="project" value="#{projectIterationFilesAction.projectSlug}" />
+    <param name="iteration" value="#{projectIterationFilesAction.iterationSlug}" />
+    <param name="localeId" value="#{projectIterationFilesAction.localeId}" />
+    
+    <param name="project" value="#{projectIterationZipFileAction.projectSlug}" />
+    <param name="iteration" value="#{projectIterationZipFileAction.iterationSlug}" />
+    <param name="localeId" value="#{projectIterationZipFileAction.localeId}" />
+    
+    <action execute="#{projectIterationFilesAction.initialize()}" />
   </page>
 
 

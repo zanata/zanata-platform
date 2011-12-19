@@ -49,7 +49,8 @@ public class ConfigUtil
       String suffix = ".url";
       DataConfiguration dataConfig = new DataConfiguration(config);
 
-      for (Iterator<String> iterator = dataConfig.getKeys(); iterator.hasNext();)
+      for (@SuppressWarnings("unchecked")
+      Iterator<String> iterator = dataConfig.getKeys(); iterator.hasNext();)
       {
          String key = iterator.next();
          if (key.endsWith(suffix))
