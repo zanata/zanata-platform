@@ -20,21 +20,21 @@
  */
 package org.zanata.webtrans.client.ui;
 
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.HTML;
 
-public class HighlightingLabel extends Label
+public class DiffMatchPatchLabel extends HTML
 {
-
+   private String original;
    private String plainText;
 
-   public HighlightingLabel()
+   public DiffMatchPatchLabel()
    {
    }
 
-   public HighlightingLabel(String text)
+   public DiffMatchPatchLabel(String orig, String text)
    {
       super();
+      this.original = orig;
       setText(text);
    }
 
@@ -48,21 +48,8 @@ public class HighlightingLabel extends Label
    public void setText(String text)
    {
       this.plainText = text;
-      super.setText(text);
-      highlight();
-   }
-
-   private void highlight()
-   {
-      Element element = getElement();
-      String text = plainText == null ? "" : plainText.replaceAll("\n", "¶\n");
-      Highlighting.syntaxHighlight(text, element);
-   }
-
-   public void highlightSearch(String search)
-   {
-      Element element = getElement();
-      Highlighting.searchHighlight(search, element);
+      String diff = Highlighting.diffAsHtml(original, plainText);
+      setHTML(diff);
    }
 
 }

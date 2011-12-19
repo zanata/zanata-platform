@@ -155,9 +155,9 @@ Removes some of the styling on the page-level splitters
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
-	cursor:pointer;
-	border-top-left-radius:5px;
-	border-top-right-radius:5px;
+    cursor:pointer;
+    border-top-left-radius:5px;
+    border-top-right-radius:5px;
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected {
@@ -167,9 +167,9 @@ Removes some of the styling on the page-level splitters
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
-	border: 2px solid #e0e8ee; 
-	background:#FFFFFF;
-	border-radius:5px;
+    border: 2px solid #e0e8ee; 
+    background:#FFFFFF;
+    border-radius:5px;
 }
 
 .WebTransEditor-Outer tr.middle td.middleCenter {
@@ -304,7 +304,8 @@ td.TableEditorCell-Source {
 }
 
 td.TableEditorCell-Target {
-    height:20px;
+	/*TODO: put this back on when middle colmun is removed.
+/*     padding-left:20px; */
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell {
@@ -459,6 +460,21 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
 	font-weight: bold
 }
 
+.TransMemoryTableSourceColumn span {
+	background:#FF0;
+}
+
+.TransMemoryTableSourceColumn ins {
+	background:#e6ffe6;
+	text-decoration: none;
+}
+
+.TransMemoryTableSourceColumn del {
+	background:#ffe6e6;
+	text-decoration: none;
+}
+
+
 .DocumentListTable {
 	width: 100%;
 	font-size:16px;
@@ -483,8 +499,7 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
 	text-align: center;
 	border: 1px outset #999966;
 	height: 65px;
-	-moz-border-radius:8px;
-	-webkit-border-radius: 8px;
+	border-radius:8px;
 }
 
 .transUnitCountTooltipTable {
@@ -495,8 +510,7 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
 .transUnitCountTooltipTable TD {
 	border: 1px solid #999966;
 	width:75px;
-	-moz-border-radius:4px;
-    -webkit-border-radius: 4px;
+	border-radius:4px;
 }
 
 .pointer{
