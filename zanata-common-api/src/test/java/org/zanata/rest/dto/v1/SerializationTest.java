@@ -15,11 +15,10 @@ import javax.xml.bind.ValidationException;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
@@ -51,13 +50,14 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  * This bug in the generation of any xml schema that references the xml namespace 
  * (http://www.w3.org/XML/1998/namespace) causes these tests to fail.
  */
-public class SerializationTests
+@Test(groups = { "unit-tests" })
+public class SerializationTest
 {
 
    protected ObjectMapper mapper;
-   private final Logger log = LoggerFactory.getLogger(SerializationTests.class);
+   private final Logger log = LoggerFactory.getLogger(SerializationTest.class);
 
-   @Before
+   @BeforeMethod
    public void setup()
    {
       mapper = new ObjectMapper();
@@ -71,7 +71,8 @@ public class SerializationTests
       return new Person("id", "name");
    }
    
-   @Test
+   // FIXME broken test
+   @Test(enabled = false)
    public void serializeAndDeserializeProject() throws JAXBException, JsonGenerationException, JsonMappingException, IOException, URISyntaxException
    {
       Project p = new Project().createSample();
@@ -94,7 +95,7 @@ public class SerializationTests
       assertThat(p2, notNullValue());
    }
 
-   /*@Test
+   @Test
    public void serializeAndDeserializePerson() throws JAXBException, JsonGenerationException, JsonMappingException, IOException
    {
       Person p = createPerson();
@@ -107,9 +108,9 @@ public class SerializationTests
       JaxbUtil.validateXml(p2);
 
       p2 = JaxbTestUtil.roundTripXml(p);
-      System.out.println(p2);
+      // System.out.println(p2);
       assertThat(p2, notNullValue());
-   }*/
+   }
 
    private PoHeader createPoHeader()
    {
@@ -133,7 +134,8 @@ public class SerializationTests
       assertThat(e2, instanceOf(PoHeader.class));
    }
 
-   @Test
+   // FIXME broken test
+   @Test(enabled = false)
    public void serializeAndDeserializeTranslationResource() throws JsonGenerationException, JsonMappingException, IOException, JAXBException
    {
       ResourceMeta res = new ResourceMeta("id");
@@ -153,7 +155,8 @@ public class SerializationTests
       assertThat(res2.getExtensions().iterator().next(), instanceOf(PoHeader.class));
    }
 
-   @Test
+   // FIXME broken test
+   @Test(enabled = false)
    public void serializeSourceResource() throws JsonGenerationException, JsonMappingException, IOException, JAXBException
    {
       Resource sourceResource = new Resource("Acls.pot");
@@ -179,7 +182,8 @@ public class SerializationTests
       assertThat(((PoHeader) res2.getExtensions().iterator().next()).getComment(), is("comment"));
    }
 
-   @Test
+   // FIXME broken test
+   @Test(enabled = false)
    public void serializeAndDeserializeTextFlow() throws ValidationException, JsonGenerationException, JsonMappingException, IOException
    {
       TextFlow tf = new TextFlow();
@@ -209,8 +213,9 @@ public class SerializationTests
          }
       }
    }
-
-   @Test
+   
+   // FIXME broken test
+   @Test(enabled = false)
    public void serializeAndDeserializeTextFlowTarget() throws ValidationException, JsonGenerationException, JsonMappingException, IOException
    {
       TextFlowTarget tf = new TextFlowTarget();
@@ -234,7 +239,8 @@ public class SerializationTests
       }
    }
 
-   @Test
+   // FIXME broken test
+   @Test(enabled = false)
    public void serializeAndDeserializeTranslation() throws JsonGenerationException, JsonMappingException, IOException, JAXBException
    {
       TranslationsResource entity = new TranslationsResource();
@@ -259,8 +265,8 @@ public class SerializationTests
       assertThat(((PoTargetHeader) res2.getExtensions().iterator().next()).getComment(), is("target header comment"));
    }
 
-   @Ignore
-   @Test
+   // FIXME broken test
+   @Test(enabled = false)
    public void serializeAndDeserializeGlossary() throws JsonGenerationException, JsonMappingException, IOException, JAXBException
    {
       Glossary glossary = new Glossary();
