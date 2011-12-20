@@ -13,6 +13,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDBUnitSeamTest;
 import org.zanata.rest.client.IGlossaryResource;
+import org.zanata.rest.client.TestProxyFactory;
 import org.zanata.rest.dto.VersionInfo;
 
 import org.zanata.rest.service.SeamMockClientExecutor;
