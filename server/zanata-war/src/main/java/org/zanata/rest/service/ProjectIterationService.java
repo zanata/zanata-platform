@@ -69,6 +69,7 @@ public class ProjectIterationService implements ProjectIterationResource
    private String iterationSlug;
 
    @HeaderParam("Content-Type")
+   @Context
    private MediaType requestContentType;
 
    @Context
@@ -76,6 +77,7 @@ public class ProjectIterationService implements ProjectIterationResource
 
    @HeaderParam(HttpHeaderNames.ACCEPT)
    @DefaultValue(MediaType.APPLICATION_XML)
+   @Context
    private MediaType accept;
 
    @Context

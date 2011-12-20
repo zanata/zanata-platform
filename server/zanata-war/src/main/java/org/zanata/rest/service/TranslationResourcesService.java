@@ -119,6 +119,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    private String iterationSlug;
 
    @HeaderParam("Content-Type")
+   @Context
    private MediaType requestContentType;
 
    @Context

@@ -47,6 +47,7 @@ public class GlossaryService implements GlossaryResource
    private UriInfo uri;
 
    @HeaderParam("Content-Type")
+   @Context
    private MediaType requestContentType;
 
    @Context

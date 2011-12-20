@@ -328,6 +328,11 @@
 					<!-- NB this version is overridden by the maven-3 profile -->
 					<version>2.1.1</version>
 				</plugin>
+				<plugin>
+					<groupId>org.codehaus.enunciate</groupId>
+					<artifactId>maven-enunciate-plugin</artifactId>
+					<version>1.24</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<extensions>

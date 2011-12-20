@@ -53,12 +53,14 @@ public class ProjectService implements ProjectResource
 
    @HeaderParam(HttpHeaderNames.ACCEPT)
    @DefaultValue(MediaType.APPLICATION_XML)
+   @Context
    private MediaType accept;
 
    @Context
    private UriInfo uri;
 
    @HeaderParam("Content-Type")
+   @Context
    private MediaType requestContentType;
 
    @Context
