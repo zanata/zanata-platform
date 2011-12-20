@@ -71,8 +71,7 @@ public class SerializationTest
       return new Person("id", "name");
    }
    
-   // FIXME broken test
-   @Test(enabled = false)
+   @Test
    public void serializeAndDeserializeProject() throws JAXBException, JsonGenerationException, JsonMappingException, IOException, URISyntaxException
    {
       Project p = new Project().createSample();
