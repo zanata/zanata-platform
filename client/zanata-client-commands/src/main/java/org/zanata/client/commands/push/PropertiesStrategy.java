@@ -21,12 +21,12 @@
 
 package org.zanata.client.commands.push;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -46,9 +46,20 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 
 class PropertiesStrategy extends AbstractPushStrategy
 {
+   // "8859_1" is used in Properties.java...
+   private static final String ISO_8859_1 = "ISO-8859-1";
+
+   private final String charset;
+
    public PropertiesStrategy()
    {
+      this(ISO_8859_1);
+   }
+
+   public PropertiesStrategy(String charset)
+   {
       super(new StringSet("comment"), ".properties");
+      this.charset = charset;
    }
 
    @Override
@@ -68,16 +79,16 @@ class PropertiesStrategy extends AbstractPushStrategy
 
    private Properties loadPropFile(File propFile) throws FileNotFoundException, IOException
    {
-      InputStream is = new BufferedInputStream(new FileInputStream(propFile));
+      Reader reader = new InputStreamReader(new FileInputStream(propFile), charset);
       try
       {
          Properties props = new Properties();
-         props.load(is);
+         props.load(reader);
          return props;
       }
       finally
       {
-         is.close();
+         reader.close();
       }
    }
 
@@ -147,7 +158,14 @@ class PropertiesStrategy extends AbstractPushStrategy
          return;
       TextFlowTarget textFlowTarget = new TextFlowTarget(key);
       textFlowTarget.setContent(content);
-      textFlowTarget.setState(ContentState.Approved);
+      if (!content.isEmpty())
+      {
+         textFlowTarget.setState(ContentState.Approved);
+      }
+      else
+      {
+         textFlowTarget.setState(ContentState.New);
+      }
       String comment = props.getComment(key);
       if (comment != null)
       {

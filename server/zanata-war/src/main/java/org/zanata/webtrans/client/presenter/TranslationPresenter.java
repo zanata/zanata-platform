@@ -20,13 +20,22 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.editor.CheckKey;
 import org.zanata.webtrans.client.editor.CheckKeyImpl;
+import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
+import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
+import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
+import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
+import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.rpc.GetTranslatorList;
+import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -35,6 +44,8 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -48,38 +59,46 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 
       void setTranslationMemoryView(Widget translationMemoryView);
 
+      void setWorkspaceUsersView(Widget workspaceUsersView);
+
       void setGlossaryView(Widget glossaryView);
 
-      void setTmViewVisible(boolean visible);
+      void setSouthPanelViewVisible(boolean visible);
 
-      HasClickHandlers getHideTMViewButton();
+      HasClickHandlers getHideSouthPanelButton();
 
-      HasClickHandlers getShowTMViewButton();
+      HasClickHandlers getShowSouthPanelButton();
 
-      void setShowTMViewButtonVisible(boolean visible);
+      void setShowSouthPanelButtonVisible(boolean visible);
 
       void setSidePanelViewVisible(boolean visible);
 
-      HasClickHandlers getHideSidePanelViewButton();
+      void updateWorkspaceUsersTitle(String title);
 
-      HasClickHandlers getShowSidePanelViewButton();
-
-      void setShowSidePanelViewButtonVisible(boolean visible);
+      ToggleButton getToogleOptionsButton();
    }
+
+   private final DispatchAsync dispatcher;
 
    private final TranslationEditorPresenter translationEditorPresenter;
    private final SidePanelPresenter sidePanelPresenter;
    private final TransMemoryPresenter transMemoryPresenter;
    private final GlossaryPresenter glossaryPresenter;
+   private final WorkspaceUsersPresenter workspaceUsersPresenter;
+
+   private final WebTransMessages messages;
 
    @Inject
-   public TranslationPresenter(Display display, EventBus eventBus, final TranslationEditorPresenter translationEditorPresenter, final SidePanelPresenter sidePanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter)
+   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final SidePanelPresenter sidePanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages)
    {
       super(display, eventBus);
+      this.messages = messages;
       this.translationEditorPresenter = translationEditorPresenter;
+      this.workspaceUsersPresenter = workspaceUsersPresenter;
       this.transMemoryPresenter = transMemoryPresenter;
       this.sidePanelPresenter = sidePanelPresenter;
       this.glossaryPresenter = glossaryPresenter;
+      this.dispatcher = dispatcher;
    }
 
    @Override
@@ -87,11 +106,33 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
    }
 
+   private void loadTranslatorList()
+   {
+      dispatcher.execute(new GetTranslatorList(), new AsyncCallback<GetTranslatorListResult>()
+      {
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            Log.error("error fetching translators list: " + caught.getMessage());
+         }
+
+         @Override
+         public void onSuccess(GetTranslatorListResult result)
+         {
+            String title = workspaceUsersPresenter.getDisplay().updateUserList(result.getTranslatorList());
+            display.updateWorkspaceUsersTitle(title);
+         }
+      });
+   }
+
    @Override
    protected void onBind()
    {
       transMemoryPresenter.bind();
       display.setTranslationMemoryView(transMemoryPresenter.getDisplay().asWidget());
+
+      workspaceUsersPresenter.bind();
+      display.setWorkspaceUsersView(workspaceUsersPresenter.getDisplay().asWidget());
 
       glossaryPresenter.bind();
       display.setGlossaryView(glossaryPresenter.getDisplay().asWidget());
@@ -102,58 +143,81 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       sidePanelPresenter.bind();
       display.setSidePanel(sidePanelPresenter.getDisplay().asWidget());
 
-      registerHandler(display.getHideSidePanelViewButton().addClickHandler(new ClickHandler()
+      registerHandler(eventBus.addHandler(ExitWorkspaceEvent.getType(), new ExitWorkspaceEventHandler()
       {
          @Override
-         public void onClick(ClickEvent event)
+         public void onExitWorkspace(ExitWorkspaceEvent event)
          {
-            display.setSidePanelViewVisible(false);
-            // sidePanelPresenter.unbind();
-            // translationEditorPresenter.unbind();
-            display.setShowSidePanelViewButtonVisible(true);
+            loadTranslatorList();
          }
       }));
 
-      display.setShowSidePanelViewButtonVisible(false);
-      display.getShowSidePanelViewButton().addClickHandler(new ClickHandler()
+      registerHandler(eventBus.addHandler(EnterWorkspaceEvent.getType(), new EnterWorkspaceEventHandler()
       {
          @Override
-         public void onClick(ClickEvent event)
+         public void onEnterWorkspace(EnterWorkspaceEvent event)
          {
-            // sidePanelPresenter.bind();
-            // translationEditorPresenter.bind();
-            display.setSidePanelViewVisible(true);
-            display.setShowSidePanelViewButtonVisible(false);
+            loadTranslatorList();
          }
-      });
+      }));
 
-      registerHandler(display.getHideTMViewButton().addClickHandler(new ClickHandler()
+      // We won't receive the EnterWorkspaceEvent generated by our own login,
+      // because
+      // this presenter is not bound until we get the callback from
+      // EventProcessor.
+      // Thus we load the translator list here.
+      loadTranslatorList();
+
+      registerHandler(display.getToogleOptionsButton().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
-            display.setTmViewVisible(false);
+            if (display.getToogleOptionsButton().isDown())
+            {
+               display.setSidePanelViewVisible(true);
+               display.getToogleOptionsButton().setTitle(messages.hideEditorOptions());
+               display.getToogleOptionsButton().setText(messages.showEditorOptionsLabel());
+            }
+            else if (!display.getToogleOptionsButton().isDown())
+            {
+               display.setSidePanelViewVisible(false);
+               display.getToogleOptionsButton().setTitle(messages.showEditorOptions());
+               display.getToogleOptionsButton().setText(messages.hideEditorOptionsLabel());
+            }
+         }
+      }));
+
+      registerHandler(display.getHideSouthPanelButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            display.setSouthPanelViewVisible(false);
             transMemoryPresenter.unbind();
             glossaryPresenter.unbind();
-            display.setShowTMViewButtonVisible(true);
+            workspaceUsersPresenter.unbind();
+            display.setShowSouthPanelButtonVisible(true);
          }
       }));
 
-      display.setShowTMViewButtonVisible(false);
-      display.getShowTMViewButton().addClickHandler(new ClickHandler()
+      display.setShowSouthPanelButtonVisible(false);
+      display.getShowSouthPanelButton().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
             transMemoryPresenter.bind();
             glossaryPresenter.bind();
+            workspaceUsersPresenter.bind();
 
-            display.setTmViewVisible(true);
-            display.setShowTMViewButtonVisible(false);
+            display.setSouthPanelViewVisible(true);
+            display.setShowSouthPanelButtonVisible(false);
             TransUnit tu = translationEditorPresenter.getSelectedTransUnit();
             if (tu != null)
             {
                transMemoryPresenter.showResultsFor(tu);
+               // glossaryPresenter.showResultsFor(tu);
             }
          }
       });
@@ -242,6 +306,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
       transMemoryPresenter.unbind();
       glossaryPresenter.unbind();
+      workspaceUsersPresenter.unbind();
       translationEditorPresenter.unbind();
       sidePanelPresenter.unbind();
    }

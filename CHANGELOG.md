@@ -1,5 +1,15 @@
 # Zanata change log summary
 
+## zanata-1.5
+ * Allow bookmarking of selected document, document list filter and current view: https://bugzilla.redhat.com/show_bug.cgi?id=757621
+ * Add workspace query string parameters for generating a custom doclist with a custom title: https://bugzilla.redhat.com/show_bug.cgi?id=758587
+  * e.g. &title=Custom%20title&doc=full/path/of/first/doc&doc=full/path/of/second/doc
+
+## zanata-1.4.4
+ * Ensure final reindex batch is properly flushed: https://bugzilla.redhat.com/show_bug.cgi?id=747836
+ * Support UTF-8 Properties files, handle empty properties: https://bugzilla.redhat.com/show_bug.cgi?id=760390
+ * Fix bug: Editor table stops working after 'Source and Target' search returns no results: https://bugzilla.redhat.com/show_bug.cgi?id=759994
+
 ## zanata-1.4.3
  * Show message context in editor info panel: https://bugzilla.redhat.com/show_bug.cgi?id=750690
  * Update gwteventservice to 1.2.0-RC1

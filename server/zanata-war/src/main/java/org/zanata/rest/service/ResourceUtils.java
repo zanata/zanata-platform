@@ -74,15 +74,15 @@ public class ResourceUtils
    /**
     * Newline character used for multi-line comments
     */
-   private static final char NEWLINE = '\n';
+   private static final char     NEWLINE = '\n';
 
-   private static final String ZANATA_GENERATOR_PREFIX = "Zanata";
+   private static final String   ZANATA_GENERATOR_PREFIX = "Zanata";
    
-   private static final String ZANATA_TAG = "#zanata";
+   private static final String   ZANATA_TAG = "#zanata";
    
-   private static final String PO_DATE_FORMAT = "yyyy-MM-dd hh:mmZ";
+   private static final String   PO_DATE_FORMAT = "yyyy-MM-dd hh:mmZ";
    
-   private static final String PO_VALID_CONTENT_TYPE = "charset=UTF-8";
+   private static final String[] PO_VALID_CONTENT_TYPES = {"charset=UTF-8", "charset=UTF8", "charset=ASCII", "charset=CHARSET"};
 
    
    /**
@@ -1171,7 +1171,14 @@ public class ResourceUtils
          {
             if( entry.getKey().equalsIgnoreCase( CONTENT_TYPE_HDR ) )
             {
-               return entry.getValue().contains( PO_VALID_CONTENT_TYPE );
+               for( String acceptedContentType : PO_VALID_CONTENT_TYPES )
+               {
+                  // Case-insensitive check
+                  if( entry.getValue().toLowerCase().contains( acceptedContentType.toLowerCase() ) )
+                  {
+                     return true;
+                  }
+               }
             }
          }
          

@@ -20,13 +20,12 @@
  */
 package org.zanata.webtrans.client.view;
 
-
 import java.util.Map;
 
 import org.zanata.webtrans.client.presenter.TransUnitNavigationPresenter;
+import org.zanata.webtrans.client.resources.EditorConfigConstants;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.Resources;
-import org.zanata.webtrans.client.ui.UserConfigConstants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -47,7 +46,7 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
    }
 
    @UiField
-   Image nextEntry, prevEntry, prevState, nextState, configure, firstEntry, lastEntry;
+   Image nextEntry, prevEntry, prevState, nextState, firstEntry, lastEntry;
 
    private final NavigationMessages messages;
 
@@ -66,25 +65,27 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
       firstEntry.setTitle(messages.firstEntry());
       lastEntry.setTitle(messages.lastEntry());
       setFuzzyUntranslatedModeTooltip();
-      configure.setTitle(messages.configurationButton());
    }
 
    public void setNavModeTooltip(Map<String, Boolean> configMap)
    {
-      boolean fuzzyMode = configMap.get(UserConfigConstants.BUTTON_FUZZY);
-      boolean untranslatedMode = configMap.get(UserConfigConstants.BUTTON_UNTRANSLATED);
+      if (configMap.containsKey(EditorConfigConstants.BUTTON_FUZZY) && configMap.containsKey(EditorConfigConstants.BUTTON_UNTRANSLATED))
+      {
+         boolean fuzzyMode = configMap.get(EditorConfigConstants.BUTTON_FUZZY);
+         boolean untranslatedMode = configMap.get(EditorConfigConstants.BUTTON_UNTRANSLATED);
 
-      if (fuzzyMode && !untranslatedMode)
-      {
-         setFuzzyModeTooltip();
-      }
-      else if (untranslatedMode && !fuzzyMode)
-      {
-         setUntranslatedModeTooltip();
-      }
-      else if (untranslatedMode && fuzzyMode)
-      {
-         setFuzzyUntranslatedModeTooltip();
+         if (fuzzyMode && !untranslatedMode)
+         {
+            setFuzzyModeTooltip();
+         }
+         else if (untranslatedMode && !fuzzyMode)
+         {
+            setUntranslatedModeTooltip();
+         }
+         else if (untranslatedMode && fuzzyMode)
+         {
+            setFuzzyUntranslatedModeTooltip();
+         }
       }
    }
 
@@ -142,23 +143,9 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
       return lastEntry;
    }
 
-
    @Override
    public Widget asWidget()
    {
       return this;
    }
-
-   @Override
-   public HasClickHandlers getConfigureButton()
-   {
-      return configure;
-   }
-
-   @Override
-   public Widget getConfigureButtonObject()
-   {
-      return configure;
-   }
-
 }

@@ -415,7 +415,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
       Resource entity = RestUtils.unmarshall(Resource.class, messageBody, requestContentType, headers.getRequestHeaders());
       log.debug("resource details: {0}", entity);
-      validateResourceEncoding(entity);
+      boolean validResourceEnc = this.resourceUtils.validateResourceEncoding(entity);
       
       HDocument document = documentDAO.getByDocId(hProjectIteration, id);
       HLocale hLocale = validateSourceLocale(entity.getLang());
@@ -429,6 +429,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
             return response.build();
          }
          changed = true;
+         // TODO check that entity name matches id parameter
          document = new HDocument(entity.getName(), entity.getContentType(), hLocale);
          document.setProjectIteration(hProjectIteration);
          hProjectIteration.getDocuments().put(id, document);
@@ -475,6 +476,11 @@ public class TranslationResourcesService implements TranslationResourcesResource
       if (copytrans && nextDocRev == 1)
       {
          copyClosestEquivalentTranslation(document.getId(), entity.getName(), projectSlug, iterationSlug);
+      }
+      
+      if( !validResourceEnc )
+      {
+         response.entity("warning: potentially incompatible character encoding.");
       }
             
       log.debug("put resource successfully");
@@ -911,14 +917,6 @@ public class TranslationResourcesService implements TranslationResourcesResource
       if (invalidExtensions != null)
       {
          throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("Unsupported Extensions within this context: " + StringUtils.join(invalidExtensions, ",")).build());
-      }
-   }
-   
-   private void validateResourceEncoding(Resource res) throws WebApplicationException
-   {
-      if( !this.resourceUtils.validateResourceEncoding(res) )
-      {
-         throw new WebApplicationException(Response.status(Status.UNSUPPORTED_MEDIA_TYPE).entity("Unsupported Encoding: ").build());
       }
    }
    

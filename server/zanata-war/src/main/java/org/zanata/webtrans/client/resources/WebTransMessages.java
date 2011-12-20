@@ -59,8 +59,17 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Show Translation Suggestions")
    String showTranslationMemoryPanel();
 
-   @DefaultMessage("Show Translation Details")
-   String showTranslationDetailsPanel();
+   @DefaultMessage("Show Editor Options")
+   String showEditorOptions();
+
+   @DefaultMessage("Hide Editor Options")
+   String hideEditorOptions();
+
+   @DefaultMessage("Options >>")
+   String showEditorOptionsLabel();
+
+   @DefaultMessage("<< Options")
+   String hideEditorOptionsLabel();
 
    @DefaultMessage("Find")
    String findButton();
@@ -70,6 +79,12 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Translation Unit Details")
    String transUnitDetailsHeading();
+
+   @DefaultMessage("Translation Memory")
+   String translationMemoryHeading();
+
+   @DefaultMessage("Validation Details")
+   String validationDetailsHeading();
 
    @DefaultMessage("Source or Target content")
    String findSourceOrTargetString();

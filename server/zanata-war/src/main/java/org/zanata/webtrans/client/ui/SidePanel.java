@@ -21,15 +21,14 @@
 package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.presenter.SidePanelPresenter;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -38,123 +37,39 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display
 
    private static SidePanelUiBinder uiBinder = GWT.create(SidePanelUiBinder.class);
 
-   interface SidePanelUiBinder extends UiBinder<LayoutPanel, SidePanel>
+   interface SidePanelUiBinder extends UiBinder<SplitLayoutPanel, SidePanel>
    {
    }
-
-   @UiField(provided = true)
-   LayoutPanel usersPanelContainer;
 
    @UiField
-   LayoutPanel transUnitDetailContainer;
+   SplitLayoutPanel mainPanel;
 
-   private final int HEIGHT_USERPANEL_EXPANDED = 200;
-   private final int HEIGHT_USERPANEL_COLLAPSED = 20;
-   private final int USERPANEL_COLLAPSE_DELAY = 1;
+   @UiField
+   LayoutPanel validationOptionsContainer;
 
-   private final LayoutPanel rootPanel;
+   @UiField
+   LayoutPanel editorOptionsContainer;
 
-   private final Timer collapseTimer = new Timer()
-   {
-      @Override
-      public void run()
-      {
-         collapseUsersPanel();
-      }
-   };
 
-   private boolean collapseTriggered = false;
-   private boolean collapsed = true;
 
    @Inject
-   public SidePanel()
+   public SidePanel(WebTransMessages messages)
    {
-      usersPanelContainer = new LayoutPanel()
-      {
-         @Override
-         public void onBrowserEvent(Event event)
-         {
-            if (event.getTypeInt() == Event.ONMOUSEOUT)
-            {
-               if (!collapsed)
-               {
-                  collapseUsersPanelSoon();
-               }
-            }
-            else if (event.getTypeInt() == Event.ONMOUSEOVER)
-            {
-               if (collapsed)
-               {
-                  expandUsersPanel();
-               }
-               else
-               {
-                  cancelCollapseUsersPanel();
-               }
-            }
-            super.onBrowserEvent(event);
-         }
-      };
-      rootPanel = uiBinder.createAndBindUi(this);
-      initWidget(rootPanel);
-      usersPanelContainer.sinkEvents(Event.ONMOUSEOUT | Event.ONMOUSEOVER);
-   }
-
-
-   @Override
-   public void setWorkspaceUsersView(Widget widget)
-   {
-      usersPanelContainer.clear();
-      usersPanelContainer.add(widget);
+      initWidget(uiBinder.createAndBindUi(this));
    }
 
    @Override
-   public void setTransUnitDetailView(Widget widget)
+   public void setValidationOptionsView(Widget widget)
    {
-      transUnitDetailContainer.clear();
-      transUnitDetailContainer.add(widget);
-   }
-
-   private void cancelCollapseUsersPanel()
-   {
-      if (collapseTriggered)
-      {
-         collapseTimer.cancel();
-         collapseTriggered = false;
-      }
-   }
-
-   private void collapseUsersPanelSoon()
-   {
-      collapseTriggered = true;
-      collapseTimer.schedule(USERPANEL_COLLAPSE_DELAY);
+      validationOptionsContainer.clear();
+      validationOptionsContainer.add(widget);
    }
 
    @Override
-   public void collapseUsersPanel()
+   public void setEditorOptionsPanel(Widget widget)
    {
-      if (collapsed)
-         return;
-      toggleUsersPanel();
-   }
-
-   private void toggleUsersPanel()
-   {
-      rootPanel.forceLayout();
-      collapsed = !collapsed;
-
-      int bottomHeight = collapsed ? HEIGHT_USERPANEL_COLLAPSED : HEIGHT_USERPANEL_EXPANDED;
-      rootPanel.setWidgetBottomHeight(usersPanelContainer, 0, Unit.PX, bottomHeight, Unit.PX);
-      rootPanel.animate(250);
-   }
-
-   @Override
-   public void expandUsersPanel()
-   {
-      cancelCollapseUsersPanel();
-      if (!collapsed)
-         return;
-      toggleUsersPanel();
+      editorOptionsContainer.clear();
+      editorOptionsContainer.add(widget);
    }
 
    @Override
@@ -162,5 +77,8 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display
    {
       return this;
    }
+
+
+
 
 }

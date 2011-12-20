@@ -41,27 +41,28 @@ import org.zanata.webtrans.client.presenter.GlossaryPresenter;
 import org.zanata.webtrans.client.presenter.SidePanelPresenter;
 import org.zanata.webtrans.client.presenter.TransMemoryDetailsPresenter;
 import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
-import org.zanata.webtrans.client.presenter.TransUnitDetailsPresenter;
 import org.zanata.webtrans.client.presenter.TransUnitNavigationPresenter;
 import org.zanata.webtrans.client.presenter.TranslationEditorPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.presenter.UndoRedoPresenter;
+import org.zanata.webtrans.client.presenter.ValidationOptionsPresenter;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.rpc.DelegatingDispatchAsync;
 import org.zanata.webtrans.client.ui.SidePanel;
+import org.zanata.webtrans.client.validation.ValidationService;
 import org.zanata.webtrans.client.view.AppView;
 import org.zanata.webtrans.client.view.DocumentListView;
 import org.zanata.webtrans.client.view.GlossaryView;
 import org.zanata.webtrans.client.view.TransMemoryDetailsView;
 import org.zanata.webtrans.client.view.TransMemoryView;
-import org.zanata.webtrans.client.view.TransUnitDetailsView;
 import org.zanata.webtrans.client.view.TransUnitNavigationView;
 import org.zanata.webtrans.client.view.TranslationEditorView;
 import org.zanata.webtrans.client.view.TranslationView;
 import org.zanata.webtrans.client.view.UndoRedoView;
+import org.zanata.webtrans.client.view.ValidationOptionsView;
 import org.zanata.webtrans.client.view.WorkspaceUsersView;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
@@ -82,6 +83,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bind(EventProcessor.class).in(Singleton.class);
       bind(Resources.class).in(Singleton.class);
       bind(WebTransMessages.class).in(Singleton.class);
+      bind(ValidationService.class).in(Singleton.class);
 
       bindPresenter(AppPresenter.class, AppPresenter.Display.class, AppView.class);
       bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
@@ -95,7 +97,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(TransUnitNavigationPresenter.class, TransUnitNavigationPresenter.Display.class, TransUnitNavigationView.class);
       bindPresenter(SidePanelPresenter.class, SidePanelPresenter.Display.class, SidePanel.class);
       bindPresenter(TranslationEditorPresenter.class, TranslationEditorPresenter.Display.class, TranslationEditorView.class);
-      bindPresenter(TransUnitDetailsPresenter.class, TransUnitDetailsPresenter.Display.class, TransUnitDetailsView.class);
+      bindPresenter(ValidationOptionsPresenter.class, ValidationOptionsPresenter.Display.class, ValidationOptionsView.class);
       bindPresenter(UndoRedoPresenter.class, UndoRedoPresenter.Display.class, UndoRedoView.class);
 
       bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);

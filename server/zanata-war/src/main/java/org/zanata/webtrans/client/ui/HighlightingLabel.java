@@ -56,13 +56,13 @@ public class HighlightingLabel extends Label
    {
       Element element = getElement();
       String text = plainText == null ? "" : plainText.replaceAll("\n", "¶\n");
-      CodeMirror.doHighlight(text, element);
+      Highlighting.syntaxHighlight(text, element);
    }
 
    public void highlightSearch(String search)
    {
       Element element = getElement();
-      CodeMirror.highlightSearch(search, element);
+      Highlighting.searchHighlight(search, element);
    }
 
 }

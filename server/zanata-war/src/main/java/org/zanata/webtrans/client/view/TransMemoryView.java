@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.TransMemoryCopyEvent;
+import org.zanata.webtrans.client.ui.DiffMatchPatchLabel;
 import org.zanata.webtrans.client.presenter.TransMemoryDetailsPresenter;
 import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
@@ -57,9 +58,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    TextBox tmTextBox;
 
    @UiField
-   Label tmHeader;
-
-   @UiField
    CheckBox phraseButton;
 
    @UiField
@@ -88,7 +86,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       phraseButton.setText(messages.phraseButtonLabel());
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
-      tmHeader.setText(messages.tmHeader());
       Log.info(LocaleInfo.getCurrentLocale().getLocaleName());
    }
 
@@ -156,7 +153,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    }
 
    @Override
-   public void createTable(ArrayList<TranslationMemoryGlossaryItem> memories)
+   public void createTable(String query, ArrayList<TranslationMemoryGlossaryItem> memories)
    {
       // TODO most of this should be in TransMemoryPresenter
       clearResults();
@@ -172,7 +169,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
          final String targetMessage = memory.getTarget();
          final int similarity = memory.getSimilarityPercent();
 
-         resultTable.setWidget(row, SOURCE_COL, new HighlightingLabel(sourceMessage));
+         resultTable.setWidget(row, SOURCE_COL, new DiffMatchPatchLabel(query, sourceMessage));
          resultTable.setWidget(row, TARGET_COL, new HighlightingLabel(targetMessage));
          resultTable.setText(row, SIMILARITY_COL, similarity + "%");
 
@@ -217,6 +214,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    {
       resultTable.removeAllRows();
    }
+
 
    @Override
    public boolean isFocused()

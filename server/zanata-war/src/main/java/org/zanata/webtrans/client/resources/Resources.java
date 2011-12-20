@@ -39,14 +39,11 @@ public interface Resources extends ClientBundle
    @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/downArrow.png")
    ImageResource downArrowButton();
 
-   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/leftArrow.png")
-   ImageResource leftArrowButton();
-
    @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/rightArrow.png")
    ImageResource rightArrowButton();
 
-   @Source("org/zanata/webtrans/images/configure.png")
-   ImageResource configureButton();
+   // @Source("org/zanata/webtrans/images/configure.png")
+   // ImageResource configureButton();
 
    @Source("org/zanata/webtrans/images/banner_bg.png")
    DataResource bannerBackground();
@@ -104,12 +101,6 @@ public interface Resources extends ClientBundle
 
    @Source("org/zanata/webtrans/images/tm_view.png")
    ImageResource tmViewButton();
-
-   @Source("org/zanata/webtrans/images/collapse_open.png")
-   ImageResource collapseOpen();
-
-   @Source("org/zanata/webtrans/images/collapse_closed.png")
-   ImageResource collapseClosed();
 
    @Source("org/zanata/webtrans/images/first_page.png")
    ImageResource firstPageImage();

@@ -38,18 +38,7 @@ public class OptionsUtil
          {
             JAXBContext jc = JAXBContext.newInstance(ZanataConfig.class);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
-            String projectConfigName = projOpts.getProjectConfig();
-            File projectConfigFile = new File(projectConfigName);
-            if (!projectConfigFile.isAbsolute())
-            {
-	           String userDir = System.getProperty("user.dir");
-	           File projectDir = new File(userDir);
-	           while (projectDir != null && !(projectConfigFile = new File(projectDir, projectConfigName)).exists())
-	           {
-	              projectDir = projectDir.getParentFile();
-	           }
-            }
-
+            File projectConfigFile = projOpts.getProjectConfig();
             if (projectConfigFile.exists())
             {
                log.info("Loading project config from {}", projectConfigFile);
@@ -60,7 +49,7 @@ public class OptionsUtil
             }
             else
             {
-               log.warn("Project config file '{}' not found; ignoring.", projectConfigName);
+               log.warn("Project config file '{}' not found; ignoring.", projectConfigFile);
             }
          }
       }

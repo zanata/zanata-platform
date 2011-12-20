@@ -20,51 +20,50 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.ui.EditorOptionsPanel;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Display>
 {
-
    public interface Display extends WidgetDisplay
    {
-      void setWorkspaceUsersView(Widget widget);
+      void setValidationOptionsView(Widget widget);
 
-      void setTransUnitDetailView(Widget widget);
-
-      void collapseUsersPanel();
-
-      void expandUsersPanel();
+      void setEditorOptionsPanel(Widget widget);
    }
 
-   private final WorkspaceUsersPresenter workspaceUsersPresenter;
-   private final TransUnitDetailsPresenter transUnitDetailsPresenter;
-
+   private final DispatchAsync dispatcher;
+   private final ValidationOptionsPresenter validationOptionsPresenter;
+   private final EditorOptionsPanel editorOptionsPanel;
+   
    @Inject
-   public SidePanelPresenter(final Display display, final EventBus eventBus, final TransUnitDetailsPresenter transUnitDetailsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, final TransFilterPresenter transFilterPresenter)
+   public SidePanelPresenter(final Display display, final EventBus eventBus, CachingDispatchAsync dispatcher, final ValidationOptionsPresenter validationDetailsPresenter, final TransFilterPresenter transFilterPresenter)
    {
       super(display, eventBus);
-      this.workspaceUsersPresenter = workspaceUsersPresenter;
-      this.transUnitDetailsPresenter = transUnitDetailsPresenter;
+      this.editorOptionsPanel = new EditorOptionsPanel(eventBus);
+      this.validationOptionsPresenter = validationDetailsPresenter;
+      this.dispatcher = dispatcher;
    }
 
    @Override
    protected void onBind()
    {
+      validationOptionsPresenter.bind();
+      display.setValidationOptionsView(validationOptionsPresenter.getDisplay().asWidget());
 
-      transUnitDetailsPresenter.bind();
-      display.setTransUnitDetailView(transUnitDetailsPresenter.getDisplay().asWidget());
-
-      workspaceUsersPresenter.bind();
-      display.setWorkspaceUsersView(workspaceUsersPresenter.getDisplay().asWidget());
-
+      display.setEditorOptionsPanel(editorOptionsPanel);
    }
+
+
 
    @Override
    protected void onUnbind()

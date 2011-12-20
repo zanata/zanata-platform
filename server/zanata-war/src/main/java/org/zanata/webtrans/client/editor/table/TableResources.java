@@ -45,4 +45,6 @@ public interface TableResources extends ClientBundle
    @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/2rightarrow.png")
    ImageResource copySrcButton();
 
+   @Source("org/zanata/webtrans/images/validate.png")
+   ImageResource cellEditorValidate();
 }

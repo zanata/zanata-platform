@@ -45,7 +45,7 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
    private final Label sourceLabel;
    private TransUnit value;
 
-   public SourcePanel(TransUnit value, NavigationMessages messages)
+   public SourcePanel(TransUnit value, TableResources resources, NavigationMessages messages)
    {
       this.value = value;
       panel = new HorizontalPanel();
