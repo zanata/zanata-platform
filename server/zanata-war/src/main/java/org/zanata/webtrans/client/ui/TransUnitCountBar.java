@@ -15,6 +15,7 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -47,8 +48,6 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
    private final TranslationStats stats = new TranslationStats();
 
    private final WebTransMessages messages;
-
-   private int approvedPercent = 0;
 
    private int totalWidth = 100;
 
@@ -139,23 +138,22 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
          int unfinishedPx = untranslated * 100 / total * width / totalWidth;
 
          setupLayoutPanel(0.0, 0, 0.0, completePx, completePx, inProgressPx, completePx + inProgressPx, unfinishedPx);
-         setLabelText(total, approved, needReview, untranslated);
+         setLabelText();
       }
 
       int duration = isGraph ? 0 : 1000;
       refreshDisplay(duration);
    }
 
-   private void setLabelText(int total, int approved, int needReview, int untranslated)
+   private void setLabelText()
    {
-      approvedPercent = approved * 100 / total;
       switch (labelFormat)
       {
       case PERCENT_COMPLETE_HRS:
-         label.setText(messages.statusBarPercentageHrs(approvedPercent, getRemainingWordsHours()));
+         label.setText(messages.statusBarPercentageHrs(stats.getApprovedPercent(statsByWords), stats.getRemainingWordsHours()));
          break;
       case PERCENT_COMPLETE:
-         label.setText(messages.statusBarLabelPercentage(approvedPercent));
+         label.setText(messages.statusBarLabelPercentage(stats.getApprovedPercent(statsByWords)));
          break;
       default:
          label.setText("error: " + labelFormat.name());
@@ -164,7 +162,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
 
    public int getApprovedPercent()
    {
-      return approvedPercent;
+      return stats.getApprovedPercent(statsByWords);
    }
 
    private void refreshDisplay(int duration)
@@ -214,19 +212,6 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
    public int getUnitUntranslated()
    {
       return stats.getUnitCount().get(ContentState.New);
-   }
-
-   public double getRemainingWordsHours()
-   {
-      return remainingHours(getWordsNeedReview(), getWordsUntranslated());
-   }
-
-   private double remainingHours(int fuzzyWords, int untranslatedWords)
-   {
-      double untransHours = untranslatedWords / 250.0;
-      double fuzzyHours = fuzzyWords / 500.0;
-      double remainHours = untransHours + fuzzyHours;
-      return remainHours;
    }
 
    @Override

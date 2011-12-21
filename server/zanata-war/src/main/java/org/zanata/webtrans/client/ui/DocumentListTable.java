@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.ui;
 
 import java.util.Comparator;
+import java.util.HashMap;
 
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display.MainView;
@@ -55,6 +56,11 @@ public final class DocumentListTable
       }
    }
 
+   // TODO this is not the ideal place to store this
+   // it is required since these graphs have been removed from DocumentNode so
+   // that DocumentListPresenter can be unit tested (JRE).
+   private static HashMap<Long, TransUnitCountGraph> statsWidgets = new HashMap<Long, TransUnitCountGraph>();
+
    private static Column<DocumentNode, String> getFolderColumn(final Resources resources)
    {
       TextColumn<DocumentNode> folderColumn = new TextColumn<DocumentNode>()
@@ -84,14 +90,25 @@ public final class DocumentListTable
       return docColumn;
    }
 
-   private static Column<DocumentNode, TransUnitCountGraph> getStatisticColumn(final Resources resources)
+   private static Column<DocumentNode, TransUnitCountGraph> getStatisticColumn(final Resources resources, final WebTransMessages messages)
    {
       Column<DocumentNode, TransUnitCountGraph> statisticColumn = new Column<DocumentNode, TransUnitCountGraph>(new TransUnitCountGraphCell())
       {
          @Override
-         public TransUnitCountGraph getValue(DocumentNode object)
+         public TransUnitCountGraph getValue(DocumentNode docNode)
          {
-            return object.getTransUnitCountGraph();
+            long id = docNode.getDocInfo().getId().getId();
+            if (!statsWidgets.containsKey(id))
+            {
+               TransUnitCountGraph graph = new TransUnitCountGraph(messages);
+               graph.setStats(docNode.getDocInfo().getStats());
+               statsWidgets.put(id, graph);
+            }
+            else
+            {
+               statsWidgets.get(id).setStats(docNode.getDocInfo().getStats());
+            }
+            return statsWidgets.get(id);
          }
       };
       statisticColumn.setSortable(true);
@@ -105,7 +122,7 @@ public final class DocumentListTable
          @Override
          public String getValue(DocumentNode object)
          {
-            return String.valueOf(object.getTransUnitCountGraph().getWordsApproved());
+            return String.valueOf(object.getDocInfo().getStats().getWordCount().getApproved());
          }
       };
       translatedColumn.setSortable(true);
@@ -119,7 +136,8 @@ public final class DocumentListTable
          @Override
          public String getValue(DocumentNode object)
          {
-            return String.valueOf(object.getTransUnitCountGraph().getWordsUntranslated());
+            return String.valueOf(object.getDocInfo().getStats().getWordCount().getUntranslated());
+
          }
       };
       unTranslatedColumn.setSortable(true);
@@ -133,7 +151,7 @@ public final class DocumentListTable
          @Override
          public String getValue(DocumentNode object)
          {
-            return messages.statusBarLabelHours(object.getTransUnitCountGraph().getRemainingWordsHours());
+            return messages.statusBarLabelHours(object.getDocInfo().getStats().getRemainingWordsHours());
          }
       };
       remainingColumn.setSortable(true);
@@ -177,7 +195,7 @@ public final class DocumentListTable
 
       final Column<DocumentNode, String> folderColumn = getFolderColumn(resources);
       final Column<DocumentNode, String> documentColumn = getDocumentColumn(resources);
-      final Column<DocumentNode, TransUnitCountGraph> statisticColumn = getStatisticColumn(resources);
+      final Column<DocumentNode, TransUnitCountGraph> statisticColumn = getStatisticColumn(resources, messages);
       final Column<DocumentNode, String> translatedColumn = getTranslatedColumn(messages);
       final Column<DocumentNode, String> untranslatedColumn = getUntranslatedColumn(messages);
       final Column<DocumentNode, String> remainingColumn = getRemainingColumn(messages);
@@ -215,13 +233,16 @@ public final class DocumentListTable
       {
          public int compare(DocumentNode o1, DocumentNode o2)
          {
-            if (o1.getTransUnitCountGraph().getApprovedPercent() == o2.getTransUnitCountGraph().getApprovedPercent())
+            // StatsByWords is always true for TransUnitCountGraph used in this
+            // table
+            boolean statsByWords = true;
+            if (o1.getDocInfo().getStats().getApprovedPercent(statsByWords) == o2.getDocInfo().getStats().getApprovedPercent(statsByWords))
             {
                return 0;
             }
             if (o1 != null && o2 != null)
             {
-               return o1.getTransUnitCountGraph().getApprovedPercent() > o2.getTransUnitCountGraph().getApprovedPercent() ? 1 : -1;
+               return o1.getDocInfo().getStats().getApprovedPercent(statsByWords) > o2.getDocInfo().getStats().getApprovedPercent(statsByWords) ? 1 : -1;
             }
             return -1;
          }
@@ -230,13 +251,13 @@ public final class DocumentListTable
       {
          public int compare(DocumentNode o1, DocumentNode o2)
          {
-            if (o1.getTransUnitCountGraph().getWordsApproved() == o2.getTransUnitCountGraph().getWordsApproved())
+            if (o1.getDocInfo().getStats().getWordCount().getApproved() == o2.getDocInfo().getStats().getWordCount().getApproved())
             {
                return 0;
             }
             if (o1 != null && o2 != null)
             {
-               return o1.getTransUnitCountGraph().getWordsApproved() > o2.getTransUnitCountGraph().getWordsApproved() ? 1 : -1;
+               return o1.getDocInfo().getStats().getWordCount().getApproved() > o2.getDocInfo().getStats().getWordCount().getApproved() ? 1 : -1;
             }
             return -1;
          }
@@ -245,13 +266,13 @@ public final class DocumentListTable
       {
          public int compare(DocumentNode o1, DocumentNode o2)
          {
-            if (o1.getTransUnitCountGraph().getWordsUntranslated() == o2.getTransUnitCountGraph().getWordsUntranslated())
+            if (o1.getDocInfo().getStats().getWordCount().getUntranslated() == o2.getDocInfo().getStats().getWordCount().getUntranslated())
             {
                return 0;
             }
             if (o1 != null && o2 != null)
             {
-               return o1.getTransUnitCountGraph().getWordsUntranslated() > o2.getTransUnitCountGraph().getWordsUntranslated() ? 1 : -1;
+               return o1.getDocInfo().getStats().getWordCount().getUntranslated() > o2.getDocInfo().getStats().getWordCount().getUntranslated() ? 1 : -1;
             }
             return -1;
          }
@@ -260,13 +281,13 @@ public final class DocumentListTable
       {
          public int compare(DocumentNode o1, DocumentNode o2)
          {
-            if (o1.getTransUnitCountGraph().getRemainingWordsHours() == o2.getTransUnitCountGraph().getRemainingWordsHours())
+            if (o1.getDocInfo().getStats().getRemainingWordsHours() == o2.getDocInfo().getStats().getRemainingWordsHours())
             {
                return 0;
             }
             if (o1 != null && o2 != null)
             {
-               return o1.getTransUnitCountGraph().getRemainingWordsHours() > o2.getTransUnitCountGraph().getRemainingWordsHours() ? 1 : -1;
+               return o1.getDocInfo().getStats().getRemainingWordsHours() > o2.getDocInfo().getStats().getRemainingWordsHours() ? 1 : -1;
             }
             return -1;
          }

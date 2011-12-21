@@ -61,4 +61,25 @@ public class TranslationStats implements Serializable
       wordCount.add(other.getWordCount());
    }
 
+   public double getRemainingWordsHours()
+   {
+      return remainingHours(wordCount.getNeedReview(), wordCount.getUntranslated());
+   }
+
+   public int getApprovedPercent(boolean byWords)
+   {
+      if (byWords)
+         return wordCount.getApproved() * 100 / wordCount.getTotal();
+      else
+         return unitCount.getApproved() * 100 / unitCount.getTotal();
+   }
+
+   private double remainingHours(int fuzzyWords, int untranslatedWords)
+   {
+      double untransHours = untranslatedWords / 250.0;
+      double fuzzyHours = fuzzyWords / 500.0;
+      double remainHours = untransHours + fuzzyHours;
+      return remainHours;
+   }
+
 }
