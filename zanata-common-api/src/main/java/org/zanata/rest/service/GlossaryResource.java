@@ -31,6 +31,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 import org.zanata.common.LocaleId;
+import org.zanata.rest.dto.Glossary;
 
 
 /**
@@ -50,7 +51,7 @@ public interface GlossaryResource
    public Response get(@PathParam("locale") LocaleId locale);
 
    @PUT
-   public Response put(InputStream messageBody);
+   public Response put(Glossary messageBody);
 
    @DELETE
    @Path("/{locale}")
