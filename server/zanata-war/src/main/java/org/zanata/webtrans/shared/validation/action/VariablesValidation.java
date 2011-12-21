@@ -21,44 +21,49 @@
 package org.zanata.webtrans.shared.validation.action;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
 
 /**
  * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class HtmlXmlTagValidation extends ValidationAction
+public class VariablesValidation extends ValidationAction
 {
-   public HtmlXmlTagValidation(String id, String description)
+   public VariablesValidation(String id, String description)
    {
       super(id, description);
    }
 
-   // private final static String tagRegex = "<[^>]+>[^<]*</[^>]+>";
-   private final static String tagRegex = "<[^>]+>";
-
-   private final static RegExp regExp = RegExp.compile(tagRegex, "g");
-
+   private final String[] varList = { "%s", "%d" };
+   
    @Override
    public void validate(String source, String target)
    {
-      String tmp = target;
-      MatchResult result = regExp.exec(source);
-      while (result != null)
+      for (String var : varList)
       {
-         String node = result.getGroup(0);
-         Log.debug("Found Node:" + node);
-         if (!tmp.contains(node))
+         int srcCount = countMatches(source, var);
+         int tgtCount = countMatches(target, var);
+         Log.debug("Variable [" + var + "]: src-" + srcCount + " target-" + tgtCount);
+         if (srcCount != tgtCount)
          {
-            addError("Tag " + node + " not found in target");
+            addError("Variable [" + var + "] count mismatch");
          }
-         else
-         {
-            tmp = tmp.replaceFirst(node, ""); // remove matched node from target
-         }
-         result = regExp.exec(source);
       }
+   }
+
+   private int countMatches(String str, String sub)
+   {
+      if ((str == null || str.length() == 0) || (sub == null || sub.length() == 0))
+      {
+         return 0;
+      }
+      int count = 0;
+      int idx = 0;
+      while ((idx = str.indexOf(sub, idx)) != -1)
+      {
+         count++;
+         idx += sub.length();
+      }
+      return count;
    }
 }

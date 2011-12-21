@@ -52,7 +52,7 @@ public class NewlineLeadTrailValidation extends ValidationAction
          MatchResult targetResult = leadRegExp.exec(target);
          if (targetResult == null)
          {
-            addError(getId() + ": Leading newline not found in target");
+            addError("Leading newline not found in target");
          }
       }
 
@@ -63,7 +63,7 @@ public class NewlineLeadTrailValidation extends ValidationAction
          MatchResult targetResult = endRegExp.exec(target);
          if (targetResult == null)
          {
-            addError(getId() + ": Trailing newline not found in target");
+            addError("Trailing newline not found in target");
          }
       }
    }
