@@ -3,15 +3,11 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:f="urn:import:org.zanata.webtrans.client"
 	xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
 
-	<ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources" />
-
 	<ui:style>
-		.imageButton {
-			cursor: pointer;
-		}
-		
-		.button {
-           border-radius:5px;
+        .small-button {
+	       height:10px;
+	       font-size:10px;
+	       border-radius:5px;
         }
 	
 	</ui:style>
@@ -24,10 +20,9 @@
 				        <g:layer top="0" bottom="5px">
 					        <g:TabLayoutPanel ui:field="southPanelTab" barUnit='PX' barHeight='20'/>
                         </g:layer>
-				        <g:layer right="3px" top="3px" width="15px" height="15px"> 
+				        <g:layer right="3px" top="0" width="70px" height="18px"> 
                             <g:FlowPanel>
-                                <g:Image resource="{resources.upArrowButton}" ui:field="showSouthPanelViewLink" styleName="{style.imageButton}" />
-                                <g:Image resource="{resources.minimizeButton}" ui:field="southPanelMinimize" styleName="{style.imageButton}" />
+                                <g:ToggleButton ui:field="toogleSouthButton" addStyleNames="{style.small-button}"/>
                             </g:FlowPanel>
                         </g:layer>
 				    </g:LayoutPanel>
@@ -38,9 +33,9 @@
 							<g:LayoutPanel ui:field="editorContainer" />
 						</g:layer>
 
-						<g:layer height="23px" width="80px" right="5px" top="3px">
+						<g:layer height="18px" width="70px" right="5px" top="5px">
 							<g:FlowPanel>
-							    <g:ToggleButton ui:field="toogleOptionsButton" addStyleNames="{style.button}"/>
+							    <g:ToggleButton ui:field="toogleOptionsButton" addStyleNames="{style.small-button}"/>
 							</g:FlowPanel>
 						</g:layer>
 					</g:LayoutPanel>

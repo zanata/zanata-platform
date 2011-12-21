@@ -65,17 +65,13 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 
       void setSouthPanelViewVisible(boolean visible);
 
-      HasClickHandlers getHideSouthPanelButton();
-
-      HasClickHandlers getShowSouthPanelButton();
-
-      void setShowSouthPanelButtonVisible(boolean visible);
-
       void setSidePanelViewVisible(boolean visible);
 
       void updateWorkspaceUsersTitle(String title);
 
       ToggleButton getToogleOptionsButton();
+      
+      ToggleButton getToogleSouthButton();
    }
 
    private final DispatchAsync dispatcher;
@@ -177,50 +173,44 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
             {
                display.setSidePanelViewVisible(true);
                display.getToogleOptionsButton().setTitle(messages.hideEditorOptions());
-               display.getToogleOptionsButton().setText(messages.showEditorOptionsLabel());
             }
             else if (!display.getToogleOptionsButton().isDown())
             {
                display.setSidePanelViewVisible(false);
                display.getToogleOptionsButton().setTitle(messages.showEditorOptions());
-               display.getToogleOptionsButton().setText(messages.hideEditorOptionsLabel());
             }
          }
       }));
 
-      registerHandler(display.getHideSouthPanelButton().addClickHandler(new ClickHandler()
+      registerHandler(display.getToogleSouthButton().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
-            display.setSouthPanelViewVisible(false);
-            transMemoryPresenter.unbind();
-            glossaryPresenter.unbind();
-            workspaceUsersPresenter.unbind();
-            display.setShowSouthPanelButtonVisible(true);
-         }
-      }));
-
-      display.setShowSouthPanelButtonVisible(false);
-      display.getShowSouthPanelButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            transMemoryPresenter.bind();
-            glossaryPresenter.bind();
-            workspaceUsersPresenter.bind();
-
-            display.setSouthPanelViewVisible(true);
-            display.setShowSouthPanelButtonVisible(false);
-            TransUnit tu = translationEditorPresenter.getSelectedTransUnit();
-            if (tu != null)
+            if (display.getToogleSouthButton().isDown())
             {
-               transMemoryPresenter.showResultsFor(tu);
-               // glossaryPresenter.showResultsFor(tu);
+               display.setSouthPanelViewVisible(false);
+               transMemoryPresenter.unbind();
+               glossaryPresenter.unbind();
+               workspaceUsersPresenter.unbind();
+            }
+            else if (!display.getToogleSouthButton().isDown())
+            {
+               transMemoryPresenter.bind();
+               glossaryPresenter.bind();
+               workspaceUsersPresenter.bind();
+
+               display.setSouthPanelViewVisible(true);
+               TransUnit tu = translationEditorPresenter.getSelectedTransUnit();
+               if (tu != null)
+               {
+                  transMemoryPresenter.showResultsFor(tu);
+                  // glossaryPresenter.showResultsFor(tu);
+               }
             }
          }
-      });
+      }));
+
 
       final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Navigation);
 

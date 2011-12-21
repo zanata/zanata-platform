@@ -48,9 +48,6 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    private static TranslationViewUiBinder uiBinder = GWT.create(TranslationViewUiBinder.class);
 
    @UiField(provided = true)
-   final Resources resources;
-
-   @UiField(provided = true)
    LayoutPanel sidePanelOuterContainer, southPanelContainer;
 
    @UiField
@@ -59,8 +56,11 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    @UiField
    LayoutPanel editorContainer, sidePanelContainer;
 
-   @UiField
+   @UiField(provided = true)
    ToggleButton toogleOptionsButton;
+
+   @UiField(provided = true)
+   ToggleButton toogleSouthButton;
 
    LayoutPanel tmPanel, userPanel;
 
@@ -73,12 +73,6 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    @UiField
    SplitLayoutPanel mainSplitPanel;
 
-   @UiField
-   Image southPanelMinimize;
-
-   @UiField
-   Image showSouthPanelViewLink;
-
    final WebTransMessages messages;
 
    private double panelWidth = 20;
@@ -89,7 +83,6 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    @Inject
    public TranslationView(Resources resources, WebTransMessages messages)
    {
-      this.resources = resources;
       this.messages = messages;
 
       StyleInjector.inject(resources.style().getText(), true);
@@ -99,14 +92,16 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       tmPanel = new LayoutPanel();
       userPanel = new LayoutPanel();
       
+      toogleOptionsButton = new ToggleButton(messages.hideEditorOptionsLabel(), messages.showEditorOptionsLabel());
+      toogleOptionsButton.setTitle(messages.hideEditorOptions());
+      toogleOptionsButton.setDown(true);
+
+      toogleSouthButton = new ToggleButton(messages.minimiseLabel(), messages.restoreLabel());
+
       initWidget(uiBinder.createAndBindUi(this));
-      southPanelMinimize.setVisible(true);
       mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) panelWidth);
       mainSplitPanel.setWidgetMinSize(southPanelContainer, (int) southHeight);
 
-      toogleOptionsButton.setText(messages.showEditorOptionsLabel());
-      toogleOptionsButton.setTitle(messages.hideEditorOptions());
-      toogleOptionsButton.setDown(true);
 
       southPanelTab.add(tmPanel, messages.translationMemoryHeading());
       if (!disableGlossary)
@@ -114,6 +109,8 @@ public class TranslationView extends Composite implements TranslationPresenter.D
          southPanelTab.add(glossaryPanel, "Glossary");
       }
       southPanelTab.add(userPanel, messages.nUsersOnline(0));
+
+
    }
 
    @Override
@@ -207,22 +204,9 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    }
 
    @Override
-   public HasClickHandlers getHideSouthPanelButton()
+   public ToggleButton getToogleSouthButton()
    {
-      return southPanelMinimize;
-   }
-
-   @Override
-   public HasClickHandlers getShowSouthPanelButton()
-   {
-      return showSouthPanelViewLink;
-   }
-
-   @Override
-   public void setShowSouthPanelButtonVisible(boolean visible)
-   {
-      showSouthPanelViewLink.setVisible(visible);
-      southPanelMinimize.setVisible(!visible);
+      return toogleSouthButton;
    }
 
    @Override
