@@ -3,29 +3,21 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:with field="resources" type="org.zanata.webtrans.client.resources.Resources" />
 	<ui:style>
-		.imageAnchor{
-			cursor: pointer;
-			}
-		.configButton {
-	       cursor: pointer;
-	       margin-left:40px;
-            }
             
         .nav-button {
-	       width:35px;
-	       height:12px;
+	       width:30px;
+	       height:10px;
 	       border-radius:5px;   
+	       margin-right:5px;
         }
         
-        .rootContainer{
-	    }
-	    
-	    .rootContainer td {
-	       padding-right:5px;
-	
+        .nav-button img {
+	       padding-bottom:2px;
         }
+        
+       
 	</ui:style>
-	<g:HorizontalPanel styleName="{style.rootContainer}">
+	<g:HorizontalPanel>
 	   <g:PushButton ui:field="firstEntry" addStyleNames="{style.nav-button}"/>
 	   <g:PushButton ui:field="prevState" addStyleNames="{style.nav-button}"/>
 	   <g:PushButton ui:field="prevEntry" addStyleNames="{style.nav-button}"/>

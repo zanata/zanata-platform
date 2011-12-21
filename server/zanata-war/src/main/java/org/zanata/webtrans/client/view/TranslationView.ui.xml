@@ -9,6 +9,10 @@
 		.imageButton {
 			cursor: pointer;
 		}
+		
+		.button {
+           border-radius:5px;
+        }
 	
 	</ui:style>
 
@@ -36,7 +40,7 @@
 
 						<g:layer height="23px" width="80px" right="5px" top="3px">
 							<g:FlowPanel>
-							    <g:ToggleButton ui:field="toogleOptionsButton"/>
+							    <g:ToggleButton ui:field="toogleOptionsButton" addStyleNames="{style.button}"/>
 							</g:FlowPanel>
 						</g:layer>
 					</g:LayoutPanel>
