@@ -27,9 +27,9 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
-public class PropReaderTests
+public class PropReaderTest
 {
-   private static final Logger log = LoggerFactory.getLogger(PropReaderTests.class);
+   private static final Logger log = LoggerFactory.getLogger(PropReaderTest.class);
    private static final String TEST_OUTPUT_DIR_STRING = "target/test-output";
    private static final File TEST_OUTPUT_DIR = new File(TEST_OUTPUT_DIR_STRING);
    PropReader propReader;
@@ -114,7 +114,7 @@ public class PropReaderTests
 
    private InputStream getResourceAsStream(String relativeResourceName) throws FileNotFoundException
    {
-      InputStream stream = PropReaderTests.class.getResourceAsStream(relativeResourceName);
+      InputStream stream = PropReaderTest.class.getResourceAsStream(relativeResourceName);
       if (stream == null)
          throw new FileNotFoundException(relativeResourceName);
       return stream;

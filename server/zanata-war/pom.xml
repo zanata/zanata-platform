@@ -659,6 +659,14 @@
             <version>${project.version}</version>
         </dependency>
         
+		<dependency>
+			<groupId>org.zanata</groupId>
+			<artifactId>zanata-rest-client</artifactId>
+			<version>${version}</version>
+	        <type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+        
 		<!-- Seam Dependencies -->
 
 		<dependency>
@@ -923,6 +931,12 @@
 			<artifactId>log4j</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+			<scope>test</scope>
+        </dependency>
 
 		<dependency>
 			<groupId>javassist</groupId>

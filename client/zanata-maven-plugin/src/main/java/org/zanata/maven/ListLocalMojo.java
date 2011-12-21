@@ -1,5 +1,6 @@
 package org.zanata.maven;
 
+import org.zanata.client.commands.ConfigurableProjectOptions;
 import org.zanata.client.commands.ListLocalCommand;
 
 /* Javadoc disabled so that maven won't include this unfinished mojo in the plugin:
@@ -7,11 +8,11 @@ import org.zanata.client.commands.ListLocalCommand;
  * considered to be Zanata documents. These are the files which will be sent to
  * Zanata when using the 'push' goal.
  * 
- * @goal listlocal
- * @requiresProject true
+ * @goal list-local
+ * @requiresProject false
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class ListLocalMojo extends ConfigurableProjectMojo
+public class ListLocalMojo extends ConfigurableProjectMojo<ConfigurableProjectOptions>
 {
 
    public ListLocalMojo() throws Exception

@@ -1,6 +1,5 @@
 package org.zanata.maven;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,13 +9,16 @@ import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptions;
 
 /**
- * Pushes source text to a Zanata project version so that it can be translated.
+ * Pushes source text to a Zanata project version so that it can be translated, and optionally push translated text as well.
+ * NB: Any documents which exist on the server but not locally will be deleted as obsolete.
+ * If deleteObsoleteModules is true, documents belonging to unknown/obsolete modules will be deleted as well.
  * 
  * @goal push
  * @requiresProject true
+ * @requiresOnline true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class PushMojo extends ConfigurableProjectMojo implements PushOptions
+public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
 {
 
    public PushMojo() throws Exception
@@ -29,20 +31,6 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    {
       return new PushCommand(this);
    }
-
-   /**
-    * Base directory for source-language files
-    * 
-    * @parameter expression="${zanata.srcDir}" default-value="."
-    */
-   private File srcDir;
-
-   /**
-    * Base directory for target-language files (translations)
-    * 
-    * @parameter expression="${zanata.transDir}" default-value="."
-    */
-   private File transDir;
 
    /**
     * Language of source documents
@@ -107,17 +95,10 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
     */
    private boolean defaultExcludes = true;
 
-   @Override
-   public File getSrcDir()
-   {
-      return srcDir;
-   }
-
-   @Override
-   public File getTransDir()
-   {
-      return transDir;
-   }
+   /**
+    * @parameter expression="${zanata.deleteObsoleteModules}" default-value="false"
+    */
+   private boolean deleteObsoleteModules;
 
    @Override
    public String getSourceLang()
@@ -147,6 +128,12 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    public boolean getUseSrcOrder()
    {
       return useSrcOrder;
+   }
+
+   @Override
+   public boolean getDeleteObsoleteModules()
+   {
+      return this.deleteObsoleteModules;
    }
 
    @Override
