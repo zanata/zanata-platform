@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.shared.validation.action;
 
+import org.zanata.webtrans.shared.validation.ValidationUtils;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
@@ -45,25 +47,28 @@ public class NewlineLeadTrailValidation extends ValidationAction
    @Override
    public void validate(String source, String target)
    {
-      MatchResult sourceResult = leadRegExp.exec(source);
-      if (sourceResult != null)
+      if (!ValidationUtils.isEmpty(target))
       {
-         Log.debug("Found leading newline in source");
-         MatchResult targetResult = leadRegExp.exec(target);
-         if (targetResult == null)
+         MatchResult sourceResult = leadRegExp.exec(source);
+         if (sourceResult != null)
          {
-            addError("Leading newline not found in target");
+            Log.debug("Found leading newline in source");
+            MatchResult targetResult = leadRegExp.exec(target);
+            if (targetResult == null)
+            {
+               addError("Leading newline not found in target");
+            }
          }
-      }
 
-      sourceResult = endRegExp.exec(source);
-      if (sourceResult != null)
-      {
-         Log.debug("Found trailing newline in source");
-         MatchResult targetResult = endRegExp.exec(target);
-         if (targetResult == null)
+         sourceResult = endRegExp.exec(source);
+         if (sourceResult != null)
          {
-            addError("Trailing newline not found in target");
+            Log.debug("Found trailing newline in source");
+            MatchResult targetResult = endRegExp.exec(target);
+            if (targetResult == null)
+            {
+               addError("Trailing newline not found in target");
+            }
          }
       }
    }

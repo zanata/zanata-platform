@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.shared.validation.action;
 
+import org.zanata.webtrans.shared.validation.ValidationUtils;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
@@ -44,21 +46,25 @@ public class HtmlXmlTagValidation extends ValidationAction
    @Override
    public void validate(String source, String target)
    {
-      String tmp = target;
-      MatchResult result = regExp.exec(source);
-      while (result != null)
+      if (!ValidationUtils.isEmpty(target))
       {
-         String node = result.getGroup(0);
-         Log.debug("Found Node:" + node);
-         if (!tmp.contains(node))
+         String tmp = target;
+         MatchResult result = regExp.exec(source);
+         while (result != null)
          {
-            addError("Tag " + node + " not found in target");
+            String node = result.getGroup(0);
+            Log.debug("Found Node:" + node);
+            if (!tmp.contains(node))
+            {
+               addError("Tag " + node + " not found in target");
+            }
+            else
+            {
+               tmp = tmp.replaceFirst(node, ""); // remove matched node from
+                                                 // target
+            }
+            result = regExp.exec(source);
          }
-         else
-         {
-            tmp = tmp.replaceFirst(node, ""); // remove matched node from target
-         }
-         result = regExp.exec(source);
       }
    }
 }

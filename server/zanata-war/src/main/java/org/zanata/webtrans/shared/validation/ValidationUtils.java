@@ -18,41 +18,36 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.validation.action;
-
-import org.zanata.webtrans.shared.validation.ValidationUtils;
-
-import com.allen_sauer.gwt.log.client.Log;
+package org.zanata.webtrans.shared.validation;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  **/
-public class VariablesValidation extends ValidationAction
+public class ValidationUtils
 {
-   public VariablesValidation(String id, String description)
+   public static int countMatches(String str, String sub)
    {
-      super(id, description);
+      if (isEmpty(str) || isEmpty(sub))
+      {
+         return 0;
+      }
+      int count = 0;
+      int idx = 0;
+      while ((idx = str.indexOf(sub, idx)) != -1)
+      {
+         count++;
+         idx += sub.length();
+      }
+      return count;
    }
 
-   private final String[] varList = { "%s", "%d" };
-   
-   @Override
-   public void validate(String source, String target)
+   public static boolean isEmpty(String str)
    {
-      if (!ValidationUtils.isEmpty(target))
-      {
-         for (String var : varList)
-         {
-            int srcCount = ValidationUtils.countMatches(source, var);
-            int tgtCount = ValidationUtils.countMatches(target, var);
-            Log.debug("Variable [" + var + "]: src-" + srcCount + " target-" + tgtCount);
-            if (srcCount != tgtCount)
-            {
-               addError("Variable [" + var + "] count mismatch");
-            }
-         }
-      }
+      return str == null || str.length() == 0;
    }
 }
+
+
+ 
