@@ -71,7 +71,7 @@
 		
 	</ui:style>
 	<g:LayoutPanel>
-		<g:layer top="5px" height="28px">
+		<g:layer top="3px" height="16px">
 		    <g:HorizontalPanel width="100%">
 		      <g:cell horizontalAlignment="ALIGN_LEFT">
 		          <g:Image resource="{resources.logo}" styleName="{style.logo}"/>
@@ -96,32 +96,32 @@
               </g:cell>
 		    </g:HorizontalPanel>
 		</g:layer>
-		<g:layer top="28px" height="28px">
-		<g:LayoutPanel ui:field='topPanel' styleName="{resources.style.banner}">
-			<g:layer left="0px" right="520px">
-			<g:HorizontalPanel width="100%">
-				<g:FlowPanel>
-				<g:HTMLPanel styleName="{style.topPanel-Workspace}">
-					<nobr>
-						<g:Anchor href="#" ui:field="documentsLink"><ui:msg>Documents</ui:msg></g:Anchor>
-						<span class="{style.divider}">></span>
-						<em>
-							<span ui:field="selectedDocumentPathSpan"/><span ui:field="selectedDocumentSpan"><ui:msg>No document selected</ui:msg></span>
-						</em>
-					</nobr>
-				</g:HTMLPanel>
-				</g:FlowPanel>
-				<g:FlowPanel >
-					<g:Label ui:field="notificationMessage" styleName="{style.notification}"/>
-				</g:FlowPanel>
-			</g:HorizontalPanel>
-			</g:layer>
-			<g:layer right="7px" width="200px">	      
-			      <fui:TransUnitCountBar ui:field="translationStatsBar" styleName="{style.translationStats}"/>
-			</g:layer>
-		</g:LayoutPanel>
+		<g:layer top="22px" height="28px">
+			<g:LayoutPanel ui:field='topPanel' styleName="{resources.style.banner}">
+				<g:layer left="0px" right="520px">
+				<g:HorizontalPanel width="100%">
+					<g:FlowPanel>
+					<g:HTMLPanel styleName="{style.topPanel-Workspace}">
+						<nobr>
+							<g:Anchor href="#" ui:field="documentsLink"><ui:msg>Documents</ui:msg></g:Anchor>
+							<span class="{style.divider}">></span>
+							<em>
+								<span ui:field="selectedDocumentPathSpan"/><span ui:field="selectedDocumentSpan"><ui:msg>No document selected</ui:msg></span>
+							</em>
+						</nobr>
+					</g:HTMLPanel>
+					</g:FlowPanel>
+					<g:FlowPanel >
+						<g:Label ui:field="notificationMessage" styleName="{style.notification}"/>
+					</g:FlowPanel>
+				</g:HorizontalPanel>
+				</g:layer>
+				<g:layer right="5px" width="200px">	      
+				      <fui:TransUnitCountBar ui:field="translationStatsBar" styleName="{style.translationStats}"/>
+				</g:layer>
+			</g:LayoutPanel>
 		</g:layer>
-		<g:layer top="58px" bottom="0px" left='7px' right='7px' >
+		<g:layer top="52px" bottom="0px" left='5px' right='5px' >
 		   <g:LayoutPanel ui:field="container" />
 		</g:layer>
 	</g:LayoutPanel>
