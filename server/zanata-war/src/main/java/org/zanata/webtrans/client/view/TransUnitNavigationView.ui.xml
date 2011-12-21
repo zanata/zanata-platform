@@ -10,13 +10,27 @@
 	       cursor: pointer;
 	       margin-left:40px;
             }
+            
+        .nav-button {
+	       width:35px;
+	       height:12px;
+	       border-radius:5px;   
+        }
+        
+        .rootContainer{
+	    }
+	    
+	    .rootContainer td {
+	       padding-right:5px;
+	
+        }
 	</ui:style>
-	<g:HTMLPanel>
-		    <g:Image resource="{resources.firstEntry}" ui:field="firstEntry" styleName="{style.imageAnchor}"/>
-			<g:Image resource="{resources.prevState}" ui:field="prevState" styleName="{style.imageAnchor}"/>
-			<g:Image resource="{resources.prevEntry}" ui:field="prevEntry" styleName="{style.imageAnchor}"/>
-			<g:Image resource="{resources.nextEntry}" ui:field="nextEntry" styleName="{style.imageAnchor}"/>
-			<g:Image resource="{resources.nextState}" ui:field="nextState" styleName="{style.imageAnchor}"/>
-		    <g:Image resource="{resources.lastEntry}" ui:field="lastEntry" styleName="{style.imageAnchor}"/>
-	</g:HTMLPanel>
+	<g:HorizontalPanel styleName="{style.rootContainer}">
+	   <g:PushButton ui:field="firstEntry" addStyleNames="{style.nav-button}"/>
+	   <g:PushButton ui:field="prevState" addStyleNames="{style.nav-button}"/>
+	   <g:PushButton ui:field="prevEntry" addStyleNames="{style.nav-button}"/>
+	   <g:PushButton ui:field="nextEntry" addStyleNames="{style.nav-button}"/>
+	   <g:PushButton ui:field="nextState" addStyleNames="{style.nav-button}"/>
+	   <g:PushButton ui:field="lastEntry" addStyleNames="{style.nav-button}"/>
+	</g:HorizontalPanel>
 </ui:UiBinder> 
