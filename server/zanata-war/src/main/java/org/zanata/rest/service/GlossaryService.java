@@ -1,6 +1,5 @@
 package org.zanata.rest.service;
 
-import java.io.InputStream;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -19,14 +18,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
+import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.Identity;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.AccountDAO;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
@@ -36,12 +35,13 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
+import org.zanata.security.SecurityChecker;
 import org.zanata.service.LocaleService;
 
 @Name("glossaryService")
 @Path(GlossaryService.SERVICE_PATH)
 @Transactional
-public class GlossaryService implements GlossaryResource
+public class GlossaryService implements GlossaryResource, SecurityChecker
 {
    @Context
    private UriInfo uri;
@@ -80,9 +80,15 @@ public class GlossaryService implements GlossaryResource
       this.localeServiceImpl = localeService;
    }
 
+   /**
+    * Returns all Glossary entries.
+    * 
+    * @return All Glossary data.
+    */
    @Override
    @GET
    @Produces( { MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+   @TypeHint(Glossary.class)
    public Response getEntries()
    {
       ResponseBuilder response = request.evaluatePreconditions();
@@ -99,10 +105,17 @@ public class GlossaryService implements GlossaryResource
       return Response.ok(glossary).build();
    }
 
+   /**
+    * Returns Glossary entries for a single locale.
+    * 
+    * @param locale Locale for which to retrieve entries.
+    * @return A glossary with entries for the requested locale only.
+    */
    @Override
    @GET
    @Path("/{locale}")
    @Produces( { MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+   @TypeHint(Glossary.class)
    public Response get(@PathParam("locale") LocaleId locale)
    {
       ResponseBuilder response = request.evaluatePreconditions();
@@ -119,10 +132,17 @@ public class GlossaryService implements GlossaryResource
       return Response.ok(glossary).build();
    }
 
+   /**
+    * Adds glossary entries.
+    * 
+    * @param glossary The Glossary entries to add.
+    * @return An OK (200) response if the glossary was successfully updated.
+    */
    @Override
    @PUT
    @Consumes( { MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   public Response put(InputStream messageBody)
+   @Restrict("#{glossaryService.checkPermission('glossary-insert')}")
+   public Response put(Glossary glossary)
    {
       ResponseBuilder response;
 
@@ -133,9 +153,6 @@ public class GlossaryService implements GlossaryResource
          return response.build();
       }
       response = Response.created(uri.getAbsolutePath());
-      Glossary glossary = RestUtils.unmarshall(Glossary.class, messageBody, requestContentType, headers.getRequestHeaders());
-
-      identity.checkPermission("", GLOSSARY_ACTION_INSERT);
 
       for (GlossaryEntry glossaryEntry : glossary.getGlossaryEntries())
       {
@@ -148,11 +165,15 @@ public class GlossaryService implements GlossaryResource
 
    /**
     * Delete all glossary term with specified locale. GlossaryEntry will be
-    * deleted if termList is empty
+    * deleted if termList is empty.
+    * 
+    * @param targetLocale The target locale to delete glosary entries from.
+    * @return An OK (200) response if the glossary was successfully deleted.
     */
    @Override
    @DELETE
    @Path("/{locale}")
+   @Restrict("#{glossaryService.checkPermission('glossary-delete')}")
    public Response deleteGlossary(@PathParam("locale") LocaleId targetLocale)
    {
       ResponseBuilder response = request.evaluatePreconditions();
@@ -160,8 +181,6 @@ public class GlossaryService implements GlossaryResource
       {
          return response.build();
       }
-
-      identity.checkPermission("", GLOSSARY_ACTION_DELETE);
 
       List<HGlossaryEntry> hGlossaryEntries = glossaryDAO.getEntries();
 
@@ -194,8 +213,14 @@ public class GlossaryService implements GlossaryResource
       return Response.ok().build();
    }
 
+   /**
+    * Delete all glossary terms.
+    * 
+    * @return An OK (200) response if the glossary was successfully deleted.
+    */
    @Override
    @DELETE
+   @Restrict("#{glossaryService.checkPermission('glossary-delete')}")
    public Response deleteGlossaries()
    {
       ResponseBuilder response = request.evaluatePreconditions();
@@ -205,7 +230,6 @@ public class GlossaryService implements GlossaryResource
       }
       List<HGlossaryEntry> hGlossaryEntries = glossaryDAO.getEntries();
 
-      identity.checkPermission("", GLOSSARY_ACTION_DELETE);
       for (HGlossaryEntry hGlossaryEntry : hGlossaryEntries)
       {
          glossaryDAO.makeTransient(hGlossaryEntry);
@@ -326,5 +350,11 @@ public class GlossaryService implements GlossaryResource
          }
          glossary.getGlossaryEntries().add(glossaryEntry);
       }
+   }
+   
+   @Override
+   public boolean checkPermission(String operation)
+   {
+      return identity != null && identity.hasPermission("", operation);
    }
 }

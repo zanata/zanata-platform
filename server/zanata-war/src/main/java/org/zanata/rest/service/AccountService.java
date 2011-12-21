@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.hibernate.Session;
 import org.jboss.resteasy.spi.NoLogWebApplicationException;
 import org.jboss.seam.annotations.In;
@@ -41,6 +42,7 @@ import org.zanata.rest.dto.Account;
 public class AccountService implements AccountResource
 {
 
+   /** User name that identifies an account. */
    @PathParam("username")
    String username;
 
@@ -76,10 +78,17 @@ public class AccountService implements AccountResource
       this.accountDAO = accountDAO;
    }
 
+   /**
+    * Retrieves a user account.
+    * 
+    * @return An account that matches a user name, or a Not Found (404) response if no such
+    * account is found.
+    */
    @Override
    @GET
    @Produces(
    {MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML, MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON})
+   @TypeHint(Account.class)
    public Response get()
    {
       log.debug("HTTP GET {0}", request.getRequestURL());
@@ -95,6 +104,14 @@ public class AccountService implements AccountResource
       return Response.ok(result).build();
    }
 
+   /**
+    * Creates or updates a user account. If an account with the given user name already exists,
+    * said account will be overwritten with the provided data. Otherwise, a new account will 
+    * be created.
+    * 
+    * @param account The account information to create/update.
+    * @return A response with an OK (200) status.
+    */
    @Override
    @PUT
    @Consumes(

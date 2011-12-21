@@ -89,6 +89,18 @@ public class FileService implements FileResource
    /* @formatter: on */
 
 
+   /**
+    * Downloads a single translation file.
+    * 
+    * @param projectSlug Project identifier.
+    * @param iterationSlug Project iteration identifier.
+    * @param locale Translations for this locale will be contained in the downloaded document.
+    * @param fileExtension File type to be downloaded. (Options: 'po')
+    * @param docId Document identifier to fetch translations for.
+    * @return A translation file in the requested format with translations for the requested document in a
+    * project, iteration and locale. If no document is found for the given parameters, a No Found (404)
+    * response is returned.
+    */
    @Override
    @GET
    @Path(FILE_DOWNLOAD_TEMPLATE)
@@ -126,6 +138,13 @@ public class FileService implements FileResource
       return response;
    }
    
+   /**
+    * Downloads a previously generated file.
+    * 
+    * @param downloadId The Zanata generated download id.
+    * @return A previously generated file, or a Not Found (404) error response if the download is not yet
+    * ready or the download id is not recognized.
+    */
    @Override
    @GET
    @Path(DOWNLOAD_TEMPLATE)
