@@ -6,7 +6,9 @@ import static org.hamcrest.Matchers.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.presenter.client.EventBus;
@@ -14,6 +16,8 @@ import net.customware.gwt.presenter.client.EventBus;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
+import org.hamcrest.Matcher;
+import org.testng.TestException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
@@ -29,10 +33,12 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -146,10 +152,81 @@ public class DocumentListPresenterTest
       verifyAllMocks();
    }
 
+   @SuppressWarnings("unchecked")
+   @Test
+   public void preFiltersDocuments()
+   {
+      // will set up the window location to return some filter documents
+      boolean setupMockWindowLoc = false;
+      boolean setupMockDispatcher = false;
+      boolean setupMockDisplay = false;
+      boolean setupMockEventBus = true;
+
+      resetAllMocks();
+
+      setupDefaultMockExpectations(true, setupMockDispatcher, setupMockDisplay, true, setupMockEventBus, true, true, true, true, setupMockWindowLoc, true);
+
+      Capture<GetDocumentList> capturedDocListRequest = new Capture<GetDocumentList>();
+      mockDispatcher.execute(and(capture(capturedDocListRequest), isA(GetDocumentList.class)), isA(AsyncCallback.class));
+      expectLastCall().andAnswer(new DoclistSuccessAnswer(new ArrayList<DocumentInfo>())).once();
+
+      // expecting page size 0 from new ArrayList above
+      setupMockDisplay(true, 0);
+
+      // simulate "doc" query string parameters
+      String firstFilterString = "filter/string/one";
+      String secondFilterString = "filter/string/two";
+      List<String> filters = new ArrayList<String>();
+      filters.add(firstFilterString);
+      filters.add(secondFilterString);
+      Map<String, List<String>> paramMapWithFilters = new HashMap<String, List<String>>();
+      paramMapWithFilters.put("doc", filters);
+      expect(mockWindowLocation.getParameterMap()).andReturn(paramMapWithFilters).anyTimes();
+
+      replayAllMocks();
+
+      dlp = newDocListPresenter();
+      dlp.bind();
+
+      verifyAllMocks();
+
+      // expect a doc list request that includes the filters from the query
+      // string
+      String message = "all doc query parameters should be passed as filter strings to the rpc call";
+      assertThat(message, firstFilterString, isIn(capturedDocListRequest.getValue().getFilters()));
+      assertThat(message, secondFilterString, isIn(capturedDocListRequest.getValue().getFilters()));
+      assertThat("only filter strings from query parameters should be passed to the rpc call, too many detected", capturedDocListRequest.getValue().getFilters().size(), is(2));
+   }
+
+   @Test
+   public void loadDocsIntoDataProvider()
+   {
+      setupAndBindDocListPresenter();
+      verifyAllMocks();
+
+      // default list of 3 documents should be stored as DocumentNode objects in
+      // the doclist returned by the data provider (dataProviderList in this
+      // case)
+
+      ArrayList<DocumentInfo> expectedDocs = buildSampleDocumentArray();
+      ArrayList<DocumentInfo> actualDocInfos = new ArrayList<DocumentInfo>();
+
+      // right amount of docs
+      assertThat("the data provider should have the same sized document list returned from the server", dataProviderList.size(), is(3));
+      for (DocumentNode node : dataProviderList)
+      {
+         assertThat("the data provider should have only documents that were returned from the server", node.getDocInfo(), isIn(expectedDocs));
+         actualDocInfos.add(node.getDocInfo());
+      }
+      assertThat("the data provider should have all documents returned from the server", actualDocInfos, hasItems(expectedDocs.get(0), expectedDocs.get(1), expectedDocs.get(2)));
+
+   }
+
    @SuppressWarnings({ "unchecked", "rawtypes" })
    @Test
-   public void docListFailure()
+   public void docListFailureNotification()
    {
+      // not expecting any data provider interactions if the list did not load
       boolean setupMockDataProvider = false;
       boolean setupMockDisplay = false;
       boolean setupMockDispatcher = false;
@@ -159,8 +236,6 @@ public class DocumentListPresenterTest
       setupDefaultMockExpectations(setupMockDataProvider, setupMockDispatcher, setupMockDisplay, true, setupMockEventBus, true, true, true, true, true, true);
 
       String failMessage = "test document load fail message";
-
-      // not expecting any data provider interactions if the list did not load
 
       // make sure general event expectation does not prevent capture
       setupMockEventBus(false);
@@ -184,17 +259,80 @@ public class DocumentListPresenterTest
       verifyAllMocks();
 
       // make sure the right notification happened
-      assertThat(capturedNotificationEvent.getValue().getSeverity(), is(NotificationEvent.Severity.Error));
-      assertThat(capturedNotificationEvent.getValue().getMessage(), is(failMessage));
+      assertThat("when document request form server fails, an error severity notification should occur", capturedNotificationEvent.getValue().getSeverity(), is(NotificationEvent.Severity.Error));
+      assertThat("the error message from localizable messages should be used to notify of failed document request from server", capturedNotificationEvent.getValue().getMessage(), is(failMessage));
    }
+
+   // @Test
+   // public void simpleSubstringFilter()
+   // {
+   // boolean setupFilterTextBox = false;
+   // resetAllMocks();
+   // setupDefaultMockExpectations(true, true, true, true, true, true,
+   // setupFilterTextBox, true, true, true, true);
+   //
+   // Capture<ValueChangeHandler<String>> capturedTextboxChangeHandler = new
+   // Capture<ValueChangeHandler<String>>();
+   // expect(mockFilterTextbox.addValueChangeHandler(and(capture(capturedTextboxChangeHandler),
+   // isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
+   //
+   // replayAllMocks();
+   //
+   // dlp = newDocListPresenter();
+   // dlp.bind();
+   //
+   // verifyAllMocks();
+   //
+   // // make sure a new token is pushed to history when the filter is changed
+   // reset(mockHistory);
+   //
+   // expect(mockHistory.getToken()).andReturn("").once();
+   // Capture<String> capturedHistoryToken = new Capture<String>();
+   // mockHistory.newItem(capture(capturedHistoryToken));
+   // expectLastCall().once();
+   //
+   // replay(mockHistory);
+   //
+   // // should match docs "second/path/doc122" and "third/path/doc123"
+   // // should not match doc "first/path/doc111"
+   // String filter = "path/doc12";
+   // ValueChangeEvent<String> filterChanged = new
+   // ValueChangeEvent<String>(filter)
+   // { // overriding gives access to protected constructor
+   // };
+   // capturedTextboxChangeHandler.getValue().onValueChange(filterChanged);
+   // verify(mockHistory);
+   //
+   // // TODO simulate history change event
+   //
+   // // TODO check that doclist is filtered
+   //
+   // // TODO test that filter text is added to token
+   //
+   // }
+   //
+   // @Test
+   // public void commaSeparatedSubstringFilter()
+   // {
+   // throw new RuntimeException("not implemented");
+   // }
+   //
+   // @Test
+   // public void simpleExactStringFilter()
+   // {
+   // throw new RuntimeException("not implemented");
+   // }
+   //
+   // @Test
+   // public void commaSeparatedExactStringFilter()
+   // {
+   // throw new RuntimeException("not implemented");
+   // }
 
    // TODO TESTS:
 
    // bind method:
-   // if success, expect documents loaded into display via mockDataProvider
    // expect display refresh?
-
-   // pre-filter is forwarded in rpc request for docs
 
    // local filter text box causes filtering of doc list
    // exact filter matches properly
@@ -208,11 +346,11 @@ public class DocumentListPresenterTest
       setupAndBindDocListPresenter();
 
       // third document from buildSampleDocumentArray()
-      DocumentId docId = dlp.getDocumentId("third/path/doc3333");
+      DocumentId docId = dlp.getDocumentId("third/path/doc123");
       assertThat(docId.getId(), is(3333L));
 
       // second document from buildSampleDocumentArray()
-      docId = dlp.getDocumentId("second/path/doc2222");
+      docId = dlp.getDocumentId("second/path/doc122");
       assertThat(docId.getId(), is(2222L));
    }
 
@@ -222,10 +360,10 @@ public class DocumentListPresenterTest
       setupAndBindDocListPresenter();
 
       DocumentInfo docInfo = dlp.getDocumentInfo(new DocumentId(1111L));
-      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(1111L), "doc1111", "first/path/", new TranslationStats()))));
+      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(1111L), "doc111", "first/path/", new TranslationStats()))));
 
       docInfo = dlp.getDocumentInfo(new DocumentId(3333L));
-      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(3333L), "doc3333", "third/path/", new TranslationStats()))));
+      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(3333L), "doc123", "third/path/", new TranslationStats()))));
    }
 
    private void setupAndBindDocListPresenter()
@@ -242,13 +380,13 @@ public class DocumentListPresenterTest
    {
       ArrayList<DocumentInfo> docList = new ArrayList<DocumentInfo>();
 
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1111L), "doc1111", "first/path/", new TranslationStats());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1111L), "doc111", "first/path/", new TranslationStats());
       docList.add(docInfo);
 
-      docInfo = new DocumentInfo(new DocumentId(2222L), "doc2222", "second/path/", new TranslationStats());
+      docInfo = new DocumentInfo(new DocumentId(2222L), "doc122", "second/path/", new TranslationStats());
       docList.add(docInfo);
 
-      docInfo = new DocumentInfo(new DocumentId(3333L), "doc3333", "third/path/", new TranslationStats());
+      docInfo = new DocumentInfo(new DocumentId(3333L), "doc123", "third/path/", new TranslationStats());
       docList.add(docInfo);
 
       return docList;
@@ -325,7 +463,6 @@ public class DocumentListPresenterTest
    @SuppressWarnings({ "unchecked", "rawtypes" })
    private void setupMockEventBus(boolean expectAllEvents)
    {
-      // TODO may need to mock handler registrations here?
       expect(mockEventBus.addHandler((GwtEvent.Type<EventHandler>) notNull(), (EventHandler) notNull())).andReturn(createMock(HandlerRegistration.class)).anyTimes();
 
       if (expectAllEvents)
@@ -419,7 +556,6 @@ public class DocumentListPresenterTest
       @Override
       public GetDocumentListResult answer() throws Throwable
       {
-         // TODO make a useful result object or pass it in the constructor
          GetDocumentListResult result = new GetDocumentListResult(new ProjectIterationId("mock-slug", "mock-iteration-slug"), docsToReturn);
 
          // get the most recent argument before this call - should be the
