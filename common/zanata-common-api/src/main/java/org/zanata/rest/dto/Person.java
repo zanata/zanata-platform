@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -14,6 +15,7 @@ import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
 @XmlType(name = "personType")
+@XmlRootElement(name = "person")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder( { "email", "name", "links" })
 @JsonWriteNullProperties(false)

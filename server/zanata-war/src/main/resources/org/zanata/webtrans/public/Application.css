@@ -158,12 +158,16 @@ Removes some of the styling on the page-level splitters
     cursor:pointer;
     border-top-left-radius:5px;
     border-top-right-radius:5px;
+    background:#4a75b5;
+    color:#FFFFFF;
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected {
     cursor:default;
     border-top-left-radius:5px;
     border-top-right-radius:5px;
+    background:#183c66;
+    color:#FFFFFF;
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {

@@ -5,6 +5,10 @@
 	<property name="out.dir" value="${user.dir}/target/test-output" />
 	<property name="bob.key" value="34567890123456789012345678901234" />
 
+	<target name="dummy">
+		<!-- FIXME get the other tests working -->
+	</target>
+
 	<target name="props2docs">
 		<props2docs 
 			srcDir="test1" sourceLang="en_US" locales="de,fr" debug="true" />

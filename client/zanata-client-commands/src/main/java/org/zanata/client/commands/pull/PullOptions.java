@@ -21,17 +21,13 @@
 
 package org.zanata.client.commands.pull;
 
-import java.io.File;
-
-import org.zanata.client.commands.ConfigurableProjectOptions;
+import org.zanata.client.commands.PushPullOptions;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface PullOptions extends ConfigurableProjectOptions
+public interface PullOptions extends PushPullOptions
 {
-   File getSrcDir();
-   File getTransDir();
    boolean getPullSrc();
 }

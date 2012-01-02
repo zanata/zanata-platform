@@ -36,7 +36,7 @@
 	            <g:layer left="7px" width="40%" top="2px" height="23px">
 		            <g:LayoutPanel ui:field="filterPanelContainer" />			    
 	            </g:layer>
-				<g:layer width="50%" right="30px" top="2px" height="23px">
+				<g:layer width="50%" right="30px" top="3px" height="23px">
 						<g:FlowPanel ui:field="transUnitNavigationContainer"  styleName="{style.centerText}"/>
 				</g:layer>
 				<g:layer top="25px" bottom="2em">

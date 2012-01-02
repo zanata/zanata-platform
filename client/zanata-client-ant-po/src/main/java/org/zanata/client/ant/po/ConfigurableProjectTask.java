@@ -1,12 +1,16 @@
 package org.zanata.client.ant.po;
 
 
+import java.io.File;
+
 import org.kohsuke.args4j.Option;
+import org.zanata.client.commands.ConfigurableProjectOptions;
 import org.zanata.client.config.LocaleList;
 
-public abstract class ConfigurableProjectTask extends ConfigurableTask
+public abstract class ConfigurableProjectTask extends ConfigurableTask implements ConfigurableProjectOptions
 {
-   private String projectConfig = "zanata.xml";
+   // FIXME when running in Ant, interpret relative to getProject().getBaseDir()
+   private File projectConfig = new File("zanata.xml");
 
    private String project;
    private String projectVersion;
@@ -25,7 +29,7 @@ public abstract class ConfigurableProjectTask extends ConfigurableTask
    }
 
    @Option(name = "--project-config", metaVar = "FILENAME", usage = "Project configuration, eg zanata.xml", required = false)
-   public void setProjectConfig(String projectConfig)
+   public void setProjectConfig(File projectConfig)
    {
       this.projectConfig = projectConfig;
    }
@@ -52,7 +56,7 @@ public abstract class ConfigurableProjectTask extends ConfigurableTask
       this.projectType = projectType;
    }
 
-   public String getProjectConfig()
+   public File getProjectConfig()
    {
       return projectConfig;
    }
