@@ -23,6 +23,8 @@ package org.zanata.webtrans.shared.validation.action;
 import org.zanata.webtrans.shared.validation.ValidationUtils;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 
 /**
  * 
@@ -36,22 +38,38 @@ public class VariablesValidation extends ValidationAction
       super(id, description);
    }
 
-   private final String[] varList = { "%s", "%d" };
-   
+   private final static String varRegex = "%[\\w]+";
+   private final static RegExp varRegExp = RegExp.compile(varRegex, "g");
+
    @Override
    public void validate(String source, String target)
    {
       if (!ValidationUtils.isEmpty(target))
       {
-         for (String var : varList)
+         String tmp = target;
+         StringBuilder sb = new StringBuilder();
+         MatchResult result = varRegExp.exec(source);
+
+         while (result != null)
          {
-            int srcCount = ValidationUtils.countMatches(source, var);
-            int tgtCount = ValidationUtils.countMatches(target, var);
-            Log.debug("Variable [" + var + "]: src-" + srcCount + " target-" + tgtCount);
-            if (srcCount != tgtCount)
+            String var = result.getGroup(0);
+            Log.debug("Found var:" + var);
+            if (!tmp.contains(var))
             {
-               addError("Variable [" + var + "] count mismatch");
+               sb.append(" ");
+               sb.append(var);
+               sb.append(" ");
             }
+            else
+            {
+               tmp = tmp.replaceFirst(var, ""); // remove matched var
+            }
+            result = varRegExp.exec(source);
+         }
+
+         if (sb.length() > 0)
+         {
+            addError("Variable [" + sb.toString() + "] missing in target");
          }
       }
    }

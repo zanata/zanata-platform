@@ -50,13 +50,14 @@ public class NewlineLeadTrailValidation extends ValidationAction
       if (!ValidationUtils.isEmpty(target))
       {
          MatchResult sourceResult = leadRegExp.exec(source);
+         StringBuilder sb = new StringBuilder();
          if (sourceResult != null)
          {
             Log.debug("Found leading newline in source");
             MatchResult targetResult = leadRegExp.exec(target);
             if (targetResult == null)
             {
-               addError("Leading newline not found in target");
+               sb.append("Leading");
             }
          }
 
@@ -67,8 +68,20 @@ public class NewlineLeadTrailValidation extends ValidationAction
             MatchResult targetResult = endRegExp.exec(target);
             if (targetResult == null)
             {
-               addError("Trailing newline not found in target");
+               if (sb.length() > 0)
+               {
+                  sb.append("/Trailing");
+               }
+               else
+               {
+                  sb.append("Trailing");
+               }
             }
+         }
+
+         if (sb.length() > 0)
+         {
+            addError(sb.toString() + " newline missing in target");
          }
       }
    }

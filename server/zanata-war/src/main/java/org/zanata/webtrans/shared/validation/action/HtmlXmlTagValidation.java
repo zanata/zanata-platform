@@ -49,21 +49,29 @@ public class HtmlXmlTagValidation extends ValidationAction
       if (!ValidationUtils.isEmpty(target))
       {
          String tmp = target;
+         StringBuilder sb = new StringBuilder();
          MatchResult result = regExp.exec(source);
+
          while (result != null)
          {
             String node = result.getGroup(0);
             Log.debug("Found Node:" + node);
             if (!tmp.contains(node))
             {
-               addError("Tag " + node + " not found in target");
+               sb.append(" ");
+               sb.append(node);
+               sb.append(" ");
             }
             else
             {
                tmp = tmp.replaceFirst(node, ""); // remove matched node from
-                                                 // target
             }
             result = regExp.exec(source);
+         }
+
+         if (sb.length() > 0)
+         {
+            addError("Tag [" + sb.toString() + "] missing in target");
          }
       }
    }

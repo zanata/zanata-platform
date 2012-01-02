@@ -46,7 +46,7 @@ public class VariablesValidationTests
    {
       variablesValidation = new VariablesValidation("Variables check", "Variables check validation");
 
-      String source = "Testing string with variable %s";
+      String source = "Testing string with variable %var1";
       String target = "Testing string with no variables";
       variablesValidation.validate(source, target);
       Assert.assertTrue(variablesValidation.hasError());
@@ -58,11 +58,11 @@ public class VariablesValidationTests
    {
       variablesValidation = new VariablesValidation("Variables check", "Variables check validation");
 
-      String source = "Testing string with variable %s and %d";
+      String source = "Testing string with variable %var1 and %var2";
       String target = "Testing string with no variables";
       variablesValidation.validate(source, target);
       Assert.assertTrue(variablesValidation.hasError());
-      Assert.assertEquals(variablesValidation.getError().size(), 2);
+      Assert.assertEquals(variablesValidation.getError().size(), 1);
    }
 
    @Test
@@ -70,11 +70,11 @@ public class VariablesValidationTests
    {
       variablesValidation = new VariablesValidation("Variables check", "Variables check validation");
 
-      String source = "Testing string with variable %s and %s and %d";
+      String source = "Testing string with variable %var1 and %var2 and %var3";
       String target = "Testing string with no variables";
       variablesValidation.validate(source, target);
       Assert.assertTrue(variablesValidation.hasError());
-      Assert.assertEquals(variablesValidation.getError().size(), 2);
+      Assert.assertEquals(variablesValidation.getError().size(), 1);
    }
 
    @Test
@@ -82,8 +82,8 @@ public class VariablesValidationTests
    {
       variablesValidation = new VariablesValidation("Variables check", "Variables check validation");
 
-      String source = "Testing string with variable %s and %d";
-      String target = "Testing string with variable %s and %d";
+      String source = "Testing string with variable %var1 and %var2";
+      String target = "Testing string with variable %var1 and %var2";
       variablesValidation.validate(source, target);
       Assert.assertFalse(variablesValidation.hasError());
       Assert.assertEquals(variablesValidation.getError().size(), 0);
