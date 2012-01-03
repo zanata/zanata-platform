@@ -51,40 +51,10 @@ public class ProjectIterationAction extends BaseSecurityChecker implements Seria
 
    private HProjectIteration securedEntity = null;
 
-   public void markProjectIterationObsolete(HProjectIteration projectIteration)
-   {
-      securedEntity = projectIteration;
-      if (checkPermission("mark-obsolete"))
-      {
-         projectIteration.setObsolete(true);
-
-         projectIterationDAO.makePersistent(projectIteration);
-         projectIterationDAO.flush();
-         FacesMessages.instance().add("Marked iteration {0} as obsolete", projectIteration.getSlug());
-      }
-   }
-
-   public void markProjectIterationCurrent(HProjectIteration projectIteration)
-   {
-      securedEntity = projectIteration;
-      if (checkPermission("mark-obsolete"))
-      {
-         projectIteration.setObsolete(false);
-
-         projectIterationDAO.makePersistent(projectIteration);
-         projectIterationDAO.flush();
-         FacesMessages.instance().add("Marked iteration {0} as current", projectIteration.getSlug());
-      }
-   }
 
    public boolean checkViewObsolete()
    {
       return Identity.instance() != null && Identity.instance().hasPermission("HProjectIteration", "view-obsolete", null);
-   }
-
-   public boolean checkViewObsoleteOption()
-   {
-      return Identity.instance() != null && Identity.instance().hasPermission("HProjectIteration", "view-obsolete-option", null);
    }
 
    @Override

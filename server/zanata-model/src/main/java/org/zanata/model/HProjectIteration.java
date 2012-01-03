@@ -54,8 +54,6 @@ public class HProjectIteration extends SlugEntityBase
 
    private HIterationProject project;
 
-   private boolean active = true;
-
    private HProjectIteration parent;
    private List<HProjectIteration> children;
 
@@ -64,18 +62,6 @@ public class HProjectIteration extends SlugEntityBase
 
    private boolean overrideLocales = false;
    private Set<HLocale> customizedLocales;
-
-   private boolean obsolete = false;
-
-   public void setActive(boolean active)
-   {
-      this.active = active;
-   }
-
-   public boolean getActive()
-   {
-      return active;
-   }
 
    public void setOverrideLocales(boolean var)
    {
@@ -167,16 +153,6 @@ public class HProjectIteration extends SlugEntityBase
    public void setDocuments(Map<String, HDocument> documents)
    {
       this.documents = documents;
-   }
-
-   public boolean isObsolete()
-   {
-      return obsolete;
-   }
-
-   public void setObsolete(boolean obsolete)
-   {
-      this.obsolete = obsolete;
    }
 
    @Override

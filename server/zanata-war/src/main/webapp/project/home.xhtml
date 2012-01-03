@@ -24,7 +24,7 @@
     <s:decorate id="main_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
     <s:fragment rendered="#{projectAction.getEmpty()}">
-	<h:outputText value="#{messages['jsf.NoProjectExists']}" />
+	   <h:outputText value="#{messages['jsf.NoProjectExists']}" />
     </s:fragment>
     <s:fragment rendered="#{!projectAction.getEmpty()}">
       <a4j:form>
@@ -33,15 +33,6 @@
 		    page="#{projectAction.scrollerPage}" id="scroller" reRender="sc2" />
 	<rich:spacer height="15" />
         
-         <s:div rendered="#{projectAction.checkViewObsoleteOption()}" styleClass="showObsoleteOption">
-            <a4j:region>
-            <h:selectBooleanCheckbox title="Show obsolete projects" value="#{projectAction.showObsolete}" >
-                <a4j:support event="onchange" reRender="main_content" />
-            </h:selectBooleanCheckbox>
-            </a4j:region>
-            <h:outputText value="#{messages['jsf.ShowObsolete']}"/>
-        </s:div>
-        
         <rich:dataTable id="projectList" 
             rows="#{projectAction.pageSize}"
             value="#{projectAction.projectPagedListDataModel}" var="project">
@@ -49,12 +40,12 @@
                      <f:facet name="header">Project Name</f:facet>
                            
                         <s:link id="project" styleClass="table_link" value="#{project.name}"  propagation="none"
-                             view="/project/project.xhtml" rendered="#{!project.obsolete}"> 
+                             view="/project/project.xhtml" rendered="#{project.status != 'Obsolete'}"> 
                             <f:param name="slug" value="#{project.slug}"/>
                         </s:link>
                         
                         <s:link id="obsoleteProject" styleClass="table_link obsolete_link" value="#{project.name}"  propagation="none"
-                             view="/project/project.xhtml" rendered="#{project.obsolete}"> 
+                             view="/project/project.xhtml" rendered="#{project.status == 'Obsolete'}"> 
                             <f:param name="slug" value="#{project.slug}"/>
                         </s:link>
                     </rich:column>
@@ -69,13 +60,9 @@
                         </h:outputText>                     
                     </rich:column>
                     
-                    <rich:column styleClass="centered" width="60px" sortBy="#{project.obsolete}" rendered="#{projectAction.checkViewObsoleteOption() and projectAction.showObsolete}">
-                        <f:facet name="header">Obsolete</f:facet>
-                        <h:selectBooleanCheckbox id="obsolete" value="#{project.obsolete}">
-                            <a4j:support event="onclick"
-                            ajaxSingle="true" reRender="main_content"
-                            action="#{projectAction.updateObsolete(project)}"/>
-                        </h:selectBooleanCheckbox>                     
+                    <rich:column styleClass="centered" width="60px">
+                        <f:facet name="header">Status</f:facet>
+                        <h:outputText value="#{project.status}"/>
                     </rich:column>
         </rich:dataTable>
         

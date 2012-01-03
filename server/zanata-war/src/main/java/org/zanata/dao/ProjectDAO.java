@@ -12,6 +12,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
+import org.zanata.model.type.StatusType;
 
 @Name("projectDAO")
 @AutoCreate
@@ -51,12 +52,12 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
    @SuppressWarnings("unchecked")
    public List<HProject> getFilteredOffsetListByCreateDate(int offset, int count)
    {
-      return getSession().createCriteria(HProject.class).addOrder(Order.desc(ORDERBY_TIMESTAMP)).add(Restrictions.eq("obsolete", false)).setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getOffsetListByCreateDate").list();
+      return getSession().createCriteria(HProject.class).addOrder(Order.desc(ORDERBY_TIMESTAMP)).add(Restrictions.eq("status", StatusType.Obsolete)).setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getOffsetListByCreateDate").list();
    }
 
    public int getFilteredProjectSize()
    {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HProject as p where p.obsolete = :obsolete").setParameter("obsolete", false).uniqueResult();
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HProject as p where p.status <> :status").setParameter("status", StatusType.Obsolete).uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();

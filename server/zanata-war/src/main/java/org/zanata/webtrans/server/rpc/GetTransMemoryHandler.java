@@ -43,6 +43,8 @@ import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.SlugEntityBase;
+import org.zanata.model.type.StatusType;
 import org.zanata.search.LevenshteinUtil;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -93,7 +95,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
          {
             float score = (Float) match[0];
             HTextFlow textFlow = (HTextFlow) match[1];
-            if (textFlow == null || textFlow.getDocument().getProjectIteration().isObsolete() || textFlow.getDocument().getProjectIteration().getProject().isObsolete())
+            if (textFlow == null || textFlow.getDocument().getProjectIteration().getStatus().equals(StatusType.Obsolete) || textFlow.getDocument().getProjectIteration().getProject().getStatus().equals(StatusType.Obsolete))
             {
                continue;
             }

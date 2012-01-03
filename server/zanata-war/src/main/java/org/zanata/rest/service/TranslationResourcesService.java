@@ -83,8 +83,9 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.SlugEntityBase;
+import org.zanata.model.type.StatusType;
 import org.zanata.rest.NoSuchEntityException;
-import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
 import org.zanata.rest.dto.resource.Resource;
@@ -883,7 +884,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
       HProject hProject = projectDAO.getBySlug(projectSlug);
 
-      if (hProjectIteration != null && !hProjectIteration.isObsolete() && !hProject.isObsolete())
+      if (hProjectIteration != null && !hProjectIteration.getStatus().equals(StatusType.Obsolete) && !hProject.getStatus().equals(StatusType.Obsolete))
       {
          return hProjectIteration;
       }

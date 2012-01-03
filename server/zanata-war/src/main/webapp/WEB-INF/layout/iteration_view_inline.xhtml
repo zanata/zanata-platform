@@ -29,14 +29,6 @@
       </s:link>
       <rich:spacer width="10px" />
       
-      <a4j:commandLink action="#{projectIterationAction.markProjectIterationObsolete(_iteration)}" 
-                             reRender="main_content" rendered="#{projectIterationAction.checkViewObsoleteOption() and !_iteration.obsolete}" >
-                            #{messages['jsf.MarkObsolete']}
-      </a4j:commandLink>
-        
-      <a4j:commandLink action="#{projectIterationAction.markProjectIterationCurrent(_iteration)}" 
-                             reRender="main_content" rendered="#{projectIterationAction.checkViewObsoleteOption() and _iteration.obsolete}" >
-                            #{messages['jsf.MarkCurrent']}
       </a4j:commandLink>
     </div>
     </a4j:form>     

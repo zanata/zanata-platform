@@ -29,7 +29,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 import org.zanata.dao.ProjectDAO;
@@ -41,8 +40,9 @@ import org.zanata.security.BaseSecurityChecker;
 public class ProjectAction extends BaseSecurityChecker implements Serializable
 {
    private static final long serialVersionUID = 1L;
-   private ProjectPagedListDataModel projectPagedListDataModel = new ProjectPagedListDataModel(false);
+
    private ProjectPagedListDataModel filteredProjectPagedListDataModel = new ProjectPagedListDataModel(true);
+   private ProjectPagedListDataModel projectPagedListDataModel = new ProjectPagedListDataModel(false);
 
    private int scrollerPage = 1;
 
@@ -55,32 +55,45 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
    @In
    Identity identity;
 
-   private boolean showObsolete = false;
-
    private HProject securedEntity = null;
 
    public boolean getEmpty()
    {
-      if (checkViewObsoleteOption() && showObsolete)
+      if (checkViewObsolete())
       {
          return projectDAO.getProjectSize() == 0;
-
       }
       else
       {
+         System.out.println("============================");
+         System.out.println("============================");
+         System.out.println("============================");
+         System.out.println("============================");
+         System.out.println("============================");
+         System.out.println("============================");
+         System.out.println("============================");
+         System.out.println("===========here3=========");
          return projectDAO.getFilteredProjectSize() == 0;
       }
    }
 
    public int getPageSize()
    {
-      if (checkViewObsoleteOption() && showObsolete)
+      if (checkViewObsolete())
       {
-         return filteredProjectPagedListDataModel.getPageSize();
+         return projectPagedListDataModel.getPageSize();
       }
       else
       {
-         return projectPagedListDataModel.getPageSize();
+         System.out.println("============================");
+         System.out.println("============================");
+         System.out.println("============================");
+         System.out.println("============================");
+         System.out.println("============================");
+         System.out.println("============================");
+         System.out.println("============================");
+         System.out.println("===========here2=========");
+         return filteredProjectPagedListDataModel.getPageSize();
       }
    }
 
@@ -96,44 +109,14 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    public DataModel getProjectPagedListDataModel()
    {
-      if (checkViewObsoleteOption() && showObsolete)
-      {
-         return filteredProjectPagedListDataModel;
-      }
-      else
+      if (checkViewObsolete())
       {
          return projectPagedListDataModel;
       }
-   }
-
-   public void updateObsolete(HProject project)
-   {
-      securedEntity = project;
-      if (checkPermission("mark-obsolete"))
+      else
       {
-         projectDAO.makePersistent(project);
-         projectDAO.flush();
-
-         if (project.isObsolete())
-         {
-            FacesMessages.instance().add("Marked {0} as obsolete", project.getName());
-         }
-         else
-         {
-            FacesMessages.instance().add("Marked {0} as current", project.getName());
-         }
+         return filteredProjectPagedListDataModel;
       }
-      securedEntity = null;
-   }
-
-   public boolean isShowObsolete()
-   {
-      return showObsolete;
-   }
-   
-   public void setShowObsolete(boolean showObsolete)
-   {
-      this.showObsolete = showObsolete;
    }
 
    @Override
@@ -148,9 +131,9 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
     * @param operation
     * @return
     */
-   public boolean checkViewObsoleteOption()
+   public boolean checkViewObsolete()
    {
-      return identity != null && identity.hasPermission("HProject", "view-obsolete-option", null);
+      return identity != null && identity.hasPermission("HProject", "view-obsolete", null);
    }
 
 }
