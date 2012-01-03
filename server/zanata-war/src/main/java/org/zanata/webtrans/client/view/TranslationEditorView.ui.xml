@@ -33,7 +33,7 @@
 				
 	</ui:style>
 			<g:LayoutPanel styleName="{style.editor}">
-	            <g:layer left="7px" width="40%" top="2px" height="23px">
+	            <g:layer left="1px" width="40%" top="2px" height="23px">
 		            <g:LayoutPanel ui:field="filterPanelContainer" />			    
 	            </g:layer>
 				<g:layer width="50%" right="30px" top="3px" height="23px">
