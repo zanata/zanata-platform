@@ -110,7 +110,7 @@ public class AccountService implements AccountResource
     * be created.
     * 
     * @param account The account information to create/update.
-    * @return A response with an OK (200) status.
+    * @return A response with an OK (200) status if updated, or CREATED (201) if new.
     */
    @Override
    @PUT

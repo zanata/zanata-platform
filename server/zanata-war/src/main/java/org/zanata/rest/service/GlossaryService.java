@@ -136,7 +136,7 @@ public class GlossaryService implements GlossaryResource, SecurityChecker
     * Adds glossary entries.
     * 
     * @param glossary The Glossary entries to add.
-    * @return An OK (200) response if the glossary was successfully updated.
+    * @return A Created (201) response if the glossary was successfully created.
     */
    @Override
    @PUT
