@@ -34,6 +34,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.history.History;
+import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.WindowLocation;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -58,30 +59,26 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 
+@SuppressWarnings("rawtypes")
 @Test(groups = { "unit-tests" })
 public class DocumentListPresenterTest
 {
    private DocumentListPresenter dlp;
 
-   @SuppressWarnings("rawtypes")
    private ListDataProvider mockDataProvider;
 
    private CachingDispatchAsync mockDispatcher;
 
    private DocumentListPresenter.Display mockDisplay;
 
-   @SuppressWarnings("rawtypes")
    private HasSelectionHandlers mockDocList;
 
-   @SuppressWarnings("rawtypes")
    private HasData mockDocListTable;
 
    private EventBus mockEventBus;
 
-   @SuppressWarnings("rawtypes")
    private HasValue mockExactSearchCheckbox; // Boolean
 
-   @SuppressWarnings("rawtypes")
    private HasValue mockFilterTextbox; // String
 
    private History mockHistory;
@@ -92,10 +89,14 @@ public class DocumentListPresenterTest
 
    private WorkspaceContext mockWorkspaceContext;
 
-   // this list is updated to update display
+   // this list is updated to update display table
    private List<DocumentNode> dataProviderList;
 
    private Capture<ValueChangeHandler<String>> capturedHistoryValueChangeHandler;
+
+   private Capture<ValueChangeHandler<String>> capturedTextboxChangeHandler;
+
+   private Capture<ValueChangeHandler<Boolean>> capturedCheckboxChangeHandler;
 
    @BeforeClass
    public void createMocks()
@@ -175,7 +176,6 @@ public class DocumentListPresenterTest
       boolean setupMockEventBus = true;
 
       resetAllMocks();
-
       setupDefaultMockExpectations(true, setupMockDispatcher, setupMockDisplay, true, setupMockEventBus, true, true, true, true, setupMockWindowLoc, true);
 
       Capture<GetDocumentList> capturedDocListRequest = new Capture<GetDocumentList>();
@@ -196,14 +196,10 @@ public class DocumentListPresenterTest
       expect(mockWindowLocation.getParameterMap()).andReturn(paramMapWithFilters).anyTimes();
 
       replayAllMocks();
-
       dlp = newDocListPresenter();
       dlp.bind();
-
       verifyAllMocks();
 
-      // expect a doc list request that includes the filters from the query
-      // string
       String message = "all doc query parameters should be passed as filter strings to the rpc call";
       assertThat(message, firstFilterString, isIn(capturedDocListRequest.getValue().getFilters()));
       assertThat(message, secondFilterString, isIn(capturedDocListRequest.getValue().getFilters()));
@@ -217,8 +213,7 @@ public class DocumentListPresenterTest
       verifyAllMocks();
 
       // default list of 3 documents should be stored as DocumentNode objects in
-      // the doclist returned by the data provider (dataProviderList in this
-      // case)
+      // the doclist returned by the data provider (dataProviderList)
 
       ArrayList<DocumentInfo> expectedDocs = buildSampleDocumentArray();
       ArrayList<DocumentInfo> actualDocInfos = new ArrayList<DocumentInfo>();
@@ -231,10 +226,9 @@ public class DocumentListPresenterTest
          actualDocInfos.add(node.getDocInfo());
       }
       assertThat("the data provider should have all documents returned from the server", actualDocInfos, hasItems(expectedDocs.get(0), expectedDocs.get(1), expectedDocs.get(2)));
-
    }
 
-   @SuppressWarnings({ "unchecked", "rawtypes" })
+   @SuppressWarnings("unchecked")
    @Test
    public void docListFailureNotification()
    {
@@ -246,8 +240,6 @@ public class DocumentListPresenterTest
 
       resetAllMocks();
       setupDefaultMockExpectations(setupMockDataProvider, setupMockDispatcher, setupMockDisplay, true, setupMockEventBus, true, true, true, true, true, true);
-
-      String failMessage = "test document load fail message";
 
       // make sure general event expectation does not prevent capture
       setupMockEventBus(false);
@@ -261,13 +253,12 @@ public class DocumentListPresenterTest
 
       setupMockDisplay(false, -1);
 
+      String failMessage = "test document load fail message";
       expect(mockMessages.loadDocFailed()).andReturn(failMessage).once();
 
       replayAllMocks();
-
       dlp = newDocListPresenter();
       dlp.bind();
-
       verifyAllMocks();
 
       // make sure the right notification happened
@@ -276,36 +267,27 @@ public class DocumentListPresenterTest
    }
 
    @Test
-   public void simpleSubstringFilterUpdatesHistory()
+   public void filterUpdateGeneratesHistoryToken()
    {
-      // should match docs "second/path/doc122" and "third/path/doc123"
-      // should not match doc "first/path/doc111"
+      resetAllMocks();
+      setupDefaultMockExpectations();
+
       String filterText = "path/doc12";
 
-      boolean setupFilterTextBox = false;
-      resetAllMocks();
-      setupDefaultMockExpectations(true, true, true, true, true, true, setupFilterTextBox, true, true, true, true);
-
-      // TODO move this to default setup code
-      Capture<ValueChangeHandler<String>> capturedTextboxChangeHandler = new Capture<ValueChangeHandler<String>>();
-      expect(mockFilterTextbox.addValueChangeHandler(and(capture(capturedTextboxChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-
+      // these seem to persist beyond verify, so setting them up here is fine
       expect(mockFilterTextbox.getValue()).andReturn(filterText).anyTimes();
       expect(mockExactSearchCheckbox.getValue()).andReturn(false).anyTimes();
 
-
       replayAllMocks();
-
       dlp = newDocListPresenter();
       dlp.bind();
-
       verifyAllMocks();
 
       // make sure a new token is pushed to history when the filter is changed
       reset(mockHistory);
       expect(mockHistory.getToken()).andReturn("").once();
-      Capture<String> capturedHistoryToken = new Capture<String>();
-      mockHistory.newItem(capture(capturedHistoryToken));
+      Capture<String> capturedHistoryTokenString = new Capture<String>();
+      mockHistory.newItem(capture(capturedHistoryTokenString));
       expectLastCall().once();
       replay(mockHistory);
       ValueChangeEvent<String> filterChanged = new ValueChangeEvent<String>(filterText)
@@ -313,6 +295,30 @@ public class DocumentListPresenterTest
       };
       capturedTextboxChangeHandler.getValue().onValueChange(filterChanged);
       verify(mockHistory);
+
+      HistoryToken capturedHistoryToken = HistoryToken.fromTokenString(capturedHistoryTokenString.getValue());
+
+      assertThat("generated history token filter text should match the filter textbox", capturedHistoryToken.getDocFilterText(), is(filterText));
+      assertThat("generated history token filter exact flag should match exact match checkbox", capturedHistoryToken.getDocFilterExact(), is(false));
+   }
+
+   @Test
+   public void historyTokenFiltersDoclist()
+   {
+      // should match docs "second/path/doc122" and "third/path/doc123"
+      // should not match doc "first/path/doc111"
+      String filterText = "path/doc12";
+
+      resetAllMocks();
+      setupDefaultMockExpectations();
+
+      expect(mockFilterTextbox.getValue()).andReturn(filterText).anyTimes();
+      expect(mockExactSearchCheckbox.getValue()).andReturn(false).anyTimes();
+
+      replayAllMocks();
+      dlp = newDocListPresenter();
+      dlp.bind();
+      verifyAllMocks();
 
       // make sure doc list is updated on history change
       // expecting 2 docs to match
@@ -327,8 +333,12 @@ public class DocumentListPresenterTest
       expectLastCall().once();
       replay(mockDataProvider);
 
+      HistoryToken historyTokenWithFilter = new HistoryToken();
+      historyTokenWithFilter.setDocFilterText(filterText);
+      historyTokenWithFilter.setDocFilterExact(false);
+
       // simulate firing history change event
-      capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(capturedHistoryToken.getValue())
+      capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(historyTokenWithFilter.toTokenString())
       {
       });
 
@@ -350,9 +360,51 @@ public class DocumentListPresenterTest
       assertThat("the data provider should have all documents that match the filter", actualDocInfos, hasItems(expectedDocs.get(0), expectedDocs.get(1)));
       // verify correct number of docs (no duplication)
       assertThat("the data provider list should contain exactly the number of documents matching the filter", dataProviderList.size(), is(2));
+   }
 
-      // TODO maybe test with hard-coded history token parameter (to ensure that
-      // bookmarks will continue to work perpetually)
+   @Test
+   public void checkExactSearchCheckbox()
+   {
+      setupAndBindDocListPresenter();
+      verifyAllMocks();
+
+      // simulate checking 'exact search' checkbox
+      reset(mockHistory);
+      expect(mockHistory.getToken()).andReturn("").once();
+      Capture<String> capturedHistoryTokenString = new Capture<String>();
+      mockHistory.newItem(capture(capturedHistoryTokenString));
+      expectLastCall().once();
+      replay(mockHistory);
+      ValueChangeEvent<Boolean> filterChanged = new ValueChangeEvent<Boolean>(true)
+      { // overriding gives access to protected constructor
+      };
+      capturedCheckboxChangeHandler.getValue().onValueChange(filterChanged);
+      verify(mockHistory);
+
+      HistoryToken exactSearchToken = new HistoryToken();
+      exactSearchToken.setDocFilterExact(true);
+
+      assertThat("checking the 'exact search' checkbox should be reflected in a new history token", capturedHistoryTokenString.getValue(), is(exactSearchToken.toTokenString()));
+
+
+      // simulate unchecking 'exact search' checkbox
+      reset(mockHistory);
+      // return checked history state as current state
+      expect(mockHistory.getToken()).andReturn(exactSearchToken.toTokenString()).once();
+      capturedHistoryTokenString = new Capture<String>();
+      mockHistory.newItem(capture(capturedHistoryTokenString));
+      expectLastCall().once();
+      replay(mockHistory);
+      filterChanged = new ValueChangeEvent<Boolean>(false)
+      { // overriding gives access to protected constructor
+      };
+      capturedCheckboxChangeHandler.getValue().onValueChange(filterChanged);
+      verify(mockHistory);
+
+      HistoryToken inexactSearchToken = new HistoryToken();
+      inexactSearchToken.setDocFilterExact(false);
+
+      assertThat("unchecking the 'exact search' checkbox should be reflected in a new history token", capturedHistoryTokenString.getValue(), is(inexactSearchToken.toTokenString()));
    }
 
 
@@ -389,7 +441,6 @@ public class DocumentListPresenterTest
    // bind method:
    // expect display refresh?
 
-   // local filter text box causes filtering of doc list
    // exact filter matches properly
    // comma-separated filter works
 
@@ -452,7 +503,7 @@ public class DocumentListPresenterTest
       setupDefaultMockExpectations(true, true, true, true, true, true, true, true, true, true, true);
    }
 
-   @SuppressWarnings({ "unchecked", "rawtypes" })
+   @SuppressWarnings("unchecked")
    private void setupDefaultMockExpectations(boolean dataProvider, boolean dispatcher, boolean display, boolean docList, boolean eventBus, boolean checkbox, boolean textbox, boolean history, boolean messages, boolean windowLoc, boolean workspaceContext)
    {
       if (dataProvider)
@@ -485,12 +536,14 @@ public class DocumentListPresenterTest
 
       if (checkbox)
       {
-         expect(mockExactSearchCheckbox.addValueChangeHandler((ValueChangeHandler<Boolean>) notNull())).andReturn(createMock(HandlerRegistration.class));
+         capturedCheckboxChangeHandler = new Capture<ValueChangeHandler<Boolean>>();
+         expect(mockExactSearchCheckbox.addValueChangeHandler(and(capture(capturedCheckboxChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
       }
 
       if (textbox)
       {
-         expect(mockFilterTextbox.addValueChangeHandler((ValueChangeHandler<String>) notNull())).andReturn(createMock(HandlerRegistration.class));
+         capturedTextboxChangeHandler = new Capture<ValueChangeHandler<String>>();
+         expect(mockFilterTextbox.addValueChangeHandler(and(capture(capturedTextboxChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
       }
 
       if (history)
@@ -522,7 +575,7 @@ public class DocumentListPresenterTest
       expectLastCall().once();
    }
 
-   @SuppressWarnings({ "unchecked", "rawtypes" })
+   @SuppressWarnings("unchecked")
    private void setupMockEventBus(boolean expectAllEvents)
    {
       expect(mockEventBus.addHandler((GwtEvent.Type<EventHandler>) notNull(), (EventHandler) notNull())).andReturn(createMock(HandlerRegistration.class)).anyTimes();
@@ -534,7 +587,7 @@ public class DocumentListPresenterTest
       }
    }
 
-   @SuppressWarnings({ "unchecked", "rawtypes" })
+   @SuppressWarnings("unchecked")
    private void setupMockDispatcher(ArrayList<DocumentInfo> docListToReturn)
    {
       mockDispatcher.execute((Action) notNull(), (AsyncCallback) notNull());
