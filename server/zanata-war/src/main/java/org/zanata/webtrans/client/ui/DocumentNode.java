@@ -33,7 +33,6 @@ import com.google.gwt.view.client.ListDataProvider;
 
 public class DocumentNode implements TransUnitUpdatedEventHandler
 {
-   private TransUnitCountGraph transUnitCountGraph;
    private ListDataProvider<DocumentNode> dataProvider;
    private DocumentInfo docInfo;
    private boolean isVisible = true;
@@ -43,10 +42,8 @@ public class DocumentNode implements TransUnitUpdatedEventHandler
    public DocumentNode(WebTransMessages messages, DocumentInfo doc, EventBus eventBus, ListDataProvider<DocumentNode> dataProvider)
    {
       this.messages = messages;
-      this.transUnitCountGraph = new TransUnitCountGraph(messages);
       this.dataProvider = dataProvider;
       this.docInfo = doc;
-      transUnitCountGraph.setStats(docInfo.getStats());
    }
 
    @Override
@@ -60,23 +57,13 @@ public class DocumentNode implements TransUnitUpdatedEventHandler
          unitCount.increment(event.getTransUnit().getStatus());
          wordCount.decrement(event.getPreviousStatus(), event.getWordCount());
          wordCount.increment(event.getTransUnit().getStatus(), event.getWordCount());
-         updateGraphStatus();
+         // TODO consider removing this and doing this from a higher level.
+         dataProvider.refresh();
       }
    }
    public DocumentInfo getDocInfo()
    {
       return docInfo;
-   }
-
-   public TransUnitCountGraph getTransUnitCountGraph()
-   {
-      return transUnitCountGraph;
-   }
-
-   private void updateGraphStatus()
-   {
-      transUnitCountGraph.setStats(docInfo.getStats());
-      dataProvider.refresh();
    }
 
    public boolean isVisible()
