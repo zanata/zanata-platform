@@ -73,7 +73,7 @@ public class NewlineLeadTrailValidationTests
       String target = "Testing string with leading new line";
       newlineLeadTrailValidation.validate(source, target);
       Assert.assertTrue(newlineLeadTrailValidation.hasError());
-      Assert.assertEquals(newlineLeadTrailValidation.getError().size(), 2);
+      Assert.assertEquals(newlineLeadTrailValidation.getError().size(), 1);
    }
 
    @Test

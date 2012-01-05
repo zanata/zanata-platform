@@ -22,6 +22,7 @@ package org.zanata.webtrans.client.view;
 
 import java.util.Map;
 
+import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.presenter.TransUnitNavigationPresenter;
 import org.zanata.webtrans.client.resources.EditorConfigConstants;
 import org.zanata.webtrans.client.resources.NavigationMessages;
@@ -33,6 +34,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -45,8 +47,8 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
    {
    }
 
-   @UiField
-   Image nextEntry, prevEntry, prevState, nextState, firstEntry, lastEntry;
+   @UiField(provided = true)
+   PushButton nextEntry, prevEntry, prevState, nextState, firstEntry, lastEntry;
 
    private final NavigationMessages messages;
 
@@ -58,6 +60,14 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
    {
       this.resources = resources;
       this.messages = messages;
+
+      nextEntry = new PushButton(new Image(resources.nextEntry()));
+      prevEntry = new PushButton(new Image(resources.prevEntry()));
+      prevState = new PushButton(new Image(resources.prevState()));
+      nextState = new PushButton(new Image(resources.nextState()));
+      firstEntry = new PushButton(new Image(resources.firstEntry()));
+      lastEntry = new PushButton(new Image(resources.lastEntry()));
+
       initWidget(uiBinder.createAndBindUi(this));
 
       prevEntry.setTitle(messages.actionToolTip(messages.prevEntry(), messages.prevEntryShortcut()));

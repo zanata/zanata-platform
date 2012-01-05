@@ -49,7 +49,7 @@ public class HtmlXmlTagValidationTests
       String target = "<html><title>HTML TAG Test</title><table><tr><td>column 1 row 1</td></tr></table></html>";
       htmlXmlTagValidation.validate(source, target);
       Assert.assertTrue(htmlXmlTagValidation.hasError());
-      Assert.assertEquals(htmlXmlTagValidation.getError().size(), 2);
+      Assert.assertEquals(htmlXmlTagValidation.getError().size(), 1);
    }
 
    @Test
@@ -61,7 +61,7 @@ public class HtmlXmlTagValidationTests
       String target = "<html><title>HTML TAG Test</title><table><tr></tr></table></html>";
       htmlXmlTagValidation.validate(source, target);
       Assert.assertTrue(htmlXmlTagValidation.hasError());
-      Assert.assertEquals(htmlXmlTagValidation.getError().size(), 4);
+      Assert.assertEquals(htmlXmlTagValidation.getError().size(), 1);
    }
 
    @Test
@@ -85,7 +85,7 @@ public class HtmlXmlTagValidationTests
       String target = "<group><users></users></group>";
       htmlXmlTagValidation.validate(source, target);
       Assert.assertTrue(htmlXmlTagValidation.hasError());
-      Assert.assertEquals(htmlXmlTagValidation.getError().size(), 4);
+      Assert.assertEquals(htmlXmlTagValidation.getError().size(), 1);
    }
 
    @Test
@@ -97,7 +97,7 @@ public class HtmlXmlTagValidationTests
       String target = "<group><users></users></group>";
       htmlXmlTagValidation.validate(source, target);
       Assert.assertTrue(htmlXmlTagValidation.hasError());
-      Assert.assertEquals(htmlXmlTagValidation.getError().size(), 2);
+      Assert.assertEquals(htmlXmlTagValidation.getError().size(), 1);
    }
 
    @Test

@@ -18,9 +18,12 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TextBox;
 
 public class Pager extends Composite implements HasPager
@@ -28,15 +31,13 @@ public class Pager extends Composite implements HasPager
 
    private static PagerUiBinder uiBinder = GWT.create(PagerUiBinder.class);
 
-   interface PagerUiBinder extends UiBinder<HTMLPanel, Pager>
+   interface PagerUiBinder extends UiBinder<HorizontalPanel, Pager>
    {
    }
 
-   @UiField
-   Image firstPage, lastPage, nextPage, prevPage;
 
-   @UiField
-   Image firstPageDisabled, lastPageDisabled, nextPageDisabled, prevPageDisabled;
+   @UiField(provided = true)
+   PushButton firstPage, lastPage, nextPage, prevPage;
 
    @UiField
    TextBox gotoPage;
@@ -55,6 +56,11 @@ public class Pager extends Composite implements HasPager
 
    public Pager(final WebTransMessages messages, final Resources resources)
    {
+      firstPage = new PushButton(new Image(resources.firstPageImage()));
+      lastPage = new PushButton(new Image(resources.lastPageImage()));
+      nextPage = new PushButton(new Image(resources.nextPageImage()));
+      prevPage = new PushButton(new Image(resources.prevPageImage()));
+
       this.resources = resources;
       initWidget(uiBinder.createAndBindUi(this));
 
@@ -111,10 +117,10 @@ public class Pager extends Composite implements HasPager
    {
       String page = pageCount == PAGECOUNT_UNKNOWN ? "" : "of " + pageCount;
       pageCountLabel.setText(page);
-      setEnabled(firstPage, firstPageDisabled, currentPage != 1);
-      setEnabled(prevPage, prevPageDisabled, currentPage != 1);
-      setEnabled(nextPage, nextPageDisabled, currentPage != pageCount);
-      setEnabled(lastPage, lastPageDisabled, currentPage != pageCount && pageCount != PAGECOUNT_UNKNOWN);
+      setEnabled(firstPage, currentPage != 1);
+      setEnabled(prevPage, currentPage != 1);
+      setEnabled(nextPage, currentPage != pageCount);
+      setEnabled(lastPage, currentPage != pageCount && pageCount != PAGECOUNT_UNKNOWN);
 
       gotoPage.setText(String.valueOf(currentPage));
    }
@@ -189,10 +195,9 @@ public class Pager extends Composite implements HasPager
       }
    };
 
-   private void setEnabled(Image enabledLink, Image disabledLink, boolean enabled)
+   private void setEnabled(PushButton button, boolean enabled)
    {
-      enabledLink.setVisible(enabled);
-      disabledLink.setVisible(!enabled);
+      button.setEnabled(enabled);
    }
 
    public boolean isFocused()

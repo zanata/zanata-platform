@@ -31,17 +31,15 @@ import com.google.gwt.regexp.shared.RegExp;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class HtmlXmlTagValidation extends ValidationAction
+public class VariablesValidation extends ValidationAction
 {
-   public HtmlXmlTagValidation(String id, String description)
+   public VariablesValidation(String id, String description)
    {
       super(id, description);
    }
 
-   // private final static String tagRegex = "<[^>]+>[^<]*</[^>]+>";
-   private final static String tagRegex = "<[^>]+>";
-
-   private final static RegExp regExp = RegExp.compile(tagRegex, "g");
+   private final static String varRegex = "%[\\w]+";
+   private final static RegExp varRegExp = RegExp.compile(varRegex, "g");
 
    @Override
    public void validate(String source, String target)
@@ -50,28 +48,28 @@ public class HtmlXmlTagValidation extends ValidationAction
       {
          String tmp = target;
          StringBuilder sb = new StringBuilder();
-         MatchResult result = regExp.exec(source);
+         MatchResult result = varRegExp.exec(source);
 
          while (result != null)
          {
-            String node = result.getGroup(0);
-            Log.debug("Found Node:" + node);
-            if (!tmp.contains(node))
+            String var = result.getGroup(0);
+            Log.debug("Found var:" + var);
+            if (!tmp.contains(var))
             {
                sb.append(" ");
-               sb.append(node);
+               sb.append(var);
                sb.append(" ");
             }
             else
             {
-               tmp = tmp.replaceFirst(node, ""); // remove matched node from
+               tmp = tmp.replaceFirst(var, ""); // remove matched var
             }
-            result = regExp.exec(source);
+            result = varRegExp.exec(source);
          }
 
          if (sb.length() > 0)
          {
-            addError("Tag [" + sb.toString() + "] missing in target");
+            addError("Variable [" + sb.toString() + "] missing in target");
          }
       }
    }
