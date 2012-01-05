@@ -65,14 +65,6 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
       }
       else
       {
-         System.out.println("============================");
-         System.out.println("============================");
-         System.out.println("============================");
-         System.out.println("============================");
-         System.out.println("============================");
-         System.out.println("============================");
-         System.out.println("============================");
-         System.out.println("===========here3=========");
          return projectDAO.getFilteredProjectSize() == 0;
       }
    }
@@ -85,14 +77,6 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
       }
       else
       {
-         System.out.println("============================");
-         System.out.println("============================");
-         System.out.println("============================");
-         System.out.println("============================");
-         System.out.println("============================");
-         System.out.println("============================");
-         System.out.println("============================");
-         System.out.println("===========here2=========");
          return filteredProjectPagedListDataModel.getPageSize();
       }
    }

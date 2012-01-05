@@ -51,9 +51,11 @@
             </rich:editor>
         </s:decorate>
 	
-	    <s:decorate id="obsoleteField" template="edit.xhtml" rendered="#{projectHome.checkPermission('mark-obsolete')}">
-	        <ui:define name="label">#{messages['jsf.Obsolete']}</ui:define>
-	        <h:selectBooleanCheckbox id="obsolete" value="#{projectHome.instance.obsolete}"/>
+	    <s:decorate id="statusField" template="edit.xhtml">
+	        <ui:define name="label">#{messages['jsf.Status']}</ui:define>
+	        <h:selectOneMenu value="#{projectHome.instance.status}">
+	            <f:selectItems value="#{projectHome.statusList}"/>
+	        </h:selectOneMenu>
 	    </s:decorate>
                         
         <div style="clear:both"></div>

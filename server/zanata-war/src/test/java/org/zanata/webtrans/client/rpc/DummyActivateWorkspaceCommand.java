@@ -4,7 +4,6 @@ import java.util.HashSet;
 
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.auth.Permission;
-import org.zanata.webtrans.shared.auth.Role;
 import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
@@ -32,9 +31,9 @@ public class DummyActivateWorkspaceCommand implements Command
    public void execute()
    {
       Log.info("ENTER DummyActivateWorkspaceCommand.execute()");
-      WorkspaceContext context = new WorkspaceContext(action.getWorkspaceId(), "Dummy Workspace", "Mock Sweedish");
+      WorkspaceContext context = new WorkspaceContext(action.getWorkspaceId(), "Dummy Workspace", "Mock Sweedish", false);
 
-      Identity identity = new Identity(new SessionId("123456"), new Person(new PersonId("bob"), "Bob The Builder"), new HashSet<Permission>(), new HashSet<Role>());
+      Identity identity = new Identity(new SessionId("123456"), new Person(new PersonId("bob"), "Bob The Builder"), new HashSet<Permission>(), new HashSet<String>());
       callback.onSuccess(new ActivateWorkspaceResult(context, identity));
       Log.info("EXIT DummyActivateWorkspaceCommand.execute()");
    }

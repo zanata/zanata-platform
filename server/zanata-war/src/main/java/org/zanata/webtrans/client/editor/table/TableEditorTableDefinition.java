@@ -45,6 +45,7 @@ import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -288,7 +289,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       this.findMessage = findMessage;
    }
 
-   public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final EventBus eventBus)
+   public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final EventBus eventBus, boolean isReadOnly)
    {
       this.messages = messages;
       this.eventBus = eventBus;
@@ -368,7 +369,12 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       
       this.targetCellEditor = new InlineTargetCellEditor(messages, cancelCallBack, transValueCallBack, eventBus);
       this.transUnitDetailsContent = new TransUnitDetailsPanel(messages.transUnitDetailsHeading());
-      targetColumnDefinition.setCellEditor(targetCellEditor);
+
+      if (!isReadOnly)
+      {
+         targetColumnDefinition.setCellEditor(targetCellEditor);
+      }
+
       // See _INDEX consts above if modifying!
       // addColumnDefinition(indicatorColumnDefinition);
       addColumnDefinition(sourceColumnDefinition);

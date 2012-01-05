@@ -20,11 +20,13 @@
  */
 package org.zanata.action;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
 import javax.persistence.NoResultException;
 
 import org.hibernate.Session;
@@ -42,6 +44,7 @@ import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.type.StatusType;
 import org.zanata.service.LocaleService;
 
 @Name("projectHome")
@@ -129,21 +132,21 @@ public class ProjectHome extends SlugHome<HIterationProject>
    }
 
    @SuppressWarnings("unchecked")
-   public List<HProjectIteration> getActiveIterations()
+   public List<HProjectIteration> getCurrentIterations()
    {
-      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.active = true and t.obsolete = false").setParameter("projectSlug", slug).getResultList();
+      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", StatusType.Current).getResultList();
    }
 
    @SuppressWarnings("unchecked")
    public List<HProjectIteration> getRetiredIterations()
    {
-      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.active = false and t.obsolete = false").setParameter("projectSlug", slug).getResultList();
+      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", StatusType.Retired).getResultList();
    }
 
    @SuppressWarnings("unchecked")
    public List<HProjectIteration> getObsoleteIterations()
    {
-      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.obsolete = true").setParameter("projectSlug", slug).getResultList();
+      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", StatusType.Obsolete).getResultList();
    }
 
    public String cancel()

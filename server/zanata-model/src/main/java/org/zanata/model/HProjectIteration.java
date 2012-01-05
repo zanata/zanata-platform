@@ -37,9 +37,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.Where;
 import org.hibernate.validator.NotNull;
 import org.jboss.seam.annotations.security.Restrict;
+import org.zanata.model.type.StatusTypeType;
 import org.zanata.rest.dto.ProjectIteration;
 
 /**
@@ -48,6 +50,7 @@ import org.zanata.rest.dto.ProjectIteration;
  * 
  */
 @Entity
+@TypeDef(name = "statusType", typeClass = StatusTypeType.class)
 @Restrict
 public class HProjectIteration extends SlugEntityBase
 {

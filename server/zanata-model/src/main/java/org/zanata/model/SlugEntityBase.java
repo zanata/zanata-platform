@@ -20,11 +20,10 @@
  */
 package org.zanata.model;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
@@ -36,7 +35,6 @@ public class SlugEntityBase extends ModelEntityBase
 {
    private String slug;
 
-   @Enumerated(EnumType.STRING)
    private StatusType status;
 
    @NaturalId
@@ -54,6 +52,7 @@ public class SlugEntityBase extends ModelEntityBase
       this.slug = slug;
    }
 
+   @Type(type = "statusType")
    public StatusType getStatus()
    {
       return status;
@@ -64,11 +63,9 @@ public class SlugEntityBase extends ModelEntityBase
       this.status = status;
    }
 
-
    @Override
    public String toString()
    {
       return super.toString() + "[slug=" + slug + "]";
    }
-
 }

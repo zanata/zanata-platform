@@ -27,10 +27,8 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
-import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.BaseSecurityChecker;
 
@@ -45,9 +43,6 @@ public class ProjectIterationAction extends BaseSecurityChecker implements Seria
 
    @In
    Identity identity;
-
-   @In
-   private ProjectIterationDAO projectIterationDAO;
 
    private HProjectIteration securedEntity = null;
 

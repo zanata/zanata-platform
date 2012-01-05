@@ -40,7 +40,12 @@
                      <f:facet name="header">Project Name</f:facet>
                            
                         <s:link id="project" styleClass="table_link" value="#{project.name}"  propagation="none"
-                             view="/project/project.xhtml" rendered="#{project.status != 'Obsolete'}"> 
+                             view="/project/project.xhtml" rendered="#{project.status == 'Current'}"> 
+                            <f:param name="slug" value="#{project.slug}"/>
+                        </s:link>
+                        
+                        <s:link id="retiredProject" styleClass="table_link retired_link" value="#{project.name}"  propagation="none"
+                             view="/project/project.xhtml" rendered="#{project.status == 'Retired'}"> 
                             <f:param name="slug" value="#{project.slug}"/>
                         </s:link>
                         

@@ -52,7 +52,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
    @SuppressWarnings("unchecked")
    public List<HProject> getFilteredOffsetListByCreateDate(int offset, int count)
    {
-      return getSession().createCriteria(HProject.class).addOrder(Order.desc(ORDERBY_TIMESTAMP)).add(Restrictions.eq("status", StatusType.Obsolete)).setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getOffsetListByCreateDate").list();
+      return getSession().createCriteria(HProject.class).addOrder(Order.desc(ORDERBY_TIMESTAMP)).add(Restrictions.ne("status", StatusType.Obsolete)).setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getOffsetListByCreateDate").list();
    }
 
    public int getFilteredProjectSize()

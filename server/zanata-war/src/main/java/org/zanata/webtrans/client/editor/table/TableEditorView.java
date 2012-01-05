@@ -28,8 +28,11 @@ import net.customware.gwt.presenter.client.EventBus;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.ValidationMessagePanel;
+import org.zanata.webtrans.shared.auth.Identity;
+import org.zanata.webtrans.shared.auth.Permission;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
 
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -62,14 +65,14 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    }
 
    @Inject
-   public TableEditorView(NavigationMessages messages, EventBus eventBus)
+   public TableEditorView(NavigationMessages messages, EventBus eventBus, Identity identity)
    {
-      this(messages, new RedirectingTableModel<TransUnit>(), eventBus);
+      this(messages, new RedirectingTableModel<TransUnit>(), eventBus, identity);
    }
 
-   public TableEditorView(NavigationMessages messages, RedirectingTableModel<TransUnit> tableModel, EventBus eventBus)
+   public TableEditorView(NavigationMessages messages, RedirectingTableModel<TransUnit> tableModel, EventBus eventBus, Identity identity)
    {
-      this(new RedirectingCachedTableModel<TransUnit>(tableModel), new TableEditorTableDefinition(messages, new RedirectingCachedTableModel<TransUnit>(tableModel), eventBus));
+      this(new RedirectingCachedTableModel<TransUnit>(tableModel), new TableEditorTableDefinition(messages, new RedirectingCachedTableModel<TransUnit>(tableModel), eventBus, (identity.hasPermission(Permission.Read)) ? true : false));
    }
 
    public TableEditorView(RedirectingCachedTableModel<TransUnit> tableModel, TableEditorTableDefinition tableDefinition)

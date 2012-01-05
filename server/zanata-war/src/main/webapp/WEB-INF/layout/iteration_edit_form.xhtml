@@ -21,17 +21,12 @@
               <a4j:support event="onblur" reRender="slugField" ajaxSingle="true"/>
             </h:inputText>
         </s:decorate>
-
-        <s:decorate id="activeField" template="edit.xhtml">
-            <ui:define name="label">#{messages['jsf.Active']}</ui:define>
-            <h:selectBooleanCheckbox id="acvite"
-                         value="#{projectIterationHome.instance.active}"/>
-        </s:decorate>
         
-        <s:decorate id="obsoleteField" template="edit.xhtml" rendered="#{projectIterationHome.checkPermission('mark-obsolete')}">
-            <ui:define name="label">#{messages['jsf.Obsolete']}</ui:define>
-            <h:selectBooleanCheckbox id="obsolete"
-                         value="#{projectIterationHome.instance.obsolete}"/>
+        <s:decorate id="statusField" template="edit.xhtml">
+            <ui:define name="label">#{messages['jsf.Status']}</ui:define>
+            <h:selectOneMenu value="#{projectIterationHome.instance.status}">
+                <f:selectItems value="#{projectIterationHome.statusList}"/>
+            </h:selectOneMenu>
         </s:decorate>
 
         <div style="clear:both"/>

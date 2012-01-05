@@ -50,15 +50,6 @@ public class ProjectPagedListDataModel extends PagedListDataModel<HProject>
       }
       else
       {
-         System.out.println("============================");
-         System.out.println("============================");
-         System.out.println("============================");
-         System.out.println("============================");
-         System.out.println("============================");
-         System.out.println("============================");
-         System.out.println("============================");
-         System.out.println("===========here5=========");
-
          proj = projectDAO.getFilteredOffsetListByCreateDate(startRow, pageSize);
          return new DataPage<HProject>(projectDAO.getFilteredProjectSize(), startRow, proj);
       }

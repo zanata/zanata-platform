@@ -109,6 +109,10 @@ public class TranslationResourcesService implements TranslationResourcesResource
    private static final String ACTION_IMPORT_TEMPLATE = "import-template";
    private static final String ACTION_IMPORT_TRANSLATION = "import-translation";
 
+   private static final String OPERATION_GET = "Get";
+   private static final String OPERATION_PUT = "Put";
+   private static final String OPERATION_DELETE = "Delete";
+
    public static final String SERVICE_PATH = ProjectIterationService.SERVICE_PATH + "/r";
 
    public static final String EVENT_COPY_TRANS = "org.zanata.rest.service.copyTrans";
@@ -225,7 +229,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    @HEAD
    public Response head()
    {
-      HProjectIteration hProjectIteration = retrieveIteration();
+      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_GET);
       validateExtensions();
       EntityTag etag = projectIterationDAO.getResourcesETag(hProjectIteration);
       ResponseBuilder response = request.evaluatePreconditions(etag);
@@ -247,7 +251,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    public Response get()
    {
 
-      HProjectIteration hProjectIteration = retrieveIteration();
+      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_GET);
 
       EntityTag etag = projectIterationDAO.getResourcesETag(hProjectIteration);
 
@@ -282,7 +286,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    @POST
    public Response post(InputStream messageBody)
    {
-      HProjectIteration hProjectIteration = retrieveIteration();
+      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_PUT);
 
       identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
 
@@ -334,7 +338,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    {
       log.debug("start get resource");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveIteration();
+      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_GET);
 
       validateExtensions(PoHeader.ID, PotEntryHeader.ID);
 
@@ -408,7 +412,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
       ResponseBuilder response;
       EntityTag etag = null;
       boolean changed = false;
-      HProjectIteration hProjectIteration = retrieveIteration();
+      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_PUT);
 
       identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
 
@@ -496,7 +500,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    public Response deleteResource(@PathParam("id") String idNoSlash)
    {
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveIteration();
+      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_DELETE);
 
       identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
 
@@ -522,7 +526,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    {
       log.debug("start to get resource meta");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveIteration();
+      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_GET);
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 
@@ -557,7 +561,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    {
       log.debug("start to put resource meta");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveIteration();
+      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_PUT);
 
       identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
 
@@ -616,7 +620,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    {
       log.debug("start to get translation");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveIteration();
+      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_GET);
 
       validateExtensions();
 
@@ -657,7 +661,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    public Response deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
    {
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveIteration();
+      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_DELETE);
       identity.checkPermission(hProjectIteration, ACTION_IMPORT_TRANSLATION);
 
       // TODO find correct etag
@@ -706,7 +710,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
          return Response.status(Status.BAD_REQUEST).entity("bad merge type "+_merge).build();
       }
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveIteration();
+      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_PUT);
 
       identity.checkPermission(hProjectIteration, ACTION_IMPORT_TRANSLATION);
 
@@ -878,18 +882,37 @@ public class TranslationResourcesService implements TranslationResourcesResource
          return Response.ok("warning: unknown resIds: " + unknownResIds).tag(etag).build();
    }
 
-   private HProjectIteration retrieveIteration()
+   private HProjectIteration retrieveIteration(String operation)
    {
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 
       HProject hProject = projectDAO.getBySlug(projectSlug);
 
-      if (hProjectIteration != null && !hProjectIteration.getStatus().equals(StatusType.Obsolete) && !hProject.getStatus().equals(StatusType.Obsolete))
+      if (hProjectIteration == null)
+      {
+         throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
+      }
+      else if (hProjectIteration.getStatus().equals(StatusType.Obsolete) || hProject.getStatus().equals(StatusType.Obsolete))
+      {
+         throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
+      }
+      else if (operation.equals(OPERATION_PUT))
+      {
+         if (hProjectIteration.getStatus().equals(StatusType.Retired) || hProject.getStatus().equals(StatusType.Retired))
+         {
+            throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
+         }
+         else
+         {
+            return hProjectIteration;
+         }
+      }
+      else
       {
          return hProjectIteration;
       }
 
-      throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
+
    }
 
    /**
