@@ -144,10 +144,6 @@ public class DocumentListPresenterTest
    @Test
    public void preFiltersDocuments()
    {
-      resetAllMocks();
-      boolean setupMockWindowLoc = false;
-      setupDefaultMockExpectations(true, true, true, true, true, true, true, true, true, setupMockWindowLoc, true);
-
       // simulate "doc" query string parameters
       String firstFilterString = "filter/string/one";
       String secondFilterString = "filter/string/two";
@@ -156,8 +152,9 @@ public class DocumentListPresenterTest
       filters.add(secondFilterString);
       Map<String, List<String>> paramMapWithFilters = new HashMap<String, List<String>>();
       paramMapWithFilters.put("doc", filters);
-      expect(mockWindowLocation.getParameterMap()).andReturn(paramMapWithFilters).anyTimes();
 
+      resetAllMocks();
+      setupDefaultMockExpectations(true, new DoclistSuccessAnswer(buildSampleDocumentArray()), paramMapWithFilters);
       replayAllMocks();
       dlp = newDocListPresenter();
       dlp.bind();
@@ -181,13 +178,11 @@ public class DocumentListPresenterTest
 
       // another trial with 0 documents
       ArrayList<DocumentInfo> testDocList;
-      boolean setupMockDispatcher = false;
 
       resetAllMocks();
-      setupDefaultMockExpectations(true, setupMockDispatcher, true, true, true, true, true, true, true, true, true);
       // returning 0 documents
       testDocList = new ArrayList<DocumentInfo>();
-      setupMockDispatcher(testDocList);
+      setupDefaultMockExpectations(true, new DoclistSuccessAnswer(testDocList), Collections.<String, List<String>> emptyMap());
       replayAllMocks();
       dlp = newDocListPresenter();
       dlp.bind();
@@ -215,22 +210,17 @@ public class DocumentListPresenterTest
       assertThat("the data provider should have all documents returned from the server", actualDocInfos, hasItems(expectedDocs.get(0), expectedDocs.get(1), expectedDocs.get(2)));
    }
 
-   @SuppressWarnings("unchecked")
    @Test
    public void docListFailureNotification()
    {
       resetAllMocks();
 
-      // dispatching fail answer instead of default
-      mockDispatcher.execute(and(capture(capturedDocListRequest), isA(Action.class)), and(capture(capturedDocListRequestCallback), isA(AsyncCallback.class)));
-      expectLastCall().andAnswer(new DocListFailAnswer());
       String failMessage = "test document load fail message";
       expect(mockMessages.loadDocFailed()).andReturn(failMessage).anyTimes();
-      boolean setupMockDispatcher = false;
 
       // not expecting any data provider interactions if the list did not load
       boolean setupMockDataProvider = false;
-      setupDefaultMockExpectations(setupMockDataProvider, setupMockDispatcher, true, true, true, true, true, true, true, true, true);
+      setupDefaultMockExpectations(setupMockDataProvider, new DocListFailAnswer(), Collections.<String, List<String>> emptyMap());
 
       replayAllMocks();
       dlp = newDocListPresenter();
@@ -243,7 +233,6 @@ public class DocumentListPresenterTest
       assertThat("the error message from localizable messages should be used to notify of failed document request from server", capturedNotificationEvent.getMessage(), is(failMessage));
    }
 
-   @SuppressWarnings("unchecked")
    @Test
    public void generatesProjectStatsEvent()
    {
@@ -459,7 +448,8 @@ public class DocumentListPresenterTest
       setupDefaultMockExpectations();
 
       String filterText = "some filter text";
-      // TODO should this be false? Try it and test with deployed application
+      // must use fireEvents=true to prevent value being used as greyed-out
+      // 'hint' text that automatically clears
       mockFilterTextbox.setValue(filterText, true);
       expectLastCall().once();
       // value should only be set if current value is different from history
@@ -561,65 +551,29 @@ public class DocumentListPresenterTest
 
    private void setupDefaultMockExpectations()
    {
-      setupDefaultMockExpectations(true, true, true, true, true, true, true, true, true, true, true);
+      setupDefaultMockExpectations(true, new DoclistSuccessAnswer(buildSampleDocumentArray()), Collections.<String, List<String>> emptyMap());
    }
 
    @SuppressWarnings("unchecked")
-   private void setupDefaultMockExpectations(boolean dataProvider, boolean dispatcher, boolean display, boolean docList, boolean eventBus, boolean checkbox, boolean textbox, boolean history, boolean messages, boolean windowLoc, boolean workspaceContext)
+   private void setupDefaultMockExpectations(boolean dataProvider, IAnswer<? extends Object> docListRequestAnswer, Map<String, List<String>> windowLocationParameters)
    {
       if (dataProvider)
       {
          setupMockDataProvider();
       }
 
-      if (dispatcher)
-      {
-         ArrayList<DocumentInfo> sampleArray = buildSampleDocumentArray();
-         setupMockDispatcher(sampleArray);
-      }
-
-      if (display)
-      {
-         setupMockDisplay();
-      }
-
-      if (docList)
-      {
-         capturedDocumentSelectionHandler = new Capture<SelectionHandler<DocumentInfo>>();
-         expect(mockDocList.addSelectionHandler(and(capture(capturedDocumentSelectionHandler), isA(SelectionHandler.class)))).andReturn(createMock(HandlerRegistration.class));
-      }
-
-      if (eventBus)
-      {
-         setupMockEventBus(true);
-      }
-
-      if (checkbox)
-      {
-         capturedCheckboxChangeHandler = new Capture<ValueChangeHandler<Boolean>>();
-         expect(mockExactSearchCheckbox.addValueChangeHandler(and(capture(capturedCheckboxChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-      }
-
-      if (textbox)
-      {
-         capturedTextboxChangeHandler = new Capture<ValueChangeHandler<String>>();
-         expect(mockFilterTextbox.addValueChangeHandler(and(capture(capturedTextboxChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-      }
-
-      if (history)
-      {
-         setupMockHistory("");
-      }
-
-      if (windowLoc)
-      {
-         expect(mockWindowLocation.getParameterMap()).andReturn(Collections.EMPTY_MAP).anyTimes();
-      }
-
-      if (workspaceContext)
-      {
-         expect(mockWorkspaceContext.getWorkspaceId()).andReturn(new WorkspaceId(new ProjectIterationId(testProjectSlug, testIterationSlug), new LocaleId(testLocaleId))).anyTimes();
-      }
+      setupMockDispatcher(docListRequestAnswer);
+      setupMockDisplay();
+      capturedDocumentSelectionHandler = new Capture<SelectionHandler<DocumentInfo>>();
+      expect(mockDocList.addSelectionHandler(and(capture(capturedDocumentSelectionHandler), isA(SelectionHandler.class)))).andReturn(createMock(HandlerRegistration.class));
+      setupMockEventBus(true);
+      capturedCheckboxChangeHandler = new Capture<ValueChangeHandler<Boolean>>();
+      expect(mockExactSearchCheckbox.addValueChangeHandler(and(capture(capturedCheckboxChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
+      capturedTextboxChangeHandler = new Capture<ValueChangeHandler<String>>();
+      expect(mockFilterTextbox.addValueChangeHandler(and(capture(capturedTextboxChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
+      setupMockHistory("");
+      expect(mockWorkspaceContext.getWorkspaceId()).andReturn(new WorkspaceId(new ProjectIterationId(testProjectSlug, testIterationSlug), new LocaleId(testLocaleId))).anyTimes();
+      expect(mockWindowLocation.getParameterMap()).andReturn(windowLocationParameters).anyTimes();
    }
 
    @SuppressWarnings("unchecked")
@@ -657,12 +611,13 @@ public class DocumentListPresenterTest
    }
 
    @SuppressWarnings("unchecked")
-   private void setupMockDispatcher(ArrayList<DocumentInfo> docListToReturn)
+   private void setupMockDispatcher(IAnswer<? extends Object> docListRequestAnswer)
    {
       capturedDocListRequest = new Capture<GetDocumentList>();
       capturedDocListRequestCallback = new Capture<AsyncCallback<GetDocumentListResult>>();
       mockDispatcher.execute(and(capture(capturedDocListRequest), isA(Action.class)), and(capture(capturedDocListRequestCallback), isA(AsyncCallback.class)));
-      expectLastCall().andAnswer(new DoclistSuccessAnswer(docListToReturn));
+      // expectLastCall().andAnswer(new DoclistSuccessAnswer(docListToReturn));
+      expectLastCall().andAnswer(docListRequestAnswer);
    }
 
    @SuppressWarnings("unchecked")
