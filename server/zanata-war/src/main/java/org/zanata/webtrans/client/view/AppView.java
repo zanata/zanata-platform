@@ -22,6 +22,7 @@ package org.zanata.webtrans.client.view;
 
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.presenter.AppPresenter;
+import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;

@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import org.zanata.webtrans.client.history.HistoryToken;
-import org.zanata.webtrans.client.presenter.AppPresenter.Display.MainView;
+import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.view.DocumentListView;

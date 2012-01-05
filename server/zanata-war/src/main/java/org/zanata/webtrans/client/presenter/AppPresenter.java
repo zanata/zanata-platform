@@ -37,7 +37,6 @@ import org.zanata.webtrans.client.events.ProjectStatsRetrievedEventHandler;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.history.HistoryToken;
-import org.zanata.webtrans.client.presenter.AppPresenter.Display.MainView;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display.StatsType;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -67,11 +66,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    // somehow, qualifying WidgetDisplay helps!
    public interface Display extends net.customware.gwt.presenter.client.widget.WidgetDisplay
    {
-      enum MainView
-      {
-         Documents, Editor;
-      }
-
       enum StatsType
       {
          Document, Project;

@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.testng.annotations.Test;
-import org.zanata.webtrans.client.presenter.AppPresenter;
+import org.zanata.webtrans.client.presenter.MainView;
 
 /**
  * Encapsulates a string token of key-value pairs for GWT history operations.
@@ -27,7 +27,7 @@ public class HistoryTokenTests
    {
       token = new HistoryToken();
 
-      assertEquals("default view should be document list", AppPresenter.Display.MainView.Documents, token.getView());
+      assertEquals("default view should be document list", MainView.Documents, token.getView());
       assertEquals("default document path should be an empty string", "", token.getDocumentPath());
       assertEquals("default document filter text should be an empty string", "", token.getDocFilterText());
       assertFalse("default document filter exact match flag should be false", token.getDocFilterExact());
@@ -38,7 +38,7 @@ public class HistoryTokenTests
    {
       token = HistoryToken.fromTokenString("");
 
-      assertEquals("default view should be document list", AppPresenter.Display.MainView.Documents, token.getView());
+      assertEquals("default view should be document list", MainView.Documents, token.getView());
       assertEquals("default document path should be an empty string", "", token.getDocumentPath());
       assertEquals("default document filter text should be an empty string", "", token.getDocFilterText());
       assertFalse("default document filter exact match flag should be false", token.getDocFilterExact());
@@ -49,7 +49,7 @@ public class HistoryTokenTests
    {
       token = HistoryToken.fromTokenString(null);
 
-      assertEquals("default view should be document list", AppPresenter.Display.MainView.Documents, token.getView());
+      assertEquals("default view should be document list", MainView.Documents, token.getView());
       assertEquals("default document path should be an empty string", "", token.getDocumentPath());
       assertEquals("default document filter text should be an empty string", "", token.getDocFilterText());
       assertFalse("default document filter exact match flag should be false", token.getDocFilterExact());
@@ -62,7 +62,7 @@ public class HistoryTokenTests
 
       token = HistoryToken.fromTokenString(tokenString);
 
-      assertEquals("view should be set from token string", AppPresenter.Display.MainView.Editor, token.getView());
+      assertEquals("view should be set from token string", MainView.Editor, token.getView());
       assertEquals("document path should be set from token string", "some/document", token.getDocumentPath());
       assertEquals("document filter text should be set from token string", "myfilter", token.getDocFilterText());
       assertTrue("document filter exact match flag should be set from token string", token.getDocFilterExact());
@@ -75,7 +75,7 @@ public class HistoryTokenTests
 
       token = HistoryToken.fromTokenString(differentOrderTokenString);
 
-      assertEquals("view should be set from any position in token string", AppPresenter.Display.MainView.Editor, token.getView());
+      assertEquals("view should be set from any position in token string", MainView.Editor, token.getView());
       assertEquals("document path should be set from any position in token string", "some/document", token.getDocumentPath());
       assertEquals("document filter text should be set from any position in token string", "myfilter", token.getDocFilterText());
       assertTrue("document filter exact match flag should be set from any position in token string", token.getDocFilterExact());
@@ -89,7 +89,7 @@ public class HistoryTokenTests
       token = HistoryToken.fromTokenString(unknownTokensString);
 
       // should be using defaults as there are no known keys
-      assertEquals("unknown keys should be ignored", AppPresenter.Display.MainView.Documents, token.getView());
+      assertEquals("unknown keys should be ignored", MainView.Documents, token.getView());
       assertEquals("unknown keys should be ignored", "", token.getDocumentPath());
       assertEquals("unknown keys should be ignored", "", token.getDocFilterText());
       assertFalse("unknown keys should be ignored", token.getDocFilterExact());
@@ -100,14 +100,14 @@ public class HistoryTokenTests
    {
       token = new HistoryToken();
 
-      token.setView(AppPresenter.Display.MainView.Editor);
-      assertEquals(AppPresenter.Display.MainView.Editor, token.getView());
-      token.setView(AppPresenter.Display.MainView.Documents);
-      assertEquals(AppPresenter.Display.MainView.Documents, token.getView());
+      token.setView(MainView.Editor);
+      assertEquals(MainView.Editor, token.getView());
+      token.setView(MainView.Documents);
+      assertEquals(MainView.Documents, token.getView());
 
-      token.setView(AppPresenter.Display.MainView.Editor);
+      token.setView(MainView.Editor);
       token.setView(null);
-      assertEquals("view should reset to default if set to null value", AppPresenter.Display.MainView.Documents, token.getView());
+      assertEquals("view should reset to default if set to null value", MainView.Documents, token.getView());
    }
 
    @Test
@@ -165,7 +165,7 @@ public class HistoryTokenTests
    public void toTokenStringHasCustomValues()
    {
       token = new HistoryToken();
-      token.setView(AppPresenter.Display.MainView.Editor);
+      token.setView(MainView.Editor);
       token.setDocumentPath("some/document");
       token.setDocFilterText("myfilter");
       token.setDocFilterExact(true);
@@ -182,7 +182,7 @@ public class HistoryTokenTests
    public void tokenStringRoundTrip()
    {
       token = new HistoryToken();
-      token.setView(AppPresenter.Display.MainView.Editor);
+      token.setView(MainView.Editor);
       token.setDocumentPath("some/document");
       token.setDocFilterText("myfilter");
       token.setDocFilterExact(true);
@@ -192,7 +192,7 @@ public class HistoryTokenTests
       token = null;
       token = HistoryToken.fromTokenString(tokenString);
 
-      assertEquals("view should survive a round-trip to and from token string", AppPresenter.Display.MainView.Editor, token.getView());
+      assertEquals("view should survive a round-trip to and from token string", MainView.Editor, token.getView());
       assertEquals("document path should survive a round-trip to and from token string", "some/document", token.getDocumentPath());
       assertEquals("document filter text should survive a round-trip to and from token string", "myfilter", token.getDocFilterText());
       assertTrue("document filter exact match flag should survive a round-trip to and from token string", token.getDocFilterExact());
