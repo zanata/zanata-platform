@@ -2,6 +2,9 @@ package org.zanata.dao;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
+
+import org.hibernate.NonUniqueResultException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
@@ -12,6 +15,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.type.StatusType;
 
 @Name("projectDAO")
@@ -69,5 +73,23 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
+   }
+
+   @SuppressWarnings("unchecked")
+   public List<HProjectIteration> getCurrentIterations(String slug)
+   {
+      return getSession().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", StatusType.Current).list();
+   }
+
+   @SuppressWarnings("unchecked")
+   public List<HProjectIteration> getRetiredIterations(String slug)
+   {
+      return getSession().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", StatusType.Retired).list();
+   }
+
+   @SuppressWarnings("unchecked")
+   public List<HProjectIteration> getObsoleteIterations(String slug)
+   {
+      return getSession().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", StatusType.Obsolete).list();
    }
 }

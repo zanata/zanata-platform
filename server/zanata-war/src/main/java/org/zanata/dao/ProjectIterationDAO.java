@@ -229,5 +229,4 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       }
       return totalCount;
    }
-
 }

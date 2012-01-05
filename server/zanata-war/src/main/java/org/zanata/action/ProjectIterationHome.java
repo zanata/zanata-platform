@@ -20,12 +20,10 @@
  */
 package org.zanata.action;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.faces.event.ValueChangeEvent;
-import javax.faces.model.SelectItem;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 
@@ -40,7 +38,6 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.type.StatusType;
 import org.zanata.service.LocaleService;
 
 @Name("projectIterationHome")

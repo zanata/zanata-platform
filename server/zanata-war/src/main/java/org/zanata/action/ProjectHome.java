@@ -20,13 +20,11 @@
  */
 package org.zanata.action;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.faces.event.ValueChangeEvent;
-import javax.faces.model.SelectItem;
 import javax.persistence.NoResultException;
 
 import org.hibernate.Session;
@@ -39,12 +37,12 @@ import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.type.StatusType;
 import org.zanata.service.LocaleService;
 
 @Name("projectHome")
@@ -58,12 +56,18 @@ public class ProjectHome extends SlugHome<HIterationProject>
 
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
+
    @In(required = false)
    Map<String, String> customizedItems;
+
    @In(required = false)
    private Boolean overrideLocales;
+
    @In
    LocaleService localeServiceImpl;
+
+   @In(create = true)
+   ProjectDAO projectDAO;
 
    @Override
    protected HIterationProject loadInstance()
@@ -131,22 +135,19 @@ public class ProjectHome extends SlugHome<HIterationProject>
       return retValue;
    }
 
-   @SuppressWarnings("unchecked")
    public List<HProjectIteration> getCurrentIterations()
    {
-      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", StatusType.Current).getResultList();
+      return projectDAO.getCurrentIterations(slug);
    }
 
-   @SuppressWarnings("unchecked")
    public List<HProjectIteration> getRetiredIterations()
    {
-      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", StatusType.Retired).getResultList();
+      return projectDAO.getRetiredIterations(slug);
    }
 
-   @SuppressWarnings("unchecked")
    public List<HProjectIteration> getObsoleteIterations()
    {
-      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", StatusType.Obsolete).getResultList();
+      return projectDAO.getObsoleteIterations(slug);
    }
 
    public String cancel()
