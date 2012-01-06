@@ -49,40 +49,50 @@ public class NewlineLeadTrailValidation extends ValidationAction
    {
       if (!ValidationUtils.isEmpty(target))
       {
-         MatchResult sourceResult = leadRegExp.exec(source);
-         StringBuilder sb = new StringBuilder();
-         if (sourceResult != null)
+         String error = runValidation(source, target);
+         if (error.length() > 0)
          {
-            Log.debug("Found leading newline in source");
-            MatchResult targetResult = leadRegExp.exec(target);
-            if (targetResult == null)
-            {
-               sb.append("Leading");
-            }
+            addError(error + " newline missing in target");
          }
-
-         sourceResult = endRegExp.exec(source);
-         if (sourceResult != null)
+         error = runValidation(target, source);
+         if (error.length() > 0)
          {
-            Log.debug("Found trailing newline in source");
-            MatchResult targetResult = endRegExp.exec(target);
-            if (targetResult == null)
-            {
-               if (sb.length() > 0)
-               {
-                  sb.append("/Trailing");
-               }
-               else
-               {
-                  sb.append("Trailing");
-               }
-            }
-         }
-
-         if (sb.length() > 0)
-         {
-            addError(sb.toString() + " newline missing in target");
+            addError(error + " newline missing in source");
          }
       }
+   }
+
+   private String runValidation(String compareFrom, String compareTo)
+   {
+      MatchResult sourceResult = leadRegExp.exec(compareFrom);
+      StringBuilder sb = new StringBuilder();
+      if (sourceResult != null)
+      {
+         Log.debug("Found leading newline");
+         MatchResult targetResult = leadRegExp.exec(compareTo);
+         if (targetResult == null)
+         {
+            sb.append("Leading");
+         }
+      }
+
+      sourceResult = endRegExp.exec(compareFrom);
+      if (sourceResult != null)
+      {
+         Log.debug("Found trailing newline");
+         MatchResult targetResult = endRegExp.exec(compareTo);
+         if (targetResult == null)
+         {
+            if (sb.length() > 0)
+            {
+               sb.append("/Trailing");
+            }
+            else
+            {
+               sb.append("Trailing");
+            }
+         }
+      }
+      return sb.toString();
    }
 }

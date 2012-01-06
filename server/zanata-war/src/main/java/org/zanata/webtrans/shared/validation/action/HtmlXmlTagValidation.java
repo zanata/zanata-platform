@@ -48,31 +48,42 @@ public class HtmlXmlTagValidation extends ValidationAction
    {
       if (!ValidationUtils.isEmpty(target))
       {
-         String tmp = target;
-         StringBuilder sb = new StringBuilder();
-         MatchResult result = regExp.exec(source);
-
-         while (result != null)
+         String error = runValidation(source, target);
+         if (error.length() > 0)
          {
-            String node = result.getGroup(0);
-            Log.debug("Found Node:" + node);
-            if (!tmp.contains(node))
-            {
-               sb.append(" ");
-               sb.append(node);
-               sb.append(" ");
-            }
-            else
-            {
-               tmp = tmp.replaceFirst(node, ""); // remove matched node from
-            }
-            result = regExp.exec(source);
+            addError("Tag [" + error + "] missing in target");
          }
 
-         if (sb.length() > 0)
+         error = runValidation(target, source);
+         if (error.length() > 0)
          {
-            addError("Tag [" + sb.toString() + "] missing in target");
+            addError("Tag [" + error + "] missing in source");
          }
       }
+   }
+
+   private String runValidation(String compareFrom, String compareTo)
+   {
+      String tmp = compareTo;
+      StringBuilder sb = new StringBuilder();
+      MatchResult result = regExp.exec(compareFrom);
+
+      while (result != null)
+      {
+         String node = result.getGroup(0);
+         Log.debug("Found Node:" + node);
+         if (!tmp.contains(node))
+         {
+            sb.append(" ");
+            sb.append(node);
+            sb.append(" ");
+         }
+         else
+         {
+            tmp = tmp.replaceFirst(node, ""); // remove matched node from
+         }
+         result = regExp.exec(compareFrom);
+      }
+      return sb.toString();
    }
 }

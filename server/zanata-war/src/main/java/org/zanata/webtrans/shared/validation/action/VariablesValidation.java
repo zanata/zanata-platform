@@ -39,38 +39,50 @@ public class VariablesValidation extends ValidationAction
    }
 
    private final static String varRegex = "%[\\w]+";
-   private final static RegExp varRegExp = RegExp.compile(varRegex, "g");
+   private RegExp varRegExp = RegExp.compile(varRegex, "g");
 
    @Override
    public void validate(String source, String target)
    {
       if (!ValidationUtils.isEmpty(target))
       {
-         String tmp = target;
-         StringBuilder sb = new StringBuilder();
-         MatchResult result = varRegExp.exec(source);
-
-         while (result != null)
+         String error = runValidation(source, target);
+         if (error.length() > 0)
          {
-            String var = result.getGroup(0);
-            Log.debug("Found var:" + var);
-            if (!tmp.contains(var))
-            {
-               sb.append(" ");
-               sb.append(var);
-               sb.append(" ");
-            }
-            else
-            {
-               tmp = tmp.replaceFirst(var, ""); // remove matched var
-            }
-            result = varRegExp.exec(source);
+            addError("Variable [" + error + "] not found in target");
          }
 
-         if (sb.length() > 0)
+         error = runValidation(target, source);
+         if (error.length() > 0)
          {
-            addError("Variable [" + sb.toString() + "] missing in target");
+            addError("Variable [" + error + "] not found in source");
          }
       }
+   }
+
+   private String runValidation(String compareFrom, String compareTo)
+   {
+      String tmp = compareTo;
+      StringBuilder sb = new StringBuilder();
+      MatchResult result = varRegExp.exec(compareFrom);
+
+      while (result != null)
+      {
+         String var = result.getGroup(0);
+         Log.debug("Found var:" + var);
+         if (!tmp.contains(var))
+         {
+            sb.append(" ");
+            sb.append(var);
+            sb.append(" ");
+         }
+         else
+         {
+            tmp = tmp.replaceFirst(var, ""); // remove matched var
+         }
+         result = varRegExp.exec(compareFrom);
+      }
+
+      return sb.toString();
    }
 }

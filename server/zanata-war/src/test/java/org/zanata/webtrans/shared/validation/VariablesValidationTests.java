@@ -78,6 +78,18 @@ public class VariablesValidationTests
    }
 
    @Test
+   public void VariablesTestWithMismatch4()
+   {
+      variablesValidation = new VariablesValidation("Variables check", "Variables check validation");
+
+      String source = "Testing string with variable %var1 and %var2 and %var3";
+      String target = "Testing string with variable %var1 and %var2 and %var3 and %var4";
+      variablesValidation.validate(source, target);
+      Assert.assertTrue(variablesValidation.hasError());
+      Assert.assertEquals(variablesValidation.getError().size(), 1);
+   }
+
+   @Test
    public void VariablesTestWithMatch()
    {
       variablesValidation = new VariablesValidation("Variables check", "Variables check validation");

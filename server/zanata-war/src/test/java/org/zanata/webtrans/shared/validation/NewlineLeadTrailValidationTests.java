@@ -49,7 +49,7 @@ public class NewlineLeadTrailValidationTests
       String target = "Testing string with leading new line\n";
       newlineLeadTrailValidation.validate(source, target);
       Assert.assertTrue(newlineLeadTrailValidation.hasError());
-      Assert.assertEquals(newlineLeadTrailValidation.getError().size(), 1);
+      Assert.assertEquals(newlineLeadTrailValidation.getError().size(), 2);
    }
 
    @Test
@@ -61,7 +61,7 @@ public class NewlineLeadTrailValidationTests
       String target = "\nTesting string with leading new line";
       newlineLeadTrailValidation.validate(source, target);
       Assert.assertTrue(newlineLeadTrailValidation.hasError());
-      Assert.assertEquals(newlineLeadTrailValidation.getError().size(), 1);
+      Assert.assertEquals(newlineLeadTrailValidation.getError().size(), 2);
    }
 
    @Test
@@ -71,6 +71,18 @@ public class NewlineLeadTrailValidationTests
 
       String source = "\nTesting string with leading new line\n";
       String target = "Testing string with leading new line";
+      newlineLeadTrailValidation.validate(source, target);
+      Assert.assertTrue(newlineLeadTrailValidation.hasError());
+      Assert.assertEquals(newlineLeadTrailValidation.getError().size(), 1);
+   }
+
+   @Test
+   public void NewlineLeadTrailTestWithMissingBoth2()
+   {
+      newlineLeadTrailValidation = new NewlineLeadTrailValidation("Newline lead/trail", "Newline lead/trail validation");
+
+      String source = "\nTesting string with leading new line";
+      String target = "\nTesting string with leading new line\n";
       newlineLeadTrailValidation.validate(source, target);
       Assert.assertTrue(newlineLeadTrailValidation.hasError());
       Assert.assertEquals(newlineLeadTrailValidation.getError().size(), 1);

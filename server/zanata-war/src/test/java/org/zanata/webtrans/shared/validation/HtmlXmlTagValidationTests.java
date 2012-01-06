@@ -101,6 +101,18 @@ public class HtmlXmlTagValidationTests
    }
 
    @Test
+   public void XMLTagTestTagMissing3()
+   {
+      htmlXmlTagValidation = new HtmlXmlTagValidation("HTML/XML tag", "Matching HTML/XML tag validation");
+
+      String source = "<group><users><user>1</user></users></group>";
+      String target = "<group><users><user>1</user></users><users></users></group>";
+      htmlXmlTagValidation.validate(source, target);
+      Assert.assertTrue(htmlXmlTagValidation.hasError());
+      Assert.assertEquals(htmlXmlTagValidation.getError().size(), 1);
+   }
+
+   @Test
    public void XMLTagTestMatching()
    {
       htmlXmlTagValidation = new HtmlXmlTagValidation("HTML/XML tag", "Matching HTML/XML tag validation");
