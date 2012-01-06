@@ -399,10 +399,7 @@ table.fullwidth {
 }
 
 .rich-panel-header {
-	-moz-border-radius-topleft: 10px;
-	-moz-border-radius-topright: 10px;
-	-webkit-border-top-left-radius:10px;
-	-webkit-border-top-right-radius:10px;
+	border-radius: 10px;
 	text-align: center;
 }
 
@@ -499,7 +496,7 @@ a.table_link {
 
 a.obsolete_link, a.obsolete_link:visited, a.obsolete_link:link{
     font-style: italic;
-    color:#0A315D;
+    color:#ACC2E1;
     text-decoration: line-through;
 }
 
@@ -508,7 +505,7 @@ a.obsolete_link, a.obsolete_link:visited, a.obsolete_link:link{
 }
 a.retired_link, a.retired_link:visited, a.retired_link:link{
     font-style: italic;
-    color:#0A315D;
+    color:#ACC2E1;
 }
 
 

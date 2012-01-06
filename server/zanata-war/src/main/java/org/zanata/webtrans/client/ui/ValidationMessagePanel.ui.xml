@@ -4,7 +4,7 @@
     
     <ui:style type="org.zanata.webtrans.client.ui.ValidationMessagePanel.Styles">
         .container {
-           width:500px;
+           width:80%;
         }
         
         .header {
