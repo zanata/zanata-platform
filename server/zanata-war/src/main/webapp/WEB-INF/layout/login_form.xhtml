@@ -8,25 +8,25 @@
 >
 	<s:token allowMultiplePosts="true" />
     <rich:panel rendered="#{not identity.loggedIn}">
-        <f:facet name="header">#{messages['jsf.SignIn']}</f:facet>
+        <f:facet name="header" class="loginForm_header">#{messages['jsf.SignIn']}</f:facet>
 
         <s:decorate id="usernameField" template="edit.xhtml" rendered="#{!applicationConfiguration.fedoraOpenIdAuth}">
-            <ui:define name="label">#{messages['jsf.Username']}</ui:define>
+            <ui:define name="label"><span class="loginForm_label">#{messages['jsf.Username']}</span></ui:define>
             <h:inputText id="username"
-                      value="#{credentials.username}"/>
+                      value="#{credentials.username}" class="loginForm_input"/>
         </s:decorate>
   
         <s:decorate id="fedoraUsernameField" template="edit.xhtml" rendered="#{applicationConfiguration.fedoraOpenIdAuth}">
-            <ui:define name="label">#{messages['jsf.FedoraUsername']}</ui:define>
+            <ui:define name="label"><span class="loginForm_label">#{messages['jsf.FedoraUsername']}</span></ui:define>
             <h:inputText id="username"
                       value="#{credentials.username}"/>
-            <h:inputHidden id="password" value="#{credentials.password}"/>
+            <h:inputHidden id="password" value="#{credentials.password}" class="loginForm_input"/>
         </s:decorate>
 
-      <s:decorate id="passwordField" template="edit.xhtml" rendered="#{!applicationConfiguration.fedoraOpenIdAuth}">
-            <ui:define name="label">#{messages['jsf.Password']}</ui:define>
+        <s:decorate id="passwordField" template="edit.xhtml" rendered="#{!applicationConfiguration.fedoraOpenIdAuth}">
+            <ui:define name="label"><span class="loginForm_label">#{messages['jsf.Password']}</span></ui:define>
             <h:inputSecret id="password"
-                        value="#{credentials.password}"/>
+                        value="#{credentials.password}" class="loginForm_input"/>
             <rich:spacer width="10px"/>
             <s:link view="/account/password_reset_request.xhtml"
             	rendered="#{applicationConfiguration.internalAuth}"
