@@ -118,7 +118,7 @@ public class HPerson extends ModelEntityBase implements Serializable
    public Set<HLocale> getLanguageMemberships()
    {
       final Set<HLocale> memberships = new HashSet<HLocale>();
-      for( HLocaleMember locMem : this.languageTeamMemberships )
+      for( HLocaleMember locMem : this.getLanguageTeamMemberships() )
       {
          memberships.add( locMem.getSupportedLanguage() );
       }
