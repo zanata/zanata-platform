@@ -45,7 +45,6 @@ import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -57,6 +56,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    // public static final int INDICATOR_COL = 0;
    public static final int SOURCE_COL = 0;
    public static final int TARGET_COL = 1;
+
+   private final boolean isReadOnly;
 
    private String findMessage;
    private SourcePanel topSourcePanel;
@@ -244,7 +245,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             return;
          }
 
-         if (rowValue.getTarget().isEmpty())
+         if (rowValue.getTarget().isEmpty() && !isReadOnly)
          {
             label.setText(messages.clickHere());
             label.setStylePrimaryName("TableEditorContent-Empty");
@@ -291,6 +292,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
    public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final EventBus eventBus, boolean isReadOnly)
    {
+      this.isReadOnly = isReadOnly;
       this.messages = messages;
       this.eventBus = eventBus;
       setRowRenderer(rowRenderer);
