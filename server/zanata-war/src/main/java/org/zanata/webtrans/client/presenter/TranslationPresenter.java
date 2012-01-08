@@ -31,6 +31,7 @@ import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
 import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
+import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -41,7 +42,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -70,7 +70,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       void updateWorkspaceUsersTitle(String title);
 
       ToggleButton getToogleOptionsButton();
-      
+
       ToggleButton getToogleSouthButton();
    }
 
@@ -211,7 +211,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          }
       }));
 
-
       final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Navigation);
 
       Event.addNativePreviewHandler(new NativePreviewHandler()
@@ -220,62 +219,89 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          public void onPreviewNativeEvent(NativePreviewEvent event)
          {
             /**
-             * @formatter:off
              * keyup is used because TargetCellEditor will intercept the event
              * again (Firefox) See textArea.addKeyDownHandler@InlineTargetCellEditor
-             * 
-             * Only when the Table is showed,editor is closed, search field not
-             * focused, the keyboard event will be processed.
              **/
-            if (display.asWidget().isVisible() && 
-                  !translationEditorPresenter.isTargetCellEditorFocused() && 
+            if (display.asWidget().isVisible())
+            { 
+               checkKey.init(event.getNativeEvent());
+
+               if (translationEditorPresenter.getSelectedTransUnit() != null && checkKey.isCopyFromTransMem())
+               {
+                  int index;
+                  switch (checkKey.getKeyCode())
+                  {
+                  case '1':
+                     index = 0;
+                     break;
+                  case '2':
+                     index = 1;
+                     break;
+                  case '3':
+                     index = 2;
+                     break;
+                  case '4':
+                     index = 3;
+                     break;
+                  default:
+                     index = -1;
+                     break;
+                  }
+                  Log.info("Copy from translation memory:" + index);
+                  eventBus.fireEvent(new TransMemoryShortcutCopyEvent(index));
+               }
+
+               /**
+                * @formatter:off
+                * Only when the Table is showed,editor is closed, search field
+                * not focused, the keyboard event will be processed.
+                **/
+               if (!translationEditorPresenter.isTargetCellEditorFocused() &&
                   !translationEditorPresenter.isTransFilterFocused() && 
                   !transMemoryPresenter.getDisplay().isFocused() && 
                   !glossaryPresenter.getDisplay().isFocused() &&
                   !translationEditorPresenter.getDisplay().isPagerFocused())
-            {
-               //@formatter:on
-               checkKey.init(event.getNativeEvent());
-
-               if (event.getNativeEvent().getType().equals("keyup"))
                {
-                  if (checkKey.isCopyFromSourceKey())
+                  if (event.getNativeEvent().getType().equals("keyup"))
                   {
-                     if (translationEditorPresenter.getSelectedTransUnit() != null)
+                     if (checkKey.isCopyFromSourceKey())
                      {
-                        Log.info("Copy from source");
-                        stopDefaultAction(event);
-                        translationEditorPresenter.gotoCurrentRow();
-                        translationEditorPresenter.cloneAction();
-                     }
-                  }
-                  else if (checkKey.isEnterKey() && !checkKey.isCtrlKey())
-                  {
-                     if (translationEditorPresenter.getSelectedTransUnit() != null)
-                     {
-                        if (!translationEditorPresenter.isCancelButtonFocused())
+                        if (translationEditorPresenter.getSelectedTransUnit() != null)
                         {
-                           Log.info("open editor");
+                           Log.info("Copy from source");
                            stopDefaultAction(event);
                            translationEditorPresenter.gotoCurrentRow();
+                           translationEditorPresenter.cloneAction();
                         }
-                        translationEditorPresenter.setCancelButtonFocused(false);
+                     }
+                     else if (checkKey.isEnterKey() && !checkKey.isCtrlKey())
+                     {
+                        if (translationEditorPresenter.getSelectedTransUnit() != null)
+                        {
+                           if (!translationEditorPresenter.isCancelButtonFocused())
+                           {
+                              Log.info("open editor");
+                              stopDefaultAction(event);
+                              translationEditorPresenter.gotoCurrentRow();
+                           }
+                           translationEditorPresenter.setCancelButtonFocused(false);
+                        }
                      }
                   }
-               }
-               if (event.getNativeEvent().getType().equals("keydown"))
-               {
-                  if (checkKey.isPreviousEntryKey())
+                  if (event.getNativeEvent().getType().equals("keydown"))
                   {
-                     Log.info("Go to previous entry");
-                     stopDefaultAction(event);
-                     translationEditorPresenter.gotoPrevRow(false);
-                  }
-                  else if (checkKey.isNextEntryKey())
-                  {
-                     Log.info("Go to next entry");
-                     stopDefaultAction(event);
-                     translationEditorPresenter.gotoNextRow(false);
+                     if (checkKey.isPreviousEntryKey())
+                     {
+                        Log.info("Go to previous entry");
+                        stopDefaultAction(event);
+                        translationEditorPresenter.gotoPrevRow(false);
+                     }
+                     else if (checkKey.isNextEntryKey())
+                     {
+                        Log.info("Go to next entry");
+                        stopDefaultAction(event);
+                        translationEditorPresenter.gotoNextRow(false);
+                     }
                   }
                }
             }

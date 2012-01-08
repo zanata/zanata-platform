@@ -1,15 +1,16 @@
 package org.zanata.webtrans.client.view;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.TransMemoryCopyEvent;
-import org.zanata.webtrans.client.ui.DiffMatchPatchLabel;
 import org.zanata.webtrans.client.presenter.TransMemoryDetailsPresenter;
 import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
+import org.zanata.webtrans.client.ui.DiffMatchPatchLabel;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 
@@ -77,6 +78,8 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 
    private final Resources resources;
    private boolean isFocused;
+
+   private List<TranslationMemoryGlossaryItem> cachedMem = new ArrayList<TranslationMemoryGlossaryItem>();
 
    @Inject
    public TransMemoryView(final UiMessages messages, Resources resources)
@@ -152,6 +155,8 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    {
    }
 
+
+
    @Override
    public void createTable(String query, ArrayList<TranslationMemoryGlossaryItem> memories)
    {
@@ -160,11 +165,13 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       addColumn("Source", SOURCE_COL);
       addColumn("Target", TARGET_COL);
       addColumn("Similarity", SIMILARITY_COL);
-
       int row = HEADER_ROW;
+      cachedMem.clear();
+
       for (final TranslationMemoryGlossaryItem memory : memories)
       {
          ++row;
+         cachedMem.add(memory);
          final String sourceMessage = memory.getSource();
          final String targetMessage = memory.getTarget();
          final int similarity = memory.getSimilarityPercent();
@@ -215,10 +222,35 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       resultTable.removeAllRows();
    }
 
-
    @Override
    public boolean isFocused()
    {
       return isFocused;
+   }
+
+   @Override
+   public String getSource(int index)
+   {
+      try
+      {
+         return cachedMem.get(index).getSource();
+      }
+      catch (IndexOutOfBoundsException e)
+      {
+         return null;
+      }
+   }
+
+   @Override
+   public String getTarget(int index)
+   {
+      try
+      {
+         return cachedMem.get(index).getTarget();
+      }
+      catch (IndexOutOfBoundsException e)
+      {
+         return null;
+      }
    }
 }

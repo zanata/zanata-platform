@@ -6,6 +6,9 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.TransMemoryCopyEvent;
+import org.zanata.webtrans.client.events.TransMemoryShorcutCopyHandler;
+import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -45,6 +48,10 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       void stopProcessing();
 
       boolean isFocused();
+      
+      String getSource(int index);
+      
+      String getTarget(int index);
    }
 
    @Inject
@@ -75,6 +82,20 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          public void onTransUnitSelected(TransUnitSelectionEvent event)
          {
             showResultsFor(event.getSelection());
+         }
+      }));
+      
+      registerHandler(eventBus.addHandler(TransMemoryShortcutCopyEvent.getType(), new TransMemoryShorcutCopyHandler()
+      {
+         @Override
+         public void onTransMemoryCopy(TransMemoryShortcutCopyEvent event)
+         {
+            String source = display.getSource(event.getIndex());
+            String target = display.getTarget(event.getIndex());
+            if (source != null && target != null)
+            {
+               eventBus.fireEvent(new TransMemoryCopyEvent(source, target));
+            }
          }
       }));
    }
