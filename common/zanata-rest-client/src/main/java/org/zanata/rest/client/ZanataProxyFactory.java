@@ -43,7 +43,7 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
       String clientVer = clientApiVersion.getVersionNo();
       String clientTimestamp = clientApiVersion.getBuildTimeStamp();
       IVersionResource iversion = createIVersionResource();
-      VersionInfo serverVersionInfo = iversion.get();
+      VersionInfo serverVersionInfo = iversion.get().getEntity();
       String serverVer = serverVersionInfo.getVersionNo();
       String serverTimestamp = serverVersionInfo.getBuildTimeStamp();
 

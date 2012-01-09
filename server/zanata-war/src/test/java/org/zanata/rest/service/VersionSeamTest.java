@@ -38,7 +38,7 @@ public class VersionSeamTest extends ZanataDBUnitSeamTest
    public void test()
    {
       log.debug("test version service");
-      VersionInfo v = version.get();
+      VersionInfo v = version.get().getEntity();
       String ver = v.getVersionNo();
       log.debug("expected versoin:" + ver);
       assertThat(v.getVersionNo(), is(ver));

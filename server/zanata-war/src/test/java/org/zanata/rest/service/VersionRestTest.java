@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 import org.zanata.ZanataRestTest;
+import org.zanata.rest.client.IVersionResource;
 import org.zanata.rest.dto.VersionInfo;
 
 
@@ -33,11 +34,11 @@ public class VersionRestTest extends ZanataRestTest
    @Test
    public void retrieveVersionInfo()
    {
-      VersionResource resource;
+      IVersionResource resource;
       log.debug("setup test version service");
-      resource = getClientRequestFactory().createProxy(VersionResource.class, createBaseURI(RESOURCE_PATH));
+      resource = getClientRequestFactory().createProxy(IVersionResource.class, createBaseURI(RESOURCE_PATH));
 
-      VersionInfo entity = resource.get();
+      VersionInfo entity = resource.get().getEntity();
       assertThat(entity.getVersionNo(), is(vVar));
       assertThat(entity.getBuildTimeStamp(), is(vBuild));
    }
