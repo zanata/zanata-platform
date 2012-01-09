@@ -22,9 +22,9 @@ package org.zanata.rest.service;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 import org.zanata.rest.MediaTypes;
-import org.zanata.rest.dto.VersionInfo;
 
 
 public interface VersionResource
@@ -37,6 +37,6 @@ public interface VersionResource
     */
    @GET
    @Produces({ MediaTypes.APPLICATION_ZANATA_VERSION_JSON, MediaTypes.APPLICATION_ZANATA_VERSION_XML })
-   public VersionInfo get();
+   public Response get();
 
 }
