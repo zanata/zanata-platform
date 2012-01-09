@@ -22,7 +22,9 @@ package org.zanata.webtrans.client.view;
 
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.presenter.AppPresenter;
+import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.MainView;
+import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
@@ -90,7 +92,7 @@ public class AppView extends Composite implements AppPresenter.Display
    private MainView currentView;
 
    @Inject
-   public AppView(Resources resources, WebTransMessages messages)
+   public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, TranslationPresenter.Display translationView)
    {
       this.resources = resources;
       this.messages = messages;
@@ -110,6 +112,12 @@ public class AppView extends Composite implements AppPresenter.Display
 
       helpLink.setHref(messages.hrefHelpLink());
       helpLink.setTarget("_BLANK");
+
+      this.documentListView = documentListView.asWidget();
+      this.container.add(this.documentListView);
+
+      this.translationView = translationView.asWidget();
+      this.container.add(this.translationView);
    }
 
    @Override
@@ -139,20 +147,6 @@ public class AppView extends Composite implements AppPresenter.Display
          currentView = MainView.Editor;
          break;
       }
-   }
-
-   @Override
-   public void setDocumentListView(Widget documentListView)
-   {
-      this.container.add(documentListView);
-      this.documentListView = documentListView;
-   }
-
-   @Override
-   public void setTranslationView(Widget editorView)
-   {
-      this.container.add(editorView);
-      this.translationView = editorView;
    }
 
    @Override

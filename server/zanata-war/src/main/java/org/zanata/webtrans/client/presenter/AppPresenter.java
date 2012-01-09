@@ -57,7 +57,6 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
@@ -70,10 +69,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       {
          Document, Project;
       }
-
-      void setDocumentListView(Widget documentListView);
-
-      void setTranslationView(Widget translationView);
 
       void showInMainView(MainView editor);
 
@@ -165,9 +160,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       documentListPresenter.bind();
       translationPresenter.bind();
-
-      display.setDocumentListView(documentListPresenter.getDisplay().asWidget());
-      display.setTranslationView(translationPresenter.getDisplay().asWidget());
 
       display.showInMainView(MainView.Documents);
 

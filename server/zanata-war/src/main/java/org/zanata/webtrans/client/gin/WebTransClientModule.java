@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.gin;
 
 import net.customware.gwt.presenter.client.DefaultEventBus;
+import net.customware.gwt.presenter.client.Display;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
 
@@ -111,6 +112,14 @@ public class WebTransClientModule extends AbstractPresenterModule
 
       bind(Identity.class).toProvider(IdentityProvider.class).in(Singleton.class);
       bind(WorkspaceContext.class).toProvider(WorkspaceContextProvider.class).in(Singleton.class);
+   }
+
+   // default implementation doesn't use singleton display binding, adding here
+   // to allow displays to be injected into other displays
+   @Override
+   protected <D extends Display> void bindDisplay(Class<D> display, Class<? extends D> displayImpl)
+   {
+      bind(display).to(displayImpl).in(Singleton.class);
    }
 
    static class WorkspaceContextProvider implements Provider<WorkspaceContext>
