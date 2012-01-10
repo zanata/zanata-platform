@@ -36,7 +36,9 @@ import org.zanata.webtrans.client.events.ProjectStatsRetrievedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsRetrievedEventHandler;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
+import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
+import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display.StatsType;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -53,8 +55,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.inject.Inject;
@@ -116,8 +116,11 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
    private final DocumentListPresenter documentListPresenter;
    private final TranslationPresenter translationPresenter;
-   private final WorkspaceContext workspaceContext;
+   private final History history;
    private final Identity identity;
+   private final Window window;
+   private final Window.Location windowLocation;
+   private final WorkspaceContext workspaceContext;
 
    private final WebTransMessages messages;
 
@@ -131,14 +134,17 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
    
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
+   public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
+      this.history = history;
       this.identity = identity;
       this.messages = messages;
       this.documentListPresenter = documentListPresenter;
       this.translationPresenter = translationPresenter;
+      this.window = window;
+      this.windowLocation = windowLocation;
       this.workspaceContext = workspaceContext;
    }
 
@@ -155,8 +161,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             display.setNotificationMessage(event.getMessage());
          }
       }));
-
-      Window.enableScrolling(false);
 
       documentListPresenter.bind();
       translationPresenter.bind();
@@ -227,13 +231,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       display.setUserLabel(identity.getPerson().getName());
 
-      String workspaceTitle = Window.Location.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
+      String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
 
       display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName(), workspaceTitle);
 
-      Window.setTitle(messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
+      window.setTitle(messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
 
-      History.addValueChangeHandler(new ValueChangeHandler<String>()
+      history.addValueChangeHandler(new ValueChangeHandler<String>()
       {
 
          @Override
@@ -243,7 +247,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          }
       });
 
-      History.fireCurrentHistoryState();
+      history.fireCurrentHistoryState();
    }
 
    @Override

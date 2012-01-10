@@ -39,6 +39,7 @@ import com.google.gwt.layout.client.Layout.AnimationCallback;
 import com.google.gwt.layout.client.Layout.Layer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
@@ -118,6 +119,8 @@ public class AppView extends Composite implements AppPresenter.Display
 
       this.translationView = translationView.asWidget();
       this.container.add(this.translationView);
+
+      Window.enableScrolling(false);
    }
 
    @Override
