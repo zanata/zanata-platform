@@ -130,4 +130,7 @@ public interface Resources extends ClientBundle
    @Source("org/zanata/webtrans/images/redo_disabled.png")
    ImageResource redoDisabled();
 
+   @Source("org/zanata/webtrans/images/loader.gif")
+   ImageResource loader();
+
 }

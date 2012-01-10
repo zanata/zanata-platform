@@ -546,7 +546,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       @Override
       public void requestRows(final Request request, final Callback<TransUnit> callback)
       {
-
+         display.startProcessing();
          int numRows = request.getNumRows();
          int startRow = request.getStartRow();
          Log.info("Table requesting " + numRows + " starting from " + startRow);
@@ -559,6 +559,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
          dispatcher.execute(new GetTransUnitList(documentId, startRow, numRows, findMessage), new AsyncCallback<GetTransUnitListResult>()
          {
+
             @Override
             public void onSuccess(GetTransUnitListResult result)
             {
@@ -568,6 +569,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                callback.onRowsReady(request, response);
                Log.info("Total of " + result.getTotalCount() + " rows available");
                display.getTableModel().setRowCount(result.getTotalCount());
+               display.stopProcessing();
             }
 
             @Override
@@ -586,8 +588,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                   Log.error("GetTransUnits failure " + caught, caught);
                   eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnknownError()));
                }
+               display.stopProcessing();
             }
          });
+
+
       }
 
       @Override

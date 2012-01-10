@@ -27,12 +27,13 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.resources.NavigationMessages;
+import org.zanata.webtrans.client.resources.Resources;
+import org.zanata.webtrans.client.ui.LoadingPanel;
 import org.zanata.webtrans.client.ui.ValidationMessagePanel;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.auth.Permission;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
 
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -58,6 +59,7 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    private final RedirectingCachedTableModel<TransUnit> cachedTableModel;
    private final TableEditorTableDefinition tableDefinition;
    private int cachedPages = 2;
+   private LoadingPanel loadingPanel;
 
    public void setFindMessage(String findMessage)
    {
@@ -65,9 +67,10 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    }
 
    @Inject
-   public TableEditorView(NavigationMessages messages, EventBus eventBus, Identity identity)
+   public TableEditorView(NavigationMessages messages, EventBus eventBus, Identity identity, final Resources resources)
    {
       this(messages, new RedirectingTableModel<TransUnit>(), eventBus, identity);
+      loadingPanel = new LoadingPanel(resources);
    }
 
    public TableEditorView(NavigationMessages messages, RedirectingTableModel<TransUnit> tableModel, EventBus eventBus, Identity identity)
@@ -138,16 +141,18 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    {
       return this;
    }
-
+   
    @Override
    public void startProcessing()
    {
+      loadingPanel.center();
       setVisible(false);
    }
 
    @Override
    public void stopProcessing()
    {
+      loadingPanel.hide();
       setVisible(true);
    }
 
