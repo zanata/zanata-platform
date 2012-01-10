@@ -479,3 +479,12 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
 	-moz-border-radius:4px;
     -webkit-border-radius: 4px;
 }
+
+.loadingPanel{
+    background:#000000;
+    padding:20px 40px 20px 40px;
+    color:#FFFFFF;
+    opacity:0.60;
+    border-radius:20px;
+    font-weight:bold;
+ }

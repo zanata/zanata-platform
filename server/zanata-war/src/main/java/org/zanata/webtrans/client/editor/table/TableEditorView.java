@@ -25,7 +25,9 @@ import java.util.Set;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.zanata.webtrans.client.Resources;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
+import org.zanata.webtrans.client.ui.LoadingPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -52,6 +54,7 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    private final RedirectingCachedTableModel<TransUnit> cachedTableModel;
    private final TableEditorTableDefinition tableDefinition;
    private int cachedPages = 2;
+   private LoadingPanel loadingPanel;
 
    public void setFindMessage(String findMessage)
    {
@@ -59,9 +62,10 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    }
 
    @Inject
-   public TableEditorView(NavigationMessages messages, EventBus eventBus)
+   public TableEditorView(NavigationMessages messages, EventBus eventBus, final Resources resources)
    {
       this(messages, new RedirectingTableModel<TransUnit>(), eventBus);
+      loadingPanel = new LoadingPanel(resources);
    }
 
    public TableEditorView(NavigationMessages messages, RedirectingTableModel<TransUnit> tableModel, EventBus eventBus)
@@ -136,12 +140,14 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    @Override
    public void startProcessing()
    {
+      loadingPanel.center();
       setVisible(false);
    }
 
    @Override
    public void stopProcessing()
    {
+      loadingPanel.hide();
       setVisible(true);
    }
 
