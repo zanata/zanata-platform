@@ -509,7 +509,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       @Override
       public void requestRows(final Request request, final Callback<TransUnit> callback)
       {
-         display.startProcessing();
          int numRows = request.getNumRows();
          int startRow = request.getStartRow();
          Log.info("Table requesting " + numRows + " starting from " + startRow);
@@ -520,6 +519,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             return;
          }
 
+         display.startProcessing();
          dispatcher.execute(new GetTransUnitList(documentId, startRow, numRows, findMessage), new AsyncCallback<GetTransUnitListResult>()
          {
             @Override
