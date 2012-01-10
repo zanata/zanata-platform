@@ -20,6 +20,10 @@
  */
 package org.zanata.webtrans.shared.validation.action;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
 import org.zanata.webtrans.shared.validation.ValidationUtils;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -59,7 +63,48 @@ public class HtmlXmlTagValidation extends ValidationAction
          {
             addError("Tag [" + error + "] missing in source");
          }
+
+         if (getError().isEmpty())
+         {
+            orderValidation(source, target);
+         }
       }
+   }
+
+   private void orderValidation(String source, String target)
+   {
+      List<String> from = getTagList(source);
+      List<String> to = getTagList(target);
+      StringBuilder sb = new StringBuilder();
+
+      for (int i = 0; i < from.size(); i++)
+      {
+         if (!to.get(i).equals(from.get(i)))
+         {
+            sb.append(" ");
+            sb.append(from.get(i));
+            sb.append(" ");
+         }
+      }
+
+      if (sb.length() > 0)
+      {
+         addError("Tag [" + sb.toString() + "] are wrong in order");
+      }
+
+   }
+
+   private List<String> getTagList(String src)
+   {
+      List<String> list = new ArrayList<String>();
+      MatchResult result = regExp.exec(src);
+      while (result != null)
+      {
+         String node = result.getGroup(0);
+         list.add(node);
+         result = regExp.exec(src);
+      }
+      return list;
    }
 
    private String runValidation(String compareFrom, String compareTo)

@@ -113,6 +113,18 @@ public class HtmlXmlTagValidationTests
    }
 
    @Test
+   public void XMLTagTestTagWrongOrder()
+   {
+      htmlXmlTagValidation = new HtmlXmlTagValidation("HTML/XML tag", "Matching HTML/XML tag validation");
+
+      String source = "<group><users><user></user></users><users></users></group>";
+      String target = "<group><users></users><users></user><user></users></group>";
+      htmlXmlTagValidation.validate(source, target);
+      Assert.assertTrue(htmlXmlTagValidation.hasError());
+      Assert.assertEquals(htmlXmlTagValidation.getError().size(), 1);
+   }
+
+   @Test
    public void XMLTagTestMatching()
    {
       htmlXmlTagValidation = new HtmlXmlTagValidation("HTML/XML tag", "Matching HTML/XML tag validation");
