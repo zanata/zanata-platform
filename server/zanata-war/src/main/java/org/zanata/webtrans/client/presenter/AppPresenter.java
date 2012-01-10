@@ -86,7 +86,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       void setWorkspaceNameLabel(String workspaceNameLabel, String workspaceTitle);
 
-      void setSelectedDocument(DocumentInfo document);
+      void setDocumentLabel(String docPath, String docName);
 
       void setNotificationMessage(String var);
 
@@ -166,6 +166,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       translationPresenter.bind();
 
       display.showInMainView(MainView.Documents);
+      // TODO get this string from messages
+      display.setDocumentLabel("", "No document selected");
 
       registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler()
       {
@@ -178,7 +180,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             {
                selectedDocument = docInfo;
                requestDocumentStats(selectedDocument.getId());
-               display.setSelectedDocument(selectedDocument);
+               display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
             }
          }
       }));
@@ -327,12 +329,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          if (display.getCurrentView().equals(MainView.Editor))
          {
             translationPresenter.saveEditorPendingChange();
+            display.setDocumentLabel("", "No document selected");
          }
          else
          { // document list view
             if (selectedDocument != null)
             {
-               display.setSelectedDocument(selectedDocument);
+               display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
             }
          }
          display.showInMainView(token.getView());

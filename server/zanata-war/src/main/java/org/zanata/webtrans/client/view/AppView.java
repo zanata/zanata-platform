@@ -28,7 +28,6 @@ import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
-import org.zanata.webtrans.shared.model.DocumentInfo;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
@@ -137,7 +136,6 @@ public class AppView extends Composite implements AppPresenter.Display
       case Documents:
          container.setWidgetTopBottom(documentListView, 0, Unit.PX, 0, Unit.PX);
          container.setWidgetTopHeight(translationView, 0, Unit.PX, 0, Unit.PX);
-         resetSelectedDocument();
          showStats(StatsType.Project);
          setStatsVisible(true);
          currentView = MainView.Documents;
@@ -193,16 +191,10 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public void setSelectedDocument(DocumentInfo document)
+   public void setDocumentLabel(String docPath, String docName)
    {
-      selectedDocumentPathSpan.setInnerText(document.getPath());
-      selectedDocumentSpan.setInnerText(document.getName());
-   }
-
-   public void resetSelectedDocument()
-   {
-      selectedDocumentPathSpan.setInnerText("");
-      selectedDocumentSpan.setInnerText("No document selected");
+      selectedDocumentPathSpan.setInnerText(docPath);
+      selectedDocumentSpan.setInnerText(docName);
    }
 
    private final AnimationCallback callback = new AnimationCallback()
