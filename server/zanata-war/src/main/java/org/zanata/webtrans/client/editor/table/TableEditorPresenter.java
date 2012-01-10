@@ -546,7 +546,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       @Override
       public void requestRows(final Request request, final Callback<TransUnit> callback)
       {
-
          int numRows = request.getNumRows();
          int startRow = request.getStartRow();
          Log.info("Table requesting " + numRows + " starting from " + startRow);
