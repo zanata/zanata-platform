@@ -45,6 +45,7 @@ public class LoadingPanel extends DecoratedPopupPanel
       hp.add(new Image(resources.loader()));
       setStyleName("loadingPanel");
       add(hp);
+      hide();
    }
 }
 
