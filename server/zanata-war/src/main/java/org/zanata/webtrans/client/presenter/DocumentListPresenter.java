@@ -41,7 +41,7 @@ import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
-import org.zanata.webtrans.client.history.WindowLocation;
+import org.zanata.webtrans.client.history.Window.Location;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.DocumentNode;
@@ -87,7 +87,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    private DocumentNode currentSelection;
    private final WebTransMessages messages;
    private final History history;
-   private final WindowLocation windowLocation;
+   private final Location windowLocation;
 
    private ListDataProvider<DocumentNode> dataProvider;
    private HashMap<DocumentId, DocumentNode> nodes;
@@ -107,7 +107,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    private static final String PRE_FILTER_QUERY_PARAMETER_KEY = "doc";
 
    @Inject
-   public DocumentListPresenter(Display display, EventBus eventBus, WorkspaceContext workspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages, History history, WindowLocation windowLocation)
+   public DocumentListPresenter(Display display, EventBus eventBus, WorkspaceContext workspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages, History history, Location windowLocation)
    {
       super(display, eventBus);
       this.workspaceContext = workspaceContext;

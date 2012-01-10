@@ -38,7 +38,7 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.ProjectStatsRetrievedEvent;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
-import org.zanata.webtrans.client.history.WindowLocation;
+import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.DocumentNode;
@@ -86,7 +86,7 @@ public class DocumentListPresenterTest
    private HasValue mockFilterTextbox; // String
    private History mockHistory;
    private WebTransMessages mockMessages;
-   private WindowLocation mockWindowLocation;
+   private Window.Location mockWindowLocation;
    private WorkspaceContext mockWorkspaceContext;
 
    // this list is updated to update display table
@@ -117,7 +117,7 @@ public class DocumentListPresenterTest
       mockFilterTextbox = createMock(HasValue.class);
       mockHistory = createMock(History.class);
       mockMessages = createMock(WebTransMessages.class);
-      mockWindowLocation = createMock(WindowLocation.class);
+      mockWindowLocation = createMock(Window.Location.class);
       mockWorkspaceContext = createMock(WorkspaceContext.class);
    }
 

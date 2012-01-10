@@ -34,7 +34,8 @@ import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
 import org.zanata.webtrans.client.editor.table.TableEditorView;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryImpl;
-import org.zanata.webtrans.client.history.WindowLocation;
+import org.zanata.webtrans.client.history.Window;
+import org.zanata.webtrans.client.history.WindowImpl;
 import org.zanata.webtrans.client.history.WindowLocationImpl;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
@@ -103,7 +104,8 @@ public class WebTransClientModule extends AbstractPresenterModule
 
       bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);
       bind(History.class).to(HistoryImpl.class).in(Singleton.class);
-      bind(WindowLocation.class).to(WindowLocationImpl.class).in(Singleton.class);
+      bind(Window.class).to(WindowImpl.class).in(Singleton.class);
+      bind(Window.Location.class).to(WindowLocationImpl.class).in(Singleton.class);
 
       // NB: if we bind directly to SeamDispatchAsync, we can't use
       // replace-class in
