@@ -37,7 +37,7 @@ public class LoadingPanel extends DecoratedPopupPanel
 
    public LoadingPanel(final Resources resources)
    {
-      super(true, false);
+      super(false, false);
       HorizontalPanel hp = new HorizontalPanel();
       hp.setSpacing(5);
       hp.setSize("100%", "100%");
