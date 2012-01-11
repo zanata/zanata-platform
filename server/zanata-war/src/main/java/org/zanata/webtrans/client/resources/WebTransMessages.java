@@ -118,4 +118,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Remaining hours")
    String columnHeaderRemaining();
+
+   @DefaultMessage("No document selected")
+   String noDocumentSelected();
 }

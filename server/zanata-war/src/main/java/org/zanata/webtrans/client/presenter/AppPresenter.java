@@ -53,9 +53,6 @@ import com.google.inject.Inject;
 
 public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 {
-   // TODO get this string from messages and inline it
-   private static final String NO_DOCUMENT_SELECTED = "No document selected";
-
    // javac seems confused about which Display is which.
    // somehow, qualifying WidgetDisplay helps!
    public interface Display extends net.customware.gwt.presenter.client.widget.WidgetDisplay
@@ -146,14 +143,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             {
                selectedDocument = docInfo;
                display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
-               // TODO hide project stats while document stats are being
-               // fetched?
-
-               // requestDocumentStats(selectedDocument.getId());
-
-               // TODO verify that this works as alternative to
-               // requestDocumentStats()
-               // otherwise, look them up form documentListPresenter
                selectedDocumentStats.set(selectedDocument.getStats());
                refreshStatsDisplay();
             }
@@ -299,7 +288,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       {
       case Documents:
          currentDisplayStats = projectStats;
-         display.setDocumentLabel("", NO_DOCUMENT_SELECTED);
+         display.setDocumentLabel("", messages.noDocumentSelected());
          break;
 
       case Editor:
