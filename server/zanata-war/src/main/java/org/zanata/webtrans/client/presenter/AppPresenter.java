@@ -80,13 +80,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       void setNotificationMessage(String var);
 
       void setStats(TranslationStats transStats);
-
-      /**
-       * Set whether the stats bar is visible.
-       * 
-       * @param visible
-       */
-      void setStatsVisible(boolean visible);
    }
 
    private final DocumentListPresenter documentListPresenter;
@@ -133,6 +126,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          public void onNotification(NotificationEvent event)
          {
             display.setNotificationMessage(event.getMessage());
+            Log.info(event.getMessage());
          }
       }));
 
@@ -162,7 +156,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
                // otherwise, look them up form documentListPresenter
                selectedDocumentStats.set(selectedDocument.getStats());
                refreshStatsDisplay();
-               display.setStatsVisible(true);
             }
          }
       }));
@@ -323,7 +316,5 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    private void refreshStatsDisplay()
    {
       display.setStats(currentDisplayStats);
-      display.setStatsVisible(true);
    }
-
 }

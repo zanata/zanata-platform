@@ -79,11 +79,6 @@ public class AppView extends Composite implements AppPresenter.Display
    private Widget documentListView;
    private Widget translationView;
 
-   // TODO the way this is used, notifications will not be shown if they occur
-   // while another message is being shown. Should use a queue or similar to
-   // allow all messages to be visible.
-   private boolean showMessage = true;
-
    @Inject
    public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, TranslationPresenter.Display translationView)
    {
@@ -94,7 +89,8 @@ public class AppView extends Composite implements AppPresenter.Display
       // this must be initialized before uiBinder.createAndBindUi(), or an
       // exception will be thrown at runtime
       translationStatsBar = new TransUnitCountBar(messages, true);
-      setStatsVisible(false); // hide until there is a value to display
+      translationStatsBar.setVisible(false); // hide until there is a value to
+                                             // display
 
       initWidget(uiBinder.createAndBindUi(this));
 
@@ -181,43 +177,30 @@ public class AppView extends Composite implements AppPresenter.Display
 
    private final AnimationCallback callback = new AnimationCallback()
    {
-
       @Override
       public void onAnimationComplete()
       {
          notificationMessage.setText("");
-         showMessage = true;
-         // TODO show next message in queue?
       }
 
       @Override
       public void onLayout(Layer layer, double progress)
       {
       }
-
    };
 
-   public void setNotificationMessage(String var)
-   {
-      if (showMessage)
-      {
-         topPanel.forceLayout();
-         notificationMessage.setText(var);
-         showMessage = false;
-         topPanel.animate(NOTIFICATION_TIME, callback);
-      }
-      // TODO else show after callback (add to LIFO collection)
-   }
-
    @Override
-   public void setStatsVisible(boolean visible)
+   public void setNotificationMessage(String message)
    {
-      translationStatsBar.setVisible(visible);
+      topPanel.forceLayout();
+      notificationMessage.setText(message);
+      topPanel.animate(NOTIFICATION_TIME, callback);
    }
 
    @Override
    public void setStats(TranslationStats transStats)
    {
       translationStatsBar.setStats(transStats);
+      translationStatsBar.setVisible(true);
    }
 }
