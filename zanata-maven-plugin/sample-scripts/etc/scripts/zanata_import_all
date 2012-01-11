@@ -13,6 +13,6 @@ echo "Note: this script should only be run against a new, empty Zanata project v
 echo "Use the script zanata_import_source for normal updates."
 echo
 echo "Pushing to Zanata server."
-mvn zanata:publican-push -Dzanata.importPo -e
+mvn zanata:push -Dzanata.pushTrans -e
 
 echo "Finished!  You may want to check pot and locale dirs into version control to track the updated POT/PO files"

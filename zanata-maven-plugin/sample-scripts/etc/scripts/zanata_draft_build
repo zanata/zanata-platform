@@ -11,7 +11,7 @@ mkdir -p $draft_dir
 
 echo "Pulling latest translations from Zanata server"
 # write PO files to a different directory under target
-mvn zanata:publican-pull -e -Dzanata.dstDir=$draft_dir
+mvn zanata:pull -e -Dzanata.transDir=$draft_dir
 
 # draft build the translated documents
 # (alternative: run Ant from weld/build/dist)
