@@ -33,6 +33,27 @@
 		    page="#{projectAction.scrollerPage}" id="scroller" reRender="sc2" />
 	<rich:spacer height="15" />
         
+        <s:div styleClass="filter-options">
+            <h:selectBooleanCheckbox title="Filter Current projects" value="#{projectAction.showCurrent}">
+                <a4j:support event="onchange" reRender="main_content" />
+            </h:selectBooleanCheckbox>
+            <h:outputText value="#{messages['jsf.Current']}"/>
+            
+            <rich:spacer width="5" />
+            <h:selectBooleanCheckbox title="Filter Retired projects" value="#{projectAction.showRetired}">
+                <a4j:support event="onchange" reRender="main_content" />
+            </h:selectBooleanCheckbox>
+            <h:outputText value="#{messages['jsf.Retired']}"/>
+            
+            <rich:spacer width="5" />
+            <s:fragment rendered="#{projectAction.checkViewObsolete()}">
+	            <h:selectBooleanCheckbox title="Filter obsolete projects" value="#{projectAction.showObsolete}">
+	                <a4j:support event="onchange" reRender="main_content" />
+	            </h:selectBooleanCheckbox>
+                <h:outputText value="#{messages['jsf.Obsolete']}"/>
+            </s:fragment>
+        </s:div>
+        
         <rich:dataTable id="projectList" 
             rows="#{projectAction.pageSize}"
             value="#{projectAction.projectPagedListDataModel}" var="project">
@@ -43,12 +64,10 @@
                              view="/project/project.xhtml" rendered="#{project.status == 'Current'}"> 
                             <f:param name="slug" value="#{project.slug}"/>
                         </s:link>
-                        
                         <s:link id="retiredProject" styleClass="table_link retired_link" value="#{project.name}"  propagation="none"
                              view="/project/project.xhtml" rendered="#{project.status == 'Retired'}"> 
                             <f:param name="slug" value="#{project.slug}"/>
                         </s:link>
-                        
                         <s:link id="obsoleteProject" styleClass="table_link obsolete_link" value="#{project.name}"  propagation="none"
                              view="/project/project.xhtml" rendered="#{project.status == 'Obsolete'}"> 
                             <f:param name="slug" value="#{project.slug}"/>

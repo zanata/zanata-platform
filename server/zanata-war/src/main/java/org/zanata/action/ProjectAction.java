@@ -41,8 +41,8 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
-   private ProjectPagedListDataModel filteredProjectPagedListDataModel = new ProjectPagedListDataModel(true);
-   private ProjectPagedListDataModel projectPagedListDataModel = new ProjectPagedListDataModel(false);
+   private ProjectPagedListDataModel filteredProjectPagedListDataModel = new ProjectPagedListDataModel("obsolete");
+   private ProjectPagedListDataModel projectPagedListDataModel = new ProjectPagedListDataModel(null);
 
    private int scrollerPage = 1;
 
@@ -54,12 +54,16 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    @In
    Identity identity;
+   
+   private boolean showObsolete = false;
+   private boolean showCurrent = true;
+   private boolean showRetired = true;
 
    private HProject securedEntity = null;
 
    public boolean getEmpty()
    {
-      if (checkViewObsolete())
+      if (checkViewObsolete() && showObsolete)
       {
          return projectDAO.getProjectSize() == 0;
       }
@@ -71,7 +75,7 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    public int getPageSize()
    {
-      if (checkViewObsolete())
+      if (checkViewObsolete() && showObsolete)
       {
          return projectPagedListDataModel.getPageSize();
       }
@@ -93,7 +97,7 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    public DataModel getProjectPagedListDataModel()
    {
-      if (checkViewObsolete())
+      if (checkViewObsolete() && showObsolete)
       {
          return projectPagedListDataModel;
       }
@@ -118,6 +122,36 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
    public boolean checkViewObsolete()
    {
       return identity != null && identity.hasPermission("HProject", "view-obsolete", null);
+   }
+   
+   public boolean isShowObsolete()
+   {
+      return showObsolete;
+   }
+   
+   public void setShowObsolete(boolean showObsolete)
+   {
+      this.showObsolete = showObsolete;
+   }
+
+   public boolean isShowCurrent()
+   {
+      return showCurrent;
+   }
+
+   public void setShowCurrent(boolean showCurrent)
+   {
+      this.showCurrent = showCurrent;
+   }
+
+   public boolean isShowRetired()
+   {
+      return showRetired;
+   }
+
+   public void setShowRetired(boolean showRetired)
+   {
+      this.showRetired = showRetired;
    }
 
 }
