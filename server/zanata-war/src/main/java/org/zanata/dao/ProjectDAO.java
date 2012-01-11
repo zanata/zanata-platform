@@ -2,9 +2,6 @@ package org.zanata.dao;
 
 import java.util.List;
 
-import javax.persistence.NoResultException;
-
-import org.hibernate.NonUniqueResultException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
@@ -48,31 +45,59 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<HProject> getOffsetListByCreateDate(int offset, int count)
+   public List<HProject> getOffsetListByCreateDate(int offset, int count, boolean filterCurrent, boolean filterRetired, boolean filterObsolete)
    {
-      return getSession().createCriteria(HProject.class).addOrder(Order.desc(ORDERBY_TIMESTAMP)).setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getAllProjectOffsetListByCreateDate").list();
-   }
-
-   @SuppressWarnings("unchecked")
-   public List<HProject> getFilteredOffsetListByCreateDate(int offset, int count)
-   {
-      return getSession().createCriteria(HProject.class).addOrder(Order.desc(ORDERBY_TIMESTAMP)).add(Restrictions.ne("status", StatusType.Obsolete)).setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getOffsetListByCreateDate").list();
-   }
-
-   public int getFilteredProjectSize()
-   {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HProject as p where p.status <> :status").setParameter("status", StatusType.Obsolete).uniqueResult();
-      if (totalCount == null)
-         return 0;
-      return totalCount.intValue();
+      if (!filterCurrent && !filterRetired && !filterObsolete) // all records
+      {
+         return getSession().createCriteria(HProject.class).addOrder(Order.desc(ORDERBY_TIMESTAMP)).setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getAllProjectOffsetListByCreateDate").list();
+      }
+      
+      String condition = constructFilterCondition(filterCurrent, filterRetired, filterObsolete);
+      return getSession().createQuery("from HProject p " + condition + "order by p.creationDate").setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getAllProjectOffsetListByCreateDate").list();
    }
 
    public int getProjectSize()
    {
       Long totalCount = (Long) getSession().createQuery("select count(*) from HProject").uniqueResult();
+
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
+   }
+
+   private String constructFilterCondition(boolean filterCurrent, boolean filterRetired, boolean filterObsolete)
+   {
+      StringBuilder condition = new StringBuilder();
+      if (filterCurrent || filterRetired || filterObsolete)
+      {
+         condition.append("where ");
+      }
+
+      if (filterCurrent)
+      {
+         condition.append("p.status <> '" + StatusType.Current + "' ");
+      }
+
+      if (filterRetired)
+      {
+         if (filterCurrent)
+         {
+            condition.append("and ");
+         }
+
+         condition.append("p.status <> '" + StatusType.Retired + "' ");
+      }
+
+      if (filterObsolete)
+      {
+         if (filterCurrent || filterRetired)
+         {
+            condition.append("and ");
+         }
+
+         condition.append("p.status <> '" + StatusType.Obsolete + "' ");
+      }
+      return condition.toString();
    }
 
    @SuppressWarnings("unchecked")

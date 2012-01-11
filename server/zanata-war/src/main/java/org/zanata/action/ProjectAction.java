@@ -41,8 +41,13 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
-   private ProjectPagedListDataModel filteredProjectPagedListDataModel = new ProjectPagedListDataModel("obsolete");
-   private ProjectPagedListDataModel projectPagedListDataModel = new ProjectPagedListDataModel(null);
+   private boolean showCurrent = true;
+   private boolean showRetired = true;
+   private boolean showObsolete = false;
+
+   private HProject securedEntity = null;
+
+   private ProjectPagedListDataModel projectPagedListDataModel = new ProjectPagedListDataModel(!showCurrent, !showRetired, !showObsolete);
 
    private int scrollerPage = 1;
 
@@ -54,35 +59,17 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    @In
    Identity identity;
-   
-   private boolean showObsolete = false;
-   private boolean showCurrent = true;
-   private boolean showRetired = true;
 
-   private HProject securedEntity = null;
+
 
    public boolean getEmpty()
    {
-      if (checkViewObsolete() && showObsolete)
-      {
-         return projectDAO.getProjectSize() == 0;
-      }
-      else
-      {
-         return projectDAO.getFilteredProjectSize() == 0;
-      }
+      return projectDAO.getProjectSize() == 0;
    }
 
    public int getPageSize()
    {
-      if (checkViewObsolete() && showObsolete)
-      {
-         return projectPagedListDataModel.getPageSize();
-      }
-      else
-      {
-         return filteredProjectPagedListDataModel.getPageSize();
-      }
+      return projectPagedListDataModel.getPageSize();
    }
 
    public int getScrollerPage()
@@ -97,14 +84,7 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    public DataModel getProjectPagedListDataModel()
    {
-      if (checkViewObsolete() && showObsolete)
-      {
-         return projectPagedListDataModel;
-      }
-      else
-      {
-         return filteredProjectPagedListDataModel;
-      }
+      return projectPagedListDataModel;
    }
 
    @Override
@@ -123,14 +103,15 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
    {
       return identity != null && identity.hasPermission("HProject", "view-obsolete", null);
    }
-   
+
    public boolean isShowObsolete()
    {
       return showObsolete;
    }
-   
+
    public void setShowObsolete(boolean showObsolete)
    {
+      projectPagedListDataModel.setFilterObsolete(!showObsolete);
       this.showObsolete = showObsolete;
    }
 
@@ -141,6 +122,7 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    public void setShowCurrent(boolean showCurrent)
    {
+      projectPagedListDataModel.setFilterCurrent(!showCurrent);
       this.showCurrent = showCurrent;
    }
 
@@ -151,6 +133,7 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    public void setShowRetired(boolean showRetired)
    {
+      projectPagedListDataModel.setFilterRetired(!showRetired);
       this.showRetired = showRetired;
    }
 
