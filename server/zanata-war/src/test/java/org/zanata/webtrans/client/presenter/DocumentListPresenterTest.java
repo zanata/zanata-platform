@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.presenter;
 import static org.easymock.EasyMock.and;
 import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
@@ -12,10 +13,11 @@ import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isIn;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,15 +29,20 @@ import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.easymock.Capture;
+import org.easymock.CaptureType;
 import org.easymock.IAnswer;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
+import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
@@ -45,6 +52,8 @@ import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
+import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
@@ -99,6 +108,7 @@ public class DocumentListPresenterTest
    private Capture<SelectionHandler<DocumentInfo>> capturedDocumentSelectionHandler;
    private Capture<GetDocumentList> capturedDocListRequest;
    private Capture<AsyncCallback<GetDocumentListResult>> capturedDocListRequestCallback;
+   private Capture<TransUnitUpdatedEventHandler> capturedTransUnitUpdatedEventHandler;
    private Capture<GwtEvent> capturedEventBusEvent;
 
    private Capture<Integer> capturedPageSize;
@@ -248,6 +258,81 @@ public class DocumentListPresenterTest
       assertThat("approved word count", projectStats.getWordCount().getApproved(), is(12));
       assertThat("needs review word count", projectStats.getWordCount().getNeedReview(), is(15));
       assertThat("untranslated word count", projectStats.getWordCount().getUntranslated(), is(18));
+   }
+
+   @Test
+   public void generatesDocumentStatsOnTuUpdate()
+   {
+      setupAndBindDocListPresenter();
+
+      // simulate TU updated in second document
+      TransUnitUpdatedEvent mockEvent = createMock(TransUnitUpdatedEvent.class);
+      expect(mockEvent.getDocumentId()).andReturn(new DocumentId(2222L)).anyTimes();
+      expect(mockEvent.getPreviousStatus()).andReturn(ContentState.NeedReview).anyTimes();
+      expect(mockEvent.getWordCount()).andReturn(3).anyTimes();
+      TransUnit newTransUnit = new TransUnit(new TransUnitId(12345L), "resId", new LocaleId("es"), "this is the source", "this is the source comment", "this is the target", ContentState.Approved, "lastModifiedBy", "lastModifiedTime", "msgContext");
+      expect(mockEvent.getTransUnit()).andReturn(newTransUnit).anyTimes();
+      replay(mockEvent);
+      capturedTransUnitUpdatedEventHandler.getValue().onTransUnitUpdated(mockEvent);
+
+      DocumentStatsUpdatedEvent docStatsEvent = null;
+      for (GwtEvent event : capturedEventBusEvent.getValues())
+         if (event.getAssociatedType().equals(DocumentStatsUpdatedEvent.getType()))
+            docStatsEvent = (DocumentStatsUpdatedEvent) event;
+
+      assertThat("a document stats event should be fired when a TU update event occurs, not found", docStatsEvent, notNullValue());
+
+      // document stats
+      assertThat("document id in document stats event shoudl match updated TU document id", docStatsEvent.getDocId(), equalTo(new DocumentId(2222L)));
+
+      // check actual counts (approved/fuzzy/untranslated)
+      // default TUs: 1/2/3
+      // approving 1 fuzzy, expect 2/1/3
+      assertThat("document Approved TU count should increase by 1 when a TU is updated from NeedsReview to Approved", docStatsEvent.getNewStats().getUnitCount().getApproved(), is(2));
+      assertThat("document NeedsReview TU count should decrease by 1 when a TU is updated from NeedsReview to Approved", docStatsEvent.getNewStats().getUnitCount().getNeedReview(), is(1));
+      assertThat("document Untranslated TU count should remain the same when a TU is updated from NeedsReview to Approved", docStatsEvent.getNewStats().getUnitCount().getUntranslated(), is(3));
+
+      // default words: 4/5/6
+      // approving 3 fuzzy so expect 7/2/6
+      assertThat("document Approved words should increase when TU changes to Approved", docStatsEvent.getNewStats().getWordCount().getApproved(), is(7));
+      assertThat("document NeedsReview words should decrease when a TU changes from NeedsReview", docStatsEvent.getNewStats().getWordCount().getNeedReview(), is(2));
+      assertThat("document Untranslated words should not change when TU changes between NeedsReview and Approved", docStatsEvent.getNewStats().getWordCount().getNeedReview(), is(2));
+   }
+
+   @Test
+   public void generatesProjectStatsOnTuUpdate()
+   {
+      setupAndBindDocListPresenter();
+
+      // simulate TU updated in second document
+      TransUnitUpdatedEvent mockEvent = createMock(TransUnitUpdatedEvent.class);
+      expect(mockEvent.getDocumentId()).andReturn(new DocumentId(2222L)).anyTimes();
+      expect(mockEvent.getPreviousStatus()).andReturn(ContentState.NeedReview).anyTimes();
+      expect(mockEvent.getWordCount()).andReturn(3).anyTimes();
+      TransUnit newTransUnit = new TransUnit(new TransUnitId(12345L), "resId", new LocaleId("es"), "this is the source", "this is the source comment", "this is the target", ContentState.Approved, "lastModifiedBy", "lastModifiedTime", "msgContext");
+      expect(mockEvent.getTransUnit()).andReturn(newTransUnit).anyTimes();
+      replay(mockEvent);
+      capturedTransUnitUpdatedEventHandler.getValue().onTransUnitUpdated(mockEvent);
+
+      ProjectStatsUpdatedEvent projectStatsEvent = null;
+
+      for (GwtEvent event : capturedEventBusEvent.getValues())
+         if (event.getAssociatedType().equals(ProjectStatsUpdatedEvent.getType()))
+            projectStatsEvent = (ProjectStatsUpdatedEvent) event;
+
+      assertThat("a project stats event should be fired when a TU update event occurs, not found", projectStatsEvent, notNullValue());
+
+      // default TUs: 3/6/9 (approved/fuzzy/untranslated)
+      // approving 1 fuzzy, expect 4/5/9
+      assertThat("project Approved TU count should increase by 1 when a TU changes to Approved status", projectStatsEvent.getProjectStats().getUnitCount().getApproved(), is(4));
+      assertThat("project NeedsReview TU count should decrease by 1 when a TU changes from Approved status", projectStatsEvent.getProjectStats().getUnitCount().getNeedReview(), is(5));
+      assertThat("project Untranslates TU count should not change when TU changes between NeedsReview and Approved", projectStatsEvent.getProjectStats().getUnitCount().getUntranslated(), is(9));
+
+      // default words: 12/15/18
+      // approving 3 fuzzy, expect 15/12/18
+      assertThat("project Approved words should increase when TU changes to Approved", projectStatsEvent.getProjectStats().getWordCount().getApproved(), is(15));
+      assertThat("project NeedsReview words should decrease when a TU changes from NeedsReview", projectStatsEvent.getProjectStats().getWordCount().getNeedReview(), is(12));
+      assertThat("project Untranslated words should not change when TU changes between NeedsReview and Approved", projectStatsEvent.getProjectStats().getWordCount().getUntranslated(), is(18));
    }
 
    @Test
@@ -603,10 +688,13 @@ public class DocumentListPresenterTest
    @SuppressWarnings("unchecked")
    private void setupMockEventBus(boolean expectAllEvents)
    {
+      capturedTransUnitUpdatedEventHandler = new Capture<TransUnitUpdatedEventHandler>();
+      expect(mockEventBus.addHandler(eq(TransUnitUpdatedEvent.getType()), and(capture(capturedTransUnitUpdatedEventHandler), isA(TransUnitUpdatedEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
       expect(mockEventBus.addHandler((GwtEvent.Type<EventHandler>) notNull(), (EventHandler) notNull())).andReturn(createMock(HandlerRegistration.class)).anyTimes();
 
-      capturedEventBusEvent = new Capture<GwtEvent>();
+      capturedEventBusEvent = new Capture<GwtEvent>(CaptureType.ALL);
       mockEventBus.fireEvent(and(capture(capturedEventBusEvent), isA(GwtEvent.class)));
+      expectLastCall().anyTimes();
    }
 
    @SuppressWarnings("unchecked")
@@ -615,7 +703,6 @@ public class DocumentListPresenterTest
       capturedDocListRequest = new Capture<GetDocumentList>();
       capturedDocListRequestCallback = new Capture<AsyncCallback<GetDocumentListResult>>();
       mockDispatcher.execute(and(capture(capturedDocListRequest), isA(Action.class)), and(capture(capturedDocListRequestCallback), isA(AsyncCallback.class)));
-      // expectLastCall().andAnswer(new DoclistSuccessAnswer(docListToReturn));
       expectLastCall().andAnswer(docListRequestAnswer);
    }
 

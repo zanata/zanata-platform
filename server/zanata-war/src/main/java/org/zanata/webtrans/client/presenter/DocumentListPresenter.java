@@ -255,13 +255,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             // update stats for containing document
             DocumentInfo updatedDoc = getDocumentInfo(event.getDocumentId());
             adjustStats(updatedDoc.getStats(), event);
-            // TODO test for this
             eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), updatedDoc.getStats()));
 
             // refresh document list table
             dataProvider.refresh();
 
-            // TODO test for this
             // update project stats, forward to AppPresenter
             adjustStats(projectStats, event);
             eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
@@ -350,7 +348,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    @Override
    public void onRevealDisplay()
    {
-      // TODO Auto-generated method stub
+      // Auto-generated method stub
    }
 
    private void loadDocumentList()
