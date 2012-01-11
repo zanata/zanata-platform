@@ -63,17 +63,11 @@ public class AppView extends Composite implements AppPresenter.Display
    @UiField(provided = true)
    TransUnitCountBar translationStatsBar;
 
-   private final TranslationStats documentStats, projectStats;
-   private StatsType showingStats;
-
    @UiField
-   Label notificationMessage;
+   Label notificationMessage, user;
 
    @UiField
    SpanElement selectedDocumentSpan, selectedDocumentPathSpan;
-
-   @UiField
-   Label user;
 
    @UiField
    LayoutPanel container, topPanel;
@@ -81,31 +75,25 @@ public class AppView extends Composite implements AppPresenter.Display
    @UiField(provided = true)
    final Resources resources;
 
+   // TODO may be able to make these provided=true widgets
    private Widget documentListView;
-
    private Widget translationView;
 
-   final WebTransMessages messages;
-
+   // TODO the way this is used, notifications will not be shown if they occur
+   // while another message is being shown. Should use a queue or similar to
+   // allow all messages to be visible.
    private boolean showMessage = true;
-
-   private MainView currentView;
 
    @Inject
    public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, TranslationPresenter.Display translationView)
    {
       this.resources = resources;
-      this.messages = messages;
 
       StyleInjector.inject(resources.style().getText(), true);
 
       // this must be initialized before uiBinder.createAndBindUi(), or an
       // exception will be thrown at runtime
       translationStatsBar = new TransUnitCountBar(messages, true);
-
-      documentStats = new TranslationStats();
-      projectStats = new TranslationStats();
-      showingStats = StatsType.Project;
       setStatsVisible(false); // hide until there is a value to display
 
       initWidget(uiBinder.createAndBindUi(this));
@@ -136,16 +124,10 @@ public class AppView extends Composite implements AppPresenter.Display
       case Documents:
          container.setWidgetTopBottom(documentListView, 0, Unit.PX, 0, Unit.PX);
          container.setWidgetTopHeight(translationView, 0, Unit.PX, 0, Unit.PX);
-         showStats(StatsType.Project);
-         setStatsVisible(true);
-         currentView = MainView.Documents;
          break;
       case Editor:
          container.setWidgetTopBottom(translationView, 0, Unit.PX, 0, Unit.PX);
          container.setWidgetTopHeight(documentListView, 0, Unit.PX, 0, Unit.PX);
-         showStats(StatsType.Document);
-         setStatsVisible(true);
-         currentView = MainView.Editor;
          break;
       }
    }
@@ -205,6 +187,7 @@ public class AppView extends Composite implements AppPresenter.Display
       {
          notificationMessage.setText("");
          showMessage = true;
+         // TODO show next message in queue?
       }
 
       @Override
@@ -223,12 +206,7 @@ public class AppView extends Composite implements AppPresenter.Display
          showMessage = false;
          topPanel.animate(NOTIFICATION_TIME, callback);
       }
-   }
-
-   @Override
-   public MainView getCurrentView()
-   {
-      return currentView;
+      // TODO else show after callback (add to LIFO collection)
    }
 
    @Override
@@ -238,40 +216,8 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public void setStats(StatsType statsFor, TranslationStats transStats)
+   public void setStats(TranslationStats transStats)
    {
-      switch (statsFor)
-      {
-      case Document:
-         documentStats.set(transStats);
-         break;
-      case Project:
-         projectStats.set(transStats);
-         break;
-      }
-      updateStatsDisplay();
-   }
-
-   @Override
-   public void showStats(StatsType whichStats)
-   {
-      showingStats = whichStats;
-      updateStatsDisplay();
-   }
-
-   /**
-    * @param whichStats the stats type being displayed
-    */
-   private void updateStatsDisplay()
-   {
-      switch (showingStats)
-      {
-      case Document:
-         translationStatsBar.setStats(documentStats);
-         break;
-      case Project:
-         translationStatsBar.setStats(projectStats);
-         break;
-      }
+      translationStatsBar.setStats(transStats);
    }
 }

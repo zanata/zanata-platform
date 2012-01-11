@@ -30,13 +30,16 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.common.TransUnitCount;
+import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.editor.filter.ContentFilter;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
+import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
-import org.zanata.webtrans.client.events.ProjectStatsRetrievedEvent;
+import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.history.History;
@@ -103,6 +106,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
    // used to determine whether to re-run filter
    private HistoryToken currentHistoryState = null;
+   
+   private TranslationStats projectStats;
 
    private static final String PRE_FILTER_QUERY_PARAMETER_KEY = "doc";
 
@@ -247,10 +252,33 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          @Override
          public void onTransUnitUpdated(TransUnitUpdatedEvent event)
          {
-            DocumentId docId = event.getDocumentId();
-            TransUnitUpdatedEventHandler handler = nodes.get(docId);
-            if (handler != null)
-               handler.onTransUnitUpdated(event);
+            // update stats for containing document
+            DocumentInfo updatedDoc = getDocumentInfo(event.getDocumentId());
+            adjustStats(updatedDoc.getStats(), event);
+            // TODO test for this
+            eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), updatedDoc.getStats()));
+
+            // refresh document list table
+            dataProvider.refresh();
+
+            // TODO test for this
+            // update project stats, forward to AppPresenter
+            adjustStats(projectStats, event);
+            eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
+         }
+
+         /**
+          * @param stats the stats object to update
+          * @param event event describing the change in translations
+          */
+         private void adjustStats(TranslationStats stats, TransUnitUpdatedEvent event)
+         {
+            TransUnitCount unitCount = stats.getUnitCount();
+            TransUnitWords wordCount = stats.getWordCount();
+            unitCount.decrement(event.getPreviousStatus());
+            unitCount.increment(event.getTransUnit().getStatus());
+            wordCount.decrement(event.getPreviousStatus(), event.getWordCount());
+            wordCount.increment(event.getTransUnit().getStatus(), event.getWordCount());
          }
       }));
 
@@ -356,15 +384,14 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
             history.fireCurrentHistoryState();
 
-            TranslationStats projectStats = new TranslationStats(); // projStats
-                                                                    // = 0
+            projectStats = new TranslationStats(); // = 0
             for (DocumentInfo doc : documents)
             {
                projectStats.add(doc.getStats());
             }
 
             // re-use these stats for the project stats
-            eventBus.fireEvent(new ProjectStatsRetrievedEvent(projectStats));
+            eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
             Log.info("Time to calculate project stats: " + String.valueOf(System.currentTimeMillis() - start));
          }
       });
@@ -381,7 +408,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       {
          Log.info("Loading document: " + ++counter + " ");
          idsByPath.put(doc.getPath() + doc.getName(), doc.getId());
-         DocumentNode node = new DocumentNode(messages, doc, eventBus, dataProvider);
+         DocumentNode node = new DocumentNode(messages, doc, eventBus);
          if (filter != null)
          {
             node.setVisible(filter.accept(doc));

@@ -35,7 +35,7 @@ import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.events.ProjectStatsRetrievedEvent;
+import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
@@ -237,8 +237,8 @@ public class DocumentListPresenterTest
    {
       setupAndBindDocListPresenter();
       verifyAllMocks();
-      assertThat("when document list is retrieved, project stats should be sent with a ProjectStatsRetrievedEvent", capturedEventBusEvent.getValue().getAssociatedType(), is((Type) ProjectStatsRetrievedEvent.getType()));
-      TranslationStats projectStats = ((ProjectStatsRetrievedEvent) capturedEventBusEvent.getValue()).getProjectStats();
+      assertThat("when document list is retrieved, project stats should be sent with a ProjectStatsRetrievedEvent", capturedEventBusEvent.getValue().getAssociatedType(), is((Type) ProjectStatsUpdatedEvent.getType()));
+      TranslationStats projectStats = ((ProjectStatsUpdatedEvent) capturedEventBusEvent.getValue()).getProjectStats();
 
       // sample doc stats set to 1, 2, 3, 4, 5, 6 for the following.
       // multiplied by 3 for 3 sample documents.
