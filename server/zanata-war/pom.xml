@@ -1180,13 +1180,13 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.google.code.gwt-log</groupId>
+			<groupId>com.allen-sauer.gwt.log</groupId>
 			<artifactId>gwt-log</artifactId>
-			<version>3.1.2</version>
+			<version>3.1.7</version>
 		</dependency>
 
 		<dependency>
-			<groupId>com.google.code.gwteventservice</groupId>
+			<groupId>de.novanic.gwteventservice</groupId>
 			<artifactId>gwteventservice</artifactId>
 		</dependency>
 
