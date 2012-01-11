@@ -152,8 +152,8 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    @Override
    public void stopProcessing()
    {
-      loadingPanel.hide();
       setVisible(true);
+      loadingPanel.hide();
    }
 
    @Override

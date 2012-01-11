@@ -334,7 +334,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                // Clear the cache
                clearCacheList();
 
-               if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
+               if (curPage == display.getCurrentPage() && selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
                {
                   Log.info("selected TU updated; clear selection");
                   display.getTargetCellEditor().cancelEdit();
@@ -345,9 +345,19 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                // - add TU index to model
                if (rowOffset != null)
                {
-                  final int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
+                  int row;
+                  if (curPage != display.getCurrentPage())
+                  {
+                     row = curPage * display.getPageSize() + rowOffset;
+                  }
+                  else
+                  {
+                     row = display.getCurrentPage() * display.getPageSize() + rowOffset;
+                  }
+
                   Log.info("row calculated as " + row);
                   display.getTableModel().setRowValueOverride(row, event.getTransUnit());
+
                   if (inProcessing != null)
                   {
                      if (inProcessing.getAction().getTransUnitId().equals(event.getTransUnit().getId()))
@@ -388,7 +398,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                   }
                }
 
-               if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
+               if (curPage == display.getCurrentPage() && selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
                {
                   tableModelHandler.gotoRow(curRowIndex);
                }
