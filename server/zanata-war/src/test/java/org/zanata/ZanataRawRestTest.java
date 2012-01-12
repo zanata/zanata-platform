@@ -29,7 +29,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
 import org.jboss.seam.mock.ResourceRequestEnvironment;
 import org.testng.Assert;
@@ -104,6 +110,46 @@ public abstract class ZanataRawRestTest extends ZanataDBUnitSeamTest
       {
          throw new AssertionError(e);
       }      
+   }
+   
+   protected static void assertJaxbUnmarshal( EnhancedMockHttpServletResponse response, Class<?> jaxbType )
+   {
+      JAXBContext jc;
+      try
+      {
+         jc = JAXBContext.newInstance(jaxbType);
+         Unmarshaller um = jc.createUnmarshaller();
+         um.unmarshal( new StringReader(response.getContentAsString()) );
+      }
+      catch (JAXBException e)
+      {
+         throw new AssertionError(e);
+      }
+   }
+   
+   protected static void assertJsonUnmarshal( EnhancedMockHttpServletResponse response, Class<?> jsonType )
+   {
+      ObjectMapper mapper = new ObjectMapper();
+      try
+      {
+         mapper.readValue( response.getContentAsString(), jsonType);
+      }
+      catch (JsonParseException e)
+      {
+         throw new AssertionError(e);
+      }
+      catch (JsonMappingException e)
+      {
+         throw new AssertionError(e);
+      }
+      catch (IllegalStateException e)
+      {
+         throw new AssertionError(e);
+      }
+      catch (IOException e)
+      {
+         throw new AssertionError(e);
+      }
    }
    
    protected static void assertHeaderPresent(HttpServletResponse response, String headerName)

@@ -45,6 +45,7 @@
      			<class name="org.zanata.rest.service.raw.ProjectIterationRestTest"/>
      			<class name="org.zanata.rest.service.raw.ProjectRestTest"/>
      			<class name="org.zanata.rest.service.raw.FileRestTest"/>
+     			<class name="org.zanata.rest.service.raw.VersionRestTest"/>
      		</classes>
      	</test>
 </suite>
