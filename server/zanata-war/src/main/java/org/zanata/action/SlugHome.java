@@ -20,10 +20,16 @@
  */
 package org.zanata.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.faces.model.SelectItem;
+
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.security.Identity;
+import org.zanata.model.type.StatusType;
 import org.zanata.security.SecurityChecker;
 
 /**
@@ -35,6 +41,8 @@ public abstract class SlugHome<E> extends EntityHome<E> implements SecurityCheck
 {
 
    private static final long serialVersionUID = 1L;
+
+   private List<SelectItem> statusList = new ArrayList<SelectItem>();
 
    @SuppressWarnings("unchecked")
    @Override
@@ -56,6 +64,31 @@ public abstract class SlugHome<E> extends EntityHome<E> implements SecurityCheck
    public boolean checkPermission(String operation)
    {
       return Identity.instance() != null && Identity.instance().hasPermission(this.getInstance(), operation);
+   }
+
+   public List<SelectItem> getStatusList()
+   {
+      if (statusList.isEmpty())
+      {
+         for (StatusType status : StatusType.values())
+         {
+            if (status == StatusType.Obsolete)
+            {
+               if (checkPermission("mark-obsolete"))
+               {
+                  SelectItem option = new SelectItem(status, status.name());
+                  statusList.add(option);
+               }
+            }
+            else
+            {
+               // no restriction on other status
+               SelectItem option = new SelectItem(status, status.name());
+               statusList.add(option);
+            }
+         }
+      }
+      return statusList;
    }
 
 }

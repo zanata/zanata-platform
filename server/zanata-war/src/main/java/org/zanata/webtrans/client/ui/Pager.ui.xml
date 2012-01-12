@@ -20,31 +20,57 @@
 		}
 		
 		.inline-label {
-			display: inline;
+			margin-top:1px;
+			margin-right:3px;
+			margin-left:2px;
+			
 		}
 		
 		.link {
 			cursor: pointer;
+			margin-right:5px;
 		}
+		
+		 .nav-button {
+           width:16px;
+           height:10px;
+           border-radius:3px;   
+           margin-right:3px;
+           border-style:solid;
+           outline:none;
+        }
+        
+        .nav-button img {
+	       padding-bottom:2px;
+	
+        }
+        
+        .rootContainer {
+	       margin:auto;
+	       padding-top:5px;
+        }
+        
+        .textBox {
+	       border:1px inset #CCC;
+	       outline:none;
+	       border-radius:3px;
+	       width:40px;
+	       height:14px;
+        }
+        
 		
 	</ui:style>
 	
-	<g:HTMLPanel>
+	<g:HorizontalPanel styleName="{style.rootContainer}">
+		  
+		<g:PushButton ui:field="firstPage" addStyleNames="{style.nav-button}"/>
+		<g:PushButton ui:field="prevPage" addStyleNames="{style.nav-button}"/>
+		  
+		<g:TextBox ui:field="gotoPage" maxLength="8" styleName="{style.textBox}" />
+		<g:Label ui:field="pageCountLabel" styleName="{style.inline-label}">of 0</g:Label>
 		
-           <g:Image ui:field="firstPage" resource="{resources.firstPageImage}" visible="false" styleName="{style.link}" />
-			<g:Image ui:field="firstPageDisabled" resource="{resources.firstPageDisabledImage}" visible="false" />
-			
-            <g:Image ui:field="prevPage" resource="{resources.prevPageImage}" visible="false" styleName="{style.link}" />
-           <g:Image ui:field="prevPageDisabled" resource="{resources.prevPageDisabledImage}" visible="false" />
-			
-			<g:TextBox ui:field="gotoPage" maxLength="8" width="40px" />
-			<g:Label ui:field="pageCountLabel" styleName="{style.inline-label}">of 0</g:Label>
+		<g:PushButton ui:field="nextPage" addStyleNames="{style.nav-button}"/>
+        <g:PushButton ui:field="lastPage" addStyleNames="{style.nav-button}"/>
 		
-           <g:Image ui:field="nextPage" resource="{resources.nextPageImage}" visible="false" styleName="{style.link}" />
-           <g:Image ui:field="nextPageDisabled" resource="{resources.nextPageDisabledImage}" visible="false" />
-
-           <g:Image ui:field="lastPage" resource="{resources.lastPageImage}" visible="false" styleName="{style.link}" />
-           <g:Image ui:field="lastPageDisabled" resource="{resources.lastPageDisabledImage}" visible="false" />
-		
-	</g:HTMLPanel>
+	</g:HorizontalPanel>
 </ui:UiBinder>

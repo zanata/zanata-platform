@@ -13,7 +13,7 @@ public class Identity implements Serializable
 
    private SessionId sessionId;
    private HashSet<Permission> permissions = new HashSet<Permission>();
-   private HashSet<Role> roles = new HashSet<Role>();
+   private HashSet<String> roles = new HashSet<String>();
    private Person person;
 
    @SuppressWarnings("unused")
@@ -21,7 +21,7 @@ public class Identity implements Serializable
    {
    }
 
-   public Identity(SessionId sessionId, Person person, HashSet<Permission> permissions, HashSet<Role> roles)
+   public Identity(SessionId sessionId, Person person, HashSet<Permission> permissions, HashSet<String> roles)
    {
       this.sessionId = sessionId;
       this.person = person;
@@ -30,7 +30,7 @@ public class Identity implements Serializable
 
    }
 
-   public boolean hasRole(Role role)
+   public boolean hasRole(String role)
    {
       return roles.contains(role);
    }

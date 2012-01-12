@@ -41,13 +41,15 @@
             <p>#{messages['jsf.YourCurrentApiKeyIs']}
               <code class="bold-larger">#{personHome.instance.account.apiKey}</code> 
             </p>
-            <div class="code">
+          </s:fragment>
+          
+          <h2>#{messages['jsf.ConfigurationForZanataini']}</h2>
+          <div class="code">
                 <div>[servers]</div>
                 <div>#{personHome.urlKeyLabel}#{personHome.host}</div>
                 <div>#{personHome.usernameKeyLabel}#{personHome.instance.account.username}</div>
                 <div>#{personHome.apiKeyLabel}#{personHome.instance.account.apiKey}</div>
             </div>
-          </s:fragment>
         </h:form>
         <br/>
         <h2>#{messages['jsf.MaintainedProjects']}</h2>

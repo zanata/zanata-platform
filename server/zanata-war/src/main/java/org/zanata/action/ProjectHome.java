@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.faces.event.ValueChangeEvent;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 
 import org.hibernate.Session;
@@ -36,12 +37,15 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.type.StatusType;
 import org.zanata.service.LocaleService;
 
 @Name("projectHome")
@@ -50,17 +54,27 @@ public class ProjectHome extends SlugHome<HIterationProject>
    private static final long serialVersionUID = 1L;
 
    private String slug;
+
+   @In
+   Identity identity;
+
    @Logger
    Log log;
 
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
+
    @In(required = false)
    Map<String, String> customizedItems;
+
    @In(required = false)
    private Boolean overrideLocales;
+
    @In
    LocaleService localeServiceImpl;
+
+   @In(create = true)
+   ProjectDAO projectDAO;
 
    @Override
    protected HIterationProject loadInstance()
@@ -71,9 +85,14 @@ public class ProjectHome extends SlugHome<HIterationProject>
 
    public void validateSuppliedId()
    {
-      getInstance(); // this will raise an EntityNotFound exception
+      HIterationProject ip = getInstance(); // this will raise an EntityNotFound exception
       // when id is invalid and conversation will not
       // start
+      
+      if (ip.getStatus().equals(StatusType.Obsolete) && !checkViewObsolete())
+      {
+         throw new EntityNotFoundException();
+      }
    }
 
    public void verifySlugAvailable(ValueChangeEvent e)
@@ -128,22 +147,19 @@ public class ProjectHome extends SlugHome<HIterationProject>
       return retValue;
    }
 
-   @SuppressWarnings("unchecked")
-   public List<HProjectIteration> getActiveIterations()
+   public List<HProjectIteration> getCurrentIterations()
    {
-      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.active = true and t.obsolete = false").setParameter("projectSlug", slug).getResultList();
+      return projectDAO.getCurrentIterations(slug);
    }
 
-   @SuppressWarnings("unchecked")
    public List<HProjectIteration> getRetiredIterations()
    {
-      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.active = false and t.obsolete = false").setParameter("projectSlug", slug).getResultList();
+      return projectDAO.getRetiredIterations(slug);
    }
 
-   @SuppressWarnings("unchecked")
    public List<HProjectIteration> getObsoleteIterations()
    {
-      return getEntityManager().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.obsolete = true").setParameter("projectSlug", slug).getResultList();
+      return projectDAO.getObsoleteIterations(slug);
    }
 
    public String cancel()
@@ -202,5 +218,10 @@ public class ProjectHome extends SlugHome<HIterationProject>
             getInstance().getCustomizedLocales().addAll(locale);
          }
       }
+   }
+
+   public boolean checkViewObsolete()
+   {
+      return identity != null && identity.hasPermission("HProject", "view-obsolete", null);
    }
 }

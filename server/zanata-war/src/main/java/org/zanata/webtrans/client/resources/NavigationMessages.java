@@ -80,9 +80,6 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Cancel")
    String editCancelShortcut();
 
-   @DefaultMessage("Configure key/button behaviour")
-   String configurationButton();
-
    // @DefaultMessage("Copy")
    // String editClone();
 
@@ -117,4 +114,16 @@ public interface NavigationMessages extends Messages
 
    @DefaultMessage("Click here to start translating")
    String clickHere();
+
+   @DefaultMessage("Click here for more info")
+   String clickHereForMoreInfo();
+
+   @DefaultMessage("Run Validation")
+   String runValidation();
+
+   @DefaultMessage("Translation Unit Details")
+   String transUnitDetailsHeading();
+
+   @DefaultMessage("Validation Message")
+   String validationMessageHeading();
 }

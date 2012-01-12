@@ -134,7 +134,8 @@ public class TranslationWorkspace
       ImmutableSet<SessionId> sessionIdSet = getSessions();
       for (SessionId sessionId : sessionIdSet)
       {
-         if (sessions.get(sessionId).equals(personId))
+         PersonId temp = sessions.get(sessionId);
+         if (temp.equals(personId))
          {
             final boolean removed = sessions.remove(sessionId, personId);
             if (removed)

@@ -1,0 +1,29 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+    ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+    ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+    ui:generateLocales="en">
+    
+	<ui:style>
+	
+        .header {
+            font-weight:bold;
+            font-size:13px;
+            background:#4a75b5;
+            text-align:center;
+            color:#FFFFFF;
+            width:100%;
+            border-radius:3px;
+            height:17px;
+        }
+        
+	</ui:style>
+	   <g:ScrollPanel>
+	       <g:VerticalPanel width="100%">
+		      <g:Label styleName="{style.header}">Validation Options</g:Label>
+		      <g:VerticalPanel ui:field="contentPanel" width="100%"/>
+		   </g:VerticalPanel>
+		</g:ScrollPanel>
+		
+</ui:UiBinder> 

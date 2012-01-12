@@ -4,12 +4,12 @@ import java.io.Serializable;
 
 public class WorkspaceContext implements Serializable
 {
-
    private static final long serialVersionUID = 1L;
 
    private WorkspaceId workspaceId;
    private String workspaceName;
    private String localeName;
+   private boolean readOnly;
 
    // for GWT
    @SuppressWarnings("unused")
@@ -17,11 +17,12 @@ public class WorkspaceContext implements Serializable
    {
    }
 
-   public WorkspaceContext(WorkspaceId workspaceId, String workspaceName, String localeName)
+   public WorkspaceContext(WorkspaceId workspaceId, String workspaceName, String localeName, boolean readOnly)
    {
       this.workspaceId = workspaceId;
       this.workspaceName = workspaceName;
       this.localeName = localeName;
+      this.readOnly = readOnly;
    }
 
    @Override
@@ -43,6 +44,11 @@ public class WorkspaceContext implements Serializable
    public String getLocaleName()
    {
       return localeName;
+   }
+
+   public boolean isReadOnly()
+   {
+      return readOnly;
    }
 
 }

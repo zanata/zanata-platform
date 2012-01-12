@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.view;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
@@ -9,6 +10,7 @@ import org.zanata.webtrans.client.presenter.TransMemoryDetailsPresenter;
 import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
+import org.zanata.webtrans.client.ui.DiffMatchPatchLabel;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 
@@ -57,9 +59,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    TextBox tmTextBox;
 
    @UiField
-   Label tmHeader;
-
-   @UiField
    CheckBox phraseButton;
 
    @UiField
@@ -80,6 +79,8 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    private final Resources resources;
    private boolean isFocused;
 
+   private List<TranslationMemoryGlossaryItem> cachedMem = new ArrayList<TranslationMemoryGlossaryItem>();
+
    @Inject
    public TransMemoryView(final UiMessages messages, Resources resources)
    {
@@ -88,7 +89,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       phraseButton.setText(messages.phraseButtonLabel());
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
-      tmHeader.setText(messages.tmHeader());
       Log.info(LocaleInfo.getCurrentLocale().getLocaleName());
    }
 
@@ -155,24 +155,28 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    {
    }
 
+
+
    @Override
-   public void createTable(ArrayList<TranslationMemoryGlossaryItem> memories)
+   public void createTable(String query, ArrayList<TranslationMemoryGlossaryItem> memories)
    {
       // TODO most of this should be in TransMemoryPresenter
       clearResults();
       addColumn("Source", SOURCE_COL);
       addColumn("Target", TARGET_COL);
       addColumn("Similarity", SIMILARITY_COL);
-
       int row = HEADER_ROW;
+      cachedMem.clear();
+
       for (final TranslationMemoryGlossaryItem memory : memories)
       {
          ++row;
+         cachedMem.add(memory);
          final String sourceMessage = memory.getSource();
          final String targetMessage = memory.getTarget();
          final int similarity = memory.getSimilarityPercent();
 
-         resultTable.setWidget(row, SOURCE_COL, new HighlightingLabel(sourceMessage));
+         resultTable.setWidget(row, SOURCE_COL, new DiffMatchPatchLabel(query, sourceMessage));
          resultTable.setWidget(row, TARGET_COL, new HighlightingLabel(targetMessage));
          resultTable.setText(row, SIMILARITY_COL, similarity + "%");
 
@@ -222,5 +226,31 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    public boolean isFocused()
    {
       return isFocused;
+   }
+
+   @Override
+   public String getSource(int index)
+   {
+      try
+      {
+         return cachedMem.get(index).getSource();
+      }
+      catch (IndexOutOfBoundsException e)
+      {
+         return null;
+      }
+   }
+
+   @Override
+   public String getTarget(int index)
+   {
+      try
+      {
+         return cachedMem.get(index).getTarget();
+      }
+      catch (IndexOutOfBoundsException e)
+      {
+         return null;
+      }
    }
 }

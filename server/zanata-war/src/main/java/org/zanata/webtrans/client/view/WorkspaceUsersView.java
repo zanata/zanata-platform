@@ -4,17 +4,15 @@ import java.util.ArrayList;
 
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.ui.UserListItem;
 import org.zanata.webtrans.shared.model.Person;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.HasMouseOverHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -28,10 +26,7 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    }
 
    @UiField
-   FlowPanel userListPanel;
-
-   @UiField
-   Label headerLabel;
+   VerticalPanel userListPanel;
 
    private final WebTransMessages messages;
 
@@ -40,7 +35,6 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    {
       this.messages = messages;
       initWidget(uiBinder.createAndBindUi(this));
-      headerLabel.setText(messages.nUsersOnline(0));
    }
 
    @Override
@@ -50,27 +44,20 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    }
 
    @Override
-   public void updateUserList(ArrayList<Person> userList)
+   public String updateUserList(ArrayList<Person> userList)
    {
       int existingCount = userListPanel.getWidgetCount();
       for (int i = 0; i < existingCount; i++)
       {
          userListPanel.remove(0);
       }
-      
+
       for (int i = 0; i < userList.size(); i++)
       {
-         UserListItem item = new UserListItem(userList.get(i));
+         Label item = new Label(userList.get(i).getName());
          userListPanel.add(item);
       }
 
-
-      headerLabel.setText(messages.nUsersOnline(userList.size()));
-
-   }
-
-   public HasMouseOverHandlers getCollapsedWidget()
-   {
-      return headerLabel;
+      return messages.nUsersOnline(userList.size());
    }
 }

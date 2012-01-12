@@ -2,16 +2,21 @@ package org.zanata.webtrans.client;
 
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.client.EventProcessor.StartCallback;
+import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.gin.WebTransGinjector;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.Identity;
+import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
+import org.zanata.webtrans.shared.rpc.ExitWorkspaceAction;
+import org.zanata.webtrans.shared.rpc.ExitWorkspaceResult;
+import org.zanata.webtrans.shared.rpc.HasExitWorkspaceData;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
@@ -20,6 +25,7 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DisclosurePanel;
@@ -93,25 +99,28 @@ public class Application implements EntryPoint
 
    private void startApp()
    {
-
       // When user close the workspace, send ExitWorkSpaceAction
-      Window.addCloseHandler(new CloseHandler<Window>()
+      Window.addWindowClosingHandler(new Window.ClosingHandler()
       {
          @Override
-         public void onClose(CloseEvent<Window> event)
+         public void onWindowClosing(ClosingEvent event)
          {
-            // injector.getDispatcher().execute(new ExitWorkspaceAction(),
-            // new AsyncCallback<ExitWorkspaceResult>() {
-            // @Override
-            // public void onFailure(Throwable caught) {
-            //
-            // }
-            //
-            // @Override
-            // public void onSuccess(ExitWorkspaceResult result) {
-            // }
-            //
-            // });
+            injector.getDispatcher().execute(new ExitWorkspaceAction(identity.getPerson().getId()), new AsyncCallback<ExitWorkspaceResult>()
+            {
+               @Override
+               public void onFailure(Throwable caught)
+               {
+
+               }
+
+               @Override
+               public void onSuccess(ExitWorkspaceResult result)
+               {
+
+               }
+
+            });
+
          }
       });
 
@@ -178,12 +187,12 @@ public class Application implements EntryPoint
    }
 
    public static native void redirectToUrl(String url)/*-{
-                                                      $wnd.location = url;
-                                                      }-*/;
+		$wnd.location = url;
+   }-*/;
 
    public static native void closeWindow()/*-{
-                                          $wnd.close();
-                                          }-*/;
+		$wnd.close();
+   }-*/;
 
    public static WorkspaceId getWorkspaceId()
    {

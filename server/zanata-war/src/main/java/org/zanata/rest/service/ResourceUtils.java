@@ -83,6 +83,8 @@ public class ResourceUtils
    private static final String   PO_DATE_FORMAT = "yyyy-MM-dd hh:mmZ";
    
    private static final String[] PO_VALID_CONTENT_TYPES = {"charset=UTF-8", "charset=UTF8", "charset=ASCII", "charset=CHARSET"};
+   
+   private static final String   PO_DEFAULT_CONTENT_TYPE = "text/plain; charset=UTF-8";
 
    
    /**
@@ -768,6 +770,17 @@ public class ResourceUtils
       else
       {
          headerEntry.setValue( this.getLanguage(hTargets) );
+      }
+      
+      headerEntry = containedHeaders.get( CONTENT_TYPE_HDR );
+      if( headerEntry == null )
+      {
+         headerEntry = new HeaderEntry(CONTENT_TYPE_HDR, PO_DEFAULT_CONTENT_TYPE);
+         headerEntries.add( headerEntry );
+      }
+      else
+      {
+         headerEntry.setValue( PO_DEFAULT_CONTENT_TYPE );
       }
       
       headerEntry = containedHeaders.get( PLURAL_FORMS_HDR );

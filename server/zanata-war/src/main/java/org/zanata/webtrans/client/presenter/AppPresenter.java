@@ -28,7 +28,6 @@ import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.Application;
-import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -59,7 +58,6 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -94,8 +92,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       HasClickHandlers getHelpLink();
 
       HasClickHandlers getDocumentsLink();
-
-      HasClickHandlers getEditorButtonsCheckbox();
 
       void setUserLabel(String userLabel);
 
@@ -144,7 +140,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    private final TranslationStats projectStats = new TranslationStats();
 
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
-
+   
    @Inject
    public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
    {
@@ -243,16 +239,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          }
       }));
 
-      registerHandler(display.getEditorButtonsCheckbox().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            boolean showButtons = ((CheckBox) display.getEditorButtonsCheckbox()).getValue();
-            eventBus.fireEvent(new ButtonDisplayChangeEvent(showButtons));
-         }
-      }));
-
       display.setUserLabel(identity.getPerson().getName());
 
       String workspaceTitle = Window.Location.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
@@ -319,6 +305,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
    private void processHistoryEvent(ValueChangeEvent<String> event)
    {
+
       Log.info("Responding to history token: " + event.getValue());
 
       HistoryToken token = HistoryToken.fromTokenString(event.getValue());
@@ -369,4 +356,5 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          token.setView(MainView.Editor);
       ((Anchor) display.getDocumentsLink()).setHref("#" + token.toTokenString());
    }
+
 }

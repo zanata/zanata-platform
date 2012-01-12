@@ -8,9 +8,8 @@
 	<ui:style>
 		.editor {
 			background-color: #ffffff;
-			border: 3px solid #e0e8ee;
-			-moz-border-radius: 7px;
-			-webkit-border-radius: 7px;
+			border: 2px solid #e0e8ee;
+			border-radius: 5px;
 		}
 		
 		.unitStatus {
@@ -34,10 +33,10 @@
 				
 	</ui:style>
 			<g:LayoutPanel styleName="{style.editor}">
-	            <g:layer left="7px" width="40%" top="2px" height="23px">
+	            <g:layer left="1px" width="40%" top="2px" height="23px">
 		            <g:LayoutPanel ui:field="filterPanelContainer" />			    
 	            </g:layer>
-				<g:layer width="50%" right="30px" top="2px" height="23px">
+				<g:layer width="50%" right="30px" top="3px" height="23px">
 						<g:FlowPanel ui:field="transUnitNavigationContainer"  styleName="{style.centerText}"/>
 				</g:layer>
 				<g:layer top="25px" bottom="2em">

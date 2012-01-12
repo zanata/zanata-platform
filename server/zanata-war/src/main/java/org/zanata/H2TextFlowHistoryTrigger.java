@@ -38,7 +38,7 @@ public class H2TextFlowHistoryTrigger extends TriggerAdapter
       }
       else
       {
-         log.warn("HTextFlow updated without incrementing revision... skipping tirgger");
+         log.warn("HTextFlow updated without incrementing revision... skipping trigger");
       }
 
    }

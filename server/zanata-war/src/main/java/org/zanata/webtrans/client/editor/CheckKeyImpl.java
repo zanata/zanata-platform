@@ -153,4 +153,16 @@ public final class CheckKeyImpl implements CheckKey
       return ctrlKey;
    }
 
+   @Override
+   public boolean isCopyFromTransMem()
+   {
+      return ctrlKey && shiftKey && (keyCode == KEY_1 || keyCode == KEY_2 || keyCode == KEY_3 || keyCode == KEY_4);
+   }
+
+   @Override
+   public int getKeyCode()
+   {
+      return keyCode;
+   }
+
 }

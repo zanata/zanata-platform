@@ -3,17 +3,11 @@
 }
 
 .rich-panel-header {
-	/* background-color: #320032;
-	border-color: #320032;
-	-moz-border-radius-topleft: 5px;
-	-moz-border-radius-topright: 5px; */
-	-webkit-border-top-left-radius: 5px;
-	-webkit-border-top-right-radius: 5px;
+	border-radius:5px;
 }
 
 .rich-panel {
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
+	border-radius:5px;
 }	
 
 /* the specificity here is necessary to override the defaults */
@@ -23,10 +17,10 @@
 }
 
 #header_top_right {
-	-webkit-box-shadow: 0 0 8px #aaa;
-	box-shadow: 0 0 8px #aaa;
-	-moz-box-shadow: 0 0 8px #aaa;
+	box-shadow: 0 0 2px #aaa;
 	border: 1px solid #CCC;
+	border-radius:5px;
+	margin-top:5px;
 }
 
 #tabs-menu {
@@ -76,3 +70,15 @@
 	border-bottom-right-radius: 5px;
 	border-bottom-left-radius: 5px;
 }
+
+.loginForm_input {
+	height:22px;
+	width:200px;
+	font-size:14px;
+	font-weight:normal;
+}
+
+.loginForm_label {
+	font-size:14px;
+}
+

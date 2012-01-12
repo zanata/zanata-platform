@@ -29,7 +29,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 import org.zanata.dao.ProjectDAO;
@@ -41,8 +40,14 @@ import org.zanata.security.BaseSecurityChecker;
 public class ProjectAction extends BaseSecurityChecker implements Serializable
 {
    private static final long serialVersionUID = 1L;
-   private ProjectPagedListDataModel projectPagedListDataModel = new ProjectPagedListDataModel(false);
-   private ProjectPagedListDataModel filteredProjectPagedListDataModel = new ProjectPagedListDataModel(true);
+
+   private boolean showCurrent = true;
+   private boolean showRetired = true;
+   private boolean showObsolete = false;
+
+   private HProject securedEntity = null;
+
+   private ProjectPagedListDataModel projectPagedListDataModel = new ProjectPagedListDataModel(!showCurrent, !showRetired, !showObsolete);
 
    private int scrollerPage = 1;
 
@@ -55,33 +60,16 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
    @In
    Identity identity;
 
-   private boolean showObsolete = false;
 
-   private HProject securedEntity = null;
 
    public boolean getEmpty()
    {
-      if (checkViewObsoleteOption() && showObsolete)
-      {
-         return projectDAO.getProjectSize() == 0;
-
-      }
-      else
-      {
-         return projectDAO.getFilteredProjectSize() == 0;
-      }
+      return projectDAO.getProjectSize() == 0;
    }
 
    public int getPageSize()
    {
-      if (checkViewObsoleteOption() && showObsolete)
-      {
-         return filteredProjectPagedListDataModel.getPageSize();
-      }
-      else
-      {
-         return projectPagedListDataModel.getPageSize();
-      }
+      return projectPagedListDataModel.getPageSize();
    }
 
    public int getScrollerPage()
@@ -96,44 +84,7 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    public DataModel getProjectPagedListDataModel()
    {
-      if (checkViewObsoleteOption() && showObsolete)
-      {
-         return filteredProjectPagedListDataModel;
-      }
-      else
-      {
-         return projectPagedListDataModel;
-      }
-   }
-
-   public void updateObsolete(HProject project)
-   {
-      securedEntity = project;
-      if (checkPermission("mark-obsolete"))
-      {
-         projectDAO.makePersistent(project);
-         projectDAO.flush();
-
-         if (project.isObsolete())
-         {
-            FacesMessages.instance().add("Marked {0} as obsolete", project.getName());
-         }
-         else
-         {
-            FacesMessages.instance().add("Marked {0} as current", project.getName());
-         }
-      }
-      securedEntity = null;
-   }
-
-   public boolean isShowObsolete()
-   {
-      return showObsolete;
-   }
-   
-   public void setShowObsolete(boolean showObsolete)
-   {
-      this.showObsolete = showObsolete;
+      return projectPagedListDataModel;
    }
 
    @Override
@@ -148,9 +99,42 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
     * @param operation
     * @return
     */
-   public boolean checkViewObsoleteOption()
+   public boolean checkViewObsolete()
    {
-      return identity != null && identity.hasPermission("HProject", "view-obsolete-option", null);
+      return identity != null && identity.hasPermission("HProject", "view-obsolete", null);
+   }
+
+   public boolean isShowObsolete()
+   {
+      return showObsolete;
+   }
+
+   public void setShowObsolete(boolean showObsolete)
+   {
+      projectPagedListDataModel.setFilterObsolete(!showObsolete);
+      this.showObsolete = showObsolete;
+   }
+
+   public boolean isShowCurrent()
+   {
+      return showCurrent;
+   }
+
+   public void setShowCurrent(boolean showCurrent)
+   {
+      projectPagedListDataModel.setFilterCurrent(!showCurrent);
+      this.showCurrent = showCurrent;
+   }
+
+   public boolean isShowRetired()
+   {
+      return showRetired;
+   }
+
+   public void setShowRetired(boolean showRetired)
+   {
+      projectPagedListDataModel.setFilterRetired(!showRetired);
+      this.showRetired = showRetired;
    }
 
 }

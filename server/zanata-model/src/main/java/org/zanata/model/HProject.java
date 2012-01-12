@@ -34,11 +34,13 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.jboss.seam.annotations.security.Restrict;
+import org.zanata.model.type.StatusTypeType;
 import org.zanata.rest.dto.Project;
 
 /**
@@ -48,6 +50,7 @@ import org.zanata.rest.dto.Project;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "projecttype", discriminatorType = DiscriminatorType.STRING)
+@TypeDef(name = "statusType", typeClass = StatusTypeType.class)
 @Restrict
 public abstract class HProject extends SlugEntityBase implements Serializable
 {
@@ -59,8 +62,6 @@ public abstract class HProject extends SlugEntityBase implements Serializable
    private Set<HLocale> customizedLocales;
 
    private Set<HPerson> maintainers;
-
-   private boolean obsolete = false;
 
    @Length(max = 80)
    @NotEmpty
@@ -134,20 +135,6 @@ public abstract class HProject extends SlugEntityBase implements Serializable
    public void setCustomizedLocales(Set<HLocale> locales)
    {
       this.customizedLocales = locales;
-   }
-
-   public boolean isObsolete()
-   {
-      return obsolete;
-   }
-
-   /**
-    * 
-    * @param obsolete
-    */
-   public void setObsolete(boolean obsolete)
-   {
-      this.obsolete = obsolete;
    }
 
    @Override

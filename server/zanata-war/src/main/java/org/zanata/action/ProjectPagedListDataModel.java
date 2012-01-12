@@ -30,30 +30,46 @@ import org.zanata.model.HProject;
 
 public class ProjectPagedListDataModel extends PagedListDataModel<HProject>
 {
-   boolean selectAll = false;
 
-   public ProjectPagedListDataModel(boolean selectAll)
+   private boolean filterCurrent;
+   private boolean filterRetired;
+   private boolean filterObsolete;
+
+   public ProjectPagedListDataModel(boolean filterCurrent, boolean filterRetired, boolean filterObsolete)
    {
-      this.selectAll = selectAll;
+      this.filterCurrent = filterCurrent;
+      this.filterRetired = filterRetired;
+      this.filterObsolete = filterObsolete;
    }
 
    @Override
    public DataPage<HProject> fetchPage(int startRow, int pageSize)
    {
       ProjectDAO projectDAO = (ProjectDAO) Component.getInstance(ProjectDAO.class, ScopeType.STATELESS);
-      List<HProject> proj = null;
 
-      if (selectAll)
-      {
-         proj = projectDAO.getOffsetListByCreateDate(startRow, pageSize);
-         return new DataPage<HProject>(projectDAO.getProjectSize(), startRow, proj);
-      }
-      else
-      {
-         proj = projectDAO.getFilteredOffsetListByCreateDate(startRow, pageSize);
-         return new DataPage<HProject>(projectDAO.getFilteredProjectSize(), startRow, proj);
-      }
+      List<HProject> proj = projectDAO.getOffsetListByCreateDate(startRow, pageSize, filterCurrent, filterRetired, filterObsolete);
+      return new DataPage<HProject>(proj.size(), startRow, proj);
+   }
 
+
+   public void setFilterObsolete(boolean filterObsolete)
+   {
+      this.filterObsolete = filterObsolete;
+      refresh();
+   }
+
+
+   public void setFilterCurrent(boolean filterCurrent)
+   {
+      this.filterCurrent = filterCurrent;
+      refresh();
+   }
+
+
+   public void setFilterRetired(boolean filterRetired)
+   {
+      this.filterRetired = filterRetired;
+      refresh();
    }
 
 }

@@ -1,0 +1,44 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+    xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    
+    <ui:with field='resources' type="org.zanata.webtrans.client.editor.table.TableResources"/>
+    
+    <ui:style>
+         .header {
+            font-weight:bold;
+            font-size:13px;
+            background:#4a75b5;
+            text-align:center;
+            color:#FFFFFF;
+            width:100%;
+            border-radius:3px;
+            height:17px;
+        }
+        
+        .subheader{
+	       padding-top:10px;
+	       font-weight:bold;
+        }
+        
+    </ui:style>
+    
+    <g:ScrollPanel>
+        <g:VerticalPanel width="100%">
+              <g:Label ui:field="header" styleName="{style.header}"/>
+              <g:VerticalPanel ui:field="contentPanel" width="100%">
+                <g:CheckBox ui:field="editorButtonsChk"/>
+                <g:CheckBox ui:field="enterChk"/>
+                <g:CheckBox ui:field="escChk"/>
+                
+                <g:Label ui:field="navOptionHeader" styleName="{style.subheader}"/>
+                <g:cell horizontalAlignment="ALIGN_CENTER">
+                    <g:ListBox ui:field="optionsList"/>
+                </g:cell>
+              </g:VerticalPanel>
+        </g:VerticalPanel>
+     </g:ScrollPanel>
+    
+    
+
+</ui:UiBinder>

@@ -47,6 +47,10 @@ public interface CheckKey
    static final int KEY_J = 'J';
    static final int KEY_K = 'K';
    static final int KEY_S = 'S';
+   static final int KEY_1 = '1';
+   static final int KEY_2 = '2';
+   static final int KEY_3 = '3';
+   static final int KEY_4 = '4';
 
    public static enum Context
    {
@@ -93,6 +97,12 @@ public interface CheckKey
     * 
     */
    boolean isCopyFromSourceKey();
+   
+   /**
+    * Copy from translation memory: CTRL+(1/2/3/4)
+    * 
+    */
+   boolean isCopyFromTransMem();
 
    /**
     * User typing in text area, any keys other than ALT+CTRL
@@ -136,6 +146,12 @@ public interface CheckKey
     * Ctrl key presssed
     */
    boolean isCtrlKey();
+   
+   /**
+    * 
+    * @return pressed key
+    */
+   int getKeyCode();
 }
 
 

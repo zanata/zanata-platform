@@ -20,21 +20,32 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.editor.CheckKey;
 import org.zanata.webtrans.client.editor.CheckKeyImpl;
+import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
+import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
+import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
+import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
+import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
+import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.rpc.GetTranslatorList;
+import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -48,38 +59,42 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 
       void setTranslationMemoryView(Widget translationMemoryView);
 
+      void setWorkspaceUsersView(Widget workspaceUsersView);
+
       void setGlossaryView(Widget glossaryView);
 
-      void setTmViewVisible(boolean visible);
-
-      HasClickHandlers getHideTMViewButton();
-
-      HasClickHandlers getShowTMViewButton();
-
-      void setShowTMViewButtonVisible(boolean visible);
+      void setSouthPanelViewVisible(boolean visible);
 
       void setSidePanelViewVisible(boolean visible);
 
-      HasClickHandlers getHideSidePanelViewButton();
+      void updateWorkspaceUsersTitle(String title);
 
-      HasClickHandlers getShowSidePanelViewButton();
+      ToggleButton getToogleOptionsButton();
 
-      void setShowSidePanelViewButtonVisible(boolean visible);
+      ToggleButton getToogleSouthButton();
    }
+
+   private final DispatchAsync dispatcher;
 
    private final TranslationEditorPresenter translationEditorPresenter;
    private final SidePanelPresenter sidePanelPresenter;
    private final TransMemoryPresenter transMemoryPresenter;
    private final GlossaryPresenter glossaryPresenter;
+   private final WorkspaceUsersPresenter workspaceUsersPresenter;
+
+   private final WebTransMessages messages;
 
    @Inject
-   public TranslationPresenter(Display display, EventBus eventBus, final TranslationEditorPresenter translationEditorPresenter, final SidePanelPresenter sidePanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter)
+   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final SidePanelPresenter sidePanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages)
    {
       super(display, eventBus);
+      this.messages = messages;
       this.translationEditorPresenter = translationEditorPresenter;
+      this.workspaceUsersPresenter = workspaceUsersPresenter;
       this.transMemoryPresenter = transMemoryPresenter;
       this.sidePanelPresenter = sidePanelPresenter;
       this.glossaryPresenter = glossaryPresenter;
+      this.dispatcher = dispatcher;
    }
 
    @Override
@@ -87,11 +102,33 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
    }
 
+   private void loadTranslatorList()
+   {
+      dispatcher.execute(new GetTranslatorList(), new AsyncCallback<GetTranslatorListResult>()
+      {
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            Log.error("error fetching translators list: " + caught.getMessage());
+         }
+
+         @Override
+         public void onSuccess(GetTranslatorListResult result)
+         {
+            String title = workspaceUsersPresenter.getDisplay().updateUserList(result.getTranslatorList());
+            display.updateWorkspaceUsersTitle(title);
+         }
+      });
+   }
+
    @Override
    protected void onBind()
    {
       transMemoryPresenter.bind();
       display.setTranslationMemoryView(transMemoryPresenter.getDisplay().asWidget());
+
+      workspaceUsersPresenter.bind();
+      display.setWorkspaceUsersView(workspaceUsersPresenter.getDisplay().asWidget());
 
       glossaryPresenter.bind();
       display.setGlossaryView(glossaryPresenter.getDisplay().asWidget());
@@ -102,61 +139,77 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       sidePanelPresenter.bind();
       display.setSidePanel(sidePanelPresenter.getDisplay().asWidget());
 
-      registerHandler(display.getHideSidePanelViewButton().addClickHandler(new ClickHandler()
+      registerHandler(eventBus.addHandler(ExitWorkspaceEvent.getType(), new ExitWorkspaceEventHandler()
       {
          @Override
-         public void onClick(ClickEvent event)
+         public void onExitWorkspace(ExitWorkspaceEvent event)
          {
-            display.setSidePanelViewVisible(false);
-            // sidePanelPresenter.unbind();
-            // translationEditorPresenter.unbind();
-            display.setShowSidePanelViewButtonVisible(true);
+            loadTranslatorList();
          }
       }));
 
-      display.setShowSidePanelViewButtonVisible(false);
-      display.getShowSidePanelViewButton().addClickHandler(new ClickHandler()
+      registerHandler(eventBus.addHandler(EnterWorkspaceEvent.getType(), new EnterWorkspaceEventHandler()
       {
          @Override
-         public void onClick(ClickEvent event)
+         public void onEnterWorkspace(EnterWorkspaceEvent event)
          {
-            // sidePanelPresenter.bind();
-            // translationEditorPresenter.bind();
-            display.setSidePanelViewVisible(true);
-            display.setShowSidePanelViewButtonVisible(false);
-         }
-      });
-
-      registerHandler(display.getHideTMViewButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            display.setTmViewVisible(false);
-            transMemoryPresenter.unbind();
-            glossaryPresenter.unbind();
-            display.setShowTMViewButtonVisible(true);
+            loadTranslatorList();
          }
       }));
 
-      display.setShowTMViewButtonVisible(false);
-      display.getShowTMViewButton().addClickHandler(new ClickHandler()
+      // We won't receive the EnterWorkspaceEvent generated by our own login,
+      // because
+      // this presenter is not bound until we get the callback from
+      // EventProcessor.
+      // Thus we load the translator list here.
+      loadTranslatorList();
+
+      registerHandler(display.getToogleOptionsButton().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
-            transMemoryPresenter.bind();
-            glossaryPresenter.bind();
-
-            display.setTmViewVisible(true);
-            display.setShowTMViewButtonVisible(false);
-            TransUnit tu = translationEditorPresenter.getSelectedTransUnit();
-            if (tu != null)
+            if (display.getToogleOptionsButton().isDown())
             {
-               transMemoryPresenter.showResultsFor(tu);
+               display.setSidePanelViewVisible(true);
+               display.getToogleOptionsButton().setTitle(messages.hideEditorOptions());
+            }
+            else if (!display.getToogleOptionsButton().isDown())
+            {
+               display.setSidePanelViewVisible(false);
+               display.getToogleOptionsButton().setTitle(messages.showEditorOptions());
             }
          }
-      });
+      }));
+
+      registerHandler(display.getToogleSouthButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            if (display.getToogleSouthButton().isDown())
+            {
+               display.setSouthPanelViewVisible(false);
+               transMemoryPresenter.unbind();
+               glossaryPresenter.unbind();
+               workspaceUsersPresenter.unbind();
+            }
+            else if (!display.getToogleSouthButton().isDown())
+            {
+               transMemoryPresenter.bind();
+               glossaryPresenter.bind();
+               workspaceUsersPresenter.bind();
+
+               display.setSouthPanelViewVisible(true);
+               TransUnit tu = translationEditorPresenter.getSelectedTransUnit();
+               if (tu != null)
+               {
+                  transMemoryPresenter.showResultsFor(tu);
+                  // glossaryPresenter.showResultsFor(tu);
+               }
+            }
+         }
+      }));
 
       final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Navigation);
 
@@ -166,62 +219,89 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          public void onPreviewNativeEvent(NativePreviewEvent event)
          {
             /**
-             * @formatter:off
              * keyup is used because TargetCellEditor will intercept the event
              * again (Firefox) See textArea.addKeyDownHandler@InlineTargetCellEditor
-             * 
-             * Only when the Table is showed,editor is closed, search field not
-             * focused, the keyboard event will be processed.
              **/
-            if (display.asWidget().isVisible() && 
-                  !translationEditorPresenter.isTargetCellEditorFocused() && 
+            if (display.asWidget().isVisible())
+            { 
+               checkKey.init(event.getNativeEvent());
+
+               if (translationEditorPresenter.getSelectedTransUnit() != null && checkKey.isCopyFromTransMem())
+               {
+                  int index;
+                  switch (checkKey.getKeyCode())
+                  {
+                  case '1':
+                     index = 0;
+                     break;
+                  case '2':
+                     index = 1;
+                     break;
+                  case '3':
+                     index = 2;
+                     break;
+                  case '4':
+                     index = 3;
+                     break;
+                  default:
+                     index = -1;
+                     break;
+                  }
+                  Log.info("Copy from translation memory:" + index);
+                  eventBus.fireEvent(new TransMemoryShortcutCopyEvent(index));
+               }
+
+               /**
+                * @formatter:off
+                * Only when the Table is showed,editor is closed, search field
+                * not focused, the keyboard event will be processed.
+                **/
+               if (!translationEditorPresenter.isTargetCellEditorFocused() &&
                   !translationEditorPresenter.isTransFilterFocused() && 
                   !transMemoryPresenter.getDisplay().isFocused() && 
                   !glossaryPresenter.getDisplay().isFocused() &&
                   !translationEditorPresenter.getDisplay().isPagerFocused())
-            {
-               //@formatter:on
-               checkKey.init(event.getNativeEvent());
-
-               if (event.getNativeEvent().getType().equals("keyup"))
                {
-                  if (checkKey.isCopyFromSourceKey())
+                  if (event.getNativeEvent().getType().equals("keyup"))
                   {
-                     if (translationEditorPresenter.getSelectedTransUnit() != null)
+                     if (checkKey.isCopyFromSourceKey())
                      {
-                        Log.info("Copy from source");
-                        stopDefaultAction(event);
-                        translationEditorPresenter.gotoCurrentRow();
-                        translationEditorPresenter.cloneAction();
-                     }
-                  }
-                  else if (checkKey.isEnterKey() && !checkKey.isCtrlKey())
-                  {
-                     if (translationEditorPresenter.getSelectedTransUnit() != null)
-                     {
-                        if (!translationEditorPresenter.isCancelButtonFocused())
+                        if (translationEditorPresenter.getSelectedTransUnit() != null)
                         {
-                           Log.info("open editor");
+                           Log.info("Copy from source");
                            stopDefaultAction(event);
                            translationEditorPresenter.gotoCurrentRow();
+                           translationEditorPresenter.cloneAction();
                         }
-                        translationEditorPresenter.setCancelButtonFocused(false);
+                     }
+                     else if (checkKey.isEnterKey() && !checkKey.isCtrlKey())
+                     {
+                        if (translationEditorPresenter.getSelectedTransUnit() != null)
+                        {
+                           if (!translationEditorPresenter.isCancelButtonFocused())
+                           {
+                              Log.info("open editor");
+                              stopDefaultAction(event);
+                              translationEditorPresenter.gotoCurrentRow();
+                           }
+                           translationEditorPresenter.setCancelButtonFocused(false);
+                        }
                      }
                   }
-               }
-               if (event.getNativeEvent().getType().equals("keydown"))
-               {
-                  if (checkKey.isPreviousEntryKey())
+                  if (event.getNativeEvent().getType().equals("keydown"))
                   {
-                     Log.info("Go to previous entry");
-                     stopDefaultAction(event);
-                     translationEditorPresenter.gotoPrevRow(false);
-                  }
-                  else if (checkKey.isNextEntryKey())
-                  {
-                     Log.info("Go to next entry");
-                     stopDefaultAction(event);
-                     translationEditorPresenter.gotoNextRow(false);
+                     if (checkKey.isPreviousEntryKey())
+                     {
+                        Log.info("Go to previous entry");
+                        stopDefaultAction(event);
+                        translationEditorPresenter.gotoPrevRow(false);
+                     }
+                     else if (checkKey.isNextEntryKey())
+                     {
+                        Log.info("Go to next entry");
+                        stopDefaultAction(event);
+                        translationEditorPresenter.gotoNextRow(false);
+                     }
                   }
                }
             }
@@ -242,6 +322,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
       transMemoryPresenter.unbind();
       glossaryPresenter.unbind();
+      workspaceUsersPresenter.unbind();
       translationEditorPresenter.unbind();
       sidePanelPresenter.unbind();
    }

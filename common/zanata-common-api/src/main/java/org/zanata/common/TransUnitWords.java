@@ -2,9 +2,6 @@ package org.zanata.common;
 
 import java.io.Serializable;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class TransUnitWords implements Serializable
 {
    private static final long serialVersionUID = 1L;

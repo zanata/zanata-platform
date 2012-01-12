@@ -27,10 +27,8 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
-import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.BaseSecurityChecker;
 
@@ -46,45 +44,12 @@ public class ProjectIterationAction extends BaseSecurityChecker implements Seria
    @In
    Identity identity;
 
-   @In
-   private ProjectIterationDAO projectIterationDAO;
-
    private HProjectIteration securedEntity = null;
 
-   public void markProjectIterationObsolete(HProjectIteration projectIteration)
-   {
-      securedEntity = projectIteration;
-      if (checkPermission("mark-obsolete"))
-      {
-         projectIteration.setObsolete(true);
-
-         projectIterationDAO.makePersistent(projectIteration);
-         projectIterationDAO.flush();
-         FacesMessages.instance().add("Marked iteration {0} as obsolete", projectIteration.getSlug());
-      }
-   }
-
-   public void markProjectIterationCurrent(HProjectIteration projectIteration)
-   {
-      securedEntity = projectIteration;
-      if (checkPermission("mark-obsolete"))
-      {
-         projectIteration.setObsolete(false);
-
-         projectIterationDAO.makePersistent(projectIteration);
-         projectIterationDAO.flush();
-         FacesMessages.instance().add("Marked iteration {0} as current", projectIteration.getSlug());
-      }
-   }
 
    public boolean checkViewObsolete()
    {
       return Identity.instance() != null && Identity.instance().hasPermission("HProjectIteration", "view-obsolete", null);
-   }
-
-   public boolean checkViewObsoleteOption()
-   {
-      return Identity.instance() != null && Identity.instance().hasPermission("HProjectIteration", "view-obsolete-option", null);
    }
 
    @Override

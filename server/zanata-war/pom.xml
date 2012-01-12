@@ -691,6 +691,14 @@
             <version>${project.version}</version>
         </dependency>
         
+		<dependency>
+			<groupId>org.zanata</groupId>
+			<artifactId>zanata-rest-client</artifactId>
+			<version>${version}</version>
+	        <type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+        
 		<!-- Seam Dependencies -->
 
 		<dependency>
@@ -963,6 +971,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+			<scope>test</scope>
+        </dependency>
+
+		<dependency>
 			<groupId>javassist</groupId>
 			<artifactId>javassist</artifactId>
 			<scope>provided</scope>
@@ -1204,13 +1218,13 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.google.code.gwt-log</groupId>
+			<groupId>com.allen-sauer.gwt.log</groupId>
 			<artifactId>gwt-log</artifactId>
-			<version>3.1.2</version>
+			<version>3.1.7</version>
 		</dependency>
 
 		<dependency>
-			<groupId>com.google.code.gwteventservice</groupId>
+			<groupId>de.novanic.gwteventservice</groupId>
 			<artifactId>gwteventservice</artifactId>
 		</dependency>
 

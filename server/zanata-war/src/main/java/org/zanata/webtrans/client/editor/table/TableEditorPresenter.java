@@ -21,7 +21,6 @@
 package org.zanata.webtrans.client.editor.table;
 
 import static org.zanata.webtrans.client.editor.table.TableConstants.MAX_PAGE_ROW;
-import static org.zanata.webtrans.client.editor.table.TableConstants.PAGE_SIZE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +47,7 @@ import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RedoFailureEvent;
+import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TransMemoryCopyEvent;
 import org.zanata.webtrans.client.events.TransMemoryCopyHandler;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
@@ -58,8 +58,11 @@ import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.UndoAddEvent;
 import org.zanata.webtrans.client.events.UndoFailureEvent;
 import org.zanata.webtrans.client.events.UndoRedoFinishEvent;
+import org.zanata.webtrans.client.events.UpdateValidationErrorEvent;
+import org.zanata.webtrans.client.events.UpdateValidationErrorEventHandler;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.ui.ValidationMessagePanel;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
 import org.zanata.webtrans.shared.auth.Identity;
@@ -140,6 +143,14 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
        *         page, or 0 if no row is selected
        */
       int getSelectedRowNumber();
+
+      void updateValidationError(TransUnitId id, List<String> errors);
+
+      ValidationMessagePanel getValidationPanel(TransUnitId id);
+
+      void setTransUnitDetails(TransUnit selectedTransUnit);
+
+      void setValidationMessageVisible(TransUnitId id);
    }
 
    private DocumentId documentId;
@@ -272,6 +283,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          {
             if (event.getSelectedItem() != null)
             {
+               display.setTransUnitDetails(event.getSelectedItem());
+               display.setValidationMessageVisible(event.getSelectedItem().getId());
+               display.getTargetCellEditor().savePendingChange(true);
                selectTransUnit(event.getSelectedItem());
             }
          }
@@ -320,19 +334,30 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                // Clear the cache
                clearCacheList();
 
-               if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
+               if (curPage == display.getCurrentPage() && selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
                {
                   Log.info("selected TU updated; clear selection");
                   display.getTargetCellEditor().cancelEdit();
+                  eventBus.fireEvent(new RunValidationEvent(event.getTransUnit().getId(), event.getTransUnit().getSource(), event.getTransUnit().getTarget()));
                }
 
                final Integer rowOffset = getRowOffset(event.getTransUnit().getId());
                // - add TU index to model
                if (rowOffset != null)
                {
-                  final int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
+                  int row;
+                  if (curPage != display.getCurrentPage())
+                  {
+                     row = curPage * display.getPageSize() + rowOffset;
+                  }
+                  else
+                  {
+                     row = display.getCurrentPage() * display.getPageSize() + rowOffset;
+                  }
+
                   Log.info("row calculated as " + row);
                   display.getTableModel().setRowValueOverride(row, event.getTransUnit());
+
                   if (inProcessing != null)
                   {
                      if (inProcessing.getAction().getTransUnitId().equals(event.getTransUnit().getId()))
@@ -363,7 +388,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                      {
                         int pageNum = inProcessing.getCurrentPage();
                         int rowNum = inProcessing.getRowNum();
-                        int row = pageNum * PAGE_SIZE + rowNum;
+                        int row = pageNum * display.getPageSize() + rowNum;
                         Log.info("go to row:" + row);
                         Log.info("go to page:" + pageNum);
                         tableModelHandler.gotoRow(row);
@@ -373,7 +398,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                   }
                }
 
-               if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
+               if (curPage == display.getCurrentPage() && selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
                {
                   tableModelHandler.gotoRow(curRowIndex);
                }
@@ -492,6 +517,20 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             display.setShowCopyButtons(event.isShowButtons());
          }
       }));
+
+      registerHandler(eventBus.addHandler(UpdateValidationErrorEvent.getType(), new UpdateValidationErrorEventHandler()
+      {
+         @Override
+         public void onUpdate(UpdateValidationErrorEvent event)
+         {
+            if (!event.isUpdateEditorOnly())
+            {
+               display.updateValidationError(event.getId(), event.getErrors());
+            }
+            display.getTargetCellEditor().updateValidationMessagePanel(display.getValidationPanel(event.getId()));
+         }
+      }));
+
       display.gotoFirstPage();
 
       History.fireCurrentHistoryState();
@@ -517,7 +556,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       @Override
       public void requestRows(final Request request, final Callback<TransUnit> callback)
       {
-
          int numRows = request.getNumRows();
          int startRow = request.getStartRow();
          Log.info("Table requesting " + numRows + " starting from " + startRow);
@@ -528,8 +566,15 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             return;
          }
 
+         if (curPage != display.getCurrentPage())
+         {
+            Log.info("start processing");
+            display.startProcessing();
+         }
+
          dispatcher.execute(new GetTransUnitList(documentId, startRow, numRows, findMessage), new AsyncCallback<GetTransUnitListResult>()
          {
+
             @Override
             public void onSuccess(GetTransUnitListResult result)
             {
@@ -539,6 +584,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                callback.onRowsReady(request, response);
                Log.info("Total of " + result.getTotalCount() + " rows available");
                display.getTableModel().setRowCount(result.getTotalCount());
+               display.stopProcessing();
             }
 
             @Override
@@ -557,8 +603,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                   Log.error("GetTransUnits failure " + caught, caught);
                   eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnknownError()));
                }
+               display.stopProcessing();
             }
          });
+
+
       }
 
       @Override
@@ -605,8 +654,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       @Override
       public void updateRowIndex(int curPage)
       {
-         curRowIndex = curPage * TableConstants.PAGE_SIZE + display.getSelectedRowNumber();
-         Log.info("Current Row Index: " + curRowIndex);
+         curRowIndex = curPage * display.getPageSize() + display.getSelectedRowNumber();
+         Log.info("Current Row Index" + curRowIndex);
       }
 
       @Override
