@@ -92,7 +92,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    private final TranslationStats selectedDocumentStats = new TranslationStats();
    private final TranslationStats projectStats = new TranslationStats();
    private TranslationStats currentDisplayStats = new TranslationStats();
-   private MainView currentView;
+   private MainView currentView = null;
 
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
@@ -113,6 +113,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    @Override
    protected void onBind()
    {
+      documentListPresenter.bind();
+      translationPresenter.bind();
 
       registerHandler(eventBus.addHandler(NotificationEvent.getType(), new NotificationEventHandler()
       {
@@ -125,10 +127,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          }
       }));
 
-      documentListPresenter.bind();
-      translationPresenter.bind();
-
-      showView(MainView.Documents);
 
       registerHandler(eventBus.addHandler(DocumentStatsUpdatedEvent.getType(), new DocumentStatsUpdatedEventHandler()
       {
@@ -197,15 +195,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          }
       }));
 
-      display.setUserLabel(identity.getPerson().getName());
-
-      String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
-
-      display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName(), workspaceTitle);
-
-      window.setTitle(messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
-
-      history.addValueChangeHandler(new ValueChangeHandler<String>()
+      registerHandler(history.addValueChangeHandler(new ValueChangeHandler<String>()
       {
 
          @Override
@@ -213,7 +203,14 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          {
             processHistoryEvent(event);
          }
-      });
+      }));
+
+      display.setUserLabel(identity.getPerson().getName());
+      String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
+      display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName(), workspaceTitle);
+      window.setTitle(messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
+
+      showView(MainView.Documents);
 
       history.fireCurrentHistoryState();
    }
@@ -239,7 +236,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       if (docId != null && (selectedDocument == null || !selectedDocument.getId().equals(docId)))
       {
-         showDocumentInfo(docId);
+         selectDocument(docId);
          eventBus.fireEvent(new DocumentSelectionEvent(docId));
       }
 
@@ -249,48 +246,43 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          token.setView(MainView.Documents);
       }
 
-      if (token.getView() != currentView)
-      {
-         if (currentView.equals(MainView.Editor))
-         {
-            translationPresenter.saveEditorPendingChange();
-         }
-         else
-         { // document list view
-            if (selectedDocument != null)
-            {
-               display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
-            }
-         }
-         showView(token.getView());
-      }
+      showView(token.getView());
    }
 
    private void showView(MainView viewToShow)
    {
-      currentView = viewToShow;
-      display.showInMainView(viewToShow);
-      switch (viewToShow)
+      if (currentView != viewToShow)
       {
-      case Documents:
-         currentDisplayStats = projectStats;
-         display.setDocumentLabel("", messages.noDocumentSelected());
-         break;
+         switch (viewToShow)
+         {
+         case Documents:
+            if (currentView == MainView.Editor)
+               translationPresenter.saveEditorPendingChange();
+            display.setDocumentLabel("", messages.noDocumentSelected());
+            currentDisplayStats = projectStats;
+            break;
 
-      case Editor:
-         currentDisplayStats = selectedDocumentStats;
-         break;
+         case Editor:
+            if (selectedDocument != null)
+            {
+               display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
+            }
+            currentDisplayStats = selectedDocumentStats;
+            break;
+         }
+         display.showInMainView(viewToShow);
+         currentView = viewToShow;
+         refreshStatsDisplay();
       }
-
-      refreshStatsDisplay();
    }
 
    /**
-    * Show the name and stats for the given document
+    * Set selected document to the given document, update name and stats to
+    * match the newly selected document.
     * 
-    * @param event
+    * @param docId id of the document to select
     */
-   private void showDocumentInfo(DocumentId docId)
+   private void selectDocument(DocumentId docId)
    {
 
       if (selectedDocument == null || !docId.equals(selectedDocument.getId()))
@@ -299,9 +291,12 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          if (docInfo != null)
          {
             selectedDocument = docInfo;
-            display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
             selectedDocumentStats.set(selectedDocument.getStats());
-            refreshStatsDisplay();
+            if (currentView == MainView.Editor)
+            {
+               display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
+               refreshStatsDisplay();
+            }
          }
       }
    }
