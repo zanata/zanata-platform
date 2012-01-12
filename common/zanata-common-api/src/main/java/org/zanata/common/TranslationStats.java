@@ -82,4 +82,19 @@ public class TranslationStats implements Serializable
       return remainHours;
    }
 
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (obj == this)
+         return true;
+      if (obj == null)
+         return false;
+      if (obj instanceof TranslationStats)
+      {
+         TranslationStats o = (TranslationStats) obj;
+         return (unitCount.equals(o.unitCount) && wordCount.equals(o.wordCount));
+      }
+      return false;
+   }
+
 }
