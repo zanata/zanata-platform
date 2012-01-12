@@ -11,11 +11,10 @@ import static org.easymock.EasyMock.notNull;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
-import net.customware.gwt.presenter.client.EventBus;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-//import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.equalTo;
+import net.customware.gwt.presenter.client.EventBus;
 
 import org.easymock.Capture;
 import org.testng.annotations.BeforeClass;
@@ -24,7 +23,6 @@ import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
-import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -33,16 +31,20 @@ import org.zanata.webtrans.client.events.NotificationEventHandler;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.history.History;
+import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.auth.Identity;
+import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 
@@ -57,6 +59,8 @@ public class AppPresenterTest
 
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
    private static final String NO_DOCUMENTS_STRING = "No document selected";
+   private static final String TEST_DOCUMENT_NAME = "test document name";
+   private static final String TEST_DOCUMENT_PATH = "test/document/path";
 
 
    private AppPresenter appPresenter;
@@ -65,6 +69,7 @@ public class AppPresenterTest
    private CachingDispatchAsync mockDispatcher;
    private Display mockDisplay;
    private DocumentListPresenter mockDocumentListPresenter;
+   private HasClickHandlers mockDocumentsLink;
    private EventBus mockEventBus;
    private History mockHistory;
    private Identity mockIdentity;
@@ -77,13 +82,17 @@ public class AppPresenterTest
    private Window.Location mockWindowLocation;
    private WorkspaceContext mockWorkspaceContext;
 
-   private Capture<DocumentSelectionHandler> capturedDocumentSelectionHandler;
    private Capture<NotificationEventHandler> capturedNotificationEventHandler;
    private Capture<DocumentStatsUpdatedEventHandler> capturedDocumentStatsUpdatedEventHandler;
    private Capture<ProjectStatsUpdatedEventHandler> capturedProjectStatsUpdatedEventHandler;
    private Capture<ClickHandler> capturedLeaveWorkspaceLinkClickHandler;
    private Capture<ClickHandler> capturedSignoutLinkClickHandler;
    private Capture<ValueChangeHandler<String>> capturedHistoryValueChangeHandler;
+   private Capture<ClickHandler> capturedDocumentLinkClickHandler;
+   private Capture<DocumentSelectionEvent> capturedDocumentSelectionEvent;
+   private DocumentInfo testDocInfo;
+   private DocumentId testDocId;
+   private TranslationStats testDocStats;
 
    // private Capture<String> capturedHistoryTokenString;
 
@@ -95,6 +104,7 @@ public class AppPresenterTest
       mockDispatcher = createMock(CachingDispatchAsync.class);
       mockDisplay = createMock(AppPresenter.Display.class);
       mockDocumentListPresenter = createMock(DocumentListPresenter.class);
+      mockDocumentsLink = createMock(HasClickHandlers.class);
       mockEventBus = createMock(EventBus.class);
       mockHistory = createMock(History.class);
       mockIdentity = createMock(Identity.class);
@@ -128,6 +138,7 @@ public class AppPresenterTest
       // - set user label
       // - set workspace name + title
       // - set window title
+      // - show 'No document selected'
 
       replayAllMocks();
 
@@ -173,19 +184,214 @@ public class AppPresenterTest
 
       verify(mockDisplay);
 
-      assertThat(capturedTranslationStats.getValue().getUnitCount().getApproved(), is(6));
-      assertThat(capturedTranslationStats.getValue().getUnitCount().getNeedReview(), is(5));
-      assertThat(capturedTranslationStats.getValue().getUnitCount().getUntranslated(), is(4));
-      assertThat(capturedTranslationStats.getValue().getWordCount().getApproved(), is(3));
-      assertThat(capturedTranslationStats.getValue().getWordCount().getNeedReview(), is(2));
-      assertThat(capturedTranslationStats.getValue().getWordCount().getUntranslated(), is(1));
+      assertThat(capturedTranslationStats.getValue(), is(equalTo(testStats)));
    }
 
-   // TODO tests:
-   // - document selection (shows stats, shows name and path)
-   // - document stats updated (show for current doc, not for different doc, not
-   // while in project view, show when switching back to doc view)
-   // - see notes for more
+   @Test
+   public void historyTriggersDocumentSelectionEvent()
+   {
+      setupAndBindAppPresenter();
+      verifyAllMocks();
+
+      reset(mockDisplay, mockDocumentListPresenter);
+
+      // not testing for specific values for the following in this test
+      mockDisplay.setDocumentLabel(notNull(String.class), notNull(String.class));
+      expectLastCall().anyTimes();
+      mockDisplay.setStats(notNull(TranslationStats.class));
+      expectLastCall().anyTimes();
+
+      buildTestDocumentInfo();
+      expect(mockDocumentListPresenter.getDocumentId(TEST_DOCUMENT_PATH + TEST_DOCUMENT_NAME)).andReturn(testDocId).anyTimes();
+      expect(mockDocumentListPresenter.getDocumentInfo(testDocId)).andReturn(testDocInfo).anyTimes();
+
+      replay(mockDisplay, mockDocumentListPresenter);
+
+      HistoryToken docSelectionToken = new HistoryToken();
+      docSelectionToken.setDocumentPath(TEST_DOCUMENT_PATH + TEST_DOCUMENT_NAME);
+      capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(docSelectionToken.toTokenString())
+      {
+      });
+
+      assertThat("a new document path in history should trigger a document selection event with the correct id", capturedDocumentSelectionEvent.getValue().getDocumentId(), is(testDocId));
+   }
+
+   @Test
+   public void historyTriggersViewChange()
+   {
+      setupAndBindAppPresenter();
+      verifyAllMocks();
+
+      reset(mockDisplay, mockDocumentListPresenter);
+
+      // not interested in name or stats for this test
+      mockDisplay.setDocumentLabel(notNull(String.class), notNull(String.class));
+      expectLastCall().anyTimes();
+      mockDisplay.setStats(notNull(TranslationStats.class));
+      expectLastCall().anyTimes();
+
+      mockDisplay.showInMainView(MainView.Editor);
+      expectLastCall().once();
+
+      // requires selected document to change to editor view
+      buildTestDocumentInfo();
+      expect(mockDocumentListPresenter.getDocumentId(TEST_DOCUMENT_PATH + TEST_DOCUMENT_NAME)).andReturn(testDocId).anyTimes();
+      expect(mockDocumentListPresenter.getDocumentInfo(testDocId)).andReturn(testDocInfo).anyTimes();
+
+      replay(mockDisplay, mockDocumentListPresenter);
+
+      HistoryToken docInEditorToken = new HistoryToken();
+      docInEditorToken.setDocumentPath(TEST_DOCUMENT_PATH + TEST_DOCUMENT_NAME);
+      docInEditorToken.setView(MainView.Editor);
+      capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(docInEditorToken.toTokenString())
+      {
+      });
+      verify(mockDisplay);
+   }
+
+   @Test
+   public void noEditorWithoutValidDocument()
+   {
+      setupAndBindAppPresenter();
+      verifyAllMocks();
+
+      reset(mockDisplay, mockDocumentListPresenter);
+      // return invalid document
+      expect(mockDocumentListPresenter.getDocumentId(notNull(String.class))).andReturn(null).anyTimes();
+      replay(mockDisplay, mockDocumentListPresenter);
+
+      HistoryToken editorWithoutDocToken = new HistoryToken();
+      editorWithoutDocToken.setView(MainView.Editor);
+      capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(editorWithoutDocToken.toTokenString())
+      {
+      });
+
+      // not expecting show view editor
+      verify(mockDisplay);
+   }
+
+
+   @Test
+   public void historyTriggersDocumentNameStatsUpdate()
+   {
+      setupAndBindAppPresenter();
+      verifyAllMocks();
+
+      reset(mockDisplay, mockDocumentListPresenter);
+
+      buildTestDocumentInfo();
+      expect(mockDocumentListPresenter.getDocumentId(TEST_DOCUMENT_PATH + TEST_DOCUMENT_NAME)).andReturn(testDocId).anyTimes();
+      expect(mockDocumentListPresenter.getDocumentInfo(testDocId)).andReturn(testDocInfo).anyTimes();
+
+      mockDisplay.showInMainView(MainView.Editor);
+      expectLastCall().once();
+      mockDisplay.setDocumentLabel(TEST_DOCUMENT_PATH, TEST_DOCUMENT_NAME);
+      expectLastCall().once();
+      mockDisplay.setStats(eq(testDocStats));
+      expectLastCall().once();
+
+      replay(mockDisplay, mockDocumentListPresenter);
+
+      HistoryToken docInEditorToken = new HistoryToken();
+      docInEditorToken.setView(MainView.Editor);
+      docInEditorToken.setDocumentPath(TEST_DOCUMENT_PATH + TEST_DOCUMENT_NAME);
+      capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(docInEditorToken.toTokenString())
+      {
+      });
+
+      verify(mockDisplay);
+   }
+
+
+   @Test
+   public void statsAndNameChangeWithView()
+   {
+      setupAndBindAppPresenter();
+      verifyAllMocks();
+
+      // change to editor
+      reset(mockDisplay, mockDocumentListPresenter);
+      buildTestDocumentInfo();
+      expect(mockDocumentListPresenter.getDocumentId(TEST_DOCUMENT_PATH + TEST_DOCUMENT_NAME)).andReturn(testDocId).anyTimes();
+      expect(mockDocumentListPresenter.getDocumentInfo(testDocId)).andReturn(testDocInfo).anyTimes();
+      mockDisplay.showInMainView(MainView.Editor);
+      expectLastCall().once();
+      mockDisplay.setDocumentLabel(TEST_DOCUMENT_PATH, TEST_DOCUMENT_NAME);
+      expectLastCall().once();
+      mockDisplay.setStats(eq(testDocStats));
+      expectLastCall().once();
+      replay(mockDisplay, mockDocumentListPresenter);
+      HistoryToken token = new HistoryToken();
+      token.setView(MainView.Editor);
+      token.setDocumentPath(TEST_DOCUMENT_PATH + TEST_DOCUMENT_NAME);
+      capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(token.toTokenString())
+      {
+      });
+      verify(mockDisplay);
+
+      // return to doc list
+      reset(mockDisplay, mockTranslationPresenter);
+      mockDisplay.showInMainView(MainView.Documents);
+      expectLastCall().once();
+      mockDisplay.setDocumentLabel("", NO_DOCUMENTS_STRING);
+      expectLastCall().once();
+      // project stats are empty in default test setup
+      mockDisplay.setStats(eq(new TranslationStats()));
+      expectLastCall().once();
+      mockTranslationPresenter.saveEditorPendingChange();
+      expectLastCall().once();
+      replay(mockDisplay, mockTranslationPresenter);
+      token.setView(MainView.Documents);
+      capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(token.toTokenString())
+      {
+      });
+
+      // return to editor
+      reset(mockDisplay);
+      mockDisplay.showInMainView(MainView.Editor);
+      expectLastCall().once();
+      mockDisplay.setDocumentLabel(TEST_DOCUMENT_PATH, TEST_DOCUMENT_NAME);
+      expectLastCall().once();
+      mockDisplay.setStats(eq(testDocStats));
+      expectLastCall().once();
+      replay(mockDisplay);
+      token.setView(MainView.Editor);
+      capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(token.toTokenString())
+      {
+      });
+
+   }
+
+   // @Test
+   // public void showsUpdatedDocumentStats()
+   // {
+   // // TODO
+   // }
+
+   // @Test
+   // public void doesNotShowWrongDocumentStats()
+   // {
+   // // TODO
+   // }
+
+   // @Test
+   // public void saveEditorChangeOnViewChange()
+   // {
+   // // TODO
+   // }
+
+
+   /**
+    * generates new test doc id and doc info ready for use in tests
+    */
+   private void buildTestDocumentInfo()
+   {
+      testDocId = new DocumentId(2222L);
+      TransUnitCount unitCount = new TransUnitCount(1, 2, 3);
+      TransUnitWords wordCount = new TransUnitWords(4, 5, 6);
+      testDocStats = new TranslationStats(unitCount, wordCount);
+      testDocInfo = new DocumentInfo(testDocId, TEST_DOCUMENT_NAME, TEST_DOCUMENT_PATH, testDocStats);
+   }
 
    private void setupAndBindAppPresenter()
    {
@@ -200,6 +406,7 @@ public class AppPresenterTest
    {
       expect(mockDisplay.getSignOutLink()).andReturn(mockSignoutLink).anyTimes();
       expect(mockDisplay.getLeaveWorkspaceLink()).andReturn(mockLeaveWorkspaceLink).anyTimes();
+      expect(mockDisplay.getDocumentsLink()).andReturn(mockDocumentsLink).anyTimes();
       // TODO think about what restrictions are appropriate here
       // (will likely need to specify different display changes)
       mockDisplay.showInMainView(MainView.Documents);
@@ -218,14 +425,19 @@ public class AppPresenterTest
       mockDocumentListPresenter.bind();
       expectLastCall().once();
 
+      capturedDocumentLinkClickHandler = new Capture<ClickHandler>();
+      expect(mockDocumentsLink.addClickHandler(and(capture(capturedDocumentLinkClickHandler), isA(ClickHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
+
       capturedNotificationEventHandler = new Capture<NotificationEventHandler>();
       expect(mockEventBus.addHandler(eq(NotificationEvent.getType()), and(capture(capturedNotificationEventHandler), isA(NotificationEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-      capturedDocumentSelectionHandler = new Capture<DocumentSelectionHandler>();
-      expect(mockEventBus.addHandler(eq(DocumentSelectionEvent.getType()), and(capture(capturedDocumentSelectionHandler), isA(DocumentSelectionHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
       capturedDocumentStatsUpdatedEventHandler = new Capture<DocumentStatsUpdatedEventHandler>();
       expect(mockEventBus.addHandler(eq(DocumentStatsUpdatedEvent.getType()), and(capture(capturedDocumentStatsUpdatedEventHandler), isA(DocumentStatsUpdatedEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
       capturedProjectStatsUpdatedEventHandler = new Capture<ProjectStatsUpdatedEventHandler>();
       expect(mockEventBus.addHandler(eq(ProjectStatsUpdatedEvent.getType()), and(capture(capturedProjectStatsUpdatedEventHandler), isA(ProjectStatsUpdatedEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
+
+      capturedDocumentSelectionEvent = new Capture<DocumentSelectionEvent>();
+      mockEventBus.fireEvent(and(capture(capturedDocumentSelectionEvent), isA(DocumentSelectionEvent.class)));
+      expectLastCall().anyTimes();
 
       setupMockHistory("");
 
@@ -270,26 +482,26 @@ public class AppPresenterTest
 
    private void resetAllMocks()
    {
-      reset(mockDispatcher, mockDisplay, mockDocumentListPresenter, mockEventBus);
-      reset(mockHistory, mockIdentity, mockLeaveWorkspaceLink, mockMessages);
-      reset(mockPerson, mockSignoutLink, mockTranslationPresenter, mockWindow);
-      reset(mockWindowLocation, mockWorkspaceContext);
+      reset(mockDispatcher, mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
+      reset(mockEventBus, mockHistory, mockIdentity, mockLeaveWorkspaceLink);
+      reset(mockMessages, mockPerson, mockSignoutLink, mockTranslationPresenter);
+      reset(mockWindow, mockWindowLocation, mockWorkspaceContext);
    }
 
    private void replayAllMocks()
    {
-      replay(mockDispatcher, mockDisplay, mockDocumentListPresenter, mockEventBus);
-      replay(mockHistory, mockIdentity, mockLeaveWorkspaceLink, mockMessages);
-      replay(mockPerson, mockSignoutLink, mockTranslationPresenter, mockWindow);
-      replay(mockWindowLocation, mockWorkspaceContext);
+      replay(mockDispatcher, mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
+      replay(mockEventBus, mockHistory, mockIdentity, mockLeaveWorkspaceLink);
+      replay(mockMessages, mockPerson, mockSignoutLink, mockTranslationPresenter);
+      replay(mockWindow, mockWindowLocation, mockWorkspaceContext);
    }
 
    private void verifyAllMocks()
    {
-      verify(mockDispatcher, mockDisplay, mockDocumentListPresenter, mockEventBus);
-      verify(mockHistory, mockIdentity, mockLeaveWorkspaceLink, mockMessages);
-      verify(mockPerson, mockSignoutLink, mockTranslationPresenter, mockWindow);
-      verify(mockWindowLocation, mockWorkspaceContext);
+      verify(mockDispatcher, mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
+      verify(mockEventBus, mockHistory, mockIdentity, mockLeaveWorkspaceLink);
+      verify(mockMessages, mockPerson, mockSignoutLink, mockTranslationPresenter);
+      verify(mockWindow, mockWindowLocation, mockWorkspaceContext);
    }
 
 }
