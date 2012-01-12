@@ -26,7 +26,6 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
-import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -96,7 +95,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    private MainView currentView;
 
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
-   
+
    @Inject
    public AppPresenter(Display display, EventBus eventBus, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
    {
@@ -130,23 +129,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       translationPresenter.bind();
 
       showView(MainView.Documents);
-
-      registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler()
-      {
-         @Override
-         public void onDocumentSelected(DocumentSelectionEvent event)
-         {
-            DocumentInfo docInfo = documentListPresenter.getDocumentInfo(event.getDocumentId());
-
-            if (docInfo != null && (selectedDocument == null || !event.getDocumentId().equals(selectedDocument.getId())))
-            {
-               selectedDocument = docInfo;
-               display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
-               selectedDocumentStats.set(selectedDocument.getStats());
-               refreshStatsDisplay();
-            }
-         }
-      }));
 
       registerHandler(eventBus.addHandler(DocumentStatsUpdatedEvent.getType(), new DocumentStatsUpdatedEventHandler()
       {
@@ -257,16 +239,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       if (docId != null && (selectedDocument == null || !selectedDocument.getId().equals(docId)))
       {
-         Log.info("Firing document selection event");
-         try
-         {
-            eventBus.fireEvent(new DocumentSelectionEvent(docId));
-         }
-         catch (Throwable t)
-         {
-            Log.info("got exception from document selection event", t);
-         }
-         Log.info("Fired document selection event for " + docId.getId());
+         showDocumentInfo(docId);
+         eventBus.fireEvent(new DocumentSelectionEvent(docId));
       }
 
       // if there is no valid document, don't show the editor
@@ -309,6 +283,27 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       }
 
       refreshStatsDisplay();
+   }
+
+   /**
+    * Show the name and stats for the given document
+    * 
+    * @param event
+    */
+   private void showDocumentInfo(DocumentId docId)
+   {
+
+      if (selectedDocument == null || !docId.equals(selectedDocument.getId()))
+      {
+         DocumentInfo docInfo = documentListPresenter.getDocumentInfo(docId);
+         if (docInfo != null)
+         {
+            selectedDocument = docInfo;
+            display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
+            selectedDocumentStats.set(selectedDocument.getStats());
+            refreshStatsDisplay();
+         }
+      }
    }
 
    /**
