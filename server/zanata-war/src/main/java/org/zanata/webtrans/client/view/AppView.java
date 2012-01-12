@@ -58,13 +58,13 @@ public class AppView extends Composite implements AppPresenter.Display
    private final int NOTIFICATION_TIME = 2500;
 
    @UiField
-   Anchor signOutLink, leaveLink, helpLink, documentsLink;
+   Anchor signOutLink, leaveLink, helpLink;
 
    @UiField(provided = true)
    TransUnitCountBar translationStatsBar;
 
    @UiField
-   Label notificationMessage, user;
+   Label notificationMessage, user, documentsLink;
 
    @UiField
    SpanElement selectedDocumentSpan, selectedDocumentPathSpan;

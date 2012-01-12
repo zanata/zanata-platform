@@ -48,7 +48,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.inject.Inject;
 
 public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
@@ -195,6 +194,27 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          }
       }));
 
+      registerHandler(display.getDocumentsLink().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+
+            if (token.getView().equals(MainView.Documents))
+            {
+               if (selectedDocument == null)
+                  return; // abort if no doc to edit
+               token.setView(MainView.Editor);
+            }
+            else
+            {
+               token.setView(MainView.Documents);
+            }
+            history.newItem(token.toTokenString());
+         }
+      }));
+
       display.setUserLabel(identity.getPerson().getName());
 
       String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
@@ -270,14 +290,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          }
          showView(token.getView());
       }
-
-      // update toggle link with alternate view, or doc list if no doc is
-      // loaded
-      if (docId == null || token.getView().equals(MainView.Editor))
-         token.setView(MainView.Documents);
-      else
-         token.setView(MainView.Editor);
-      ((Anchor) display.getDocumentsLink()).setHref("#" + token.toTokenString());
    }
 
    private void showView(MainView viewToShow)
