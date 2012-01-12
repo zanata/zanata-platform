@@ -212,7 +212,11 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<useFile>false</useFile>
-				</configuration>
+					<failIfNoTests>true</failIfNoTests>
+					<!-- TODO set to true?
+					<failIfNoTests>false</failIfNoTests>				
+					 -->
+					</configuration>
 			</plugin>
 
 			<plugin>
@@ -264,6 +268,13 @@
 						</manifestEntries>
 					</archive>
 				</configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>test-jar</goal>
+                </goals>
+              </execution>
+            </executions>
 			</plugin>
 
 			<plugin>
@@ -516,19 +527,6 @@
 		</profile>
 	</profiles>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-all</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -559,7 +557,7 @@
 			<dependency>
 				<groupId>org.easymock</groupId>
 				<artifactId>easymock</artifactId>
-				<version>3.0</version>
+				<version>3.1</version>
 				<scope>test</scope>
 			</dependency>
 
@@ -591,9 +589,9 @@
 			</dependency>
 
 			<dependency>
-				<groupId>com.google.code.gwteventservice</groupId>
+				<groupId>de.novanic.gwteventservice</groupId>
 				<artifactId>gwteventservice</artifactId>
-				<version>1.2.0-RC1</version>
+				<version>1.2.0</version>
 			</dependency>
 
 			<dependency>
