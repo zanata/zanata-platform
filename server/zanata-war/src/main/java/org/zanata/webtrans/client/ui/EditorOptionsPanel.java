@@ -26,6 +26,7 @@ import java.util.Map;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
+import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.resources.EditorConfigConstants;
 
@@ -33,6 +34,8 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -62,18 +65,64 @@ public class EditorOptionsPanel extends Composite
    VerticalPanel contentPanel;
 
    @UiField
-   Label header, navOptionHeader;
+   Label header, navOptionHeader, filterHeader;
 
    @UiField
    CheckBox enterChk, escChk, editorButtonsChk;
+   
+   @UiField
+   CheckBox translatedChk, needReviewChk, untranslatedChk;
 
    @UiField
    ListBox optionsList;
 
+   private final EventBus eventBus;
    private Map<String, Boolean> configMap = new HashMap<String, Boolean>();
+   private boolean filterTranslated, filterNeedReview, filterUntranslated;
+
+   private final ValueChangeHandler<Boolean> configChangeHandler = new ValueChangeHandler<Boolean>()
+   {
+      @Override
+      public void onValueChange(ValueChangeEvent<Boolean> event)
+      {
+         if (event.getSource() == enterChk)
+         {
+            Log.info("Enable 'Enter' Key to save and move to next string: " + event.getValue());
+            configMap.put(EditorConfigConstants.BUTTON_ENTER, event.getValue());
+         }
+         else if (event.getSource() == escChk)
+         {
+            Log.info("Enable 'Esc' Key to close editor: " + event.getValue());
+            configMap.put(EditorConfigConstants.BUTTON_ESC, event.getValue());
+         }
+         eventBus.fireEvent(new UserConfigChangeEvent(configMap));
+      }
+   };
+
+   private final ValueChangeHandler<Boolean> filterChangeHandler = new ValueChangeHandler<Boolean>()
+   {
+      @Override
+      public void onValueChange(ValueChangeEvent<Boolean> event)
+      {
+         if (event.getSource() == translatedChk)
+         {
+            filterTranslated = !event.getValue();
+         }
+         else if (event.getSource() == needReviewChk)
+         {
+            filterNeedReview = !event.getValue();
+         }
+         else if (event.getSource() == untranslatedChk)
+         {
+            filterUntranslated = !event.getValue();
+         }
+         eventBus.fireEvent(new FilterViewEvent(filterTranslated, filterNeedReview, filterUntranslated));
+      }
+   };
 
    public EditorOptionsPanel(final EventBus eventBus)
    {
+      this.eventBus = eventBus;
       initWidget(uiBinder.createAndBindUi(this));
 
       header.setText(EditorConfigConstants.LABEL_EDITOR_OPTIONS);
@@ -86,6 +135,15 @@ public class EditorOptionsPanel extends Composite
       escChk.setValue(false);
       editorButtonsChk.setValue(true);
 
+      translatedChk.setText(EditorConfigConstants.LABEL_TRANSLATED);
+      needReviewChk.setText(EditorConfigConstants.LABEL_NEED_REVIEW);
+      untranslatedChk.setText(EditorConfigConstants.LABEL_UNTRANSLATED);
+      filterHeader.setText(EditorConfigConstants.LABEL_FILTERS);
+
+      translatedChk.setValue(true);
+      needReviewChk.setValue(true);
+      untranslatedChk.setValue(true);
+      
       optionsList.addItem(EditorConfigConstants.OPTION_FUZZY_UNTRANSLATED);
       optionsList.addItem(EditorConfigConstants.OPTION_FUZZY);
       optionsList.addItem(EditorConfigConstants.OPTION_UNTRANSLATED);
@@ -97,16 +155,8 @@ public class EditorOptionsPanel extends Composite
       configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
       configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
 
-      enterChk.addValueChangeHandler(new ValueChangeHandler<Boolean>()
-      {
-         @Override
-         public void onValueChange(ValueChangeEvent<Boolean> event)
-         {
-            Log.info("Enable 'Enter' Key to save and move to next string: " + event.getValue());
-            configMap.put(EditorConfigConstants.BUTTON_ENTER, event.getValue());
-            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
-         }
-      });
+      enterChk.addValueChangeHandler(configChangeHandler);
+      escChk.addValueChangeHandler(configChangeHandler);
 
       editorButtonsChk.addValueChangeHandler(new ValueChangeHandler<Boolean>()
       {
@@ -118,16 +168,9 @@ public class EditorOptionsPanel extends Composite
          }
       });
 
-      escChk.addValueChangeHandler(new ValueChangeHandler<Boolean>()
-      {
-         @Override
-         public void onValueChange(ValueChangeEvent<Boolean> event)
-         {
-            Log.info("Enable 'Esc' Key to close editor: " + event.getValue());
-            configMap.put(EditorConfigConstants.BUTTON_ESC, event.getValue());
-            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
-         }
-      });
+      translatedChk.addValueChangeHandler(filterChangeHandler);
+      needReviewChk.addValueChangeHandler(filterChangeHandler);
+      untranslatedChk.addValueChangeHandler(filterChangeHandler);
 
       optionsList.addChangeHandler(new ChangeHandler()
       {

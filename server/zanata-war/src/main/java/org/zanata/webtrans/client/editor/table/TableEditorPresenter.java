@@ -39,6 +39,8 @@ import org.zanata.webtrans.client.events.CopySourceEvent;
 import org.zanata.webtrans.client.events.CopySourceEventHandler;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
+import org.zanata.webtrans.client.events.FilterViewEvent;
+import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
@@ -62,6 +64,7 @@ import org.zanata.webtrans.client.events.UpdateValidationErrorEvent;
 import org.zanata.webtrans.client.events.UpdateValidationErrorEventHandler;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.ui.FilterViewConfirmationPanel;
 import org.zanata.webtrans.client.ui.ValidationMessagePanel;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
@@ -79,6 +82,8 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -91,6 +96,7 @@ import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -178,6 +184,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    private final TableEditorMessages messages;
 
    private UndoableTransUnitUpdateAction inProcessing;
+   
+   private final FilterViewConfirmationPanel filterViewConfirmationPanel = new FilterViewConfirmationPanel();
 
    private final UndoableTransUnitUpdateHandler undoableTransUnitUpdateHandler = new UndoableTransUnitUpdateHandler()
    {
@@ -276,6 +284,36 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    {
       display.setTableModelHandler(tableModelHandler);
       display.setPageSize(TableConstants.PAGE_SIZE);
+      registerHandler(filterViewConfirmationPanel.getSaveChangesAndFilterButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            display.getTargetCellEditor().savePendingChange(true);
+            // fire filter
+
+         }
+      }));
+      
+      registerHandler(filterViewConfirmationPanel.getDiscardChangesAndFilterButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            display.getTargetCellEditor().cancelEdit();
+            // fire filter
+         }
+      }));
+
+      registerHandler(filterViewConfirmationPanel.getCancelFilterButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            filterViewConfirmationPanel.hide();
+         }
+      }));
+
       registerHandler(display.getSelectionHandlers().addSelectionHandler(new SelectionHandler<TransUnit>()
       {
          @Override
@@ -528,6 +566,18 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                display.updateValidationError(event.getId(), event.getErrors());
             }
             display.getTargetCellEditor().updateValidationMessagePanel(display.getValidationPanel(event.getId()));
+         }
+      }));
+
+      registerHandler(eventBus.addHandler(FilterViewEvent.getType(), new FilterViewEventHandler()
+      {
+         @Override
+         public void onFilterView(FilterViewEvent event)
+         {
+            if (display.getTargetCellEditor().isOpened() && display.getTargetCellEditor().isEditing())
+            {
+               filterViewConfirmationPanel.center();
+            }
          }
       }));
 

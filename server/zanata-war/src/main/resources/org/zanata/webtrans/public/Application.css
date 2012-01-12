@@ -529,3 +529,11 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
     border-radius:20px;
     font-weight:bold;
 }
+
+.filterConfirmationPanel{
+    background:#4C4C4C;
+    padding:5px 20px 0px 20px;
+    color:#FFFFFF;
+    border-radius:20px;
+    font-weight:bold;
+}

@@ -18,7 +18,23 @@
         
         .subheader{
 	       padding-top:10px;
+	       padding-left:5px;
 	       font-weight:bold;
+        }
+        
+        .translated {
+	       border-left:3px solid #099B09;
+	       margin-left:5px;
+        }
+        
+        .needReview {
+	       border-left:3px solid #ffc000;
+           margin-left:5px;
+        }
+	   
+	   .untranslated {
+	       border-left:3px solid #e5e5e5;
+           margin-left:5px;
         }
         
     </ui:style>
@@ -31,8 +47,21 @@
                 <g:CheckBox ui:field="enterChk"/>
                 <g:CheckBox ui:field="escChk"/>
                 
+                <g:Label ui:field="filterHeader" styleName="{style.subheader}"/>
+                <g:cell>
+                    <g:CheckBox ui:field="translatedChk" styleName="{style.translated}"/>
+                </g:cell>
+                
+                <g:cell>
+                    <g:CheckBox ui:field="needReviewChk" styleName="{style.needReview}"/>
+                </g:cell>
+                
+                <g:cell>
+                    <g:CheckBox ui:field="untranslatedChk" styleName="{style.untranslated}"/>
+                </g:cell>
+                
                 <g:Label ui:field="navOptionHeader" styleName="{style.subheader}"/>
-                <g:cell horizontalAlignment="ALIGN_CENTER">
+                <g:cell>
                     <g:ListBox ui:field="optionsList"/>
                 </g:cell>
               </g:VerticalPanel>
