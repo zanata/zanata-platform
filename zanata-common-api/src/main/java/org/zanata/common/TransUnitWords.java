@@ -1,14 +1,9 @@
 package org.zanata.common;
 
-import java.io.Serializable;
-
-public class TransUnitWords implements Serializable
+public class TransUnitWords extends AbstractTranslationCount
 {
-   private static final long serialVersionUID = 1L;
 
-   private int approved;
-   private int needReview;
-   private int untranslated;
+   private static final long serialVersionUID = 849734798480292025L;
 
    public TransUnitWords()
    {
@@ -16,91 +11,17 @@ public class TransUnitWords implements Serializable
 
    public TransUnitWords(int approved, int needReview, int untranslated)
    {
-      this.approved = approved;
-      this.needReview = needReview;
-      this.untranslated = untranslated;
-   }
-
-   public void increment(ContentState state, int count)
-   {
-      set(state, get(state) + count);
-   }
-
-   public void decrement(ContentState state, int count)
-   {
-      set(state, get(state) - count);
-   }
-
-   public void set(ContentState state, int value)
-   {
-      switch (state)
-      {
-      case Approved:
-         approved = value;
-         break;
-      case NeedReview:
-         needReview = value;
-         break;
-      case New:
-         untranslated = value;
-         break;
-      default:
-         throw new RuntimeException("not implemented for state " + state.name());
-      }
-   }
-
-   public int get(ContentState state)
-   {
-      switch (state)
-      {
-      case Approved:
-         return approved;
-      case NeedReview:
-         return needReview;
-      case New:
-         return untranslated;
-      default:
-         throw new RuntimeException("not implemented for state " + state.name());
-      }
+      super(approved, needReview, untranslated);
    }
 
    public void add(TransUnitWords other)
    {
-      this.approved += other.approved;
-      this.needReview += other.needReview;
-      this.untranslated += other.untranslated;
+      super.add(other);
    }
 
    public void set(TransUnitWords other)
    {
-      this.approved = other.approved;
-      this.needReview = other.needReview;
-      this.untranslated = other.untranslated;
-   }
-
-   public int getTotal()
-   {
-      return approved + needReview + untranslated;
-   }
-
-   public int getApproved()
-   {
-      return approved;
-   }
-
-   public int getNeedReview()
-   {
-      return needReview;
-   }
-
-   public int getUntranslated()
-   {
-      return untranslated;
-   }
-
-   public int getNotApproved()
-   {
-      return untranslated + needReview;
+      super.set(other);
    }
 
    public int getPer()
@@ -112,8 +33,22 @@ public class TransUnitWords implements Serializable
       }
       else
       {
-         double per = 100 * approved / total;
+         double per = 100 * getApproved() / total;
          return (int) Math.ceil(per);
       }
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (obj == this)
+         return true;
+      if (obj == null)
+         return false;
+      if (obj instanceof TransUnitWords)
+      {
+         return super.equals(obj);
+      }
+      return false;
    }
 }
