@@ -547,7 +547,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
       registerHandler(eventBus.addHandler(ButtonDisplayChangeEvent.getType(), new ButtonDisplayChangeEventHandler()
       {
-
          @Override
          public void onButtonDisplayChange(ButtonDisplayChangeEvent event)
          {
@@ -617,7 +616,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          }
 
          display.startProcessing();
-         dispatcher.execute(new GetTransUnitList(documentId, startRow, numRows, findMessage), new AsyncCallback<GetTransUnitListResult>()
+         dispatcher.execute(new GetTransUnitList(documentId, startRow, numRows, findMessage, ), new AsyncCallback<GetTransUnitListResult>()
          {
 
             @Override
