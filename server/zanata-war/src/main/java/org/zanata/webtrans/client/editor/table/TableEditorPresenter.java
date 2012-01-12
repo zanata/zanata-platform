@@ -528,7 +528,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             return;
          }
 
-         display.startProcessing();
+         if (curPage != display.getCurrentPage())
+         {
+            Log.info("start processing");
+            display.startProcessing();
+         }
          dispatcher.execute(new GetTransUnitList(documentId, startRow, numRows, findMessage), new AsyncCallback<GetTransUnitListResult>()
          {
             @Override
