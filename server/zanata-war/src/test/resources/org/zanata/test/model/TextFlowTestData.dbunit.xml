@@ -68,4 +68,86 @@
   	tf_id="1"
   	tf_revision="1"
   />
+  
+  <!-- File API Testing Documents -->
+  
+  <HDocument
+    id="2"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
+    contentType="text/plain"
+    docId="/my/path/document-2.txt"
+    locale="4"
+    name="document-2.txt"
+    path="/my/path"
+    project_iteration_id="1"
+    revision="1"
+    obsolete="0"
+  />
+  
+   <HTextFlow 
+  	id="2"
+  	document_id="2"
+  	resId="tf2"
+  	revision="1"
+  	pos="0"
+    obsolete="0"
+  	content="mssgId1"
+  	wordCount="1"
+  />
+  <HTextFlow 
+  	id="3"
+  	document_id="2"
+  	resId="tf3"
+  	revision="1"
+  	pos="1"
+    obsolete="0"
+  	content="mssgId2"
+  	wordCount="1"
+  />
+  <HTextFlow 
+  	id="4"
+  	document_id="2"
+  	resId="tf4"
+  	revision="1"
+  	pos="2"
+    obsolete="0"
+  	content="mssgId3"
+  	wordCount="1"
+  />
+  
+  <HTextFlowTarget 
+  	id="5"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
+  	content="mssgTrans1"
+  	locale="4"
+  	state="1"
+  	tf_id="2"
+  	tf_revision="1"
+  />
+  <HTextFlowTarget 
+  	id="6"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
+  	content="mssgTrans2"
+  	locale="4"
+  	state="1"
+  	tf_id="3"
+  	tf_revision="1"
+  />
+  <HTextFlowTarget 
+  	id="7"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
+  	content="mssgTrans3"
+  	locale="4"
+  	state="1"
+  	tf_id="4"
+  	tf_revision="1"
+  />
 </dataset>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:project xmlns:ns2="http://zanata.org/namespace/api/" type="IterationProject" id="sample-project">
+	<name>Sample Project</name>
+	<description>An example Project</description>
+	<project-iterations>
+		<ns2:project-iteration id="1.0">
+			<link type="application/vnd.zanata.project.iteration+xml" rel="self" href="iterations/i/1.0"/>
+		</ns2:project-iteration>
+		<ns2:project-iteration id="1.1">
+			<link type="application/vnd.zanata.project.iteration+xml" rel="self" href="iterations/i/1.1"/>
+		</ns2:project-iteration>
+	</project-iterations>
+</ns2:project>

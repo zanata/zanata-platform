@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:glossary xmlns:ns2="http://zanata.org/namespace/api/">
+	<source-locales/>
+	<target-locales/>
+	<glossary-entries>
+		<glossary-entry src-lang="en-US">
+			<source-reference>source reference</source-reference>
+			<glossary-term xml:lang="en-US">
+				<comment>test data comment 1</comment>
+				<content>test data content 1 (source lang)</content>
+			</glossary-term>
+			<glossary-term xml:lang="de">
+				<comment>test data comment 2</comment>
+				<content>test data content 2</content>
+			</glossary-term>
+			<glossary-term xml:lang="es">
+				<comment>test data comment 3</comment>
+				<content>test data content 3</content>
+			</glossary-term>
+		</glossary-entry>
+	</glossary-entries>
+</ns2:glossary>
