@@ -29,9 +29,9 @@ push ( )
    echo "Pushing updated POT files to Zanata for translation"
    PUSH_OPTION=""
    if [ $PUSH_PO_FILES -gt 0 ]; then
-      PUSH_OPTION="-Dzanata.importPo"
+      PUSH_OPTION="-Dzanata.pushTrans"
    fi
-   mvn zanata:publican-push $PUSH_OPTION -e
+   mvn zanata:push $PUSH_OPTION -e
 
    echo "Finished!  You may want to check pot into version control to track the updated POT files"
 }
@@ -39,7 +39,7 @@ push ( )
 pull ( )
 {
    echo "Pulling latest translations from Zanata server"
-   mvn zanata:publican-pull -e  -Dzanata.dstDir=src/main/docbook
+   mvn zanata:pull -e  -Dzanata.transDir=src/main/docbook
    echo "Finished! Don't forget to check locale dirs into version control to record the updated PO files"
 }
 
@@ -61,7 +61,7 @@ draft ( )
 
    echo "Pulling latest translations from Zanata server"
    # write PO files to a different directory under target
-   mvn zanata:publican-pull -e -Dzanata.dstDir=$DRAFT_DIR
+   mvn zanata:pull -e -Dzanata.transDir=$DRAFT_DIR
 
    # draft build the translated documents
 
