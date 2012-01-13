@@ -83,7 +83,7 @@ public class PropReaderTest
       Unmarshaller unmarshal = jc.createUnmarshaller();
       TranslationsResource docIn = (TranslationsResource) unmarshal.unmarshal(new StringReader(sw.toString()));
 
-      PropWriter.write(docIn, TEST_OUTPUT_DIR, "test", locale, ISO_8859_1);
+      PropWriter.write(null, docIn, TEST_OUTPUT_DIR, "test", locale, ISO_8859_1);
 
       assertInputAndOutputDocContentSame(docName);
    }

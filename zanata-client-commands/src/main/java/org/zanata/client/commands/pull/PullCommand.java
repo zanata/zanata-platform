@@ -139,7 +139,7 @@ public class PullCommand extends PushPullCommand<PullOptions>
          String localDocName = unqualifiedDocName(qualifiedDocName);
          // TODO follow a Link instead of generating the URI
          String docUri = RestUtil.convertToDocumentURIId(qualifiedDocName);
-         if (strat.needsDocToWriteTrans() || getOpts().getPullSrc())
+         if (strat.needsDocToWriteTrans() || getOpts().getPullSrc() || getOpts().getCreateSkeletons())
          {
             ClientResponse<Resource> resourceResponse = translationResources.getResource(docUri, strat.getExtensions());
             ClientUtility.checkResult(resourceResponse, uri);
@@ -156,16 +156,26 @@ public class PullCommand extends PushPullCommand<PullOptions>
             LocaleId locale = new LocaleId(locMapping.getLocale());
 
             ClientResponse<TranslationsResource> transResponse = translationResources.getTranslations(docUri, locale, strat.getExtensions());
+            TranslationsResource targetDoc;
             // ignore 404 (no translation yet for specified document)
             if (transResponse.getResponseStatus() == Response.Status.NOT_FOUND)
             {
-               log.info("No translations found in locale {} for document {}", locale, localDocName);
-               continue;
+               targetDoc = null;
+               if (!getOpts().getCreateSkeletons())
+               {
+                  log.info("No translations found in locale {} for document {}", locale, localDocName);
+                  continue;
+               }
             }
-            ClientUtility.checkResult(transResponse, uri);
-            TranslationsResource targetDoc = transResponse.getEntity();
-
-            writeTargetDoc(strat, localDocName, locMapping, doc, targetDoc);
+            else
+            {
+               ClientUtility.checkResult(transResponse, uri);
+               targetDoc = transResponse.getEntity();
+            }
+            if (targetDoc != null || getOpts().getCreateSkeletons())
+            {
+               writeTargetDoc(strat, localDocName, locMapping, doc, targetDoc);
+            }
          }
       }
 

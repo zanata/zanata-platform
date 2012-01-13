@@ -30,4 +30,5 @@ import org.zanata.client.commands.PushPullOptions;
 public interface PullOptions extends PushPullOptions
 {
    boolean getPullSrc();
+   boolean getCreateSkeletons();
 }

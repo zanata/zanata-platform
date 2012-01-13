@@ -22,6 +22,12 @@ public class PullMojo extends PushPullMojo<PullOptions> implements PullOptions
     */
    private boolean pullSrc;
 
+   /**
+    * Whether to create skeleton entries for strings/files which have not been translated yet
+    * @parameter expression="${zanata.createSkeletons}"
+    */
+   private boolean createSkeletons;
+
    public PullMojo() throws Exception
    {
       super();
@@ -36,6 +42,12 @@ public class PullMojo extends PushPullMojo<PullOptions> implements PullOptions
    public boolean getPullSrc()
    {
       return pullSrc;
+   }
+
+   @Override
+   public boolean getCreateSkeletons()
+   {
+      return createSkeletons;
    }
 
 }
