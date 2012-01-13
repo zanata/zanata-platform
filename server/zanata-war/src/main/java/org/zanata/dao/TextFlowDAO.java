@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.util.Version;
@@ -33,9 +34,11 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
+import org.hibernate.transform.ResultTransformer;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -55,7 +58,6 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 {
    @In
    private FullTextEntityManager entityManager;
-
 
    public TextFlowDAO()
    {
@@ -186,21 +188,22 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       Query query = getSession().createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos").setParameter("id", documentId);
       return query.setFirstResult(offset).setMaxResults(count).list();
    }
-   
-   
+
    @SuppressWarnings("unchecked")
    // TODO: use hibernate search
-   public Set<Object[]> getIdsBySearch(Long documentId, int offset, int count, String search, LocaleId localeId)
+   public Set<Object[]> getIdsBySearch(Long documentId, int offset, int count, String search, LocaleId localeId, boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated)
    {
       Query textFlowQuery = getSession().createQuery("select tf.id, tf.pos from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id and lower(tf.content) like :content order by tf.pos");
       textFlowQuery.setParameter("id", documentId);
       textFlowQuery.setParameter("content", "%" + search + "%");
       List<Object[]> ids1 = textFlowQuery.list();
+
       Query textFlowTargetQuery = getSession().createQuery("select tft.textFlow.id, tft.textFlow.pos from HTextFlowTarget tft where tft.textFlow.obsolete=0 and tft.textFlow.document.id = :id and lower(tft.content) like :content and tft.locale.localeId = :localeId order by tft.textFlow.pos");
       textFlowTargetQuery.setParameter("id", documentId);
       textFlowTargetQuery.setParameter("content", "%" + search + "%");
       textFlowTargetQuery.setParameter("localeId", localeId);
       List<Object[]> ids2 = textFlowTargetQuery.list();
+
       Set<Object[]> idSet = new TreeSet<Object[]>(new Comparator<Object[]>()
       {
          @Override
@@ -211,9 +214,9 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       });
       idSet.addAll(ids1);
       idSet.addAll(ids2);
+
       return idSet;
    }
-
 
    // TODO: use hibernate search
    @SuppressWarnings("unchecked")

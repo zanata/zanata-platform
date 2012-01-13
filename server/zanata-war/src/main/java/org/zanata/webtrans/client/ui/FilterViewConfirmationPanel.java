@@ -37,10 +37,11 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  **/
 public class FilterViewConfirmationPanel extends DecoratedPopupPanel
 {
-
    private Button saveChanges = new Button("Save Changes");
    private Button discardChanges = new Button("Discard Changes");
    private Button cancelFilter = new Button("Cancel filter");
+
+   private boolean filterTranslated, filterNeedReview, filterUntranslated;
 
    public FilterViewConfirmationPanel()
    {
@@ -99,6 +100,28 @@ public class FilterViewConfirmationPanel extends DecoratedPopupPanel
    public HasClickHandlers getCancelFilterButton()
    {
       return cancelFilter;
+   }
+
+   public void updateFilter(boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated)
+   {
+      this.filterTranslated = filterTranslated;
+      this.filterNeedReview = filterNeedReview;
+      this.filterUntranslated = filterUntranslated;
+   }
+
+   public boolean isFilterTranslated()
+   {
+      return filterTranslated;
+   }
+
+   public boolean isFilterNeedReview()
+   {
+      return filterNeedReview;
+   }
+
+   public boolean isFilterUntranslated()
+   {
+      return filterUntranslated;
    }
 
 }

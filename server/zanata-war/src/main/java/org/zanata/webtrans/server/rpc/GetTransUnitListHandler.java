@@ -28,6 +28,7 @@ import java.util.Set;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import org.apache.lucene.queryParser.ParseException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -83,25 +84,23 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          throw new ActionException(e.getMessage());
       }
 
-      int size = 0;
       List<HTextFlow> textFlows = new ArrayList<HTextFlow>();
       if (action.getPhrase() != null && !action.getPhrase().isEmpty())
       {
          log.info("find message:" + action.getPhrase());
-         Set<Object[]> idSet = textFlowDAO.getIdsBySearch(action.getDocumentId().getValue(), action.getOffset(), action.getCount(), action.getPhrase(), action.getWorkspaceId().getLocaleId());
-         size = idSet.size();
-         log.info("size : {0}", size);
+         Set<Object[]> idSet = textFlowDAO.getIdsBySearch(action.getDocumentId().getValue(), action.getOffset(), action.getCount(), action.getPhrase(), action.getWorkspaceId().getLocaleId(), action.isFilterTranslated(), action.isFilterNeedReview(), action.isFilterUntranslated());
+         log.info("size : {0}", idSet.size());
          log.info("action.getOffset() : {0}", action.getOffset());
          log.info("action.getCount() : {0}", action.getCount());
 
          List<Object[]> subIds = new ArrayList<Object[]>();
-         if ((action.getOffset() + action.getCount()) < size)
+         if ((action.getOffset() + action.getCount()) < idSet.size())
          {
             subIds = new ArrayList<Object[]>(idSet).subList(action.getOffset(), action.getOffset() + action.getCount());
          }
-         else if (action.getOffset() < size)
+         else if (action.getOffset() < idSet.size())
          {
-            subIds = new ArrayList<Object[]>(idSet).subList(action.getOffset(), size);
+            subIds = new ArrayList<Object[]>(idSet).subList(action.getOffset(), idSet.size());
          }
          List<Long> idList = new ArrayList<Long>();
          for (Object[] para : subIds)
@@ -113,7 +112,8 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       }
       else
       {
-         size = textFlowDAO.getByDocument(action.getDocumentId().getValue()).size();
+         // size =
+         // textFlowDAO.getByDocument(action.getDocumentId().getValue()).size();
          textFlows = textFlowDAO.getOffsetListByDocument(action.getDocumentId().getValue(), action.getOffset(), action.getCount());
       }
 
@@ -143,7 +143,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          }
          units.add(tu);
       }
-      return new GetTransUnitListResult(action.getDocumentId(), units, size);
+      return new GetTransUnitListResult(action.getDocumentId(), units, units.size());
    }
 
    @Override
