@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.gin;
 
 import net.customware.gwt.presenter.client.DefaultEventBus;
+import net.customware.gwt.presenter.client.Display;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
 
@@ -33,7 +34,8 @@ import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
 import org.zanata.webtrans.client.editor.table.TableEditorView;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryImpl;
-import org.zanata.webtrans.client.history.WindowLocation;
+import org.zanata.webtrans.client.history.Window;
+import org.zanata.webtrans.client.history.WindowImpl;
 import org.zanata.webtrans.client.history.WindowLocationImpl;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
@@ -102,7 +104,8 @@ public class WebTransClientModule extends AbstractPresenterModule
 
       bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);
       bind(History.class).to(HistoryImpl.class).in(Singleton.class);
-      bind(WindowLocation.class).to(WindowLocationImpl.class).in(Singleton.class);
+      bind(Window.class).to(WindowImpl.class).in(Singleton.class);
+      bind(Window.Location.class).to(WindowLocationImpl.class).in(Singleton.class);
 
       // NB: if we bind directly to SeamDispatchAsync, we can't use
       // replace-class in
@@ -111,6 +114,14 @@ public class WebTransClientModule extends AbstractPresenterModule
 
       bind(Identity.class).toProvider(IdentityProvider.class).in(Singleton.class);
       bind(WorkspaceContext.class).toProvider(WorkspaceContextProvider.class).in(Singleton.class);
+   }
+
+   // default implementation doesn't use singleton display binding, adding here
+   // to allow displays to be injected into other displays
+   @Override
+   protected <D extends Display> void bindDisplay(Class<D> display, Class<? extends D> displayImpl)
+   {
+      bind(display).to(displayImpl).in(Singleton.class);
    }
 
    static class WorkspaceContextProvider implements Provider<WorkspaceContext>
