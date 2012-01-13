@@ -46,15 +46,14 @@ public class ProjectsServiceSeamTest extends ZanataDBUnitSeamTest
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
-   // TODO fix and re-enable this test
-   @Test(enabled = false)
+   @Test
    public void retrieveListofProjects() throws Exception
    {
       ClientResponse<List<Project>> response = projectService.get();
 
       assertThat(response.getStatus(), is(200));
       assertThat(response.getEntity(), notNullValue());
-      assertThat(response.getEntity().size(), is(1));
+      assertThat(response.getEntity().size(), is(1)); // Obsolete and retired projects should not appear
 
    }
 }

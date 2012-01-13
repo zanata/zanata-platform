@@ -36,6 +36,11 @@ public class SlugEntityBase extends ModelEntityBase
    private String slug;
 
    private StatusType status;
+   
+   public SlugEntityBase()
+   {
+      status = StatusType.Current; // Current by default
+   }
 
    @NaturalId
    @Length(min = 1, max = 40)
@@ -53,6 +58,7 @@ public class SlugEntityBase extends ModelEntityBase
    }
 
    @Type(type = "statusType")
+   @NotNull
    public StatusType getStatus()
    {
       return status;

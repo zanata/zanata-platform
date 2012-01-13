@@ -1,5 +1,8 @@
 package org.zanata.rest.service;
 
+import static org.zanata.model.type.StatusType.Obsolete;
+import static org.zanata.model.type.StatusType.Retired;
+
 import java.net.URI;
 
 import javax.ws.rs.Consumes;
@@ -18,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.util.HttpHeaderNames;
@@ -123,6 +127,12 @@ public class ProjectService implements ProjectResource
       }
 
       HProject hProject = projectDAO.getBySlug(projectSlug);
+      
+      // Obsolete/Retired projects are not exposed
+      if( hProject.getStatus().in(Obsolete, Retired) )
+      {
+         return Response.status(Status.NOT_FOUND).build();
+      }
 
       Project project = toResource(hProject, accept);
       return Response.ok(project).tag(etag).build();
@@ -153,8 +163,20 @@ public class ProjectService implements ProjectResource
 
          response = Response.created(uri.getAbsolutePath());
       }
+      // Project is Obsolete
+      else if( hProject.getStatus().in(Obsolete) )
+      {
+         response = Response.status(Status.NOT_FOUND);
+         return response.build();
+      }
+      // Project is retired
+      else if( hProject.getStatus().in(Retired) )
+      {
+         response = Response.status(Status.NOT_MODIFIED);
+         return response.build();
+      }
       else
-      { // must be an update operation
+      {  // must be an update operation
          // pre-emptive entity permission check
          identity.checkPermission(hProject, "update");
          etag = eTagUtils.generateTagForProject(projectSlug);

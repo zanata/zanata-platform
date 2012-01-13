@@ -27,7 +27,22 @@ package org.zanata.model.type;
  **/
 public enum StatusType
 {
-   Current, Retired, Obsolete
+   Current, Retired, Obsolete;
+   
+   /**
+    * Utility method to evaluate whether a status type is in a set of types.
+    */
+   public boolean in(StatusType ... values)
+   {
+      for( StatusType t : values )
+      {
+         if( this == t )
+         {
+            return true;
+         }
+      }
+      return false;
+   }
 }
 
 

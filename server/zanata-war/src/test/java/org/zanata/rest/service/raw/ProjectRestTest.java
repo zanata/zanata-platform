@@ -21,7 +21,9 @@
 package org.zanata.rest.service.raw;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 import javax.ws.rs.core.HttpHeaders;
 
@@ -157,7 +159,9 @@ public class ProjectRestTest extends ZanataRawRestTest
          protected void onResponse(EnhancedMockHttpServletResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
-            // TODO Compare results
+            assertThat(response.getContentAsString(), containsString("sample-project"));
+            assertThat(response.getContentAsString(), not(containsString("retired-project")));
+            assertThat(response.getContentAsString(), not(containsString("obsolete-project")));
          }
       }.run();
    }
@@ -177,7 +181,10 @@ public class ProjectRestTest extends ZanataRawRestTest
          protected void onResponse(EnhancedMockHttpServletResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
-            // TODO Compare results
+            assertThat(response.getStatus(), is(200)); // Ok
+            assertThat(response.getContentAsString(), containsString("sample-project"));
+            assertThat(response.getContentAsString(), not(containsString("retired-project")));
+            assertThat(response.getContentAsString(), not(containsString("obsolete-project")));
          }
       }.run();
    }

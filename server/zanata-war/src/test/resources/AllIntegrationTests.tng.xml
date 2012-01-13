@@ -31,7 +31,6 @@
 		 -->
      	<test name="Seam Tests">
      		<classes>
-     			<class name="org.zanata.rest.service.ProjectServiceRawSeamTest"/>
      			<class name="org.zanata.rest.service.ProjectsServiceSeamTest"/>
      			<class name="org.zanata.rest.service.ResourceServiceSeamTest"/>
      			<class name="org.zanata.rest.service.TranslationServiceSeamTest"/>
