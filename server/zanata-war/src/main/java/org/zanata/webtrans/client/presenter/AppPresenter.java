@@ -137,8 +137,11 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             if (selectedDocument != null && event.getDocId().equals(selectedDocument.getId()))
             {
                selectedDocumentStats.set(event.getNewStats());
+               if (currentView.equals(MainView.Editor))
+               {
+                  refreshStatsDisplay();
+               }
             }
-            refreshStatsDisplay();
          }
       }));
 
@@ -149,7 +152,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          public void onProjectStatsRetrieved(ProjectStatsUpdatedEvent event)
          {
             projectStats.set(event.getProjectStats());
-            refreshStatsDisplay();
+            if (currentView.equals(MainView.Documents))
+            {
+               refreshStatsDisplay();
+            }
          }
       }));
 
