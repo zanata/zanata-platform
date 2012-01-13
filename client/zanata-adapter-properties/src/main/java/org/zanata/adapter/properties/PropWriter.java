@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.fedorahosted.openprops.Properties;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
@@ -62,15 +64,32 @@ public class PropWriter
       }
    }
 
-   public static void write(final TranslationsResource doc, final File baseDir, String bundleName, String locale, String charset) throws IOException
+   public static void write(Resource srcDoc, final TranslationsResource doc, final File baseDir, String bundleName, String locale, String charset) throws IOException
    {
       Properties targetProp = new Properties();
-      for (TextFlowTarget target : doc.getTextFlowTargets())
+
+      if (srcDoc == null)
       {
-         targetProp.setProperty(target.getResId(), target.getContent());
-         SimpleComment simpleComment = target.getExtensions(true).findByType(SimpleComment.class);
-         if (simpleComment != null && simpleComment.getValue() != null)
-            targetProp.setComment(target.getResId(), simpleComment.getValue());
+         for (TextFlowTarget target : doc.getTextFlowTargets())
+         {
+            textFlowTargetToProperty(target.getResId(), target, targetProp);
+         }
+      }
+      else
+      {
+         Map<String, TextFlowTarget> targets = new HashMap<String, TextFlowTarget>();
+         if (doc != null)
+         {
+            for (TextFlowTarget target : doc.getTextFlowTargets())
+            {
+               targets.put(target.getResId(), target);
+            }
+         }
+         for (TextFlow textFlow : srcDoc.getTextFlows())
+         {
+            TextFlowTarget target = targets.get(textFlow.getId());
+            textFlowTargetToProperty(textFlow.getId(), target, targetProp);
+         }
       }
 
       File langFile = new File(baseDir, bundleName + "_" + locale + ".properties");
@@ -85,6 +104,21 @@ public class PropWriter
       finally
       {
          out2.close();
+      }
+   }
+
+   private static void textFlowTargetToProperty(String resId, TextFlowTarget target, Properties targetProp)
+   {
+      if (target == null)
+      {
+         targetProp.setProperty(resId, "");
+         return;
+      }
+      targetProp.setProperty(target.getResId(), target.getContent());
+      SimpleComment simpleComment = target.getExtensions(true).findByType(SimpleComment.class);
+      if (simpleComment != null && simpleComment.getValue() != null)
+      {
+         targetProp.setComment(target.getResId(), simpleComment.getValue());
       }
    }
 

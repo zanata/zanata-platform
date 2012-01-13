@@ -15,6 +15,7 @@ import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.fedorahosted.tennera.jgettext.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.common.ContentState;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
@@ -201,15 +202,9 @@ public class PoWriter2
                      }
                   }
                }
-               switch (contentData.getState())
+               if (contentData.getState() == ContentState.NeedReview)
                {
-               case Approved:
-                  message.setFuzzy(false);
-                  break;
-               case NeedReview:
-               case New:
                   message.setFuzzy(true);
-                  break;
                }
             }
          }
