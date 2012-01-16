@@ -58,6 +58,8 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
       rightPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
       rightPanel.setSize("100%", "100%");
 
+      // int rowNum = value.getRowIndex() + 1;
+      // sourceLabel = new HighlightingLabel(rowNum + ". " + value.getSource());
       sourceLabel = new HighlightingLabel(value.getSource());
       sourceLabel.setStylePrimaryName("TableEditorContent");
       sourceLabel.setTitle(messages.sourceCommentLabel() + value.getSourceComment());
@@ -65,8 +67,6 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
       panel.add(sourceLabel);
       panel.add(rightPanel);
    }
-
-
 
    public void add(Widget w)
    {

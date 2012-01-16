@@ -9,7 +9,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class TransUnit implements IsSerializable, Serializable
 {
-
    private static final long serialVersionUID = -8247442475446266600L;
 
    private ContentState status;
@@ -25,6 +24,7 @@ public class TransUnit implements IsSerializable, Serializable
    private String msgContext;
    private String lastModifiedBy;
    private String lastModifiedTime;
+   private Integer rowIndex;
 
    public String getLastModifiedBy()
    {
@@ -52,7 +52,7 @@ public class TransUnit implements IsSerializable, Serializable
    {
    }
 
-   public TransUnit(TransUnitId id, String resId, LocaleId localeId, String source, String sourceComment, String target, ContentState status, String lastModifiedBy, String lastModifiedTime, String msgContext)
+   public TransUnit(TransUnitId id, String resId, LocaleId localeId, String source, String sourceComment, String target, ContentState status, String lastModifiedBy, String lastModifiedTime, String msgContext, Integer rowIndex)
    {
       this.id = id;
       this.resId = resId;
@@ -64,11 +64,12 @@ public class TransUnit implements IsSerializable, Serializable
       this.lastModifiedBy = lastModifiedBy;
       this.lastModifiedTime = lastModifiedTime;
       this.msgContext = msgContext;
+      this.rowIndex = rowIndex;
    }
 
    public TransUnit(TransUnit other)
    {
-      this(other.id, other.resId, other.localeId, other.source, other.sourceComment, other.target, other.status, other.lastModifiedBy, other.lastModifiedTime, other.msgContext);
+      this(other.id, other.resId, other.localeId, other.source, other.sourceComment, other.target, other.status, other.lastModifiedBy, other.lastModifiedTime, other.msgContext, other.rowIndex);
    }
 
    public static final TransUnit copy(TransUnit other)
@@ -140,4 +141,15 @@ public class TransUnit implements IsSerializable, Serializable
    {
       this.msgContext = msgContext;
    }
+
+   public Integer getRowIndex()
+   {
+      return rowIndex;
+   }
+
+   public void setRowIndex(Integer rowIndex)
+   {
+      this.rowIndex = rowIndex;
+   }
+
 }
