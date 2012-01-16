@@ -473,7 +473,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          @Override
          public void onCopySource(CopySourceEvent event)
          {
-            int row = event.getTransUnit().getRowIndex();
+            int row = getRow(event.getTransUnit().getId());
 
             tableModelHandler.gotoRow(row);
             display.getTargetCellEditor().setText(event.getTransUnit().getSource());
