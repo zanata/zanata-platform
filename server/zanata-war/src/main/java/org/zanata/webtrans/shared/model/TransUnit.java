@@ -67,6 +67,11 @@ public class TransUnit implements IsSerializable, Serializable
       this.rowIndex = rowIndex;
    }
 
+   public TransUnit(TransUnitId id, String resId, LocaleId localeId, String source, String sourceComment, String target, ContentState status, String lastModifiedBy, String lastModifiedTime, String msgContext)
+   {
+      this(id, resId, localeId, source, sourceComment, target, status, lastModifiedBy, lastModifiedTime, msgContext, null);
+   }
+
    public TransUnit(TransUnit other)
    {
       this(other.id, other.resId, other.localeId, other.source, other.sourceComment, other.target, other.status, other.lastModifiedBy, other.lastModifiedTime, other.msgContext, other.rowIndex);

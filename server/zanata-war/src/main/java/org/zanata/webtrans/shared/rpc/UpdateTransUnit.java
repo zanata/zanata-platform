@@ -14,7 +14,6 @@ public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResu
    private ContentState contentState;
    private boolean isRedo = false;
    private Integer verNum;
-   private Integer row;
 
    public Integer getVerNum()
    {
@@ -41,12 +40,11 @@ public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResu
    {
    }
 
-   public UpdateTransUnit(TransUnitId transUnitId, String content, ContentState contentState, Integer row)
+   public UpdateTransUnit(TransUnitId transUnitId, String content, ContentState contentState)
    {
       this.transUnitId = transUnitId;
       this.content = content;
       this.contentState = contentState;
-      this.row = row;
    }
 
    public String getContent()
@@ -63,10 +61,4 @@ public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResu
    {
       return contentState;
    }
-
-   public Integer getRow()
-   {
-      return row;
-   }
-
 }

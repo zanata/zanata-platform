@@ -165,7 +165,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       }
 
       String content = (target.getContent() != null ? target.getContent() : "");
-      UpdateTransUnit previous = new UpdateTransUnit(action.getTransUnitId(), content, prevStatus, action.getRow());
+      UpdateTransUnit previous = new UpdateTransUnit(action.getTransUnitId(), content, prevStatus);
 
       if (!StringUtils.equals(action.getContent(), target.getContent()))
       {
@@ -197,7 +197,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
                                    CommentsUtil.toString(hTextFlow.getComment()),
                                    action.getContent(), target.getState(),
                                    authenticatedAccount.getPerson().getName(),
-                                   SIMPLE_FORMAT.format(new Date()), msgContext, action.getRow());
+                                   SIMPLE_FORMAT.format(new Date()), msgContext);
       // @formatter:on
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu);
 
@@ -273,7 +273,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
                                    CommentsUtil.toString(hTextFlow.getComment()),
                                    target.getContent(), target.getState(),
                                    target.getLastModifiedBy().getName(),
-                                   SIMPLE_FORMAT.format(target.getLastChanged()), msgContext, action.getRow());
+                                   SIMPLE_FORMAT.format(target.getLastChanged()), msgContext);
       // @formatter:on
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu);
 
