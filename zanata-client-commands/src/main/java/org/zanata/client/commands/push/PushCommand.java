@@ -310,14 +310,14 @@ public class PushCommand extends PushPullCommand<PushOptions>
    {
       if (!getOpts().isDryRun())
       {
-         log.info("pushing source document [name={}] to server", srcDoc.getName());
+         log.info("pushing source doc [name={} size={}] to server", srcDoc.getName(), srcDoc.getTextFlows().size());
          boolean copyTrans = getOpts().getCopyTrans();
          ClientResponse<String> putResponse = translationResources.putResource(docUri, srcDoc, extensions, copyTrans);
          ClientUtility.checkResult(putResponse, uri);
       }
       else
       {
-         log.info("pushing source document [name={}] to server (skipped due to dry run)", srcDoc.getName());
+         log.info("pushing source doc [name={} size={}] to server (skipped due to dry run)", srcDoc.getName(), srcDoc.getTextFlows().size());
       }
    }
 
@@ -325,7 +325,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
    {
       if (!getOpts().isDryRun())
       {
-         log.info("pushing target document [name={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), locale.getLocalLocale(), locale.getLocale() });
+         log.info("pushing target doc [name={} size={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), targetDoc.getTextFlowTargets().size(), locale.getLocalLocale(), locale.getLocale() });
          ClientResponse<String> putTransResponse = translationResources.putTranslations(docUri, new LocaleId(locale.getLocale()), targetDoc, extensions, getOpts().getMergeType());
          ClientUtility.checkResult(putTransResponse, uri);
          String entity = putTransResponse.getEntity(String.class);
@@ -336,7 +336,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       }
       else
       {
-         log.info("pushing target document [name={} client-locale={}] to server [locale={}] (skipped due to dry run)", new Object[] { srcDoc.getName(), locale.getLocalLocale(), locale.getLocale() });
+         log.info("pushing target doc [name={} size={} client-locale={}] to server [locale={}] (skipped due to dry run)", new Object[] { srcDoc.getName(), targetDoc.getTextFlowTargets().size(), locale.getLocalLocale(), locale.getLocale() });
       }
    }
 
