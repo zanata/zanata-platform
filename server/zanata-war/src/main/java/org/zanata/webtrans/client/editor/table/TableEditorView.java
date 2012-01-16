@@ -30,7 +30,6 @@ import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.ui.LoadingPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -189,11 +188,6 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    public void setCachedPages(int cachedPages)
    {
       this.cachedPages = cachedPages;
-   }
-
-   public int getCachedPages()
-   {
-      return cachedPages;
    }
 
    @Override
