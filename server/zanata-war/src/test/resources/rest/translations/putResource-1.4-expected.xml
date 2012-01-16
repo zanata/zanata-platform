@@ -1,0 +1,7 @@
+<ns2:resource xmlns:ns2="http://zanata.org/namespace/api/"
+	xmlns:ns3="http://zanata.org/namespace/api/gettext/" type="FILE"
+	revision="1" xml:lang="en-US" content-type="text/plain">
+	<name>zanata/test/rest/resource/document.txt</name>
+	<extensions/>
+	<text-flows/>
+</ns2:resource>

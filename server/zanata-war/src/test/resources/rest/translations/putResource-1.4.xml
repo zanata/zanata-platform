@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:resource xmlns:ns2="http://zanata.org/namespace/api/"
+	xmlns:ns3="http://zanata.org/namespace/api/gettext/" xmlns:ns4="http://zanata.org/namespace/api/comment/"
+	type="FILE" xml:lang="en-US" content-type="text/plain">
+	<name>zanata/test/rest/resource/document.txt</name>
+	<text-flows>
+		<ns2:text-flow xml:lang="en-US" id="hello world">
+			<content>hello world</content>
+			<extensions>
+				<extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:type="ns4:simpleCommentExtension" xml:space="preserve"><value>####################################################################################################
+
+This file is for reference only, changes have no effect on the generated interface implementations.
+
+####################################################################################################
+
+Id: 11900
+Message: hello world</value></extension>
+			</extensions>
+		</ns2:text-flow>
+	</text-flows>
+</ns2:resource>
