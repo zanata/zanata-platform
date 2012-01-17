@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.rest.client.IProjectIterationResource;
 import org.zanata.rest.client.ITranslationResources;
-import org.zanata.rest.client.IVersion;
+import org.zanata.rest.client.IVersionResource;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.VersionInfo;
 
@@ -56,11 +56,11 @@ public class TestProxyFactory extends ZanataProxyFactory
    }
 
    @Override
-   public IVersion createIVersion()
+   public IVersionResource createIVersionResource()
    {
       try
       {
-         return createProxy(IVersion.class, new URI("/restv1/version"));
+         return createProxy(IVersionResource.class, new URI("/restv1/version"));
       }
       catch (URISyntaxException e)
       {

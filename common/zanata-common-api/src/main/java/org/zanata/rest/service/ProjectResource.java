@@ -21,8 +21,6 @@
 
 package org.zanata.rest.service;
 
-import java.io.InputStream;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
@@ -32,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.zanata.rest.MediaTypes;
+import org.zanata.rest.dto.Project;
 
 
 /**
@@ -51,6 +50,6 @@ public interface ProjectResource
 
    @PUT
    @Consumes({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   public Response put(InputStream messageBody);
+   public Response put(Project project);
 
 }

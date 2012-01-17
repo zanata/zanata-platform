@@ -147,15 +147,11 @@ public class ProjectRestTest extends ZanataRestTest
    @Test
    public void createProjectWithInvalidData()
    {
-      mockIdentity.checkPermission(anyObject(HIterationProject.class), eq("insert"));
-      mockControl.replay();
-
       IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve(PROJECT_SLUG));
       Project project1 = new Project(PROJECT_SLUG, PROJECT_NAME_INVALID, ProjectType.IterationProject, PROJECT_DESC);
       Response response1 = projectService.put(project1);
 
       assertThat(response1.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
-      mockControl.verify();
    }
 
    @Test

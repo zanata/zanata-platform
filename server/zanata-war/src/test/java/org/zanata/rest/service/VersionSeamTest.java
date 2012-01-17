@@ -8,14 +8,14 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDBUnitSeamTest;
-import org.zanata.rest.client.IVersion;
+import org.zanata.rest.client.IVersionResource;
 import org.zanata.rest.client.TestProxyFactory;
 import org.zanata.rest.dto.VersionInfo;
 
 
 public class VersionSeamTest extends ZanataDBUnitSeamTest
 {
-   private IVersion version;
+   private IVersionResource version;
    private final Logger log = LoggerFactory.getLogger(VersionSeamTest.class);
 
    @Override
@@ -28,14 +28,14 @@ public class VersionSeamTest extends ZanataDBUnitSeamTest
    {
       log.debug("setup test version service");
       TestProxyFactory clientRequestFactory = new TestProxyFactory(new SeamMockClientExecutor(this));
-      version = clientRequestFactory.createIVersion();
+      version = clientRequestFactory.createIVersionResource();
    }
 
    @Test
    public void test()
    {
       log.debug("test version service");
-      VersionInfo v = version.get();
+      VersionInfo v = version.get().getEntity();
       String ver = v.getVersionNo();
       log.debug("expected versoin:" + ver);
       assertThat(v.getVersionNo(), is(ver));

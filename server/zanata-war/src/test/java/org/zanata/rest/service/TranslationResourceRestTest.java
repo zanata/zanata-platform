@@ -3,6 +3,7 @@ package org.zanata.rest.service;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isOneOf;
 import static org.hamcrest.Matchers.notNullValue;
@@ -191,7 +192,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    {
       Resource sr = createSourceResource("my.txt");
 
-      ClientResponse<String> response = transResource.post(sr, null);
+      ClientResponse<String> response = transResource.post(sr, null, true);
       assertThat(response.getResponseStatus(), is(Status.CREATED));
       List<String> locationHeader = response.getHeaders().get("Location");
       assertThat(locationHeader.size(), is(1));
@@ -207,9 +208,9 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TextFlow stf = new TextFlow("tf1", LocaleId.EN, "tf1");
       sr.getTextFlows().add(stf);
 
-      ClientResponse<String> postResponse = transResource.post(sr, null);
+      ClientResponse<String> postResponse = transResource.post(sr, null, true);
       assertThat(postResponse.getResponseStatus(), is(Status.CREATED));
-      postResponse = transResource.post(sr, null);
+      postResponse = transResource.post(sr, null, true);
 
       ClientResponse<Resource> resourceGetResponse = transResource.getResource("my.txt", null);
       assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
@@ -259,7 +260,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       */
       // @formatter:on
 
-      ClientResponse<String> postResponse = transResource.post(sr, null); // new
+      ClientResponse<String> postResponse = transResource.post(sr, null, true); // new
                                                                    // StringSet(PoHeader.ID));
       assertThat(postResponse.getResponseStatus(), is(Status.CREATED));
       doGetandAssertThatResourceListContainsNItems(1);
@@ -310,9 +311,8 @@ public class TranslationResourceRestTest extends ZanataRestTest
       assertThat(entity2.getTextFlowTargets().size(), is(entity.getTextFlowTargets().size()));
 
       entity.getTextFlowTargets().clear();
-      // push an empty document
+      // push an empty document      
       response = transResource.putTranslations("my.txt", de_DE, entity, null, MergeType.IMPORT.toString());
-
       assertThat(response.getResponseStatus(), is(Status.OK));
 
       getResponse = transResource.getTranslations("my.txt", de_DE, null);
@@ -707,6 +707,37 @@ public class TranslationResourceRestTest extends ZanataRestTest
       expectTarget1(target1);
       dontExpectTarget1a();
    }
+   
+   @Test
+   public void testZanataGeneratedPoHeaders() throws Exception
+   {
+      LocaleId de_DE = new LocaleId("de");
+      getZero();
+      publishTranslations(); // push some translations (with no headers)
+      // Get the translations with PO headers
+      ClientResponse<TranslationsResource> response = transResource.getTranslations("my.txt", de_DE, new StringSet("gettext"));
+      
+      TranslationsResource translations = response.getEntity();
+      assertThat(translations.getExtensions().size(), greaterThan(0));
+      
+      // List of custom Zanata headers that should be present
+      final String[] requiredHeaders = new String[]{"Last-Translator", "PO-Revision-Date", "Language-Team", "X-Generator",
+            "Language"};
+      
+      for( String reqHeader : requiredHeaders )
+      {
+         boolean headerFound = false;
+         for( HeaderEntry entry : translations.getExtensions().findByType(PoTargetHeader.class).getEntries() )
+         {
+            if( entry.getKey().equals(reqHeader) )
+            {
+               headerFound = true;
+            }
+         }
+         
+         assertThat("PO Target Header '" + reqHeader + "' was not present when pulling translations.", headerFound, is(true));
+      }
+   }
 
    @Test
    public void getBadProject() throws Exception
@@ -1050,7 +1081,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    {
       String id = DOC2_NAME;
       Resource doc = newDoc(id, newTextFlow("HELLO", "Hello World", "hello comment"));
-      Response response = transResource.post(doc, extComment);
+      Response response = transResource.post(doc, extComment, true);
       assertThat(response.getStatus(), is(201));
 
       if (putTarget)

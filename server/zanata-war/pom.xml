@@ -253,6 +253,21 @@
                     <outputDirectory>${project.build.outputDirectory}</outputDirectory>
 				</configuration>
 			</plugin>
+			
+			<plugin>
+				<groupId>org.codehaus.enunciate</groupId>
+				<artifactId>maven-enunciate-plugin</artifactId>
+				<configuration>
+					<configFile>etc/enunciate/enunciate.xml</configFile>
+				</configuration>
+				<!-- <executions>
+					<execution>
+						<goals>
+							<goal>docs</goal>
+						</goals>
+					</execution>
+				</executions> -->
+			</plugin>
 
 		</plugins>
 
@@ -279,6 +294,23 @@
 										</versionRange>
 										<goals>
 											<goal>pseudo</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.enunciate
+										</groupId>
+										<artifactId>
+											maven-enunciate-plugin
+										</artifactId>
+										<versionRange>[1.9-RC1,)</versionRange>
+										<goals>
+											<goal>assemble</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
@@ -850,6 +882,12 @@
 		<dependency>
 			<groupId>org.fedorahosted.openprops</groupId>
 			<artifactId>openprops</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.codehaus.enunciate</groupId>
+			<artifactId>enunciate-core-annotations</artifactId>
+			<version>${enunciate.version}</version>
 		</dependency>
 		
 		<!-- Quartz -->

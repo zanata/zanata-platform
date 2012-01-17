@@ -72,7 +72,7 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
    @Test(dataProvider = "ResourceTestData")
    public void testPostGetResource(Resource sr)
    {
-      translationResource.post(sr, null);
+      translationResource.post(sr, null, true);
       Resource base = resourceTestFactory.getTextFlowTest();
       Resource get = translationResource.getResource(sr.getName(), null).getEntity();
       ResourceTestUtil.clearRevs(base);
@@ -83,7 +83,7 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
     @Test(dataProvider = "ResourceTestData")
    public void testPostGetResourceWithExtension(Resource sr)
    {
-      translationResource.post(sr, new StringSet("gettext;comment"));
+      translationResource.post(sr, new StringSet("gettext;comment"), true);
       Resource get = translationResource.getResource(sr.getName(), new StringSet("gettext;comment")).getEntity();
       ResourceTestUtil.clearRevs(sr);
       ResourceTestUtil.clearRevs(get);
@@ -96,7 +96,7 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
    public void testPostNoExtensionGetResource(Resource sr)
    {
       log.debug("post resource:" + sr.toString());
-      translationResource.post(sr, null);
+      translationResource.post(sr, null, true);
       Resource get = translationResource.getResource(sr.getName(), new StringSet("gettext;comment")).getEntity();
       Resource base = resourceTestFactory.getTextFlowTest();
       ResourceTestUtil.clearRevs(base);
@@ -110,7 +110,7 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
    public void testPostGetNoExtensionResource(Resource sr)
    {
       log.debug("post resource:" + sr.toString());
-      translationResource.post(sr, new StringSet("gettext;comment"));
+      translationResource.post(sr, new StringSet("gettext;comment"), true);
       Resource get = translationResource.getResource(sr.getName(), null).getEntity();
       Resource base = resourceTestFactory.getTextFlowTest();
       ResourceTestUtil.clearRevs(base);
@@ -181,7 +181,7 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
    public void testDeleteResource()
    {
       Resource rs1 = resourceTestFactory.getTextFlowTest2();
-      translationResource.post(rs1, null);
+      translationResource.post(rs1, null, true);
       ClientResponse<String> resourceGetResponse = translationResource.deleteResource(rs1.getName());
       assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
 

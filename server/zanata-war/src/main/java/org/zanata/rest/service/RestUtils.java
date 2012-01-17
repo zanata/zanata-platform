@@ -2,7 +2,6 @@ package org.zanata.rest.service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -31,7 +30,7 @@ public class RestUtils
     * @param entity Hibernate-validator annotated entity
     */
    @SuppressWarnings("unchecked")
-   public static <T extends Serializable> void validateEntity(T entity)
+   public static <T> void validateEntity(T entity)
    {
       @SuppressWarnings("rawtypes")
       ClassValidator<T> validator = new ClassValidator(entity.getClass());
@@ -57,7 +56,7 @@ public class RestUtils
       }
    }
 
-   public static <T extends Serializable> T unmarshall(Class<T> entityClass, InputStream is, MediaType requestContentType, MultivaluedMap<String, String> requestHeaders)
+   public static <T> T unmarshall(Class<T> entityClass, InputStream is, MediaType requestContentType, MultivaluedMap<String, String> requestHeaders)
    {
       MessageBodyReader<T> reader = SeamResteasyProviderFactory.getInstance().getMessageBodyReader(entityClass, entityClass, entityClass.getAnnotations(), requestContentType);
       if (reader == null)

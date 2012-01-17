@@ -8,9 +8,10 @@ import javax.ws.rs.Produces;
 import org.jboss.resteasy.client.ClientResponse;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Project;
+import org.zanata.rest.service.ProjectResource;
 
 //@Path("/projects/p/{projectSlug}")
-public interface IProjectResource
+public interface IProjectResource extends ProjectResource
 {
 
    @GET

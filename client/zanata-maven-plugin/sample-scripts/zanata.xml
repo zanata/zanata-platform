@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config xmlns="http://zanata.org/namespace/config/">
-      <url>https://translate.jboss.org/</url>
+      <url>http://localhost:8080/zanata/</url>
       <project>example-project</project>
       <project-version>1.0</project-version>
+      <project-type>podir</project-type>
       <locales>
          <locale map-from="de-DE">de</locale>
          <locale map-from="es-ES">es</locale>

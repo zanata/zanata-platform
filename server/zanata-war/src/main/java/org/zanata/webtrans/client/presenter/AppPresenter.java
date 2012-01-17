@@ -20,33 +20,26 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.common.TransUnitCount;
-import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
-import org.zanata.webtrans.client.events.DocumentSelectionHandler;
+import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
+import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEventHandler;
-import org.zanata.webtrans.client.events.ProjectStatsRetrievedEvent;
-import org.zanata.webtrans.client.events.ProjectStatsRetrievedEventHandler;
-import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
-import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
+import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
+import org.zanata.webtrans.client.events.ProjectStatsUpdatedEventHandler;
+import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
-import org.zanata.webtrans.client.presenter.AppPresenter.Display.MainView;
-import org.zanata.webtrans.client.presenter.AppPresenter.Display.StatsType;
+import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
-import org.zanata.webtrans.shared.rpc.GetStatusCount;
-import org.zanata.webtrans.shared.rpc.GetStatusCountResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -54,11 +47,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
@@ -67,23 +55,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    // somehow, qualifying WidgetDisplay helps!
    public interface Display extends net.customware.gwt.presenter.client.widget.WidgetDisplay
    {
-      enum MainView
-      {
-         Documents, Editor;
-      }
-
-      enum StatsType
-      {
-         Document, Project;
-      }
-
-      void setDocumentListView(Widget documentListView);
-
-      void setTranslationView(Widget translationView);
 
       void showInMainView(MainView editor);
-
-      MainView getCurrentView();
 
       HasClickHandlers getSignOutLink();
 
@@ -97,65 +70,51 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       void setWorkspaceNameLabel(String workspaceNameLabel, String workspaceTitle);
 
-      void setSelectedDocument(DocumentInfo document);
+      void setDocumentLabel(String docPath, String docName);
 
       void setNotificationMessage(String var);
 
-      /**
-       * Set the statistics to display for the current document or project
-       * 
-       * @param statsFor whether these are document or project stats
-       * @param transStats the stats to display for the document/project
-       */
-      void setStats(StatsType statsFor, TranslationStats transStats);
-
-      /**
-       * Choose which statistics to show in the header bar. Does not change
-       * visibility of the stats bar.
-       * 
-       * @param whichStats the type of stats to display
-       */
-      void showStats(StatsType whichStats);
-
-      /**
-       * Set whether the stats bar is visible.
-       * 
-       * @param visible
-       */
-      void setStatsVisible(boolean visible);
+      void setStats(TranslationStats transStats);
    }
 
    private final DocumentListPresenter documentListPresenter;
    private final TranslationPresenter translationPresenter;
-   private final WorkspaceContext workspaceContext;
+   private final History history;
    private final Identity identity;
+   private final Window window;
+   private final Window.Location windowLocation;
+   private final WorkspaceContext workspaceContext;
 
    private final WebTransMessages messages;
 
    private DocumentInfo selectedDocument;
 
-   private final DispatchAsync dispatcher;
-
    private final TranslationStats selectedDocumentStats = new TranslationStats();
    private final TranslationStats projectStats = new TranslationStats();
+   private TranslationStats currentDisplayStats = new TranslationStats();
+   private MainView currentView = null;
 
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
-   
+
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
+   public AppPresenter(Display display, EventBus eventBus, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
    {
       super(display, eventBus);
-      this.dispatcher = dispatcher;
+      this.history = history;
       this.identity = identity;
       this.messages = messages;
       this.documentListPresenter = documentListPresenter;
       this.translationPresenter = translationPresenter;
+      this.window = window;
+      this.windowLocation = windowLocation;
       this.workspaceContext = workspaceContext;
    }
 
    @Override
    protected void onBind()
    {
+      documentListPresenter.bind();
+      translationPresenter.bind();
 
       registerHandler(eventBus.addHandler(NotificationEvent.getType(), new NotificationEventHandler()
       {
@@ -164,57 +123,39 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          public void onNotification(NotificationEvent event)
          {
             display.setNotificationMessage(event.getMessage());
+            Log.info(event.getMessage());
          }
       }));
 
-      Window.enableScrolling(false);
 
-      documentListPresenter.bind();
-      translationPresenter.bind();
-
-      display.setDocumentListView(documentListPresenter.getDisplay().asWidget());
-      display.setTranslationView(translationPresenter.getDisplay().asWidget());
-
-      display.showInMainView(MainView.Documents);
-
-      registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler()
+      registerHandler(eventBus.addHandler(DocumentStatsUpdatedEvent.getType(), new DocumentStatsUpdatedEventHandler()
       {
-         @Override
-         public void onDocumentSelected(DocumentSelectionEvent event)
-         {
-            DocumentInfo docInfo = documentListPresenter.getDocumentInfo(event.getDocumentId());
 
-            if (docInfo != null && (selectedDocument == null || !event.getDocumentId().equals(selectedDocument.getId())))
+         @Override
+         public void onDocumentStatsUpdated(DocumentStatsUpdatedEvent event)
+         {
+            if (selectedDocument != null && event.getDocId().equals(selectedDocument.getId()))
             {
-               selectedDocument = docInfo;
-               requestDocumentStats(selectedDocument.getId());
-               display.setSelectedDocument(selectedDocument);
+               selectedDocumentStats.set(event.getNewStats());
+               if (currentView.equals(MainView.Editor))
+               {
+                  refreshStatsDisplay();
+               }
             }
          }
       }));
 
-      registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler()
+      registerHandler(eventBus.addHandler(ProjectStatsUpdatedEvent.getType(), new ProjectStatsUpdatedEventHandler()
       {
+
          @Override
-         public void onTransUnitUpdated(TransUnitUpdatedEvent event)
+         public void onProjectStatsRetrieved(ProjectStatsUpdatedEvent event)
          {
-            if (selectedDocument != null && event.getDocumentId().equals(selectedDocument.getId()))
+            projectStats.set(event.getProjectStats());
+            if (currentView.equals(MainView.Documents))
             {
-               adjustStats(selectedDocumentStats, event);
-               display.setStats(StatsType.Document, selectedDocumentStats);
+               refreshStatsDisplay();
             }
-            adjustStats(projectStats, event);
-            display.setStats(StatsType.Project, projectStats);
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(ProjectStatsRetrievedEvent.getType(), new ProjectStatsRetrievedEventHandler()
-      {
-
-         @Override
-         public void onProjectStatsRetrieved(ProjectStatsRetrievedEvent event)
-         {
-            display.setStats(StatsType.Project, event.getProjectStats());
          }
       }));
 
@@ -239,15 +180,28 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          }
       }));
 
-      display.setUserLabel(identity.getPerson().getName());
+      registerHandler(display.getDocumentsLink().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
 
-      String workspaceTitle = Window.Location.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
+            if (token.getView().equals(MainView.Documents))
+            {
+               if (selectedDocument == null)
+                  return; // abort if no doc to edit
+               token.setView(MainView.Editor);
+            }
+            else
+            {
+               token.setView(MainView.Documents);
+            }
+            history.newItem(token.toTokenString());
+         }
+      }));
 
-      display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName(), workspaceTitle);
-
-      Window.setTitle(messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
-
-      History.addValueChangeHandler(new ValueChangeHandler<String>()
+      registerHandler(history.addValueChangeHandler(new ValueChangeHandler<String>()
       {
 
          @Override
@@ -255,9 +209,16 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          {
             processHistoryEvent(event);
          }
-      });
+      }));
 
-      History.fireCurrentHistoryState();
+      display.setUserLabel(identity.getPerson().getName());
+      String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
+      display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName(), workspaceTitle);
+      window.setTitle(messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
+
+      showView(MainView.Documents);
+
+      history.fireCurrentHistoryState();
    }
 
    @Override
@@ -268,39 +229,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    @Override
    public void onRevealDisplay()
    {
-   }
-
-   private void requestDocumentStats(final DocumentId newDocumentId)
-   {
-      dispatcher.execute(new GetStatusCount(newDocumentId), new AsyncCallback<GetStatusCountResult>()
-      {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            Log.error("error fetching GetStatusCount: " + caught.getMessage());
-         }
-
-         @Override
-         public void onSuccess(GetStatusCountResult result)
-         {
-            selectedDocumentStats.set(result.getCount());
-            display.setStats(StatsType.Document, selectedDocumentStats);
-         }
-      });
-   }
-
-   /**
-    * @param Updateevent
-    */
-   private void adjustStats(TranslationStats statsObject, TransUnitUpdatedEvent Updateevent)
-   {
-      TransUnitCount unitCount = statsObject.getUnitCount();
-      TransUnitWords wordCount = statsObject.getWordCount();
-
-      unitCount.increment(Updateevent.getTransUnit().getStatus());
-      unitCount.decrement(Updateevent.getPreviousStatus());
-      wordCount.increment(Updateevent.getTransUnit().getStatus(), Updateevent.getWordCount());
-      wordCount.decrement(Updateevent.getPreviousStatus(), Updateevent.getWordCount());
    }
 
    private void processHistoryEvent(ValueChangeEvent<String> event)
@@ -314,16 +242,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       if (docId != null && (selectedDocument == null || !selectedDocument.getId().equals(docId)))
       {
-         Log.info("Firing document selection event");
-         try
-         {
-            eventBus.fireEvent(new DocumentSelectionEvent(docId));
-         }
-         catch (Throwable t)
-         {
-            Log.info("got exception from document selection event", t);
-         }
-         Log.info("Fired document selection event for " + docId.getId());
+         selectDocument(docId);
+         eventBus.fireEvent(new DocumentSelectionEvent(docId));
       }
 
       // if there is no valid document, don't show the editor
@@ -332,29 +252,66 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          token.setView(MainView.Documents);
       }
 
-      if (token.getView() != display.getCurrentView())
-      {
-         if (display.getCurrentView().equals(MainView.Editor))
-         {
-            translationPresenter.saveEditorPendingChange();
-         }
-         else
-         { // document list view
-            if (selectedDocument != null)
-            {
-               display.setSelectedDocument(selectedDocument);
-            }
-         }
-         display.showInMainView(token.getView());
-      }
-
-      // update toggle link with alternate view, or doc list if no doc is
-      // loaded
-      if (docId == null || token.getView().equals(MainView.Editor))
-         token.setView(MainView.Documents);
-      else
-         token.setView(MainView.Editor);
-      ((Anchor) display.getDocumentsLink()).setHref("#" + token.toTokenString());
+      showView(token.getView());
    }
 
+   private void showView(MainView viewToShow)
+   {
+      if (currentView != viewToShow)
+      {
+         switch (viewToShow)
+         {
+         case Documents:
+            if (currentView == MainView.Editor)
+               translationPresenter.saveEditorPendingChange();
+            display.setDocumentLabel("", messages.noDocumentSelected());
+            currentDisplayStats = projectStats;
+            break;
+
+         case Editor:
+            if (selectedDocument != null)
+            {
+               display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
+            }
+            currentDisplayStats = selectedDocumentStats;
+            break;
+         }
+         display.showInMainView(viewToShow);
+         currentView = viewToShow;
+         refreshStatsDisplay();
+      }
+   }
+
+   /**
+    * Set selected document to the given document, update name and stats to
+    * match the newly selected document.
+    * 
+    * @param docId id of the document to select
+    */
+   private void selectDocument(DocumentId docId)
+   {
+
+      if (selectedDocument == null || !docId.equals(selectedDocument.getId()))
+      {
+         DocumentInfo docInfo = documentListPresenter.getDocumentInfo(docId);
+         if (docInfo != null)
+         {
+            selectedDocument = docInfo;
+            selectedDocumentStats.set(selectedDocument.getStats());
+            if (currentView == MainView.Editor)
+            {
+               display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
+               refreshStatsDisplay();
+            }
+         }
+      }
+   }
+
+   /**
+    * Ensure current stats are displayed in the display.
+    */
+   private void refreshStatsDisplay()
+   {
+      display.setStats(currentDisplayStats);
+   }
 }

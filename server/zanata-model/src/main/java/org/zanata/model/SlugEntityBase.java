@@ -27,7 +27,6 @@ import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
-import org.zanata.model.type.StatusType;
 import org.zanata.model.validator.Slug;
 
 @MappedSuperclass
@@ -36,6 +35,11 @@ public class SlugEntityBase extends ModelEntityBase
    private String slug;
 
    private StatusType status;
+
+   public enum StatusType
+   {
+      Current, Retired, Obsolete
+   }
 
    @NaturalId
    @Length(min = 1, max = 40)

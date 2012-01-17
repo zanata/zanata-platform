@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:project type="IterationProject" id="test-project"
+	xmlns:ns2="http://zanata.org/namespace/api/">
+	<name>Test Project</name>
+</ns2:project>

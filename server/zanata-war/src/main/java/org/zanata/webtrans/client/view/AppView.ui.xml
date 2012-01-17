@@ -68,6 +68,11 @@
         .topPanel-right-menu {
 	       margin-right:6px;
         }
+        
+        .documents-link {
+            cursor: pointer;
+            display: inline;
+        }
 		
 	</ui:style>
 	<g:LayoutPanel>
@@ -103,7 +108,7 @@
 					<g:FlowPanel>
 					<g:HTMLPanel styleName="{style.topPanel-Workspace}">
 						<nobr>
-							<g:Anchor href="#" ui:field="documentsLink"><ui:msg>Documents</ui:msg></g:Anchor>
+						    <g:Label ui:field="documentsLink" styleName="{style.documents-link}"><ui:msg>Documents</ui:msg></g:Label>
 							<span class="{style.divider}">></span>
 							<em>
 								<span ui:field="selectedDocumentPathSpan"/><span ui:field="selectedDocumentSpan"><ui:msg>No document selected</ui:msg></span>

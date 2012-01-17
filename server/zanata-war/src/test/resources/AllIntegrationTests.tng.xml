@@ -38,4 +38,14 @@
      			<class name="org.zanata.rest.service.VersionSeamTest"/>
      		</classes>
      	</test>
+     	<test name="Raw Rest Tests">
+     		<classes>
+     			<class name="org.zanata.rest.service.raw.AccountRestTest"/>
+     			<class name="org.zanata.rest.service.raw.GlossaryRestTest"/>
+     			<class name="org.zanata.rest.service.raw.ProjectIterationRestTest"/>
+     			<class name="org.zanata.rest.service.raw.ProjectRestTest"/>
+     			<class name="org.zanata.rest.service.raw.FileRestTest"/>
+     			<class name="org.zanata.rest.service.raw.VersionRestTest"/>
+     		</classes>
+     	</test>
 </suite>

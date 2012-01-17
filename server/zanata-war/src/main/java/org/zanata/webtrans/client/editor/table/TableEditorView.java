@@ -195,11 +195,6 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
       this.cachedPages = cachedPages;
    }
 
-   public int getCachedPages()
-   {
-      return cachedPages;
-   }
-
    @Override
    public RedirectingCachedTableModel<TransUnit> getTableModel()
    {

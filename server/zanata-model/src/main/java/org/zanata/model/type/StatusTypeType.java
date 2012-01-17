@@ -30,6 +30,7 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.type.ImmutableType;
 import org.hibernate.type.LiteralType;
 import org.hibernate.type.StringType;
+import org.zanata.model.SlugEntityBase;
 
 public class StatusTypeType extends ImmutableType implements LiteralType
 {
@@ -57,7 +58,7 @@ public class StatusTypeType extends ImmutableType implements LiteralType
       }
       else
       {
-         return StatusType.valueOf(string);
+         return SlugEntityBase.StatusType.valueOf(string);
       }
    }
 
@@ -82,7 +83,7 @@ public class StatusTypeType extends ImmutableType implements LiteralType
    @Override
    public Class<?> getReturnedClass()
    {
-      return StatusType.class;
+      return SlugEntityBase.StatusType.class;
    }
 
    @Override

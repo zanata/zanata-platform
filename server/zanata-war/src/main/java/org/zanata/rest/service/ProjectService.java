@@ -1,6 +1,5 @@
 package org.zanata.rest.service;
 
-import java.io.InputStream;
 import java.net.URI;
 
 import javax.ws.rs.Consumes;
@@ -54,12 +53,14 @@ public class ProjectService implements ProjectResource
 
    @HeaderParam(HttpHeaderNames.ACCEPT)
    @DefaultValue(MediaType.APPLICATION_XML)
+   @Context
    private MediaType accept;
 
    @Context
    private UriInfo uri;
 
    @HeaderParam("Content-Type")
+   @Context
    private MediaType requestContentType;
 
    @Context
@@ -130,7 +131,7 @@ public class ProjectService implements ProjectResource
    @Override
    @PUT
    @Consumes( { MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   public Response put(InputStream messageBody)
+   public Response put(Project project)
    {
 
       ResponseBuilder response;
@@ -166,7 +167,6 @@ public class ProjectService implements ProjectResource
          response = Response.ok();
       }
 
-      Project project = RestUtils.unmarshall(Project.class, messageBody, requestContentType, headers.getRequestHeaders());
       transfer(project, hProject);
 
       hProject = projectDAO.makePersistent(hProject);

@@ -20,7 +20,6 @@
  */
 package org.zanata.rest.service;
 
-import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.ArrayList;
@@ -60,6 +59,7 @@ import org.jboss.resteasy.util.GenericType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
@@ -84,7 +84,6 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.SlugEntityBase;
-import org.zanata.model.type.StatusType;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
@@ -93,6 +92,7 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.security.BaseSecurityChecker;
 import org.zanata.service.LocaleService;
 
 import com.google.common.collect.Sets;
@@ -102,7 +102,7 @@ import com.google.common.collect.Sets;
 @Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Consumes( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Transactional
-public class TranslationResourcesService implements TranslationResourcesResource
+public class TranslationResourcesService extends BaseSecurityChecker implements TranslationResourcesResource
 {
 
    // security actions
@@ -123,16 +123,8 @@ public class TranslationResourcesService implements TranslationResourcesResource
    @PathParam("iterationSlug")
    private String iterationSlug;
 
-   @QueryParam("ext")
-   @DefaultValue("")
-   private Set<String> extensions;
-   
-   @QueryParam("copyTrans")
-   @DefaultValue("true")
-   private boolean copytrans;
-
-
    @HeaderParam("Content-Type")
+   @Context
    private MediaType requestContentType;
 
    @Context
@@ -164,9 +156,6 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
    @In
    private ResourceUtils resourceUtils;
-
-   @In
-   Identity identity;
 
    @In
    private ETagUtils eTagUtils;
@@ -248,7 +237,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    @Override
    @GET
    @Wrapped(element = "resources", namespace = Namespaces.ZANATA_API)
-   public Response get()
+   public Response get(@QueryParam("ext") Set<String> extensions)
    {
 
       HProjectIteration hProjectIteration = retrieveIteration(OPERATION_GET);
@@ -284,24 +273,22 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
    @Override
    @POST
-   public Response post(InputStream messageBody)
+   @Restrict("#{translationResourcesService.checkPermission('import-template')}")
+   public Response post(Resource resource, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans)
    {
       HProjectIteration hProjectIteration = retrieveIteration(OPERATION_PUT);
 
-      identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
-
       validateExtensions(PoHeader.ID, PotEntryHeader.ID);
 
-      Resource entity = RestUtils.unmarshall(Resource.class, messageBody, requestContentType, headers.getRequestHeaders());
-      HDocument document = documentDAO.getByDocId(hProjectIteration, entity.getName());
-      HLocale hLocale = validateSourceLocale(entity.getLang());
+      HDocument document = documentDAO.getByDocId(hProjectIteration, resource.getName());
+      HLocale hLocale = validateSourceLocale(resource.getLang());
       int nextDocRev;
       if (document != null)
       {
          if (!document.isObsolete())
          {
             // updates must happen through PUT on the actual resource
-            return Response.status(Status.CONFLICT).entity("A document with name " + entity.getName() + " already exists.").build();
+            return Response.status(Status.CONFLICT).entity("A document with name " + resource.getName() + " already exists.").build();
          }
          // a deleted document is being created again
          nextDocRev = document.getRevision() + 1;
@@ -310,19 +297,19 @@ public class TranslationResourcesService implements TranslationResourcesResource
       else
       {
          nextDocRev = 1;
-         document = new HDocument(entity.getName(), entity.getContentType(), hLocale);
+         document = new HDocument(resource.getName(), resource.getContentType(), hLocale);
          document.setProjectIteration(hProjectIteration);
       }
-      hProjectIteration.getDocuments().put(entity.getName(), document);
+      hProjectIteration.getDocuments().put(resource.getName(), document);
       
-      resourceUtils.transferFromResource(entity, document, extensions, hLocale, nextDocRev);
+      resourceUtils.transferFromResource(resource, document, extensions, hLocale, nextDocRev);
 
       document = documentDAO.makePersistent(document);
       documentDAO.flush();
       
       if (copytrans && nextDocRev == 1)
       {
-         copyClosestEquivalentTranslation(document.getId(), entity.getName(), projectSlug, iterationSlug);
+         copyClosestEquivalentTranslation(document.getId(), resource.getName(), projectSlug, iterationSlug);
       }
            
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, document.getDocId(), extensions);
@@ -334,7 +321,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
-   public Response getResource(@PathParam("id") String idNoSlash)
+   public Response getResource(@PathParam("id") String idNoSlash, @QueryParam("ext") Set<String> extensions)
    {
       log.debug("start get resource");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
@@ -342,7 +329,8 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
       validateExtensions(PoHeader.ID, PotEntryHeader.ID);
 
-      EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
+      final Set<String> extSet = new HashSet<String>(extensions);
+      EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extSet);
 
       ResponseBuilder response = request.evaluatePreconditions(etag);
       if (response != null)
@@ -400,12 +388,13 @@ public class TranslationResourcesService implements TranslationResourcesResource
          throw new WebApplicationException(Response.status(Status.FORBIDDEN).entity(e.getMessage()).build());
       }
    }
-
+   
    @Override
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE)
+   @Restrict("#{translationResourcesService.checkPermission('import-template')}")
    // /r/{id}
-   public Response putResource(@PathParam("id") String idNoSlash, InputStream messageBody)
+   public Response putResource(@PathParam("id") String idNoSlash, Resource resource, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans)
    {
       log.debug("start put resource");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
@@ -414,16 +403,13 @@ public class TranslationResourcesService implements TranslationResourcesResource
       boolean changed = false;
       HProjectIteration hProjectIteration = retrieveIteration(OPERATION_PUT);
 
-      identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
-
       validateExtensions();
 
-      Resource entity = RestUtils.unmarshall(Resource.class, messageBody, requestContentType, headers.getRequestHeaders());
-      log.debug("resource details: {0}", entity);
-      boolean validResourceEnc = this.resourceUtils.validateResourceEncoding(entity);
+      log.debug("resource details: {0}", resource);
+      boolean validResourceEnc = this.resourceUtils.validateResourceEncoding(resource);
       
       HDocument document = documentDAO.getByDocId(hProjectIteration, id);
-      HLocale hLocale = validateSourceLocale(entity.getLang());
+      HLocale hLocale = validateSourceLocale(resource.getLang());
       int nextDocRev;
       if (document == null)
       { // must be a create operation
@@ -435,7 +421,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
          }
          changed = true;
          // TODO check that entity name matches id parameter
-         document = new HDocument(entity.getName(), entity.getContentType(), hLocale);
+         document = new HDocument(resource.getName(), resource.getContentType(), hLocale);
          document.setProjectIteration(hProjectIteration);
          hProjectIteration.getDocuments().put(id, document);
          response = Response.created(uri.getAbsolutePath());
@@ -467,7 +453,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
          response = Response.ok();
       }
 
-      changed |= resourceUtils.transferFromResource(entity, document, extensions, hLocale, nextDocRev);
+      changed |= resourceUtils.transferFromResource(resource, document, extensions, hLocale, nextDocRev);
 
 
       if (changed)
@@ -480,7 +466,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
       if (copytrans && nextDocRev == 1)
       {
-         copyClosestEquivalentTranslation(document.getId(), entity.getName(), projectSlug, iterationSlug);
+         copyClosestEquivalentTranslation(document.getId(), resource.getName(), projectSlug, iterationSlug);
       }
       
       if( !validResourceEnc )
@@ -496,15 +482,14 @@ public class TranslationResourcesService implements TranslationResourcesResource
    @Override
    @DELETE
    @Path(RESOURCE_SLUG_TEMPLATE)
+   @Restrict("#{translationResourcesService.checkPermission('import-template')}")
    // /r/{id}
    public Response deleteResource(@PathParam("id") String idNoSlash)
    {
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration(OPERATION_DELETE);
 
-      identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
-
-      EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
+      EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, new HashSet<String>());
 
       ResponseBuilder response = request.evaluatePreconditions(etag);
       if (response != null)
@@ -522,7 +507,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
    // /r/{id}/meta
-   public Response getResourceMeta(@PathParam("id") String idNoSlash)
+   public Response getResourceMeta(@PathParam("id") String idNoSlash, @QueryParam("ext") Set<String> extensions)
    {
       log.debug("start to get resource meta");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
@@ -556,14 +541,13 @@ public class TranslationResourcesService implements TranslationResourcesResource
    @Override
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
+   @Restrict("#{translationResourcesService.checkPermission('import-template')}")
    // /r/{id}/meta
-   public Response putResourceMeta(@PathParam("id") String idNoSlash, InputStream messageBody)
+   public Response putResourceMeta(@PathParam("id") String idNoSlash, ResourceMeta messageBody, @QueryParam("ext") Set<String> extensions)
    {
       log.debug("start to put resource meta");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration(OPERATION_PUT);
-
-      identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 
@@ -574,8 +558,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
       }
 
       log.debug("pass evaluation");
-      ResourceMeta entity = RestUtils.unmarshall(ResourceMeta.class, messageBody, requestContentType, headers.getRequestHeaders());
-      log.debug("put resource meta: {0}", entity);
+      log.debug("put resource meta: {0}", messageBody);
 
       HDocument document = documentDAO.getByDocId(hProjectIteration, id);
       if (document == null)
@@ -586,8 +569,8 @@ public class TranslationResourcesService implements TranslationResourcesResource
       {
          return Response.status(Status.NOT_FOUND).build();
       }
-      HLocale hLocale = validateTargetLocale(entity.getLang(), projectSlug, iterationSlug);
-      boolean changed = resourceUtils.transferFromResourceMetadata(entity, document, extensions, hLocale, document.getRevision() + 1);
+      HLocale hLocale = validateTargetLocale(messageBody.getLang(), projectSlug, iterationSlug);
+      boolean changed = resourceUtils.transferFromResourceMetadata(messageBody, document, extensions, hLocale, document.getRevision() + 1);
 
       if (changed)
       {
@@ -600,15 +583,6 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
    }
 
-   @Override
-   @GET
-   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   // /r/{id}/translations/{locale}
-   public Response getTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
-   {
-      return this.getTranslations(idNoSlash, locale, this.extensions);
-   }
-   
    /**
     * Returns a set of translations for a given locale and extension set.
     * @param idNoSlash The document Id.
@@ -616,7 +590,11 @@ public class TranslationResourcesService implements TranslationResourcesResource
     * @param extensions The extensions to bring over.
     * @return Response
     */
-   public Response getTranslations( String idNoSlash, LocaleId locale, Set<String> extensions )
+   @Override
+   @GET
+   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
+   // /r/{id}/translations/{locale}
+   public Response getTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, @QueryParam("ext") Set<String> extensions)
    {
       log.debug("start to get translation");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
@@ -657,15 +635,15 @@ public class TranslationResourcesService implements TranslationResourcesResource
    @Override
    @DELETE
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
+   @Restrict("#{translationResourcesService.checkPermission('import-translation')}")
    // /r/{id}/translations/{locale}
    public Response deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
    {
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration(OPERATION_DELETE);
-      identity.checkPermission(hProjectIteration, ACTION_IMPORT_TRANSLATION);
 
       // TODO find correct etag
-      EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
+      EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, new HashSet<String>());
 
       ResponseBuilder response = request.evaluatePreconditions(etag);
       if (response != null)
@@ -696,28 +674,27 @@ public class TranslationResourcesService implements TranslationResourcesResource
    @Override
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
+   @Restrict("#{translationResourcesService.checkPermission('import-translation')}")
    // /r/{id}/translations/{locale}
-   public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, @QueryParam("merge") @DefaultValue("auto") String _merge, InputStream messageBody)
+   public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") Set<String> extensions, @QueryParam("merge") @DefaultValue("auto") String merge)
    {
       log.debug("start put translations");
       MergeType mergeType;
       try
       {
-         mergeType = MergeType.valueOf(_merge.toUpperCase());
+         mergeType = MergeType.valueOf(merge.toUpperCase());
       }
       catch (Exception e)
       {
-         return Response.status(Status.BAD_REQUEST).entity("bad merge type "+_merge).build();
+         return Response.status(Status.BAD_REQUEST).entity("bad merge type "+merge).build();
       }
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration(OPERATION_PUT);
 
-      identity.checkPermission(hProjectIteration, ACTION_IMPORT_TRANSLATION);
-
       validateExtensions();
 
       // TODO create valid etag
-      EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
+      EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, new HashSet<String>());
 
       ResponseBuilder response = request.evaluatePreconditions(etag);
       if (response != null)
@@ -733,14 +710,13 @@ public class TranslationResourcesService implements TranslationResourcesResource
       }
 
 
-      TranslationsResource entity = RestUtils.unmarshall(TranslationsResource.class, messageBody, requestContentType, headers.getRequestHeaders());
-      log.debug("start put translations entity:{0}" , entity);
+      log.debug("start put translations entity:{0}" , messageBody);
 
       boolean changed = false;
 
       HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
       // handle extensions
-      changed |= resourceUtils.transferFromTranslationsResourceExtensions(entity.getExtensions(true), document, extensions, hLocale, mergeType);
+      changed |= resourceUtils.transferFromTranslationsResourceExtensions(messageBody.getExtensions(true), document, extensions, hLocale, mergeType);
 
       List<HPerson> newPeople = new ArrayList<HPerson>();
       // NB: removedTargets only applies for MergeType.IMPORT
@@ -759,7 +735,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
          }
       }
 
-      for (TextFlowTarget current : entity.getTextFlowTargets())
+      for (TextFlowTarget current : messageBody.getTextFlowTargets())
       {
          String resId = current.getResId();
          HTextFlow textFlow = textFlowDAO.getById(document, resId);
@@ -892,13 +868,13 @@ public class TranslationResourcesService implements TranslationResourcesResource
       {
          throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
       }
-      else if (hProjectIteration.getStatus().equals(StatusType.Obsolete) || hProject.getStatus().equals(StatusType.Obsolete))
+      else if (hProjectIteration.getStatus().equals(SlugEntityBase.StatusType.Obsolete) || hProject.getStatus().equals(SlugEntityBase.StatusType.Obsolete))
       {
          throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
       }
-      else if (operation.equals(OPERATION_PUT))
+      else if (OPERATION_PUT.equals(operation))
       {
-         if (hProjectIteration.getStatus().equals(StatusType.Retired) || hProject.getStatus().equals(StatusType.Retired))
+         if (hProjectIteration.getStatus().equals(SlugEntityBase.StatusType.Retired) || hProject.getStatus().equals(SlugEntityBase.StatusType.Retired))
          {
             throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
          }
@@ -951,6 +927,12 @@ public class TranslationResourcesService implements TranslationResourcesResource
       {
          events.raiseTransactionSuccessEvent(EVENT_COPY_TRANS, docId, projectSlug, iterationSlug);
       }
+   }
+   
+   @Override
+   public Object getSecuredEntity()
+   {
+      return retrieveIteration(null);
    }
 
 }
