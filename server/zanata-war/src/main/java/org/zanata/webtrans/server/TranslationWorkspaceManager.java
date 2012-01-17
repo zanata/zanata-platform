@@ -15,7 +15,7 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.zanata.ZanataInit;
 import org.zanata.common.LocaleId;
-import org.zanata.model.type.StatusType;
+import org.zanata.model.SlugEntityBase;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.PersonId;
@@ -129,25 +129,25 @@ public class TranslationWorkspaceManager
    {
       Session session = (Session) Component.getInstance("session");
 
-      StatusType projectStatus = (StatusType) session.createQuery("select p.status from HProject as p where p.slug = :slug").setParameter("slug", workspaceId.getProjectIterationId().getProjectSlug()).uniqueResult();
-      if (projectStatus.equals(StatusType.Obsolete))
+      SlugEntityBase.StatusType projectStatus = (SlugEntityBase.StatusType) session.createQuery("select p.status from HProject as p where p.slug = :slug").setParameter("slug", workspaceId.getProjectIterationId().getProjectSlug()).uniqueResult();
+      if (projectStatus.equals(SlugEntityBase.StatusType.Obsolete))
       {
          throw new NoSuchWorkspaceException("Project is obsolete");
       }
 
-      StatusType projectIterationStatus = (StatusType) session.createQuery("select it.status from HProjectIteration it where it.slug = :slug and it.project.slug = :pslug").setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug()).setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug()).uniqueResult();
-      if (projectIterationStatus.equals(StatusType.Obsolete))
+      SlugEntityBase.StatusType projectIterationStatus = (SlugEntityBase.StatusType) session.createQuery("select it.status from HProjectIteration it where it.slug = :slug and it.project.slug = :pslug").setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug()).setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug()).uniqueResult();
+      if (projectIterationStatus.equals(SlugEntityBase.StatusType.Obsolete))
       {
          throw new NoSuchWorkspaceException("Project Iteration is obsolete");
       }
 
-      String workspaceName = (String) session.createQuery("select it.project.name || ' (' || it.slug || ')' " + "from HProjectIteration it " + "where it.slug = :slug " + "and it.project.slug = :pslug " + "and it.status <> :status").setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug()).setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug()).setParameter("status", StatusType.Obsolete).uniqueResult();
+      String workspaceName = (String) session.createQuery("select it.project.name || ' (' || it.slug || ')' " + "from HProjectIteration it " + "where it.slug = :slug " + "and it.project.slug = :pslug " + "and it.status <> :status").setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug()).setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug()).setParameter("status", SlugEntityBase.StatusType.Obsolete).uniqueResult();
       if (workspaceName == null)
       {
          throw new NoSuchWorkspaceException("Invalid workspace Id");
       }
 
-      if (projectStatus.equals(StatusType.Retired) || projectIterationStatus.equals(StatusType.Retired))
+      if (projectStatus.equals(SlugEntityBase.StatusType.Retired) || projectIterationStatus.equals(SlugEntityBase.StatusType.Retired))
       {
          return new WorkspaceContext(workspaceId, workspaceName, ULocale.getDisplayName(workspaceId.getLocaleId().toJavaName(), ULocale.ENGLISH), true);
       }
