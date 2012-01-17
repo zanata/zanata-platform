@@ -1,6 +1,6 @@
 package org.zanata.webtrans.client.history;
 
-import org.zanata.webtrans.client.presenter.AppPresenter;
+import org.zanata.webtrans.client.presenter.MainView;
 
 import com.allen_sauer.gwt.log.client.Log;
 
@@ -25,13 +25,13 @@ public class HistoryToken
    public static final String KEY_DOC_FILTER_OPTION = "filtertype";
    public static final String VALUE_DOC_FILTER_EXACT = "exact";
 
-   private AppPresenter.Display.MainView view;
+   private MainView view;
    private String fullDocPath;
    private boolean docFilterExact;
    private String docFilterText;
 
    // defaults
-   private static final AppPresenter.Display.MainView DEFAULT_VIEW = AppPresenter.Display.MainView.Documents;
+   private static final MainView DEFAULT_VIEW = MainView.Documents;
    private static final String DEFAULT_DOCUMENT_PATH = "";
    private static final String DEFAULT_DOC_FILTER_TEXT = "";
    private static final boolean DEFAULT_DOC_FILTER_EXACT = false;
@@ -81,7 +81,7 @@ public class HistoryToken
          {
             if (value.equals(VALUE_EDITOR_VIEW))
             {
-               historyToken.setView(AppPresenter.Display.MainView.Editor);
+               historyToken.setView(MainView.Editor);
             }
             // else default will be used
          }
@@ -119,12 +119,12 @@ public class HistoryToken
          this.fullDocPath = fullDocPath;
    }
 
-   public AppPresenter.Display.MainView getView()
+   public MainView getView()
    {
       return view;
    }
 
-   public void setView(AppPresenter.Display.MainView view)
+   public void setView(MainView view)
    {
       if (view == null)
          this.view = DEFAULT_VIEW;

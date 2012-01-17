@@ -5,13 +5,13 @@ import org.zanata.common.TranslationStats;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class ProjectStatsRetrievedEvent extends GwtEvent<ProjectStatsRetrievedEventHandler>
+public class ProjectStatsUpdatedEvent extends GwtEvent<ProjectStatsUpdatedEventHandler>
 {
 
    /**
     * Handler type.
     */
-   private static Type<ProjectStatsRetrievedEventHandler> TYPE;
+   private static Type<ProjectStatsUpdatedEventHandler> TYPE;
    private TranslationStats projectStats;
 
    /**
@@ -19,12 +19,12 @@ public class ProjectStatsRetrievedEvent extends GwtEvent<ProjectStatsRetrievedEv
     * 
     * @return returns the handler type
     */
-   public static Type<ProjectStatsRetrievedEventHandler> getType()
+   public static Type<ProjectStatsUpdatedEventHandler> getType()
    {
-      return TYPE != null ? TYPE : (TYPE = new Type<ProjectStatsRetrievedEventHandler>());
+      return TYPE != null ? TYPE : (TYPE = new Type<ProjectStatsUpdatedEventHandler>());
    }
 
-   public ProjectStatsRetrievedEvent(TranslationStats projectStats)
+   public ProjectStatsUpdatedEvent(TranslationStats projectStats)
    {
       this.projectStats = projectStats;
    }
@@ -35,13 +35,13 @@ public class ProjectStatsRetrievedEvent extends GwtEvent<ProjectStatsRetrievedEv
    }
 
    @Override
-   protected void dispatch(ProjectStatsRetrievedEventHandler handler)
+   protected void dispatch(ProjectStatsUpdatedEventHandler handler)
    {
       handler.onProjectStatsRetrieved(this);
    }
 
    @Override
-   public GwtEvent.Type<ProjectStatsRetrievedEventHandler> getAssociatedType()
+   public GwtEvent.Type<ProjectStatsUpdatedEventHandler> getAssociatedType()
    {
       return getType();
    }

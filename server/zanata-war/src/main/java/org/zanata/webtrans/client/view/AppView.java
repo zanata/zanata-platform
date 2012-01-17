@@ -22,10 +22,12 @@ package org.zanata.webtrans.client.view;
 
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.presenter.AppPresenter;
+import org.zanata.webtrans.client.presenter.DocumentListPresenter;
+import org.zanata.webtrans.client.presenter.MainView;
+import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
-import org.zanata.webtrans.shared.model.DocumentInfo;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
@@ -36,6 +38,7 @@ import com.google.gwt.layout.client.Layout.AnimationCallback;
 import com.google.gwt.layout.client.Layout.Layer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
@@ -55,22 +58,16 @@ public class AppView extends Composite implements AppPresenter.Display
    private final int NOTIFICATION_TIME = 2500;
 
    @UiField
-   Anchor signOutLink, leaveLink, helpLink, documentsLink;
+   Anchor signOutLink, leaveLink, helpLink;
 
    @UiField(provided = true)
    TransUnitCountBar translationStatsBar;
 
-   private final TranslationStats documentStats, projectStats;
-   private StatsType showingStats;
-
    @UiField
-   Label notificationMessage;
+   Label notificationMessage, user, documentsLink;
 
    @UiField
    SpanElement selectedDocumentSpan, selectedDocumentPathSpan;
-
-   @UiField
-   Label user;
 
    @UiField
    LayoutPanel container, topPanel;
@@ -78,37 +75,35 @@ public class AppView extends Composite implements AppPresenter.Display
    @UiField(provided = true)
    final Resources resources;
 
+   // TODO may be able to make these provided=true widgets
    private Widget documentListView;
-
    private Widget translationView;
 
-   final WebTransMessages messages;
-
-   private boolean showMessage = true;
-
-   private MainView currentView;
-
    @Inject
-   public AppView(Resources resources, WebTransMessages messages)
+   public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, TranslationPresenter.Display translationView)
    {
       this.resources = resources;
-      this.messages = messages;
 
       StyleInjector.inject(resources.style().getText(), true);
 
       // this must be initialized before uiBinder.createAndBindUi(), or an
       // exception will be thrown at runtime
       translationStatsBar = new TransUnitCountBar(messages, true);
-
-      documentStats = new TranslationStats();
-      projectStats = new TranslationStats();
-      showingStats = StatsType.Project;
-      setStatsVisible(false); // hide until there is a value to display
+      translationStatsBar.setVisible(false); // hide until there is a value to
+                                             // display
 
       initWidget(uiBinder.createAndBindUi(this));
 
       helpLink.setHref(messages.hrefHelpLink());
       helpLink.setTarget("_BLANK");
+
+      this.documentListView = documentListView.asWidget();
+      this.container.add(this.documentListView);
+
+      this.translationView = translationView.asWidget();
+      this.container.add(this.translationView);
+
+      Window.enableScrolling(false);
    }
 
    @Override
@@ -125,33 +120,12 @@ public class AppView extends Composite implements AppPresenter.Display
       case Documents:
          container.setWidgetTopBottom(documentListView, 0, Unit.PX, 0, Unit.PX);
          container.setWidgetTopHeight(translationView, 0, Unit.PX, 0, Unit.PX);
-         resetSelectedDocument();
-         showStats(StatsType.Project);
-         setStatsVisible(true);
-         currentView = MainView.Documents;
          break;
       case Editor:
          container.setWidgetTopBottom(translationView, 0, Unit.PX, 0, Unit.PX);
          container.setWidgetTopHeight(documentListView, 0, Unit.PX, 0, Unit.PX);
-         showStats(StatsType.Document);
-         setStatsVisible(true);
-         currentView = MainView.Editor;
          break;
       }
-   }
-
-   @Override
-   public void setDocumentListView(Widget documentListView)
-   {
-      this.container.add(documentListView);
-      this.documentListView = documentListView;
-   }
-
-   @Override
-   public void setTranslationView(Widget editorView)
-   {
-      this.container.add(editorView);
-      this.translationView = editorView;
    }
 
    @Override
@@ -195,93 +169,38 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public void setSelectedDocument(DocumentInfo document)
+   public void setDocumentLabel(String docPath, String docName)
    {
-      selectedDocumentPathSpan.setInnerText(document.getPath());
-      selectedDocumentSpan.setInnerText(document.getName());
-   }
-
-   public void resetSelectedDocument()
-   {
-      selectedDocumentPathSpan.setInnerText("");
-      selectedDocumentSpan.setInnerText("No document selected");
+      selectedDocumentPathSpan.setInnerText(docPath);
+      selectedDocumentSpan.setInnerText(docName);
    }
 
    private final AnimationCallback callback = new AnimationCallback()
    {
-
       @Override
       public void onAnimationComplete()
       {
          notificationMessage.setText("");
-         showMessage = true;
       }
 
       @Override
       public void onLayout(Layer layer, double progress)
       {
       }
-
    };
 
-   public void setNotificationMessage(String var)
+   @Override
+   public void setNotificationMessage(String message)
    {
-      if (showMessage)
-      {
-         topPanel.forceLayout();
-         notificationMessage.setText(var);
-         showMessage = false;
-         topPanel.animate(NOTIFICATION_TIME, callback);
-      }
+      topPanel.forceLayout();
+      notificationMessage.setText(message);
+      topPanel.animate(NOTIFICATION_TIME, callback);
    }
 
    @Override
-   public MainView getCurrentView()
+   public void setStats(TranslationStats transStats)
    {
-      return currentView;
-   }
-
-   @Override
-   public void setStatsVisible(boolean visible)
-   {
-      translationStatsBar.setVisible(visible);
-   }
-
-   @Override
-   public void setStats(StatsType statsFor, TranslationStats transStats)
-   {
-      switch (statsFor)
-      {
-      case Document:
-         documentStats.set(transStats);
-         break;
-      case Project:
-         projectStats.set(transStats);
-         break;
-      }
-      updateStatsDisplay();
-   }
-
-   @Override
-   public void showStats(StatsType whichStats)
-   {
-      showingStats = whichStats;
-      updateStatsDisplay();
-   }
-
-   /**
-    * @param whichStats the stats type being displayed
-    */
-   private void updateStatsDisplay()
-   {
-      switch (showingStats)
-      {
-      case Document:
-         translationStatsBar.setStats(documentStats);
-         break;
-      case Project:
-         translationStatsBar.setStats(projectStats);
-         break;
-      }
+      translationStatsBar.setStats(transStats);
+      translationStatsBar.setVisible(true);
    }
 }

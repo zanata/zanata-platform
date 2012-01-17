@@ -7,7 +7,6 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 
 public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResult>
 {
-
    private static final long serialVersionUID = 1L;
 
    private TransUnitId transUnitId;

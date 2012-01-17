@@ -2,7 +2,9 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
-
+    
+    <!-- This is a 1.5 and 1.6 release changeset. Use this changelog for 1.5 and 1.6 related change -->
+	
 	<changeSet author="aeng@redhat.com" id="1">
         <comment>Alter HProjectIteration/HProject - add status column</comment>
         <addColumn tableName="HProjectIteration">
@@ -19,9 +21,12 @@
     </changeSet>    
     
     <changeSet author="aeng@redhat.com" id="2">
+        <validCheckSum>8b576cc32f673719e6bc7c6fb272469</validCheckSum>
+        <validCheckSum>deb0ab78fddee055f538a735c586ebe6</validCheckSum>
         <comment>Insert HProjectIteration/HProject status column with 'Current'</comment>
         
-        <sql>UPDATE HProjectIteration SET status='Current'</sql>
+        <sql>UPDATE HProjectIteration SET status='Current' WHERE active='1'</sql>
+        <sql>UPDATE HProjectIteration SET status='Retired' WHERE active='0'</sql>
         <sql>UPDATE HProject SET status='Current'</sql>
     </changeSet>
     

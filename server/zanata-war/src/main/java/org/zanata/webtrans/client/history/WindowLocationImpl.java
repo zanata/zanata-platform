@@ -4,9 +4,8 @@ import java.util.List;
 import java.util.Map;
 import com.google.gwt.user.client.Window;
 
-public class WindowLocationImpl implements WindowLocation
+public class WindowLocationImpl implements org.zanata.webtrans.client.history.Window.Location
 {
-
    @Override
    public String getParameter(String name)
    {
@@ -24,5 +23,4 @@ public class WindowLocationImpl implements WindowLocation
    {
       return Window.Location.getHref();
    }
-
 }
