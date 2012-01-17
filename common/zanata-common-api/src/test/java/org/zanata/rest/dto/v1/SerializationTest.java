@@ -116,7 +116,7 @@ public class SerializationTest
       return new PoHeader("hello world");
    }
 
-   @Test
+   @Test(enabled=false)
    public void serializeAndDeserializeExtension() throws JsonGenerationException, JsonMappingException, IOException, JAXBException
    {
       // TODO are we actually trying to test serializing an extension where the type is not known?

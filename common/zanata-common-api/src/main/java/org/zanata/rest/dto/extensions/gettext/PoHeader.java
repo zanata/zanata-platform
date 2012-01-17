@@ -18,7 +18,6 @@ import org.zanata.rest.dto.DTOUtil;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * 
  */
-@XmlRootElement(name = "po-header")
 @XmlType(name = "poHeaderExtension", propOrder = { "comment", "entries" })
 @JsonTypeName(value = "po-header")
 public class PoHeader implements AbstractResourceMetaExtension

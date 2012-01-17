@@ -76,6 +76,7 @@ public class AccountRestTest extends ZanataRawRestTest
          protected void onResponse(EnhancedMockHttpServletResponse response)
          {
             assertThat(response.getStatus(), is(200));
+            assertContentSameAsResource(response.getContentAsString(), "rest/account/get.xml");
          }
       }.run();
    }
@@ -95,6 +96,7 @@ public class AccountRestTest extends ZanataRawRestTest
          protected void onResponse(EnhancedMockHttpServletResponse response)
          {
             assertThat(response.getStatus(), is(200));
+            assertContentSameAsResource(response.getContentAsString(), "rest/account/get.json");
          }
       }.run();
    }

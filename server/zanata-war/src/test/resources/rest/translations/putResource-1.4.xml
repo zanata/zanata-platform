@@ -1,21 +1,52 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns2:resource xmlns:ns2="http://zanata.org/namespace/api/"
 	xmlns:ns3="http://zanata.org/namespace/api/gettext/" xmlns:ns4="http://zanata.org/namespace/api/comment/"
-	type="FILE" xml:lang="en-US" content-type="text/plain">
+	type="FILE" xml:lang="en-US" content-type="application/x-gettext">
 	<name>zanata/test/rest/resource/document.txt</name>
+	<extensions>
+		<extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:type="ns3:poHeaderExtension">
+			<comment>
+				AUTHOR &lt;EMAIL@ADDRESS&gt;, YEAR.
+			</comment>
+			<entries>
+				<entry key="Project-Id-Version">0</entry>
+				<entry key="POT-Creation-Date">2010-03-18T07:41:00</entry>
+				<entry key="MIME-Version">1.0</entry>
+				<entry key="Content-Type">application/x-publican; charset=UTF-8</entry>
+				<entry key="Content-Transfer-Encoding">8bit</entry>
+			</entries>
+		</extension>
+	</extensions>
 	<text-flows>
-		<ns2:text-flow xml:lang="en-US" id="hello world">
-			<content>hello world</content>
+		<ns2:text-flow xml:lang="en-US"
+			id="fe2284eb32d4b09d29fd34217324b19a">
+			<content>TextFlow1</content>
 			<extensions>
+				<!-- <extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:type="ns4:simpleCommentExtension" xml:space="preserve"><value>Tag: title</value></extension> -->
 				<extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-					xsi:type="ns4:simpleCommentExtension" xml:space="preserve"><value>####################################################################################################
-
-This file is for reference only, changes have no effect on the generated interface implementations.
-
-####################################################################################################
-
-Id: 11900
-Message: hello world</value></extension>
+					xsi:type="ns3:potEntryHeader">
+					<flags>
+						<flag>no-c-format</flag>
+					</flags>
+					<source-references />
+				</extension>
+			</extensions>
+		</ns2:text-flow>
+		<ns2:text-flow xml:lang="en-US"
+			id="04adb9934729bde800b771c310c05cec">
+			<content>TextFlow2</content>
+			<extensions>
+				<!-- <extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:type="ns4:simpleCommentExtension" xml:space="preserve"><value>Tag: para</value></extension> -->
+				<extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:type="ns3:potEntryHeader">
+					<flags>
+						<flag>no-c-format</flag>
+					</flags>
+					<source-references />
+				</extension>
 			</extensions>
 		</ns2:text-flow>
 	</text-flows>

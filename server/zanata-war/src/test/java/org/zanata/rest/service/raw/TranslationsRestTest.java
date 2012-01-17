@@ -34,7 +34,9 @@ import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
 import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
 import org.testng.annotations.Test;
 import org.zanata.ZanataRawRestTest;
-import org.zanata.rest.MediaTypes;
+import org.zanata.rest.dto.extensions.comment.SimpleComment;
+import org.zanata.rest.dto.extensions.gettext.PoHeader;
+import org.zanata.rest.dto.resource.Resource;
 
 public class TranslationsRestTest extends ZanataRawRestTest
 {
@@ -50,7 +52,7 @@ public class TranslationsRestTest extends ZanataRawRestTest
    }
    
    @Test
-   public void xmlPut() throws Exception
+   public void xmlPutResource() throws Exception
    {
       // Put the Translations
       new ResourceRequest(sharedEnvironment, Method.PUT, "/restv1/projects/p/sample-project/iterations/i/1.0/r/zanata,test,rest,resource,document.txt")
@@ -58,6 +60,8 @@ public class TranslationsRestTest extends ZanataRawRestTest
          @Override
          protected void prepareRequest(EnhancedMockHttpServletRequest request)
          {
+            request.setQueryString(""); // Bug: will throw NPE when adding query params unless this is called 
+            request.addQueryParameter("ext", PoHeader.ID);
             request.setContentType(MediaType.APPLICATION_XML);
             request.setContent(getResourceAsString("rest/translations/putResource-1.4.xml").getBytes());
          }
@@ -75,6 +79,8 @@ public class TranslationsRestTest extends ZanataRawRestTest
          @Override
          protected void prepareRequest(EnhancedMockHttpServletRequest request)
          {
+            request.setQueryString(""); // Bug: will throw NPE when adding query params unless this is called 
+            request.addQueryParameter("ext", PoHeader.ID);
             request.setContentType(MediaType.APPLICATION_XML);
             request.addHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML);
          }
@@ -82,11 +88,34 @@ public class TranslationsRestTest extends ZanataRawRestTest
          @Override
          protected void onResponse(EnhancedMockHttpServletResponse response)
          {
-            System.out.println("\n\n" + response.getContentAsString() + "\n\n");
             assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+            assertContentSameAsResource(response.getContentAsString(), "rest/translations/putResource-1.4-expected.xml");
+            assertJaxbUnmarshal(response, Resource.class);
          }
       }.run();
 
+   }
+   
+   @Test
+   public void xmlGetTranslations() throws Exception
+   {
+      new ResourceRequest(sharedEnvironment, Method.GET, "/restv1/projects/p/sample-project/iterations/i/1.0/r/my,path,document-2.txt/translations/en-US")
+      {
+         @Override
+         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         {
+            request.setQueryString(""); // Bug: will throw NPE when adding query params unless this is called 
+            request.addQueryParameter("ext", SimpleComment.ID);
+            request.addHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML);
+         }
+         
+         @Override
+         protected void onResponse(EnhancedMockHttpServletResponse response)
+         {
+            assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+            assertContentSameAsResource(response.getContentAsString(), "rest/translations/getTranslations.xml");
+         }
+      }.run();
    }
 
 }
