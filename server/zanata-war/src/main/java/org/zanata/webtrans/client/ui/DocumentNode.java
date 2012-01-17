@@ -22,45 +22,22 @@ package org.zanata.webtrans.client.ui;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.zanata.common.TransUnitCount;
-import org.zanata.common.TransUnitWords;
-import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
-import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
-import com.google.gwt.view.client.ListDataProvider;
-
-public class DocumentNode implements TransUnitUpdatedEventHandler
+public class DocumentNode
 {
-   private ListDataProvider<DocumentNode> dataProvider;
    private DocumentInfo docInfo;
    private boolean isVisible = true;
 
    final WebTransMessages messages;
 
-   public DocumentNode(WebTransMessages messages, DocumentInfo doc, EventBus eventBus, ListDataProvider<DocumentNode> dataProvider)
+   public DocumentNode(WebTransMessages messages, DocumentInfo doc, EventBus eventBus)
    {
       this.messages = messages;
-      this.dataProvider = dataProvider;
       this.docInfo = doc;
    }
 
-   @Override
-   public void onTransUnitUpdated(TransUnitUpdatedEvent event)
-   {
-      if (event.getDocumentId().equals(docInfo.getId()))
-      {
-         TransUnitCount unitCount = docInfo.getStats().getUnitCount();
-         TransUnitWords wordCount = docInfo.getStats().getWordCount();
-         unitCount.decrement(event.getPreviousStatus());
-         unitCount.increment(event.getTransUnit().getStatus());
-         wordCount.decrement(event.getPreviousStatus(), event.getWordCount());
-         wordCount.increment(event.getTransUnit().getStatus(), event.getWordCount());
-         // TODO consider removing this and doing this from a higher level.
-         dataProvider.refresh();
-      }
-   }
    public DocumentInfo getDocInfo()
    {
       return docInfo;
