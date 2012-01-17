@@ -267,7 +267,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          {
             if (event.getSelectedItem() != null)
             {
-               display.getTargetCellEditor().savePendingChange(true);
                selectTransUnit(event.getSelectedItem());
             }
          }
