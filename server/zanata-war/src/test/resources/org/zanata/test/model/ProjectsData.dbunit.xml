@@ -49,6 +49,16 @@
 			  overrideLocales="FALSE"
 			  status="Retired"
 		    />
+		<HProjectIteration id="3"
+	          versionNum="1"
+			  creationDate="2009-09-01 20:31:32"
+	          lastChanged="2009-09-01 20:31:32"
+	          slug="retired-current"
+	          parentId="[NULL]"
+	          project_id="2"
+			  overrideLocales="FALSE"
+			  status="Current"
+        />
         
         <!-- Obsolete Project -->
         <HProject projecttype="iteration" 
@@ -63,6 +73,40 @@
 			  overrideLocales="FALSE"
 			  status="Obsolete"
 		    />
+		<HProjectIteration id="4"
+	          versionNum="1"
+			  creationDate="2009-09-01 20:31:32"
+	          lastChanged="2009-09-01 20:31:32"
+	          slug="obsolete-current"
+	          parentId="[NULL]"
+	          project_id="3"
+			  overrideLocales="FALSE"
+			  status="Current"
+        />
+        
+        <!-- Current Project with retired iteration -->
+        <HProject projecttype="iteration" 
+	          id="4"
+	          versionNum="1"
+			  creationDate="2009-09-01 20:30:16"
+			  lastChanged="2009-09-01 20:30:16" 
+			  slug="current-project" 
+			  description="A current Project"
+			  homeContent=""
+			  name="Sample Current Project"
+			  overrideLocales="FALSE"
+			  status="Current"
+		    />
+		<HProjectIteration id="5"
+	          versionNum="1"
+			  creationDate="2009-09-01 20:31:32"
+	          lastChanged="2009-09-01 20:31:32"
+	          slug="current-obsolete"
+	          parentId="[NULL]"
+	          project_id="4"
+			  overrideLocales="FALSE"
+			  status="Obsolete"
+        />
         
 		<!-- Tell DbUnit to delete any existing documents -->
 		<HDocument />

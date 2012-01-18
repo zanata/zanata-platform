@@ -32,14 +32,15 @@ import javax.xml.bind.annotation.XmlType;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
+import org.zanata.common.EntityStatus;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.MediaTypes.Format;
 
-@XmlType(name = "projectIterationType", propOrder = { "links" })
+@XmlType(name = "projectIterationType", propOrder = { "links", "status" })
 @XmlRootElement(name = "project-iteration")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
-@JsonPropertyOrder({ "id", "links" })
+@JsonPropertyOrder({ "id", "links", "status" })
 public class ProjectIteration implements Serializable, HasCollectionSample<ProjectIteration>, HasMediaType
 {
 
@@ -49,6 +50,7 @@ public class ProjectIteration implements Serializable, HasCollectionSample<Proje
    private static final long serialVersionUID = 1L;
    private String id;
    private Links links;
+   private EntityStatus status;
 
    public ProjectIteration()
    {
@@ -95,6 +97,17 @@ public class ProjectIteration implements Serializable, HasCollectionSample<Proje
          links = new Links();
       return links;
    }
+   
+   @XmlElement(name = "status", required = false)
+   public EntityStatus getStatus()
+   {
+      return status;
+   }
+
+   public void setStatus(EntityStatus status)
+   {
+      this.status = status;
+   }
 
    @Override
    public ProjectIteration createSample()
@@ -132,6 +145,7 @@ public class ProjectIteration implements Serializable, HasCollectionSample<Proje
       int result = 1;
       result = prime * result + ((id == null) ? 0 : id.hashCode());
       result = prime * result + ((links == null) ? 0 : links.hashCode());
+      result = prime * result + ((status == null) ? 0 : status.hashCode());
       return result;
    }
 
@@ -170,6 +184,10 @@ public class ProjectIteration implements Serializable, HasCollectionSample<Proje
          }
       }
       else if (!links.equals(other.links))
+      {
+         return false;
+      }
+      if( status != other.status )
       {
          return false;
       }

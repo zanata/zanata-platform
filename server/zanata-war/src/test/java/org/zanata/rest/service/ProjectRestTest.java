@@ -98,7 +98,7 @@ public class ProjectRestTest extends ZanataRestTest
    {
       IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve("retired-project"));
       ClientResponse<Project> response = projectService.get();
-      assertThat(response.getStatus(), is(Status.NOT_FOUND.getStatusCode())); // Retired projects are not found
+      assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // Retired projects can be read
    }
    
    @Test
@@ -122,7 +122,7 @@ public class ProjectRestTest extends ZanataRestTest
    {
       IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve("retired-project"));
       ClientResponse response = projectService.head();
-      assertThat(response.getStatus(), is(Status.NOT_FOUND.getStatusCode())); // Retired projects are not found
+      assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // Retired projects can be read
    }
 
    @Test

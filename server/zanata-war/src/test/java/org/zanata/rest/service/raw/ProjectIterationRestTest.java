@@ -24,6 +24,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
@@ -102,24 +103,62 @@ public class ProjectIterationRestTest extends ZanataRawRestTest
       }.run();
    }
    
-   /*@Test
-   public void getWithInvalidContentType() throws Exception
+   @Test
+   public void getCurrentIterationOnObsoleteProject() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/projects/p/sample-project/iterations/i/1.0")
+      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/projects/p/obsolete-project/iterations/i/obsolete-current")
       {
          @Override
          protected void prepareRequest(EnhancedMockHttpServletRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, "INVALID-CONTENT-TYPE");
+            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
          }
 
          @Override
          protected void onResponse(EnhancedMockHttpServletResponse response)
          {
-            assertThat(response.getStatus(), is(500)); // 500 (Should it be a 415. unsupported media type?)
+            assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode())); // Iteration not found because project is obsolete
          }
       }.run();
-   }*/
+   }
+   
+   @Test
+   public void getCurrentIterationOnRetiredProject() throws Exception
+   {
+      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/projects/p/retired-project/iterations/i/retired-current")
+      {
+         @Override
+         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         {
+            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
+         }
+
+         @Override
+         protected void onResponse(EnhancedMockHttpServletResponse response)
+         {
+            assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode())); // 200 (Retired projects are readable)
+         }
+      }.run();
+   }
+   
+   @Test
+   public void getObsoleteIterationOnCurrentProject() throws Exception
+   {
+      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/projects/p/current-project/iterations/i/current-obsolete")
+      {
+         @Override
+         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         {
+            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
+         }
+
+         @Override
+         protected void onResponse(EnhancedMockHttpServletResponse response)
+         {
+            assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode())); // 404
+         }
+      }.run();
+   }
    
    @Test
    public void putXml() throws Exception

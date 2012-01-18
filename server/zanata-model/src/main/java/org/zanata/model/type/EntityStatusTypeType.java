@@ -30,9 +30,9 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.type.ImmutableType;
 import org.hibernate.type.LiteralType;
 import org.hibernate.type.StringType;
-import org.zanata.model.SlugEntityBase;
+import org.zanata.common.EntityStatus;
 
-public class StatusTypeType extends ImmutableType implements LiteralType
+public class EntityStatusTypeType extends ImmutableType implements LiteralType
 {
 
    private static final long serialVersionUID = 1251881884197592346L;
@@ -58,7 +58,7 @@ public class StatusTypeType extends ImmutableType implements LiteralType
       }
       else
       {
-         return SlugEntityBase.StatusType.valueOf(string);
+         return EntityStatus.valueOf(string);
       }
    }
 
@@ -83,13 +83,13 @@ public class StatusTypeType extends ImmutableType implements LiteralType
    @Override
    public Class<?> getReturnedClass()
    {
-      return SlugEntityBase.StatusType.class;
+      return EntityStatus.class;
    }
 
    @Override
    public String getName()
    {
-      return "statusType";
+      return "entityStatusType";
    }
 
    @Override

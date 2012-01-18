@@ -20,8 +20,8 @@
  */
 package org.zanata.rest.service;
 
-import static org.zanata.model.SlugEntityBase.StatusType.Obsolete;
-import static org.zanata.model.SlugEntityBase.StatusType.Retired;
+import static org.zanata.common.EntityStatus.Obsolete;
+import static org.zanata.common.EntityStatus.Retired;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -238,6 +238,7 @@ public class ProjectIterationService implements ProjectIterationResource
    public static void transfer(HProjectIteration from, ProjectIteration to)
    {
       to.setId(from.getSlug());
+      to.setStatus(from.getStatus());
    }
 
 }

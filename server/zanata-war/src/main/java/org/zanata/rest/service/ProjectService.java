@@ -1,7 +1,7 @@
 package org.zanata.rest.service;
 
-import static org.zanata.model.SlugEntityBase.StatusType.Obsolete;
-import static org.zanata.model.SlugEntityBase.StatusType.Retired;
+import static org.zanata.common.EntityStatus.Obsolete;
+import static org.zanata.common.EntityStatus.Retired;
 
 import java.net.URI;
 
