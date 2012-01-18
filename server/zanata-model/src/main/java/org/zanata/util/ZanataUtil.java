@@ -35,5 +35,25 @@ public class ZanataUtil
       else
          return a.equals(b);
    }
+   
+   /**
+    * Indicates if an object is present in a set.
+    * 
+    * @param actual The object to be looked for.
+    * @param expected The expected set.
+    * @return True if actual is present in the expected set (using the ${@link ZanataUtil#equal(Object, Object)} method).
+    * False otherwise.
+    */
+   public static <T> boolean in( T actual, T ... expected )
+   {
+      for( T value : expected )
+      {
+         if( equal(actual, value) )
+         {
+            return true;
+         }
+      }
+      return false;
+   }
 
 }

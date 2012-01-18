@@ -20,6 +20,9 @@
  */
 package org.zanata.rest.service;
 
+import static org.zanata.model.SlugEntityBase.StatusType.Obsolete;
+import static org.zanata.model.SlugEntityBase.StatusType.Retired;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -52,6 +55,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.validator.SlugValidator;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.ProjectIteration;
+import org.zanata.util.ZanataUtil;
 
 @Name("projectIterationService")
 @Path(ProjectIterationService.SERVICE_PATH)
@@ -164,6 +168,16 @@ public class ProjectIterationService implements ProjectIterationResource
       {
          return Response.status(Status.NOT_FOUND).entity("Project '" + projectSlug + "' not found.").build();
       }
+      // Project is Obsolete
+      else if( ZanataUtil.in(hProject.getStatus(), Obsolete) )
+      {
+         return Response.status(Status.NOT_FOUND).entity("Project '" + projectSlug + "' is obsolete.").build();
+      }
+      // Project is retired
+      else if( ZanataUtil.in(hProject.getStatus(), Retired) )
+      {
+         return Response.status(Status.FORBIDDEN).entity("Project '" + projectSlug + "' is retired.").build();
+      }
 
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 
@@ -183,6 +197,18 @@ public class ProjectIterationService implements ProjectIterationResource
 
          response = Response.created(uri.getAbsolutePath());
          changed = true;
+      }
+      // Iteration is Obsolete
+      else if( ZanataUtil.in(hProjectIteration.getStatus(), Obsolete) )
+      {
+         response = Response.status(Status.NOT_FOUND);
+         return response.entity("Obsolete Iteration.").build();
+      }
+      // Iteration is retired
+      else if( ZanataUtil.in(hProjectIteration.getStatus(), Retired) )
+      {
+         response = Response.status(Status.FORBIDDEN);
+         return response.entity("Retired Iteration.").build();
       }
       else
       { // must be an update operation

@@ -1,7 +1,7 @@
 package org.zanata.rest.service;
 
-import static org.zanata.model.type.StatusType.Obsolete;
-import static org.zanata.model.type.StatusType.Retired;
+import static org.zanata.model.SlugEntityBase.StatusType.Obsolete;
+import static org.zanata.model.SlugEntityBase.StatusType.Retired;
 
 import java.net.URI;
 
@@ -42,6 +42,7 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
+import org.zanata.util.ZanataUtil;
 
 @Name("projectService")
 @Path(ProjectService.SERVICE_PATH)
@@ -128,8 +129,8 @@ public class ProjectService implements ProjectResource
 
       HProject hProject = projectDAO.getBySlug(projectSlug);
       
-      // Obsolete/Retired projects are not exposed
-      if( hProject.getStatus().in(Obsolete, Retired) )
+      // Obsolete projects are not exposed
+      if( ZanataUtil.in(hProject.getStatus(), Obsolete) )
       {
          return Response.status(Status.NOT_FOUND).build();
       }
@@ -138,6 +139,12 @@ public class ProjectService implements ProjectResource
       return Response.ok(project).tag(etag).build();
    }
 
+   /**
+    * @return 200 If the project was modified.
+    *         201 If the project was created.
+    *         404 If the project was not found, or is obsolete.
+    *         403 If the project was not modified for some other reason (e.g. project is retired).
+    */
    @Override
    @PUT
    @Consumes( { MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -164,16 +171,16 @@ public class ProjectService implements ProjectResource
          response = Response.created(uri.getAbsolutePath());
       }
       // Project is Obsolete
-      else if( hProject.getStatus().in(Obsolete) )
+      else if( ZanataUtil.in(hProject.getStatus(), Obsolete) )
       {
          response = Response.status(Status.NOT_FOUND);
-         return response.build();
+         return response.entity("Obsolete Project.").build();
       }
       // Project is retired
-      else if( hProject.getStatus().in(Retired) )
+      else if( ZanataUtil.in(hProject.getStatus(), Retired) )
       {
-         response = Response.status(Status.NOT_MODIFIED);
-         return response.build();
+         response = Response.status(Status.FORBIDDEN);
+         return response.entity("Retired Project.").build();
       }
       else
       {  // must be an update operation
