@@ -39,13 +39,13 @@ import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.type.StatusType;
 import org.zanata.service.LocaleService;
 
 @Name("projectHome")
@@ -89,7 +89,7 @@ public class ProjectHome extends SlugHome<HIterationProject>
       // when id is invalid and conversation will not
       // start
       
-      if (ip.getStatus().equals(StatusType.Obsolete) && !checkViewObsolete())
+      if (ip.getStatus().equals(EntityStatus.Obsolete) && !checkViewObsolete())
       {
          throw new EntityNotFoundException();
       }

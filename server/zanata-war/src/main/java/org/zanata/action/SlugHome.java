@@ -20,6 +20,8 @@
  */
 package org.zanata.action;
 
+import static org.zanata.common.EntityStatus.Obsolete;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +31,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.security.Identity;
-import org.zanata.model.type.StatusType;
+import org.zanata.common.EntityStatus;
 import org.zanata.security.SecurityChecker;
 
 /**
@@ -70,9 +72,9 @@ public abstract class SlugHome<E> extends EntityHome<E> implements SecurityCheck
    {
       if (statusList.isEmpty())
       {
-         for (StatusType status : StatusType.values())
+         for (EntityStatus status : EntityStatus.values())
          {
-            if (status == StatusType.Obsolete)
+            if (status == Obsolete)
             {
                if (checkPermission("mark-obsolete"))
                {

@@ -13,6 +13,7 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.hibernate.validator.NotEmpty;
 import org.zanata.common.ContentState;
+import org.zanata.common.Namespaces;
 import org.zanata.rest.dto.DTOUtil;
 import org.zanata.rest.dto.Extensible;
 import org.zanata.rest.dto.Person;
@@ -44,7 +45,7 @@ public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetEx
       this.resId = resId;
    }
 
-   @XmlElement(name = "person")
+   @XmlElement(name = "person", namespace=Namespaces.ZANATA_API)
    public Person getTranslator()
    {
       return translator;

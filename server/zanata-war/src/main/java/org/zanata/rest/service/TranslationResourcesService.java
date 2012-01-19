@@ -66,6 +66,7 @@ import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.ContentState;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.Namespaces;
 import org.zanata.dao.DocumentDAO;
@@ -83,7 +84,6 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.type.StatusType;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
@@ -868,13 +868,13 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       {
          throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
       }
-      else if (hProjectIteration.getStatus().equals(StatusType.Obsolete) || hProject.getStatus().equals(StatusType.Obsolete))
+      else if (hProjectIteration.getStatus().equals(EntityStatus.Obsolete) || hProject.getStatus().equals(EntityStatus.Obsolete))
       {
          throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
       }
       else if (OPERATION_PUT.equals(operation))
       {
-         if (hProjectIteration.getStatus().equals(StatusType.Retired) || hProject.getStatus().equals(StatusType.Retired))
+         if (hProjectIteration.getStatus().equals(EntityStatus.Retired) || hProject.getStatus().equals(EntityStatus.Retired))
          {
             throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
          }

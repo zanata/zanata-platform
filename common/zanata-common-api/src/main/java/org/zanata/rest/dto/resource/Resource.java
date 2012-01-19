@@ -34,7 +34,7 @@ public class Resource extends AbstractResourceMeta
    }
 
    @XmlElementWrapper(name = "text-flows", required = false)
-   @XmlElement(name = "text-flow")
+   @XmlElement(name = "text-flow", namespace=org.zanata.common.Namespaces.ZANATA_API)
    public List<TextFlow> getTextFlows()
    {
       if (textFlows == null)

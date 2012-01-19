@@ -240,7 +240,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          // will be closed
          // targetCellEditor.isEditing not suitable since when we click the save
          // button, cellValue is not null.
-         if (targetCellEditor.isOpened() && targetCellEditor.getTargetCell().getId().equals(rowValue))
+
+         if (targetCellEditor.isOpened() && targetCellEditor.getTargetCell().getId().equals(rowValue.getId()))
          {
             return;
          }
@@ -286,7 +287,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
    public void setFindMessage(String findMessage)
    {
-      Log.info("set find message: " + findMessage);
       this.findMessage = findMessage;
    }
 

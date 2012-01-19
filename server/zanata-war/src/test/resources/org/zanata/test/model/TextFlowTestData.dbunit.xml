@@ -77,10 +77,10 @@
     creationDate="2009-09-01 20:30:16"
     lastChanged="2009-09-01 20:30:16" 
     contentType="text/plain"
-    docId="/my/path/document-2.txt"
+    docId="my/path/document-2.txt"
     locale="4"
     name="document-2.txt"
-    path="/my/path"
+    path="my/path"
     project_iteration_id="1"
     revision="1"
     obsolete="0"
@@ -117,6 +117,20 @@
   	wordCount="1"
   />
   
+  <!-- Text Flow Target comments -->
+  <HSimpleComment 
+  	id="1"
+  	comment="Text Flow Target Comment 1"
+  />
+  <HSimpleComment 
+  	id="2"
+  	comment="Text Flow Target Comment 2"
+  />
+  <HSimpleComment 
+  	id="3"
+  	comment="Text Flow Target Comment 3"
+  />
+  
   <HTextFlowTarget 
   	id="5"
     versionNum="1"
@@ -127,6 +141,8 @@
   	state="1"
   	tf_id="2"
   	tf_revision="1"
+  	last_modified_by_id="2"
+  	comment_id="1"
   />
   <HTextFlowTarget 
   	id="6"
@@ -138,6 +154,8 @@
   	state="1"
   	tf_id="3"
   	tf_revision="1"
+  	last_modified_by_id="2"
+  	comment_id="2"
   />
   <HTextFlowTarget 
   	id="7"
@@ -149,5 +167,7 @@
   	state="1"
   	tf_id="4"
   	tf_revision="1"
+  	last_modified_by_id="2"
+  	comment_id="3"
   />
 </dataset>

@@ -18,6 +18,7 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
+import org.zanata.common.EntityStatus;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.MediaTypes.Format;
 
@@ -27,9 +28,9 @@ import org.zanata.rest.MediaTypes.Format;
  * @author asgeirf
  * 
  */
-@XmlType(name = "projectType", propOrder = { "name", "description", "links", "iterations" })
+@XmlType(name = "projectType", propOrder = { "name", "description", "links", "iterations", "status" })
 @XmlRootElement(name = "project")
-@JsonPropertyOrder( { "id", "type", "name", "description", "links", "iterations" })
+@JsonPropertyOrder( { "id", "type", "name", "description", "links", "iterations", "status" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
 public class Project implements Serializable, HasCollectionSample<Project>, HasMediaType
@@ -38,8 +39,8 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
    private String id;
    private String name;
    private ProjectType type = ProjectType.IterationProject;
-
    private String description;
+   private EntityStatus status = EntityStatus.Current;
 
    private Links links;
 
@@ -147,6 +148,17 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
          iterations = new ArrayList<ProjectIteration>();
       return getIterations();
    }
+   
+   @XmlElement(name = "status", required = false)
+   public EntityStatus getStatus()
+   {
+      return status;
+   }
+
+   public void setStatus(EntityStatus status)
+   {
+      this.status = status;
+   }
 
    @Override
    public Project createSample()
@@ -196,6 +208,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       result = prime * result + ((links == null) ? 0 : links.hashCode());
       result = prime * result + ((name == null) ? 0 : name.hashCode());
       result = prime * result + ((type == null) ? 0 : type.hashCode());
+      result = prime * result + ((status == null) ? 0 : status.hashCode());
       return result;
    }
 
@@ -271,6 +284,10 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
          return false;
       }
       if (type != other.type)
+      {
+         return false;
+      }
+      if(status != other.status)
       {
          return false;
       }

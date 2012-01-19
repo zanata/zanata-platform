@@ -84,6 +84,46 @@ public class ProjectRestTest extends ZanataRestTest
       ClientResponse<Project> response = projectService.get();
       assertThat(response.getStatus(), lessThan(400));
    }
+   
+   @Test
+   public void retrieveObsoleteProject()
+   {
+      IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve("obsolete-project"));
+      ClientResponse<Project> response = projectService.get();
+      assertThat(response.getStatus(), is(Status.NOT_FOUND.getStatusCode())); // Obsolete projects are not found
+   }
+   
+   @Test
+   public void retrieveRetiredProject()
+   {
+      IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve("retired-project"));
+      ClientResponse<Project> response = projectService.get();
+      assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // Retired projects can be read
+   }
+   
+   @Test
+   public void headExistingProject()
+   {
+      IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve("sample-project"));
+      ClientResponse response = projectService.head();
+      assertThat(response.getStatus(), lessThan(400));
+   }
+   
+   @Test
+   public void headObsoleteProject()
+   {
+      IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve("obsolete-project"));
+      ClientResponse response = projectService.head();
+      assertThat(response.getStatus(), is(Status.NOT_FOUND.getStatusCode())); // Obsolete projects are not found
+   }
+   
+   @Test
+   public void headRetiredProject()
+   {
+      IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve("retired-project"));
+      ClientResponse response = projectService.head();
+      assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // Retired projects can be read
+   }
 
    @Test
    public void createProject()

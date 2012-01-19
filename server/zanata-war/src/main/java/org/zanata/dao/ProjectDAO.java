@@ -10,10 +10,10 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.common.EntityStatus;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.type.StatusType;
 
 @Name("projectDAO")
 @AutoCreate
@@ -75,7 +75,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
 
       if (filterCurrent)
       {
-         condition.append("p.status <> '" + StatusType.Current + "' ");
+         condition.append("p.status <> '" + EntityStatus.Current + "' ");
       }
 
       if (filterRetired)
@@ -85,7 +85,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
             condition.append("and ");
          }
 
-         condition.append("p.status <> '" + StatusType.Retired + "' ");
+         condition.append("p.status <> '" + EntityStatus.Retired + "' ");
       }
 
       if (filterObsolete)
@@ -95,7 +95,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
             condition.append("and ");
          }
 
-         condition.append("p.status <> '" + StatusType.Obsolete + "' ");
+         condition.append("p.status <> '" + EntityStatus.Obsolete + "' ");
       }
       return condition.toString();
    }
@@ -103,18 +103,18 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
    @SuppressWarnings("unchecked")
    public List<HProjectIteration> getCurrentIterations(String slug)
    {
-      return getSession().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", StatusType.Current).list();
+      return getSession().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", EntityStatus.Current).list();
    }
 
    @SuppressWarnings("unchecked")
    public List<HProjectIteration> getRetiredIterations(String slug)
    {
-      return getSession().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", StatusType.Retired).list();
+      return getSession().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", EntityStatus.Retired).list();
    }
 
    @SuppressWarnings("unchecked")
    public List<HProjectIteration> getObsoleteIterations(String slug)
    {
-      return getSession().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", StatusType.Obsolete).list();
+      return getSession().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", EntityStatus.Obsolete).list();
    }
 }

@@ -85,14 +85,14 @@ public class FileRestTest extends ZanataRawRestTest
          protected void prepareRequest(EnhancedMockHttpServletRequest request)
          {
             request.setQueryString(""); // Need to add this when using query params or else the test fails
-            request.addQueryParameter("docId", "/my/path/document-2.txt");
+            request.addQueryParameter("docId", "my/path/document-2.txt");
          }
 
          @Override
          protected void onResponse(EnhancedMockHttpServletResponse response)
          {
-            assertHeaderValue(response, "Content-Disposition", "attachment; filename=\"document-2.txt.po\"");
             assertThat(response.getStatus(), is(200)); // Ok
+            assertHeaderValue(response, "Content-Disposition", "attachment; filename=\"document-2.txt.po\"");
             assertThat(response.getContentType(), is(MediaType.APPLICATION_OCTET_STREAM));
             assertPoFileCorrect( response.getContentAsString() );    
             assertPoFileContainsTranslations( response.getContentAsString(), 
