@@ -20,7 +20,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataRestTest;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.AccountDAO;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.rest.client.IGlossaryResource;

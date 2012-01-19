@@ -5,7 +5,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.jboss.seam.contexts.Lifecycle;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.NotLoggedInException;
 import org.testng.Assert;

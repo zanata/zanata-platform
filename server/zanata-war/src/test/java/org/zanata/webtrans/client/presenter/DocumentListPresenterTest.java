@@ -2,6 +2,7 @@ package org.zanata.webtrans.client.presenter;
 
 import static org.easymock.EasyMock.and;
 import static org.easymock.EasyMock.capture;
+import static org.easymock.EasyMock.captureInt;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
@@ -710,7 +711,7 @@ public class DocumentListPresenterTest
    private void setupMockDisplay()
    {
       capturedPageSize = new Capture<Integer>();
-      mockDisplay.setPageSize(capture(capturedPageSize));
+      mockDisplay.setPageSize(captureInt(capturedPageSize));
       expectLastCall().anyTimes();
 
       expect(mockDisplay.getDataProvider()).andReturn(mockDataProvider).anyTimes();
