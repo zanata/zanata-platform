@@ -187,7 +187,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
                   {
                      if (translationEditorPresenter.getSelectedTransUnit() != null)
                      {
-                        Log.info("Copy from source");
                         stopDefaultAction(event);
                         translationEditorPresenter.gotoCurrentRow();
                         translationEditorPresenter.cloneAction();
@@ -199,7 +198,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
                      {
                         if (!translationEditorPresenter.isCancelButtonFocused())
                         {
-                           Log.info("open editor");
                            stopDefaultAction(event);
                            translationEditorPresenter.gotoCurrentRow();
                         }

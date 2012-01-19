@@ -116,11 +116,9 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    {
       dataProvider.getList().clear();
       nodes = new HashMap<DocumentId, DocumentNode>(sortedList.size());
-      int counter = 0;
       long start = System.currentTimeMillis();
       for (DocumentInfo doc : sortedList)
       {
-         Log.info("Loading document: " + ++counter + " ");
          DocumentNode node = new DocumentNode(messages, doc, eventBus, dataProvider);
          if (filter != null)
          {

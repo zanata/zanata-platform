@@ -94,7 +94,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       this.workspaceContext = workspaceContext;
       this.dispatcher = dispatcher;
       this.messages = messages;
-      Log.info("DocumentListPresenter()");
    }
 
    @Override
@@ -210,9 +209,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          {
             long start = System.currentTimeMillis();
             final ArrayList<DocumentInfo> documents = result.getDocuments();
-            Log.info("Received doc list for " + result.getProjectIterationId() + ": " + documents.size() + " elements");
+            Log.info("Received doc list for " + result.getProjectIterationId() + ": " + documents.size() + " elements, loading time: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
             display.setList(documents);
-            Log.info("Time to load docs into DocListView: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
             start = System.currentTimeMillis();
             for (DocumentInfo doc : documents)
             {

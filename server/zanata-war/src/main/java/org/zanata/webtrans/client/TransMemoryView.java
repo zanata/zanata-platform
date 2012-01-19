@@ -83,7 +83,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       phraseButton.setText(messages.tmPhraseButtonLabel());
       clearButton.setText(messages.tmClearButtonLabel());
       searchButton.setText(messages.tmSearchButtonLabel());
-      Log.info(LocaleInfo.getCurrentLocale().getLocaleName());
    }
 
    @UiHandler("tmTextBox")

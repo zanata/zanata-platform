@@ -26,7 +26,6 @@ import org.zanata.webtrans.client.events.CopySourceEvent;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -204,7 +203,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          // will be closed
          // targetCellEditor.isEditing not suitable since when we click the save
          // button, cellValue is not null.
-         if (targetCellEditor.isOpened() && targetCellEditor.getTargetCell().getId().equals(rowValue))
+         if (targetCellEditor.isOpened() && targetCellEditor.getTargetCell().getId().equals(rowValue.getId()))
          {
             return;
          }
@@ -237,7 +236,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
    public void setFindMessage(String findMessage)
    {
-      Log.info("set find message: " + findMessage);
       this.findMessage = findMessage;
    }
 

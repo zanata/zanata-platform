@@ -203,23 +203,15 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    }
 
    @Override
-   public void gotoRow(int row)
-   {
-      getDataTable().selectRow(row, true);
-      editCell(row, TableEditorTableDefinition.TARGET_COL);
-   }
-
-   // Go to row location of the current page.
    public void gotoRow(int row, boolean andEdit)
    {
-      if (andEdit)
-         editCell(row, TableEditorTableDefinition.TARGET_COL);
-      else
+      if (row < getDataTable().getRowCount())
       {
-         if (row < getDataTable().getRowCount())
+         getDataTable().selectRow(row, true);
+         DOM.scrollIntoView(getDataTable().getWidget(row, TableEditorTableDefinition.TARGET_COL).getElement());
+         if (andEdit)
          {
-            getDataTable().selectRow(row, true);
-            DOM.scrollIntoView(getDataTable().getWidget(row, TableEditorTableDefinition.TARGET_COL).getElement());
+            editCell(row, TableEditorTableDefinition.TARGET_COL);
          }
       }
    }
