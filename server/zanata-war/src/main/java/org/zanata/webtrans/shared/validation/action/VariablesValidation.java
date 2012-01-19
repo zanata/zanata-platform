@@ -44,7 +44,7 @@ public class VariablesValidation extends ValidationAction
 
    // derived from translate toolkit printf style variable matching regex. See:
    // http://translate.svn.sourceforge.net/viewvc/translate/src/trunk/translate/filters/checks.py?revision=17978&view=markup
-   private final static String varRegex = "%((?:\\d+\\$|\\(\\w+\\))?[+#-]*(\\d+)?(\\.\\d+)?(hh|h|l|ll|L|z|j|t)?[\\w%])";
+   private final static String varRegex = "%((?:\\d+\\$|\\(\\w+\\))?[+#-]*(\\d+)?(\\.\\d+)?(hh|h|ll|l|L|z|j|t)?[\\w%])";
    // private final static String varRegex = "%[\\w]+";
 
    @Override

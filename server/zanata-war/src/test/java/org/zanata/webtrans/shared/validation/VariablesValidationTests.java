@@ -168,14 +168,14 @@ public class VariablesValidationTests
    {
       variablesValidation = new VariablesValidation(mockMessages);
       String source = "Testing string with no variables";
-      String target = "%1$-0Ls variables in all parts %2$-0hs of the string %3$-0ls";
+      String target = "%1$-0lls variables in all parts %2$-0hs of the string %3$-0ls";
       variablesValidation.validate(source, target);
 
       assertThat(variablesValidation.hasError(), is(true));
       assertThat(variablesValidation.getError(), hasItem(MOCK_VARIABLES_ADDED_MESSAGE));
       assertThat(variablesValidation.getError().size(), is(1));
 
-      assertThat(capturedVarsAdded.getValue(), hasItems("%1$-0Ls", "%2$-0hs", "%3$-0ls"));
+      assertThat(capturedVarsAdded.getValue(), hasItems("%1$-0lls", "%2$-0hs", "%3$-0ls"));
       assertThat(capturedVarsAdded.getValue().size(), is(3));
       assertThat(capturedVarsMissing.hasCaptured(), is(false));
    }
