@@ -194,10 +194,128 @@ public class HtmlXmlTagValidationTests
       assertThat(capturedTagsMissing.getValue().size(), is(3));
    }
 
-   // TODO update algorithm, this test will fail so will need updating
+   @Test
+   public void orderOnlyValidatedWithSameTags()
+   {
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      String source = "<one><two><three></four></five>";
+      String target = "<two></five></four><three><six>";
+      htmlXmlTagValidation.validate(source, target);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(true));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_MISSING_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_ADDED_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError().size(), is(2));
+
+      assertThat(capturedTagsMissing.getValue(), hasItem("<one>"));
+      assertThat(capturedTagsMissing.getValue().size(), is(1));
+      assertThat(capturedTagsAdded.getValue(), hasItem("<six>"));
+      assertThat(capturedTagsAdded.getValue().size(), is(1));
+      assertThat(capturedTagsOutOfOrder.hasCaptured(), is(false));
+   }
+
+   @Test
+   public void lastTagMovedToFirstError()
+   {
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      String source = "<one><two><three></four></five><six>";
+      String target = "<six><one><two><three></four></five>";
+      htmlXmlTagValidation.validate(source, target);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(true));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+
+      assertThat(capturedTagsOutOfOrder.getValue(), hasItem("<six>"));
+      assertThat("when one tag has moved, only that tag should be reported out of order", capturedTagsOutOfOrder.getValue().size(), is(1));
+   }
+
+   @Test
+   public void firstTagMovedToLastError()
+   {
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      String source = "<one><two><three></four></five><six>";
+      String target = "<two><three></four></five><six><one>";
+      htmlXmlTagValidation.validate(source, target);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(true));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+
+      assertThat(capturedTagsOutOfOrder.getValue(), hasItem("<one>"));
+      assertThat("when one tag has moved, only that tag should be reported out of order", capturedTagsOutOfOrder.getValue().size(), is(1));
+   }
+
+   @Test
+   public void tagMovedToMiddleError()
+   {
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      String source = "<one><two><three></four></five><six>";
+      String target = "<two><three><one></four></five><six>";
+      htmlXmlTagValidation.validate(source, target);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(true));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+
+      assertThat(capturedTagsOutOfOrder.getValue(), hasItem("<one>"));
+      assertThat("when one tag has moved, only that tag should be reported out of order", capturedTagsOutOfOrder.getValue().size(), is(1));
+   }
+
+   @Test
+   public void reversedTagsError()
+   {
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      String source = "<one><two><three></four></five><six>";
+      String target = "<six></five></four><three><two><one>";
+      htmlXmlTagValidation.validate(source, target);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(true));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+
+      // <one> is the first in-order tag, so is not reported
+      assertThat(capturedTagsOutOfOrder.getValue(), hasItems("<six>", "</five>", "</four>", "<three>", "<two>"));
+      assertThat(capturedTagsOutOfOrder.getValue().size(), is(5));
+   }
+
+   @Test
+   public void reportFirstTagsOutOfOrder()
+   {
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      String source = "<one><two><three></four></five><six>";
+      String target = "</four></five><six><one><two><three>";
+      htmlXmlTagValidation.validate(source, target);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(true));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+
+      assertThat(capturedTagsOutOfOrder.getValue(), hasItems("</four>", "</five>", "<six>"));
+      assertThat(capturedTagsOutOfOrder.getValue().size(), is(3));
+   }
+
+   @Test
+   public void reportLeastTagsOutOfOrder()
+   {
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      String source = "<one><two><three></four></five><six>";
+      String target = "<six></four></five><one><two><three>";
+      htmlXmlTagValidation.validate(source, target);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(true));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+
+      // <one><two><three> in order
+      // should not use </four></five> as there are less tags
+      assertThat("should report the least number of tags to move to restore order", capturedTagsOutOfOrder.getValue(), hasItems("</four>", "</five>", "<six>"));
+      assertThat(capturedTagsOutOfOrder.getValue().size(), is(3));
+   }
+
    @SuppressWarnings("unchecked")
    @Test
-   public void wrongOrderTagError()
+   public void swapSomeTagsError()
    {
       htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
       String source = "<one><two><three></three></two><four></four></one>";
@@ -208,17 +326,10 @@ public class HtmlXmlTagValidationTests
       assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
       assertThat(htmlXmlTagValidation.getError().size(), is(1));
 
-      // Note: only <three> and </three> have been moved in this string, but the
-      // algorithm just looks for changed index at the moment.
-      assertThat(capturedTagsOutOfOrder.getValue(), hasItems("<three>", "</three>", "</two>", "<four>"));
-      assertThat(capturedTagsOutOfOrder.getValue(), not(anyOf(hasItem("<one>"), hasItem("<two>"), hasItem("</four>"), hasItem("</one>"))));
-      assertThat(capturedTagsOutOfOrder.getValue().size(), is(4));
+      assertThat(capturedTagsOutOfOrder.getValue(), hasItems("<three>", "</three>"));
+      assertThat(capturedTagsOutOfOrder.getValue(), not(anyOf(hasItem("<one>"), hasItem("<two>"), hasItem("</two>"), hasItem("<four>"), hasItem("</four>"), hasItem("</one>"))));
+      assertThat(capturedTagsOutOfOrder.getValue().size(), is(2));
    }
-
-   // TODO test cases for moving one tag a long way (when the algorithm
-   // handles that better). e.g.
-   // String source = "<one><two><three></three></two><four></four></one>";
-   // String target = "</one><one><two><three></three></two><four></four>";
 }
 
 
