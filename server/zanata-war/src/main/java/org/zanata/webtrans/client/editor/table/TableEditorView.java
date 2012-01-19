@@ -35,6 +35,7 @@ import org.zanata.webtrans.shared.auth.Permission;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -141,7 +142,7 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    {
       return this;
    }
-   
+
    @Override
    public void startProcessing()
    {
@@ -208,23 +209,15 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    }
 
    @Override
-   public void gotoRow(int row)
-   {
-      getDataTable().selectRow(row, true);
-      editCell(row, TableEditorTableDefinition.TARGET_COL);
-   }
-
-   // Go to row location of the current page.
    public void gotoRow(int row, boolean andEdit)
    {
-      if (andEdit)
-         editCell(row, TableEditorTableDefinition.TARGET_COL);
-      else
+      if (row < getDataTable().getRowCount())
       {
-         if (row < getDataTable().getRowCount())
+         getDataTable().selectRow(row, true);
+         DOM.scrollIntoView(getDataTable().getWidget(row, TableEditorTableDefinition.TARGET_COL).getElement());
+         if (andEdit)
          {
-            getDataTable().selectRow(row, true);
-            DOM.scrollIntoView(getDataTable().getWidget(row, TableEditorTableDefinition.TARGET_COL).getElement());
+            editCell(row, TableEditorTableDefinition.TARGET_COL);
          }
       }
    }
@@ -267,7 +260,6 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    {
       this.tableDefinition.updateValidationMessage(id, errors);
    }
-
 
    @Override
    public ValidationMessagePanel getValidationPanel(TransUnitId id)

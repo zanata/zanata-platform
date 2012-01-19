@@ -112,8 +112,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
       void setPageSize(int size);
 
-      void gotoRow(int row);
-
       void gotoRow(int row, boolean andEdit);
 
       TransUnit getTransUnitValue(int row);
@@ -344,14 +342,14 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                // - add TU index to model
                if (row != null)
                {
+                  Log.info("onTransUnitUpdated - update row:" + row);
                   display.getTableModel().setRowValueOverride(row, event.getTransUnit());
 
                   if (inProcessing != null)
                   {
                      if (inProcessing.getAction().getTransUnitId().equals(event.getTransUnit().getId()))
                      {
-                        Log.info("go to row:" + row);
-                        tableModelHandler.gotoRow(row);
+                        tableModelHandler.gotoRow(row, true);
                         eventBus.fireEvent(new UndoRedoFinishEvent(inProcessing));
                         inProcessing = null;
                      }
@@ -368,9 +366,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                         int pageNum = inProcessing.getCurrentPage();
                         int rowNum = inProcessing.getRowNum();
                         row = pageNum * display.getPageSize() + rowNum;
-                        Log.info("go to row:" + row);
-                        Log.info("go to page:" + pageNum);
-                        tableModelHandler.gotoRow(row);
+                        tableModelHandler.gotoRow(row, true);
                         eventBus.fireEvent(new UndoRedoFinishEvent(inProcessing));
                         inProcessing = null;
                      }
@@ -378,7 +374,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                }
                if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
                {
-                  tableModelHandler.gotoRow(curRowIndex);
+                  tableModelHandler.gotoRow(curRowIndex, true);
                }
             }
          }
@@ -409,7 +405,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             if (selectedTransUnit != null)
             {
                int step = event.getStep();
-               Log.info("Step " + step);
                // Send message to server to stop editing current selection
                // stopEditing(selectedTransUnit);
 
@@ -475,7 +470,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          {
             int row = getRow(event.getTransUnit().getId());
 
-            tableModelHandler.gotoRow(row);
+            tableModelHandler.gotoRow(row, true);
             display.getTargetCellEditor().setText(event.getTransUnit().getSource());
             display.getTargetCellEditor().autoSize();
          }
@@ -517,7 +512,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       {
          if (transUnitId.equals(transUnit.getId()))
          {
-            Log.info("return getRow:" + transUnit.getRowIndex());
             return transUnit.getRowIndex();
          }
       }
@@ -548,13 +542,12 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             @Override
             public void onSuccess(GetTransUnitListResult result)
             {
-               Log.info("find message:" + findMessage);
                SerializableResponse<TransUnit> response = new SerializableResponse<TransUnit>(result.getUnits());
-               Log.info("Got " + result.getUnits().size() + " rows back");
+               Log.info("Got " + result.getUnits().size() + " rows back of " + result.getTotalCount() + " available");
                callback.onRowsReady(request, response);
-               Log.info("Total of " + result.getTotalCount() + " rows available");
                display.getTableModel().setRowCount(result.getTotalCount());
                display.stopProcessing();
+               tableModelHandler.gotoRow(curRowIndex, false);
             }
 
             @Override
@@ -618,14 +611,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       public void updatePageAndRowIndex()
       {
          curPage = display.getCurrentPage();
-         updateRowIndex(curPage);
-      }
-
-      @Override
-      public void updateRowIndex(int curPage)
-      {
          curRowIndex = curPage * display.getPageSize() + display.getSelectedRowNumber();
-         Log.info("Current Row Index" + curRowIndex);
+         Log.info("Current Row Index:" + curRowIndex + " Current page:" + curPage);
       }
 
       @Override
@@ -635,14 +622,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          int newRowIndex = curRowIndex + 1;
          if (newRowIndex < display.getTableModel().getRowCount())
          {
-            if (andEdit)
-            {
-               gotoRow(newRowIndex);
-            }
-            else
-            {
-               gotoRow(newRowIndex, andEdit);
-            }
+            gotoRow(newRowIndex, andEdit);
          }
       }
 
@@ -653,14 +633,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          int newRowIndex = curRowIndex - 1;
          if (newRowIndex >= 0)
          {
-            if (andEdit)
-            {
-               gotoRow(newRowIndex);
-            }
-            else
-            {
-               gotoRow(newRowIndex, andEdit);
-            }
+            gotoRow(newRowIndex, andEdit);
          }
       }
 
@@ -668,14 +641,14 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       public void gotoFirstRow()
       {
          updatePageAndRowIndex();
-         gotoRow(0);
+         gotoRow(0, true);
       }
 
       @Override
       public void gotoLastRow()
       {
          updatePageAndRowIndex();
-         gotoRow(display.getTableModel().getRowCount() - 1);
+         gotoRow(display.getTableModel().getRowCount() - 1, true);
       }
 
       @Override
@@ -727,39 +700,24 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       }
 
       @Override
-      public void gotoRow(int rowIndex)
-      {
-         curPage = display.getCurrentPage();
-         int pageNum = rowIndex / (MAX_PAGE_ROW + 1);
-         int rowNum = rowIndex % (MAX_PAGE_ROW + 1);
-         if (pageNum != curPage)
-         {
-            display.gotoPage(pageNum, false);
-         }
-
-         selectTransUnit(display.getTransUnitValue(rowNum));
-         display.gotoRow(rowNum);
-
-         if (pageNum != curPage)
-         {
-            display.getTargetCellEditor().cancelEdit();
-         }
-      }
-
-      @Override
       public void gotoRow(int rowIndex, boolean andEdit)
       {
          curPage = display.getCurrentPage();
+         int prevPage = curPage;
          int pageNum = rowIndex / (MAX_PAGE_ROW + 1);
          int rowNum = rowIndex % (MAX_PAGE_ROW + 1);
-         if (pageNum != curPage)
+         if (pageNum != prevPage)
          {
             display.gotoPage(pageNum, false);
          }
 
-
          selectTransUnit(display.getTransUnitValue(rowNum));
          display.gotoRow(rowNum, andEdit);
+
+         if (pageNum != prevPage)
+         {
+            display.getTargetCellEditor().cancelEdit();
+         }
       }
    };
 
@@ -927,7 +885,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                if (curRowIndex > newRowIndex)
                {
                   display.getTargetCellEditor().cancelEdit();
-                  tableModelHandler.gotoRow(newRowIndex);
+                  tableModelHandler.gotoRow(newRowIndex, true);
                   break;
                }
             }
@@ -960,7 +918,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                if (curRowIndex < newRowIndex)
                {
                   display.getTargetCellEditor().cancelEdit();
-                  tableModelHandler.gotoRow(newRowIndex);
+                  tableModelHandler.gotoRow(newRowIndex, true);
                   break;
                }
             }
@@ -1045,7 +1003,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
       {
          selectedTransUnit = transUnit;
-         Log.info("SelectedTransUnit " + selectedTransUnit.getId());
+         Log.info("SelectedTransUnit: " + selectedTransUnit.getId());
          // Clean the cache when we click the new entry
          clearCacheList();
 
@@ -1055,7 +1013,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
    public void gotoCurrentRow()
    {
-      tableModelHandler.gotoRow(curRowIndex);
+      tableModelHandler.gotoRow(curRowIndex, true);
    }
 
    public void gotoPrevRow(boolean andEdit)

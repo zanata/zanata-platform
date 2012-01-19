@@ -41,11 +41,7 @@ public abstract class TableModelHandler<RowType>
 
    abstract void prevNewIndex();
 
-   abstract void gotoRow(int row);
-
    abstract void gotoRow(int rowIndex, boolean andEdit);
 
    abstract void updatePageAndRowIndex();
-
-   abstract void updateRowIndex(int curPage);
 }

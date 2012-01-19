@@ -123,7 +123,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          public void onNotification(NotificationEvent event)
          {
             display.setNotificationMessage(event.getMessage());
-            Log.info(event.getMessage());
+            Log.info("Notification:" + event.getMessage());
          }
       }));
 
@@ -233,7 +233,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
    private void processHistoryEvent(ValueChangeEvent<String> event)
    {
-
       Log.info("Responding to history token: " + event.getValue());
 
       HistoryToken token = HistoryToken.fromTokenString(event.getValue());
