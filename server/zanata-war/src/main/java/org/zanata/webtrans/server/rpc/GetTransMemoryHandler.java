@@ -38,12 +38,12 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.zanata.common.ContentState;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.SlugEntityBase;
 import org.zanata.search.LevenshteinUtil;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -98,7 +98,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
             {
                continue;
             }
-            else if (textFlow.getDocument().getProjectIteration().getStatus().equals(SlugEntityBase.StatusType.Obsolete) || textFlow.getDocument().getProjectIteration().getProject().getStatus().equals(SlugEntityBase.StatusType.Obsolete))
+            else if (textFlow.getDocument().getProjectIteration().getStatus().equals(EntityStatus.Obsolete) || textFlow.getDocument().getProjectIteration().getProject().getStatus().equals(EntityStatus.Obsolete))
             {
                continue;
             }

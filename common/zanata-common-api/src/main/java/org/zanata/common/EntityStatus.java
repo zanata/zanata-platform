@@ -1,5 +1,5 @@
 /*
- * Copyright 2011, Red Hat, Inc. and individual contributors
+ * Copyright 2010, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,42 +18,14 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.zanata.common;
 
-package org.zanata.util;
+import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlType;
 
-/**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
- */
-public class ZanataUtil
+@XmlType(name = "entityStatusType")
+@XmlEnum(String.class)
+public enum EntityStatus
 {
-
-   public static boolean equal(Object a, Object b)
-   {
-      if (a == null)
-         return b == null;
-      else
-         return a.equals(b);
-   }
-   
-   /**
-    * Indicates if an object is present in a set.
-    * 
-    * @param actual The object to be looked for.
-    * @param expected The expected set.
-    * @return True if actual is present in the expected set (using the ${@link ZanataUtil#equal(Object, Object)} method).
-    * False otherwise.
-    */
-   public static <T> boolean in( T actual, T ... expected )
-   {
-      for( T value : expected )
-      {
-         if( equal(actual, value) )
-         {
-            return true;
-         }
-      }
-      return false;
-   }
-
+   Current, Retired, Obsolete
 }

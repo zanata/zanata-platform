@@ -20,6 +20,8 @@
  */
 package org.zanata.rest.service;
 
+import static org.zanata.common.EntityStatus.Obsolete;
+
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.ArrayList;
@@ -49,7 +51,7 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectType;
-import org.zanata.rest.dto.resource.ResourceMeta;
+import org.zanata.util.ZanataUtil;
 
 @Name("projectsService")
 @Path("/projects")
@@ -81,9 +83,14 @@ public class ProjectsService implements ProjectsResource
 
       for (HProject hProject : projects)
       {
-         Project project = new Project(hProject.getSlug(), hProject.getName(), ProjectType.IterationProject);
-         project.getLinks(true).add(new Link(URI.create("p/" + hProject.getSlug()), "self", MediaTypes.createFormatSpecificType(MediaTypes.APPLICATION_ZANATA_PROJECT, accept)));
-         projectRefs.add(project);
+         // Ignore Obsolete projects
+         if( !ZanataUtil.in(hProject.getStatus(), Obsolete) )
+         {
+            Project project = new Project(hProject.getSlug(), hProject.getName(), ProjectType.IterationProject);
+            project.setStatus( hProject.getStatus() );
+            project.getLinks(true).add(new Link(URI.create("p/" + hProject.getSlug()), "self", MediaTypes.createFormatSpecificType(MediaTypes.APPLICATION_ZANATA_PROJECT, accept)));
+            projectRefs.add(project);
+         }
       }
 
       Type genericType = new GenericType<List<Project>>()

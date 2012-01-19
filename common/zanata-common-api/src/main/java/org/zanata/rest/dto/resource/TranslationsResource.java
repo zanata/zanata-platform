@@ -14,6 +14,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
+import org.zanata.common.Namespaces;
 import org.zanata.rest.dto.DTOUtil;
 import org.zanata.rest.dto.Extensible;
 import org.zanata.rest.dto.HasSample;
@@ -57,7 +58,7 @@ public class TranslationsResource implements Serializable, HasSample<Translation
    }
 
    @XmlElementWrapper(name = "targets", required = false)
-   @XmlElement(name = "text-flow-target")
+   @XmlElement(name = "text-flow-target", namespace=Namespaces.ZANATA_API)
    public List<TextFlowTarget> getTextFlowTargets()
    {
       if (textFlowTargets == null)

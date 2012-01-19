@@ -1,5 +1,7 @@
 {"id":"sample-project","type":"IterationProject","name":"Sample Project","description":"An example Project",
 	"iterations":[
-		{"id":"1.0","links":[{"type":"application/vnd.zanata.project.iteration+json","rel":"self","href":"iterations/i/1.0"}]},
-		{"id":"1.1","links":[{"type":"application/vnd.zanata.project.iteration+json","rel":"self","href":"iterations/i/1.1"}]}
-	]}
+		{"id":"1.0","links":[{"type":"application/vnd.zanata.project.iteration+json","rel":"self","href":"iterations/i/1.0"}],"status":"Current"},
+		{"id":"1.1","links":[{"type":"application/vnd.zanata.project.iteration+json","rel":"self","href":"iterations/i/1.1"}],"status":"Current"}
+	],
+	"status":"Current"
+}
