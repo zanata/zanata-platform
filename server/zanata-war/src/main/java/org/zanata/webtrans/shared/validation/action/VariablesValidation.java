@@ -41,9 +41,11 @@ public class VariablesValidation extends ValidationAction
       super(messages.variablesValidatorName(), messages.variablesValidatorDescription(), messages);
    }
 
+
+   // derived from translate toolkit printf style variable matching regex. See:
+   // http://translate.svn.sourceforge.net/viewvc/translate/src/trunk/translate/filters/checks.py?revision=17978&view=markup
+   private final static String varRegex = "%((?:\\d+\\$|\\(\\w+\\))?[+#-]*(\\d+)?(\\.\\d+)?(hh|h|l|ll|L|z|j|t)?[\\w%])";
    // private final static String varRegex = "%[\\w]+";
-   // private final static String varRegex = "%[^\\s,$]+(?![^\\s,$])";
-   private final static String varRegex = "%[^\\s,$]*";
 
    @Override
    public void validate(String source, String target)
