@@ -31,6 +31,7 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.UpdateValidationErrorEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
+import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.validation.ValidationObject;
 import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
@@ -53,15 +54,14 @@ public class ValidationService
    private final TableEditorMessages messages;
    
    @Inject
-   public ValidationService(final EventBus eventBus, final TableEditorMessages messages)
+   public ValidationService(final EventBus eventBus, final TableEditorMessages messages, final ValidationMessages valMessages)
    {
       this.eventBus = eventBus;
       this.messages = messages;
 
-
-      HtmlXmlTagValidation htmlxmlValidation = new HtmlXmlTagValidation("HTML/XML tag", "Matching HTML/XML tag validation");
-      NewlineLeadTrailValidation newlineLeadTrailValidation = new NewlineLeadTrailValidation("Newline lead/trail", "Newline lead/trail validation");
-      VariablesValidation variablesValidation = new VariablesValidation("Variables check", "Variables check validation");
+      HtmlXmlTagValidation htmlxmlValidation = new HtmlXmlTagValidation(valMessages);
+      NewlineLeadTrailValidation newlineLeadTrailValidation = new NewlineLeadTrailValidation(valMessages);
+      VariablesValidation variablesValidation = new VariablesValidation(valMessages);
 
       validationMap.put(htmlxmlValidation.getId(), htmlxmlValidation);
       validationMap.put(newlineLeadTrailValidation.getId(), newlineLeadTrailValidation);

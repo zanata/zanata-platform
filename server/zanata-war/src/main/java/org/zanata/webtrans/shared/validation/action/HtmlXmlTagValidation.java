@@ -22,8 +22,8 @@ package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
+import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.validation.ValidationUtils;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -37,9 +37,9 @@ import com.google.gwt.regexp.shared.RegExp;
  **/
 public class HtmlXmlTagValidation extends ValidationAction
 {
-   public HtmlXmlTagValidation(String id, String description)
+   public HtmlXmlTagValidation(final ValidationMessages messages)
    {
-      super(id, description);
+      super(messages.xmlHtmlValidatorName(), messages.xmlHtmlValidatorDescription(), messages);
    }
 
    // private final static String tagRegex = "<[^>]+>[^<]*</[^>]+>";
@@ -52,16 +52,17 @@ public class HtmlXmlTagValidation extends ValidationAction
    {
       if (!ValidationUtils.isEmpty(target))
       {
-         String error = runValidation(source, target);
-         if (error.length() > 0)
+         List<String> error = runValidation(source, target);
+         if (!error.isEmpty())
          {
-            addError("Tag [" + error + "] missing in target");
+
+            addError(getMessages().tagsMissing(error));
          }
 
          error = runValidation(target, source);
-         if (error.length() > 0)
+         if (!error.isEmpty())
          {
-            addError("Tag [" + error + "] missing in source");
+            addError(getMessages().tagsAdded(error));
          }
 
          if (getError().isEmpty())
@@ -73,25 +74,25 @@ public class HtmlXmlTagValidation extends ValidationAction
 
    private void orderValidation(String source, String target)
    {
+      // TODO improve for cases such as first node moved to end and last node
+      // moved to start. Currently reports every node in these cases, should
+      // only report the one moved node.
       List<String> from = getTagList(source);
       List<String> to = getTagList(target);
-      StringBuilder sb = new StringBuilder();
+      List<String> outOfOrder = new ArrayList<String>();
 
       for (int i = 0; i < from.size(); i++)
       {
          if (!to.get(i).equals(from.get(i)))
          {
-            sb.append(" ");
-            sb.append(from.get(i));
-            sb.append(" ");
+            outOfOrder.add(from.get(i));
          }
       }
 
-      if (sb.length() > 0)
+      if (!outOfOrder.isEmpty())
       {
-         addError("Tag [" + sb.toString() + "] are wrong in order");
+         addError(getMessages().tagsWrongOrder(outOfOrder));
       }
-
    }
 
    private List<String> getTagList(String src)
@@ -107,10 +108,10 @@ public class HtmlXmlTagValidation extends ValidationAction
       return list;
    }
 
-   private String runValidation(String compareFrom, String compareTo)
+   private List<String> runValidation(String compareFrom, String compareTo)
    {
       String tmp = compareTo;
-      StringBuilder sb = new StringBuilder();
+      List<String> unmatched = new ArrayList<String>();
       MatchResult result = regExp.exec(compareFrom);
 
       while (result != null)
@@ -119,9 +120,7 @@ public class HtmlXmlTagValidation extends ValidationAction
          Log.debug("Found Node:" + node);
          if (!tmp.contains(node))
          {
-            sb.append(" ");
-            sb.append(node);
-            sb.append(" ");
+            unmatched.add(node);
          }
          else
          {
@@ -129,6 +128,6 @@ public class HtmlXmlTagValidation extends ValidationAction
          }
          result = regExp.exec(compareFrom);
       }
-      return sb.toString();
+      return unmatched;
    }
 }

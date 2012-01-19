@@ -20,9 +20,18 @@
  */
 package org.zanata.webtrans.shared.validation;
 
-import org.junit.Before;
-import org.testng.Assert;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
 
 /**
@@ -30,74 +39,197 @@ import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
+@Test(groups = { "unit-tests" })
 public class NewlineLeadTrailValidationTests
 {
+   // mock message strings
+   private static final String MOCK_NEWLINE_VALIDATOR_NAME = "test newline validator name";
+   private static final String MOCK_NEWLINE_VALIDATOR_DESCRIPTION = "test xml html validator description";
+
+   private static final String MOCK_TRAILING_NEWLINE_MISSING_MESSAGE = "mock trailing newline missing message";
+   private static final String MOCK_TRAILING_NEWLINE_ADDED_MESSAGE = "mock trailing newline added message";
+   private static final String MOCK_LEADING_NEWLINE_MISSING_MESSAGE = "mock leading newline missing message";
+   private static final String MOCK_LEADING_NEWLINE_ADDED_MESSAGE = "mock leading newline added message";
+
+
    private NewlineLeadTrailValidation newlineLeadTrailValidation;
 
-   @Before
+   private ValidationMessages mockMessages;
+
+   @BeforeClass
+   public void mockMessages()
+   {
+      mockMessages = createMock(ValidationMessages.class);
+
+      expect(mockMessages.newlineValidatorName()).andReturn(MOCK_NEWLINE_VALIDATOR_NAME).anyTimes();
+      expect(mockMessages.newlineValidatorDescription()).andReturn(MOCK_NEWLINE_VALIDATOR_DESCRIPTION).anyTimes();
+
+      expect(mockMessages.leadingNewlineAdded()).andReturn(MOCK_LEADING_NEWLINE_ADDED_MESSAGE).anyTimes();
+      expect(mockMessages.leadingNewlineMissing()).andReturn(MOCK_LEADING_NEWLINE_MISSING_MESSAGE).anyTimes();
+      expect(mockMessages.trailingNewlineAdded()).andReturn(MOCK_TRAILING_NEWLINE_ADDED_MESSAGE).anyTimes();
+      expect(mockMessages.trailingNewlineMissing()).andReturn(MOCK_TRAILING_NEWLINE_MISSING_MESSAGE).anyTimes();
+
+      replay(mockMessages);
+   }
+
+   @BeforeMethod
    public void init()
    {
       newlineLeadTrailValidation = null;
    }
 
    @Test
-   public void NewlineLeadTrailTestWithMissingLead()
+   public void idIsSet()
    {
-      newlineLeadTrailValidation = new NewlineLeadTrailValidation("Newline lead/trail", "Newline lead/trail validation");
+      newlineLeadTrailValidation = new NewlineLeadTrailValidation(mockMessages);
+      assertThat(newlineLeadTrailValidation.getId(), is(MOCK_NEWLINE_VALIDATOR_NAME));
+   }
 
+   @Test
+   public void descriptionIsSet()
+   {
+      newlineLeadTrailValidation = new NewlineLeadTrailValidation(mockMessages);
+      assertThat(newlineLeadTrailValidation.getDescription(), is(MOCK_NEWLINE_VALIDATOR_DESCRIPTION));
+   }
+
+   @Test
+   public void noNewlinesBothMatch()
+   {
+      newlineLeadTrailValidation = new NewlineLeadTrailValidation(mockMessages);
+      String source = "String without newlines";
+      String target = "Different newline-devoid string";
+      newlineLeadTrailValidation.validate(source, target);
+
+      assertThat(newlineLeadTrailValidation.hasError(), is(false));
+      assertThat(newlineLeadTrailValidation.getError().size(), is(0));
+   }
+
+   @Test
+   public void bothNewlinesBothMatch()
+   {
+      newlineLeadTrailValidation = new NewlineLeadTrailValidation(mockMessages);
+      String source = "\nString with both newlines\n";
+      String target = "\nDifferent newline-infested string\n";
+      newlineLeadTrailValidation.validate(source, target);
+
+      assertThat(newlineLeadTrailValidation.hasError(), is(false));
+      assertThat(newlineLeadTrailValidation.getError().size(), is(0));
+   }
+
+   @Test
+   public void internalNewlinesDontCount()
+   {
+      newlineLeadTrailValidation = new NewlineLeadTrailValidation(mockMessages);
+      String source = "String with an \n internal newline.";
+      String target = "Different string lacking the newline";
+      newlineLeadTrailValidation.validate(source, target);
+
+      assertThat(newlineLeadTrailValidation.hasError(), is(false));
+      assertThat(newlineLeadTrailValidation.getError().size(), is(0));
+   }
+
+   @Test
+   public void missingLeadingNewline()
+   {
+      newlineLeadTrailValidation = new NewlineLeadTrailValidation(mockMessages);
       String source = "\nTesting string with leading new line";
-      String target = "Testing string with leading new line\n";
+      String target = "Different string with the newline removed";
       newlineLeadTrailValidation.validate(source, target);
-      Assert.assertTrue(newlineLeadTrailValidation.hasError());
-      Assert.assertEquals(newlineLeadTrailValidation.getError().size(), 2);
+
+      assertThat(newlineLeadTrailValidation.hasError(), is(true));
+      assertThat(newlineLeadTrailValidation.getError(), hasItem(MOCK_LEADING_NEWLINE_MISSING_MESSAGE));
+      assertThat(newlineLeadTrailValidation.getError().size(), is(1));
    }
 
    @Test
-   public void NewlineLeadTrailTestWithMissingTrail()
+   public void addedLeadingNewline()
    {
-      newlineLeadTrailValidation = new NewlineLeadTrailValidation("Newline lead/trail", "Newline lead/trail validation");
-
-      String source = "Testing string with leading new line\n";
-      String target = "\nTesting string with leading new line";
+      newlineLeadTrailValidation = new NewlineLeadTrailValidation(mockMessages);
+      String source = "Testing string without a leading new line";
+      String target = "\nDifferent string with a leading newline added";
       newlineLeadTrailValidation.validate(source, target);
-      Assert.assertTrue(newlineLeadTrailValidation.hasError());
-      Assert.assertEquals(newlineLeadTrailValidation.getError().size(), 2);
+
+      assertThat(newlineLeadTrailValidation.hasError(), is(true));
+      assertThat(newlineLeadTrailValidation.getError(), hasItem(MOCK_LEADING_NEWLINE_ADDED_MESSAGE));
+      assertThat(newlineLeadTrailValidation.getError().size(), is(1));
    }
 
    @Test
-   public void NewlineLeadTrailTestWithMissingBoth()
+   public void missingTrailingNewline()
    {
-      newlineLeadTrailValidation = new NewlineLeadTrailValidation("Newline lead/trail", "Newline lead/trail validation");
-
-      String source = "\nTesting string with leading new line\n";
-      String target = "Testing string with leading new line";
+      newlineLeadTrailValidation = new NewlineLeadTrailValidation(mockMessages);
+      String source = "Testing string with trailing new line\n";
+      String target = "Different string with the newline removed";
       newlineLeadTrailValidation.validate(source, target);
-      Assert.assertTrue(newlineLeadTrailValidation.hasError());
-      Assert.assertEquals(newlineLeadTrailValidation.getError().size(), 1);
+
+      assertThat(newlineLeadTrailValidation.hasError(), is(true));
+      assertThat(newlineLeadTrailValidation.getError(), hasItem(MOCK_TRAILING_NEWLINE_MISSING_MESSAGE));
+      assertThat(newlineLeadTrailValidation.getError().size(), is(1));
    }
 
    @Test
-   public void NewlineLeadTrailTestWithMissingBoth2()
+   public void addedTrailingNewline()
    {
-      newlineLeadTrailValidation = new NewlineLeadTrailValidation("Newline lead/trail", "Newline lead/trail validation");
-
-      String source = "\nTesting string with leading new line";
-      String target = "\nTesting string with leading new line\n";
+      newlineLeadTrailValidation = new NewlineLeadTrailValidation(mockMessages);
+      String source = "Testing string without a trailing new line";
+      String target = "Different string with a trailing newline added\n";
       newlineLeadTrailValidation.validate(source, target);
-      Assert.assertTrue(newlineLeadTrailValidation.hasError());
-      Assert.assertEquals(newlineLeadTrailValidation.getError().size(), 1);
+
+      assertThat(newlineLeadTrailValidation.hasError(), is(true));
+      assertThat(newlineLeadTrailValidation.getError(), hasItem(MOCK_TRAILING_NEWLINE_ADDED_MESSAGE));
+      assertThat(newlineLeadTrailValidation.getError().size(), is(1));
    }
 
    @Test
-   public void NewlineLeadTrailTestMatch()
+   public void addedBothNewlines()
    {
-      newlineLeadTrailValidation = new NewlineLeadTrailValidation("Newline lead/trail", "Newline lead/trail validation");
-
-      String source = "\nTesting string with leading new line\n";
-      String target = "\nTesting string with leading new line\n";
+      newlineLeadTrailValidation = new NewlineLeadTrailValidation(mockMessages);
+      String source = "Testing string with no newlines";
+      String target = "\nDifferent string with both added\n";
       newlineLeadTrailValidation.validate(source, target);
-      Assert.assertFalse(newlineLeadTrailValidation.hasError());
-      Assert.assertEquals(newlineLeadTrailValidation.getError().size(), 0);
+
+      assertThat(newlineLeadTrailValidation.hasError(), is(true));
+      assertThat(newlineLeadTrailValidation.getError(), hasItems(MOCK_TRAILING_NEWLINE_ADDED_MESSAGE, MOCK_TRAILING_NEWLINE_ADDED_MESSAGE));
+      assertThat(newlineLeadTrailValidation.getError().size(), is(2));
+   }
+
+   @Test
+   public void missingBothNewlines()
+   {
+      newlineLeadTrailValidation = new NewlineLeadTrailValidation(mockMessages);
+      String source = "\nString with both newlines\n";
+      String target = "Other string with no newlines";
+      newlineLeadTrailValidation.validate(source, target);
+
+      assertThat(newlineLeadTrailValidation.hasError(), is(true));
+      assertThat(newlineLeadTrailValidation.getError(), hasItems(MOCK_TRAILING_NEWLINE_MISSING_MESSAGE, MOCK_TRAILING_NEWLINE_MISSING_MESSAGE));
+      assertThat(newlineLeadTrailValidation.getError().size(), is(2));
+   }
+
+   @Test
+   public void addedAndMissing1()
+   {
+      newlineLeadTrailValidation = new NewlineLeadTrailValidation(mockMessages);
+      String source = "\nString with only leading newline";
+      String target = "Other string with newline trailing\n";
+      newlineLeadTrailValidation.validate(source, target);
+
+      assertThat(newlineLeadTrailValidation.hasError(), is(true));
+      assertThat(newlineLeadTrailValidation.getError(), hasItems(MOCK_LEADING_NEWLINE_MISSING_MESSAGE, MOCK_TRAILING_NEWLINE_ADDED_MESSAGE));
+      assertThat(newlineLeadTrailValidation.getError().size(), is(2));
+   }
+
+   @Test
+   public void addedAndMissing2()
+   {
+      newlineLeadTrailValidation = new NewlineLeadTrailValidation(mockMessages);
+      String source = "String with trailing newline\n";
+      String target = "\nOther string with newline leading";
+      newlineLeadTrailValidation.validate(source, target);
+
+      assertThat(newlineLeadTrailValidation.hasError(), is(true));
+      assertThat(newlineLeadTrailValidation.getError(), hasItems(MOCK_LEADING_NEWLINE_ADDED_MESSAGE, MOCK_TRAILING_NEWLINE_MISSING_MESSAGE));
+      assertThat(newlineLeadTrailValidation.getError().size(), is(2));
    }
 }
 

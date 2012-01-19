@@ -20,9 +20,12 @@
  */
 package org.zanata.webtrans.shared.validation.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.validation.ValidationUtils;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
@@ -33,56 +36,61 @@ import com.google.gwt.regexp.shared.RegExp;
  **/
 public class VariablesValidation extends ValidationAction
 {
-   public VariablesValidation(String id, String description)
+   public VariablesValidation(final ValidationMessages messages)
    {
-      super(id, description);
+      super(messages.variablesValidatorName(), messages.variablesValidatorDescription(), messages);
    }
 
-   private final static String varRegex = "%[\\w]+";
-   private RegExp varRegExp = RegExp.compile(varRegex, "g");
+   // private final static String varRegex = "%[\\w]+";
+   // private final static String varRegex = "%[^\\s,$]+(?![^\\s,$])";
+   private final static String varRegex = "%[^\\s,$]*";
 
    @Override
    public void validate(String source, String target)
    {
       if (!ValidationUtils.isEmpty(target))
       {
-         String error = runValidation(source, target);
-         if (error.length() > 0)
+         ArrayList<String> sourceVars = findVars(source);
+         ArrayList<String> targetVars = findVars(target);
+
+         List<String> missing = listMissing(sourceVars, targetVars);
+         if (!missing.isEmpty())
          {
-            addError("Variable [" + error + "] not found in target");
+            addError(getMessages().varsMissing(missing));
          }
 
-         error = runValidation(target, source);
-         if (error.length() > 0)
+         // missing from source = added
+         missing = listMissing(targetVars, sourceVars);
+         if (!missing.isEmpty())
          {
-            addError("Variable [" + error + "] not found in source");
+            addError(getMessages().varsAdded(missing));
          }
       }
    }
 
-   private String runValidation(String compareFrom, String compareTo)
+   private List<String> listMissing(ArrayList<String> baseVars, ArrayList<String> testVars)
    {
-      String tmp = compareTo;
-      StringBuilder sb = new StringBuilder();
-      MatchResult result = varRegExp.exec(compareFrom);
+      ArrayList<String> remainingVars = new ArrayList<String>();
+      remainingVars.addAll(testVars);
+      ArrayList<String> unmatched = new ArrayList<String>();
 
+      for (String var : baseVars)
+         if (!remainingVars.remove(var))
+            unmatched.add(var);
+      return unmatched;
+   }
+
+   private ArrayList<String> findVars(String inString)
+   {
+      ArrayList<String> vars = new ArrayList<String>();
+      // compile each time to reset index
+      RegExp varRegExp = RegExp.compile(varRegex, "g");
+      MatchResult result = varRegExp.exec(inString);
       while (result != null)
       {
-         String var = result.getGroup(0);
-         Log.debug("Found var:" + var);
-         if (!tmp.contains(var))
-         {
-            sb.append(" ");
-            sb.append(var);
-            sb.append(" ");
-         }
-         else
-         {
-            tmp = tmp.replaceFirst(var, ""); // remove matched var
-         }
-         result = varRegExp.exec(compareFrom);
+         vars.add(result.getGroup(0));
+         result = varRegExp.exec(inString);
       }
-
-      return sb.toString();
+      return vars;
    }
 }

@@ -23,6 +23,7 @@ package org.zanata.webtrans.shared.validation.action;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.validation.ValidationObject;
 
 /**
@@ -37,14 +38,22 @@ public abstract class ValidationAction implements ValidationObject
    
    private final String description;
 
+   private ValidationMessages messages;
+
+   protected ValidationMessages getMessages()
+   {
+      return messages;
+   }
+
    private List<String> errorList = new ArrayList<String>();
 
    public abstract void validate(String source, String target);
 
-   public ValidationAction(String id, String description)
+   public ValidationAction(String id, String description, final ValidationMessages messages)
    {
       this.id = id;
       this.description = description;
+      this.messages = messages;
    }
 
    @Override

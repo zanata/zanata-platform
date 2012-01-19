@@ -20,10 +20,10 @@
  */
 package org.zanata.webtrans.shared.validation.action;
 
+import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.validation.ValidationUtils;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
@@ -33,9 +33,9 @@ import com.google.gwt.regexp.shared.RegExp;
  **/
 public class NewlineLeadTrailValidation extends ValidationAction
 {
-   public NewlineLeadTrailValidation(String id, String description)
+   public NewlineLeadTrailValidation(final ValidationMessages messages)
    {
-      super(id, description);
+      super(messages.newlineValidatorName(), messages.newlineValidatorDescription(), messages);
    }
 
    private final static String leadNewlineRegex = "^\n";
@@ -49,50 +49,47 @@ public class NewlineLeadTrailValidation extends ValidationAction
    {
       if (!ValidationUtils.isEmpty(target))
       {
-         String error = runValidation(source, target);
-         if (error.length() > 0)
-         {
-            addError(error + " newline missing in target");
-         }
-         error = runValidation(target, source);
-         if (error.length() > 0)
-         {
-            addError(error + " newline missing in source");
-         }
+         if (!shareLeading(source, target))
+            addError(getMessages().leadingNewlineMissing());
+
+         if (!shareLeading(target, source))
+            addError(getMessages().leadingNewlineAdded());
+
+         if (!shareTrailing(source, target))
+            addError(getMessages().trailingNewlineMissing());
+
+         if (!shareTrailing(target, source))
+            addError(getMessages().trailingNewlineAdded());
       }
    }
 
-   private String runValidation(String compareFrom, String compareTo)
+   /**
+    * @return false if base has a leading newline and test does not, true
+    *         otherwise
+    */
+   private boolean shareLeading(String base, String test)
    {
-      MatchResult sourceResult = leadRegExp.exec(compareFrom);
-      StringBuilder sb = new StringBuilder();
-      if (sourceResult != null)
+      if (leadRegExp.test(base))
       {
          Log.debug("Found leading newline");
-         MatchResult targetResult = leadRegExp.exec(compareTo);
-         if (targetResult == null)
-         {
-            sb.append("Leading");
-         }
+         return leadRegExp.test(test);
       }
+      // no newline so can't fail
+      return true;
+   }
 
-      sourceResult = endRegExp.exec(compareFrom);
-      if (sourceResult != null)
+   /**
+    * @return false if base has a trailing newline and test does not, true
+    *         otherwise
+    */
+   private boolean shareTrailing(String base, String test)
+   {
+      if (endRegExp.test(base))
       {
          Log.debug("Found trailing newline");
-         MatchResult targetResult = endRegExp.exec(compareTo);
-         if (targetResult == null)
-         {
-            if (sb.length() > 0)
-            {
-               sb.append("/Trailing");
-            }
-            else
-            {
-               sb.append("Trailing");
-            }
-         }
+         return endRegExp.test(test);
       }
-      return sb.toString();
+      // no newline so can't fail
+      return true;
    }
 }
