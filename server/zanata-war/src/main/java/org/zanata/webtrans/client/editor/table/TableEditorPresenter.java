@@ -469,7 +469,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          public void onCopySource(CopySourceEvent event)
          {
             int row = getRow(event.getTransUnit().getId());
-
             tableModelHandler.gotoRow(row, true);
             display.getTargetCellEditor().setText(event.getTransUnit().getSource());
             display.getTargetCellEditor().autoSize();
@@ -510,7 +509,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    {
       for (TransUnit transUnit : display.getRowValues())
       {
-         if (transUnitId.equals(transUnit.getId()))
+         if (transUnitId == transUnit.getId())
          {
             return transUnit.getRowIndex();
          }
@@ -569,8 +568,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                display.stopProcessing();
             }
          });
-
-
       }
 
       @Override
