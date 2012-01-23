@@ -468,17 +468,19 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          @Override
          public void onCopySource(CopySourceEvent event)
          {
-            int row = getRow(event.getTransUnit().getId());
-            tableModelHandler.gotoRow(row, true);
-            display.getTargetCellEditor().setText(event.getTransUnit().getSource());
-            display.getTargetCellEditor().autoSize();
+            Integer row = getRow(event.getTransUnit().getId());
+            if (row != null)
+            {
+               tableModelHandler.gotoRow(row, true);
+               display.getTargetCellEditor().setText(event.getTransUnit().getSource());
+               display.getTargetCellEditor().autoSize();
+            }
          }
 
       }));
 
       registerHandler(eventBus.addHandler(ButtonDisplayChangeEvent.getType(), new ButtonDisplayChangeEventHandler()
       {
-
          @Override
          public void onButtonDisplayChange(ButtonDisplayChangeEvent event)
          {

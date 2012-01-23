@@ -459,7 +459,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       if (isEditing())
       {
-         cellValue.setTarget("");
          textArea.setText(text);
       }
    }
@@ -482,7 +481,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          savePendingChange(false);
       }
 
-      Log.debug("starting edit of cell");
+      Log.debug("starting edit of cell:" + cellValue.getTarget());
 
       // Save the current values
       curCallback = callback;
@@ -506,7 +505,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       textArea.setFocus(true);
       isOpened = true;
       DOM.scrollIntoView(table.getCellFormatter().getElement(curRow, curCol));
-
       eventBus.fireEvent(new UpdateValidationErrorEvent(cellValue.getId(), true));
    }
 
