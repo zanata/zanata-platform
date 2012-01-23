@@ -21,7 +21,6 @@
 package org.zanata.webtrans.shared.validation.action;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.shared.validation.ValidationUtils;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.regexp.shared.RegExp;
@@ -35,7 +34,7 @@ public class NewlineLeadTrailValidation extends ValidationAction
 {
    public NewlineLeadTrailValidation(final ValidationMessages messages)
    {
-      super(messages.newlineValidatorName(), messages.newlineValidatorDescription(), messages);
+      super(messages.newlineValidatorName(), messages.newlineValidatorDescription(), true, messages);
    }
 
    private final static String leadNewlineRegex = "^\n";
@@ -45,22 +44,19 @@ public class NewlineLeadTrailValidation extends ValidationAction
    private final static RegExp endRegExp = RegExp.compile(endNewlineRegex);
 
    @Override
-   public void validate(String source, String target)
+   public void doValidate(String source, String target)
    {
-      if (!ValidationUtils.isEmpty(target))
-      {
-         if (!shareLeading(source, target))
-            addError(getMessages().leadingNewlineMissing());
+      if (!shareLeading(source, target))
+         addError(getMessages().leadingNewlineMissing());
 
-         if (!shareLeading(target, source))
-            addError(getMessages().leadingNewlineAdded());
+      if (!shareLeading(target, source))
+         addError(getMessages().leadingNewlineAdded());
 
-         if (!shareTrailing(source, target))
-            addError(getMessages().trailingNewlineMissing());
+      if (!shareTrailing(source, target))
+         addError(getMessages().trailingNewlineMissing());
 
-         if (!shareTrailing(target, source))
-            addError(getMessages().trailingNewlineAdded());
-      }
+      if (!shareTrailing(target, source))
+         addError(getMessages().trailingNewlineAdded());
    }
 
    /**

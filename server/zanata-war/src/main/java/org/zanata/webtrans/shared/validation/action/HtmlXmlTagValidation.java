@@ -21,10 +21,8 @@
 package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
-//import java.util.List;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.shared.validation.ValidationUtils;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.regexp.shared.MatchResult;
@@ -39,7 +37,7 @@ public class HtmlXmlTagValidation extends ValidationAction
 {
    public HtmlXmlTagValidation(final ValidationMessages messages)
    {
-      super(messages.xmlHtmlValidatorName(), messages.xmlHtmlValidatorDescription(), messages);
+      super(messages.xmlHtmlValidatorName(), messages.xmlHtmlValidatorDescription(), true, messages);
    }
 
    // private final static String tagRegex = "<[^>]+>[^<]*</[^>]+>";
@@ -48,33 +46,30 @@ public class HtmlXmlTagValidation extends ValidationAction
    private final static RegExp regExp = RegExp.compile(tagRegex, "g");
 
    @Override
-   public void validate(String source, String target)
+   public void doValidate(String source, String target)
    {
-      if (!ValidationUtils.isEmpty(target))
+      ArrayList<String> sourceTags = getTagList(source);
+      ArrayList<String> targetTags = getTagList(target);
+
+      ArrayList<String> error = listMissing(source, target);
+      if (!error.isEmpty())
       {
-         ArrayList<String> sourceTags = getTagList(source);
-         ArrayList<String> targetTags = getTagList(target);
+         addError(getMessages().tagsMissing(error));
+      }
 
-         ArrayList<String> error = listMissing(source, target);
-         if (!error.isEmpty())
-         {
-            addError(getMessages().tagsMissing(error));
-         }
+      boolean noError = error.isEmpty();
 
-         boolean noError = error.isEmpty();
+      error = listMissing(target, source);
+      if (!error.isEmpty())
+      {
+         addError(getMessages().tagsAdded(error));
+      }
 
-         error = listMissing(target, source);
-         if (!error.isEmpty())
-         {
-            addError(getMessages().tagsAdded(error));
-         }
+      noError &= error.isEmpty();
 
-         noError &= error.isEmpty();
-
-         if (noError)
-         {
-            orderValidation(sourceTags, targetTags);
-         }
+      if (noError)
+      {
+         orderValidation(sourceTags, targetTags);
       }
    }
 
