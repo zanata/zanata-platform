@@ -64,7 +64,7 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 
    public boolean getEmpty()
    {
-      return projectDAO.getProjectSize() == 0;
+      return projectDAO.getFilterProjectSize(false, false, false) == 0;
    }
 
    public int getPageSize()

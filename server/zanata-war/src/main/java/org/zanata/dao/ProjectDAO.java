@@ -56,9 +56,10 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
       return getSession().createQuery("from HProject p " + condition + "order by p.creationDate").setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getAllProjectOffsetListByCreateDate").list();
    }
 
-   public int getProjectSize()
+   public int getFilterProjectSize(boolean filterCurrent, boolean filterRetired, boolean filterObsolete)
    {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HProject").uniqueResult();
+      String query = "select count(*) from HProject p " + constructFilterCondition(filterCurrent, filterRetired, filterObsolete);
+      Long totalCount = (Long) getSession().createQuery(query.toString()).uniqueResult();
 
       if (totalCount == null)
          return 0;
