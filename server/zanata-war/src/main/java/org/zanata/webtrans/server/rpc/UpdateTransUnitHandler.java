@@ -197,7 +197,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
                                    CommentsUtil.toString(hTextFlow.getComment()),
                                    action.getContent(), target.getState(),
                                    authenticatedAccount.getPerson().getName(),
-                                   SIMPLE_FORMAT.format(new Date()), msgContext);
+                                   SIMPLE_FORMAT.format(new Date()), msgContext, hTextFlow.getPos());
       // @formatter:on
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu);
 
@@ -273,7 +273,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
                                    CommentsUtil.toString(hTextFlow.getComment()),
                                    target.getContent(), target.getState(),
                                    target.getLastModifiedBy().getName(),
-                                   SIMPLE_FORMAT.format(target.getLastChanged()), msgContext);
+                                   SIMPLE_FORMAT.format(target.getLastChanged()), msgContext, hTextFlow.getPos());
       // @formatter:on
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu);
 

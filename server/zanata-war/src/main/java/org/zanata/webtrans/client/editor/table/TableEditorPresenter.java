@@ -338,7 +338,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                   eventBus.fireEvent(new RunValidationEvent(event.getTransUnit().getId(), event.getTransUnit().getSource(), event.getTransUnit().getTarget()));
                }
 
-               Integer row = getRow(event.getTransUnit().getId());
+               Integer row = getRow(event.getTransUnit());
                // - add TU index to model
                if (row != null)
                {
@@ -468,7 +468,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          @Override
          public void onCopySource(CopySourceEvent event)
          {
-            Integer row = getRow(event.getTransUnit().getId());
+            Integer row = getRow(event.getTransUnit());
             if (row != null)
             {
                tableModelHandler.gotoRow(row, true);
@@ -507,13 +507,29 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       History.fireCurrentHistoryState();
    }
 
-   public Integer getRow(TransUnitId transUnitId)
+   public boolean isFiltering()
    {
-      for (TransUnit transUnit : display.getRowValues())
+      return findMessage != null && !findMessage.isEmpty();
+   }
+
+   public Integer getRow(TransUnit tu)
+   {
+      if (!isFiltering())
       {
-         if (transUnitId == transUnit.getId())
+         return tu.getRowIndex();
+      }
+      else
+      {
+         TransUnitId transUnitId = tu.getId();
+         int n = 0;
+         for (TransUnit transUnit : display.getRowValues())
          {
-            return transUnit.getRowIndex();
+            if (transUnitId.equals(transUnit.getId()))
+            {
+               int row = n + (curPage * display.getPageSize());
+               return row;
+            }
+            n++;
          }
       }
       return null;
