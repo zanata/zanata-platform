@@ -267,7 +267,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          ValidationMessagePanel msgPanel = messagePanelMap.get(rowValue.getId());
          if (msgPanel == null)
          {
-            msgPanel = new ValidationMessagePanel(messages.validationMessageHeading(), false);
+            msgPanel = new ValidationMessagePanel(false, messages);
          }
          msgPanel.setVisible(false);
 
@@ -408,7 +408,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
       if (panel == null)
       {
-         panel = new ValidationMessagePanel(messages.validationMessageHeading(), false);
+         panel = new ValidationMessagePanel(false, messages);
          messagePanelMap.put(id, panel);
       }
       return panel;

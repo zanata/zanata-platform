@@ -362,7 +362,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       verticalPanel.add(topLayoutPanel);
 
-      validationMessagePanel = new ValidationMessagePanel(messages.validationMessageHeading(), true);
+      validationMessagePanel = new ValidationMessagePanel(true, messages);
 
       verticalPanel.add(validationMessagePanel);
       verticalPanel.setCellVerticalAlignment(validationMessagePanel, HasVerticalAlignment.ALIGN_BOTTOM);

@@ -20,6 +20,8 @@ package org.zanata.webtrans.client.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.zanata.webtrans.client.resources.NavigationMessages;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
@@ -62,14 +64,22 @@ public class ValidationMessagePanel extends Composite
    private boolean collapsible;
    private List<String> errors = new ArrayList<String>();
 
+   private final NavigationMessages messages;
 
-   public ValidationMessagePanel(String header, boolean collapsible)
+
+   public ValidationMessagePanel(boolean collapsible, NavigationMessages messages)
    {
       contents = new VerticalPanel();
+      this.messages = messages;
       initWidget(uiBinder.createAndBindUi(this));
       setCollapsible(collapsible);
-      headerLabel.setText(header);
+      setHeaderText(messages.validationWarningsHeading(0));
       collapse();
+   }
+
+   private void setHeaderText(String header)
+   {
+      headerLabel.setText(header);
    }
 
    public void setContent(List<String> errors)
@@ -83,6 +93,7 @@ public class ValidationMessagePanel extends Composite
          contents.add(new Label(error));
       }
       contentPanel.add(contents);
+      setHeaderText(messages.validationWarningsHeading(errors.size()));
       expand();
    }
 
