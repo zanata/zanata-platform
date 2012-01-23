@@ -2,6 +2,7 @@ package org.zanata.webtrans.client.presenter;
 
 import static org.easymock.EasyMock.and;
 import static org.easymock.EasyMock.capture;
+import static org.easymock.EasyMock.captureInt;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
@@ -270,7 +271,7 @@ public class DocumentListPresenterTest
       expect(mockEvent.getDocumentId()).andReturn(new DocumentId(2222L)).anyTimes();
       expect(mockEvent.getPreviousStatus()).andReturn(ContentState.NeedReview).anyTimes();
       expect(mockEvent.getWordCount()).andReturn(3).anyTimes();
-      TransUnit newTransUnit = new TransUnit(new TransUnitId(12345L), "resId", new LocaleId("es"), "this is the source", "this is the source comment", "this is the target", ContentState.Approved, "lastModifiedBy", "lastModifiedTime", "msgContext");
+      TransUnit newTransUnit = new TransUnit(new TransUnitId(12345L), "resId", new LocaleId("es"), "this is the source", "this is the source comment", "this is the target", ContentState.Approved, "lastModifiedBy", "lastModifiedTime", "msgContext", 1);
       expect(mockEvent.getTransUnit()).andReturn(newTransUnit).anyTimes();
       replay(mockEvent);
       capturedTransUnitUpdatedEventHandler.getValue().onTransUnitUpdated(mockEvent);
@@ -309,7 +310,7 @@ public class DocumentListPresenterTest
       expect(mockEvent.getDocumentId()).andReturn(new DocumentId(2222L)).anyTimes();
       expect(mockEvent.getPreviousStatus()).andReturn(ContentState.NeedReview).anyTimes();
       expect(mockEvent.getWordCount()).andReturn(3).anyTimes();
-      TransUnit newTransUnit = new TransUnit(new TransUnitId(12345L), "resId", new LocaleId("es"), "this is the source", "this is the source comment", "this is the target", ContentState.Approved, "lastModifiedBy", "lastModifiedTime", "msgContext");
+      TransUnit newTransUnit = new TransUnit(new TransUnitId(12345L), "resId", new LocaleId("es"), "this is the source", "this is the source comment", "this is the target", ContentState.Approved, "lastModifiedBy", "lastModifiedTime", "msgContext", 1);
       expect(mockEvent.getTransUnit()).andReturn(newTransUnit).anyTimes();
       replay(mockEvent);
       capturedTransUnitUpdatedEventHandler.getValue().onTransUnitUpdated(mockEvent);
@@ -710,7 +711,7 @@ public class DocumentListPresenterTest
    private void setupMockDisplay()
    {
       capturedPageSize = new Capture<Integer>();
-      mockDisplay.setPageSize(capture(capturedPageSize));
+      mockDisplay.setPageSize(captureInt(capturedPageSize));
       expectLastCall().anyTimes();
 
       expect(mockDisplay.getDataProvider()).andReturn(mockDataProvider).anyTimes();

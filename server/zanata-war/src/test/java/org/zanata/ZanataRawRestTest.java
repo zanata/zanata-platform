@@ -52,6 +52,7 @@ public abstract class ZanataRawRestTest extends ZanataDBUnitSeamTest
    {
       sharedEnvironment = new ResourceRequestEnvironment(this)
       {
+         @SuppressWarnings("serial")
          @Override
          public Map<String, Object> getDefaultHeaders()
          {

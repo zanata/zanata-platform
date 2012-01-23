@@ -81,7 +81,6 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
       glossaryHeader.setText(messages.glossaryHeader());
-      Log.info(LocaleInfo.getCurrentLocale().getLocaleName());
    }
 
    @UiHandler("glossaryTextBox")

@@ -123,8 +123,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
       dataProvider = display.getDataProvider();
       nodes = new HashMap<DocumentId, DocumentNode>();
-
-      Log.info("DocumentListPresenter()");
    }
 
    @Override
@@ -375,9 +373,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          {
             long start = System.currentTimeMillis();
             final ArrayList<DocumentInfo> documents = result.getDocuments();
-            Log.info("Received doc list for " + result.getProjectIterationId() + ": " + documents.size() + " elements");
+            Log.info("Received doc list for " + result.getProjectIterationId() + ": " + documents.size() + " elements, loading time: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
             setList(documents);
-            Log.info("Time to load docs into DocListView: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
             start = System.currentTimeMillis();
 
             history.fireCurrentHistoryState();
@@ -400,11 +397,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       dataProvider.getList().clear();
       nodes = new HashMap<DocumentId, DocumentNode>(sortedList.size());
       idsByPath = new HashMap<String, DocumentId>(sortedList.size());
-      int counter = 0;
       long start = System.currentTimeMillis();
       for (DocumentInfo doc : sortedList)
       {
-         Log.info("Loading document: " + ++counter + " ");
          idsByPath.put(doc.getPath() + doc.getName(), doc.getId());
          DocumentNode node = new DocumentNode(messages, doc, eventBus);
          if (filter != null)

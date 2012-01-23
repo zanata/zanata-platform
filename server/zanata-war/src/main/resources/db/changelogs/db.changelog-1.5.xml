@@ -170,5 +170,9 @@
         </addColumn>
     </changeSet>
 
+   <!--
+   NB: Please do not add any more changesets to this file.
+   Any future changesets for the 1.5 branch should be added to db.changelog-1.6.xml.
+    -->
 
 </databaseChangeLog>

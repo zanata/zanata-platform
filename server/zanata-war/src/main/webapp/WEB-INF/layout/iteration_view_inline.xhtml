@@ -40,7 +40,6 @@
     <rich:column id="translate">
       <h:outputLink
           rendered="#{s:hasPermission(projectHome.instance, 'modify-translation', tribe) and !applicationConfiguration.debug}"
-          target="_blank"
           value="#{request.contextPath}/webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
 		<f:param name="iteration" value="#{_iteration.slug}"/>
@@ -50,7 +49,6 @@
       </h:outputLink>
       <h:outputLink
           rendered="#{s:hasPermission(projectHome.instance, 'modify-translation', tribe) and applicationConfiguration.debug}"
-          target="_blank"
           value="#{request.contextPath}/webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
 		<f:param name="iteration" value="#{_iteration.slug}"/>

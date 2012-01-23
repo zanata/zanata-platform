@@ -118,7 +118,6 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       }
 
       ArrayList<TransUnit> units = new ArrayList<TransUnit>();
-      int rowIndex = 0;
       for (HTextFlow textFlow : textFlows)
       {
 
@@ -130,7 +129,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
             msgContext = textFlow.getPotEntryData().getContext();
          }
 
-         TransUnit tu = new TransUnit(tuId, textFlow.getResId(), action.getWorkspaceId().getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New, "", "", msgContext, rowIndex);
+         TransUnit tu = new TransUnit(tuId, textFlow.getResId(), action.getWorkspaceId().getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New, "", "", msgContext, textFlow.getPos());
          HTextFlowTarget target = textFlow.getTargets().get(hLocale);
          if (target != null)
          {
@@ -143,7 +142,6 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
             tu.setLastModifiedTime(SIMPLE_FORMAT.format(target.getLastChanged()));
          }
          units.add(tu);
-         rowIndex++;
       }
       return new GetTransUnitListResult(action.getDocumentId(), units, units.size());
    }

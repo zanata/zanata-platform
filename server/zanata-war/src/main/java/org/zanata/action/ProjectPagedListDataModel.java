@@ -46,9 +46,11 @@ public class ProjectPagedListDataModel extends PagedListDataModel<HProject>
    public DataPage<HProject> fetchPage(int startRow, int pageSize)
    {
       ProjectDAO projectDAO = (ProjectDAO) Component.getInstance(ProjectDAO.class, ScopeType.STATELESS);
-
       List<HProject> proj = projectDAO.getOffsetListByCreateDate(startRow, pageSize, filterCurrent, filterRetired, filterObsolete);
-      return new DataPage<HProject>(proj.size(), startRow, proj);
+
+      int projectSize = projectDAO.getFilterProjectSize(filterCurrent, filterRetired, filterObsolete);
+
+      return new DataPage<HProject>(projectSize, startRow, proj);
    }
 
 

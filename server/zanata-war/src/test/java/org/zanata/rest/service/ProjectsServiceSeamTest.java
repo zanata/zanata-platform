@@ -18,6 +18,7 @@ import org.zanata.ZanataDBUnitSeamTest;
 import org.zanata.rest.client.ApiKeyHeaderDecorator;
 import org.zanata.rest.client.IProjectsResource;
 import org.zanata.rest.dto.Project;
+import org.zanata.rest.service.raw.ProjectRestTest;
 
 @Test(groups = { "seam-tests" })
 public class ProjectsServiceSeamTest extends ZanataDBUnitSeamTest
@@ -46,15 +47,18 @@ public class ProjectsServiceSeamTest extends ZanataDBUnitSeamTest
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
-   // TODO fix and re-enable this test
-   @Test(enabled = false)
-   public void retrieveListofProjects() throws Exception
+   /**
+    * Disabled test. Please see {@link ProjectRestTest#getAllXml()} and {@link ProjectRestTest#getAllJson()} 
+    * as replacements. 
+    */
+   @Test(enabled=false)
+   public void retrieveListOfProjects() throws Exception
    {
       ClientResponse<List<Project>> response = projectService.get();
 
       assertThat(response.getStatus(), is(200));
       assertThat(response.getEntity(), notNullValue());
-      assertThat(response.getEntity().size(), is(1));
+      assertThat(response.getEntity().size(), is(2)); // Obsolete projects should not appear
 
    }
 }

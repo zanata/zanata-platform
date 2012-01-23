@@ -262,6 +262,7 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
    {
       try
       {
+         @SuppressWarnings("deprecation")
          IDatabaseConnection dbUnitCon = new DatabaseConnection(getSession().connection());
          editConfig(dbUnitCon.getConfig());
          return dbUnitCon;

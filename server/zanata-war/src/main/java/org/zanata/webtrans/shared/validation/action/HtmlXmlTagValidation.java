@@ -21,9 +21,9 @@
 package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+//import java.util.List;
 
+import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.validation.ValidationUtils;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -37,9 +37,9 @@ import com.google.gwt.regexp.shared.RegExp;
  **/
 public class HtmlXmlTagValidation extends ValidationAction
 {
-   public HtmlXmlTagValidation(String id, String description)
+   public HtmlXmlTagValidation(final ValidationMessages messages)
    {
-      super(id, description);
+      super(messages.xmlHtmlValidatorName(), messages.xmlHtmlValidatorDescription(), messages);
    }
 
    // private final static String tagRegex = "<[^>]+>[^<]*</[^>]+>";
@@ -52,51 +52,108 @@ public class HtmlXmlTagValidation extends ValidationAction
    {
       if (!ValidationUtils.isEmpty(target))
       {
-         String error = runValidation(source, target);
-         if (error.length() > 0)
+         ArrayList<String> sourceTags = getTagList(source);
+         ArrayList<String> targetTags = getTagList(target);
+
+         ArrayList<String> error = listMissing(source, target);
+         if (!error.isEmpty())
          {
-            addError("Tag [" + error + "] missing in target");
+            addError(getMessages().tagsMissing(error));
          }
 
-         error = runValidation(target, source);
-         if (error.length() > 0)
+         boolean noError = error.isEmpty();
+
+         error = listMissing(target, source);
+         if (!error.isEmpty())
          {
-            addError("Tag [" + error + "] missing in source");
+            addError(getMessages().tagsAdded(error));
          }
 
-         if (getError().isEmpty())
+         noError &= error.isEmpty();
+
+         if (noError)
          {
-            orderValidation(source, target);
+            orderValidation(sourceTags, targetTags);
          }
       }
    }
 
-   private void orderValidation(String source, String target)
+   private void orderValidation(ArrayList<String> srcTags, ArrayList<String> trgTags)
    {
-      List<String> from = getTagList(source);
-      List<String> to = getTagList(target);
-      StringBuilder sb = new StringBuilder();
+      ArrayList<String> longestRun = null;
+      ArrayList<String> currentRun = new ArrayList<String>();
 
-      for (int i = 0; i < from.size(); i++)
+      String[] src = srcTags.toArray(new String[srcTags.size()]);
+      String[] trg = trgTags.toArray(new String[trgTags.size()]);
+
+      for (int i = 0; i < src.length; i++)
       {
-         if (!to.get(i).equals(from.get(i)))
+         String token = src[i];
+         int srcIndex = i;
+         int trgIndex = trgTags.indexOf(token);
+
+         if (trgIndex > -1)
          {
-            sb.append(" ");
-            sb.append(from.get(i));
-            sb.append(" ");
+            currentRun = new ArrayList<String>();
+            currentRun.add(token);
+
+            int j = trgIndex + 1;
+
+            while (j < trg.length && srcIndex < src.length - 1)
+            {
+               int nextIndexInSrc = findInTail(trg[j], src, srcIndex + 1);
+               if (nextIndexInSrc > -1)
+               {
+                  srcIndex = nextIndexInSrc;
+                  currentRun.add(src[srcIndex]);
+               }
+               j++;
+            }
+
+            if (currentRun.size() == srcTags.size())
+            {
+               // must all match
+               return;
+            }
+
+            if (longestRun == null || longestRun.size() < currentRun.size())
+            {
+               longestRun = currentRun;
+            }
          }
       }
 
-      if (sb.length() > 0)
+      if (longestRun != null && longestRun.size() > 0)
       {
-         addError("Tag [" + sb.toString() + "] are wrong in order");
-      }
+         ArrayList<String> outOfOrder = new ArrayList<String>();
 
+         for (int i = 0; i < src.length; i++)
+         {
+            if (!longestRun.contains(src[i]))
+            {
+               outOfOrder.add(src[i]);
+            }
+         }
+
+         addError(getMessages().tagsWrongOrder(outOfOrder));
+      }
    }
 
-   private List<String> getTagList(String src)
+   private int findInTail(String toFind, String[] findIn, int startIndex)
    {
-      List<String> list = new ArrayList<String>();
+      for (int i = startIndex; i < findIn.length; i++)
+      {
+         if (findIn[i].equals(toFind))
+         {
+            return i;
+         }
+      }
+      return -1;
+   }
+
+   private ArrayList<String> getTagList(String src)
+   {
+      ArrayList<String> list = new ArrayList<String>();
       MatchResult result = regExp.exec(src);
       while (result != null)
       {
@@ -107,10 +164,10 @@ public class HtmlXmlTagValidation extends ValidationAction
       return list;
    }
 
-   private String runValidation(String compareFrom, String compareTo)
+   private ArrayList<String> listMissing(String compareFrom, String compareTo)
    {
       String tmp = compareTo;
-      StringBuilder sb = new StringBuilder();
+      ArrayList<String> unmatched = new ArrayList<String>();
       MatchResult result = regExp.exec(compareFrom);
 
       while (result != null)
@@ -119,9 +176,7 @@ public class HtmlXmlTagValidation extends ValidationAction
          Log.debug("Found Node:" + node);
          if (!tmp.contains(node))
          {
-            sb.append(" ");
-            sb.append(node);
-            sb.append(" ");
+            unmatched.add(node);
          }
          else
          {
@@ -129,6 +184,6 @@ public class HtmlXmlTagValidation extends ValidationAction
          }
          result = regExp.exec(compareFrom);
       }
-      return sb.toString();
+      return unmatched;
    }
 }

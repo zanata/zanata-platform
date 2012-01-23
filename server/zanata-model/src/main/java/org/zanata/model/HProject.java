@@ -40,7 +40,7 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.jboss.seam.annotations.security.Restrict;
-import org.zanata.model.type.StatusTypeType;
+import org.zanata.model.type.EntityStatusTypeType;
 import org.zanata.rest.dto.Project;
 
 /**
@@ -50,7 +50,7 @@ import org.zanata.rest.dto.Project;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "projecttype", discriminatorType = DiscriminatorType.STRING)
-@TypeDef(name = "statusType", typeClass = StatusTypeType.class)
+@TypeDef(name = "entityStatusType", typeClass = EntityStatusTypeType.class)
 @Restrict
 public abstract class HProject extends SlugEntityBase implements Serializable
 {

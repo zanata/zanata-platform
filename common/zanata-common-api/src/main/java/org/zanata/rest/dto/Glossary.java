@@ -85,7 +85,7 @@ public class Glossary implements Serializable, HasMediaType
    }
 
    @XmlElementWrapper(name = "glossary-entries")
-   @XmlElement(name = "glossary-entry")
+   @XmlElement(name="glossary-entry")
    public List<GlossaryEntry> getGlossaryEntries()
    {
       if (glossaryEntries == null)

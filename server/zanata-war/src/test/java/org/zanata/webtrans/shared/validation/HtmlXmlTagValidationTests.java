@@ -20,9 +20,24 @@
  */
 package org.zanata.webtrans.shared.validation;
 
-import org.junit.Before;
-import org.testng.Assert;
+import static org.easymock.EasyMock.capture;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+
+import java.util.List;
+
+import org.easymock.Capture;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
 
 /**
@@ -30,110 +45,290 @@ import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
+@Test(groups = { "unit-tests" })
 public class HtmlXmlTagValidationTests
 {
+   // mock message strings
+   private static final String MOCK_XML_HTML_VALIDATOR_DESCRIPTION = "test xml html validator description";
+   private static final String MOCK_XML_HTML_VALIDATOR_NAME = "test xml html validator name";
+   private static final String MOCK_TAGS_OUT_OF_ORDER_MESSAGE = "mock tags out of order message";
+   private static final String MOCK_TAGS_MISSING_MESSAGE = "mock tags missing message";
+   private static final String MOCK_TAGS_ADDED_MESSAGE = "mock tags added message";
+
    private HtmlXmlTagValidation htmlXmlTagValidation;
 
-   @Before
+   private ValidationMessages mockMessages;
+
+   // captured tag lists sent to messages
+   private Capture<List<String>> capturedTagsAdded;
+   private Capture<List<String>> capturedTagsMissing;
+   private Capture<List<String>> capturedTagsOutOfOrder;
+
+
+   @BeforeClass
+   public void mockMessages()
+   {
+      mockMessages = createMock(ValidationMessages.class);
+
+      capturedTagsAdded = new Capture<List<String>>();
+      capturedTagsMissing = new Capture<List<String>>();
+      capturedTagsOutOfOrder = new Capture<List<String>>();
+
+      expect(mockMessages.tagsAdded(capture(capturedTagsAdded))).andReturn(MOCK_TAGS_ADDED_MESSAGE).anyTimes();
+      expect(mockMessages.tagsMissing(capture(capturedTagsMissing))).andReturn(MOCK_TAGS_MISSING_MESSAGE).anyTimes();
+      expect(mockMessages.tagsWrongOrder(capture(capturedTagsOutOfOrder))).andReturn(MOCK_TAGS_OUT_OF_ORDER_MESSAGE).anyTimes();
+      expect(mockMessages.xmlHtmlValidatorName()).andReturn(MOCK_XML_HTML_VALIDATOR_NAME).anyTimes();
+      expect(mockMessages.xmlHtmlValidatorDescription()).andReturn(MOCK_XML_HTML_VALIDATOR_DESCRIPTION).anyTimes();
+      replay(mockMessages);
+   }
+
+   @BeforeMethod
    public void init()
    {
       htmlXmlTagValidation = null;
+
+      capturedTagsAdded.reset();
+      capturedTagsMissing.reset();
+      capturedTagsOutOfOrder.reset();
    }
 
    @Test
-   public void HTMLTagTestTagMissing()
+   public void idIsSet()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation("HTML/XML tag", "Matching HTML/XML tag validation");
-
-      String source = "<html><title>HTML TAG Test</title><table><tr><td>column 1 row 1</td><td>column 2 row 1</td></tr></table></html>";
-      String target = "<html><title>HTML TAG Test</title><table><tr><td>column 1 row 1</td></tr></table></html>";
-      htmlXmlTagValidation.validate(source, target);
-      Assert.assertTrue(htmlXmlTagValidation.hasError());
-      Assert.assertEquals(htmlXmlTagValidation.getError().size(), 1);
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      assertThat(htmlXmlTagValidation.getId(), is(MOCK_XML_HTML_VALIDATOR_NAME));
    }
 
    @Test
-   public void HTMLTagTestTagMissing2()
+   public void descriptionIsSet()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation("HTML/XML tag", "Matching HTML/XML tag validation");
-
-      String source = "<html><title>HTML TAG Test</title><table><tr><td>column 1 row 1</td><td>column 2 row 1</td></tr></table></html>";
-      String target = "<html><title>HTML TAG Test</title><table><tr></tr></table></html>";
-      htmlXmlTagValidation.validate(source, target);
-      Assert.assertTrue(htmlXmlTagValidation.hasError());
-      Assert.assertEquals(htmlXmlTagValidation.getError().size(), 1);
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      assertThat(htmlXmlTagValidation.getDescription(), is(MOCK_XML_HTML_VALIDATOR_DESCRIPTION));
    }
 
    @Test
-   public void HTMLTagTestMatching()
+   public void matchingHtmlNoError()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation("HTML/XML tag", "Matching HTML/XML tag validation");
-
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
       String source = "<html><title>HTML TAG Test</title><table><tr><td>column 1 row 1</td><td>column 2 row 1</td></tr></table></html>";
       String target = "<html><title>HTML TAG Test</title><table><tr><td>column 1 row 1</td><td>column 2 row 1</td></tr></table></html>";
       htmlXmlTagValidation.validate(source, target);
-      Assert.assertFalse(htmlXmlTagValidation.hasError());
-      Assert.assertEquals(htmlXmlTagValidation.getError().size(), 0);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(false));
+      assertThat(htmlXmlTagValidation.getError().size(), is(0));
    }
 
    @Test
-   public void XMLTagTestTagMissing()
+   public void matchingXmlNoError()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation("HTML/XML tag", "Matching HTML/XML tag validation");
-
-      String source = "<group><users><user>1</user><user>2</user></users></group>";
-      String target = "<group><users></users></group>";
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      String source = "<group><users><user>name</user></users></group>";
+      String target = "<group><users><user>nombre</user></users></group>";
       htmlXmlTagValidation.validate(source, target);
-      Assert.assertTrue(htmlXmlTagValidation.hasError());
-      Assert.assertEquals(htmlXmlTagValidation.getError().size(), 1);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(false));
+      assertThat(htmlXmlTagValidation.getError().size(), is(0));
    }
 
    @Test
-   public void XMLTagTestTagMissing2()
+   public void addedTagError()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation("HTML/XML tag", "Matching HTML/XML tag validation");
-
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
       String source = "<group><users><user>1</user></users></group>";
-      String target = "<group><users></users></group>";
+      String target = "<group><users><user>1</user></users><foo></group>";
       htmlXmlTagValidation.validate(source, target);
-      Assert.assertTrue(htmlXmlTagValidation.hasError());
-      Assert.assertEquals(htmlXmlTagValidation.getError().size(), 1);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(true));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_ADDED_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+
+      assertThat(capturedTagsAdded.getValue(), hasItem("<foo>"));
+      assertThat(capturedTagsAdded.getValue().size(), is(1));
    }
 
    @Test
-   public void XMLTagTestTagMissing3()
+   public void addedTagsError()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation("HTML/XML tag", "Matching HTML/XML tag validation");
-
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
       String source = "<group><users><user>1</user></users></group>";
-      String target = "<group><users><user>1</user></users><users></users></group>";
+      String target = "<foo><group><users><bar><user>1</user></users></group><moo>";
       htmlXmlTagValidation.validate(source, target);
-      Assert.assertTrue(htmlXmlTagValidation.hasError());
-      Assert.assertEquals(htmlXmlTagValidation.getError().size(), 1);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(true));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_ADDED_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+
+      assertThat(capturedTagsAdded.getValue(), hasItems("<foo>", "<bar>", "<moo>"));
+      assertThat(capturedTagsAdded.getValue().size(), is(3));
    }
 
    @Test
-   public void XMLTagTestTagWrongOrder()
+   public void missingTagError()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation("HTML/XML tag", "Matching HTML/XML tag validation");
-
-      String source = "<group><users><user></user></users><users></users></group>";
-      String target = "<group><users></users><users></user><user></users></group>";
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      String source = "<html><title>HTML TAG Test</title><foo><table><tr><td>column 1 row 1</td><td>column 2 row 1</td></tr></table></html>";
+      String target = "<html><title>HTML TAG Test</title><table><tr><td>column 1 row 1</td><td>column 2 row 1</td></tr></table></html>";
       htmlXmlTagValidation.validate(source, target);
-      Assert.assertTrue(htmlXmlTagValidation.hasError());
-      Assert.assertEquals(htmlXmlTagValidation.getError().size(), 1);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(true));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_MISSING_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+
+      assertThat(capturedTagsMissing.getValue(), hasItem("<foo>"));
+      assertThat(capturedTagsMissing.getValue().size(), is(1));
    }
 
    @Test
-   public void XMLTagTestMatching()
+   public void missingTagsError()
    {
-      htmlXmlTagValidation = new HtmlXmlTagValidation("HTML/XML tag", "Matching HTML/XML tag validation");
-
-      String source = "<group><users><user>1</user></users></group>";
-      String target = "<group><users><user>1</user></users></group>";
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      String source = "<html><title>HTML TAG Test</title><p><table><tr><td>column 1 row 1</td></tr></table></html>";
+      String target = "<title>HTML TAG Test</title><table><tr><td>column 1 row 1</td></tr></table>";
       htmlXmlTagValidation.validate(source, target);
-      Assert.assertFalse(htmlXmlTagValidation.hasError());
-      Assert.assertEquals(htmlXmlTagValidation.getError().size(), 0);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(true));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_MISSING_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+
+      assertThat(capturedTagsMissing.getValue(), hasItems("<html>", "<p>", "</html>"));
+      assertThat(capturedTagsMissing.getValue().size(), is(3));
+   }
+
+   @Test
+   public void orderOnlyValidatedWithSameTags()
+   {
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      String source = "<one><two><three></four></five>";
+      String target = "<two></five></four><three><six>";
+      htmlXmlTagValidation.validate(source, target);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(true));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_MISSING_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_ADDED_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError().size(), is(2));
+
+      assertThat(capturedTagsMissing.getValue(), hasItem("<one>"));
+      assertThat(capturedTagsMissing.getValue().size(), is(1));
+      assertThat(capturedTagsAdded.getValue(), hasItem("<six>"));
+      assertThat(capturedTagsAdded.getValue().size(), is(1));
+      assertThat(capturedTagsOutOfOrder.hasCaptured(), is(false));
+   }
+
+   @Test
+   public void lastTagMovedToFirstError()
+   {
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      String source = "<one><two><three></four></five><six>";
+      String target = "<six><one><two><three></four></five>";
+      htmlXmlTagValidation.validate(source, target);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(true));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+
+      assertThat(capturedTagsOutOfOrder.getValue(), hasItem("<six>"));
+      assertThat("when one tag has moved, only that tag should be reported out of order", capturedTagsOutOfOrder.getValue().size(), is(1));
+   }
+
+   @Test
+   public void firstTagMovedToLastError()
+   {
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      String source = "<one><two><three></four></five><six>";
+      String target = "<two><three></four></five><six><one>";
+      htmlXmlTagValidation.validate(source, target);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(true));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+
+      assertThat(capturedTagsOutOfOrder.getValue(), hasItem("<one>"));
+      assertThat("when one tag has moved, only that tag should be reported out of order", capturedTagsOutOfOrder.getValue().size(), is(1));
+   }
+
+   @Test
+   public void tagMovedToMiddleError()
+   {
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      String source = "<one><two><three></four></five><six>";
+      String target = "<two><three><one></four></five><six>";
+      htmlXmlTagValidation.validate(source, target);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(true));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+
+      assertThat(capturedTagsOutOfOrder.getValue(), hasItem("<one>"));
+      assertThat("when one tag has moved, only that tag should be reported out of order", capturedTagsOutOfOrder.getValue().size(), is(1));
+   }
+
+   @Test
+   public void reversedTagsError()
+   {
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      String source = "<one><two><three></four></five><six>";
+      String target = "<six></five></four><three><two><one>";
+      htmlXmlTagValidation.validate(source, target);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(true));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+
+      // <one> is the first in-order tag, so is not reported
+      assertThat(capturedTagsOutOfOrder.getValue(), hasItems("<six>", "</five>", "</four>", "<three>", "<two>"));
+      assertThat(capturedTagsOutOfOrder.getValue().size(), is(5));
+   }
+
+   @Test
+   public void reportFirstTagsOutOfOrder()
+   {
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      String source = "<one><two><three></four></five><six>";
+      String target = "</four></five><six><one><two><three>";
+      htmlXmlTagValidation.validate(source, target);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(true));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+
+      assertThat(capturedTagsOutOfOrder.getValue(), hasItems("</four>", "</five>", "<six>"));
+      assertThat(capturedTagsOutOfOrder.getValue().size(), is(3));
+   }
+
+   @Test
+   public void reportLeastTagsOutOfOrder()
+   {
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      String source = "<one><two><three></four></five><six>";
+      String target = "<six></four></five><one><two><three>";
+      htmlXmlTagValidation.validate(source, target);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(true));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+
+      // <one><two><three> in order
+      // should not use </four></five> as there are less tags
+      assertThat("should report the least number of tags to move to restore order", capturedTagsOutOfOrder.getValue(), hasItems("</four>", "</five>", "<six>"));
+      assertThat(capturedTagsOutOfOrder.getValue().size(), is(3));
+   }
+
+   @SuppressWarnings("unchecked")
+   @Test
+   public void swapSomeTagsError()
+   {
+      htmlXmlTagValidation = new HtmlXmlTagValidation(mockMessages);
+      String source = "<one><two><three></three></two><four></four></one>";
+      String target = "<one><two></two><four></three><three></four></one>";
+      htmlXmlTagValidation.validate(source, target);
+
+      assertThat(htmlXmlTagValidation.hasError(), is(true));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+
+      assertThat(capturedTagsOutOfOrder.getValue(), hasItems("<three>", "</three>"));
+      assertThat(capturedTagsOutOfOrder.getValue(), not(anyOf(hasItem("<one>"), hasItem("<two>"), hasItem("</two>"), hasItem("<four>"), hasItem("</four>"), hasItem("</one>"))));
+      assertThat(capturedTagsOutOfOrder.getValue().size(), is(2));
    }
 }
 

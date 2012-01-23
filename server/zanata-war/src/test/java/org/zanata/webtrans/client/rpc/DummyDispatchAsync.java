@@ -35,6 +35,7 @@ public class DummyDispatchAsync extends SeamDispatchAsync
       Log.info("DummyDispatchAsync()");
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public <A extends Action<R>, R extends Result> void execute(A action, AsyncCallback<R> callback)
    {
