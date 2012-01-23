@@ -140,7 +140,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             @Override
             public void onClick(ClickEvent event)
             {
-               rowValue.setTarget(rowValue.getSource());
                eventBus.fireEvent(new CopySourceEvent(rowValue));
             }
 
