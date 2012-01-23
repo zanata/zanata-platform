@@ -493,11 +493,20 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          @Override
          public void onUpdate(UpdateValidationErrorEvent event)
          {
-            if (!event.isUpdateEditorOnly())
+            if (event.isUpdateEditorOnly())
+            {
+               // only show panel if validation has been run for this TU
+               ValidationMessagePanel panel = display.getValidationPanel(event.getId());
+               if (panel.getVisiblePolicy())
+               {
+                  display.getTargetCellEditor().updateValidationMessagePanel(panel.getErrors());
+               }
+            }
+            else
             {
                display.updateValidationError(event.getId(), event.getErrors());
+               display.getTargetCellEditor().updateValidationMessagePanel(event.getErrors());
             }
-            display.getTargetCellEditor().updateValidationMessagePanel(display.getValidationPanel(event.getId()));
          }
       }));
 

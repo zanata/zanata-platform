@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
+import java.util.List;
 import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -363,6 +364,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       verticalPanel.add(topLayoutPanel);
 
       validationMessagePanel = new ValidationMessagePanel(true, messages);
+      validationMessagePanel.setVisiblePolicy(true);
 
       verticalPanel.add(validationMessagePanel);
       verticalPanel.setCellVerticalAlignment(validationMessagePanel, HasVerticalAlignment.ALIGN_BOTTOM);
@@ -507,6 +509,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       isOpened = true;
       DOM.scrollIntoView(table.getCellFormatter().getElement(curRow, curCol));
 
+      // hide until validation results are available
+      validationMessagePanel.setVisible(false);
       eventBus.fireEvent(new UpdateValidationErrorEvent(cellValue.getId(), true));
    }
 
@@ -724,8 +728,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       return cellValue;
    }
 
-   public void updateValidationMessagePanel(ValidationMessagePanel panel)
+   public void updateValidationMessagePanel(List<String> errors)
    {
-      validationMessagePanel.setContent(panel.getErrors());
+      validationMessagePanel.setContent(errors);
+      validationMessagePanel.setVisible(true);
    }
 }

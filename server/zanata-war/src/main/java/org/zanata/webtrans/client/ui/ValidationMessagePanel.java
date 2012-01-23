@@ -66,6 +66,7 @@ public class ValidationMessagePanel extends Composite
 
    private final NavigationMessages messages;
 
+   private boolean canShow;
 
    public ValidationMessagePanel(boolean collapsible, NavigationMessages messages)
    {
@@ -75,6 +76,8 @@ public class ValidationMessagePanel extends Composite
       setCollapsible(collapsible);
       setHeaderText(messages.validationWarningsHeading(0));
       collapse();
+      this.canShow = false;
+      this.setVisible(false);
    }
 
    private void setHeaderText(String header)
@@ -95,6 +98,7 @@ public class ValidationMessagePanel extends Composite
       contentPanel.add(contents);
       setHeaderText(messages.validationWarningsHeading(errors.size()));
       expand();
+      this.canShow = true;
    }
 
    @UiHandler("headerLabel")
@@ -147,5 +151,29 @@ public class ValidationMessagePanel extends Composite
    public List<String> getErrors()
    {
       return errors;
+   }
+
+   public void setVisiblePolicy(boolean canShow)
+   {
+      this.canShow = canShow;
+      if (!canShow)
+      {
+         this.setVisible(false);
+      }
+   }
+
+   @Override
+   public void setVisible(boolean visible)
+   {
+      if (visible && canShow)
+         super.setVisible(true);
+      else
+         super.setVisible(false);
+
+   }
+
+   public boolean getVisiblePolicy()
+   {
+      return canShow;
    }
 }
