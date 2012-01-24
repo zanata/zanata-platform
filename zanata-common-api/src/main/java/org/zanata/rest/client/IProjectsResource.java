@@ -20,8 +20,6 @@
  */
 package org.zanata.rest.client;
 
-import java.util.List;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -42,6 +40,6 @@ public interface IProjectsResource extends ProjectsResource
    @Override
    @GET
    @Produces( { MediaTypes.APPLICATION_ZANATA_PROJECTS_XML, MediaTypes.APPLICATION_ZANATA_PROJECTS_JSON })
-   public ClientResponse<List<Project>> get();
+   public ClientResponse<Project[]> get();
 
 }
