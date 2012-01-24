@@ -1,9 +1,14 @@
 # Zanata change log summary
 
+## zanata-1.4.5
+ * Add support for Maven modules: https://bugzilla.redhat.com/show_bug.cgi?id=742872
+ * Fix bug: Moving to a new page does not refresh the translation textboxes (ghost translations): https://bugzilla.redhat.com/show_bug.cgi?id=760431
+
 ## zanata-1.4.4
  * Ensure final reindex batch is properly flushed: https://bugzilla.redhat.com/show_bug.cgi?id=747836
  * Support UTF-8 Properties files, handle empty properties: https://bugzilla.redhat.com/show_bug.cgi?id=760390
  * Fix bug: Editor table stops working after 'Source and Target' search returns no results: https://bugzilla.redhat.com/show_bug.cgi?id=759994
+ * Add dryRun option for Maven goals 'push' and 'pull'
 
 ## zanata-1.4.3
  * Show message context in editor info panel: https://bugzilla.redhat.com/show_bug.cgi?id=750690
