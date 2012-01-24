@@ -173,10 +173,11 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          @Override
          public void onClick(ClickEvent event)
          {
-            Application.closeWindow();
-            // As the editor was created at new window, it should be closed
-            // rather than redirected to project home.
-            // Application.redirectToZanataProjectHome(workspaceContext.getWorkspaceId());
+            // use when opening workspace in new window
+            // Application.closeWindow();
+
+            // use when opening workspace in same window
+            Application.redirectToZanataProjectHome(workspaceContext.getWorkspaceId());
          }
       }));
 
