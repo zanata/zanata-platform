@@ -171,6 +171,48 @@ public abstract class ZanataRawRestTest extends ZanataDBUnitSeamTest
       }
    }
    
+   protected static <T> T jaxbUnmarhsal( EnhancedMockHttpServletResponse response, Class<T> jaxbType )
+   {
+      JAXBContext jc;
+      try
+      {
+         jc = JAXBContext.newInstance(jaxbType);
+         Unmarshaller um = jc.createUnmarshaller();
+         //um.setEventHandler( new javax.xml.bind.helpers.DefaultValidationEventHandler() );
+         T result = (T)um.unmarshal( new StringReader(response.getContentAsString()) );
+         return result;
+      }
+      catch (JAXBException e)
+      {
+         throw new AssertionError(e);
+      }
+   }
+   
+   protected static <T> T jsonUnmarshal( EnhancedMockHttpServletResponse response, Class<T> jsonType )
+   {
+      ObjectMapper mapper = new ObjectMapper();
+      try
+      {
+         return mapper.readValue( response.getContentAsString(), jsonType);
+      }
+      catch (JsonParseException e)
+      {
+         throw new AssertionError(e);
+      }
+      catch (JsonMappingException e)
+      {
+         throw new AssertionError(e);
+      }
+      catch (IllegalStateException e)
+      {
+         throw new AssertionError(e);
+      }
+      catch (IOException e)
+      {
+         throw new AssertionError(e);
+      }
+   }
+   
    private static String toSingleLine( String multiLineString ) throws IOException
    {
       BufferedReader br = new BufferedReader(new StringReader(multiLineString));

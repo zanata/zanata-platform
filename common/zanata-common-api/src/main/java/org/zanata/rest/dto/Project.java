@@ -19,6 +19,7 @@ import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.zanata.common.EntityStatus;
+import org.zanata.common.Namespaces;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.MediaTypes.Format;
 
@@ -110,8 +111,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       this.description = description;
    }
 
-   @XmlElementWrapper(name = "links")
-   @XmlElement(name = "link")
+   @XmlElement(name = "link", namespace = Namespaces.ZANATA_API)
    public Links getLinks()
    {
       return links;

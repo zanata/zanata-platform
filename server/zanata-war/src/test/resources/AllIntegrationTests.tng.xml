@@ -48,4 +48,10 @@
      			<class name="org.zanata.rest.service.raw.TranslationsRestTest"/>
      		</classes>
      	</test>
+     	<test name="Backwards Compatibility Tests">
+     		<classes>
+     			<class name="org.zanata.rest.compat.v1_4_4.ProjectCompatibilityTest"/>
+     			<class name="org.zanata.rest.compat.v1_4_4.ProjectRawCompatibilityTest"/>
+     		</classes>
+     	</test>
 </suite>

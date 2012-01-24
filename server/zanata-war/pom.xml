@@ -698,6 +698,24 @@
 	        <type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- Compatibility Dependencies -->
+		
+		<dependency>
+			<groupId>org.zanata</groupId>
+			<artifactId>zanata-api-compat</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<scope>test</scope>
+			<classifier>v1.4.4</classifier>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.zanata</groupId>
+			<artifactId>zanata-api-compat</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<scope>test</scope>
+			<classifier>v1.3</classifier>
+		</dependency>
         
 		<!-- Seam Dependencies -->
 
