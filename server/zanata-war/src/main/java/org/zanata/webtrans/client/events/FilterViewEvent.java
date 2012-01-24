@@ -24,12 +24,14 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler>
    }
 
    private boolean filterTranslated, filterNeedReview, filterUntranslated;
+   private boolean cancelFilter;
 
-   public FilterViewEvent(boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated)
+   public FilterViewEvent(boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated, boolean cancelFilter)
    {
       this.filterTranslated = filterTranslated;
       this.filterNeedReview = filterNeedReview;
       this.filterUntranslated = filterUntranslated;
+      this.cancelFilter = cancelFilter;
    }
 
    @Override
@@ -57,6 +59,11 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler>
    public boolean isFilterUntranslated()
    {
       return filterUntranslated;
+   }
+
+   public boolean isCancelFilter()
+   {
+      return cancelFilter;
    }
 
 }

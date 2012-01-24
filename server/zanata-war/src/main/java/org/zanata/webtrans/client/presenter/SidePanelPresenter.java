@@ -26,6 +26,8 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
+import org.zanata.webtrans.client.events.FilterViewEvent;
+import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.EditorOptionsPanel;
 
@@ -61,6 +63,18 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
       display.setValidationOptionsView(validationOptionsPresenter.getDisplay().asWidget());
 
       display.setEditorOptionsPanel(editorOptionsPanel);
+
+      registerHandler(eventBus.addHandler(FilterViewEvent.getType(), new FilterViewEventHandler()
+      {
+         @Override
+         public void onFilterView(FilterViewEvent event)
+         {
+            if (event.isCancelFilter())
+            {
+               editorOptionsPanel.updateFilterOption(event.isFilterTranslated(), event.isFilterNeedReview(), event.isFilterUntranslated());
+            }
+         }
+      }));
    }
 
 

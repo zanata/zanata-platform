@@ -34,8 +34,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -46,7 +44,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
 
 /**
  *
@@ -116,7 +113,7 @@ public class EditorOptionsPanel extends Composite
          {
             filterUntranslated = !event.getValue();
          }
-         eventBus.fireEvent(new FilterViewEvent(filterTranslated, filterNeedReview, filterUntranslated));
+         eventBus.fireEvent(new FilterViewEvent(filterTranslated, filterNeedReview, filterUntranslated, false));
       }
    };
 
@@ -203,6 +200,18 @@ public class EditorOptionsPanel extends Composite
    {
       return this;
    }
+
+   public void updateFilterOption(boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated)
+   {
+      this.filterTranslated = filterTranslated;
+      this.filterNeedReview = filterNeedReview;
+      this.filterUntranslated = filterUntranslated;
+
+      translatedChk.setValue(!filterTranslated, false);
+      needReviewChk.setValue(!filterNeedReview, false);
+      untranslatedChk.setValue(!filterUntranslated, false);
+   }
+
 }
 
 

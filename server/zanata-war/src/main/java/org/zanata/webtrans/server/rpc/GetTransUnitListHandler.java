@@ -49,7 +49,6 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 
-
 @Name("webtrans.gwt.GetTransUnitListHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetTransUnitList.class)
@@ -120,7 +119,6 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       ArrayList<TransUnit> units = new ArrayList<TransUnit>();
       for (HTextFlow textFlow : textFlows)
       {
-
          TransUnitId tuId = new TransUnitId(textFlow.getId());
 
          String msgContext = null;
@@ -129,21 +127,53 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
             msgContext = textFlow.getPotEntryData().getContext();
          }
 
-         TransUnit tu = new TransUnit(tuId, textFlow.getResId(), action.getWorkspaceId().getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New, "", "", msgContext, textFlow.getPos());
          HTextFlowTarget target = textFlow.getTargets().get(hLocale);
-         if (target != null)
+         if (!isFiltered(action.isFilterTranslated(), action.isFilterNeedReview(), action.isFilterUntranslated(), target))
          {
-            tu.setTarget(target.getContent());
-            tu.setStatus(target.getState());
-            if (target.getLastModifiedBy() != null)
+            TransUnit tu = new TransUnit(tuId, textFlow.getResId(), action.getWorkspaceId().getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New, "", "", msgContext, textFlow.getPos());
+            if (target != null)
             {
-               tu.setLastModifiedBy(target.getLastModifiedBy().getName());
+               tu.setTarget(target.getContent());
+               tu.setStatus(target.getState());
+               if (target.getLastModifiedBy() != null)
+               {
+                  tu.setLastModifiedBy(target.getLastModifiedBy().getName());
+               }
+               tu.setLastModifiedTime(SIMPLE_FORMAT.format(target.getLastChanged()));
             }
-            tu.setLastModifiedTime(SIMPLE_FORMAT.format(target.getLastChanged()));
+            units.add(tu);
          }
-         units.add(tu);
       }
       return new GetTransUnitListResult(action.getDocumentId(), units, units.size());
+   }
+
+   private boolean isFiltered(boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated, HTextFlowTarget target)
+   {
+      if (target == null)
+      {
+         if (filterUntranslated)
+         {
+            return true;
+         }
+      }
+      else
+      {
+         ContentState state = target.getState();
+
+         if (state == ContentState.Approved && filterTranslated)
+         {
+            return true;
+         }
+         if (state == ContentState.NeedReview && filterNeedReview)
+         {
+            return true;
+         }
+         if (state == ContentState.New && filterUntranslated)
+         {
+            return true;
+         }
+      }
+      return false;
    }
 
    @Override

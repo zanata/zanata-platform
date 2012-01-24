@@ -395,7 +395,10 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       ValidationMessagePanel messagePanel = messagePanelMap.get(id);
       if (messagePanel != null)
       {
-         Log.info("Validation error: " + errors.toString());
+         if (!errors.isEmpty())
+         {
+            Log.info("Validation error: " + errors.toString());
+         }
          messagePanel.setContent(errors);
          messagePanelMap.put(id, messagePanel);
       }

@@ -35,7 +35,7 @@ import org.zanata.webtrans.shared.auth.Permission;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
-import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -157,6 +157,11 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
       loadingPanel.hide();
    }
 
+   public boolean isProcessing()
+   {
+      return loadingPanel.isShowing();
+   }
+
    @Override
    public HandlerRegistration addSelectionHandler(SelectionHandler<TransUnit> handler)
    {
@@ -214,7 +219,7 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
       if (row < getDataTable().getRowCount())
       {
          getDataTable().selectRow(row, true);
-         DOM.scrollIntoView(getDataTable().getWidget(row, TableEditorTableDefinition.TARGET_COL).getElement());
+         scrollIntoView(getDataTable().getWidget(row, TableEditorTableDefinition.TARGET_COL).getElement());
          if (andEdit)
          {
             editCell(row, TableEditorTableDefinition.TARGET_COL);
@@ -280,4 +285,45 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
       this.tableDefinition.setValidationMessageVisible(id);
 
    }
+
+   /*
+    * Overrides DOM.scrollIntoView() - focus on element's bottom right corner
+    * This implementation focus on element's top left corner
+    */
+   public native void scrollIntoView(Element elem) /*-{
+		var left = elem.offsetLeft, top = elem.offsetTop;
+		var width = elem.offsetWidth, height = elem.offsetHeight;
+
+		if (elem.parentNode != elem.offsetParent) {
+			left -= elem.parentNode.offsetLeft;
+			top -= elem.parentNode.offsetTop;
+		}
+
+		var cur = elem.parentNode;
+		while (cur && (cur.nodeType == 1)) {
+			if (left + width > cur.scrollLeft + cur.clientWidth) {
+				cur.scrollLeft = (left + width) - cur.clientWidth;
+			}
+			if (left < cur.scrollLeft) {
+				cur.scrollLeft = left;
+			}
+			if (top + height > cur.scrollTop + cur.clientHeight) {
+				cur.scrollTop = (top + height) - cur.clientHeight;
+			}
+			if (top < cur.scrollTop) {
+				cur.scrollTop = top;
+			}
+
+			var offsetLeft = cur.offsetLeft, offsetTop = cur.offsetTop;
+			if (cur.parentNode != cur.offsetParent) {
+				offsetLeft -= cur.parentNode.offsetLeft;
+				offsetTop -= cur.parentNode.offsetTop;
+			}
+
+			left += offsetLeft - cur.scrollLeft;
+			top += offsetTop - cur.scrollTop;
+			cur = cur.parentNode;
+		}
+   }-*/;
+
 }
