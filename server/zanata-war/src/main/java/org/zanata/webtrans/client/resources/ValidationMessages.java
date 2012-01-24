@@ -70,8 +70,8 @@ public interface ValidationMessages extends Messages
    String tagsAdded(@PluralCount List<String> tags);
 
    @Description("Lists the xml or html tags that are in the original string but have not been included in the target")
-   @DefaultMessage("Missing tags {0,list,string}")
-   @AlternateMessage({ "one", "Missing tag {0,list,string}" })
+   @DefaultMessage("Missing tags: {0,list,string}")
+   @AlternateMessage({ "one", "Missing tag: {0,list,string}" })
    String tagsMissing(@PluralCount List<String> tags);
 
    @DefaultMessage("Tags in unexpected position: {0,list,string}")

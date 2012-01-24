@@ -124,10 +124,6 @@ public class ValidationMessagePanel extends Composite
          contentPanel.setHeight("95px");
          contentPanel.setVisible(true);
       }
-      else
-      {
-         collapse();
-      }
    }
 
    public void collapse()

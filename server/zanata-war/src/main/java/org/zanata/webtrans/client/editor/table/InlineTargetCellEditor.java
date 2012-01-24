@@ -30,8 +30,9 @@ import org.zanata.webtrans.client.editor.CheckKey;
 import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.events.EditTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
+import org.zanata.webtrans.client.events.RequestValidationEvent;
+import org.zanata.webtrans.client.events.RequestValidationEventHandler;
 import org.zanata.webtrans.client.events.RunValidationEvent;
-import org.zanata.webtrans.client.events.UpdateValidationErrorEvent;
 import org.zanata.webtrans.client.resources.EditorConfigConstants;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.ValidationMessagePanel;
@@ -47,8 +48,6 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
@@ -167,6 +166,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private PushButton saveButton, fuzzyButton, cancelButton, validateButton;
    private ValidationMessagePanel validationMessagePanel;
 
+   private boolean keypressed;
+   private boolean typing;
+   private int typingCycles;
+
    private final EventBus eventBus;
 
    /**
@@ -177,18 +180,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       // Wrap contents in a table
 
-      final int REFRESH_INTERVAL = 1000; // ms
-      final Timer runValidationTimer = new Timer()
-      {
-         @Override
-         public void run()
-         {
-            if (isEditing() && isOpened())
-            {
-               eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSource(), textArea.getText(), false));
-            }
-         }
-      };
+      final int TYPING_TIMER_INTERVAL = 200; // ms
+      final int TYPING_TIMER_RECURRENT_VALIDATION_PERIOD = 5; // intervals
+
 
       verticalPanel = new VerticalPanel();
       verticalPanel.setWidth("100%");
@@ -202,16 +196,65 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       editRowCallback = rowCallback;
       textArea = new EditorTextArea();
       textArea.setStyleName("TableEditorContent-Edit");
+
       textArea.addValueChangeHandler(new ValueChangeHandler<String>()
       {
          @Override
          public void onValueChange(ValueChangeEvent<String> event)
          {
             autoSize();
-            runValidationTimer.schedule(REFRESH_INTERVAL);
+            fireValidationEvent(eventBus);
          }
 
       });
+
+      final Timer typingTimer = new Timer()
+      {
+         @Override
+         public void run()
+         {
+            if (keypressed)
+            {
+               // still typing, validate periodically
+               keypressed = false;
+               typingCycles++;
+               if (typingCycles % TYPING_TIMER_RECURRENT_VALIDATION_PERIOD == 0)
+               {
+                  fireValidationEvent(eventBus);
+               }
+            }
+            else
+            {
+               // finished, validate immediately
+               this.cancel();
+               typing = false;
+               fireValidationEvent(eventBus);
+            }
+         }
+      };
+
+      // used to determine whether user is still typing
+      textArea.addKeyDownHandler(new KeyDownHandler()
+      {
+
+         @Override
+         public void onKeyDown(KeyDownEvent event)
+         {
+            if (typing)
+            {
+               keypressed = true;
+            }
+            else
+            {
+               // set false so that next keypress is detectable
+               keypressed = false;
+               typing = true;
+               typingCycles = 0;
+               typingTimer.scheduleRepeating(TYPING_TIMER_INTERVAL);
+            }
+         }
+      });
+
       textArea.addBlurHandler(new BlurHandler()
       {
          @Override
@@ -229,20 +272,33 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          }
       });
 
-     
-
-      textArea.addKeyUpHandler(new KeyUpHandler()
+      eventBus.addHandler(RequestValidationEvent.getType(), new RequestValidationEventHandler()
       {
+
          @Override
-         public void onKeyUp(KeyUpEvent event)
+         public void onRequestValidation(RequestValidationEvent event)
          {
-            checkKey.init(event.getNativeEvent());
-            if (checkKey.isUserTyping())
+            if (isEditing())
             {
-               runValidationTimer.schedule(REFRESH_INTERVAL);
+               fireValidationEvent(eventBus);
             }
          }
       });
+
+      // object creation is probably too much overhead for this, using simpler
+      // boolean implementation.
+      // textArea.addKeyUpHandler(new KeyUpHandler()
+      // {
+      // @Override
+      // public void onKeyUp(KeyUpEvent event)
+      // {
+      // checkKey.init(event.getNativeEvent());
+      // if (checkKey.isUserTyping())
+      // {
+      // runValidationTimer.schedule(REFRESH_INTERVAL);
+      // }
+      // }
+      // });
 
       // KeyDown is used to override browser event
       textArea.addKeyDownHandler(new KeyDownHandler()
@@ -316,7 +372,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          {
             if (cellValue != null)
             {
-               eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSource(), textArea.getText()));
+               fireValidationEvent(eventBus);
             }
          }
       });
@@ -511,7 +567,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       // hide until validation results are available
       validationMessagePanel.setVisible(false);
-      eventBus.fireEvent(new UpdateValidationErrorEvent(cellValue.getId(), true));
+      fireValidationEvent(eventBus);
    }
 
    public void savePendingChange(boolean cancelIfUnchanged)
@@ -732,5 +788,13 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       validationMessagePanel.setContent(errors);
       validationMessagePanel.setVisible(true);
+   }
+
+   /**
+    * @param eventBus
+    */
+   private void fireValidationEvent(final EventBus eventBus)
+   {
+      eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSource(), textArea.getText(), false));
    }
 }
