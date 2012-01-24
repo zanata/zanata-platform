@@ -22,7 +22,7 @@ package org.zanata.webtrans.client.events;
 
 import com.google.gwt.event.shared.EventHandler;
 
-public interface UpdateValidationErrorEventHandler extends EventHandler
+public interface RequestValidationEventHandler extends EventHandler
 {
-   void onUpdate(UpdateValidationErrorEvent event);
+   void onRequestValidation(RequestValidationEvent event);
 }

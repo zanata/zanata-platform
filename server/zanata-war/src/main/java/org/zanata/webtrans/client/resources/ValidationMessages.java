@@ -16,65 +16,65 @@ public interface ValidationMessages extends Messages
 {
    // Newline validator
 
-   @DefaultMessage("Newline lead/trail")
+   @DefaultMessage("Leading/trailing newline (¶)")
    String newlineValidatorName();
 
-   @DefaultMessage("Newline lead/trail validation")
+   @DefaultMessage("Check for consistent leading and trailing newline (¶)")
    String newlineValidatorDescription();
 
-   @DefaultMessage("Leading newline missing from target")
+   @DefaultMessage("Leading newline (¶) is missing")
    String leadingNewlineMissing();
 
-   @DefaultMessage("Leading newline added to target")
+   @DefaultMessage("Unexpected leading newline (¶)")
    String leadingNewlineAdded();
 
-   @DefaultMessage("Trailing newline missing from target")
+   @DefaultMessage("Trailing newline (¶) is missing")
    String trailingNewlineMissing();
 
-   @DefaultMessage("Trailing newline added to target")
+   @DefaultMessage("Unexpected trailing newline (¶)")
    String trailingNewlineAdded();
 
 
    // Variables validator
 
-   @DefaultMessage("Variables check")
+   @DefaultMessage("%x variables")
    String variablesValidatorName();
 
-   @DefaultMessage("Variables check validation")
+   @DefaultMessage("Check that printf style (%x) variables are consistent")
    String variablesValidatorDescription();
 
    @Description("Lists the variables that are in the original string but have not been included in the target")
-   @DefaultMessage("Variables [ {0,list,string} ] missing in target")
-   @AlternateMessage({ "one", "Variable [ {0,list,string} ] missing in target" })
+   @DefaultMessage("Missing variables: {0,list,string}")
+   @AlternateMessage({ "one", "Missing variable: {0,list,string}" })
    String varsMissing(@PluralCount
    List<String> vars);
 
    @Description("Lists the variables that are in the target but are not in the original string")
-   @DefaultMessage("Variables [ {0,list,string} ] added in target")
-   @AlternateMessage({ "one", "Variable [ {0,list,string} ] added in target" })
+   @DefaultMessage("Unexpected variables: {0,list,string}")
+   @AlternateMessage({ "one", "Unexpected variable: {0,list,string}" })
    String varsAdded(@PluralCount
    List<String> vars);
 
 
    // XHM/HTML tag validator
 
-   @DefaultMessage("HTML/XML tag")
+   @DefaultMessage("XML/HTML tags")
    String xmlHtmlValidatorName();
 
-   @DefaultMessage("Matching HTML/XML tag validation")
+   @DefaultMessage("Check that XML/HTML tags are consistent")
    String xmlHtmlValidatorDescription();
 
    @Description("Lists the xml or html tags that are in the target but are not in the original string")
-   @DefaultMessage("Tags [ {0,list,string} ] added in target")
-   @AlternateMessage({ "one", "Tag [ {0,list,string} ] added in target" })
+   @DefaultMessage("Unexpected tags: {0,list,string}")
+   @AlternateMessage({ "one", "Unexpected tag: {0,list,string}" })
    String tagsAdded(@PluralCount List<String> tags);
 
    @Description("Lists the xml or html tags that are in the original string but have not been included in the target")
-   @DefaultMessage("Tags [ {0,list,string} ] missing in target")
-   @AlternateMessage({ "one", "Tag [ {0,list,string} ] missing in target" })
+   @DefaultMessage("Missing tags: {0,list,string}")
+   @AlternateMessage({ "one", "Missing tag: {0,list,string}" })
    String tagsMissing(@PluralCount List<String> tags);
 
-   @DefaultMessage("Tags [ {0,list,string} ] are in a different order in target and source")
-   @AlternateMessage({ "one", "Tag [ {0,list,string} ] is in a different location in target and source" })
+   @DefaultMessage("Tags in unexpected position: {0,list,string}")
+   @AlternateMessage({ "one", "Tag in unexpected position: {0,list,string}" })
    String tagsWrongOrder(@PluralCount List<String> tags);
 }

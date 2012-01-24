@@ -24,65 +24,52 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.events.DocumentSelectionEvent;
-import org.zanata.webtrans.client.events.DocumentSelectionHandler;
-import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
-import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
-import org.zanata.webtrans.client.events.RunValidationEvent;
-import org.zanata.webtrans.client.events.RunValidationEventHandler;
-import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.client.validation.ValidationService;
+import org.zanata.webtrans.shared.validation.ValidationObject;
 
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.inject.Inject;
 
 /**
- *
+ * 
+ * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
+ * 
  **/
 public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsPresenter.Display>
 {
    public interface Display extends WidgetDisplay
    {
-      void validate(TransUnitId id, String source, String target, boolean fireNotification);
-
-      void clearAllMessage();
+      HasValueChangeHandlers<Boolean> addValidationSelector(String label, String tooltip, boolean enabled);
    }
 
+   private ValidationService validationService;
+
    @Inject
-   public ValidationOptionsPresenter(Display display, EventBus eventBus)
+   public ValidationOptionsPresenter(Display display, EventBus eventBus, final ValidationService validationService)
    {
       super(display, eventBus);
+      this.validationService = validationService;
    }
 
    @Override
    protected void onBind()
    {
-      registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), new TransUnitSelectionHandler()
+      for (final ValidationObject object : validationService.getValidationList())
       {
-         @Override
-         public void onTransUnitSelected(TransUnitSelectionEvent event)
+         HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(object.getId(), object.getDescription(), object.isEnabled());
+         changeHandler.addValueChangeHandler(new ValueChangeHandler<Boolean>()
          {
-            display.clearAllMessage();
-         }
-      }));
 
-      registerHandler(eventBus.addHandler(RunValidationEvent.getType(), new RunValidationEventHandler()
-      {
-         @Override
-         public void onValidate(RunValidationEvent event)
-         {
-            display.validate(event.getId(), event.getSource(), event.getTarget(), event.isFireNotification());
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler()
-      {
-         @Override
-         public void onDocumentSelected(DocumentSelectionEvent event)
-         {
-            display.clearAllMessage();
-         }
-      }));
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event)
+            {
+               validationService.updateStatus(object.getId(), event.getValue());
+            }
+         });
+      }
    }
 
    @Override

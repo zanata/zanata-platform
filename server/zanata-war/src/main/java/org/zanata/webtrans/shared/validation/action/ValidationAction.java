@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.validation.ValidationObject;
+import org.zanata.webtrans.shared.validation.ValidationUtils;
 
 /**
  *
@@ -47,12 +48,19 @@ public abstract class ValidationAction implements ValidationObject
 
    private List<String> errorList = new ArrayList<String>();
 
-   public abstract void validate(String source, String target);
+   public void validate(String source, String target)
+   {
+      if (!ValidationUtils.isEmpty(target))
+         doValidate(source, target);
+   }
 
-   public ValidationAction(String id, String description, final ValidationMessages messages)
+   public abstract void doValidate(String source, String target);
+
+   public ValidationAction(String id, String description, boolean enabled, final ValidationMessages messages)
    {
       this.id = id;
       this.description = description;
+      this.isEnabled = enabled;
       this.messages = messages;
    }
 

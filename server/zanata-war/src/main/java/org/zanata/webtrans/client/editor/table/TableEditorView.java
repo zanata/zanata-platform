@@ -29,13 +29,10 @@ import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.ui.LoadingPanel;
-import org.zanata.webtrans.client.ui.ValidationMessagePanel;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.auth.Permission;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitId;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -256,28 +253,9 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    }
 
    @Override
-   public void updateValidationError(TransUnitId id, List<String> errors)
-   {
-      this.tableDefinition.updateValidationMessage(id, errors);
-   }
-
-   @Override
-   public ValidationMessagePanel getValidationPanel(TransUnitId id)
-   {
-      return this.tableDefinition.getValidationMessagePanel(id);
-   }
-
-   @Override
    public void setTransUnitDetails(TransUnit selectedTransUnit)
    {
       this.tableDefinition.setTransUnitDetails(selectedTransUnit);
-
-   }
-
-   @Override
-   public void setValidationMessageVisible(TransUnitId id)
-   {
-      this.tableDefinition.setValidationMessageVisible(id);
 
    }
 }

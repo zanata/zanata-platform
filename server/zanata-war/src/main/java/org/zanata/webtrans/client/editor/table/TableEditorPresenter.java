@@ -58,11 +58,10 @@ import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.UndoAddEvent;
 import org.zanata.webtrans.client.events.UndoFailureEvent;
 import org.zanata.webtrans.client.events.UndoRedoFinishEvent;
-import org.zanata.webtrans.client.events.UpdateValidationErrorEvent;
-import org.zanata.webtrans.client.events.UpdateValidationErrorEventHandler;
+import org.zanata.webtrans.client.events.UpdateValidationWarningsEvent;
+import org.zanata.webtrans.client.events.UpdateValidationWarningsEventHandler;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.ui.ValidationMessagePanel;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
 import org.zanata.webtrans.shared.auth.Identity;
@@ -142,13 +141,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
        */
       int getSelectedRowNumber();
 
-      void updateValidationError(TransUnitId id, List<String> errors);
-
-      ValidationMessagePanel getValidationPanel(TransUnitId id);
-
       void setTransUnitDetails(TransUnit selectedTransUnit);
-
-      void setValidationMessageVisible(TransUnitId id);
    }
 
    private DocumentId documentId;
@@ -282,7 +275,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             if (event.getSelectedItem() != null)
             {
                display.setTransUnitDetails(event.getSelectedItem());
-               display.setValidationMessageVisible(event.getSelectedItem().getId());
                display.getTargetCellEditor().savePendingChange(true);
                selectTransUnit(event.getSelectedItem());
             }
@@ -404,7 +396,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          {
             if (selectedTransUnit != null)
             {
-               int step = event.getStep();
+               // int step = event.getStep();
                // Send message to server to stop editing current selection
                // stopEditing(selectedTransUnit);
 
@@ -489,16 +481,12 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          }
       }));
 
-      registerHandler(eventBus.addHandler(UpdateValidationErrorEvent.getType(), new UpdateValidationErrorEventHandler()
+      registerHandler(eventBus.addHandler(UpdateValidationWarningsEvent.getType(), new UpdateValidationWarningsEventHandler()
       {
          @Override
-         public void onUpdate(UpdateValidationErrorEvent event)
+         public void onUpdate(UpdateValidationWarningsEvent event)
          {
-            if (!event.isUpdateEditorOnly())
-            {
-               display.updateValidationError(event.getId(), event.getErrors());
-            }
-            display.getTargetCellEditor().updateValidationMessagePanel(display.getValidationPanel(event.getId()));
+            display.getTargetCellEditor().updateValidationMessagePanel(event.getErrors());
          }
       }));
 

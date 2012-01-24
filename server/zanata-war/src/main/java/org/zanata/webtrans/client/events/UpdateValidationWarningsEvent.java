@@ -31,48 +31,41 @@ import com.google.gwt.event.shared.GwtEvent;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class UpdateValidationErrorEvent extends GwtEvent<UpdateValidationErrorEventHandler>
+public class UpdateValidationWarningsEvent extends GwtEvent<UpdateValidationWarningsEventHandler>
 {
    /**
     * Handler type.
     */
-   private static Type<UpdateValidationErrorEventHandler> TYPE;
+   private static Type<UpdateValidationWarningsEventHandler> TYPE;
 
    /**
     * Gets the type associated with this event.
     * 
     * @return returns the handler type
     */
-   public static Type<UpdateValidationErrorEventHandler> getType()
+   public static Type<UpdateValidationWarningsEventHandler> getType()
    {
-      return TYPE != null ? TYPE : (TYPE = new Type<UpdateValidationErrorEventHandler>());
+      return TYPE != null ? TYPE : (TYPE = new Type<UpdateValidationWarningsEventHandler>());
    }
 
    private TransUnitId id;
    private List<String> errors;
-   private boolean updateEditorOnly = false;
 
-   public UpdateValidationErrorEvent(TransUnitId id, List<String> errors)
+   public UpdateValidationWarningsEvent(TransUnitId id, List<String> errors)
    {
       this.id = id;
       this.errors = errors;
    }
 
-   public UpdateValidationErrorEvent(TransUnitId id, boolean updateEditorOnly)
-   {
-      this.id = id;
-      this.updateEditorOnly = updateEditorOnly;
-   }
-
    @Override
-   public Type<UpdateValidationErrorEventHandler> getAssociatedType()
+   public Type<UpdateValidationWarningsEventHandler> getAssociatedType()
    {
       return getType();
    }
 
 
    @Override
-   protected void dispatch(UpdateValidationErrorEventHandler handler)
+   protected void dispatch(UpdateValidationWarningsEventHandler handler)
    {
       handler.onUpdate(this);
    }
@@ -85,11 +78,6 @@ public class UpdateValidationErrorEvent extends GwtEvent<UpdateValidationErrorEv
    public List<String> getErrors()
    {
       return errors;
-   }
-
-   public boolean isUpdateEditorOnly()
-   {
-      return updateEditorOnly;
    }
 }
 

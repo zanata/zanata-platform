@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.shared.validation.ValidationUtils;
 
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
@@ -38,7 +37,7 @@ public class VariablesValidation extends ValidationAction
 {
    public VariablesValidation(final ValidationMessages messages)
    {
-      super(messages.variablesValidatorName(), messages.variablesValidatorDescription(), messages);
+      super(messages.variablesValidatorName(), messages.variablesValidatorDescription(), true, messages);
    }
 
 
@@ -48,25 +47,22 @@ public class VariablesValidation extends ValidationAction
    // private final static String varRegex = "%[\\w]+";
 
    @Override
-   public void validate(String source, String target)
+   public void doValidate(String source, String target)
    {
-      if (!ValidationUtils.isEmpty(target))
+      ArrayList<String> sourceVars = findVars(source);
+      ArrayList<String> targetVars = findVars(target);
+
+      List<String> missing = listMissing(sourceVars, targetVars);
+      if (!missing.isEmpty())
       {
-         ArrayList<String> sourceVars = findVars(source);
-         ArrayList<String> targetVars = findVars(target);
+         addError(getMessages().varsMissing(missing));
+      }
 
-         List<String> missing = listMissing(sourceVars, targetVars);
-         if (!missing.isEmpty())
-         {
-            addError(getMessages().varsMissing(missing));
-         }
-
-         // missing from source = added
-         missing = listMissing(targetVars, sourceVars);
-         if (!missing.isEmpty())
-         {
-            addError(getMessages().varsAdded(missing));
-         }
+      // missing from source = added
+      missing = listMissing(targetVars, sourceVars);
+      if (!missing.isEmpty())
+      {
+         addError(getMessages().varsAdded(missing));
       }
    }
 

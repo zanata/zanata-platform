@@ -22,7 +22,6 @@ package org.zanata.webtrans.client.editor.table;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -31,11 +30,9 @@ import org.zanata.webtrans.client.events.CopySourceEvent;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
-import org.zanata.webtrans.client.ui.ValidationMessagePanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -223,8 +220,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
    };
 
-   private Map<TransUnitId, ValidationMessagePanel> messagePanelMap = new HashMap<TransUnitId, ValidationMessagePanel>();
-
    private final CellRenderer<TransUnit, TransUnit> targetCellRenderer = new CellRenderer<TransUnit, TransUnit>()
    {
       @Override
@@ -263,18 +258,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          label.setTitle(messages.clickHere());
          targetPanel.add(label);
 
-         ValidationMessagePanel msgPanel = messagePanelMap.get(rowValue.getId());
-         if (msgPanel == null)
-         {
-            msgPanel = new ValidationMessagePanel(messages.validationMessageHeading(), false);
-         }
-         msgPanel.setVisible(false);
-
-         messagePanelMap.put(rowValue.getId(), msgPanel);
-
-         targetPanel.add(msgPanel);
-
-         targetPanel.setCellVerticalAlignment(msgPanel, HasVerticalAlignment.ALIGN_BOTTOM);
          targetPanel.setSize("100%", "100%");
 
          view.setWidget(targetPanel);
@@ -388,44 +371,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    public InlineTargetCellEditor getTargetCellEditor()
    {
       return targetCellEditor;
-   }
-
-   public void updateValidationMessage(TransUnitId id, List<String> errors)
-   {
-      ValidationMessagePanel messagePanel = messagePanelMap.get(id);
-      if (messagePanel != null)
-      {
-         Log.info("Validation error: " + errors.toString());
-         messagePanel.setContent(errors);
-         messagePanelMap.put(id, messagePanel);
-      }
-   }
-
-   public ValidationMessagePanel getValidationMessagePanel(TransUnitId id)
-   {
-      ValidationMessagePanel panel = messagePanelMap.get(id);
-
-      if (panel == null)
-      {
-         panel = new ValidationMessagePanel(messages.validationMessageHeading(), false);
-         messagePanelMap.put(id, panel);
-      }
-      return panel;
-   }
-
-   public void setValidationMessageVisible(TransUnitId id)
-   {
-      for (Map.Entry<TransUnitId, ValidationMessagePanel> entry : messagePanelMap.entrySet())
-      {
-         if (entry.getKey().equals(id))
-         {
-            entry.getValue().setVisible(true);
-         }
-         else
-         {
-            entry.getValue().setVisible(false);
-         }
-      }
    }
 
    public void setTransUnitDetails(TransUnit selectedTransUnit)
