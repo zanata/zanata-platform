@@ -20,20 +20,18 @@
  */
 package org.zanata.rest.client;
 
-import java.io.IOException;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.ext.Provider;
 
 import org.jboss.resteasy.annotations.interception.ClientInterceptor;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.spi.interception.ClientExecutionContext;
 import org.jboss.resteasy.spi.interception.ClientExecutionInterceptor;
-import org.jboss.resteasy.spi.interception.MessageBodyReaderContext;
-import org.jboss.resteasy.spi.interception.MessageBodyReaderInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.rest.RestConstant;
 
 /**
  * Performs logging of Resteasy Requests on the client side. This interceptor logs only
@@ -44,37 +42,16 @@ import org.slf4j.LoggerFactory;
  */
 @Provider
 @ClientInterceptor
-public class TraceDebugInterceptor implements MessageBodyReaderInterceptor, ClientExecutionInterceptor
+public class TraceDebugInterceptor implements ClientExecutionInterceptor
 {
 
    private static final Logger log = LoggerFactory.getLogger(TraceDebugInterceptor.class);
    
-   private boolean isVerbose;
+   private boolean logHttp;
    
-   public TraceDebugInterceptor(boolean isVerbose)
+   public TraceDebugInterceptor(boolean logHttp)
    {
-      this.isVerbose = isVerbose;
-   }
-   
-   @Override
-   public Object read(MessageBodyReaderContext context) throws IOException, WebApplicationException
-   {
-      if( log.isTraceEnabled() && this.isVerbose )
-      {
-         // Log after reading a response
-         for( String key : context.getHeaders().keySet() )
-         {
-            log.trace("Header:   " + key.toString());
-            log.trace("Value(s): " + context.getHeaders().get(key).toString());
-         }
-         // mark the input stream so it can be reset later (the input stream can only be read once)
-         context.getInputStream().mark(Integer.MAX_VALUE);
-         log.trace("Body:" + new Scanner(context.getInputStream()).useDelimiter("\\A").next());
-         // reset the input stream so the entity can be read by the client
-         context.getInputStream().reset();
-      }
-      
-      return context.proceed();
+      this.logHttp = logHttp;
    }
    
    
@@ -82,23 +59,51 @@ public class TraceDebugInterceptor implements MessageBodyReaderInterceptor, Clie
    @Override
    public ClientResponse execute(ClientExecutionContext ctx) throws Exception
    {
-      if( log.isTraceEnabled() )
+      if( !log.isInfoEnabled() || !this.logHttp )
       {
-         log.trace( "Zanata Rest Request: " + ctx.getRequest().getHttpMethod() + " => " + ctx.getRequest().getUri() );
-         
-         if( this.isVerbose )
+         return ctx.proceed();
+      }
+
+      log.info( ">> REST Request: " + ctx.getRequest().getHttpMethod() + " => " + ctx.getRequest().getUri() );
+      
+      // Log before sending a request
+      for( String key : ctx.getRequest().getHeaders().keySet() )
+      {
+         String headerVal = ctx.getRequest().getHeaders().get(key).toString();
+         if( key.equals( RestConstant.HEADER_API_KEY ) )
          {
-            // Log before sending a request
-            for( String key : ctx.getRequest().getHeaders().keySet() )
-            {
-               log.trace("Header:   " + key.toString());
-               log.trace("Value(s): " + ctx.getRequest().getHeaders().get(key).toString());
-            }
-            log.trace("Body:" + ctx.getRequest().getBody() );
+            headerVal = this.maskHeaderValues(ctx.getRequest().getHeaders().get(key));
          }
+         
+         log.info(">> Header: " + key + " = " + headerVal );
+      }
+      log.info(">> Body: " + ctx.getRequest().getBody() );
+      
+      ClientResponse result = ctx.proceed();
+      
+      // log after a response has been received
+      log.info("<< REST Response: " + result.getResponseStatus().getStatusCode() + ":" + result.getResponseStatus());
+      for( Object key : result.getHeaders().keySet() )
+      {
+         log.info("<< Header: " + key + " = " + result.getHeaders().get(key) );
       }
       
-      return ctx.proceed();
+      return result;
+   }
+   
+   /**
+    * Masks a list of header values so they are not displayed as clear text in the logs.
+    */
+   private String maskHeaderValues( List<String> headerValues )
+   {
+      List<String> maskedList = new ArrayList<String>( headerValues.size() );
+      
+      for( String actualValue : headerValues )
+      {
+         maskedList.add( actualValue.replaceAll(".", "*") ); // mask all characters with stars
+      }
+      
+      return maskedList.toString();
    }
 
 }

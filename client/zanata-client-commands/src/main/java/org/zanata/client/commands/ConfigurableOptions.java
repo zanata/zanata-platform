@@ -48,6 +48,14 @@ public interface ConfigurableOptions extends BasicOptions
 
    @Option(name = "--username", metaVar = "USER", usage = "Username")
    public void setUsername(String username);
+   
+   /**
+    * Enable HTTP message logging.
+    */
+   public boolean getLogHttp();
+   
+   @Option(name = "--logHttp", metaVar = "LOGHTTP", usage = "Enable HTTP message logging.")
+   public void setLogHttp(boolean traceLogging);
 
 
 }
