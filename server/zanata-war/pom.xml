@@ -254,21 +254,6 @@
 				</configuration>
 			</plugin>
 			
-			<plugin>
-				<groupId>org.codehaus.enunciate</groupId>
-				<artifactId>maven-enunciate-plugin</artifactId>
-				<configuration>
-					<configFile>etc/enunciate/enunciate.xml</configFile>
-				</configuration>
-				<!-- <executions>
-					<execution>
-						<goals>
-							<goal>docs</goal>
-						</goals>
-					</execution>
-				</executions> -->
-			</plugin>
-
 		</plugins>
 
 		<pluginManagement>
@@ -324,6 +309,29 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+   <reporting>
+      <plugins>
+         <plugin>
+            <groupId>org.codehaus.enunciate</groupId>
+            <artifactId>maven-enunciate-plugin</artifactId>
+            <configuration>
+               <configFile>etc/enunciate/enunciate.xml</configFile>
+
+               <!--
+               These two enunciate options are undocumented, but
+               their absence causes an error during site generation.
+                -->
+               <enunciateArtifactId>unused</enunciateArtifactId>
+               <moduleName>unused</moduleName>
+
+               <!-- The subdirectory of the site where the documentation will be put. -->
+               <!-- Note that if this isn't set, the documentation will overwrite the site. -->
+               <docsSubdir>apidocs</docsSubdir>
+            </configuration>
+         </plugin>
+      </plugins>
+   </reporting>
 
 	<profiles>
 		<profile>

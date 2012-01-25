@@ -102,6 +102,9 @@ import com.google.common.collect.Sets;
 @Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Consumes( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Transactional
+/**
+ * This service allows clients to push and pull both source documents and translations.
+ */
 public class TranslationResourcesService extends BaseSecurityChecker implements TranslationResourcesResource
 {
 
