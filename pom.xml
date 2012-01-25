@@ -168,7 +168,7 @@
 		<guava.version>r06</guava.version>
 		<jackson.version>1.5.0</jackson.version>
 		<icu4j.version>4.8</icu4j.version>
-		<enunciate.version>1.25</enunciate.version>
+		<enunciate.version>1.24</enunciate.version>
 
 		<cobertura.halt.failure>false</cobertura.halt.failure>
 		<javadoc.skip>true</javadoc.skip>
