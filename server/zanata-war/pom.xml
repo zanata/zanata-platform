@@ -315,6 +315,8 @@
          <plugin>
             <groupId>org.codehaus.enunciate</groupId>
             <artifactId>maven-enunciate-plugin</artifactId>
+            <!-- apparently pluginManagement is ignored in reporting -->
+            <version>${enunciate.version}</version>
             <configuration>
                <configFile>etc/enunciate/enunciate.xml</configFile>
 
