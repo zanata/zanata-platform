@@ -55,6 +55,11 @@ public abstract class ConfigurableOptionsImpl extends BasicOptionsImpl implement
     * zanata.ini.
     */
    private String key;
+   
+   /**
+    * Enable HTTP message logging.
+    */
+   private boolean logHttp;
 
    public ConfigurableOptionsImpl()
    {
@@ -110,6 +115,18 @@ public abstract class ConfigurableOptionsImpl extends BasicOptionsImpl implement
    public File getUserConfig()
    {
       return userConfig;
+   }
+
+   @Override
+   public boolean getLogHttp()
+   {
+      return logHttp;
+   }
+
+   @Override
+   public void setLogHttp(boolean logHttp)
+   {
+      this.logHttp = logHttp;
    }
 
 }
