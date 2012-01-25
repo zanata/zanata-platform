@@ -43,7 +43,7 @@
                     </s:fragment>
                     
 					<s:fragment rendered="#{not identity.loggedIn}">
-					   <s:link id="Sign_in" view="/account/login.xhtml" value="#{messages['jsf.SignIn']}" propagation="none" />
+					   <s:link id="Sign_in" view="/account/sign_in?continue=#{request.requestURL}#{not empty request.queryString ? '%3F' : ''}#{request.queryString}" value="#{messages['jsf.SignIn']}" propagation="none" />
 					   
 					   <rich:spacer width="10px" /> 
 					   

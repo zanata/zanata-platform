@@ -37,7 +37,6 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.Identity;
 import org.zanata.ApplicationConfiguration;
-import org.zanata.ZanataInit;
 
 @Name("zanataExternalLoginBean")
 @Scope(ScopeType.SESSION)
