@@ -55,6 +55,9 @@
       <rule if-outcome="edit">
         <redirect view-id="/profile/edit.xhtml" />
       </rule>
+      <rule if-outcome="redirect">
+        <redirect url="#{userRedirect.url}" />
+      </rule>
       <rule if-outcome="home">
         <redirect view-id="/home.xhtml" />
       </rule>

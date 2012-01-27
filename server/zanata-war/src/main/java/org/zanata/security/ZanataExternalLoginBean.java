@@ -57,12 +57,15 @@ public class ZanataExternalLoginBean implements Serializable
    
    private ApplicationConfiguration applicationConfiguration;
 
+   private UserRedirectBean userRedirectBean;
+
    @Create
    public void init()
    {
       identity = (ZanataIdentity) Component.getInstance(ZanataIdentity.class, ScopeType.SESSION);
       identityStore = (ZanataJpaIdentityStore) Component.getInstance(ZanataJpaIdentityStore.class, ScopeType.APPLICATION);
       applicationConfiguration = (ApplicationConfiguration) Component.getInstance(ApplicationConfiguration.class, ScopeType.APPLICATION);
+      userRedirectBean = (UserRedirectBean) Component.getInstance(UserRedirectBean.class, ScopeType.SESSION);
    }
 
 
@@ -129,7 +132,14 @@ public class ZanataExternalLoginBean implements Serializable
 
       if (applicationConfiguration.isKerberosAuth() && identity.isLoggedIn() && !isNewUser())
       {
-         return "home";
+         if (userRedirectBean.isRedirect())
+         {
+            return "redirect";
+         }
+         else
+         {
+            return "home";
+         }
       }
 
       if (applicationConfiguration.isKerberosAuth() && !identity.isLoggedIn())
