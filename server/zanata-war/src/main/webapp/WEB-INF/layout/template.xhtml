@@ -43,7 +43,11 @@
                     </s:fragment>
                     
 					<s:fragment rendered="#{not identity.loggedIn}">
-					   <s:link id="Sign_in" view="/account/sign_in?continue=#{request.requestURL}#{not empty request.queryString ? '%3F' : ''}#{request.queryString}" value="#{messages['jsf.SignIn']}" propagation="none" />
+                       <s:link id="Sign_in" view="/account/sign_in?continue=#{applicationConfiguration.serverPath}#{request.getAttribute('javax.servlet.forward.servlet_path')}" value="#{messages['jsf.SignIn']}" propagation="none" />
+                       <!-- works without server path being set, but does not use rewritten urls
+                       the empty server path condition is always false due to hard-coded default
+                       <s:link id="Sign_in" rendered="#{empty applicationConfiguration.serverPath}" view="/account/sign_in?continue=#{request.requestURL}#{not empty request.queryString ? '%3F' : ''}#{request.queryString}" value="#{messages['jsf.SignIn']}" propagation="none" />
+                        -->
 					   
 					   <rich:spacer width="10px" /> 
 					   
