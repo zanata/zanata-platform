@@ -16,5 +16,7 @@ public interface HasTransUnitUpdatedData
    int getWordCount();
 
    TransUnit getTransUnit();
+   
+   String getUsername();
 
 }

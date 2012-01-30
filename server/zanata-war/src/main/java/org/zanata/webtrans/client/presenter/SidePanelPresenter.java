@@ -20,17 +20,28 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
+import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.resources.EditorConfigConstants;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.EditorOptionsPanel;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -46,23 +57,42 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
    private final DispatchAsync dispatcher;
    private final ValidationOptionsPresenter validationOptionsPresenter;
    private final EditorOptionsPanel editorOptionsPanel;
-   
+
    @Inject
    public SidePanelPresenter(final Display display, final EventBus eventBus, CachingDispatchAsync dispatcher, final ValidationOptionsPresenter validationDetailsPresenter, final TransFilterPresenter transFilterPresenter)
    {
       super(display, eventBus);
-      this.editorOptionsPanel = new EditorOptionsPanel(eventBus);
+      this.editorOptionsPanel = new EditorOptionsPanel();
       this.validationOptionsPresenter = validationDetailsPresenter;
       this.dispatcher = dispatcher;
+
+      configMap.put(EditorConfigConstants.BUTTON_ENTER, false);
+      configMap.put(EditorConfigConstants.BUTTON_ESC, false);
+      configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
+      configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
    }
+
+   private final ValueChangeHandler<Boolean> filterChangeHandler = new ValueChangeHandler<Boolean>()
+   {
+      @Override
+      public void onValueChange(ValueChangeEvent<Boolean> event)
+      {
+         eventBus.fireEvent(new FilterViewEvent(!editorOptionsPanel.getTranslatedChk().getValue(), !editorOptionsPanel.getNeedReviewChk().getValue(), !editorOptionsPanel.getUntranslatedChk().getValue(), false));
+      }
+   };
+
+   private Map<String, Boolean> configMap = new HashMap<String, Boolean>();
 
    @Override
    protected void onBind()
    {
       validationOptionsPresenter.bind();
       display.setValidationOptionsView(validationOptionsPresenter.getDisplay().asWidget());
-
       display.setEditorOptionsPanel(editorOptionsPanel);
+
+      registerHandler(editorOptionsPanel.getTranslatedChk().addValueChangeHandler(filterChangeHandler));
+      registerHandler(editorOptionsPanel.getNeedReviewChk().addValueChangeHandler(filterChangeHandler));
+      registerHandler(editorOptionsPanel.getUntranslatedChk().addValueChangeHandler(filterChangeHandler));
 
       registerHandler(eventBus.addHandler(FilterViewEvent.getType(), new FilterViewEventHandler()
       {
@@ -71,13 +101,80 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
          {
             if (event.isCancelFilter())
             {
-               editorOptionsPanel.updateFilterOption(event.isFilterTranslated(), event.isFilterNeedReview(), event.isFilterUntranslated());
+               editorOptionsPanel.getTranslatedChk().setValue(!event.isFilterTranslated(), false);
+               editorOptionsPanel.getNeedReviewChk().setValue(!event.isFilterNeedReview(), false);
+               editorOptionsPanel.getUntranslatedChk().setValue(!event.isFilterUntranslated(), false);
+            }
+
+            // if filter view, hide model navigation
+            if (!event.isFilterTranslated() || !event.isFilterNeedReview() || !event.isFilterUntranslated())
+            {
+               editorOptionsPanel.setNavOptionVisible(false);
+            }
+            else
+            {
+               editorOptionsPanel.setNavOptionVisible(true);
             }
          }
       }));
+
+      registerHandler(editorOptionsPanel.getEditorButtonsChk().addValueChangeHandler(new ValueChangeHandler<Boolean>()
+      {
+         @Override
+         public void onValueChange(ValueChangeEvent<Boolean> event)
+         {
+            Log.info("Show editor buttons: " + event.getValue());
+            eventBus.fireEvent(new ButtonDisplayChangeEvent(event.getValue()));
+         }
+      }));
+
+      registerHandler(editorOptionsPanel.getEnterChk().addValueChangeHandler(new ValueChangeHandler<Boolean>()
+      {
+         @Override
+         public void onValueChange(ValueChangeEvent<Boolean> event)
+         {
+            Log.info("Enable 'Enter' Key to save and move to next string: " + event.getValue());
+            configMap.put(EditorConfigConstants.BUTTON_ENTER, event.getValue());
+            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
+         }
+      }));
+
+      registerHandler(editorOptionsPanel.getEscChk().addValueChangeHandler(new ValueChangeHandler<Boolean>()
+      {
+         @Override
+         public void onValueChange(ValueChangeEvent<Boolean> event)
+         {
+            Log.info("Enable 'Esc' Key to close editor: " + event.getValue());
+            configMap.put(EditorConfigConstants.BUTTON_ESC, event.getValue());
+            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
+         }
+      }));
+
+      registerHandler(editorOptionsPanel.getOptionsList().addChangeHandler(new ChangeHandler()
+      {
+         @Override
+         public void onChange(ChangeEvent event)
+         {
+            String selectedOption = editorOptionsPanel.getOptionsList().getItemText(editorOptionsPanel.getOptionsList().getSelectedIndex());
+            if (selectedOption.equals(EditorConfigConstants.OPTION_FUZZY_UNTRANSLATED))
+            {
+               configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
+               configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
+            }
+            else if (selectedOption.equals(EditorConfigConstants.OPTION_FUZZY))
+            {
+               configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
+               configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, false);
+            }
+            else if (selectedOption.equals(EditorConfigConstants.OPTION_UNTRANSLATED))
+            {
+               configMap.put(EditorConfigConstants.BUTTON_FUZZY, false);
+               configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
+            }
+            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
+         }
+      }));
    }
-
-
 
    @Override
    protected void onUnbind()

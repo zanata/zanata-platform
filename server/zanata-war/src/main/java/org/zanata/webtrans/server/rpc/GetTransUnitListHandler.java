@@ -149,6 +149,11 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
 
    private boolean isFiltered(boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated, HTextFlowTarget target)
    {
+      if (filterTranslated == filterNeedReview == filterUntranslated)
+      {
+         return false;
+      }
+
       if (target == null)
       {
          if (filterUntranslated)

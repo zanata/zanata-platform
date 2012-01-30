@@ -423,11 +423,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                // - add TU index to model
                if (row != null)
                {
-                  if (!display.isProcessing())
-                  {
-                     Log.info("onTransUnitUpdated - update row:" + row);
-                     display.getTableModel().setRowValueOverride(row, event.getTransUnit());
-                  }
+                  Log.info("onTransUnitUpdated - update row:" + row);
+                  display.getTableModel().setRowValueOverride(row, event.getTransUnit());
 
                   if (inProcessing != null)
                   {
@@ -456,7 +453,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                      }
                   }
                }
-               if (!display.isProcessing() && selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
+               if (!display.isProcessing() && event.getUsername().equals(identity.getPerson().getId().toString()) && selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
                {
                   tableModelHandler.gotoRow(curRowIndex, true);
                }

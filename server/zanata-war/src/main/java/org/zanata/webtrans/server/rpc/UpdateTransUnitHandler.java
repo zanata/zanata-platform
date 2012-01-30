@@ -199,7 +199,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
                                    authenticatedAccount.getPerson().getName(),
                                    SIMPLE_FORMAT.format(new Date()), msgContext, hTextFlow.getPos());
       // @formatter:on
-      TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu);
+      TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu, ZanataIdentity.instance().getCredentials().getUsername());
 
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
       workspace.publish(event);
@@ -275,7 +275,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
                                    target.getLastModifiedBy().getName(),
                                    SIMPLE_FORMAT.format(target.getLastChanged()), msgContext, hTextFlow.getPos());
       // @formatter:on
-      TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu);
+      TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu, ZanataIdentity.instance().getCredentials().getUsername());
 
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
       workspace.publish(event);

@@ -20,22 +20,9 @@
  */
 package org.zanata.webtrans.client.ui;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.customware.gwt.presenter.client.EventBus;
-
-import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
-import org.zanata.webtrans.client.events.FilterViewEvent;
-import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.resources.EditorConfigConstants;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -73,53 +60,8 @@ public class EditorOptionsPanel extends Composite
    @UiField
    ListBox optionsList;
 
-   private final EventBus eventBus;
-   private Map<String, Boolean> configMap = new HashMap<String, Boolean>();
-   private boolean filterTranslated, filterNeedReview, filterUntranslated;
-
-   private final ValueChangeHandler<Boolean> configChangeHandler = new ValueChangeHandler<Boolean>()
+   public EditorOptionsPanel()
    {
-      @Override
-      public void onValueChange(ValueChangeEvent<Boolean> event)
-      {
-         if (event.getSource() == enterChk)
-         {
-            Log.info("Enable 'Enter' Key to save and move to next string: " + event.getValue());
-            configMap.put(EditorConfigConstants.BUTTON_ENTER, event.getValue());
-         }
-         else if (event.getSource() == escChk)
-         {
-            Log.info("Enable 'Esc' Key to close editor: " + event.getValue());
-            configMap.put(EditorConfigConstants.BUTTON_ESC, event.getValue());
-         }
-         eventBus.fireEvent(new UserConfigChangeEvent(configMap));
-      }
-   };
-
-   private final ValueChangeHandler<Boolean> filterChangeHandler = new ValueChangeHandler<Boolean>()
-   {
-      @Override
-      public void onValueChange(ValueChangeEvent<Boolean> event)
-      {
-         if (event.getSource() == translatedChk)
-         {
-            filterTranslated = !event.getValue();
-         }
-         else if (event.getSource() == needReviewChk)
-         {
-            filterNeedReview = !event.getValue();
-         }
-         else if (event.getSource() == untranslatedChk)
-         {
-            filterUntranslated = !event.getValue();
-         }
-         eventBus.fireEvent(new FilterViewEvent(filterTranslated, filterNeedReview, filterUntranslated, false));
-      }
-   };
-
-   public EditorOptionsPanel(final EventBus eventBus)
-   {
-      this.eventBus = eventBus;
       initWidget(uiBinder.createAndBindUi(this));
 
       header.setText(EditorConfigConstants.LABEL_EDITOR_OPTIONS);
@@ -137,62 +79,11 @@ public class EditorOptionsPanel extends Composite
       untranslatedChk.setText(EditorConfigConstants.LABEL_UNTRANSLATED);
       filterHeader.setText(EditorConfigConstants.LABEL_FILTERS);
 
-      translatedChk.setValue(true);
-      needReviewChk.setValue(true);
-      untranslatedChk.setValue(true);
-      
       optionsList.addItem(EditorConfigConstants.OPTION_FUZZY_UNTRANSLATED);
       optionsList.addItem(EditorConfigConstants.OPTION_FUZZY);
       optionsList.addItem(EditorConfigConstants.OPTION_UNTRANSLATED);
 
       optionsList.setSelectedIndex(0);
-
-      configMap.put(EditorConfigConstants.BUTTON_ENTER, false);
-      configMap.put(EditorConfigConstants.BUTTON_ESC, false);
-      configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
-      configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
-
-      enterChk.addValueChangeHandler(configChangeHandler);
-      escChk.addValueChangeHandler(configChangeHandler);
-
-      editorButtonsChk.addValueChangeHandler(new ValueChangeHandler<Boolean>()
-      {
-         @Override
-         public void onValueChange(ValueChangeEvent<Boolean> event)
-         {
-            Log.info("Show editor buttons: " + event.getValue());
-            eventBus.fireEvent(new ButtonDisplayChangeEvent(event.getValue()));
-         }
-      });
-
-      translatedChk.addValueChangeHandler(filterChangeHandler);
-      needReviewChk.addValueChangeHandler(filterChangeHandler);
-      untranslatedChk.addValueChangeHandler(filterChangeHandler);
-
-      optionsList.addChangeHandler(new ChangeHandler()
-      {
-         @Override
-         public void onChange(ChangeEvent event)
-         {
-            String selectedOption = optionsList.getItemText(optionsList.getSelectedIndex());
-            if (selectedOption.equals(EditorConfigConstants.OPTION_FUZZY_UNTRANSLATED))
-            {
-               configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
-               configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
-            }
-            else if (selectedOption.equals(EditorConfigConstants.OPTION_FUZZY))
-            {
-               configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
-               configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, false);
-            }
-            else if (selectedOption.equals(EditorConfigConstants.OPTION_UNTRANSLATED))
-            {
-               configMap.put(EditorConfigConstants.BUTTON_FUZZY, false);
-               configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
-            }
-            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
-         }
-      });
    }
 
    @Override
@@ -201,17 +92,46 @@ public class EditorOptionsPanel extends Composite
       return this;
    }
 
-   public void updateFilterOption(boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated)
+   public CheckBox getTranslatedChk()
    {
-      this.filterTranslated = filterTranslated;
-      this.filterNeedReview = filterNeedReview;
-      this.filterUntranslated = filterUntranslated;
-
-      translatedChk.setValue(!filterTranslated, false);
-      needReviewChk.setValue(!filterNeedReview, false);
-      untranslatedChk.setValue(!filterUntranslated, false);
+      return translatedChk;
    }
 
+   public CheckBox getNeedReviewChk()
+   {
+      return needReviewChk;
+   }
+
+   public CheckBox getUntranslatedChk()
+   {
+      return untranslatedChk;
+   }
+
+   public CheckBox getEditorButtonsChk()
+   {
+      return editorButtonsChk;
+   }
+
+   public CheckBox getEnterChk()
+   {
+      return enterChk;
+   }
+
+   public CheckBox getEscChk()
+   {
+      return escChk;
+   }
+
+   public ListBox getOptionsList()
+   {
+      return optionsList;
+   }
+
+   public void setNavOptionVisible(boolean visible)
+   {
+      navOptionHeader.setVisible(visible);
+      optionsList.setVisible(visible);
+   }
 }
 
 
