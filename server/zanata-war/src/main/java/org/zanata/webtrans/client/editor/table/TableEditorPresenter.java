@@ -165,6 +165,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    private final CachingDispatchAsync dispatcher;
    private final Identity identity;
    private TransUnit selectedTransUnit;
+   private TransUnit targetTransUnit;
    // private int lastRowNum;
    private List<Long> transIdNextNewFuzzyCache = new ArrayList<Long>();
    private List<Long> transIdPrevNewFuzzyCache = new ArrayList<Long>();
@@ -306,6 +307,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             filterViewConfirmationPanel.hide();
 
             display.getTargetCellEditor().savePendingChange(true);
+            targetTransUnit = selectedTransUnit;
             initialiseTransUnitList();
          }
       }));
@@ -320,6 +322,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             filterViewConfirmationPanel.hide();
 
             display.getTargetCellEditor().cancelEdit();
+            targetTransUnit = selectedTransUnit;
             initialiseTransUnitList();
          }
       }));
@@ -352,6 +355,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                else
                {
                   filterViewConfirmationPanel.updateFilter(filterTranslated, filterNeedReview, filterUntranslated);
+                  targetTransUnit = selectedTransUnit;
                   initialiseTransUnitList();
                }
             }
@@ -398,6 +402,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             display.startProcessing();
             findMessage = event.getMessage();
             display.setFindMessage(findMessage);
+            targetTransUnit = selectedTransUnit;
             initialiseTransUnitList();
          }
 
@@ -584,8 +589,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          }
       }));
 
-
-
       display.gotoFirstPage();
 
       History.fireCurrentHistoryState();
@@ -621,7 +624,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
    private final TableModelHandler<TransUnit> tableModelHandler = new TableModelHandler<TransUnit>()
    {
-
       @Override
       public void requestRows(final Request request, final Callback<TransUnit> callback)
       {
@@ -634,7 +636,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             callback.onFailure(new RuntimeException("No DocumentId"));
             return;
          }
-
          display.startProcessing();
 
          dispatcher.execute(new GetTransUnitList(documentId, startRow, numRows, findMessage, filterViewConfirmationPanel.isFilterTranslated(), filterViewConfirmationPanel.isFilterNeedReview(), filterViewConfirmationPanel.isFilterUntranslated()), new AsyncCallback<GetTransUnitListResult>()
@@ -647,6 +648,13 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                callback.onRowsReady(request, response);
                display.getTableModel().setRowCount(result.getTotalCount());
                display.stopProcessing();
+
+               Log.info(targetTransUnit + "");
+               if (targetTransUnit != null)
+               {
+                  Integer row = getRow(targetTransUnit);
+                  Log.info(targetTransUnit.getId().toString() + ":" + row);
+               }
 
                if (result.getTotalCount() > 0)
                {
