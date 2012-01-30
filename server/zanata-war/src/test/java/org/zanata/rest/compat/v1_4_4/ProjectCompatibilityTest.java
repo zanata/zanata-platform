@@ -22,31 +22,15 @@ package org.zanata.rest.compat.v1_4_4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
-import java.io.IOException;
-import java.util.List;
+import javax.ws.rs.core.Response.Status;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.resteasy.client.ClientResponse;
-import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
-import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
-import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
-import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
 import org.testng.annotations.Test;
 import org.zanata.ZanataCompatibilityTest;
-import org.zanata.common.Namespaces;
-import org.zanata.rest.MediaTypes;
 import org.zanata.v1_4_4.rest.client.IProjectResource;
-import org.zanata.v1_4_4.rest.client.IProjectsResource;
 import org.zanata.v1_4_4.rest.dto.Project;
 import org.zanata.v1_4_4.rest.dto.ProjectType;
 
@@ -58,18 +42,17 @@ import org.zanata.v1_4_4.rest.dto.ProjectType;
  */
 public class ProjectCompatibilityTest extends ZanataCompatibilityTest
 {
-
+   
    @Override
    protected void prepareDBUnitOperations()
    {
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-   }
-   
+   }   
 
    @Test
    public void getProjectXml() throws Exception
    {
-      IProjectResource projectClient = (IProjectResource)super.createProxy(IProjectResource.class, "/projects/p/sample-project");
+      IProjectResource projectClient = super.createProxy(IProjectResource.class, "/projects/p/sample-project");
       ClientResponse<Project> projectResponse = projectClient.get();
       Project project = projectResponse.getEntity();
       
@@ -81,53 +64,31 @@ public class ProjectCompatibilityTest extends ZanataCompatibilityTest
       assertThat(project.getType(), is( ProjectType.IterationProject ));
    }
    
-   
-   public void getAllProjectsXml() throws Exception
+   @Test
+   public void putProjectXml() throws Exception
    {
-      // testing raw compatibility. The 1.4.4 client interface was not working correctly
-      // for this endpoint. Hence, just testing the server portion
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/projects/")
-      {
-         @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
-         {
-            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECTS_XML);
-         }
-
-         @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
-         {
-            assertThat(response.getStatus(), is(200)); // Ok
-            assertJaxbUnmarshal(response, Projects.class);
-            Projects projects = jaxbUnmarhsal(response, Projects.class);
-            Project sampleProject = null;
-            
-            // find sample project
-            for( Project p : projects.projects )
-            {
-               if( p.getId().equals("sample-project") )
-               {
-                  sampleProject = p;
-               }
-            }
-            
-            // Assertions on individual project
-            assertThat(sampleProject, notNullValue());
-            assertThat(sampleProject.getId(), is("sample-project"));
-            assertThat(sampleProject.getName(), is("Sample Project"));
-            assertThat(sampleProject.getLinks().size(), is(1));
-            assertThat(sampleProject.getType(), is( ProjectType.IterationProject ));
-         }
-      }.run();
-   }
-   
-   /**
-    * JAXB Wrapper class for a list of projects. Only used for testing.
-    */
-   @XmlRootElement(name="projects", namespace=Namespaces.ZANATA_API)
-   private static class Projects 
-   {
-      @XmlElementRef
-      List<Project> projects;      
+      // New Project
+      Project p = new Project("new-project", "New Project", ProjectType.IterationProject, "This is a New Sample Project");
+      
+      IProjectResource projectClient = super.createProxy(IProjectResource.class, "/projects/p/new-project");
+      ClientResponse putResponse = projectClient.put( p );
+      
+      // Assert initial put
+      assertThat(putResponse.getStatus(), is(Status.CREATED.getStatusCode()));
+      
+      // Modified Project
+      p.setDescription("This is an updated project");
+      putResponse = projectClient.put( p );
+      
+      // Assert modification
+      assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
+      
+      // Retrieve again
+      Project p2 = projectClient.get().getEntity();
+      assertThat(p2.getId(), is(p.getId()));
+      assertThat(p2.getName(), is(p.getName()));
+      assertThat(p2.getDescription(), is(p.getDescription()));
+      assertThat(p2.getIterations(), nullValue());
+      assertThat(p2.getType(), is(p.getType()));
    }
 }

@@ -52,6 +52,11 @@
      		<classes>
      			<class name="org.zanata.rest.compat.v1_4_4.ProjectCompatibilityTest"/>
      			<class name="org.zanata.rest.compat.v1_4_4.ProjectRawCompatibilityTest"/>
+     			<class name="org.zanata.rest.compat.v1_4_4.AccountCompatibilityTest"/>
+     			<class name="org.zanata.rest.compat.v1_4_4.AccountRawCompatibilityTest"/>
+     			<class name="org.zanata.rest.compat.v1_4_4.VersionCompatibilityTest"/>
+     			<class name="org.zanata.rest.compat.v1_4_4.VersionRawCompatibilityTest"/>
+     			<class name="org.zanata.rest.compat.v1_4_4.TranslationsCompatibilityTest"/>
      		</classes>
      	</test>
 </suite>

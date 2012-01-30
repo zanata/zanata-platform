@@ -28,6 +28,9 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response.Status;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -40,7 +43,8 @@ import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
 import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
 import org.testng.annotations.Test;
 import org.zanata.ZanataCompatibilityTest;
-import org.zanata.rest.MediaTypes;
+import org.zanata.v1_4_4.common.Namespaces;
+import org.zanata.v1_4_4.rest.MediaTypes;
 import org.zanata.v1_4_4.rest.dto.Project;
 import org.zanata.v1_4_4.rest.dto.ProjectType;
 
@@ -57,6 +61,25 @@ public class ProjectRawCompatibilityTest extends ZanataCompatibilityTest
    protected void prepareDBUnitOperations()
    {
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+   }
+   
+   @Test
+   public void head() throws Exception
+   {
+      new ResourceRequest(unauthorizedEnvironment, Method.HEAD, "/restv1/projects/p/sample-project")
+      {
+         @Override
+         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         {
+         }
+
+         @Override
+         protected void onResponse(EnhancedMockHttpServletResponse response)
+         {
+            assertThat(response.getStatus(), is(200)); // Ok
+            assertHeaderPresent(response, HttpHeaders.ETAG);
+         }
+      }.run();
    }
 
    @Test
@@ -126,6 +149,69 @@ public class ProjectRawCompatibilityTest extends ZanataCompatibilityTest
       }.run();
    }
    
+   public void getAllProjectsXml() throws Exception
+   {
+      // testing raw compatibility. The 1.4.4 client interface was not working correctly
+      // for this endpoint. Hence, just testing the server portion
+      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/projects/")
+      {
+         @Override
+         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         {
+            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECTS_XML);
+         }
+
+         @Override
+         protected void onResponse(EnhancedMockHttpServletResponse response)
+         {
+            assertThat(response.getStatus(), is(200)); // Ok
+            assertJaxbUnmarshal(response, Projects.class);
+            Projects projects = jaxbUnmarhsal(response, Projects.class);
+            Project sampleProject = null;
+            
+            // find sample project
+            for( Project p : projects.projects )
+            {
+               if( p.getId().equals("sample-project") )
+               {
+                  sampleProject = p;
+               }
+            }
+            
+            // Assertions on individual project
+            assertThat(sampleProject, notNullValue());
+            assertThat(sampleProject.getId(), is("sample-project"));
+            assertThat(sampleProject.getName(), is("Sample Project"));
+            assertThat(sampleProject.getLinks().size(), is(1));
+            assertThat(sampleProject.getType(), is( ProjectType.IterationProject ));
+         }
+      }.run();
+   }
+   
+   @Test
+   public void putProjectJson() throws Exception
+   {
+      // No client method for Json Put, so testing raw compatibility
+      new ResourceRequest(unauthorizedEnvironment, Method.PUT, "/restv1/projects/p/new-project")
+      {
+         @Override
+         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         {
+            // New Project
+            Project p = new Project("new-project", "New Project", ProjectType.IterationProject, "This is a New Sample Project");
+            
+            request.setContentType( MediaTypes.APPLICATION_ZANATA_PROJECT_JSON );
+            request.setContent( jsonMarshal(p).getBytes() );
+         }
+
+         @Override
+         protected void onResponse(EnhancedMockHttpServletResponse response)
+         {
+            assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
+         }
+      }.run();
+   }
+   
    private List<Project> jsonParse(EnhancedMockHttpServletResponse response)
    {
       ObjectMapper mapper = new ObjectMapper();
@@ -149,6 +235,16 @@ public class ProjectRawCompatibilityTest extends ZanataCompatibilityTest
       {
          throw new AssertionError(e);
       }
+   }
+   
+   /**
+    * JAXB Wrapper class for a list of projects. Only used for testing.
+    */
+   @XmlRootElement(name="projects", namespace=Namespaces.ZANATA_API)
+   private static class Projects 
+   {
+      @XmlElementRef
+      List<Project> projects;      
    }
    
 }

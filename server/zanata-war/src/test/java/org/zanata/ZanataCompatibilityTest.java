@@ -20,9 +20,18 @@
  */
 package org.zanata;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.rest.client.TestProxyFactory;
@@ -49,6 +58,49 @@ public abstract class ZanataCompatibilityTest extends ZanataRawRestTest
       catch (URISyntaxException e)
       {
          throw new RuntimeException(e);
+      }
+   }
+   
+   protected static String jaxbMarhsal( Object jaxbObject )
+   {
+      JAXBContext jc;
+      try
+      {
+         jc = JAXBContext.newInstance(jaxbObject.getClass());
+         Marshaller m = jc.createMarshaller();
+         //m.setEventHandler( new javax.xml.bind.helpers.DefaultValidationEventHandler() );
+         StringWriter sw = new StringWriter();
+         m.marshal(jaxbObject, sw);
+         return sw.toString();
+      }
+      catch (JAXBException e)
+      {
+         throw new AssertionError(e);
+      }
+   }
+   
+   protected static String jsonMarshal( Object jsonObject )
+   {
+      ObjectMapper mapper = new ObjectMapper();
+      try
+      {
+         return mapper.writeValueAsString( jsonObject );
+      }
+      catch (JsonParseException e)
+      {
+         throw new AssertionError(e);
+      }
+      catch (JsonMappingException e)
+      {
+         throw new AssertionError(e);
+      }
+      catch (IllegalStateException e)
+      {
+         throw new AssertionError(e);
+      }
+      catch (IOException e)
+      {
+         throw new AssertionError(e);
       }
    }
 
