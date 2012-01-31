@@ -171,7 +171,7 @@ public abstract class ZanataRawRestTest extends ZanataDBUnitSeamTest
       }
    }
    
-   protected static <T> T jaxbUnmarhsal( EnhancedMockHttpServletResponse response, Class<T> jaxbType )
+   protected static <T> T jaxbUnmarshal( EnhancedMockHttpServletResponse response, Class<T> jaxbType )
    {
       JAXBContext jc;
       try

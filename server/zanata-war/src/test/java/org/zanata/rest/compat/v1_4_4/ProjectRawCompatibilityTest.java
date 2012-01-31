@@ -166,7 +166,7 @@ public class ProjectRawCompatibilityTest extends ZanataCompatibilityTest
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertJaxbUnmarshal(response, Projects.class);
-            Projects projects = jaxbUnmarhsal(response, Projects.class);
+            Projects projects = jaxbUnmarshal(response, Projects.class);
             Project sampleProject = null;
             
             // find sample project
