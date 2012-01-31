@@ -13,7 +13,6 @@ public class LocalTest extends AbstractBuildTest
     * This helps Infinitest, since it doesn't know about the taskdefs inside
     * build.xml
     */
-   @SuppressWarnings("unchecked")
    static Class<?>[] testedClasses = { Props2DocsTask.class, Docs2PropsTask.class };
 
    public LocalTest(String name)

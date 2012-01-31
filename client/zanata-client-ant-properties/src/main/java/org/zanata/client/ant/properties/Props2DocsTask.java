@@ -3,23 +3,16 @@ package org.zanata.client.ant.properties;
 import java.io.File;
 import java.io.StringWriter;
 import java.net.URL;
-import java.util.List;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
-
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.types.selectors.FileSelector;
-import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.adapter.properties.PropReader;
 import org.zanata.common.ContentState;
-import org.zanata.common.ContentType;
-import org.zanata.common.LocaleId;
-import org.zanata.rest.client.ClientUtility;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.VersionInfo;
 
