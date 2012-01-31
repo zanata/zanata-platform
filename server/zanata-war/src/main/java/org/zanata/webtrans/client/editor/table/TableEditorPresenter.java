@@ -442,16 +442,28 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          @Override
          public void onTransMemoryCopy(TransMemoryCopyEvent event)
          {
-            // When user clicked on copy-to-target anchor, it checks
-            // if user is editing any target. Notifies if not.
-            if (display.getTargetCellEditor().isEditing())
+            if (selectedTransUnit == null)
             {
-               display.getTargetCellEditor().setText(event.getTargetResult());
-               display.getTargetCellEditor().autoSize();
-               eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
+               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.noTextFlowToCopy()));
             }
             else
-               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnopened()));
+            {
+               if (!display.getTargetCellEditor().isEditing())
+               {
+                  gotoCurrentRow();
+               }
+               if (display.getTargetCellEditor().isEditing())
+               {
+                  display.getTargetCellEditor().setText(event.getTargetResult());
+                  display.getTargetCellEditor().autoSize();
+                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
+               }
+               else
+               {
+                  // Error if failed to open editor
+                  eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnopened()));
+               }
+            }
          }
       }));
 
