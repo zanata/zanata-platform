@@ -13,7 +13,6 @@ public class RemoteTest extends AbstractBuildTest
     * This helps Infinitest, since it doesn't know about the taskdefs inside
     * build.xml
     */
-   @SuppressWarnings("unchecked")
    static Class<?>[] testedClasses = { UploadPoTask.class, DownloadPoTask.class };
 
    public RemoteTest(String name)
