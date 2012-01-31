@@ -1,8 +1,6 @@
 package org.zanata.maven;
 
-import java.io.File;
 import java.util.Arrays;
-import java.util.Collections;
 
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
