@@ -21,6 +21,9 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Please open the target in the editor first.")
    String notifyUnopened();
 
+   @DefaultMessage("No selected text flow to copy to.")
+   String noTextFlowToCopy();
+
    @DefaultMessage("Not logged in!")
    String notifyNotLoggedIn();
 
