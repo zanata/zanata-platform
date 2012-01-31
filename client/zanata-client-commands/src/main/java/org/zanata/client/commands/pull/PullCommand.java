@@ -96,6 +96,7 @@ public class PullCommand extends PushPullCommand<PullOptions>
          log.info("Pulling target documents (translations) only");
       }
       log.info("Target-language base directory (translations): {}", getOpts().getTransDir());
+      log.info("Create skeletons for untranslated messages/files: {}", getOpts().getCreateSkeletons());
 
       if (getOpts().isDryRun())
       {
