@@ -36,7 +36,7 @@ import org.zanata.client.commands.glossary.push.GlossaryPushOptions;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class GlossaryPushMojo extends ConfigurableProjectMojo implements GlossaryPushOptions
+public class GlossaryPushMojo extends ConfigurableProjectMojo<GlossaryPushOptions> implements GlossaryPushOptions
 {
 
    /**
