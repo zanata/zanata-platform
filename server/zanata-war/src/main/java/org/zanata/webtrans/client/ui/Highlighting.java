@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.ui;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Element;
 
 public class Highlighting
@@ -72,45 +73,50 @@ public class Highlighting
 		}
    }-*/;
 
-   public static native String diffAsHtml(String text1, String text2)/*-{
+   public static String diffAsHtml(String text1, String text2)
+   {
+      JavaScriptObject diffs = diff(text1, text2);
+      return diffsToHtml(diffs);
+   }
+
+   private static native JavaScriptObject diff(String text1, String text2)/*-{
 		if (!$wnd.diffMatchPatch) {
 			$wnd.diffMatchPatch = new $wnd.diff_match_patch();
 			$wnd.diffMatchPatch.Diff_Timeout = 0.2;
-
-			//			// modified diff_prettyHtml() from diff_match_patch.js
-			//			$wnd.diffMatchPatch.prototype.diff_prettyHtml = function(diffs) {
-			//				var html = [];
-			//				var pattern_amp = /&/g;
-			//				var pattern_lt = /</g;
-			//				var pattern_gt = />/g;
-			//				var pattern_para = /\n/g;
-			//				for ( var x = 0; x < diffs.length; x++) {
-			//					var op = diffs[x][0]; // Operation (insert, delete, equal)
-			//					var data = diffs[x][1]; // Text of change.
-			//					var text = data.replace(pattern_amp, '&amp;').replace(
-			//							pattern_lt, '&lt;').replace(pattern_gt, '&gt;')
-			//							.replace(pattern_para, '&para;<br>');
-			//					switch (op) {
-			//					case DIFF_INSERT:
-			//						html[x] = '<ins class="diff-insert">' + text + '</ins>';
-			//						break;
-			//					case DIFF_DELETE:
-			//						html[x] = '<del class="diff-delete">' + text + '</del>';
-			//						break;
-			//					case DIFF_EQUAL:
-			//						html[x] = '<span class="diff-equal">' + text
-			//								+ '</span>';
-			//						break;
-			//					}
-			//				}
-			//				return html.join('');
-			//			};
 		}
 
 		var dmp = $wnd.diffMatchPatch;
-		var d = dmp.diff_main(text1, text2);
-		dmp.diff_cleanupSemantic(d);
-		return dmp.diff_prettyHtml(d);
+		var diffs = dmp.diff_main(text1, text2);
+		dmp.diff_cleanupSemantic(diffs);
+		return diffs;
+   }-*/;
+
+   // modified diff_prettyHtml() from diff_match_patch.js
+   private static native String diffsToHtml(JavaScriptObject diffs)/*-{
+		var html = [];
+		var pattern_amp = /&/g;
+		var pattern_lt = /</g;
+		var pattern_gt = />/g;
+		var pattern_para = /\n/g;
+		for ( var x = 0; x < diffs.length; x++) {
+			var op = diffs[x][0]; // Operation (insert, delete, equal)
+			var data = diffs[x][1]; // Text of change.
+			var text = data.replace(pattern_amp, '&amp;').replace(pattern_lt,
+					'&lt;').replace(pattern_gt, '&gt;').replace(pattern_para,
+					'&para;<br>');
+			switch (op) {
+			case $wnd['DIFF_INSERT']:
+				html[x] = '<ins class="diff-insert">' + text + '</ins>';
+				break;
+			case $wnd['DIFF_DELETE']:
+				html[x] = '<del class="diff-delete">' + text + '</del>';
+				break;
+			case $wnd['DIFF_EQUAL']:
+				html[x] = '<span class="diff-equal">' + text + '</span>';
+				break;
+			}
+		}
+		return html.join('');
    }-*/;
 
 }

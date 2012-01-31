@@ -464,18 +464,34 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
 	font-weight: bold
 }
 
-.TransMemoryTableSourceColumn span {
+/* when match highlighting is enabled: */
+/*
+.TransMemoryHighlightMatches .diff-equal {
 	background:#FF0;
 }
 
-.TransMemoryTableSourceColumn ins {
+.TransMemoryHighlightMatches .diff-insert {
 	background:#e6ffe6;
 	text-decoration: none;
 }
 
-.TransMemoryTableSourceColumn del {
-	background:#ffe6e6;
-	text-decoration: none;
+.TransMemoryHighlightMatches .diff-delete {
+	display: none;
+}
+*/
+
+/* when colour diff is enabled: */
+.diff-equal {
+}
+
+.diff-insert {
+   background:#99ccff;
+   text-decoration: underline;
+}
+
+.diff-delete {
+   background:#ff9999;
+   text-decoration: line-through;
 }
 
 
