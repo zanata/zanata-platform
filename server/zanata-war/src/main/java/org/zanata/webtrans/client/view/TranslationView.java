@@ -20,18 +20,21 @@
  */
 package org.zanata.webtrans.client.view;
 
+import org.zanata.webtrans.client.presenter.GlossaryPresenter;
+import org.zanata.webtrans.client.presenter.SidePanelPresenter;
+import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
+import org.zanata.webtrans.client.presenter.TranslationEditorPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
+import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.SplitLayoutPanelHelper;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.StyleInjector;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
@@ -69,6 +72,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
     */
    // @UiField
    LayoutPanel glossaryPanel;
+   private boolean enableGlossary = false;
 
    @UiField
    SplitLayoutPanel mainSplitPanel;
@@ -78,10 +82,9 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    private double panelWidth = 20;
    private double southHeight = 30;
 
-   boolean disableGlossary = true;
 
    @Inject
-   public TranslationView(Resources resources, WebTransMessages messages)
+   public TranslationView(Resources resources, WebTransMessages messages, TranslationEditorPresenter.Display translationEditorView, SidePanelPresenter.Display sidePanelView, TransMemoryPresenter.Display transMemoryView, WorkspaceUsersPresenter.Display workspaceUsersView, GlossaryPresenter.Display glossaryView)
    {
       this.messages = messages;
 
@@ -104,59 +107,62 @@ public class TranslationView extends Composite implements TranslationPresenter.D
 
 
       southPanelTab.add(tmPanel, messages.translationMemoryHeading());
-      if (!disableGlossary)
+      if (enableGlossary)
       {
          southPanelTab.add(glossaryPanel, "Glossary");
       }
       southPanelTab.add(userPanel, messages.nUsersOnline(0));
 
+      setEditorView(translationEditorView.asWidget());
+
+      setSidePanel(sidePanelView.asWidget());
+
+      setTranslationMemoryView(transMemoryView.asWidget());
+
+      setWorkspaceUsersView(workspaceUsersView.asWidget());
+
+      // TODO glossary temporarily disabled
+      if (enableGlossary)
+      {
+         setGlossaryView(glossaryView.asWidget());
+      }
+
 
    }
 
-   @Override
-   public void setTranslationMemoryView(Widget translationMemoryView)
+   private void setTranslationMemoryView(Widget translationMemoryView)
    {
       tmPanel.clear();
       tmPanel.add(translationMemoryView);
    }
 
-   @Override
-   public void setWorkspaceUsersView(Widget workspaceUsersView)
+   private void setWorkspaceUsersView(Widget workspaceUsersView)
    {
       userPanel.clear();
       userPanel.add(workspaceUsersView);
    }
 
-   /*
-    * TODO: temporary disable glossary functionalities
-    */
-   @Override
-   public void setGlossaryView(Widget glossaryView)
+   private void setGlossaryView(Widget glossaryView)
    {
-      if (!disableGlossary)
-      {
-         glossaryPanel.clear();
-         glossaryPanel.add(glossaryView);
-      }
+      glossaryPanel.clear();
+      glossaryPanel.add(glossaryView);
+   }
+
+   private void setEditorView(Widget editorView)
+   {
+      this.editorContainer.add(editorView);
+   }
+
+   private void setSidePanel(Widget sidePanel)
+   {
+      sidePanelContainer.clear();
+      sidePanelContainer.add(sidePanel);
    }
 
    @Override
    public Widget asWidget()
    {
       return this;
-   }
-
-   @Override
-   public void setEditorView(Widget editorView)
-   {
-      this.editorContainer.add(editorView);
-   }
-
-   @Override
-   public void setSidePanel(Widget sidePanel)
-   {
-      sidePanelContainer.clear();
-      sidePanelContainer.add(sidePanel);
    }
 
    @Override

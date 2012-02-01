@@ -46,23 +46,12 @@ import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ToggleButton;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.Display>
 {
    public interface Display extends WidgetDisplay
    {
-      void setEditorView(Widget editorView);
-
-      void setSidePanel(Widget sidePanel);
-
-      void setTranslationMemoryView(Widget translationMemoryView);
-
-      void setWorkspaceUsersView(Widget workspaceUsersView);
-
-      void setGlossaryView(Widget glossaryView);
-
       void setSouthPanelViewVisible(boolean visible);
 
       void setSidePanelViewVisible(boolean visible);
@@ -125,19 +114,10 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    protected void onBind()
    {
       transMemoryPresenter.bind();
-      display.setTranslationMemoryView(transMemoryPresenter.getDisplay().asWidget());
-
       workspaceUsersPresenter.bind();
-      display.setWorkspaceUsersView(workspaceUsersPresenter.getDisplay().asWidget());
-
       glossaryPresenter.bind();
-      display.setGlossaryView(glossaryPresenter.getDisplay().asWidget());
-
       translationEditorPresenter.bind();
-      display.setEditorView(translationEditorPresenter.getDisplay().asWidget());
-
       sidePanelPresenter.bind();
-      display.setSidePanel(sidePanelPresenter.getDisplay().asWidget());
 
       registerHandler(eventBus.addHandler(ExitWorkspaceEvent.getType(), new ExitWorkspaceEventHandler()
       {

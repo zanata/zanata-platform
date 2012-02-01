@@ -32,12 +32,12 @@ import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class SidePanel extends Composite implements SidePanelPresenter.Display
+public class SidePanelView extends Composite implements SidePanelPresenter.Display
 {
 
    private static SidePanelUiBinder uiBinder = GWT.create(SidePanelUiBinder.class);
 
-   interface SidePanelUiBinder extends UiBinder<SplitLayoutPanel, SidePanel>
+   interface SidePanelUiBinder extends UiBinder<SplitLayoutPanel, SidePanelView>
    {
    }
 
@@ -53,7 +53,7 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display
 
 
    @Inject
-   public SidePanel(WebTransMessages messages)
+   public SidePanelView(WebTransMessages messages)
    {
       initWidget(uiBinder.createAndBindUi(this));
    }
