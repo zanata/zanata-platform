@@ -77,7 +77,7 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
       @Override
       public void onValueChange(ValueChangeEvent<Boolean> event)
       {
-         eventBus.fireEvent(new FilterViewEvent(!editorOptionsPanel.getTranslatedChk().getValue(), !editorOptionsPanel.getNeedReviewChk().getValue(), !editorOptionsPanel.getUntranslatedChk().getValue(), false));
+         eventBus.fireEvent(new FilterViewEvent(editorOptionsPanel.getTranslatedChk().getValue(), editorOptionsPanel.getNeedReviewChk().getValue(), editorOptionsPanel.getUntranslatedChk().getValue(), false));
       }
    };
 
@@ -101,13 +101,13 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
          {
             if (event.isCancelFilter())
             {
-               editorOptionsPanel.getTranslatedChk().setValue(!event.isFilterTranslated(), false);
-               editorOptionsPanel.getNeedReviewChk().setValue(!event.isFilterNeedReview(), false);
-               editorOptionsPanel.getUntranslatedChk().setValue(!event.isFilterUntranslated(), false);
+               editorOptionsPanel.getTranslatedChk().setValue(event.isFilterTranslated(), false);
+               editorOptionsPanel.getNeedReviewChk().setValue(event.isFilterNeedReview(), false);
+               editorOptionsPanel.getUntranslatedChk().setValue(event.isFilterUntranslated(), false);
             }
 
             // if filter view, hide model navigation
-            if (!event.isFilterTranslated() || !event.isFilterNeedReview() || !event.isFilterUntranslated())
+            if (event.isFilterTranslated() || event.isFilterNeedReview() || event.isFilterUntranslated())
             {
                editorOptionsPanel.setNavOptionVisible(false);
             }
