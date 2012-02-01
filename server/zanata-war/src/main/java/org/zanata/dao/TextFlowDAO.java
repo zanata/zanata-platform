@@ -20,6 +20,7 @@
  */
 package org.zanata.dao;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -39,14 +40,24 @@ import org.hibernate.search.jpa.FullTextQuery;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.log.Log;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.DefaultNgramAnalyzer;
 import org.zanata.model.HDocument;
+import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
+import org.zanata.webtrans.server.rpc.CommentsUtil;
+import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
+import org.zanata.webtrans.shared.util.TextFlowFilter;
 
 @Name("textFlowDAO")
 @AutoCreate
@@ -56,6 +67,11 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    @In
    private FullTextEntityManager entityManager;
 
+   @In
+   LocaleDAO localeDAO;
+
+   @Logger
+   Log log;
 
    public TextFlowDAO()
    {
@@ -67,11 +83,6 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       super(HTextFlow.class, session);
    }
 
-   /**
-    * @param document
-    * @param id
-    * @return
-    */
    public HTextFlow getById(HDocument document, String id)
    {
       return (HTextFlow) getSession().createCriteria(HTextFlow.class).add(Restrictions.naturalId().set("resId", id).set("document", document)).setCacheable(true).setComment("TextFlowDAO.getById").uniqueResult();
@@ -173,47 +184,27 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       // @formatter:on
    }
 
-   @SuppressWarnings({ "unchecked" })
-   public List<HTextFlow> getByDocument(Long documentId)
+   public int getCountByDocument(Long documentId)
    {
-      Query query = getSession().createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos").setParameter("id", documentId);
-      return query.list();
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos").setParameter("id", documentId).uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
    }
 
    @SuppressWarnings("unchecked")
-   public List<HTextFlow> getOffsetListByDocument(Long documentId, int offset, int count)
+   public List<HTextFlow> getTransUnitList(Long documentId, int offset, int count)
    {
       Query query = getSession().createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos").setParameter("id", documentId);
       return query.setFirstResult(offset).setMaxResults(count).list();
    }
-   
-   
-   @SuppressWarnings("unchecked")
-   // TODO: use hibernate search
-   public Set<Object[]> getIdsBySearch(Long documentId, int offset, int count, String search, LocaleId localeId)
-   {
-      Query textFlowQuery = getSession().createQuery("select tf.id, tf.pos from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id and lower(tf.content) like :content order by tf.pos");
-      textFlowQuery.setParameter("id", documentId);
-      textFlowQuery.setParameter("content", "%" + search + "%");
-      List<Object[]> ids1 = textFlowQuery.list();
-      Query textFlowTargetQuery = getSession().createQuery("select tft.textFlow.id, tft.textFlow.pos from HTextFlowTarget tft where tft.textFlow.obsolete=0 and tft.textFlow.document.id = :id and lower(tft.content) like :content and tft.locale.localeId = :localeId order by tft.textFlow.pos");
-      textFlowTargetQuery.setParameter("id", documentId);
-      textFlowTargetQuery.setParameter("content", "%" + search + "%");
-      textFlowTargetQuery.setParameter("localeId", localeId);
-      List<Object[]> ids2 = textFlowTargetQuery.list();
-      Set<Object[]> idSet = new TreeSet<Object[]>(new Comparator<Object[]>()
-      {
-         @Override
-         public int compare(Object[] arg0, Object[] arg1)
-         {
-            return ((Integer) arg0[1]).compareTo((Integer) arg1[1]);
-         }
-      });
-      idSet.addAll(ids1);
-      idSet.addAll(ids2);
-      return idSet;
-   }
 
+   @SuppressWarnings("unchecked")
+   public List<HTextFlow> getTransUnitList(Long documentId)
+   {
+      Query query = getSession().createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos").setParameter("id", documentId);
+      return query.list();
+   }
 
    // TODO: use hibernate search
    @SuppressWarnings("unchecked")
