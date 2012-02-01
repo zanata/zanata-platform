@@ -41,26 +41,33 @@ import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.inject.Inject;
 
 public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.Display>
 {
    public interface Display extends WidgetDisplay
    {
-      void setSouthPanelViewVisible(boolean visible);
+      void setParticipantsTitle(String title);
 
-      void setSidePanelViewVisible(boolean visible);
+      void setSouthPanelVisible(boolean visible);
 
-      void updateWorkspaceUsersTitle(String title);
+      void setSidePanelVisible(boolean visible);
 
-      ToggleButton getToogleOptionsButton();
+      // no need for HasValue<Boolean> yet, change if we need to set this
+      boolean isShowOptions();
 
-      ToggleButton getToogleSouthButton();
+      HasClickHandlers getOptionsToggle();
+
+      void setOptionsToggleTooltip(String tooltip);
+
+      boolean isShowSouthPanel();
+
+      HasClickHandlers getSouthPanelToggle();
    }
 
    private final DispatchAsync dispatcher;
@@ -105,7 +112,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          public void onSuccess(GetTranslatorListResult result)
          {
             String title = workspaceUsersPresenter.getDisplay().updateUserList(result.getTranslatorList());
-            display.updateWorkspaceUsersTitle(title);
+            display.setParticipantsTitle(title);
          }
       });
    }
@@ -144,43 +151,43 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       // Thus we load the translator list here.
       loadTranslatorList();
 
-      registerHandler(display.getToogleOptionsButton().addClickHandler(new ClickHandler()
+      registerHandler(display.getOptionsToggle().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
-            if (display.getToogleOptionsButton().isDown())
+            if (display.isShowOptions())
             {
-               display.setSidePanelViewVisible(true);
-               display.getToogleOptionsButton().setTitle(messages.hideEditorOptions());
+               display.setSidePanelVisible(true);
+               display.setOptionsToggleTooltip(messages.hideEditorOptions());
             }
-            else if (!display.getToogleOptionsButton().isDown())
+            else if (!display.isShowOptions())
             {
-               display.setSidePanelViewVisible(false);
-               display.getToogleOptionsButton().setTitle(messages.showEditorOptions());
+               display.setSidePanelVisible(false);
+               display.setOptionsToggleTooltip(messages.showEditorOptions());
             }
          }
       }));
 
-      registerHandler(display.getToogleSouthButton().addClickHandler(new ClickHandler()
+      registerHandler(display.getSouthPanelToggle().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
-            if (display.getToogleSouthButton().isDown())
+            if (display.isShowSouthPanel())
             {
-               display.setSouthPanelViewVisible(false);
+               display.setSouthPanelVisible(false);
                transMemoryPresenter.unbind();
                glossaryPresenter.unbind();
                workspaceUsersPresenter.unbind();
             }
-            else if (!display.getToogleSouthButton().isDown())
+            else if (!display.isShowSouthPanel())
             {
                transMemoryPresenter.bind();
                glossaryPresenter.bind();
                workspaceUsersPresenter.bind();
 
-               display.setSouthPanelViewVisible(true);
+               display.setSouthPanelVisible(true);
                TransUnit tu = translationEditorPresenter.getSelectedTransUnit();
                if (tu != null)
                {
@@ -203,7 +210,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
              * again (Firefox) See textArea.addKeyDownHandler@InlineTargetCellEditor
              **/
             if (display.asWidget().isVisible())
-            { 
+            {
                checkKey.init(event.getNativeEvent());
 
                if (translationEditorPresenter.getSelectedTransUnit() != null && checkKey.isCopyFromTransMem())

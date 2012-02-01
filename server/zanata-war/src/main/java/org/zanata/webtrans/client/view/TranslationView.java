@@ -32,6 +32,7 @@ import org.zanata.webtrans.client.ui.SplitLayoutPanelHelper;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.StyleInjector;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -60,10 +61,10 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    LayoutPanel editorContainer, sidePanelContainer;
 
    @UiField(provided = true)
-   ToggleButton toogleOptionsButton;
+   ToggleButton optionsToggleButton;
 
    @UiField(provided = true)
-   ToggleButton toogleSouthButton;
+   ToggleButton southPanelToggleButton;
 
    LayoutPanel tmPanel, userPanel;
 
@@ -77,8 +78,6 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    @UiField
    SplitLayoutPanel mainSplitPanel;
 
-   final WebTransMessages messages;
-
    private double panelWidth = 20;
    private double southHeight = 30;
 
@@ -86,7 +85,6 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    @Inject
    public TranslationView(Resources resources, WebTransMessages messages, TranslationEditorPresenter.Display translationEditorView, SidePanelPresenter.Display sidePanelView, TransMemoryPresenter.Display transMemoryView, WorkspaceUsersPresenter.Display workspaceUsersView, GlossaryPresenter.Display glossaryView)
    {
-      this.messages = messages;
 
       StyleInjector.inject(resources.style().getText(), true);
       sidePanelOuterContainer = new LayoutPanel();
@@ -95,11 +93,11 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       tmPanel = new LayoutPanel();
       userPanel = new LayoutPanel();
       
-      toogleOptionsButton = new ToggleButton(messages.hideEditorOptionsLabel(), messages.showEditorOptionsLabel());
-      toogleOptionsButton.setTitle(messages.hideEditorOptions());
-      toogleOptionsButton.setDown(true);
+      optionsToggleButton = new ToggleButton(messages.hideEditorOptionsLabel(), messages.showEditorOptionsLabel());
+      optionsToggleButton.setTitle(messages.hideEditorOptions());
+      optionsToggleButton.setDown(true);
 
-      toogleSouthButton = new ToggleButton(messages.minimiseLabel(), messages.restoreLabel());
+      southPanelToggleButton = new ToggleButton(messages.minimiseLabel(), messages.restoreLabel());
 
       initWidget(uiBinder.createAndBindUi(this));
       mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) panelWidth);
@@ -126,8 +124,6 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       {
          setGlossaryView(glossaryView.asWidget());
       }
-
-
    }
 
    private void setTranslationMemoryView(Widget translationMemoryView)
@@ -166,7 +162,13 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    }
 
    @Override
-   public void setSidePanelViewVisible(boolean visible)
+   public void setParticipantsTitle(String title)
+   {
+      southPanelTab.setTabText(1, title);
+   }
+
+   @Override
+   public void setSidePanelVisible(boolean visible)
    {
       mainSplitPanel.forceLayout();
       Widget splitter = SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel, sidePanelOuterContainer);
@@ -185,7 +187,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    }
 
    @Override
-   public void setSouthPanelViewVisible(boolean visible)
+   public void setSouthPanelVisible(boolean visible)
    {
       mainSplitPanel.forceLayout();
       Widget splitter = SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel, southPanelContainer);
@@ -204,20 +206,32 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    }
 
    @Override
-   public ToggleButton getToogleOptionsButton()
+   public boolean isShowOptions()
    {
-      return toogleOptionsButton;
+      return optionsToggleButton.isDown();
    }
 
    @Override
-   public ToggleButton getToogleSouthButton()
+   public HasClickHandlers getOptionsToggle()
    {
-      return toogleSouthButton;
+      return optionsToggleButton;
    }
 
    @Override
-   public void updateWorkspaceUsersTitle(String title)
+   public void setOptionsToggleTooltip(String tooltip)
    {
-      southPanelTab.setTabText(1, title);
+      optionsToggleButton.setTitle(tooltip);
+   }
+
+   @Override
+   public boolean isShowSouthPanel()
+   {
+      return southPanelToggleButton.isDown();
+   }
+
+   @Override
+   public HasClickHandlers getSouthPanelToggle()
+   {
+      return southPanelToggleButton;
    }
 }

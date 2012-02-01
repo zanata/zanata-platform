@@ -23,7 +23,7 @@
                         </g:layer>
 				        <g:layer right="3px" top="0" width="70px" height="18px"> 
                             <g:FlowPanel>
-                                <g:ToggleButton ui:field="toogleSouthButton" addStyleNames="{style.small-button}"/>
+                                <g:ToggleButton ui:field="southPanelToggleButton" addStyleNames="{style.small-button}"/>
                             </g:FlowPanel>
                         </g:layer>
 				    </g:LayoutPanel>
@@ -36,7 +36,7 @@
 
 						<g:layer height="18px" width="70px" right="5px" top="5px">
 							<g:FlowPanel>
-							    <g:ToggleButton ui:field="toogleOptionsButton" addStyleNames="{style.small-button}"/>
+							    <g:ToggleButton ui:field="optionsToggleButton" addStyleNames="{style.small-button}"/>
 							</g:FlowPanel>
 						</g:layer>
 					</g:LayoutPanel>
