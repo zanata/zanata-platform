@@ -73,7 +73,7 @@ public class PoWriter2
       File potFile = new File(potDir, doc.getName() + ".pot");
       PathUtil.makeParents(potFile);
       FileWriter fWriter = new FileWriter(potFile);
-      write(fWriter, doc, null);
+      write(fWriter, "UTF-8", doc, null);
    }
 
    /**
@@ -93,7 +93,7 @@ public class PoWriter2
       File poFile = new File(localeDir, doc.getName() + ".po");
       mkdirs(poFile.getParentFile());
       FileWriter fWriter = new FileWriter(poFile);
-      write(fWriter, doc, targetDoc);
+      write(fWriter, "UTF-8", doc, targetDoc);
    }
    
    /**
@@ -108,7 +108,7 @@ public class PoWriter2
    public void writePo(OutputStream stream, String charset, Resource doc, TranslationsResource targetDoc) throws IOException
    {
       OutputStreamWriter osWriter = new OutputStreamWriter(stream, charset);
-      write(osWriter, doc, targetDoc);
+      write(osWriter, charset, doc, targetDoc);
    }
 
    /**
@@ -122,19 +122,19 @@ public class PoWriter2
     * @param targetDoc
     * @throws IOException
     */
-   private void write(Writer writer, Resource document, TranslationsResource targetDoc) throws IOException
+   private void write(Writer writer, String charset, Resource document, TranslationsResource targetDoc) throws IOException
    {
       PoHeader poHeader = document.getExtensions(true).findByType(PoHeader.class);
       HeaderFields hf = new HeaderFields();
       if (poHeader == null)
       {
          log.warn("No PO header in document named " + document.getName());
-         setDefaultHeaderFields(hf);
       }
       else
       {
          copyToHeaderFields(hf, poHeader.getEntries());
       }
+      setEncodingHeaderFields(hf, charset);
       Message headerMessage = null;
       if (targetDoc != null)
       {
@@ -225,11 +225,21 @@ public class PoWriter2
       }
    }
 
-   static void setDefaultHeaderFields(HeaderFields hf)
+   static void setEncodingHeaderFields(HeaderFields hf, String charset)
    {
-      hf.setValue("MIME-Version", "1.0");
-      hf.setValue("Content-Type", "text/plain; charset=UTF-8");
-      hf.setValue("Content-Transfer-Encoding", "8bit");
+      hf.setValue(HeaderFields.KEY_MimeVersion, "1.0");
+      hf.setValue(HeaderFields.KEY_ContentTransferEncoding, "8bit");
+
+      String ct, contentType = hf.getValue(HeaderFields.KEY_ContentType);
+      if (contentType == null)
+      {
+         ct = "text/plain; charset=" + charset;
+      }
+      else
+      {
+         ct = contentType.replaceFirst("charset=[^;]*", "charset=" + charset);
+      }
+      hf.setValue(HeaderFields.KEY_ContentType, ct);
    }
 
    static void copyToHeaderFields(HeaderFields hf, final List<HeaderEntry> entries)
