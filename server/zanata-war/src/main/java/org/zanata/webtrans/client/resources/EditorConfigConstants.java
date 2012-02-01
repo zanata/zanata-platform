@@ -38,6 +38,11 @@ public class EditorConfigConstants
    public static final String LABEL_EDITOR_BUTTONS = "Editor Buttons";
    public static final String LABEL_EDITOR_OPTIONS = "Editor Options";
    
+   public static final String LABEL_TRANSLATED = "Translated";
+   public static final String LABEL_NEED_REVIEW = "Need Review";
+   public static final String LABEL_UNTRANSLATED = "Untranslated";
+   public static final String LABEL_FILTERS = "Message Filters:";
+   
    public static final String OPTION_FUZZY_UNTRANSLATED = "Next Fuzzy/Untranslated";
    public static final String OPTION_FUZZY = "Next Fuzzy";
    public static final String OPTION_UNTRANSLATED = "Next Untranslated";

@@ -26,6 +26,8 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.FilterViewEvent;
+import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
@@ -35,7 +37,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavigationPresenter.Display> implements HasNavTransUnitHandlers
@@ -56,6 +57,8 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
       HasClickHandlers getNextStateButton();
 
       void setNavModeTooltip(Map<String, Boolean> configMap);
+
+      void setModelNavVisible(boolean visible);
    }
 
    @Inject
@@ -120,6 +123,23 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
             fireEvent(new NavTransUnitEvent(NavigationType.NextState));
          }
       });
+
+      registerHandler(eventBus.addHandler(FilterViewEvent.getType(), new FilterViewEventHandler()
+      {
+         @Override
+         public void onFilterView(FilterViewEvent event)
+         {
+            // if filter view, hide model navigation
+            if (!event.isFilterTranslated() || !event.isFilterNeedReview() || !event.isFilterUntranslated())
+            {
+               display.setModelNavVisible(false);
+            }
+            else
+            {
+               display.setModelNavVisible(true);
+            }
+         }
+      }));
 
    }
 
