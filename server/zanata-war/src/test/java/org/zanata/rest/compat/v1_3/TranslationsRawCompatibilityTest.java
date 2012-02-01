@@ -18,7 +18,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.rest.compat.v1_4_4;
+package org.zanata.rest.compat.v1_3;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
@@ -37,19 +37,19 @@ import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
 import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
 import org.testng.annotations.Test;
 import org.zanata.ZanataCompatibilityTest;
-import org.zanata.v1_4_4.common.ContentState;
-import org.zanata.v1_4_4.common.ContentType;
-import org.zanata.v1_4_4.common.LocaleId;
-import org.zanata.v1_4_4.common.ResourceType;
-import org.zanata.v1_4_4.rest.StringSet;
-import org.zanata.v1_4_4.rest.client.ITranslationResources;
-import org.zanata.v1_4_4.rest.dto.extensions.comment.SimpleComment;
-import org.zanata.v1_4_4.rest.dto.extensions.gettext.PoHeader;
-import org.zanata.v1_4_4.rest.dto.resource.Resource;
-import org.zanata.v1_4_4.rest.dto.resource.ResourceMeta;
-import org.zanata.v1_4_4.rest.dto.resource.TextFlow;
-import org.zanata.v1_4_4.rest.dto.resource.TextFlowTarget;
-import org.zanata.v1_4_4.rest.dto.resource.TranslationsResource;
+import org.zanata.v1_3.common.ContentState;
+import org.zanata.v1_3.common.ContentType;
+import org.zanata.v1_3.common.LocaleId;
+import org.zanata.v1_3.common.ResourceType;
+import org.zanata.v1_3.rest.StringSet;
+import org.zanata.v1_3.rest.client.ITranslationResources;
+import org.zanata.v1_3.rest.dto.extensions.comment.SimpleComment;
+import org.zanata.v1_3.rest.dto.extensions.gettext.PoHeader;
+import org.zanata.v1_3.rest.dto.resource.Resource;
+import org.zanata.v1_3.rest.dto.resource.ResourceMeta;
+import org.zanata.v1_3.rest.dto.resource.TextFlow;
+import org.zanata.v1_3.rest.dto.resource.TextFlowTarget;
+import org.zanata.v1_3.rest.dto.resource.TranslationsResource;
 
 public class TranslationsRawCompatibilityTest extends ZanataCompatibilityTest
 {

@@ -3,5 +3,8 @@
 
 	<!-- Clear the HTextFlowTargetHistory table -->
 	<HTextFlowTargetHistory/>
+	
+	<!-- Clear the HDocumentHistory table -->
+	<HDocumentHistory/>
 
 </dataset>
