@@ -25,6 +25,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang.StringUtils;
+import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -75,27 +76,20 @@ public class ResourceUtils
     * Newline character used for multi-line comments
     */
    private static final char     NEWLINE = '\n';
-
    private static final String   ZANATA_GENERATOR_PREFIX = "Zanata";
-   
    private static final String   ZANATA_TAG = "#zanata";
-   
    private static final String   PO_DATE_FORMAT = "yyyy-MM-dd hh:mmZ";
-   
-   private static final String[] PO_VALID_CONTENT_TYPES = {"charset=UTF-8", "charset=UTF8", "charset=ASCII", "charset=CHARSET"};
-   
    private static final String   PO_DEFAULT_CONTENT_TYPE = "text/plain; charset=UTF-8";
-
    
    /**
     * PO Header entries
     */
    private static final String LAST_TRANSLATOR_HDR    = "Last-Translator";
-   private static final String PO_REVISION_DATE_HDR   = "PO-Revision-Date";
-   private static final String LANGUAGE_TEAM_HDR      = "Language-Team";
+   private static final String PO_REVISION_DATE_HDR = HeaderFields.KEY_PoRevisionDate;
+   private static final String LANGUAGE_TEAM_HDR = HeaderFields.KEY_LanguageTeam;
    private static final String X_GENERATOR_HDR        = "X-Generator";
-   private static final String LANGUAGE_HDR           = "Language";
-   private static final String CONTENT_TYPE_HDR       = "Content-Type";
+   private static final String LANGUAGE_HDR = HeaderFields.KEY_Language;
+   private static final String CONTENT_TYPE_HDR = HeaderFields.KEY_ContentType;
    private static final String PLURAL_FORMS_HDR       = "Plural-Forms";
 
    private static final Log log = Logging.getLog(ResourceUtils.class);
@@ -1175,32 +1169,4 @@ public class ResourceUtils
       }
    }
    
-   public boolean validateResourceEncoding(Resource res)
-   {
-      PoHeader poHeader = res.getExtensions(true).findByType(PoHeader.class);
-      if( poHeader != null )
-      {
-         for( HeaderEntry entry : poHeader.getEntries() )
-         {
-            if( entry.getKey().equalsIgnoreCase( CONTENT_TYPE_HDR ) )
-            {
-               for( String acceptedContentType : PO_VALID_CONTENT_TYPES )
-               {
-                  // Case-insensitive check
-                  if( entry.getValue().toLowerCase().contains( acceptedContentType.toLowerCase() ) )
-                  {
-                     return true;
-                  }
-               }
-            }
-         }
-         
-         return false;
-      }
-      else
-      {
-         return true;
-      }
-   }
-
 }
