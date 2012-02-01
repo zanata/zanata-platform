@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!-- Password: "admin" -->
-<ns2:account username="testuser" passwordHash="Eyox7xbNQ09MkIfRyH+rjg=="
-	name="Test Account" enabled="false" email="test@testing.com"
-	xmlns:ns2="http://zanata.org/namespace/api/" />

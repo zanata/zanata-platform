@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:account xmlns:ns2="http://zanata.org/namespace/api/" username="admin" passwordHash="Eyox7xbNQ09MkIfRyH+rjg==" name="Administrator" enabled="true" email="admin@example.com" apiKey="b6d7044e9ee3b2447c28fb7c50d86d98">
-	<role>admin</role>
-	<role>user</role>
-</ns2:account>
