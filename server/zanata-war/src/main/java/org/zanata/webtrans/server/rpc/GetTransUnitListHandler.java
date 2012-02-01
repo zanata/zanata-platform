@@ -112,26 +112,23 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          if (!filter.isFilterOut(textFlow, hLocale))
          {
             TransUnit tu = initTransUnit(textFlow, hLocale);
-            units.add(tu);
             if (action.getTargetTransUnitId() != null && tu.getId().equals(action.getTargetTransUnitId()))
             {
                gotoRow = units.size();
             }
+            units.add(tu);
          }
       }
       size = units.size();
 
       if ((action.getOffset() + action.getCount()) < units.size())
       {
-         units.subList(action.getOffset() + action.getCount() + 1, units.size()).clear();
-
-         int toIndex = (action.getOffset() - 1) >= 0 ? action.getOffset() - 1 : 0;
-         units.subList(0, toIndex).clear();
+         units.subList(action.getOffset() + action.getCount(), units.size()).clear();
+         units.subList(0, action.getOffset()).clear();
       }
       else if (action.getOffset() < units.size())
       {
-         int toIndex = (action.getOffset() - 1) >= 0 ? action.getOffset() - 1 : 0;
-         units.subList(0, toIndex).clear();
+         units.subList(0, action.getOffset()).clear();
       }
 
       return new GetTransUnitListResult(action.getDocumentId(), units, size, gotoRow);
