@@ -3,13 +3,11 @@ package org.zanata.adapter.po;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.fedorahosted.tennera.jgettext.Message;
@@ -27,6 +25,7 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.util.HashUtil;
 import org.zanata.util.ShortString;
 
 import com.google.common.collect.ImmutableSet;
@@ -44,6 +43,16 @@ public class PoReader2
    {
    }
 
+   /**
+    * Extract contents of a PO file and convert to a TranslationsResource.
+    * NB: If the file contains the gettext header Content-Type, it must be
+    * set to ASCII, CHARSET, UTF8 or UTF-8, or an exception will occur.
+    * @param inputSource PO file to be extracted
+    * @param srcDoc source language document
+    * @param useSourceOrder ensure that the TextFlowTargets have the
+    * same order as the TextFlows in srcDoc
+    * @return converted PO file as TranslationsResource
+    */
    public TranslationsResource extractTarget(InputSource inputSource, Resource srcDoc, boolean useSourceOrder)
    {
       TranslationsResource document = new TranslationsResource();
@@ -126,11 +135,37 @@ public class PoReader2
       return document;
    }
 
+   /**
+    * Checks that the file is safe to read as UTF-8.
+    * @param hf
+    */
+   private static void checkContentType(HeaderFields hf)
+   {
+// @formatter:off
+      String contentType = hf.getValue(HeaderFields.KEY_ContentType);
+      if (contentType == null)
+         return;
+      String ct = contentType.toLowerCase();
+      if (!ct.contains("charset="))
+         return;
+      if (ct.contains("charset=charset") || ct.contains("charset=ascii") ||
+            ct.contains("charset=utf-8") || ct.contains("charset=utf8"))
+      {
+         return;
+      }
+      else
+      {
+         throw new RuntimeException("unsupported charset in " + HeaderFields.KEY_ContentType + ": " + contentType);
+      }
+// @formatter:on
+   }
+
    private static void extractPotHeader(Message message, PoHeader potHeader)
    {
       potHeader.setComment(StringUtils.join(message.getComments(), "\n"));
 
       HeaderFields hf = HeaderFields.wrap(message);
+      checkContentType(hf);
       for (String key : hf.getKeys())
       {
          String val = hf.getValue(key);
@@ -148,6 +183,7 @@ public class PoReader2
       poHeader.setComment(StringUtils.join(message.getComments(), "\n"));
 
       HeaderFields hf = HeaderFields.wrap(message);
+      checkContentType(hf);
       for (String key : hf.getKeys())
       {
          String val = hf.getValue(key);
@@ -164,6 +200,15 @@ public class PoReader2
       }
    }
 
+   /**
+    * Extract contents of a POT file and convert to a Resource.
+    * NB: If the file contains the gettext header Content-Type, it must be
+    * set to ASCII, CHARSET, UTF8 or UTF-8, or an exception will occur.
+    * @param inputSource POT file to be extracted
+    * @param sourceLocaleId locale of POT, used to set metadata fields
+    * @param docName name of POT file (minus .pot extension) used to set metadata fields
+    * @return converted POT file as Resource
+    */
    public Resource extractTemplate(InputSource inputSource, LocaleId sourceLocaleId, String docName)
    {
       Resource document = new Resource(docName);
@@ -283,21 +328,7 @@ public class PoReader2
    {
       String sep = "\u0000";
       String hashBase = message.getMsgctxt() == null ? message.getMsgid() : message.getMsgctxt() + sep + message.getMsgid();
-      return generateHash(hashBase);
-   }
-
-   public static String generateHash(String key)
-   {
-      try
-      {
-         MessageDigest md5 = MessageDigest.getInstance("MD5");
-         md5.reset();
-         return new String(Hex.encodeHex(md5.digest(key.getBytes("UTF-8"))));
-      }
-      catch (Exception exc)
-      {
-         throw new RuntimeException(exc);
-      }
+      return HashUtil.generateHash(hashBase);
    }
 
 }
