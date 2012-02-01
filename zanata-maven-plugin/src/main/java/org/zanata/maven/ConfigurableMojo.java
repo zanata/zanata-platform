@@ -80,6 +80,13 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends Ab
     * @parameter default-value="${settings.interactiveMode}"
     */
    private boolean interactiveMode = true;
+   
+   /**
+    * Enable HTTP message logging.
+    * 
+    * @parameter expression="${zanata.logHttp}" default-value="false"
+    */
+   private boolean logHttp = false;
 
    public ConfigurableMojo()
    {
@@ -282,6 +289,18 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends Ab
    public File getUserConfig()
    {
       return userConfig;
+   }
+   
+   @Override
+   public boolean getLogHttp()
+   {
+      return logHttp;
+   }
+   
+   @Override
+   public void setLogHttp(boolean logHttp)
+   {
+      this.logHttp = logHttp;
    }
 
 }

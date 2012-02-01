@@ -28,6 +28,12 @@ public abstract class ConfigurableTask extends ZanataTask
     * zanata.ini.
     */
    private String key;
+   
+   /**
+    * Enable HTTP message logging. 
+    */
+   private boolean logHttp;
+   
 
    public String getKey()
    {
@@ -71,6 +77,17 @@ public abstract class ConfigurableTask extends ZanataTask
    public File getUserConfig()
    {
       return userConfig;
+   }
+
+   public boolean getLogHttp()
+   {
+      return logHttp;
+   }
+
+   @Option(name = "--logHttp", metaVar = "LOGHTTP", usage = "Enable HTTP message logging.")
+   public void setLogHttp(boolean logHttp)
+   {
+      this.logHttp = logHttp;
    }
 
 }
