@@ -27,30 +27,32 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 @Test(groups = { "unit-tests" })
 public class PoReader2Test
 {
-
    private static final Logger log = LoggerFactory.getLogger(PoReader2Test.class);
 
    LocaleId ja = new LocaleId("ja-JP");
+   String testDir = "src/test/resources/";
+   PoReader2 poReader = new PoReader2();
 
-   @Test
-   public void extractTemplateThenAdd2Targets() throws IOException, JAXBException
+   private Resource getTemplate()
    {
-      String testDir = "src/test/resources/";
-
-
       InputSource inputSource = new InputSource(new File(testDir, "pot/RPM.pot").toURI().toString());
       inputSource.setEncoding("utf8");
-
-      PoReader2 poReader = new PoReader2();
 
       System.out.println("parsing template");
       Resource doc = poReader.extractTemplate(inputSource, LocaleId.EN_US, "doc1");
       assertThat(doc.getTextFlows().size(), is(137));
+      return doc;
+   }
+
+   private void extractTarget(boolean useSrcOrder) throws IOException, JAXBException
+   {
+      InputSource inputSource;
+      Resource doc = getTemplate();
       String locale = "ja-JP";
       inputSource = new InputSource(new File(testDir, locale + "/RPM.po").toURI().toString());
       inputSource.setEncoding("utf8");
       System.out.println("extracting target: " + locale);
-      TranslationsResource targetDoc = poReader.extractTarget(inputSource, doc, false);
+      TranslationsResource targetDoc = poReader.extractTarget(inputSource, doc, useSrcOrder);
       List<TextFlowTarget> textFlowTargets = targetDoc.getTextFlowTargets();
       assertThat(textFlowTargets.size(), is(137));
       TextFlowTarget target = textFlowTargets.iterator().next();
@@ -83,4 +85,45 @@ public class PoReader2Test
 
       // TODO test PO headers and attributes
    }
+
+   @Test
+   public void extractTemplate()
+   {
+      getTemplate();
+   }
+
+   @Test(expectedExceptions = { RuntimeException.class }, expectedExceptionsMessageRegExp = ".*unsupported charset.*")
+   public void extractInvalidTemplate() throws IOException, JAXBException
+   {
+      InputSource inputSource = new InputSource(new File(testDir, "pot/invalid.pot").toURI().toString());
+      inputSource.setEncoding("utf8");
+
+      poReader.extractTemplate(inputSource, LocaleId.EN_US, "doc1");
+   }
+
+   @Test
+   public void extractTargetWithSourceOrder() throws IOException, JAXBException
+   {
+      extractTarget(true);
+   }
+
+   @Test
+   public void extractTargetWithTargetOrder() throws IOException, JAXBException
+   {
+      extractTarget(false);
+   }
+
+   @Test(expectedExceptions = { RuntimeException.class }, expectedExceptionsMessageRegExp = ".*unsupported charset.*")
+   public void extractInvalidTarget() throws IOException, JAXBException
+   {
+      Resource srcDoc = getTemplate();
+
+      String locale = "ja-JP";
+      InputSource inputSource = new InputSource(new File(testDir, locale + "/invalid.po").toURI().toString());
+      inputSource.setEncoding("utf8");
+      System.out.println("extracting target: " + locale);
+
+      poReader.extractTarget(inputSource, srcDoc, false);
+   }
+
 }
