@@ -33,7 +33,9 @@ import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
 import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
 import org.testng.annotations.Test;
 import org.zanata.ZanataRawRestTest;
+import org.zanata.common.EntityStatus;
 import org.zanata.rest.MediaTypes;
+import org.zanata.rest.dto.ProjectIteration;
 
 public class ProjectIterationRestTest extends ZanataRawRestTest
 {
@@ -78,7 +80,11 @@ public class ProjectIterationRestTest extends ZanataRawRestTest
          protected void onResponse(EnhancedMockHttpServletResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
-            assertContentSameAsResource(response.getContentAsString(), "rest/iteration/get.xml");
+            assertJaxbUnmarshal(response, ProjectIteration.class);
+            
+            ProjectIteration iteration = jaxbUnmarshal(response, ProjectIteration.class);
+            assertThat(iteration.getId(), is("1.0"));
+            assertThat(iteration.getStatus(), is(EntityStatus.Current));
          }
       }.run();
    }
@@ -98,7 +104,11 @@ public class ProjectIterationRestTest extends ZanataRawRestTest
          protected void onResponse(EnhancedMockHttpServletResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
-            assertContentSameAsResource(response.getContentAsString(), "rest/iteration/get.json");
+            assertJsonUnmarshal(response, ProjectIteration.class);
+            
+            ProjectIteration iteration = jsonUnmarshal(response, ProjectIteration.class);
+            assertThat(iteration.getId(), is("1.0"));
+            assertThat(iteration.getStatus(), is(EntityStatus.Current));
          }
       }.run();
    }
@@ -163,13 +173,16 @@ public class ProjectIterationRestTest extends ZanataRawRestTest
    @Test
    public void putXml() throws Exception
    {
+      final ProjectIteration iteration = new ProjectIteration("test-iteration");
+      iteration.setStatus(EntityStatus.Current);
+      
       new ResourceRequest(sharedEnvironment, Method.PUT, "/restv1/projects/p/sample-project/iterations/i/test-iteration")
       {
          @Override
          protected void prepareRequest(EnhancedMockHttpServletRequest request)
          {
             request.setContentType(MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
-            request.setContent( getResourceAsString("rest/iteration/put.xml").getBytes() );
+            request.setContent( jaxbMarhsal(iteration).getBytes() );
          }
 
          @Override
@@ -183,13 +196,16 @@ public class ProjectIterationRestTest extends ZanataRawRestTest
    @Test
    public void putJson() throws Exception
    {
+      final ProjectIteration iteration = new ProjectIteration("test-iteration");
+      iteration.setStatus(EntityStatus.Current);
+      
       new ResourceRequest(sharedEnvironment, Method.PUT, "/restv1/projects/p/sample-project/iterations/i/test-iteration-json")
       {
          @Override
          protected void prepareRequest(EnhancedMockHttpServletRequest request)
          {
             request.setContentType(MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON);
-            request.setContent( getResourceAsString("rest/iteration/put.json").getBytes() );
+            request.setContent( jsonMarshal(iteration).getBytes() );
          }
 
          @Override

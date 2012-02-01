@@ -32,7 +32,11 @@ import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
 import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
 import org.testng.annotations.Test;
 import org.zanata.ZanataRawRestTest;
+import org.zanata.common.LocaleId;
 import org.zanata.rest.MediaTypes;
+import org.zanata.rest.dto.Glossary;
+import org.zanata.rest.dto.GlossaryEntry;
+import org.zanata.rest.dto.GlossaryTerm;
 
 public class GlossaryRestTest extends ZanataRawRestTest
 {
@@ -60,7 +64,35 @@ public class GlossaryRestTest extends ZanataRawRestTest
          protected void onResponse(EnhancedMockHttpServletResponse response)
          {
             assertThat(response.getStatus(), is(200));
-            GlossaryRestTest.super.assertContentSameAsResource(response.getContentAsString(), "rest/glossary/get.xml");
+            assertJaxbUnmarshal(response, Glossary.class);
+            
+            Glossary glossary = jaxbUnmarshal(response, Glossary.class);
+            assertThat(glossary.getGlossaryEntries().size(), is(1));
+            
+            // Glossary Entry
+            GlossaryEntry entry = glossary.getGlossaryEntries().get(0);
+            assertThat( entry.getSourcereference(), is("source reference") );
+            assertThat( entry.getSrcLang(), is(LocaleId.EN_US) );
+            assertThat( entry.getGlossaryTerms().size(), is(3) );
+            
+            // Glossary Terms
+            GlossaryTerm term = entry.getGlossaryTerms().get(0);
+            assertThat(term.getLocale(), is(LocaleId.EN_US));
+            assertThat(term.getComments().size(), is(1));
+            assertThat(term.getComments().get(0), is("test data comment 1"));
+            assertThat(term.getContent(), is("test data content 1 (source lang)"));
+            
+            term = entry.getGlossaryTerms().get(1);
+            assertThat(term.getLocale(), is(LocaleId.DE));
+            assertThat(term.getComments().size(), is(1));
+            assertThat(term.getComments().get(0), is("test data comment 2"));
+            assertThat(term.getContent(), is("test data content 2"));
+            
+            term = entry.getGlossaryTerms().get(2);
+            assertThat(term.getLocale(), is(LocaleId.ES));
+            assertThat(term.getComments().size(), is(1));
+            assertThat(term.getComments().get(0), is("test data comment 3"));
+            assertThat(term.getContent(), is("test data content 3"));
          }
       }.run();
    }
@@ -80,7 +112,35 @@ public class GlossaryRestTest extends ZanataRawRestTest
          protected void onResponse(EnhancedMockHttpServletResponse response)
          {
             assertThat(response.getStatus(), is(200));
-            GlossaryRestTest.super.assertContentSameAsResource(response.getContentAsString(), "rest/glossary/get.json");
+            assertJsonUnmarshal(response, Glossary.class);
+            
+            Glossary glossary = jsonUnmarshal(response, Glossary.class);
+            assertThat(glossary.getGlossaryEntries().size(), is(1));
+            
+            // Glossary Entry
+            GlossaryEntry entry = glossary.getGlossaryEntries().get(0);
+            assertThat( entry.getSourcereference(), is("source reference") );
+            assertThat( entry.getSrcLang(), is(LocaleId.EN_US) );
+            assertThat( entry.getGlossaryTerms().size(), is(3) );
+            
+            // Glossary Terms
+            GlossaryTerm term = entry.getGlossaryTerms().get(0);
+            assertThat(term.getLocale(), is(LocaleId.EN_US));
+            assertThat(term.getComments().size(), is(1));
+            assertThat(term.getComments().get(0), is("test data comment 1"));
+            assertThat(term.getContent(), is("test data content 1 (source lang)"));
+            
+            term = entry.getGlossaryTerms().get(1);
+            assertThat(term.getLocale(), is(LocaleId.DE));
+            assertThat(term.getComments().size(), is(1));
+            assertThat(term.getComments().get(0), is("test data comment 2"));
+            assertThat(term.getContent(), is("test data content 2"));
+            
+            term = entry.getGlossaryTerms().get(2);
+            assertThat(term.getLocale(), is(LocaleId.ES));
+            assertThat(term.getComments().size(), is(1));
+            assertThat(term.getComments().get(0), is("test data comment 3"));
+            assertThat(term.getContent(), is("test data content 3"));
          }
       }.run();
    }
@@ -106,13 +166,15 @@ public class GlossaryRestTest extends ZanataRawRestTest
    @Test
    public void putXml() throws Exception
    {
+      final Glossary glossary = this.getSampleGlossary();
+      
       new ResourceRequest(sharedEnvironment, Method.PUT, "/restv1/glossary")
       {
          @Override
          protected void prepareRequest(EnhancedMockHttpServletRequest request)
          {
             request.setContentType(MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML);
-            request.setContent( getResourceAsString("rest/glossary/put.xml").getBytes() );
+            request.setContent( jaxbMarhsal(glossary).getBytes() );
          }
 
          @Override
@@ -126,13 +188,15 @@ public class GlossaryRestTest extends ZanataRawRestTest
    /*@Test
    public void putJson() throws Exception
    {
+      final Glossary glossary = this.getSampleGlossary();
+   
       new ResourceRequest(sharedEnvironment, Method.PUT, "/restv1/glossary")
       {
          @Override
          protected void prepareRequest(EnhancedMockHttpServletRequest request)
          {
             request.setContentType(MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON);
-            request.setContent( getResourceAsString("rest/glossary/put.json").getBytes() );
+            request.setContent( jsonMarshal(glossary).getBytes() );
          }
 
          @Override
@@ -159,6 +223,49 @@ public class GlossaryRestTest extends ZanataRawRestTest
             assertThat(response.getStatus(), is(200)); // Ok
          }
       }.run();
+   }
+   
+   private Glossary getSampleGlossary()
+   {
+      Glossary glossary = new Glossary();
+      GlossaryEntry glossaryEntry1 = new GlossaryEntry();
+      glossaryEntry1.setSrcLang(LocaleId.EN_US);
+      glossaryEntry1.setSourcereference("TEST SOURCE REF DATA");
+      
+      GlossaryTerm glossaryTerm1 = new GlossaryTerm();
+      glossaryTerm1.setLocale(LocaleId.EN_US);
+      glossaryTerm1.setContent("TEST DATA 1 EN_US");
+      glossaryTerm1.getComments().add("COMMENT 1");
+
+      GlossaryTerm glossaryTerm2 = new GlossaryTerm();
+      glossaryTerm2.setLocale(LocaleId.DE);
+      glossaryTerm2.setContent("TEST DATA 2 DE");
+      glossaryTerm2.getComments().add("COMMENT 2");
+
+      glossaryEntry1.getGlossaryTerms().add(glossaryTerm1);
+      glossaryEntry1.getGlossaryTerms().add(glossaryTerm2);
+
+      GlossaryEntry glossaryEntry2 = new GlossaryEntry();
+      glossaryEntry2.setSrcLang(LocaleId.EN_US);
+      glossaryEntry2.setSourcereference("TEST SOURCE REF DATA2");
+
+      GlossaryTerm glossaryTerm3 = new GlossaryTerm();
+      glossaryTerm3.setLocale(LocaleId.EN_US);
+      glossaryTerm3.setContent("TEST DATA 3 EN_US");
+      glossaryTerm3.getComments().add("COMMENT 3");
+
+      GlossaryTerm glossaryTerm4 = new GlossaryTerm();
+      glossaryTerm4.setLocale(LocaleId.DE);
+      glossaryTerm4.setContent("TEST DATA 4 DE");
+      glossaryTerm4.getComments().add("COMMENT 4");
+
+      glossaryEntry2.getGlossaryTerms().add(glossaryTerm3);
+      glossaryEntry2.getGlossaryTerms().add(glossaryTerm4);
+
+      glossary.getGlossaryEntries().add(glossaryEntry1);
+      glossary.getGlossaryEntries().add(glossaryEntry2);
+      
+      return glossary;
    }
 
 }

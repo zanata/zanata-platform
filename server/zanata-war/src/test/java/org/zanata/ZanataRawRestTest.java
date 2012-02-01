@@ -20,17 +20,16 @@
  */
 package org.zanata;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.codehaus.jackson.JsonParseException;
@@ -38,7 +37,6 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
 import org.jboss.seam.mock.ResourceRequestEnvironment;
-import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 
 public abstract class ZanataRawRestTest extends ZanataDBUnitSeamTest
@@ -73,43 +71,6 @@ public abstract class ZanataRawRestTest extends ZanataDBUnitSeamTest
             return new HashMap<String, Object>();
          }
       };
-   }
-   
-   protected static String getResourceAsString(String resource)
-   {
-      // Read the body file into memory
-      InputStream st = ZanataRawRestTest.class.getClassLoader().getResourceAsStream( resource );
-      BufferedReader reader = new BufferedReader( new InputStreamReader(st) );
-      StringBuilder body = new StringBuilder();
-      String line;
-      try
-      {
-         while( (line = reader.readLine()) != null )
-         {
-            body.append(line);
-         }
-      }
-      catch (IOException e)
-      {
-         throw new RuntimeException(e);
-      }
-      
-      return body.toString();
-   }
-   
-   protected static void assertContentSameAsResource(String content, String resource)
-   {
-      String resourceXml = getResourceAsString(resource);
-      
-      // Turn both to single lines and compare
-      try
-      {
-         Assert.assertEquals( toSingleLine(content) , toSingleLine(resourceXml));
-      }
-      catch (IOException e)
-      {
-         throw new AssertionError(e);
-      }      
    }
    
    protected static void assertJaxbUnmarshal( EnhancedMockHttpServletResponse response, Class<?> jaxbType )
@@ -213,17 +174,47 @@ public abstract class ZanataRawRestTest extends ZanataDBUnitSeamTest
       }
    }
    
-   private static String toSingleLine( String multiLineString ) throws IOException
+   protected static String jaxbMarhsal( Object jaxbObject )
    {
-      BufferedReader br = new BufferedReader(new StringReader(multiLineString));
-      String line;
-      StringBuilder multiLine = new StringBuilder();
-
-      while((line=br.readLine())!= null){
-         multiLine.append(line.trim().replaceAll("\n", "").replaceAll("\t", ""));
+      JAXBContext jc;
+      try
+      {
+         jc = JAXBContext.newInstance(jaxbObject.getClass());
+         Marshaller m = jc.createMarshaller();
+         //m.setEventHandler( new javax.xml.bind.helpers.DefaultValidationEventHandler() );
+         StringWriter sw = new StringWriter();
+         m.marshal(jaxbObject, sw);
+         return sw.toString();
       }
-      
-      return multiLine.toString();
+      catch (JAXBException e)
+      {
+         throw new AssertionError(e);
+      }
+   }
+   
+   protected static String jsonMarshal( Object jsonObject )
+   {
+      ObjectMapper mapper = new ObjectMapper();
+      try
+      {
+         return mapper.writeValueAsString( jsonObject );
+      }
+      catch (JsonParseException e)
+      {
+         throw new AssertionError(e);
+      }
+      catch (JsonMappingException e)
+      {
+         throw new AssertionError(e);
+      }
+      catch (IllegalStateException e)
+      {
+         throw new AssertionError(e);
+      }
+      catch (IOException e)
+      {
+         throw new AssertionError(e);
+      }
    }
    
 }
