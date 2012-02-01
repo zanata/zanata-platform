@@ -220,6 +220,8 @@ public class ProjectService implements ProjectResource
    {
       to.setName(from.getName());
       to.setDescription(from.getDescription());
+      // TODO Currently all Projects are created as Current
+      //to.setStatus(from.getStatus());
    }
 
    public static void transfer(HProject from, Project to)
@@ -227,6 +229,7 @@ public class ProjectService implements ProjectResource
       to.setId(from.getSlug());
       to.setName(from.getName());
       to.setDescription(from.getDescription());
+      to.setStatus(from.getStatus());
    }
 
    public static Project toResource(HProject hProject, MediaType mediaType)
