@@ -111,8 +111,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onSuccess(GetTranslatorListResult result)
          {
-            String title = workspaceUsersPresenter.getDisplay().updateUserList(result.getTranslatorList());
-            display.setParticipantsTitle(title);
+            workspaceUsersPresenter.setUserList(result.getTranslatorList());
+            display.setParticipantsTitle(messages.nUsersOnline(result.getTranslatorList().size()));
          }
       });
    }

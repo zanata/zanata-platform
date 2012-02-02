@@ -14,10 +14,11 @@ import com.google.inject.Inject;
 public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPresenter.Display>
 {
 
-
    public interface Display extends WidgetDisplay
    {
-      String updateUserList(ArrayList<Person> userList);
+      void clearUserList();
+
+      void addUser(String name);
    }
 
    @Inject
@@ -35,14 +36,21 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
    protected void onUnbind()
    {
       // TODO Auto-generated method stub
-
    }
 
    @Override
    public void onRevealDisplay()
    {
       // TODO Auto-generated method stub
+   }
 
+   public void setUserList(ArrayList<Person> users)
+   {
+      display.clearUserList();
+      for (Person p : users)
+      {
+         display.addUser(p.getName());
+      }
    }
 
 }

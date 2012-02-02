@@ -1,10 +1,6 @@
 package org.zanata.webtrans.client.view;
 
-import java.util.ArrayList;
-
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
-import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.shared.model.Person;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -14,7 +10,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
 
 public class WorkspaceUsersView extends Composite implements WorkspaceUsersPresenter.Display
 {
@@ -28,12 +23,8 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    @UiField
    VerticalPanel userListPanel;
 
-   private final WebTransMessages messages;
-
-   @Inject
-   public WorkspaceUsersView(WebTransMessages messages)
+   public WorkspaceUsersView()
    {
-      this.messages = messages;
       initWidget(uiBinder.createAndBindUi(this));
    }
 
@@ -44,20 +35,15 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    }
 
    @Override
-   public String updateUserList(ArrayList<Person> userList)
+   public void clearUserList()
    {
-      int existingCount = userListPanel.getWidgetCount();
-      for (int i = 0; i < existingCount; i++)
-      {
-         userListPanel.remove(0);
-      }
+      userListPanel.clear();
+   }
 
-      for (int i = 0; i < userList.size(); i++)
-      {
-         Label item = new Label(userList.get(i).getName());
-         userListPanel.add(item);
-      }
-
-      return messages.nUsersOnline(userList.size());
+   @Override
+   public void addUser(String name)
+   {
+      Label item = new Label(name);
+      userListPanel.add(item);
    }
 }
