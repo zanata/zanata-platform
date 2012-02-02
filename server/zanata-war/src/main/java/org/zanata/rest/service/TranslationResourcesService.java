@@ -409,7 +409,6 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       validateExtensions();
 
       log.debug("resource details: {0}", resource);
-      boolean validResourceEnc = this.resourceUtils.validateResourceEncoding(resource);
       
       HDocument document = documentDAO.getByDocId(hProjectIteration, id);
       HLocale hLocale = validateSourceLocale(resource.getLang());
@@ -458,7 +457,6 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
 
       changed |= resourceUtils.transferFromResource(resource, document, extensions, hLocale, nextDocRev);
 
-
       if (changed)
       {
          document = documentDAO.makePersistent(document);
@@ -466,20 +464,13 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
          etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
       }
 
-
       if (copytrans && nextDocRev == 1)
       {
          copyClosestEquivalentTranslation(document.getId(), resource.getName(), projectSlug, iterationSlug);
       }
       
-      if( !validResourceEnc )
-      {
-         response.entity("warning: potentially incompatible character encoding.");
-      }
-            
       log.debug("put resource successfully");
       return response.tag(etag).build();
-
    }
 
    @Override

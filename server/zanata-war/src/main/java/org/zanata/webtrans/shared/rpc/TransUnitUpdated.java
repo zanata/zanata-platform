@@ -36,6 +36,7 @@ public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedDa
    private int wordCount;
    private ContentState previousStatus;
    private TransUnit tu;
+   private String username;
 
 
    // for ExposeEntity
@@ -43,12 +44,13 @@ public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedDa
    {
    }
 
-   public TransUnitUpdated(DocumentId documentId, int wordCount, ContentState previousStatus, TransUnit tu)
+   public TransUnitUpdated(DocumentId documentId, int wordCount, ContentState previousStatus, TransUnit tu, String username)
    {
       this.documentId = documentId;
       this.wordCount = wordCount;
       this.previousStatus = previousStatus;
       this.tu = tu;
+      this.username = username;
    }
 
    @Override
@@ -86,4 +88,9 @@ public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedDa
       return tu;
    }
 
+   @Override
+   public String getUsername()
+   {
+      return username;
+   }
 }

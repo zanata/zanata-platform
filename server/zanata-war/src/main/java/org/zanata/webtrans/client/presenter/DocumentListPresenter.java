@@ -387,7 +387,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
             // re-use these stats for the project stats
             eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
-            Log.info("Time to calculate project stats: " + String.valueOf(System.currentTimeMillis() - start));
+            Log.info("Time to calculate project stats: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
          }
       });
    }

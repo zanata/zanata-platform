@@ -170,4 +170,45 @@
   	last_modified_by_id="2"
   	comment_id="3"
   />
+  
+  <!-- HDocument 
+  	   Single Text Flow and Translation -->
+  	   
+  <HDocument
+    id="3"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
+    contentType="text/plain"
+    docId="my/path/document-3.txt"
+    locale="4"
+    name="document-3.txt"
+    path="my/path"
+    project_iteration_id="1"
+    revision="1"
+    obsolete="0"
+  />
+  <HTextFlow 
+  	id="5"
+  	document_id="3"
+  	resId="tf1"
+  	revision="1"
+  	pos="0"
+    obsolete="0"
+  	content="mssgId4"
+  	wordCount="1"
+  />
+  <HTextFlowTarget 
+  	id="8"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
+  	content="mssgTrans4"
+  	locale="4"
+  	state="1"
+  	tf_id="5"
+  	tf_revision="1"
+  	last_modified_by_id="2"
+  />
+  
 </dataset>

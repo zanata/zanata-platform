@@ -26,26 +26,6 @@ public class TransUnit implements IsSerializable, Serializable
    private String lastModifiedTime;
    private int rowIndex;
 
-   public String getLastModifiedBy()
-   {
-      return lastModifiedBy;
-   }
-
-   public void setLastModifiedBy(String lastModifiedBy)
-   {
-      this.lastModifiedBy = lastModifiedBy;
-   }
-
-   public String getLastModifiedTime()
-   {
-      return lastModifiedTime;
-   }
-
-   public void setLastModifiedTime(String lastModifiedTime)
-   {
-      this.lastModifiedTime = lastModifiedTime;
-   }
-
    // for GWT
    @SuppressWarnings("unused")
    private TransUnit()
@@ -65,16 +45,6 @@ public class TransUnit implements IsSerializable, Serializable
       this.lastModifiedTime = lastModifiedTime;
       this.msgContext = msgContext;
       this.rowIndex = rowIndex;
-   }
-
-   public TransUnit(TransUnit other)
-   {
-      this(other.id, other.resId, other.localeId, other.source, other.sourceComment, other.target, other.status, other.lastModifiedBy, other.lastModifiedTime, other.msgContext, other.rowIndex);
-   }
-
-   public static final TransUnit copy(TransUnit other)
-   {
-      return new TransUnit(other);
    }
    
    public TransUnitId getId()
@@ -150,6 +120,26 @@ public class TransUnit implements IsSerializable, Serializable
    public void setRowIndex(int rowIndex)
    {
       this.rowIndex = rowIndex;
+   }
+
+   public String getLastModifiedBy()
+   {
+      return lastModifiedBy;
+   }
+
+   public void setLastModifiedBy(String lastModifiedBy)
+   {
+      this.lastModifiedBy = lastModifiedBy;
+   }
+
+   public String getLastModifiedTime()
+   {
+      return lastModifiedTime;
+   }
+
+   public void setLastModifiedTime(String lastModifiedTime)
+   {
+      this.lastModifiedTime = lastModifiedTime;
    }
 
 }

@@ -34,6 +34,7 @@ public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler
    private final ContentState previousStatus;
    private int wordCount;
    private TransUnit tu;
+   private String username;
 
 
    /**
@@ -61,6 +62,7 @@ public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler
       this.previousStatus = data.getPreviousStatus();
       this.wordCount = data.getWordCount();
       this.tu = data.getTransUnit();
+      this.username = data.getUsername();
    }
 
    @Override
@@ -81,7 +83,6 @@ public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler
       return documentId;
    }
 
-
    @Override
    public ContentState getPreviousStatus()
    {
@@ -98,6 +99,12 @@ public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler
    public TransUnit getTransUnit()
    {
       return this.tu;
+   }
+
+   @Override
+   public String getUsername()
+   {
+      return username;
    }
 
 }

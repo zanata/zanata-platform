@@ -33,13 +33,21 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
 
    public ZanataProxyFactory(URI base, String username, String apiKey, VersionInfo clientApiVersion)
    {
-      this(base, username, apiKey, null, clientApiVersion);
+      this(base, username, apiKey, null, clientApiVersion, false);
+   }
+   
+   public ZanataProxyFactory(URI base, String username, String apiKey, VersionInfo clientApiVersion, boolean logHttp)
+   {
+      this(base, username, apiKey, null, clientApiVersion, logHttp);
    }
 
-   public ZanataProxyFactory(URI base, String username, String apiKey, ClientExecutor executor, VersionInfo clientApiVersion)
+   public ZanataProxyFactory(URI base, String username, String apiKey, ClientExecutor executor, VersionInfo clientApiVersion,
+                             boolean logHttp)
    {
       crf = new ClientRequestFactory(executor, null, fixBase(base));
+      registerPrefixInterceptor(new TraceDebugInterceptor(logHttp));
       registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey, clientApiVersion.getVersionNo()));
+      
       String clientVer = clientApiVersion.getVersionNo();
       String clientTimestamp = clientApiVersion.getBuildTimeStamp();
       IVersionResource iversion = createIVersionResource();

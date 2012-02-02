@@ -26,6 +26,7 @@ import static org.hamcrest.Matchers.is;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response.Status;
 
+import org.dbunit.operation.DatabaseOperation;
 import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
 import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
 import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
@@ -33,6 +34,7 @@ import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
 import org.testng.annotations.Test;
 import org.zanata.ZanataRawRestTest;
 import org.zanata.rest.MediaTypes;
+import org.zanata.rest.dto.Account;
 
 public class AccountRestTest extends ZanataRawRestTest
 {
@@ -40,6 +42,7 @@ public class AccountRestTest extends ZanataRawRestTest
    @Override
    protected void prepareDBUnitOperations()
    {
+      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
    
    @Test
@@ -76,7 +79,14 @@ public class AccountRestTest extends ZanataRawRestTest
          protected void onResponse(EnhancedMockHttpServletResponse response)
          {
             assertThat(response.getStatus(), is(200));
-            assertContentSameAsResource(response.getContentAsString(), "rest/account/get.xml");
+            assertJaxbUnmarshal(response, Account.class);
+            
+            Account account = jaxbUnmarshal(response, Account.class);
+            assertThat(account.getUsername(), is("admin"));
+            assertThat(account.getPasswordHash(), is("Eyox7xbNQ09MkIfRyH+rjg=="));
+            assertThat(account.getEmail(), is("root@localhost"));
+            assertThat(account.getApiKey(), is("b6d7044e9ee3b2447c28fb7c50d86d98"));
+            assertThat(account.getRoles().size(), is(1)); // 1 roles
          }
       }.run();
    }
@@ -96,7 +106,14 @@ public class AccountRestTest extends ZanataRawRestTest
          protected void onResponse(EnhancedMockHttpServletResponse response)
          {
             assertThat(response.getStatus(), is(200));
-            assertContentSameAsResource(response.getContentAsString(), "rest/account/get.json");
+            assertJsonUnmarshal(response, Account.class);
+            
+            Account account = jsonUnmarshal(response, Account.class);
+            assertThat(account.getUsername(), is("admin"));
+            assertThat(account.getPasswordHash(), is("Eyox7xbNQ09MkIfRyH+rjg=="));
+            assertThat(account.getEmail(), is("root@localhost"));
+            assertThat(account.getApiKey(), is("b6d7044e9ee3b2447c28fb7c50d86d98"));
+            assertThat(account.getRoles().size(), is(1)); // 1 role
          }
       }.run();
    }
@@ -104,13 +121,16 @@ public class AccountRestTest extends ZanataRawRestTest
    @Test
    public void xmlPut() throws Exception
    {
+      final Account account = new Account("test@testing.com", "Test Account", "testuser", "Eyox7xbNQ09MkIfRyH+rjg==");
+      account.setEnabled(false);
+      
       new ResourceRequest(sharedEnvironment, Method.PUT, "/restv1/accounts/u/testuser")
       {
          @Override
          protected void prepareRequest(EnhancedMockHttpServletRequest request)
          {
             request.setContentType(MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
-            request.setContent(getResourceAsString("rest/account/put.xml").getBytes());
+            request.setContent( jaxbMarhsal(account).getBytes() );
          }
 
          @Override
@@ -124,13 +144,16 @@ public class AccountRestTest extends ZanataRawRestTest
    @Test
    public void jsonPut() throws Exception
    {
+      final Account account = new Account("test@testing.com", "Test Account", "testuser", "Eyox7xbNQ09MkIfRyH+rjg==");
+      account.setEnabled(false);
+      
       new ResourceRequest(sharedEnvironment, Method.PUT, "/restv1/accounts/u/testuser")
       {
          @Override
          protected void prepareRequest(EnhancedMockHttpServletRequest request)
          {
             request.setContentType(MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
-            request.setContent(getResourceAsString("rest/account/put.json").getBytes());
+            request.setContent(jsonMarshal(account).getBytes());
          }
 
          @Override
@@ -144,13 +167,16 @@ public class AccountRestTest extends ZanataRawRestTest
    @Test
    public void unauthorizedPut() throws Exception
    {
+      final Account account = new Account("test@testing.com", "Test Account", "testuser", "Eyox7xbNQ09MkIfRyH+rjg==");
+      account.setEnabled(false);
+      
       new ResourceRequest(unauthorizedEnvironment, Method.PUT, "/restv1/accounts/u/testuser")
       {
          @Override
          protected void prepareRequest(EnhancedMockHttpServletRequest request)
          {
             request.setContentType(MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
-            request.setContent(getResourceAsString("rest/account/put.json").getBytes());
+            request.setContent(jsonMarshal(account).getBytes());
          }
 
          @Override

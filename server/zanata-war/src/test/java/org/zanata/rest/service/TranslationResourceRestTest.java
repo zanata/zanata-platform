@@ -747,22 +747,8 @@ public class TranslationResourceRestTest extends ZanataRestTest
       assertThat(response.getStatus(), is(404));
    }
    
-   @Test
-   public void putUnexpectedEncodingDocument() throws Exception
-   {
-      Resource doc = this.createSourceDoc("DocumentWithUnexpectedEncoding", true);
-      ResourceTestUtil.addPoHeader(doc, "Content-Type", "application/x-publican; charset=UNACCEPTABLE");
-      ClientResponse<String> response = this.putResource(doc, "gettext");
-      assertThat(response.getEntity(), containsString("warning"));
-   }
-
    // END of tests
    
-   private ClientResponse<String> putResource( Resource res, String extensions )
-   {
-      return transResource.putResource(res.getName(), res, new StringSet( extensions ));
-   }
-
    private void expectDocs(boolean checkRevs, boolean checkLinksIgnored, Resource... docs)
    {
       expectResourceMetas(checkRevs, docs);
