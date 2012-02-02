@@ -104,13 +104,14 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
             }
 
             // if filter view, hide model navigation
-            if (event.isFilterTranslated() || event.isFilterNeedReview() || event.isFilterUntranslated())
+            boolean showingFullList = (event.isFilterTranslated() == event.isFilterNeedReview()) && (event.isFilterTranslated() == event.isFilterUntranslated());
+            if (showingFullList)
             {
-               editorOptionsPanel.setNavOptionVisible(false);
+               editorOptionsPanel.setNavOptionVisible(true);
             }
             else
             {
-               editorOptionsPanel.setNavOptionVisible(true);
+               editorOptionsPanel.setNavOptionVisible(false);
             }
          }
       }));

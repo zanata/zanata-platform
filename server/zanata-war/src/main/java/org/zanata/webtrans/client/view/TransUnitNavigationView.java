@@ -160,7 +160,7 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
    }
 
    @Override
-   public void setModelNavVisible(boolean visible)
+   public void setModalNavVisible(boolean visible)
    {
       prevState.setVisible(visible);
       nextState.setVisible(visible);
