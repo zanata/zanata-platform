@@ -37,9 +37,9 @@ import com.google.gwt.user.client.ui.Widget;
 public class ValidationMessagePanel extends Composite
 {
 
-   private static ValidationMessagePanelUiBinder uiBinder = GWT.create(ValidationMessagePanelUiBinder.class);
+   private static UI uiBinder = GWT.create(UI.class);
 
-   interface ValidationMessagePanelUiBinder extends UiBinder<Widget, ValidationMessagePanel>
+   interface UI extends UiBinder<Widget, ValidationMessagePanel>
    {
    }
 
@@ -47,7 +47,7 @@ public class ValidationMessagePanel extends Composite
    {
       String header();
 
-      String header_clickable();
+      String headerClickable();
    }
 
    @UiField
@@ -136,7 +136,7 @@ public class ValidationMessagePanel extends Composite
    {
       this.collapsible = collapsible;
       if(collapsible){
-         headerLabel.setStyleName(style.header_clickable());
+         headerLabel.setStyleName(style.headerClickable());
       }
       else
       {
