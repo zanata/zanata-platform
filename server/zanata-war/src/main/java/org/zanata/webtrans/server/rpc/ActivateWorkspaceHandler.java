@@ -20,11 +20,6 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.security.Principal;
-import java.security.acl.Group;
-import java.util.Enumeration;
-import java.util.HashSet;
-
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -44,11 +39,9 @@ import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.auth.Identity;
-import org.zanata.webtrans.shared.auth.Permission;
 import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
 import org.zanata.webtrans.shared.rpc.EnterWorkspace;
@@ -81,45 +74,8 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
       EnterWorkspace event = new EnterWorkspace(new PersonId(ZanataIdentity.instance().getPrincipal().getName()));
       workspace.publish(event);
 
-      HashSet<String> rolesSet = getRolesSet();
-      Identity identity = new Identity(retrieveSessionId(), retrievePerson(), getPermission(workspace.getWorkspaceContext(), rolesSet), rolesSet);
-
+      Identity identity = new Identity(retrieveSessionId(), retrievePerson());
       return new ActivateWorkspaceResult(workspace.getWorkspaceContext(), identity);
-   }
-
-   private HashSet<Permission> getPermission(WorkspaceContext workspaceContext, HashSet<String> rolesSet)
-   {
-      HashSet<Permission> permissionSet = new HashSet<Permission>();
-
-      if (workspaceContext.isReadOnly() && !rolesSet.contains("admin"))
-      {
-         permissionSet.add(Permission.Read);
-      }
-      else
-      {
-         permissionSet.add(Permission.Edit);
-      }
-
-      return permissionSet;
-   }
-
-   private HashSet<String> getRolesSet()
-   {
-      HashSet<String> rolesSet = new HashSet<String>();
-      for (Group sg : ZanataIdentity.instance().getSubject().getPrincipals(Group.class))
-      {
-         if (ZanataIdentity.ROLES_GROUP.equals(sg.getName()))
-         {
-            Enumeration e = sg.members();
-            while (e.hasMoreElements())
-            {
-               Principal member = (Principal) e.nextElement();
-               rolesSet.add(member.getName());
-            }
-            break;
-         }
-      }
-      return rolesSet;
    }
 
    @Override

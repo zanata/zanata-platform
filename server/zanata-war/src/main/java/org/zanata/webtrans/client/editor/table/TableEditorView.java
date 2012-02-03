@@ -29,12 +29,9 @@ import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.ui.LoadingPanel;
-import org.zanata.webtrans.shared.auth.Identity;
-import org.zanata.webtrans.shared.auth.Permission;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -49,7 +46,6 @@ import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
 import com.google.gwt.gen2.table.event.client.RowSelectionEvent;
 import com.google.gwt.gen2.table.event.client.RowSelectionHandler;
 import com.google.gwt.gen2.table.event.client.TableEvent.Row;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -68,18 +64,18 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    }
 
    @Inject
-   public TableEditorView(NavigationMessages messages, EventBus eventBus, Identity identity, final Resources resources)
+   public TableEditorView(NavigationMessages messages, EventBus eventBus, WorkspaceContext workspaceContext, final Resources resources)
    {
-      this(messages, new RedirectingTableModel<TransUnit>(), eventBus, identity);
+      this(messages, new RedirectingTableModel<TransUnit>(), eventBus, workspaceContext);
       loadingPanel = new LoadingPanel(resources);
    }
 
-   public TableEditorView(NavigationMessages messages, RedirectingTableModel<TransUnit> tableModel, EventBus eventBus, Identity identity)
+   private TableEditorView(NavigationMessages messages, RedirectingTableModel<TransUnit> tableModel, EventBus eventBus, WorkspaceContext workspaceContext)
    {
-      this(new RedirectingCachedTableModel<TransUnit>(tableModel), new TableEditorTableDefinition(messages, new RedirectingCachedTableModel<TransUnit>(tableModel), eventBus, (identity.hasPermission(Permission.Read)) ? true : false));
+      this(new RedirectingCachedTableModel<TransUnit>(tableModel), new TableEditorTableDefinition(messages, new RedirectingCachedTableModel<TransUnit>(tableModel), eventBus, workspaceContext.isReadOnly()));
    }
 
-   public TableEditorView(RedirectingCachedTableModel<TransUnit> tableModel, TableEditorTableDefinition tableDefinition)
+   private TableEditorView(RedirectingCachedTableModel<TransUnit> tableModel, TableEditorTableDefinition tableDefinition)
    {
       super(tableModel, tableDefinition);
       this.cachedTableModel = tableModel;
