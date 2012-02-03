@@ -47,14 +47,23 @@ public class ConfigurationServiceImpl implements ConfigurationService
    private ApplicationConfiguration applicationConfiguration;
 
    @Override
-   public String getConfigurationFileContents(String projectSlug, String iterationSlug)
+   public String getConfigurationFileContents(String projectSlug, String iterationSlug, String projectType)
    {
       StringBuilder var = new StringBuilder(
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<config xmlns=\"" + Namespaces.ZANATA_CONFIG + "\">\n");
       var.append("  <url>" + applicationConfiguration.getServerPath() + "/</url>\n");
       var.append("  <project>" + projectSlug + "</project>\n");
-      var.append("  <project-version>" + iterationSlug + "</project-version>\n\n");
+      var.append("  <project-version>" + iterationSlug + "</project-version>\n");
+      if (projectType != null)
+      {
+         var.append("  <project-type>" + projectType + "</project-type>\n");
+      }
+      else
+      {
+         var.append("  <!--<project-type>podir|properties|gettext|xliff|utf8properties</project-type>-->\n");
+      }
+      var.append("\n");
 
       List<HLocale> locales = localeServiceImpl.getSupportedLangugeByProjectIteration(projectSlug, iterationSlug);
       HLocale source = localeServiceImpl.getSourceLocale(projectSlug, iterationSlug);

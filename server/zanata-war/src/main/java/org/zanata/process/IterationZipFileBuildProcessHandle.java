@@ -31,6 +31,7 @@ public class IterationZipFileBuildProcessHandle extends ProcessHandle
 
    private String projectSlug;
    private String iterationSlug;
+   private String projectType;
    private String localeId; 
    private String initiatingUserName;
    private String downloadId;
@@ -55,6 +56,16 @@ public class IterationZipFileBuildProcessHandle extends ProcessHandle
       this.iterationSlug = iterationSlug;
    }
    
+   public String getProjectType()
+   {
+      return projectType;
+   }
+
+   public void setProjectType(String projectType)
+   {
+      this.projectType = projectType;
+   }
+
    public String getLocaleId()
    {
       return localeId;

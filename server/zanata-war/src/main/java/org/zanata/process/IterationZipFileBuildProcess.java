@@ -31,7 +31,6 @@ import java.util.zip.ZipOutputStream;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.async.Asynchronous;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
@@ -53,16 +52,8 @@ import org.zanata.service.FileSystemService;
  */
 @Name("iterationZipFileBuildProcess")
 @AutoCreate
-public class IterationZipFileBuildProcess extends BackgroundProcess
+public class IterationZipFileBuildProcess extends BackgroundProcess<IterationZipFileBuildProcessHandle>
 {   
-   private String projectSlug;
-   
-   private String iterationSlug;
-   
-   private String localeId;
-   
-   private String userName;
-   
    @In
    private DocumentDAO documentDAO;
    
@@ -82,12 +73,22 @@ public class IterationZipFileBuildProcess extends BackgroundProcess
    private ConfigurationService configurationServiceImpl;
 
    @Override
-   protected void runProcess() throws Exception
+   protected void runProcess(IterationZipFileBuildProcessHandle zipHandle) throws Exception
    {
-      final List<HDocument> allIterationDocs = this.documentDAO.getAllByProjectIteration(this.projectSlug, this.iterationSlug);
-      this.processHandle.setMaxProgress( allIterationDocs.size() );
+      final String projectSlug = zipHandle.getProjectSlug();
+      final String iterationSlug = zipHandle.getIterationSlug();
+      final String projectType = "podir";
+      final String localeId = zipHandle.getLocaleId();
+      final String userName = zipHandle.getInitiatingUserName();
+
+      final List<HDocument> allIterationDocs = this.documentDAO.getAllByProjectIteration(projectSlug, iterationSlug);
+      zipHandle.setMaxProgress(allIterationDocs.size() + 1);
       
-      final HLocale hLocale = this.localeDAO.findByLocaleId(new LocaleId(this.localeId));
+      final String projectDirectory = projectSlug + "-" + iterationSlug + "/";
+      final HLocale hLocale = this.localeDAO.findByLocaleId(new LocaleId(localeId));
+      final String mappedLocale = hLocale.getLocaleId().getId();
+      final String localeDirectory = projectDirectory + mappedLocale + "/";
+
       final File downloadFile = this.fileSystemServiceImpl.createDownloadStagingFile("zip");
       final FileOutputStream output = new FileOutputStream( downloadFile );
       final ZipOutputStream zipOutput = new ZipOutputStream(output);
@@ -100,20 +101,23 @@ public class IterationZipFileBuildProcess extends BackgroundProcess
       
       // Generate the download descriptor file
       String downloadId = this.fileSystemServiceImpl.createDownloadDescriptorFile(downloadFile, 
-            this.projectSlug + "_" + this.iterationSlug + "_" + this.localeId + ".zip",
-            this.userName);
-      ((IterationZipFileBuildProcessHandle)super.processHandle).setDownloadId( downloadId );
+            projectSlug + "_" + iterationSlug + "_" + localeId + ".zip",
+            userName);
+      zipHandle.setDownloadId(downloadId);
       
-      // Add the config file at the root of the archive
-      zipOutput.putNextEntry( new ZipEntry( this.configurationServiceImpl.getConfigurationFileName() ) );
+      // Add the config file at the root of the project directory
+      String configFilename = projectDirectory + this.configurationServiceImpl.getConfigurationFileName();
+      zipOutput.putNextEntry(new ZipEntry(configFilename));
       zipOutput.write( 
-            this.configurationServiceImpl.getConfigurationFileContents(this.projectSlug, this.iterationSlug).getBytes() );
+            this.configurationServiceImpl.getConfigurationFileContents(projectSlug, iterationSlug, projectType).getBytes());
       zipOutput.closeEntry();
-      
-      for( int i=0; i<allIterationDocs.size(); i++ )
+      zipHandle.incrementProgress(1);
+
+
+      for (HDocument document : allIterationDocs)
       {
          // Stop the process if signaled to do so
-         if( this.processHandle.getShouldStop() )
+         if (zipHandle.getShouldStop())
          {
             zipOutput.close();
             downloadFile.delete();
@@ -121,7 +125,6 @@ public class IterationZipFileBuildProcess extends BackgroundProcess
             return;
          }
             
-         HDocument document = allIterationDocs.get(i);
          TranslationsResource translationResource = new TranslationsResource();
          resourceUtils.transferToTranslationsResource(
                translationResource, document, hLocale, extensions, 
@@ -129,33 +132,15 @@ public class IterationZipFileBuildProcess extends BackgroundProcess
 
          Resource res = this.resourceUtils.buildResource( document );
          
-         zipOutput.putNextEntry( new ZipEntry( document.getDocId() + ".po" ) );
+         String filename = localeDirectory + document.getDocId() + ".po";
+         zipOutput.putNextEntry(new ZipEntry(filename));
          poWriter.writePo(zipOutput, "UTF-8", res, translationResource);
          zipOutput.closeEntry();
-         this.processHandle.incrementProgress(1);
+         zipHandle.incrementProgress(1);
       }
       
       zipOutput.flush();
       zipOutput.close();
-   }
-
-   @Override
-   @Asynchronous
-   public void startProcess(ProcessHandle handle)
-   {
-      if( !(handle instanceof IterationZipFileBuildProcessHandle) )
-      {
-         throw new RuntimeException(this.getClass().getName() + " can only be started with handles of type " +
-               IterationZipFileBuildProcessHandle.class.getName() );
-      }
-      
-      IterationZipFileBuildProcessHandle zipHandle = (IterationZipFileBuildProcessHandle)handle;
-      
-      this.projectSlug = zipHandle.getProjectSlug();
-      this.iterationSlug = zipHandle.getIterationSlug();
-      this.localeId = zipHandle.getLocaleId();
-      this.userName = zipHandle.getInitiatingUserName();
-      super.startProcess(handle);
    }
 
 }

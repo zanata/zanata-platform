@@ -29,13 +29,11 @@ import org.jboss.seam.log.Log;
  * 
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public abstract class BackgroundProcess
+public abstract class BackgroundProcess<H extends ProcessHandle>
 {
 
    @Logger
    private Log log;
-   
-   protected ProcessHandle processHandle;
    
    /**
     * Starts the process.
@@ -43,14 +41,13 @@ public abstract class BackgroundProcess
     * @param handle The handle to be used for the running process.
     */
    @Asynchronous
-   public void startProcess(ProcessHandle handle)
+   public void startProcess(H handle)
    {
-      this.processHandle = handle;
-      this.processHandle.setInProgress(true);
+      handle.setInProgress(true);
       
       try
       {
-         this.runProcess();
+         runProcess(handle);
       }
       catch( Exception ex )
       {
@@ -58,9 +55,9 @@ public abstract class BackgroundProcess
       }
       finally
       {
-         this.processHandle.setInProgress(false);
+         handle.setInProgress(false);
       }
    }
    
-   protected abstract void runProcess() throws Exception;
+   protected abstract void runProcess(H handle) throws Exception;
 }

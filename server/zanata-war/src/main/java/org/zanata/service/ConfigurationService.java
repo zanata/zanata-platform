@@ -27,9 +27,10 @@ public interface ConfigurationService
     * 
     * @param projectSlug
     * @param iterationSlug
+    * @param projectType
     * @return The configuration file contents for the given project and iteration.
     */
-   String getConfigurationFileContents(String projectSlug, String iterationSlug);
+   String getConfigurationFileContents(String projectSlug, String iterationSlug, String projectType);
    
    /**
     * Returns the default configuration file Name.
