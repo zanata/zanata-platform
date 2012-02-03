@@ -12,8 +12,8 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.easymock.Capture;
@@ -35,7 +35,6 @@ import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -68,7 +67,6 @@ public class AppPresenterTest
    private AppPresenter appPresenter;
 
 
-   private CachingDispatchAsync mockDispatcher;
    private Display mockDisplay;
    private DocumentListPresenter mockDocumentListPresenter;
    private HasClickHandlers mockDocumentsLink;
@@ -103,7 +101,6 @@ public class AppPresenterTest
    @BeforeClass
    public void createMocks()
    {
-      mockDispatcher = createMock(CachingDispatchAsync.class);
       mockDisplay = createMock(AppPresenter.Display.class);
       mockDocumentListPresenter = createMock(DocumentListPresenter.class);
       mockDocumentsLink = createMock(HasClickHandlers.class);
@@ -638,7 +635,7 @@ public class AppPresenterTest
 
    private void resetAllMocks()
    {
-      reset(mockDispatcher, mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
+      reset(mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
       reset(mockEventBus, mockHistory, mockIdentity, mockLeaveWorkspaceLink);
       reset(mockMessages, mockPerson, mockSignoutLink, mockTranslationPresenter);
       reset(mockWindow, mockWindowLocation, mockWorkspaceContext);
@@ -646,7 +643,7 @@ public class AppPresenterTest
 
    private void replayAllMocks()
    {
-      replay(mockDispatcher, mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
+      replay(mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
       replay(mockEventBus, mockHistory, mockIdentity, mockLeaveWorkspaceLink);
       replay(mockMessages, mockPerson, mockSignoutLink, mockTranslationPresenter);
       replay(mockWindow, mockWindowLocation, mockWorkspaceContext);
@@ -654,7 +651,7 @@ public class AppPresenterTest
 
    private void verifyAllMocks()
    {
-      verify(mockDispatcher, mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
+      verify(mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
       verify(mockEventBus, mockHistory, mockIdentity, mockLeaveWorkspaceLink);
       verify(mockMessages, mockPerson, mockSignoutLink, mockTranslationPresenter);
       verify(mockWindow, mockWindowLocation, mockWorkspaceContext);

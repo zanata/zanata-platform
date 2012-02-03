@@ -23,7 +23,6 @@ package org.zanata.webtrans.client.presenter;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -34,7 +33,6 @@ import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.resources.EditorConfigConstants;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.EditorOptionsPanel;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -54,17 +52,17 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
       void setEditorOptionsPanel(Widget widget);
    }
 
-   private final DispatchAsync dispatcher;
    private final ValidationOptionsPresenter validationOptionsPresenter;
    private final EditorOptionsPanel editorOptionsPanel;
 
+   private Map<String, Boolean> configMap = new HashMap<String, Boolean>();
+
    @Inject
-   public SidePanelPresenter(final Display display, final EventBus eventBus, CachingDispatchAsync dispatcher, final ValidationOptionsPresenter validationDetailsPresenter, final TransFilterPresenter transFilterPresenter)
+   public SidePanelPresenter(final Display display, final EventBus eventBus, final ValidationOptionsPresenter validationDetailsPresenter, final TransFilterPresenter transFilterPresenter)
    {
       super(display, eventBus);
       this.editorOptionsPanel = new EditorOptionsPanel();
       this.validationOptionsPresenter = validationDetailsPresenter;
-      this.dispatcher = dispatcher;
 
       configMap.put(EditorConfigConstants.BUTTON_ENTER, false);
       configMap.put(EditorConfigConstants.BUTTON_ESC, false);
@@ -81,7 +79,6 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
       }
    };
 
-   private Map<String, Boolean> configMap = new HashMap<String, Boolean>();
 
    @Override
    protected void onBind()
@@ -107,13 +104,14 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
             }
 
             // if filter view, hide model navigation
-            if (event.isFilterTranslated() || event.isFilterNeedReview() || event.isFilterUntranslated())
+            boolean showingFullList = (event.isFilterTranslated() == event.isFilterNeedReview()) && (event.isFilterTranslated() == event.isFilterUntranslated());
+            if (showingFullList)
             {
-               editorOptionsPanel.setNavOptionVisible(false);
+               editorOptionsPanel.setNavOptionVisible(true);
             }
             else
             {
-               editorOptionsPanel.setNavOptionVisible(true);
+               editorOptionsPanel.setNavOptionVisible(false);
             }
          }
       }));

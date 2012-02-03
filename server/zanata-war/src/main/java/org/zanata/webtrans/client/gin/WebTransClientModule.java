@@ -53,7 +53,7 @@ import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.rpc.DelegatingDispatchAsync;
-import org.zanata.webtrans.client.ui.SidePanel;
+import org.zanata.webtrans.client.ui.SidePanelView;
 import org.zanata.webtrans.client.validation.ValidationService;
 import org.zanata.webtrans.client.view.AppView;
 import org.zanata.webtrans.client.view.DocumentListView;
@@ -97,7 +97,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(GlossaryPresenter.class, GlossaryPresenter.Display.class, GlossaryView.class);
       bindPresenter(TransMemoryDetailsPresenter.class, TransMemoryDetailsPresenter.Display.class, TransMemoryDetailsView.class);
       bindPresenter(TransUnitNavigationPresenter.class, TransUnitNavigationPresenter.Display.class, TransUnitNavigationView.class);
-      bindPresenter(SidePanelPresenter.class, SidePanelPresenter.Display.class, SidePanel.class);
+      bindPresenter(SidePanelPresenter.class, SidePanelPresenter.Display.class, SidePanelView.class);
       bindPresenter(TranslationEditorPresenter.class, TranslationEditorPresenter.Display.class, TranslationEditorView.class);
       bindPresenter(ValidationOptionsPresenter.class, ValidationOptionsPresenter.Display.class, ValidationOptionsView.class);
       bindPresenter(UndoRedoPresenter.class, UndoRedoPresenter.Display.class, UndoRedoView.class);

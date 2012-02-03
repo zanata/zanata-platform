@@ -20,7 +20,12 @@
  */
 package org.zanata.webtrans.client.view;
 
+import org.zanata.webtrans.client.presenter.GlossaryPresenter;
+import org.zanata.webtrans.client.presenter.SidePanelPresenter;
+import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
+import org.zanata.webtrans.client.presenter.TranslationEditorPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
+import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.SplitLayoutPanelHelper;
@@ -31,7 +36,6 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
@@ -57,10 +61,10 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    LayoutPanel editorContainer, sidePanelContainer;
 
    @UiField(provided = true)
-   ToggleButton toogleOptionsButton;
+   ToggleButton optionsToggleButton;
 
    @UiField(provided = true)
-   ToggleButton toogleSouthButton;
+   ToggleButton southPanelToggleButton;
 
    LayoutPanel tmPanel, userPanel;
 
@@ -69,21 +73,18 @@ public class TranslationView extends Composite implements TranslationPresenter.D
     */
    // @UiField
    LayoutPanel glossaryPanel;
+   private boolean enableGlossary = false;
 
    @UiField
    SplitLayoutPanel mainSplitPanel;
 
-   final WebTransMessages messages;
-
    private double panelWidth = 20;
    private double southHeight = 30;
 
-   boolean disableGlossary = true;
 
    @Inject
-   public TranslationView(Resources resources, WebTransMessages messages)
+   public TranslationView(Resources resources, WebTransMessages messages, TranslationEditorPresenter.Display translationEditorView, SidePanelPresenter.Display sidePanelView, TransMemoryPresenter.Display transMemoryView, WorkspaceUsersPresenter.Display workspaceUsersView, GlossaryPresenter.Display glossaryView)
    {
-      this.messages = messages;
 
       StyleInjector.inject(resources.style().getText(), true);
       sidePanelOuterContainer = new LayoutPanel();
@@ -92,11 +93,11 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       tmPanel = new LayoutPanel();
       userPanel = new LayoutPanel();
       
-      toogleOptionsButton = new ToggleButton(messages.hideEditorOptionsLabel(), messages.showEditorOptionsLabel());
-      toogleOptionsButton.setTitle(messages.hideEditorOptions());
-      toogleOptionsButton.setDown(true);
+      optionsToggleButton = new ToggleButton(messages.hideEditorOptionsLabel(), messages.showEditorOptionsLabel());
+      optionsToggleButton.setTitle(messages.hideEditorOptions());
+      optionsToggleButton.setDown(true);
 
-      toogleSouthButton = new ToggleButton(messages.minimiseLabel(), messages.restoreLabel());
+      southPanelToggleButton = new ToggleButton(messages.minimiseLabel(), messages.restoreLabel());
 
       initWidget(uiBinder.createAndBindUi(this));
       mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) panelWidth);
@@ -104,40 +105,54 @@ public class TranslationView extends Composite implements TranslationPresenter.D
 
 
       southPanelTab.add(tmPanel, messages.translationMemoryHeading());
-      if (!disableGlossary)
+      if (enableGlossary)
       {
          southPanelTab.add(glossaryPanel, "Glossary");
       }
       southPanelTab.add(userPanel, messages.nUsersOnline(0));
 
+      setEditorView(translationEditorView.asWidget());
 
+      setSidePanel(sidePanelView.asWidget());
+
+      setTranslationMemoryView(transMemoryView.asWidget());
+
+      setWorkspaceUsersView(workspaceUsersView.asWidget());
+
+      // TODO glossary temporarily disabled
+      if (enableGlossary)
+      {
+         setGlossaryView(glossaryView.asWidget());
+      }
    }
 
-   @Override
-   public void setTranslationMemoryView(Widget translationMemoryView)
+   private void setTranslationMemoryView(Widget translationMemoryView)
    {
       tmPanel.clear();
       tmPanel.add(translationMemoryView);
    }
 
-   @Override
-   public void setWorkspaceUsersView(Widget workspaceUsersView)
+   private void setWorkspaceUsersView(Widget workspaceUsersView)
    {
       userPanel.clear();
       userPanel.add(workspaceUsersView);
    }
 
-   /*
-    * TODO: temporary disable glossary functionalities
-    */
-   @Override
-   public void setGlossaryView(Widget glossaryView)
+   private void setGlossaryView(Widget glossaryView)
    {
-      if (!disableGlossary)
-      {
-         glossaryPanel.clear();
-         glossaryPanel.add(glossaryView);
-      }
+      glossaryPanel.clear();
+      glossaryPanel.add(glossaryView);
+   }
+
+   private void setEditorView(Widget editorView)
+   {
+      this.editorContainer.add(editorView);
+   }
+
+   private void setSidePanel(Widget sidePanel)
+   {
+      sidePanelContainer.clear();
+      sidePanelContainer.add(sidePanel);
    }
 
    @Override
@@ -147,20 +162,13 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    }
 
    @Override
-   public void setEditorView(Widget editorView)
+   public void setParticipantsTitle(String title)
    {
-      this.editorContainer.add(editorView);
+      southPanelTab.setTabText(1, title);
    }
 
    @Override
-   public void setSidePanel(Widget sidePanel)
-   {
-      sidePanelContainer.clear();
-      sidePanelContainer.add(sidePanel);
-   }
-
-   @Override
-   public void setSidePanelViewVisible(boolean visible)
+   public void setSidePanelVisible(boolean visible)
    {
       mainSplitPanel.forceLayout();
       Widget splitter = SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel, sidePanelOuterContainer);
@@ -179,7 +187,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    }
 
    @Override
-   public void setSouthPanelViewVisible(boolean visible)
+   public void setSouthPanelVisible(boolean visible)
    {
       mainSplitPanel.forceLayout();
       Widget splitter = SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel, southPanelContainer);
@@ -198,20 +206,32 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    }
 
    @Override
-   public ToggleButton getToogleOptionsButton()
+   public boolean isShowOptions()
    {
-      return toogleOptionsButton;
+      return optionsToggleButton.isDown();
    }
 
    @Override
-   public ToggleButton getToogleSouthButton()
+   public HasClickHandlers getOptionsToggle()
    {
-      return toogleSouthButton;
+      return optionsToggleButton;
    }
 
    @Override
-   public void updateWorkspaceUsersTitle(String title)
+   public void setOptionsToggleTooltip(String tooltip)
    {
-      southPanelTab.setTabText(1, title);
+      optionsToggleButton.setTitle(tooltip);
+   }
+
+   @Override
+   public boolean isShowSouthPanel()
+   {
+      return southPanelToggleButton.isDown();
+   }
+
+   @Override
+   public HasClickHandlers getSouthPanelToggle()
+   {
+      return southPanelToggleButton;
    }
 }

@@ -58,7 +58,7 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
 
       void setNavModeTooltip(Map<String, Boolean> configMap);
 
-      void setModelNavVisible(boolean visible);
+      void setModalNavVisible(boolean visible);
    }
 
    @Inject
@@ -129,14 +129,14 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
          @Override
          public void onFilterView(FilterViewEvent event)
          {
-            // if filter view, hide model navigation
-            if (!event.isFilterTranslated() || !event.isFilterNeedReview() || !event.isFilterUntranslated())
+            boolean showingFullList = (event.isFilterTranslated() == event.isFilterNeedReview()) && (event.isFilterTranslated() == event.isFilterUntranslated());
+            if (showingFullList)
             {
-               display.setModelNavVisible(false);
+               display.setModalNavVisible(true);
             }
             else
             {
-               display.setModelNavVisible(true);
+               display.setModalNavVisible(false);
             }
          }
       }));
