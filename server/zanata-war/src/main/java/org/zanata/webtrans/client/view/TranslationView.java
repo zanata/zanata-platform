@@ -32,10 +32,10 @@ import org.zanata.webtrans.client.ui.SplitLayoutPanelHelper;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.StyleInjector;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
@@ -206,13 +206,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    }
 
    @Override
-   public boolean isShowOptions()
-   {
-      return optionsToggleButton.isDown();
-   }
-
-   @Override
-   public HasClickHandlers getOptionsToggle()
+   public HasValue<Boolean> getOptionsToggle()
    {
       return optionsToggleButton;
    }
@@ -224,14 +218,9 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    }
 
    @Override
-   public boolean isShowSouthPanel()
-   {
-      return southPanelToggleButton.isDown();
-   }
-
-   @Override
-   public HasClickHandlers getSouthPanelToggle()
+   public HasValue<Boolean> getSouthPanelToggle()
    {
       return southPanelToggleButton;
    }
+
 }
