@@ -39,7 +39,27 @@
     <rich:column id="locale_id">#{tribe.retrieveNativeName()} [#{tribe.localeId.id}]</rich:column>
     <rich:column id="translate">
       <h:outputLink
-          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation', tribe) and !applicationConfiguration.debug}"
+          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation', tribe) and !applicationConfiguration.debug and projectHome.isReadOnly(_iteration)}"
+          value="#{request.contextPath}/webtrans/Application.html">
+		<f:param name="project" value="#{_iteration.project.slug}"/>
+		<f:param name="iteration" value="#{_iteration.slug}"/>
+		<f:param name="localeId" value="#{tribe.localeId.id}"/>
+		<f:param name="locale" value="#{locale.language}" />
+		#{messages['jsf.View']}
+      </h:outputLink>
+      <h:outputLink
+          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation', tribe) and applicationConfiguration.debug and projectHome.isReadOnly(_iteration)}"
+          value="#{request.contextPath}/webtrans/Application.html">
+		<f:param name="project" value="#{_iteration.project.slug}"/>
+		<f:param name="iteration" value="#{_iteration.slug}"/>
+		<f:param name="localeId" value="#{tribe.localeId.id}"/>
+		<f:param name="gwt.codesvr" value="127.0.0.1:9997"/>
+		<f:param name="locale" value="#{locale.language}" />
+		#{messages['jsf.ViewGWTDevMode']}
+      </h:outputLink>
+      
+      <h:outputLink
+          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation', tribe) and !applicationConfiguration.debug and !projectHome.isReadOnly(_iteration)}"
           value="#{request.contextPath}/webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
 		<f:param name="iteration" value="#{_iteration.slug}"/>
@@ -48,7 +68,7 @@
 		#{messages['jsf.Translate']}
       </h:outputLink>
       <h:outputLink
-          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation', tribe) and applicationConfiguration.debug}"
+          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation', tribe) and applicationConfiguration.debug and !projectHome.isReadOnly(_iteration)}"
           value="#{request.contextPath}/webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
 		<f:param name="iteration" value="#{_iteration.slug}"/>
@@ -57,6 +77,8 @@
 		<f:param name="locale" value="#{locale.language}" />
 		#{messages['jsf.TranslateGWTDevMode']}
       </h:outputLink>
+      
+      
     </rich:column>
     <rich:column id="files">
       <s:link
