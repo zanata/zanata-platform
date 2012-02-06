@@ -199,7 +199,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       else
       {
          southHeight = mainSplitPanel.getWidgetContainerElement(southPanelContainer).getOffsetHeight();
-         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, 30);
+         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, 26);
       }
       splitter.setVisible(visible);
       mainSplitPanel.animate(200);
