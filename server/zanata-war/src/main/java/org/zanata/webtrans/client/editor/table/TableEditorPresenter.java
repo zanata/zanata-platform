@@ -381,7 +381,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          {
             if (event.getSelectedItem() != null)
             {
-               display.setTransUnitDetails(event.getSelectedItem());
                display.getTargetCellEditor().savePendingChange(true);
                selectTransUnit(event.getSelectedItem());
             }
@@ -1191,6 +1190,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    public void selectTransUnit(TransUnit transUnit)
    {
       tableModelHandler.updatePageAndRowIndex();
+
+      display.setTransUnitDetails(transUnit);
 
       if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
       {
