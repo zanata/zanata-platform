@@ -85,10 +85,11 @@ public class ProjectHome extends SlugHome<HIterationProject>
 
    public void validateSuppliedId()
    {
-      HIterationProject ip = getInstance(); // this will raise an EntityNotFound exception
+      HIterationProject ip = getInstance(); // this will raise an EntityNotFound
+                                            // exception
       // when id is invalid and conversation will not
       // start
-      
+
       if (ip.getStatus().equals(EntityStatus.Obsolete) && !checkViewObsolete())
       {
          throw new EntityNotFoundException();
@@ -218,6 +219,15 @@ public class ProjectHome extends SlugHome<HIterationProject>
             getInstance().getCustomizedLocales().addAll(locale);
          }
       }
+   }
+
+   public boolean isReadOnly(HProjectIteration iteration)
+   {
+      if (getInstance().getStatus() != EntityStatus.Current || (iteration != null && iteration.getStatus() != EntityStatus.Current))
+      {
+         return true;
+      }
+      return false;
    }
 
    public boolean checkViewObsolete()
