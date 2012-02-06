@@ -430,21 +430,21 @@
   <!-- Exceptions -->
 
   <exception class="org.zanata.security.KeyNotFoundException"
-    log-level="debug">
+    log-level="warn">
     <redirect view-id="/error.xhtml">
       <message severity="error">#{messages['jsf.InvalidActivationKey']}</message>
     </redirect>
   </exception>
 
   <exception class="org.jboss.seam.framework.EntityNotFoundException"
-    log-level="debug">
+    log-level="warn">
     <redirect view-id="/error.xhtml">
       <message severity="warn">#{messages['jsf.RecordNotFound']}</message>
     </redirect>
   </exception>
 
   <exception class="javax.persistence.EntityNotFoundException"
-    log-level="debug">
+    log-level="warn">
     <redirect view-id="/error.xhtml">
       <message severity="warn">#{messages['jsf.RecordNotFound']}</message>
     </redirect>

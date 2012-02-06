@@ -67,12 +67,12 @@ public class ActivateAction implements Serializable
    {
 
       if (getActivationKey() == null)
-         throw new KeyNotFoundException();
+         throw new KeyNotFoundException("null activation key");
 
       key = accountActivationKeyDAO.findById(getActivationKey(), false);
 
       if (key == null)
-         throw new KeyNotFoundException();
+         throw new KeyNotFoundException("activation key: " + getActivationKey());
    }
 
    public void setActivationKey(String activationKey)
