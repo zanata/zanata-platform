@@ -82,9 +82,24 @@
                                </h:inputText>
                            </h:panelGroup>
 	                    </f:facet>
+                       <h:outputLink
+                           title="#{messages['jsf.Translate']}"
+                           rendered="#{s:hasPermission(projectIterationFilesAction.locale, 'modify-translation')}"
+                           value="#{request.contextPath}/webtrans/Application.html?project=#{projectIterationFilesAction.projectSlug}&amp;iteration=#{projectIterationFilesAction.iterationSlug}&amp;localeId=#{projectIterationFilesAction.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{doc.docId}">
+                           #{doc.name}
+                       </h:outputLink>
+                       <h:outputText
+                           rendered="#{!s:hasPermission(projectIterationFilesAction.locale, 'modify-translation')}">
+                           #{doc.name}
+                       </h:outputText>
+	                </rich:column>
+	                <rich:column>
+	                    <f:facet name="header">
+	                       #{messages['jsf.iteration.files.Download']}
+	                    </f:facet>
 	                    <s:link view="/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/po">
 	                       <f:param name="docId" value="#{doc.docId}"/>
-	                       <h:outputText value="#{doc.name}"/>
+                          <h:outputText value="#{messages['jsf.iteration.files.dotpo']}"/>
 	                    </s:link> 
 	                </rich:column>
 	                <rich:column>
