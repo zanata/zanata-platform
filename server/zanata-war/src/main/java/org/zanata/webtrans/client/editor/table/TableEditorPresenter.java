@@ -71,6 +71,7 @@ import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.EditingTranslationAction;
 import org.zanata.webtrans.shared.rpc.EditingTranslationResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
@@ -176,6 +177,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
    private final TableEditorMessages messages;
 
+   private final boolean readOnly;
+
    private UndoableTransUnitUpdateAction inProcessing;
 
    private final FilterViewConfirmationPanel filterViewConfirmationPanel = new FilterViewConfirmationPanel();
@@ -248,12 +251,13 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    };
 
    @Inject
-   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages)
+   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
       this.identity = identity;
       this.messages = messages;
+      this.readOnly = workspaceContext.isReadOnly();
    }
 
    private void clearCacheList()
@@ -587,8 +591,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          @Override
          public void onButtonDisplayChange(ButtonDisplayChangeEvent event)
          {
-            display.getTargetCellEditor().setShowOperationButtons(event.isShowButtons());
-            display.setShowCopyButtons(event.isShowButtons());
+            if (!readOnly)
+            {
+               display.getTargetCellEditor().setShowOperationButtons(event.isShowButtons());
+               display.setShowCopyButtons(event.isShowButtons());
+            }
          }
       }));
 
@@ -600,6 +607,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             display.getTargetCellEditor().updateValidationMessagePanel(event.getErrors());
          }
       }));
+
+      if (readOnly)
+      {
+         display.setShowCopyButtons(false);
+      }
 
       display.gotoFirstPage();
 

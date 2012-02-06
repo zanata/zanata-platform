@@ -183,7 +183,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             }
 
          });
-         
+
          topSourcePanel.add(copyButton);
          copyButtons.add(copyButton);
          
