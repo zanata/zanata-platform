@@ -29,6 +29,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.common.EditState;
+import org.zanata.common.EntityStatus;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateAction;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateHandler;
 import org.zanata.webtrans.client.editor.DocumentEditorPresenter;
@@ -48,6 +49,10 @@ import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.events.ProjectIterationUpdateEvent;
+import org.zanata.webtrans.client.events.ProjectIterationUpdateEventHandler;
+import org.zanata.webtrans.client.events.ProjectUpdateEvent;
+import org.zanata.webtrans.client.events.ProjectUpdateEventHandler;
 import org.zanata.webtrans.client.events.RedoFailureEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TransMemoryCopyEvent;
@@ -177,11 +182,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
    private final TableEditorMessages messages;
 
-   private final boolean readOnly;
-
    private UndoableTransUnitUpdateAction inProcessing;
 
    private final FilterViewConfirmationPanel filterViewConfirmationPanel = new FilterViewConfirmationPanel();
+
+   private final WorkspaceContext workspaceContext;
 
    private boolean filterTranslated, filterNeedReview, filterUntranslated;
 
@@ -257,7 +262,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       this.dispatcher = dispatcher;
       this.identity = identity;
       this.messages = messages;
-      this.readOnly = workspaceContext.isReadOnly();
+      this.workspaceContext = workspaceContext;
    }
 
    private void clearCacheList()
@@ -591,11 +596,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          @Override
          public void onButtonDisplayChange(ButtonDisplayChangeEvent event)
          {
-            if (!readOnly)
-            {
-               display.getTargetCellEditor().setShowOperationButtons(event.isShowButtons());
-               display.setShowCopyButtons(event.isShowButtons());
-            }
+            display.getTargetCellEditor().setShowOperationButtons(event.isShowButtons());
+            display.setShowCopyButtons(event.isShowButtons());
          }
       }));
 
@@ -608,7 +610,60 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          }
       }));
 
-      if (readOnly)
+      registerHandler(eventBus.addHandler(ProjectUpdateEvent.getType(), new ProjectUpdateEventHandler()
+      {
+         @Override
+         public void onProjectUpdated(ProjectUpdateEvent event)
+         {
+            if (workspaceContext.isReadOnly() == (event.getProjectStatus() != EntityStatus.Current))
+            {
+               return;
+            }
+
+            if (event.getProjectStatus() != EntityStatus.Current)
+            {
+               workspaceContext.setReadOnly(true);
+               display.getTargetCellEditor().setReadOnly(true);
+               eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyReadOnlyWorkspace()));
+            }
+            else
+            {
+               workspaceContext.setReadOnly(false);
+               display.getTargetCellEditor().setReadOnly(false);
+               eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyEditableWorkspace()));
+            }
+         }
+      }));
+
+      registerHandler(eventBus.addHandler(ProjectIterationUpdateEvent.getType(), new ProjectIterationUpdateEventHandler()
+      {
+         @Override
+         public void onProjectIterationUpdated(ProjectIterationUpdateEvent event)
+         {
+            if ((event.getProjectStatus() != EntityStatus.Current) || (event.getProjectIterationStatus() != EntityStatus.Current))
+            {
+               if (!workspaceContext.isReadOnly())
+               {
+                  workspaceContext.setReadOnly(true);
+                  eventBus.fireEvent(new ButtonDisplayChangeEvent(false));
+                  display.getTargetCellEditor().setReadOnly(true);
+                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyReadOnlyWorkspace()));
+               }
+            }
+            else
+            {
+               if (workspaceContext.isReadOnly())
+               {
+                  workspaceContext.setReadOnly(false);
+                  eventBus.fireEvent(new ButtonDisplayChangeEvent(true));
+                  display.getTargetCellEditor().setReadOnly(false);
+                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyEditableWorkspace()));
+               }
+            }
+         }
+      }));
+
+      if (workspaceContext.isReadOnly())
       {
          display.setShowCopyButtons(false);
       }
