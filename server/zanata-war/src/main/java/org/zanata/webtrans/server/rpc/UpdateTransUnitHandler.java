@@ -38,7 +38,10 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.ContentState;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HAccount;
@@ -78,6 +81,12 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
    @In
    Identity identity;
+
+   @In
+   ProjectDAO projectDAO;
+
+   @In
+   ProjectIterationDAO projectIterationDAO;
 
    @In
    TranslationWorkspaceManager translationWorkspaceManager;
@@ -126,6 +135,11 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
                throw new ActionException("Find conflict, Redo Failure.");
             }
          }
+      }
+
+      if (!hTextFlow.getDocument().getProjectIteration().getProject().getStatus().equals(EntityStatus.Current) || !hTextFlow.getDocument().getProjectIteration().getStatus().equals(EntityStatus.Current))
+      {
+         throw new ActionException("Project/Project iteration status is not current.");
       }
 
       boolean targetChanged = false;
