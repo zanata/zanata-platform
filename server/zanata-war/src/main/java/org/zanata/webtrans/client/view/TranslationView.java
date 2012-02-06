@@ -97,7 +97,8 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       optionsToggleButton.setTitle(messages.hideEditorOptions());
       optionsToggleButton.setDown(true);
 
-      southPanelToggleButton = new ToggleButton(messages.minimiseLabel(), messages.restoreLabel());
+      southPanelToggleButton = new ToggleButton(messages.restoreLabel(), messages.minimiseLabel());
+      southPanelToggleButton.setDown(true);
 
       initWidget(uiBinder.createAndBindUi(this));
       mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) panelWidth);
