@@ -12,6 +12,7 @@ import org.zanata.webtrans.client.presenter.MainView;
  * @author David Mason, damason@redhat.com
  * 
  */
+@Test(groups = { "unit-tests" })
 public class HistoryTokenTests
 {
    private HistoryToken token;
