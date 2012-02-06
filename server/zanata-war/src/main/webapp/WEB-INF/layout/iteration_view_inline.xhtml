@@ -14,13 +14,13 @@
       	value="#{messages['jsf.ConfigFile']}"
       	title="#{messages['jsf.GenerateProjectConfig']}"
       	action="#{configurationAction.getData}">
-	    <f:param name="iterationSlug" value="#{_iteration.slug}"/>
         <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+	    <f:param name="iterationSlug" value="#{_iteration.slug}"/>
       </s:link>	
       <rich:spacer width="10px" />
       <s:link view="/project/iteration_status.xhtml" propagation="none" value="#{messages['jsf.Statistics']}">
-        <f:param name="iterationSlug" value="#{_iteration.slug}"/>
         <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+        <f:param name="iterationSlug" value="#{_iteration.slug}"/>
       </s:link>
       <rich:spacer width="10px" />
       <s:link view="/project/iteration_edit.xhtml" propagation="none" rendered="#{s:hasPermission(_iteration, 'update')}" value="#{messages['jsf.EditVersion']}">
