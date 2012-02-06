@@ -45,7 +45,7 @@
 		<f:param name="iteration" value="#{_iteration.slug}"/>
 		<f:param name="localeId" value="#{hLocale.localeId.id}"/>
 		<f:param name="locale" value="#{locale.language}" />
-		#{messages['jsf.View']}
+		#{messages['jsf.Open']}
       </h:outputLink>
       <h:outputLink
           rendered="#{s:hasPermission(hLocale, 'modify-translation') and applicationConfiguration.debug and projectHome.isReadOnly(_iteration)}"
@@ -55,7 +55,7 @@
 		<f:param name="localeId" value="#{hLocale.localeId.id}"/>
 		<f:param name="gwt.codesvr" value="127.0.0.1:9997"/>
 		<f:param name="locale" value="#{locale.language}" />
-		#{messages['jsf.ViewGWTDevMode']}
+		#{messages['jsf.OpenGWTDevMode']}
       </h:outputLink>
       
       <h:outputLink
