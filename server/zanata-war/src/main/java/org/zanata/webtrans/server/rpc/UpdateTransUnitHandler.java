@@ -36,7 +36,6 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
-import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
@@ -81,7 +80,10 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    Session session;
 
    @In
-   Identity identity;
+   ZanataIdentity identity;
+   
+   @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
+   HAccount authenticatedAccount;
 
    @In
    ProjectDAO projectDAO;
@@ -112,12 +114,13 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
     */
    public UpdateTransUnitHandler(
          Session session,
-         Identity identity,
+         ZanataIdentity identity,
          ProjectDAO projectDAO,
          ProjectIterationDAO projectIterationDAO,
          TextFlowTargetHistoryDAO textFlowTargetHistoryDAO,
          TranslationWorkspaceManager translationWorkspaceManager,
-         LocaleService localeServiceImpl)
+         LocaleService localeServiceImpl,
+         HAccount authenticatedAccount)
    {
       this.log = Logging.getLog(UpdateTransUnitHandler.class);
       this.session = session;
@@ -127,17 +130,18 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       this.textFlowTargetHistoryDAO = textFlowTargetHistoryDAO;
       this.translationWorkspaceManager = translationWorkspaceManager;
       this.localeServiceImpl = localeServiceImpl;
+      this.authenticatedAccount = authenticatedAccount;
    }
 
    @Override
    public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException
    {
-      ZanataIdentity.instance().checkLoggedIn();
+      identity.checkLoggedIn();
       log.debug("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContent());
 
       HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
       LocaleId locale = action.getWorkspaceId().getLocaleId();
-      HAccount authenticatedAccount = (HAccount) Contexts.getSessionContext().get(JpaIdentityStore.AUTHENTICATED_USER);
+      
       HLocale hLocale;
       try
       {
@@ -243,7 +247,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
                                    authenticatedAccount.getPerson().getName(),
                                    SIMPLE_FORMAT.format(new Date()), msgContext, hTextFlow.getPos());
       // @formatter:on
-      TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu, ZanataIdentity.instance().getCredentials().getUsername());
+      TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu, identity.getCredentials().getUsername());
 
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
       workspace.publish(event);

@@ -1,5 +1,8 @@
 package org.zanata.rest.service;
 
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
@@ -27,6 +30,7 @@ import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.fest.assertions.Assertions;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.seam.core.Events;
+import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +43,7 @@ import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ResourceType;
+import org.zanata.dao.AccountDAO;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
@@ -47,6 +52,7 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
+import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.RestUtil;
@@ -64,7 +70,17 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.webtrans.server.TranslationWorkspace;
+import org.zanata.webtrans.server.TranslationWorkspaceManager;
+import org.zanata.webtrans.server.rpc.UpdateTransUnitHandler;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
+import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rpc.SessionEventData;
+import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
+import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 public class TranslationResourceRestTest extends ZanataRestTest
 {
@@ -84,7 +100,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    StringSet extComment = new StringSet("comment");
 
    IMocksControl mockControl = EasyMock.createControl();
-   Identity mockIdentity = mockControl.createMock(Identity.class);
+   ZanataIdentity mockIdentity = mockControl.createMock(ZanataIdentity.class);
 
    ApplicationConfiguration applicationConfiguration;
    ProjectIterationDAO projectIterationDAO;
@@ -95,12 +111,15 @@ public class TranslationResourceRestTest extends ZanataRestTest
    Identity identity;
    ETagUtils eTagUtils;
    PersonDAO personDAO;
+   AccountDAO accountDAO;
    TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
    ProjectDAO projectDAO;
    LocaleServiceImpl localeService;
    Events events;
 
    ITranslationResources transResource;
+   
+   UpdateTransUnitHandler transUnitHandler;
 
 
    @BeforeClass
@@ -120,6 +139,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    {
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
    @SuppressWarnings("serial")
@@ -143,6 +163,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       };
       this.eTagUtils = new ETagUtils(getSession(), documentDAO);
       this.personDAO = new PersonDAO(getSession());
+      this.accountDAO = new AccountDAO(getSession());
       this.textFlowTargetHistoryDAO = new TextFlowTargetHistoryDAO(getSession());
 
       LocaleDAO localeDAO = new LocaleDAO(getSession());
@@ -712,7 +733,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    }
    
    @Test
-   public void testZanataGeneratedPoHeaders() throws Exception
+   public void generatedPoHeaders() throws Exception
    {
       LocaleId de_DE = new LocaleId("de");
       getZero();
@@ -900,6 +921,50 @@ public class TranslationResourceRestTest extends ZanataRestTest
          }
       }
    }
+   
+   @Test
+   public void headersAfterWebtransEdit() throws Exception
+   {
+      LocaleId de_DE = new LocaleId("de");
+      getZero();
+      
+      // Push a document with no translations
+      createResourceWithContentUsingPut();
+      
+      super.newSession();
+      
+      // Translator
+      HAccount translator = accountDAO.getByUsername("demo");
+      
+      // Translate using the web editor
+      this.simulateWebEditorTranslation("sample-project", "1.0", "my.txt", "tf1", translator, de_DE, "Translated", ContentState.Approved);
+      
+      super.newSession();
+      
+      // Fetch the translations again
+      ClientResponse<TranslationsResource> response = transResource.getTranslations("my.txt", de_DE, new StringSet("gettext"));
+      
+      TranslationsResource translations = response.getEntity();
+      assertThat( translations.getTextFlowTargets().size(), greaterThan(0) );
+      
+      // Make sure the headers are present
+      PoTargetHeader header = translations.getExtensions(true).findByType(PoTargetHeader.class);
+      assertThat(header, notNullValue());
+      assertThat(header.getEntries().size(), greaterThan(0));
+      
+      // Make sure the headers have the correct value
+      for( HeaderEntry entry : header.getEntries() )
+      {
+         if( entry.getKey().equals(HeaderFields.KEY_LastTranslator) )
+         {
+            assertThat( entry.getValue().trim(), is("Sample User <user1@localhost>") );
+         }
+         else if( entry.getKey().equals(HeaderFields.KEY_PoRevisionDate) )
+         {
+            assertThat( entry.getValue().trim().length(), greaterThan(0) );
+         }
+      }
+   }
 
    @Test
    public void getBadProject() throws Exception
@@ -910,6 +975,75 @@ public class TranslationResourceRestTest extends ZanataRestTest
    }
    
    // END of tests
+   
+   /**
+    * Simulates the translation of a Unit using the web editor.
+    * 
+    * @param projectSlug Project
+    * @param iterationSlug Project Iteration
+    * @param docId Document Id
+    * @param textFlowContent Text Flow's content
+    * @param translator The user that does the translation
+    * @param localeId Locale for the translation
+    * @param translation The translated text
+    * @param translationState The new state for the translation (can be null if no changes are needed)
+    */
+   private void simulateWebEditorTranslation(String projectSlug, String iterationSlug, String docId, String textFlowContent,
+         HAccount translator, LocaleId localeId, String translation, ContentState translationState )
+   throws Exception
+   {
+      // Mock certain objects
+      TranslationWorkspaceManager transWorkerManager = mockControl.createMock(TranslationWorkspaceManager.class);
+      TranslationWorkspace transWorkspace = mockControl.createMock(TranslationWorkspace.class);
+      
+      Credentials mockCredentials = new Credentials();
+      mockCredentials.setInitialized(true);
+      mockCredentials.setUsername( translator.getUsername() );
+      
+      // Set mock expectations
+      expect( transWorkerManager.getOrRegisterWorkspace( anyObject(WorkspaceId.class) ) ).andReturn( transWorkspace ).anyTimes();
+      expect( mockIdentity.getCredentials() ).andReturn( mockCredentials );
+      mockIdentity.checkLoggedIn();
+      expectLastCall();      
+      mockIdentity.checkPermission(anyObject(), anyObject(String.class));
+      expectLastCall();
+      transWorkspace.publish( anyObject(SessionEventData.class) );
+      expectLastCall();
+      mockControl.replay();
+      
+      // @formatter:off      
+      transUnitHandler = new UpdateTransUnitHandler(
+            getSession(), 
+            mockIdentity, 
+            projectDAO, 
+            projectIterationDAO, 
+            textFlowTargetHistoryDAO, 
+            transWorkerManager,
+            localeService,
+            translator);
+      // @formatter:on
+      
+      // Translation unit id to update
+      Long textFlowId = (Long)getSession().createQuery("select tf.id from HTextFlow tf where tf.content = ? and " +
+            "tf.document.docId = ? and " +
+            "tf.document.projectIteration.slug = ? and " +
+            "tf.document.projectIteration.project.slug = ?")
+            .setString(0, textFlowContent)
+            .setString(1, docId)
+            .setString(2, iterationSlug)
+            .setString(3, projectSlug)
+            .uniqueResult();
+      
+      // Translate using webtrans
+      UpdateTransUnit action = new UpdateTransUnit(new TransUnitId(textFlowId), translation, translationState);
+      action.setWorkspaceId( new WorkspaceId(new ProjectIterationId(projectSlug, iterationSlug), localeId) );
+      
+      UpdateTransUnitResult result =
+         transUnitHandler.execute(action, null);
+      
+      assertThat( result.isSuccess(), is(true) );
+      mockControl.verify();
+   }
    
    private void expectDocs(boolean checkRevs, boolean checkLinksIgnored, Resource... docs)
    {

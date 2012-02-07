@@ -65,5 +65,18 @@ public abstract class ZanataJpaTest
       emf.close();
       emf = null;
    }
+   
+   /**
+    * Commits the changes on the current session and starts a new one.
+    * This method is useful whenever multi-session tests are needed.
+    * 
+    * @return The newly started session
+    */
+   protected Session newSession()
+   {
+      em.getTransaction().commit();
+      setupEM();
+      return getSession();
+   }
 
 }
