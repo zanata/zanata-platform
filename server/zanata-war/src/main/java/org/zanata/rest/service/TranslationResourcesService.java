@@ -85,6 +85,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.NoSuchEntityException;
+import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
 import org.zanata.rest.dto.resource.Resource;
@@ -111,10 +112,6 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    // security actions
    private static final String ACTION_IMPORT_TEMPLATE = "import-template";
    private static final String ACTION_IMPORT_TRANSLATION = "import-translation";
-
-   private static final String OPERATION_GET = "Get";
-   private static final String OPERATION_PUT = "Put";
-   private static final String OPERATION_DELETE = "Delete";
 
    public static final String SERVICE_PATH = ProjectIterationService.SERVICE_PATH + "/r";
 
@@ -221,7 +218,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    @HEAD
    public Response head()
    {
-      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_GET);
+      HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
       validateExtensions();
       EntityTag etag = projectIterationDAO.getResourcesETag(hProjectIteration);
       ResponseBuilder response = request.evaluatePreconditions(etag);
@@ -242,8 +239,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    @Wrapped(element = "resources", namespace = Namespaces.ZANATA_API)
    public Response get(@QueryParam("ext") Set<String> extensions)
    {
-
-      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_GET);
+      HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
 
       EntityTag etag = projectIterationDAO.getResourcesETag(hProjectIteration);
 
@@ -279,7 +275,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    @Restrict("#{translationResourcesService.checkPermission('import-template')}")
    public Response post(Resource resource, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans)
    {
-      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_PUT);
+      HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
 
       validateExtensions(PoHeader.ID, PotEntryHeader.ID);
 
@@ -328,7 +324,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    {
       log.debug("start get resource");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_GET);
+      HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
 
       validateExtensions(PoHeader.ID, PotEntryHeader.ID);
 
@@ -404,7 +400,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       ResponseBuilder response;
       EntityTag etag = null;
       boolean changed = false;
-      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_PUT);
+      HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
 
       validateExtensions();
 
@@ -481,7 +477,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    public Response deleteResource(@PathParam("id") String idNoSlash)
    {
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_DELETE);
+      HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, new HashSet<String>());
 
@@ -505,7 +501,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    {
       log.debug("start to get resource meta");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_GET);
+      HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 
@@ -541,7 +537,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    {
       log.debug("start to put resource meta");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_PUT);
+      HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 
@@ -592,7 +588,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    {
       log.debug("start to get translation");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_GET);
+      HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
 
       validateExtensions();
 
@@ -634,7 +630,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    public Response deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
    {
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_DELETE);
+      HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
 
       // TODO find correct etag
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, new HashSet<String>());
@@ -683,7 +679,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
          return Response.status(Status.BAD_REQUEST).entity("bad merge type "+merge).build();
       }
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveIteration(OPERATION_PUT);
+      HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
 
       validateExtensions();
 
@@ -852,10 +848,9 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
          return Response.ok("warning: unknown resIds: " + unknownResIds).tag(etag).build();
    }
 
-   private HProjectIteration retrieveIteration(String operation)
+   private HProjectIteration retrieveAndCheckIteration(boolean writeOperation)
    {
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-
       HProject hProject = projectDAO.getBySlug(projectSlug);
 
       if (hProjectIteration == null)
@@ -866,11 +861,11 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       {
          throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
       }
-      else if (OPERATION_PUT.equals(operation))
+      else if (writeOperation)
       {
          if (hProjectIteration.getStatus().equals(EntityStatus.READONLY) || hProject.getStatus().equals(EntityStatus.READONLY))
          {
-            throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
+            throw new ReadOnlyEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' is read-only.");
          }
          else
          {
@@ -881,8 +876,6 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       {
          return hProjectIteration;
       }
-
-
    }
 
    /**
@@ -926,7 +919,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    @Override
    public Object getSecuredEntity()
    {
-      return retrieveIteration(null);
+      return retrieveAndCheckIteration(false);
    }
 
 }

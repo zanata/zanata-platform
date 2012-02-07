@@ -171,12 +171,12 @@ public class ProjectIterationService implements ProjectIterationResource
       // Project is Obsolete
       else if( ZanataUtil.in(hProject.getStatus(), OBSOLETE) )
       {
-         return Response.status(Status.NOT_FOUND).entity("Project '" + projectSlug + "' is obsolete.").build();
+         return Response.status(Status.NOT_FOUND).entity("Project '" + projectSlug + "' not found.").build();
       }
       // Project is ReadOnly
       else if( ZanataUtil.in(hProject.getStatus(), READONLY) )
       {
-         return Response.status(Status.FORBIDDEN).entity("Project '" + projectSlug + "' is readOnly.").build();
+         return Response.status(Status.FORBIDDEN).entity("Project '" + projectSlug + "' is read-only.").build();
       }
 
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
@@ -201,14 +201,12 @@ public class ProjectIterationService implements ProjectIterationResource
       // Iteration is Obsolete
       else if( ZanataUtil.in(hProjectIteration.getStatus(), OBSOLETE) )
       {
-         response = Response.status(Status.NOT_FOUND);
-         return response.entity("Obsolete Iteration.").build();
+         return Response.status(Status.FORBIDDEN).entity("Project Iiteration '" + projectSlug + ":" + iterationSlug + "' is obsolete.").build();
       }
       // Iteration is ReadOnly
       else if( ZanataUtil.in(hProjectIteration.getStatus(), READONLY) )
       {
-         response = Response.status(Status.FORBIDDEN);
-         return response.entity("ReadOnly Iteration.").build();
+         return Response.status(Status.FORBIDDEN).entity("Project Iteration '" + projectSlug + ":" + iterationSlug + "' is read-only.").build();
       }
       else
       { // must be an update operation

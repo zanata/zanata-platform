@@ -59,7 +59,8 @@ public class ETagUtils
     * This algorithm takes into account changes in Project Iterations as well.
     * 
     * @param slug Project slug
-    * @return calculated EntityTag or null if project does not exist
+    * @return calculated EntityTag
+    * @throws NoSuchEntityException if project is obsolete or does not exist
     */
    public EntityTag generateTagForProject(String slug)
    {
@@ -71,7 +72,6 @@ public class ETagUtils
 
       if (projectVersion == null)
          throw new NoSuchEntityException("Project '" + slug + "' not found.");
-      ;
 
       @SuppressWarnings("unchecked")
       List<Integer> iterationVersions = session.createQuery("select i.versionNum from HProjectIteration i " +
@@ -90,7 +90,8 @@ public class ETagUtils
     * 
     * @param projectSlug project slug
     * @param iterationSlug iteration slug
-    * @return calculated EntityTag or null if iteration does not exist
+    * @return calculated EntityTag
+    * @throw NoSuchEntityException if iteration is obsolete or does not exist
     */
    public EntityTag generateETagForIteration(String projectSlug, String iterationSlug)
    {
@@ -103,7 +104,6 @@ public class ETagUtils
 
       if (iterationVersion == null)
          throw new NoSuchEntityException("Project Iteration '" + iterationSlug + "' not found.");
-      ;
 
       String hash = HashUtil.generateHash(String.valueOf(iterationVersion));
 
@@ -115,7 +115,7 @@ public class ETagUtils
       HDocument doc = documentDAO.getByDocId(iteration, id);
       if (doc == null)
          throw new NoSuchEntityException("Document '" + id + "' not found.");
-      ;
+
       Integer hashcode = 1;
       hashcode = hashcode * 31 + doc.getRevision();
 

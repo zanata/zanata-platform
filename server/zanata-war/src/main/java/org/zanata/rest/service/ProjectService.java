@@ -128,22 +128,15 @@ public class ProjectService implements ProjectResource
       }
 
       HProject hProject = projectDAO.getBySlug(projectSlug);
-      
-      // Obsolete projects are not exposed
-      if( ZanataUtil.in(hProject.getStatus(), OBSOLETE) )
-      {
-         return Response.status(Status.NOT_FOUND).build();
-      }
-
       Project project = toResource(hProject, accept);
       return Response.ok(project).tag(etag).build();
    }
 
    /**
     * @return 200 If the project was modified. 201 If the project was created.
-    *         404 If the project was not found, or is obsolete. 403 If the
+    *         404 If the project was not found. 403 If the
     *         project was not modified for some other reason (e.g. project is
-    *         ReadOnly).
+    *         obsolete or ReadOnly).
     */
    @Override
    @PUT
@@ -173,14 +166,12 @@ public class ProjectService implements ProjectResource
       // Project is Obsolete
       else if( ZanataUtil.in(hProject.getStatus(), OBSOLETE) )
       {
-         response = Response.status(Status.NOT_FOUND);
-         return response.entity("Obsolete Project.").build();
+         return Response.status(Status.FORBIDDEN).entity("Project '" + projectSlug + "' is obsolete.").build();
       }
       // Project is ReadOnly
       else if( ZanataUtil.in(hProject.getStatus(), READONLY) )
       {
-         response = Response.status(Status.FORBIDDEN);
-         return response.entity("ReadOnly Project.").build();
+         return Response.status(Status.FORBIDDEN).entity("Project '" + projectSlug + "' is read-only.").build();
       }
       else
       {  // must be an update operation
