@@ -296,6 +296,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    {
       display.setTableModelHandler(tableModelHandler);
       display.setPageSize(TableConstants.PAGE_SIZE);
+      if (workspaceContext.isReadOnly())
+      {
+         display.setShowCopyButtons(false);
+      }
+
       registerHandler(filterViewConfirmationPanel.getSaveChangesAndFilterButton().addClickHandler(new ClickHandler()
       {
          @Override
@@ -626,11 +631,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             }
          }
       }));
-
-      if (workspaceContext.isReadOnly())
-      {
-         display.setShowCopyButtons(false);
-      }
 
       display.gotoFirstPage();
 

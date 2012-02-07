@@ -36,6 +36,7 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.EditorConfigConstants;
 import org.zanata.webtrans.client.ui.EditorOptionsPanel;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -58,13 +59,15 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
    private final EditorOptionsPanel editorOptionsPanel;
 
    private Map<String, Boolean> configMap = new HashMap<String, Boolean>();
+   private final WorkspaceContext workspaceContext;
 
    @Inject
-   public SidePanelPresenter(final Display display, final EventBus eventBus, final ValidationOptionsPresenter validationDetailsPresenter, final TransFilterPresenter transFilterPresenter)
+   public SidePanelPresenter(final Display display, final EventBus eventBus, final ValidationOptionsPresenter validationDetailsPresenter, final TransFilterPresenter transFilterPresenter, final WorkspaceContext workspaceContext)
    {
       super(display, eventBus);
       this.editorOptionsPanel = new EditorOptionsPanel();
       this.validationOptionsPresenter = validationDetailsPresenter;
+      this.workspaceContext = workspaceContext;
 
       configMap.put(EditorConfigConstants.BUTTON_ENTER, false);
       configMap.put(EditorConfigConstants.BUTTON_ESC, false);
@@ -88,6 +91,10 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
       validationOptionsPresenter.bind();
       display.setValidationOptionsView(validationOptionsPresenter.getDisplay().asWidget());
       display.setEditorOptionsPanel(editorOptionsPanel);
+      if (workspaceContext.isReadOnly())
+      {
+         setReadOnly(true);
+      }
 
       registerHandler(editorOptionsPanel.getTranslatedChk().addValueChangeHandler(filterChangeHandler));
       registerHandler(editorOptionsPanel.getNeedReviewChk().addValueChangeHandler(filterChangeHandler));
@@ -180,13 +187,18 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
          @Override
          public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
          {
-            boolean active = !event.isReadOnly();
-            editorOptionsPanel.getEditorButtonsChk().setValue(active);
-            editorOptionsPanel.getEditorButtonsChk().setEnabled(active);
-            editorOptionsPanel.getEnterChk().setEnabled(active);
-            editorOptionsPanel.getEscChk().setEnabled(active);
+            setReadOnly(event.isReadOnly());
          }
       }));
+   }
+
+   void setReadOnly(boolean readOnly)
+   {
+      boolean active = !readOnly;
+      editorOptionsPanel.getEditorButtonsChk().setValue(active);
+      editorOptionsPanel.getEditorButtonsChk().setEnabled(active);
+      editorOptionsPanel.getEnterChk().setEnabled(active);
+      editorOptionsPanel.getEscChk().setEnabled(active);
    }
 
    @Override
