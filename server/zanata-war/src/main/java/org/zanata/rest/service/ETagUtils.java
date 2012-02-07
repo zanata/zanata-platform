@@ -1,6 +1,6 @@
 package org.zanata.rest.service;
 
-import static org.zanata.common.EntityStatus.Obsolete;
+import static org.zanata.common.EntityStatus.OBSOLETE;
 
 import java.util.List;
 import java.util.Set;
@@ -66,7 +66,7 @@ public class ETagUtils
       Integer projectVersion = (Integer) session.createQuery("select p.versionNum from HProject p where slug =:slug " +
       		"and status not in (:statusList)")
       		.setParameter("slug", slug)
-      		.setParameterList("statusList", new Object[]{Obsolete})
+      		.setParameterList("statusList", new Object[]{OBSOLETE})
       		.uniqueResult();
 
       if (projectVersion == null)
@@ -77,7 +77,7 @@ public class ETagUtils
       List<Integer> iterationVersions = session.createQuery("select i.versionNum from HProjectIteration i " +
       		"where i.project.slug =:slug and status not in (:statusList)")
       		.setParameter("slug", slug)
-      		.setParameterList("statusList", new Object[]{Obsolete})
+      		.setParameterList("statusList", new Object[]{OBSOLETE})
       		.list();
 
       String hash = HashUtil.generateHash(projectVersion + ':' + StringUtils.join(iterationVersions, ':'));
@@ -98,7 +98,7 @@ public class ETagUtils
             "and status not in (:statusList) and i.project.status not in (:statusList)")
             .setParameter("islug", iterationSlug)
             .setParameter("pslug", projectSlug)
-            .setParameterList("statusList", new Object[]{Obsolete})
+            .setParameterList("statusList", new Object[]{OBSOLETE})
             .uniqueResult();
 
       if (iterationVersion == null)

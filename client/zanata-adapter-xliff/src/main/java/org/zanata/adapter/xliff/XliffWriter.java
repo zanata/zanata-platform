@@ -53,7 +53,7 @@ public class XliffWriter extends XliffCommon
       writer.writeStartElement(ELE_BODY);
    }
 
-   private static void writeTransUnits(IndentingXMLStreamWriter writer, Resource doc, TranslationsResource targetDoc) throws XMLStreamException
+   private static void writeTransUnits(IndentingXMLStreamWriter writer, Resource doc, TranslationsResource targetDoc, boolean createSkeletons) throws XMLStreamException
    {
       Map<String, TextFlowTarget> targets = Collections.emptyMap();
       if (targetDoc != null)
@@ -66,11 +66,16 @@ public class XliffWriter extends XliffCommon
       }
       for (TextFlow textFlow : doc.getTextFlows())
       {
+         TextFlowTarget target = targets.get(textFlow.getId());
+         if (target == null && !createSkeletons)
+         {
+            continue;
+         }
+
          writer.writeStartElement(ELE_TRANS_UNIT);
          writer.writeAttribute(ATTRI_ID, textFlow.getId());
          writeTransUnitSource(writer, textFlow);
          writeTransUnitContext(writer, textFlow);
-         TextFlowTarget target = targets.get(textFlow.getId());
          if (target != null)
          {
             writeTransUnitTarget(writer, target);
@@ -138,12 +143,14 @@ public class XliffWriter extends XliffCommon
    }
 
    /**
+    * Used for writing target file
+    * 
     * @param baseDir
     * @param doc
     * @param javaLocale
     * @param targetDoc may be null
     */
-   public static void write(File baseDir, Resource doc, String javaLocale, TranslationsResource targetDoc)
+   public static void write(File baseDir, Resource doc, String javaLocale, TranslationsResource targetDoc, boolean createSkeletons)
    {
       try
       {
@@ -157,7 +164,7 @@ public class XliffWriter extends XliffCommon
             writeHeader(writer, doc, javaLocale);
          else
             writeHeader(writer, doc, null);
-         writeTransUnits(writer, doc, targetDoc);
+         writeTransUnits(writer, doc, targetDoc, createSkeletons);
 
          writer.writeEndElement(); // end body tag
          writer.writeEndElement(); // end file tag
@@ -175,9 +182,16 @@ public class XliffWriter extends XliffCommon
       }
    }
 
+   /**
+    * Used for writing source file
+    * 
+    * @param baseDir
+    * @param doc
+    * @param javaLocale
+    */
    public static void write(File baseDir, Resource doc, String javaLocale)
    {
-      write(baseDir, doc, javaLocale, null);
+      write(baseDir, doc, javaLocale, null, true);
    }
 
 }

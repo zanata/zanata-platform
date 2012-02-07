@@ -114,7 +114,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
 
    private boolean isReadOnly(EntityStatus projectStatus, EntityStatus iterStatus)
    {
-      boolean current = projectStatus.equals(EntityStatus.Current) && iterStatus.equals(EntityStatus.Current);
+      boolean current = projectStatus.equals(EntityStatus.ACTIVE) && iterStatus.equals(EntityStatus.ACTIVE);
       return !current;
    }
 
@@ -159,18 +159,18 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       Session session = (Session) Component.getInstance("session");
 
       EntityStatus projectStatus = (EntityStatus) session.createQuery("select p.status from HProject as p where p.slug = :slug").setParameter("slug", workspaceId.getProjectIterationId().getProjectSlug()).uniqueResult();
-      if (projectStatus.equals(EntityStatus.Obsolete))
+      if (projectStatus.equals(EntityStatus.OBSOLETE))
       {
          throw new NoSuchWorkspaceException("Project is obsolete");
       }
 
       EntityStatus projectIterationStatus = (EntityStatus) session.createQuery("select it.status from HProjectIteration it where it.slug = :slug and it.project.slug = :pslug").setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug()).setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug()).uniqueResult();
-      if (projectIterationStatus.equals(EntityStatus.Obsolete))
+      if (projectIterationStatus.equals(EntityStatus.OBSOLETE))
       {
          throw new NoSuchWorkspaceException("Project Iteration is obsolete");
       }
 
-      String workspaceName = (String) session.createQuery("select it.project.name || ' (' || it.slug || ')' " + "from HProjectIteration it " + "where it.slug = :slug " + "and it.project.slug = :pslug " + "and it.status <> :status").setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug()).setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug()).setParameter("status", EntityStatus.Obsolete).uniqueResult();
+      String workspaceName = (String) session.createQuery("select it.project.name || ' (' || it.slug || ')' " + "from HProjectIteration it " + "where it.slug = :slug " + "and it.project.slug = :pslug " + "and it.status <> :status").setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug()).setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug()).setParameter("status", EntityStatus.OBSOLETE).uniqueResult();
       if (workspaceName == null)
       {
          throw new NoSuchWorkspaceException("Invalid workspace Id");

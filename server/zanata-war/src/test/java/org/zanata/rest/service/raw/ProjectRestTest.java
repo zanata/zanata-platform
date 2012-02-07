@@ -88,7 +88,7 @@ public class ProjectRestTest extends ZanataRawRestTest
             Project project = jaxbUnmarshal(response, Project.class);
             assertThat(project.getId(), is("sample-project"));
             assertThat(project.getDescription(), is("An example Project"));
-            assertThat(project.getStatus(), is(EntityStatus.Current));
+            assertThat(project.getStatus(), is(EntityStatus.ACTIVE));
             assertThat(project.getName(), is("Sample Project"));
             assertThat(project.getType(), is(ProjectType.IterationProject));
             assertThat(project.getIterations().size(), is(2));
@@ -96,12 +96,12 @@ public class ProjectRestTest extends ZanataRawRestTest
             // Iteration 1
             ProjectIteration iteration = project.getIterations().get(0);
             assertThat(iteration.getId(), is("1.0"));
-            assertThat(iteration.getStatus(), is(EntityStatus.Current));
+            assertThat(iteration.getStatus(), is(EntityStatus.ACTIVE));
             
             // Iteration 2
             iteration = project.getIterations().get(1);
             assertThat(iteration.getId(), is("1.1"));
-            assertThat(iteration.getStatus(), is(EntityStatus.Current));
+            assertThat(iteration.getStatus(), is(EntityStatus.ACTIVE));
          }
       }.run();
    }
@@ -126,7 +126,7 @@ public class ProjectRestTest extends ZanataRawRestTest
             Project project = jsonUnmarshal(response, Project.class);
             assertThat(project.getId(), is("sample-project"));
             assertThat(project.getDescription(), is("An example Project"));
-            assertThat(project.getStatus(), is(EntityStatus.Current));
+            assertThat(project.getStatus(), is(EntityStatus.ACTIVE));
             assertThat(project.getName(), is("Sample Project"));
             assertThat(project.getType(), is(ProjectType.IterationProject));
             assertThat(project.getIterations().size(), is(2));
@@ -134,12 +134,12 @@ public class ProjectRestTest extends ZanataRawRestTest
             // Iteration 1
             ProjectIteration iteration = project.getIterations().get(0);
             assertThat(iteration.getId(), is("1.0"));
-            assertThat(iteration.getStatus(), is(EntityStatus.Current));
+            assertThat(iteration.getStatus(), is(EntityStatus.ACTIVE));
             
             // Iteration 2
             iteration = project.getIterations().get(1);
             assertThat(iteration.getId(), is("1.1"));
-            assertThat(iteration.getStatus(), is(EntityStatus.Current));
+            assertThat(iteration.getStatus(), is(EntityStatus.ACTIVE));
          }
       }.run();
    }
@@ -148,7 +148,7 @@ public class ProjectRestTest extends ZanataRawRestTest
    public void putXml() throws Exception
    {
       final Project project = new Project("test-project", "Test Project", ProjectType.IterationProject, "This is a Test project");
-      project.setStatus(EntityStatus.Current);
+      project.setStatus(EntityStatus.ACTIVE);
       project.getIterations(true).add( new ProjectIteration("test-1.0") );
       project.getIterations(true).add( new ProjectIteration("test-2.0") );
       
@@ -173,7 +173,7 @@ public class ProjectRestTest extends ZanataRawRestTest
    public void putJson() throws Exception
    {
       final Project project = new Project("test-project", "Test Project", ProjectType.IterationProject, "This is a Test project");
-      project.setStatus(EntityStatus.Current);
+      project.setStatus(EntityStatus.ACTIVE);
       project.getIterations(true).add( new ProjectIteration("test-1.0") );
       project.getIterations(true).add( new ProjectIteration("test-2.0") );
       

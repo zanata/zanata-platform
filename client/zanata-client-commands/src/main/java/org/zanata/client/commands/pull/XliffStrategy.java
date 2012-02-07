@@ -65,7 +65,7 @@ public class XliffStrategy implements PullStrategy
    @Override
    public void writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
    {
-      XliffWriter.write(opts.getTransDir(), doc, localeMapping.getJavaLocale(), targetDoc);
+      XliffWriter.write(opts.getTransDir(), doc, localeMapping.getJavaLocale(), targetDoc, opts.getCreateSkeletons());
    }
 
 }

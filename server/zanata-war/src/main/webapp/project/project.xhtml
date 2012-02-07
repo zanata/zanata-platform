@@ -16,17 +16,17 @@
     <s:decorate id="main_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 
-    <s:fragment rendered="#{projectHome.instance.status == 'Current'}">
+    <s:fragment rendered="#{projectHome.instance.status == 'ACTIVE'}">
         <h1>#{messages['jsf.ProjectId']}: #{projectHome.instance.slug}</h1>
         <h1>#{messages['jsf.Name']}: #{projectHome.instance.name}</h1>
     </s:fragment>
     
-    <s:fragment rendered="#{projectHome.instance.status == 'Retired'}">
-        <h1>#{messages['jsf.ProjectId']}: <span class="retired">#{projectHome.instance.slug}</span></h1>
-        <h1>#{messages['jsf.Name']}: <span class="retired">#{projectHome.instance.name}</span></h1>
+    <s:fragment rendered="#{projectHome.instance.status == 'READONLY'}">
+        <h1>#{messages['jsf.ProjectId']}: <span class="readonly">#{projectHome.instance.slug}</span></h1>
+        <h1>#{messages['jsf.Name']}: <span class="readonly">#{projectHome.instance.name}</span></h1>
     </s:fragment>
     
-    <s:fragment rendered="#{projectHome.instance.status == 'Obsolete'}">
+    <s:fragment rendered="#{projectHome.instance.status == 'OBSOLETE'}">
         <h1>#{messages['jsf.ProjectId']}: <span class="obsolete">#{projectHome.instance.slug}</span></h1>
         <h1>#{messages['jsf.Name']}: <span class="obsolete">#{projectHome.instance.name}</span></h1>
     </s:fragment>
@@ -36,10 +36,10 @@
 
     <rich:spacer height="10px" />
     
-    <s:fragment rendered="#{projectHome.currentIterations.size > 0}">
-        <h2>#{messages['jsf.CurrentIterations']}</h2>
-	    <rich:dataGrid id="currentIterations" columns="1"
-	                   value="#{projectHome.currentIterations}"
+    <s:fragment rendered="#{projectHome.activeIterations.size > 0}">
+        <h2>#{messages['jsf.ActiveIterations']}</h2>
+	    <rich:dataGrid id="activeIterations" columns="1"
+	                   value="#{projectHome.activeIterations}"
 	                   var="_iteration"
 	                   rowKeyVar="_it" >
 	      <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" headerClass="iterationHeader_active">
@@ -48,12 +48,12 @@
 	    </rich:dataGrid>
     </s:fragment>
 
-    <s:fragment rendered="#{projectHome.retiredIterations.size > 0}">
-      <h2>#{messages['jsf.RetiredIterations']}</h2>
-      <rich:dataGrid id="retiredIterations" columns="1"
-                     value="#{projectHome.retiredIterations}"
+    <s:fragment rendered="#{projectHome.readOnlyIterations.size > 0}">
+      <h2>#{messages['jsf.ReadOnlyIterations']}</h2>
+      <rich:dataGrid id="readOnlyIterations" columns="1"
+                     value="#{projectHome.readOnlyIterations}"
                      var="_iteration">
-        <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" headerClass="iterationHeader_retired" opened="#{false}">
+        <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" headerClass="iterationHeader_readOnly" opened="#{false}">
           <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
         </rich:simpleTogglePanel>
       </rich:dataGrid>

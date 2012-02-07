@@ -92,7 +92,7 @@ public class ProjectHome extends SlugHome<HIterationProject>
       // when id is invalid and conversation will not
       // start
 
-      if (ip.getStatus().equals(EntityStatus.Obsolete) && !checkViewObsolete())
+      if (ip.getStatus().equals(EntityStatus.OBSOLETE) && !checkViewObsolete())
       {
          throw new EntityNotFoundException();
       }
@@ -149,14 +149,14 @@ public class ProjectHome extends SlugHome<HIterationProject>
       return retValue;
    }
 
-   public List<HProjectIteration> getCurrentIterations()
+   public List<HProjectIteration> getActiveIterations()
    {
-      return projectDAO.getCurrentIterations(slug);
+      return projectDAO.getActiveIterations(slug);
    }
 
-   public List<HProjectIteration> getRetiredIterations()
+   public List<HProjectIteration> getReadOnlyIterations()
    {
-      return projectDAO.getRetiredIterations(slug);
+      return projectDAO.getReadOnlyIterations(slug);
    }
 
    public List<HProjectIteration> getObsoleteIterations()
@@ -226,7 +226,7 @@ public class ProjectHome extends SlugHome<HIterationProject>
 
    public boolean isReadOnly(HProjectIteration iteration)
    {
-      if (getInstance().getStatus() != EntityStatus.Current || (iteration != null && iteration.getStatus() != EntityStatus.Current))
+      if (getInstance().getStatus() != EntityStatus.ACTIVE || (iteration != null && iteration.getStatus() != EntityStatus.ACTIVE))
       {
          return true;
       }

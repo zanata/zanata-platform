@@ -20,8 +20,8 @@
  */
 package org.zanata.rest.service;
 
-import static org.zanata.common.EntityStatus.Obsolete;
-import static org.zanata.common.EntityStatus.Retired;
+import static org.zanata.common.EntityStatus.OBSOLETE;
+import static org.zanata.common.EntityStatus.READONLY;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -169,14 +169,14 @@ public class ProjectIterationService implements ProjectIterationResource
          return Response.status(Status.NOT_FOUND).entity("Project '" + projectSlug + "' not found.").build();
       }
       // Project is Obsolete
-      else if( ZanataUtil.in(hProject.getStatus(), Obsolete) )
+      else if( ZanataUtil.in(hProject.getStatus(), OBSOLETE) )
       {
          return Response.status(Status.NOT_FOUND).entity("Project '" + projectSlug + "' is obsolete.").build();
       }
-      // Project is retired
-      else if( ZanataUtil.in(hProject.getStatus(), Retired) )
+      // Project is ReadOnly
+      else if( ZanataUtil.in(hProject.getStatus(), READONLY) )
       {
-         return Response.status(Status.FORBIDDEN).entity("Project '" + projectSlug + "' is retired.").build();
+         return Response.status(Status.FORBIDDEN).entity("Project '" + projectSlug + "' is readOnly.").build();
       }
 
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
@@ -199,16 +199,16 @@ public class ProjectIterationService implements ProjectIterationResource
          changed = true;
       }
       // Iteration is Obsolete
-      else if( ZanataUtil.in(hProjectIteration.getStatus(), Obsolete) )
+      else if( ZanataUtil.in(hProjectIteration.getStatus(), OBSOLETE) )
       {
          response = Response.status(Status.NOT_FOUND);
          return response.entity("Obsolete Iteration.").build();
       }
-      // Iteration is retired
-      else if( ZanataUtil.in(hProjectIteration.getStatus(), Retired) )
+      // Iteration is ReadOnly
+      else if( ZanataUtil.in(hProjectIteration.getStatus(), READONLY) )
       {
          response = Response.status(Status.FORBIDDEN);
-         return response.entity("Retired Iteration.").build();
+         return response.entity("ReadOnly Iteration.").build();
       }
       else
       { // must be an update operation

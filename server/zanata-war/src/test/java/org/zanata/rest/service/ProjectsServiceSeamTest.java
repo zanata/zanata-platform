@@ -56,7 +56,7 @@ public class ProjectsServiceSeamTest extends ZanataDBUnitSeamTest
       // Obsolete projects should not appear
       for( Project p : response.getEntity() )
       {
-         assertFalse( p.getStatus() == EntityStatus.Obsolete );
+         assertFalse( p.getStatus() == EntityStatus.OBSOLETE );
       }
 
    }

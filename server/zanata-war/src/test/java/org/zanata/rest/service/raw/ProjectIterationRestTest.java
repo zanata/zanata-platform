@@ -84,7 +84,7 @@ public class ProjectIterationRestTest extends ZanataRawRestTest
             
             ProjectIteration iteration = jaxbUnmarshal(response, ProjectIteration.class);
             assertThat(iteration.getId(), is("1.0"));
-            assertThat(iteration.getStatus(), is(EntityStatus.Current));
+            assertThat(iteration.getStatus(), is(EntityStatus.ACTIVE));
          }
       }.run();
    }
@@ -108,7 +108,7 @@ public class ProjectIterationRestTest extends ZanataRawRestTest
             
             ProjectIteration iteration = jsonUnmarshal(response, ProjectIteration.class);
             assertThat(iteration.getId(), is("1.0"));
-            assertThat(iteration.getStatus(), is(EntityStatus.Current));
+            assertThat(iteration.getStatus(), is(EntityStatus.ACTIVE));
          }
       }.run();
    }
@@ -174,7 +174,7 @@ public class ProjectIterationRestTest extends ZanataRawRestTest
    public void putXml() throws Exception
    {
       final ProjectIteration iteration = new ProjectIteration("test-iteration");
-      iteration.setStatus(EntityStatus.Current);
+      iteration.setStatus(EntityStatus.ACTIVE);
       
       new ResourceRequest(sharedEnvironment, Method.PUT, "/restv1/projects/p/sample-project/iterations/i/test-iteration")
       {
@@ -197,7 +197,7 @@ public class ProjectIterationRestTest extends ZanataRawRestTest
    public void putJson() throws Exception
    {
       final ProjectIteration iteration = new ProjectIteration("test-iteration");
-      iteration.setStatus(EntityStatus.Current);
+      iteration.setStatus(EntityStatus.ACTIVE);
       
       new ResourceRequest(sharedEnvironment, Method.PUT, "/restv1/projects/p/sample-project/iterations/i/test-iteration-json")
       {
