@@ -28,8 +28,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.log.Log;
 
 /**
  * Get the URL for the current page in URL encoded format for use in the query
@@ -42,6 +44,9 @@ import org.jboss.seam.annotations.Scope;
 @AutoCreate
 public class UrlUtil implements Serializable
 {
+
+   @Logger
+   private Log log;
 
    /**
     * 
@@ -60,9 +65,21 @@ public class UrlUtil implements Serializable
     */
    public String getEncodedLocalUrl(HttpServletRequest request)
    {
-      String url = (String) request.getAttribute("javax.servlet.forward.context_path");
-      url += (String) request.getAttribute("javax.servlet.forward.servlet_path");
-      String queryString = (String) request.getAttribute("javax.servlet.forward.query_string");
+      String url, queryString;
+      if (request.getAttribute("javax.servlet.forward.request_uri") != null)
+      {
+         url = (String) request.getAttribute("javax.servlet.forward.context_path");
+         url += (String) request.getAttribute("javax.servlet.forward.servlet_path");
+         queryString = (String) request.getAttribute("javax.servlet.forward.query_string");
+      }
+      else
+      {
+         url = request.getRequestURI();
+         queryString = request.getQueryString();
+         log.warn("encountered non-rewritten url {0} with query string {1}", url, queryString);
+      }
+
+
       if (queryString != null && queryString.length() > 0)
       {
          url += "?" + queryString;

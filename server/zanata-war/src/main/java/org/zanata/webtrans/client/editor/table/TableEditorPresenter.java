@@ -29,6 +29,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.common.EditState;
+import org.zanata.common.EntityStatus;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateAction;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateHandler;
 import org.zanata.webtrans.client.editor.DocumentEditorPresenter;
@@ -48,6 +49,10 @@ import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.events.ProjectIterationUpdateEvent;
+import org.zanata.webtrans.client.events.ProjectIterationUpdateEventHandler;
+import org.zanata.webtrans.client.events.ProjectUpdateEvent;
+import org.zanata.webtrans.client.events.ProjectUpdateEventHandler;
 import org.zanata.webtrans.client.events.RedoFailureEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TransMemoryCopyEvent;
@@ -71,6 +76,7 @@ import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.EditingTranslationAction;
 import org.zanata.webtrans.shared.rpc.EditingTranslationResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
@@ -180,6 +186,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
    private final FilterViewConfirmationPanel filterViewConfirmationPanel = new FilterViewConfirmationPanel();
 
+   private final WorkspaceContext workspaceContext;
+
    private boolean filterTranslated, filterNeedReview, filterUntranslated;
 
    private final UndoableTransUnitUpdateHandler undoableTransUnitUpdateHandler = new UndoableTransUnitUpdateHandler()
@@ -248,12 +256,13 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    };
 
    @Inject
-   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages)
+   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
       this.identity = identity;
       this.messages = messages;
+      this.workspaceContext = workspaceContext;
    }
 
    private void clearCacheList()
@@ -372,7 +381,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          {
             if (event.getSelectedItem() != null)
             {
-               display.setTransUnitDetails(event.getSelectedItem());
                display.getTargetCellEditor().savePendingChange(true);
                selectTransUnit(event.getSelectedItem());
             }
@@ -600,6 +608,64 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             display.getTargetCellEditor().updateValidationMessagePanel(event.getErrors());
          }
       }));
+
+      registerHandler(eventBus.addHandler(ProjectUpdateEvent.getType(), new ProjectUpdateEventHandler()
+      {
+         @Override
+         public void onProjectUpdated(ProjectUpdateEvent event)
+         {
+            if (workspaceContext.isReadOnly() == (event.getProjectStatus() != EntityStatus.Current))
+            {
+               return;
+            }
+
+            if (event.getProjectStatus() != EntityStatus.Current)
+            {
+               workspaceContext.setReadOnly(true);
+               display.getTargetCellEditor().setReadOnly(true);
+               eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyReadOnlyWorkspace()));
+            }
+            else
+            {
+               workspaceContext.setReadOnly(false);
+               display.getTargetCellEditor().setReadOnly(false);
+               eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyEditableWorkspace()));
+            }
+         }
+      }));
+
+      registerHandler(eventBus.addHandler(ProjectIterationUpdateEvent.getType(), new ProjectIterationUpdateEventHandler()
+      {
+         @Override
+         public void onProjectIterationUpdated(ProjectIterationUpdateEvent event)
+         {
+            if ((event.getProjectStatus() != EntityStatus.Current) || (event.getProjectIterationStatus() != EntityStatus.Current))
+            {
+               if (!workspaceContext.isReadOnly())
+               {
+                  workspaceContext.setReadOnly(true);
+                  eventBus.fireEvent(new ButtonDisplayChangeEvent(false));
+                  display.getTargetCellEditor().setReadOnly(true);
+                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyReadOnlyWorkspace()));
+               }
+            }
+            else
+            {
+               if (workspaceContext.isReadOnly())
+               {
+                  workspaceContext.setReadOnly(false);
+                  eventBus.fireEvent(new ButtonDisplayChangeEvent(true));
+                  display.getTargetCellEditor().setReadOnly(false);
+                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyEditableWorkspace()));
+               }
+            }
+         }
+      }));
+
+      if (workspaceContext.isReadOnly())
+      {
+         display.setShowCopyButtons(false);
+      }
 
       display.gotoFirstPage();
 
@@ -1124,6 +1190,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    public void selectTransUnit(TransUnit transUnit)
    {
       tableModelHandler.updatePageAndRowIndex();
+
+      display.setTransUnitDetails(transUnit);
 
       if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
       {

@@ -23,23 +23,16 @@ package org.zanata.action;
 import java.util.List;
 
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.security.Identity;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HDocument;
-import org.zanata.process.IterationZipFileBuildProcess;
-import org.zanata.process.IterationZipFileBuildProcessHandle;
-import org.zanata.process.ProcessHandle;
-import org.zanata.security.BaseSecurityChecker;
+import org.zanata.model.HLocale;
 
 @Name("projectIterationFilesAction")
 @Scope(ScopeType.PAGE)
@@ -55,6 +48,9 @@ public class ProjectIterationFilesAction
    @In
    private DocumentDAO documentDAO;
    
+   @In
+   private LocaleDAO localeDAO;
+
    private List<HDocument> iterationDocuments;
    
    private String documentNameFilter;
@@ -65,6 +61,11 @@ public class ProjectIterationFilesAction
       this.iterationDocuments = this.documentDAO.getAllByProjectIteration(this.projectSlug, this.iterationSlug);
    }
    
+   public HLocale getLocale()
+   {
+      return localeDAO.findByLocaleId(new LocaleId(localeId));
+   }
+
    public boolean filterDocumentByName( Object docObject )
    {
       final HDocument document = (HDocument)docObject;

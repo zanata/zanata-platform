@@ -58,6 +58,9 @@ public class HistoryToken
          return historyToken;
       }
 
+      // decode characters that may still be url-encoded
+      token = token.replaceAll("%3A", ":").replaceAll("%3B", ";").replaceAll("%2F", "/");
+
       for (String pairString : token.split(PAIR_SEPARATOR))
       {
          String[] pair = pairString.split(DELIMITER_K_V);

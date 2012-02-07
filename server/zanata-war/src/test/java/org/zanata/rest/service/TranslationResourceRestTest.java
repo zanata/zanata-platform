@@ -8,6 +8,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isOneOf;
 import static org.hamcrest.Matchers.notNullValue;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -800,14 +802,19 @@ public class TranslationResourceRestTest extends ZanataRestTest
       target.setTranslator(new Person("root@localhost", "Admin user"));
       entity.getTextFlowTargets().add(target);
       
+      // Future Date for the PO Revision Date Header
+      Calendar poRevDate = Calendar.getInstance();
+      poRevDate.add(Calendar.YEAR, 1); // 1 year in the future
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mmZ");
+      
       // Add initial headers to the translations
       PoTargetHeader transHeader = new PoTargetHeader();
       transHeader.getEntries().add( new HeaderEntry(HeaderFields.KEY_LastTranslator, "Test User <test@zanata.org>") );
-      transHeader.getEntries().add( new HeaderEntry(HeaderFields.KEY_PoRevisionDate, "2013-01-01 09:00+1000") ); // Date in the future
+      transHeader.getEntries().add( new HeaderEntry(HeaderFields.KEY_PoRevisionDate, dateFormat.format(poRevDate.getTime())) ); // Date in the future
       entity.getExtensions(true).add( transHeader );
       
       // Push the translations
-      ClientResponse<String> putResponse = transResource.putTranslations("my.txt", de_DE, entity, null);
+      ClientResponse<String> putResponse = transResource.putTranslations("my.txt", de_DE, entity, new StringSet("gettext"));
       assertThat(putResponse.getResponseStatus(), is(Status.OK));
       
       // Get the translations with PO headers
@@ -828,7 +835,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
          }
          else if( entry.getKey().equals(HeaderFields.KEY_PoRevisionDate) )
          {
-            assertThat( entry.getValue().trim(), is("2008-01-01 09:00+1000") );
+            assertThat( entry.getValue().trim(), is( dateFormat.format(poRevDate.getTime()) ) );
          }
       }
    }

@@ -745,7 +745,10 @@ public class ResourceUtils
          headerEntry = new HeaderEntry(LANGUAGE_TEAM_HDR, this.getLanguageTeam(locale));
          headerEntries.add( headerEntry );
       }
-      // Keep the original value if provided
+      else
+      {
+         // Keep the original value if provided
+      }
       
       headerEntry = containedHeaders.get( LANGUAGE_HDR );
       if( headerEntry == null )
@@ -786,7 +789,10 @@ public class ResourceUtils
          headerEntry = new HeaderEntry(PLURAL_FORMS_HDR, this.getPluralForms(locale));
          headerEntries.add(headerEntry);
       }
-      // Keep the original if provided
+      else
+      {
+         // Keep the original if provided
+      }
    }
    
    /**

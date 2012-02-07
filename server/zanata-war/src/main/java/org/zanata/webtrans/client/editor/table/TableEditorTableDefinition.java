@@ -183,7 +183,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             }
 
          });
-         
+
          topSourcePanel.add(copyButton);
          copyButtons.add(copyButton);
          
@@ -351,13 +351,10 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          }
       };
       
-      this.targetCellEditor = new InlineTargetCellEditor(messages, cancelCallBack, transValueCallBack, eventBus);
+      this.targetCellEditor = new InlineTargetCellEditor(messages, cancelCallBack, transValueCallBack, eventBus, isReadOnly);
       this.transUnitDetailsContent = new TransUnitDetailsPanel(messages.transUnitDetailsHeading());
 
-      if (!isReadOnly)
-      {
-         targetColumnDefinition.setCellEditor(targetCellEditor);
-      }
+      targetColumnDefinition.setCellEditor(targetCellEditor);
 
       // See _INDEX consts above if modifying!
       // addColumnDefinition(indicatorColumnDefinition);

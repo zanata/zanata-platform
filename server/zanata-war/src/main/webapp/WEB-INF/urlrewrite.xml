@@ -60,8 +60,24 @@
   </rule>
 
   <rule>
-    <from casesensitive="true">^/project/view/(.+)$</from>
+    <from casesensitive="true">^/project/view/([^/]+)/?$</from>
     <to last="true">/project/project.seam\?slug=$1</to>
+  </rule>
+
+  <rule>
+    <from casesensitive="true">^/project/view/([^/]+)/iter/([^/]+)/files/([^/]+)/?$</from>
+    <to last="true">/project/iteration_files.seam\?project=$1&amp;iteration=$2&amp;localeId=$3</to>
+  </rule>
+
+  <!-- zanata.xml -->
+  <rule>
+    <from casesensitive="true">^/project/view/([^/]+)/iter/([^/]+)/config/?$</from>
+    <to last="true">/project/project.seam\?projectSlug=$1&amp;iterationSlug=$2&amp;actionMethod=project%2Fproject.xhtml%3AconfigurationAction.getData</to>
+  </rule>
+
+  <rule>
+    <from casesensitive="true">^/project/view/([^/]+)/iter/([^/]+)/stats/?$</from>
+    <to last="true">/project/iteration_status.seam\?projectSlug=$1&amp;iterationSlug=$2</to>
   </rule>
 
   <rule>
@@ -208,6 +224,18 @@
   <outbound-rule>
     <from>^(/.+)?/project/project.seam\?slug=(.+)$</from>
     <to>$1/project/view/$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/project/iteration_files.seam\?project=([^&amp;]+)&amp;iteration=([^&amp;]+)&amp;localeId=([^&amp;]+)$</from>
+    <to>$1/project/view/$2/iter/$3/files/$4</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/project/project.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)(?:&amp;slug=[^&amp;]+)?&amp;actionMethod=project%2Fproject\.xhtml%3AconfigurationAction\.getData.*$</from>
+    <to>$1/project/view/$2/iter/$3/config</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/project/iteration_status.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)$</from>
+    <to>$1/project/view/$2/iter/$3/stats</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/project/home.seam(.+)?$</from>

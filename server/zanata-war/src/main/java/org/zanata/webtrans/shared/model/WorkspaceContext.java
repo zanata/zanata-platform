@@ -51,4 +51,9 @@ public class WorkspaceContext implements Serializable
       return readOnly;
    }
 
+   public void setReadOnly(boolean readOnly)
+   {
+      this.readOnly = readOnly;
+   }
+
 }

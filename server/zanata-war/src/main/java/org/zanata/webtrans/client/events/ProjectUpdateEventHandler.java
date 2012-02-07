@@ -1,5 +1,5 @@
 /*
- * Copyright 2011, Red Hat, Inc. and individual contributors
+ * Copyright 2010, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,19 +18,11 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.zanata.webtrans.client.events;
 
-package org.zanata.webtrans.server;
+import com.google.gwt.event.shared.EventHandler;
 
-import org.zanata.webtrans.shared.NoSuchWorkspaceException;
-import org.zanata.webtrans.shared.model.WorkspaceId;
-
-/**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
- */
-public interface TranslationWorkspaceManager
+public interface ProjectUpdateEventHandler extends EventHandler
 {
-
-   public TranslationWorkspace getOrRegisterWorkspace(WorkspaceId workspaceId) throws NoSuchWorkspaceException;
-
+   void onProjectUpdated(ProjectUpdateEvent event);
 }
