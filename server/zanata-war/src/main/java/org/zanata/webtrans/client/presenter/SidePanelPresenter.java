@@ -27,18 +27,13 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.common.EntityStatus;
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
-import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.events.ProjectIterationUpdateEvent;
-import org.zanata.webtrans.client.events.ProjectIterationUpdateEventHandler;
-import org.zanata.webtrans.client.events.ProjectUpdateEvent;
-import org.zanata.webtrans.client.events.ProjectUpdateEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
-import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.EditorConfigConstants;
 import org.zanata.webtrans.client.ui.EditorOptionsPanel;
 
@@ -180,47 +175,16 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
          }
       }));
       
-      registerHandler(eventBus.addHandler(ProjectUpdateEvent.getType(), new ProjectUpdateEventHandler()
+      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
       {
          @Override
-         public void onProjectUpdated(ProjectUpdateEvent event)
+         public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
          {
-            if (event.getProjectStatus() != EntityStatus.Current)
-            {
-               editorOptionsPanel.getEditorButtonsChk().setValue(false);
-               editorOptionsPanel.getEditorButtonsChk().setEnabled(false);
-               editorOptionsPanel.getEnterChk().setEnabled(false);
-               editorOptionsPanel.getEscChk().setEnabled(false);
-            }
-            else
-            {
-               editorOptionsPanel.getEditorButtonsChk().setValue(true);
-               editorOptionsPanel.getEditorButtonsChk().setEnabled(true);
-               editorOptionsPanel.getEnterChk().setEnabled(true);
-               editorOptionsPanel.getEscChk().setEnabled(true);
-            }
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(ProjectIterationUpdateEvent.getType(), new ProjectIterationUpdateEventHandler()
-      {
-         @Override
-         public void onProjectIterationUpdated(ProjectIterationUpdateEvent event)
-         {
-            if ((event.getProjectStatus() != EntityStatus.Current) || (event.getProjectIterationStatus() != EntityStatus.Current))
-            {
-               editorOptionsPanel.getEditorButtonsChk().setValue(false);
-               editorOptionsPanel.getEditorButtonsChk().setEnabled(false);
-               editorOptionsPanel.getEnterChk().setEnabled(false);
-               editorOptionsPanel.getEscChk().setEnabled(false);
-            }
-            else
-            {
-               editorOptionsPanel.getEditorButtonsChk().setValue(true);
-               editorOptionsPanel.getEditorButtonsChk().setEnabled(true);
-               editorOptionsPanel.getEnterChk().setEnabled(true);
-               editorOptionsPanel.getEscChk().setEnabled(true);
-            }
+            boolean active = !event.isReadOnly();
+            editorOptionsPanel.getEditorButtonsChk().setValue(active);
+            editorOptionsPanel.getEditorButtonsChk().setEnabled(active);
+            editorOptionsPanel.getEnterChk().setEnabled(active);
+            editorOptionsPanel.getEscChk().setEnabled(active);
          }
       }));
    }

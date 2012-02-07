@@ -22,7 +22,7 @@ package org.zanata.webtrans.client.events;
 
 import com.google.gwt.event.shared.EventHandler;
 
-public interface ProjectUpdateEventHandler extends EventHandler
+public interface WorkspaceContextUpdateEventHandler extends EventHandler
 {
-   void onProjectUpdated(ProjectUpdateEvent event);
+   void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event);
 }

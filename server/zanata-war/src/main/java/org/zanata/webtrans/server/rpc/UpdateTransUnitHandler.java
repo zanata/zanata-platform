@@ -39,7 +39,6 @@ import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.ContentState;
-import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -135,6 +134,13 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       ZanataIdentity.instance().checkLoggedIn();
       log.debug("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContent());
 
+      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
+
+      if (workspace.getWorkspaceContext().isReadOnly())
+      {
+         throw new ActionException("Project or version is read-only");
+      }
+
       HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
       LocaleId locale = action.getWorkspaceId().getLocaleId();
       HAccount authenticatedAccount = (HAccount) Contexts.getSessionContext().get(JpaIdentityStore.AUTHENTICATED_USER);
@@ -165,11 +171,6 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
                throw new ActionException("Find conflict, Redo Failure.");
             }
          }
-      }
-
-      if (!hTextFlow.getDocument().getProjectIteration().getProject().getStatus().equals(EntityStatus.Current) || !hTextFlow.getDocument().getProjectIteration().getStatus().equals(EntityStatus.Current))
-      {
-         throw new ActionException("Project/Project iteration is read only");
       }
 
       boolean targetChanged = false;
@@ -245,7 +246,6 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       // @formatter:on
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu, ZanataIdentity.instance().getCredentials().getUsername());
 
-      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
       workspace.publish(event);
 
       UpdateTransUnitResult result = new UpdateTransUnitResult(true);

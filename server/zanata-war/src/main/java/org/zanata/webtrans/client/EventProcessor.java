@@ -6,8 +6,7 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
-import org.zanata.webtrans.client.events.ProjectIterationUpdateEvent;
-import org.zanata.webtrans.client.events.ProjectUpdateEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -16,12 +15,10 @@ import org.zanata.webtrans.shared.rpc.EnterWorkspace;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.HasEnterWorkspaceData;
 import org.zanata.webtrans.shared.rpc.HasExitWorkspaceData;
-import org.zanata.webtrans.shared.rpc.HasProjectIterationUpdateData;
-import org.zanata.webtrans.shared.rpc.HasProjectUpdateData;
+import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
 import org.zanata.webtrans.shared.rpc.HasTransUnitEditData;
 import org.zanata.webtrans.shared.rpc.HasTransUnitUpdatedData;
-import org.zanata.webtrans.shared.rpc.ProjectIterationUpdate;
-import org.zanata.webtrans.shared.rpc.ProjectUpdate;
+import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
 import org.zanata.webtrans.shared.rpc.TransUnitEditing;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
@@ -97,21 +94,12 @@ public class EventProcessor implements RemoteEventListener
             }
          });
 
-         factories.put(ProjectUpdate.class, new EventFactory<ProjectUpdateEvent>()
+         factories.put(WorkspaceContextUpdate.class, new EventFactory<WorkspaceContextUpdateEvent>()
          {
             @Override
-            public ProjectUpdateEvent create(SessionEventData event)
+            public WorkspaceContextUpdateEvent create(SessionEventData event)
             {
-               return new ProjectUpdateEvent((HasProjectUpdateData) event);
-            }
-         });
-
-         factories.put(ProjectIterationUpdate.class, new EventFactory<ProjectIterationUpdateEvent>()
-         {
-            @Override
-            public ProjectIterationUpdateEvent create(SessionEventData event)
-            {
-               return new ProjectIterationUpdateEvent((HasProjectIterationUpdateData) event);
+               return new WorkspaceContextUpdateEvent((HasWorkspaceContextUpdateData) event);
             }
          });
       }
