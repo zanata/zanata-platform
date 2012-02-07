@@ -37,7 +37,7 @@
     <rich:spacer height="10px" />
     
     <s:fragment rendered="#{projectHome.activeIterations.size > 0}">
-        <h2>#{messages['jsf.ActiveIterations']}</h2>
+        <h2>#{messages['jsf.ActiveVersions']}</h2>
 	    <rich:dataGrid id="activeIterations" columns="1"
 	                   value="#{projectHome.activeIterations}"
 	                   var="_iteration"
@@ -49,7 +49,7 @@
     </s:fragment>
 
     <s:fragment rendered="#{projectHome.readOnlyIterations.size > 0}">
-      <h2>#{messages['jsf.ReadOnlyIterations']}</h2>
+      <h2>#{messages['jsf.ReadOnlyVersions']}</h2>
       <rich:dataGrid id="readOnlyIterations" columns="1"
                      value="#{projectHome.readOnlyIterations}"
                      var="_iteration">
@@ -60,7 +60,7 @@
     </s:fragment>
     
     <s:fragment rendered="#{projectHome.obsoleteIterations.size > 0 and projectIterationAction.checkViewObsolete()}">
-      <h2>#{messages['jsf.ObsoleteIterations']}</h2>
+      <h2>#{messages['jsf.ObsoleteVersions']}</h2>
       <rich:dataGrid id="obsoleteIterations" columns="1"
                      value="#{projectHome.obsoleteIterations}"
                      var="_iteration">

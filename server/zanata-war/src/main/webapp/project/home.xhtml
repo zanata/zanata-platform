@@ -35,13 +35,13 @@
         
         <s:div styleClass="filter-options">
 	        <a4j:region>
-	            <h:selectBooleanCheckbox title="Filter Active projects" value="#{projectAction.showActive}">
+	            <h:selectBooleanCheckbox title="Filter active projects" value="#{projectAction.showActive}">
 	                <a4j:support event="onchange" reRender="main_content" />
 	            </h:selectBooleanCheckbox>
 	            <h:outputText value="#{messages['jsf.Active']}"/>
 	            
 	            <rich:spacer width="5" />
-	            <h:selectBooleanCheckbox title="Filter ReadOnly projects" value="#{projectAction.showReadOnly}">
+	            <h:selectBooleanCheckbox title="Filter read-only projects" value="#{projectAction.showReadOnly}">
 	                <a4j:support event="onchange" reRender="main_content" />
 	            </h:selectBooleanCheckbox>
 	            <h:outputText value="#{messages['jsf.ReadOnly']}"/>
