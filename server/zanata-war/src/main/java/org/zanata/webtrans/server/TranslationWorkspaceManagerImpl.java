@@ -14,8 +14,12 @@ import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.zanata.ZanataInit;
+import org.zanata.action.ProjectHome;
+import org.zanata.action.ProjectIterationHome;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
+import org.zanata.model.HIterationProject;
+import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.PersonId;
@@ -23,6 +27,8 @@ import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
+import org.zanata.webtrans.shared.rpc.ProjectIterationUpdate;
+import org.zanata.webtrans.shared.rpc.ProjectUpdate;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
@@ -74,6 +80,37 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
             log.info("Removing user {0} from workspace {1}", username, workspace.getWorkspaceContext());
             // Send GWT Event to client to update the userlist
             ExitWorkspace event = new ExitWorkspace(new PersonId(username));
+            workspace.publish(event);
+         }
+      }
+   }
+
+   @Observer(ProjectHome.PROJECT_UPDATE)
+   public void projectUpdate(HIterationProject project)
+   {
+      log.info("Project {0} updated", project.getSlug());
+      ImmutableSet<TranslationWorkspace> workspaceSet = ImmutableSet.copyOf(workspaceMap.values());
+      for (TranslationWorkspace workspace : workspaceSet)
+      {
+         if (workspace.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectSlug().equals(project.getSlug()))
+         {
+            ProjectUpdate event = new ProjectUpdate(project.getSlug(), project.getStatus());
+            workspace.publish(event);
+         }
+      }
+   }
+
+   @Observer(ProjectIterationHome.PROJECT_ITERATION_UPDATE)
+   public void projectIterationUpdate(HProjectIteration projectIteration)
+   {
+      log.info("Project iteration {0} updated", projectIteration.getSlug());
+      ImmutableSet<TranslationWorkspace> workspaceSet = ImmutableSet.copyOf(workspaceMap.values());
+      for (TranslationWorkspace workspace : workspaceSet)
+      {
+         if (workspace.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectSlug().equals(projectIteration.getProject().getSlug()) &&
+               workspace.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getIterationSlug().equals(projectIteration.getSlug()))
+         {
+            ProjectIterationUpdate event = new ProjectIterationUpdate(projectIteration.getProject().getSlug(), projectIteration.getProject().getStatus(), projectIteration.getSlug(), projectIteration.getStatus());
             workspace.publish(event);
          }
       }
