@@ -47,4 +47,10 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Failed to Lock TransUnit")
    String notifyLockFailed();
+
+   @DefaultMessage("Workspace is set to read only")
+   String notifyReadOnlyWorkspace();
+
+   @DefaultMessage("Workspace is set to edit mode")
+   String notifyEditableWorkspace();
 }

@@ -21,8 +21,45 @@
 
 package org.zanata.webtrans.server;
 
+import org.zanata.action.ProjectHome;
+import org.zanata.action.ProjectIterationHome;
+import org.zanata.model.HIterationProject;
+import org.zanata.model.HProjectIteration;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rpc.ProjectIterationUpdate;
+import org.zanata.webtrans.shared.rpc.ProjectUpdate;
+            workspace.publish(event);
+         }
+      }
+   }
+
+   @Observer(ProjectHome.PROJECT_UPDATE)
+   public void projectUpdate(HIterationProject project)
+   {
+      log.info("Project {0} updated", project.getSlug());
+      ImmutableSet<TranslationWorkspace> workspaceSet = ImmutableSet.copyOf(workspaceMap.values());
+      for (TranslationWorkspace workspace : workspaceSet)
+      {
+         if (workspace.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectSlug().equals(project.getSlug()))
+         {
+            ProjectUpdate event = new ProjectUpdate(project.getSlug(), project.getStatus());
+            workspace.publish(event);
+         }
+      }
+   }
+
+   @Observer(ProjectIterationHome.PROJECT_ITERATION_UPDATE)
+   public void projectIterationUpdate(HProjectIteration projectIteration)
+   {
+      log.info("Project iteration {0} updated", projectIteration.getSlug());
+      ImmutableSet<TranslationWorkspace> workspaceSet = ImmutableSet.copyOf(workspaceMap.values());
+      for (TranslationWorkspace workspace : workspaceSet)
+      {
+         if (workspace.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectSlug().equals(projectIteration.getProject().getSlug()) && 
+ workspace.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getIterationSlug().equals(projectIteration.getSlug()))
+         {
+            ProjectIterationUpdate event = new ProjectIterationUpdate(projectIteration.getProject().getSlug(), projectIteration.getProject().getStatus(), projectIteration.getSlug(), projectIteration.getStatus());
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>

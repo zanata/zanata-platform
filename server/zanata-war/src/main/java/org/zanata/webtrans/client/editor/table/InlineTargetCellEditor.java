@@ -153,6 +153,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private boolean isFocused = false;
    private boolean isOpened = false;
    private boolean isCancelButtonFocused = false;
+   private boolean isReadOnly;
 
    private boolean untranslatedMode = true, fuzzyMode = true;
    private boolean isEnterKeySavesEnabled = false, isEscKeyCloseEditor = false;
@@ -175,8 +176,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    /**
     * Construct a new {@link InlineTargetCellEditor} with the specified images.
     */
-   public InlineTargetCellEditor(final NavigationMessages messages, CancelCallback<TransUnit> callback, EditRowCallback rowCallback, final EventBus eventBus)
+   public InlineTargetCellEditor(final NavigationMessages messages, CancelCallback<TransUnit> callback, EditRowCallback rowCallback, final EventBus eventBus, final boolean isReadOnly)
    {
+      this.isReadOnly = isReadOnly;
       final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       // Wrap contents in a table
 
@@ -524,6 +526,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    @Override
    public void editCell(CellEditInfo cellEditInfo, TransUnit cellValue, Callback<TransUnit> callback)
    {
+      if (isReadOnly)
+      {
+         return;
+      }
+
       if (isEditing())
       {
          if (cellEditInfo.getCellIndex() == curCol && cellEditInfo.getRowIndex() == curRow)
@@ -795,5 +802,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private void fireValidationEvent(final EventBus eventBus)
    {
       eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSource(), textArea.getText(), false));
+   }
+   
+   public void setReadOnly(boolean isReadOnly)
+   {
+      this.isReadOnly = isReadOnly;
+      // cancelEdit();
    }
 }

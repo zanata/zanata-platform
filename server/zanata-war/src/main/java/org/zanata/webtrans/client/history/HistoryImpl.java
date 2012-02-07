@@ -3,8 +3,6 @@ package org.zanata.webtrans.client.history;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 
-//TODO inject this
-
 /**
  * @author David Mason, damason@redhat.com
  * 

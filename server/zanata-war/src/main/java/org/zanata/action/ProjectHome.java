@@ -53,6 +53,8 @@ public class ProjectHome extends SlugHome<HIterationProject>
 {
    private static final long serialVersionUID = 1L;
 
+   public static final String PROJECT_UPDATE = "project.update";
+   
    private String slug;
 
    @In
@@ -144,7 +146,6 @@ public class ProjectHome extends SlugHome<HIterationProject>
             Events.instance().raiseEvent("projectAdded");
          }
       }
-
       return retValue;
    }
 
@@ -200,7 +201,9 @@ public class ProjectHome extends SlugHome<HIterationProject>
    public String update()
    {
       updateOverrideLocales();
-      return super.update();
+      String state = super.update();
+      Events.instance().raiseEvent(PROJECT_UPDATE, getInstance());
+      return state;
    }
 
    private void updateOverrideLocales()

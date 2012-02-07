@@ -32,6 +32,7 @@ import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.zanata.dao.ProjectDAO;
@@ -45,6 +46,9 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
 {
 
    private static final long serialVersionUID = 1L;
+
+   public static final String PROJECT_ITERATION_UPDATE = "project.iteration.update";
+
    private String slug;
    private String projectSlug;
    @In(required = false)
@@ -170,7 +174,9 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
    public String update()
    {
       updateOverrideLocales();
-      return super.update();
+      String state = super.update();
+      Events.instance().raiseEvent(PROJECT_ITERATION_UPDATE, getInstance());
+      return state;
    }
    
    

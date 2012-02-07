@@ -14,13 +14,13 @@
       	value="#{messages['jsf.ConfigFile']}"
       	title="#{messages['jsf.GenerateProjectConfig']}"
       	action="#{configurationAction.getData}">
-	    <f:param name="iterationSlug" value="#{_iteration.slug}"/>
         <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+	    <f:param name="iterationSlug" value="#{_iteration.slug}"/>
       </s:link>	
       <rich:spacer width="10px" />
       <s:link view="/project/iteration_status.xhtml" propagation="none" value="#{messages['jsf.Statistics']}">
-        <f:param name="iterationSlug" value="#{_iteration.slug}"/>
         <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+        <f:param name="iterationSlug" value="#{_iteration.slug}"/>
       </s:link>
       <rich:spacer width="10px" />
       <s:link view="/project/iteration_edit.xhtml" propagation="none" rendered="#{s:hasPermission(_iteration, 'update')}" value="#{messages['jsf.EditVersion']}">
@@ -45,7 +45,7 @@
 		<f:param name="iteration" value="#{_iteration.slug}"/>
 		<f:param name="localeId" value="#{hLocale.localeId.id}"/>
 		<f:param name="locale" value="#{locale.language}" />
-		#{messages['jsf.View']}
+		#{messages['jsf.Open']}
       </h:outputLink>
       <h:outputLink
           rendered="#{s:hasPermission(hLocale, 'modify-translation') and applicationConfiguration.debug and projectHome.isReadOnly(_iteration)}"
@@ -55,7 +55,7 @@
 		<f:param name="localeId" value="#{hLocale.localeId.id}"/>
 		<f:param name="gwt.codesvr" value="127.0.0.1:9997"/>
 		<f:param name="locale" value="#{locale.language}" />
-		#{messages['jsf.ViewGWTDevMode']}
+		#{messages['jsf.OpenGWTDevMode']}
       </h:outputLink>
       
       <h:outputLink

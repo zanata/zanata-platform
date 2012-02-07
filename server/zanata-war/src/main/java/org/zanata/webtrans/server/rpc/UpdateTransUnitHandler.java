@@ -169,7 +169,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
       if (!hTextFlow.getDocument().getProjectIteration().getProject().getStatus().equals(EntityStatus.Current) || !hTextFlow.getDocument().getProjectIteration().getStatus().equals(EntityStatus.Current))
       {
-         throw new ActionException("Project/Project iteration status is not current.");
+         throw new ActionException("Project/Project iteration is read only");
       }
 
       boolean targetChanged = false;
