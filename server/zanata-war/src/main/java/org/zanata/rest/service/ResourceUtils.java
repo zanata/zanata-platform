@@ -6,13 +6,14 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -705,7 +706,8 @@ public class ResourceUtils
    private void populateHeaderEntries( final List<HeaderEntry> headerEntries, final List<HTextFlowTarget> hTargets,
                                        final HLocale locale)
    {
-      final Map<String, HeaderEntry> containedHeaders = new HashMap<String, HeaderEntry>( headerEntries.size() );
+      final Map<String, HeaderEntry> containedHeaders = new LinkedHashMap<String, HeaderEntry>( headerEntries.size() );
+      HTextFlowTarget lastTranslatedTarget = this.getLastTranslatedTarget(hTargets);
       
       // Collect the existing header entries
       for( HeaderEntry entry : headerEntries )
@@ -714,35 +716,50 @@ public class ResourceUtils
       }
       
       // Add / Replace headers
-      HeaderEntry headerEntry = containedHeaders.get( LAST_TRANSLATOR_HDR );
+      Date revisionDate = this.getRevisionDate(headerEntries, lastTranslatedTarget);
+      HeaderEntry headerEntry = containedHeaders.get( PO_REVISION_DATE_HDR );
       if( headerEntry == null )
       {
-         headerEntry = new HeaderEntry(LAST_TRANSLATOR_HDR, this.getLastTranslator(hTargets));
+         headerEntry = new HeaderEntry(PO_REVISION_DATE_HDR, this.toPoHeaderString(revisionDate));
          headerEntries.add( headerEntry );
       }
       else
       {
-         headerEntry.setValue(this.getLastTranslator(hTargets));
+         headerEntry.setValue(this.toPoHeaderString(revisionDate));
       }
       
-      headerEntry = containedHeaders.get( PO_REVISION_DATE_HDR );
+      headerEntry = containedHeaders.get( LAST_TRANSLATOR_HDR );
       if( headerEntry == null )
       {
-         headerEntry = new HeaderEntry(PO_REVISION_DATE_HDR, this.getLastModifiedDate(hTargets));
+         headerEntry = new HeaderEntry(LAST_TRANSLATOR_HDR, this.getLastTranslator(lastTranslatedTarget, headerEntries));
          headerEntries.add( headerEntry );
       }
       else
       {
-         headerEntry.setValue(this.getLastModifiedDate(hTargets));
+         headerEntry.setValue(this.getLastTranslator(lastTranslatedTarget, headerEntries));
       }
       
       headerEntry = containedHeaders.get( LANGUAGE_TEAM_HDR );
       if( headerEntry == null )
       {
-         headerEntry = new HeaderEntry(LANGUAGE_TEAM_HDR, this.getLanguageTeam(hTargets));
+         headerEntry = new HeaderEntry(LANGUAGE_TEAM_HDR, this.getLanguageTeam(locale));
          headerEntries.add( headerEntry );
       }
-      // Keep the original value if provided
+      else
+      {
+         // Keep the original value if provided
+      }
+      
+      headerEntry = containedHeaders.get( LANGUAGE_HDR );
+      if( headerEntry == null )
+      {
+         headerEntry = new HeaderEntry(LANGUAGE_HDR, this.getLanguage(locale));
+         headerEntries.add( headerEntry );
+      }
+      else
+      {
+         headerEntry.setValue( this.getLanguage(locale) );
+      }
 
       headerEntry = containedHeaders.get( X_GENERATOR_HDR );
       if( headerEntry == null )
@@ -753,17 +770,6 @@ public class ResourceUtils
       else
       {
          headerEntry.setValue( this.getSystemVersion() );
-      }
-      
-      headerEntry = containedHeaders.get( LANGUAGE_HDR );
-      if( headerEntry == null )
-      {
-         headerEntry = new HeaderEntry(LANGUAGE_HDR, this.getLanguage(hTargets));
-         headerEntries.add( headerEntry );
-      }
-      else
-      {
-         headerEntry.setValue( this.getLanguage(hTargets) );
       }
       
       headerEntry = containedHeaders.get( CONTENT_TYPE_HDR );
@@ -783,30 +789,134 @@ public class ResourceUtils
          headerEntry = new HeaderEntry(PLURAL_FORMS_HDR, this.getPluralForms(locale));
          headerEntries.add(headerEntry);
       }
-      // Keep the original if provided
+      else
+      {
+         // Keep the original if provided
+      }
    }
    
    /**
-    * Gets the last translator for a set of Text Flow targets.
+    * Finds and returns the Revision Date stored in a PO file's header entries.
     * 
-    * @param translations The text flow targets.
-    * @return A string with the value of the last translator for the given set of
-    * translations.
+    * @param headerEntries A single PO file's header entries.
+    * @return The Revision Date header value, or null if no such header is found or the date
+    * cannot be parsed.
     */
-   private String getLastTranslator( final List<HTextFlowTarget> translations )
+   private Date getHeaderRevisionDate(final List<HeaderEntry> headerEntries)
    {
+      Date poFileRevisionDate = null;
+      
+      for( HeaderEntry entry : headerEntries )
+      {
+         if( entry.getKey().equalsIgnoreCase( PO_REVISION_DATE_HDR ) )
+         {
+            SimpleDateFormat dateFormat = new SimpleDateFormat( PO_DATE_FORMAT );
+            try
+            {
+               poFileRevisionDate = dateFormat.parse( entry.getValue() );
+            }
+            catch (ParseException e)
+            {
+               // found the header but date could not be parsed
+            }
+            
+            break;
+         }
+      }
+      
+      return poFileRevisionDate;
+   }
+   
+   private String getHeaderLastTranslator(final List<HeaderEntry> headerEntries)
+   {      
+      for( HeaderEntry entry : headerEntries )
+      {
+         if( entry.getKey().equalsIgnoreCase( LAST_TRANSLATOR_HDR ) )
+         {
+            return entry.getValue();
+         }
+      }
+      
+      return "";
+   }
+   
+   /**
+    * Returns a PO file's Revision Date based on the values stored in the file's header and in the last translated target.
+    * If the system cannot determine a suitable Revision date, a null value is returned.
+    */
+   private Date getRevisionDate(final List<HeaderEntry> headerEntries, final HTextFlowTarget lastTranslated)
+   {
+      Date poFileRevisionDate = this.getHeaderRevisionDate(headerEntries);
+      Date translationsRevisionDate = null;
+      
+      if( lastTranslated != null )
+      {
+         translationsRevisionDate = lastTranslated.getLastChanged();
+      }
+      
+      if( translationsRevisionDate != null )
+      {
+         if( poFileRevisionDate != null )
+         {
+            return translationsRevisionDate.after(poFileRevisionDate) ? translationsRevisionDate : poFileRevisionDate;
+         }
+         else
+         {
+            return translationsRevisionDate;
+         }
+      }
+      else
+      {
+         return poFileRevisionDate == null ? null : poFileRevisionDate;
+      }
+   }
+   
+   /**
+    * @param translations A list of Translations for a document.
+    * @return The most recently translated target. If there are more than one, this method
+    * will return one of those, no assurances o  
+    */
+   private HTextFlowTarget getLastTranslatedTarget( final List<HTextFlowTarget> translations )
+   {      
       Date lastUpdate = new Date(Long.MIN_VALUE);
-      String lastTranslator = "";
+      HTextFlowTarget lastTranslated = null;
       
       for( HTextFlowTarget trans : translations )
       {
-         if( trans.getLastChanged().after( lastUpdate ) )
+         if( trans.getLastModifiedBy() != null && trans.getLastChanged().after( lastUpdate ) )
          {
-            HPerson lastModifiedBy = trans.getLastModifiedBy();
-            if( lastModifiedBy != null )
-            {
-               lastTranslator = lastModifiedBy.getName() + " <" + lastModifiedBy.getEmail() + ">";
-            }
+            lastTranslated = trans;
+         }
+      }
+      
+      return lastTranslated;
+   }
+   
+   /**
+    * Gets the last translator header value for a set of header entries and the last translated target.
+    * 
+    * @param lastTranslated The most currently translated target.
+    * @param headerEntries The PO header entries.
+    * @return A string with the value of the last translator.
+    */
+   private String getLastTranslator( final HTextFlowTarget lastTranslated, final List<HeaderEntry> headerEntries )
+   {
+      Date headerRevisionDate = this.getHeaderRevisionDate(headerEntries);
+      String lastTranslator = this.getHeaderLastTranslator(headerEntries);
+      
+      if( lastTranslated != null )
+      {
+         HPerson lastModifiedBy = lastTranslated.getLastModifiedBy();
+         Date lastModifiedDate = lastTranslated.getLastChanged();
+         
+         // Last translated target is more recent than the Revision Date on the Header
+         if( lastModifiedBy != null && lastModifiedDate != null && lastModifiedDate.after( headerRevisionDate ) )
+         {
+            lastTranslator = lastModifiedBy.getName() + " <" + lastModifiedBy.getEmail() + ">";
+         }
+         else if( lastModifiedBy != null && lastModifiedDate == null )
+         {
+            lastTranslator = lastModifiedBy.getName() + " <" + lastModifiedBy.getEmail() + ">";
          }
       }
       
@@ -814,69 +924,40 @@ public class ResourceUtils
    }
    
    /**
-    * Gets the last date of modification for a set of Text Flow targets.
+    * Returns a string representation of a Date for use in a PO file header.
     * 
-    * @param translations The text flow targets.
-    * @return A string with the value of the Last modified date for the given set of
-    * translations.
+    * @param aDate Date object to include in the Header
+    * @return A string with the value of the date suitable for a PO file header.
     */
-   private String getLastModifiedDate( final List<HTextFlowTarget> translations )
+   private String toPoHeaderString( Date aDate )
    {
-      Date lastUpdate = null;
-      
-      for( HTextFlowTarget trans : translations )
-      {
-         if( lastUpdate == null || trans.getLastChanged().after( lastUpdate ) )
-         {
-            lastUpdate = trans.getLastChanged();
-         }
-      }
-      
-      if( lastUpdate == null )
-      {
-         return null;
-      }
-      else
+      if( aDate != null )
       {
          SimpleDateFormat dateFormat = new SimpleDateFormat( PO_DATE_FORMAT );
-         return dateFormat.format( lastUpdate );
+         return dateFormat.format( aDate );
+      }
+      else 
+      {
+         return "";
       }
    }
    
    /**
-    * Retrieves the language team for a set of translations. Will assume all translations
-    * have the same locale. 
-    * 
-    * @param translations
+    * Returns the Language Team PO file header for a given locale.
     */
-   private String getLanguageTeam( final List<HTextFlowTarget> translations )
+   private String getLanguageTeam( final HLocale hLocale )
    {
-      for( HTextFlowTarget trans : translations )
-      {
-         if( trans.getLocale() != null )
-         {
-            return trans.getLocale().retrieveDisplayName();
-         }
-      }
-      return "";
+      return hLocale.retrieveDisplayName();
    }
    
    /**
-    * Retrieves the language for a set of translations. Will assume all translations
-    * have the same locale. 
+    * Retrieves the language PO file header for a given locale.
     * 
     * @param translations
     */
-   private String getLanguage( final List<HTextFlowTarget> translations )
+   private String getLanguage( final HLocale locale )
    {
-      for( HTextFlowTarget trans : translations )
-      {
-         if( trans.getLocale() != null )
-         {
-            return trans.getLocale().getLocaleId().getId();
-         }
-      }
-      return "";
+      return locale.getLocaleId().toString();
    }
    
    /**
@@ -912,7 +993,7 @@ public class ResourceUtils
       // Try out every combination. e.g: for xxx_yyy_zzz, try xxx_yyyy_zzz, then xxx_yyy, then xxx
       while( javaLocale.indexOf('_') > 0 )
       {
-         javaLocale = javaLocale.substring(0, javaLocale.indexOf('_'));
+         javaLocale = javaLocale.substring(0, javaLocale.lastIndexOf('_'));
          
          if( pluralForms.containsKey( javaLocale ) )
          {

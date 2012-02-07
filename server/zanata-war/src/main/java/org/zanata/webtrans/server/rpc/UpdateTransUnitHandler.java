@@ -35,6 +35,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.ContentState;
@@ -89,15 +90,44 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    ProjectIterationDAO projectIterationDAO;
 
    @In
+   private TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
+
+   @In
    TranslationWorkspaceManager translationWorkspaceManager;
 
    @In
    private LocaleService localeServiceImpl;
 
-   @In
-   private TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
-
    private static SimpleDateFormat SIMPLE_FORMAT = new SimpleDateFormat();
+
+   /**
+    * Used by Seam
+    */
+   public UpdateTransUnitHandler()
+   {
+   }
+
+   /**
+    * Used for tests
+    */
+   public UpdateTransUnitHandler(
+         Session session,
+         Identity identity,
+         ProjectDAO projectDAO,
+         ProjectIterationDAO projectIterationDAO,
+         TextFlowTargetHistoryDAO textFlowTargetHistoryDAO,
+         TranslationWorkspaceManager translationWorkspaceManager,
+         LocaleService localeServiceImpl)
+   {
+      this.log = Logging.getLog(UpdateTransUnitHandler.class);
+      this.session = session;
+      this.identity = identity;
+      this.projectDAO = projectDAO;
+      this.projectIterationDAO = projectIterationDAO;
+      this.textFlowTargetHistoryDAO = textFlowTargetHistoryDAO;
+      this.translationWorkspaceManager = translationWorkspaceManager;
+      this.localeServiceImpl = localeServiceImpl;
+   }
 
    @Override
    public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException

@@ -10,7 +10,7 @@
 		  homeContent=""
 		  name="Sample Project"
 		  overrideLocales="FALSE"
-		  status="Current"
+		  status="ACTIVE"
 	    />
         <HProjectIteration id="1"
 				          versionNum="1"
@@ -20,7 +20,7 @@
                            parentId="[NULL]"
                            project_id="1"
 						  overrideLocales="FALSE"
-						  status="Current"
+						  status="ACTIVE"
         />
 	   	<HProjectIteration id="2"
 				          versionNum="1"
@@ -30,7 +30,7 @@
                            parentId="[NULL]"
                            project_id="1"
 						  overrideLocales="FALSE"
-						  status="Current"
+						  status="ACTIVE"
         />
 	    <HProject_Maintainer personId="3" 
                              projectId="1"
@@ -47,7 +47,7 @@
 			  homeContent=""
 			  name="Sample Retired Project"
 			  overrideLocales="FALSE"
-			  status="Retired"
+			  status="READONLY"
 		    />
 		<HProjectIteration id="3"
 	          versionNum="1"
@@ -57,7 +57,7 @@
 	          parentId="[NULL]"
 	          project_id="2"
 			  overrideLocales="FALSE"
-			  status="Current"
+			  status="ACTIVE"
         />
         
         <!-- Obsolete Project -->
@@ -71,7 +71,7 @@
 			  homeContent=""
 			  name="Sample Obsolete Project"
 			  overrideLocales="FALSE"
-			  status="Obsolete"
+			  status="OBSOLETE"
 		    />
 		<HProjectIteration id="4"
 	          versionNum="1"
@@ -81,7 +81,7 @@
 	          parentId="[NULL]"
 	          project_id="3"
 			  overrideLocales="FALSE"
-			  status="Current"
+			  status="ACTIVE"
         />
         
         <!-- Current Project with retired iteration -->
@@ -95,7 +95,7 @@
 			  homeContent=""
 			  name="Sample Current Project"
 			  overrideLocales="FALSE"
-			  status="Current"
+			  status="ACTIVE"
 		    />
 		<HProjectIteration id="5"
 	          versionNum="1"
@@ -105,7 +105,7 @@
 	          parentId="[NULL]"
 	          project_id="4"
 			  overrideLocales="FALSE"
-			  status="Obsolete"
+			  status="OBSOLETE"
         />
         
 		<!-- Tell DbUnit to delete any existing documents -->
