@@ -862,13 +862,13 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       {
          throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
       }
-      else if (hProjectIteration.getStatus().equals(EntityStatus.Obsolete) || hProject.getStatus().equals(EntityStatus.Obsolete))
+      else if (hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE) || hProject.getStatus().equals(EntityStatus.OBSOLETE))
       {
          throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
       }
       else if (OPERATION_PUT.equals(operation))
       {
-         if (hProjectIteration.getStatus().equals(EntityStatus.Retired) || hProject.getStatus().equals(EntityStatus.Retired))
+         if (hProjectIteration.getStatus().equals(EntityStatus.READONLY) || hProject.getStatus().equals(EntityStatus.READONLY))
          {
             throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
          }

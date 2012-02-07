@@ -614,12 +614,12 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          @Override
          public void onProjectUpdated(ProjectUpdateEvent event)
          {
-            if (workspaceContext.isReadOnly() == (event.getProjectStatus() != EntityStatus.Current))
+            if (workspaceContext.isReadOnly() == (event.getProjectStatus() != EntityStatus.ACTIVE))
             {
                return;
             }
 
-            if (event.getProjectStatus() != EntityStatus.Current)
+            if (event.getProjectStatus() != EntityStatus.ACTIVE)
             {
                workspaceContext.setReadOnly(true);
                display.getTargetCellEditor().setReadOnly(true);
@@ -639,7 +639,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          @Override
          public void onProjectIterationUpdated(ProjectIterationUpdateEvent event)
          {
-            if ((event.getProjectStatus() != EntityStatus.Current) || (event.getProjectIterationStatus() != EntityStatus.Current))
+            if ((event.getProjectStatus() != EntityStatus.ACTIVE) || (event.getProjectIterationStatus() != EntityStatus.ACTIVE))
             {
                if (!workspaceContext.isReadOnly())
                {
@@ -664,7 +664,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
       if (workspaceContext.isReadOnly())
       {
-         display.setShowCopyButtons(false);
+         eventBus.fireEvent(new ButtonDisplayChangeEvent(false));
       }
 
       display.gotoFirstPage();

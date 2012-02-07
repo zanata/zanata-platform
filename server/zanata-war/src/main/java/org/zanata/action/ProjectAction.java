@@ -41,13 +41,13 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
-   private boolean showCurrent = true;
-   private boolean showRetired = true;
+   private boolean showActive = true;
+   private boolean showReadOnly = true;
    private boolean showObsolete = false;
 
    private HProject securedEntity = null;
 
-   private ProjectPagedListDataModel projectPagedListDataModel = new ProjectPagedListDataModel(!showCurrent, !showRetired, !showObsolete);
+   private ProjectPagedListDataModel projectPagedListDataModel = new ProjectPagedListDataModel(!showActive, !showReadOnly, !showObsolete);
 
    private int scrollerPage = 1;
 
@@ -115,26 +115,26 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
       this.showObsolete = showObsolete;
    }
 
-   public boolean isShowCurrent()
+   public boolean isShowActive()
    {
-      return showCurrent;
+      return showActive;
    }
 
-   public void setShowCurrent(boolean showCurrent)
+   public void setShowActive(boolean showActive)
    {
-      projectPagedListDataModel.setFilterCurrent(!showCurrent);
-      this.showCurrent = showCurrent;
+      projectPagedListDataModel.setFilterActive(!showActive);
+      this.showActive = showActive;
    }
 
-   public boolean isShowRetired()
+   public boolean isShowReadOnly()
    {
-      return showRetired;
+      return showReadOnly;
    }
 
-   public void setShowRetired(boolean showRetired)
+   public void setShowReadOnly(boolean showReadOnly)
    {
-      projectPagedListDataModel.setFilterRetired(!showRetired);
-      this.showRetired = showRetired;
+      projectPagedListDataModel.setFilterReadOnly(!showReadOnly);
+      this.showReadOnly = showReadOnly;
    }
 
 }

@@ -39,7 +39,7 @@ public class SlugEntityBase extends ModelEntityBase
    
    public SlugEntityBase()
    {
-      status = EntityStatus.Current; // Current by default
+      status = EntityStatus.ACTIVE; // Active by default
    }
 
    @NaturalId

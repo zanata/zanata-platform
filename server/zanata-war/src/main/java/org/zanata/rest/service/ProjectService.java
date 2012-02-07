@@ -1,7 +1,7 @@
 package org.zanata.rest.service;
 
-import static org.zanata.common.EntityStatus.Obsolete;
-import static org.zanata.common.EntityStatus.Retired;
+import static org.zanata.common.EntityStatus.OBSOLETE;
+import static org.zanata.common.EntityStatus.READONLY;
 
 import java.net.URI;
 
@@ -130,7 +130,7 @@ public class ProjectService implements ProjectResource
       HProject hProject = projectDAO.getBySlug(projectSlug);
       
       // Obsolete projects are not exposed
-      if( ZanataUtil.in(hProject.getStatus(), Obsolete) )
+      if( ZanataUtil.in(hProject.getStatus(), OBSOLETE) )
       {
          return Response.status(Status.NOT_FOUND).build();
       }
@@ -140,10 +140,10 @@ public class ProjectService implements ProjectResource
    }
 
    /**
-    * @return 200 If the project was modified.
-    *         201 If the project was created.
-    *         404 If the project was not found, or is obsolete.
-    *         403 If the project was not modified for some other reason (e.g. project is retired).
+    * @return 200 If the project was modified. 201 If the project was created.
+    *         404 If the project was not found, or is obsolete. 403 If the
+    *         project was not modified for some other reason (e.g. project is
+    *         ReadOnly).
     */
    @Override
    @PUT
@@ -171,16 +171,16 @@ public class ProjectService implements ProjectResource
          response = Response.created(uri.getAbsolutePath());
       }
       // Project is Obsolete
-      else if( ZanataUtil.in(hProject.getStatus(), Obsolete) )
+      else if( ZanataUtil.in(hProject.getStatus(), OBSOLETE) )
       {
          response = Response.status(Status.NOT_FOUND);
          return response.entity("Obsolete Project.").build();
       }
-      // Project is retired
-      else if( ZanataUtil.in(hProject.getStatus(), Retired) )
+      // Project is ReadOnly
+      else if( ZanataUtil.in(hProject.getStatus(), READONLY) )
       {
          response = Response.status(Status.FORBIDDEN);
-         return response.entity("Retired Project.").build();
+         return response.entity("ReadOnly Project.").build();
       }
       else
       {  // must be an update operation

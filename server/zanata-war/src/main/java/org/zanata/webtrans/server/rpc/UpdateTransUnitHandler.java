@@ -137,9 +137,9 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          }
       }
 
-      if (!hTextFlow.getDocument().getProjectIteration().getProject().getStatus().equals(EntityStatus.Current) || !hTextFlow.getDocument().getProjectIteration().getStatus().equals(EntityStatus.Current))
+      if (!hTextFlow.getDocument().getProjectIteration().getProject().getStatus().equals(EntityStatus.ACTIVE) || !hTextFlow.getDocument().getProjectIteration().getStatus().equals(EntityStatus.ACTIVE))
       {
-         throw new ActionException("Project/Project iteration is read only");
+         throw new ActionException("Project/Project version is read only");
       }
 
       boolean targetChanged = false;

@@ -98,7 +98,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
             {
                continue;
             }
-            else if (textFlow.getDocument().getProjectIteration().getStatus().equals(EntityStatus.Obsolete) || textFlow.getDocument().getProjectIteration().getProject().getStatus().equals(EntityStatus.Obsolete))
+            else if (textFlow.getDocument().getProjectIteration().getStatus().equals(EntityStatus.OBSOLETE) || textFlow.getDocument().getProjectIteration().getProject().getStatus().equals(EntityStatus.OBSOLETE))
             {
                continue;
             }

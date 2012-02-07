@@ -31,7 +31,7 @@
     </div>
     </a4j:form>     
   </div>
-
+<s:fragment rendered="#{_iteration.status != 'OBSOLETE'}">
   <rich:dataTable id="data_table" width="100%" value="#{iterationTranslationAction.getTranslationLocale(projectHome.instance.slug, _iteration.slug)}"
                   var="hLocale"
                   styleClass="iteration_inline_tribes"
@@ -98,6 +98,7 @@
       </ui:include>
     </rich:column>
   </rich:dataTable>
+</s:fragment>
 </div>
 
 </ui:composition>

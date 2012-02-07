@@ -45,7 +45,19 @@
         <dropColumn tableName="HProject" columnName="obsolete" />
     </changeSet>
     
+    <changeSet author="aeng@redhat.com" id="5">
+        <comment>Update 'Current' to 'ACTIVE' and 'Retired' to 'READONLY'</comment>
+        <sql>UPDATE HProject SET status='ACTIVE' WHERE status='Current'</sql>
+        <sql>UPDATE HProject SET status='READONLY' where status='Retired'</sql>
+        <sql>UPDATE HProjectIteration SET status='ACTIVE' WHERE status='Current'</sql>
+        <sql>UPDATE HProjectIteration SET status='READONLY' where status='Retired'</sql>
+    </changeSet>
     
+    <changeSet author="aeng@redhat.com" id="6">
+        <comment>Update 'Obsolete' to 'OBSOLETE'</comment>
+        <sql>UPDATE HProject SET status='OBSOLETE' WHERE status='Obsolete'</sql>
+        <sql>UPDATE HProjectIteration SET status='OBSOLETE' where status='Obsolete'</sql>
+    </changeSet>
     
   
         

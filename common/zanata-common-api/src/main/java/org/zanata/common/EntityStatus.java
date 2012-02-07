@@ -27,5 +27,5 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum(String.class)
 public enum EntityStatus
 {
-   Current, Retired, Obsolete
+   ACTIVE, READONLY, OBSOLETE
 }

@@ -185,7 +185,7 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
          @Override
          public void onProjectUpdated(ProjectUpdateEvent event)
          {
-            if (event.getProjectStatus() != EntityStatus.Current)
+            if (event.getProjectStatus() != EntityStatus.ACTIVE)
             {
                editorOptionsPanel.getEditorButtonsChk().setValue(false);
                editorOptionsPanel.getEditorButtonsChk().setEnabled(false);
@@ -207,7 +207,7 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
          @Override
          public void onProjectIterationUpdated(ProjectIterationUpdateEvent event)
          {
-            if ((event.getProjectStatus() != EntityStatus.Current) || (event.getProjectIterationStatus() != EntityStatus.Current))
+            if ((event.getProjectStatus() != EntityStatus.ACTIVE) || (event.getProjectIterationStatus() != EntityStatus.ACTIVE))
             {
                editorOptionsPanel.getEditorButtonsChk().setValue(false);
                editorOptionsPanel.getEditorButtonsChk().setEnabled(false);
