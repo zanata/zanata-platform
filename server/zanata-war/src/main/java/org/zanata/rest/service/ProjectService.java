@@ -1,7 +1,7 @@
 package org.zanata.rest.service;
 
-import static org.zanata.common.EntityStatus.Obsolete;
-import static org.zanata.common.EntityStatus.Retired;
+import static org.zanata.common.EntityStatus.OBSOLETE;
+import static org.zanata.common.EntityStatus.READONLY;
 
 import java.net.URI;
 
@@ -128,22 +128,15 @@ public class ProjectService implements ProjectResource
       }
 
       HProject hProject = projectDAO.getBySlug(projectSlug);
-      
-      // Obsolete projects are not exposed
-      if( ZanataUtil.in(hProject.getStatus(), Obsolete) )
-      {
-         return Response.status(Status.NOT_FOUND).build();
-      }
-
       Project project = toResource(hProject, accept);
       return Response.ok(project).tag(etag).build();
    }
 
    /**
-    * @return 200 If the project was modified.
-    *         201 If the project was created.
-    *         404 If the project was not found, or is obsolete.
-    *         403 If the project was not modified for some other reason (e.g. project is retired).
+    * @return 200 If the project was modified. 201 If the project was created.
+    *         404 If the project was not found. 403 If the
+    *         project was not modified for some other reason (e.g. project is
+    *         obsolete or ReadOnly).
     */
    @Override
    @PUT
@@ -171,16 +164,14 @@ public class ProjectService implements ProjectResource
          response = Response.created(uri.getAbsolutePath());
       }
       // Project is Obsolete
-      else if( ZanataUtil.in(hProject.getStatus(), Obsolete) )
+      else if( ZanataUtil.in(hProject.getStatus(), OBSOLETE) )
       {
-         response = Response.status(Status.NOT_FOUND);
-         return response.entity("Obsolete Project.").build();
+         return Response.status(Status.FORBIDDEN).entity("Project '" + projectSlug + "' is obsolete.").build();
       }
-      // Project is retired
-      else if( ZanataUtil.in(hProject.getStatus(), Retired) )
+      // Project is ReadOnly
+      else if( ZanataUtil.in(hProject.getStatus(), READONLY) )
       {
-         response = Response.status(Status.FORBIDDEN);
-         return response.entity("Retired Project.").build();
+         return Response.status(Status.FORBIDDEN).entity("Project '" + projectSlug + "' is read-only.").build();
       }
       else
       {  // must be an update operation

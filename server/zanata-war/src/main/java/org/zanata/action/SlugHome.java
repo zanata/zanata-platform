@@ -20,7 +20,7 @@
  */
 package org.zanata.action;
 
-import static org.zanata.common.EntityStatus.Obsolete;
+import static org.zanata.common.EntityStatus.OBSOLETE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +74,7 @@ public abstract class SlugHome<E> extends EntityHome<E> implements SecurityCheck
       {
          for (EntityStatus status : EntityStatus.values())
          {
-            if (status == Obsolete)
+            if (status == OBSOLETE)
             {
                if (checkPermission("mark-obsolete"))
                {

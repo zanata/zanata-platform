@@ -41,7 +41,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
    private String name;
    private ProjectType type = ProjectType.IterationProject;
    private String description;
-   private EntityStatus status = EntityStatus.Current;
+   private EntityStatus status = EntityStatus.ACTIVE;
 
    private Links links;
 

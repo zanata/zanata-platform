@@ -1,6 +1,6 @@
 package org.zanata.rest.service;
 
-import static org.zanata.common.EntityStatus.Obsolete;
+import static org.zanata.common.EntityStatus.OBSOLETE;
 
 import java.util.List;
 import java.util.Set;
@@ -59,25 +59,25 @@ public class ETagUtils
     * This algorithm takes into account changes in Project Iterations as well.
     * 
     * @param slug Project slug
-    * @return calculated EntityTag or null if project does not exist
+    * @return calculated EntityTag
+    * @throws NoSuchEntityException if project is obsolete or does not exist
     */
    public EntityTag generateTagForProject(String slug)
    {
       Integer projectVersion = (Integer) session.createQuery("select p.versionNum from HProject p where slug =:slug " +
       		"and status not in (:statusList)")
       		.setParameter("slug", slug)
-      		.setParameterList("statusList", new Object[]{Obsolete})
+      		.setParameterList("statusList", new Object[]{OBSOLETE})
       		.uniqueResult();
 
       if (projectVersion == null)
          throw new NoSuchEntityException("Project '" + slug + "' not found.");
-      ;
 
       @SuppressWarnings("unchecked")
       List<Integer> iterationVersions = session.createQuery("select i.versionNum from HProjectIteration i " +
       		"where i.project.slug =:slug and status not in (:statusList)")
       		.setParameter("slug", slug)
-      		.setParameterList("statusList", new Object[]{Obsolete})
+      		.setParameterList("statusList", new Object[]{OBSOLETE})
       		.list();
 
       String hash = HashUtil.generateHash(projectVersion + ':' + StringUtils.join(iterationVersions, ':'));
@@ -90,7 +90,8 @@ public class ETagUtils
     * 
     * @param projectSlug project slug
     * @param iterationSlug iteration slug
-    * @return calculated EntityTag or null if iteration does not exist
+    * @return calculated EntityTag
+    * @throw NoSuchEntityException if iteration is obsolete or does not exist
     */
    public EntityTag generateETagForIteration(String projectSlug, String iterationSlug)
    {
@@ -98,12 +99,11 @@ public class ETagUtils
             "and status not in (:statusList) and i.project.status not in (:statusList)")
             .setParameter("islug", iterationSlug)
             .setParameter("pslug", projectSlug)
-            .setParameterList("statusList", new Object[]{Obsolete})
+            .setParameterList("statusList", new Object[]{OBSOLETE})
             .uniqueResult();
 
       if (iterationVersion == null)
          throw new NoSuchEntityException("Project Iteration '" + iterationSlug + "' not found.");
-      ;
 
       String hash = HashUtil.generateHash(String.valueOf(iterationVersion));
 
@@ -115,7 +115,7 @@ public class ETagUtils
       HDocument doc = documentDAO.getByDocId(iteration, id);
       if (doc == null)
          throw new NoSuchEntityException("Document '" + id + "' not found.");
-      ;
+
       Integer hashcode = 1;
       hashcode = hashcode * 31 + doc.getRevision();
 

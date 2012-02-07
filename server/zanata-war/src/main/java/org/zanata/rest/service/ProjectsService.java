@@ -20,7 +20,7 @@
  */
 package org.zanata.rest.service;
 
-import static org.zanata.common.EntityStatus.Obsolete;
+import static org.zanata.common.EntityStatus.OBSOLETE;
 
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -84,7 +84,7 @@ public class ProjectsService implements ProjectsResource
       for (HProject hProject : projects)
       {
          // Ignore Obsolete projects
-         if( !ZanataUtil.in(hProject.getStatus(), Obsolete) )
+         if( !ZanataUtil.in(hProject.getStatus(), OBSOLETE) )
          {
             Project project = new Project(hProject.getSlug(), hProject.getName(), ProjectType.IterationProject);
             project.setStatus( hProject.getStatus() );

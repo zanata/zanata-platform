@@ -19,6 +19,7 @@ import org.zanata.action.ProjectIterationHome;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HIterationProject;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
@@ -27,8 +28,7 @@ import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
-import org.zanata.webtrans.shared.rpc.ProjectIterationUpdate;
-import org.zanata.webtrans.shared.rpc.ProjectUpdate;
+import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
@@ -47,19 +47,13 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    private Log log = Logging.getLog(TranslationWorkspaceManagerImpl.class);
 
    private final ConcurrentHashMap<WorkspaceId, TranslationWorkspace> workspaceMap;
-   private final Multimap<ProjectIterationId, LocaleId> projectIterationLocaleMap;
-   private final Multimap<LocaleId, TranslationWorkspace> localeWorkspaceMap;
+   private final Multimap<ProjectIterationId, TranslationWorkspace> projIterWorkspaceMap;
 
    public TranslationWorkspaceManagerImpl()
    {
       this.workspaceMap = new ConcurrentHashMap<WorkspaceId, TranslationWorkspace>();
-
-      Multimap<ProjectIterationId, LocaleId> projectIterationLocaleMap = HashMultimap.create();
-      this.projectIterationLocaleMap = Multimaps.synchronizedMultimap(projectIterationLocaleMap);
-
-      Multimap<LocaleId, TranslationWorkspace> localeWorkspaceMap = HashMultimap.create();
-      this.localeWorkspaceMap = Multimaps.synchronizedMultimap(localeWorkspaceMap);
-
+      Multimap<ProjectIterationId, TranslationWorkspace> piwm = HashMultimap.create();
+      this.projIterWorkspaceMap = Multimaps.synchronizedMultimap(piwm);
    }
 
    @Observer(ZanataInit.EVENT_Zanata_Startup)
@@ -88,32 +82,40 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    @Observer(ProjectHome.PROJECT_UPDATE)
    public void projectUpdate(HIterationProject project)
    {
-      log.info("Project {0} updated", project.getSlug());
-      ImmutableSet<TranslationWorkspace> workspaceSet = ImmutableSet.copyOf(workspaceMap.values());
-      for (TranslationWorkspace workspace : workspaceSet)
+      String projectSlug = project.getSlug();
+      log.info("Project {0} updated, status={1}", projectSlug, project.getStatus());
+
+      for (HProjectIteration iter : project.getProjectIterations())
       {
-         if (workspace.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectSlug().equals(project.getSlug()))
-         {
-            ProjectUpdate event = new ProjectUpdate(project.getSlug(), project.getStatus());
-            workspace.publish(event);
-         }
+         projectIterationUpdate(iter);
       }
    }
 
    @Observer(ProjectIterationHome.PROJECT_ITERATION_UPDATE)
    public void projectIterationUpdate(HProjectIteration projectIteration)
    {
-      log.info("Project iteration {0} updated", projectIteration.getSlug());
-      ImmutableSet<TranslationWorkspace> workspaceSet = ImmutableSet.copyOf(workspaceMap.values());
-      for (TranslationWorkspace workspace : workspaceSet)
+      String projectSlug = projectIteration.getProject().getSlug();
+      String iterSlug = projectIteration.getSlug();
+      HProject project = projectIteration.getProject();
+      boolean readOnly = isReadOnly(project.getStatus(), projectIteration.getStatus());
+      log.info("Project {0} iteration {1} updated, status={2}, readOnly={3}", projectSlug, iterSlug, projectIteration.getStatus(), readOnly);
+
+      ProjectIterationId iterId = new ProjectIterationId(projectSlug, iterSlug);
+      for (TranslationWorkspace workspace : projIterWorkspaceMap.get(iterId))
       {
-         if (workspace.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectSlug().equals(projectIteration.getProject().getSlug()) &&
-               workspace.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getIterationSlug().equals(projectIteration.getSlug()))
+         if (readOnly != workspace.getWorkspaceContext().isReadOnly())
          {
-            ProjectIterationUpdate event = new ProjectIterationUpdate(projectIteration.getProject().getSlug(), projectIteration.getProject().getStatus(), projectIteration.getSlug(), projectIteration.getStatus());
+            workspace.getWorkspaceContext().setReadOnly(readOnly);
+            WorkspaceContextUpdate event = new WorkspaceContextUpdate(readOnly);
             workspace.publish(event);
          }
       }
+   }
+
+   private boolean isReadOnly(EntityStatus projectStatus, EntityStatus iterStatus)
+   {
+      boolean current = projectStatus.equals(EntityStatus.ACTIVE) && iterStatus.equals(EntityStatus.ACTIVE);
+      return !current;
    }
 
    @Destroy
@@ -121,16 +123,6 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    {
       log.info("stopping...");
       log.info("closing down {0} workspaces: ", workspaceMap.size());
-   }
-
-   public ImmutableSet<LocaleId> getLocales(ProjectIterationId projectIterationId)
-   {
-      return ImmutableSet.copyOf(projectIterationLocaleMap.get(projectIterationId));
-   }
-
-   public ImmutableSet<LocaleId> getLocales()
-   {
-      return ImmutableSet.copyOf(localeWorkspaceMap.keySet());
    }
 
    public int getWorkspaceCount()
@@ -149,8 +141,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
 
          if (prev == null)
          {
-            projectIterationLocaleMap.put(workspaceId.getProjectIterationId(), workspaceId.getLocaleId());
-            localeWorkspaceMap.put(workspaceId.getLocaleId(), workspace);
+            projIterWorkspaceMap.put(workspaceId.getProjectIterationId(), workspace);
             if (Events.exists())
                Events.instance().raiseEvent(EVENT_WORKSPACE_CREATED, workspaceId);
          }
@@ -168,29 +159,26 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       Session session = (Session) Component.getInstance("session");
 
       EntityStatus projectStatus = (EntityStatus) session.createQuery("select p.status from HProject as p where p.slug = :slug").setParameter("slug", workspaceId.getProjectIterationId().getProjectSlug()).uniqueResult();
-      if (projectStatus.equals(EntityStatus.Obsolete))
+      if (projectStatus.equals(EntityStatus.OBSOLETE))
       {
          throw new NoSuchWorkspaceException("Project is obsolete");
       }
 
       EntityStatus projectIterationStatus = (EntityStatus) session.createQuery("select it.status from HProjectIteration it where it.slug = :slug and it.project.slug = :pslug").setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug()).setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug()).uniqueResult();
-      if (projectIterationStatus.equals(EntityStatus.Obsolete))
+      if (projectIterationStatus.equals(EntityStatus.OBSOLETE))
       {
          throw new NoSuchWorkspaceException("Project Iteration is obsolete");
       }
 
-      String workspaceName = (String) session.createQuery("select it.project.name || ' (' || it.slug || ')' " + "from HProjectIteration it " + "where it.slug = :slug " + "and it.project.slug = :pslug " + "and it.status <> :status").setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug()).setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug()).setParameter("status", EntityStatus.Obsolete).uniqueResult();
+      String workspaceName = (String) session.createQuery("select it.project.name || ' (' || it.slug || ')' " + "from HProjectIteration it " + "where it.slug = :slug " + "and it.project.slug = :pslug " + "and it.status <> :status").setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug()).setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug()).setParameter("status", EntityStatus.OBSOLETE).uniqueResult();
       if (workspaceName == null)
       {
          throw new NoSuchWorkspaceException("Invalid workspace Id");
       }
 
-      if (projectStatus.equals(EntityStatus.Retired) || projectIterationStatus.equals(EntityStatus.Retired))
-      {
-         return new WorkspaceContext(workspaceId, workspaceName, ULocale.getDisplayName(workspaceId.getLocaleId().toJavaName(), ULocale.ENGLISH), true);
-      }
-
-      return new WorkspaceContext(workspaceId, workspaceName, ULocale.getDisplayName(workspaceId.getLocaleId().toJavaName(), ULocale.ENGLISH), false);
+      boolean readOnly = isReadOnly(projectStatus, projectIterationStatus);
+      String localeDisplayName = ULocale.getDisplayName(workspaceId.getLocaleId().toJavaName(), ULocale.ENGLISH);
+      return new WorkspaceContext(workspaceId, workspaceName, localeDisplayName, readOnly);
    }
 
    private TranslationWorkspace createWorkspace(WorkspaceId workspaceId) throws NoSuchWorkspaceException
@@ -208,16 +196,6 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    public TranslationWorkspace getWorkspace(WorkspaceId workspaceId)
    {
       return workspaceMap.get(workspaceId);
-   }
-
-   public ImmutableSet<TranslationWorkspace> getWorkspaces(LocaleId locale)
-   {
-      return ImmutableSet.copyOf(localeWorkspaceMap.get(locale));
-   }
-
-   public ImmutableSet<ProjectIterationId> getProjects()
-   {
-      return ImmutableSet.copyOf(projectIterationLocaleMap.keySet());
    }
 
 }

@@ -886,6 +886,7 @@ public class ResourceUtils
          if( trans.getLastModifiedBy() != null && trans.getLastChanged().after( lastUpdate ) )
          {
             lastTranslated = trans;
+            lastUpdate = trans.getLastChanged();
          }
       }
       

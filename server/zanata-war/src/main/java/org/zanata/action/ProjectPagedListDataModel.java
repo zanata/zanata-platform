@@ -31,14 +31,14 @@ import org.zanata.model.HProject;
 public class ProjectPagedListDataModel extends PagedListDataModel<HProject>
 {
 
-   private boolean filterCurrent;
-   private boolean filterRetired;
+   private boolean filterActive;
+   private boolean filterReadOnly;
    private boolean filterObsolete;
 
-   public ProjectPagedListDataModel(boolean filterCurrent, boolean filterRetired, boolean filterObsolete)
+   public ProjectPagedListDataModel(boolean filterActive, boolean filterReadOnly, boolean filterObsolete)
    {
-      this.filterCurrent = filterCurrent;
-      this.filterRetired = filterRetired;
+      this.filterActive = filterActive;
+      this.filterReadOnly = filterReadOnly;
       this.filterObsolete = filterObsolete;
    }
 
@@ -46,9 +46,9 @@ public class ProjectPagedListDataModel extends PagedListDataModel<HProject>
    public DataPage<HProject> fetchPage(int startRow, int pageSize)
    {
       ProjectDAO projectDAO = (ProjectDAO) Component.getInstance(ProjectDAO.class, ScopeType.STATELESS);
-      List<HProject> proj = projectDAO.getOffsetListByCreateDate(startRow, pageSize, filterCurrent, filterRetired, filterObsolete);
+      List<HProject> proj = projectDAO.getOffsetListByCreateDate(startRow, pageSize, filterActive, filterReadOnly, filterObsolete);
 
-      int projectSize = projectDAO.getFilterProjectSize(filterCurrent, filterRetired, filterObsolete);
+      int projectSize = projectDAO.getFilterProjectSize(filterActive, filterReadOnly, filterObsolete);
 
       return new DataPage<HProject>(projectSize, startRow, proj);
    }
@@ -61,16 +61,16 @@ public class ProjectPagedListDataModel extends PagedListDataModel<HProject>
    }
 
 
-   public void setFilterCurrent(boolean filterCurrent)
+   public void setFilterActive(boolean filterActive)
    {
-      this.filterCurrent = filterCurrent;
+      this.filterActive = filterActive;
       refresh();
    }
 
 
-   public void setFilterRetired(boolean filterRetired)
+   public void setFilterReadOnly(boolean filterReadOnly)
    {
-      this.filterRetired = filterRetired;
+      this.filterReadOnly = filterReadOnly;
       refresh();
    }
 

@@ -45,20 +45,20 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<HProject> getOffsetListByCreateDate(int offset, int count, boolean filterCurrent, boolean filterRetired, boolean filterObsolete)
+   public List<HProject> getOffsetListByCreateDate(int offset, int count, boolean filterActive, boolean filterReadOnly, boolean filterObsolete)
    {
-      if (!filterCurrent && !filterRetired && !filterObsolete) // all records
+      if (!filterActive && !filterReadOnly && !filterObsolete) // all records
       {
          return getSession().createCriteria(HProject.class).addOrder(Order.desc(ORDERBY_TIMESTAMP)).setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getAllProjectOffsetListByCreateDate").list();
       }
       
-      String condition = constructFilterCondition(filterCurrent, filterRetired, filterObsolete);
+      String condition = constructFilterCondition(filterActive, filterReadOnly, filterObsolete);
       return getSession().createQuery("from HProject p " + condition + "order by p.creationDate").setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getAllProjectOffsetListByCreateDate").list();
    }
 
-   public int getFilterProjectSize(boolean filterCurrent, boolean filterRetired, boolean filterObsolete)
+   public int getFilterProjectSize(boolean filterActive, boolean filterReadOnly, boolean filterObsolete)
    {
-      String query = "select count(*) from HProject p " + constructFilterCondition(filterCurrent, filterRetired, filterObsolete);
+      String query = "select count(*) from HProject p " + constructFilterCondition(filterActive, filterReadOnly, filterObsolete);
       Long totalCount = (Long) getSession().createQuery(query.toString()).uniqueResult();
 
       if (totalCount == null)
@@ -66,56 +66,56 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
       return totalCount.intValue();
    }
 
-   private String constructFilterCondition(boolean filterCurrent, boolean filterRetired, boolean filterObsolete)
+   private String constructFilterCondition(boolean filterActive, boolean filterReadOnly, boolean filterObsolete)
    {
       StringBuilder condition = new StringBuilder();
-      if (filterCurrent || filterRetired || filterObsolete)
+      if (filterActive || filterReadOnly || filterObsolete)
       {
          condition.append("where ");
       }
 
-      if (filterCurrent)
+      if (filterActive)
       {
-         condition.append("p.status <> '" + EntityStatus.Current + "' ");
+         condition.append("p.status <> '" + EntityStatus.ACTIVE + "' ");
       }
 
-      if (filterRetired)
+      if (filterReadOnly)
       {
-         if (filterCurrent)
+         if (filterActive)
          {
             condition.append("and ");
          }
 
-         condition.append("p.status <> '" + EntityStatus.Retired + "' ");
+         condition.append("p.status <> '" + EntityStatus.READONLY + "' ");
       }
 
       if (filterObsolete)
       {
-         if (filterCurrent || filterRetired)
+         if (filterActive || filterReadOnly)
          {
             condition.append("and ");
          }
 
-         condition.append("p.status <> '" + EntityStatus.Obsolete + "' ");
+         condition.append("p.status <> '" + EntityStatus.OBSOLETE + "' ");
       }
       return condition.toString();
    }
 
    @SuppressWarnings("unchecked")
-   public List<HProjectIteration> getCurrentIterations(String slug)
+   public List<HProjectIteration> getActiveIterations(String slug)
    {
-      return getSession().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", EntityStatus.Current).list();
+      return getSession().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", EntityStatus.ACTIVE).list();
    }
 
    @SuppressWarnings("unchecked")
-   public List<HProjectIteration> getRetiredIterations(String slug)
+   public List<HProjectIteration> getReadOnlyIterations(String slug)
    {
-      return getSession().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", EntityStatus.Retired).list();
+      return getSession().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", EntityStatus.READONLY).list();
    }
 
    @SuppressWarnings("unchecked")
    public List<HProjectIteration> getObsoleteIterations(String slug)
    {
-      return getSession().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", EntityStatus.Obsolete).list();
+      return getSession().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", EntityStatus.OBSOLETE).list();
    }
 }

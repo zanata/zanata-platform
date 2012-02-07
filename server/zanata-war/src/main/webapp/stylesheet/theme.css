@@ -329,7 +329,7 @@ tr.hover-row {
 	border-color: #ffffff;
 }
 
-.iterationHeader_retired,.iterationHeader_obsolete{
+.iterationHeader_readOnly,.iterationHeader_obsolete{
     background-image: none;
     border-width: medium;
     background-color: #e5e5e5;
@@ -500,10 +500,10 @@ a.obsolete_link, a.obsolete_link:visited, a.obsolete_link:link{
     text-decoration: line-through;
 }
 
-.retired{
+.readonly{
     font-style: italic;
 }
-a.retired_link, a.retired_link:visited, a.retired_link:link{
+a.readonly_link, a.readonly_link:visited, a.readonly_link:link{
     font-style: italic;
     color:#ACC2E1;
 }
