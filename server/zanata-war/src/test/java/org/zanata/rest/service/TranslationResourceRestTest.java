@@ -21,6 +21,7 @@ import org.apache.commons.httpclient.URIException;
 import org.dbunit.operation.DatabaseOperation;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
+import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.fest.assertions.Assertions;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.seam.core.Events;
@@ -140,7 +141,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       };
       this.eTagUtils = new ETagUtils(getSession(), documentDAO);
       this.personDAO = new PersonDAO(getSession());
-      this.textFlowTargetHistoryDAO = new TextFlowTargetHistoryDAO();
+      this.textFlowTargetHistoryDAO = new TextFlowTargetHistoryDAO(getSession());
 
       LocaleDAO localeDAO = new LocaleDAO(getSession());
       projectDAO = new ProjectDAO(getSession());
@@ -721,8 +722,8 @@ public class TranslationResourceRestTest extends ZanataRestTest
       assertThat(translations.getExtensions().size(), greaterThan(0));
       
       // List of custom Zanata headers that should be present
-      final String[] requiredHeaders = new String[]{"Last-Translator", "PO-Revision-Date", "Language-Team", "X-Generator",
-            "Language"};
+      final String[] requiredHeaders = new String[]{HeaderFields.KEY_LastTranslator, HeaderFields.KEY_PoRevisionDate,
+            HeaderFields.KEY_LanguageTeam, "X-Generator", HeaderFields.KEY_Language};
       
       for( String reqHeader : requiredHeaders )
       {
@@ -736,6 +737,160 @@ public class TranslationResourceRestTest extends ZanataRestTest
          }
          
          assertThat("PO Target Header '" + reqHeader + "' was not present when pulling translations.", headerFound, is(true));
+      }
+      
+      // Since it is a first push with no headers, the Last Translator and Last Revision Date header should be empty
+      for( HeaderEntry entry : translations.getExtensions().findByType(PoTargetHeader.class).getEntries() )
+      {
+         if( entry.getKey().equals(HeaderFields.KEY_LastTranslator) || entry.getKey().equals(HeaderFields.KEY_PoRevisionDate) )
+         {
+            assertThat( entry.getValue().trim(), is("") );
+         }
+      }
+   }
+   
+   @Test
+   public void headersBeforeTranslating() throws Exception
+   {
+      LocaleId de_DE = new LocaleId("de");
+      getZero();
+      
+      // Push a document with no translations
+      createResourceWithContentUsingPut();
+      
+      // Get the translations with PO headers
+      ClientResponse<TranslationsResource> response = transResource.getTranslations("my.txt", de_DE, new StringSet("gettext"));
+      
+      TranslationsResource translations = response.getEntity();
+      assertThat( translations.getTextFlowTargets().size(), is(0) ); // Expecting no translations
+      
+      // Make sure the headers are populated
+      PoTargetHeader header = translations.getExtensions(true).findByType(PoTargetHeader.class);
+      assertThat(header, notNullValue());
+      assertThat(header.getEntries().size(), greaterThan(0));
+      
+      // Make sure the header values are empty since the system does not have any information for them
+      for( HeaderEntry entry : header.getEntries() )
+      {
+         if( entry.getKey().equals(HeaderFields.KEY_LastTranslator) )
+         {
+            assertThat( entry.getValue().trim(), is("") );
+         }
+         else if( entry.getKey().equals(HeaderFields.KEY_PoRevisionDate) )
+         {
+            assertThat( entry.getValue().trim(), is("") );
+         }
+      }
+   }
+   
+   @Test
+   public void headersFromOriginalPush() throws Exception
+   {
+      LocaleId de_DE = new LocaleId("de");
+      getZero();
+      
+      // Push a document and its translations
+      createResourceWithContentUsingPut();
+
+      TranslationsResource entity = new TranslationsResource();
+      TextFlowTarget target = new TextFlowTarget();
+      target.setResId("tf1");
+      target.setContent("hello world");
+      target.setState(ContentState.Approved);
+      target.setTranslator(new Person("root@localhost", "Admin user"));
+      entity.getTextFlowTargets().add(target);
+      
+      // Add initial headers to the translations
+      PoTargetHeader transHeader = new PoTargetHeader();
+      transHeader.getEntries().add( new HeaderEntry(HeaderFields.KEY_LastTranslator, "Test User <test@zanata.org>") );
+      transHeader.getEntries().add( new HeaderEntry(HeaderFields.KEY_PoRevisionDate, "2013-01-01 09:00+1000") ); // Date in the future
+      entity.getExtensions(true).add( transHeader );
+      
+      // Push the translations
+      ClientResponse<String> putResponse = transResource.putTranslations("my.txt", de_DE, entity, null);
+      assertThat(putResponse.getResponseStatus(), is(Status.OK));
+      
+      // Get the translations with PO headers
+      ClientResponse<TranslationsResource> transResponse = transResource.getTranslations("my.txt", de_DE, new StringSet("gettext"));
+      TranslationsResource translations = transResponse.getEntity();
+      
+      // Make sure the headers are populated
+      PoTargetHeader header = translations.getExtensions(true).findByType(PoTargetHeader.class);
+      assertThat(header, notNullValue());
+      assertThat(header.getEntries().size(), greaterThan(0));
+      
+      // Make sure the header values are the same as the ones pushed with the document
+      for( HeaderEntry entry : header.getEntries() )
+      {
+         if( entry.getKey().equals(HeaderFields.KEY_LastTranslator) )
+         {
+            assertThat( entry.getValue().trim(), is("Test User <test@zanata.org>") );
+         }
+         else if( entry.getKey().equals(HeaderFields.KEY_PoRevisionDate) )
+         {
+            assertThat( entry.getValue().trim(), is("2008-01-01 09:00+1000") );
+         }
+      }
+   }
+   
+   @Test
+   public void headersAfterTranslating() throws Exception
+   {
+      LocaleId de_DE = new LocaleId("de");
+      getZero();
+      
+      // Push a document and its translations
+      createResourceWithContentUsingPut();
+
+      TranslationsResource entity = new TranslationsResource();
+      TextFlowTarget target = new TextFlowTarget();
+      target.setResId("tf1");
+      target.setContent("hello world");
+      target.setState(ContentState.Approved);
+      target.setTranslator(new Person("root@localhost", "Admin user"));
+      entity.getTextFlowTargets().add(target);
+      
+      ClientResponse<String> putResponse = transResource.putTranslations("my.txt", de_DE, entity, null);
+      assertThat(putResponse.getResponseStatus(), is(Status.OK));
+      
+      // Get the translations with PO headers
+      ClientResponse<TranslationsResource> response = transResource.getTranslations("my.txt", de_DE, new StringSet("gettext"));
+      
+      TranslationsResource translations = response.getEntity();
+      assertThat( translations.getTextFlowTargets().size(), greaterThan(0) );
+      
+      // Now translate and push them again
+      for( TextFlowTarget tft : translations.getTextFlowTargets() )
+      {
+         tft.setContent("Translated");
+         tft.setState(ContentState.Approved);
+      }
+      
+      putResponse = transResource.putTranslations("my.txt", de_DE, translations, null);
+      assertThat(putResponse.getStatus(), is(Response.Status.OK.getStatusCode()));
+      
+      // Fetch the translations again
+      response = transResource.getTranslations("my.txt", de_DE, new StringSet("gettext"));
+      
+      translations = response.getEntity();
+      assertThat( translations.getTextFlowTargets().size(), greaterThan(0) );
+      
+      // Make sure the headers are now populated
+      PoTargetHeader header = translations.getExtensions(true).findByType(PoTargetHeader.class);
+      assertThat(header, notNullValue());
+      assertThat(header.getEntries().size(), greaterThan(0));
+      
+      // Make sure the headers have the correct value
+      for( HeaderEntry entry : header.getEntries() )
+      {
+         if( entry.getKey().equals(HeaderFields.KEY_LastTranslator) )
+         {
+            assertThat( entry.getValue().trim(), is("Administrator <root@localhost>") );
+         }
+         else if( entry.getKey().equals(HeaderFields.KEY_PoRevisionDate) )
+         {
+            assertThat( entry.getValue().trim().length(), greaterThan(0) );
+         }
       }
    }
 
