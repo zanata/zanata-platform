@@ -12,12 +12,12 @@ import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SubnodeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.client.VersionUtility;
 import org.zanata.client.config.ConfigUtil;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.ZanataConfig;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.util.VersionUtility;
 
 public class OptionsUtil
 {
