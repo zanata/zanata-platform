@@ -12,10 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.VersionInfo;
 
-/**
- * @see org.zanata.client.VersionUtility
- */
-//FIXME merge zanata.client.VersionUtility and zanata.util.VersionUtility into zanata.common.util.VersionUtility (must prevent GWT compilation)
 public class VersionUtility
 {
    private static final Logger log = LoggerFactory.getLogger(VersionUtility.class);
