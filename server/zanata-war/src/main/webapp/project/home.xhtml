@@ -88,7 +88,7 @@
                     
                     <rich:column styleClass="centered" width="60px" sortBy="#{project.status}">
                         <f:facet name="header">Status</f:facet>
-                        <h:outputText value="#{project.status}"/>
+                        <h:outputText value="#{messages[project.status.messageKey]}"/>
                     </rich:column>
         </rich:dataTable>
         

@@ -33,6 +33,7 @@ import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -42,10 +43,14 @@ import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ButtonBase;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit>
 {
@@ -57,8 +62,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    private final boolean isReadOnly;
 
    private String findMessage;
-   private SourcePanel topSourcePanel;
-   private ArrayList<Image> copyButtons;
+   private SourcePanel sourcePanel;
+   private ArrayList<Widget> copyButtons;
    private boolean showingCopyButtons;
    private EventBus eventBus;
    
@@ -92,36 +97,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       }
    };
 
-   // private final AbstractColumnDefinition<TransUnit, TransUnit>
-   // indicatorColumnDefinition =
-   // new AbstractColumnDefinition<TransUnit, TransUnit>() {
-   // @Override
-   // public TransUnit getCellValue(TransUnit rowValue) {
-   // return rowValue;
-   // }
-   //
-   // @Override
-   // public void setCellValue(TransUnit rowValue, TransUnit cellValue) {
-   // cellValue.setSource(rowValue.getSource());
-   // }
-   // };
-   //
-   // private final CellRenderer<TransUnit, TransUnit> indicatorCellRenderer =
-   // new CellRenderer<TransUnit, TransUnit>() {
-   // @Override
-   // public void renderRowValue(
-   // TransUnit rowValue,
-   // ColumnDefinition<TransUnit, TransUnit> columnDef,
-   // com.google.gwt.gen2.table.client.TableDefinition.AbstractCellView<TransUnit>
-   // view) {
-   // view.setStyleName("TableEditorCell TableEditorCell-Source");
-   // if(rowValue.getEditStatus().equals(EditState.Lock)) {
-   // Image image = new Image("../img/silk/user.png");
-   // view.setWidget(image);
-   // }
-   // }
-   // };
-
    private final AbstractColumnDefinition<TransUnit, TransUnit> sourceColumnDefinition = new AbstractColumnDefinition<TransUnit, TransUnit>()
    {
       @Override
@@ -150,28 +125,15 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          panel.setSize("100%", "100%");
 
          TableResources images = GWT.create(TableResources.class);
-         final Image copyButton = new Image(images.copySrcButton());
-         copyButton.setStyleName("gwt-Button");
-         copyButton.setTitle(messages.copySourcetoTarget());
-         copyButton.setVisible(showingCopyButtons);
-         copyButton.addClickHandler(new ClickHandler()
-         {
-            @Override
-            public void onClick(ClickEvent event)
-            {
-               eventBus.fireEvent(new CopySourceEvent(rowValue));
-            }
-
-         });
          
-         topSourcePanel = new SourcePanel(rowValue, images, messages);
+         sourcePanel = new SourcePanel(rowValue, images, messages);
          
          if (findMessage != null && !findMessage.isEmpty())
          {
-            topSourcePanel.highlightSearch(findMessage);
+            sourcePanel.highlightSearch(findMessage);
          }
-         topSourcePanel.getLabel().sinkEvents(Event.ONCLICK);
-         topSourcePanel.getLabel().addClickHandler(new ClickHandler()
+         sourcePanel.getLabel().sinkEvents(Event.ONCLICK);
+         sourcePanel.getLabel().addClickHandler(new ClickHandler()
          {
             @Override
             public void onClick(ClickEvent event)
@@ -181,13 +143,22 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
                   targetCellEditor.savePendingChange(true);
                }
             }
-
          });
 
-         topSourcePanel.add(copyButton);
-         copyButtons.add(copyButton);
+         sourcePanel.getCopySrcButton().addClickHandler(new ClickHandler()
+         {
+            @Override
+            public void onClick(ClickEvent event)
+            {
+               eventBus.fireEvent(new CopySourceEvent(rowValue));
+            }
+         });
+
+         sourcePanel.getCopySrcButton().setVisible(showingCopyButtons);
+
+         copyButtons.add(sourcePanel.getCopySrcButton());
          
-         panel.add(topSourcePanel);
+         panel.add(sourcePanel);
          sourcePanelMap.put(rowValue.getId(), panel);
 
          view.setWidget(panel);
@@ -197,9 +168,9 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    public void setShowCopyButtons(boolean showButtons)
    {
       showingCopyButtons = showButtons;
-      for (Image copyBtn : copyButtons)
+      for (Widget btns : copyButtons)
       {
-         copyBtn.setVisible(showButtons);
+         btns.setVisible(showButtons);
       }
    }
 
@@ -356,12 +327,10 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
       targetColumnDefinition.setCellEditor(targetCellEditor);
 
-      // See _INDEX consts above if modifying!
-      // addColumnDefinition(indicatorColumnDefinition);
       addColumnDefinition(sourceColumnDefinition);
       addColumnDefinition(targetColumnDefinition);
 
-      copyButtons = new ArrayList<Image>();
+      copyButtons = new ArrayList<Widget>();
       showingCopyButtons = true;
    }
 

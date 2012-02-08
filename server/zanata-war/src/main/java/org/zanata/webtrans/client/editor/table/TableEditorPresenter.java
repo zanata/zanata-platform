@@ -20,18 +20,18 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
-import static org.zanata.webtrans.client.editor.table.TableConstants.*;
+import static org.zanata.webtrans.client.editor.table.TableConstants.MAX_PAGE_ROW;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.EditState;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateAction;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateHandler;
-import org.zanata.webtrans.client.editor.DocumentEditorPresenter;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
 import org.zanata.webtrans.client.events.ButtonDisplayChangeEventHandler;
@@ -101,7 +101,7 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPresenter.Display> implements HasPageNavigation
+public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.Display> implements HasPageNavigation
 {
    public interface Display extends WidgetDisplay, HasPageNavigation
    {
