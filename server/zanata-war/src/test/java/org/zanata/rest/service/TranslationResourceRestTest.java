@@ -77,6 +77,7 @@ import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.server.rpc.UpdateTransUnitHandler;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
@@ -996,6 +997,9 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TranslationWorkspaceManager transWorkerManager = mockControl.createMock(TranslationWorkspaceManager.class);
       TranslationWorkspace transWorkspace = mockControl.createMock(TranslationWorkspace.class);
       
+      WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId(projectSlug, iterationSlug), localeId);
+      WorkspaceContext workspaceContext = new WorkspaceContext(workspaceId, "sample-workspace", localeId.getId(), false);
+      
       Credentials mockCredentials = new Credentials();
       mockCredentials.setInitialized(true);
       mockCredentials.setUsername( translator.getUsername() );
@@ -1003,6 +1007,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       // Set mock expectations
       expect( transWorkerManager.getOrRegisterWorkspace( anyObject(WorkspaceId.class) ) ).andReturn( transWorkspace ).anyTimes();
       expect( mockIdentity.getCredentials() ).andReturn( mockCredentials );
+      expect( transWorkspace.getWorkspaceContext() ).andReturn( workspaceContext );
       mockIdentity.checkLoggedIn();
       expectLastCall();      
       mockIdentity.checkPermission(anyObject(), anyObject(String.class));
@@ -1036,7 +1041,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       
       // Translate using webtrans
       UpdateTransUnit action = new UpdateTransUnit(new TransUnitId(textFlowId), translation, translationState);
-      action.setWorkspaceId( new WorkspaceId(new ProjectIterationId(projectSlug, iterationSlug), localeId) );
+      action.setWorkspaceId( workspaceId );
       
       UpdateTransUnitResult result =
          transUnitHandler.execute(action, null);
