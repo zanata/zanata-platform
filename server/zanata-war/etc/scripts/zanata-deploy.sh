@@ -3,8 +3,8 @@
 # Script: zanata-deploy.sh
 # Author: sflaniga@redhat.com
 
-# This script deploys zanata.war to a target machine,
-# based on a Jenkins job name 
+# This script deploys zanata.war from the local Maven repo
+# to a target machine, based on a Jenkins job name
 # and some configuration variables read from ~/.config/zanata-deploy.conf.
 
 # Requirements:
@@ -13,7 +13,9 @@
 # 2. Jenkins vars BUILD_TAG, JOB_NAME, GIT_BRANCH set by Jenkins
 # NB Jenkins will only set $GIT_BRANCH if the build config specifies a single branch
 # 3. Jenkins job name should look like zanata-VER-PROFILE or zanata-build-deploy-VER-PROFILE
-# 4. minimal zanata-deploy.conf should look something like this:
+# 4. set m2repo or srcdir if you want to override defaults
+# 5. minimal zanata-deploy.conf should look something like this:
+#
 # master_version=1.5
 # host_1_4_jaas=jaastest.example.com
 # host_1_4_internal=internaltest.example.com
@@ -44,7 +46,7 @@ WARNING_EMAIL=${WARNING_EMAIL-test@example.com}
 ssh=${ssh-ssh}
 scp=${scp-scp}
 mail=${mail-mail}
-
+m2repo=${m2repo-$HOME/.m2/repository}
 BUILD_TYPES=(autotest internal kerberos fedora jaas)
 
 # functions:
@@ -71,7 +73,7 @@ warn() {
 echo "BUILD_TAG: $BUILD_TAG"
 echo "GIT_BRANCH: $GIT_BRANCH"
 
-#if [[ $JOB_NAME =~ zanata-(build-deploy-)?(([^-][^-]*)-)?(.*) ]]; then
+#if [[ $JOB_NAME =~ zanata-((build-)?deploy-)?(([^-][^-]*)-)?(.*) ]]; then
    #branch_name=${BASH_REMATCH[3]}
    #echo "${BASH_REMATCH[0]}"
    #echo "${BASH_REMATCH[1]}"
@@ -93,9 +95,11 @@ if [[ "$branch_name" == "master" ]]; then
 else
    version=$branch_name
 fi
+srcdir=${srcdir-${m2repo}/org/zanata/zanata-war/${version}-SNAPSHOT}
 
 echo "branch: $branch_name"
 echo "version: $version"
+echo "srcdir: $srcdir"
 
 # replace . with _ in version:
 ver=${version//./_}
@@ -155,7 +159,7 @@ do
       fi
       set +x
 
-      warfile=server/zanata-war/target/zanata-*-$buildType.war
+      warfile=${srcdir}/zanata-*-$buildType.war
 
       set -x
       echo "copying $warfile to $host:$targetfile"
