@@ -20,6 +20,8 @@
  */
 package org.zanata.process;
 
+import java.util.concurrent.Semaphore;
+
 /**
  * Extension of the basci Process Handle class to include data pertinent to the 
  * building of an iteration zip file.
@@ -35,6 +37,20 @@ public class IterationZipFileBuildProcessHandle extends ProcessHandle
    private String localeId; 
    private String initiatingUserName;
    private String downloadId;
+   private Semaphore readySemaphore;
+   
+   public IterationZipFileBuildProcessHandle()
+   {
+      this.readySemaphore = new Semaphore(1);
+      try
+      {
+         this.readySemaphore.acquire(); // Immediately acquire the only semaphore permit until the process is ready
+      }
+      catch (InterruptedException e)
+      {
+         // Ignore
+      }
+   }
    
    public String getProjectSlug()
    {
@@ -94,6 +110,32 @@ public class IterationZipFileBuildProcessHandle extends ProcessHandle
    public void setInitiatingUserName(String initiatingUserName)
    {
       this.initiatingUserName = initiatingUserName;
+   }
+   
+   /**
+    * Waits until the process represented by this handle is ready to proceed.
+    * 
+    * @return True, if the process is ready after waiting. False if for some reason the process
+    * is not ready after waiting for a reasonable time.
+    */
+   public void waitUntilReady()
+   {
+      try
+      {
+         this.readySemaphore.acquire();
+      }
+      catch (InterruptedException e)
+      {
+         // If interrupted, just ignore
+      }
+   }
+   
+   /**
+    * Signals that the process is ready.
+    */
+   void ready()
+   {
+      this.readySemaphore.release();
    }
    
 }

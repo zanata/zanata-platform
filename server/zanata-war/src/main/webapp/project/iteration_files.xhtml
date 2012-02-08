@@ -129,6 +129,7 @@
 	                minValue="-1" 
 	                maxValue="#{projectIterationZipFileAction.zipFilePrepHandle.maxProgress - 1}"
 	                enabled="#{projectIterationZipFileAction.zipFilePrepHandle.inProgress}"
+	                ignoreDupResponses="true"
 	                reRenderAfterComplete="downloadProgressBar">
 	                <f:facet name="complete">
 	                    <script type="text/javascript">
