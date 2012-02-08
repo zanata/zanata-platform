@@ -27,10 +27,16 @@
  		</groups>
 	</test>
 		TODO: use group seam-tests instead, but make sure TestNG 
-		executes up the @BeforeSuite method SeamTest.startSeam()  
+		executes the @BeforeSuite method SeamTest.startSeam()
 		 -->
      	<test name="Seam Tests">
      		<classes>
+<!-- FIXME get these tests working again
+            <class name="org.zanata.server.rpc.ActivateWorkspaceActionSeamTest"/>
+            <class name="org.zanata.rest.service.GlossaryServiceSeamTest"/>
+            <class name="org.zanata.dao.LocaleMemberDAOTest"/>
+ -->
+
      			<class name="org.zanata.rest.service.ProjectsServiceSeamTest"/>
      			<class name="org.zanata.rest.service.ResourceServiceSeamTest"/>
      			<class name="org.zanata.rest.service.TranslationServiceSeamTest"/>

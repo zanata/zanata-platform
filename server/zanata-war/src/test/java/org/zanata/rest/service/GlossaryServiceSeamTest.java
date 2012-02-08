@@ -53,4 +53,6 @@ public abstract class GlossaryServiceSeamTest extends ZanataDBUnitSeamTest
       beforeTestOperations.add(new DataSetOperation(GLOSSARY_DATA_DBUNIT_XML, DatabaseOperation.CLEAN_INSERT));
       afterTestOperations.add(new DataSetOperation(GLOSSARY_DATA_DBUNIT_XML, DatabaseOperation.DELETE_ALL));
    }
+
+   // FIXME write the tests!
 }
