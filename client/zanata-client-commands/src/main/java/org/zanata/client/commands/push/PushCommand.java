@@ -73,6 +73,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
          throw new RuntimeException("unknown project type: " + getOpts().getProjectType());
       }
       strat.setPushOptions(getOpts());
+      strat.init();
       return strat;
    }
 
