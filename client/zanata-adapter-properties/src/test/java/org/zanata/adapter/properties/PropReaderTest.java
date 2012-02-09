@@ -34,12 +34,11 @@ public class PropReaderTest
    private static final File TEST_OUTPUT_DIR = new File(TEST_OUTPUT_DIR_STRING);
    PropReader propReader;
    static final String ISO_8859_1 = "ISO-8859-1";
-   String locale = "fr";
 
    @BeforeMethod
    public void resetReader()
    {
-      propReader = new PropReader(ISO_8859_1, new LocaleId(locale), ContentState.New);
+      propReader = new PropReader();
    }
 
    @Test
@@ -68,10 +67,11 @@ public class PropReaderTest
    @Test
    public void roundtripTransPropsToDocXmlToProps() throws Exception
    {
+      String locale = "fr";
       String docName = "test_fr.properties";
       InputStream targetStream = getResourceAsStream(docName);
       TranslationsResource transDoc = new TranslationsResource();
-      propReader.extractTarget(transDoc, targetStream);
+      propReader.extractTarget(transDoc, targetStream, new LocaleId(locale), ContentState.New);
 
       JAXBContext jc = JAXBContext.newInstance(TranslationsResource.class);
       Marshaller marshal = jc.createMarshaller();
