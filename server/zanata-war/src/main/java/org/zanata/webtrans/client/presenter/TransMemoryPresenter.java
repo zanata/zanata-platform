@@ -94,11 +94,14 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          @Override
          public void onTransMemoryCopy(TransMemoryShortcutCopyEvent event)
          {
-            String source = display.getSource(event.getIndex());
-            String target = display.getTarget(event.getIndex());
-            if (source != null && target != null)
+            if (!workspaceContext.isReadOnly())
             {
-               eventBus.fireEvent(new TransMemoryCopyEvent(source, target));
+               String source = display.getSource(event.getIndex());
+               String target = display.getTarget(event.getIndex());
+               if (source != null && target != null)
+               {
+                  eventBus.fireEvent(new TransMemoryCopyEvent(source, target));
+               }
             }
          }
       }));
