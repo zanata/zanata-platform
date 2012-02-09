@@ -98,7 +98,7 @@ class PropertiesStrategy extends AbstractPushStrategy
       return loadResource(docName, propFile);
    }
 
-   private TranslationsResource loadTranslationsResource(Resource srcDoc, File transFile, boolean useSourceOrder) throws IOException
+   private TranslationsResource loadTranslationsResource(Resource srcDoc, File transFile) throws IOException
    {
       TranslationsResource targetDoc = new TranslationsResource();
       propReader.extractTarget(targetDoc, new FileInputStream(transFile));
@@ -114,7 +114,7 @@ class PropertiesStrategy extends AbstractPushStrategy
          File transFile = new File(getOpts().getTransDir(), filename);
          if (transFile.exists())
          {
-            TranslationsResource targetDoc = loadTranslationsResource(srcDoc, transFile, getOpts().getUseSrcOrder());
+            TranslationsResource targetDoc = loadTranslationsResource(srcDoc, transFile);
             callback.visit(locale, targetDoc);
          }
          else

@@ -44,7 +44,8 @@ public class PoReader2Test
       return doc;
    }
 
-   private void extractTarget(boolean useSrcOrder) throws IOException, JAXBException
+   @Test
+   public void extractTarget() throws IOException, JAXBException
    {
       InputSource inputSource;
       Resource doc = getTemplate();
@@ -52,7 +53,7 @@ public class PoReader2Test
       inputSource = new InputSource(new File(testDir, locale + "/RPM.po").toURI().toString());
       inputSource.setEncoding("utf8");
       System.out.println("extracting target: " + locale);
-      TranslationsResource targetDoc = poReader.extractTarget(inputSource, doc, useSrcOrder);
+      TranslationsResource targetDoc = poReader.extractTarget(inputSource, doc);
       List<TextFlowTarget> textFlowTargets = targetDoc.getTextFlowTargets();
       assertThat(textFlowTargets.size(), is(137));
       TextFlowTarget target = textFlowTargets.iterator().next();
@@ -101,18 +102,6 @@ public class PoReader2Test
       poReader.extractTemplate(inputSource, LocaleId.EN_US, "doc1");
    }
 
-   @Test
-   public void extractTargetWithSourceOrder() throws IOException, JAXBException
-   {
-      extractTarget(true);
-   }
-
-   @Test
-   public void extractTargetWithTargetOrder() throws IOException, JAXBException
-   {
-      extractTarget(false);
-   }
-
    @Test(expectedExceptions = { RuntimeException.class }, expectedExceptionsMessageRegExp = ".*unsupported charset.*")
    public void extractInvalidTarget() throws IOException, JAXBException
    {
@@ -123,7 +112,7 @@ public class PoReader2Test
       inputSource.setEncoding("utf8");
       System.out.println("extracting target: " + locale);
 
-      poReader.extractTarget(inputSource, srcDoc, false);
+      poReader.extractTarget(inputSource, srcDoc);
    }
 
 }

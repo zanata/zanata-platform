@@ -3,10 +3,7 @@ package org.zanata.adapter.po;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
@@ -49,28 +46,12 @@ public class PoReader2
     * set to ASCII, CHARSET, UTF8 or UTF-8, or an exception will occur.
     * @param inputSource PO file to be extracted
     * @param srcDoc source language document
-    * @param useSourceOrder ensure that the TextFlowTargets have the
-    * same order as the TextFlows in srcDoc
     * @return converted PO file as TranslationsResource
     */
-   public TranslationsResource extractTarget(InputSource inputSource, Resource srcDoc, boolean useSourceOrder)
+   public TranslationsResource extractTarget(InputSource inputSource, Resource srcDoc)
    {
       TranslationsResource document = new TranslationsResource();
       MessageStreamParser messageParser = createParser(inputSource);
-
-      List<TextFlow> resources = srcDoc.getTextFlows();
-
-      List<String> textFlowIds = null;
-      Map<String, TextFlowTarget> targets = null;
-      if (useSourceOrder)
-      {
-         textFlowIds = new ArrayList<String>();
-         for (TextFlow res : resources)
-         {
-            textFlowIds.add(res.getId());
-         }
-         targets = new HashMap<String, TextFlowTarget>();
-      }
 
       boolean headerFound = false;
       while (messageParser.hasNext())
@@ -99,36 +80,16 @@ public class PoReader2
          else
          {
             String id = createId(message);
-            if (useSourceOrder && !textFlowIds.contains(id))
-            {
-               // TODO append obsolete
-            }
-            else
-            {
-               // add the target content (msgstr)
-               TextFlowTarget tfTarget = new TextFlowTarget();
-               tfTarget.setResId(id);
-               tfTarget.setDescription(ShortString.shorten(message.getMsgid()));
+            // add the target content (msgstr)
+            TextFlowTarget tfTarget = new TextFlowTarget();
+            tfTarget.setResId(id);
+            tfTarget.setDescription(ShortString.shorten(message.getMsgid()));
 
-               tfTarget.setContent(message.getMsgstr());
-               tfTarget.setState(getContentState(message));
+            tfTarget.setContent(message.getMsgstr());
+            tfTarget.setState(getContentState(message));
 
-               // add the PO comment
-               tfTarget.getExtensions(true).add(new SimpleComment(StringUtils.join(message.getComments(), "\n")));
-               if (useSourceOrder)
-                  targets.put(id, tfTarget);
-               else
-                  document.getTextFlowTargets().add(tfTarget);
-            }
-         }
-      }
-      if (useSourceOrder)
-      {
-         // this ensures that the TextFlowTargets have the same order as the
-         // TextFlows in the Document:
-         for (String id : textFlowIds)
-         {
-            TextFlowTarget tfTarget = targets.get(id);
+            // add the PO comment
+            tfTarget.getExtensions(true).add(new SimpleComment(StringUtils.join(message.getComments(), "\n")));
             document.getTextFlowTargets().add(tfTarget);
          }
       }

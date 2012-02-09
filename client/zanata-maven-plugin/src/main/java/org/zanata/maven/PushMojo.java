@@ -56,12 +56,11 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    private boolean copyTrans;
 
    /**
-    * Should we ensure that translations appear in the same order as the source
-    * strings? This is only needed for compatibility with Zanata server below
-    * v1.4.
+    * Obsolete option, only for backwards compatibility
     * 
     * @parameter expression="${zanata.useSrcOrder}" default-value="false"
     */
+   @Deprecated
    private boolean useSrcOrder;
 
    /**
@@ -122,12 +121,6 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    public String getMergeType()
    {
       return merge;
-   }
-
-   @Override
-   public boolean getUseSrcOrder()
-   {
-      return useSrcOrder;
    }
 
    @Override
