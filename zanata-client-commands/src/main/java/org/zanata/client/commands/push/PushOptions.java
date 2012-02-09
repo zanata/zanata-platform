@@ -9,9 +9,7 @@ public interface PushOptions extends PushPullOptions
    public String getSourceLang();
    public boolean getPushTrans();
    public boolean getCopyTrans();
-   public boolean getUseSrcOrder();
    public String getMergeType();
-
    public List<String> getIncludes();
    public List<String> getExcludes();
    public boolean getDefaultExcludes();

@@ -236,8 +236,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand<PublicanPush
                   {
                      InputSource inputSource = new InputSource(bis2);
                      inputSource.setEncoding("utf8");
-                     // NB we always use source order in this impl
-                     targetDoc = poReader.extractTarget(inputSource, srcDoc, true);
+                     targetDoc = poReader.extractTarget(inputSource, srcDoc);
                   }
                   finally
                   {

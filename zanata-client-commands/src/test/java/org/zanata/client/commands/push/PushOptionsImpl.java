@@ -40,7 +40,6 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
    List<String> excludes;
    boolean defaultExcludes;
    String mergeType;
-   boolean useSrcOrder;
    boolean copyTrans;
    boolean pushTrans;
    File transDir;
@@ -93,12 +92,6 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
    public boolean getCopyTrans()
    {
       return copyTrans;
-   }
-
-   @Override
-   public boolean getUseSrcOrder()
-   {
-      return useSrcOrder;
    }
 
    @Override
