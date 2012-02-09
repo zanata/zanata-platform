@@ -45,6 +45,8 @@ class PropertiesStrategy extends AbstractPushStrategy
 
    private PropReader propReader;
 
+   private final String charset;
+
    public PropertiesStrategy()
    {
       this(ISO_8859_1);
@@ -53,6 +55,12 @@ class PropertiesStrategy extends AbstractPushStrategy
    public PropertiesStrategy(String charset)
    {
       super(new StringSet("comment"), ".properties");
+      this.charset = charset;
+   }
+
+   @Override
+   public void init()
+   {
       this.propReader = new PropReader(
             charset,
             new LocaleId(getOpts().getSourceLang()),

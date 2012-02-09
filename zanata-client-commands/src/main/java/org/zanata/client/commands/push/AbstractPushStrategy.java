@@ -75,8 +75,8 @@ public abstract class AbstractPushStrategy
 
       dirScanner.setBasedir(srcDir);
       dirScanner.setCaseSensitive(false);
-      dirScanner.setExcludes((String[]) excludes.toArray(new String[excludes.size()]));
-      dirScanner.setIncludes((String[]) includes.toArray(new String[includes.size()]));
+      dirScanner.setExcludes(excludes.toArray(new String[excludes.size()]));
+      dirScanner.setIncludes(includes.toArray(new String[includes.size()]));
       dirScanner.scan();
       return dirScanner.getIncludedFiles();
    }
@@ -118,6 +118,10 @@ public abstract class AbstractPushStrategy
    public PushOptions getOpts()
    {
       return opts;
+   }
+
+   public void init()
+   {
    }
 
 }
