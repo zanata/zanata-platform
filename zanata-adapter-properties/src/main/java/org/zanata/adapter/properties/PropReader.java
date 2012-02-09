@@ -2,8 +2,6 @@ package org.zanata.adapter.properties;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 
@@ -17,72 +15,37 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
- * A Properties reader with support for skipping NON-TRANSLATABLE keys.
- * NOT THREADSAFE.
+ * A PropReader. NOT THREADSAFE.
  * 
  * @author <a href="mailto:sflaniga@redhat.com">Sean Flanigan</a>
  * @version $Revision: 1.1 $
  */
 public class PropReader
 {
-   // "8859_1" is used in Properties.java...
-   private static final String ISO_8859_1 = "ISO-8859-1";
+
    public static final String PROP_CONTENT_TYPE = "text/plain";
    private static final String NEWLINE_REGEX = "(\r\n|\r|\n)";
 
-   private final String charset;
-   private final LocaleId sourceLocale;
-   private final ContentState contentState;
-
-   /**
-    * @param charset charset to use when reading .properties files (usually "ISO-8859-1")
-    * @param sourceLocale "lang" attribute for source TextFlows
-    * @param contentState ContentState for new TextFlowTargets (typically Approved)
-    */
-   public PropReader(String charset, LocaleId sourceLocale, ContentState contentState)
-   {
-      this.charset = charset;
-      this.sourceLocale = sourceLocale;
-      this.contentState = contentState;
-   }
-
-   public PropReader()
-   {
-      this(ISO_8859_1, LocaleId.EN_US, ContentState.Approved);
-   }
-
    // pre: template already extracted
-   public void extractTarget(TranslationsResource doc, InputStream in) throws IOException
+   public void extractTarget(TranslationsResource doc, InputStream in, LocaleId localeId, ContentState contentState) throws IOException
    {
       Properties props = loadProps(in);
-      for (String key : props.keySet())
+      for (String key : props.stringPropertyNames())
       {
-         addPropEntryToDoc(doc, props, key, contentState);
-      }
-   }
-
-   private void addPropEntryToDoc(TranslationsResource doc, Properties props, String key, ContentState contentState)
-   {
-      String content = props.getProperty(key);
-      if (content == null)
-         return;
-      TextFlowTarget textFlowTarget = new TextFlowTarget(key);
-      textFlowTarget.setContent(content);
-      if (!content.isEmpty())
-      {
+         String val = props.getProperty(key);
+         String id = getID(key, val);
+         TextFlowTarget textFlowTarget = new TextFlowTarget(id);
+         textFlowTarget.setContent(val);
+         // textFlowTarget.setLang(localeId);
          textFlowTarget.setState(contentState);
+         String comment = props.getComment(key);
+         if (comment != null && comment.length() != 0)
+         {
+            SimpleComment simpleComment = textFlowTarget.getExtensions(true).findOrAddByType(SimpleComment.class);
+            simpleComment.setValue(comment);
+         }
+         doc.getTextFlowTargets().add(textFlowTarget);
       }
-      else
-      {
-         textFlowTarget.setState(ContentState.New);
-      }
-      String comment = props.getComment(key);
-      if (comment != null && comment.length() != 0)
-      {
-         SimpleComment simpleComment = new SimpleComment(comment);
-         textFlowTarget.getExtensions(true).add(simpleComment);
-      }
-      doc.getTextFlowTargets().add(textFlowTarget);
    }
 
    /**
@@ -92,8 +55,8 @@ public class PropReader
     * @param doc the resource to add properties textflows to
     * @param in the input stream to read the properties from
     * @throws IOException
-    * @throws InvalidPropertiesFormatException
     */
+   // TODO allowing Readers (via InputSource) might be a bad idea
    // TODO add documentation on exceptions thrown
    public void extractTemplate(Resource doc, InputStream in) throws IOException
    {
@@ -112,14 +75,16 @@ public class PropReader
          }
          if (nonTranslatableCount == 0)
          {
-            String content = props.getProperty(key);
-            String id = getID(key, content);
-            TextFlow textFlow = new TextFlow(id, sourceLocale, content);
+            String val = props.getProperty(key);
+            String id = getID(key, val);
+            TextFlow textFlow = new TextFlow(id);
+            textFlow.setContent(val);
             if (comment != null && comment.length() != 0)
             {
-               SimpleComment simpleComment = new SimpleComment(comment);
-               textFlow.getExtensions(true).add(simpleComment);
+               SimpleComment simpleComment = textFlow.getExtensions(true).findOrAddByType(SimpleComment.class);
+               simpleComment.setValue(comment);
             }
+            // textFlow.setLang(LocaleId.EN);
             resources.add(textFlow);
          }
       }
@@ -131,9 +96,9 @@ public class PropReader
     * 
     * @param comment comment to process, may have multiple lines
     * @param sb string buffer to output comments in translatable blocks
-    * @return adjusted non-translatable count, a value > 0 indicates that the
+    * @return adjusted non-translateable count, a value > 0 indicates that the
     *         current section is non-translatable
-    * @throws InvalidPropertiesFormatException
+    * @throws Exception
     */
    private int processCommentForNonTranslatable(int nonTranslatableCount, String comment, StringBuilder sb) throws InvalidPropertiesFormatException
    {
@@ -189,17 +154,9 @@ public class PropReader
 
    private Properties loadProps(InputStream in) throws IOException
    {
-      Reader reader = new InputStreamReader(in, charset);
-      try
-      {
-         Properties props = new Properties();
-         props.load(reader);
-         return props;
-      }
-      finally
-      {
-         reader.close();
-      }
+      Properties props = new Properties();
+      props.load(in);
+      return props;
    }
 
 }
