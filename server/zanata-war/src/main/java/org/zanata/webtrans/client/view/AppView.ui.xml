@@ -36,7 +36,7 @@
 			padding: 5px;
 		}
 
-		.topPanel-Workspace a{
+		.topPanel-Workspace a {
 			color: white;
 			font-weight: bold;
 			text-decoration: none;
@@ -49,6 +49,14 @@
 			color: white;
 			margin-top: 7px;
 		}
+		
+        .readOnly {
+            font-weight: bold;
+            font-size: 1.15em;
+            color: #ff6622;
+            padding-right: 7px;
+            display: inline;
+        }
 		
 		.userName {
 			font-weight: bold;
@@ -80,6 +88,9 @@
 		    <g:HorizontalPanel width="100%">
 		      <g:cell horizontalAlignment="ALIGN_LEFT">
 		          <g:Image resource="{resources.logo}" styleName="{style.logo}"/>
+		      </g:cell>
+		      <g:cell horizontalAlignment="ALIGN_LEFT">
+                  <g:Label ui:field="readOnlyLabel" styleName="{style.readOnly}"><ui:msg>Read-only mode</ui:msg></g:Label>
 		      </g:cell>
 		       <g:cell horizontalAlignment="ALIGN_RIGHT">
                     <g:FlowPanel styleName="{style.topPanel-right-menu}">
