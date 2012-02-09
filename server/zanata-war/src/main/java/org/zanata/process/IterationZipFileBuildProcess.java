@@ -84,6 +84,8 @@ public class IterationZipFileBuildProcess extends BackgroundProcess<IterationZip
       final List<HDocument> allIterationDocs = this.documentDAO.getAllByProjectIteration(projectSlug, iterationSlug);
       zipHandle.setMaxProgress(allIterationDocs.size() + 1);
       
+      zipHandle.ready();
+      
       final String projectDirectory = projectSlug + "-" + iterationSlug + "/";
       final HLocale hLocale = this.localeDAO.findByLocaleId(new LocaleId(localeId));
       final String mappedLocale = hLocale.getLocaleId().getId();

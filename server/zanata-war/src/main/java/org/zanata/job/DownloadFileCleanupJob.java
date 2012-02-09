@@ -21,8 +21,6 @@
 package org.zanata.job;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.util.Calendar;
 
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;

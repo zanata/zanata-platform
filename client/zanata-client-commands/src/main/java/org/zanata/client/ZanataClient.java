@@ -21,6 +21,7 @@ import org.zanata.client.commands.PutUserOptionsImpl;
 import org.zanata.client.commands.PutVersionOptionsImpl;
 import org.zanata.client.commands.SystemExitStrategy;
 import org.zanata.client.commands.ZanataCommand;
+import org.zanata.util.VersionUtility;
 
 @SuppressWarnings("deprecation")
 public class ZanataClient extends BasicOptionsImpl

@@ -27,5 +27,16 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum(String.class)
 public enum EntityStatus
 {
-   ACTIVE, READONLY, OBSOLETE
+   ACTIVE("jsf.Active"), READONLY("jsf.ReadOnly"), OBSOLETE("jsf.Obsolete");
+   
+   private final String messageKey;
+   EntityStatus(String messageKey)
+   {
+      this.messageKey = messageKey;
+   }
+
+   public String getMessageKey()
+   {
+      return messageKey;
+   }
 }

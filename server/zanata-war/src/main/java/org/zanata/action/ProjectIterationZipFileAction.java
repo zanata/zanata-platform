@@ -52,8 +52,9 @@ public class ProjectIterationZipFileAction extends BaseSecurityChecker
       processHandle.setLocaleId( this.localeId );
       processHandle.setInitiatingUserName( Identity.instance().getCredentials().getUsername() );
       
-      // Fire the zip file building process
+      // Fire the zip file building process and wait until it is ready to return
       this.iterationZipFileBuildProcess.startProcess( processHandle );
+      processHandle.waitUntilReady();
    }
    
    @End
