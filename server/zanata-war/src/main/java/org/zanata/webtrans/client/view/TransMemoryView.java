@@ -77,6 +77,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 
    private final Resources resources;
    private boolean isFocused;
+   private boolean showCopyLinks;
 
    private List<TranslationMemoryGlossaryItem> cachedMem = new ArrayList<TranslationMemoryGlossaryItem>();
 
@@ -91,6 +92,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
       this.messages = messages;
+      showCopyLinks = true;
    }
 
    @UiHandler("tmTextBox")
@@ -194,23 +196,27 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
          });
          resultTable.setWidget(row, INFO_COL, infoLink);
 
-         final Anchor copyLink = new Anchor("Copy");
-         copyLink.addClickHandler(new ClickHandler()
+         if (showCopyLinks)
          {
-            @Override
-            public void onClick(ClickEvent event)
+            final Anchor copyLink = new Anchor("Copy");
+            copyLink.addClickHandler(new ClickHandler()
             {
-               eventBus.fireEvent(new TransMemoryCopyEvent(sourceMessage, targetMessage));
-               Log.info("TransMemoryCopyEvent event is sent. (" + targetMessage + ")");
+               @Override
+               public void onClick(ClickEvent event)
+               {
+                  eventBus.fireEvent(new TransMemoryCopyEvent(sourceMessage, targetMessage));
+                  Log.info("TransMemoryCopyEvent event is sent. (" + targetMessage + ")");
+               }
+            });
+            resultTable.setWidget(row, ACTION_COL, copyLink);
+            String shortcutKeys = "";
+            if (row <= 4)
+            {
+               shortcutKeys = " (Ctrl + Shift + " + row + ")";
             }
-         });
-         resultTable.setWidget(row, ACTION_COL, copyLink);
-         String shortcutKeys = "";
-         if (row <= 4)
-         {
-            shortcutKeys = " (Ctrl + Shift + " + row + ")";
+            copyLink.setTitle(messages.copyLinkTooltip(targetMessage) + shortcutKeys);
          }
-         copyLink.setTitle(messages.copyLinkTooltip(targetMessage) + shortcutKeys);
+
       }
       resultTable.setCellPadding(CELL_PADDING);
    }
@@ -258,5 +264,12 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       {
          return null;
       }
+   }
+
+   @Override
+   public void setCopyLinksVisible(boolean visible)
+   {
+      showCopyLinks = visible;
+      // could refresh display here
    }
 }

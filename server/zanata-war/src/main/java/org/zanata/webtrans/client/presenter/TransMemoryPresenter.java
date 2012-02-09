@@ -11,6 +11,8 @@ import org.zanata.webtrans.client.events.TransMemoryShorcutCopyHandler;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
@@ -52,6 +54,8 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       String getSource(int index);
       
       String getTarget(int index);
+
+      void setCopyLinksVisible(boolean visible);
    }
 
    @Inject
@@ -98,6 +102,17 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
             }
          }
       }));
+
+      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
+      {
+         @Override
+         public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
+         {
+            display.setCopyLinksVisible(!event.isReadOnly());
+         }
+      }));
+
+      display.setCopyLinksVisible(!workspaceContext.isReadOnly());
    }
 
    public void showResultsFor(TransUnit transUnit)
