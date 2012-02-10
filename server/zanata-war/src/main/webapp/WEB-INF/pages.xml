@@ -38,11 +38,13 @@
     <restrict>#{s:hasRole('admin')}</restrict>
   </page>
   
-  <page view-id="/search.xhtml" action="#{projectSearch.search}">
-    <param name="q" value="#{projectSearch.searchQuery}" />
-    <param name="page" value="#{projectSearch.currentPage}" />
+  <!-- Project Search -->
+  <page view-id="*">
+  	<navigation from-action="#{projectSearch.search}">
+  		<redirect view-id="/search.xhtml"/>
+  	</navigation>
   </page>
-
+  
   <!-- Account -->
    <page view-id="/account/login.xhtml">
     <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
