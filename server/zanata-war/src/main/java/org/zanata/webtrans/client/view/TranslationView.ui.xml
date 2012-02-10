@@ -8,6 +8,7 @@
 	       height:10px;
 	       font-size:10px;
 	       border-radius:5px;
+	       -moz-border-radius:5px;
 	       outline:none;
         }
 	

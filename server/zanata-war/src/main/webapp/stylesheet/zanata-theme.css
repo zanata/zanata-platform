@@ -4,10 +4,12 @@
 
 .rich-panel-header {
 	border-radius:5px;
+	-moz-border-radius:5px;
 }
 
 .rich-panel {
 	border-radius:5px;
+	-moz-border-radius:5px;
 }	
 
 /* the specificity here is necessary to override the defaults */
@@ -20,6 +22,7 @@
 	box-shadow: 0 0 2px #aaa;
 	border: 1px solid #CCC;
 	border-radius:5px;
+	-moz-border-radius:5px;
 	margin-top:5px;
 }
 
@@ -28,9 +31,8 @@
 	background: url('../public-img/bar_background.png') 0 0 repeat-x;
 	border: 1px solid #EAEAEA;
 	border-bottom-color: #CACACA;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
 	border-radius: 3px;
+	-moz-border-radius: 3px;
 }
 
 #tabs .ui-tabs-nav {

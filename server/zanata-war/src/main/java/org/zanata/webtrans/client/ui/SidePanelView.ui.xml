@@ -9,6 +9,7 @@
 			background-color: #ffffff;
 			border: 2px solid #e0e8ee;
 			border-radius: 5px;
+			-moz-border-radius:5px;
 		}
 		
 	</ui:style>
