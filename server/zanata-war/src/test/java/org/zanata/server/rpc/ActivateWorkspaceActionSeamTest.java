@@ -1,11 +1,11 @@
 package org.zanata.server.rpc;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.*;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.jboss.seam.mock.DBUnitSeamTest;
 import org.testng.annotations.Test;
+import org.zanata.ZanataDBUnitSeamTest;
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.server.SeamDispatch;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -14,7 +14,7 @@ import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
 
 @Test(groups = { "seam-tests" })
-public class ActivateWorkspaceActionSeamTest extends DBUnitSeamTest
+public class ActivateWorkspaceActionSeamTest extends ZanataDBUnitSeamTest
 {
 
    protected void prepareDBUnitOperations()

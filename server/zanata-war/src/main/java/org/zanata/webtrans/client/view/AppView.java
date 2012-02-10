@@ -64,7 +64,7 @@ public class AppView extends Composite implements AppPresenter.Display
    TransUnitCountBar translationStatsBar;
 
    @UiField
-   Label notificationMessage, user, documentsLink;
+   Label readOnlyLabel, notificationMessage, user, documentsLink;
 
    @UiField
    SpanElement selectedDocumentSpan, selectedDocumentPathSpan;
@@ -202,5 +202,11 @@ public class AppView extends Composite implements AppPresenter.Display
    {
       translationStatsBar.setStats(transStats);
       translationStatsBar.setVisible(true);
+   }
+
+   @Override
+   public void setReadOnlyVisible(boolean visible)
+   {
+      readOnlyLabel.setVisible(visible);
    }
 }

@@ -32,6 +32,8 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEventHandler;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEventHandler;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
@@ -75,6 +77,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       void setNotificationMessage(String var);
 
       void setStats(TranslationStats transStats);
+
+      void setReadOnlyVisible(boolean visible);
    }
 
    private final DocumentListPresenter documentListPresenter;
@@ -115,6 +119,16 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    {
       documentListPresenter.bind();
       translationPresenter.bind();
+
+      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
+      {
+
+         @Override
+         public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
+         {
+            display.setReadOnlyVisible(event.isReadOnly());
+         }
+      }));
 
       registerHandler(eventBus.addHandler(NotificationEvent.getType(), new NotificationEventHandler()
       {
@@ -216,6 +230,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
       display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName(), workspaceTitle);
       window.setTitle(messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
+
+      display.setReadOnlyVisible(workspaceContext.isReadOnly());
 
       showView(MainView.Documents);
 

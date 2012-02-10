@@ -23,31 +23,27 @@ package org.zanata.client.commands.push;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
-import org.fedorahosted.openprops.Properties;
+import org.zanata.adapter.properties.PropReader;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.StringSet;
-import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.TextFlow;
-import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 class PropertiesStrategy extends AbstractPushStrategy
 {
    // "8859_1" is used in Properties.java...
    private static final String ISO_8859_1 = "ISO-8859-1";
+
+   private PropReader propReader;
 
    private final String charset;
 
@@ -60,6 +56,15 @@ class PropertiesStrategy extends AbstractPushStrategy
    {
       super(new StringSet("comment"), ".properties");
       this.charset = charset;
+   }
+
+   @Override
+   public void init()
+   {
+      this.propReader = new PropReader(
+            charset,
+            new LocaleId(getOpts().getSourceLang()),
+            ContentState.Approved);
    }
 
    @Override
@@ -77,47 +82,12 @@ class PropertiesStrategy extends AbstractPushStrategy
       return localDocNames;
    }
 
-   private Properties loadPropFile(File propFile) throws FileNotFoundException, IOException
-   {
-      Reader reader = new InputStreamReader(new FileInputStream(propFile), charset);
-      try
-      {
-         Properties props = new Properties();
-         props.load(reader);
-         return props;
-      }
-      finally
-      {
-         reader.close();
-      }
-   }
-
    private Resource loadResource(String docName, File propFile) throws IOException
    {
-      // TODO consider using PropReader
       Resource doc = new Resource(docName);
       // doc.setContentType(contentType);
-      Properties props = loadPropFile(propFile);
-      for (String key : props.keySet())
-      {
-         TextFlow textflow = propEntryToTextFlow(props, key);
-         doc.getTextFlows().add(textflow);
-      }
+      propReader.extractTemplate(doc, new FileInputStream(propFile));
       return doc;
-   }
-
-   private TextFlow propEntryToTextFlow(Properties props, String key)
-   {
-      String content = props.getProperty(key);
-      LocaleId sourceLoc = new LocaleId(getOpts().getSourceLang());
-      TextFlow textflow = new TextFlow(key, sourceLoc, content);
-      String comment = props.getComment(key);
-      if (comment != null)
-      {
-         SimpleComment simpleComment = new SimpleComment(comment);
-         textflow.getExtensions(true).add(simpleComment);
-      }
-      return textflow;
    }
 
    @Override
@@ -128,51 +98,11 @@ class PropertiesStrategy extends AbstractPushStrategy
       return loadResource(docName, propFile);
    }
 
-   private TranslationsResource loadTranslationsResource(Resource srcDoc, File transFile, boolean useSourceOrder) throws IOException
+   private TranslationsResource loadTranslationsResource(Resource srcDoc, File transFile) throws IOException
    {
-      // TODO consider using PropReader
       TranslationsResource targetDoc = new TranslationsResource();
-      Properties props = loadPropFile(transFile);
-      if (getOpts().getUseSrcOrder())
-      {
-         for (TextFlow tf : srcDoc.getTextFlows())
-         {
-            String key = tf.getId();
-            addPropEntryToDoc(targetDoc, props, key);
-         }
-      }
-      else
-      {
-         for (String key : props.keySet())
-         {
-            addPropEntryToDoc(targetDoc, props, key);
-         }
-      }
+      propReader.extractTarget(targetDoc, new FileInputStream(transFile));
       return targetDoc;
-   }
-
-   private void addPropEntryToDoc(TranslationsResource targetDoc, Properties props, String key)
-   {
-      String content = props.getProperty(key);
-      if (content == null)
-         return;
-      TextFlowTarget textFlowTarget = new TextFlowTarget(key);
-      textFlowTarget.setContent(content);
-      if (!content.isEmpty())
-      {
-         textFlowTarget.setState(ContentState.Approved);
-      }
-      else
-      {
-         textFlowTarget.setState(ContentState.New);
-      }
-      String comment = props.getComment(key);
-      if (comment != null)
-      {
-         SimpleComment simpleComment = new SimpleComment(comment);
-         textFlowTarget.getExtensions(true).add(simpleComment);
-      }
-      targetDoc.getTextFlowTargets().add(textFlowTarget);
    }
 
    @Override
@@ -184,7 +114,7 @@ class PropertiesStrategy extends AbstractPushStrategy
          File transFile = new File(getOpts().getTransDir(), filename);
          if (transFile.exists())
          {
-            TranslationsResource targetDoc = loadTranslationsResource(srcDoc, transFile, getOpts().getUseSrcOrder());
+            TranslationsResource targetDoc = loadTranslationsResource(srcDoc, transFile);
             callback.visit(locale, targetDoc);
          }
          else

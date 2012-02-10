@@ -92,21 +92,21 @@ public class CopyTransServiceImpl implements CopyTransService
 
    private String createComment(HTextFlowTarget target)
    {
-      String authorname;
+      String author;
       HDocument document = target.getTextFlow().getDocument();
       String projectname = document.getProjectIteration().getProject().getName();
       String version = document.getProjectIteration().getSlug();
       String documentid = document.getDocId();
       if (target.getLastModifiedBy() != null)
       {
-         authorname = target.getLastModifiedBy().getName();
+         author = ", author " + target.getLastModifiedBy().getName();
       }
       else
       {
-         authorname = "";
+         author = "";
       }
 
-      return "translation auto-copied from project " + projectname + ", version " + version + ", document " + documentid + ", author " + authorname;
+      return "translation auto-copied from project " + projectname + ", version " + version + ", document " + documentid + author;
    }
 
    // TODO unit testing for this method

@@ -30,6 +30,8 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.NotificationEventHandler;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEventHandler;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
@@ -85,6 +87,7 @@ public class AppPresenterTest
    private Capture<NotificationEventHandler> capturedNotificationEventHandler;
    private Capture<DocumentStatsUpdatedEventHandler> capturedDocumentStatsUpdatedEventHandler;
    private Capture<ProjectStatsUpdatedEventHandler> capturedProjectStatsUpdatedEventHandler;
+   private Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdatedEventHandler;
    private Capture<ClickHandler> capturedLeaveWorkspaceLinkClickHandler;
    private Capture<ClickHandler> capturedSignoutLinkClickHandler;
    private Capture<ValueChangeHandler<String>> capturedHistoryValueChangeHandler;
@@ -442,6 +445,34 @@ public class AppPresenterTest
       assertThat("document path should be maintained when clicking documents link", capturedToken.getDocumentPath(), is(token.getDocumentPath()));
    }
 
+   @Test
+   public void showsHidesReadonlyLabel()
+   {
+      setupAndBindAppPresenter();
+      verifyAllMocks();
+
+      // display expect show readonly
+      reset(mockDisplay);
+      mockDisplay.setReadOnlyVisible(true);
+      expectLastCall().once();
+      // simulate workspace readonly event
+      WorkspaceContextUpdateEvent mockEvent = createMock(WorkspaceContextUpdateEvent.class);
+      expect(mockEvent.isReadOnly()).andReturn(true).anyTimes();
+      replay(mockDisplay, mockEvent);
+      capturedWorkspaceContextUpdatedEventHandler.getValue().onWorkspaceContextUpdated(mockEvent);
+      verify(mockDisplay);
+
+      // display expect hide readonly
+      reset(mockDisplay, mockEvent);
+      mockDisplay.setReadOnlyVisible(false);
+      expectLastCall().once();
+      // simulate workspace editable event
+      expect(mockEvent.isReadOnly()).andReturn(false).anyTimes();
+      replay(mockDisplay, mockEvent);
+      capturedWorkspaceContextUpdatedEventHandler.getValue().onWorkspaceContextUpdated(mockEvent);
+      verify(mockDisplay);
+   }
+
    /**
     * generates new test doc id and doc info ready for use in tests
     */
@@ -570,6 +601,8 @@ public class AppPresenterTest
       expectLastCall().anyTimes();
       mockDisplay.setWorkspaceNameLabel(TEST_WORKSPACE_NAME, TEST_WORKSPACE_TITLE);
       expectLastCall().anyTimes();
+      mockDisplay.setReadOnlyVisible(false);
+      expectLastCall().once();
       // initially empty project stats
       emptyProjectStats = new TranslationStats();
       mockDisplay.setStats(eq(emptyProjectStats));
@@ -587,6 +620,9 @@ public class AppPresenterTest
       expect(mockEventBus.addHandler(eq(DocumentStatsUpdatedEvent.getType()), and(capture(capturedDocumentStatsUpdatedEventHandler), isA(DocumentStatsUpdatedEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
       capturedProjectStatsUpdatedEventHandler = new Capture<ProjectStatsUpdatedEventHandler>();
       expect(mockEventBus.addHandler(eq(ProjectStatsUpdatedEvent.getType()), and(capture(capturedProjectStatsUpdatedEventHandler), isA(ProjectStatsUpdatedEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
+
+      capturedWorkspaceContextUpdatedEventHandler = new Capture<WorkspaceContextUpdateEventHandler>();
+      expect(mockEventBus.addHandler(eq(WorkspaceContextUpdateEvent.getType()), and(capture(capturedWorkspaceContextUpdatedEventHandler), isA(WorkspaceContextUpdateEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
 
       capturedDocumentSelectionEvent = new Capture<DocumentSelectionEvent>();
       mockEventBus.fireEvent(and(capture(capturedDocumentSelectionEvent), isA(DocumentSelectionEvent.class)));
@@ -617,6 +653,7 @@ public class AppPresenterTest
 
       expect(mockWorkspaceContext.getWorkspaceName()).andReturn(TEST_WORKSPACE_NAME).anyTimes();
       expect(mockWorkspaceContext.getLocaleName()).andReturn(TEST_LOCALE_NAME).anyTimes();
+      expect(mockWorkspaceContext.isReadOnly()).andReturn(false).anyTimes();
    }
 
    @SuppressWarnings("unchecked")

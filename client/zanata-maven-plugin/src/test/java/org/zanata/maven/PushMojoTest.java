@@ -64,7 +64,6 @@ public class PushMojoTest extends ZanataMojoTest<PushMojo, PushCommand>
       assertEquals(true, pushMojo.getPushTrans());
       assertEquals(false, pushMojo.getCopyTrans());
       assertEquals("import", pushMojo.getMergeType());
-      assertEquals(true, pushMojo.getUseSrcOrder());
       assertEquals(Arrays.asList("includes"), pushMojo.getIncludes());
       assertEquals(Arrays.asList("excludes"), pushMojo.getExcludes());
       assertEquals(false, pushMojo.getDefaultExcludes());
