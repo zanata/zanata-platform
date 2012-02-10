@@ -6,9 +6,12 @@
     xmlns:s="http://jboss.com/products/seam/taglib"
     xmlns:rich="http://richfaces.org/rich">
   
-  <form method="get" action="#{request.contextPath}/search.seam">
+  <h:form>
+  	 <h:outputText rendered="#{s:hasRole('admin')}" value="#{messages['jsf.Obsolete']}"/>
+     <h:selectBooleanCheckbox id="inc_obs" value="#{projectSearch.includeObsolete}" rendered="#{s:hasRole('admin')}"
+     	title="#{messages['jsf.project.search.IncludeObsoleteTooltip']}"/>
      <h:inputText id="q" styleClass="with_icon search_icon"  value="#{projectSearch.searchQuery}"/>
-     <input type="submit" value="#{messages['jsf.SearchProjects']}"/>
-  </form>
+     <h:commandButton value="#{messages['jsf.SearchProjects']}" action="#{projectSearch.search}"/>
+  </h:form>
   
 </div>
