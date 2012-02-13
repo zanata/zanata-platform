@@ -188,11 +188,11 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    }
 
    @Override
-   public void setSouthPanelVisible(boolean visible)
+   public void setSouthPanelExpanded(boolean expanded)
    {
       mainSplitPanel.forceLayout();
       Widget splitter = SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel, southPanelContainer);
-      if (visible)
+      if (expanded)
       {
          SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, southHeight);
       }
@@ -201,9 +201,21 @@ public class TranslationView extends Composite implements TranslationPresenter.D
          southHeight = mainSplitPanel.getWidgetContainerElement(southPanelContainer).getOffsetHeight();
          SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, 26);
       }
-      splitter.setVisible(visible);
+      splitter.setVisible(expanded);
       mainSplitPanel.animate(200);
 
+   }
+
+   @Override
+   public void setSouthPanelVisible(boolean visible)
+   {
+      double splitPosition = visible ? 26 : 0;
+
+      mainSplitPanel.forceLayout();
+      // TODO retain southHeight? Workaround is to collapse first
+      SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, splitPosition);
+      SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel, southPanelContainer).setVisible(visible);
+      mainSplitPanel.animate(200);
    }
 
    @Override
