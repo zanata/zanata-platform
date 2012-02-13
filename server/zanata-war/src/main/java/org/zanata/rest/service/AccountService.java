@@ -81,8 +81,9 @@ public class AccountService implements AccountResource
    /**
     * Retrieves a user account.
     * 
-    * @return An account that matches a user name, or a Not Found (404) response if no such
-    * account is found.
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - Response containing information for the user account.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
     */
    @Override
    @GET
@@ -110,7 +111,11 @@ public class AccountService implements AccountResource
     * be created.
     * 
     * @param account The account information to create/update.
-    * @return A response with an OK (200) status if updated, or CREATED (201) if new.
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - If a new account was created.<br>
+    * CREATED(201) - If an existing account was modified.<br>
+    * UNAUTHORIZED(401) - If the user does not have the proper permissions to perform this operation.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation. 
     */
    @Override
    @PUT

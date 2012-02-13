@@ -25,6 +25,7 @@ import java.io.Serializable;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
+import org.hibernate.validator.Email;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Pattern;
@@ -38,6 +39,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.log.Log;
+import org.zanata.dao.PersonDAO;
 import org.zanata.model.HPerson;
 import org.zanata.service.RegisterService;
 
@@ -56,11 +58,15 @@ public class RegisterAction implements Serializable
 
    @In
    RegisterService registerServiceImpl;
+   
+   @In
+   PersonDAO personDAO;
 
    @In(create = true)
    private Renderer renderer;
 
    private String username;
+   private String email;
    private String password;
    private String passwordConfirm;
 
@@ -92,6 +98,19 @@ public class RegisterAction implements Serializable
    public String getUsername()
    {
       return username;
+   }
+   
+   public void setEmail(String email)
+   {
+      validateEmail(email);
+      this.email = email;
+   }
+   
+   @NotEmpty
+   @Email
+   public String getEmail()
+   {
+      return email;
    }
 
    public void setPassword(String password)
@@ -142,6 +161,15 @@ public class RegisterAction implements Serializable
          // pass
       }
    }
+   
+   public void validateEmail(String email)
+   {
+      if(this.personDAO.findByEmail(email) != null)
+      {
+         valid = false;
+         FacesMessages.instance().addToControl("email", "This email address is already taken");
+      }
+   }
 
    public void validatePasswords(String p1, String p2)
    {
@@ -168,6 +196,7 @@ public class RegisterAction implements Serializable
    {
       valid = true;
       validateUsername(getUsername());
+      validateEmail(getEmail());
       validatePasswords(getPassword(), getPasswordConfirm());
       validateTermsOfUse();
 
@@ -177,7 +206,8 @@ public class RegisterAction implements Serializable
       }
       final String user = getUsername();
       final String pass = getPassword();
-      String key = registerServiceImpl.register(user, pass, getPerson().getName(), getPerson().getEmail());
+      final String email = getEmail();
+      String key = registerServiceImpl.register(user, pass, getPerson().getName(), email);
       setActivationKey(key);
       log.info("get register key:" + key);
 
