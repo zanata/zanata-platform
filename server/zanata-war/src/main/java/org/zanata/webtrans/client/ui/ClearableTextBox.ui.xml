@@ -10,6 +10,7 @@
 			vertical-align: middle;
 			border: 1px solid black;
 			border-radius: 4px;
+			-moz-border-radius:4px;
 			padding: 2px; 
 			}
 		.xButton {

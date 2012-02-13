@@ -174,6 +174,7 @@ Removes some of the styling on the page-level splitters
     border: 2px solid #e0e8ee; 
     background:#FFFFFF;
     border-radius:5px;
+    -moz-border-radius:5px;
 }
 
 .WebTransEditor-Outer tr.middle td.middleCenter {
@@ -520,6 +521,7 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
 	border: 1px outset #999966;
 	height: 65px;
 	border-radius:8px;
+	-moz-border-radius:8px;
 }
 
 .transUnitCountTooltipTable {
@@ -531,6 +533,7 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
 	border: 1px solid #999966;
 	width:75px;
 	border-radius:4px;
+	-moz-border-radius:4px;
 }
 
 .pointer{
@@ -543,6 +546,7 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
     color:#FFFFFF;
     opacity:0.60;
     border-radius:20px;
+    -moz-border-radius:20px;
     font-weight:bold;
 }
 
@@ -551,5 +555,6 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
     padding:5px 20px 0px 20px;
     color:#FFFFFF;
     border-radius:20px;
+    -moz-border-radius:20px;
     font-weight:bold;
 }

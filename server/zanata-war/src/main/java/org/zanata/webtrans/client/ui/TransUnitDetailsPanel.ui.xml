@@ -6,7 +6,7 @@
 	
 	<ui:style>
 		 .container {
-           width:80%;
+           width:70%;
            padding-top:15px;
         }
         
