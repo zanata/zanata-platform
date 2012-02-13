@@ -48,6 +48,8 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
@@ -68,6 +70,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     * Default style name.
     */
    public static final String DEFAULT_STYLENAME = "gwt-TargetCellEditor";
+
+   private static final int INITIAL_LINES = 3;
+   private static final int HEIGHT_PER_LINE = 16;
 
    /**
     * The click listener used to clone.
@@ -184,7 +189,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       final int TYPING_TIMER_INTERVAL = 200; // ms
       final int TYPING_TIMER_RECURRENT_VALIDATION_PERIOD = 5; // intervals
-
 
       verticalPanel = new VerticalPanel();
       verticalPanel.setWidth("100%");
@@ -349,12 +353,17 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             {
                cancelEdit();
             }
-            else if (checkKey.isUserTyping())
+            else if (checkKey.isUserTyping() && !checkKey.isBackspace())
             {
-               autoSize();
+               growSize();
+            }
+            else if (checkKey.isUserTyping() && checkKey.isBackspace())
+            {
+               shrinkSize(false);
             }
          }
       });
+
       topLayoutPanel.add(textArea);
 
       operationsPanel = new HorizontalPanel();
@@ -728,16 +737,44 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    public void autoSize()
    {
-      int initialLines = 3;
-      int growByLines = 1;
+      shrinkSize(true);
+      growSize();
+   }
 
-      Log.debug("autosize TextArea");
-
-      textArea.setVisibleLines(initialLines);
-
-      while (textArea.getElement().getScrollHeight() > textArea.getElement().getClientHeight())
+   /**
+    * forceShrink will resize the textArea to initialLines(3 lines) and growSize
+    * according to the scroll height
+    * 
+    * @param forceShrink
+    */
+   public void shrinkSize(boolean forceShrink)
+   {
+      Log.debug("shrinkSize");
+      if (forceShrink)
       {
-         textArea.setVisibleLines(textArea.getVisibleLines() + growByLines);
+         textArea.setVisibleLines(INITIAL_LINES);
+      }
+      else
+      {
+         if (textArea.getElement().getScrollHeight() > (INITIAL_LINES * HEIGHT_PER_LINE))
+         {
+            // if the scroll bar exist
+         }
+         else
+         {
+            textArea.setVisibleLines(INITIAL_LINES);
+         }
+      }
+   }
+
+   public void growSize()
+   {
+      if (textArea.getElement().getScrollHeight() > textArea.getElement().getClientHeight())
+      {
+         Log.debug("growSize");
+         int newHeight = textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight();
+         int newLine = newHeight / HEIGHT_PER_LINE;
+         textArea.setVisibleLines(textArea.getVisibleLines() + newLine);
       }
    }
 
@@ -803,7 +840,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSource(), textArea.getText(), false));
    }
-   
+
    public void setReadOnly(boolean isReadOnly)
    {
       this.isReadOnly = isReadOnly;

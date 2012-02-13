@@ -107,6 +107,12 @@ public final class CheckKeyImpl implements CheckKey
    }
 
    @Override
+   public boolean isBackspace()
+   {
+      return keyCode == KeyCodes.KEY_BACKSPACE;
+   }
+
+   @Override
    public boolean isCloseEditorKey(boolean isEscKeyCloseEditor)
    {
       return isEscKeyCloseEditor && keyCode == KeyCodes.KEY_ESCAPE;

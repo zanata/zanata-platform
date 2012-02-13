@@ -152,6 +152,13 @@ public interface CheckKey
     * @return pressed key
     */
    int getKeyCode();
+
+
+   /**
+    * 
+    * Backspace key pressed
+    */
+   boolean isBackspace();
 }
 
 
