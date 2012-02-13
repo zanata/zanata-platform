@@ -31,7 +31,7 @@
         <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
             <ui:define name="label">#{messages['jsf.Email']}</ui:define>
             <h:inputText id="email" required="true"
-                      value="#{register.person.email}">
+                      value="#{register.email}">
                <a4j:support event="onblur" reRender="emailField" ajaxSingle="true"/>
             </h:inputText>
             <h:graphicImage id="emailHelp" value="../public-img/msginfo.png" styleClass="input_help">
