@@ -17,11 +17,7 @@ import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.easymock.Capture;
-import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-import org.easymock.IMocksControl;
-import org.easymock.internal.MocksControl;
-import org.easymock.internal.MocksControl.MockType;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
