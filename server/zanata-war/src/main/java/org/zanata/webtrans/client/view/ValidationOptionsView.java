@@ -45,4 +45,14 @@ public class ValidationOptionsView extends Composite implements ValidationOption
       return this;
    }
 
+   @Override
+   public void setEnabled(boolean enabled)
+   {
+      for (Widget w : contentPanel)
+      {
+         CheckBox chk = (CheckBox) w;
+         chk.setEnabled(enabled);
+      }
+   }
+
 }

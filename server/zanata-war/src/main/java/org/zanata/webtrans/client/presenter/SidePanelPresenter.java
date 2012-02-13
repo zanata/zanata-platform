@@ -194,11 +194,21 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
 
    void setReadOnly(boolean readOnly)
    {
+      if (readOnly)
+      {
+         eventBus.fireEvent(new ButtonDisplayChangeEvent(false));
+      }
+      else
+      {
+         eventBus.fireEvent(new ButtonDisplayChangeEvent(editorOptionsPanel.getEditorButtonsChk().getValue()));
+      }
+
       boolean active = !readOnly;
-      editorOptionsPanel.getEditorButtonsChk().setValue(active);
       editorOptionsPanel.getEditorButtonsChk().setEnabled(active);
       editorOptionsPanel.getEnterChk().setEnabled(active);
       editorOptionsPanel.getEscChk().setEnabled(active);
+
+      validationOptionsPresenter.setEnabled(active);
    }
 
    @Override

@@ -43,6 +43,11 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    public interface Display extends WidgetDisplay
    {
       HasValueChangeHandlers<Boolean> addValidationSelector(String label, String tooltip, boolean enabled);
+
+      /**
+       * enable or disable user interaction with all selectors in the display
+       */
+      void setEnabled(boolean enabled);
    }
 
    private ValidationService validationService;
@@ -80,6 +85,11 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    @Override
    protected void onRevealDisplay()
    {
+   }
+
+   public void setEnabled(boolean enabled)
+   {
+      display.setEnabled(enabled);
    }
 }
 
