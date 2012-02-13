@@ -97,9 +97,11 @@ public class FileService implements FileResource
     * @param locale Translations for this locale will be contained in the downloaded document.
     * @param fileExtension File type to be downloaded. (Options: 'po')
     * @param docId Document identifier to fetch translations for.
-    * @return A translation file in the requested format with translations for the requested document in a
-    * project, iteration and locale. If no document is found for the given parameters, a No Found (404)
-    * response is returned.
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - A translation file in the requested format with translations for the requested document in a
+    * project, iteration and locale. <br>
+    * NOT FOUND(404) - If a document is not found with the given parameters.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
     */
    @Override
    @GET
@@ -142,8 +144,12 @@ public class FileService implements FileResource
     * Downloads a previously generated file.
     * 
     * @param downloadId The Zanata generated download id.
-    * @return A previously generated file, or a Not Found (404) error response if the download is not yet
-    * ready or the download id is not recognized.
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - A translation file in the requested format with translations for the requested document in a
+    * project, iteration and locale. <br>
+    * NOT FOUND(404) - If a downloadable file is not found for the given id, or is not yet ready for download 
+    * (i.e. the system is still preparing it).<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
     */
    @Override
    @GET

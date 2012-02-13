@@ -31,9 +31,11 @@ public class VersionService implements VersionResource
    }
    
    /**
-    * Retrieve VersionInfo
+    * Retrieve Version information for the application.
     * 
-    * @return VersionInfo
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - Response with the system's version information in the content.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
     */
    @Override
    @GET

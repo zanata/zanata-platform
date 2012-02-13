@@ -42,6 +42,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -66,9 +67,11 @@ public class ProjectIterationService implements ProjectIterationResource
    public static final String ITERATION_SLUG_TEMPLATE = "{iterationSlug:" + SlugValidator.PATTERN + "}";
    public static final String SERVICE_PATH = ProjectService.SERVICE_PATH + "/iterations/i/" + ITERATION_SLUG_TEMPLATE;
 
+   /** Project Identifier. */
    @PathParam("projectSlug")
    private String projectSlug;
 
+   /** Project Iteration identifier. */
    @PathParam("iterationSlug")
    private String iterationSlug;
 
@@ -114,6 +117,14 @@ public class ProjectIterationService implements ProjectIterationResource
       this.eTagUtils = eTagUtils;
    }
 
+   /**
+    * Returns header information for a project iteration.
+    * 
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - Response with an "Etag" header for the requested project iteration.<br>
+    * NOT FOUND(404) - If a project iteration could not be found for the given parameters.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
+    */
    @Override
    @HEAD
    @Produces( { MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -130,9 +141,18 @@ public class ProjectIterationService implements ProjectIterationResource
       return Response.ok().tag(etag).build();
    }
 
+   /**
+    * Returns data for a single Project iteration.
+    * 
+    * @return The following response status codes will be returned from this operation:<br> 
+    * OK(200) - Contains the Project iteration data. <br>
+    * NOT FOUND(404) - response, if a Project iteration could not be found for the given parameters.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
+    */
    @Override
    @GET
    @Produces( { MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+   @TypeHint(ProjectIteration.class)
    public Response get()
    {
 
@@ -152,10 +172,23 @@ public class ProjectIterationService implements ProjectIterationResource
       return Response.ok(it).tag(etag).build();
    }
 
+   /**
+    * Creates or modifies a Project iteration.
+    * 
+    * @param projectIteration The project iteration information.
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - If an already existing project iteration was updated as a result of this operation.<br>
+    * CREATED(201) - If a new project iteration was added.<br>
+    * NOT FOUND(404) - If no project was found for the given project slug.<br>
+    * FORBIDDEN(403) - If the user was not allowed to create/modify the project iteration. In this case an error message
+    * is contained in the response.<br>
+    * UNAUTHORIZED(401) - If the user does not have the proper permissions to perform this operation.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
+    */
    @Override
    @PUT
    @Consumes( { MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   public Response put(ProjectIteration project)
+   public Response put(ProjectIteration projectIteration)
    {
 
       ResponseBuilder response;

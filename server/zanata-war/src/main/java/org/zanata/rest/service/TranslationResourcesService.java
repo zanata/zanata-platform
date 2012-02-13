@@ -54,6 +54,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
 import org.jboss.seam.annotations.In;
@@ -117,12 +118,15 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
 
    public static final String EVENT_COPY_TRANS = "org.zanata.rest.service.copyTrans";
    
+   /** Project Identifier. */
    @PathParam("projectSlug")
    private String projectSlug;
 
+   /** Project Iteration identifier. */
    @PathParam("iterationSlug")
    private String iterationSlug;
 
+   /** (This parameter is optional and is currently not used) */
    @HeaderParam("Content-Type")
    @Context
    private MediaType requestContentType;
@@ -214,6 +218,14 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       this.events = events;
    }
 
+   /**
+    * Returns header information for a Project's iteration translations.
+    * 
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - Response containing an "Etag" header for the requested project iteration translations.<br>
+    * NOT FOUND(404) - If a project iteration could not be found for the given parameters.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.  
+    */
    @Override
    @HEAD
    public Response head()
@@ -230,13 +242,19 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    }
 
    /**
-    * Retrieve the List of Resources
+    * Retrieve the List of Documents (Resources) belonging to a Project iteration.
     * 
-    * @return Response.ok with ResourcesList or Response(404) if not found
+    * @param extensions The document extensions to fetch along with the documents (e.g. "gettext", "comment"). This parameter
+    * allows multiple values e.g. "ext=gettext&ext=comment".
+    * @return  The following response status codes will be returned from this operation:<br>
+    * OK(200) - Response with a list of documents wrapped around a "resources" tag. <br>
+    * NOT FOUND(404) - If a Project iteration could not be found with the given parameters.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
     */
    @Override
    @GET
    @Wrapped(element = "resources", namespace = Namespaces.ZANATA_API)
+   @TypeHint(ResourceMeta.class)
    public Response get(@QueryParam("ext") Set<String> extensions)
    {
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
@@ -270,6 +288,20 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    }
 
 
+   /**
+    * Creates a new Document.
+    * 
+    * @param resource The document information.
+    * @param extensions The document extensions to save with the new document (e.g. "gettext", "comment"). This parameter
+    * allows multiple values e.g. "ext=gettext&ext=comment".
+    * @param copytrans Boolean value that indicates whether reasonably close translations from other projects should be 
+    * found to initially populate this document's translations.
+    * @return The following response status codes will be returned from this operation:<br>
+    * CREATED (201) - If the document was successfully created.<br>
+    * CONFLICT(409) - If another document already exists with the same name, on the same project iteration.<br>
+    * UNAUTHORIZED(401) - If the user does not have the proper permissions to perform this operation.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
+    */
    @Override
    @POST
    @Restrict("#{translationResourcesService.checkPermission('import-template')}")
@@ -316,9 +348,23 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       return Response.created(URI.create("r/" + resourceUtils.encodeDocId(document.getDocId()))).tag(etag).build();
    }
 
+   /**
+    * Retrieves information for a Document.
+    * 
+    * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
+    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/' 
+    * characters replaced with commas (',').
+    * @param extensions The document extensions to fetch along with the document (e.g. "gettext", "comment"). This parameter
+    * allows multiple values e.g. "ext=gettext&ext=comment".
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - Response with the document's information.<br> 
+    * NOT FOUND(404) - If a document could not be found with the given parameters.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
+    */
    @Override
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE)
+   @TypeHint(Resource.class)
    // /r/{id}
    public Response getResource(@PathParam("id") String idNoSlash, @QueryParam("ext") Set<String> extensions)
    {
@@ -388,6 +434,26 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       }
    }
    
+   /**
+    * Creates or modifies a Document.
+    * 
+    * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
+    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/' 
+    * characters replaced with commas (',').
+    * @param resource The document information.
+    * @param extensions The document extensions to save with the document (e.g. "gettext", "comment"). This parameter
+    * allows multiple values e.g. "ext=gettext&ext=comment".
+    * @param copytrans Boolean value that indicates whether reasonably close translations from other projects should be 
+    * found to initially populate this document's translations.
+    * @return The following response status codes will be returned from this operation:<br>
+    * CREATED(201) - If a new document was successfully created.<br>
+    * OK(200) - If an already existing document was modified.<br>
+    * NOT FOUND(404) - If a project or project iteration could not be found with the given parameters.<br>
+    * FORBIDDEN(403) - If the user is not allowed to modify the project, project iteration or document. This might be
+    * due to the project or iteration being in Read-Only mode.<br>
+    * UNAUTHORIZED(401) - If the user does not have the proper permissions to perform this operation.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
+    */
    @Override
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE)
@@ -469,6 +535,20 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       return response.tag(etag).build();
    }
 
+   /**
+    * Delete a Document. The system keeps the history of this document however.
+    * 
+    * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
+    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/' 
+    * characters replaced with commas (',').
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - If The document was successfully deleted.<br>
+    * NOT FOUND(404) - If a project or project iteration could not be found with the given parameters.<br>
+    * FORBIDDEN(403) - If the user is not allowed to modify the project, project iteration or document. This might be
+    * due to the project or iteration being in Read-Only mode.<br>
+    * UNAUTHORIZED(401) - If the user does not have the proper permissions to perform this operation.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
+    */
    @Override
    @DELETE
    @Path(RESOURCE_SLUG_TEMPLATE)
@@ -493,9 +573,23 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       return Response.ok().build();
    }
 
+   /**
+    * Retrieves meta-data information for a Document.
+    * 
+    * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
+    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/' 
+    * characters replaced with commas (',').
+    * @param extensions The document extensions to retrieve with the document's meta-data (e.g. "gettext", "comment"). 
+    * This parameter allows multiple values e.g. "ext=gettext&ext=comment".
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - If the Document's meta-data was found. The data will be contained in the response.<br>
+    * NOT FOUND(404) - If a project, project iteration or document could not be found with the given parameters.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
+    */
    @Override
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
+   @TypeHint(ResourceMeta.class)
    // /r/{id}/meta
    public Response getResourceMeta(@PathParam("id") String idNoSlash, @QueryParam("ext") Set<String> extensions)
    {
@@ -528,6 +622,21 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       return Response.ok().entity(entity).tag(etag).build();
    }
 
+   /**
+    * Modifies an existing document's meta-data.
+    * 
+    * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
+    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/' 
+    * characters replaced with commas (',').
+    * @param messageBody The document's meta-data.
+    * @param extensions The document extensions to save with the document (e.g. "gettext", "comment"). This parameter
+    * allows multiple values e.g. "ext=gettext&ext=comment".
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - If the Document's meta-data was successfully modified.<br>
+    * NOT FOUND(404) - If a document was not found using the given parameters.<br>
+    * UNAUTHORIZED(401) - If the user does not have the proper permissions to perform this operation.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
+    */
    @Override
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
@@ -574,15 +683,23 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    }
 
    /**
-    * Returns a set of translations for a given locale and extension set.
-    * @param idNoSlash The document Id.
+    * Retrieves a set of translations for a given locale.
+    * 
+    * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
+    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/' 
+    * characters replaced with commas (',').
     * @param locale The locale for which to get translations.
-    * @param extensions The extensions to bring over.
-    * @return Response
+    * @param extensions The translation extensions to retrieve (e.g. "comment"). This parameter
+    * allows multiple values.
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - Successfully retrieved translations. The data will be contained in the response.<br>
+    * NOT FOUND(404) - If a project, project iteration or document could not be found with the given parameters.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
     */
    @Override
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
+   @TypeHint(TranslationsResource.class)
    // /r/{id}/translations/{locale}
    public Response getTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, @QueryParam("ext") Set<String> extensions)
    {
@@ -622,6 +739,20 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       return Response.ok().entity(translationResource).tag(etag).build();
    }
 
+   /**
+    * Deletes a set of translations for a given locale. Also deletes any extensions recorded for the translations in
+    * question. The system will keep history of the translations.
+    * 
+    * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
+    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/' 
+    * characters replaced with commas (',').
+    * @param locale The locale for which to get translations.
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - Successfully deleted the translations.<br>
+    * NOT FOUND(404) - If a project, project iteration or document could not be found with the given parameters.
+    * UNAUTHORIZED(401) - If the user does not have the proper permissions to perform this operation.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
+    */
    @Override
    @DELETE
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
@@ -661,6 +792,27 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
 
    }
 
+   /**
+    * Updates the translations for a document and a locale.
+    * 
+    * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
+    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/' 
+    * characters replaced with commas (',').
+    * @param locale The locale for which to get translations.
+    * @param messageBody The translations to modify.
+    * @param extensions The translation extension types to modify (e.g. "comment"). This parameter
+    * allows multiple values.
+    * @param merge Indicates how to deal with existing translations (valid options: 'auto', 'import'). Import will 
+    * overwrite all current values with the values being pushed (even empty ones), while Auto will check the history 
+    * of your translations and will not overwrite any translations for which it detects a previous value is being pushed.
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - Translations were successfully updated.<br>
+    * NOT FOUND(404) - If a project, project iteration or document could not be found with the given parameters.<br>
+    * UNAUTHORIZED(401) - If the user does not have the proper permissions to perform this operation.<br>
+    * BAD REQUEST(400) - If there are problems with the parameters passed. i.e. Merge type is not one of the accepted 
+    * types. This response should have a content message indicating a reason.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
+    */
    @Override
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")

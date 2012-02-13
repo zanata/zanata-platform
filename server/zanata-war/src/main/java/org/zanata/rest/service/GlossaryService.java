@@ -23,7 +23,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.Identity;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
@@ -83,7 +82,9 @@ public class GlossaryService implements GlossaryResource, SecurityChecker
    /**
     * Returns all Glossary entries.
     * 
-    * @return All Glossary data.
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - Response containing all Glossary entries in the system.
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
     */
    @Override
    @GET
@@ -109,7 +110,9 @@ public class GlossaryService implements GlossaryResource, SecurityChecker
     * Returns Glossary entries for a single locale.
     * 
     * @param locale Locale for which to retrieve entries.
-    * @return A glossary with entries for the requested locale only.
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - Response containing all Glossary entries for the given locale.
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
     */
    @Override
    @GET
@@ -136,7 +139,10 @@ public class GlossaryService implements GlossaryResource, SecurityChecker
     * Adds glossary entries.
     * 
     * @param glossary The Glossary entries to add.
-    * @return A Created (201) response if the glossary was successfully created.
+    * @return The following response status codes will be returned from this operation:<br>
+    * CREATED(201) - If the glossary entries were successfully created.
+    * UNAUTHORIZED(401) - If the user does not have the proper permissions to perform this operation.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
     */
    @Override
    @PUT
@@ -164,11 +170,13 @@ public class GlossaryService implements GlossaryResource, SecurityChecker
    }
 
    /**
-    * Delete all glossary term with specified locale. GlossaryEntry will be
-    * deleted if termList is empty.
+    * Delete all glossary terms with the specified locale.
     * 
-    * @param targetLocale The target locale to delete glosary entries from.
-    * @return An OK (200) response if the glossary was successfully deleted.
+    * @param targetLocale The target locale to delete glossary entries from.
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - If the glossary entries were successfully deleted.
+    * UNAUTHORIZED(401) - If the user does not have the proper permissions to perform this operation.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
     */
    @Override
    @DELETE
@@ -216,7 +224,10 @@ public class GlossaryService implements GlossaryResource, SecurityChecker
    /**
     * Delete all glossary terms.
     * 
-    * @return An OK (200) response if the glossary was successfully deleted.
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - If the glossary entries were successfully deleted.
+    * UNAUTHORIZED(401) - If the user does not have the proper permissions to perform this operation.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
     */
    @Override
    @DELETE
