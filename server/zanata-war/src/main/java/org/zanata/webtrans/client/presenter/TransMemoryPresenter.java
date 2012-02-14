@@ -34,12 +34,13 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 {
    private final WorkspaceContext workspaceContext;
    private final CachingDispatchAsync dispatcher;
+   private GetTranslationMemory currentRequest;
 
    public interface Display extends WidgetDisplay
    {
-      HasValue<Boolean> getExactButton();
-
       HasClickHandlers getSearchButton();
+
+      HasValue<SearchType> getSearchType();
 
       HasText getTmTextBox();
 
@@ -69,14 +70,14 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    @Override
    protected void onBind()
    {
+      display.getSearchType().setValue(SearchType.FUZZY);
       display.getSearchButton().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
             String query = display.getTmTextBox().getText();
-            GetTranslationMemory.SearchType searchType = display.getExactButton().getValue() ? SearchType.EXACT : SearchType.RAW;
-            showResults(query, searchType);
+            showResults(query, display.getSearchType().getValue());
          }
       });
 
@@ -131,6 +132,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    {
       display.startProcessing();
       final GetTranslationMemory action = new GetTranslationMemory(query, workspaceContext.getWorkspaceId().getLocaleId(), searchType);
+      currentRequest = action;
       dispatcher.execute(action, new AsyncCallback<GetTranslationMemoryResult>()
       {
          @Override
@@ -142,8 +144,17 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          @Override
          public void onSuccess(GetTranslationMemoryResult result)
          {
+            if (!result.getRequest().equals(currentRequest))
+            {
+               Log.info("ignoring old TM result for query: " + result.getRequest().getQuery());
+               return;
+            }
+            Log.info("received TM result for query: " + currentRequest.getQuery());
+            display.getTmTextBox().setText(currentRequest.getQuery());
+            display.getSearchType().setValue(currentRequest.getSearchType());
             ArrayList<TranslationMemoryGlossaryItem> memories = result.getMemories();
             display.createTable(query, memories);
+            currentRequest = null;
          }
       });
    }
