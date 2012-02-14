@@ -737,6 +737,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    public void autoSize()
    {
+      Log.debug("autoSize");
       shrinkSize(true);
       growSize();
    }
@@ -747,33 +748,37 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     * 
     * @param forceShrink
     */
-   public void shrinkSize(boolean forceShrink)
+   private void shrinkSize(boolean forceShrink)
    {
-      Log.debug("shrinkSize");
       if (forceShrink)
       {
          textArea.setVisibleLines(INITIAL_LINES);
       }
       else
       {
-         if (textArea.getElement().getScrollHeight() > (INITIAL_LINES * HEIGHT_PER_LINE))
+         if (textArea.getElement().getScrollHeight() <= (INITIAL_LINES * HEIGHT_PER_LINE))
          {
-            // if the scroll bar exist
+            textArea.setVisibleLines(INITIAL_LINES);
          }
          else
          {
-            textArea.setVisibleLines(INITIAL_LINES);
+            if (textArea.getElement().getScrollHeight() >= textArea.getElement().getClientHeight())
+            {
+               int newHeight = textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight() > 0 ? textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight() : HEIGHT_PER_LINE;
+               int newLine = (newHeight / HEIGHT_PER_LINE) - 1 > INITIAL_LINES ? (newHeight / HEIGHT_PER_LINE) - 1 : INITIAL_LINES;
+               textArea.setVisibleLines(textArea.getVisibleLines() - newLine);
+            }
+            growSize();
          }
       }
    }
 
-   public void growSize()
+   private void growSize()
    {
       if (textArea.getElement().getScrollHeight() > textArea.getElement().getClientHeight())
       {
-         Log.debug("growSize");
          int newHeight = textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight();
-         int newLine = newHeight / HEIGHT_PER_LINE;
+         int newLine = (newHeight / HEIGHT_PER_LINE) + 1;
          textArea.setVisibleLines(textArea.getVisibleLines() + newLine);
       }
    }
