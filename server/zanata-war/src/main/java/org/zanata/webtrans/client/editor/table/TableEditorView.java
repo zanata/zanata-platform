@@ -80,7 +80,6 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
       super(tableModel, tableDefinition);
       this.cachedTableModel = tableModel;
       this.tableDefinition = tableDefinition;
-      tableDefinition.setTableEditor(this);
       setStylePrimaryName("TableEditorWrapper");
       setSize("100%", "100%");
       setPageSize(10);

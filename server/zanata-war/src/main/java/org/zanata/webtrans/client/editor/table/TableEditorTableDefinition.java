@@ -27,12 +27,12 @@ import java.util.Map;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.CopySourceEvent;
+import org.zanata.webtrans.client.events.OpenEditorEvent;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
-import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -46,12 +46,8 @@ import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ButtonBase;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -240,7 +236,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             {
                if (!isReadOnly)
                {
-                  tableEditor.gotoRow(rowIndex, true);
+                  eventBus.fireEvent(new OpenEditorEvent(rowIndex));
                }
             }
          });
@@ -364,12 +360,4 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          sourcePanel.setCellVerticalAlignment(transUnitDetailsContent,HasVerticalAlignment.ALIGN_BOTTOM);
       }
    }
-
-   private TableEditorPresenter.Display tableEditor;
-
-   public void setTableEditor(TableEditorPresenter.Display tableEditor)
-   {
-      this.tableEditor = tableEditor;
-   }
-
 }
