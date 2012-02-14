@@ -32,11 +32,14 @@ import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
@@ -194,7 +197,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    private final CellRenderer<TransUnit, TransUnit> targetCellRenderer = new CellRenderer<TransUnit, TransUnit>()
    {
       @Override
-      public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
+      public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, final AbstractCellView<TransUnit> view)
       {
          view.setStyleName("TableEditorCell TableEditorCell-Target");
          final VerticalPanel targetPanel = new VerticalPanel();
@@ -227,10 +230,22 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             ((HighlightingLabel) label).highlightSearch(findMessage);
          }
          label.setTitle(messages.clickHere());
+
+         label.sinkEvents(Event.ONMOUSEDOWN);
+         final int rowIndex = view.getRowIndex();
+         label.addMouseDownHandler(new MouseDownHandler()
+         {
+            @Override
+            public void onMouseDown(MouseDownEvent event)
+            {
+               if (!isReadOnly)
+               {
+                  tableEditor.gotoRow(rowIndex, true);
+               }
+            }
+         });
          targetPanel.add(label);
-
          targetPanel.setSize("100%", "100%");
-
          view.setWidget(targetPanel);
       }
    };
@@ -348,6 +363,13 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          sourcePanel.add(transUnitDetailsContent);
          sourcePanel.setCellVerticalAlignment(transUnitDetailsContent,HasVerticalAlignment.ALIGN_BOTTOM);
       }
+   }
+
+   private TableEditorPresenter.Display tableEditor;
+
+   public void setTableEditor(TableEditorPresenter.Display tableEditor)
+   {
+      this.tableEditor = tableEditor;
    }
 
 }
