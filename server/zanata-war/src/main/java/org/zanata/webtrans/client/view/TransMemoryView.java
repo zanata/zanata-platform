@@ -11,8 +11,11 @@ import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.DiffMatchPatchLabel;
+import org.zanata.webtrans.client.ui.EnumListBox;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
+import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
+import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -27,13 +30,13 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -58,10 +61,10 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    TextBox tmTextBox;
 
    @UiField
-   CheckBox phraseButton;
-
-   @UiField
    Button searchButton;
+
+   @UiField(provided = true)
+   ValueListBox<SearchType> searchType;
 
    @UiField
    Button clearButton;
@@ -84,11 +87,11 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    private UiMessages messages;
 
    @Inject
-   public TransMemoryView(final UiMessages messages, Resources resources)
+   public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, Resources resources)
    {
       this.resources = resources;
+      searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);
       initWidget(uiBinder.createAndBindUi(this));
-      phraseButton.setText(messages.phraseButtonLabel());
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
       this.messages = messages;
@@ -124,15 +127,15 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    }
 
    @Override
-   public HasValue<Boolean> getExactButton()
-   {
-      return phraseButton;
-   }
-
-   @Override
    public Button getSearchButton()
    {
       return searchButton;
+   }
+
+   @Override
+   public HasValue<SearchType> getSearchType()
+   {
+      return searchType;
    }
 
    public TextBox getTmTextBox()

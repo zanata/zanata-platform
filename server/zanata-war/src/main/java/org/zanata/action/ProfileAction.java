@@ -35,7 +35,6 @@ import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.ApplicationConfiguration;
-import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
@@ -56,16 +55,7 @@ public class ProfileAction implements Serializable
    private String email;
    private String username;
    private String activationKey;
-
-   public String getActivationKey()
-   {
-      return activationKey;
-   }
-
-   public void setActivationKey(String keyHash)
-   {
-      this.activationKey = keyHash;
-   }
+   private boolean valid;
 
    @In
    ApplicationConfiguration applicationConfiguration;
@@ -90,6 +80,17 @@ public class ProfileAction implements Serializable
 
    @In
    RegisterService registerServiceImpl;
+   
+   private void validateEmail(String email)
+   {
+      HPerson person = personDAO.findByEmail(email);
+      
+      if( person != null && !person.getAccount().equals( authenticatedAccount ) )
+      {
+         valid = false;
+         FacesMessages.instance().addToControl("email", "This email address is already taken");
+      }
+   }
 
    @Create
    public void onCreate()
@@ -131,7 +132,6 @@ public class ProfileAction implements Serializable
    }
 
    @Email
-   @NotDuplicateEmail
    public String getEmail()
    {
       return email;
@@ -139,13 +139,27 @@ public class ProfileAction implements Serializable
 
    public void setEmail(String email)
    {
+      this.validateEmail(email);
       this.email = email;
+   }
+   
+   public String getActivationKey()
+   {
+      return activationKey;
+   }
+
+   public void setActivationKey(String keyHash)
+   {
+      this.activationKey = keyHash;
    }
 
    @Transactional
    public String edit()
    {
-      if (personDAO.findByEmail(email) != null)
+      this.valid = true;
+      validateEmail(this.email);
+      
+      if( !this.isValid() )
       {
          return null;
       }
@@ -186,6 +200,11 @@ public class ProfileAction implements Serializable
          return "home";
       }
       return "view";
+   }
+
+   public boolean isValid()
+   {
+      return valid;
    }
 
 }

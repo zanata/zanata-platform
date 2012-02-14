@@ -18,39 +18,21 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.editor.table;
+package org.zanata.webtrans.client.resources;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
+import com.google.gwt.i18n.client.LocalizableResource.Generate;
 
-public class EditorTextArea extends TextArea
+@DefaultLocale
+@Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
+public interface EnumMessages extends com.google.gwt.i18n.client.Messages
 {
-   public EditorTextArea()
-   {
-      super();
-      sinkEvents(Event.ONPASTE);
-   }
+   @DefaultMessage("Phrase")
+   String searchTypeExact();
 
-   @Override
-   public void onBrowserEvent(Event event)
-   {
-      super.onBrowserEvent(event);
-      switch (DOM.eventGetType(event)) {
-      case Event.ONPASTE:
-         Scheduler.get().scheduleDeferred(new ScheduledCommand()
-         {
-                @Override
-                  public void execute() {
-                      ValueChangeEvent.fire(EditorTextArea.this, getText());
-                  }
-         });
-         break;
-      }
-   }
+   @DefaultMessage("Fuzzy")
+   String searchTypeFuzzy();
 
+   @DefaultMessage("Lucene")
+   String searchTypeRaw();
 }
-

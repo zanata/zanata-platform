@@ -185,7 +185,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       Collections.sort(results, comp);
 
       log.info("Returning {0} TM matches for \"{1}\"", results.size(), abbrev);
-      return new GetTranslationMemoryResult(results);
+      return new GetTranslationMemoryResult(action, results);
    }
 
    @Override

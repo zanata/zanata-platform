@@ -39,6 +39,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.log.Log;
+import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HPerson;
 import org.zanata.service.RegisterService;
@@ -102,12 +103,12 @@ public class RegisterAction implements Serializable
    
    public void setEmail(String email)
    {
-      validateEmail(email);
       this.email = email;
    }
    
    @NotEmpty
    @Email
+   @NotDuplicateEmail(message="This email address is already taken.")
    public String getEmail()
    {
       return email;
@@ -161,15 +162,6 @@ public class RegisterAction implements Serializable
          // pass
       }
    }
-   
-   public void validateEmail(String email)
-   {
-      if(this.personDAO.findByEmail(email) != null)
-      {
-         valid = false;
-         FacesMessages.instance().addToControl("email", "This email address is already taken");
-      }
-   }
 
    public void validatePasswords(String p1, String p2)
    {
@@ -196,7 +188,6 @@ public class RegisterAction implements Serializable
    {
       valid = true;
       validateUsername(getUsername());
-      validateEmail(getEmail());
       validatePasswords(getPassword(), getPasswordConfirm());
       validateTermsOfUse();
 
