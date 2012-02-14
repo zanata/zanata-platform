@@ -184,7 +184,6 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       }
       splitter.setVisible(visible);
       mainSplitPanel.animate(200);
-
    }
 
    @Override

@@ -35,28 +35,51 @@ import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.EditorConfigConstants;
-import org.zanata.webtrans.client.ui.EditorOptionsPanel;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
 public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter.Display>
 {
    public interface Display extends WidgetDisplay
    {
-      // TODO remove this - inline code between this presenter and displayimpl
-      // class
-      void setEditorOptionsPanel(Widget widget);
+
+      HasValue<Boolean> getTranslatedChk();
+
+      HasValue<Boolean> getNeedReviewChk();
+
+      HasValue<Boolean> getUntranslatedChk();
+
+      HasValue<Boolean> getEditorButtonsChk();
+
+      HasValue<Boolean> getEnterChk();
+
+      HasValue<Boolean> getEscChk();
+
+      void setEditorOptionsVisible(boolean visible);
+
+      void setNavOptionVisible(boolean visible);
+
+      void setValidationOptionsVisible(boolean visible);
+
+      HasChangeHandlers getFilterOptionsSelect();
+
+      // possible filter values
+      static final String KEY_FUZZY_UNTRANSLATED = "FU";
+      static final String KEY_FUZZY = "F";
+      static final String KEY_UNTRANSLATED = "U";
+
+      String getSelectedFilter();
    }
 
    private final ValidationOptionsPresenter validationOptionsPresenter;
-   private final EditorOptionsPanel editorOptionsPanel;
 
    private Map<String, Boolean> configMap = new HashMap<String, Boolean>();
    private final WorkspaceContext workspaceContext;
@@ -65,7 +88,6 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
    public OptionsPanelPresenter(final Display display, final EventBus eventBus, final ValidationOptionsPresenter validationDetailsPresenter, final TransFilterPresenter transFilterPresenter, final WorkspaceContext workspaceContext)
    {
       super(display, eventBus);
-      this.editorOptionsPanel = new EditorOptionsPanel();
       this.validationOptionsPresenter = validationDetailsPresenter;
       this.workspaceContext = workspaceContext;
 
@@ -80,24 +102,22 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
       @Override
       public void onValueChange(ValueChangeEvent<Boolean> event)
       {
-         eventBus.fireEvent(new FilterViewEvent(editorOptionsPanel.getTranslatedChk().getValue(), editorOptionsPanel.getNeedReviewChk().getValue(), editorOptionsPanel.getUntranslatedChk().getValue(), false));
+         eventBus.fireEvent(new FilterViewEvent(display.getTranslatedChk().getValue(), display.getNeedReviewChk().getValue(), display.getUntranslatedChk().getValue(), false));
       }
    };
-
 
    @Override
    protected void onBind()
    {
       validationOptionsPresenter.bind();
-      display.setEditorOptionsPanel(editorOptionsPanel);
       if (workspaceContext.isReadOnly())
       {
          setReadOnly(true);
       }
 
-      registerHandler(editorOptionsPanel.getTranslatedChk().addValueChangeHandler(filterChangeHandler));
-      registerHandler(editorOptionsPanel.getNeedReviewChk().addValueChangeHandler(filterChangeHandler));
-      registerHandler(editorOptionsPanel.getUntranslatedChk().addValueChangeHandler(filterChangeHandler));
+      registerHandler(display.getTranslatedChk().addValueChangeHandler(filterChangeHandler));
+      registerHandler(display.getNeedReviewChk().addValueChangeHandler(filterChangeHandler));
+      registerHandler(display.getUntranslatedChk().addValueChangeHandler(filterChangeHandler));
 
       registerHandler(eventBus.addHandler(FilterViewEvent.getType(), new FilterViewEventHandler()
       {
@@ -106,25 +126,25 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          {
             if (event.isCancelFilter())
             {
-               editorOptionsPanel.getTranslatedChk().setValue(event.isFilterTranslated(), false);
-               editorOptionsPanel.getNeedReviewChk().setValue(event.isFilterNeedReview(), false);
-               editorOptionsPanel.getUntranslatedChk().setValue(event.isFilterUntranslated(), false);
+               display.getTranslatedChk().setValue(event.isFilterTranslated(), false);
+               display.getNeedReviewChk().setValue(event.isFilterNeedReview(), false);
+               display.getUntranslatedChk().setValue(event.isFilterUntranslated(), false);
             }
 
             // if filter view, hide model navigation
             boolean showingFullList = (event.isFilterTranslated() == event.isFilterNeedReview()) && (event.isFilterTranslated() == event.isFilterUntranslated());
             if (showingFullList)
             {
-               editorOptionsPanel.setNavOptionVisible(true);
+               display.setNavOptionVisible(true);
             }
             else
             {
-               editorOptionsPanel.setNavOptionVisible(false);
+               display.setNavOptionVisible(false);
             }
          }
       }));
 
-      registerHandler(editorOptionsPanel.getEditorButtonsChk().addValueChangeHandler(new ValueChangeHandler<Boolean>()
+      registerHandler(display.getEditorButtonsChk().addValueChangeHandler(new ValueChangeHandler<Boolean>()
       {
          @Override
          public void onValueChange(ValueChangeEvent<Boolean> event)
@@ -134,7 +154,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          }
       }));
 
-      registerHandler(editorOptionsPanel.getEnterChk().addValueChangeHandler(new ValueChangeHandler<Boolean>()
+      registerHandler(display.getEnterChk().addValueChangeHandler(new ValueChangeHandler<Boolean>()
       {
          @Override
          public void onValueChange(ValueChangeEvent<Boolean> event)
@@ -145,7 +165,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          }
       }));
 
-      registerHandler(editorOptionsPanel.getEscChk().addValueChangeHandler(new ValueChangeHandler<Boolean>()
+      registerHandler(display.getEscChk().addValueChangeHandler(new ValueChangeHandler<Boolean>()
       {
          @Override
          public void onValueChange(ValueChangeEvent<Boolean> event)
@@ -156,23 +176,28 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          }
       }));
 
-      registerHandler(editorOptionsPanel.getOptionsList().addChangeHandler(new ChangeHandler()
+      // editor buttons always shown by default
+      display.getEditorButtonsChk().setValue(true, false);
+      display.getEnterChk().setValue(configMap.get(EditorConfigConstants.BUTTON_ENTER), false);
+      display.getEscChk().setValue(configMap.get(EditorConfigConstants.BUTTON_ESC), false);
+
+      registerHandler(display.getFilterOptionsSelect().addChangeHandler(new ChangeHandler()
       {
          @Override
          public void onChange(ChangeEvent event)
          {
-            String selectedOption = editorOptionsPanel.getOptionsList().getItemText(editorOptionsPanel.getOptionsList().getSelectedIndex());
-            if (selectedOption.equals(EditorConfigConstants.OPTION_FUZZY_UNTRANSLATED))
+            String selectedOption = display.getSelectedFilter();
+            if (selectedOption.equals(Display.KEY_FUZZY_UNTRANSLATED))
             {
                configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
                configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
             }
-            else if (selectedOption.equals(EditorConfigConstants.OPTION_FUZZY))
+            else if (selectedOption.equals(Display.KEY_FUZZY))
             {
                configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
                configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, false);
             }
-            else if (selectedOption.equals(EditorConfigConstants.OPTION_UNTRANSLATED))
+            else if (selectedOption.equals(Display.KEY_UNTRANSLATED))
             {
                configMap.put(EditorConfigConstants.BUTTON_FUZZY, false);
                configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
@@ -180,7 +205,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
             eventBus.fireEvent(new UserConfigChangeEvent(configMap));
          }
       }));
-      
+
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
       {
          @Override
@@ -193,21 +218,10 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
 
    void setReadOnly(boolean readOnly)
    {
-      if (readOnly)
-      {
-         eventBus.fireEvent(new ButtonDisplayChangeEvent(false));
-      }
-      else
-      {
-         eventBus.fireEvent(new ButtonDisplayChangeEvent(editorOptionsPanel.getEditorButtonsChk().getValue()));
-      }
-
-      boolean active = !readOnly;
-      editorOptionsPanel.getEditorButtonsChk().setEnabled(active);
-      editorOptionsPanel.getEnterChk().setEnabled(active);
-      editorOptionsPanel.getEscChk().setEnabled(active);
-
-      validationOptionsPresenter.setEnabled(active);
+      boolean displayButtons = readOnly ? false : display.getEditorButtonsChk().getValue();
+      eventBus.fireEvent(new ButtonDisplayChangeEvent(displayButtons));
+      display.setEditorOptionsVisible(!readOnly);
+      display.setValidationOptionsVisible(!readOnly);
    }
 
    @Override
