@@ -86,7 +86,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private final DispatchAsync dispatcher;
 
    private final TranslationEditorPresenter translationEditorPresenter;
-   private final SidePanelPresenter sidePanelPresenter;
+   private final OptionsPanelPresenter optionsPanelPresenter;
    private final TransMemoryPresenter transMemoryPresenter;
    private final GlossaryPresenter glossaryPresenter;
    private final WorkspaceUsersPresenter workspaceUsersPresenter;
@@ -100,14 +100,14 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private boolean southPanelExpanded = true;
 
    @Inject
-   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final SidePanelPresenter sidePanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final NativeEvent nativeEvent, final WorkspaceContext workspaceContext)
+   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final OptionsPanelPresenter optionsPanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final NativeEvent nativeEvent, final WorkspaceContext workspaceContext)
    {
       super(display, eventBus);
       this.messages = messages;
       this.translationEditorPresenter = translationEditorPresenter;
       this.workspaceUsersPresenter = workspaceUsersPresenter;
       this.transMemoryPresenter = transMemoryPresenter;
-      this.sidePanelPresenter = sidePanelPresenter;
+      this.optionsPanelPresenter = optionsPanelPresenter;
       this.glossaryPresenter = glossaryPresenter;
       this.dispatcher = dispatcher;
 
@@ -144,7 +144,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
       bindSouthPanelPresenters();
       translationEditorPresenter.bind();
-      sidePanelPresenter.bind();
+      optionsPanelPresenter.bind();
 
       registerHandler(eventBus.addHandler(ExitWorkspaceEvent.getType(), new ExitWorkspaceEventHandler()
       {
@@ -325,7 +325,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
       unbindSouthPanelPresenters();
       translationEditorPresenter.unbind();
-      sidePanelPresenter.unbind();
+      optionsPanelPresenter.unbind();
    }
 
    public void saveEditorPendingChange()

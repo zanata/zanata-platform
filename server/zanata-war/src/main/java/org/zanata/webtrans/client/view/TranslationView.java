@@ -21,7 +21,7 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.presenter.GlossaryPresenter;
-import org.zanata.webtrans.client.presenter.SidePanelPresenter;
+import org.zanata.webtrans.client.presenter.OptionsPanelPresenter;
 import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.presenter.TranslationEditorPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
@@ -83,7 +83,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
 
 
    @Inject
-   public TranslationView(Resources resources, WebTransMessages messages, TranslationEditorPresenter.Display translationEditorView, SidePanelPresenter.Display sidePanelView, TransMemoryPresenter.Display transMemoryView, WorkspaceUsersPresenter.Display workspaceUsersView, GlossaryPresenter.Display glossaryView)
+   public TranslationView(Resources resources, WebTransMessages messages, TranslationEditorPresenter.Display translationEditorView, OptionsPanelPresenter.Display sidePanelView, TransMemoryPresenter.Display transMemoryView, WorkspaceUsersPresenter.Display workspaceUsersView, GlossaryPresenter.Display glossaryView)
    {
 
       StyleInjector.inject(resources.style().getText(), true);

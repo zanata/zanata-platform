@@ -46,12 +46,12 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Display>
+public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter.Display>
 {
    public interface Display extends WidgetDisplay
    {
-      void setValidationOptionsView(Widget widget);
-
+      // TODO remove this - inline code between this presenter and displayimpl
+      // class
       void setEditorOptionsPanel(Widget widget);
    }
 
@@ -62,7 +62,7 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
    private final WorkspaceContext workspaceContext;
 
    @Inject
-   public SidePanelPresenter(final Display display, final EventBus eventBus, final ValidationOptionsPresenter validationDetailsPresenter, final TransFilterPresenter transFilterPresenter, final WorkspaceContext workspaceContext)
+   public OptionsPanelPresenter(final Display display, final EventBus eventBus, final ValidationOptionsPresenter validationDetailsPresenter, final TransFilterPresenter transFilterPresenter, final WorkspaceContext workspaceContext)
    {
       super(display, eventBus);
       this.editorOptionsPanel = new EditorOptionsPanel();
@@ -89,7 +89,6 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
    protected void onBind()
    {
       validationOptionsPresenter.bind();
-      display.setValidationOptionsView(validationOptionsPresenter.getDisplay().asWidget());
       display.setEditorOptionsPanel(editorOptionsPanel);
       if (workspaceContext.isReadOnly())
       {

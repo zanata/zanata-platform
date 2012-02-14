@@ -63,7 +63,7 @@ public class TranslationPresenterTest
    private GlossaryPresenter mockGlossaryPresenter;
    private WebTransMessages mockMessages;
    private NativeEvent mockNativeEvent;
-   private SidePanelPresenter mockSidePanelPresenter;
+   private OptionsPanelPresenter mockSidePanelPresenter;
    private TranslationEditorPresenter mockTranslationEditorPresenter;
    private TransMemoryPresenter mockTransMemoryPresenter;
    private WorkspaceContext mockWorkspaceContext;
@@ -94,7 +94,7 @@ public class TranslationPresenterTest
       mockGlossaryPresenter = createMock(GlossaryPresenter.class);
       mockMessages = createMock(WebTransMessages.class);
       mockNativeEvent = createMock(NativeEvent.class);
-      mockSidePanelPresenter = createMock(SidePanelPresenter.class);
+      mockSidePanelPresenter = createMock(OptionsPanelPresenter.class);
       mockTranslationEditorPresenter = createMock(TranslationEditorPresenter.class);
       mockTransMemoryPresenter = createMock(TransMemoryPresenter.class);
       mockWorkspaceContext = createMock(WorkspaceContext.class);

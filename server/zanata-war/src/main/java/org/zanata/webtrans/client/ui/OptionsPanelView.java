@@ -20,7 +20,8 @@
  */
 package org.zanata.webtrans.client.ui;
 
-import org.zanata.webtrans.client.presenter.SidePanelPresenter;
+import org.zanata.webtrans.client.presenter.OptionsPanelPresenter;
+import org.zanata.webtrans.client.presenter.ValidationOptionsPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.google.gwt.core.client.GWT;
@@ -32,12 +33,12 @@ import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class SidePanelView extends Composite implements SidePanelPresenter.Display
+public class OptionsPanelView extends Composite implements OptionsPanelPresenter.Display
 {
 
-   private static SidePanelUiBinder uiBinder = GWT.create(SidePanelUiBinder.class);
+   private static OptionsPanelUiBinder uiBinder = GWT.create(OptionsPanelUiBinder.class);
 
-   interface SidePanelUiBinder extends UiBinder<SplitLayoutPanel, SidePanelView>
+   interface OptionsPanelUiBinder extends UiBinder<SplitLayoutPanel, OptionsPanelView>
    {
    }
 
@@ -53,16 +54,11 @@ public class SidePanelView extends Composite implements SidePanelPresenter.Displ
 
 
    @Inject
-   public SidePanelView(WebTransMessages messages)
+   public OptionsPanelView(WebTransMessages messages, ValidationOptionsPresenter.Display validationOptionsView)
    {
       initWidget(uiBinder.createAndBindUi(this));
-   }
-
-   @Override
-   public void setValidationOptionsView(Widget widget)
-   {
       validationOptionsContainer.clear();
-      validationOptionsContainer.add(widget);
+      validationOptionsContainer.add(validationOptionsView.asWidget());
    }
 
    @Override
