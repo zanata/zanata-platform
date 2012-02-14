@@ -57,6 +57,7 @@ public class HighlightingLabel extends Label
       Element element = getElement();
       String text = plainText == null ? "" : plainText.replaceAll("\n", "¶\n");
       Highlighting.syntaxHighlight(text, element);
+      element.addClassName("cm-s-default");
    }
 
    public void highlightSearch(String search)

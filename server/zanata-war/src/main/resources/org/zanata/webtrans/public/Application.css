@@ -385,7 +385,8 @@ tr.TableEditorRow.selected td.TableEditorCell-Target {
 }
 
 .TableEditorContent {
-	word-wrap: break-word; 
+	word-wrap: break-word;
+	white-space: pre-wrap;
 }
 
 .TableEditorContent,.TableEditorContent-Edit {

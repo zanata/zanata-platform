@@ -28,7 +28,7 @@ public class Highlighting
 
    public static native void syntaxHighlight(String text, Element elem)/*-{
 		elem.innerHTML = '';
-		$wnd.highlightText(text, elem);
+		$wnd.CodeMirror.runMode(text, "htmlmixed", elem);
    }-*/;
 
    public static native void searchHighlight(String searchTerm, Element elem)/*-{
