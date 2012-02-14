@@ -33,7 +33,6 @@ public class EditorTextArea extends TextArea
    {
       super();
       sinkEvents(Event.ONPASTE);
-
    }
 
    @Override
