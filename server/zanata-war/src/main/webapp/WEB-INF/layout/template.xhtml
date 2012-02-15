@@ -39,7 +39,7 @@
 					   
 					   <rich:spacer width="10px" /> 
 					   
-					   <s:link id="Sign_out" view="/home.xhtml" action="#{identity.logout}" value="#{messages['jsf.SignOut']}" propagation="none" />
+					   <s:link id="Sign_out" view="/account/sign_out" value="#{messages['jsf.SignOut']}" propagation="none" />
                     </s:fragment>
                     
 					<s:fragment rendered="#{not identity.loggedIn}">

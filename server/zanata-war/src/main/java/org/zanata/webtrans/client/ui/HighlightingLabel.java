@@ -20,7 +20,7 @@
  */
 package org.zanata.webtrans.client.ui;
 
-import com.google.gwt.user.client.Element;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Label;
 
 public class HighlightingLabel extends Label
@@ -34,7 +34,7 @@ public class HighlightingLabel extends Label
 
    public HighlightingLabel(String text)
    {
-      super();
+      this();
       setText(text);
    }
 
@@ -48,8 +48,8 @@ public class HighlightingLabel extends Label
    public void setText(String text)
    {
       this.plainText = text;
-      super.setText(text);
       highlight();
+      updateHorizontalAlignment();
    }
 
    private void highlight()
@@ -57,6 +57,7 @@ public class HighlightingLabel extends Label
       Element element = getElement();
       String text = plainText == null ? "" : plainText.replaceAll("\n", "¶\n");
       Highlighting.syntaxHighlight(text, element);
+      element.addClassName("cm-s-default");
    }
 
    public void highlightSearch(String search)

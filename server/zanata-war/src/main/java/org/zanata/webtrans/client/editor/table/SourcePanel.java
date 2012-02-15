@@ -44,7 +44,7 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
 
    private final HorizontalPanel panel;
    private final HorizontalPanel rightPanel;
-   private final Label sourceLabel;
+   private final HighlightingLabel sourceLabel;
    private PushButton copyButton;
    private TransUnit value;
 
@@ -125,7 +125,7 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
    
    public void highlightSearch(String search)
    {
-      ((HighlightingLabel) sourceLabel).highlightSearch(search);
+      sourceLabel.highlightSearch(search);
    }
 
 }
