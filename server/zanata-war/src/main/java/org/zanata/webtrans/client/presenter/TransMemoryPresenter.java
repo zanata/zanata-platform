@@ -55,8 +55,6 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       String getSource(int index);
       
       String getTarget(int index);
-
-      void setCopyLinksVisible(boolean visible);
    }
 
    @Inject
@@ -106,17 +104,6 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
             }
          }
       }));
-
-      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
-      {
-         @Override
-         public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
-         {
-            display.setCopyLinksVisible(!event.isReadOnly());
-         }
-      }));
-
-      display.setCopyLinksVisible(!workspaceContext.isReadOnly());
    }
 
    public void showResultsFor(TransUnit transUnit)

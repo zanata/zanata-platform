@@ -9,6 +9,7 @@
             padding-top:5px;	
             font-weight:bold;
         }
+        
     </ui:style>
         
 	<g:LayoutPanel>
@@ -22,8 +23,7 @@
 		</g:layer>
 		<g:layer top="25px" bottom="0px">
 			<g:ScrollPanel>
-				<c:CellTable ui:field='tmTable' />
-<!-- 				<g:FlexTable ui:field="resultTable"/> -->
+				<c:CellTable ui:field='tmTable'/>
 			</g:ScrollPanel>
 		</g:layer>
 	</g:LayoutPanel>
