@@ -198,7 +198,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          view.setStyleName("TableEditorCell TableEditorCell-Target");
          final VerticalPanel targetPanel = new VerticalPanel();
 
-         final Label label = new HighlightingLabel();
+         final HighlightingLabel label = new HighlightingLabel();
 
          // if editor is opening, do not render target cell, otherwise editor
          // will be closed
@@ -223,7 +223,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
          if (findMessage != null && !findMessage.isEmpty())
          {
-            ((HighlightingLabel) label).highlightSearch(findMessage);
+            label.highlightSearch(findMessage);
          }
          label.setTitle(messages.clickHere());
 

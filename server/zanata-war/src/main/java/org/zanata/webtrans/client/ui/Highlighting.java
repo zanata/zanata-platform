@@ -21,7 +21,7 @@
 package org.zanata.webtrans.client.ui;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.user.client.Element;
+import com.google.gwt.dom.client.Element;
 
 public class Highlighting
 {
@@ -31,6 +31,7 @@ public class Highlighting
 		$wnd.CodeMirror.runMode(text, "htmlmixed", elem);
    }-*/;
 
+   // From JavaScript on http://www.nsftools.com/misc/SearchAndHighlight.htm
    public static native void searchHighlight(String searchTerm, Element elem)/*-{
 		// the highlightStartTag and highlightEndTag parameters are optional
 		var bodyText = elem.innerHTML;
