@@ -21,15 +21,17 @@
 package org.zanata.webtrans.client.ui;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.HTML;
 
-public class HighlightingLabel extends Label
+public class HighlightingLabel extends HTML
 {
 
    private String plainText;
 
    public HighlightingLabel()
    {
+      // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=116083
+      super("<pre></pre>");
    }
 
    public HighlightingLabel(String text)
@@ -54,7 +56,7 @@ public class HighlightingLabel extends Label
 
    private void highlight()
    {
-      Element element = getElement();
+      Element element = getElement().getFirstChildElement();
       String text = plainText == null ? "" : plainText.replaceAll("\n", "¶\n");
       Highlighting.syntaxHighlight(text, element);
       element.addClassName("cm-s-default");

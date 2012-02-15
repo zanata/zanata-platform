@@ -384,18 +384,24 @@ tr.TableEditorRow.selected td.TableEditorCell-Target {
 	border-right: 3px solid #666666;
 }
 
-.TableEditorContent {
-	word-wrap: break-word;
-	white-space: pre-wrap;
-}
-
-.TableEditorContent,.TableEditorContent-Edit {
+.TableEditorContent,.TableEditorContent-Edit,.TableEditorContent-Empty {
 	font-size: 14px;
 	font-family: sans-serif;
 	padding: 0px;
+   word-wrap: break-word;
+   white-space: pre-wrap;
 	margin: 0px;
 	width: 98%;
 	/*border: none; might make the text area look less cramped */
+}
+
+.TableEditorContent pre, .TableEditorContent-Empty pre {
+   font-size: inherit;
+   font-family: inherit;
+   word-wrap: inherit;
+   white-space: inherit;
+   padding: 0px;
+   margin: 0px;
 }
 
 .TableEditorContent font {
