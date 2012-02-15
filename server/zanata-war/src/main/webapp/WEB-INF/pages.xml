@@ -39,6 +39,7 @@
   </page>
   
   <!-- Project Search -->
+  <!-- TODO this rule is a duplicate, should be combined with first * rule -->
   <page view-id="*">
   	<navigation from-action="#{projectSearch.search}">
   		<redirect view-id="/search.xhtml"/>
@@ -58,6 +59,7 @@
         <redirect view-id="/profile/edit.xhtml" />
       </rule>
       <rule if-outcome="redirect">
+        <!-- TODO add login success message -->
         <redirect url="#{userRedirect.url}" />
       </rule>
       <rule if-outcome="home">
@@ -426,8 +428,8 @@
       </rule>
     </navigation>
   </page>
-  
-  
+
+
 
   <!-- Exceptions -->
 

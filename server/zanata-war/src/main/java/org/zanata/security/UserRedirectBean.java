@@ -31,7 +31,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 
 /**
- * This bean is used to redirect a user after login to a given url.
+ * This bean is used store a url from the query string for use with redirects.
  * 
  * Add {@code continue=URL} to the query string, and have seam capture the
  * parameter by adding child element
@@ -44,6 +44,8 @@ import org.jboss.seam.annotations.Scope;
 @AutoCreate
 public class UserRedirectBean implements Serializable
 {
+   private static final String HOME_URL = "/";
+   private static final String ERROR_URL = "/error";
 
    /**
     * 
@@ -52,9 +54,61 @@ public class UserRedirectBean implements Serializable
    private final static String ENCODING = "UTF-8";
    private String url;
 
+   /**
+    * Modifies the redirect url to apply extra rules about redirects that cannot
+    * be expressed in pages.xml.
+    * 
+    * Currently replaces the error url with the home url to prevent redirect to
+    * error page after signing in from the error page.
+    * 
+    * @param originalUrl the url of the page redirected from
+    * @return the adjusted url if any adjustment is required, originalUrl
+    *         otherwise
+    */
+   private String applyRedirectModifications(String originalUrl)
+   {
+      if (originalUrl == null)
+      {
+         return originalUrl;
+      }
+
+      String newUrl, queryString;
+
+      int qsIndex = originalUrl.indexOf('?');
+      if (qsIndex < 0)
+      {
+         newUrl = originalUrl;
+         queryString = "";
+      }
+      else
+      {
+         newUrl = originalUrl.substring(0, qsIndex);
+         queryString = originalUrl.substring(qsIndex);
+      }
+
+
+      if (newUrl.endsWith(ERROR_URL))
+      {
+         newUrl = newUrl.substring(0, newUrl.length() - ERROR_URL.length());
+         newUrl = newUrl.concat(HOME_URL);
+         return newUrl.concat(queryString);
+      }
+      else
+      {
+         return originalUrl;
+      }
+
+   }
+
+   /**
+    * Stores the url for later use after applying any required modifications.
+    * 
+    * @param url a non-encoded url
+    * @see {@link #applyRedirectModifications(String)}
+    */
    public void setUrl(String url)
    {
-      this.url = url;
+      this.url = applyRedirectModifications(url);
    }
 
    public String getUrl()
@@ -76,6 +130,12 @@ public class UserRedirectBean implements Serializable
       }
    }
 
+   /**
+    * Decodes an encoded url, then stores with modifications.
+    * 
+    * @param encodedUrl an encoded url to store
+    * @see {@link #setUrl(String)}
+    */
    public void setEncodedUrl(String encodedUrl)
    {
       if (encodedUrl == null || encodedUrl.isEmpty())
@@ -86,7 +146,7 @@ public class UserRedirectBean implements Serializable
 
       try
       {
-         this.url = URLDecoder.decode(encodedUrl, ENCODING);
+         setUrl(URLDecoder.decode(encodedUrl, ENCODING));
       }
       catch (UnsupportedEncodingException e)
       {
