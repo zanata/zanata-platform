@@ -25,12 +25,15 @@ import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.NativeEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.presenter.TranslationPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 
@@ -60,9 +63,10 @@ public class TranslationPresenterTest
    private GlossaryPresenter mockGlossaryPresenter;
    private WebTransMessages mockMessages;
    private NativeEvent mockNativeEvent;
-   private SidePanelPresenter mockSidePanelPresenter;
+   private OptionsPanelPresenter mockSidePanelPresenter;
    private TranslationEditorPresenter mockTranslationEditorPresenter;
    private TransMemoryPresenter mockTransMemoryPresenter;
+   private WorkspaceContext mockWorkspaceContext;
    private WorkspaceUsersPresenter mockWorkspaceUsersPresenter;
 
    // mock view components
@@ -72,6 +76,7 @@ public class TranslationPresenterTest
 
    private Capture<EnterWorkspaceEventHandler> capturedEnterWorkspaceEventHandler;
    private Capture<ExitWorkspaceEventHandler> capturedExitWorkspaceEventHandler;
+   private Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdateEventHandler;
    private Capture<GetTranslatorList> capturedTranslatorListRequest;
    private Capture<AsyncCallback<GetTranslatorListResult>> capturedTranslatorListRequestCallback;
    private Capture<ValueChangeHandler<Boolean>> capturedOptionsToggleValueChangeHandler;
@@ -89,9 +94,10 @@ public class TranslationPresenterTest
       mockGlossaryPresenter = createMock(GlossaryPresenter.class);
       mockMessages = createMock(WebTransMessages.class);
       mockNativeEvent = createMock(NativeEvent.class);
-      mockSidePanelPresenter = createMock(SidePanelPresenter.class);
+      mockSidePanelPresenter = createMock(OptionsPanelPresenter.class);
       mockTranslationEditorPresenter = createMock(TranslationEditorPresenter.class);
       mockTransMemoryPresenter = createMock(TransMemoryPresenter.class);
+      mockWorkspaceContext = createMock(WorkspaceContext.class);
       mockWorkspaceUsersPresenter = createMock(WorkspaceUsersPresenter.class);
 
       mockOptionsToggle = createMock(HasValue.class);
@@ -100,7 +106,7 @@ public class TranslationPresenterTest
 
    private TranslationPresenter newTranslationPresenter()
    {
-      return new TranslationPresenter(mockDisplay, mockEventBus, mockDispatcher, mockWorkspaceUsersPresenter, mockTranslationEditorPresenter, mockSidePanelPresenter, mockTransMemoryPresenter, mockGlossaryPresenter, mockMessages, mockNativeEvent);
+      return new TranslationPresenter(mockDisplay, mockEventBus, mockDispatcher, mockWorkspaceUsersPresenter, mockTranslationEditorPresenter, mockSidePanelPresenter, mockTransMemoryPresenter, mockGlossaryPresenter, mockMessages, mockNativeEvent, mockWorkspaceContext);
    }
 
 
@@ -129,7 +135,6 @@ public class TranslationPresenterTest
    public void hidesOptionsPanel()
    {
       setupAndBindPresenter();
-
       reset(mockDisplay);
       mockDisplay.setOptionsToggleTooltip(TEST_SHOW_OPTIONS_TOOLTIP);
       expectLastCall().once();
@@ -177,7 +182,7 @@ public class TranslationPresenterTest
 
       reset(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter);
       // doesn't set tooltip like options toggle
-      mockDisplay.setSouthPanelVisible(false);
+      mockDisplay.setSouthPanelExpanded(false);
       expectLastCall().once();
 
       // should unbind sub-presenters when hiding
@@ -205,9 +210,30 @@ public class TranslationPresenterTest
    {
       setupAndBindPresenter();
 
+      // hide south panel so that it can be shown
+      reset(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter);
+      // doesn't set tooltip like options toggle
+      mockDisplay.setSouthPanelExpanded(false);
+      expectLastCall().once();
+      // should unbind sub-presenters when hiding
+      mockTransMemoryPresenter.unbind();
+      expectLastCall().once();
+      mockGlossaryPresenter.unbind();
+      expectLastCall().once();
+      mockWorkspaceUsersPresenter.unbind();
+      expectLastCall().once();
+      replay(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter);
+      // simulate south panel toggle released
+      @SuppressWarnings("unchecked")
+      ValueChangeEvent<Boolean> southPanelToggleDeactivated = createMock(ValueChangeEvent.class);
+      expect(southPanelToggleDeactivated.getValue()).andReturn(false).anyTimes();
+      replay(southPanelToggleDeactivated);
+      capturedSouthPanelToggleValueChangeHandler.getValue().onValueChange(southPanelToggleDeactivated);
+
+      // test showing south panel
       reset(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter, mockTranslationEditorPresenter);
       // doesn't set tooltip like options toggle
-      mockDisplay.setSouthPanelVisible(true);
+      mockDisplay.setSouthPanelExpanded(true);
       expectLastCall().once();
 
       // should re-bind sub-presenters when showing
@@ -228,13 +254,15 @@ public class TranslationPresenterTest
 
       // simulate south panel toggle depressed
       @SuppressWarnings("unchecked")
-      ValueChangeEvent<Boolean> southPanelToggleDeactivated = createMock(ValueChangeEvent.class);
-      expect(southPanelToggleDeactivated.getValue()).andReturn(true).anyTimes();
-      replay(southPanelToggleDeactivated);
-      capturedSouthPanelToggleValueChangeHandler.getValue().onValueChange(southPanelToggleDeactivated);
+      ValueChangeEvent<Boolean> southPanelToggleActivated = createMock(ValueChangeEvent.class);
+      expect(southPanelToggleActivated.getValue()).andReturn(true).anyTimes();
+      replay(southPanelToggleActivated);
+      capturedSouthPanelToggleValueChangeHandler.getValue().onValueChange(southPanelToggleActivated);
 
       verify(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter);
    }
+
+   // TODO extract methods for common south panel show/hide test components
 
    /**
     * similar to showsSouthPanel() but with non-null selected TU
@@ -244,9 +272,29 @@ public class TranslationPresenterTest
    {
       setupAndBindPresenter();
 
+      // hide south panel so that it can be shown
+      reset(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter);
+      // doesn't set tooltip like options toggle
+      mockDisplay.setSouthPanelExpanded(false);
+      expectLastCall().once();
+      // should unbind sub-presenters when hiding
+      mockTransMemoryPresenter.unbind();
+      expectLastCall().once();
+      mockGlossaryPresenter.unbind();
+      expectLastCall().once();
+      mockWorkspaceUsersPresenter.unbind();
+      expectLastCall().once();
+      replay(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter);
+      // simulate south panel toggle released
+      @SuppressWarnings("unchecked")
+      ValueChangeEvent<Boolean> southPanelToggleDeactivated = createMock(ValueChangeEvent.class);
+      expect(southPanelToggleDeactivated.getValue()).andReturn(false).anyTimes();
+      replay(southPanelToggleDeactivated);
+      capturedSouthPanelToggleValueChangeHandler.getValue().onValueChange(southPanelToggleDeactivated);
+
       reset(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter, mockTranslationEditorPresenter);
       // doesn't set tooltip like options toggle
-      mockDisplay.setSouthPanelVisible(true);
+      mockDisplay.setSouthPanelExpanded(true);
       expectLastCall().once();
 
       // should re-bind sub-presenters when showing
@@ -269,10 +317,10 @@ public class TranslationPresenterTest
 
       // simulate south panel toggle depressed
       @SuppressWarnings("unchecked")
-      ValueChangeEvent<Boolean> southPanelToggleDeactivated = createMock(ValueChangeEvent.class);
-      expect(southPanelToggleDeactivated.getValue()).andReturn(true).anyTimes();
-      replay(southPanelToggleDeactivated);
-      capturedSouthPanelToggleValueChangeHandler.getValue().onValueChange(southPanelToggleDeactivated);
+      ValueChangeEvent<Boolean> southPanelToggleActivated = createMock(ValueChangeEvent.class);
+      expect(southPanelToggleActivated.getValue()).andReturn(true).anyTimes();
+      replay(southPanelToggleActivated);
+      capturedSouthPanelToggleValueChangeHandler.getValue().onValueChange(southPanelToggleActivated);
 
       verify(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter, mockTranslationEditorPresenter);
    }
@@ -356,7 +404,9 @@ public class TranslationPresenterTest
       expect(mockEventBus.addHandler(eq(EnterWorkspaceEvent.getType()), and(capture(capturedEnterWorkspaceEventHandler), isA(EnterWorkspaceEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
       capturedExitWorkspaceEventHandler = new Capture<ExitWorkspaceEventHandler>();
       expect(mockEventBus.addHandler(eq(ExitWorkspaceEvent.getType()), and(capture(capturedExitWorkspaceEventHandler), isA(ExitWorkspaceEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-
+      capturedWorkspaceContextUpdateEventHandler = new Capture<WorkspaceContextUpdateEventHandler>();
+      expect(mockEventBus.addHandler(eq(WorkspaceContextUpdateEvent.getType()), and(capture(capturedWorkspaceContextUpdateEventHandler), isA(WorkspaceContextUpdateEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
+      
       setupUserListRequestResponse(initialParticipants);
       
       expect(mockDisplay.getOptionsToggle()).andReturn(mockOptionsToggle).anyTimes();
@@ -366,6 +416,9 @@ public class TranslationPresenterTest
       expect(mockDisplay.getSouthPanelToggle()).andReturn(mockSouthPanelToggle).anyTimes();
       capturedSouthPanelToggleValueChangeHandler = new Capture<ValueChangeHandler<Boolean>>();
       expect(mockSouthPanelToggle.addValueChangeHandler(and(capture(capturedSouthPanelToggleValueChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
+      expect(mockSouthPanelToggle.getValue()).andReturn(true).anyTimes();
+
+      expect(mockWorkspaceContext.isReadOnly()).andReturn(false).anyTimes();
 
       capturedKeyShortcutHandler = new Capture<NativePreviewHandler>();
       expect(mockNativeEvent.addNativePreviewHandler(and(capture(capturedKeyShortcutHandler), isA(NativePreviewHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
@@ -394,7 +447,7 @@ public class TranslationPresenterTest
    {
       reset(mockDispatcher, mockDisplay, mockEventBus, mockGlossaryPresenter);
       reset(mockMessages, mockNativeEvent, mockSidePanelPresenter, mockTranslationEditorPresenter, mockTransMemoryPresenter);
-      reset(mockWorkspaceUsersPresenter);
+      reset(mockWorkspaceContext, mockWorkspaceUsersPresenter);
 
       reset(mockOptionsToggle, mockSouthPanelToggle);
    }
@@ -403,7 +456,7 @@ public class TranslationPresenterTest
    {
       replay(mockDispatcher, mockDisplay, mockEventBus, mockGlossaryPresenter);
       replay(mockMessages, mockNativeEvent, mockSidePanelPresenter, mockTranslationEditorPresenter, mockTransMemoryPresenter);
-      replay(mockWorkspaceUsersPresenter);
+      replay(mockWorkspaceContext, mockWorkspaceUsersPresenter);
 
       replay(mockOptionsToggle, mockSouthPanelToggle);
    }
@@ -412,7 +465,7 @@ public class TranslationPresenterTest
    {
       verify(mockDispatcher, mockDisplay, mockEventBus, mockGlossaryPresenter);
       verify(mockMessages, mockNativeEvent, mockSidePanelPresenter, mockTranslationEditorPresenter, mockTransMemoryPresenter);
-      verify(mockWorkspaceUsersPresenter);
+      verify(mockWorkspaceContext, mockWorkspaceUsersPresenter);
 
       verify(mockOptionsToggle, mockSouthPanelToggle);
    }
