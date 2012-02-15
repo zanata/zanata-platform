@@ -38,7 +38,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -47,6 +49,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.CellPreviewEvent;
+import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.NoSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -261,18 +265,21 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       tmTable.addColumn(detailsColumn);
       tmTable.addColumn(copyColumn);
 
+      tmTable.addColumnStyleName(tmTable.getColumnIndex(detailsColumn), "tmTable_noPaddingCol");
+      tmTable.addColumnStyleName(tmTable.getColumnIndex(copyColumn), "tmTable_noPaddingCol");
+
       final NoSelectionModel<TranslationMemoryGlossaryItem> selectionModel = new NoSelectionModel<TranslationMemoryGlossaryItem>();
+      
+      CellPreviewEvent.Handler<TranslationMemoryGlossaryItem> selectionEventManager = new CellPreviewEvent.Handler<TranslationMemoryGlossaryItem>(){
 
-      selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler()
-      {
          @Override
-         public void onSelectionChange(SelectionChangeEvent event)
+         public void onCellPreview(CellPreviewEvent<TranslationMemoryGlossaryItem> event)
          {
-            Object selected = selectionModel.getLastSelectedObject();
+            event.setCanceled(true);
          }
-      });
-
-      tmTable.setSelectionModel(selectionModel);
+      };
+      tmTable.setSelectionModel(selectionModel, selectionEventManager);
+      tmTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
    }
 
    @Override

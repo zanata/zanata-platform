@@ -537,6 +537,18 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
 	cursor:pointer;
 }
 
+.tmTable_noPaddingCol{
+	padding:0;
+	margin:0;
+}
+
+.tmTable th{
+	border-bottom:0px;
+	color: Blue;
+	font-style: normal;
+	font-weight: bold
+}
+
 .loadingPanel{
     background:#000000;
     padding:20px 40px 20px 40px;
