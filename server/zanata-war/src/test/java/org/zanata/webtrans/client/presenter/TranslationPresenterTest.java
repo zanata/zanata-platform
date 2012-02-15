@@ -370,8 +370,73 @@ public class TranslationPresenterTest
       verify(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter);
    }
 
+   @Test
+   public void disablesTmOnReadOnly()
+   {
+      setupAndBindPresenter();
+      fireReadOnlyAndCheckResponse();
+   }
+
+   @Test
+   public void enablesTmOnNotReadOnly()
+   {
+      setupAndBindPresenter();
+      fireReadOnlyAndCheckResponse();
+
+      reset(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter, mockSouthPanelToggle);
+
+      // re-expansion of south panel depends on toggle state (from before it was
+      // hidden). Simulating contracted in this test, so no re-binding of
+      // presenters is expected.
+      // might be good to have presenter store this rather than keeping state in
+      // view.
+      expect(mockSouthPanelToggle.getValue()).andReturn(false).anyTimes();
+      expect(mockDisplay.getSouthPanelToggle()).andReturn(mockSouthPanelToggle);
+
+      mockDisplay.setSouthPanelVisible(true);
+
+      replay(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter, mockSouthPanelToggle);
+
+      // fire readonly event
+      WorkspaceContextUpdateEvent notReadOnlyEvent = createMock(WorkspaceContextUpdateEvent.class);
+      expect(notReadOnlyEvent.isReadOnly()).andReturn(false).anyTimes();
+      replay(notReadOnlyEvent);
+      capturedWorkspaceContextUpdateEventHandler.getValue().onWorkspaceContextUpdated(notReadOnlyEvent);
+
+      verify(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter, mockSouthPanelToggle);
+
+   }
+
+   /**
+    * Fire a mock read-only event and check that south panel is hidden and
+    * presenters on south panel are unbound
+    */
+   private void fireReadOnlyAndCheckResponse()
+   {
+      reset(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter);
+
+      mockDisplay.setSouthPanelExpanded(false);
+      mockDisplay.setSouthPanelVisible(false);
+
+      mockTransMemoryPresenter.unbind();
+      mockGlossaryPresenter.unbind();
+      mockWorkspaceUsersPresenter.unbind();
+
+      replay(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter);
+
+      // fire readonly event
+      WorkspaceContextUpdateEvent readOnlyEvent = createMock(WorkspaceContextUpdateEvent.class);
+      expect(readOnlyEvent.isReadOnly()).andReturn(true).anyTimes();
+      replay(readOnlyEvent);
+      capturedWorkspaceContextUpdateEventHandler.getValue().onWorkspaceContextUpdated(readOnlyEvent);
+
+      verify(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter);
+   }
+
+   // TODO test for starting in read-only mode
+
    // TODO test failed participants list request (what behaviour is desired
-   // here?)
+   // here? Ignore? Clear list? Display 'unable to retrieve participants list'?)
 
    // TODO test key bindings
 
