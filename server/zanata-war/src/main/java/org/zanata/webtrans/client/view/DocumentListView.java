@@ -68,19 +68,22 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    @UiField
    CheckBox exactSearchCheckBox;
 
-   @UiField(provided = true)
-   final CellTable<DocumentNode> documentListTable;
+   CellTable<DocumentNode> documentListTable;
 
+   private final Resources resources;
+   private final WebTransMessages messages;
+   
    private ListDataProvider<DocumentNode> dataProvider;
 
    @Inject
    public DocumentListView(Resources resources, WebTransMessages messages, UiMessages uiMessages, final CachingDispatchAsync dispatcher, EventBus eventBus)
    {
-
+      this.resources = resources;
+      this.messages = messages;
+      
       filterTextBox = new ClearableTextBox(resources, uiMessages);
       // TODO set this from the presenter if possible
       dataProvider = new ListDataProvider<DocumentNode>();
-      documentListTable = DocumentListTable.initDocumentListTable(this, resources, messages, dataProvider);
 
       initWidget(uiBinder.createAndBindUi(this));
    }
@@ -132,5 +135,15 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    public HasValue<Boolean> getExactSearchCheckbox()
    {
       return exactSearchCheckBox;
+   }
+   
+   @Override
+   public void renderTable()
+   {
+      documentListTable = DocumentListTable.initDocumentListTable(this, resources, messages, dataProvider);
+      dataProvider.addDataDisplay(documentListTable);
+
+      documentScrollPanel.clear();
+      documentScrollPanel.add(documentListTable);
    }
 }
