@@ -258,6 +258,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       });
 
       tmTable = new CellTable<TranslationMemoryGlossaryItem>();
+      tmTable.setWidth("80%");
       tmTable.addStyleName("tmTable");
       tmTable.addColumn(sourceColumn, "Source");
       tmTable.addColumn(targetColumn, "Target");
@@ -275,7 +276,10 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
          @Override
          public void onCellPreview(CellPreviewEvent<TranslationMemoryGlossaryItem> event)
          {
-            event.setCanceled(true);
+            if ((event.getColumn() != tmTable.getColumnIndex(detailsColumn)) && (event.getColumn() != tmTable.getColumnIndex(copyColumn)))
+            {
+               event.setCanceled(true);
+            }
          }
       };
       tmTable.setSelectionModel(selectionModel, selectionEventManager);
