@@ -20,11 +20,11 @@
         }
         
 	</ui:style>
-	   <g:ScrollPanel>
-	       <g:VerticalPanel width="100%">
-		      <g:Label styleName="{style.header}">Validation Options</g:Label>
-		      <g:VerticalPanel ui:field="contentPanel" width="100%"/>
-		   </g:VerticalPanel>
-		</g:ScrollPanel>
+    <g:ScrollPanel>
+        <g:VerticalPanel width="100%">
+            <g:Label ui:field="header" styleName="{style.header}"><ui:msg>Validation Options</ui:msg></g:Label>
+            <g:VerticalPanel ui:field="contentPanel" width="100%"/>
+        </g:VerticalPanel>
+    </g:ScrollPanel>
 		
 </ui:UiBinder> 
