@@ -40,6 +40,15 @@ public interface UiMessages extends Messages
    @DefaultMessage("Search")
    String searchButtonLabel();
 
+   @DefaultMessage("Similarity")
+   String similarityLabel();
+
+   @DefaultMessage("Source")
+   String sourceLabel();
+
+   @DefaultMessage("Target")
+   String targetLabel();
+
    @DefaultMessage("Translation Memory")
    String tmHeader();
 

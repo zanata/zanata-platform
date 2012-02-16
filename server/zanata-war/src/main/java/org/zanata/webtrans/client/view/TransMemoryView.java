@@ -1,12 +1,9 @@
 package org.zanata.webtrans.client.view;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-import net.customware.gwt.presenter.client.EventBus;
-
-import org.zanata.webtrans.client.events.TransMemoryCopyEvent;
-import org.zanata.webtrans.client.presenter.TransMemoryDetailsPresenter;
 import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
@@ -17,39 +14,41 @@ import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
 
-import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.cell.client.AbstractCell;
+import com.google.gwt.cell.client.ButtonCell;
+import com.google.gwt.cell.client.ImageResourceCell;
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.DefaultSelectionEventManager;
+import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.NoSelectionModel;
 import com.google.inject.Inject;
 
 public class TransMemoryView extends Composite implements TransMemoryPresenter.Display
 {
-
-   private static final int CELL_PADDING = 5;
-   private static final int HEADER_ROW = 0;
-   private static final int SOURCE_COL = 0;
-   private static final int TARGET_COL = 1;
-   private static final int SIMILARITY_COL = 2;
-   private static final int INFO_COL = 3;
-   private static final int ACTION_COL = 4;
 
    private static TransMemoryViewUiBinder uiBinder = GWT.create(TransMemoryViewUiBinder.class);
 
@@ -70,32 +69,122 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    Button clearButton;
 
    @UiField
-   FlexTable resultTable;
+   ScrollPanel scrollPanel;
 
-   @Inject
-   private EventBus eventBus;
+   CellTable<TranslationMemoryGlossaryItem> tmTable;
 
-   @Inject
-   private TransMemoryDetailsPresenter tmInfoPresenter;
+   private static Resources resources;
+   private static String query;
 
-   private final Resources resources;
    private boolean isFocused;
-   private boolean showCopyLinks;
-
-   private List<TranslationMemoryGlossaryItem> cachedMem = new ArrayList<TranslationMemoryGlossaryItem>();
 
    private UiMessages messages;
+   private ListDataProvider<TranslationMemoryGlossaryItem> dataProvider;
+
+   private static class ClickableImageResourceCell extends ImageResourceCell
+   {
+      @Override
+      public Set<String> getConsumedEvents()
+      {
+         Set<String> consumedEvents = new HashSet<String>();
+         consumedEvents.add("click");
+         return consumedEvents;
+      }
+
+      @Override
+      public void onBrowserEvent(Context context, Element parent, ImageResource value, NativeEvent event, ValueUpdater<ImageResource> valueUpdater)
+      {
+         String eventType = event.getType();
+         if ("click".equals(eventType))
+         {
+            onEnterKeyDown(context, parent, value, event, valueUpdater);
+         }
+      }
+
+      @Override
+      protected void onEnterKeyDown(Context context, Element parent, ImageResource value, NativeEvent event, ValueUpdater<ImageResource> valueUpdater)
+      {
+         if (valueUpdater != null)
+         {
+            valueUpdater.update(value);
+         }
+      }
+   }
+
+   private final Column<TranslationMemoryGlossaryItem, DiffMatchPatchLabel> sourceColumn = new Column<TranslationMemoryGlossaryItem, DiffMatchPatchLabel>(new DiffMatchPatchLabelCell())
+   {
+      @Override
+      public DiffMatchPatchLabel getValue(TranslationMemoryGlossaryItem object)
+      {
+         DiffMatchPatchLabel label = new DiffMatchPatchLabel(query, object.getSource());
+         return label;
+      }
+   };
+   private final Column<TranslationMemoryGlossaryItem, HighlightingLabel> targetColumn = new Column<TranslationMemoryGlossaryItem, HighlightingLabel>(new HighlightingLabelCell())
+   {
+      @Override
+      public HighlightingLabel getValue(TranslationMemoryGlossaryItem object)
+      {
+         HighlightingLabel label = new HighlightingLabel(object.getTarget());
+         return label;
+      }
+   };
+   private final TextColumn<TranslationMemoryGlossaryItem> similarityColumn = new TextColumn<TranslationMemoryGlossaryItem>()
+   {
+      @Override
+      public String getValue(TranslationMemoryGlossaryItem object)
+      {
+         return object.getSimilarityPercent() + "%";
+      }
+   };
+   private final Column<TranslationMemoryGlossaryItem, ImageResource> detailsColumn = new Column<TranslationMemoryGlossaryItem, ImageResource>(new ClickableImageResourceCell())
+   {
+      @Override
+      public ImageResource getValue(TranslationMemoryGlossaryItem object)
+      {
+         return resources.informationImage();
+      }
+   };
+
+   private final Column<TranslationMemoryGlossaryItem, String> copyColumn = new Column<TranslationMemoryGlossaryItem, String>(new ButtonCell())
+   {
+      @Override
+      public String getValue(TranslationMemoryGlossaryItem object)
+      {
+         return "Copy";
+      }
+   };
+
+   private static class DiffMatchPatchLabelCell extends AbstractCell<DiffMatchPatchLabel>
+   {
+      @Override
+      public void render(Context context, DiffMatchPatchLabel value, SafeHtmlBuilder sb)
+      {
+         sb.appendHtmlConstant(value.getElement().getString());
+      }
+   }
+
+   private static class HighlightingLabelCell extends AbstractCell<HighlightingLabel>
+   {
+      @Override
+      public void render(Context context, HighlightingLabel value, SafeHtmlBuilder sb)
+      {
+         sb.appendHtmlConstant(value.getElement().getString());
+      }
+   }
 
    @Inject
    public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, Resources resources)
    {
       this.resources = resources;
+      this.messages = messages;
+
       searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);
+      dataProvider = new ListDataProvider<TranslationMemoryGlossaryItem>();
       initWidget(uiBinder.createAndBindUi(this));
+
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
-      this.messages = messages;
-      showCopyLinks = true;
    }
 
    @UiHandler("tmTextBox")
@@ -123,7 +212,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    void onClearButtonClicked(ClickEvent event)
    {
       tmTextBox.setText("");
-      clearResults();
+      dataProvider.getList().clear();
    }
 
    @Override
@@ -152,8 +241,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    @Override
    public void startProcessing()
    {
-      clearResults();
-      resultTable.setWidget(0, 0, new Label("Loading..."));
+      dataProvider.getList().clear();
    }
 
    @Override
@@ -161,80 +249,17 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    {
    }
 
-
-
    @Override
-   public void createTable(String query, ArrayList<TranslationMemoryGlossaryItem> memories)
+   public void reloadData(String query, ArrayList<TranslationMemoryGlossaryItem> memories)
    {
-      // TODO most of this should be in TransMemoryPresenter
-      clearResults();
-      addColumn("Source", SOURCE_COL);
-      addColumn("Target", TARGET_COL);
-      addColumn("Similarity", SIMILARITY_COL);
-      int row = HEADER_ROW;
-      cachedMem.clear();
+      this.query = query;
+      dataProvider.getList().clear();
 
       for (final TranslationMemoryGlossaryItem memory : memories)
       {
-         ++row;
-         cachedMem.add(memory);
-         final String sourceMessage = memory.getSource();
-         final String targetMessage = memory.getTarget();
-         final int similarity = memory.getSimilarityPercent();
-
-         resultTable.setWidget(row, SOURCE_COL, new DiffMatchPatchLabel(query, sourceMessage));
-         resultTable.setWidget(row, TARGET_COL, new HighlightingLabel(targetMessage));
-         resultTable.setText(row, SIMILARITY_COL, similarity + "%");
-
-         final Image infoLink = new Image(resources.informationImage());
-         infoLink.setTitle("Details");
-         infoLink.setStylePrimaryName("pointer");
-         infoLink.addClickHandler(new ClickHandler()
-         {
-            @Override
-            public void onClick(ClickEvent event)
-            {
-               tmInfoPresenter.show(memory);
-            }
-         });
-         resultTable.setWidget(row, INFO_COL, infoLink);
-
-         if (showCopyLinks)
-         {
-            final Anchor copyLink = new Anchor("Copy");
-            copyLink.addClickHandler(new ClickHandler()
-            {
-               @Override
-               public void onClick(ClickEvent event)
-               {
-                  eventBus.fireEvent(new TransMemoryCopyEvent(sourceMessage, targetMessage));
-                  Log.info("TransMemoryCopyEvent event is sent. (" + targetMessage + ")");
-               }
-            });
-            resultTable.setWidget(row, ACTION_COL, copyLink);
-            String shortcutKeys = "";
-            if (row <= 4)
-            {
-               shortcutKeys = " (Ctrl + Shift + " + row + ")";
-            }
-            copyLink.setTitle(messages.copyLinkTooltip(targetMessage) + shortcutKeys);
-         }
-
+         dataProvider.getList().add(memory);
       }
-      resultTable.setCellPadding(CELL_PADDING);
-   }
-
-   private void addColumn(String columnHeading, int pos)
-   {
-      Label widget = new Label(columnHeading);
-      widget.setWidth("100%");
-      widget.addStyleName("TransMemoryTableColumnHeader");
-      resultTable.setWidget(HEADER_ROW, pos, widget);
-   }
-
-   public void clearResults()
-   {
-      resultTable.removeAllRows();
+      dataProvider.refresh();
    }
 
    @Override
@@ -248,7 +273,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    {
       try
       {
-         return cachedMem.get(index).getSource();
+         return dataProvider.getList().get(index).getSource();
       }
       catch (IndexOutOfBoundsException e)
       {
@@ -261,7 +286,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    {
       try
       {
-         return cachedMem.get(index).getTarget();
+         return dataProvider.getList().get(index).getTarget();
       }
       catch (IndexOutOfBoundsException e)
       {
@@ -270,9 +295,37 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    }
 
    @Override
-   public void setCopyLinksVisible(boolean visible)
+   public Column<TranslationMemoryGlossaryItem, ImageResource> getDetailsColumn()
    {
-      showCopyLinks = visible;
-      // could refresh display here
+      return detailsColumn;
+   }
+
+   @Override
+   public Column<TranslationMemoryGlossaryItem, String> getCopyColumn()
+   {
+      return copyColumn;
+   }
+
+   @Override
+   public void renderTable()
+   {
+      tmTable = new CellTable<TranslationMemoryGlossaryItem>();
+      tmTable.addStyleName("tmTable");
+      tmTable.addColumn(sourceColumn, messages.sourceLabel());
+      tmTable.addColumn(targetColumn, messages.targetLabel());
+      tmTable.addColumn(similarityColumn, messages.similarityLabel());
+      tmTable.addColumn(detailsColumn);
+      tmTable.addColumn(copyColumn);
+
+      final NoSelectionModel<TranslationMemoryGlossaryItem> selectionModel = new NoSelectionModel<TranslationMemoryGlossaryItem>();
+      final DefaultSelectionEventManager<TranslationMemoryGlossaryItem> manager = DefaultSelectionEventManager.createBlacklistManager(0, 1, 2);
+      tmTable.setSelectionModel(selectionModel, manager);
+
+      tmTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
+
+      dataProvider.addDataDisplay(tmTable);
+
+      scrollPanel.clear();
+      scrollPanel.add(tmTable);
    }
 }
