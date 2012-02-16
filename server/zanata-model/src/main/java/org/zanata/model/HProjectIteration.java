@@ -41,7 +41,7 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.Where;
 import org.hibernate.validator.NotNull;
 import org.jboss.seam.annotations.security.Restrict;
-import org.zanata.model.type.EntityStatusTypeType;
+import org.zanata.model.type.EntityStatusType;
 import org.zanata.rest.dto.ProjectIteration;
 
 /**
@@ -50,7 +50,7 @@ import org.zanata.rest.dto.ProjectIteration;
  * 
  */
 @Entity
-@TypeDef(name = "entityStatusType", typeClass = EntityStatusTypeType.class)
+@TypeDef(name = "entityStatus", typeClass = EntityStatusType.class)
 @Restrict
 public class HProjectIteration extends SlugEntityBase
 {

@@ -28,7 +28,22 @@ import javax.xml.bind.annotation.XmlType;
 public enum EntityStatus
 {
    ACTIVE("jsf.Active"), READONLY("jsf.ReadOnly"), OBSOLETE("jsf.Obsolete");
-   
+
+   public static EntityStatus valueOf(char initial)
+   {
+      switch (initial)
+      {
+      case 'A':
+         return ACTIVE;
+      case 'R':
+         return READONLY;
+      case 'O':
+         return OBSOLETE;
+      default:
+         throw new IllegalArgumentException(String.valueOf(initial));
+      }
+   }
+
    private final String messageKey;
    EntityStatus(String messageKey)
    {
@@ -39,4 +54,10 @@ public enum EntityStatus
    {
       return messageKey;
    }
+
+   public char getInitial()
+   {
+      return name().charAt(0);
+   }
+
 }
