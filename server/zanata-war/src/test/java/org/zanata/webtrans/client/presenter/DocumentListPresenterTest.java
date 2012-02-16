@@ -682,8 +682,6 @@ public class DocumentListPresenterTest
       mockDataProvider.refresh();
       expectLastCall().anyTimes();
       expect(mockDataProvider.getList()).andReturn(dataProviderList).anyTimes();
-      mockDataProvider.addDataDisplay(mockDocListTable);
-      expectLastCall().once();
    }
 
    @SuppressWarnings("unchecked")
@@ -712,7 +710,10 @@ public class DocumentListPresenterTest
    {
       capturedPageSize = new Capture<Integer>();
       mockDisplay.setPageSize(captureInt(capturedPageSize));
+
       expectLastCall().anyTimes();
+
+      mockDisplay.renderTable();
 
       expect(mockDisplay.getDataProvider()).andReturn(mockDataProvider).anyTimes();
       expect(mockDisplay.getDocumentList()).andReturn(mockDocList).anyTimes();
