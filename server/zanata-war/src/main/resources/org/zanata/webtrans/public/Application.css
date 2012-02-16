@@ -533,7 +533,11 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
 	cursor:pointer;
 }
 
-.tmTable td img{
+.tmTable {
+/* 	width:80%; */
+}
+
+.tmTable td img {
 	cursor:pointer;
 }
 
