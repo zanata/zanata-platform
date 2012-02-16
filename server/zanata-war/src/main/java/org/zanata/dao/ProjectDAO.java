@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -47,13 +46,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
    @SuppressWarnings("unchecked")
    public List<HProject> getOffsetListByCreateDate(int offset, int count, boolean filterActive, boolean filterReadOnly, boolean filterObsolete)
    {
-      if (!filterActive && !filterReadOnly && !filterObsolete) // all records
-      {
-         return getSession().createCriteria(HProject.class).addOrder(Order.desc(ORDERBY_TIMESTAMP)).setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getAllProjectOffsetListByCreateDate").list();
-      }
-      
       String condition = constructFilterCondition(filterActive, filterReadOnly, filterObsolete);
-      return getSession().createQuery("from HProject p " + condition + "order by p.creationDate").setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getAllProjectOffsetListByCreateDate").list();
+      return getSession().createQuery("from HProject p " + condition + "order by p.creationDate desc").setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getAllProjectOffsetListByCreateDate").list();
    }
 
    public int getFilterProjectSize(boolean filterActive, boolean filterReadOnly, boolean filterObsolete)
