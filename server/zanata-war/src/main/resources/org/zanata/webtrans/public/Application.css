@@ -466,12 +466,6 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
 	background-color: #ffffcc;
 }
 
-.TransMemoryTableColumnHeader {
-	color: Blue;
-	font-style: normal;
-	font-weight: bold
-}
-
 /* when match highlighting is enabled: */
 /*
 .TransMemoryHighlightMatches .diff-equal {
@@ -501,7 +495,6 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
    background:#ff9999;
    text-decoration: line-through;
 }
-
 
 .DocumentListTable {
 	width: 100%;
@@ -545,6 +538,26 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
 
 .pointer{
 	cursor:pointer;
+}
+
+.tmTable {
+/* 	width:80%; */
+}
+
+.tmTable td img {
+	cursor:pointer;
+}
+
+.tmTable_noPaddingCol{
+	padding:0;
+	margin:0;
+}
+
+.tmTable th{
+	border-bottom:0px;
+	color: Blue;
+	font-style: normal;
+	font-weight: bold
 }
 
 .loadingPanel{
