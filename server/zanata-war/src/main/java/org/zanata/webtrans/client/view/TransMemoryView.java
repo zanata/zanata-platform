@@ -317,9 +317,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       tmTable.addColumn(detailsColumn);
       tmTable.addColumn(copyColumn);
 
-      tmTable.addColumnStyleName(tmTable.getColumnIndex(detailsColumn), "tmTable_noPaddingCol");
-      tmTable.addColumnStyleName(tmTable.getColumnIndex(copyColumn), "tmTable_noPaddingCol");
-
       final NoSelectionModel<TranslationMemoryGlossaryItem> selectionModel = new NoSelectionModel<TranslationMemoryGlossaryItem>();
       final DefaultSelectionEventManager<TranslationMemoryGlossaryItem> manager = DefaultSelectionEventManager.createBlacklistManager(0, 1, 2);
       tmTable.setSelectionModel(selectionModel, manager);

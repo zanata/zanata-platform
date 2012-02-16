@@ -541,21 +541,29 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
 }
 
 .tmTable {
-/* 	width:80%; */
+	width:70%;
 }
 
 .tmTable td img {
 	cursor:pointer;
 }
 
-.tmTable_noPaddingCol{
-	padding:0;
-	margin:0;
+.tmTable td {
+	font-family:Arial Unicode MS,Arial,sans-serif;
+	font-size:small;
+	padding-top:0;
+	padding-right:10px;
+	padding-bottom:0;
+	padding-left:0;
+}
+
+.tmTable td pre{
+	font-family:inherit;
 }
 
 .tmTable th{
 	border-bottom:0px;
-	color: Blue;
+	color: blue;
 	font-style: normal;
 	font-weight: bold
 }
