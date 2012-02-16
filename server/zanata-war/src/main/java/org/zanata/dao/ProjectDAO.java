@@ -70,7 +70,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
 
       if (filterActive)
       {
-         condition.append("p.status <> '" + EntityStatus.ACTIVE + "' ");
+         // TODO bind this as a parameter
+         condition.append("p.status <> '" + EntityStatus.ACTIVE.getInitial() + "' ");
       }
 
       if (filterReadOnly)
@@ -80,7 +81,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
             condition.append("and ");
          }
 
-         condition.append("p.status <> '" + EntityStatus.READONLY + "' ");
+         // TODO bind this as a parameter
+         condition.append("p.status <> '" + EntityStatus.READONLY.getInitial() + "' ");
       }
 
       if (filterObsolete)
@@ -90,7 +92,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
             condition.append("and ");
          }
 
-         condition.append("p.status <> '" + EntityStatus.OBSOLETE + "' ");
+         // TODO bind this as a parameter
+         condition.append("p.status <> '" + EntityStatus.OBSOLETE.getInitial() + "' ");
       }
       return condition.toString();
    }

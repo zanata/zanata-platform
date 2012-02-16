@@ -58,8 +58,13 @@
         <sql>UPDATE HProject SET status='OBSOLETE' WHERE status='Obsolete'</sql>
         <sql>UPDATE HProjectIteration SET status='OBSOLETE' where status='Obsolete'</sql>
     </changeSet>
-    
-  
-        
+
+    <changeSet author="sflaniga@redhat.com" id="1">
+        <comment>Alter HProjectIteration/HProject - change status to char(1)</comment>
+        <sql>UPDATE HProject SET status=SUBSTRING(status,1,1);</sql>
+        <modifyColumn tableName="HProject">
+            <column name="status" type="char(1)"/>
+        </modifyColumn>
+    </changeSet>
 
 </databaseChangeLog>
