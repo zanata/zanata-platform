@@ -253,12 +253,13 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    public void reloadData(String query, ArrayList<TranslationMemoryGlossaryItem> memories)
    {
       this.query = query;
+      tmTable.setVisibleRangeAndClearData(tmTable.getVisibleRange(), true);
       dataProvider.getList().clear();
-
       for (final TranslationMemoryGlossaryItem memory : memories)
       {
          dataProvider.getList().add(memory);
       }
+      tmTable.setPageSize(dataProvider.getList().size());
       dataProvider.refresh();
    }
 
