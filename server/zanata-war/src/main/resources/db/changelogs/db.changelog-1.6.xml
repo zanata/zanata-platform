@@ -66,5 +66,13 @@
             <column name="status" type="char(1)"/>
         </modifyColumn>
     </changeSet>
+    
+    <changeSet author="aeng@redhat.com" id="7">
+        <comment>Alter HProjectIteration - change status to char(1)</comment>
+        <sql>UPDATE HProjectIteration SET status=SUBSTRING(status,1,1);</sql>
+        <modifyColumn tableName="HProjectIteration">
+            <column name="status" type="char(1)"/>
+        </modifyColumn>
+    </changeSet>
 
 </databaseChangeLog>
