@@ -61,7 +61,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
@@ -179,9 +178,6 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    @In
    private LocaleService localeServiceImpl;
 
-   @In("org.jboss.seam.core.events")
-   private Events events;
-
 
    public TranslationResourcesService()
    {
@@ -203,7 +199,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       PersonDAO personDAO,
       TextFlowTargetHistoryDAO textFlowTargetHistoryDAO,
       LocaleService localeService,
-      Events events
+      CopyTransService copyTransService
    )
 // @formatter:on
    {
@@ -219,7 +215,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       this.personDAO = personDAO;
       this.textFlowTargetHistoryDAO = textFlowTargetHistoryDAO;
       this.localeServiceImpl = localeService;
-      this.events = events;
+      this.copyTransServiceImpl = copyTransService;
    }
 
    /**

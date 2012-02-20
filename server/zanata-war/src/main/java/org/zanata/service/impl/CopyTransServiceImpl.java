@@ -31,6 +31,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.log.Logging;
 import org.jboss.seam.transaction.Transaction;
 import org.zanata.common.ContentState;
 import org.zanata.dao.DatabaseConstants;
@@ -52,31 +53,33 @@ import org.zanata.service.LocaleService;
 @Scope(ScopeType.STATELESS)
 public class CopyTransServiceImpl implements CopyTransService
 {
-   
+   @In
    private LocaleService localeServiceImpl;
+   
+   @In
    private TextFlowTargetDAO textFlowTargetDAO;
+   
+   @In
    private DocumentDAO documentDAO;
+   
    @Logger
    Log log;
-
-   @In
-   public void setLocaleServiceImpl(LocaleService localeService)
+   
+   public CopyTransServiceImpl()
    {
-      this.localeServiceImpl = localeService;
    }
 
-   @In
-   public void setTextFlowTargetDAO(TextFlowTargetDAO tftDAO)
+   // @formatter:off
+   public CopyTransServiceImpl(LocaleService localeServiceImpl, 
+                               TextFlowTargetDAO textFlowTargetDAO, 
+                               DocumentDAO documentDAO)
    {
-      this.textFlowTargetDAO = tftDAO;
-   }
-
-   @In
-   public void setDocumentDAO(DocumentDAO documentDAO)
-   {
+      this.log = Logging.getLog(CopyTransServiceImpl.class);
+      this.localeServiceImpl = localeServiceImpl;
+      this.textFlowTargetDAO = textFlowTargetDAO;
       this.documentDAO = documentDAO;
    }
-
+   // @formatter:off
 
    @Observer(TranslationResourcesService.EVENT_COPY_TRANS)
    public void execute(Long docId, String project, String iterationSlug)
