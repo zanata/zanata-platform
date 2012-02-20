@@ -59,6 +59,14 @@
         <sql>UPDATE HProjectIteration SET status='OBSOLETE' where status='Obsolete'</sql>
     </changeSet>
 
+	<changeSet author="aeng@redhat.com" id="7">
+        <comment>Alter HProjectIteration - change status to char(1)</comment>
+        <sql>UPDATE HProjectIteration SET status=SUBSTRING(status,1,1);</sql>
+        <modifyColumn tableName="HProjectIteration">
+            <column name="status" type="char(1)"/>
+        </modifyColumn>
+    </changeSet>
+
     <changeSet author="sflaniga@redhat.com" id="1">
         <comment>Alter HProjectIteration/HProject - change status to char(1)</comment>
         <sql>UPDATE HProject SET status=SUBSTRING(status,1,1);</sql>
@@ -67,12 +75,22 @@
         </modifyColumn>
     </changeSet>
     
-    <changeSet author="aeng@redhat.com" id="7">
-        <comment>Alter HProjectIteration - change status to char(1)</comment>
-        <sql>UPDATE HProjectIteration SET status=SUBSTRING(status,1,1);</sql>
-        <modifyColumn tableName="HProjectIteration">
-            <column name="status" type="char(1)"/>
-        </modifyColumn>
+    <changeSet author="camunoz@redhat.com" id="1">
+    	<comment>Add and populate Content Hash column for the HTextFlow table.</comment>
+    	<addColumn tableName="HTextFlow">
+    		<column name="contentHash" type="varchar(255)">
+    			<constraints nullable="false"/>
+    		</column>
+    	</addColumn>
+    	<createIndex tableName="HTextFlow" indexName="Idx_ContentHash">
+    		<column name="contentHash"/>
+    	</createIndex>
+    	<sql>UPDATE HTextFlow SET contentHash = MD5(content)</sql>	
     </changeSet>
+
+	<!--
+    This changelog file (despite the filename) is actually part 2 of the changes for Zanata 1.5.
+    Please start a new file (eg db.changelog-1.6a.xml) for the 1.6 dev cycle.
+     -->   
 
 </databaseChangeLog>

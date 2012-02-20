@@ -71,6 +71,7 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
@@ -171,14 +172,8 @@ public class TranslationResourceRestTest extends ZanataRestTest
       projectDAO = new ProjectDAO(getSession());
       this.localeService = new LocaleServiceImpl(localeDAO, projectDAO, projectIterationDAO, personDAO);
       localeService.setLocaleDAO(localeDAO);
-
-      this.events = new Events()
-      {
-         @Override
-         public void raiseTransactionSuccessEvent(String type, Object... parameters)
-         {
-         }
-      };
+      
+      CopyTransServiceImpl copyTransService = new CopyTransServiceImpl(localeService, textFlowTargetDAO, documentDAO);
 
       // @formatter:off
       TranslationResourcesService obj = new TranslationResourcesService(
@@ -194,7 +189,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
             personDAO,
             textFlowTargetHistoryDAO,
             localeService,
-            events);
+            copyTransService);
       // @formatter:on
 
       resources.add(obj);

@@ -28,6 +28,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
@@ -52,6 +54,20 @@ import org.zanata.hibernate.search.LocaleIdBridge;
  * 
  */
 @Entity
+@NamedQueries({
+   @NamedQuery(name = "HTextFlowTarget.findLatestEquivalentTranslations",
+               query = "select tft, tfExample, max(tft.lastChanged) " +
+               		  "from HTextFlowTarget tft, HTextFlow tfExample " +
+                       "left join fetch tft.textFlow " +
+                       "where " +
+                       "tfExample.resId = tft.textFlow.resId " +
+                       "and tfExample.document = :document " +
+                       "and tfExample.contentHash = tft.textFlow.contentHash " +
+                       "and tft.textFlow.document.docId = :docId " +
+                       "and tft.locale = :locale " +
+                       "and tft.state = :state " +
+                       "group by tft.textFlow.contentHash")
+})
 public class HTextFlowTarget extends ModelEntityBase implements ITextFlowTargetHistory, HasSimpleComment
 {
 
