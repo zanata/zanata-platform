@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.zanata</groupId>
 		<artifactId>zanata-parent</artifactId>
-		<version>1.5-SNAPSHOT</version>
+		<version>1.5.0-alpha-1</version>
 		<relativePath>../../zanata-parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>zanata-war</artifactId>
@@ -54,7 +54,7 @@
 				<phase>prepare-package</phase>
 				<configuration>
 					<tasks>
-						<mkdir dir="${project.build.directory}/zanata"/>
+						<mkdir dir="${project.build.directory}/zanata" />
 					</tasks>
 				</configuration>
 				<goals>
@@ -282,7 +282,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 								<pluginExecution>
@@ -299,7 +299,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
@@ -714,7 +714,7 @@
 		<dependency>
 			<groupId>org.zanata</groupId>
 			<artifactId>zanata-api-compat</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.0.0</version>
 			<scope>test</scope>
 			<classifier>v1.4.4</classifier>
 		</dependency>
