@@ -2,6 +2,8 @@ package org.zanata.dao;
 
 import java.util.List;
 
+import org.hibernate.ScrollMode;
+import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
@@ -77,25 +79,24 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
       // @formatter:on
    }
    
-   public HTextFlowTarget findLatestEquivalentTranslation(HTextFlow textFlow, HLocale locale)
+   /**
+    * Fetches a set of equivalent translations for a given document on a given locale.
+    * 
+    * @param document The document for which to find equivalent translations.
+    * @param locale The locale. Only translations for this locale are fetched.
+    * @return A scrollable result set (in case there is a large result set). Position 0 of the 
+    * result set is the matching translation (HTextFlowTarget) and position 1 is the HTextFlow 
+    * in the document that it matches against. 
+    */
+   public ScrollableResults findLatestEquivalentTranslations(HDocument document, HLocale locale)
    {
       // @formatter:off
-      return (HTextFlowTarget) getSession().createQuery(
-         "select t from HTextFlowTarget t " +
-         "where t.textFlow.resId = :resid " +
-         "and t.textFlow.content = :content " +
-         "and t.textFlow.document.docId =:docId " +
-         "and t.locale = :locale " +
-         "and t.state = :state " +
-         "order by t.lastChanged desc")
-            .setParameter("content", textFlow.getContent())
-            .setParameter("docId", textFlow.getDocument().getDocId())
-            .setParameter("locale", locale)
-            .setParameter("resid", textFlow.getResId())
-            .setParameter("state", ContentState.Approved)
-            .setMaxResults(1).uniqueResult();
+      return getSession().getNamedQuery("HTextFlowTarget.findLatestEquivalentTranslations")
+               .setParameter("document", document)
+               .setParameter("docId", document.getDocId())
+               .setParameter("locale", locale)
+               .setParameter("state", ContentState.Approved)
+               .scroll(ScrollMode.FORWARD_ONLY); // Not Scrollable, only allows forward scrolling
       // @formatter:on
    }
-   
-
 }

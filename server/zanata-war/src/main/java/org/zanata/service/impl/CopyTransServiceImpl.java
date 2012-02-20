@@ -22,6 +22,7 @@ package org.zanata.service.impl;
 
 import java.util.List;
 
+import org.hibernate.ScrollableResults;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -32,6 +33,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.transaction.Transaction;
 import org.zanata.common.ContentState;
+import org.zanata.dao.DatabaseConstants;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HDocument;
@@ -113,49 +115,61 @@ public class CopyTransServiceImpl implements CopyTransService
    @Override
    public void copyTransForLocale(HDocument document, HLocale locale)
    {
+      ScrollableResults results = null;
+      
       try
       {
-         Transaction.instance().begin();
          int copyCount = 0;
-         for (HTextFlow textFlow : document.getTextFlows())
+         int rowCount = 0;
+         
+         results = textFlowTargetDAO.findLatestEquivalentTranslations(document, locale);
+         
+         while (results.next())
          {
-            HTextFlowTarget hTarget = textFlow.getTargets().get(locale);
+            rowCount++;
+            
+            final HTextFlowTarget oldTFT = (HTextFlowTarget)results.get(0);
+            final HTextFlow textFlow = (HTextFlow)results.get(1);
+            HTextFlowTarget hTarget = textFlow.getTargets().get( locale ); 
+            
             if (hTarget != null && hTarget.getState() == ContentState.Approved)
                continue;
-            HTextFlowTarget oldTFT = textFlowTargetDAO.findLatestEquivalentTranslation(textFlow, locale);
-            if (oldTFT != null)
+            
+            if (hTarget == null)
             {
-               if (hTarget == null)
-               {
-                  hTarget = new HTextFlowTarget(textFlow, locale);
-                  hTarget.setVersionNum(1);
-                  textFlow.getTargets().put(locale, hTarget);
-               }
-               else
-               {
-                  // DB trigger will copy old value to history table, if we
-                  // change the versionNum
-                  hTarget.setVersionNum(hTarget.getVersionNum() + 1);
-               }
-               // NB we don't touch creationDate
-               hTarget.setTextFlowRevision(textFlow.getRevision());
-               hTarget.setLastChanged(oldTFT.getLastChanged());
-               hTarget.setLastModifiedBy(oldTFT.getLastModifiedBy());
-               hTarget.setContent(oldTFT.getContent());
-               hTarget.setState(oldTFT.getState());
-               HSimpleComment hcomment = hTarget.getComment();
-               if (hcomment == null)
-               {
-                  hcomment = new HSimpleComment();
-                  hTarget.setComment(hcomment);
-               }
-               hcomment.setComment(createComment(oldTFT));
-               textFlowTargetDAO.makePersistent(hTarget);
-               ++copyCount;
+               hTarget = new HTextFlowTarget(textFlow, locale);
+               hTarget.setVersionNum(1);
+               textFlow.getTargets().put(locale, hTarget);
+            }
+            else
+            {
+               // DB trigger will copy old value to history table, if we
+               // change the versionNum
+               hTarget.setVersionNum(hTarget.getVersionNum() + 1);
+            }
+            // NB we don't touch creationDate
+            hTarget.setTextFlowRevision(textFlow.getRevision());
+            hTarget.setLastChanged(oldTFT.getLastChanged());
+            hTarget.setLastModifiedBy(oldTFT.getLastModifiedBy());
+            hTarget.setContent(oldTFT.getContent());
+            hTarget.setState(oldTFT.getState());
+            HSimpleComment hcomment = hTarget.getComment();
+            if (hcomment == null)
+            {
+               hcomment = new HSimpleComment();
+               hTarget.setComment(hcomment);
+            }
+            hcomment.setComment(createComment(oldTFT));
+            textFlowTargetDAO.makePersistent(hTarget);
+            ++copyCount;
+            
+            // manually flush
+            if( rowCount % DatabaseConstants.BATCH_SIZE == 0 )
+            {
+               textFlowTargetDAO.flush();
+               textFlowTargetDAO.clear();
             }
          }
-         textFlowTargetDAO.flush();
-         Transaction.instance().commit();
 
          log.info("copyTrans: {0} {1} translations for document \"{2}{3}\" ", copyCount, locale.getLocaleId(), document.getPath(), document.getName());
       }
@@ -171,6 +185,28 @@ public class CopyTransServiceImpl implements CopyTransService
             log.warn(i, i);
          }
       }
+      finally
+      {
+         if( results != null )
+         {
+            results.close();
+         }
+      }
+   }
+   
+   @Override
+   public void copyTransForDocument(HDocument document)
+   {
+      log.info("copyTrans start: document \"{0}\"", document.getDocId());
+      List<HLocale> localelist = 
+            localeServiceImpl.getSupportedLangugeByProjectIteration(document.getProjectIteration().getProject().getSlug(),
+                  document.getProjectIteration().getSlug());
+
+      for (HLocale locale : localelist)
+      {
+         copyTransForLocale(document, locale);
+      }
+      log.info("copyTrans finished: document \"{0}\"", document.getDocId());
    }
 
 }

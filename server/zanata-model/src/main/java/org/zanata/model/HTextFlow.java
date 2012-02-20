@@ -58,6 +58,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.DefaultNgramAnalyzer;
 import org.zanata.hibernate.search.TextFlowFilterFactory;
 import org.zanata.model.po.HPotEntryData;
+import org.zanata.util.HashUtil;
 import org.zanata.util.OkapiUtil;
 
 /**
@@ -101,6 +102,8 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    private HPotEntryData potEntryData;
    
    private Long wordCount;
+   
+   private String contentHash;
 
    public HTextFlow()
    {
@@ -232,6 +235,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
       {
          this.content = content;
          updateWordCount();
+         updateContentHash();
       }
    }
 
@@ -285,6 +289,18 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    {
       this.wordCount = wordCount;
    }
+   
+   public String getContentHash()
+   {
+      return contentHash;
+   }
+   
+   // this method is private because setContent(), and only setContent(), should
+   // be setting the contentHash
+   private void setContentHash(String contentHash)
+   {
+      this.contentHash = contentHash;
+   }
 
    private void updateWordCount()
    {
@@ -298,6 +314,15 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
       // about the content type.
       long count = OkapiUtil.countWords(content, locale);
       setWordCount(count);
+   }
+   
+   private void updateContentHash()
+   {
+      // don't bother setting the hash when content is null
+      if( content != null )
+      {
+         this.setContentHash( HashUtil.generateHash(content) );         
+      }
    }
 
    private String toBCP47(HLocale hLocale)

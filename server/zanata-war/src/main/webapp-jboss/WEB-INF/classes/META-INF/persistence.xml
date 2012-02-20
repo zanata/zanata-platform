@@ -69,7 +69,7 @@
       <!-- TODO: That doesn't work for me, using the enhancer in build.xml manually -->
       <property name="hibernate.ejb.use_class_enhancer" value="true"/>
       <property name="hibernate.max_fetch_depth" value="1"/>
-      <property name="hibernate.jdbc.batch_size" value="0"/>
+      <property name="hibernate.jdbc.batch_size" value="100"/>
       
       <!-- Enable Hibernate statistics, needs SessionFactory in JNDI for JMX monitoring 
       <property name="hibernate.generate_statistics" value="true"/>
