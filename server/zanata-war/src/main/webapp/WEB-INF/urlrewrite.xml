@@ -181,6 +181,11 @@
     <to>/admin/home.seam</to>
   </rule>
 
+  <rule>
+    <from>^/error(.+)?$</from>
+    <to>/error.seam$1</to>
+  </rule>
+
 
   <rule>
     <from casesensitive="true">^/rest/$</from>
@@ -300,6 +305,11 @@
   <outbound-rule>
     <from>^(/.+)?/help/view.seam(.+)?$</from>
     <to>$1/help/view$2</to>
+  </outbound-rule>
+
+  <outbound-rule>
+    <from>^(/.+)?/error.seam(.+)?$</from>
+    <to>$1/error$2</to>
   </outbound-rule>
 
 </urlrewrite>

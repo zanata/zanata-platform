@@ -384,17 +384,20 @@ tr.TableEditorRow.selected td.TableEditorCell-Target {
 	border-right: 3px solid #666666;
 }
 
-.TableEditorContent {
-	word-wrap: break-word; 
-}
-
-.TableEditorContent,.TableEditorContent-Edit {
-	font-size: 14px;
-	font-family: sans-serif;
+.TableEditorContent,.TableEditorContent-Edit,.TableEditorContent-Empty {
+    font-size: 14px;
+    font-family: sans-serif;
 	padding: 0px;
+/*    word-wrap: break-word; */
+/*    white-space: pre-wrap; */
 	margin: 0px;
 	width: 98%;
 	/*border: none; might make the text area look less cramped */
+}
+
+.TableEditorContent pre, .TableEditorContent-Empty pre {
+   padding: 0px;
+   margin: 0px;
 }
 
 .TableEditorContent font {
@@ -459,12 +462,6 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
 	background-color: #ffffcc;
 }
 
-.TransMemoryTableColumnHeader {
-	color: Blue;
-	font-style: normal;
-	font-weight: bold
-}
-
 /* when match highlighting is enabled: */
 /*
 .TransMemoryHighlightMatches .diff-equal {
@@ -494,7 +491,6 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
    background:#ff9999;
    text-decoration: line-through;
 }
-
 
 .DocumentListTable {
 	width: 100%;
@@ -538,6 +534,34 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
 
 .pointer{
 	cursor:pointer;
+}
+
+.translationContainer pre {
+	font-size: 14px;
+	font-family: sans-serif;
+   	word-wrap: break-word;
+   	white-space: pre-wrap;
+}
+
+.tmTable {
+	width:70%;
+}
+
+.tmTable td img {
+	cursor:pointer;
+}
+
+.tmTable td {
+	font-family:sans-serif;
+	font-size:small;
+	padding:0 10px 0 0;
+}
+
+.tmTable th{
+	border-bottom:0px;
+	color: blue;
+	font-style: normal;
+	font-weight: bold
 }
 
 .loadingPanel{

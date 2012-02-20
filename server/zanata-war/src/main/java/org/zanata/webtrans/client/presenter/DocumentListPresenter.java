@@ -82,6 +82,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       HasData<DocumentNode> getDocumentListTable();
 
       ListDataProvider<DocumentNode> getDataProvider();
+      
+      void renderTable();
    }
 
    private final DispatchAsync dispatcher;
@@ -122,6 +124,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       this.windowLocation = windowLocation;
 
       dataProvider = display.getDataProvider();
+      display.renderTable();
       nodes = new HashMap<DocumentId, DocumentNode>();
    }
 
@@ -414,7 +417,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       }
       Log.info("Time to create DocumentNodes: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
       display.setPageSize(dataProvider.getList().size());
-      dataProvider.addDataDisplay(display.getDocumentListTable());
+      dataProvider.refresh();
    }
 
    /**
@@ -487,5 +490,10 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          // loading from bookmarked history token
          display.getDocumentListTable().getSelectionModel().setSelected(node, true);
       }
+   }
+   
+   public ListDataProvider<DocumentNode> getDataProvider()
+   {
+      return dataProvider;
    }
 }

@@ -10,7 +10,7 @@
 		  homeContent=""
 		  name="Sample Project"
 		  overrideLocales="FALSE"
-		  status="ACTIVE"
+		  status="A"
 	    />
         <HProjectIteration id="1"
 				          versionNum="1"
@@ -20,7 +20,7 @@
                            parentId="[NULL]"
                            project_id="1"
 						  overrideLocales="FALSE"
-						  status="ACTIVE"
+						  status="A"
         />
 	   	<HProjectIteration id="2"
 				          versionNum="1"
@@ -30,7 +30,7 @@
                            parentId="[NULL]"
                            project_id="1"
 						  overrideLocales="FALSE"
-						  status="ACTIVE"
+						  status="A"
         />
 	    <HProject_Maintainer personId="3" 
                              projectId="1"
@@ -47,7 +47,7 @@
 			  homeContent=""
 			  name="Sample Retired Project"
 			  overrideLocales="FALSE"
-			  status="READONLY"
+			  status="R"
 		    />
 		<HProjectIteration id="3"
 	          versionNum="1"
@@ -57,7 +57,7 @@
 	          parentId="[NULL]"
 	          project_id="2"
 			  overrideLocales="FALSE"
-			  status="ACTIVE"
+			  status="A"
         />
         
         <!-- Obsolete Project -->
@@ -71,7 +71,7 @@
 			  homeContent=""
 			  name="Sample Obsolete Project"
 			  overrideLocales="FALSE"
-			  status="OBSOLETE"
+			  status="O"
 		    />
 		<HProjectIteration id="4"
 	          versionNum="1"
@@ -81,7 +81,7 @@
 	          parentId="[NULL]"
 	          project_id="3"
 			  overrideLocales="FALSE"
-			  status="ACTIVE"
+			  status="A"
         />
         
         <!-- Current Project with retired iteration -->
@@ -95,7 +95,7 @@
 			  homeContent=""
 			  name="Sample Current Project"
 			  overrideLocales="FALSE"
-			  status="ACTIVE"
+			  status="A"
 		    />
 		<HProjectIteration id="5"
 	          versionNum="1"
@@ -105,7 +105,29 @@
 	          parentId="[NULL]"
 	          project_id="4"
 			  overrideLocales="FALSE"
-			  status="OBSOLETE"
+			  status="O"
+        />
+        
+        <HProjectIteration id="6"
+	          versionNum="1"
+			  creationDate="2009-09-01 20:31:32"
+	          lastChanged="2009-09-01 20:31:32"
+	          slug="current-active"
+	          parentId="[NULL]"
+	          project_id="4"
+			  overrideLocales="FALSE"
+			  status="A"
+        />
+        
+        <HProjectIteration id="7"
+	          versionNum="1"
+			  creationDate="2009-09-01 20:31:32"
+	          lastChanged="2009-09-01 20:31:32"
+	          slug="current-readonly"
+	          parentId="[NULL]"
+	          project_id="4"
+			  overrideLocales="FALSE"
+			  status="R"
         />
         
 		<!-- Tell DbUnit to delete any existing documents -->

@@ -57,7 +57,7 @@ public class SlugEntityBase extends ModelEntityBase
       this.slug = slug;
    }
 
-   @Type(type = "entityStatusType")
+   @Type(type = "entityStatus")
    @NotNull
    public EntityStatus getStatus()
    {

@@ -22,39 +22,17 @@ package org.zanata.webtrans.client.resources;
 
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
-import com.google.gwt.i18n.client.Messages;
 
 @DefaultLocale
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
-public interface UiMessages extends Messages
+public interface EnumMessages extends com.google.gwt.i18n.client.Messages
 {
-   @DefaultMessage("")
-   String typeToEnter();
-   
    @DefaultMessage("Phrase")
-   String phraseButtonLabel();
+   String searchTypeExact();
 
-   @DefaultMessage("Clear")
-   String clearButtonLabel();
+   @DefaultMessage("Fuzzy")
+   String searchTypeFuzzy();
 
-   @DefaultMessage("Search")
-   String searchButtonLabel();
-
-   @DefaultMessage("Similarity")
-   String similarityLabel();
-
-   @DefaultMessage("Source")
-   String sourceLabel();
-
-   @DefaultMessage("Target")
-   String targetLabel();
-
-   @DefaultMessage("Translation Memory")
-   String tmHeader();
-
-   @DefaultMessage("Glossary")
-   String glossaryHeader();
-
-   @DefaultMessage("Copy \"{0}\" to the editor")
-   String copyLinkTooltip(String targetMessage);
+   @DefaultMessage("Lucene")
+   String searchTypeRaw();
 }

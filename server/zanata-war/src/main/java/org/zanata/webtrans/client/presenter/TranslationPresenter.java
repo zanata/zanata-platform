@@ -33,9 +33,12 @@ import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.NativeEvent;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 
@@ -54,6 +57,21 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
       void setParticipantsTitle(String title);
 
+      /**
+       * expand to previous size or collapse to show just tabs on the south
+       * panel
+       * 
+       * @param expanded
+       */
+      void setSouthPanelExpanded(boolean expanded);
+
+      /**
+       * Show or completely hide the south panel. The panel will be
+       * expanded(false) when made visible after being hidden, even if it was
+       * expanded(true) when it was hidden.
+       * 
+       * @param visible
+       */
       void setSouthPanelVisible(boolean visible);
 
       void setSidePanelVisible(boolean visible);
@@ -68,28 +86,33 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private final DispatchAsync dispatcher;
 
    private final TranslationEditorPresenter translationEditorPresenter;
-   private final SidePanelPresenter sidePanelPresenter;
+   private final OptionsPanelPresenter optionsPanelPresenter;
    private final TransMemoryPresenter transMemoryPresenter;
    private final GlossaryPresenter glossaryPresenter;
    private final WorkspaceUsersPresenter workspaceUsersPresenter;
+
+   private WorkspaceContext workspaceContext;
 
    private final WebTransMessages messages;
 
    private NativeEvent nativeEvent;
 
+   private boolean southPanelExpanded = true;
+
    @Inject
-   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final SidePanelPresenter sidePanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final NativeEvent nativeEvent)
+   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final OptionsPanelPresenter optionsPanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final NativeEvent nativeEvent, final WorkspaceContext workspaceContext)
    {
       super(display, eventBus);
       this.messages = messages;
       this.translationEditorPresenter = translationEditorPresenter;
       this.workspaceUsersPresenter = workspaceUsersPresenter;
       this.transMemoryPresenter = transMemoryPresenter;
-      this.sidePanelPresenter = sidePanelPresenter;
+      this.optionsPanelPresenter = optionsPanelPresenter;
       this.glossaryPresenter = glossaryPresenter;
       this.dispatcher = dispatcher;
 
       this.nativeEvent = nativeEvent;
+      this.workspaceContext = workspaceContext;
    }
 
    @Override
@@ -119,11 +142,9 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    @Override
    protected void onBind()
    {
-      transMemoryPresenter.bind();
-      workspaceUsersPresenter.bind();
-      glossaryPresenter.bind();
+      bindSouthPanelPresenters();
       translationEditorPresenter.bind();
-      sidePanelPresenter.bind();
+      optionsPanelPresenter.bind();
 
       registerHandler(eventBus.addHandler(ExitWorkspaceEvent.getType(), new ExitWorkspaceEventHandler()
       {
@@ -149,9 +170,23 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       // Thus we load the translator list here.
       loadTranslatorList();
 
+      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
+      {
+         @Override
+         public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
+         {
+            setSouthPanelReadOnly(event.isReadOnly());
+         }
+      }));
+
+      if (workspaceContext.isReadOnly())
+      {
+         setSouthPanelReadOnly(true);
+      }
+
       registerHandler(display.getOptionsToggle().addValueChangeHandler(new ValueChangeHandler<Boolean>()
       {
-         
+
          @Override
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
@@ -175,27 +210,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
             boolean shouldShowSouthPanel = event.getValue();
-            if (shouldShowSouthPanel)
-            {
-               transMemoryPresenter.bind();
-               glossaryPresenter.bind();
-               workspaceUsersPresenter.bind();
-
-               display.setSouthPanelVisible(true);
-               TransUnit tu = translationEditorPresenter.getSelectedTransUnit();
-               if (tu != null)
-               {
-                  transMemoryPresenter.showResultsFor(tu);
-                  // glossaryPresenter.showResultsFor(tu);
-               }
-            }
-            else
-            {
-               display.setSouthPanelVisible(false);
-               transMemoryPresenter.unbind();
-               glossaryPresenter.unbind();
-               workspaceUsersPresenter.unbind();
-            }
+            setSouthPanelExpanded(shouldShowSouthPanel);
          }
       }));
 
@@ -308,16 +323,79 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    @Override
    protected void onUnbind()
    {
-      transMemoryPresenter.unbind();
-      glossaryPresenter.unbind();
-      workspaceUsersPresenter.unbind();
+      unbindSouthPanelPresenters();
       translationEditorPresenter.unbind();
-      sidePanelPresenter.unbind();
+      optionsPanelPresenter.unbind();
    }
 
    public void saveEditorPendingChange()
    {
       translationEditorPresenter.saveEditorPendingChange();
+   }
+
+   /**
+    * Handle all changes required to completely hide and unbind the south panel for read-only mode, or to undo said changes.
+    * 
+    * @param readOnly
+    */
+   private void setSouthPanelReadOnly(boolean readOnly)
+   {
+      if (readOnly)
+      {
+         // includes unbinding
+         setSouthPanelExpanded(false);
+      }
+      display.setSouthPanelVisible(!readOnly);
+      if (!readOnly)
+      {
+         setSouthPanelExpanded(display.getSouthPanelToggle().getValue());
+      }
+   }
+   
+   /**
+    * Expand or collapse south panel, binding or unbinding presenters
+    * as appropriate. Will have no effect if the panel is already in
+    * the state of expansion or contraction that is specified.
+    * 
+    * @param expanded
+    */
+   private void setSouthPanelExpanded(boolean expanded)
+   {
+      if (expanded == southPanelExpanded)
+      {
+         return; //nothing to do
+      }
+      display.setSouthPanelExpanded(expanded);
+      southPanelExpanded = expanded;
+      if (expanded)
+      {
+         bindSouthPanelPresenters();
+         
+         TransUnit tu = translationEditorPresenter.getSelectedTransUnit();
+         if (tu != null)
+         {
+            transMemoryPresenter.showResultsFor(tu);
+            // glossaryPresenter.showResultsFor(tu);
+         }
+      }
+      else
+      {
+         unbindSouthPanelPresenters();
+      }
+   }
+
+   private void bindSouthPanelPresenters()
+   {
+      transMemoryPresenter.bind();
+      glossaryPresenter.bind();
+      workspaceUsersPresenter.bind();
+   }
+   
+   private void unbindSouthPanelPresenters()
+   {
+      transMemoryPresenter.unbind();
+      glossaryPresenter.unbind();
+      workspaceUsersPresenter.unbind();
    }
 
 }

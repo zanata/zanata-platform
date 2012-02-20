@@ -13,5 +13,27 @@
         <h1>#{messages['jsf.Administration']}</h1>
 		
 		#{messages['jsf.PleaseChooseAPageFromTheAdministrationMenuAbove']}
+		<br/><br/>
+		<rich:simpleTogglePanel switchType="client" label="#{messages['jsf.OverallStatistics']}" opened="#{true}">
+        	<table>
+				<tr><td><h2>#{messages['jsf.TotalProjects']}:</h2></td><td><h2>#{adminStatsAction.totalProjectCount}</h2></td></tr>  
+				
+				<tr><td><h4>#{messages['jsf.Active']}:</h4></td><td><h4>#{adminStatsAction.totalActiveProjectCount}</h4></td></tr>        	
+				<tr><td><h4>#{messages['jsf.ReadOnly']}:</h4></td><td><h4>#{adminStatsAction.totalReadOnlyProjectCount}</h4></td></tr>        	
+				<tr><td><h4>#{messages['jsf.Obsolete']}:</h4></td><td><h4>#{adminStatsAction.totalObsoleteProjectCount}</h4></td></tr>
+						
+				<tr><td><h2>Total Project Iterations:</h2></td><td><h2>#{adminStatsAction.totalProjectIterCount}</h2></td></tr>
+		        <tr><td><h4>#{messages['jsf.Active']}:</h4></td><td><h4>#{adminStatsAction.totalActiveProjectIterCount}</h4></td></tr>
+		        <tr><td><h4>#{messages['jsf.ReadOnly']}:</h4></td><td><h4>#{adminStatsAction.totalReadOnlyProjectIterCount}</h4></td></tr>
+		        <tr><td><h4>#{messages['jsf.Obsolete']}:</h4></td><td><h4>#{adminStatsAction.totalObsoleteProjectIterCount}</h4></td></tr>        	
+				
+				<tr><td><h2>#{messages['jsf.TotalWords']}:</h2></td><td><h2>#{adminStatsAction.totalWords}</h2></td></tr>
+				<tr><td><h4>#{messages['jsf.Approved']}:</h4></td><td><h4>#{adminStatsAction.totalApprovedWords}</h4></td></tr>
+				<tr><td><h4>#{messages['jsf.NeedReview']}:</h4></td><td><h4>#{adminStatsAction.totalNeedReviewWords}</h4></td></tr>
+				<tr><td><h4>#{messages['jsf.Untranslated']}:</h4></td><td><h4>#{adminStatsAction.totalUntranslatedWords}</h4></td></tr>
+				
+				<tr><td><h2>#{messages['jsf.TotalTranslators']}:</h2></td><td><h2>#{adminStatsAction.totalTranslator}</h2></td></tr>
+			</table>  
+        </rich:simpleTogglePanel>
     </ui:define>
 </ui:composition>

@@ -33,8 +33,8 @@
         <h:form>
           <s:token allowMultiplePosts="true" />
           <h:commandButton action="#{personHome.regenerateApiKey}"
-              value="Regenerate API Key" reRender="api_key,no_api_key"
-              onclick="if (!confirm('Are you sure you want to regenerate your API Key?')) return false" />
+              value="Generate API Key" reRender="api_key,no_api_key"
+              onclick="if (!confirm('Are you sure you want to generate your API Key?')) return false" />
           <br/><br/>
           <s:span id="no_api_key" rendered="#{personHome.instance.account.apiKey == null}">#{messages['jsf.NotGenerated']}</s:span>
           <s:fragment id="api_key" rendered="#{personHome.instance.account.apiKey != null}"> 

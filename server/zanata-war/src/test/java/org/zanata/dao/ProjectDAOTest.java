@@ -45,6 +45,7 @@ public class ProjectDAOTest extends ZanataDbunitJpaTest
       assertThat(project.getName(), is("Sample Project"));
    }
 
+   @Test
    public void getValidProjectById()
    {
       HProject project = dao.findById(1l, false);
@@ -52,4 +53,63 @@ public class ProjectDAOTest extends ZanataDbunitJpaTest
       assertThat(project.getName(), is("Sample Project"));
    }
 
+   @Test
+   public void getActiveIterations()
+   {
+      assertThat(dao.getActiveIterations("current-project").size(), is(1));
+   }
+
+   @Test
+   public void getReadOnlyIterations()
+   {
+      assertThat(dao.getReadOnlyIterations("current-project").size(), is(1));
+   }
+
+   @Test
+   public void getObsoleteIterations()
+   {
+      assertThat(dao.getObsoleteIterations("current-project").size(), is(1));
+   }
+
+   @Test
+   public void getFilterProjectSizeAll()
+   {
+      assertThat(dao.getFilterProjectSize(false, false, false), is(4));
+   }
+
+   @Test
+   public void getFilterProjectSizeOnlyActive()
+   {
+      assertThat(dao.getFilterProjectSize(false, true, true), is(2));
+   }
+
+   @Test
+   public void getFilterProjectSizeOnlyReadOnly()
+   {
+      assertThat(dao.getFilterProjectSize(true, false, true), is(1));
+   }
+
+   @Test
+   public void getFilterProjectSizeOnlyObsolete()
+   {
+      assertThat(dao.getFilterProjectSize(true, true, false), is(1));
+   }
+
+   @Test
+   public void getFilterProjectSizeOnlyActiveAndReadOnly()
+   {
+      assertThat(dao.getFilterProjectSize(false, false, true), is(3));
+   }
+
+   @Test
+   public void getFilterProjectSizeOnlyActiveAndObsolete()
+   {
+      assertThat(dao.getFilterProjectSize(false, true, false), is(3));
+   }
+
+   @Test
+   public void getFilterProjectSizeOnlyObsoleteAndReadOnly()
+   {
+      assertThat(dao.getFilterProjectSize(true, false, false), is(2));
+   }
 }

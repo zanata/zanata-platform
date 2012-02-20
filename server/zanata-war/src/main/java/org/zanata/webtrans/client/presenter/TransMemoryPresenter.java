@@ -11,8 +11,6 @@ import org.zanata.webtrans.client.events.TransMemoryShorcutCopyHandler;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
-import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
-import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
@@ -22,9 +20,12 @@ import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
@@ -34,28 +35,38 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 {
    private final WorkspaceContext workspaceContext;
    private final CachingDispatchAsync dispatcher;
+   private GetTranslationMemory currentRequest;
+
+   @Inject
+   private TransMemoryDetailsPresenter tmInfoPresenter;
 
    public interface Display extends WidgetDisplay
    {
-      HasValue<Boolean> getExactButton();
-
       HasClickHandlers getSearchButton();
+
+      HasValue<SearchType> getSearchType();
 
       HasText getTmTextBox();
 
-      void createTable(String query, ArrayList<TranslationMemoryGlossaryItem> memories);
-      
+      void reloadData(String query, ArrayList<TranslationMemoryGlossaryItem> memories);
+
       void startProcessing();
-      
+
       void stopProcessing();
 
       boolean isFocused();
-      
+
       String getSource(int index);
-      
+
       String getTarget(int index);
 
-      void setCopyLinksVisible(boolean visible);
+      @SuppressWarnings("rawtypes")
+      Column getDetailsColumn();
+
+      @SuppressWarnings("rawtypes")
+      Column getCopyColumn();
+
+      void renderTable();
    }
 
    @Inject
@@ -64,19 +75,21 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       super(display, eventBus);
       this.dispatcher = dispatcher;
       this.workspaceContext = workspaceContext;
+
+      display.renderTable();
    }
 
    @Override
    protected void onBind()
    {
+      display.getSearchType().setValue(SearchType.FUZZY);
       display.getSearchButton().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
             String query = display.getTmTextBox().getText();
-            GetTranslationMemory.SearchType searchType = display.getExactButton().getValue() ? SearchType.EXACT : SearchType.RAW;
-            showResults(query, searchType);
+            showResults(query, display.getSearchType().getValue());
          }
       });
 
@@ -88,7 +101,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
             showResultsFor(event.getSelection());
          }
       }));
-      
+
       registerHandler(eventBus.addHandler(TransMemoryShortcutCopyEvent.getType(), new TransMemoryShorcutCopyHandler()
       {
          @Override
@@ -106,16 +119,23 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          }
       }));
 
-      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
+      display.getDetailsColumn().setFieldUpdater(new FieldUpdater<TranslationMemoryGlossaryItem, ImageResource>()
       {
          @Override
-         public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
+         public void update(int index, TranslationMemoryGlossaryItem object, ImageResource value)
          {
-            display.setCopyLinksVisible(!event.isReadOnly());
+            tmInfoPresenter.show(object);
          }
-      }));
+      });
 
-      display.setCopyLinksVisible(!workspaceContext.isReadOnly());
+      display.getCopyColumn().setFieldUpdater(new FieldUpdater<TranslationMemoryGlossaryItem, String>()
+      {
+         @Override
+         public void update(int index, TranslationMemoryGlossaryItem object, String value)
+         {
+            eventBus.fireEvent(new TransMemoryCopyEvent(object.getSource(), object.getTarget()));
+         }
+      });
    }
 
    public void showResultsFor(TransUnit transUnit)
@@ -131,6 +151,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    {
       display.startProcessing();
       final GetTranslationMemory action = new GetTranslationMemory(query, workspaceContext.getWorkspaceId().getLocaleId(), searchType);
+      currentRequest = action;
       dispatcher.execute(action, new AsyncCallback<GetTranslationMemoryResult>()
       {
          @Override
@@ -142,8 +163,17 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          @Override
          public void onSuccess(GetTranslationMemoryResult result)
          {
+            if (!result.getRequest().equals(currentRequest))
+            {
+               Log.debug("ignoring old TM result for query: " + result.getRequest().getQuery());
+               return;
+            }
+            Log.debug("received TM result for query: " + currentRequest.getQuery());
+            display.getTmTextBox().setText(currentRequest.getQuery());
+            display.getSearchType().setValue(currentRequest.getSearchType());
             ArrayList<TranslationMemoryGlossaryItem> memories = result.getMemories();
-            display.createTable(query, memories);
+            display.reloadData(query, memories);
+            currentRequest = null;
          }
       });
    }

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -47,13 +46,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
    @SuppressWarnings("unchecked")
    public List<HProject> getOffsetListByCreateDate(int offset, int count, boolean filterActive, boolean filterReadOnly, boolean filterObsolete)
    {
-      if (!filterActive && !filterReadOnly && !filterObsolete) // all records
-      {
-         return getSession().createCriteria(HProject.class).addOrder(Order.desc(ORDERBY_TIMESTAMP)).setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getAllProjectOffsetListByCreateDate").list();
-      }
-      
       String condition = constructFilterCondition(filterActive, filterReadOnly, filterObsolete);
-      return getSession().createQuery("from HProject p " + condition + "order by p.creationDate").setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getAllProjectOffsetListByCreateDate").list();
+      return getSession().createQuery("from HProject p " + condition + "order by p.creationDate desc").setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getAllProjectOffsetListByCreateDate").list();
    }
 
    public int getFilterProjectSize(boolean filterActive, boolean filterReadOnly, boolean filterObsolete)
@@ -76,7 +70,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
 
       if (filterActive)
       {
-         condition.append("p.status <> '" + EntityStatus.ACTIVE + "' ");
+         // TODO bind this as a parameter
+         condition.append("p.status <> '" + EntityStatus.ACTIVE.getInitial() + "' ");
       }
 
       if (filterReadOnly)
@@ -86,7 +81,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
             condition.append("and ");
          }
 
-         condition.append("p.status <> '" + EntityStatus.READONLY + "' ");
+         // TODO bind this as a parameter
+         condition.append("p.status <> '" + EntityStatus.READONLY.getInitial() + "' ");
       }
 
       if (filterObsolete)
@@ -96,7 +92,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
             condition.append("and ");
          }
 
-         condition.append("p.status <> '" + EntityStatus.OBSOLETE + "' ");
+         // TODO bind this as a parameter
+         condition.append("p.status <> '" + EntityStatus.OBSOLETE.getInitial() + "' ");
       }
       return condition.toString();
    }
@@ -117,5 +114,39 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
    public List<HProjectIteration> getObsoleteIterations(String slug)
    {
       return getSession().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", EntityStatus.OBSOLETE).list();
+   }
+
+   public int getTotalProjectCount()
+   {
+      String query = "select count(*) from HProject";
+      Long totalCount = (Long) getSession().createQuery(query.toString()).uniqueResult();
+
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
+   public int getTotalActiveProjectCount()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HProject p where p.status = :status").setParameter("status", EntityStatus.ACTIVE).uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
+   public int getTotalReadOnlyProjectCount()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HProject p where p.status = :status").setParameter("status", EntityStatus.READONLY).uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
+   public int getTotalObsoleteProjectCount()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HProject p where p.status = :status").setParameter("status", EntityStatus.OBSOLETE).uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
    }
 }

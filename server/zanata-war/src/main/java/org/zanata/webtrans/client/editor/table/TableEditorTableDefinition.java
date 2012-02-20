@@ -36,6 +36,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
@@ -198,7 +199,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          view.setStyleName("TableEditorCell TableEditorCell-Target");
          final VerticalPanel targetPanel = new VerticalPanel();
 
-         final Label label = new HighlightingLabel();
+         final HighlightingLabel label = new HighlightingLabel();
 
          // if editor is opening, do not render target cell, otherwise editor
          // will be closed
@@ -223,7 +224,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
          if (findMessage != null && !findMessage.isEmpty())
          {
-            ((HighlightingLabel) label).highlightSearch(findMessage);
+            label.highlightSearch(findMessage);
          }
          label.setTitle(messages.clickHere());
 
@@ -234,7 +235,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             @Override
             public void onMouseDown(MouseDownEvent event)
             {
-               if (!isReadOnly)
+               if (!isReadOnly && event.getNativeButton() == NativeEvent.BUTTON_LEFT)
                {
                   eventBus.fireEvent(new OpenEditorEvent(rowIndex));
                }
