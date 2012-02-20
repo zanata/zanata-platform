@@ -41,6 +41,22 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
       return (HTextFlowTarget) getSession().createCriteria(HTextFlowTarget.class).add(Restrictions.naturalId().set("textFlow", textFlow).set("locale", locale)).setCacheable(true).setComment("TextFlowTargetDAO.getByNaturalId").uniqueResult();
    }
 
+   public int getTotalApprovedWords()
+   {
+      Long totalCount = (Long) getSession().createQuery("select sum(t.textFlow.wordCount) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0").setParameter("state", ContentState.Approved).uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
+   public int getTotalNeedReviewWords()
+   {
+      Long totalCount = (Long) getSession().createQuery("select sum(t.textFlow.wordCount) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0").setParameter("state", ContentState.NeedReview).uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
    @SuppressWarnings("unchecked")
    public List<HTextFlowTarget> findAllTranslations(HDocument document, LocaleId localeId)
    {
@@ -76,7 +92,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
             .list();      
       // @formatter:on
    }
-   
+
    public HTextFlowTarget findLatestEquivalentTranslation(HTextFlow textFlow, HLocale locale)
    {
       // @formatter:off
@@ -96,6 +112,5 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
             .setMaxResults(1).uniqueResult();
       // @formatter:on
    }
-   
 
 }

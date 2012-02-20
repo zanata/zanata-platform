@@ -33,6 +33,7 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.ContentState;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
@@ -228,5 +229,39 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
          totalCount = 0L;
       }
       return totalCount;
+   }
+
+   public int getTotalProjectIterCount()
+   {
+      String query = "select count(*) from HProjectIteration";
+      Long totalCount = (Long) getSession().createQuery(query.toString()).uniqueResult();
+
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
+   public int getTotalActiveProjectIterCount()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HProjectIteration t where t.status = :status").setParameter("status", EntityStatus.ACTIVE).uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
+   public int getTotalReadOnlyProjectIterCount()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HProjectIteration t where t.status = :status").setParameter("status", EntityStatus.READONLY).uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
+   public int getTotalObsoleteProjectIterCount()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HProjectIteration t where t.status = :status").setParameter("status", EntityStatus.OBSOLETE).uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
    }
 }

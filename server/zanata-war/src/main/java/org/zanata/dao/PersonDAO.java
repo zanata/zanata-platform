@@ -30,6 +30,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.common.EntityStatus;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
@@ -93,6 +94,14 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
       Query query = getSession().createQuery("from HPerson as p where p.account.username like :name or p.name like :name");
       query.setParameter("name", "%" + name + "%");
       return query.list();
+   }
+
+   public int getTotalTranslator()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HPerson").uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
    }
 
 }

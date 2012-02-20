@@ -115,4 +115,38 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
    {
       return getSession().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status").setParameter("projectSlug", slug).setParameter("status", EntityStatus.OBSOLETE).list();
    }
+
+   public int getTotalProjectCount()
+   {
+      String query = "select count(*) from HProject";
+      Long totalCount = (Long) getSession().createQuery(query.toString()).uniqueResult();
+
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
+   public int getTotalActiveProjectCount()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HProject p where p.status = :status").setParameter("status", EntityStatus.ACTIVE).uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
+   public int getTotalReadOnlyProjectCount()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HProject p where p.status = :status").setParameter("status", EntityStatus.READONLY).uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
+   public int getTotalObsoleteProjectCount()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HProject p where p.status = :status").setParameter("status", EntityStatus.OBSOLETE).uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
 }
