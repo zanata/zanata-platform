@@ -43,7 +43,7 @@ public class PropReaderTest
       Unmarshaller unmarshal = jc.createUnmarshaller();
       Resource docIn = (Resource) unmarshal.unmarshal(new StringReader(sw.toString()));
 
-      PropWriter.write(docIn, new File("target/test-output"), ISO_8859_1);
+      PropWriter.write(docIn, new File("target/test-output"));
 
       // FIXME check output files against input
    }
@@ -66,7 +66,7 @@ public class PropReaderTest
       Unmarshaller unmarshal = jc.createUnmarshaller();
       TranslationsResource docIn = (TranslationsResource) unmarshal.unmarshal(new StringReader(sw.toString()));
 
-      PropWriter.write(docIn, new File("target/test-output"), "test", locale, ISO_8859_1);
+      PropWriter.write(docIn, new File("target/test-output"), "test", locale);
 
       // FIXME check output files against input
    }
