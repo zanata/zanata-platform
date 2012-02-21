@@ -75,6 +75,10 @@
         </modifyColumn>
     </changeSet>
     
+    <changeSet author="camunoz@redhat.com" id="1-h2" dbms="h2">
+    	<comment>Create H2 database Hash function.</comment>
+    	<sql>CREATE ALIAS MD5 FOR "org.zanata.util.HashUtil.generateHash"</sql>
+    </changeSet>
     <changeSet author="camunoz@redhat.com" id="1">
     	<comment>Add and populate Content Hash column for the HTextFlow table.</comment>
     	<addColumn tableName="HTextFlow">
@@ -86,6 +90,13 @@
     		<column name="contentHash"/>
     	</createIndex>
     	<sql>UPDATE HTextFlow SET contentHash = MD5(content)</sql>	
+    </changeSet>
+    
+    <changeSet author="camunoz@redhat.com" id="2">
+    	<comment>Change Content Hash column on HTextFlow to char(32)</comment>
+    	<modifyColumn tableName="HTextFlow">
+    		<column name="contentHash" type="char(32)"/>
+    	</modifyColumn>
     </changeSet>
 
 	<!--
