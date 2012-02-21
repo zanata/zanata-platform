@@ -1,9 +1,12 @@
 package org.zanata.adapter.properties;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +41,17 @@ public class PropWriter
     * @param baseDir
     * @throws IOException
     */
-   public static void write(final Resource doc, final File baseDir, String charset) throws IOException
+   public static void write(final Resource doc, final File baseDir) throws IOException
+   {
+      write(doc, baseDir, false);
+   }
+
+   public static void writeUTF8(final Resource doc, final File baseDir) throws IOException
+   {
+      write(doc, baseDir, true);
+   }
+
+   private static void write(final Resource doc, final File baseDir, boolean utf8) throws IOException
    {
       File baseFile = new File(baseDir, doc.getName() + ".properties");
       makeParentDirs(baseFile);
@@ -53,18 +66,20 @@ public class PropWriter
             props.setComment(textFlow.getId(), simpleComment.getValue());
       }
       // props.store(System.out, null);
-      Writer out = new OutputStreamWriter(new FileOutputStream(baseFile), charset);
-      try
-      {
-         props.store(out, null);
-      }
-      finally
-      {
-         out.close();
-      }
+      storeProps(props, baseFile, utf8);
    }
 
-   public static void write(Resource srcDoc, final TranslationsResource doc, final File baseDir, String bundleName, String locale, String charset) throws IOException
+   public static void write(Resource srcDoc, final TranslationsResource doc, final File baseDir, String bundleName, String locale) throws IOException
+   {
+      write(srcDoc, doc, baseDir, bundleName, locale, false);
+   }
+
+   public static void writeUTF8(Resource srcDoc, final TranslationsResource doc, final File baseDir, String bundleName, String locale) throws IOException
+   {
+      write(srcDoc, doc, baseDir, bundleName, locale, true);
+   }
+
+   private static void write(Resource srcDoc, final TranslationsResource doc, final File baseDir, String bundleName, String locale, boolean utf8) throws IOException
    {
       Properties targetProp = new Properties();
 
@@ -95,15 +110,27 @@ public class PropWriter
       File langFile = new File(baseDir, bundleName + "_" + locale + ".properties");
       makeParentDirs(langFile);
       logVerbose("Creating target file " + langFile);
-      // targetProp.store(System.out, null);
-      Writer out2 = new OutputStreamWriter(new FileOutputStream(langFile), charset);
+      storeProps(targetProp, langFile, utf8);
+   }
+
+   private static void storeProps(Properties props, File file, boolean utf8) throws UnsupportedEncodingException, FileNotFoundException, IOException
+   {
+      BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file));
       try
       {
-         targetProp.store(out2, null);
+         if (utf8)
+         {
+            Writer writer = new OutputStreamWriter(out, "UTF-8");
+            props.store(writer, null);
+         }
+         else
+         {
+            props.store(out, null);
+         }
       }
       finally
       {
-         out2.close();
+         out.close();
       }
    }
 
