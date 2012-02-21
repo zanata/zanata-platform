@@ -222,7 +222,7 @@ Removes some of the styling on the page-level splitters
 }
 
 .TableEditor tr td.TableEditorCell-Middle {
-	vertical-align: middle;
+	vertical-align: top;
 	width: 16px;
 }
 
@@ -305,7 +305,7 @@ td.TableEditorCell {
 }
 
 td.TableEditorCell-Source {
-	
+/* 	overflow-x:scroll; */
 }
 
 td.TableEditorCell-Target {

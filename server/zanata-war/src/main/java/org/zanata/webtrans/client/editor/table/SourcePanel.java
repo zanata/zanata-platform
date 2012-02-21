@@ -30,22 +30,16 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.ButtonBase;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PushButton;
 
 public class SourcePanel extends Composite implements HasValue<TransUnit>, HasClickHandlers
 {
 
    private final HorizontalPanel panel;
-   private final HorizontalPanel rightPanel;
    private final HighlightingLabel sourceLabel;
-   private PushButton copyButton;
    private TransUnit value;
 
    public SourcePanel(TransUnit value, TableResources resources, NavigationMessages messages)
@@ -57,28 +51,11 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
       initWidget(panel);
       setStylePrimaryName("TableEditorSource");
 
-      rightPanel = new HorizontalPanel();
-      rightPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-      rightPanel.setSize("100%", "100%");
-
       sourceLabel = new HighlightingLabel(value.getSource());
       sourceLabel.setStylePrimaryName("TableEditorContent");
       sourceLabel.setTitle(messages.sourceCommentLabel() + value.getSourceComment());
 
-      copyButton = new PushButton(new Image(resources.copySrcButton()));
-      copyButton.setStyleName("gwt-Button");
-      copyButton.setSize("16px", "16px");
-      copyButton.setTitle(messages.copySourcetoTarget());
-
-      rightPanel.add(copyButton);
-
       panel.add(sourceLabel);
-      panel.add(rightPanel);
-   }
-
-   public ButtonBase getCopySrcButton()
-   {
-      return copyButton;
    }
 
    public Label getLabel()
