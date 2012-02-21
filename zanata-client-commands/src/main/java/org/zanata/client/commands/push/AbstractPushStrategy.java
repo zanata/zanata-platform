@@ -32,7 +32,7 @@ import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 
 /**
- *
+ * NB: you must initialise this object with init() after setPushOptions()
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/

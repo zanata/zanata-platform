@@ -38,6 +38,11 @@ import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
+/**
+ * NB: you must initialise this object with init() after setPushOptions()
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ *
+ */
 class PropertiesStrategy extends AbstractPushStrategy
 {
    // "8859_1" is used in Properties.java...

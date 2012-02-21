@@ -1,6 +1,6 @@
 package org.zanata.adapter.properties;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -60,7 +60,7 @@ public class PropReaderTest
       Unmarshaller unmarshal = jc.createUnmarshaller();
       Resource docIn = (Resource) unmarshal.unmarshal(new StringReader(sw.toString()));
 
-      PropWriter.write(docIn, TEST_OUTPUT_DIR, ISO_8859_1);
+      PropWriter.write(docIn, TEST_OUTPUT_DIR);
 
       assertInputAndOutputDocContentSame(docName);
    }
@@ -83,7 +83,7 @@ public class PropReaderTest
       Unmarshaller unmarshal = jc.createUnmarshaller();
       TranslationsResource docIn = (TranslationsResource) unmarshal.unmarshal(new StringReader(sw.toString()));
 
-      PropWriter.write(null, docIn, TEST_OUTPUT_DIR, "test", locale, ISO_8859_1);
+      PropWriter.write(null, docIn, TEST_OUTPUT_DIR, "test", locale);
 
       assertInputAndOutputDocContentSame(docName);
    }
