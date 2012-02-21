@@ -79,10 +79,13 @@
     	<comment>Create H2 database Hash function.</comment>
     	<sql>CREATE ALIAS MD5 FOR "org.zanata.util.HashUtil.generateHash"</sql>
     </changeSet>
+
     <changeSet author="camunoz@redhat.com" id="1">
+      <validCheckSum>c84f50706e194f1d74bc133c0cfa216</validCheckSum>
     	<comment>Add and populate Content Hash column for the HTextFlow table.</comment>
     	<addColumn tableName="HTextFlow">
-    		<column name="contentHash" type="varchar(255)">
+         <!-- original changeSet had varchar(255) -->
+    		<column name="contentHash" type="char(32)">
     			<constraints nullable="false"/>
     		</column>
     	</addColumn>
@@ -91,8 +94,15 @@
     	</createIndex>
     	<sql>UPDATE HTextFlow SET contentHash = MD5(content)</sql>	
     </changeSet>
-    
-    <changeSet author="camunoz@redhat.com" id="2">
+
+    <changeSet author="camunoz@redhat.com" id="2" dbms="mysql">
+      <preConditions onFail="MARK_RAN">
+          <sqlCheck expectedResult="1">
+             SELECT * FROM INFORMATION_SCHEMA.COLUMNS
+             WHERE TABLE_SCHEMA='${database.defaultSchemaName}' AND TABLE_NAME='HTextFlow'
+             AND COLUMN_NAME='contentHash' AND DATA_TYPE='varchar';
+          </sqlCheck>
+      </preConditions>
     	<comment>Change Content Hash column on HTextFlow to char(32)</comment>
     	<modifyColumn tableName="HTextFlow">
     		<column name="contentHash" type="char(32)"/>
