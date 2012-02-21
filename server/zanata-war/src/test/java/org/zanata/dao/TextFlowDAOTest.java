@@ -10,7 +10,6 @@ import org.hibernate.Session;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
-import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 
 @Test(groups = { "jpa-tests" })
@@ -34,15 +33,15 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
 
    public void getIdsWithTranslations()
    {
-      List<Long> de = dao.getIdsByTargetState(new LocaleId("de"), ContentState.Approved);
+      List<Long> de = dao.findIdsWithTranslations(new LocaleId("de"));
       System.out.println(de);
       assertThat(de.size(), is(1));
 
-      List<Long> es = dao.getIdsByTargetState(new LocaleId("es"), ContentState.Approved);
+      List<Long> es = dao.findIdsWithTranslations(new LocaleId("es"));
       System.out.println(es);
       assertThat(es.size(), is(0));
 
-      List<Long> fr = dao.getIdsByTargetState(new LocaleId("fr"), ContentState.Approved);
+      List<Long> fr = dao.findIdsWithTranslations(new LocaleId("fr"));
       System.out.println(fr);
       assertThat(fr.size(), is(0));
    }

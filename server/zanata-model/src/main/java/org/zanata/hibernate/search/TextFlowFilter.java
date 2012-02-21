@@ -20,24 +20,26 @@
  */
 package org.zanata.hibernate.search;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.index.TermDocs;
+import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
-import org.hibernate.search.annotations.Factory;
-import org.hibernate.search.annotations.Key;
-import org.hibernate.search.filter.FilterKey;
-import org.hibernate.search.filter.StandardFilterKey;
+import org.apache.lucene.util.OpenBitSet;
+import org.hibernate.Session;
+import org.jboss.seam.Component;
+import org.jboss.seam.log.Log;
+import org.jboss.seam.log.Logging;
 import org.zanata.common.LocaleId;
 
-public class TextFlowFilterFactory
+public class TextFlowFilter extends Filter
 {
+   private static final Log log = Logging.getLog(TextFlowFilter.class);
+   private static final long serialVersionUID = 1L;
    private LocaleId locale;
-
-   @Factory
-   public Filter getFilter()
-   {
-      TextFlowFilter filter = new TextFlowFilter();
-      filter.setLocale(this.locale);
-      return filter;
-   }
 
    /**
     * @return the locale
@@ -46,7 +48,7 @@ public class TextFlowFilterFactory
    {
       return locale;
    }
-
+   
    /**
     * @param locale the locale to set
     */
@@ -55,12 +57,21 @@ public class TextFlowFilterFactory
       this.locale = locale;
    }
 
-   @Key
-   public FilterKey getKey()
+   @Override
+   public DocIdSet getDocIdSet(IndexReader reader) throws IOException
    {
-      StandardFilterKey key = new StandardFilterKey();
-      key.addParameter(locale);
-      return key;
+      OpenBitSet bitSet = new OpenBitSet(reader.maxDoc());
+      Session session = (Session) Component.getInstance("session");
+      // TODO move DAOs into zanata-model, and use TextFlowDAO.findIdsWithTranslations(LocaleId)
+      log.info("getDocIdSet for locale {0}", locale);
+      List<Long> ids = session.getNamedQuery("HTextFlow.findIdsWithTranslations").setParameter("locale", locale).list();
+      for (Long id : ids)
+      {
+         Term term = new Term("id", id.toString());
+         TermDocs termDocs = reader.termDocs(term);
+         while (termDocs.next())
+            bitSet.set(termDocs.doc());
+      }
+      return bitSet;
    }
-
 }

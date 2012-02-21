@@ -20,7 +20,7 @@
  */
 package org.zanata.model;
 
-import static org.zanata.util.ZanataUtil.equal;
+import static org.zanata.util.ZanataUtil.*;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -35,6 +35,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -71,8 +73,15 @@ import org.zanata.util.OkapiUtil;
  */
 @Entity
 @Indexed
-// allow caching of filter instances, but not the set of translated textflows
-@FullTextFilterDef(name = "textFlowFilter", impl = TextFlowFilterFactory.class, cache = FilterCacheModeType.INSTANCE_ONLY)
+@FullTextFilterDef(name = "textFlowFilter", impl = TextFlowFilterFactory.class, cache = FilterCacheModeType.INSTANCE_AND_DOCIDSETRESULTS)
+@NamedQueries(@NamedQuery(
+      name = "HTextFlow.findIdsWithTranslations",
+      query = "SELECT tft.textFlow.id FROM HTextFlowTarget tft " +
+            "WHERE tft.locale.localeId=:locale " +
+            "AND tft.state=org.zanata.common.ContentState.Approved " +
+            "AND tft.textFlow.document.projectIteration.status<>org.zanata.common.EntityStatus.OBSOLETE " +
+            "AND tft.textFlow.document.projectIteration.project.status<>org.zanata.common.EntityStatus.OBSOLETE"
+))
 public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComment
 {
    private static final Logger log = LoggerFactory.getLogger(HTextFlow.class);

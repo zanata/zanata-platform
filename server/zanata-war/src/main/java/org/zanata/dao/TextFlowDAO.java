@@ -20,7 +20,6 @@
  */
 package org.zanata.dao;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -44,20 +43,11 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
-import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.DefaultNgramAnalyzer;
 import org.zanata.model.HDocument;
-import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
-import org.zanata.webtrans.server.rpc.CommentsUtil;
-import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitId;
-import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
-import org.zanata.webtrans.shared.util.TextFlowFilter;
 
 @Name("textFlowDAO")
 @AutoCreate
@@ -107,12 +97,10 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<Long> getIdsByTargetState(LocaleId locale, ContentState state)
+   public List<Long> findIdsWithTranslations(LocaleId locale)
    {
-      Query q = getSession().createQuery("select tft.textFlow.id from HTextFlowTarget tft where tft.locale.localeId=:locale and tft.state=:state");
+      Query q = getSession().getNamedQuery("HTextFlow.findIdsWithTranslations");
       q.setParameter("locale", locale);
-      q.setParameter("state", state);
-      q.setComment("TextFlowDAO.getIdsByTargetState");
       return q.list();
    }
 
@@ -134,7 +122,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 
    }
 
-   public List<Object[]> getSearchResult(String searchText, SearchType searchType, List<Long> translatedIds, final int maxResult) throws ParseException
+   public List<Object[]> getSearchResult(String searchText, SearchType searchType, LocaleId localeID, final int maxResult) throws ParseException
    {
       String queryText;
       switch (searchType)
@@ -159,7 +147,8 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       QueryParser parser = new QueryParser(Version.LUCENE_29, "content", new DefaultNgramAnalyzer());
       org.apache.lucene.search.Query textQuery = parser.parse(queryText);
       FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
-      ftQuery.enableFullTextFilter("textFlowFilter").setParameter("translatedIds", translatedIds);
+      ftQuery.enableFullTextFilter("textFlowFilter").setParameter("locale", localeID);
+
       ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
       @SuppressWarnings("unchecked")
       List<Object[]> matches = ftQuery.setMaxResults(maxResult).getResultList();
