@@ -30,6 +30,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -51,6 +53,7 @@ import org.zanata.hibernate.search.LocaleIdBridge;
  *
  **/
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
 @FullTextFilterDef(name = "glossaryFilter", impl = GlossaryFilterFactory.class, cache = FilterCacheModeType.INSTANCE_ONLY)
 public class HGlossaryTerm extends ModelEntityBase

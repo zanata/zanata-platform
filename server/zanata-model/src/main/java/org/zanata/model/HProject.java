@@ -33,6 +33,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.search.annotations.Field;
@@ -48,6 +50,7 @@ import org.zanata.rest.dto.Project;
  * 
  */
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "projecttype", discriminatorType = DiscriminatorType.STRING)
 @TypeDef(name = "entityStatus", typeClass = EntityStatusType.class)

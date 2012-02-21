@@ -31,6 +31,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.zanata.model.HSimpleComment;
@@ -43,6 +45,7 @@ import org.zanata.model.HTextFlow;
  * @see org.zanata.rest.dto.extensions.gettext.PotEntryHeader
  */
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @BatchSize(size = 20)
 public class HPotEntryData implements Serializable
 {

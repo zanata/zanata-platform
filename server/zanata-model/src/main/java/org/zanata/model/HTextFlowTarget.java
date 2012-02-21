@@ -33,6 +33,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -68,6 +70,7 @@ import org.zanata.hibernate.search.LocaleIdBridge;
                        "and tft.state = :state " +
                        "group by tft.textFlow.contentHash")
 })
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class HTextFlowTarget extends ModelEntityBase implements ITextFlowTargetHistory, HasSimpleComment
 {
 

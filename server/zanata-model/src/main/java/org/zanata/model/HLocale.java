@@ -31,6 +31,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -41,6 +43,7 @@ import org.zanata.model.type.LocaleIdType;
 import com.ibm.icu.util.ULocale;
 
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @TypeDef(name = "localeId", typeClass = LocaleIdType.class)
 public class HLocale extends ModelEntityBase implements Serializable
 {
@@ -87,6 +90,7 @@ public class HLocale extends ModelEntityBase implements Serializable
    
    @OneToMany(cascade=CascadeType.ALL)
    @JoinColumn(name = "supportedLanguageId")
+   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
    public Set<HLocaleMember> getMembers()
    {
       if( this.members == null )

@@ -22,6 +22,9 @@ package org.zanata.model.po;
 
 import javax.persistence.Entity;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 /**
  * 
  * @author sflaniga@redhat.com
@@ -29,6 +32,7 @@ import javax.persistence.Entity;
  * @see org.zanata.rest.dto.extensions.gettext.PoHeader
  */
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class HPoHeader extends PoHeaderBase
 {
 

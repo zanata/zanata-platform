@@ -27,6 +27,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.NotNull;
@@ -36,7 +38,8 @@ import org.hibernate.validator.NotNull;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
- @Entity
+@Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class HTermComment
 {
    private Long id;

@@ -36,6 +36,8 @@ import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.Where;
@@ -50,6 +52,7 @@ import org.zanata.rest.dto.ProjectIteration;
  * 
  */
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @TypeDef(name = "entityStatus", typeClass = EntityStatusType.class)
 @Restrict
 public class HProjectIteration extends SlugEntityBase

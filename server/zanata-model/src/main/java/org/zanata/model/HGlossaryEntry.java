@@ -30,6 +30,8 @@ import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
@@ -44,6 +46,7 @@ import org.zanata.hibernate.search.LocaleIdBridge;
  *
  **/
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
 public class HGlossaryEntry extends ModelEntityBase
 {

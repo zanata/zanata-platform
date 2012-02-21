@@ -42,6 +42,8 @@ import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -72,6 +74,7 @@ import org.zanata.util.OkapiUtil;
  * 
  */
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
 @FullTextFilterDef(name = "textFlowFilter", impl = TextFlowFilterFactory.class, cache = FilterCacheModeType.INSTANCE_AND_DOCIDSETRESULTS)
 @NamedQueries(@NamedQuery(
@@ -263,6 +266,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    @OneToMany(cascade = CascadeType.ALL, mappedBy = "textFlow")
    @MapKey(name = "locale")
    @BatchSize(size = 10)
+   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
    public Map<HLocale, HTextFlowTarget> getTargets()
    {
       if (targets == null)

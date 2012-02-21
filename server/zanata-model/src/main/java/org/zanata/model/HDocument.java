@@ -36,6 +36,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
@@ -66,6 +68,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  * 
  */
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @TypeDef(name = "contentType", typeClass = ContentTypeType.class)
 public class HDocument extends ModelEntityBase implements IDocumentHistory
 {

@@ -35,6 +35,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
@@ -53,6 +55,7 @@ import org.zanata.rest.dto.Account;
  * 
  */
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "username"))
 @Indexed
 public class HAccount extends ModelEntityBase implements Serializable
@@ -76,6 +79,7 @@ public class HAccount extends ModelEntityBase implements Serializable
    private HAccountResetPasswordKey accountResetPasswordKey;
 
 
+   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "account")
    public HAccountActivationKey getAccountActivationKey()
    {
@@ -87,6 +91,7 @@ public class HAccount extends ModelEntityBase implements Serializable
       this.accountActivationKey = accountActivationKey;
    }
 
+   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "account")
    public HAccountResetPasswordKey getAccountResetPasswordKey()
    {
@@ -98,6 +103,7 @@ public class HAccount extends ModelEntityBase implements Serializable
       this.accountResetPasswordKey = accountResetPasswordKey;
    }
 
+   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
    public HPerson getPerson()
    {
@@ -162,6 +168,7 @@ public class HAccount extends ModelEntityBase implements Serializable
       this.apiKey = key;
    }
 
+   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
    @UserRoles
    @ManyToMany(targetEntity = HAccountRole.class)
    @JoinTable(name = "HAccountMembership", joinColumns = @JoinColumn(name = "accountId"), inverseJoinColumns = @JoinColumn(name = "memberOf"))
