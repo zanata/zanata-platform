@@ -61,7 +61,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
@@ -95,6 +94,7 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.BaseSecurityChecker;
+import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 
 import com.google.common.collect.Sets;
@@ -169,14 +169,14 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
 
    @In
    private TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
+   
+   @In
+   private CopyTransService copyTransServiceImpl;
 
    private final Log log = Logging.getLog(TranslationResourcesService.class);
 
    @In
    private LocaleService localeServiceImpl;
-
-   @In("org.jboss.seam.core.events")
-   private Events events;
 
 
    public TranslationResourcesService()
@@ -199,7 +199,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       PersonDAO personDAO,
       TextFlowTargetHistoryDAO textFlowTargetHistoryDAO,
       LocaleService localeService,
-      Events events
+      CopyTransService copyTransService
    )
 // @formatter:on
    {
@@ -215,7 +215,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       this.personDAO = personDAO;
       this.textFlowTargetHistoryDAO = textFlowTargetHistoryDAO;
       this.localeServiceImpl = localeService;
-      this.events = events;
+      this.copyTransServiceImpl = copyTransService;
    }
 
    /**
@@ -340,7 +340,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       
       if (copytrans && nextDocRev == 1)
       {
-         copyClosestEquivalentTranslation(document.getId(), resource.getName(), projectSlug, iterationSlug);
+         copyClosestEquivalentTranslation(document);
       }
            
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, document.getDocId(), extensions);
@@ -528,7 +528,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
 
       if (copytrans && nextDocRev == 1)
       {
-         copyClosestEquivalentTranslation(document.getId(), resource.getName(), projectSlug, iterationSlug);
+         copyClosestEquivalentTranslation(document);
       }
       
       log.debug("put resource successfully");
@@ -1060,11 +1060,11 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    }
    
 
-   public void copyClosestEquivalentTranslation(Long docId, String name, String projectSlug, String iterationSlug)
+   public void copyClosestEquivalentTranslation(HDocument document)
    {
       if (applicationConfiguration.getEnableCopyTrans())
       {
-         events.raiseTransactionSuccessEvent(EVENT_COPY_TRANS, docId, projectSlug, iterationSlug);
+         copyTransServiceImpl.copyTransForDocument(document);
       }
    }
    
