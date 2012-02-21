@@ -25,7 +25,6 @@ import java.io.IOException;
 
 import org.zanata.adapter.properties.PropWriter;
 import org.zanata.client.config.LocaleMapping;
-import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
@@ -33,51 +32,23 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class PropertiesStrategy implements PullStrategy
+public class UTF8PropertiesStrategy extends PropertiesStrategy
 {
-   StringSet extensions = new StringSet("comment");
-   private PullOptions pullOptions;
 
-   public PropertiesStrategy()
+   public UTF8PropertiesStrategy()
    {
-   }
-
-   /**
-    * @return the opts
-    */
-   protected PullOptions getPullOptions()
-   {
-      return pullOptions;
-   }
-
-   @Override
-   public void setPullOptions(PullOptions opts)
-   {
-      this.pullOptions = opts;
-   }
-
-   @Override
-   public StringSet getExtensions()
-   {
-      return extensions;
-   }
-
-   @Override
-   public boolean needsDocToWriteTrans()
-   {
-      return false;
    }
 
    @Override
    public void writeSrcFile(Resource doc) throws IOException
    {
-      PropWriter.write(doc, getPullOptions().getSrcDir());
+      PropWriter.writeUTF8(doc, getPullOptions().getSrcDir());
    }
 
    @Override
    public void writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
    {
-      PropWriter.write(targetDoc, getPullOptions().getTransDir(), docName, localeMapping.getJavaLocale());
+      PropWriter.writeUTF8(targetDoc, getPullOptions().getTransDir(), docName, localeMapping.getJavaLocale());
    }
 
 }
