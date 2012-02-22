@@ -46,6 +46,7 @@ import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PushButton;
@@ -61,6 +62,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    public static final int TARGET_COL = 2;
 
    private final boolean isReadOnly;
+   private final TableResources images = GWT.create(TableResources.class);
 
    private String findMessage;
    private SourcePanel sourcePanel;
@@ -70,15 +72,13 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    
    private TransUnitDetailsPanel transUnitDetailsContent;
 
+
    private final RowRenderer<TransUnit> rowRenderer = new RowRenderer<TransUnit>()
    {
       @Override
       public void renderRowValue(TransUnit rowValue, AbstractRowView<TransUnit> view)
       {
          String styles = "TableEditorRow ";
-         styles += view.getRowIndex() % 2 == 0 ? "odd-row" : "even-row";
-
-
          String state = "";
          switch (rowValue.getStatus())
          {
@@ -123,10 +123,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       {
          view.setStyleName("TableEditorCell TableEditorCell-Source");
          VerticalPanel panel = new VerticalPanel();
-         panel.setSize("100%", "100%");
+         panel.addStyleName("TableEditorCell-Source-Table");
 
-         TableResources images = GWT.create(TableResources.class);
-         
          sourcePanel = new SourcePanel(rowValue, images, messages);
          
          if (findMessage != null && !findMessage.isEmpty())
@@ -185,14 +183,15 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       {
          view.setStyleName("TableEditorCell TableEditorCell-Target");
          final VerticalPanel targetPanel = new VerticalPanel();
+         targetPanel.addStyleName("TableEditorCell-Target-Table");
 
          final HighlightingLabel label = new HighlightingLabel();
 
-         // if editor is opening, do not render target cell, otherwise editor
-         // will be closed
-         // targetCellEditor.isEditing not suitable since when we click the save
-         // button, cellValue is not null.
-
+         /**
+          * if editor is opening, do not render target cell, otherwise editor
+          * will be closed. targetCellEditor.isEditing not suitable since when
+          * we click the save button, cellValue is not null.
+          **/
          if (targetCellEditor.isOpened() && targetCellEditor.getTargetCell().getId().equals(rowValue.getId()))
          {
             return;
@@ -249,7 +248,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       }
    };
 
-   private final TableResources images = GWT.create(TableResources.class);
+
 
    private final CellRenderer<TransUnit, TransUnit> operationsCellRenderer = new CellRenderer<TransUnit, TransUnit>()
    {
@@ -394,8 +393,12 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       VerticalPanel sourcePanel = sourcePanelMap.get(selectedTransUnit.getId());
       if (sourcePanel != null)
       {
+         FlowPanel wrapper = new FlowPanel();
+         wrapper.addStyleName("TransUnitDetail-Wrapper");
+
          transUnitDetailsContent.setDetails(selectedTransUnit);
-         sourcePanel.add(transUnitDetailsContent);
+         wrapper.add(transUnitDetailsContent);
+         sourcePanel.add(wrapper);
          sourcePanel.setCellVerticalAlignment(transUnitDetailsContent,HasVerticalAlignment.ALIGN_BOTTOM);
       }
    }

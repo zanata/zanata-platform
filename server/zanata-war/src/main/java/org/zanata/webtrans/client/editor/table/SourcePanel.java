@@ -31,21 +31,21 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 
 public class SourcePanel extends Composite implements HasValue<TransUnit>, HasClickHandlers
 {
 
-   private final HorizontalPanel panel;
+   private final FlowPanel panel;
    private final HighlightingLabel sourceLabel;
    private TransUnit value;
 
    public SourcePanel(TransUnit value, TableResources resources, NavigationMessages messages)
    {
       this.value = value;
-      panel = new HorizontalPanel();
+      panel = new FlowPanel();
       panel.setSize("100%", "100%");
 
       initWidget(panel);
