@@ -76,7 +76,7 @@ import org.zanata.util.OkapiUtil;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
-@FullTextFilterDef(name = "textFlowFilter", impl = TextFlowFilterFactory.class, cache = FilterCacheModeType.INSTANCE_AND_DOCIDSETRESULTS)
+@FullTextFilterDef(name = "textFlowFilter", impl = TextFlowFilterFactory.class, cache = FilterCacheModeType.INSTANCE_ONLY)
 @NamedQueries(@NamedQuery(
       name = "HTextFlow.findIdsWithTranslations",
       query = "SELECT tft.textFlow.id FROM HTextFlowTarget tft " +

@@ -83,7 +83,7 @@
       <property name="net.sf.ehcache.configurationResourceName" value="/META-INF/ehcache.xml"/>
       -->
       <property name="hibernate.cache.use_second_level_cache" value="true"/>
-      <property name="hibernate.cache.use_query_cache" value="false"/>
+      <property name="hibernate.cache.use_query_cache" value="true"/>
       <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JBossTransactionManagerLookup"/>
       
     </properties>

@@ -29,6 +29,7 @@ import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.util.OpenBitSet;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.jboss.seam.Component;
 import org.jboss.seam.log.Log;
@@ -64,7 +65,9 @@ public class TextFlowFilter extends Filter
       Session session = (Session) Component.getInstance("session");
       // TODO move DAOs into zanata-model, and use TextFlowDAO.findIdsWithTranslations(LocaleId)
       log.info("getDocIdSet for locale {0}", locale);
-      List<Long> ids = session.getNamedQuery("HTextFlow.findIdsWithTranslations").setParameter("locale", locale).list();
+      Query q = session.getNamedQuery("HTextFlow.findIdsWithTranslations");
+      q.setCacheable(true).setParameter("locale", locale);
+      List<Long> ids = q.list();
       for (Long id : ids)
       {
          Term term = new Term("id", id.toString());

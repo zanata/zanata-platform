@@ -66,6 +66,7 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
 
    public HGlossaryEntry getEntryById(Long id)
    {
+      // TODO can't we just use Session.load() ?
       return (HGlossaryEntry) getSession().createCriteria(HGlossaryEntry.class).add(Restrictions.naturalId().set("id", id)).setCacheable(true).setComment("GlossaryDAO.getEntryById").uniqueResult();
    }
 

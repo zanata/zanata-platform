@@ -100,7 +100,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    public List<Long> findIdsWithTranslations(LocaleId locale)
    {
       Query q = getSession().getNamedQuery("HTextFlow.findIdsWithTranslations");
-      q.setParameter("locale", locale);
+      q.setCacheable(true).setParameter("locale", locale);
       return q.list();
    }
 
