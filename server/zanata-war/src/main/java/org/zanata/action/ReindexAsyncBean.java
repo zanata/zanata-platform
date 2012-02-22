@@ -130,6 +130,11 @@ public class ReindexAsyncBean
       try
       {
          session.purgeAll(clazz);
+
+         // TODO try this, see how it affects reindexing time:
+         //session.flushToIndexes();
+         //session.getSearchFactory().optimize(clazz);
+
          session.setFlushMode(FlushMode.MANUAL);
          session.setCacheMode(CacheMode.IGNORE);
 
@@ -148,6 +153,8 @@ public class ReindexAsyncBean
             }
          }
          session.flushToIndexes(); // apply changes to indexes
+         // TODO try this too, see how it affects reindexing time:
+         //session.getSearchFactory().optimize(clazz);
          session.clear(); // clear since the queue is processed
       }
       catch (Exception e)
