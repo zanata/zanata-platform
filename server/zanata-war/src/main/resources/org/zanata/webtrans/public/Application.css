@@ -221,11 +221,6 @@ Removes some of the styling on the page-level splitters
 	vertical-align: top;
 }
 
-.TableEditor tr td.TableEditorCell-Middle {
-	vertical-align: middle;
-	width: 16px;
-}
-
 .TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Source {
 	border-right: none;
 	border-left: 3px solid #cccccc;
@@ -305,12 +300,34 @@ td.TableEditorCell {
 }
 
 td.TableEditorCell-Source {
-	
+	vertical-align: top;
+	word-break:break-all;
+}
+
+td.TableEditorCell-Middle {
+	vertical-align: top;
+	width: 16px;
 }
 
 td.TableEditorCell-Target {
-	/*TODO: put this back on when middle colmun is removed.
-/*     padding-left:20px; */
+	vertical-align: top;
+	word-break:break-all;
+}
+
+.TableEditorCell-Source-Table{
+	overflow:auto;
+	display:block;
+	width:100%;
+	height:100%;
+}
+
+.TableEditorCell-Target-Table{
+	overflow:auto;
+	display:block;
+}
+
+.TransUnitDetail-Wrapper {
+	width:450px;
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell {
@@ -343,14 +360,6 @@ tr.TableEditorRow .gwt-Button-display-onhover {
 
 tr.TableEditorRow.highlighted td.TableEditorCell-Target {
 	cursor: hand;
-}
-
-tr.TableEditorRow.even-row {
-	background-color: #ffffff;
-}
-
-tr.TableEditorRow.odd-row {
-	background-color: #ffffff;
 }
 
 tr.TableEditorRow.content-filter {
@@ -388,11 +397,7 @@ tr.TableEditorRow.selected td.TableEditorCell-Target {
     font-size: 14px;
     font-family: sans-serif;
 	padding: 0px;
-/*    word-wrap: break-word; */
-/*    white-space: pre-wrap; */
 	margin: 0px;
-	width: 98%;
-	/*border: none; might make the text area look less cramped */
 }
 
 .TableEditorContent pre, .TableEditorContent-Empty pre {
@@ -413,6 +418,7 @@ tr.TableEditorRow.selected td.TableEditorCell-Target {
 .TableEditorContent-Edit {
 	border-top: 1px solid #BFBFBF;
 	border-bottom: 1px solid #BFBFBF;
+	width:98%;
 }
 
 tr.FuzzyStateDecoration td.TableEditorCell-Target .TableEditorContent{

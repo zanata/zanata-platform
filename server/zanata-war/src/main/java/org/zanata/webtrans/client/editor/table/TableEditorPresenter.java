@@ -878,7 +878,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          {
             display.gotoPage(pageNum, false);
          }
-
          selectTransUnit(display.getTransUnitValue(rowNum));
          display.gotoRow(rowNum, andEdit);
 
