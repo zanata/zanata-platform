@@ -737,7 +737,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    public void autoSize()
    {
-      Log.debug("autoSize");
       shrinkSize(true);
       growSize();
    }

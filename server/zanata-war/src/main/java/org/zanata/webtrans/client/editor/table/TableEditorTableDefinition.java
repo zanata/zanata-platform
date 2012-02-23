@@ -40,6 +40,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.gen2.logging.shared.Log;
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
@@ -295,6 +296,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       setRowRenderer(rowRenderer);
       sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
 
+      // min-width of 46px is reserved by system for each column.
       operationsColumnDefinition.setMaximumColumnWidth(1);
       operationsColumnDefinition.setCellRenderer(operationsCellRenderer);
 
