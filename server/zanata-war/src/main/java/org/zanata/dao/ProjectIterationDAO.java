@@ -26,6 +26,8 @@ import java.util.Map;
 
 import javax.ws.rs.core.EntityTag;
 
+import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
@@ -61,14 +63,20 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
 
    public HProjectIteration getBySlug(String projectSlug, String iterationSlug)
    {
-      HIterationProject project = (HIterationProject) getSession().createCriteria(HProject.class).add(Restrictions.naturalId().set("slug", projectSlug)).setCacheable(true).uniqueResult();
+      Criteria crit = getSession().createCriteria(HProject.class);
+      crit.add(Restrictions.naturalId().set("slug", projectSlug));
+      crit.setCacheable(true).setComment("ProjectIterationDAO.getBySlugs");
+      HIterationProject project = (HIterationProject) crit.uniqueResult();
 
       return getBySlug(project, iterationSlug);
    }
 
    public HProjectIteration getBySlug(HIterationProject project, String iterationSlug)
    {
-      return (HProjectIteration) getSession().createCriteria(HProjectIteration.class).add(Restrictions.naturalId().set("project", project).set("slug", iterationSlug)).setCacheable(true).uniqueResult();
+      Criteria crit = getSession().createCriteria(HProjectIteration.class);
+      crit.add(Restrictions.naturalId().set("project", project).set("slug", iterationSlug));
+      crit.setCacheable(true).setComment("ProjectIterationDAO.getBySlug");
+      return (HProjectIteration) crit.uniqueResult();
    }
 
    /**
@@ -82,18 +90,18 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
 
       @SuppressWarnings("unchecked")
       // @formatter:off
-      List<StatusCount> stats = getSession().createQuery("select new org.zanata.model.StatusCount(tft.state, count(tft)) " +
+      Query q = getSession().createQuery("select new org.zanata.model.StatusCount(tft.state, count(tft)) " +
          "from HTextFlowTarget tft " + 
          "where tft.textFlow.document.projectIteration.id = :id " + 
          "  and tft.locale.localeId = :locale" +
          " and tft.textFlow.obsolete = false" + 
          " and tft.textFlow.document.obsolete = false" + 
-         " group by tft.state")
-         .setParameter("id", iterationId)
-         .setParameter("locale", localeId)
-         .setCacheable(true).list();
-
+         " group by tft.state");
       // @formatter:on
+      q.setParameter("id", iterationId)
+            .setParameter("locale", localeId);
+      q.setCacheable(true).setComment("ProjectIterationDAO.getStatisticsForContainer");
+      List<StatusCount> stats = q.list();
 
       TransUnitCount stat = new TransUnitCount();
 
@@ -120,18 +128,19 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
 
       @SuppressWarnings("unchecked")
       // @formatter:off
-      List<StatusCount> stats = getSession().createQuery("select new org.zanata.model.StatusCount(tft.state, sum(tft.textFlow.wordCount)) " +
+      Query q = getSession().createQuery("select new org.zanata.model.StatusCount(tft.state, sum(tft.textFlow.wordCount)) " +
          "from HTextFlowTarget tft " + 
          "where tft.textFlow.document.projectIteration.id = :id " + 
          "  and tft.locale.localeId = :locale" +
          " and tft.textFlow.obsolete = false" + 
          " and tft.textFlow.document.obsolete = false" + 
-         " group by tft.state")
-         .setParameter("id", iterationId)
-         .setParameter("locale", localeId)
-         .setCacheable(true).list();
+         " group by tft.state");
+         // @formatter:on
+      q.setParameter("id", iterationId)
+            .setParameter("locale", localeId);
+      q.setCacheable(true).setComment("ProjectIterationDAO.getWordStatsForContainer");
+      List<StatusCount> stats = q.list();
 
-      // @formatter:on
 
       TransUnitWords stat = new TransUnitWords();
 
@@ -151,13 +160,14 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
    {
       @SuppressWarnings("unchecked")
       // @formatter:off
-      List<Integer> revisions = getSession().createQuery(
+      Query q = getSession().createQuery(
          "select d.revision from HDocument d " +
          "where d.projectIteration =:iteration " + 
          "and d.obsolete = false")
-            .setParameter("iteration", projectIteration)
-            .list();
+            .setParameter("iteration", projectIteration);
       // @formatter:on
+      q.setCacheable(true).setComment("ProjectIterationDAO.getResourcesETag");
+      List<Integer> revisions = q.list();
 
       int hashCode = 1;
       for (int revision : revisions)
@@ -178,11 +188,14 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
    public Map<String, TransUnitWords> getAllWordStatsStatistics(Long iterationId)
    {
       // @formatter:off
-      @SuppressWarnings("unchecked")
-      List< Object[]> stats = getSession().createQuery("select tft.state, sum(tft.textFlow.wordCount), tft.locale.localeId " +
+      Query q = getSession().createQuery("select tft.state, sum(tft.textFlow.wordCount), tft.locale.localeId " +
       		"from HTextFlowTarget tft where tft.textFlow.document.projectIteration.id = :id  and tft.textFlow.obsolete = false" +
-      		" and tft.textFlow.document.obsolete = false group by tft.state, tft.locale.localeId").setParameter("id", iterationId).setCacheable(true).list();
+      		" and tft.textFlow.document.obsolete = false group by tft.state, tft.locale.localeId");
       // @formatter:on
+      q.setParameter("id", iterationId);
+      q.setCacheable(true).setComment("ProjectIterationDAO.getAllWordStatsStatistics");
+      @SuppressWarnings("unchecked")
+      List<Object[]> stats = q.list();
 
       Map<String, TransUnitWords> result = new HashMap<String, TransUnitWords>();
 
@@ -216,14 +229,15 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
    public Long getTotalCountForIteration(Long iterationId)
    {
       // @formatter:off
-      Long totalCount = (Long) getSession().createQuery(
+      Query q = getSession().createQuery(
             "select sum(tf.wordCount) from HTextFlow tf " +
             "where tf.document.projectIteration.id = :id" +
             " and tf.obsolete = false" +
-            " and tf.document.obsolete = false")
-               .setParameter("id", iterationId)
-               .setCacheable(true).uniqueResult();
+            " and tf.document.obsolete = false");
       // @formatter:on
+      q.setParameter("id", iterationId);
+      q.setCacheable(true).setComment("ProjectIterationDAO.getTotalCountForIteration");
+      Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
       {
          totalCount = 0L;
@@ -234,7 +248,9 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
    public int getTotalProjectIterCount()
    {
       String query = "select count(*) from HProjectIteration";
-      Long totalCount = (Long) getSession().createQuery(query.toString()).uniqueResult();
+      Query q = getSession().createQuery(query.toString());
+      q.setCacheable(true).setComment("ProjectIterationDAO.getTotalProjectIterCount");
+      Long totalCount = (Long) q.uniqueResult();
 
       if (totalCount == null)
          return 0;
@@ -243,7 +259,10 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
 
    public int getTotalActiveProjectIterCount()
    {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HProjectIteration t where t.status = :status").setParameter("status", EntityStatus.ACTIVE).uniqueResult();
+      Query q = getSession().createQuery("select count(*) from HProjectIteration t where t.status = :status");
+      q.setParameter("status", EntityStatus.ACTIVE);
+      q.setCacheable(true).setComment("ProjectIterationDAO.getTotalActiveProjectIterCount");
+      Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -251,7 +270,10 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
 
    public int getTotalReadOnlyProjectIterCount()
    {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HProjectIteration t where t.status = :status").setParameter("status", EntityStatus.READONLY).uniqueResult();
+      Query q = getSession().createQuery("select count(*) from HProjectIteration t where t.status = :status");
+      q.setParameter("status", EntityStatus.READONLY);
+      q.setCacheable(true).setComment("ProjectIterationDAO.getTotalReadOnlyProjectIterCount");
+      Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -259,7 +281,10 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
 
    public int getTotalObsoleteProjectIterCount()
    {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HProjectIteration t where t.status = :status").setParameter("status", EntityStatus.OBSOLETE).uniqueResult();
+      Query q = getSession().createQuery("select count(*) from HProjectIteration t where t.status = :status");
+      q.setParameter("status", EntityStatus.OBSOLETE);
+      q.setCacheable(true).setComment("ProjectIterationDAO.getTotalObsoleteProjectIterCount");
+      Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();

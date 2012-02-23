@@ -63,7 +63,8 @@ public class TextFlowFilter extends TimeCachedFilter
       // TODO move DAOs into zanata-model, and use TextFlowDAO.findIdsWithTranslations(LocaleId)
       log.debug("fetching DocIdSet for locale {0}", locale);
       Query q = session.getNamedQuery("HTextFlow.findIdsWithTranslations");
-      q.setCacheable(true).setParameter("locale", locale);
+      // we do our own caching, no need for double caching
+      q.setCacheable(false).setParameter("locale", locale);
       List<Long> ids = q.list();
       for (Long id : ids)
       {

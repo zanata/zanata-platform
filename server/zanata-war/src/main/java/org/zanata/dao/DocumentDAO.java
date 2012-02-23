@@ -1,10 +1,11 @@
 package org.zanata.dao;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
@@ -39,25 +40,31 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
 
    public HDocument getByDocId(HProjectIteration iteration, String id)
    {
-      return (HDocument) getSession().createCriteria(HDocument.class).add(Restrictions.naturalId().set("docId", id).set("projectIteration", iteration)).setCacheable(true).setComment("DocumentDAO.getById").uniqueResult();
+      Criteria cr = getSession().createCriteria(HDocument.class);
+      cr.add(Restrictions.naturalId().set("docId", id).set("projectIteration", iteration));
+      cr.setCacheable(true).setComment("DocumentDAO.getById");
+      return (HDocument) cr.uniqueResult();
    }
 
    public Set<LocaleId> getTargetLocales(HDocument hDoc)
    {
       @SuppressWarnings("unchecked")
       // @formatter:off
-      List<LocaleId> locales = getSession().createQuery(
-         "select tft.locale from HTextFlowTarget tft " +
-         "where tft.textFlow.document = :document")
-            .setParameter("document", hDoc)
-            .list();
+      // TODO should this use UNIQUE?
+      Query q = getSession().createQuery(
+            "select tft.locale from HTextFlowTarget tft " +
+            "where tft.textFlow.document = :document");
+      q.setParameter("document", hDoc);
+      List<LocaleId> locales = q.list();
       // @formatter:on
       return new HashSet<LocaleId>(locales);
    }
 
    public int getTotalDocument()
    {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HDocument").uniqueResult();
+      Query q = getSession().createQuery("select count(*) from HDocument");
+      q.setCacheable(true);
+      Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -65,7 +72,9 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
 
    public int getTotalActiveDocument()
    {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HDocument doc where doc.obsolete = false").uniqueResult();
+      Query q = getSession().createQuery("select count(*) from HDocument doc where doc.obsolete = false");
+      q.setCacheable(true);
+      Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -73,7 +82,9 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
 
    public int getTotalObsoleteDocument()
    {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HDocument doc where doc.obsolete = true").uniqueResult();
+      Query q = getSession().createQuery("select count(*) from HDocument doc where doc.obsolete = true");
+      q.setCacheable(true);
+      Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -126,11 +137,13 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
          "group by tft.state")
             .setParameter("id", docId)
             .setParameter("locale", localeId)
+            .setCacheable(true)
             .list();
       Long totalWordCount = (Long) session.createQuery(
          "select sum(tf.wordCount) from HTextFlow tf " +
          "where tf.document.id = :id and tf.obsolete = false")
             .setParameter("id", docId)
+            .setCacheable(true)
             .uniqueResult();
       if (totalWordCount == null)
          totalWordCount = 0L;
@@ -166,33 +179,30 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
    public HDocument getByProjectIterationAndDocId(final String projectSlug, final String iterationSlug, final String docId)
    {
       Session session = getSession();
-      
-      final HDocument doc = (HDocument)
-         session.createQuery("from HDocument d where d.projectIteration.slug = :iterationSlug " +
-               "and d.projectIteration.project.slug = :projectSlug " +
-               "and d.docId = :docId " +
-               "and d.obsolete = false")
-               .setParameter("iterationSlug", iterationSlug)
-               .setParameter("projectSlug", projectSlug)
-               .setParameter("docId", docId)
-               .uniqueResult();
+      Query q = session.createQuery("from HDocument d where d.projectIteration.slug = :iterationSlug " +
+            "and d.projectIteration.project.slug = :projectSlug " +
+            "and d.docId = :docId " +
+            "and d.obsolete = false");
+      q.setParameter("iterationSlug", iterationSlug)
+            .setParameter("projectSlug", projectSlug)
+            .setParameter("docId", docId);
+      q.setCacheable(true);
+      final HDocument doc = (HDocument) q.uniqueResult();
       return doc;
    }
    
    public List<HDocument> getAllByProjectIteration(final String projectSlug, final String iterationSlug)
    {
       Session session = getSession();
-      
+      Query q = session.createQuery("from HDocument d " +
+            "where d.projectIteration.slug = :iterationSlug " +
+            "and d.projectIteration.project.slug = :projectSlug " +
+            "and d.obsolete = false " +
+            "order by d.name");
+      q.setParameter("iterationSlug", iterationSlug)
+            .setParameter("projectSlug", projectSlug);
       @SuppressWarnings("unchecked")
-      final List<HDocument> documents =
-         session.createQuery("from HDocument d " +
-         		"where d.projectIteration.slug = :iterationSlug " +
-         		"and d.projectIteration.project.slug = :projectSlug " +
-         		"and d.obsolete = false " +
-         		"order by d.name")
-         		.setParameter("iterationSlug", iterationSlug)
-         		.setParameter("projectSlug", projectSlug)
-         		.list();
+      final List<HDocument> documents = q.list();
       return documents;
    }
 

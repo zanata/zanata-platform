@@ -23,6 +23,7 @@ package org.zanata.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -30,7 +31,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.common.EntityStatus;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
@@ -53,7 +53,11 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
 
    public HPerson findByEmail(String email)
    {
-      return (HPerson) getSession().createCriteria(HPerson.class).add(Restrictions.naturalId().set("email", email)).setCacheable(true).setComment("PersonDAO.findByEmail").uniqueResult();
+      Criteria cr = getSession().createCriteria(HPerson.class);
+      cr.add(Restrictions.naturalId().set("email", email));
+      cr.setCacheable(true);
+      cr.setComment("PersonDAO.findByEmail");
+      return (HPerson) cr.uniqueResult();
    }
 
    @SuppressWarnings("unchecked")
@@ -61,6 +65,8 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
    {
       Query query = getSession().createQuery("select m.id.supportedLanguage from HLocaleMember as m where m.id.person.account.username = :username");
       query.setParameter("username", userName);
+      query.setCacheable(true);
+      query.setComment("PersonDAO.getLanguageMembershipByUsername");
       List<HLocale> re = new ArrayList<HLocale>();
       List<HLocale> su = query.list();
       for (HLocale lan : su)
@@ -78,6 +84,8 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
    {
       Query query = getSession().createQuery("select p.maintainerProjects from HPerson as p where p.account.username = :username");
       query.setParameter("username", userName);
+      query.setCacheable(true);
+      query.setComment("PersonDAO.getMaintainerProjectByUsername");
       return query.list();
    }
 
@@ -85,6 +93,8 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
    {
       Query query = getSession().createQuery("from HPerson as p where p.account.username = :username");
       query.setParameter("username", username);
+      query.setCacheable(true);
+      query.setComment("PersonDAO.findByUsername");
       return (HPerson) query.uniqueResult();
    }
    
@@ -93,12 +103,16 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
    {
       Query query = getSession().createQuery("from HPerson as p where p.account.username like :name or p.name like :name");
       query.setParameter("name", "%" + name + "%");
+      query.setCacheable(true);
+      query.setComment("PersonDAO.findAllContainingName");
       return query.list();
    }
 
    public int getTotalTranslator()
    {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HPerson").uniqueResult();
+      Query q = getSession().createQuery("select count(*) from HPerson");
+      Long totalCount = (Long) q.uniqueResult();
+      q.setCacheable(true).setComment("PersonDAO.getTotalTranslator");
       if (totalCount == null)
          return 0;
       return totalCount.intValue();

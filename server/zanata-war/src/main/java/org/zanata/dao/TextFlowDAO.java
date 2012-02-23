@@ -75,7 +75,10 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 
    public HTextFlow getById(HDocument document, String id)
    {
-      return (HTextFlow) getSession().createCriteria(HTextFlow.class).add(Restrictions.naturalId().set("resId", id).set("document", document)).setCacheable(true).setComment("TextFlowDAO.getById").uniqueResult();
+      Criteria cr = getSession().createCriteria(HTextFlow.class);
+      cr.add(Restrictions.naturalId().set("resId", id).set("document", document));
+      cr.setCacheable(true).setComment("TextFlowDAO.getById");
+      return (HTextFlow) cr.uniqueResult();
    }
 
    @SuppressWarnings("unchecked")
@@ -87,27 +90,35 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       }
       Query query = getSession().createQuery("FROM HTextFlow WHERE id in (:idList)");
       query.setParameterList("idList", idList);
-      query.setComment("TextFlowDAO.getByIdList");
+      // caching could be expensive for long idLists
+      query.setCacheable(false).setComment("TextFlowDAO.getByIdList");
       return query.list();
    }
 
    public HTextFlow getObsoleteById(HDocument document, String id)
    {
-      return (HTextFlow) getSession().createCriteria(HTextFlow.class).add(Restrictions.naturalId().set("resId", id).set("document", document)).add(Restrictions.eq("obsolete", true)).setCacheable(true).setComment("TextFlowDAO.getObsoleteById").uniqueResult();
+      Criteria cr = getSession().createCriteria(HTextFlow.class);
+      cr.add(Restrictions.naturalId().set("resId", id).set("document", document)).add(Restrictions.eq("obsolete", true));
+      cr.setCacheable(true).setComment("TextFlowDAO.getObsoleteById");
+      return (HTextFlow) cr.uniqueResult();
    }
 
    @SuppressWarnings("unchecked")
    public List<Long> findIdsWithTranslations(LocaleId locale)
    {
       Query q = getSession().getNamedQuery("HTextFlow.findIdsWithTranslations");
-      q.setCacheable(true).setParameter("locale", locale);
+      q.setParameter("locale", locale);
+      // TextFlowFilter does its own caching, no need for double caching
+      q.setCacheable(false).setComment("TextFlowDAO.findIdsWithTranslations");
       return q.list();
    }
 
    @SuppressWarnings("unchecked")
    public List<HTextFlow> getNavigationByDocumentId(Long documentId, int offset, boolean reverse)
    {
-      Criteria c = getSession().createCriteria(HTextFlow.class).add(Restrictions.eq("document.id", documentId)).add(Restrictions.eq("obsolete", false)).setComment("TextFlowDAO.getNavigationByDocumentId");
+      Criteria c = getSession().createCriteria(HTextFlow.class);
+      c.add(Restrictions.eq("document.id", documentId)).add(Restrictions.eq("obsolete", false));
+      c.setCacheable(true).setComment("TextFlowDAO.getNavigationByDocumentId");
 
       if (reverse)
       {
@@ -155,27 +166,11 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       return matches;
    }
 
-   @SuppressWarnings("unchecked")
-   public List<HTextFlow> findEquivalents(HTextFlow textFlow)
-   {
-      // @formatter:off
-      return getSession().createQuery(
-         "select tf from HTextFlow tf " +
-         "where tf.resId = :resid " +
-         "and tf.document.docId = :docId " +
-         "and tf.document.projectIteration.project = :project " +
-         "and tf.document.projectIteration != :iteration ")
-            .setParameter("docId", textFlow.getDocument().getDocId())
-            .setParameter("project", textFlow.getDocument().getProjectIteration().getProject())
-            .setParameter("iteration", textFlow.getDocument().getProjectIteration())
-            .setParameter("resid", textFlow.getResId())
-            .list();
-      // @formatter:on
-   }
-
    public int getTotalWords()
    {
-      Long totalCount = (Long) getSession().createQuery("select sum(tf.wordCount) from HTextFlow tf where tf.obsolete=0").uniqueResult();
+      Query q = getSession().createQuery("select sum(tf.wordCount) from HTextFlow tf where tf.obsolete=0");
+      q.setCacheable(true).setComment("TextFlowDAO.getTotalWords");
+      Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -183,7 +178,9 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 
    public int getTotalTextFlows()
    {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlow").uniqueResult();
+      Query q = getSession().createQuery("select count(*) from HTextFlow");
+      q.setCacheable(true).setComment("TextFlowDAO.getTotalTextFlows");
+      Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -191,7 +188,9 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 
    public int getTotalActiveTextFlows()
    {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlow tf where tf.obsolete=0").uniqueResult();
+      Query q = getSession().createQuery("select count(*) from HTextFlow tf where tf.obsolete=0");
+      q.setCacheable(true).setComment("TextFlowDAO.getTotalActiveTextFlows");
+      Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -199,7 +198,9 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 
    public int getTotalObsoleteTextFlows()
    {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlow tf where tf.obsolete=1").uniqueResult();
+      Query q = getSession().createQuery("select count(*) from HTextFlow tf where tf.obsolete=1");
+      q.setCacheable(true).setComment("TextFlowDAO.getTotalObsoleteTextFlows");
+      Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -207,7 +208,10 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 
    public int getCountByDocument(Long documentId)
    {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos").setParameter("id", documentId).uniqueResult();
+      Query q = getSession().createQuery("select count(*) from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos");
+      q.setParameter("id", documentId);
+      q.setCacheable(true).setComment("TextFlowDAO.getCountByDocument");
+      Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -216,15 +220,20 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    @SuppressWarnings("unchecked")
    public List<HTextFlow> getTransUnitList(Long documentId, int offset, int count)
    {
-      Query query = getSession().createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos").setParameter("id", documentId);
-      return query.setFirstResult(offset).setMaxResults(count).list();
+      Query q = getSession().createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos");
+      q.setParameter("id", documentId);
+      q.setFirstResult(offset).setMaxResults(count);
+      q.setCacheable(true).setComment("TextFlowDAO.getTransUnitList");
+      return q.list();
    }
 
    @SuppressWarnings("unchecked")
    public List<HTextFlow> getTransUnitList(Long documentId)
    {
-      Query query = getSession().createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos").setParameter("id", documentId);
-      return query.list();
+      Query q = getSession().createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos");
+      q.setParameter("id", documentId);
+      q.setCacheable(true).setComment("TextFlowDAO.getTransUnitList");
+      return q.list();
    }
 
    // TODO: use hibernate search
@@ -234,15 +243,18 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       Query textFlowQuery;
       Query textFlowTargetQuery;
       Set<Object[]> idSet;
+      // TODO look at using Hibernate Search, because this is *expensive*
       if (reverse)
       {
          textFlowQuery = getSession().createQuery("select tf.id, tf.pos from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id and lower(tf.content) like :content and tf.pos < :offset  order by tf.pos desc");
          textFlowQuery.setParameter("id", documentId);
          textFlowQuery.setParameter("content", "%" + search + "%");
+         textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getNavigationByTF-fwd");
          textFlowTargetQuery = getSession().createQuery("select tft.textFlow.id, tft.textFlow.pos from HTextFlowTarget tft where tft.textFlow.obsolete=0 and tft.textFlow.document.id = :id and lower(tft.content) like :content and tft.locale.localeId = :localeId and tft.textFlow.pos < :offset order by tft.textFlow.pos desc");
          textFlowTargetQuery.setParameter("id", documentId);
          textFlowTargetQuery.setParameter("content", "%" + search + "%");
          textFlowTargetQuery.setParameter("localeId", localeId);
+         textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getNavigationByTFT-fwd");
          idSet = new TreeSet<Object[]>(new Comparator<Object[]>()
          {
             @Override
@@ -257,10 +269,12 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
          textFlowQuery = getSession().createQuery("select tf.id, tf.pos from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id and lower(tf.content) like :content and tf.pos > :offset  order by tf.pos");
          textFlowQuery.setParameter("id", documentId);
          textFlowQuery.setParameter("content", "%" + search + "%");
+         textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getNavigationByTF-rev");
          textFlowTargetQuery = getSession().createQuery("select tft.textFlow.id, tft.textFlow.pos from HTextFlowTarget tft where tft.textFlow.obsolete=0 and tft.textFlow.document.id = :id and lower(tft.content) like :content and tft.locale.localeId = :localeId and tft.textFlow.pos > :offset order by tft.textFlow.pos");
          textFlowTargetQuery.setParameter("id", documentId);
          textFlowTargetQuery.setParameter("content", "%" + search + "%");
          textFlowTargetQuery.setParameter("localeId", localeId);
+         textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getNavigationByTFT-rev");
          idSet = new TreeSet<Object[]>(new Comparator<Object[]>()
          {
             @Override

@@ -2,6 +2,8 @@ package org.zanata.dao;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
@@ -40,12 +42,17 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
     */
    public HTextFlowTarget getByNaturalId(HTextFlow textFlow, HLocale locale)
    {
-      return (HTextFlowTarget) getSession().createCriteria(HTextFlowTarget.class).add(Restrictions.naturalId().set("textFlow", textFlow).set("locale", locale)).setCacheable(true).setComment("TextFlowTargetDAO.getByNaturalId").uniqueResult();
+      Criteria cr = getSession().createCriteria(HTextFlowTarget.class);
+      cr.add(Restrictions.naturalId().set("textFlow", textFlow).set("locale", locale));
+      cr.setCacheable(true).setComment("TextFlowTargetDAO.getByNaturalId");
+      return (HTextFlowTarget) cr.uniqueResult();
    }
 
    public int getTotalTextFlowTargets()
    {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlowTarget").uniqueResult();
+      Query q = getSession().createQuery("select count(*) from HTextFlowTarget");
+      q.setCacheable(true);
+      Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -53,7 +60,9 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
 
    public int getTotalActiveTextFlowTargets()
    {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlowTarget t where t.textFlow.obsolete=0").uniqueResult();
+      Query q = getSession().createQuery("select count(*) from HTextFlowTarget t where t.textFlow.obsolete=0");
+      q.setCacheable(true);
+      Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -61,7 +70,9 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
 
    public int getTotalObsoleteTextFlowTargets()
    {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlowTarget t where t.textFlow.obsolete=1").uniqueResult();
+      Query q = getSession().createQuery("select count(*) from HTextFlowTarget t where t.textFlow.obsolete=1");
+      q.setCacheable(true);
+      Long totalCount = (Long) q.uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -69,7 +80,9 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
 
    public int getTotalApprovedTextFlowTargets()
    {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0").setParameter("state", ContentState.Approved).uniqueResult();
+      Query q = getSession().createQuery("select count(*) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0");
+      q.setCacheable(true);
+      Long totalCount = (Long) q.setParameter("state", ContentState.Approved).uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -77,7 +90,9 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
 
    public int getTotalNeedReviewTextFlowTargets()
    {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0").setParameter("state", ContentState.NeedReview).uniqueResult();
+      Query q = getSession().createQuery("select count(*) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0");
+      q.setCacheable(true);
+      Long totalCount = (Long) q.setParameter("state", ContentState.NeedReview).uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -85,7 +100,9 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
 
    public int getTotalNewTextFlowTargets()
    {
-      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0").setParameter("state", ContentState.New).uniqueResult();
+      Query q = getSession().createQuery("select count(*) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0");
+      q.setCacheable(true);
+      Long totalCount = (Long) q.setParameter("state", ContentState.New).uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -93,7 +110,9 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
 
    public int getTotalApprovedWords()
    {
-      Long totalCount = (Long) getSession().createQuery("select sum(t.textFlow.wordCount) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0").setParameter("state", ContentState.Approved).uniqueResult();
+      Query q = getSession().createQuery("select sum(t.textFlow.wordCount) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0");
+      q.setCacheable(true);
+      Long totalCount = (Long) q.setParameter("state", ContentState.Approved).uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -101,7 +120,9 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
 
    public int getTotalNeedReviewWords()
    {
-      Long totalCount = (Long) getSession().createQuery("select sum(t.textFlow.wordCount) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0").setParameter("state", ContentState.NeedReview).uniqueResult();
+      Query q = getSession().createQuery("select sum(t.textFlow.wordCount) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0");
+      q.setCacheable(true);
+      Long totalCount = (Long) q.setParameter("state", ContentState.NeedReview).uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -111,16 +132,17 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
    public List<HTextFlowTarget> findAllTranslations(HDocument document, LocaleId localeId)
    {
       // @formatter:off
-      return getSession().createQuery(
-         "select t from HTextFlowTarget t where " + 
-         "t.textFlow.document =:document " +
-         "and t.locale.localeId =:localeId " + 
-         "and t.state !=:state " + 
-         "order by t.textFlow.pos")
-            .setParameter("document", document)
-            .setParameter("localeId", localeId)
-            .setParameter("state", ContentState.New)
-            .list();
+      Query q = getSession().createQuery(
+            "select t from HTextFlowTarget t where " + 
+            "t.textFlow.document =:document " +
+            "and t.locale.localeId =:localeId " + 
+            "and t.state !=:state " + 
+            "order by t.textFlow.pos");
+      q.setParameter("document", document);
+      q.setParameter("localeId", localeId);
+      q.setParameter("state", ContentState.New);
+      q.setCacheable(true);
+      return q.list();
       // @formatter:on
    }
 
@@ -128,18 +150,19 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
    public List<HTextFlowTarget> findTranslations(HDocument document, HLocale locale)
    {
       // @formatter:off
-      return getSession().createQuery(
-         "select t " +
-         "from HTextFlowTarget t where " + 
-         "t.textFlow.document =:document " +
-         "and t.locale =:locale " + 
-         "and t.state !=:state " +
-         "and t.textFlow.obsolete=false " + 
-         "order by t.textFlow.pos")
-            .setParameter("document", document)
-            .setParameter("locale", locale)
-            .setParameter("state", ContentState.New)
-            .list();      
+      Query q = getSession().createQuery(
+            "select t " +
+                  "from HTextFlowTarget t where " +
+                  "t.textFlow.document =:document " +
+                  "and t.locale =:locale " +
+                  "and t.state !=:state " +
+                  "and t.textFlow.obsolete=false " +
+                  "order by t.textFlow.pos");
+      q.setParameter("document", document);
+      q.setParameter("locale", locale);
+      q.setParameter("state", ContentState.New);
+      q.setCacheable(true);
+      return q.list();
       // @formatter:on
    }
    
@@ -155,12 +178,13 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
    public ScrollableResults findLatestEquivalentTranslations(HDocument document, HLocale locale)
    {
       // @formatter:off
-      return getSession().getNamedQuery("HTextFlowTarget.findLatestEquivalentTranslations")
-               .setParameter("document", document)
-               .setParameter("docId", document.getDocId())
-               .setParameter("locale", locale)
-               .setParameter("state", ContentState.Approved)
-               .scroll(ScrollMode.FORWARD_ONLY); // Not Scrollable, only allows forward scrolling
+      Query q = getSession().getNamedQuery("HTextFlowTarget.findLatestEquivalentTranslations");
+      q.setParameter("document", document)
+      .setParameter("docId", document.getDocId())
+      .setParameter("locale", locale)
+      .setParameter("state", ContentState.Approved);
+      q.setCacheable(false); // TODO does it make sense to cache scrollable results?
+      return q.scroll(ScrollMode.FORWARD_ONLY); // Not Scrollable, only allows forward scrolling
       // @formatter:on
    }
 }
