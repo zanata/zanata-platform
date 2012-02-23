@@ -43,6 +43,54 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
       return (HTextFlowTarget) getSession().createCriteria(HTextFlowTarget.class).add(Restrictions.naturalId().set("textFlow", textFlow).set("locale", locale)).setCacheable(true).setComment("TextFlowTargetDAO.getByNaturalId").uniqueResult();
    }
 
+   public int getTotalTextFlowTargets()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlowTarget").uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
+   public int getTotalActiveTextFlowTargets()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlowTarget t where t.textFlow.obsolete=0").uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
+   public int getTotalObsoleteTextFlowTargets()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlowTarget t where t.textFlow.obsolete=1").uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
+   public int getTotalApprovedTextFlowTargets()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0").setParameter("state", ContentState.Approved).uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
+   public int getTotalNeedReviewTextFlowTargets()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0").setParameter("state", ContentState.NeedReview).uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
+   public int getTotalNewTextFlowTargets()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0").setParameter("state", ContentState.New).uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
    public int getTotalApprovedWords()
    {
       Long totalCount = (Long) getSession().createQuery("select sum(t.textFlow.wordCount) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0").setParameter("state", ContentState.Approved).uniqueResult();
