@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.zanata</groupId>
 		<artifactId>zanata-parent</artifactId>
-		<version>1.5.0-alpha-2-SNAPSHOT</version>
+		<version>1.5.0-alpha-2</version>
 		<relativePath>../../zanata-parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>zanata-war</artifactId>
@@ -722,7 +722,7 @@
 		<dependency>
 			<groupId>org.zanata</groupId>
 			<artifactId>zanata-api-compat</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.0.0</version>
 			<scope>test</scope>
 			<classifier>v1.3</classifier>
 		</dependency>
