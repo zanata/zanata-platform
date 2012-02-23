@@ -104,13 +104,18 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
             @Override
             public void onTransUnitSelected(TransUnitSelectionEvent event)
             {
-               showResultsFor(event.getSelection());
+               createGlossaryRequestForTransUnit(event.getSelection());
             }
          }));
       }
    }
 
-   public void showResultsFor(TransUnit transUnit)
+   // TODO piggy back on TransMemoryPresenter's request
+   /**
+    * @see TransMemoryPresenter#createTMRequestForTransUnit(TransUnit)
+    * @param transUnit
+    */
+   public void createGlossaryRequestForTransUnit(TransUnit transUnit)
    {
       String query = transUnit.getSource();
       display.getGlossaryTextBox().setText("");

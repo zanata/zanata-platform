@@ -374,8 +374,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          TransUnit tu = translationEditorPresenter.getSelectedTransUnit();
          if (tu != null)
          {
-            transMemoryPresenter.showResultsFor(tu);
-            // glossaryPresenter.showResultsFor(tu);
+            transMemoryPresenter.createTMRequestForTransUnit(tu);
+            // glossaryPresenter.createGlossaryRequestForTransUnit(tu);
          }
       }
       else

@@ -35,7 +35,8 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 {
    private final WorkspaceContext workspaceContext;
    private final CachingDispatchAsync dispatcher;
-   private GetTranslationMemory currentRequest;
+   private GetTranslationMemory submittedRequest = null;
+   private GetTranslationMemory lastRequest = null;
 
    @Inject
    private TransMemoryDetailsPresenter tmInfoPresenter;
@@ -89,7 +90,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          public void onClick(ClickEvent event)
          {
             String query = display.getTmTextBox().getText();
-            showResults(query, display.getSearchType().getValue());
+            createTMRequest(query, display.getSearchType().getValue());
          }
       });
 
@@ -98,7 +99,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          @Override
          public void onTransUnitSelected(TransUnitSelectionEvent event)
          {
-            showResultsFor(event.getSelection());
+            createTMRequestForTransUnit(event.getSelection());
          }
       }));
 
@@ -138,44 +139,85 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       });
    }
 
-   public void showResultsFor(TransUnit transUnit)
+   public void createTMRequestForTransUnit(TransUnit transUnit)
    {
       String query = transUnit.getSource();
       // Start automatically fuzzy search
       SearchType searchType = GetTranslationMemory.SearchType.FUZZY;
       display.getTmTextBox().setText("");
-      showResults(query, searchType);
+      createTMRequest(query, searchType);
    }
 
-   private void showResults(final String query, GetTranslationMemory.SearchType searchType)
+   private void createTMRequest(final String query, GetTranslationMemory.SearchType searchType)
    {
       display.startProcessing();
       final GetTranslationMemory action = new GetTranslationMemory(query, workspaceContext.getWorkspaceId().getLocaleId(), searchType);
-      currentRequest = action;
+      scheduleTMRequest(action);
+   }
+
+   /**
+    * Create a translation memory request.  The request will be sent
+    * immediately if the server is not processing another TM request,
+    * otherwise it will block. NB: If this request is blocked, it will be
+    * discarded if another request arrives before the server finishes.
+    * @param action
+    */
+   private void scheduleTMRequest(GetTranslationMemory action)
+   {
+      lastRequest = action;
+      if (submittedRequest == null)
+      {
+         submitTMRequest(action);
+      }
+      else
+      {
+         Log.debug("blocking TM request until outstanding request returns");
+      }
+   }
+
+   private void submitTMRequest(GetTranslationMemory action)
+   {
+      Log.debug("submitting TM request");
       dispatcher.execute(action, new AsyncCallback<GetTranslationMemoryResult>()
       {
          @Override
          public void onFailure(Throwable caught)
          {
             Log.error(caught.getMessage(), caught);
+            submittedRequest = null;
          }
 
          @Override
          public void onSuccess(GetTranslationMemoryResult result)
          {
-            if (!result.getRequest().equals(currentRequest))
+            if (result.getRequest().equals(lastRequest))
             {
-               Log.debug("ignoring old TM result for query: " + result.getRequest().getQuery());
-               return;
+               Log.debug("received TM result for query");
+               displayTMResult(result);
+               lastRequest = null;
             }
-            Log.debug("received TM result for query: " + currentRequest.getQuery());
-            display.getTmTextBox().setText(currentRequest.getQuery());
-            display.getSearchType().setValue(currentRequest.getSearchType());
-            ArrayList<TranslationMemoryGlossaryItem> memories = result.getMemories();
-            display.reloadData(query, memories);
-            currentRequest = null;
+            else
+            {
+               Log.debug("ignoring old TM result for query");
+            }
+            submittedRequest = null;
+            if (lastRequest != null)
+            {
+               // submit the waiting request
+               submitTMRequest(lastRequest);
+            }
          }
       });
+      submittedRequest = action;
+   }
+
+   private void displayTMResult(GetTranslationMemoryResult result)
+   {
+      String query = submittedRequest.getQuery();
+      display.getTmTextBox().setText(query);
+      display.getSearchType().setValue(submittedRequest.getSearchType());
+      ArrayList<TranslationMemoryGlossaryItem> memories = result.getMemories();
+      display.reloadData(query, memories);
    }
 
    @Override
@@ -187,4 +229,5 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    public void onRevealDisplay()
    {
    }
+
 }
