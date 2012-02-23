@@ -877,9 +877,9 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
          }
       }
 
-      for (TextFlowTarget current : messageBody.getTextFlowTargets())
+      for (TextFlowTarget incomingTarget : messageBody.getTextFlowTargets())
       {
-         String resId = current.getResId();
+         String resId = incomingTarget.getResId();
          HTextFlow textFlow = textFlowDAO.getById(document, resId);
          if (textFlow == null)
          {
@@ -890,13 +890,13 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
          }
          else
          {
-            if (current.getContent().isEmpty() && current.getState() != ContentState.New)
+            if (incomingTarget.getContent().isEmpty() && incomingTarget.getState() != ContentState.New)
             {
-               return Response.status(Status.BAD_REQUEST).entity("empty TextFlowTarget " + current.getResId() + " must have ContentState New").build();
+               return Response.status(Status.BAD_REQUEST).entity("empty TextFlowTarget " + incomingTarget.getResId() + " must have ContentState New").build();
             }
-            if (current.getState() == ContentState.New && !current.getContent().isEmpty())
+            if (incomingTarget.getState() == ContentState.New && !incomingTarget.getContent().isEmpty())
             {
-               return Response.status(Status.BAD_REQUEST).entity("ContentState New is illegal for non-empty TextFlowTarget " + current.getResId()).build();
+               return Response.status(Status.BAD_REQUEST).entity("ContentState New is illegal for non-empty TextFlowTarget " + incomingTarget.getResId()).build();
             }
 
             HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale);
@@ -908,29 +908,29 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
                hTarget = new HTextFlowTarget(textFlow, hLocale);
                hTarget.setVersionNum(0); // incremented when content is set
                textFlow.getTargets().put(hLocale, hTarget);
-               targetChanged |= resourceUtils.transferFromTextFlowTarget(current, hTarget);
-               targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(current.getExtensions(true), hTarget, extensions);
+               targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
+               targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
             }
             else
             {
                switch (mergeType)
                {
                case AUTO:
-                  if (!current.getContent().isEmpty())
+                  if (!incomingTarget.getContent().isEmpty())
                   {
                      if (hTarget.getState() == ContentState.New)
                      {
-                        targetChanged |= resourceUtils.transferFromTextFlowTarget(current, hTarget);
-                        targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(current.getExtensions(true), hTarget, extensions);
+                        targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
+                        targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                      }
                      else
                      {
-                        String localContent = current.getContent();
+                        String localContent = incomingTarget.getContent();
                         boolean matchHistory = textFlowTargetHistoryDAO.findContentInHistory(hTarget, localContent);
                         if (!matchHistory)
                         {
-                           targetChanged |= resourceUtils.transferFromTextFlowTarget(current, hTarget);
-                           targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(current.getExtensions(true), hTarget, extensions);
+                           targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
+                           targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                         }
                      }
                   }
@@ -938,8 +938,8 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
 
                case IMPORT:
                   removedTargets.remove(hTarget);
-                  targetChanged |= resourceUtils.transferFromTextFlowTarget(current, hTarget);
-                  targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(current.getExtensions(true), hTarget, extensions);
+                  targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
+                  targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                   break;
 
                default:
@@ -951,15 +951,15 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
             if (targetChanged)
             {
                changed = true;
-               if (current.getTranslator() != null)
+               if (incomingTarget.getTranslator() != null)
                {
-                  String email = current.getTranslator().getEmail();
+                  String email = incomingTarget.getTranslator().getEmail();
                   HPerson hPerson = personDAO.findByEmail(email);
                   if (hPerson == null)
                   {
                      hPerson = new HPerson();
                      hPerson.setEmail(email);
-                     hPerson.setName(current.getTranslator().getName());
+                     hPerson.setName(incomingTarget.getTranslator().getName());
                      newPeople.add(hPerson);
                   }
                   hTarget.setLastModifiedBy(hPerson);
@@ -970,7 +970,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
                }
                textFlowTargetDAO.makePersistent(hTarget);
             }
-            current = null;
+            incomingTarget = null;
          }
       }
       if (changed || !removedTargets.isEmpty())
