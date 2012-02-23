@@ -40,6 +40,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.gen2.logging.shared.Log;
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
@@ -223,6 +224,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             {
                if (!isReadOnly && event.getNativeButton() == NativeEvent.BUTTON_LEFT)
                {
+                  event.stopPropagation();
+                  event.preventDefault();
                   eventBus.fireEvent(new OpenEditorEvent(rowIndex));
                }
             }
@@ -373,7 +376,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       
       this.targetCellEditor = new InlineTargetCellEditor(messages, cancelCallBack, transValueCallBack, eventBus, isReadOnly);
       this.transUnitDetailsContent = new TransUnitDetailsPanel(messages.transUnitDetailsHeading());
-
       targetColumnDefinition.setCellEditor(targetCellEditor);
 
       addColumnDefinition(sourceColumnDefinition);
@@ -400,7 +402,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          transUnitDetailsContent.setDetails(selectedTransUnit);
          wrapper.add(transUnitDetailsContent);
          sourcePanel.add(wrapper);
-         sourcePanel.setCellVerticalAlignment(transUnitDetailsContent,HasVerticalAlignment.ALIGN_BOTTOM);
+         sourcePanel.setCellVerticalAlignment(transUnitDetailsContent, HasVerticalAlignment.ALIGN_BOTTOM);
       }
    }
 }
