@@ -295,6 +295,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       setRowRenderer(rowRenderer);
       sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
 
+      // min-width of 46px is reserved by system for each column.
       operationsColumnDefinition.setMaximumColumnWidth(1);
       operationsColumnDefinition.setCellRenderer(operationsCellRenderer);
 
