@@ -916,22 +916,29 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
                switch (mergeType)
                {
                case AUTO:
-                  if (!incomingTarget.getContent().isEmpty())
+                  if (incomingTarget.getState() != ContentState.New)
                   {
                      if (hTarget.getState() == ContentState.New)
                      {
                         targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
                         targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                      }
-                     else
+                     else if (incomingTarget.getState() == ContentState.Approved)
                      {
                         String localContent = incomingTarget.getContent();
-                        boolean matchHistory = textFlowTargetHistoryDAO.findContentInHistory(hTarget, localContent);
-                        if (!matchHistory)
+                        boolean oldContent = textFlowTargetHistoryDAO.findContentInHistory(hTarget, localContent);
+                        if (!oldContent)
                         {
                            targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
                            targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                         }
+                     }
+                     else
+                     {
+                        // incomingTarget state = NeedReview
+                        // hTarget state != New
+
+                        // we don't overwrite the server's NeedReview or Approved value (business rule)
                      }
                   }
                   break;
