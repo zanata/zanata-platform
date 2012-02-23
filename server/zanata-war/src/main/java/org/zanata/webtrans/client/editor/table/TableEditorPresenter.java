@@ -599,8 +599,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onOpenEditor(OpenEditorEvent event)
          {
-            int rowIndex = event.getRowIndex();
-            tableModelHandler.gotoRow(rowIndex, true);
+            tableModelHandler.gotoRowInCurrentPage(event.getRowNum(), true);
          }
       }));
 
@@ -885,6 +884,13 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          {
             display.getTargetCellEditor().cancelEdit();
          }
+      }
+
+      @Override
+      public void gotoRowInCurrentPage(int rowNum, boolean andEdit)
+      {
+         selectTransUnit(display.getTransUnitValue(rowNum));
+         display.gotoRow(rowNum, andEdit);
       }
    };
 

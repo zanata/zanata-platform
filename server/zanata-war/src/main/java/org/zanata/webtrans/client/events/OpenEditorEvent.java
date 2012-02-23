@@ -24,16 +24,16 @@ public class OpenEditorEvent extends GwtEvent<OpenEditorEventHandler>
       return TYPE;
    }
 
-   private int rowIndex;
+   private int rowNum;
 
    public OpenEditorEvent(int rowIndex)
    {
-      this.rowIndex = rowIndex;
+      this.rowNum = rowIndex;
    }
 
-   public int getRowIndex()
+   public int getRowNum()
    {
-      return rowIndex;
+      return rowNum;
    }
 
    @Override

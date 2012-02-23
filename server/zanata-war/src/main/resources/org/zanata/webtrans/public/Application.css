@@ -280,7 +280,7 @@ td.TableEditorCell-Target {
 }
 
 @-moz-document {
-	{}
+{}
 	table.TableEditorCell-Source-Table { 
 		overflow-x:auto;
 		display: block;
