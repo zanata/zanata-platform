@@ -1,6 +1,19 @@
 package org.zanata;
 
+import java.util.Map;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.persister.collection.AbstractCollectionPersister;
+import org.hibernate.persister.entity.EntityPersister;
+import org.jboss.seam.contexts.TestLifecycle;
 import org.jboss.seam.mock.DBUnitSeamTest;
+import org.jboss.seam.mock.MockHttpSession;
+import org.jboss.seam.mock.MockServletContext;
+import org.jboss.seam.mock.ResourceRequestEnvironment;
+import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
+import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
+import org.jboss.seam.servlet.ServletSessionMap;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
@@ -46,6 +59,7 @@ public abstract class ZanataDBUnitSeamTest extends DBUnitSeamTest
    public void setupClass() throws Exception
    {
       super.setupClass();
+      this.clearHibernateCache(); // Clear the Hibernate cache after initial setup
    }
 
    @BeforeMethod(groups = { "seam-tests" })
@@ -53,6 +67,7 @@ public abstract class ZanataDBUnitSeamTest extends DBUnitSeamTest
    public void prepareDataBeforeTest()
    {
       super.prepareDataBeforeTest();
+      this.clearHibernateCache(); // Clear the hibernate cache after data is modified before the test
    }
 
    @AfterMethod(groups = { "seam-tests" })
@@ -101,5 +116,47 @@ public abstract class ZanataDBUnitSeamTest extends DBUnitSeamTest
       super.stopSeam();
    }
    // end of setup methods from SeamTest
+   
+   /**
+    * Clears the Hibernate Cache.
+    * This method starts a Test lifecycle just for the purpose of clearing the Hibernate session factory's
+    * second level cache.
+    * TODO Maybe there is a way of doing this without intruding into TestNGs internals.
+    */
+   protected void clearHibernateCache()
+   {
+      TestLifecycle.beginTest(servletContext, new ServletSessionMap(new MockHttpSession(servletContext)));
+      try
+      {
+         Session session = (Session)getInstance("session");
+         SessionFactory sessionFactory = session.getSessionFactory();
+         
+         // Clear the Entity cache
+         Map classMetadata = sessionFactory.getAllClassMetadata();
+         for( Object obj : classMetadata.values() )
+         {
+            EntityPersister p = (EntityPersister)obj;
+            if( p.hasCache() )
+            {
+               sessionFactory.evictEntity( p.getEntityName() );
+            }
+         }
+         
+         // Clear the Collection cache
+         Map collMetadata = sessionFactory.getAllCollectionMetadata();
+         for( Object obj : collMetadata.values() )
+         {
+            AbstractCollectionPersister p = (AbstractCollectionPersister)obj;
+            if( p.hasCache() )
+            {
+               sessionFactory.evictCollection( p.getRole() );
+            }
+         }
+      }
+      finally
+      {
+         TestLifecycle.endTest();
+      }
+   }   
 
 }
