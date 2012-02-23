@@ -99,7 +99,7 @@
       <preConditions onFail="MARK_RAN">
           <sqlCheck expectedResult="1">
              SELECT * FROM INFORMATION_SCHEMA.COLUMNS
-             WHERE TABLE_SCHEMA='${database.defaultSchemaName}' AND TABLE_NAME='HTextFlow'
+             WHERE TABLE_SCHEMA='zanata' AND TABLE_NAME='HTextFlow'
              AND COLUMN_NAME='contentHash' AND DATA_TYPE='varchar';
           </sqlCheck>
       </preConditions>
