@@ -42,6 +42,7 @@ import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.LevenshteinUtil;
@@ -88,7 +89,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       try
       {
          List<Object[]> matches = textFlowDAO.getSearchResult(searchText, searchType, localeID, MAX_RESULTS);
-         Map<TMKey, TranslationMemoryGlossaryItem> matchesMap = new LinkedHashMap<TMKey, TranslationMemoryGlossaryItem>();
+         Map<TMKey, TranslationMemoryGlossaryItem> matchesMap = new LinkedHashMap<TMKey, TranslationMemoryGlossaryItem>(matches.size());
          for (Object[] match : matches)
          {
             float score = (Float) match[0];
@@ -97,14 +98,17 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
             {
                continue;
             }
-            else if (textFlow.getDocument().getProjectIteration().getStatus().equals(EntityStatus.OBSOLETE) || textFlow.getDocument().getProjectIteration().getProject().getStatus().equals(EntityStatus.OBSOLETE))
+            else
             {
-               continue;
+               HProjectIteration projectIteration = textFlow.getDocument().getProjectIteration();
+               if (projectIteration.getStatus() == EntityStatus.OBSOLETE || projectIteration.getProject().getStatus() == EntityStatus.OBSOLETE)
+               {
+                  continue;
+               }
             }
-
             HTextFlowTarget target = textFlow.getTargets().get(hLocale);
             // double check in case of caching issues
-            if (target.getState() != ContentState.Approved)
+            if (target == null || target.getState() != ContentState.Approved)
             {
                continue;
             }

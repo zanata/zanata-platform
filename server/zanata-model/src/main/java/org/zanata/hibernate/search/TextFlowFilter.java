@@ -27,7 +27,6 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.search.DocIdSet;
-import org.apache.lucene.search.Filter;
 import org.apache.lucene.util.OpenBitSet;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -36,11 +35,17 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.zanata.common.LocaleId;
 
-public class TextFlowFilter extends Filter
+public class TextFlowFilter extends TimeCachedFilter
 {
    private static final Log log = Logging.getLog(TextFlowFilter.class);
    private static final long serialVersionUID = 1L;
-   private LocaleId locale;
+   private final LocaleId locale;
+
+   public TextFlowFilter(LocaleId locale)
+   {
+      super(20000);
+      this.locale = locale;
+   }
 
    /**
     * @return the locale
@@ -49,22 +54,14 @@ public class TextFlowFilter extends Filter
    {
       return locale;
    }
-   
-   /**
-    * @param locale the locale to set
-    */
-   public void setLocale(LocaleId locale)
-   {
-      this.locale = locale;
-   }
 
    @Override
-   public DocIdSet getDocIdSet(IndexReader reader) throws IOException
+   protected DocIdSet fetchDocIdSet(IndexReader reader) throws IOException
    {
       OpenBitSet bitSet = new OpenBitSet(reader.maxDoc());
       Session session = (Session) Component.getInstance("session");
       // TODO move DAOs into zanata-model, and use TextFlowDAO.findIdsWithTranslations(LocaleId)
-      log.info("getDocIdSet for locale {0}", locale);
+      log.debug("fetching DocIdSet for locale {0}", locale);
       Query q = session.getNamedQuery("HTextFlow.findIdsWithTranslations");
       q.setCacheable(true).setParameter("locale", locale);
       List<Long> ids = q.list();
@@ -77,4 +74,11 @@ public class TextFlowFilter extends Filter
       }
       return bitSet;
    }
+
+   @Override
+   public String toString()
+   {
+      return "TextFlowFilter [locale=" + locale + "]";
+   }
+
 }
