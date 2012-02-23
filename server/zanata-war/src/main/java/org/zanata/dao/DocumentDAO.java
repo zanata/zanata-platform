@@ -55,6 +55,30 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       return new HashSet<LocaleId>(locales);
    }
 
+   public int getTotalDocument()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HDocument").uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
+   public int getTotalActiveDocument()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HDocument doc where doc.obsolete = false").uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
+   public int getTotalObsoleteDocument()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HDocument doc where doc.obsolete = true").uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
    /**
     * @see ProjectIterationDAO#getStatisticsForContainer(Long, LocaleId)
     * @param docId

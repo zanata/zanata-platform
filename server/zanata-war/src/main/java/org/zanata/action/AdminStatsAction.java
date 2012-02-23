@@ -21,12 +21,6 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -34,13 +28,12 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
+import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
-import org.zanata.model.HGlossaryEntry;
-import org.zanata.model.HLocale;
 
 /**
  *
@@ -73,6 +66,9 @@ public class AdminStatsAction implements Serializable
 
    @In
    TextFlowTargetDAO textFlowTargetDAO;
+
+   @In
+   DocumentDAO documentDAO;
 
    public int getTotalProjectCount()
    {
@@ -137,6 +133,66 @@ public class AdminStatsAction implements Serializable
    public int getTotalUntranslatedWords()
    {
       return getTotalWords() - (getTotalNeedReviewWords() + getTotalApprovedWords());
+   }
+
+   public int getTotalDocuments()
+   {
+      return documentDAO.getTotalDocument();
+   }
+
+   public int getTotalActiveDocuments()
+   {
+      return documentDAO.getTotalActiveDocument();
+   }
+
+   public int getTotalObsoleteDocuments()
+   {
+      return documentDAO.getTotalObsoleteDocument();
+   }
+
+   public int getTotalTextFlows()
+   {
+      return textFlowDAO.getTotalTextFlows();
+   }
+
+   public int getTotalActiveTextFlows()
+   {
+      return textFlowDAO.getTotalActiveTextFlows();
+   }
+
+   public int getTotalObsoleteTextFlows()
+   {
+      return textFlowDAO.getTotalObsoleteTextFlows();
+   }
+
+   public int getTotalTextFlowTargets()
+   {
+      return textFlowTargetDAO.getTotalTextFlowTargets();
+   }
+
+   public int getTotalActiveTextFlowTargets()
+   {
+      return textFlowTargetDAO.getTotalTextFlowTargets();
+   }
+
+   public int getTotalObsoleteTextFlowTargets()
+   {
+      return textFlowTargetDAO.getTotalTextFlowTargets();
+   }
+
+   public int getTotalApprovedTextFlowTargets()
+   {
+      return textFlowTargetDAO.getTotalApprovedTextFlowTargets();
+   }
+
+   public int getTotalNeedReviewTextFlowTargets()
+   {
+      return textFlowTargetDAO.getTotalNeedReviewTextFlowTargets();
+   }
+
+   public int getTotalUntranslatedTextFlowTargets()
+   {
+      return textFlowTargetDAO.getTotalNewTextFlowTargets();
    }
 }
 
