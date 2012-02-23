@@ -95,11 +95,12 @@
     	<sql>UPDATE HTextFlow SET contentHash = MD5(content)</sql>	
     </changeSet>
 
-    <changeSet author="camunoz@redhat.com" id="2" dbms="mysql">
+    <!-- renamed from changeset(camunoz@redhat.com:2) to ensure preconditions are checked again -->
+    <changeSet author="sflaniga@redhat.com" id="2" dbms="mysql">
       <preConditions onFail="MARK_RAN">
           <sqlCheck expectedResult="1">
              SELECT * FROM INFORMATION_SCHEMA.COLUMNS
-             WHERE TABLE_SCHEMA='${database.defaultSchemaName}' AND TABLE_NAME='HTextFlow'
+             WHERE TABLE_SCHEMA=SCHEMA() AND TABLE_NAME='HTextFlow'
              AND COLUMN_NAME='contentHash' AND DATA_TYPE='varchar';
           </sqlCheck>
       </preConditions>

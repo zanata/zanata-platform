@@ -15,13 +15,11 @@
 .rich-stglpanel-header {
 	border-radius:5px;
 	-moz-border-radius:5px;
-	text-align: center;
 }
 
 /* the specificity here is necessary to override the defaults */
 .rich-panel .rich-panel-header,.rich-stglpanel .rich-stglpanel-header {
 	background-image: none;
-	
 }
 
 #header_top_right {

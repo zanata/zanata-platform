@@ -310,7 +310,7 @@ public class TranslationPresenterTest
       TransUnit mockTU = createMock(TransUnit.class);
       expect(mockTranslationEditorPresenter.getSelectedTransUnit()).andReturn(mockTU);
       // should not call this for null TU selected:
-      mockTransMemoryPresenter.showResultsFor(mockTU);
+      mockTransMemoryPresenter.createTMRequestForTransUnit(mockTU);
       expectLastCall().once();
 
       replay(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter, mockTranslationEditorPresenter);

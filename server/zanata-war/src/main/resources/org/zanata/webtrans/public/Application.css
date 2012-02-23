@@ -3,20 +3,19 @@ body {
 	background-color: #f8f9fa;
 }
 
-
 /*
 Styling for errors when webtrans fails to load
 */
 .AppLoadError {
-    margin-top: 20px;
-    margin-left:  30px;
+	margin-top: 20px;
+	margin-left: 30px;
 }
 
 div.AppLoadError {
-    font-weight: bold;
-    font-size: 1.5em;
-    color: #ff2222;
-    margin-bottom: 15px;
+	font-weight: bold;
+	font-size: 1.5em;
+	color: #ff2222;
+	margin-bottom: 15px;
 }
 
 a.AppLoadError {
@@ -26,7 +25,6 @@ a.AppLoadError {
 	margin-left: 60px;
 	margin-bottom: 15px;
 }
-
 
 /*
 Removes some of the styling on the page-level splitters
@@ -155,26 +153,26 @@ Removes some of the styling on the page-level splitters
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
-    cursor:pointer;
-    border-top-left-radius:5px;
-    border-top-right-radius:5px;
-    background:#4a75b5;
-    color:#FFFFFF;
+	cursor: pointer;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	background: #4a75b5;
+	color: #FFFFFF;
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected {
-    cursor:default;
-    border-top-left-radius:5px;
-    border-top-right-radius:5px;
-    background:#183c66;
-    color:#FFFFFF;
+	cursor: default;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	background: #183c66;
+	color: #FFFFFF;
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
-    border: 2px solid #e0e8ee; 
-    background:#FFFFFF;
-    border-radius:5px;
-    -moz-border-radius:5px;
+	border: 2px solid #e0e8ee;
+	background: #FFFFFF;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
 }
 
 .WebTransEditor-Outer tr.middle td.middleCenter {
@@ -224,110 +222,85 @@ Removes some of the styling on the page-level splitters
 .TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Source {
 	border-right: none;
 	border-left: 3px solid #cccccc;
-	/* need to verify if #cccccc works for all borders first
-	border-right: 3px solid #f7dec3;
-	border-left: 3px solid #f7dec3;
-	*/
 }
 
 .TableEditor tr.NewStateDecoration td.TableEditorCell-Source {
 	border-right: none;
 	border-left: 3px solid #cccccc;
-	/* need to verify if #cccccc works for all borders first
-	border-right: 3px solid #c3e0f7;
-	border-left: 3px solid #c3e0f7;	
-	*/
 }
 
 .TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Source {
 	border-right: none;
 	border-left: 3px solid #cccccc;
-	/* need to verify if #cccccc works for all borders first
-	border-right: 3px solid #a8eab1;
-	border-left: 3px solid #a8eab1;
-	*/
 }
 
 .TableEditor tr.ErrorStateDecoration td.TableEditorCell-Source {
 	border-right: none;
 	border-left: 3px solid #cccccc;
-	/* need to verify if #cccccc works for all borders first
-    border-right: 3px solid #f7c3c3;
-    border-left: 3px solid #f7c3c3;
-    */
 }
 
 .TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Target {
 	font-style: italic;
 	border-right: 3px solid #cccccc;
-	/* need to verify if #cccccc works for all borders first
-	border-right: 3px solid #f7dec3;
-	border-left: 3px solid #f7dec3;
-    */
 }
 
 .TableEditor tr.NewStateDecoration td.TableEditorCell-Target {
 	border-right: 3px solid #cccccc;
 	border-left: none;
-	/* need to verify if #cccccc works for all borders first
-	border-right: 3px solid #c3e0f7;
-	border-left: 3px solid #c3e0f7;
-	*/
 }
 
 .TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Target {
 	border-right: 3px solid #cccccc;
 	border-left: none;
-	/* need to verify if #cccccc works for all borders first
-	border-right: 3px solid #a8eab1;
-	border-left: 3px solid #a8eab1;
-	*/
 }
 
 .TableEditor tr.ErrorStateDecoration td.TableEditorCell-Target {
 	border-right: 3px solid #cccccc;
 	border-left: none;
-	/* need to verify if #cccccc works for all borders first
-    border-right: 3px solid #f7c3c3;
-    border-left: 3px solid #f7c3c3;
-    */
 }
 
 td.TableEditorCell {
 	border-top: 1px solid #e0e0e0;
-	padding-top:10px;
-	padding-bottom:10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
 
 td.TableEditorCell-Source {
 	vertical-align: top;
-	word-break:break-all;
+	word-break: break-all;
 }
 
 td.TableEditorCell-Middle {
-	vertical-align: top;
-	width: 16px;
+	
 }
 
 td.TableEditorCell-Target {
 	vertical-align: top;
-	word-break:break-all;
+	word-break: break-all;
 }
 
-.TableEditorCell-Source-Table{
-	overflow:auto;
-	display:block;
-	width:100%;
-	height:100%;
+@-moz-document {
+{}
+	table.TableEditorCell-Source-Table { 
+		overflow-x:auto;
+		display: block;
+		width: 100%;
+	}
+	table.TableEditorCell-Target-Table {
+		overflow-x: auto;
+		display: block;
+	}
 }
 
-.TableEditorCell-Target-Table{
-	overflow:auto;
-	display:block;
+.TableEditorCell-Source-Table {
+	width: 100%;
+}
+
+.TableEditorCell-Target-Table {
 }
 
 .TransUnitDetail-Wrapper {
-	width:450px;
+	width: 450px;
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell {
@@ -336,7 +309,6 @@ tr.TableEditorRow.highlighted td.TableEditorCell {
 	there is a background gradient image for editor cells.
 	
 	background-color: #f1f2f6; */
-	
 	border-color: #AAA;
 	border-bottom: 1px solid #AAA;
 }
@@ -350,12 +322,12 @@ tr.TableEditorRow.highlighted td.TableEditorCell-Middle {
 }
 
 tr.TableEditorRow.highlighted .gwt-Button-display-onhover {
-	display:inline;
-	cursor:pointer;
+	display: inline;
+	cursor: pointer;
 }
 
 tr.TableEditorRow .gwt-Button-display-onhover {
-    display:none;
+	display: none;
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell-Target {
@@ -371,13 +343,13 @@ tr.TableEditorRow.content-filter-match {
 }
 
 tr.TableEditorRow.content-filter-nomatch {
-	filter: alpha(opacity =   25);
+	filter: alpha(opacity =     25);
 	-moz-opacity: 0.25;
-	-khtml-opacity: 0.25;
 	opacity: 0.25;
 }
 
 tr.TableEditorRow.selected {
+	
 }
 
 tr.TableEditorRow.selected td.TableEditorCell {
@@ -394,56 +366,63 @@ tr.TableEditorRow.selected td.TableEditorCell-Target {
 }
 
 .TableEditorContent,.TableEditorContent-Edit,.TableEditorContent-Empty {
-    font-size: 14px;
-    font-family: sans-serif;
+	font-size: 14px;
+	font-family: sans-serif;
 	padding: 0px;
 	margin: 0px;
 }
 
-.TableEditorContent pre, .TableEditorContent-Empty pre {
-   padding: 0px;
-   margin: 0px;
+.TableEditorContent pre,.TableEditorContent-Empty pre {
+	padding: 0px;
+	margin: 0px;
 }
 
 .TableEditorContent font {
-	background-color: #ffa; 
-	color: blue!important;
+	background-color: #ffa;
+	color: blue !important;
 }
 
 .TableEditorContent font span {
-	background-color: #ffa; 
-	color: blue!important;
+	background-color: #ffa;
+	color: blue !important;
 }
 
 .TableEditorContent-Edit {
 	border-top: 1px solid #BFBFBF;
 	border-bottom: 1px solid #BFBFBF;
-	width:98%;
+	width: 98%;
 }
 
-tr.FuzzyStateDecoration td.TableEditorCell-Target .TableEditorContent{
-    border-left:3px solid #ffc000;
-    border-right:3px solid #ffc000;
-    padding-left:5px;
+tr.FuzzyStateDecoration td.TableEditorCell-Target .TableEditorContent {
+	border-left: 3px solid #ffc000;
+	border-right: 3px solid #ffc000;
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
-tr.FuzzyStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
-    border-left:3px solid #ffc000;
-    border-right:3px solid #ffc000;
-    padding-left:5px;
-    font-style:italic;
+tr.FuzzyStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
+	{
+	border-left: 3px solid #ffc000;
+	border-right: 3px solid #ffc000;
+	padding-left: 5px;
+	padding-right: 5px;
+	font-style: italic;
 }
 
-tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent {
-    border-left:3px solid #099b09;
-    border-right:3px solid #099b09;
-    padding-left:5px;
+tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent
+	{
+	border-left: 3px solid #099b09;
+	border-right: 3px solid #099b09;
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
-tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
-    border-left:3px solid #099b09;
-    border-right:3px solid #099b09;
-    padding-left:5px;
+tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
+	{
+	border-left: 3px solid #099b09;
+	border-right: 3px solid #099b09;
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
 .TableEditorContent-Empty {
@@ -486,34 +465,35 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
 
 /* when colour diff is enabled: */
 .diff-equal {
+	
 }
 
 .diff-insert {
-   background:#99ccff;
-   text-decoration: underline;
+	background: #99ccff;
+	text-decoration: underline;
 }
 
 .diff-delete {
-   background:#ff9999;
-   text-decoration: line-through;
+	background: #ff9999;
+	text-decoration: line-through;
 }
 
 .DocumentListTable {
 	width: 100%;
-	font-size:16px;
+	font-size: 16px;
 }
 
 .DocumentListTable td {
-    font-size:16px;
-    cursor:pointer;
+	font-size: 16px;
+	cursor: pointer;
 }
 
-.DocumentListTable_folderCol{
-	width:25%;
+.DocumentListTable_folderCol {
+	width: 25%;
 }
 
-.DocumentListTable_docCol{
-    width:25%;
+.DocumentListTable_docCol {
+	width: 25%;
 }
 
 .transUnitCountTooltip {
@@ -522,8 +502,8 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
 	text-align: center;
 	border: 1px outset #999966;
 	height: 65px;
-	border-radius:8px;
-	-moz-border-radius:8px;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
 }
 
 .transUnitCountTooltipTable {
@@ -533,58 +513,58 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit {
 
 .transUnitCountTooltipTable TD {
 	border: 1px solid #999966;
-	width:75px;
-	border-radius:4px;
-	-moz-border-radius:4px;
+	width: 75px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
 }
 
-.pointer{
-	cursor:pointer;
+.pointer {
+	cursor: pointer;
 }
 
 .translationContainer pre {
 	font-size: 14px;
 	font-family: sans-serif;
-   	word-wrap: break-word;
-   	white-space: pre-wrap;
+	word-wrap: break-word;
+	white-space: pre-wrap;
 }
 
 .tmTable {
-	width:70%;
+	width: 70%;
 }
 
 .tmTable td img {
-	cursor:pointer;
+	cursor: pointer;
 }
 
 .tmTable td {
-	font-family:sans-serif;
-	font-size:small;
-	padding:0 10px 0 0;
+	font-family: sans-serif;
+	font-size: small;
+	padding: 0 10px 0 0;
 }
 
-.tmTable th{
-	border-bottom:0px;
+.tmTable th {
+	border-bottom: 0px;
 	color: blue;
 	font-style: normal;
 	font-weight: bold
 }
 
-.loadingPanel{
-    background:#000000;
-    padding:20px 40px 20px 40px;
-    color:#FFFFFF;
-    opacity:0.60;
-    border-radius:20px;
-    -moz-border-radius:20px;
-    font-weight:bold;
+.loadingPanel {
+	background: #000000;
+	padding: 20px 40px 20px 40px;
+	color: #FFFFFF;
+	opacity: 0.60;
+	border-radius: 20px;
+	-moz-border-radius: 20px;
+	font-weight: bold;
 }
 
-.filterConfirmationPanel{
-    background:#4C4C4C;
-    padding:5px 20px 0px 20px;
-    color:#FFFFFF;
-    border-radius:20px;
-    -moz-border-radius:20px;
-    font-weight:bold;
+.filterConfirmationPanel {
+	background: #4C4C4C;
+	padding: 5px 20px 0px 20px;
+	color: #FFFFFF;
+	border-radius: 20px;
+	-moz-border-radius: 20px;
+	font-weight: bold;
 }

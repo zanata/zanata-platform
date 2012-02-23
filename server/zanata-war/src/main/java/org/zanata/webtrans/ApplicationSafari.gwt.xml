@@ -6,4 +6,6 @@
 	<inherits name="org.zanata.webtrans.Application"/>
 	<set-property name="user.agent" value="safari"/>
 	<set-property name="locale" value="default"/>
+   <extend-property name="log_level" values="DEBUG" />
+   <set-property name="log_level" value="DEBUG" />
 </module>

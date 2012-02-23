@@ -48,8 +48,6 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
@@ -266,7 +264,17 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          @Override
          public void onBlur(BlurEvent event)
          {
-            isFocused = false;
+            // if (!isOpened)
+            // {
+               isFocused = false;
+            // }
+            // else
+            // {
+            // event.getSource().
+            // event.preventDefault();
+            // event.stopPropagation();
+            // textArea.setFocus(true);
+            // }
          }
       });
       textArea.addFocusHandler(new FocusHandler()
@@ -280,7 +288,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       eventBus.addHandler(RequestValidationEvent.getType(), new RequestValidationEventHandler()
       {
-
          @Override
          public void onRequestValidation(RequestValidationEvent event)
          {
@@ -555,7 +562,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          savePendingChange(false);
       }
 
-      Log.debug("starting edit of cell:" + cellValue.getTarget());
+      Log.debug("starting edit");
 
       // Save the current values
       curCallback = callback;
@@ -578,6 +585,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       this.cellValue = cellValue;
       textArea.setFocus(true);
       isOpened = true;
+
       DOM.scrollIntoView(table.getCellFormatter().getElement(curRow, curCol));
 
       // hide until validation results are available
@@ -590,7 +598,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       // if something has changed, save as approved
       if (isEditing() && !cellValue.getTarget().equals(textArea.getText()))
       {
-         Log.info("savePendingChange - acceptEdit");
+         Log.debug("savePendingChange - acceptEdit");
          cellValue.setStatus(ContentState.Approved);
          acceptEdit();
       }
@@ -598,7 +606,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       {
          if (cancelIfUnchanged)
          {
-            Log.info("savePendingChange- cancel edit");
+            Log.debug("savePendingChange- cancel edit");
             cancelEdit();
          }
       }
@@ -737,7 +745,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    public void autoSize()
    {
-      Log.debug("autoSize");
       shrinkSize(true);
       growSize();
    }

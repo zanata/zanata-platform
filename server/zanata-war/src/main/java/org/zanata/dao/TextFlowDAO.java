@@ -181,6 +181,30 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       return totalCount.intValue();
    }
 
+   public int getTotalTextFlows()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlow").uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
+   public int getTotalActiveTextFlows()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlow tf where tf.obsolete=0").uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
+   public int getTotalObsoleteTextFlows()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlow tf where tf.obsolete=1").uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
    public int getCountByDocument(Long documentId)
    {
       Long totalCount = (Long) getSession().createQuery("select count(*) from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos").setParameter("id", documentId).uniqueResult();

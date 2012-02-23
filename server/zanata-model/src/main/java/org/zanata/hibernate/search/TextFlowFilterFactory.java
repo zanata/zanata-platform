@@ -34,9 +34,7 @@ public class TextFlowFilterFactory
    @Factory
    public Filter getFilter()
    {
-      TextFlowFilter filter = new TextFlowFilter();
-      filter.setLocale(this.locale);
-      return filter;
+      return new TextFlowFilter(this.locale);
    }
 
    /**

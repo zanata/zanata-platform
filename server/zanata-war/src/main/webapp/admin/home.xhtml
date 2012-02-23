@@ -1,39 +1,37 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:s="http://jboss.com/products/seam/taglib"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:rich="http://richfaces.org/rich"
-    template="../WEB-INF/layout/template.xhtml">
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	template="../WEB-INF/layout/template.xhtml">
 
-    <ui:define name="center_content">
-        <rich:jQuery selector="#tab_admin" query="addClass('ui-tabs-selected')" />
-        <h1>#{messages['jsf.Administration']}</h1>
+	<ui:define name="center_content">
+		<rich:jQuery selector="#tab_admin"
+			query="addClass('ui-tabs-selected')" />
+		<h1>#{messages['jsf.Administration']}</h1>
 		
-		#{messages['jsf.PleaseChooseAPageFromTheAdministrationMenuAbove']}
-		<br/><br/>
-		<rich:simpleTogglePanel switchType="client" label="#{messages['jsf.OverallStatistics']}" opened="#{true}">
-        	<table>
-				<tr><td><h2>#{messages['jsf.TotalProjects']}:</h2></td><td><h2>#{adminStatsAction.totalProjectCount}</h2></td></tr>  
-				
-				<tr><td><h4>#{messages['jsf.Active']}:</h4></td><td><h4>#{adminStatsAction.totalActiveProjectCount}</h4></td></tr>        	
-				<tr><td><h4>#{messages['jsf.ReadOnly']}:</h4></td><td><h4>#{adminStatsAction.totalReadOnlyProjectCount}</h4></td></tr>        	
-				<tr><td><h4>#{messages['jsf.Obsolete']}:</h4></td><td><h4>#{adminStatsAction.totalObsoleteProjectCount}</h4></td></tr>
-						
-				<tr><td><h2>Total Project Iterations:</h2></td><td><h2>#{adminStatsAction.totalProjectIterCount}</h2></td></tr>
-		        <tr><td><h4>#{messages['jsf.Active']}:</h4></td><td><h4>#{adminStatsAction.totalActiveProjectIterCount}</h4></td></tr>
-		        <tr><td><h4>#{messages['jsf.ReadOnly']}:</h4></td><td><h4>#{adminStatsAction.totalReadOnlyProjectIterCount}</h4></td></tr>
-		        <tr><td><h4>#{messages['jsf.Obsolete']}:</h4></td><td><h4>#{adminStatsAction.totalObsoleteProjectIterCount}</h4></td></tr>        	
-				
-				<tr><td><h2>#{messages['jsf.TotalWords']}:</h2></td><td><h2>#{adminStatsAction.totalWords}</h2></td></tr>
-				<tr><td><h4>#{messages['jsf.Approved']}:</h4></td><td><h4>#{adminStatsAction.totalApprovedWords}</h4></td></tr>
-				<tr><td><h4>#{messages['jsf.NeedReview']}:</h4></td><td><h4>#{adminStatsAction.totalNeedReviewWords}</h4></td></tr>
-				<tr><td><h4>#{messages['jsf.Untranslated']}:</h4></td><td><h4>#{adminStatsAction.totalUntranslatedWords}</h4></td></tr>
-				
-				<tr><td><h2>#{messages['jsf.TotalTranslators']}:</h2></td><td><h2>#{adminStatsAction.totalTranslator}</h2></td></tr>
-			</table>  
-        </rich:simpleTogglePanel>
-    </ui:define>
+		<ul style="padding-left:20px">
+			<li id="Admin_Server_configuration_home"><s:link
+					id="Admin_Server_configuration_a_home"
+					view="/admin/server_configuration.xhtml" propagation="none" styleClass="table_link">#{messages['jsf.ServerConfiguration']}</s:link></li>
+			<li id="Admin_Manage_users_home"><s:link id="Admin_Manage_users_a_home"
+					view="/admin/usermanager.xhtml" propagation="none" styleClass="table_link">#{messages['jsf.ManageUsers']}</s:link></li>
+			<li id="Admin_Manage_roles_home"><s:link id="Admin_Manage_roles_a_home"
+					view="/admin/rolemanager.xhtml" propagation="none" styleClass="table_link">#{messages['jsf.ManageRoles']}</s:link></li>
+			<li id="Admin_Manage_languages_home"><s:link
+					id="Admin_Manage_languages_a_home" view="/admin/languagemanager.xhtml"
+					propagation="none" styleClass="table_link">#{messages['jsf.ManageLanguage']}</s:link></li>
+			<li id="Admin_Manage_search_home"><s:link id="Admin_Manage_search_a_home"
+					view="/admin/search.xhtml" propagation="none" styleClass="table_link">#{messages['jsf.ManageSearch']}</s:link></li>
+			<li id="Admin_Glossary_home"><s:link id="Admin_Glossary_home"
+					view="/admin/glossary.xhtml" propagation="none" styleClass="table_link">#{messages['jsf.Glossary']}</s:link></li>
+			<li id="Admin_Manage_stats_home"><s:link id="Admin_Manage_stats_a_home"
+					view="/admin/stats.xhtml" propagation="none" styleClass="table_link">#{messages['jsf.OverallStatistics']}</s:link></li>
+		</ul>
+
+
+	</ui:define>
 </ui:composition>
