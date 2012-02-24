@@ -264,17 +264,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          @Override
          public void onBlur(BlurEvent event)
          {
-            // if (!isOpened)
-            // {
-               isFocused = false;
-            // }
-            // else
-            // {
-            // event.getSource().
-            // event.preventDefault();
-            // event.stopPropagation();
-            // textArea.setFocus(true);
-            // }
+				isFocused = false;
          }
       });
       textArea.addFocusHandler(new FocusHandler()

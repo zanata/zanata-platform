@@ -223,6 +223,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             {
                if (!isReadOnly && event.getNativeButton() == NativeEvent.BUTTON_LEFT)
                {
+                  event.stopPropagation();
+                  event.preventDefault();
                   eventBus.fireEvent(new OpenEditorEvent(rowIndex));
                }
             }
@@ -373,7 +375,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       
       this.targetCellEditor = new InlineTargetCellEditor(messages, cancelCallBack, transValueCallBack, eventBus, isReadOnly);
       this.transUnitDetailsContent = new TransUnitDetailsPanel(messages.transUnitDetailsHeading());
-
       targetColumnDefinition.setCellEditor(targetCellEditor);
 
       addColumnDefinition(sourceColumnDefinition);
@@ -400,7 +401,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          transUnitDetailsContent.setDetails(selectedTransUnit);
          wrapper.add(transUnitDetailsContent);
          sourcePanel.add(wrapper);
-         sourcePanel.setCellVerticalAlignment(transUnitDetailsContent,HasVerticalAlignment.ALIGN_BOTTOM);
+         sourcePanel.setCellVerticalAlignment(transUnitDetailsContent, HasVerticalAlignment.ALIGN_BOTTOM);
       }
    }
 }
