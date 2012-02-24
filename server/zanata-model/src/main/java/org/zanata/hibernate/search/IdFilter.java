@@ -34,28 +34,21 @@ import org.jboss.seam.log.Logging;
 
 public class IdFilter extends Filter
 {
-   /**
-    * 
-    */
    private static final long serialVersionUID = 1L;
-   private List<Long> ids;
    private static final Log log = Logging.getLog(IdFilter.class);
+   private List<Long> ids;
 
-   public void setIds(List<Long> var)
+   public IdFilter(List<Long> ids)
    {
-      log.debug("Setting Ids");
-      this.ids = var;
+      this.ids = ids;
    }
    
-   public List<Long> getIds()
-   {
-      return this.ids;
-   }
-
    @Override
    public DocIdSet getDocIdSet(IndexReader reader) throws IOException
    {
       OpenBitSet bitSet = new OpenBitSet(reader.maxDoc());
+      if (log.isDebugEnabled())
+         log.debug("getDocIdSet for {0} ids", ids.size());
       for (Long id : ids)
       {
          Term term = new Term("id", id.toString());

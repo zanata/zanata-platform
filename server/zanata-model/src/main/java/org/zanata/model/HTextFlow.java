@@ -60,7 +60,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.DefaultNgramAnalyzer;
-import org.zanata.hibernate.search.TextFlowFilterFactory;
+import org.zanata.hibernate.search.IdFilterFactory;
 import org.zanata.model.po.HPotEntryData;
 import org.zanata.util.HashUtil;
 import org.zanata.util.OkapiUtil;
@@ -78,9 +78,8 @@ import org.zanata.util.OkapiUtil;
 @Indexed
 @FullTextFilterDef(
       name = "textFlowFilter",
-      impl = TextFlowFilterFactory.class,
-      // TextFlowFilter will cache its own docid sets
-      cache = FilterCacheModeType.INSTANCE_ONLY)
+      impl = IdFilterFactory.class,
+      cache = FilterCacheModeType.INSTANCE_AND_DOCIDSETRESULTS)
 @NamedQueries(@NamedQuery(
       name = "HTextFlow.findIdsWithTranslations",
       query = "SELECT tft.textFlow.id FROM HTextFlowTarget tft " +

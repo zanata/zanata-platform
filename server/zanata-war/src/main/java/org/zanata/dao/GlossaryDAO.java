@@ -135,7 +135,7 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
       QueryParser parser = new QueryParser(Version.LUCENE_29, "content", new DefaultNgramAnalyzer(4));
       org.apache.lucene.search.Query textQuery = parser.parse(queryText);
       FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HGlossaryTerm.class);
-      ftQuery.enableFullTextFilter("glossaryFilter").setParameter("termIds", termIds);
+      ftQuery.enableFullTextFilter("glossaryFilter").setParameter("ids", termIds);
       ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
       @SuppressWarnings("unchecked")
       List<Object[]> matches = ftQuery.setMaxResults(maxResult).getResultList();

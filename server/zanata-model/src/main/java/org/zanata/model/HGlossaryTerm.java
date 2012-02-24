@@ -44,7 +44,7 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.NotNull;
 import org.zanata.hibernate.search.DefaultNgramAnalyzer;
-import org.zanata.hibernate.search.GlossaryFilterFactory;
+import org.zanata.hibernate.search.IdFilterFactory;
 import org.zanata.hibernate.search.LocaleIdBridge;
 
 /**
@@ -55,7 +55,7 @@ import org.zanata.hibernate.search.LocaleIdBridge;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
-@FullTextFilterDef(name = "glossaryFilter", impl = GlossaryFilterFactory.class, cache = FilterCacheModeType.INSTANCE_ONLY)
+@FullTextFilterDef(name = "glossaryFilter", impl = IdFilterFactory.class, cache = FilterCacheModeType.INSTANCE_ONLY)
 public class HGlossaryTerm extends ModelEntityBase
 {
    private String content;

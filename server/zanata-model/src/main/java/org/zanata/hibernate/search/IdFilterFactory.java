@@ -1,5 +1,5 @@
 /*
- * Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  * 
@@ -20,44 +20,41 @@
  */
 package org.zanata.hibernate.search;
 
+import java.util.List;
+
 import org.apache.lucene.search.Filter;
 import org.hibernate.search.annotations.Factory;
 import org.hibernate.search.annotations.Key;
 import org.hibernate.search.filter.FilterKey;
 import org.hibernate.search.filter.StandardFilterKey;
-import org.zanata.common.LocaleId;
 
-public class TextFlowFilterFactory
+public class IdFilterFactory
 {
-   private LocaleId locale;
 
    @Factory
    public Filter getFilter()
    {
-      return new TextFlowFilter(this.locale);
+      IdFilter filter = new IdFilter(this.ids);
+      return filter;
    }
 
-   /**
-    * @return the locale
-    */
-   public LocaleId getLocale()
+   private List<Long> ids;
+
+   public List<Long> getIds()
    {
-      return locale;
+      return ids;
    }
 
-   /**
-    * @param locale the locale to set
-    */
-   public void setLocale(LocaleId locale)
+   public void setIds(List<Long> ids)
    {
-      this.locale = locale;
+      this.ids = ids;
    }
 
    @Key
    public FilterKey getKey()
    {
       StandardFilterKey key = new StandardFilterKey();
-      key.addParameter(locale);
+      key.addParameter(ids);
       return key;
    }
 

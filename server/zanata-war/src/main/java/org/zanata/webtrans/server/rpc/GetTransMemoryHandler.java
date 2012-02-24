@@ -88,7 +88,9 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 
       try
       {
-         List<Object[]> matches = textFlowDAO.getSearchResult(searchText, searchType, localeID, MAX_RESULTS);
+         // FIXME this won't scale well
+         List<Long> idsWithTranslations = textFlowDAO.findIdsWithTranslations(localeID);
+         List<Object[]> matches = textFlowDAO.getSearchResult(searchText, searchType, idsWithTranslations, MAX_RESULTS);
          Map<TMKey, TranslationMemoryGlossaryItem> matchesMap = new LinkedHashMap<TMKey, TranslationMemoryGlossaryItem>(matches.size());
          for (Object[] match : matches)
          {
