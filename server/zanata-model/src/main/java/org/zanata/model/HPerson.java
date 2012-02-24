@@ -224,7 +224,7 @@ public class HPerson extends ModelEntityBase implements Serializable
    @Transient
    public boolean isCoordinator(HLocale locale)
    {
-      // TODO consider implementing business key equality
+      // TODO PERF consider implementing business key equality
       for (HLocaleMember membership : locale.getMembers())
       {
          if (membership.getPerson().getId().equals( this.getId() ) 
@@ -237,7 +237,7 @@ public class HPerson extends ModelEntityBase implements Serializable
    @Transient
    public boolean isMember(HLocale locale)
    {
-      // TODO consider implementing business key equality
+      // TODO PERF consider implementing business key equality
       for (HLocaleMember membership : locale.getMembers())
       {
          if (membership.getPerson().getId().equals( this.getId() ) )
