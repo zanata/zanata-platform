@@ -253,7 +253,14 @@
                     <outputDirectory>${project.build.outputDirectory}</outputDirectory>
 				</configuration>
 			</plugin>
-			
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<!-- zanata war is too big to deploy, especially with five variants -->
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+
 		</plugins>
 
 		<pluginManagement>
