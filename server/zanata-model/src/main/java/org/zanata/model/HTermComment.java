@@ -96,6 +96,7 @@ public class HTermComment
 
    @ManyToOne
    @JoinColumn(name = "glossaryTermId", insertable = false, updatable = false, nullable = false)
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    public HGlossaryTerm getGlossaryTerm()
    {

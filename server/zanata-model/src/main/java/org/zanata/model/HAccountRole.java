@@ -57,6 +57,7 @@ public class HAccountRole implements Serializable
       this.id = id;
    }
 
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @RoleName
    public String getName()
    {

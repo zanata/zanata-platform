@@ -69,6 +69,7 @@ public class HTextFlowTargetHistory implements Serializable, ITextFlowTargetHist
       this.id = id;
    }
 
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @ManyToOne
    @JoinColumn(name = "target_id")
@@ -83,6 +84,7 @@ public class HTextFlowTargetHistory implements Serializable, ITextFlowTargetHist
    }
 
    @Override
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    public Integer getVersionNum()
    {

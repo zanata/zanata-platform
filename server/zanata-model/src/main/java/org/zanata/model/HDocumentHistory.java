@@ -67,6 +67,7 @@ public class HDocumentHistory implements IDocumentHistory
       this.id = id;
    }
 
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @ManyToOne
    @JoinColumn(name = "document_id")
@@ -80,6 +81,7 @@ public class HDocumentHistory implements IDocumentHistory
       this.document = document;
    }
 
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    public Integer getRevision()
    {

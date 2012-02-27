@@ -69,6 +69,7 @@ public class HTextFlowHistory implements Serializable, ITextFlowHistory
       this.id = id;
    }
 
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @Override
    public Integer getRevision()
@@ -81,6 +82,7 @@ public class HTextFlowHistory implements Serializable, ITextFlowHistory
       this.revision = revision;
    }
 
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @ManyToOne
    @JoinColumn(name = "tf_id")

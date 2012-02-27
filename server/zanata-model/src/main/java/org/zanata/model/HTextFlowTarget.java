@@ -111,6 +111,7 @@ public class HTextFlowTarget extends ModelEntityBase implements ITextFlowTargetH
    }
 
 
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @ManyToOne
    @JoinColumn(name = "locale", nullable = false)
@@ -166,6 +167,7 @@ public class HTextFlowTarget extends ModelEntityBase implements ITextFlowTargetH
       this.lastModifiedBy = lastModifiedBy;
    }
 
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @ManyToOne
    @JoinColumn(name = "tf_id")

@@ -103,6 +103,7 @@ public class HGlossaryTerm extends ModelEntityBase
       this.comments = comments;
    }
 
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @ManyToOne
    @JoinColumn(name = "glossaryEntryId", nullable = false)
@@ -116,6 +117,7 @@ public class HGlossaryTerm extends ModelEntityBase
       this.glossaryEntry = glossaryEntry;
    }
 
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "localeId", nullable = false)

@@ -115,6 +115,7 @@ public class HAccount extends ModelEntityBase implements Serializable
       this.person = person;
    }
 
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @UserPrincipal
    @Field(index = Index.TOKENIZED)

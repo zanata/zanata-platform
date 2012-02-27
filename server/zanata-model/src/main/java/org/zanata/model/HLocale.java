@@ -55,6 +55,7 @@ public class HLocale extends ModelEntityBase implements Serializable
    private Set<HLocaleMember> members;
    
 
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @NotNull
    @Type(type = "localeId")

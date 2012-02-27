@@ -161,6 +161,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    }
 
    // TODO make this case sensitive
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @Length(max = 255)
    @NotEmpty
@@ -205,6 +206,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
 
    @ManyToOne
    @JoinColumn(name = "document_id", insertable = false, updatable = false, nullable = false)
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    public HDocument getDocument()
    {

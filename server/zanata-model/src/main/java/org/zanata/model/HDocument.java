@@ -137,6 +137,7 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory
    }
 
    // TODO make this case sensitive
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @Length(max = 255)
    @NotEmpty
@@ -198,6 +199,7 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory
 
    @ManyToOne(cascade = CascadeType.PERSIST)
    @JoinColumn(name = "project_iteration_id", nullable = false)
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    public HProjectIteration getProjectIteration()
    {

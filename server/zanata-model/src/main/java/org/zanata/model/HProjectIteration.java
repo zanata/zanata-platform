@@ -81,6 +81,7 @@ public class HProjectIteration extends SlugEntityBase
 
    @ManyToOne
    @NotNull
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    public HIterationProject getProject()
    {

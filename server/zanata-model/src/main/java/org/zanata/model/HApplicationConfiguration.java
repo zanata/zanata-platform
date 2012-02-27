@@ -55,6 +55,7 @@ public class HApplicationConfiguration extends ModelEntityBase
       this.value = value;
    }
 
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @NotEmpty
    @Length(max = 255)

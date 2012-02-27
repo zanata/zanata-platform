@@ -42,6 +42,7 @@ public class SlugEntityBase extends ModelEntityBase
       status = EntityStatus.ACTIVE; // Active by default
    }
 
+   // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @Length(min = 1, max = 40)
    @Slug
