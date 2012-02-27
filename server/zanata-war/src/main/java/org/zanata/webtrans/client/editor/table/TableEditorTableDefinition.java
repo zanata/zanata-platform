@@ -230,7 +230,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             }
          });
          targetPanel.add(label);
-         targetPanel.setSize("100%", "100%");
+         targetPanel.setWidth("100%");
          view.setWidget(targetPanel);
       }
    };
