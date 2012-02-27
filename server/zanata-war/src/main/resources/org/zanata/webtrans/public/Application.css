@@ -290,6 +290,9 @@ td.TableEditorCell-Target {
 		overflow-x: auto;
 		display: block;
 	}
+	div.TransUnitDetail-Wrapper {
+		width: 450px;
+	}
 }
 
 .TableEditorCell-Source-Table {
@@ -300,7 +303,7 @@ td.TableEditorCell-Target {
 }
 
 .TransUnitDetail-Wrapper {
-	width: 450px;
+	width: 90%;
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell {
