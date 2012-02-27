@@ -732,7 +732,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                else
                {
                   Log.error("GetTransUnits failure " + caught, caught);
-                  eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnknownError()));
+                  eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyLoadFailed()));
                }
                display.stopProcessing();
             }
