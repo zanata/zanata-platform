@@ -34,7 +34,7 @@
 		.notification {
 			color: yellow;
 			padding: 5px;
-         display: inline;
+         	display: inline;
 		}
         
       .notification-dismiss {
@@ -124,19 +124,23 @@
 			<g:LayoutPanel ui:field='topPanel' styleName="{resources.style.banner}">
 				<g:layer left="0px" right="205px">
 				<g:HorizontalPanel width="100%">
-					<g:HTMLPanel styleName="{style.topPanel-Workspace}">
-						<nobr>
-						    <g:Label ui:field="documentsLink" styleName="{style.documents-link}"><ui:msg>Documents</ui:msg></g:Label>
-							<span class="{style.divider}">></span>
-							<em>
-								<span ui:field="selectedDocumentPathSpan"/><span ui:field="selectedDocumentSpan"><ui:msg>No document selected</ui:msg></span>
-							</em>
-						</nobr>
-					</g:HTMLPanel>
-               <g:HTMLPanel>
+					<g:cell verticalAlignment="ALIGN_MIDDLE">
+						<g:HTMLPanel styleName="{style.topPanel-Workspace}">
+							<nobr>
+							    <g:Label ui:field="documentsLink" styleName="{style.documents-link}"><ui:msg>Documents</ui:msg></g:Label>
+								<span class="{style.divider}">></span>
+								<em>
+									<span ui:field="selectedDocumentPathSpan"/><span ui:field="selectedDocumentSpan"><ui:msg>No document selected</ui:msg></span>
+								</em>
+							</nobr>
+						</g:HTMLPanel>
+					</g:cell>
+					<g:cell verticalAlignment="ALIGN_MIDDLE">
+		            <g:HTMLPanel>
 						<g:Label ui:field="notificationMessage" styleName="{style.notification}"/>
-                  <g:Label ui:field="dismissLink" styleName="{style.notification-dismiss}"><ui:msg>(clear)</ui:msg></g:Label>
-               </g:HTMLPanel>
+		                  <g:Label ui:field="dismissLink" styleName="{style.notification-dismiss}"><ui:msg>(clear)</ui:msg></g:Label>
+		            </g:HTMLPanel>
+		            </g:cell>
 				</g:HorizontalPanel>
 				</g:layer>
 				<g:layer right="5px" width="200px">	      
