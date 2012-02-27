@@ -31,13 +31,12 @@
     </div>
     </a4j:form>     
   </div>
-<s:fragment rendered="#{_iteration.status != 'OBSOLETE'}">
   <rich:dataTable id="data_table" width="100%" value="#{iterationTranslationAction.getTranslationLocale(projectHome.instance.slug, _iteration.slug)}"
                   var="hLocale"
                   styleClass="iteration_inline_tribes"
                   rowClasses="odd,even">
     <rich:column id="locale_id">#{hLocale.retrieveNativeName()} [#{hLocale.localeId.id}]</rich:column>
-    <rich:column id="translate">
+    <rich:column id="translate" rendered="#{!projectHome.isObsolete(_iteration)}">
       <h:outputLink
           rendered="#{s:hasPermission(hLocale, 'modify-translation') and !applicationConfiguration.debug and projectHome.isReadOnly(_iteration)}"
           value="#{request.contextPath}/webtrans/Application.html">
@@ -98,7 +97,6 @@
       </ui:include>
     </rich:column>
   </rich:dataTable>
-</s:fragment>
 </div>
 
 </ui:composition>
