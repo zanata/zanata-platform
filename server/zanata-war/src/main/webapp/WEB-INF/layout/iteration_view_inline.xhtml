@@ -46,6 +46,7 @@
 		<f:param name="locale" value="#{locale.language}" />
 		#{messages['jsf.Open']}
       </h:outputLink>
+      
       <h:outputLink
           rendered="#{s:hasPermission(hLocale, 'modify-translation') and applicationConfiguration.debug and projectHome.isReadOnly(_iteration)}"
           value="#{request.contextPath}/webtrans/Application.html">

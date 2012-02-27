@@ -226,7 +226,7 @@ public class ProjectHome extends SlugHome<HIterationProject>
 
    public boolean isReadOnly(HProjectIteration iteration)
    {
-      if (getInstance().getStatus() == EntityStatus.READONLY || (iteration != null && iteration.getStatus() != EntityStatus.READONLY))
+      if (getInstance().getStatus() == EntityStatus.READONLY || (iteration != null && iteration.getStatus() == EntityStatus.READONLY))
       {
          return true;
       }
