@@ -735,7 +735,8 @@ public class TranslationResourceRestTest extends ZanataRestTest
       getZero();
       publishTranslations(); // push some translations (with no headers)
       // Get the translations with PO headers
-      ClientResponse<TranslationsResource> response = transResource.getTranslations("my.txt", de_DE, new StringSet("gettext"));
+      ClientResponse<TranslationsResource> response = transResource.getTranslations(
+            "my.txt", de_DE, new StringSet("gettext"), true);
       
       TranslationsResource translations = response.getEntity();
       assertThat(translations.getExtensions().size(), greaterThan(0));
@@ -778,7 +779,8 @@ public class TranslationResourceRestTest extends ZanataRestTest
       createResourceWithContentUsingPut();
       
       // Get the translations with PO headers
-      ClientResponse<TranslationsResource> response = transResource.getTranslations("my.txt", de_DE, new StringSet("gettext"));
+      ClientResponse<TranslationsResource> response = transResource.getTranslations(
+            "my.txt", de_DE, new StringSet("gettext"), true);
       
       TranslationsResource translations = response.getEntity();
       assertThat( translations.getTextFlowTargets().size(), is(0) ); // Expecting no translations

@@ -705,7 +705,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
          @PathParam("id") String idNoSlash,
          @PathParam("locale") LocaleId locale,
          @QueryParam("ext") Set<String> extensions,
-         @QueryParam("skeletons") @DefaultValue("true") boolean skeletons
+         @QueryParam("skeletons") @DefaultValue("false") boolean skeletons
          )
    {
       log.debug("start to get translation");
