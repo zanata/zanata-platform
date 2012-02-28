@@ -1,23 +1,13 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.easymock.EasyMock.and;
-import static org.easymock.EasyMock.capture;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.notNull;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.reset;
-import static org.easymock.EasyMock.verify;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.easymock.EasyMock.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.easymock.Capture;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
@@ -35,6 +25,7 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
+import org.zanata.webtrans.client.history.Window.Location;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.shared.auth.Identity;
@@ -49,6 +40,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.HasVisibility;
 
 @Test(groups = { "unit-tests" })
 public class AppPresenterTest
@@ -68,23 +60,25 @@ public class AppPresenterTest
 
    private AppPresenter appPresenter;
 
-
-   private Display mockDisplay;
-   private DocumentListPresenter mockDocumentListPresenter;
-   private HasClickHandlers mockDocumentsLink;
-   private EventBus mockEventBus;
-   private History mockHistory;
-   private Identity mockIdentity;
-   private HasClickHandlers mockLeaveWorkspaceLink;
-   private WebTransMessages mockMessages;
-   private Person mockPerson;
-   private HasClickHandlers mockSignoutLink;
-   private TranslationPresenter mockTranslationPresenter;
-   private Window mockWindow;
-   private Window.Location mockWindowLocation;
-   private WorkspaceContext mockWorkspaceContext;
+   HasClickHandlers mockDismiss = createMock(HasClickHandlers.class);
+   HasVisibility mockDismissVisibility = createMock(HasVisibility.class);
+   Display mockDisplay = createMock(AppPresenter.Display.class);
+   DocumentListPresenter mockDocumentListPresenter = createMock(DocumentListPresenter.class);
+   HasClickHandlers mockDocumentsLink = createMock(HasClickHandlers.class);
+   EventBus mockEventBus = createMock(EventBus.class);
+   History mockHistory = createMock(History.class);
+   Identity mockIdentity = createMock(Identity.class);
+   WebTransMessages mockMessages = createMock(WebTransMessages.class);
+   Person mockPerson = createMock(Person.class);
+   TranslationPresenter mockTranslationPresenter = createMock(TranslationPresenter.class);
+   Window mockWindow = createMock(Window.class);
+   Location mockWindowLocation = createMock(Window.Location.class);
+   WorkspaceContext mockWorkspaceContext = createMock(WorkspaceContext.class);
+   HasClickHandlers mockLeaveWorkspaceLink = createMock(HasClickHandlers.class);
+   HasClickHandlers mockSignoutLink = createMock(HasClickHandlers.class);
 
    private Capture<NotificationEventHandler> capturedNotificationEventHandler;
+   private Capture<ClickHandler> capturedDismissLinkClickHandler;
    private Capture<DocumentStatsUpdatedEventHandler> capturedDocumentStatsUpdatedEventHandler;
    private Capture<ProjectStatsUpdatedEventHandler> capturedProjectStatsUpdatedEventHandler;
    private Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdatedEventHandler;
@@ -100,24 +94,10 @@ public class AppPresenterTest
    private TranslationStats testDocStats;
    private TranslationStats emptyProjectStats;
 
-
-   @BeforeClass
-   public void createMocks()
+   @BeforeMethod
+   void beforeMethod()
    {
-      mockDisplay = createMock(AppPresenter.Display.class);
-      mockDocumentListPresenter = createMock(DocumentListPresenter.class);
-      mockDocumentsLink = createMock(HasClickHandlers.class);
-      mockEventBus = createMock(EventBus.class);
-      mockHistory = createMock(History.class);
-      mockIdentity = createMock(Identity.class);
-      mockMessages = createMock(WebTransMessages.class);
-      mockPerson = createMock(Person.class);
-      mockTranslationPresenter = createMock(TranslationPresenter.class);
-      mockWindow = createMock(Window.class);
-      mockWindowLocation = createMock(Window.Location.class);
-      mockWorkspaceContext = createMock(WorkspaceContext.class);
-      mockLeaveWorkspaceLink = createMock(HasClickHandlers.class);
-      mockSignoutLink = createMock(HasClickHandlers.class);
+      resetAllMocks();
    }
 
    private AppPresenter newAppPresenter()
@@ -130,10 +110,8 @@ public class AppPresenterTest
 
    // TODO test that initial history state is handled properly
 
-   @Test
-   public void performsRequiredActionsOnBind()
+   public void testPerformsRequiredActionsOnBind()
    {
-      resetAllMocks();
       setupDefaultMockExpectations();
 
       // default mock expectations include:
@@ -154,8 +132,7 @@ public class AppPresenterTest
       verifyAllMocks();
    }
 
-   @Test
-   public void showsNotificationEvents()
+   public void testShowsNotificationEvents()
    {
       setupAndBindAppPresenter();
       verifyAllMocks();
@@ -164,16 +141,23 @@ public class AppPresenterTest
       String testMessage = "test notification message";
       mockDisplay.setNotificationMessage(testMessage);
       expectLastCall().once();
+      expect(mockDisplay.getDismissVisibility()).andReturn(mockDismissVisibility).anyTimes();
       replay(mockDisplay);
+
+      reset(mockDismissVisibility);
+      mockDismissVisibility.setVisible(true);
+      expectLastCall().once();
+      replay(mockDismissVisibility);
+
 
       NotificationEvent notification = new NotificationEvent(Severity.Info, testMessage);
       capturedNotificationEventHandler.getValue().onNotification(notification);
 
       verify(mockDisplay);
+      verify(mockDismissVisibility);
    }
 
-   @Test
-   public void showsUpdatedProjectStats()
+   public void testShowsUpdatedProjectStats()
    {
       setupAndBindAppPresenter();
       verifyAllMocks();
@@ -193,8 +177,7 @@ public class AppPresenterTest
       assertThat(capturedTranslationStats.getValue(), is(equalTo(testStats)));
    }
 
-   @Test
-   public void updateProjectStatsFromEditorView()
+   public void testUpdateProjectStatsFromEditorView()
    {
       setupAndBindAppPresenter();
       verifyAllMocks();
@@ -210,8 +193,7 @@ public class AppPresenterTest
       returnToDoclistView(token, updatedStats);
    }
 
-   @Test
-   public void historyTriggersDocumentSelectionEvent()
+   public void testHistoryTriggersDocumentSelectionEvent()
    {
       setupAndBindAppPresenter();
       verifyAllMocks();
@@ -239,8 +221,7 @@ public class AppPresenterTest
       assertThat("a new document path in history should trigger a document selection event with the correct id", capturedDocumentSelectionEvent.getValue().getDocumentId(), is(testDocId));
    }
 
-   @Test
-   public void historyTriggersViewChange()
+   public void testHistoryTriggersViewChange()
    {
       setupAndBindAppPresenter();
       verifyAllMocks();
@@ -270,8 +251,7 @@ public class AppPresenterTest
       verify(mockDisplay);
    }
 
-   @Test
-   public void noEditorWithoutValidDocument()
+   public void testNoEditorWithoutValidDocument()
    {
       setupAndBindAppPresenter();
       verifyAllMocks();
@@ -292,8 +272,7 @@ public class AppPresenterTest
    }
 
 
-   @Test
-   public void historyTriggersDocumentNameStatsUpdate()
+   public void testHistoryTriggersDocumentNameStatsUpdate()
    {
       setupAndBindAppPresenter();
       verifyAllMocks();
@@ -328,8 +307,7 @@ public class AppPresenterTest
     * Note: this also verifies that editor pending change is saved when changing
     * from editor to document list
     */
-   @Test
-   public void statsAndNameChangeWithView()
+   public void testStatsAndNameChangeWithView()
    {
       setupAndBindAppPresenter();
       verifyAllMocks();
@@ -340,8 +318,7 @@ public class AppPresenterTest
    }
 
 
-   @Test
-   public void showsUpdatedDocumentStats()
+   public void testShowsUpdatedDocumentStats()
    {
       setupAndBindAppPresenter();
       verifyAllMocks();
@@ -360,8 +337,7 @@ public class AppPresenterTest
       verify(mockDisplay);
    }
 
-   @Test
-   public void doesNotShowWrongDocumentStats()
+   public void testDoesNotShowWrongDocumentStats()
    {
       setupAndBindAppPresenter();
       verifyAllMocks();
@@ -379,8 +355,7 @@ public class AppPresenterTest
       verify(mockDisplay);
    }
 
-   @Test
-   public void updateDocumentStatsFromDoclistView()
+   public void testUpdateDocumentStatsFromDoclistView()
    {
       setupAndBindAppPresenter();
       verifyAllMocks();
@@ -397,8 +372,30 @@ public class AppPresenterTest
       returnToEditorView(token, updatedStats);
    }
 
-   @Test
-   public void documentsLinkGeneratesHistoryToken()
+   public void testDismiss()
+   {
+      setupDefaultMockExpectations();
+      appPresenter = newAppPresenter();
+      String testMessage = "testing";
+
+      mockDisplay.setNotificationMessage(testMessage);
+      mockDismissVisibility.setVisible(true); // visible upon message
+      mockDisplay.setNotificationMessage("");
+      mockDismissVisibility.setVisible(false); // invisible upon clear
+
+      replayAllMocks();
+      appPresenter.bind();
+      NotificationEvent notification = new NotificationEvent(Severity.Info, testMessage);
+      capturedNotificationEventHandler.getValue().onNotification(notification);
+      ClickEvent event = new ClickEvent()
+      {
+      };
+      capturedDismissLinkClickHandler.getValue().onClick(event);
+
+      verify(mockDismissVisibility, mockDisplay);
+   }
+
+   public void testDocumentsLinkGeneratesHistoryToken()
    {
       setupAndBindAppPresenter();
       verifyAllMocks();
@@ -445,8 +442,7 @@ public class AppPresenterTest
       assertThat("document path should be maintained when clicking documents link", capturedToken.getDocumentPath(), is(token.getDocumentPath()));
    }
 
-   @Test
-   public void showsHidesReadonlyLabel()
+   public void testShowsHidesReadonlyLabel()
    {
       setupAndBindAppPresenter();
       verifyAllMocks();
@@ -581,7 +577,6 @@ public class AppPresenterTest
 
    private void setupAndBindAppPresenter()
    {
-      resetAllMocks();
       setupDefaultMockExpectations();
       replayAllMocks();
       appPresenter = newAppPresenter();
@@ -593,6 +588,12 @@ public class AppPresenterTest
       expect(mockDisplay.getSignOutLink()).andReturn(mockSignoutLink).anyTimes();
       expect(mockDisplay.getLeaveWorkspaceLink()).andReturn(mockLeaveWorkspaceLink).anyTimes();
       expect(mockDisplay.getDocumentsLink()).andReturn(mockDocumentsLink).anyTimes();
+      expect(mockDisplay.getDismiss()).andReturn(mockDismiss).anyTimes();
+      expect(mockDisplay.getDismissVisibility()).andReturn(mockDismissVisibility).anyTimes();
+
+      mockDismissVisibility.setVisible(false); // starts invisible
+      expectLastCall().once();
+
       mockDisplay.showInMainView(MainView.Documents);
       expectLastCall().anyTimes();
       mockDisplay.setDocumentLabel("", NO_DOCUMENTS_STRING);
@@ -613,6 +614,9 @@ public class AppPresenterTest
 
       capturedDocumentLinkClickHandler = new Capture<ClickHandler>();
       expect(mockDocumentsLink.addClickHandler(and(capture(capturedDocumentLinkClickHandler), isA(ClickHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
+
+      capturedDismissLinkClickHandler = new Capture<ClickHandler>();
+      expect(mockDismiss.addClickHandler(and(capture(capturedDismissLinkClickHandler), isA(ClickHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
 
       capturedNotificationEventHandler = new Capture<NotificationEventHandler>();
       expect(mockEventBus.addHandler(eq(NotificationEvent.getType()), and(capture(capturedNotificationEventHandler), isA(NotificationEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
@@ -676,6 +680,7 @@ public class AppPresenterTest
       reset(mockEventBus, mockHistory, mockIdentity, mockLeaveWorkspaceLink);
       reset(mockMessages, mockPerson, mockSignoutLink, mockTranslationPresenter);
       reset(mockWindow, mockWindowLocation, mockWorkspaceContext);
+      reset(mockDismiss, mockDismissVisibility);
    }
 
    private void replayAllMocks()
@@ -684,6 +689,7 @@ public class AppPresenterTest
       replay(mockEventBus, mockHistory, mockIdentity, mockLeaveWorkspaceLink);
       replay(mockMessages, mockPerson, mockSignoutLink, mockTranslationPresenter);
       replay(mockWindow, mockWindowLocation, mockWorkspaceContext);
+      replay(mockDismiss, mockDismissVisibility);
    }
 
    private void verifyAllMocks()
@@ -692,6 +698,7 @@ public class AppPresenterTest
       verify(mockEventBus, mockHistory, mockIdentity, mockLeaveWorkspaceLink);
       verify(mockMessages, mockPerson, mockSignoutLink, mockTranslationPresenter);
       verify(mockWindow, mockWindowLocation, mockWorkspaceContext);
+      verify(mockDismiss, mockDismissVisibility);
    }
 
 }
