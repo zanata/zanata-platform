@@ -139,7 +139,7 @@ public class AppPresenterTest
 
       reset(mockDisplay);
       String testMessage = "test notification message";
-      mockDisplay.setNotificationMessage(testMessage);
+      mockDisplay.setNotificationMessage(testMessage, Severity.Warning);
       expectLastCall().once();
       expect(mockDisplay.getDismissVisibility()).andReturn(mockDismissVisibility).anyTimes();
       replay(mockDisplay);
@@ -150,7 +150,7 @@ public class AppPresenterTest
       replay(mockDismissVisibility);
 
 
-      NotificationEvent notification = new NotificationEvent(Severity.Info, testMessage);
+      NotificationEvent notification = new NotificationEvent(Severity.Warning, testMessage);
       capturedNotificationEventHandler.getValue().onNotification(notification);
 
       verify(mockDisplay);
@@ -378,14 +378,14 @@ public class AppPresenterTest
       appPresenter = newAppPresenter();
       String testMessage = "testing";
 
-      mockDisplay.setNotificationMessage(testMessage);
+      mockDisplay.setNotificationMessage(testMessage, Severity.Error);
       mockDismissVisibility.setVisible(true); // visible upon message
-      mockDisplay.setNotificationMessage("");
+      mockDisplay.setNotificationMessage("", Severity.Info);
       mockDismissVisibility.setVisible(false); // invisible upon clear
 
       replayAllMocks();
       appPresenter.bind();
-      NotificationEvent notification = new NotificationEvent(Severity.Info, testMessage);
+      NotificationEvent notification = new NotificationEvent(Severity.Error, testMessage);
       capturedNotificationEventHandler.getValue().onNotification(notification);
       ClickEvent event = new ClickEvent()
       {

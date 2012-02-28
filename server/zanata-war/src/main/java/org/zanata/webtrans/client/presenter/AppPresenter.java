@@ -75,7 +75,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       void setDocumentLabel(String docPath, String docName);
 
-      void setNotificationMessage(String var);
+      void setNotificationMessage(String message, NotificationEvent.Severity severity);
 
       HasClickHandlers getDismiss();
       HasVisibility getDismissVisibility();
@@ -140,7 +140,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          @Override
          public void onNotification(NotificationEvent event)
          {
-            display.setNotificationMessage(event.getMessage());
+            display.setNotificationMessage(event.getMessage(), event.getSeverity());
             display.getDismissVisibility().setVisible(true);
             Log.info("Notification:" + event.getMessage());
          }
@@ -183,7 +183,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          @Override
          public void onClick(ClickEvent event)
          {
-            display.setNotificationMessage("");
+            display.setNotificationMessage("", NotificationEvent.Severity.Info);
             display.getDismissVisibility().setVisible(false);
          }
       }));

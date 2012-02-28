@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.common.TranslationStats;
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.MainView;
@@ -34,6 +35,7 @@ import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
@@ -50,6 +52,13 @@ public class AppView extends Composite implements AppPresenter.Display
 
    interface AppViewUiBinder extends UiBinder<LayoutPanel, AppView>
    {
+   }
+
+   interface Styles extends CssResource
+   {
+      String notificationInfo();
+      String notificationWarning();
+      String notificationError();
    }
 
    private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
@@ -71,6 +80,10 @@ public class AppView extends Composite implements AppPresenter.Display
 
    @UiField(provided = true)
    final Resources resources;
+
+   @UiField
+   Styles style;
+
 
    // TODO may be able to make these provided=true widgets
    private Widget documentListView;
@@ -185,10 +198,24 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public void setNotificationMessage(String message)
+   public void setNotificationMessage(String message, NotificationEvent.Severity severity)
    {
       notificationMessage.setText(message);
       notificationMessage.setTitle(message);
+
+      // TODO use setStyleDependentName (notification-severity.name())
+      switch (severity)
+      {
+      case Info:
+         notificationMessage.setStyleName(style.notificationInfo());
+         break;
+      case Warning:
+         notificationMessage.setStyleName(style.notificationWarning());
+         break;
+      case Error:
+         notificationMessage.setStyleName(style.notificationError());
+         break;
+      }
       dismissLink.setVisible(!message.isEmpty());
    }
 

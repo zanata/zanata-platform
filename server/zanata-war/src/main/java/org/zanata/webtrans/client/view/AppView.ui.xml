@@ -9,7 +9,7 @@
 	
 	<ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources"/>
 	
-	<ui:style>
+	<ui:style type="org.zanata.webtrans.client.view.AppView.Styles">
 	
 		.topPanel-Navigation {
 
@@ -31,11 +31,24 @@
 			padding: 5px;
 		}
 
-		.notification {
-			color: yellow;
-			padding: 5px;
-         	display: inline;
-		}
+      .notificationInfo {
+         color: white;
+         padding: 5px;
+         display: inline;
+      }
+        
+      .notificationWarning {
+         color: yellow;
+         padding: 5px;
+         display: inline;
+      }
+        
+      .notificationError {
+         color: black;
+         background: lightSalmon;
+         padding: 5px;
+         display: inline;
+      }
         
       .notification-dismiss {
             color: white;
@@ -137,7 +150,7 @@
 					</g:cell>
 					<g:cell verticalAlignment="ALIGN_MIDDLE">
 		            <g:HTMLPanel>
-						<g:Label ui:field="notificationMessage" styleName="{style.notification}"/>
+						<g:Label ui:field="notificationMessage" styleName="{style.notificationInfo}"/>
 		                  <g:Label ui:field="dismissLink" styleName="{style.notification-dismiss}"><ui:msg>(clear)</ui:msg></g:Label>
 		            </g:HTMLPanel>
 		            </g:cell>
