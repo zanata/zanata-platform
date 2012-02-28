@@ -75,7 +75,6 @@ public class LanguageTeamAction extends BaseSecurityChecker implements Serializa
 
    private String language;
    private HLocale locale;
-   private boolean contained;
    private String searchTerm;
    private List<HPerson> searchResults;
 
@@ -106,23 +105,13 @@ public class LanguageTeamAction extends BaseSecurityChecker implements Serializa
 
    public void initLocale()
    {
-      contained = false;
-      for (HLocale locale : this.memberLanguage)
-      {
-         if (locale.getLocaleId().getId().equals(language))
-         {
-            contained = true;
-            break;
-         }
-      }
       locale = localeServiceImpl.getByLocaleId(new LocaleId(language));
       log.debug("init language: {0}", locale.getLocaleId().getId());
-      log.debug("init contained: {0}", contained);
    }
 
-   public boolean getContained()
+   public boolean isUserInTeam()
    {
-      return contained;
+      return authenticatedAccount != null && this.isPersonInTeam( this.authenticatedAccount.getId() );
    }
 
    public HLocale getLocale()

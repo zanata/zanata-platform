@@ -98,7 +98,7 @@ public interface ITranslationResources extends TranslationResourcesResource
          @PathParam("id") String idNoSlash,
          @PathParam("locale") LocaleId locale,
          @QueryParam("ext") Set<String> extensions,
-         @QueryParam("skeletons") @DefaultValue("true") boolean skeletons);
+         @QueryParam("skeletons") boolean skeletons);
 
    @Override
    @DELETE

@@ -53,9 +53,7 @@
                       <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
                       <a4j:commandButton value="#{messages['jsf.Remove']}"
                           action="#{languageTeamAction.removeMembership(member)}"
-                          reRender="threads"
-                          onclick="this.disabled=true"
-                          oncomplete="this.disabeld=false"/>
+                          reRender="memberPanel,actionPanel" />
                   </rich:column>
                 </rich:dataTable>
             </rich:panel>
@@ -69,15 +67,15 @@
           #{messages['jsf.Actions']}
         </f:facet>
         <a4j:form id="Language_team_member_toggle_form" ajaxSubmit="true" reRender="actionPanel,tribesTabDiv,memberPanel">
-          <a4j:commandLink id="Join" styleClass="action_link" action="#{languageTeamAction.joinTribe}" rendered="#{not languageTeamAction.contained and s:hasRole('admin')}">
+          <a4j:commandLink id="Join" styleClass="action_link" action="#{languageTeamAction.joinTribe}" rendered="#{not languageTeamAction.isUserInTeam() and s:hasRole('admin')}">
             #{messages['jsf.JoinLanguageTeam']}
             <s:conversationId name="id" value="#{languageTeamAction.language}"/>
           </a4j:commandLink>
-          <a4j:commandLink id="Leave" styleClass="action_link" action="#{languageTeamAction.leaveTribe}" rendered="#{languageTeamAction.contained}">
+          <a4j:commandLink id="Leave" styleClass="action_link" action="#{languageTeamAction.leaveTribe}" rendered="#{languageTeamAction.isUserInTeam()}">
             #{messages['jsf.LeaveLanguageTeam']}
             <s:conversationId name="id" value="#{languageTeamAction.language}"/>
           </a4j:commandLink>
-          <s:link styleClass="action_link" value="#{messages['jsf.RequestToJoinLanguageTeam']}" view="/language/join/#{languageTeamAction.language}" rendered="#{identity.loggedIn and not languageTeamAction.contained}" />
+          <s:link styleClass="action_link" value="#{messages['jsf.RequestToJoinLanguageTeam']}" view="/language/join/#{languageTeamAction.language}" rendered="#{identity.loggedIn and not languageTeamAction.isUserInTeam()}" />
             <!--
           <s:link styleClass="action_link" value="#{messages['jsf.contactLanguageTeamCoordinator']}" view="/language/contact_coordinator.xhtml" propagation="none"  rendered="#{identity.loggedIn}">
             using this param is not as clean as I'd like, but seems to be the only way to get a literal
