@@ -123,7 +123,8 @@ public class PullCommand extends PushPullCommand<PullOptions>
       log.info("Pulling {} docs for this module from the server", docNamesForModule.size());
       log.debug("Doc names: {}", docNamesForModule);
 
-      if (getOpts().getPullSrc())
+      boolean pullSrc = getOpts().getPullSrc();
+      if (pullSrc)
       {
          log.warn("The pullSrc option is set: existing source-language files may be overwritten/deleted");
          confirmWithUser("This will overwrite/delete any existing documents and translations in the above directories.\n");
@@ -139,14 +140,15 @@ public class PullCommand extends PushPullCommand<PullOptions>
          String localDocName = unqualifiedDocName(qualifiedDocName);
          // TODO follow a Link instead of generating the URI
          String docUri = RestUtil.convertToDocumentURIId(qualifiedDocName);
-         if (strat.needsDocToWriteTrans() || getOpts().getPullSrc() || getOpts().getCreateSkeletons())
+         boolean createSkeletons = getOpts().getCreateSkeletons();
+         if (strat.needsDocToWriteTrans() || pullSrc || createSkeletons)
          {
             ClientResponse<Resource> resourceResponse = translationResources.getResource(docUri, strat.getExtensions());
             ClientUtility.checkResult(resourceResponse, uri);
             doc = resourceResponse.getEntity();
             doc.setName(localDocName);
          }
-         if (getOpts().getPullSrc())
+         if (pullSrc)
          {
             writeSrcDoc(strat, doc);
          }
@@ -155,13 +157,14 @@ public class PullCommand extends PushPullCommand<PullOptions>
          {
             LocaleId locale = new LocaleId(locMapping.getLocale());
 
-            ClientResponse<TranslationsResource> transResponse = translationResources.getTranslations(docUri, locale, strat.getExtensions());
+            ClientResponse<TranslationsResource> transResponse = translationResources.getTranslations(
+                  docUri, locale, strat.getExtensions(), createSkeletons);
             TranslationsResource targetDoc;
             // ignore 404 (no translation yet for specified document)
             if (transResponse.getResponseStatus() == Response.Status.NOT_FOUND)
             {
                targetDoc = null;
-               if (!getOpts().getCreateSkeletons())
+               if (!createSkeletons)
                {
                   log.info("No translations found in locale {} for document {}", locale, localDocName);
                   continue;
@@ -172,7 +175,7 @@ public class PullCommand extends PushPullCommand<PullOptions>
                ClientUtility.checkResult(transResponse, uri);
                targetDoc = transResponse.getEntity();
             }
-            if (targetDoc != null || getOpts().getCreateSkeletons())
+            if (targetDoc != null || createSkeletons)
             {
                writeTargetDoc(strat, localDocName, locMapping, doc, targetDoc);
             }
@@ -194,12 +197,21 @@ public class PullCommand extends PushPullCommand<PullOptions>
       }
    }
 
-   private void writeTargetDoc(PullStrategy strat, String localDocName, LocaleMapping locMapping, Resource doc, TranslationsResource targetDoc) throws IOException
+   /**
+    * 
+    * @param strat
+    * @param localDocName
+    * @param locMapping
+    * @param docWithLocalName may be null if needsDocToWriteTrans() returns false
+    * @param targetDoc
+    * @throws IOException
+    */
+   private void writeTargetDoc(PullStrategy strat, String localDocName, LocaleMapping locMapping, Resource docWithLocalName, TranslationsResource targetDoc) throws IOException
    {
       if (!getOpts().isDryRun())
       {
          log.info("Writing translation file in locale {} for document {}", locMapping.getLocalLocale(), localDocName);
-         strat.writeTransFile(doc, localDocName, locMapping, targetDoc);
+         strat.writeTransFile(docWithLocalName, localDocName, locMapping, targetDoc);
       }
       else
       {
