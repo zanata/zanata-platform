@@ -87,10 +87,18 @@ public interface ITranslationResources extends TranslationResourcesResource
    @Path("{id}/meta")
    public ClientResponse<String> putResourceMeta(@PathParam("id") String idNoSlash, ResourceMeta messageBody, @QueryParam("ext") Set<String> extensions);
 
-   @Override
    @GET
    @Path("{id}/translations/{locale}")
    public ClientResponse<TranslationsResource> getTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, @QueryParam("ext") Set<String> extensions);
+
+   @Override
+   @GET
+   @Path("{id}/translations/{locale}")
+   public ClientResponse<TranslationsResource> getTranslations(
+         @PathParam("id") String idNoSlash,
+         @PathParam("locale") LocaleId locale,
+         @QueryParam("ext") Set<String> extensions,
+         @QueryParam("skeletons") @DefaultValue("true") boolean skeletons);
 
    @Override
    @DELETE

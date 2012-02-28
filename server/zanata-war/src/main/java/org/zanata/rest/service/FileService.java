@@ -128,7 +128,7 @@ public class FileService implements FileResource
          
          // Perform translation of Hibernate DTOs to JAXB DTOs
          TranslationsResource transRes = 
-               (TranslationsResource)this.translationResourcesService.getTranslations(docId, new LocaleId(locale), extensions).getEntity();
+               (TranslationsResource) this.translationResourcesService.getTranslations(docId, new LocaleId(locale), extensions, true).getEntity();
          Resource res = this.resourceUtils.buildResource(document);
                
          StreamingOutput output = new POStreamingOutput(res, transRes);

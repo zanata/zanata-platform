@@ -22,10 +22,10 @@ public interface PullStrategy
 
    /**
     * pre: docWithLocalName.getName() must match docName if docWithLocalName is not null
+    * @param docWithLocalName may be null if needsDocToWriteTrans() returns false
     * @param docName may be null if needsDocToWriteTrans() returns false
     * @param localeMapping
     * @param targetDoc
-    * @param localDocName
     * @throws IOException
     */
    void writeTransFile(Resource docWithLocalName, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException;

@@ -335,7 +335,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       response = transResource.putTranslations("my.txt", de_DE, entity, null, MergeType.IMPORT.toString());
       assertThat(response.getResponseStatus(), is(Status.OK));
 
-      getResponse = transResource.getTranslations("my.txt", de_DE, null);
+      getResponse = transResource.getTranslations("my.txt", de_DE, null, false);
       assertThat(getResponse.getResponseStatus(), is(Status.NOT_FOUND));
    }
 
@@ -1104,7 +1104,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
 
    private void dontExpectTarget(String id, LocaleId locale)
    {
-      ClientResponse<TranslationsResource> response = transResource.getTranslations(id, locale, null);
+      ClientResponse<TranslationsResource> response = transResource.getTranslations(id, locale, null, false);
       assertThat(response.getStatus(), is(404));
    }
 
