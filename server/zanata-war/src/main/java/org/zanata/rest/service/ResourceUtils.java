@@ -1088,24 +1088,31 @@ public class ResourceUtils
     * @param enabledExtensions
     * @param locale
     * @see #transferFromTranslationsResourceExtensions
+    * @return true only if extensions were found
     */
-   public void transferToTranslationsResourceExtensions(HDocument from, ExtensionSet<TranslationsResourceExtension> to, Set<String> enabledExtensions, HLocale locale, List<HTextFlowTarget> hTargets)
+   public boolean transferToTranslationsResourceExtensions(HDocument from, ExtensionSet<TranslationsResourceExtension> to, Set<String> enabledExtensions, HLocale locale, List<HTextFlowTarget> hTargets)
    {
+      boolean found = false;
       if (enabledExtensions.contains(PoTargetHeader.ID))
       {
          log.debug("PoTargetHeader requested");
          PoTargetHeader poTargetHeader = new PoTargetHeader();
          HPoTargetHeader fromHeader = from.getPoTargetHeaders().get(locale);
-         if( fromHeader == null )
+         if (fromHeader != null)
+         {
+            found = true;
+            log.debug("PoTargetHeader found");
+         }
+         else
          {
             // If no header is found, use a default empty header for generation purposes
             fromHeader = new HPoTargetHeader();
             fromHeader.setEntries("");
          }
-         log.debug("PoTargetHeader found");
          transferToPoTargetHeader(fromHeader, poTargetHeader, hTargets, locale);
          to.add(poTargetHeader);
       }
+      return found;
    }
 
    public void transferToTextFlowExtensions(HTextFlow from, ExtensionSet<TextFlowExtension> to, Set<String> enabledExtensions)
@@ -1236,19 +1243,34 @@ public class ResourceUtils
       return entity;
    }
    
-   public void transferToTranslationsResource(TranslationsResource transRes, HDocument document, 
+   /**
+    * 
+    * @param transRes
+    * @param document
+    * @param locale
+    * @param enabledExtensions
+    * @param hTargets
+    * @return true only if some data was found (non-New translations, or some metadata extensions)
+    */
+   public boolean transferToTranslationsResource(TranslationsResource transRes, HDocument document,
          HLocale locale, Set<String> enabledExtensions, List<HTextFlowTarget> hTargets)
    {      
-      this.transferToTranslationsResourceExtensions(document, transRes.getExtensions(true), enabledExtensions, locale, hTargets);
+      boolean found = this.transferToTranslationsResourceExtensions(
+            document, transRes.getExtensions(true), enabledExtensions, locale, hTargets);
       
       for (HTextFlowTarget hTarget : hTargets)
       {
+         if (hTarget.getState() != ContentState.New)
+         {
+            found = true;
+         }
          TextFlowTarget target = new TextFlowTarget();
          target.setResId(hTarget.getTextFlow().getResId());
          this.transferToTextFlowTarget(hTarget, target);
          this.transferToTextFlowTargetExtensions(hTarget, target.getExtensions(true), enabledExtensions);
          transRes.getTextFlowTargets().add(target);
       }
+      return found;
    }
    
 }

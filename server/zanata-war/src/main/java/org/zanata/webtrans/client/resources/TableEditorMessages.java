@@ -27,16 +27,16 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Not logged in!")
    String notifyNotLoggedIn();
 
-   @DefaultMessage("Failed to load data from Server")
+   @DefaultMessage("Failed to load data from server")
    String notifyLoadFailed();
 
-   @DefaultMessage("An unknown error occurred")
-   String notifyUnknownError();
+   @DefaultMessage("Saving...")
+   String notifySaving();
 
-   @DefaultMessage("Failed to update Translation Unit: {0}")
+   @DefaultMessage("Save FAILED: {0}")
    String notifyUpdateFailed(String errorMessage);
 
-   @DefaultMessage("Saved change to Translation Unit")
+   @DefaultMessage("Saved")
    String notifyUpdateSaved();
 
    @DefaultMessage("Validation error - See validation message")

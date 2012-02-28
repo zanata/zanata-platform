@@ -386,7 +386,8 @@ public class TranslationsCompatibilityTest extends ZanataCompatibilityTest
       assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
       
       // try to fetch them again
-      ClientResponse<TranslationsResource> getResponse = translationsClient.getTranslations("my,path,document-3.txt", LocaleId.EN_US, null);
-      assertThat( getResponse.getStatus(), is(Status.NOT_FOUND.getStatusCode()) ); // 404
+      ClientResponse<TranslationsResource> getResponse = translationsClient.getTranslations(
+            "my,path,document-3.txt", LocaleId.EN_US, new StringSet(PoHeader.ID + ";" + SimpleComment.ID));
+      assertThat(getResponse.getStatus(), is(Status.NOT_FOUND.getStatusCode())); // 404
    }
 }

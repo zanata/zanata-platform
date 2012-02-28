@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.common.TranslationStats;
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.MainView;
@@ -34,13 +35,13 @@ import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.layout.client.Layout.AnimationCallback;
-import com.google.gwt.layout.client.Layout.Layer;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -53,9 +54,14 @@ public class AppView extends Composite implements AppPresenter.Display
    {
    }
 
-   private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
+   interface Styles extends CssResource
+   {
+      String notificationInfo();
+      String notificationWarning();
+      String notificationError();
+   }
 
-   private final int NOTIFICATION_TIME = 2500;
+   private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
 
    @UiField
    Anchor signOutLink, leaveLink, helpLink;
@@ -64,7 +70,7 @@ public class AppView extends Composite implements AppPresenter.Display
    TransUnitCountBar translationStatsBar;
 
    @UiField
-   Label readOnlyLabel, notificationMessage, user, documentsLink;
+   Label readOnlyLabel, notificationMessage, user, documentsLink, dismissLink;
 
    @UiField
    SpanElement selectedDocumentSpan, selectedDocumentPathSpan;
@@ -74,6 +80,10 @@ public class AppView extends Composite implements AppPresenter.Display
 
    @UiField(provided = true)
    final Resources resources;
+
+   @UiField
+   Styles style;
+
 
    // TODO may be able to make these provided=true widgets
    private Widget documentListView;
@@ -129,6 +139,18 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
+   public HasClickHandlers getDismiss()
+   {
+      return dismissLink;
+   }
+
+   @Override
+   public HasVisibility getDismissVisibility()
+   {
+      return dismissLink;
+   }
+
+   @Override
    public HasClickHandlers getHelpLink()
    {
       return helpLink;
@@ -175,26 +197,26 @@ public class AppView extends Composite implements AppPresenter.Display
       selectedDocumentSpan.setInnerText(docName);
    }
 
-   private final AnimationCallback callback = new AnimationCallback()
-   {
-      @Override
-      public void onAnimationComplete()
-      {
-         notificationMessage.setText("");
-      }
-
-      @Override
-      public void onLayout(Layer layer, double progress)
-      {
-      }
-   };
-
    @Override
-   public void setNotificationMessage(String message)
+   public void setNotificationMessage(String message, NotificationEvent.Severity severity)
    {
-      topPanel.forceLayout();
       notificationMessage.setText(message);
-      topPanel.animate(NOTIFICATION_TIME, callback);
+      notificationMessage.setTitle(message);
+
+      // TODO use setStyleDependentName (notification-severity.name())
+      switch (severity)
+      {
+      case Info:
+         notificationMessage.setStyleName(style.notificationInfo());
+         break;
+      case Warning:
+         notificationMessage.setStyleName(style.notificationWarning());
+         break;
+      case Error:
+         notificationMessage.setStyleName(style.notificationError());
+         break;
+      }
+      dismissLink.setVisible(!message.isEmpty());
    }
 
    @Override

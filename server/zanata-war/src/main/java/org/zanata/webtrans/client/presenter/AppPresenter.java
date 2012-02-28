@@ -49,6 +49,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.inject.Inject;
 
 public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
@@ -74,7 +75,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       void setDocumentLabel(String docPath, String docName);
 
-      void setNotificationMessage(String var);
+      void setNotificationMessage(String message, NotificationEvent.Severity severity);
+
+      HasClickHandlers getDismiss();
+      HasVisibility getDismissVisibility();
 
       void setStats(TranslationStats transStats);
 
@@ -136,7 +140,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          @Override
          public void onNotification(NotificationEvent event)
          {
-            display.setNotificationMessage(event.getMessage());
+            display.setNotificationMessage(event.getMessage(), event.getSeverity());
+            display.getDismissVisibility().setVisible(true);
             Log.info("Notification:" + event.getMessage());
          }
       }));
@@ -172,6 +177,18 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             }
          }
       }));
+
+      registerHandler(display.getDismiss().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            display.setNotificationMessage("", NotificationEvent.Severity.Info);
+            display.getDismissVisibility().setVisible(false);
+         }
+      }));
+
+      display.getDismissVisibility().setVisible(false);
 
       registerHandler(display.getSignOutLink().addClickHandler(new ClickHandler()
       {

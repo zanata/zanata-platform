@@ -93,7 +93,12 @@ public interface TranslationResourcesResource
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
-   public Response getTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, @QueryParam("ext") Set<String> extensions);
+   public Response getTranslations(
+         @PathParam("id") String idNoSlash,
+         @PathParam("locale") LocaleId locale,
+         @QueryParam("ext") Set<String> extensions,
+         @QueryParam("skel") boolean createSkeletons
+         );
 
    @DELETE
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")

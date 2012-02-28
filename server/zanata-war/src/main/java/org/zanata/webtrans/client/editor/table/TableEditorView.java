@@ -92,7 +92,7 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
       // Setup the formatting
       setCellPadding(3);
       setCellSpacing(0);
-      setResizePolicy(ScrollTable.ResizePolicy.FLOW);
+      setResizePolicy(ScrollTable.ResizePolicy.FIXED_WIDTH);
 
       getDataTable().setStylePrimaryName("TableEditor");
       getDataTable().setSelectionPolicy(SelectionPolicy.ONE_ROW);

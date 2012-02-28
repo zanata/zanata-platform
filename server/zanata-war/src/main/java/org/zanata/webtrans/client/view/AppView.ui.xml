@@ -9,7 +9,7 @@
 	
 	<ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources"/>
 	
-	<ui:style>
+	<ui:style type="org.zanata.webtrans.client.view.AppView.Styles">
 	
 		.topPanel-Navigation {
 
@@ -31,10 +31,31 @@
 			padding: 5px;
 		}
 
-		.notification {
-			color: yellow;
-			padding: 5px;
-		}
+      .notificationInfo {
+         color: white;
+         padding: 5px;
+         display: inline;
+      }
+        
+      .notificationWarning {
+         color: yellow;
+         padding: 5px;
+         display: inline;
+      }
+        
+      .notificationError {
+         color: black;
+         background: lightSalmon;
+         padding: 5px;
+         display: inline;
+      }
+        
+      .notification-dismiss {
+            color: white;
+            text-decoration: underline;
+            cursor: pointer;
+            display: inline;
+      }
 
 		.topPanel-Workspace a {
 			color: white;
@@ -99,13 +120,13 @@
                                     <g:Label ui:field="user" styleName="{style.userName}"/>
                                  </g:cell>
                                  <g:cell horizontalAlignment="ALIGN_CENTER">
-                                    <g:Anchor href="#" ui:field="helpLink"><ui:msg>Help</ui:msg></g:Anchor>
+                                    <g:Anchor href="javascript:void(0)" ui:field="helpLink"><ui:msg>Help</ui:msg></g:Anchor>
                                  </g:cell>
                                  <g:cell horizontalAlignment="ALIGN_CENTER">
-                                    <g:Anchor href="#" ui:field="leaveLink"><ui:msg>Leave Workspace</ui:msg></g:Anchor>
+                                    <g:Anchor href="javascript:void(0)" ui:field="leaveLink"><ui:msg>Leave Workspace</ui:msg></g:Anchor>
                                  </g:cell>
                                  <g:cell horizontalAlignment="ALIGN_CENTER">
-                                    <g:Anchor href="#" ui:field="signOutLink"><ui:msg>Sign Out</ui:msg></g:Anchor>
+                                    <g:Anchor href="javascript:void(0)" ui:field="signOutLink"><ui:msg>Sign Out</ui:msg></g:Anchor>
                                  </g:cell>
                         </g:HorizontalPanel>
                     </g:FlowPanel>
@@ -114,22 +135,25 @@
 		</g:layer>
 		<g:layer top="22px" height="28px">
 			<g:LayoutPanel ui:field='topPanel' styleName="{resources.style.banner}">
-				<g:layer left="0px" right="520px">
+				<g:layer left="0px" right="205px">
 				<g:HorizontalPanel width="100%">
-					<g:FlowPanel>
-					<g:HTMLPanel styleName="{style.topPanel-Workspace}">
-						<nobr>
-						    <g:Label ui:field="documentsLink" styleName="{style.documents-link}"><ui:msg>Documents</ui:msg></g:Label>
-							<span class="{style.divider}">></span>
-							<em>
-								<span ui:field="selectedDocumentPathSpan"/><span ui:field="selectedDocumentSpan"><ui:msg>No document selected</ui:msg></span>
-							</em>
-						</nobr>
-					</g:HTMLPanel>
-					</g:FlowPanel>
-					<g:FlowPanel >
-						<g:Label ui:field="notificationMessage" styleName="{style.notification}"/>
-					</g:FlowPanel>
+					<g:cell verticalAlignment="ALIGN_MIDDLE">
+						<g:HTMLPanel styleName="{style.topPanel-Workspace}">
+							<nobr>
+							    <g:Label ui:field="documentsLink" styleName="{style.documents-link}"><ui:msg>Documents</ui:msg></g:Label>
+								<span class="{style.divider}">></span>
+								<em>
+									<span ui:field="selectedDocumentPathSpan"/><span ui:field="selectedDocumentSpan"><ui:msg>No document selected</ui:msg></span>
+								</em>
+							</nobr>
+						</g:HTMLPanel>
+					</g:cell>
+					<g:cell verticalAlignment="ALIGN_MIDDLE">
+		            <g:HTMLPanel>
+						<g:Label ui:field="notificationMessage" styleName="{style.notificationInfo}"/>
+		                  <g:Label ui:field="dismissLink" styleName="{style.notification-dismiss}"><ui:msg>(clear)</ui:msg></g:Label>
+		            </g:HTMLPanel>
+		            </g:cell>
 				</g:HorizontalPanel>
 				</g:layer>
 				<g:layer right="5px" width="200px">	      

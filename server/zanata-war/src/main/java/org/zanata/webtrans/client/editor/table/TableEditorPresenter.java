@@ -202,6 +202,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             Log.info("cancel edit");
             display.getTargetCellEditor().cancelEdit();
          }
+         eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifySaving()));
          dispatcher.rollback(action.getAction(), action.getResult(), new AsyncCallback<Void>()
          {
             @Override
@@ -219,6 +220,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             @Override
             public void onSuccess(Void result)
             {
+               eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyUpdateSaved()));
             }
          });
       }
@@ -232,6 +234,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          final UpdateTransUnit updateTransUnit = action.getAction();
          updateTransUnit.setRedo(true);
          updateTransUnit.setVerNum(action.getResult().getCurrentVersionNum());
+         eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifySaving()));
          dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
          {
             @Override
@@ -249,6 +252,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             @Override
             public void onSuccess(UpdateTransUnitResult result)
             {
+               eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyUpdateSaved()));
             }
          });
       }
@@ -732,7 +736,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                else
                {
                   Log.error("GetTransUnits failure " + caught, caught);
-                  eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnknownError()));
+                  eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyLoadFailed()));
                }
                display.stopProcessing();
             }
@@ -744,6 +748,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       public boolean onSetRowValue(int row, TransUnit rowValue)
       {
          final UpdateTransUnit updateTransUnit = new UpdateTransUnit(rowValue.getId(), rowValue.getTarget(), rowValue.getStatus());
+         eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifySaving()));
          dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
          {
             @Override

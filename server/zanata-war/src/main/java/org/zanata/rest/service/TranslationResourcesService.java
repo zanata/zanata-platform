@@ -701,7 +701,12 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    @TypeHint(TranslationsResource.class)
    // /r/{id}/translations/{locale}
-   public Response getTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, @QueryParam("ext") Set<String> extensions)
+   public Response getTranslations(
+         @PathParam("id") String idNoSlash,
+         @PathParam("locale") LocaleId locale,
+         @QueryParam("ext") Set<String> extensions,
+         @QueryParam("skeletons") @DefaultValue("false") boolean skeletons
+         )
    {
       log.debug("start to get translation");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
@@ -726,11 +731,11 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
 
       HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
       TranslationsResource translationResource = new TranslationsResource();
-      resourceUtils.transferToTranslationsResource(
+      boolean foundData = resourceUtils.transferToTranslationsResource(
             translationResource, document, hLocale, extensions, 
             textFlowTargetDAO.findTranslations(document, hLocale));
 
-      if (translationResource.getTextFlowTargets().isEmpty() && translationResource.getExtensions(true).isEmpty())
+      if (!foundData && !skeletons)
       {
          return Response.status(Status.NOT_FOUND).build();
       }
