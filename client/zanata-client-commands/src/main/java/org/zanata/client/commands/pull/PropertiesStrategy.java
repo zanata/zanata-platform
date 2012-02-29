@@ -77,10 +77,11 @@ public class PropertiesStrategy implements PullStrategy
    @Override
    public void writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
    {
-      if (getPullOptions().getCreateSkeletons())
-         PropWriter.write(doc, targetDoc, getPullOptions().getTransDir(), docName, localeMapping.getJavaLocale());
+      boolean createSkeletons = getPullOptions().getCreateSkeletons();
+      if (createSkeletons)
+         PropWriter.write(doc, targetDoc, getPullOptions().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
       else
-         PropWriter.write(null, targetDoc, getPullOptions().getTransDir(), docName, localeMapping.getJavaLocale());
+         PropWriter.write(null, targetDoc, getPullOptions().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
    }
 
 }

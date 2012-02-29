@@ -48,10 +48,11 @@ public class UTF8PropertiesStrategy extends PropertiesStrategy
    @Override
    public void writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
    {
-      if (getPullOptions().getCreateSkeletons())
-         PropWriter.writeUTF8(doc, targetDoc, getPullOptions().getTransDir(), docName, localeMapping.getJavaLocale());
+      boolean createSkeletons = getPullOptions().getCreateSkeletons();
+      if (createSkeletons)
+         PropWriter.writeUTF8(doc, targetDoc, getPullOptions().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
       else
-         PropWriter.writeUTF8(null, targetDoc, getPullOptions().getTransDir(), docName, localeMapping.getJavaLocale());
+         PropWriter.writeUTF8(null, targetDoc, getPullOptions().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
    }
 
 }

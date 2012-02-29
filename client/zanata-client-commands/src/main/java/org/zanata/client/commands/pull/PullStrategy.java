@@ -28,5 +28,9 @@ public interface PullStrategy
     * @param targetDoc
     * @throws IOException
     */
-   void writeTransFile(Resource docWithLocalName, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException;
+   void writeTransFile(
+         Resource docWithLocalName,
+         String docName,
+         LocaleMapping localeMapping,
+         TranslationsResource targetDoc) throws IOException;
 }
