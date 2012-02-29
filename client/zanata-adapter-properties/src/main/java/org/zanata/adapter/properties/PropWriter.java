@@ -78,7 +78,7 @@ public class PropWriter
          if (target == null || target.getState() != ContentState.Approved)
          {
             // don't save fuzzy or empty values
-            return;
+            continue;
          }
          targetProp.setProperty(target.getResId(), target.getContent());
          SimpleComment simpleComment = target.getExtensions(true).findByType(SimpleComment.class);
