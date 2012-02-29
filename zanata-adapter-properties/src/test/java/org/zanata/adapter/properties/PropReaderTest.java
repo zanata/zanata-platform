@@ -39,7 +39,7 @@ public class PropReaderTest
    @BeforeMethod
    public void resetReader()
    {
-      propReader = new PropReader(ISO_8859_1, new LocaleId(locale), ContentState.New);
+      propReader = new PropReader(ISO_8859_1, new LocaleId(locale), ContentState.Approved);
    }
 
    @Test
@@ -83,7 +83,7 @@ public class PropReaderTest
       Unmarshaller unmarshal = jc.createUnmarshaller();
       TranslationsResource docIn = (TranslationsResource) unmarshal.unmarshal(new StringReader(sw.toString()));
 
-      PropWriter.write(null, docIn, TEST_OUTPUT_DIR, "test", locale);
+      PropWriter.write(null, docIn, TEST_OUTPUT_DIR, "test", locale, false);
 
       assertInputAndOutputDocContentSame(docName);
    }

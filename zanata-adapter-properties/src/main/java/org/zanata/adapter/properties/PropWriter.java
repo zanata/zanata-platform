@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.fedorahosted.openprops.Properties;
+import org.zanata.common.ContentState;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
@@ -69,17 +70,20 @@ public class PropWriter
       storeProps(props, baseFile, utf8);
    }
 
-   public static void write(Resource srcDoc, final TranslationsResource doc, final File baseDir, String bundleName, String locale) throws IOException
+   public static void write(Resource srcDoc, final TranslationsResource doc, final File baseDir, String bundleName, String locale, boolean createSkeletons) throws IOException
    {
-      write(srcDoc, doc, baseDir, bundleName, locale, false);
+      write(srcDoc, doc, baseDir, bundleName, locale, false, createSkeletons);
    }
 
-   public static void writeUTF8(Resource srcDoc, final TranslationsResource doc, final File baseDir, String bundleName, String locale) throws IOException
+   public static void writeUTF8(Resource srcDoc, final TranslationsResource doc, final File baseDir, String bundleName, String locale, boolean createSkeletons) throws IOException
    {
-      write(srcDoc, doc, baseDir, bundleName, locale, true);
+      write(srcDoc, doc, baseDir, bundleName, locale, true, createSkeletons);
    }
 
-   private static void write(Resource srcDoc, final TranslationsResource doc, final File baseDir, String bundleName, String locale, boolean utf8) throws IOException
+   private static void write(
+         Resource srcDoc, final TranslationsResource doc,
+         final File baseDir, String bundleName, String locale,
+         boolean utf8, boolean createSkeletons) throws IOException
    {
       Properties targetProp = new Properties();
 
@@ -87,7 +91,7 @@ public class PropWriter
       {
          for (TextFlowTarget target : doc.getTextFlowTargets())
          {
-            textFlowTargetToProperty(target.getResId(), target, targetProp);
+            textFlowTargetToProperty(target.getResId(), target, targetProp, createSkeletons);
          }
       }
       else
@@ -103,7 +107,7 @@ public class PropWriter
          for (TextFlow textFlow : srcDoc.getTextFlows())
          {
             TextFlowTarget target = targets.get(textFlow.getId());
-            textFlowTargetToProperty(textFlow.getId(), target, targetProp);
+            textFlowTargetToProperty(textFlow.getId(), target, targetProp, createSkeletons);
          }
       }
 
@@ -134,11 +138,15 @@ public class PropWriter
       }
    }
 
-   private static void textFlowTargetToProperty(String resId, TextFlowTarget target, Properties targetProp)
+   private static void textFlowTargetToProperty(String resId, TextFlowTarget target, Properties targetProp, boolean createSkeletons)
    {
-      if (target == null)
+      if (target == null || target.getState() != ContentState.Approved)
       {
-         targetProp.setProperty(resId, "");
+         // don't save fuzzy or empty values
+         if (createSkeletons)
+         {
+            targetProp.setProperty(resId, "");
+         }
          return;
       }
       targetProp.setProperty(target.getResId(), target.getContent());

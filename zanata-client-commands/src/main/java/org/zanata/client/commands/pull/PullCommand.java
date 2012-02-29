@@ -206,7 +206,12 @@ public class PullCommand extends PushPullCommand<PullOptions>
     * @param targetDoc
     * @throws IOException
     */
-   private void writeTargetDoc(PullStrategy strat, String localDocName, LocaleMapping locMapping, Resource docWithLocalName, TranslationsResource targetDoc) throws IOException
+   private void writeTargetDoc(
+         PullStrategy strat,
+         String localDocName,
+         LocaleMapping locMapping,
+         Resource docWithLocalName,
+         TranslationsResource targetDoc) throws IOException
    {
       if (!getOpts().isDryRun())
       {

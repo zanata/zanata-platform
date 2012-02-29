@@ -12,6 +12,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.zanata.common.ContentState;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.TextFlowExtension;
 import org.zanata.rest.dto.resource.Resource;
@@ -76,7 +77,7 @@ public class XliffWriter extends XliffCommon
          writer.writeAttribute(ATTRI_ID, textFlow.getId());
          writeTransUnitSource(writer, textFlow);
          writeTransUnitContext(writer, textFlow);
-         if (target != null)
+         if (target != null && target.getState() == ContentState.Approved)
          {
             writeTransUnitTarget(writer, target);
          }
