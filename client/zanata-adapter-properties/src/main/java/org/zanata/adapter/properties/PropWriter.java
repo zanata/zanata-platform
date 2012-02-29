@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 import org.fedorahosted.openprops.Properties;
+import org.zanata.common.ContentState;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
@@ -74,6 +75,11 @@ public class PropWriter
       Properties targetProp = new Properties();
       for (TextFlowTarget target : doc.getTextFlowTargets())
       {
+         if (target == null || target.getState() != ContentState.Approved)
+         {
+            // don't save fuzzy or empty values
+            return;
+         }
          targetProp.setProperty(target.getResId(), target.getContent());
          SimpleComment simpleComment = target.getExtensions(true).findByType(SimpleComment.class);
          if (simpleComment != null && simpleComment.getValue() != null)
