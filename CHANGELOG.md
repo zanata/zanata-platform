@@ -4,6 +4,29 @@
  * Allow bookmarking of selected document, document list filter and current view: https://bugzilla.redhat.com/show_bug.cgi?id=757621
  * Add workspace query string parameters for generating a custom doclist with a custom title: https://bugzilla.redhat.com/show_bug.cgi?id=758587
   * e.g. &title=Custom%20title&doc=full/path/of/first/doc&doc=full/path/of/second/doc
+ * Redesign of color scheme translation editor workspace layout
+ * Project/project iteration status changes: ACTIVE, READONLY, and OBSOLETE
+ * Allow readonly access to retired project/project iteration: https://bugzilla.redhat.com/show_bug.cgi?id=755759
+ * Implement filter messages in the editor by translation status: https://bugzilla.redhat.com/show_bug.cgi?id=773459
+ * Implement validation in editor: 
+  * Newline validation on leading and trailing string: https://bugzilla.redhat.com/show_bug.cgi?id=768802
+  * Variables to be checked for consistency: https://bugzilla.redhat.com/show_bug.cgi?id=769471
+  * XML and HTML tags to be checked for completeness: https://bugzilla.redhat.com/show_bug.cgi?id=756235
+ * Project list filtering based on status
+ * Overall statistics page for Admin
+ * Fix bug: 
+  * Rapid key navigation causes backlog of TM queries: https://bugzilla.redhat.com/show_bug.cgi?id=785034
+  * Long strings slow down the operation: https://bugzilla.redhat.com/show_bug.cgi?id=750956
+  * "Participants" information is incorrect.: https://bugzilla.redhat.com/show_bug.cgi?id=756292
+  * Translation editor: Long word in source cell invades the editor cell: https://bugzilla.redhat.com/show_bug.cgi?id=759337
+  * On push operations, copyTrans runs too slowly: https://bugzilla.redhat.com/show_bug.cgi?id=746899
+  * Zanata po push does not assume working directory: https://bugzilla.redhat.com/show_bug.cgi?id=727386
+  * Fuzzy strings are not shown on web interface after uploading: https://bugzilla.redhat.com/show_bug.cgi?id=728821
+  * Can not disable copytrans option when pushing source to zanata server with --no-copytrans option: https://bugzilla.redhat.com/show_bug.cgi?id=738907
+  * add support for msgctxt in PO files: https://bugzilla.redhat.com/show_bug.cgi?id=739807
+  * No proper error message when specify unsupported project type: https://bugzilla.redhat.com/show_bug.cgi?id=753719
+  * Edit profile: "duplicate email" is shown even if user press save without changing email: https://bugzilla.redhat.com/show_bug.cgi?id=719176
+  * Translation editor table shows changes which failed to save: https://bugzilla.redhat.com/show_bug.cgi?id=690669
 
 ## zanata-1.4.5
  * Add support for Maven modules: https://bugzilla.redhat.com/show_bug.cgi?id=742872
