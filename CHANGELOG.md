@@ -1,5 +1,11 @@
 # Zanata change log summary
 
+## zanata-1.4.5.2
+ * Fix handling of fuzzy entries when saving Properties files
+
+## zanata-1.4.5.1
+ * Fix regression with Unicode encoding for ordinary (Latin-1) .properties files: https://bugzilla.redhat.com/show_bug.cgi?id=795597
+
 ## zanata-1.4.5
  * Add support for Maven modules: https://bugzilla.redhat.com/show_bug.cgi?id=742872
  * Fix bug: Moving to a new page does not refresh the translation textboxes (ghost translations): https://bugzilla.redhat.com/show_bug.cgi?id=760431
