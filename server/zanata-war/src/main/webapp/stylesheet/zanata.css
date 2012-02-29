@@ -6,7 +6,7 @@ body {
 	background-color: #ffffff;
 }
 
-a, a:link, a:visited {
+a,a:link,a:visited {
 	text-decoration: none;
 }
 
@@ -14,7 +14,7 @@ a:hover {
 	color: #990000;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,h2,h3,h4,h5,h6 {
 	margin: 10px 0;
 	padding: 0;
 }
@@ -28,11 +28,12 @@ h1, h2, h3, h4, h5, h6 {
 #headerlogo {
 	padding-top: 6px;
 }
+
 #banner {
 	float: left;
 	width: 900px;
 	background: #ffffff;
-	padding-bottom:10px;
+	padding-bottom: 10px;
 }
 
 #banner-menu {
@@ -47,7 +48,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #search {
-	float:right;
+	float: right;
 	height: 50px;
 }
 
@@ -55,33 +56,11 @@ h1, h2, h3, h4, h5, h6 {
 	float: left;
 	height: 40px;
 	width: 100%;
-	
 }
 
 #main-container {
 	float: left;
 	width: 100%;
-
-}
-
-#bd {
-	width: 900px;
-	padding: 10px 0;
-	background-color: #ffffff;
-	float: left;
-	text-align: left;
-}
-
-#ft {
-	width: 900px;
-	float: left;
-	color: #000000;
-	text-align: center;
-	background-color: #c8e0fa;
-	-moz-border-radius-bottomright: 10px;
-	-moz-border-radius-bottomleft: 10px;
-	border-bottom-right-radius: 10px;
-	border-bottom-left-radius: 10px;
 }
 
 #footer-text {
@@ -104,17 +83,6 @@ h1, h2, h3, h4, h5, h6 {
 	float: right;
 	margin: 0;
 	padding: 0;
-}
-
-#header_top_right {
-	background-color: #ffffff;
-	border-left: #999999 solid 1px;
-	border-right: #999999 solid 1px;
-	border-bottom: #999999 solid 1px;
-	-moz-border-radius-bottomright: 10px;
-	-moz-border-radius-bottomleft: 10px;
-	border-bottom-right-radius: 10px;
-	border-bottom-left-radius: 10px;
 }
 
 #login-menu ul li {
@@ -146,69 +114,71 @@ h1, h2, h3, h4, h5, h6 {
 
 #yui-main {
 	float: left;
-
 	width: 680px !important;
 }
 
 .reindexStatusIndicator {
-    margin-top: 10px;
-    font-weight: bold;
-    font-style: italic;
-    margin-left: 20px;
+	margin-top: 10px;
+	font-weight: bold;
+	font-style: italic;
+	margin-left: 20px;
 }
 
 /** theme.css **/
-
 .rich-table {
 	width: 100%;
 }
 
-.inline_cell_item{
-    width: 100%;
-    float: left;
-    margin: 0px;
+.inline_cell_item {
+	width: 100%;
+	float: left;
+	margin: 0px;
 }
 
 /* for the benefit of richfaces' rich:editor */
 .bold-larger {
-	font-weight:bold;
-	font-size:larger;
+	font-weight: bold;
+	font-size: larger;
 }
+
 .bold-smaller {
-	font-weight:bold;
-	font-size:smaller;
+	font-weight: bold;
+	font-size: smaller;
 }
+
 .red-bold {
-	font-weight:bold;
-	color:red;
+	font-weight: bold;
+	color: red;
 }
+
 .red-bold-larger {
-	font-weight:bold;
-	font-size:larger;
-	color:red;
+	font-weight: bold;
+	font-size: larger;
+	color: red;
 }
+
 .red-bold-smaller {
-	font-weight:bold;
-	font-size:smaller;
-	color:red;
+	font-weight: bold;
+	font-size: smaller;
+	color: red;
 }
 
 .noBorderTable .rich-table {
- border-width: 0px;
+	border-width: 0px;
 }
- 
+
 .noBorderTable .rich-table-headercell {
- border-width: 0px;
+	border-width: 0px;
 }
- 
+
 .noBorderTable .rich-table-cell {
- border-width: 0px;
+	border-width: 0px;
 }
 
-.code{
-	color:grey;
+.code {
+	color: grey;
 }
 
-.filter-options{
+.filter-options {
 	float: right;
 }
