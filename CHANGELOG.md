@@ -14,6 +14,15 @@
   * XML and HTML tags to be checked for completeness: https://bugzilla.redhat.com/show_bug.cgi?id=756235
  * Project list filtering based on status
  * Overall statistics page for Admin
+ * Add file download page with the option to download a single PO file, or a zip with a project iteration's files for one locale
+ * Translation memory results now have highlighted differences
+ * Activate entity caching
+ * Maven client option to create 'skeleton' PO files when no translations are present
+ * Maven client option to log detailed client-server message information
+ * Generate Zanata Rest API documentation
+ * Add automated compatibility tests with previous versions of the Zanata java client classes
+ * After signing in/out, do not automatically 
+ * Several UI updates and changes
  * Fix bug: 
   * Rapid key navigation causes backlog of TM queries: https://bugzilla.redhat.com/show_bug.cgi?id=785034
   * Long strings slow down the operation: https://bugzilla.redhat.com/show_bug.cgi?id=750956
