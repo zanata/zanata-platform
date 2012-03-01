@@ -88,6 +88,8 @@ public class CopyTransServiceImpl implements CopyTransService
       log.info("copyTrans start: document \"{0}\"", document.getDocId());
       List<HLocale> localelist = localeServiceImpl.getSupportedLangugeByProjectIteration(project, iterationSlug);
 
+      // TODO iterate over document's textflows, then call copyTransForTextFlow(textFlow, localeList)
+      // refer patch from https://bugzilla.redhat.com/show_bug.cgi?id=746899
       for (HLocale locale : localelist)
       {
          copyTransForLocale(document, locale);
