@@ -10,8 +10,11 @@
 	template="../WEB-INF/layout/template.xhtml">
 
 	<ui:define name="left_content">
-		<s:link view="/admin/supportedlanguagedetail.xhtml"
+	  <rich:panel>
+      	<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+      	<s:link styleClass="action_link" view="/admin/supportedlanguagedetail.xhtml"
 			value="#{messages['jsf.CreateSupportedLanguage']}" />
+    	</rich:panel>
 	</ui:define>
 
 	<ui:define name="center_content">
