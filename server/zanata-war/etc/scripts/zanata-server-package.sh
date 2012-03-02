@@ -8,7 +8,12 @@
 #
 # Parameters:
 # 1. JBoss 5 zip distribution location.
-# 2. Apache maven in the path
+#
+# Pre-requisites:
+# 1. Apache maven in the path
+
+# Mysql Driver version to be used
+MYSQL_DRV_VERSION=5.1.18
 
 # Get the JBoss 5 zip location from parameters
 JBOSS_ZIP_LOC=$1
@@ -50,8 +55,8 @@ cp $ZANATA_WAR_HOME/target/zanata-*-internal.war $JBOSS_TMP_DIR/server/zanata/de
 cp $ZANATA_WAR_HOME/src/etc/zanata-ds.xml $JBOSS_TMP_DIR/server/zanata/deploy
 
 # Get Maven dependencies
-mvn dependency:get -DrepoUrl=http://repo1.maven.org -Dartifact=mysql:mysql-connector-java:5.1.18
-cp ~/.m2/repository/mysql/mysql-connector-java/5.1.12/mysql-connector-java-5.1.12.jar $JBOSS_TMP_DIR/server/zanata/lib
+mvn dependency:get -DrepoUrl=http://repo1.maven.org -Dartifact=mysql:mysql-connector-java:$MYSQL_DRV_VERSION
+cp ~/.m2/repository/mysql/mysql-connector-java/$MYSQL_DRV_VERSION/mysql-connector-java-$MYSQL_DRV_VERSION.jar $JBOSS_TMP_DIR/server/zanata/lib
 
 # Create zanata start scripts
 
