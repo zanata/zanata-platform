@@ -41,6 +41,231 @@
 	color: grey;
 }
 
+.search_icon {
+	background-image: url(../public-img/silk/zoom.png);
+}
+
+.input_help {
+	vertical-align: middle;
+	padding-left: 2px;
+	/* error img takes up 16px */
+	padding-right: 2px;
+}
+
+.columnHeader:hover {
+	color: #FF6600;
+}
+
+.message {
+	padding: 5px;
+	list-style: none;
+	color: #000000;
+	margin: 5px 0 8px 0;
+}
+
+.message li {
+	list-style-type: none;
+	list-style-position: outside;
+	list-style-image: none;
+	background: no-repeat left center;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 20px;
+	margin-left: 3px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+
+.message li.infomsg {
+	background-image: url(../public-img/msginfo.png);
+	background-color: #fafafe;
+}
+
+.message li.errormsg {
+	background-image: url(../public-img/msgerror.png);
+	background-color: #fefafa;
+}
+
+.message li.warnmsg {
+	background-image: url(../public-img/msgwarn.png);
+	background-color: #fefefa;
+}
+
+.name {
+	vertical-align: top;
+	font-weight: bold;
+	width: 130px;
+	float: left;
+	padding: 5px;
+	margin-top: 3px;
+	clear: left;
+}
+
+.prop {
+	vertical-align: middle;
+}
+
+.value {
+	float: left;
+	padding: 5px;
+}
+
+.error {
+	float: left;
+	padding: 5px;
+}
+
+.errors {
+	color: #F00000;
+	vertical-align: middle;
+}
+
+img.errors {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.errors input,.errors textarea {
+	border: 1px solid #F00000 !important;
+	background-color: #FFFAFA;
+}
+
+.required {
+	color: #F00000;
+	padding-left: 2px;
+}
+
+.rich-panel input[type=submit],.rich-panel input[type=button],.rich-tabpanel input[type=submit],.rich-tabpanel input[type=button]
+	{
+	margin-bottom: 0;
+}
+
+.actionButtons {
+	padding-top: 10px;
+	padding-right: 10px;
+	text-align: left;
+}
+
+.actionButtons select {
+	margin: 5px 5px 5px 0;
+	vertical-align: bottom;
+}
+
+div.info {
+}
+
+/* Styles from the security-stuff in seamspace*/
+div.checkmark {
+	background: url(../public-img/silk/tick.png) top left no-repeat;
+	width: 16px;
+	height: 16px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+div.cross {
+	background: url(../public-img/silk/cross.png) top left no-repeat;
+	width: 16px;
+	height: 16px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+tr.odd {
+	background-color: #ffffff;
+}
+
+tr.even {
+	background-color: #fafaff;
+}
+
+tr.hover-row { 
+	cursor: pointer;
+}
+
+td.enabled {
+	text-align: center;
+}
+
+table.fullwidth {
+	width: 100%
+}
+
+a.action_link {
+	display: block;
+	font-size: 130%;
+	font-weight: bold;
+	background-color: #EDF0FF;
+	border: 2px solid #E6E9F7;
+	padding: 4px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	color: #7092C3;
+	text-decoration: none;
+	margin: 1px;
+	text-align: center;
+}
+
+a.table_link {
+	font-size: 14px;
+	font-weight: bold;
+	padding: 4px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	color: #7092C3;
+	text-decoration: none;
+	margin: 1px;
+	text-align: right;
+}
+
+a.table_link:hover {
+	color: #990000;
+}
+
+
+.obsolete {
+	font-style: italic;
+	text-decoration: line-through;
+}
+
+a.obsolete_link,a.obsolete_link:visited,a.obsolete_link:link {
+	font-style: italic;
+	color: #ACC2E1;
+	text-decoration: line-through;
+}
+
+.readonly {
+	font-style: italic;
+}
+
+a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
+	font-style: italic;
+	color: #ACC2E1;
+}
+
+a.action_link:hover {
+	background-color: #F5F8FF;
+	border: 2px solid #F6F9F7;
+	color: #80A2C3;
+}
+
+
+/* -----------------------   Left/right container CSS  -------------------------*/
+.yui-b {
+	padding: 5px;
+	width: 200px;
+	float:right;
+}
+
+#yui-main .yui-b {
+	position: static;
+	width:auto;
+	float:none;
+}
+/* -----------------------  End Left/right container CSS  -------------------------*/
+
 /* -----------------------  Header CSS  -------------------------*/
 #headerlogo {
 	padding-top: 6px;
@@ -64,6 +289,14 @@
 	float: right;
 	padding: 10px 20px;
 }
+
+#loading_top_right {
+	position: fixed;
+	right: 2px;
+	top: 2px;
+}
+
+
 /* ----------------------- End Header CSS  -------------------------*/
 
 /* -----------------------  Footer CSS  -------------------------*/
@@ -347,6 +580,27 @@
 /* -----------------------  End Customised Language list CSS  -------------------------*/
 
 /* -----------------------  Inline project iteration CSS  -------------------------*/
+
+.iterationHeader_active {
+	background-image: none;
+	border-width: medium;
+	background-color: #ffffff;
+	color: #000000;
+	border-color: #ffffff;
+}
+
+.iterationHeader_readOnly,.iterationHeader_obsolete {
+	background-image: none;
+	border-width: medium;
+	background-color: #e5e5e5;
+	color: #000000;
+	border-color: #e5e5e5;
+}
+
+#iteration-status-panel {
+	width: 880px;
+}
+
 .list_view_header {
 	width: 100%;
 	padding-bottom: 3px;
@@ -376,3 +630,10 @@
 	margin-bottom: 6px;
 }
 /* -----------------------  End Inline project iteration CSS  -------------------------*/
+
+.iteration_inline_tribes {
+	
+}
+
+.footer {
+}
