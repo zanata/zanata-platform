@@ -10,7 +10,21 @@ public class GetTranslationMemory implements Action<GetTranslationMemoryResult>
 
    public static enum SearchType
    {
-      EXACT, FUZZY, RAW
+      /**
+       * Search for exact terms, adjacent to each other and in correct order.
+       * (Lucene PhraseQuery)
+       */
+      EXACT,
+
+      /**
+       * Search for similar terms. (Lucene fuzzy query)
+       */
+      FUZZY,
+
+      /**
+       * Uses search string as a raw Lucene query without adding any escapes.
+       */
+      RAW
    }
 
    private static final long serialVersionUID = 1L;
