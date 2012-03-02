@@ -23,6 +23,9 @@ package org.zanata.rest.service.raw;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.ws.rs.core.HttpHeaders;
 
 import org.dbunit.operation.DatabaseOperation;
@@ -75,24 +78,29 @@ public class GlossaryRestTest extends ZanataRawRestTest
             assertThat( entry.getSrcLang(), is(LocaleId.EN_US) );
             assertThat( entry.getGlossaryTerms().size(), is(3) );
             
-            // Glossary Terms
-            GlossaryTerm term = entry.getGlossaryTerms().get(0);
-            assertThat(term.getLocale(), is(LocaleId.EN_US));
-            assertThat(term.getComments().size(), is(1));
-            assertThat(term.getComments().get(0), is("test data comment 1"));
-            assertThat(term.getContent(), is("test data content 1 (source lang)"));
+            // Expected / Actual glossary terms
+            Set<GlossaryTerm> actualTerms = new HashSet<GlossaryTerm>(entry.getGlossaryTerms());
             
-            term = entry.getGlossaryTerms().get(1);
-            assertThat(term.getLocale(), is(LocaleId.DE));
-            assertThat(term.getComments().size(), is(1));
-            assertThat(term.getComments().get(0), is("test data comment 2"));
-            assertThat(term.getContent(), is("test data content 2"));
+            Set<GlossaryTerm> expectedTerms = new HashSet<GlossaryTerm>();
+            GlossaryTerm expTerm = new GlossaryTerm();
+            expTerm.setLocale(LocaleId.EN_US);
+            expTerm.setContent("test data content 1 (source lang)");
+            expTerm.getComments().add("test data comment 1");
+            expectedTerms.add(expTerm);
             
-            term = entry.getGlossaryTerms().get(2);
-            assertThat(term.getLocale(), is(LocaleId.ES));
-            assertThat(term.getComments().size(), is(1));
-            assertThat(term.getComments().get(0), is("test data comment 3"));
-            assertThat(term.getContent(), is("test data content 3"));
+            expTerm = new GlossaryTerm();
+            expTerm.setLocale(LocaleId.DE);
+            expTerm.setContent("test data content 2");
+            expTerm.getComments().add("test data comment 2");
+            expectedTerms.add(expTerm);
+            
+            expTerm = new GlossaryTerm();
+            expTerm.setLocale(LocaleId.ES);
+            expTerm.setContent("test data content 3");
+            expTerm.getComments().add("test data comment 3");
+            expectedTerms.add(expTerm);
+            
+            assertThat(actualTerms, is( expectedTerms ));
          }
       }.run();
    }
@@ -123,24 +131,29 @@ public class GlossaryRestTest extends ZanataRawRestTest
             assertThat( entry.getSrcLang(), is(LocaleId.EN_US) );
             assertThat( entry.getGlossaryTerms().size(), is(3) );
             
-            // Glossary Terms
-            GlossaryTerm term = entry.getGlossaryTerms().get(0);
-            assertThat(term.getLocale(), is(LocaleId.EN_US));
-            assertThat(term.getComments().size(), is(1));
-            assertThat(term.getComments().get(0), is("test data comment 1"));
-            assertThat(term.getContent(), is("test data content 1 (source lang)"));
+            // Expected / Actual glossary terms
+            Set<GlossaryTerm> actualTerms = new HashSet<GlossaryTerm>(entry.getGlossaryTerms());
             
-            term = entry.getGlossaryTerms().get(1);
-            assertThat(term.getLocale(), is(LocaleId.DE));
-            assertThat(term.getComments().size(), is(1));
-            assertThat(term.getComments().get(0), is("test data comment 2"));
-            assertThat(term.getContent(), is("test data content 2"));
+            Set<GlossaryTerm> expectedTerms = new HashSet<GlossaryTerm>();
+            GlossaryTerm expTerm = new GlossaryTerm();
+            expTerm.setLocale(LocaleId.EN_US);
+            expTerm.setContent("test data content 1 (source lang)");
+            expTerm.getComments().add("test data comment 1");
+            expectedTerms.add(expTerm);
             
-            term = entry.getGlossaryTerms().get(2);
-            assertThat(term.getLocale(), is(LocaleId.ES));
-            assertThat(term.getComments().size(), is(1));
-            assertThat(term.getComments().get(0), is("test data comment 3"));
-            assertThat(term.getContent(), is("test data content 3"));
+            expTerm = new GlossaryTerm();
+            expTerm.setLocale(LocaleId.DE);
+            expTerm.setContent("test data content 2");
+            expTerm.getComments().add("test data comment 2");
+            expectedTerms.add(expTerm);
+            
+            expTerm = new GlossaryTerm();
+            expTerm.setLocale(LocaleId.ES);
+            expTerm.setContent("test data content 3");
+            expTerm.getComments().add("test data comment 3");
+            expectedTerms.add(expTerm);
+            
+            assertThat(actualTerms, is( expectedTerms ));
          }
       }.run();
    }
