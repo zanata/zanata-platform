@@ -27,7 +27,6 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
@@ -85,7 +84,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
    private final WorkspaceContext workspaceContext;
 
    @Inject
-   public OptionsPanelPresenter(final Display display, final EventBus eventBus, final ValidationOptionsPresenter validationDetailsPresenter, final TransFilterPresenter transFilterPresenter, final WorkspaceContext workspaceContext)
+   public OptionsPanelPresenter(final Display display, final EventBus eventBus, final ValidationOptionsPresenter validationDetailsPresenter, final WorkspaceContext workspaceContext)
    {
       super(display, eventBus);
       this.validationOptionsPresenter = validationDetailsPresenter;
