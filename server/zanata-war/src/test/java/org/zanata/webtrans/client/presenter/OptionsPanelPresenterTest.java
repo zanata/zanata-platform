@@ -26,6 +26,7 @@ import org.zanata.webtrans.client.presenter.OptionsPanelPresenter.Display;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 
 
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -72,7 +73,7 @@ public class OptionsPanelPresenterTest
    Capture<ValueChangeHandler<Boolean>> capturedTranslatedChkValueChangeEventHandler = new Capture<ValueChangeHandler<Boolean>>();
    Capture<ValueChangeHandler<Boolean>> capturedNeedReviewChkValueChangeEventHandler = new Capture<ValueChangeHandler<Boolean>>();
    Capture<ValueChangeHandler<Boolean>> capturedUntranslatedChkValueChangeEventHandler = new Capture<ValueChangeHandler<Boolean>>();
-   Capture<ChangeHandler> capturedFilterOptionsSelectChangeHandler = new Capture<ChangeHandler>();
+   Capture<ChangeHandler> capturedNavigationOptionsSelectChangeHandler = new Capture<ChangeHandler>();
 
    Capture<FilterViewEventHandler> capturedFilterViewEventHandler = new Capture<FilterViewEventHandler>();
    Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdateEventHandler = new Capture<WorkspaceContextUpdateEventHandler>();
@@ -479,14 +480,65 @@ public class OptionsPanelPresenterTest
       assertThat(capturedUserConfigChangeEvent.getValue().getConfigMap().get(configItemKey), is(optionCheckValue));
    }
 
-   //TODO add tests based on OptionsPanelPresenter's responsibilities
 
-   //Responsibilities:
-   //fire events for:
-   //filter options select (modal navigation select - rename this)
+   public void selectFuzzyNavigation()
+   {
+      String selectedFilter = "F";
+      boolean expectFuzzyNavigation = true;
+      boolean expectUntranslatedNavigation = false;
+      testNavigationTypeSelection(selectedFilter, expectFuzzyNavigation, expectUntranslatedNavigation);
+   }
+
+   public void selectUntranslatedNavigation()
+   {
+      String selectedFilter = "U";
+      boolean expectFuzzyNavigation = false;
+      boolean expectUntranslatedNavigation = true;
+      testNavigationTypeSelection(selectedFilter, expectFuzzyNavigation, expectUntranslatedNavigation);
+   }
+
+   public void selectFuzzyUntranslatedNavigation()
+   {
+      String selectedFilter = "FU";
+      boolean expectFuzzyNavigation = true;
+      boolean expectUntranslatedNavigation = true;
+      testNavigationTypeSelection(selectedFilter, expectFuzzyNavigation, expectUntranslatedNavigation);
+   }
+
+   /**
+    * Checks that a user config change event with correct values is fired in
+    * response to a specific navigation type being selected.
+    * 
+    * @param selectedFilter
+    * @param expectFuzzyNavigation
+    * @param expectUntranslatedNavigation
+    */
+   private void testNavigationTypeSelection(String selectedFilter, boolean expectFuzzyNavigation, boolean expectUntranslatedNavigation)
+   {
+      expectBindMethodBehaviour(false);
+      ChangeEvent event = createMock(ChangeEvent.class);
+      expect(mockDisplay.getSelectedFilter()).andReturn(selectedFilter).anyTimes();
+      mockEventBus.fireEvent(and(capture(capturedUserConfigChangeEvent), isA(UserConfigChangeEvent.class)));
+      expectLastCall().once();
+
+      replay(event);
+      replayGlobalMocks();
+
+      optionsPanelPresenter.bind();
+      capturedNavigationOptionsSelectChangeHandler.getValue().onChange(event);
+
+      verifyAllMocks();
+      assertThat(capturedUserConfigChangeEvent.getValue().getConfigMap().get("Fuzzy"), is(expectFuzzyNavigation));
+      assertThat(capturedUserConfigChangeEvent.getValue().getConfigMap().get("Untranslated"), is(expectUntranslatedNavigation));
+   }
 
 
-
+   /**
+    * Set up expectations for all the default bind behaviour, with variation for
+    * workspace starting as read-only
+    * 
+    * @param readOnlyWorkspace
+    */
    private void expectBindMethodBehaviour(boolean readOnlyWorkspace)
    {
       mockValidationDetailsPresenter.bind();
@@ -509,7 +561,7 @@ public class OptionsPanelPresenterTest
       expectSetDefaultEditorOptionsChkStates();
 
       expect(mockDisplay.getFilterOptionsSelect()).andReturn(mockFilterOptionsSelect).anyTimes();
-      expect(mockFilterOptionsSelect.addChangeHandler(capture(capturedFilterOptionsSelectChangeHandler))).andReturn(createMock(HandlerRegistration.class)).once();
+      expect(mockFilterOptionsSelect.addChangeHandler(capture(capturedNavigationOptionsSelectChangeHandler))).andReturn(createMock(HandlerRegistration.class)).once();
    }
 
    private void expectSetDefaultEditorOptionsChkStates()
@@ -569,7 +621,7 @@ public class OptionsPanelPresenterTest
       capturedNeedReviewChkValueChangeEventHandler.reset();
       capturedUntranslatedChkValueChangeEventHandler.reset();
 
-      capturedFilterOptionsSelectChangeHandler.reset();
+      capturedNavigationOptionsSelectChangeHandler.reset();
 
       capturedFilterViewEventHandler.reset();
       capturedWorkspaceContextUpdateEventHandler.reset();
