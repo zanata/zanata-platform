@@ -11,10 +11,12 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
 import net.customware.gwt.presenter.client.EventBus;
-
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 import org.easymock.Capture;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
@@ -73,6 +75,8 @@ public class OptionsPanelPresenterTest
    Capture<FilterViewEventHandler> capturedFilterViewEventHandler = new Capture<FilterViewEventHandler>();
    Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdateEventHandler = new Capture<WorkspaceContextUpdateEventHandler>();
 
+   Capture<ButtonDisplayChangeEvent> capturedButtonDisplayChangeEvent = new Capture<ButtonDisplayChangeEvent>();
+
 
 
    @BeforeMethod
@@ -86,11 +90,12 @@ public class OptionsPanelPresenterTest
    }
 
 
-   public void canBind()
+   public void canBindEditableWorkspace()
    {
-      expectBindMethodBehaviour();
+      boolean readOnlyWorkspace = false;
+      expectBindMethodBehaviour(readOnlyWorkspace);
 
-      replayAllMocks();
+      replayGlobalMocks();
 
       //try to bind
       optionsPanelPresenter.bind();
@@ -98,17 +103,92 @@ public class OptionsPanelPresenterTest
       verifyAllMocks();
    }
 
+   public void canBindReadOnlyWorkspace()
+   {
+      boolean readOnlyWorkspace = true;
+      expectBindMethodBehaviour(readOnlyWorkspace);
+      replayGlobalMocks();
+      optionsPanelPresenter.bind();
+      verifyAllMocks();
+   }
+
+   public void readOnlyWorkspaceContextUpdated()
+   {
+      boolean changeToReadonly = true;
+      testWorkspaceReadonlyChange(changeToReadonly, true);
+   }
+
+   public void editableWorkspaceContextUpdated()
+   {
+      boolean changeToReadonly = false;
+      boolean editorButtonsOptionChecked = true;
+      testWorkspaceReadonlyChange(changeToReadonly, editorButtonsOptionChecked);
+   }
+
+   public void editableWorkspaceContextUpdatedWithHiddenButtons()
+   {
+      boolean changeToReadonly = false;
+      boolean editorButtonsOptionChecked = false;
+      testWorkspaceReadonlyChange(changeToReadonly, editorButtonsOptionChecked);
+   }
+
+   private void testWorkspaceReadonlyChange(boolean changeToReadonly, boolean editorButtonsOptionChecked)
+   {
+      //start as opposite state
+      boolean startReadOnly = !changeToReadonly;
+      boolean changeToEditable = !changeToReadonly;
+      expectBindMethodBehaviour(startReadOnly);
+
+      //expected response
+      mockEventBus.fireEvent(and(capture(capturedButtonDisplayChangeEvent), isA(ButtonDisplayChangeEvent.class)));
+      mockDisplay.setEditorOptionsVisible(changeToEditable);
+      mockDisplay.setValidationOptionsVisible(changeToEditable);
+
+      if (changeToEditable)
+      {
+         //should check button display option to decide whether to show them
+         expect(mockEditorButtonsChk.getValue()).andReturn(editorButtonsOptionChecked).anyTimes();
+      }
+
+      //workspace context event to fire
+      WorkspaceContextUpdateEvent workspaceContextChangeEvent = createMock(WorkspaceContextUpdateEvent.class);
+      expect(workspaceContextChangeEvent.isReadOnly()).andReturn(changeToReadonly).anyTimes();
+      replay(workspaceContextChangeEvent);
+
+      replayGlobalMocks();
+      optionsPanelPresenter.bind();
+      //simulate event
+      capturedWorkspaceContextUpdateEventHandler.getValue().onWorkspaceContextUpdated(workspaceContextChangeEvent);
+
+      verifyAllMocks();
+      //check that buttons are hidden/shown
+      assertThat(capturedButtonDisplayChangeEvent.getValue().isShowButtons(), is(changeToEditable && editorButtonsOptionChecked));
+   }
 
 
    //TODO add tests based on OptionsPanelPresenter's responsibilities
 
+   //Responsibilities:
 
-   private void expectBindMethodBehaviour()
+   //filterViewEvent when any filter checkbox changed, with current filter values
+   //set filter checkboxes in response to filter event
+   //(To remove?) hide modal navigation options when appropriate
+   //fire events for editor config change (filters, modal navigation, buttons)?
+
+
+   private void expectBindMethodBehaviour(boolean readOnlyWorkspace)
    {
       mockValidationDetailsPresenter.bind();
       expectLastCall().once();
 
-      expect(mockWorkspaceContext.isReadOnly()).andReturn(false).once();
+      expect(mockWorkspaceContext.isReadOnly()).andReturn(readOnlyWorkspace).once();
+
+      if (readOnlyWorkspace)
+      {
+         mockEventBus.fireEvent(and(capture(capturedButtonDisplayChangeEvent), isA(ButtonDisplayChangeEvent.class)));
+         mockDisplay.setEditorOptionsVisible(false);
+         mockDisplay.setValidationOptionsVisible(false);
+      }
 
       expectRegisterFilterChangeHandlers();
       expectEventBusEventHandlerRegistrations();
@@ -180,9 +260,11 @@ public class OptionsPanelPresenterTest
 
       capturedFilterViewEventHandler.reset();
       capturedWorkspaceContextUpdateEventHandler.reset();
+
+      capturedButtonDisplayChangeEvent.reset();
    }
 
-   private void replayAllMocks()
+   private void replayGlobalMocks()
    {
       replay(mockDisplay, mockEventBus);
       replay(mockValidationDetailsPresenter, mockWorkspaceContext);

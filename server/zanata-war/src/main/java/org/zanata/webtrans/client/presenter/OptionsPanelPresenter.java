@@ -130,7 +130,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
                display.getUntranslatedChk().setValue(event.isFilterUntranslated(), false);
             }
 
-            // if filter view, hide model navigation
+            // if filter view, hide modal navigation
             boolean showingFullList = (event.isFilterTranslated() == event.isFilterNeedReview()) && (event.isFilterTranslated() == event.isFilterUntranslated());
             if (showingFullList)
             {
