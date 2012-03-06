@@ -31,11 +31,15 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.SplitLayoutPanelHelper;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
@@ -66,7 +70,9 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    @UiField(provided = true)
    ToggleButton southPanelToggleButton;
 
-   LayoutPanel tmPanel, userPanel, glossaryPanel;
+   LayoutPanel userPanel;
+   
+   HorizontalPanel tmGlossaryPanel = new HorizontalPanel();
 
    @UiField
    SplitLayoutPanel mainSplitPanel;
@@ -83,8 +89,6 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       sidePanelOuterContainer = new LayoutPanel();
       southPanelContainer = new LayoutPanel();
 
-      tmPanel = new LayoutPanel();
-      glossaryPanel = new LayoutPanel();
       userPanel = new LayoutPanel();
       
       optionsToggleButton = new ToggleButton(messages.hideEditorOptionsLabel(), messages.showEditorOptionsLabel());
@@ -98,9 +102,9 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) panelWidth);
       mainSplitPanel.setWidgetMinSize(southPanelContainer, (int) southHeight);
 
+      tmGlossaryPanel.setSize("100%", "100%");
 
-      southPanelTab.add(tmPanel, messages.translationMemoryHeading());
-      southPanelTab.add(glossaryPanel, messages.glossaryHeading());
+      southPanelTab.add(tmGlossaryPanel, messages.translationMemoryHeading());
       southPanelTab.add(userPanel, messages.nUsersOnline(0));
 
       setEditorView(translationEditorView.asWidget());
@@ -116,8 +120,8 @@ public class TranslationView extends Composite implements TranslationPresenter.D
 
    private void setTranslationMemoryView(Widget translationMemoryView)
    {
-      tmPanel.clear();
-      tmPanel.add(translationMemoryView);
+      tmGlossaryPanel.remove(translationMemoryView);
+      tmGlossaryPanel.add(translationMemoryView);
    }
 
    private void setWorkspaceUsersView(Widget workspaceUsersView)
@@ -128,8 +132,8 @@ public class TranslationView extends Composite implements TranslationPresenter.D
 
    private void setGlossaryView(Widget glossaryView)
    {
-      glossaryPanel.clear();
-      glossaryPanel.add(glossaryView);
+      tmGlossaryPanel.remove(glossaryView);
+      tmGlossaryPanel.add(glossaryView);
    }
 
    private void setEditorView(Widget editorView)
