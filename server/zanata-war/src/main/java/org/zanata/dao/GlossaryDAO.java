@@ -39,7 +39,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.DefaultNgramAnalyzer;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
-import org.zanata.webtrans.shared.rpc.GetGlossary.SearchType;
+import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 /**
  *

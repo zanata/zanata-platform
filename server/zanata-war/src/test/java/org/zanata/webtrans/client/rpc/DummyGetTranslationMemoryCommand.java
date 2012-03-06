@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
-import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
+import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Command;
@@ -30,10 +30,10 @@ public class DummyGetTranslationMemoryCommand implements Command
       String query = action.getQuery();
       SearchType type = action.getSearchType();
       ArrayList<TranslationMemoryGlossaryItem> matches = new ArrayList<TranslationMemoryGlossaryItem>();
-      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;target3</tr>", new Long(3), 85));
-      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;target3</tr>", new Long(3), 85));
-      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;target3</tr>", new Long(3), 85));
-      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;target3</tr>", new Long(3), 85));
+      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;target3</tr>", query, new Long(3), 85));
+      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;target3</tr>", query, new Long(3), 85));
+      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;target3</tr>", query, new Long(3), 85));
+      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;target3</tr>", query, new Long(3), 85));
       callback.onSuccess(new GetTranslationMemoryResult(action, matches));
       Log.info("EXIT DummyGetTranslationMemoryCommand.execute()");
    }

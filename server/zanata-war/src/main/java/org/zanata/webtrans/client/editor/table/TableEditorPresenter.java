@@ -52,8 +52,8 @@ import org.zanata.webtrans.client.events.OpenEditorEvent;
 import org.zanata.webtrans.client.events.OpenEditorEventHandler;
 import org.zanata.webtrans.client.events.RedoFailureEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
-import org.zanata.webtrans.client.events.TransMemoryCopyEvent;
-import org.zanata.webtrans.client.events.TransMemoryCopyHandler;
+import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
+import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
@@ -552,10 +552,10 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          }
       }));
 
-      registerHandler(eventBus.addHandler(TransMemoryCopyEvent.getType(), new TransMemoryCopyHandler()
+      registerHandler(eventBus.addHandler(CopyDataToEditorEvent.getType(), new CopyDataToEditorHandler()
       {
          @Override
-         public void onTransMemoryCopy(TransMemoryCopyEvent event)
+         public void onTransMemoryCopy(CopyDataToEditorEvent event)
          {
             if (selectedTransUnit == null)
             {

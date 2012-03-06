@@ -66,14 +66,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    @UiField(provided = true)
    ToggleButton southPanelToggleButton;
 
-   LayoutPanel tmPanel, userPanel;
-
-   /*
-    * TODO: temporary disable glossary functionalities
-    */
-   // @UiField
-   LayoutPanel glossaryPanel;
-   private boolean enableGlossary = false;
+   LayoutPanel tmPanel, userPanel, glossaryPanel;
 
    @UiField
    SplitLayoutPanel mainSplitPanel;
@@ -91,6 +84,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       southPanelContainer = new LayoutPanel();
 
       tmPanel = new LayoutPanel();
+      glossaryPanel = new LayoutPanel();
       userPanel = new LayoutPanel();
       
       optionsToggleButton = new ToggleButton(messages.hideEditorOptionsLabel(), messages.showEditorOptionsLabel());
@@ -106,10 +100,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
 
 
       southPanelTab.add(tmPanel, messages.translationMemoryHeading());
-      if (enableGlossary)
-      {
-         southPanelTab.add(glossaryPanel, "Glossary");
-      }
+      southPanelTab.add(glossaryPanel, messages.glossaryHeading());
       southPanelTab.add(userPanel, messages.nUsersOnline(0));
 
       setEditorView(translationEditorView.asWidget());
@@ -120,11 +111,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
 
       setWorkspaceUsersView(workspaceUsersView.asWidget());
 
-      // TODO glossary temporarily disabled
-      if (enableGlossary)
-      {
-         setGlossaryView(glossaryView.asWidget());
-      }
+      setGlossaryView(glossaryView.asWidget());
    }
 
    private void setTranslationMemoryView(Widget translationMemoryView)
@@ -165,7 +152,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    @Override
    public void setParticipantsTitle(String title)
    {
-      southPanelTab.setTabText(1, title);
+      southPanelTab.setTabText(southPanelTab.getWidgetIndex(userPanel), title);
    }
 
    @Override

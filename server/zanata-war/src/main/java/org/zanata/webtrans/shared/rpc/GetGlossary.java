@@ -5,14 +5,8 @@ import net.customware.gwt.dispatch.shared.Action;
 import org.zanata.common.LocaleId;
 
 
-public class GetGlossary implements Action<GetGlossaryResult>
+public class GetGlossary implements Action<GetGlossaryResult>, HasSearchType
 {
-
-   public static enum SearchType
-   {
-      EXACT, FUZZY
-   }
-
    private static final long serialVersionUID = 1L;
    private LocaleId localeId;
    private String query;
@@ -30,6 +24,7 @@ public class GetGlossary implements Action<GetGlossaryResult>
       this.searchType = searchType;
    }
 
+   @Override
    public SearchType getSearchType()
    {
       return searchType;

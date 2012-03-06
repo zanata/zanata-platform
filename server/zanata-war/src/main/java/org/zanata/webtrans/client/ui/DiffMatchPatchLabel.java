@@ -29,6 +29,7 @@ public class DiffMatchPatchLabel extends HTML
 
    public DiffMatchPatchLabel()
    {
+      super();
    }
 
    public DiffMatchPatchLabel(String orig, String text)
@@ -52,4 +53,8 @@ public class DiffMatchPatchLabel extends HTML
       setHTML(diff);
    }
 
+   public void setOriginal(String original)
+   {
+      this.original = original;
+   }
 }

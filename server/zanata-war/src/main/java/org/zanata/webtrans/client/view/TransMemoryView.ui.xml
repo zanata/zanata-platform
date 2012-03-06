@@ -4,11 +4,6 @@
 	xmlns:f="urn:import:org.zanata.webtrans.client"
 	xmlns:c="urn:import:com.google.gwt.user.cellview.client">
 	<ui:style>
-        .headerLabel {
-            padding-right:5px;
-            padding-top:5px;	
-            font-weight:bold;
-        }
         
     </ui:style>
         

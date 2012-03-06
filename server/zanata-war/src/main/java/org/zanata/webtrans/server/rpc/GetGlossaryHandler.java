@@ -49,8 +49,8 @@ import org.zanata.util.ShortString;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
-import org.zanata.webtrans.shared.rpc.GetGlossary.SearchType;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
+import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 @Name("webtrans.gwt.GetGlossaryHandler")
 @Scope(ScopeType.STATELESS)
@@ -146,7 +146,7 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
             TranslationMemoryGlossaryItem item = matchesMap.get(key);
             if (item == null)
             {
-               item = new TranslationMemoryGlossaryItem(srcTermContent, targetTermContent, score, percent);
+               item = new TranslationMemoryGlossaryItem(srcTermContent, targetTermContent, searchText, score, percent);
                matchesMap.put(key, item);
             }
          }
@@ -212,7 +212,7 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
       Collections.sort(results, comp);
 
       log.info("Returning {0} Glossary matches for \"{1}\"", results.size(), abbrev);
-      return new GetGlossaryResult(results);
+      return new GetGlossaryResult(action, results);
    }
 
    @Override

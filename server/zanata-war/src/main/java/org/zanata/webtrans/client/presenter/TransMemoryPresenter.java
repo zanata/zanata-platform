@@ -6,7 +6,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.events.TransMemoryCopyEvent;
+import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.TransMemoryShorcutCopyHandler;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
@@ -16,8 +16,8 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
-import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
+import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -61,11 +61,9 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
       String getTarget(int index);
 
-      @SuppressWarnings("rawtypes")
-      Column getDetailsColumn();
+      Column<TranslationMemoryGlossaryItem, ImageResource> getDetailsColumn();
 
-      @SuppressWarnings("rawtypes")
-      Column getCopyColumn();
+      Column<TranslationMemoryGlossaryItem, String> getCopyColumn();
 
       void renderTable();
    }
@@ -114,7 +112,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
                String target = display.getTarget(event.getIndex());
                if (source != null && target != null)
                {
-                  eventBus.fireEvent(new TransMemoryCopyEvent(source, target));
+                  eventBus.fireEvent(new CopyDataToEditorEvent(source, target));
                }
             }
          }
@@ -134,7 +132,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          @Override
          public void update(int index, TranslationMemoryGlossaryItem object, String value)
          {
-            eventBus.fireEvent(new TransMemoryCopyEvent(object.getSource(), object.getTarget()));
+            eventBus.fireEvent(new CopyDataToEditorEvent(object.getSource(), object.getTarget()));
          }
       });
    }
