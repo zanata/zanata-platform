@@ -68,7 +68,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
 
       void setValidationOptionsVisible(boolean visible);
 
-      HasChangeHandlers getFilterOptionsSelect();
+      HasChangeHandlers getModalNavigationOptionsSelect();
 
       // possible filter values
       static final String KEY_FUZZY_UNTRANSLATED = "FU";
@@ -184,7 +184,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
       display.getEnterChk().setValue(configMap.get(EditorConfigConstants.BUTTON_ENTER), false);
       display.getEscChk().setValue(configMap.get(EditorConfigConstants.BUTTON_ESC), false);
 
-      registerHandler(display.getFilterOptionsSelect().addChangeHandler(new ChangeHandler()
+      registerHandler(display.getModalNavigationOptionsSelect().addChangeHandler(new ChangeHandler()
       {
          @Override
          public void onChange(ChangeEvent event)

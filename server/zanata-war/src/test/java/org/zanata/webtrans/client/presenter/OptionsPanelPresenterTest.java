@@ -560,7 +560,7 @@ public class OptionsPanelPresenterTest
       expectRegisterEditorOptionsChangeHandlers();
       expectSetDefaultEditorOptionsChkStates();
 
-      expect(mockDisplay.getFilterOptionsSelect()).andReturn(mockFilterOptionsSelect).anyTimes();
+      expect(mockDisplay.getModalNavigationOptionsSelect()).andReturn(mockFilterOptionsSelect).anyTimes();
       expect(mockFilterOptionsSelect.addChangeHandler(capture(capturedNavigationOptionsSelectChangeHandler))).andReturn(createMock(HandlerRegistration.class)).once();
    }
 
