@@ -27,6 +27,7 @@ import org.zanata.webtrans.shared.model.WorkspaceContext;
 
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasValue;
@@ -76,6 +77,8 @@ public class OptionsPanelPresenterTest
    Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdateEventHandler = new Capture<WorkspaceContextUpdateEventHandler>();
 
    Capture<ButtonDisplayChangeEvent> capturedButtonDisplayChangeEvent = new Capture<ButtonDisplayChangeEvent>();
+
+   Capture<FilterViewEvent> capturedFilterViewEvent = new Capture<FilterViewEvent>();
 
 
 
@@ -132,6 +135,14 @@ public class OptionsPanelPresenterTest
       testWorkspaceReadonlyChange(changeToReadonly, editorButtonsOptionChecked);
    }
 
+   /**
+    * Tests 3 different scenarios: setting workspace to read-only, setting
+    * workspace to editable with buttons shown, and setting workspace editable
+    * with buttons hidden.
+    * 
+    * @param changeToReadonly
+    * @param editorButtonsOptionChecked
+    */
    private void testWorkspaceReadonlyChange(boolean changeToReadonly, boolean editorButtonsOptionChecked)
    {
       //start as opposite state
@@ -165,15 +176,124 @@ public class OptionsPanelPresenterTest
       assertThat(capturedButtonDisplayChangeEvent.getValue().isShowButtons(), is(changeToEditable && editorButtonsOptionChecked));
    }
 
+   public void filterViewApprovedCheckbox()
+   {
+      boolean transChecked = true;
+      boolean needReviewChecked = false;
+      boolean untransChecked = false;
+      boolean eventValue = transChecked;
+      testFilterCheckboxChange(eventValue, transChecked, needReviewChecked, untransChecked,
+                               capturedTranslatedChkValueChangeEventHandler);
+   }
+
+   public void filterViewNeedReviewCheckbox()
+   {
+      boolean transChecked = false;
+      boolean needReviewChecked = true;
+      boolean untransChecked = false;
+      boolean eventValue = needReviewChecked;
+      testFilterCheckboxChange(eventValue, transChecked, needReviewChecked, untransChecked,
+                               capturedNeedReviewChkValueChangeEventHandler);
+   }
+
+   public void filterViewUntranslatedCheckbox()
+   {
+      boolean transChecked = false;
+      boolean needReviewChecked = false;
+      boolean untransChecked = true;
+      boolean eventValue = untransChecked;
+      testFilterCheckboxChange(eventValue, transChecked, needReviewChecked, untransChecked,
+                               capturedUntranslatedChkValueChangeEventHandler);
+   }
+
+   public void unfilterViewApprovedCheckbox()
+   {
+      boolean transChecked = false;
+      boolean needReviewChecked = true;
+      boolean untransChecked = true;
+      boolean eventValue = transChecked;
+      testFilterCheckboxChange(eventValue, transChecked, needReviewChecked, untransChecked,
+                               capturedTranslatedChkValueChangeEventHandler);
+   }
+
+   public void unfilterViewNeedReviewCheckbox()
+   {
+      boolean transChecked = true;
+      boolean needReviewChecked = false;
+      boolean untransChecked = true;
+      boolean eventValue = needReviewChecked;
+      testFilterCheckboxChange(eventValue, transChecked, needReviewChecked, untransChecked,
+                               capturedNeedReviewChkValueChangeEventHandler);
+   }
+
+   public void unfilterViewUntranslatedCheckbox()
+   {
+      boolean transChecked = true;
+      boolean needReviewChecked = true;
+      boolean untransChecked = false;
+      boolean eventValue = untransChecked;
+      testFilterCheckboxChange(eventValue, transChecked, needReviewChecked, untransChecked,
+                               capturedUntranslatedChkValueChangeEventHandler);
+   }
+
+   /**
+    * Tests that changing filter checkboxes fires the correct event, allowing
+    * different filter option combinations to be specified. eventValue must be
+    * the same as *Checked for the checkbox under test (i.e. the checkbox for
+    * which capturedCheckboxChangeHandler is the handler).
+    * 
+    * @param eventValue value to return from checkbox {@link ValueChangeEvent}.
+    *           Must match the value for *Checked parameter for checkbox under
+    *           test.
+    * @param transChecked
+    * @param needReviewChecked
+    * @param untransChecked
+    * @param capturedCheckboxChangeHandler handler to handle the
+    *           {@link ValueChangeEvent}
+    */
+   private void testFilterCheckboxChange(boolean eventValue, boolean transChecked, boolean needReviewChecked, boolean untransChecked, Capture<ValueChangeHandler<Boolean>> capturedCheckboxChangeHandler)
+   {
+      expectBindMethodBehaviour(false);
+
+      @SuppressWarnings("unchecked")
+      ValueChangeEvent<Boolean> event = createMock(ValueChangeEvent.class);
+      expect(event.getValue()).andReturn(eventValue).anyTimes();
+
+      mockEventBus.fireEvent(and(capture(capturedFilterViewEvent), isA(FilterViewEvent.class)));
+      expectLastCall().once();
+
+      //simulate current state of checkboxes
+      expect(mockTranslatedChk.getValue()).andReturn(transChecked).anyTimes();
+      expect(mockNeedReviewChk.getValue()).andReturn(needReviewChecked).anyTimes();
+      expect(mockUntranslatedChk.getValue()).andReturn(untransChecked).anyTimes();
+
+      replayGlobalMocks();
+
+      optionsPanelPresenter.bind();
+
+      //simulate checkbox check/uncheck
+      capturedCheckboxChangeHandler.getValue().onValueChange(event);
+
+      verifyAllMocks();
+      //check that filter view event has correct flags
+      assertThat(capturedFilterViewEvent.getValue().isFilterTranslated(), is(transChecked));
+      assertThat(capturedFilterViewEvent.getValue().isFilterNeedReview(), is(needReviewChecked));
+      assertThat(capturedFilterViewEvent.getValue().isFilterUntranslated(), is(untransChecked));
+      assertThat("isCancelFilter should always be false when manipulating filter checkboxes",
+                 capturedFilterViewEvent.getValue().isCancelFilter(), is(false));
+   }
+
+
 
    //TODO add tests based on OptionsPanelPresenter's responsibilities
 
    //Responsibilities:
 
-   //filterViewEvent when any filter checkbox changed, with current filter values
    //set filter checkboxes in response to filter event
    //(To remove?) hide modal navigation options when appropriate
+   // note: leave TODO comment to change tests when we stop hiding modal navigation
    //fire events for editor config change (filters, modal navigation, buttons)?
+
 
 
    private void expectBindMethodBehaviour(boolean readOnlyWorkspace)
@@ -262,6 +382,7 @@ public class OptionsPanelPresenterTest
       capturedWorkspaceContextUpdateEventHandler.reset();
 
       capturedButtonDisplayChangeEvent.reset();
+      capturedFilterViewEvent.reset();
    }
 
    private void replayGlobalMocks()
