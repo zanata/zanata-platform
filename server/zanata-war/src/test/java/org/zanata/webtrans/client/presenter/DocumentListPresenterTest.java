@@ -675,7 +675,6 @@ public class DocumentListPresenterTest
       expectLastCall().anyTimes();
    }
 
-   @SuppressWarnings("unchecked")
    private void setupMockDataProvider()
    {
       dataProviderList = new ArrayList<DocumentNode>();
