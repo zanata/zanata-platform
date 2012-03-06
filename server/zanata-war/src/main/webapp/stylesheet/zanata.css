@@ -1,93 +1,7 @@
-body {
-	margin: 0px;
-	padding: 0px;
-	font-family: Tahoma, Geneva, sans-serif;
-	font-size: 12px;
-	background-color: #ffffff;
-}
-
-a, a:link, a:visited {
-	text-decoration: none;
-}
-
-a:hover {
-	color: #990000;
-}
-
-h1, h2, h3, h4, h5, h6 {
-	margin: 10px 0;
-	padding: 0;
-}
-
 #container {
 	width: 900px;
 	margin: 0 auto;
 	background-color: #ffffff;
-}
-
-#headerlogo {
-	padding-top: 6px;
-}
-#banner {
-	float: left;
-	width: 900px;
-	background: #ffffff;
-	padding-bottom:10px;
-}
-
-#banner-menu {
-	float: right;
-	width: 300px;
-	height: 100px;
-}
-
-#login-menu {
-	float: right;
-	height: 50px;
-}
-
-#search {
-	float:right;
-	height: 50px;
-}
-
-#menu-container {
-	float: left;
-	height: 40px;
-	width: 100%;
-	
-}
-
-#main-container {
-	float: left;
-	width: 100%;
-
-}
-
-#bd {
-	width: 900px;
-	padding: 10px 0;
-	background-color: #ffffff;
-	float: left;
-	text-align: left;
-}
-
-#ft {
-	width: 900px;
-	float: left;
-	color: #000000;
-	text-align: center;
-	background-color: #c8e0fa;
-	-moz-border-radius-bottomright: 10px;
-	-moz-border-radius-bottomleft: 10px;
-	border-bottom-right-radius: 10px;
-	border-bottom-left-radius: 10px;
-}
-
-#footer-text {
-	float: left;
-	margin-left: 100px;
-	width: 700px;
 }
 
 #localeSelector {
@@ -95,120 +9,631 @@ h1, h2, h3, h4, h5, h6 {
 	width: 100px;
 }
 
-#content {
-	float: left;
-}
-
-#login-menu ul {
-	list-style: none;
-	float: right;
-	margin: 0;
-	padding: 0;
-}
-
-#header_top_right {
-	background-color: #ffffff;
-	border-left: #999999 solid 1px;
-	border-right: #999999 solid 1px;
-	border-bottom: #999999 solid 1px;
-	-moz-border-radius-bottomright: 10px;
-	-moz-border-radius-bottomleft: 10px;
-	border-bottom-right-radius: 10px;
-	border-bottom-left-radius: 10px;
-}
-
-#login-menu ul li {
-	list-style: none;
-	float: left;
-	margin: 5px 10px;
-	padding: 0;
-	line-height: 50px;
-}
-
-#login-menu ul li a {
-	color: #000000;
-}
-
-#login-menu ul li a:hover {
-	color: #ff0000;
-}
-
-#search form {
-	float: right;
-	height: 30px;
-	margin: 10px 0;
-}
-
-#search input {
-	float: left;
-	vertical-align: middle;
-}
-
 #yui-main {
 	float: left;
-
 	width: 680px !important;
 }
 
-.reindexStatusIndicator {
-    margin-top: 10px;
-    font-weight: bold;
-    font-style: italic;
-    margin-left: 20px;
+.bold-larger {
+	font-weight: bold;
+	font-size: larger;
 }
 
-/** theme.css **/
+.filter-options {
+	float: right;
+}
+
+#search_panel {
+	float: right;
+	padding-bottom: 5px;
+	color: #999999;
+}
+
+#bd {
+	min-height: 400px;
+	width: 100%;
+	padding: 10px 0;
+	float: left;
+	text-align: left;
+}
+
+.code {
+	color: grey;
+}
+
+.search_icon {
+	background-image: url(../public-img/silk/zoom.png);
+}
+
+.input_help {
+	vertical-align: middle;
+	padding-left: 2px;
+	/* error img takes up 16px */
+	padding-right: 2px;
+}
+
+.columnHeader:hover {
+	color: #FF6600;
+}
+
+.message {
+	padding: 5px;
+	list-style: none;
+	color: #000000;
+	margin: 5px 0 8px 0;
+}
+
+.message li {
+	list-style-type: none;
+	list-style-position: outside;
+	list-style-image: none;
+	background: no-repeat left center;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 20px;
+	margin-left: 3px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+
+.message li.infomsg {
+	background-image: url(../public-img/msginfo.png);
+	background-color: #fafafe;
+}
+
+.message li.errormsg {
+	background-image: url(../public-img/msgerror.png);
+	background-color: #fefafa;
+}
+
+.message li.warnmsg {
+	background-image: url(../public-img/msgwarn.png);
+	background-color: #fefefa;
+}
+
+.name {
+	vertical-align: top;
+	font-weight: bold;
+	width: 130px;
+	float: left;
+	padding: 5px;
+	margin-top: 3px;
+	clear: left;
+}
+
+.prop {
+	vertical-align: middle;
+}
+
+.value {
+	float: left;
+	padding: 5px;
+}
+
+.error {
+	float: left;
+	padding: 5px;
+}
+
+.errors {
+	color: #F00000;
+	vertical-align: middle;
+}
+
+img.errors {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.errors input,.errors textarea {
+	border: 1px solid #F00000 !important;
+	background-color: #FFFAFA;
+}
+
+.required {
+	color: #F00000;
+	padding-left: 2px;
+}
+
+.rich-panel input[type=submit],.rich-panel input[type=button],.rich-tabpanel input[type=submit],.rich-tabpanel input[type=button]
+	{
+	margin-bottom: 0;
+}
+
+.actionButtons {
+	padding-top: 10px;
+	padding-right: 10px;
+	text-align: left;
+}
+
+.actionButtons select {
+	margin: 5px 5px 5px 0;
+	vertical-align: bottom;
+}
+
+div.info {
+}
+
+/* Styles from the security-stuff in seamspace*/
+div.checkmark {
+	background: url(../public-img/silk/tick.png) top left no-repeat;
+	width: 16px;
+	height: 16px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+div.cross {
+	background: url(../public-img/silk/cross.png) top left no-repeat;
+	width: 16px;
+	height: 16px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+tr.odd {
+	background-color: #ffffff;
+}
+
+tr.even {
+	background-color: #fafaff;
+}
+
+tr.hover-row { 
+	cursor: pointer;
+}
+
+td.enabled {
+	text-align: center;
+}
+
+table.fullwidth {
+	width: 100%
+}
+
+a.action_link {
+	display: block;
+	font-size: 130%;
+	font-weight: bold;
+	background-color: #EDF0FF;
+	border: 2px solid #E6E9F7;
+	padding: 4px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	color: #7092C3;
+	text-decoration: none;
+	margin: 1px;
+	text-align: center;
+}
+
+a.table_link {
+	font-size: 14px;
+	font-weight: bold;
+	padding: 4px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	color: #7092C3;
+	text-decoration: none;
+	margin: 1px;
+	text-align: right;
+}
+
+a.table_link:hover {
+	color: #990000;
+}
+
+
+.obsolete {
+	font-style: italic;
+	text-decoration: line-through;
+}
+
+a.obsolete_link,a.obsolete_link:visited,a.obsolete_link:link {
+	font-style: italic;
+	color: #ACC2E1;
+	text-decoration: line-through;
+}
+
+.readonly {
+	font-style: italic;
+}
+
+a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
+	font-style: italic;
+	color: #ACC2E1;
+}
+
+a.action_link:hover {
+	background-color: #F5F8FF;
+	border: 2px solid #F6F9F7;
+	color: #80A2C3;
+}
+
+
+/* -----------------------   Left/right container CSS  -------------------------*/
+.yui-b {
+	padding: 5px;
+	width: 200px;
+	float:right;
+}
+
+#yui-main .yui-b {
+	position: static;
+	width:auto;
+	float:none;
+}
+/* -----------------------  End Left/right container CSS  -------------------------*/
+
+/* -----------------------  Header CSS  -------------------------*/
+#headerlogo {
+	padding-top: 6px;
+	float: left;
+}
+
+#banner {
+	float: left;
+	width: 900px;
+	background: #ffffff;
+	padding-bottom: 10px;
+}
+
+#header_top_right {
+	box-shadow: 0 0 2px #aaa;
+	-moz-box-shadow:0 0 2px #aaa;
+	border: 1px solid #CCC;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	margin-top: 5px;
+	float: right;
+	padding: 10px 20px;
+}
+
+#loading_top_right {
+	position: fixed;
+	right: 2px;
+	top: 2px;
+}
+
+
+/* ----------------------- End Header CSS  -------------------------*/
+
+/* -----------------------  Footer CSS  -------------------------*/
+#ft {
+	background: url('../public-img/footer_background.png') 0 0 repeat-x;
+	-moz-border-radius-bottomright: 5px;
+	-moz-border-radius-bottomleft: 5px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+	float: left;
+}
+
+#footer {
+	width: 100%;
+	line-height: 20px;
+	text-align: center;
+	padding-top: 10px;
+}
+
+#footer-text {
+	float: left;
+	margin-left: 100px;
+	width: 700px;
+}
+/* -----------------------  End Footer CSS  -------------------------*/
+
+/* -----------------------  JSF components CSS  -------------------------*/
+.rich-panel-header {
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	text-align: center;
+}
+
+.rich-panel {
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	margin-bottom:10px;
+}
+
+.rich-panel-body {
+	border: 1px solid;
+	border-color: #f4f4f4;
+}
+
+.rich-stglpanel-header {
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+
+/* the specificity here is necessary to override the defaults */
+.rich-panel .rich-panel-header,.rich-stglpanel .rich-stglpanel-header {
+	background-image: none;
+	padding: 2px 3px;
+}
+
+.rich-stglpanel {
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.rich-stglpanel-body {
+	overflow: auto;
+}
 
 .rich-table {
 	width: 100%;
 }
 
-.inline_cell_item{
-    width: 100%;
-    float: left;
-    margin: 0px;
-}
-
-/* for the benefit of richfaces' rich:editor */
-.bold-larger {
-	font-weight:bold;
-	font-size:larger;
-}
-.bold-smaller {
-	font-weight:bold;
-	font-size:smaller;
-}
-.red-bold {
-	font-weight:bold;
-	color:red;
-}
-.red-bold-larger {
-	font-weight:bold;
-	font-size:larger;
-	color:red;
-}
-.red-bold-smaller {
-	font-weight:bold;
-	font-size:smaller;
-	color:red;
+.inline_cell_item {
+	width: 100%;
+	float: left;
+	margin: 0px;
 }
 
 .noBorderTable .rich-table {
- border-width: 0px;
+	border-width: 0px;
 }
- 
+
 .noBorderTable .rich-table-headercell {
- border-width: 0px;
+	border-width: 0px;
 }
- 
+
 .noBorderTable .rich-table-cell {
- border-width: 0px;
+	border-width: 0px;
 }
 
-.code{
-	color:grey;
+/* -----------------------  End JSF components CSS  -------------------------*/
+
+/* -----------------------  Top menu CSS  -------------------------*/
+/* Caution! Ensure accessibility in print and other media types... */
+@media projection , screen {
+	/* Use class for showing/hiding tab content, so that visibility can be better controlled in different media types... */
+	.ui-tabs-hide {
+		display: none;
+	}
 }
 
-.filter-options{
+/* Hide useless elements in print layouts... */
+@media print {
+	.ui-tabs-nav {
+		display: none;
+	}
+}
+
+#tabs-menu {
+	background: url('../public-img/bar_background.png') 0 0 repeat-x;
+	border: 1px solid #EAEAEA;
+	border-bottom-color: #CACACA;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	float: left;
+	width: 900px;
+	height: 40px;
+}
+
+#tabs .ui-tabs-nav {
+	margin: 0 10px;
+	padding:0;
+}
+
+#tabs .ui-tabs-nav li {
+	line-height: 40px;
+	list-style: none;
+	float: left;
+	min-width: 84px; /* be nice to Opera */
+}
+
+#tabs .ui-tabs-nav li a {
+	color: #000000;
+	white-space: nowrap; /* required in IE 6 */
+	height:40px;
+	font-weight:bold;
+	padding: 0 20px;
+}
+
+#tabs .ui-tabs-nav li.ui-tabs-selected {
+	border-top: 1px solid #C1BFBF;
+	border-left: 1px solid #C1BFBF;
+}
+
+#tabs .ui-tabs-nav li.ui-tabs-selected a {
+	background-color: #d3d3d3;
+	color: black;
+	margin-top: 0;
+	height:40px;
+	display:block;
+}
+
+#tabs img {
+	margin-right: 5px;
+	vertical-align: middle;
+}
+
+#tabs .ui-tabs-nav a,.ui-tabs-nav a span {
+	display: block;
+	width:auto;
+	cursor:pointer;
+	outline: 0 none;
+}
+
+.ui-tabs-nav-issues {
+	position: relative;
+}
+
+.ui-tabs-nav-issues ul {
+	border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 3px;
+	-moz-border-radius-bottomright: 3px;
+	-moz-border-radius-bottomleft: 3px;
+	display: none;
+	border: 1px solid #ddd;
+	margin:0;
+	padding-left:0px;
+}
+
+.ui-tabs-nav-issues:hover ul {
+	display: block;
+	position: absolute;
+}
+
+.ui-tabs-nav-issues ul li a {
+	background: #eeeeee !important;
+	padding: 0 !important;
+	text-align: left !important;
+	border-bottom: 1px solid #ddd;
+	height: 12px !important;
+	font-weight: normal !important;
+	padding: 8px 10px !important;
+	line-height: 1.2em;
+	margin:0px;
+}
+
+.ui-tabs-loading em {
+	padding: 0 0 0 20px;
+	background: url(../public-img/loading.gif) no-repeat 0 50%;
+}
+
+.ui-tabs-nav-issues ul li a:hover {
+	background-color: #dddddd !important;
+}
+
+.ui-tabs-nav-issues ul li {
+	width: 250px;
+}
+/* -----------------------  End Top menu CSS  -------------------------*/
+
+/* -----------------------  Login form CSS  -------------------------*/
+.loginForm_input {
+	height: 22px;
+	width: 200px;
+	font-size: 14px;
+	font-weight: normal;
+}
+
+.loginForm_label {
+	font-size: 14px;
+}
+/* -----------------------  End Login form CSS  -------------------------*/
+
+/* -----------------------  Stats bar CSS  -------------------------*/
+.translationStatusDiv {
+	float: left;
+	display: block;
+	padding: 3px;
+	padding-right: 6px;
+	margin-right: 5px;
+	width: 144px;
+	height: 14px;
+}
+
+.statusBar_percentage {
+	font-size: 12px;
+	font-weight: bold;
+	padding-left: 2px;
+}
+
+.statusBar_noContent {
+	font-size: 12px;
+	text-align: center;
+	width: 142px;
+	padding: 3px;
+	padding-right: 6px;
+	margin-right: 5px;
+}
+
+.translationStatusBar {
+	float: left;
+	display: block;
+	height: 14px;
+	margin: 0;
+	padding: 0;
+}
+
+.statusBar_approved {
+	background-color: #099b09;
+}
+
+.statusBar_needReview {
+	background-color: #ffc000;
+}
+
+.statusBar_untranslated {
+	background-color: #e5e5e5;
+}
+/* -----------------------  End Stats bar CSS  -------------------------*/
+
+/* -----------------------  Customised Language list CSS  -------------------------*/
+.language_list {
+	font-size: 12px;
+	height: 200px;
+	width: 300px;
+}
+
+.language_action_buttons {
+	
+}
+
+.language_action_button {
+	width: 70px;
+}
+/* -----------------------  End Customised Language list CSS  -------------------------*/
+
+/* -----------------------  Inline project iteration CSS  -------------------------*/
+
+.iterationHeader_active {
+	background-image: none;
+	border-width: medium;
+	background-color: #ffffff;
+	color: #000000;
+	border-color: #ffffff;
+}
+
+.iterationHeader_readOnly,.iterationHeader_obsolete {
+	background-image: none;
+	border-width: medium;
+	background-color: #e5e5e5;
+	color: #000000;
+	border-color: #e5e5e5;
+}
+
+#iteration-status-panel {
+	width: 880px;
+}
+
+.list_view_header {
+	width: 100%;
+	padding-bottom: 3px;
+}
+
+.list_view_header h2 {
+	display: inline;
+	margin-top: 0px;
+	margin-bottom: 3px;
+}
+
+.list_view_header h2>a {
+	text-decoration: none;
+	float: left;
+}
+
+.list_view_header .series_name {
+	font-style: italic;
+	font-size: 80%;
+	color: gray;
+}
+
+.list_view_header .menu_items {
 	float: right;
+	display: inline;
+	text-align: right;
+	margin-bottom: 6px;
+}
+/* -----------------------  End Inline project iteration CSS  -------------------------*/
+
+.iteration_inline_tribes {
+	
+}
+
+.footer {
 }

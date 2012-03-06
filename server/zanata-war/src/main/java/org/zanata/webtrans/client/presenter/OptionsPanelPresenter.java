@@ -27,7 +27,6 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
@@ -69,7 +68,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
 
       void setValidationOptionsVisible(boolean visible);
 
-      HasChangeHandlers getFilterOptionsSelect();
+      HasChangeHandlers getModalNavigationOptionsSelect();
 
       // possible filter values
       static final String KEY_FUZZY_UNTRANSLATED = "FU";
@@ -85,7 +84,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
    private final WorkspaceContext workspaceContext;
 
    @Inject
-   public OptionsPanelPresenter(final Display display, final EventBus eventBus, final ValidationOptionsPresenter validationDetailsPresenter, final TransFilterPresenter transFilterPresenter, final WorkspaceContext workspaceContext)
+   public OptionsPanelPresenter(final Display display, final EventBus eventBus, final ValidationOptionsPresenter validationDetailsPresenter, final WorkspaceContext workspaceContext)
    {
       super(display, eventBus);
       this.validationOptionsPresenter = validationDetailsPresenter;
@@ -124,6 +123,8 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          @Override
          public void onFilterView(FilterViewEvent event)
          {
+            // filter cancel will revert a checkbox value, so the checkboxes are
+            // updated to reflect this reversion
             if (event.isCancelFilter())
             {
                display.getTranslatedChk().setValue(event.isFilterTranslated(), false);
@@ -131,7 +132,9 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
                display.getUntranslatedChk().setValue(event.isFilterUntranslated(), false);
             }
 
-            // if filter view, hide model navigation
+            // if filter view, hide modal navigation
+            // TODO remove this when modal navigation is updated to work with a
+            // filtered list
             boolean showingFullList = (event.isFilterTranslated() == event.isFilterNeedReview()) && (event.isFilterTranslated() == event.isFilterUntranslated());
             if (showingFullList)
             {
@@ -181,7 +184,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
       display.getEnterChk().setValue(configMap.get(EditorConfigConstants.BUTTON_ENTER), false);
       display.getEscChk().setValue(configMap.get(EditorConfigConstants.BUTTON_ESC), false);
 
-      registerHandler(display.getFilterOptionsSelect().addChangeHandler(new ChangeHandler()
+      registerHandler(display.getModalNavigationOptionsSelect().addChangeHandler(new ChangeHandler()
       {
          @Override
          public void onChange(ChangeEvent event)

@@ -140,7 +140,9 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    @Override
    public void renderTable()
    {
-      documentListTable = DocumentListTable.initDocumentListTable(this, resources, messages, dataProvider);
+      // documentListTable = DocumentListTable.initDocumentListTable(this,
+      // resources, messages, dataProvider);
+      documentListTable = new DocumentListTable(this, resources, messages, dataProvider);
       dataProvider.addDataDisplay(documentListTable);
 
       documentScrollPanel.clear();

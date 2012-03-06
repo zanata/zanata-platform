@@ -16,13 +16,14 @@
     <s:token allowMultiplePosts="true" />
     <rich:panel id="loggedIn" >
              <rich:editor id="homeContent" 
-                width="500" height="600" style="width:500px;"
+                height="600"
                 required="false"
                 value="#{serverConfigurationBean.homeContent}"
                 viewMode="visual" 
                 useSeamText="true"
                 configuration="richeditor"
                 theme="advanced">
+                 <f:param name="width" value="100%"/>
             </rich:editor>
 
      <div style="clear:both"></div>

@@ -160,7 +160,7 @@ public class OptionsPanelView extends Composite implements OptionsPanelPresenter
    }
 
    @Override
-   public HasChangeHandlers getFilterOptionsSelect()
+   public HasChangeHandlers getModalNavigationOptionsSelect()
    {
       return optionsList;
    }
