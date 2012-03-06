@@ -36,31 +36,31 @@ public class OptionsPanelPresenterTest
 {
 
    // object under test
-   private OptionsPanelPresenter optionsPanelPresenter;
+   OptionsPanelPresenter optionsPanelPresenter;
 
    //injected mocks
-   private Display mockDisplay = createMock(Display.class);
-   private EventBus mockEventBus = createMock(EventBus.class);
-   private ValidationOptionsPresenter mockValidationDetailsPresenter = createMock(ValidationOptionsPresenter.class);
-   private WorkspaceContext mockWorkspaceContext = createMock(WorkspaceContext.class);
+   Display mockDisplay = createMock(Display.class);
+   EventBus mockEventBus = createMock(EventBus.class);
+   ValidationOptionsPresenter mockValidationDetailsPresenter = createMock(ValidationOptionsPresenter.class);
+   WorkspaceContext mockWorkspaceContext = createMock(WorkspaceContext.class);
 
    //filter checkboxes
    @SuppressWarnings("unchecked")
-   private HasValue<Boolean> mockTranslatedChk = createMock(HasValue.class);
+   HasValue<Boolean> mockTranslatedChk = createMock(HasValue.class);
    @SuppressWarnings("unchecked")
-   private HasValue<Boolean> mockNeedReviewChk = createMock(HasValue.class);
+   HasValue<Boolean> mockNeedReviewChk = createMock(HasValue.class);
    @SuppressWarnings("unchecked")
-   private HasValue<Boolean> mockUntranslatedChk = createMock(HasValue.class);
+   HasValue<Boolean> mockUntranslatedChk = createMock(HasValue.class);
 
    //editor option checkboxes
    @SuppressWarnings("unchecked")
-   private HasValue<Boolean> mockEditorButtonsChk = createMock(HasValue.class);
+   HasValue<Boolean> mockEditorButtonsChk = createMock(HasValue.class);
    @SuppressWarnings("unchecked")
-   private HasValue<Boolean> mockEnterChk = createMock(HasValue.class);
+   HasValue<Boolean> mockEnterChk = createMock(HasValue.class);
    @SuppressWarnings("unchecked")
-   private HasValue<Boolean> mockEscChk = createMock(HasValue.class);
+   HasValue<Boolean> mockEscChk = createMock(HasValue.class);
 
-   private HasChangeHandlers mockFilterOptionsSelect = createMock(HasChangeHandlers.class);
+   HasChangeHandlers mockFilterOptionsSelect = createMock(HasChangeHandlers.class);
 
 
    //captures for checkbox value change handlers
