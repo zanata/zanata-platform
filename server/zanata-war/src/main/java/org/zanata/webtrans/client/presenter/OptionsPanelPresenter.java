@@ -123,6 +123,8 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          @Override
          public void onFilterView(FilterViewEvent event)
          {
+            // filter cancel will revert a checkbox value, so the checkboxes are
+            // updated to reflect this reversion
             if (event.isCancelFilter())
             {
                display.getTranslatedChk().setValue(event.isFilterTranslated(), false);
@@ -131,6 +133,8 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
             }
 
             // if filter view, hide modal navigation
+            // TODO remove this when modal navigation is updated to work with a
+            // filtered list
             boolean showingFullList = (event.isFilterTranslated() == event.isFilterNeedReview()) && (event.isFilterTranslated() == event.isFilterUntranslated());
             if (showingFullList)
             {

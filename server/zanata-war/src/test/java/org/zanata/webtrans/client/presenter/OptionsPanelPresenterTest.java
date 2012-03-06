@@ -284,14 +284,112 @@ public class OptionsPanelPresenterTest
    }
 
 
+   public void filterChangeFilterAll()
+   {
+      boolean filterTranslated = true;
+      boolean filterNeedReview = true;
+      boolean filterUntranslated = true;
+      boolean cancelFilter = false;
+
+      //modal nav options visible when all or no filters selected
+      boolean expectShowNavOptions = true;
+
+      testFilterViewEventResponse(filterTranslated, filterNeedReview, filterUntranslated, cancelFilter, expectShowNavOptions);
+   }
+
+   public void filterChangeFilterNone()
+   {
+      boolean filterTranslated = false;
+      boolean filterNeedReview = false;
+      boolean filterUntranslated = false;
+      boolean cancelFilter = false;
+
+      //modal nav options visible when all or no filters selected
+      boolean expectShowNavOptions = true;
+
+      testFilterViewEventResponse(filterTranslated, filterNeedReview, filterUntranslated, cancelFilter, expectShowNavOptions);
+   }
+
+   public void filterChangeFilterSome()
+   {
+      boolean filterTranslated = true;
+      boolean filterNeedReview = false;
+      boolean filterUntranslated = true;
+      boolean cancelFilter = false;
+
+      //modal nav options hidden when 3 filter flags not all same
+      boolean expectShowNavOptions = false;
+
+      testFilterViewEventResponse(filterTranslated, filterNeedReview, filterUntranslated, cancelFilter, expectShowNavOptions);
+   }
+
+   public void filterChangeCancelFilter()
+   {
+      //expect to run value setters when cancelFilter is true
+      boolean cancelFilter = true;
+
+      boolean filterTranslated = true;
+      boolean filterNeedReview = false;
+      boolean filterUntranslated = true;
+
+      //modal nav options hidden when  3 filter flags not all same
+      boolean expectShowNavOptions = false;
+
+      testFilterViewEventResponse(filterTranslated, filterNeedReview, filterUntranslated, cancelFilter, expectShowNavOptions);
+   }
+
+   /**
+    * Test that navigation options are shown or hidden in response to a
+    * {@link FilterViewEvent} with the specified flag values.
+    * 
+    * @param filterTranslated
+    * @param filterNeedReview
+    * @param filterUntranslated
+    * @param cancelFilter
+    * @param expectShowNavOptions
+    */
+   private void testFilterViewEventResponse(boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated,
+                                            boolean cancelFilter, boolean expectShowNavOptions)
+   {
+      expectBindMethodBehaviour(false);
+
+      FilterViewEvent event = createMock(FilterViewEvent.class);
+      expect(event.isFilterTranslated()).andReturn(filterTranslated).anyTimes();
+      expect(event.isFilterNeedReview()).andReturn(filterNeedReview).anyTimes();
+      expect(event.isFilterUntranslated()).andReturn(filterUntranslated).anyTimes();
+      expect(event.isCancelFilter()).andReturn(cancelFilter).anyTimes();
+
+      // TODO this should be removed when modal navigation is updated to work
+      // with filtered results.
+      mockDisplay.setNavOptionVisible(expectShowNavOptions);
+      expectLastCall().once();
+
+      if (cancelFilter)
+      {
+         //should run value setters without events when cancelFilter is true
+         boolean fireEvents = false;
+         mockTranslatedChk.setValue(filterTranslated, fireEvents);
+         expectLastCall().once();
+         mockNeedReviewChk.setValue(filterNeedReview, fireEvents);
+         expectLastCall().once();
+         mockUntranslatedChk.setValue(filterUntranslated, fireEvents);
+         expectLastCall().once();
+      }
+
+      replay(event);
+      replayGlobalMocks();
+
+      optionsPanelPresenter.bind();
+      capturedFilterViewEventHandler.getValue().onFilterView(event);
+
+      verifyAllMocks();
+   }
+
+
 
    //TODO add tests based on OptionsPanelPresenter's responsibilities
 
    //Responsibilities:
-
-   //set filter checkboxes in response to filter event
-   //(To remove?) hide modal navigation options when appropriate
-   // note: leave TODO comment to change tests when we stop hiding modal navigation
    //fire events for editor config change (filters, modal navigation, buttons)?
 
 
