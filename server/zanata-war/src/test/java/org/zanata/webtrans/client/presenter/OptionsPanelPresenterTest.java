@@ -19,6 +19,7 @@ import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.presenter.OptionsPanelPresenter.Display;
@@ -77,9 +78,8 @@ public class OptionsPanelPresenterTest
    Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdateEventHandler = new Capture<WorkspaceContextUpdateEventHandler>();
 
    Capture<ButtonDisplayChangeEvent> capturedButtonDisplayChangeEvent = new Capture<ButtonDisplayChangeEvent>();
-
    Capture<FilterViewEvent> capturedFilterViewEvent = new Capture<FilterViewEvent>();
-
+   Capture<UserConfigChangeEvent> capturedUserConfigChangeEvent = new Capture<UserConfigChangeEvent>();
 
 
    @BeforeMethod
@@ -385,12 +385,105 @@ public class OptionsPanelPresenterTest
       verifyAllMocks();
    }
 
+   public void editorButtonsOptionChecked()
+   {
+      boolean buttonCheckValue = true;
+      testEditorButtonsOptionCheckEvent(buttonCheckValue);
+   }
 
+   public void editorButtonsOptionUnchecked()
+   {
+      boolean buttonCheckValue = false;
+      testEditorButtonsOptionCheckEvent(buttonCheckValue);
+   }
+
+
+   private void testEditorButtonsOptionCheckEvent(boolean editorButtonsOptionCheckValue)
+   {
+      expectBindMethodBehaviour(false);
+
+      @SuppressWarnings("unchecked")
+      ValueChangeEvent<Boolean> event = createMock(ValueChangeEvent.class);
+      expect(event.getValue()).andReturn(editorButtonsOptionCheckValue).anyTimes();
+      mockEventBus.fireEvent(and(capture(capturedButtonDisplayChangeEvent), isA(ButtonDisplayChangeEvent.class)));
+      expectLastCall().once();
+
+      replay(event);
+      replayGlobalMocks();
+
+      optionsPanelPresenter.bind();
+      capturedEditorButtonsChkValueChangeEventHandler.getValue().onValueChange(event);
+
+      verifyAllMocks();
+      assertThat(capturedButtonDisplayChangeEvent.getValue().isShowButtons(), is(editorButtonsOptionCheckValue));
+   }
+
+   public void enterOptionChecked()
+   {
+      boolean enterOptionCheckValue = true;
+      Capture<ValueChangeHandler<Boolean>> enterCheckboxValueChangeHandler = capturedEnterChkValueChangeEventHandler;
+      String configItemKey = "Enter";
+      testOptionCheckTriggersUserConfigEvent(enterOptionCheckValue, enterCheckboxValueChangeHandler, configItemKey);
+   }
+
+   public void enterOptionUnchecked()
+   {
+      boolean enterOptionCheckValue = false;
+      Capture<ValueChangeHandler<Boolean>> enterCheckboxValueChangeHandler = capturedEnterChkValueChangeEventHandler;
+      String configItemKey = "Enter";
+      testOptionCheckTriggersUserConfigEvent(enterOptionCheckValue, enterCheckboxValueChangeHandler, configItemKey);
+   }
+
+   public void escOptionChecked()
+   {
+      boolean escOptionCheckValue = true;
+      Capture<ValueChangeHandler<Boolean>> escCheckboxValueChangeHandler = capturedEscChkValueChangeEventHandler;
+      String configItemKey = "Esc";
+      testOptionCheckTriggersUserConfigEvent(escOptionCheckValue, escCheckboxValueChangeHandler, configItemKey);
+   }
+
+   public void escOptionUnchecked()
+   {
+      boolean escOptionCheckValue = false;
+      Capture<ValueChangeHandler<Boolean>> escCheckboxValueChangeHandler = capturedEscChkValueChangeEventHandler;
+      String configItemKey = "Esc";
+      testOptionCheckTriggersUserConfigEvent(escOptionCheckValue, escCheckboxValueChangeHandler, configItemKey);
+   }
+
+   /**
+    * Test that user config event is generated in response to
+    * checking/unchecking an editor option checkbox.
+    * 
+    * @param optionCheckValue new value used for value change event
+    * @param checkboxValueChangeHandler handler for the checkbox under test
+    * @param configItemKey expected key in user config map
+    */
+   private void testOptionCheckTriggersUserConfigEvent(boolean optionCheckValue, Capture<ValueChangeHandler<Boolean>> checkboxValueChangeHandler, String configItemKey)
+   {
+      expectBindMethodBehaviour(false);
+
+      @SuppressWarnings("unchecked")
+      ValueChangeEvent<Boolean> event = createMock(ValueChangeEvent.class);
+      expect(event.getValue()).andReturn(optionCheckValue).anyTimes();
+
+      mockEventBus.fireEvent(and(capture(capturedUserConfigChangeEvent), isA(UserConfigChangeEvent.class)));
+      expectLastCall().once();
+
+      replay(event);
+      replayGlobalMocks();
+
+      optionsPanelPresenter.bind();
+      checkboxValueChangeHandler.getValue().onValueChange(event);
+
+      verifyAllMocks();
+      assertThat(capturedUserConfigChangeEvent.getValue().getConfigMap().get(configItemKey), is(optionCheckValue));
+   }
 
    //TODO add tests based on OptionsPanelPresenter's responsibilities
 
    //Responsibilities:
-   //fire events for editor config change (filters, modal navigation, buttons)?
+   //fire events for:
+   //filter options select (modal navigation select - rename this)
 
 
 
@@ -398,14 +491,16 @@ public class OptionsPanelPresenterTest
    {
       mockValidationDetailsPresenter.bind();
       expectLastCall().once();
-
       expect(mockWorkspaceContext.isReadOnly()).andReturn(readOnlyWorkspace).once();
 
       if (readOnlyWorkspace)
       {
          mockEventBus.fireEvent(and(capture(capturedButtonDisplayChangeEvent), isA(ButtonDisplayChangeEvent.class)));
+         expectLastCall().once();
          mockDisplay.setEditorOptionsVisible(false);
+         expectLastCall().once();
          mockDisplay.setValidationOptionsVisible(false);
+         expectLastCall().once();
       }
 
       expectRegisterFilterChangeHandlers();
@@ -481,6 +576,7 @@ public class OptionsPanelPresenterTest
 
       capturedButtonDisplayChangeEvent.reset();
       capturedFilterViewEvent.reset();
+      capturedUserConfigChangeEvent.reset();
    }
 
    private void replayGlobalMocks()
