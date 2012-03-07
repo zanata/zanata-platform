@@ -6,6 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.seam.annotations.Name;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.VersionInfo;
@@ -40,6 +41,7 @@ public class VersionService implements VersionResource
    @Override
    @GET
    @Produces({ MediaTypes.APPLICATION_ZANATA_VERSION_JSON, MediaTypes.APPLICATION_ZANATA_VERSION_XML })
+   @TypeHint(VersionInfo.class)
    public Response get()
    {
       return Response.ok(version).build();
