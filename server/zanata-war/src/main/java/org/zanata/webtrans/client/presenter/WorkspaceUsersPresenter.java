@@ -7,7 +7,6 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.shared.model.Person;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
 
 import com.google.inject.Inject;
 
@@ -22,7 +21,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
    }
 
    @Inject
-   public WorkspaceUsersPresenter(final Display display, final EventBus eventBus, WorkspaceContext workspaceContext)
+   public WorkspaceUsersPresenter(final Display display, final EventBus eventBus)
    {
       super(display, eventBus);
    }
@@ -35,13 +34,11 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
    @Override
    protected void onUnbind()
    {
-      // TODO Auto-generated method stub
    }
 
    @Override
    public void onRevealDisplay()
    {
-      // TODO Auto-generated method stub
    }
 
    public void setUserList(ArrayList<Person> users)
