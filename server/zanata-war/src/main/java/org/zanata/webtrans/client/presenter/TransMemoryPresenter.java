@@ -33,13 +33,6 @@ import com.google.inject.Inject;
 
 public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.Display>
 {
-   private final WorkspaceContext workspaceContext;
-   private final CachingDispatchAsync dispatcher;
-   private GetTranslationMemory submittedRequest = null;
-   private GetTranslationMemory lastRequest = null;
-
-   @Inject
-   private TransMemoryDetailsPresenter tmInfoPresenter;
 
    public interface Display extends WidgetDisplay
    {
@@ -64,18 +57,21 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       Column<TranslationMemoryGlossaryItem, ImageResource> getDetailsColumn();
 
       Column<TranslationMemoryGlossaryItem, String> getCopyColumn();
-
-      void renderTable();
    }
 
+   private final WorkspaceContext workspaceContext;
+   private final CachingDispatchAsync dispatcher;
+   private GetTranslationMemory submittedRequest = null;
+   private GetTranslationMemory lastRequest = null;
+   private TransMemoryDetailsPresenter tmInfoPresenter;
+
    @Inject
-   public TransMemoryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, WorkspaceContext workspaceContext)
+   public TransMemoryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, TransMemoryDetailsPresenter tmInfoPresenter, WorkspaceContext workspaceContext)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
       this.workspaceContext = workspaceContext;
-
-      display.renderTable();
+      this.tmInfoPresenter = tmInfoPresenter;
    }
 
    @Override

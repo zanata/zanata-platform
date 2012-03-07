@@ -185,6 +185,8 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
+
+      renderTable();
    }
 
    @UiHandler("tmTextBox")
@@ -307,8 +309,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       return copyColumn;
    }
 
-   @Override
-   public void renderTable()
+   private void renderTable()
    {
       tmTable = new CellTable<TranslationMemoryGlossaryItem>();
       tmTable.addStyleName("tmTable");
