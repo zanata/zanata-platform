@@ -51,4 +51,10 @@ public interface UiMessages extends Messages
 
    @DefaultMessage("Copy \"{0}\" to the editor")
    String copyLinkTooltip(String targetMessage);
+
+   @DefaultMessage("Translation Memory")
+   String translationMemoryHeading();
+
+   @DefaultMessage("Glossary")
+   String glossaryHeading();
 }

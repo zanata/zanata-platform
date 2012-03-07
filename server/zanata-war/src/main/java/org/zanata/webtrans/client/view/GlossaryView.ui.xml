@@ -2,12 +2,21 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:f="urn:import:org.zanata.webtrans.client">
 	<ui:style>
-		
+		.headerLabel {
+            padding-right:5px;
+            padding-top:5px;	
+            font-weight:bold;
+        }
+        
+        .container {
+			border-left:2px solid #E0E8EE;
+		}
 	</ui:style>
 
-	<g:LayoutPanel>
+	<g:LayoutPanel styleName="{style.container}">
 		<g:layer top="0px" height="30px">
 			<g:HorizontalPanel>
+				<g:Label ui:field="headerLabel" styleName="{style.headerLabel}"/>
 				<g:TextBox ui:field="glossaryTextBox" />
 				<g:ValueListBox ui:field="searchType" />
 				<g:Button ui:field="searchButton" />

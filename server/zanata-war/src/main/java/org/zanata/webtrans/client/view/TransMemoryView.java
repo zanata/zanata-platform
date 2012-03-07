@@ -31,6 +31,7 @@ import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSe
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueListBox;
@@ -51,6 +52,9 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 
    @UiField
    TextBox tmTextBox;
+
+   @UiField
+   Label headerLabel;
 
    @UiField
    Button searchButton;
@@ -82,6 +86,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       dataProvider = new ListDataProvider<TranslationMemoryGlossaryItem>();
       initWidget(uiBinder.createAndBindUi(this));
 
+      headerLabel.setText(messages.translationMemoryHeading());
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
    }
@@ -222,6 +227,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    {
       tmTable = new CellTable<TranslationMemoryGlossaryItem>();
       tmTable.addStyleName("tmTable");
+      tmTable.addStyleName("southTable");
       tmTable.addColumn(sourceColumn, messages.sourceLabel());
       tmTable.addColumn(targetColumn, messages.targetLabel());
       tmTable.addColumn(new SimilarityColumn(), messages.similarityLabel());

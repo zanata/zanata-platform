@@ -27,6 +27,7 @@ import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSe
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueListBox;
@@ -54,6 +55,9 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    @UiField
    Button searchButton;
 
+   @UiField
+   Label headerLabel;
+
    @UiField(provided = true)
    ValueListBox<SearchType> searchType;
 
@@ -73,6 +77,8 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);
       dataProvider = new ListDataProvider<TranslationMemoryGlossaryItem>();
       initWidget(uiBinder.createAndBindUi(this));
+
+      headerLabel.setText(messages.glossaryHeading());
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
    }
@@ -148,7 +154,8 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    public void renderTable()
    {
       glossaryTable = new CellTable<TranslationMemoryGlossaryItem>();
-      glossaryTable.addStyleName("tmTable");
+      glossaryTable.addStyleName("glossaryTable");
+      glossaryTable.addStyleName("southTable");
       glossaryTable.addColumn(sourceColumn, messages.sourceLabel());
       glossaryTable.addColumn(targetColumn, messages.targetLabel());
       glossaryTable.addColumn(new SimilarityColumn(), messages.similarityLabel());
