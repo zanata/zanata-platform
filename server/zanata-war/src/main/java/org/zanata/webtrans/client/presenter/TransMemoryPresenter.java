@@ -61,11 +61,9 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
       String getTarget(int index);
 
-      @SuppressWarnings("rawtypes")
-      Column getDetailsColumn();
+      Column<TranslationMemoryGlossaryItem, ImageResource> getDetailsColumn();
 
-      @SuppressWarnings("rawtypes")
-      Column getCopyColumn();
+      Column<TranslationMemoryGlossaryItem, String> getCopyColumn();
 
       void renderTable();
    }

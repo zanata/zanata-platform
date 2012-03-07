@@ -1,12 +1,11 @@
 package org.zanata.webtrans.client.presenter;
 
 import static org.easymock.EasyMock.*;
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.easymock.Capture;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.TransUnitCount;
