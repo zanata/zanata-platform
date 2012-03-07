@@ -22,6 +22,7 @@
 		<jboss.embedded.version>beta3.SP12</jboss.embedded.version>
 		<war.config.dir>${basedir}/src/etc</war.config.dir>
 		<containerId>jboss5x</containerId>
+      <allow.deploy.skip>true</allow.deploy.skip>
 		
 		<!-- application properties -->
 		<env.debug>false</env.debug>
@@ -257,7 +258,8 @@
 				<artifactId>maven-deploy-plugin</artifactId>
 				<!-- zanata war is too big to deploy, especially with five variants -->
 				<configuration>
-					<skip>true</skip>
+               <!-- MEAD builds must deploy all artifacts, so we run them with -Dallow.deploy.skip=false -->
+					<skip>${allow.deploy.skip}</skip>
 				</configuration>
 			</plugin>
 
