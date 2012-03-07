@@ -119,7 +119,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    private void setTranslationMemoryView(Widget translationMemoryView)
    {
       tmGlossaryPanel.remove(translationMemoryView);
-      tmGlossaryPanel.addWest(translationMemoryView, 50);
+      tmGlossaryPanel.addWest(translationMemoryView, 55);
    }
 
    private void setWorkspaceUsersView(Widget workspaceUsersView)
@@ -131,7 +131,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    private void setGlossaryView(Widget glossaryView)
    {
       tmGlossaryPanel.remove(glossaryView);
-      tmGlossaryPanel.addEast(glossaryView, 50);
+      tmGlossaryPanel.addEast(glossaryView, 45);
    }
 
    private void setEditorView(Widget editorView)
