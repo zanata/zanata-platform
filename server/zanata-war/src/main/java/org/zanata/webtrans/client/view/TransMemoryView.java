@@ -24,6 +24,7 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.resources.client.ImageResource;
@@ -73,8 +74,8 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 
    CellTable<TranslationMemoryGlossaryItem> tmTable;
 
-   private static Resources resources;
-   private static String query;
+   private Resources resources;
+   private String query;
 
    private boolean isFocused;
 
@@ -218,7 +219,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    }
 
    @Override
-   public Button getSearchButton()
+   public HasClickHandlers getSearchButton()
    {
       return searchButton;
    }
