@@ -6,21 +6,20 @@ import java.util.HashMap;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.ui.table.cell.TransUnitCountGraphCell;
+import org.zanata.webtrans.client.ui.table.column.DirectoryColumn;
+import org.zanata.webtrans.client.ui.table.column.DocumentColumn;
+import org.zanata.webtrans.client.ui.table.column.RemainingWordsHoursColumn;
+import org.zanata.webtrans.client.ui.table.column.StatisticColumn;
+import org.zanata.webtrans.client.ui.table.column.TranslatedColumn;
+import org.zanata.webtrans.client.ui.table.column.UntranslatedColumn;
 import org.zanata.webtrans.client.view.DocumentListView;
 import org.zanata.webtrans.shared.util.ObjectUtil;
 
-import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.cell.client.IconCellDecorator;
-import com.google.gwt.cell.client.TextCell;
-import com.google.gwt.cell.client.ValueUpdater;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
-import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.History;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -31,132 +30,6 @@ public class DocumentListTable extends CellTable<DocumentNode>
    // TODO this is not the ideal place to store this
    // it is required since these graphs have been removed from DocumentNode so
    // that DocumentListPresenter can be unit tested (JRE).
-   private HashMap<Long, TransUnitCountGraph> statsWidgets = new HashMap<Long, TransUnitCountGraph>();
-
-   public class TransUnitCountGraphCell extends AbstractCell<TransUnitCountGraph>
-   {
-      public TransUnitCountGraphCell()
-      {
-         super("mouseover", "mouseout");
-      }
-
-      @Override
-      public void render(Context arg0, TransUnitCountGraph arg1, SafeHtmlBuilder arg2)
-      {
-         arg2.appendHtmlConstant(arg1.getElement().getString());
-      }
-
-      @Override
-      public void onBrowserEvent(Context context, Element parent, TransUnitCountGraph value, NativeEvent event, ValueUpdater<TransUnitCountGraph> valueUpdater)
-      {
-         if (event.getType().equalsIgnoreCase("mouseover"))
-         {
-            value.onMouseOver(parent.getFirstChildElement());
-         }
-         else if (event.getType().equalsIgnoreCase("mouseout"))
-         {
-            value.onMouseOut();
-         }
-      }
-   }
-
-   private Column<DocumentNode, String> getFolderColumn()
-   {
-      TextColumn<DocumentNode> folderColumn = new TextColumn<DocumentNode>()
-      {
-         @Override
-         public String getValue(DocumentNode object)
-         {
-            return object.getDocInfo().getPath();
-         }
-      };
-      folderColumn.setSortable(true);
-      return folderColumn;
-   }
-
-   private Column<DocumentNode, String> getDocumentColumn(final org.zanata.webtrans.client.resources.Resources images)
-   {
-      IconCellDecorator<String> docIconCell = new IconCellDecorator<String>(images.documentImage(), new TextCell());
-      Column<DocumentNode, String> docColumn = new Column<DocumentNode, String>(docIconCell)
-      {
-         @Override
-         public String getValue(DocumentNode object)
-         {
-            return object.getDocInfo().getName();
-         }
-      };
-      docColumn.setSortable(true);
-      return docColumn;
-   }
-
-   private Column<DocumentNode, TransUnitCountGraph> getStatisticColumn(final WebTransMessages messages)
-   {
-      Column<DocumentNode, TransUnitCountGraph> statisticColumn = new Column<DocumentNode, TransUnitCountGraph>(new TransUnitCountGraphCell())
-      {
-         @Override
-         public TransUnitCountGraph getValue(DocumentNode docNode)
-         {
-            long id = docNode.getDocInfo().getId().getId();
-            if (!statsWidgets.containsKey(id))
-            {
-               TransUnitCountGraph graph = new TransUnitCountGraph(messages);
-               graph.setStats(docNode.getDocInfo().getStats());
-               statsWidgets.put(id, graph);
-            }
-            else
-            {
-               statsWidgets.get(id).setStats(docNode.getDocInfo().getStats());
-            }
-            return statsWidgets.get(id);
-         }
-      };
-      statisticColumn.setSortable(true);
-      return statisticColumn;
-   }
-
-   private Column<DocumentNode, String> getTranslatedColumn(final WebTransMessages messages)
-   {
-      TextColumn<DocumentNode> translatedColumn = new TextColumn<DocumentNode>()
-      {
-         @Override
-         public String getValue(DocumentNode object)
-         {
-            return String.valueOf(object.getDocInfo().getStats().getWordCount().getApproved());
-         }
-      };
-      translatedColumn.setSortable(true);
-      return translatedColumn;
-   }
-
-   private Column<DocumentNode, String> getUntranslatedColumn(final WebTransMessages messages)
-   {
-      TextColumn<DocumentNode> unTranslatedColumn = new TextColumn<DocumentNode>()
-      {
-         @Override
-         public String getValue(DocumentNode object)
-         {
-            return String.valueOf(object.getDocInfo().getStats().getWordCount().getUntranslated());
-
-         }
-      };
-      unTranslatedColumn.setSortable(true);
-      return unTranslatedColumn;
-   }
-
-   private Column<DocumentNode, String> getRemainingColumn(final WebTransMessages messages)
-   {
-      TextColumn<DocumentNode> remainingColumn = new TextColumn<DocumentNode>()
-      {
-         @Override
-         public String getValue(DocumentNode object)
-         {
-            return messages.statusBarLabelHours(object.getDocInfo().getStats().getRemainingWordsHours());
-         }
-      };
-      remainingColumn.setSortable(true);
-      return remainingColumn;
-   }
-
    private final SingleSelectionModel<DocumentNode> selectionModel = new SingleSelectionModel<DocumentNode>()
    {
       @Override
@@ -192,14 +65,21 @@ public class DocumentListTable extends CellTable<DocumentNode>
       setStylePrimaryName("DocumentListTable");
       setSelectionModel(selectionModel);
 
-      final Column<DocumentNode, String> folderColumn = getFolderColumn();
-      final Column<DocumentNode, String> documentColumn = getDocumentColumn(images);
-      final Column<DocumentNode, TransUnitCountGraph> statisticColumn = getStatisticColumn(messages);
-      final Column<DocumentNode, String> translatedColumn = getTranslatedColumn(messages);
-      final Column<DocumentNode, String> untranslatedColumn = getUntranslatedColumn(messages);
-      final Column<DocumentNode, String> remainingColumn = getRemainingColumn(messages);
+      final Column<DocumentNode, String> directoryColumn = new DirectoryColumn();
+      final Column<DocumentNode, String> documentColumn = new DocumentColumn(images);
+      final Column<DocumentNode, TransUnitCountGraph> statisticColumn = new StatisticColumn(messages);
+      final Column<DocumentNode, String> translatedColumn = new TranslatedColumn();
+      final Column<DocumentNode, String> untranslatedColumn = new UntranslatedColumn();
+      final Column<DocumentNode, String> remainingColumn = new RemainingWordsHoursColumn(messages);
 
-      addColumn(folderColumn, messages.columnHeaderDirectory());
+      directoryColumn.setSortable(true);
+      documentColumn.setSortable(true);
+      statisticColumn.setSortable(true);
+      translatedColumn.setSortable(true);
+      untranslatedColumn.setSortable(true);
+      remainingColumn.setSortable(true);
+
+      addColumn(directoryColumn, messages.columnHeaderDirectory());
       addColumn(documentColumn, messages.columnHeaderDocument());
       addColumn(statisticColumn, messages.columnHeaderStatistic());
       addColumn(translatedColumn, messages.columnHeaderTranslated());
@@ -207,7 +87,7 @@ public class DocumentListTable extends CellTable<DocumentNode>
       addColumn(remainingColumn, messages.columnHeaderRemaining());
 
       ListHandler<DocumentNode> columnSortHandler = new ListHandler<DocumentNode>(dataProvider.getList());
-      columnSortHandler.setComparator(folderColumn, new Comparator<DocumentNode>()
+      columnSortHandler.setComparator(directoryColumn, new Comparator<DocumentNode>()
       {
          public int compare(DocumentNode o1, DocumentNode o2)
          {
@@ -291,11 +171,11 @@ public class DocumentListTable extends CellTable<DocumentNode>
             return -1;
          }
       });
-      addColumnStyleName(getColumnIndex(folderColumn), "DocumentListTable_folderCol");
+      addColumnStyleName(getColumnIndex(directoryColumn), "DocumentListTable_folderCol");
       addColumnStyleName(getColumnIndex(documentColumn), "DocumentListTable_docCol");
       addColumnSortHandler(columnSortHandler);
 
-      getColumnSortList().push(folderColumn);
+      getColumnSortList().push(directoryColumn);
 
    }
 }
