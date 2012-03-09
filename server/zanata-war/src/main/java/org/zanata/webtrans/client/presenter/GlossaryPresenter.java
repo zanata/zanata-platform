@@ -26,7 +26,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
+import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -116,7 +116,7 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
          @Override
          public void update(int index, TranslationMemoryGlossaryItem object, String value)
          {
-            eventBus.fireEvent(new CopyDataToEditorEvent(object.getSource(), object.getTarget()));
+            eventBus.fireEvent(new InsertStringInEditorEvent(object.getSource(), object.getTarget()));
          }
       });
    }

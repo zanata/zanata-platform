@@ -43,6 +43,8 @@ import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
+import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
+import org.zanata.webtrans.client.events.InsertStringInEditorHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
@@ -570,6 +572,36 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                if (display.getTargetCellEditor().isEditing())
                {
                   display.getTargetCellEditor().setText(event.getTargetResult());
+                  display.getTargetCellEditor().autoSize();
+                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
+               }
+               else
+               {
+                  // Error if failed to open editor
+                  eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnopened()));
+               }
+            }
+         }
+      }));
+      
+      registerHandler(eventBus.addHandler(InsertStringInEditorEvent.getType(), new InsertStringInEditorHandler()
+      {
+         @Override
+         public void onInsertString(InsertStringInEditorEvent event)
+         {
+            if (selectedTransUnit == null)
+            {
+               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.noTextFlowToCopy()));
+            }
+            else
+            {
+               if (!display.getTargetCellEditor().isEditing())
+               {
+                  gotoCurrentRow();
+               }
+               if (display.getTargetCellEditor().isEditing())
+               {
+                  display.getTargetCellEditor().insertTextInCursorPosition(event.getSuggestion());
                   display.getTargetCellEditor().autoSize();
                   eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
                }

@@ -48,6 +48,12 @@ public interface UiMessages extends Messages
 
    @DefaultMessage("Target")
    String targetLabel();
+   
+   @DefaultMessage("Term")
+   String termLabel();
+   
+   @DefaultMessage("Suggestion")
+   String suggestionLabel();
 
    @DefaultMessage("Copy \"{0}\" to the editor")
    String copyLinkTooltip(String targetMessage);

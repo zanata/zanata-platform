@@ -156,8 +156,8 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       glossaryTable = new CellTable<TranslationMemoryGlossaryItem>();
       glossaryTable.addStyleName("glossaryTable");
       glossaryTable.addStyleName("southTable");
-      glossaryTable.addColumn(sourceColumn, messages.sourceLabel());
-      glossaryTable.addColumn(targetColumn, messages.targetLabel());
+      glossaryTable.addColumn(sourceColumn, messages.termLabel());
+      glossaryTable.addColumn(targetColumn, messages.suggestionLabel());
       glossaryTable.addColumn(new SimilarityColumn(), messages.similarityLabel());
       glossaryTable.addColumn(copyColumn);
 

@@ -529,6 +529,17 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
    }
 
+   public void insertTextInCursorPosition(String text)
+   {
+      if (isEditing())
+      {
+         String preCursor = textArea.getText().substring(0, textArea.getCursorPos());
+         String postCursor = textArea.getText().substring(textArea.getCursorPos(), textArea.getText().length());
+         
+         textArea.setText(preCursor + text + postCursor);
+      }
+   }
+   
    @Override
    public void editCell(CellEditInfo cellEditInfo, TransUnit cellValue, Callback<TransUnit> callback)
    {
