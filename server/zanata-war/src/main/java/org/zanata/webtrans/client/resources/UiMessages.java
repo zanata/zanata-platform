@@ -49,11 +49,11 @@ public interface UiMessages extends Messages
    @DefaultMessage("Target")
    String targetLabel();
    
-   @DefaultMessage("Term")
-   String termLabel();
+   @DefaultMessage("Source Term")
+   String srcTermLabel();
    
-   @DefaultMessage("Suggestion")
-   String suggestionLabel();
+   @DefaultMessage("Target Term")
+   String targetTermLabel();
 
    @DefaultMessage("Copy \"{0}\" to the editor")
    String copyLinkTooltip(String targetMessage);
