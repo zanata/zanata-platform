@@ -3,8 +3,8 @@ package org.zanata.webtrans.client.rpc;
 import java.util.ArrayList;
 
 import org.zanata.model.HSimpleComment;
+import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
-import org.zanata.webtrans.shared.rpc.TransMemoryDetails;
 import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
 
 import com.allen_sauer.gwt.log.client.Log;

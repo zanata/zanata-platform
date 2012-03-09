@@ -6,6 +6,7 @@ import org.zanata.webtrans.client.presenter.GlossaryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.EnumListBox;
+import org.zanata.webtrans.client.ui.LoadingPanel;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.client.ui.table.column.DetailsColumn;
 import org.zanata.webtrans.client.ui.table.column.CopyButtonColumn;
@@ -70,6 +71,7 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    @UiField
    ScrollPanel scrollPanel;
 
+   private final LoadingPanel glossaryDetails;
    private final UiMessages messages;
    private boolean isFocused;
    
@@ -87,6 +89,8 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       targetColumn = new HighlightingLabelColumn(false, true);
       copyColumn = new CopyButtonColumn();
       detailsColumn = new DetailsColumn(resources);
+      
+      glossaryDetails = new LoadingPanel(resources);
       
       
       searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);
@@ -208,5 +212,17 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    public Column<TranslationMemoryGlossaryItem, ImageResource> getDetailsColumn()
    {
       return detailsColumn;
+   }
+
+   @Override
+   public void showDetails(TranslationMemoryGlossaryItem object)
+   {
+      glossaryDetails.center();
+   }
+
+   @Override
+   public void hideDetails()
+   {
+      glossaryDetails.hide();
    }
 }

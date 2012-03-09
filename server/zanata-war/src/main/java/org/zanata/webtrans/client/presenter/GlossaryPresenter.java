@@ -44,7 +44,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
@@ -91,6 +90,10 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
       Column<TranslationMemoryGlossaryItem, String> getCopyColumn();
 
       Column<TranslationMemoryGlossaryItem, ImageResource> getDetailsColumn();
+
+      void showDetails(TranslationMemoryGlossaryItem object);
+      
+      void hideDetails();
    }
 
    @Override
@@ -129,7 +132,7 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
          @Override
          public void update(int index, TranslationMemoryGlossaryItem object, ImageResource value)
          {
-               Window.alert("Glossary details for:" + object.getSource());
+            display.showDetails(object);
          }
       });
    }
