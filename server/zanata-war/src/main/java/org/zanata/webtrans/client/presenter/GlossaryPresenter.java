@@ -42,7 +42,9 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
@@ -87,6 +89,8 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
       void reloadData(String query, ArrayList<TranslationMemoryGlossaryItem> glossaries);
 
       Column<TranslationMemoryGlossaryItem, String> getCopyColumn();
+
+      Column<TranslationMemoryGlossaryItem, ImageResource> getDetailsColumn();
    }
 
    @Override
@@ -117,6 +121,15 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
          public void update(int index, TranslationMemoryGlossaryItem object, String value)
          {
             eventBus.fireEvent(new InsertStringInEditorEvent(object.getSource(), object.getTarget()));
+         }
+      });
+
+      display.getDetailsColumn().setFieldUpdater(new FieldUpdater<TranslationMemoryGlossaryItem, ImageResource>()
+      {
+         @Override
+         public void update(int index, TranslationMemoryGlossaryItem object, ImageResource value)
+         {
+               Window.alert("Glossary details for:" + object.getSource());
          }
       });
    }

@@ -3,9 +3,11 @@ package org.zanata.webtrans.client.view;
 import java.util.ArrayList;
 
 import org.zanata.webtrans.client.presenter.GlossaryPresenter;
+import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.EnumListBox;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
+import org.zanata.webtrans.client.ui.table.column.DetailsColumn;
 import org.zanata.webtrans.client.ui.table.column.CopyButtonColumn;
 import org.zanata.webtrans.client.ui.table.column.HighlightingLabelColumn;
 import org.zanata.webtrans.client.ui.table.column.SimilarityColumn;
@@ -18,6 +20,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -69,11 +72,23 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
 
    private final UiMessages messages;
    private boolean isFocused;
+   
+   private final HighlightingLabelColumn sourceColumn;
+   private final HighlightingLabelColumn targetColumn;
+   private final CopyButtonColumn copyColumn;
+   private final DetailsColumn detailsColumn;
 
    @Inject
-   public GlossaryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer)
+   public GlossaryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, Resources resources)
    {
       this.messages = messages;
+      
+      sourceColumn = new HighlightingLabelColumn(true, false);
+      targetColumn = new HighlightingLabelColumn(false, true);
+      copyColumn = new CopyButtonColumn();
+      detailsColumn = new DetailsColumn(resources);
+      
+      
       searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);
       dataProvider = new ListDataProvider<TranslationMemoryGlossaryItem>();
       initWidget(uiBinder.createAndBindUi(this));
@@ -146,10 +161,6 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       return searchType;
    }
 
-   private CopyButtonColumn copyColumn = new CopyButtonColumn();
-   private HighlightingLabelColumn sourceColumn = new HighlightingLabelColumn(true, false);
-   private HighlightingLabelColumn targetColumn = new HighlightingLabelColumn(false, true);
-
    @Override
    public void renderTable()
    {
@@ -159,6 +170,7 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       glossaryTable.addColumn(sourceColumn, messages.srcTermLabel());
       glossaryTable.addColumn(targetColumn, messages.targetTermLabel());
       glossaryTable.addColumn(new SimilarityColumn(), messages.similarityLabel());
+      glossaryTable.addColumn(detailsColumn, messages.detailsLabel());
       glossaryTable.addColumn(copyColumn);
 
       final NoSelectionModel<TranslationMemoryGlossaryItem> selectionModel = new NoSelectionModel<TranslationMemoryGlossaryItem>();
@@ -190,5 +202,11 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    public Column<TranslationMemoryGlossaryItem, String> getCopyColumn()
    {
       return copyColumn;
+   }
+   
+   @Override
+   public Column<TranslationMemoryGlossaryItem, ImageResource> getDetailsColumn()
+   {
+      return detailsColumn;
    }
 }

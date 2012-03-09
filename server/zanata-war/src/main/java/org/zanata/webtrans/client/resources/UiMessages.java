@@ -42,6 +42,9 @@ public interface UiMessages extends Messages
 
    @DefaultMessage("Similarity")
    String similarityLabel();
+   
+   @DefaultMessage("Details")
+   String detailsLabel();
 
    @DefaultMessage("Source")
    String sourceLabel();
