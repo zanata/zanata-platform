@@ -66,7 +66,19 @@ end
   
 ******************************************************************************************/
 
-/* admin can create/delete projects (see rule AdminAnything above) */
+/* admin can delete projects (see rule AdminAnything above) */
+
+/* Any authenticated user can create a project */
+rule CreateProject
+  no-loop
+  activation-group "permissions"
+when
+  $project: HProject()
+  $authenticatedPerson: HPerson()
+  check: PermissionCheck(target == $project, action == "insert", granted == false )
+then
+  check.grant();
+end
 
 /* anyone can read a project */
 rule ReadProject
