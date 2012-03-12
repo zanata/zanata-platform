@@ -5,10 +5,10 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.shared.model.TransMemoryDetails;
+import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
-import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
-import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
+import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
+import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -21,7 +21,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.inject.Inject;
 
-public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDetailsPresenter.Display>
+public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPresenter.Display>
 {
    private final CachingDispatchAsync dispatcher;
 
@@ -39,27 +39,21 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
 
       HasText getTargetComment();
 
-      HasText getProjectName();
-
-      HasText getIterationName();
-
-      HasText getDocumentName();
-
-      HasChangeHandlers getDocumentListBox();
+      HasChangeHandlers getEntryListBox();
 
       int getSelectedDocumentIndex();
 
       HasClickHandlers getDismissButton();
 
-      void clearDocs();
+      void clearEntries();
 
-      void addDoc(String text);
+      void addEntry(String text);
    }
 
-   TransMemoryDetailsList tmDetails;
+   GetGlossaryDetailsResult glossaryDetails;
 
    @Inject
-   public TransMemoryDetailsPresenter(final Display display, EventBus eventBus, CachingDispatchAsync dispatcher)
+   public GlossaryDetailsPresenter(final Display display, EventBus eventBus, CachingDispatchAsync dispatcher)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
@@ -72,22 +66,21 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
             display.hide();
          }
       }));
-      registerHandler(display.getDocumentListBox().addChangeHandler(new ChangeHandler()
+      registerHandler(display.getEntryListBox().addChangeHandler(new ChangeHandler()
       {
          @Override
          public void onChange(ChangeEvent event)
          {
-            selectDoc(display.getSelectedDocumentIndex());
+            selectEntry(display.getSelectedDocumentIndex());
          }
       }));
    }
 
    public void show(final TranslationMemoryGlossaryItem item)
    {
-      // request TM details from the server
-      dispatcher.execute(new GetTransMemoryDetailsAction(item.getSourceIdList()), new AsyncCallback<TransMemoryDetailsList>()
+      // request glossary details from the server
+      dispatcher.execute(new GetGlossaryDetailsAction(item.getSourceIdList()), new AsyncCallback<GetGlossaryDetailsResult>()
       {
-
          @Override
          public void onFailure(Throwable caught)
          {
@@ -95,45 +88,48 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
          }
 
          @Override
-         public void onSuccess(TransMemoryDetailsList result)
+         public void onSuccess(GetGlossaryDetailsResult result)
          {
-            tmDetails = result;
+            glossaryDetails = result;
             display.getSourceText().setText(item.getSource());
             display.getTargetText().setText(item.getTarget());
-            display.clearDocs();
-            for (TransMemoryDetails detailsItem : tmDetails.getItems())
-            {
-               String docText = detailsItem.getProjectName() + '/' + detailsItem.getIterationName() + '/' + detailsItem.getDocId();
-               display.addDoc(docText);
-            }
-            selectDoc(0);
+            display.clearEntries();
 
+            int i = 1;
+            for (GlossaryDetails detailsItem : result.getGlossaryDetails())
+            {
+               String entryText = "Entry #" + i + ": " + detailsItem.getSrcLocale() + '/' + detailsItem.getSourceRef();
+               display.addEntry(entryText);
+               i++;
+            }
+            selectEntry(0);
             display.show();
          }
       });
    }
 
-   protected void selectDoc(int selected)
+   protected void selectEntry(int selected)
    {
-      String sourceComment = "";
-      String targetComment = "";
-      String project = "";
-      String iter = "";
-      String doc = "";
+      StringBuilder srcComments = new StringBuilder();
+      StringBuilder targetComments = new StringBuilder();
       if (selected >= 0)
       {
-         TransMemoryDetails item = tmDetails.getItems().get(selected);
-         sourceComment = item.getSourceComment();
-         targetComment = item.getTargetComment();
-         project = item.getProjectName();
-         iter = item.getIterationName();
-         doc = item.getDocId();
+         GlossaryDetails item = glossaryDetails.getGlossaryDetails().get(selected);
+
+         for (String srcComment : item.getSourceComment())
+         {
+            srcComments.append(srcComment);
+            srcComments.append("\n");
+         }
+
+         for (String targetComment : item.getTargetComment())
+         {
+            targetComments.append(targetComment);
+            targetComments.append("\n");
+         }
       }
-      display.getSourceComment().setText(sourceComment);
-      display.getTargetComment().setText(targetComment);
-      display.getProjectName().setText(project);
-      display.getIterationName().setText(iter);
-      display.getDocumentName().setText(doc);
+      display.getSourceComment().setText(srcComments.toString());
+      display.getTargetComment().setText(targetComments.toString());
    }
 
    @Override

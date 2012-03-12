@@ -20,6 +20,7 @@
  */
 package org.zanata.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.lucene.queryParser.ParseException;
@@ -39,6 +40,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.DefaultNgramAnalyzer;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
+import org.zanata.model.HTextFlow;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 /**
@@ -113,7 +115,22 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
       query.setParameter("content", content);
       return (HGlossaryEntry) query.uniqueResult();
    }
-
+   /* @formatter:on */
+   
+   @SuppressWarnings("unchecked")
+   public List<HGlossaryTerm> findByIdList(List<Long> idList)
+   {
+      if (idList == null || idList.isEmpty())
+      {
+         return new ArrayList<HGlossaryTerm>();
+      }
+      Query query = getSession().createQuery("FROM HGlossaryTerm WHERE id in (:idList)");
+      query.setParameterList("idList", idList);
+      query.setCacheable(false).setComment("GlossaryDAO.getByIdList");
+      return query.list();
+   }
+   
+   
    public List<Object[]> getSearchResult(String searchText, SearchType searchType, List<Long> termIds, final int maxResult) throws ParseException
    {
       String queryText;

@@ -2,40 +2,48 @@ package org.zanata.webtrans.shared.model;
 
 import java.util.List;
 
+import org.zanata.model.HLocale;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class GlossaryDetails implements IsSerializable
 {
-
-   private String sourceTerm;
-   private String targetTerm;
-   private List<String> comments;
+   private List<String> sourceComment;
+   private List<String> targetComment;
+   private String sourceRef;
+   private String srcLocale;
 
    @SuppressWarnings("unused")
    private GlossaryDetails()
    {
-      this(null, null, null);
+      this(null, null, null, null);
    }
 
-   public GlossaryDetails(String sourceTerm, String targetTerm, List<String> comments)
+   public GlossaryDetails(List<String> sourceComment, List<String> targetComment, String sourceRef, String srcLocale)
    {
-      this.sourceTerm = sourceTerm;
-      this.targetTerm = targetTerm;
-      this.comments = comments;
+      this.sourceComment = sourceComment;
+      this.targetComment = targetComment;
+      this.sourceRef = sourceRef;
+      this.srcLocale =srcLocale;
    }
 
-   public String getSourceTerm()
+   public List<String> getSourceComment()
    {
-      return sourceTerm;
+      return sourceComment;
    }
 
-   public String getTargetTerm()
+   public List<String> getTargetComment()
    {
-      return targetTerm;
+      return targetComment;
    }
 
-   public List<String> getComments()
+   public String getSourceRef()
    {
-      return comments;
+      return sourceRef;
+   }
+
+   public String getSrcLocale()
+   {
+      return srcLocale;
    }
 }

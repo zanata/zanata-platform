@@ -34,6 +34,8 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
+import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
+import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
@@ -60,6 +62,9 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    private final CachingDispatchAsync dispatcher;
    private GetGlossary submittedRequest = null;
    private GetGlossary lastRequest = null;
+
+   @Inject
+   private GlossaryDetailsPresenter glossaryDetailsPresenter;
 
    @Inject
    public GlossaryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, WorkspaceContext workspaceContext)
@@ -90,10 +95,6 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
       Column<TranslationMemoryGlossaryItem, String> getCopyColumn();
 
       Column<TranslationMemoryGlossaryItem, ImageResource> getDetailsColumn();
-
-      void showDetails(TranslationMemoryGlossaryItem object);
-      
-      void hideDetails();
    }
 
    @Override
@@ -132,7 +133,7 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
          @Override
          public void update(int index, TranslationMemoryGlossaryItem object, ImageResource value)
          {
-            display.showDetails(object);
+            glossaryDetailsPresenter.show(object);
          }
       });
    }

@@ -12,6 +12,8 @@ import org.zanata.webtrans.shared.rpc.EditingTranslationResult;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
+import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
+import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.GetStatusCount;
 import org.zanata.webtrans.shared.rpc.GetStatusCountResult;
@@ -113,6 +115,12 @@ public class DummyDispatchAsync extends SeamDispatchAsync
          final GetTransMemoryDetailsAction _action = (GetTransMemoryDetailsAction) action;
          AsyncCallback<TransMemoryDetailsList> _callback = (AsyncCallback<TransMemoryDetailsList>) callback;
          Scheduler.get().scheduleDeferred(new DummyGetTransMemoryDetailsCommand(_action, _callback));
+      }
+      else if (action instanceof GetGlossaryDetailsAction)
+      {
+         final GetGlossaryDetailsAction _action = (GetGlossaryDetailsAction) action;
+         AsyncCallback<GetGlossaryDetailsResult> _callback = (AsyncCallback<GetGlossaryDetailsResult>) callback;
+         Scheduler.get().scheduleDeferred(new DummyGetGlossaryDetailsCommand(_action, _callback));
       }
       else
       {

@@ -149,6 +149,7 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
                item = new TranslationMemoryGlossaryItem(srcTermContent, targetTermContent, searchText, score, percent);
                matchesMap.put(key, item);
             }
+            item.addSourceId(glossaryTerm.getId());
          }
          results = new ArrayList<TranslationMemoryGlossaryItem>(matchesMap.values());
       }

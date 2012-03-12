@@ -12,7 +12,7 @@ public class TranslationMemoryGlossaryItem implements Serializable
    private String target;
    private String query;
 
-   private ArrayList<Long> transUnitIdList = new ArrayList<Long>();
+   private ArrayList<Long> sourceIdList = new ArrayList<Long>();
    private float relevanceScore;
    private int similarityPercent;
 
@@ -31,14 +31,14 @@ public class TranslationMemoryGlossaryItem implements Serializable
       this.similarityPercent = similarityPercent;
    }
 
-   public ArrayList<Long> getTransUnitIdList()
+   public ArrayList<Long> getSourceIdList()
    {
-      return transUnitIdList;
+      return sourceIdList;
    }
 
-   public void addTransUnitId(Long transUnitId)
+   public void addSourceId(Long sourceId)
    {
-      this.transUnitIdList.add(transUnitId);
+      this.sourceIdList.add(sourceId);
    }
 
    public void setTarget(String target)
