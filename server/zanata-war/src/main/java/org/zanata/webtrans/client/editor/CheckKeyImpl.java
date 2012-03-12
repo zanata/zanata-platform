@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.editor;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 
@@ -162,6 +163,7 @@ public final class CheckKeyImpl implements CheckKey
    @Override
    public boolean isCopyFromTransMem()
    {
+      Log.info(keyCode + "");
       return ctrlKey && shiftKey && (keyCode == KEY_1 || keyCode == KEY_2 || keyCode == KEY_3 || keyCode == KEY_4);
    }
 

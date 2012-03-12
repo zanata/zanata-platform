@@ -14,28 +14,21 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
-import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
-import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTermComment;
-import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
-import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
-import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
-import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
 
 @Name("webtrans.gwt.GetGlossaryDetailsHandler")
 @Scope(ScopeType.STATELESS)
-@ActionHandlerFor(GetTransMemoryDetailsAction.class)
+@ActionHandlerFor(GetGlossaryDetailsAction.class)
 public class GetGlossaryDetailsHandler extends AbstractActionHandler<GetGlossaryDetailsAction, GetGlossaryDetailsResult>
 {
 
@@ -64,7 +57,7 @@ public class GetGlossaryDetailsHandler extends AbstractActionHandler<GetGlossary
       ArrayList<Long> sourceIds = action.getSourceIdList();
       
       
-      log.info("Fetching Glossary details for TFs {0} in locale {1}", sourceIds);
+      log.info("Fetching Glossary details for glossary{0} in locale {1}", sourceIds, hLocale);
       List<HGlossaryTerm> srcTerms = glossaryDAO.findByIdList(sourceIds);
       ArrayList<GlossaryDetails> items = new ArrayList<GlossaryDetails>(srcTerms.size());
       

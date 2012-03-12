@@ -149,7 +149,7 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
          throw new RuntimeException("Unknown query type: " + searchType);
       }
 
-      QueryParser parser = new QueryParser(Version.LUCENE_29, "content", new DefaultNgramAnalyzer(4));
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "content", new DefaultNgramAnalyzer());
       org.apache.lucene.search.Query textQuery = parser.parse(queryText);
       FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HGlossaryTerm.class);
       ftQuery.enableFullTextFilter("glossaryFilter").setParameter("ids", termIds);
