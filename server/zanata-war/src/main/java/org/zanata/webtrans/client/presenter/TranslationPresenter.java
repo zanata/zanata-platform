@@ -236,16 +236,20 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
                   int index;
                   switch (checkKey.getKeyCode())
                   {
-                  case '1':
+                  case CheckKey.KEY_1:
+                  case CheckKey.KEY_1_NUM:
                      index = 0;
                      break;
-                  case '2':
+                  case CheckKey.KEY_2:
+                  case CheckKey.KEY_2_NUM:
                      index = 1;
                      break;
-                  case '3':
+                  case CheckKey.KEY_3:
+                  case CheckKey.KEY_3_NUM:
                      index = 2;
                      break;
-                  case '4':
+                  case CheckKey.KEY_4:
+                  case CheckKey.KEY_4_NUM:
                      index = 3;
                      break;
                   default:
