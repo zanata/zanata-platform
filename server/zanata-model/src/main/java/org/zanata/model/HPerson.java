@@ -27,7 +27,6 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -103,8 +102,11 @@ public class HPerson extends ModelEntityBase implements Serializable
       return email;
    }
 
-   @ManyToMany(fetch = FetchType.EAGER)
-   @JoinTable(name = "HProject_Maintainer", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "projectId"))
+   /*
+    * This is a read-only side of the relationship. Changes to this collection are allowed but will not
+    * be persisted.
+    */
+   @ManyToMany(fetch = FetchType.EAGER, mappedBy = "maintainers")
    public Set<HProject> getMaintainerProjects()
    {
       if (maintainerProjects == null)
