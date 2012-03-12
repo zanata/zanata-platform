@@ -16,7 +16,7 @@
 		<g:layer top="0px" height="30px">
 			<g:HorizontalPanel>
 				<g:TextBox ui:field="tmTextBox" />
-            <g:ValueListBox ui:field="searchType"/>
+                <g:ValueListBox ui:field="searchType"/>
 				<g:Button ui:field="searchButton"/>
 				<g:Button ui:field="clearButton"/>
 			</g:HorizontalPanel>
