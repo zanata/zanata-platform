@@ -1,6 +1,5 @@
 package org.zanata.webtrans.client.view;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,7 +21,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -181,13 +179,10 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       this.messages = messages;
 
       searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);
-      dataProvider = new ListDataProvider<TranslationMemoryGlossaryItem>();
       initWidget(uiBinder.createAndBindUi(this));
 
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
-
-      renderTable();
    }
 
    @UiHandler("tmTextBox")
@@ -211,11 +206,10 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       isFocused = false;
    }
 
-   @UiHandler("clearButton")
-   void onClearButtonClicked(ClickEvent event)
+   @Override
+   public HasClickHandlers getClearButton()
    {
-      tmTextBox.setText("");
-      dataProvider.getList().clear();
+      return clearButton;
    }
 
    @Override
@@ -244,58 +238,32 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    @Override
    public void startProcessing()
    {
-      dataProvider.getList().clear();
+      //TODO show waiting indicator
    }
 
    @Override
    public void stopProcessing()
    {
+      //TODO hide waiting indicator
+      //TODO add test for start and stop processing at appropriate times
    }
 
    @Override
-   public void reloadData(String query, ArrayList<TranslationMemoryGlossaryItem> memories)
+   public void setDiffText(String query)
    {
       this.query = query;
-      tmTable.setVisibleRangeAndClearData(tmTable.getVisibleRange(), true);
-      dataProvider.getList().clear();
-      for (final TranslationMemoryGlossaryItem memory : memories)
-      {
-         dataProvider.getList().add(memory);
-      }
-      tmTable.setPageSize(dataProvider.getList().size());
-      dataProvider.refresh();
+   }
+
+   @Override
+   public void setPageSize(int size)
+   {
+      tmTable.setPageSize(size);
    }
 
    @Override
    public boolean isFocused()
    {
       return isFocused;
-   }
-
-   @Override
-   public String getSource(int index)
-   {
-      try
-      {
-         return dataProvider.getList().get(index).getSource();
-      }
-      catch (IndexOutOfBoundsException e)
-      {
-         return null;
-      }
-   }
-
-   @Override
-   public String getTarget(int index)
-   {
-      try
-      {
-         return dataProvider.getList().get(index).getTarget();
-      }
-      catch (IndexOutOfBoundsException e)
-      {
-         return null;
-      }
    }
 
    @Override
@@ -308,6 +276,13 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    public Column<TranslationMemoryGlossaryItem, String> getCopyColumn()
    {
       return copyColumn;
+   }
+
+   @Override
+   public void setDataProvider(ListDataProvider<TranslationMemoryGlossaryItem> dataProvider)
+   {
+      this.dataProvider = dataProvider;
+      renderTable();
    }
 
    private void renderTable()
