@@ -47,10 +47,18 @@ public interface CheckKey
    static final int KEY_J = 'J';
    static final int KEY_K = 'K';
    static final int KEY_S = 'S';
-   static final int KEY_1 = '1';
-   static final int KEY_2 = '2';
-   static final int KEY_3 = '3';
-   static final int KEY_4 = '4';
+   
+   static int KEY_1 = 49;
+   static int KEY_1_NUM = 35;
+   
+   static final int KEY_2 = 50;
+   static final int KEY_2_NUM = 40;
+   
+   static final int KEY_3 = 51;
+   static final int KEY_3_NUM = 34;
+   
+   static final int KEY_4 = 52;
+   static final int KEY_4_NUM = 37;
 
    public static enum Context
    {
