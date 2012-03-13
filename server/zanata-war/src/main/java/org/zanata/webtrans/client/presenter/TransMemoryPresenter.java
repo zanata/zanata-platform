@@ -43,8 +43,6 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
       HasText getTmTextBox();
 
-      void setDiffText(String query);
-
       void startProcessing();
 
       void stopProcessing();
@@ -232,7 +230,6 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    {
       String query = submittedRequest.getQuery();
       display.getTmTextBox().setText(query);
-      display.setDiffText(query);
       display.getSearchType().setValue(submittedRequest.getSearchType());
 
       dataProvider.getList().clear();

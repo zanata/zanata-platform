@@ -1,7 +1,5 @@
 package org.zanata.webtrans.client.view;
 
-import java.util.ArrayList;
-
 import org.zanata.webtrans.client.presenter.GlossaryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
@@ -160,7 +158,6 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       return searchType;
    }
 
-   @Override
    public void renderTable()
    {
       glossaryTable = new CellTable<TranslationMemoryGlossaryItem>();
@@ -185,19 +182,6 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    }
 
    @Override
-   public void reloadData(String query, ArrayList<TranslationMemoryGlossaryItem> glossaries)
-   {
-      glossaryTable.setVisibleRangeAndClearData(glossaryTable.getVisibleRange(), true);
-      dataProvider.getList().clear();
-      for (final TranslationMemoryGlossaryItem glossary : glossaries)
-      {
-         dataProvider.getList().add(glossary);
-      }
-      glossaryTable.setPageSize(dataProvider.getList().size());
-      dataProvider.refresh();
-   }
-
-   @Override
    public Column<TranslationMemoryGlossaryItem, String> getCopyColumn()
    {
       return copyColumn;
@@ -207,5 +191,18 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    public Column<TranslationMemoryGlossaryItem, ImageResource> getDetailsColumn()
    {
       return detailsColumn;
+   }
+
+   @Override
+   public void setDataProvider(ListDataProvider<TranslationMemoryGlossaryItem> dataProvider)
+   {
+      this.dataProvider = dataProvider;
+      renderTable();
+   }
+
+   @Override
+   public void setPageSize(int size)
+   {
+      glossaryTable.setPageSize(size);
    }
 }

@@ -5,8 +5,8 @@ import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.EnumListBox;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
-import org.zanata.webtrans.client.ui.table.cell.ClickableImageResourceCell;
 import org.zanata.webtrans.client.ui.table.column.CopyButtonColumn;
+import org.zanata.webtrans.client.ui.table.column.DetailsColumn;
 import org.zanata.webtrans.client.ui.table.column.DiffMatchPatchLabelColumn;
 import org.zanata.webtrans.client.ui.table.column.HighlightingLabelColumn;
 import org.zanata.webtrans.client.ui.table.column.SimilarityColumn;
@@ -68,19 +68,25 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 
    CellTable<TranslationMemoryGlossaryItem> tmTable;
 
-   private Resources resources;
-   private String query;
-
    private boolean isFocused;
 
    private UiMessages messages;
    private ListDataProvider<TranslationMemoryGlossaryItem> dataProvider;
 
+   private DiffMatchPatchLabelColumn sourceColumn;
+   private HighlightingLabelColumn targetColumn;
+   private CopyButtonColumn copyColumn;
+   private DetailsColumn detailsColumn;
+
    @Inject
-   public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, Resources resources)
+   public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, final Resources resources)
    {
-      this.resources = resources;
       this.messages = messages;
+
+      sourceColumn = new DiffMatchPatchLabelColumn(true, false);
+      targetColumn = new HighlightingLabelColumn(false, true);
+      copyColumn = new CopyButtonColumn();
+      detailsColumn = new DetailsColumn(resources);
 
       searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);
       initWidget(uiBinder.createAndBindUi(this));
@@ -154,12 +160,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    }
 
    @Override
-   public void setDiffText(String query)
-   {
-      this.query = query;
-   }
-
-   @Override
    public void setPageSize(int size)
    {
       tmTable.setPageSize(size);
@@ -190,18 +190,6 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       renderTable();
    }
 
-   private DiffMatchPatchLabelColumn sourceColumn = new DiffMatchPatchLabelColumn(true, false);
-   private HighlightingLabelColumn targetColumn = new HighlightingLabelColumn(false, true);
-   private CopyButtonColumn copyColumn = new CopyButtonColumn();
-   private final Column<TranslationMemoryGlossaryItem, ImageResource> detailsColumn = new Column<TranslationMemoryGlossaryItem, ImageResource>(new ClickableImageResourceCell())
-   {
-      @Override
-      public ImageResource getValue(TranslationMemoryGlossaryItem object)
-      {
-         return resources.informationImage();
-      }
-   };
-   
    private void renderTable()
    {
       tmTable = new CellTable<TranslationMemoryGlossaryItem>();
