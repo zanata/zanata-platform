@@ -1,7 +1,15 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.easymock.EasyMock.*;
-
+import static org.easymock.EasyMock.and;
+import static org.easymock.EasyMock.capture;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
+import static org.easymock.EasyMock.verify;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.easymock.Capture;
@@ -15,7 +23,7 @@ import org.zanata.webtrans.client.presenter.TransMemoryPresenter.Display;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
-import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
+import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.event.dom.client.ClickHandler;

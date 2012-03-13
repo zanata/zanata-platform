@@ -6,17 +6,14 @@ import org.zanata.webtrans.client.presenter.GlossaryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.EnumListBox;
-import org.zanata.webtrans.client.ui.LoadingPanel;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
-import org.zanata.webtrans.client.ui.table.column.DetailsColumn;
 import org.zanata.webtrans.client.ui.table.column.CopyButtonColumn;
+import org.zanata.webtrans.client.ui.table.column.DetailsColumn;
 import org.zanata.webtrans.client.ui.table.column.HighlightingLabelColumn;
 import org.zanata.webtrans.client.ui.table.column.SimilarityColumn;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
-import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;

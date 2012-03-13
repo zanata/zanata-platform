@@ -14,8 +14,8 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
-import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
+import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -150,7 +150,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          @Override
          public void update(int index, TranslationMemoryGlossaryItem object, String value)
          {
-            eventBus.fireEvent(new TransMemoryCopyEvent(object.getSource(), object.getTarget()));
+            eventBus.fireEvent(new CopyDataToEditorEvent(object.getSource(), object.getTarget()));
          }
       });
    }
