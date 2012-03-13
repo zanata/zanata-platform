@@ -1,7 +1,5 @@
 package org.zanata.webtrans.client.presenter;
 
-import java.util.ArrayList;
-
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -16,8 +14,8 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
+import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
-import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -29,53 +27,56 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
 
 public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.Display>
 {
-   private final WorkspaceContext workspaceContext;
-   private final CachingDispatchAsync dispatcher;
-   private GetTranslationMemory submittedRequest = null;
-   private GetTranslationMemory lastRequest = null;
-
-   @Inject
-   private TransMemoryDetailsPresenter tmInfoPresenter;
 
    public interface Display extends WidgetDisplay
    {
       HasClickHandlers getSearchButton();
 
+      HasClickHandlers getClearButton();
+
       HasValue<SearchType> getSearchType();
 
       HasText getTmTextBox();
 
-      void reloadData(String query, ArrayList<TranslationMemoryGlossaryItem> memories);
+      void setDiffText(String query);
 
       void startProcessing();
 
       void stopProcessing();
 
+      void setPageSize(int size);
+
       boolean isFocused();
-
-      String getSource(int index);
-
-      String getTarget(int index);
 
       Column<TranslationMemoryGlossaryItem, ImageResource> getDetailsColumn();
 
       Column<TranslationMemoryGlossaryItem, String> getCopyColumn();
 
-      void renderTable();
+      void setDataProvider(ListDataProvider<TranslationMemoryGlossaryItem> dataProvider);
    }
 
+   private final WorkspaceContext workspaceContext;
+   private final CachingDispatchAsync dispatcher;
+   private GetTranslationMemory submittedRequest = null;
+   private GetTranslationMemory lastRequest = null;
+   private TransMemoryDetailsPresenter tmInfoPresenter;
+   private ListDataProvider<TranslationMemoryGlossaryItem> dataProvider;
+
    @Inject
-   public TransMemoryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, WorkspaceContext workspaceContext)
+   public TransMemoryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, TransMemoryDetailsPresenter tmInfoPresenter, WorkspaceContext workspaceContext)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
       this.workspaceContext = workspaceContext;
+      this.tmInfoPresenter = tmInfoPresenter;
 
-      display.renderTable();
+      dataProvider = new ListDataProvider<TranslationMemoryGlossaryItem>();
+      display.setDataProvider(dataProvider);
    }
 
    @Override
@@ -89,6 +90,16 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          {
             String query = display.getTmTextBox().getText();
             createTMRequest(query, display.getSearchType().getValue());
+         }
+      });
+
+      display.getClearButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            display.getTmTextBox().setText("");
+            dataProvider.getList().clear();
          }
       });
 
@@ -108,11 +119,18 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          {
             if (!workspaceContext.isReadOnly())
             {
-               String source = display.getSource(event.getIndex());
-               String target = display.getTarget(event.getIndex());
-               if (source != null && target != null)
+               TranslationMemoryGlossaryItem item;
+               try
                {
-                  eventBus.fireEvent(new CopyDataToEditorEvent(source, target));
+                  item = dataProvider.getList().get(event.getIndex());
+               }
+               catch (IndexOutOfBoundsException ex)
+               {
+                  item = null;
+               }
+               if (item != null)
+               {
+                  eventBus.fireEvent(new CopyDataToEditorEvent(item.getSource(),  item.getTarget()));
                }
             }
          }
@@ -132,7 +150,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          @Override
          public void update(int index, TranslationMemoryGlossaryItem object, String value)
          {
-            eventBus.fireEvent(new CopyDataToEditorEvent(object.getSource(), object.getTarget()));
+            eventBus.fireEvent(new TransMemoryCopyEvent(object.getSource(), object.getTarget()));
          }
       });
    }
@@ -148,6 +166,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
    private void createTMRequest(final String query, GetTranslationMemory.SearchType searchType)
    {
+      dataProvider.getList().clear();
       display.startProcessing();
       final GetTranslationMemory action = new GetTranslationMemory(query, workspaceContext.getWorkspaceId().getLocaleId(), searchType);
       scheduleTMRequest(action);
@@ -213,9 +232,16 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    {
       String query = submittedRequest.getQuery();
       display.getTmTextBox().setText(query);
+      display.setDiffText(query);
       display.getSearchType().setValue(submittedRequest.getSearchType());
-      ArrayList<TranslationMemoryGlossaryItem> memories = result.getMemories();
-      display.reloadData(query, memories);
+
+      dataProvider.getList().clear();
+      for (final TranslationMemoryGlossaryItem memory : result.getMemories())
+      {
+         dataProvider.getList().add(memory);
+      }
+      display.setPageSize(dataProvider.getList().size());
+      dataProvider.refresh();
    }
 
    @Override
