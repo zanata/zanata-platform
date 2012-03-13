@@ -38,7 +38,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.shared.validation.action.VariablesValidation;
+import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
 
 /**
  *
@@ -53,7 +53,7 @@ public class VariablesValidationTests
    private static final String MOCK_VARIABLES_ADDED_MESSAGE = "test variables added message";
    private static final String MOCK_VARIABLES_MISSING_MESSAGE = "test variables missing message";
 
-   private VariablesValidation variablesValidation;
+   private PrintfVariablesValidation variablesValidation;
 
    private ValidationMessages mockMessages;
    private Capture<List<String>> capturedVarsAdded;
@@ -69,8 +69,8 @@ public class VariablesValidationTests
 
       expect(mockMessages.varsAdded(capture(capturedVarsAdded))).andReturn(MOCK_VARIABLES_ADDED_MESSAGE).anyTimes();
       expect(mockMessages.varsMissing(capture(capturedVarsMissing))).andReturn(MOCK_VARIABLES_MISSING_MESSAGE).anyTimes();
-      expect(mockMessages.variablesValidatorName()).andReturn(MOCK_VARIABLES_VALIDATOR_NAME).anyTimes();
-      expect(mockMessages.variablesValidatorDescription()).andReturn(MOCK_VARIABLES_VALIDATOR_DESCRIPTION).anyTimes();
+      expect(mockMessages.printfVariablesValidatorName()).andReturn(MOCK_VARIABLES_VALIDATOR_NAME).anyTimes();
+      expect(mockMessages.printfVariablesValidatorDescription()).andReturn(MOCK_VARIABLES_VALIDATOR_DESCRIPTION).anyTimes();
       replay(mockMessages);
    }
 
@@ -86,21 +86,21 @@ public class VariablesValidationTests
    @Test
    public void idIsSet()
    {
-      variablesValidation = new VariablesValidation(mockMessages);
+      variablesValidation = new PrintfVariablesValidation(mockMessages);
       assertThat(variablesValidation.getId(), is(MOCK_VARIABLES_VALIDATOR_NAME));
    }
 
    @Test
    public void descriptionIsSet()
    {
-      variablesValidation = new VariablesValidation(mockMessages);
+      variablesValidation = new PrintfVariablesValidation(mockMessages);
       assertThat(variablesValidation.getDescription(), is(MOCK_VARIABLES_VALIDATOR_DESCRIPTION));
    }
 
    @Test
    public void noErrorForMatchingVars()
    {
-      variablesValidation = new VariablesValidation(mockMessages);
+      variablesValidation = new PrintfVariablesValidation(mockMessages);
       String source = "Testing string with variable %1v and %2v";
       String target = "%2v and %1v included, order not relevant";
       variablesValidation.validate(source, target);
@@ -115,7 +115,7 @@ public class VariablesValidationTests
    @Test
    public void missingVarInTarget()
    {
-      variablesValidation = new VariablesValidation(mockMessages);
+      variablesValidation = new PrintfVariablesValidation(mockMessages);
       String source = "Testing string with variable %1v";
       String target = "Testing string with no variables";
       variablesValidation.validate(source, target);
@@ -132,7 +132,7 @@ public class VariablesValidationTests
    @Test
    public void missingVarsThroughoutTarget()
    {
-      variablesValidation = new VariablesValidation(mockMessages);
+      variablesValidation = new PrintfVariablesValidation(mockMessages);
       String source = "%a variables in all parts %b of the string %c";
       String target = "Testing string with no variables";
       variablesValidation.validate(source, target);
@@ -149,7 +149,7 @@ public class VariablesValidationTests
    @Test
    public void addedVarInTarget()
    {
-      variablesValidation = new VariablesValidation(mockMessages);
+      variablesValidation = new PrintfVariablesValidation(mockMessages);
       String source = "Testing string with no variables";
       String target = "Testing string with variable %2$#x";
       variablesValidation.validate(source, target);
@@ -166,7 +166,7 @@ public class VariablesValidationTests
    @Test
    public void addedVarsThroughoutTarget()
    {
-      variablesValidation = new VariablesValidation(mockMessages);
+      variablesValidation = new PrintfVariablesValidation(mockMessages);
       String source = "Testing string with no variables";
       String target = "%1$-0lls variables in all parts %2$-0hs of the string %3$-0ls";
       variablesValidation.validate(source, target);
@@ -183,7 +183,7 @@ public class VariablesValidationTests
    @Test
    public void bothAddedAndMissingVars()
    {
-      variablesValidation = new VariablesValidation(mockMessages);
+      variablesValidation = new PrintfVariablesValidation(mockMessages);
       String source = "String with %x and %y only, not z";
       String target = "String with %y and %z, not x";
       variablesValidation.validate(source, target);
@@ -202,7 +202,7 @@ public class VariablesValidationTests
    @Test
    public void substringVariablesDontMatch()
    {
-      variablesValidation = new VariablesValidation(mockMessages);
+      variablesValidation = new PrintfVariablesValidation(mockMessages);
       String source = "%ll";
       String target = "%l %ll";
       variablesValidation.validate(source, target);
@@ -220,7 +220,7 @@ public class VariablesValidationTests
    @Test
    public void superstringVariablesDontMatch()
    {
-      variablesValidation = new VariablesValidation(mockMessages);
+      variablesValidation = new PrintfVariablesValidation(mockMessages);
 
       String source = "%l %ll";
       String target = "%ll";
@@ -238,7 +238,7 @@ public class VariablesValidationTests
    @Test
    public void superstringVariablesDontMatch2()
    {
-      variablesValidation = new VariablesValidation(mockMessages);
+      variablesValidation = new PrintfVariablesValidation(mockMessages);
 
       String source = "%z";
       String target = "%zz";
@@ -255,7 +255,7 @@ public class VariablesValidationTests
    @Test
    public void checkWithRealWorldExamples()
    {
-      variablesValidation = new VariablesValidation(mockMessages);
+      variablesValidation = new PrintfVariablesValidation(mockMessages);
       // examples from strings in translate.zanata.org
       String source = "%s %d %-25s %r";
       String target = "no variables";
