@@ -138,9 +138,7 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
             HGlossaryTerm targetTerm = getTargetTerm(entries, glossaryTerm.getGlossaryEntry().getId(), hLocale);
             String targetTermContent = targetTerm.getContent();
 
-            int levDistance = LevenshteinUtil.getLevenshteinSubstringDistance(searchText, srcTermContent);
-            int maxDistance = searchText.length();
-            int percent = 100 * (maxDistance - levDistance) / maxDistance;
+            int percent = (int) (100 * LevenshteinUtil.getSimilarity(searchText, srcTermContent));
 
             GlossaryKey key = new GlossaryKey(targetTermContent, srcTermContent);
             TranslationMemoryGlossaryItem item = matchesMap.get(key);

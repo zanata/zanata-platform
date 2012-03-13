@@ -165,7 +165,6 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       glossaryTable.addStyleName("southTable");
       glossaryTable.addColumn(sourceColumn, messages.srcTermLabel());
       glossaryTable.addColumn(targetColumn, messages.targetTermLabel());
-      glossaryTable.addColumn(new SimilarityColumn(), messages.similarityLabel());
       glossaryTable.addColumn(detailsColumn, messages.detailsLabel());
       glossaryTable.addColumn(copyColumn);
 
