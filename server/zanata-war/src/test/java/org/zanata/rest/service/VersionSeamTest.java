@@ -3,6 +3,7 @@ package org.zanata.rest.service;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import org.dbunit.operation.DatabaseOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeMethod;
@@ -18,9 +19,13 @@ public class VersionSeamTest extends ZanataDBUnitSeamTest
    private IVersionResource version;
    private final Logger log = LoggerFactory.getLogger(VersionSeamTest.class);
 
+   private static final String ACCOUNT_DATA_DBUNIT_XML = "org/zanata/test/model/AccountData.dbunit.xml";
+
    @Override
    protected void prepareDBUnitOperations()
    {
+      beforeTestOperations.add(new DataSetOperation(ACCOUNT_DATA_DBUNIT_XML, DatabaseOperation.CLEAN_INSERT));
+      afterTestOperations.add(new DataSetOperation(ACCOUNT_DATA_DBUNIT_XML, DatabaseOperation.DELETE_ALL));
    }
 
    @BeforeMethod
