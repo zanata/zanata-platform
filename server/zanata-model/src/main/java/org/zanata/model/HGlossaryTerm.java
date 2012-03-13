@@ -30,6 +30,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.IndexColumn;
@@ -43,7 +44,6 @@ import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.NotNull;
-import org.zanata.hibernate.search.DefaultNgramAnalyzer;
 import org.zanata.hibernate.search.IdFilterFactory;
 import org.zanata.hibernate.search.LocaleIdBridge;
 
@@ -75,7 +75,7 @@ public class HGlossaryTerm extends ModelEntityBase
 
    @NotNull
    @Type(type = "text")
-   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
+   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = StandardAnalyzer.class))
    public String getContent()
    {
       return content;

@@ -57,7 +57,7 @@ public class GetGlossaryDetailsHandler extends AbstractActionHandler<GetGlossary
       ArrayList<Long> sourceIds = action.getSourceIdList();
       
       
-      log.info("Fetching Glossary details for glossary{0} in locale {1}", sourceIds, hLocale);
+      log.info("Fetching Glossary details for entry{0} in locale {1}", sourceIds, hLocale);
       List<HGlossaryTerm> srcTerms = glossaryDAO.findByIdList(sourceIds);
       ArrayList<GlossaryDetails> items = new ArrayList<GlossaryDetails>(srcTerms.size());
       
