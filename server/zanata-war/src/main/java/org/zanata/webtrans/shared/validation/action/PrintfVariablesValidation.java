@@ -33,11 +33,11 @@ import com.google.gwt.regexp.shared.RegExp;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class VariablesValidation extends ValidationAction
+public class PrintfVariablesValidation extends ValidationAction
 {
-   public VariablesValidation(final ValidationMessages messages)
+   public PrintfVariablesValidation(final ValidationMessages messages)
    {
-      super(messages.variablesValidatorName(), messages.variablesValidatorDescription(), true, messages);
+      super(messages.printfVariablesValidatorName(), messages.printfVariablesValidatorDescription(), true, messages);
    }
 
 

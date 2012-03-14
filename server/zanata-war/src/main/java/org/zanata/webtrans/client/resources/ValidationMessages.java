@@ -35,25 +35,40 @@ public interface ValidationMessages extends Messages
    String trailingNewlineAdded();
 
 
-   // Variables validator
+   // Printf variables validator
 
    @DefaultMessage("%x variables")
-   String variablesValidatorName();
+   String printfVariablesValidatorName();
 
    @DefaultMessage("Check that printf style (%x) variables are consistent")
-   String variablesValidatorDescription();
+   String printfVariablesValidatorDescription();
+
+
+   // Java variables validator
+
+   @DefaultMessage("{x} variables")
+   String javaVariablesValidatorName();
+
+   @DefaultMessage("Check that java style ({x}) variables are consistent")
+   String javaVariablesValidatorDescription();
+
+   @Description("Lists variables that appear a different number of times between source and target strings")
+   @DefaultMessage("Inconsistent variable count for variables: {0,list,string}")
+   String differentVarCount(@PluralCount List<String> vars);
+
+
+   // Shared variables validator messages
 
    @Description("Lists the variables that are in the original string but have not been included in the target")
    @DefaultMessage("Missing variables: {0,list,string}")
    @AlternateMessage({ "one", "Missing variable: {0,list,string}" })
-   String varsMissing(@PluralCount
-   List<String> vars);
+   String varsMissing(@PluralCount List<String> vars);
 
    @Description("Lists the variables that are in the target but are not in the original string")
    @DefaultMessage("Unexpected variables: {0,list,string}")
    @AlternateMessage({ "one", "Unexpected variable: {0,list,string}" })
-   String varsAdded(@PluralCount
-   List<String> vars);
+   String varsAdded(@PluralCount List<String> vars);
+
 
 
    // XHM/HTML tag validator
