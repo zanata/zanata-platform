@@ -25,11 +25,9 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 
 import java.util.List;
 
@@ -78,7 +76,6 @@ public class JavaVariablesValidationTest
    public void init()
    {
       javaVariablesValidation = null;
-
       capturedVarsAdded.reset();
       capturedVarsMissing.reset();
    }
@@ -197,6 +194,144 @@ public class JavaVariablesValidationTest
       assertThat(capturedVarsMissing.getValue(), hasItem("{0}"));
       assertThat(capturedVarsMissing.getValue().size(), is(1));
    }
+
+   public void disturbanceInTheForce()
+   {
+      javaVariablesValidation = new JavaVariablesValidation(mockMessages);
+      String source = "At {1,time} on {1,date}, there was {2} on planet {0,number,integer}.";
+      String target = "At time on date, there was a disturbance in the force on planet Earth";
+      javaVariablesValidation.validate(source, target);
+
+      assertThat(javaVariablesValidation.hasError(), is(true));
+      assertThat(javaVariablesValidation.getError(), hasItem(MOCK_VARIABLES_MISSING_MESSAGE));
+      assertThat(javaVariablesValidation.getError().size(), is(1));
+
+      assertThat(capturedVarsMissing.getValue(), hasItems("{1}", "{2}", "{0}"));
+      assertThat(capturedVarsMissing.getValue().size(), is(3));
+      assertThat(capturedVarsAdded.hasCaptured(), is(false));
+   }
+
+   public void diskContainsFiles()
+   {
+      javaVariablesValidation = new JavaVariablesValidation(mockMessages);
+      String source = "The disk \"{1}\" contains {0} file(s).";
+      String target = "The disk contains some files";
+      javaVariablesValidation.validate(source, target);
+
+      assertThat(javaVariablesValidation.hasError(), is(true));
+      assertThat(javaVariablesValidation.getError(), hasItem(MOCK_VARIABLES_MISSING_MESSAGE));
+      assertThat(javaVariablesValidation.getError().size(), is(1));
+
+      assertThat(capturedVarsMissing.getValue(), hasItems("{1}", "{0}"));
+      assertThat(capturedVarsMissing.getValue().size(), is(2));
+      assertThat(capturedVarsAdded.hasCaptured(), is(false));
+   }
+
+   public void doesNotDetectEscapedVariables()
+   {
+      javaVariablesValidation = new JavaVariablesValidation(mockMessages);
+      String source = "This string does not contain \\{0\\} style variables";
+      String target = "This string does not contain java style variables";
+      javaVariablesValidation.validate(source, target);
+
+      assertThat(javaVariablesValidation.hasError(), is(false));
+      assertThat(javaVariablesValidation.getError().size(), is(0));
+
+      assertThat(capturedVarsAdded.hasCaptured(), is(false));
+      assertThat(capturedVarsMissing.hasCaptured(), is(false));
+   }
+
+   public void doesNotDetectQuotedVariables()
+   {
+      javaVariablesValidation = new JavaVariablesValidation(mockMessages);
+      String source = "This string does not contain '{0}' style variables";
+      String target = "This string does not contain java style variables";
+      javaVariablesValidation.validate(source, target);
+
+      assertThat(javaVariablesValidation.hasError(), is(false));
+      assertThat(javaVariablesValidation.getError().size(), is(0));
+
+      assertThat(capturedVarsAdded.hasCaptured(), is(false));
+      assertThat(capturedVarsMissing.hasCaptured(), is(false));
+   }
+
+   public void doesNotDetectVariablesInQuotedText()
+   {
+      javaVariablesValidation = new JavaVariablesValidation(mockMessages);
+      String source = "This 'string does not contain {0} style' variables";
+      String target = "This string does not contain java style variables";
+      javaVariablesValidation.validate(source, target);
+
+      assertThat(javaVariablesValidation.hasError(), is(false));
+      assertThat(javaVariablesValidation.getError().size(), is(0));
+
+      assertThat(capturedVarsAdded.hasCaptured(), is(false));
+      assertThat(capturedVarsMissing.hasCaptured(), is(false));
+   }
+
+   public void ignoresEscapedQuotes()
+   {
+      javaVariablesValidation = new JavaVariablesValidation(mockMessages);
+      String source = "This string does not contain \\'{0}\\' style variables";
+      String target = "This string does not contain java style variables";
+      javaVariablesValidation.validate(source, target);
+
+      assertThat(javaVariablesValidation.hasError(), is(true));
+      assertThat(javaVariablesValidation.getError(), hasItem(MOCK_VARIABLES_MISSING_MESSAGE));
+      assertThat(javaVariablesValidation.getError().size(), is(1));
+
+      assertThat(capturedVarsMissing.getValue(), hasItem("{0}"));
+      assertThat(capturedVarsMissing.getValue().size(), is(1));
+      assertThat(capturedVarsAdded.hasCaptured(), is(false));
+   }
+
+   public void advancedQuoting()
+   {
+      javaVariablesValidation = new JavaVariablesValidation(mockMessages);
+      String source = "'''{'0}'''''{0}'''";
+      String target = "From examples on MessageFormat page, should not contain any variables";
+      javaVariablesValidation.validate(source, target);
+
+      assertThat(javaVariablesValidation.hasError(), is(false));
+      assertThat(javaVariablesValidation.getError().size(), is(0));
+
+      assertThat(capturedVarsAdded.hasCaptured(), is(false));
+      assertThat(capturedVarsMissing.hasCaptured(), is(false));
+   }
+
+   public void translatedChoicesStillMatch()
+   {
+      javaVariablesValidation = new JavaVariablesValidation(mockMessages);
+      String source = "There {0,choice,0#are no things|1#is one thing|1<are many things}.";
+      String target = "Es gibt {0,choice,0#keine Dinge|1#eine Sache|1<viele Dinge}.";
+      javaVariablesValidation.validate(source, target);
+
+      assertThat(javaVariablesValidation.hasError(), is(false));
+      assertThat(javaVariablesValidation.getError().size(), is(0));
+
+      assertThat(capturedVarsAdded.hasCaptured(), is(false));
+      assertThat(capturedVarsMissing.hasCaptured(), is(false));
+   }
+
+   public void choiceFormatAndRecursion()
+   {
+      javaVariablesValidation = new JavaVariablesValidation(mockMessages);
+      String source = "There {0,choice,0#are no files|1#is one file|1<are {0,number,integer} files}.";
+      String target = "There are 0 files";
+      javaVariablesValidation.validate(source, target);
+
+      assertThat(javaVariablesValidation.hasError(), is(true));
+      assertThat(javaVariablesValidation.getError(), hasItem(MOCK_VARIABLES_MISSING_MESSAGE));
+      assertThat(javaVariablesValidation.getError().size(), is(1));
+
+      assertThat(capturedVarsMissing.getValue(), hasItem("{0}"));
+      assertThat(capturedVarsMissing.getValue().size(), is(1));
+      assertThat(capturedVarsAdded.hasCaptured(), is(false));
+   }
+
+   //TODO tests for format type
+
+   //TODO test 3 or 4 levels of recursion
 
 }
 

@@ -21,17 +21,20 @@
 package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
-
 /**
+ * Checks for consistent java-style variables between two strings.
+ * 
+ * The current implementation will only check that each argument index is used a
+ * consistent number of times. This will be extended in future to check that
+ * each argument index is used with the same FormatType.
  * 
  * @author David Mason, damason@redhat.com
- * 
+ * @see http://docs.oracle.com/javase/1.4.2/docs/api/java/text/MessageFormat.html
  **/
 public class JavaVariablesValidation extends ValidationAction
 {
@@ -40,55 +43,115 @@ public class JavaVariablesValidation extends ValidationAction
       super(messages.javaVariablesValidatorName(), messages.javaVariablesValidatorDescription(), true, messages);
    }
 
-   //TODO improve this
-   //See http://docs.oracle.com/javase/1.4.2/docs/api/java/text/MessageFormat.html#format(java.lang.String, java.lang.Object[])
-   //there are some examples here for test cases
-   //need to account for subformats and quotes in this.
-   //recursion is possible so this may need to be done programatically (e.g. with a stack of curly braces)
-   private final static String javaVarRegex = "[{][^{]*[}]";
-
    @Override
    public void doValidate(String source, String target)
    {
       ArrayList<String> sourceVars = findJavaVars(source);
       ArrayList<String> targetVars = findJavaVars(target);
 
-      List<String> missing = listMissing(sourceVars, targetVars);
+      //check if any indices are added/missing
+      HashMap<String, Integer> sourceCounts = countIndices(sourceVars);
+      HashMap<String, Integer> targetCounts = countIndices(targetVars);
+      ArrayList<String> missing = new ArrayList<String>();
+      ArrayList<String> added = new ArrayList<String>();
+      ArrayList<String> different = new ArrayList<String>();
+
+      for (Entry<String, Integer> sourceVar : sourceCounts.entrySet())
+      {
+         Integer targetCount = targetCounts.remove(sourceVar.getKey());
+         if (targetCount == null)
+         {
+            missing.add("{" + sourceVar.getKey() + "}");
+         }
+         else if (sourceVar.getValue() != targetCount)
+         {
+            different.add("{" + sourceVar.getKey() + "}");
+         }
+      }
+      for (String targetVar : targetCounts.keySet())
+      {
+         added.add("{" + targetVar + "}");
+      }
+
       if (!missing.isEmpty())
       {
          addError(getMessages().varsMissing(missing));
       }
-
-      // missing from source = added
-      missing = listMissing(targetVars, sourceVars);
-      if (!missing.isEmpty())
+      if (!added.isEmpty())
       {
-         addError(getMessages().varsAdded(missing));
+         addError(getMessages().varsAdded(added));
       }
+      if (!different.isEmpty())
+      {
+         addError(getMessages().differentVarCount(different));
+      }
+
+      //TODO check if indices are used with the same format types
+      //e.g. "You owe me {0, currency}" --> "Du schuldest mir {0, percent}" is not correct
    }
 
-   private List<String> listMissing(ArrayList<String> baseVars, ArrayList<String> testVars)
+   private HashMap<String, Integer> countIndices(ArrayList<String> fullVars)
    {
-      ArrayList<String> remainingVars = new ArrayList<String>();
-      remainingVars.addAll(testVars);
-      ArrayList<String> unmatched = new ArrayList<String>();
+      HashMap<String, Integer> argumentIndexCounts = new HashMap<String, Integer>();
+      for (String fullVar : fullVars)
+      {
+         int argIndexEnd = fullVar.indexOf(',');
+         argIndexEnd = (argIndexEnd != -1 ? argIndexEnd : fullVar.length() - 1);
+         String argumentIndex = fullVar.substring(1, argIndexEnd).trim();
 
-      for (String var : baseVars)
-         if (!remainingVars.remove(var))
-            unmatched.add(var);
-      return unmatched;
+         if (argumentIndexCounts.containsKey(argumentIndex))
+            argumentIndexCounts.put(argumentIndex, argumentIndexCounts.get(argumentIndex) + 1);
+         else
+            argumentIndexCounts.put(argumentIndex, 1);
+      }
+      return argumentIndexCounts;
    }
 
    private ArrayList<String> findJavaVars(String inString)
    {
       ArrayList<String> vars = new ArrayList<String>();
-      // compile each time to reset index
-      RegExp javaVarRegExp = RegExp.compile(javaVarRegex, "g");
-      MatchResult result = javaVarRegExp.exec(inString);
-      while (result != null)
+      //stack of opening brace positions, replace if better gwt LIFO collection found
+      ArrayList<Integer> openings = new ArrayList<Integer>();
+      ArrayList<Character> escapeChars = new ArrayList<Character>();
+      escapeChars.add('\\');
+      boolean isEscaped = false;
+      boolean isQuoted = false;
+      //scan for opening brace
+      for (int i = 0; i<inString.length(); i++)
       {
-         vars.add(result.getGroup(0));
-         result = javaVarRegExp.exec(inString);
+         if (isEscaped)
+         {
+            isEscaped = false;
+            continue;
+         }
+
+         //TODO add handling of quoting within SubFormatPatternParts and Strings
+
+         char c = inString.charAt(i);
+
+         if (c == '\'')
+         {
+            isQuoted = !isQuoted;
+            continue;
+         }
+         if (isQuoted)
+         {
+            continue;
+         }
+         if (escapeChars.contains(c))
+         {
+            isEscaped = true;
+            continue;
+         }
+         if (c == '{')
+         {
+            openings.add(i);
+         }
+         else if (c == '}' && openings.size() > 0)
+         {
+            String variable = inString.substring(openings.remove(openings.size() -1), i + 1);
+            vars.add(variable);
+         }
       }
       return vars;
    }

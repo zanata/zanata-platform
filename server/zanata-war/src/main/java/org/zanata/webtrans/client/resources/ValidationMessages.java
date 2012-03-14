@@ -43,6 +43,7 @@ public interface ValidationMessages extends Messages
    @DefaultMessage("Check that printf style (%x) variables are consistent")
    String printfVariablesValidatorDescription();
 
+
    // Java variables validator
 
    @DefaultMessage("{x} variables")
@@ -50,6 +51,11 @@ public interface ValidationMessages extends Messages
 
    @DefaultMessage("Check that java style ({x}) variables are consistent")
    String javaVariablesValidatorDescription();
+
+   @Description("Lists variables that appear a different number of times between source and target strings")
+   @DefaultMessage("Inconsistent variable count for variables: {0,list,string}")
+   String differentVarCount(@PluralCount List<String> vars);
+
 
    // Shared variables validator messages
 
