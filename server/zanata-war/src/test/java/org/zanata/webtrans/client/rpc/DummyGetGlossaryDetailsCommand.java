@@ -2,13 +2,10 @@ package org.zanata.webtrans.client.rpc;
 
 import java.util.ArrayList;
 
-import org.zanata.model.HSimpleComment;
+import org.zanata.common.LocaleId;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
-import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
-import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
-import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Command;
@@ -18,10 +15,12 @@ public class DummyGetGlossaryDetailsCommand implements Command
 {
 
    private final AsyncCallback<GetGlossaryDetailsResult> callback;
+   private final GetGlossaryDetailsAction action;
 
    DummyGetGlossaryDetailsCommand(GetGlossaryDetailsAction action, AsyncCallback<GetGlossaryDetailsResult> callback)
    {
       this.callback = callback;
+      this.action = action;
    }
 
    @Override
@@ -42,7 +41,7 @@ public class DummyGetGlossaryDetailsCommand implements Command
          targetComments.add("Target Comment " + (2 + i));
          targetComments.add("Target Comment " + (3 + i));
          
-         items.add(new GlossaryDetails(srcComments, targetComments, "Dummy source ref", "en-us"));
+         items.add(new GlossaryDetails(srcComments, targetComments, "Dummy source ref " + (1 + i), new LocaleId("en-us"), action.getWorkspaceId().getLocaleId()));
       }
       
       callback.onSuccess(new GetGlossaryDetailsResult(items));

@@ -10,6 +10,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
@@ -26,11 +27,23 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
    DialogBox dialogBox;
 
    @UiField
+   TextArea srcRef;
+
+   @UiField
    TextArea sourceText;
+
    @UiField
    TextArea targetText;
+
    @UiField
    TextArea sourceComment;
+
+   @UiField
+   Label sourceLabel;
+
+   @UiField
+   Label targetLabel;
+
    @UiField
    TextArea targetComment;
 
@@ -60,7 +73,7 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
    {
       return dialogBox;
    }
-  
+
    @Override
    public HasText getSourceComment()
    {
@@ -113,6 +126,24 @@ public class GlossaryDetailsView implements GlossaryDetailsPresenter.Display
    public void clearEntries()
    {
       entryListBox.clear();
+   }
+
+   @Override
+   public HasText getSourceLabel()
+   {
+      return sourceLabel;
+   }
+
+   @Override
+   public HasText getTargetLabel()
+   {
+      return targetLabel;
+   }
+
+   @Override
+   public HasText getSrcRef()
+   {
+      return srcRef;
    }
 
 }

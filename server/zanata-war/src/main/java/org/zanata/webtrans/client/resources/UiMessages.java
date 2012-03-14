@@ -66,4 +66,14 @@ public interface UiMessages extends Messages
 
    @DefaultMessage("Glossary")
    String glossaryHeading();
+
+   @DefaultMessage("Entry #{0}")
+   String entriesLabel(int count);
+
+   @DefaultMessage("Source Term [{0}]:")
+   String glossarySourceTermLabel(String locale);
+
+   @DefaultMessage("Target Term [{0}]:")
+   String glossaryTargetTermLabel(String locale);
+
 }

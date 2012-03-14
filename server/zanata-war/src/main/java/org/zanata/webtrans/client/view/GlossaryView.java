@@ -8,7 +8,6 @@ import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.client.ui.table.column.CopyButtonColumn;
 import org.zanata.webtrans.client.ui.table.column.DetailsColumn;
 import org.zanata.webtrans.client.ui.table.column.HighlightingLabelColumn;
-import org.zanata.webtrans.client.ui.table.column.SimilarityColumn;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 

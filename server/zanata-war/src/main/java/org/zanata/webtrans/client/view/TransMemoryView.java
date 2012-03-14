@@ -198,7 +198,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       tmTable.addColumn(sourceColumn, messages.sourceLabel());
       tmTable.addColumn(targetColumn, messages.targetLabel());
       tmTable.addColumn(new SimilarityColumn(), messages.similarityLabel());
-      tmTable.addColumn(detailsColumn);
+      tmTable.addColumn(detailsColumn, messages.detailsLabel());
       tmTable.addColumn(copyColumn);
 
       final NoSelectionModel<TranslationMemoryGlossaryItem> selectionModel = new NoSelectionModel<TranslationMemoryGlossaryItem>();

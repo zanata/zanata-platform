@@ -4,6 +4,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
@@ -39,6 +40,12 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
 
       HasText getTargetComment();
 
+      HasText getSourceLabel();
+
+      HasText getTargetLabel();
+
+      HasText getSrcRef();
+
       HasChangeHandlers getEntryListBox();
 
       int getSelectedDocumentIndex();
@@ -50,13 +57,16 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
       void addEntry(String text);
    }
 
-   GetGlossaryDetailsResult glossaryDetails;
+   private GetGlossaryDetailsResult glossaryDetails;
+
+   private final UiMessages messages;
 
    @Inject
-   public GlossaryDetailsPresenter(final Display display, EventBus eventBus, CachingDispatchAsync dispatcher)
+   public GlossaryDetailsPresenter(final Display display, EventBus eventBus, UiMessages messages, CachingDispatchAsync dispatcher)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
+      this.messages = messages;
 
       registerHandler(display.getDismissButton().addClickHandler(new ClickHandler()
       {
@@ -98,8 +108,9 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
             int i = 1;
             for (GlossaryDetails detailsItem : result.getGlossaryDetails())
             {
-               String entryText = "Entry #" + i + ": " + detailsItem.getSrcLocale() + '/' + detailsItem.getSourceRef();
-               display.addEntry(entryText);
+               display.getSourceLabel().setText(messages.glossarySourceTermLabel(detailsItem.getSrcLocale().toString()));
+               display.getTargetLabel().setText(messages.glossaryTargetTermLabel(detailsItem.getTargetLocale().toString()));
+               display.addEntry(messages.entriesLabel(i));
                i++;
             }
             selectEntry(0);
@@ -112,10 +123,11 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
    {
       StringBuilder srcComments = new StringBuilder();
       StringBuilder targetComments = new StringBuilder();
+      String srcRef = "";
       if (selected >= 0)
       {
          GlossaryDetails item = glossaryDetails.getGlossaryDetails().get(selected);
-
+         srcRef = item.getSourceRef();
          for (String srcComment : item.getSourceComment())
          {
             srcComments.append(srcComment);
@@ -128,6 +140,8 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
             targetComments.append("\n");
          }
       }
+
+      display.getSrcRef().setText(srcRef);
       display.getSourceComment().setText(srcComments.toString());
       display.getTargetComment().setText(targetComments.toString());
    }

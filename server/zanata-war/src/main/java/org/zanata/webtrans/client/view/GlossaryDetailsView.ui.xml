@@ -13,22 +13,32 @@
 	  <g:caption><b><ui:msg>Glossary Details</ui:msg></b></g:caption>
 	  <g:HTMLPanel>
 			<g:VerticalPanel>
-				<g:HorizontalPanel>
-					<g:Label><ui:msg>Locations:</ui:msg></g:Label>
-				    <g:ListBox ui:field='entryListBox' visibleItemCount='5'/>
+				<g:HorizontalPanel width="100%">
+					<g:cell width="50%">
+						<g:HorizontalPanel>
+						<g:Label><ui:msg>Entries:</ui:msg></g:Label>
+					    <g:ListBox ui:field='entryListBox' visibleItemCount='5'/>
+					    </g:HorizontalPanel>
+				    </g:cell>
+				    <g:cell width="50%">
+				    	<g:VerticalPanel>
+				    	<g:Label><ui:msg>Source Reference:</ui:msg></g:Label>
+						<g:TextArea ui:field="srcRef" readOnly='true'/>
+						 </g:VerticalPanel>
+				    </g:cell>
 				</g:HorizontalPanel>
 				<g:HorizontalPanel>
 					<g:VerticalPanel>
-						<g:Label><ui:msg>Source: </ui:msg></g:Label>
-						<g:TextArea ui:field='sourceText' readOnly='true'><ui:msg>Source Text</ui:msg></g:TextArea>
-						<g:Label><ui:msg>Comment:</ui:msg></g:Label>
-						<g:TextArea ui:field='sourceComment' readOnly='true'><ui:msg>Source Comment</ui:msg></g:TextArea>
+						<g:Label ui:field="sourceLabel"/>
+						<g:TextArea ui:field='sourceText' readOnly='true'/>
+						<g:Label><ui:msg>Comments:</ui:msg></g:Label>
+						<g:TextArea ui:field='sourceComment' readOnly='true'/>
 					</g:VerticalPanel>
 					<g:VerticalPanel>
-						<g:Label><ui:msg>Target:</ui:msg></g:Label>
-						<g:TextArea ui:field='targetText' readOnly='true'><ui:msg>Target Text</ui:msg></g:TextArea>
-						<g:Label><ui:msg>Comment:</ui:msg></g:Label>
-						<g:TextArea ui:field='targetComment' readOnly='true'><ui:msg>Target Comment</ui:msg></g:TextArea>
+						<g:Label ui:field="targetLabel"/>
+						<g:TextArea ui:field='targetText' readOnly='true'/>
+						<g:Label><ui:msg>Comments:</ui:msg></g:Label>
+						<g:TextArea ui:field='targetComment' readOnly='true'/>
 					</g:VerticalPanel>
 				</g:HorizontalPanel>
 			</g:VerticalPanel>
