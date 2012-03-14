@@ -1,12 +1,14 @@
 package ZanataPermissions;
 
 import java.security.Principal;
+
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.Role;
 import org.jboss.seam.security.permission.PermissionCheck;
@@ -176,7 +178,7 @@ end
   
 ******************************************************************************************/
 
-/* Language Team members can add a translation */
+/* Language Team members can add a translation for their language teams */
 
 rule LangTeamMemberAddTranslation
   no-loop
@@ -192,11 +194,9 @@ then
   check.grant();
 end
 
-/* Project Maintainers can add a translation
-   Currently INACTIVE */
+/* Project Maintainers can add a translation for their projects */
 
-/*
-rule ProjectCoordinatorAddTranslation
+rule ProjectMaintainerAddTranslation
   no-loop
   activation-group "permissions"
 when
@@ -209,7 +209,8 @@ when
 then
   check.grant();
 end
-*/
+ 
+
 
 
 /*****************************************************************************************

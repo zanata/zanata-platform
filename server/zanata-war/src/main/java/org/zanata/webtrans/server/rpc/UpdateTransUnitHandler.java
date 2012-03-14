@@ -146,6 +146,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       }
 
       HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
+      HProject hProject = projectDAO.getBySlug( action.getWorkspaceId().getProjectIterationId().getProjectSlug() );
       LocaleId locale = action.getWorkspaceId().getLocaleId();
       
       HLocale hLocale;
@@ -158,7 +159,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          throw new ActionException(e.getMessage());
       }
 
-      identity.checkPermission(hLocale, ACTION_MODIFY_TRANSLATION);
+      identity.checkPermission(ACTION_MODIFY_TRANSLATION, hLocale, hProject);
 
       HTextFlowTarget target = hTextFlow.getTargets().get(hLocale);
 
@@ -278,7 +279,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       }
 
       HProject hProject = hTextFlow.getDocument().getProjectIteration().getProject();
-      identity.checkPermission(hProject, ACTION_MODIFY_TRANSLATION);
+      identity.checkPermission(ACTION_MODIFY_TRANSLATION, hLocale, hProject);
       HAccount authenticatedAccount = (HAccount) Contexts.getSessionContext().get(JpaIdentityStore.AUTHENTICATED_USER);
 
       HTextFlowTarget target = hTextFlow.getTargets().get(hLocale);

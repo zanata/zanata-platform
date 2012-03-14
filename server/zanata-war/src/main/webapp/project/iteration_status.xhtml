@@ -19,20 +19,40 @@
         <h:form>
             <s:token allowMultiplePosts="true" />
 		  <rich:dataTable id="data_table" width="100%" value="#{viewAllStatusAction.getAllStatus().toArray()}" 
-                  var="language"
+                  var="stats"
                   styleClass="iteration_inline_tribes"
                   rowClasses="odd,even">
-					<rich:column sortBy="#{language.locale}">
+					<rich:column sortBy="#{stats.locale}">
 						<f:facet name="header">#{messages['jsf.Language']}</f:facet>
-	            		#{language.locale}
+						<h:outputLink
+							  rendered="#{identity.loggedIn}"
+					          value="#{request.contextPath}/webtrans/Application.html"
+					          title="#{messages['jsf.iteration.stats.OpenInWebEditor']}">
+							<f:param name="project" value="#{viewAllStatusAction.projectSlug}"/>
+							<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}"/>
+							<f:param name="localeId" value="#{stats.locale}"/>
+							<f:param name="locale" value="#{locale.language}" />
+		            		<h:outputText value="#{stats.locale}"/>
+						</h:outputLink>
+						<h:outputText value="#{stats.locale}" rendered="#{not identity.loggedIn}"/>
 	        		</rich:column>
-					<rich:column sortBy="#{language.nativeName}">
+					<rich:column sortBy="#{stats.nativeName}">
 						<f:facet name="header">#{messages['jsf.Name']}</f:facet>
-	            		#{language.nativeName}
+						<h:outputLink
+							  rendered="#{identity.loggedIn}"
+					          value="#{request.contextPath}/webtrans/Application.html"
+					          title="#{messages['jsf.iteration.stats.OpenInWebEditor']}">
+							<f:param name="project" value="#{viewAllStatusAction.projectSlug}"/>
+							<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}"/>
+							<f:param name="localeId" value="#{stats.locale}"/>
+							<f:param name="locale" value="#{locale.language}" />
+		            		<h:outputText value="#{stats.nativeName}"/>
+						</h:outputLink>
+						<h:outputText value="#{stats.nativeName}" rendered="#{not identity.loggedIn}"/>
 	        		</rich:column>
-	        	<rich:column sortBy="#{language.per}">
+	        	<rich:column sortBy="#{stats.per}">
 	        	  <f:facet name="header">Percentage</f:facet>
-                  <ui:param name="tstatus" value="#{language.words}" />
+                  <ui:param name="tstatus" value="#{stats.words}" />
                   <ui:include src="../WEB-INF/layout/statsbar.xhtml">
                     <ui:param name="status" value="#{tstatus}" />
                   </ui:include>
@@ -40,15 +60,15 @@
     
 				<rich:column>
 					<f:facet name="header">Approved (words)</f:facet>
-					#{language.words.approved}
+					#{stats.words.approved}
 	        		</rich:column>
 				<rich:column>
 					<f:facet name="header">Need Review (words)</f:facet>
-					#{language.words.needReview}
+					#{stats.words.needReview}
 	        		</rich:column>
 				<rich:column>
 					<f:facet name="header">Untranslated (words)</f:facet>
-					#{language.words.untranslated}
+					#{stats.words.untranslated}
 	        		</rich:column>
   		  </rich:dataTable>
         </h:form>              
