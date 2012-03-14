@@ -23,7 +23,6 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.facts.ProjectLocalePair;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -121,8 +120,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    
    private boolean checkPermission(HProject project, HLocale locale)
    {
-      ProjectLocalePair securityFact = new ProjectLocalePair(locale, project);
-      return ZanataIdentity.instance().hasPermission(securityFact, "modify-translation");
+      return ZanataIdentity.instance().hasPermission("modify-translation", project, locale);
    }
    
    private boolean isReadOnly(HProject project, EntityStatus iterStatus, HLocale locale)

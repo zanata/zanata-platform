@@ -23,9 +23,14 @@ package org.zanata.security;
 import static org.jboss.seam.ScopeType.SESSION;
 import static org.jboss.seam.annotations.Install.APPLICATION;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
+import org.drools.FactHandle;
+import org.drools.StatefulSession;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Install;
@@ -37,9 +42,11 @@ import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.LogProvider;
 import org.jboss.seam.log.Logging;
+import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.Configuration;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.NotLoggedInException;
+import org.jboss.seam.security.permission.RuleBasedPermissionResolver;
 
 @Name("org.jboss.seam.security.identity")
 @Scope(SESSION)
@@ -129,6 +136,76 @@ public class ZanataIdentity extends Identity
       if (log.isDebugEnabled())
          log.debug("EXIT hasPermission(): " + result);
       return result;
+   }
+   
+   /**
+    * Indicates if the user has permissions on a variable number of facts. 
+    * This method is a utility provision for Seam's lack of multi-fact insertion into working memory.
+    * 
+    * @param action The permission action.
+    * @param targets Targets for permissions.
+    */
+   public boolean hasPermission(String action, Object ... targets)
+   {
+      final List<FactHandle> handles = new ArrayList<FactHandle>();
+      StatefulSession securityContext = RuleBasedPermissionResolver.instance().getSecurityContext();
+      
+      synchronized (securityContext)
+      {
+         // First target
+         Object firstTarget = targets.length > 0 ? targets[0] : null;
+         
+         // Insert the rest of the targets into working memory
+         for( int i = 1; i < targets.length; i++ )
+         {
+            handles.add( securityContext.insert(targets[i]) );
+         }
+         
+         // Run the permission check
+         boolean result = super.hasPermission(firstTarget, action);
+         
+         // Retract all inserted targets
+         for (FactHandle handle : handles)
+         {
+            securityContext.retract(handle);
+         }
+         
+         return result;
+      }
+   }
+   
+   /**
+    * Checks permissions on a variable number of facts. 
+    * This method is a utility provision for Seam's lack of multi-fact insertion into working memory.
+    * 
+    * @param action The permission action.
+    * @param targets Targets for permissions.
+    */
+   public void checkPermission(String action, Object ... targets)
+   {
+      final List<FactHandle> handles = new ArrayList<FactHandle>();
+      StatefulSession securityContext = RuleBasedPermissionResolver.instance().getSecurityContext();
+      
+      synchronized (securityContext)
+      {
+         // First target
+         Object firstTarget = targets.length > 0 ? targets[0] : null;
+         
+         // Insert the rest of the targets into working memory
+         for( int i = 1; i < targets.length; i++ )
+         {
+            handles.add( securityContext.insert(targets[i]) );
+         }
+         
+         // Run the permission check
+         super.checkPermission(firstTarget, action);
+         
+         // Retract all inserted targets
+         for (FactHandle handle : handles)
+         {
+            securityContext.retract(handle);
+         }
+      }
    }
 
    @Override

@@ -8,7 +8,6 @@ import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.security.facts.ProjectLocalePair;
 
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.Role;
@@ -188,8 +187,9 @@ when
   check: PermissionCheck(action == "add-translation" || action == "modify-translation", granted == false)
   authenticatedPerson: HPerson() 
   eval(authenticatedPerson != null)
-  ProjectLocalePair($locale : locale, locale != null,
-  	eval(authenticatedPerson.isMember($locale)) )
+  $locale: HLocale(
+    eval(authenticatedPerson.isMember($locale))
+  )
 then
   check.grant();
 end
@@ -203,11 +203,14 @@ when
   check: PermissionCheck(action == "add-translation" || action == "modify-translation", granted == false)
   authenticatedPerson: HPerson() 
   eval(authenticatedPerson != null)
-  ProjectLocalePair($project : project, project != null,
-  	eval(authenticatedPerson.isMaintainer($project)) )
+  $project: HProject(
+    eval(authenticatedPerson.isMaintainer($project))
+  )
 then
   check.grant();
 end
+ 
+
 
 
 /*****************************************************************************************

@@ -38,7 +38,7 @@
     <rich:column id="locale_id">#{hLocale.retrieveNativeName()} [#{hLocale.localeId.id}]</rich:column>
     <rich:column id="translate" rendered="#{!projectHome.isObsolete(_iteration)}">
       <h:outputLink
-          rendered="#{iterationTranslationAction.allowedToTranslate(hLocale) and !applicationConfiguration.debug and projectHome.isReadOnly(_iteration)}"
+          rendered="#{s:hasPermission(hLocale, 'modify-translation') and !applicationConfiguration.debug and projectHome.isReadOnly(_iteration)}"
           value="#{request.contextPath}/webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
 		<f:param name="iteration" value="#{_iteration.slug}"/>
@@ -48,7 +48,7 @@
       </h:outputLink>
       
       <h:outputLink
-          rendered="#{iterationTranslationAction.allowedToTranslate(hLocale) and applicationConfiguration.debug and projectHome.isReadOnly(_iteration)}"
+          rendered="#{s:hasPermission(hLocale, 'modify-translation') and applicationConfiguration.debug and projectHome.isReadOnly(_iteration)}"
           value="#{request.contextPath}/webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
 		<f:param name="iteration" value="#{_iteration.slug}"/>
@@ -59,7 +59,7 @@
       </h:outputLink>
       
       <h:outputLink
-          rendered="#{iterationTranslationAction.allowedToTranslate(hLocale) and !applicationConfiguration.debug and !projectHome.isReadOnly(_iteration)}"
+          rendered="#{s:hasPermission(hLocale, 'modify-translation') and !applicationConfiguration.debug and !projectHome.isReadOnly(_iteration)}"
           value="#{request.contextPath}/webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
 		<f:param name="iteration" value="#{_iteration.slug}"/>
@@ -68,7 +68,7 @@
 		#{messages['jsf.Translate']}
       </h:outputLink>
       <h:outputLink
-          rendered="#{iterationTranslationAction.allowedToTranslate(hLocale) and applicationConfiguration.debug and !projectHome.isReadOnly(_iteration)}"
+          rendered="#{s:hasPermission(hLocale, 'modify-translation') and applicationConfiguration.debug and !projectHome.isReadOnly(_iteration)}"
           value="#{request.contextPath}/webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
 		<f:param name="iteration" value="#{_iteration.slug}"/>
@@ -82,7 +82,7 @@
     </rich:column>
     <rich:column id="files">
       <s:link
-          rendered="#{iterationTranslationAction.allowedToTranslate(hLocale)}"
+          rendered="#{s:hasPermission(hLocale, 'modify-translation')}"
           view="/project/iteration_files.xhtml"
           propagation="none"
           value="#{messages['jsf.Files']}">

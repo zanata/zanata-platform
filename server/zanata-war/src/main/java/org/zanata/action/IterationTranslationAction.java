@@ -39,7 +39,6 @@ import org.zanata.common.TransUnitWords;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
-import org.zanata.security.facts.ProjectLocalePair;
 import org.zanata.service.LocaleService;
 
 @Name("iterationTranslationAction")
@@ -77,10 +76,5 @@ public class IterationTranslationAction implements Serializable
    public TransUnitWords getWordStatsForContainer(Long iterationId, LocaleId localeId)
    {
       return projectIterationDAO.getWordStatsForContainer(iterationId, localeId);
-   }
-   
-   public boolean allowedToTranslate(HLocale hLocale)
-   {
-      return identity != null && identity.hasPermission( new ProjectLocalePair(hLocale, null), "modify-translation");
    }
 }
