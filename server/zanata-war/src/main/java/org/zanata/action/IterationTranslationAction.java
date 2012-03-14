@@ -30,6 +30,7 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.annotation.CachedMethods;
@@ -38,6 +39,7 @@ import org.zanata.common.TransUnitWords;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
+import org.zanata.security.facts.ProjectLocalePair;
 import org.zanata.service.LocaleService;
 
 @Name("iterationTranslationAction")
@@ -52,6 +54,9 @@ public class IterationTranslationAction implements Serializable
    @Logger
    Log log;
 
+   @In
+   Identity identity;
+   
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
    
@@ -72,5 +77,10 @@ public class IterationTranslationAction implements Serializable
    public TransUnitWords getWordStatsForContainer(Long iterationId, LocaleId localeId)
    {
       return projectIterationDAO.getWordStatsForContainer(iterationId, localeId);
+   }
+   
+   public boolean allowedToTranslate(HLocale hLocale)
+   {
+      return identity != null && identity.hasPermission( new ProjectLocalePair(hLocale, null), "modify-translation");
    }
 }

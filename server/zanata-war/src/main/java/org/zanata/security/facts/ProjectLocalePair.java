@@ -18,21 +18,49 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.security;
+package org.zanata.security.facts;
+
+import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 
 /**
- * Common interface for classes that need to implement permission checks.
+ * Represents a fact that holds information about a project and locale.
  * 
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface SecurityChecker
+public class ProjectLocalePair
 {
+
+   private HLocale locale;
    
-   /**
-    * Checks permission for a given action.
-    * 
-    * @param operation The operation that is being executed.
-    * @return The result of the permission validation.
-    */
-   public boolean checkPermission(String operation);
+   private HProject project;
+
+   
+   public ProjectLocalePair(HLocale locale, HProject project)
+   {
+      super();
+      this.locale = locale;
+      this.project = project;
+   }
+
+   public HLocale getLocale()
+   {
+      return locale;
+   }
+
+   public void setLocale(HLocale locale)
+   {
+      this.locale = locale;
+   }
+
+   public HProject getProject()
+   {
+      return project;
+   }
+
+   public void setProject(HProject project)
+   {
+      this.project = project;
+   }
+   
 }

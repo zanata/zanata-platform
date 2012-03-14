@@ -49,6 +49,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.facts.ProjectLocalePair;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
@@ -146,6 +147,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       }
 
       HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
+      HProject hProject = projectDAO.getBySlug( action.getWorkspaceId().getProjectIterationId().getProjectSlug() );
       LocaleId locale = action.getWorkspaceId().getLocaleId();
       
       HLocale hLocale;
@@ -158,7 +160,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          throw new ActionException(e.getMessage());
       }
 
-      identity.checkPermission(hLocale, ACTION_MODIFY_TRANSLATION);
+      identity.checkPermission(new ProjectLocalePair(hLocale, hProject), ACTION_MODIFY_TRANSLATION);
 
       HTextFlowTarget target = hTextFlow.getTargets().get(hLocale);
 
@@ -278,7 +280,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       }
 
       HProject hProject = hTextFlow.getDocument().getProjectIteration().getProject();
-      identity.checkPermission(hProject, ACTION_MODIFY_TRANSLATION);
+      identity.checkPermission(new ProjectLocalePair(hLocale, hProject), ACTION_MODIFY_TRANSLATION);
       HAccount authenticatedAccount = (HAccount) Contexts.getSessionContext().get(JpaIdentityStore.AUTHENTICATED_USER);
 
       HTextFlowTarget target = hTextFlow.getTargets().get(hLocale);

@@ -43,6 +43,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import org.zanata.security.BaseSecurityChecker;
+import org.zanata.security.facts.ProjectLocalePair;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.service.LocaleService;
 
@@ -215,7 +216,7 @@ public class LanguageTeamAction extends BaseSecurityChecker implements Serializa
        * evaluate rules.
        */
       this.locale.getMembers();
-      return this.locale;
+      return new ProjectLocalePair(this.locale, null);
    }
 
 }
