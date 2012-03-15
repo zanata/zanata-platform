@@ -30,6 +30,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.IndexColumn;
@@ -43,19 +44,18 @@ import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.NotNull;
-import org.zanata.hibernate.search.DefaultNgramAnalyzer;
-import org.zanata.hibernate.search.IdFilterFactory;
+import org.zanata.hibernate.search.LocaleFilterFactory;
 import org.zanata.hibernate.search.LocaleIdBridge;
 
 /**
- *
+ * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
+ * 
  **/
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
-@FullTextFilterDef(name = "glossaryFilter", impl = IdFilterFactory.class, cache = FilterCacheModeType.INSTANCE_ONLY)
+@FullTextFilterDef(name = "glossaryLocaleFilter", impl = LocaleFilterFactory.class, cache = FilterCacheModeType.INSTANCE_ONLY)
 public class HGlossaryTerm extends ModelEntityBase
 {
    private String content;
@@ -75,7 +75,7 @@ public class HGlossaryTerm extends ModelEntityBase
 
    @NotNull
    @Type(type = "text")
-   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
+   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = StandardAnalyzer.class))
    public String getContent()
    {
       return content;
@@ -127,12 +127,11 @@ public class HGlossaryTerm extends ModelEntityBase
    {
       return locale;
    }
-   
+
    public void setLocale(HLocale locale)
    {
       this.locale = locale;
    }
-
 
    @Override
    public String toString()
@@ -193,6 +192,3 @@ public class HGlossaryTerm extends ModelEntityBase
       return true;
    }
 }
-
-
- 

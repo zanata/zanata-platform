@@ -20,129 +20,219 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import java.util.ArrayList;
-
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.common.LocaleId;
+import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
+import org.zanata.webtrans.client.history.History;
+import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
-import org.zanata.webtrans.shared.rpc.GetGlossary.SearchType;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
+import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
 
 /**
- *
+ * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
+ * 
  **/
 public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display>
 {
    private final WorkspaceContext workspaceContext;
    private final CachingDispatchAsync dispatcher;
+   private final GlossaryDetailsPresenter glossaryDetailsPresenter;
+   private final DocumentListPresenter docListPresenter;
+   private final History history;
+   private GetGlossary submittedRequest = null;
+   private GetGlossary lastRequest = null;
 
-   @Inject
-   public GlossaryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, WorkspaceContext workspaceContext)
-   {
-      super(display, eventBus);
-      this.dispatcher = dispatcher;
-      this.workspaceContext = workspaceContext;
-   }
+   private ListDataProvider<TranslationMemoryGlossaryItem> dataProvider;
+
 
    public interface Display extends WidgetDisplay
    {
-      HasValue<Boolean> getExactButton();
-
       HasClickHandlers getSearchButton();
 
       HasText getGlossaryTextBox();
 
+      HasValue<SearchType> getSearchType();
+
       void startProcessing();
 
-      void createTable(ArrayList<TranslationMemoryGlossaryItem> memories);
-
       boolean isFocused();
+
+      Column<TranslationMemoryGlossaryItem, String> getCopyColumn();
+
+      Column<TranslationMemoryGlossaryItem, ImageResource> getDetailsColumn();
+
+      void setDataProvider(ListDataProvider<TranslationMemoryGlossaryItem> dataProvider);
+
+      void setPageSize(int size);
    }
 
-   /*
-    * TODO: temporary disable glossary functionalities
-    */
-   boolean disableGlossary = true;
+   @Inject
+   public GlossaryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, GlossaryDetailsPresenter glossaryDetailsPresenter, DocumentListPresenter docListPresenter, History history, WorkspaceContext workspaceContext)
+   {
+      super(display, eventBus);
+      this.dispatcher = dispatcher;
+      this.workspaceContext = workspaceContext;
+      this.glossaryDetailsPresenter = glossaryDetailsPresenter;
+      this.docListPresenter = docListPresenter;
+      this.history = history;
+      dataProvider = new ListDataProvider<TranslationMemoryGlossaryItem>();
+      display.setDataProvider(dataProvider);
+   }
 
    @Override
    protected void onBind()
    {
-      if (!disableGlossary)
+      display.getSearchButton().addClickHandler(new ClickHandler()
       {
-         display.getSearchButton().addClickHandler(new ClickHandler()
+         @Override
+         public void onClick(ClickEvent event)
          {
-            @Override
-            public void onClick(ClickEvent event)
-            {
-               String query = display.getGlossaryTextBox().getText();
-               GetGlossary.SearchType searchType = display.getExactButton().getValue() ? SearchType.EXACT : SearchType.FUZZY;
-               showResults(query, searchType);
-            }
-         });
+            String query = display.getGlossaryTextBox().getText();
+            createGlossaryRequest(query, display.getSearchType().getValue());
+         }
+      });
 
-         registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), new TransUnitSelectionHandler()
+      registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), new TransUnitSelectionHandler()
+      {
+         @Override
+         public void onTransUnitSelected(TransUnitSelectionEvent event)
          {
-            @Override
-            public void onTransUnitSelected(TransUnitSelectionEvent event)
-            {
-               createGlossaryRequestForTransUnit(event.getSelection());
-            }
-         }));
-      }
+            createGlossaryRequestForTransUnit(event.getSelection());
+         }
+      }));
+
+      display.getCopyColumn().setFieldUpdater(new FieldUpdater<TranslationMemoryGlossaryItem, String>()
+      {
+         @Override
+         public void update(int index, TranslationMemoryGlossaryItem object, String value)
+         {
+            eventBus.fireEvent(new InsertStringInEditorEvent(object.getSource(), object.getTarget()));
+         }
+      });
+
+      display.getDetailsColumn().setFieldUpdater(new FieldUpdater<TranslationMemoryGlossaryItem, ImageResource>()
+      {
+         @Override
+         public void update(int index, TranslationMemoryGlossaryItem object, ImageResource value)
+         {
+            glossaryDetailsPresenter.show(object);
+         }
+      });
    }
 
-   // TODO piggy back on TransMemoryPresenter's request
-   /**
-    * @see TransMemoryPresenter#createTMRequestForTransUnit(TransUnit)
-    * @param transUnit
-    */
+   private void createGlossaryRequest(final String query, GetGlossary.SearchType searchType)
+   {
+      display.startProcessing();
+      
+      HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+      DocumentId docId = docListPresenter.getDocumentId(token.getDocumentPath());
+      DocumentInfo docInfo = docListPresenter.getDocumentInfo(docId);
+      LocaleId srcLocale = LocaleId.EN_US;
+      if (docInfo != null)
+      {
+         srcLocale = docInfo.getSourceLocale();
+      }
+      final GetGlossary action = new GetGlossary(query, workspaceContext.getWorkspaceId().getLocaleId(), srcLocale, searchType);
+      scheduleGlossaryRequest(action);
+   }
+
    public void createGlossaryRequestForTransUnit(TransUnit transUnit)
    {
       String query = transUnit.getSource();
+      SearchType searchType = GetGlossary.SearchType.FUZZY;
       display.getGlossaryTextBox().setText("");
-      showResults(query, GetGlossary.SearchType.FUZZY);
+      createGlossaryRequest(query, searchType);
    }
 
-   private void showResults(String query, GetGlossary.SearchType searchType)
+   private void scheduleGlossaryRequest(GetGlossary action)
    {
-      display.startProcessing();
-      final GetGlossary action = new GetGlossary(query, workspaceContext.getWorkspaceId().getLocaleId(), searchType);
+      lastRequest = action;
+      if (submittedRequest == null)
+      {
+         submitGlossaryRequest(action);
+      }
+      else
+      {
+         Log.debug("blocking glossary request until outstanding request returns");
+      }
+   }
+
+   private void submitGlossaryRequest(GetGlossary action)
+   {
+      Log.debug("submitting glossary request");
       dispatcher.execute(action, new AsyncCallback<GetGlossaryResult>()
       {
          @Override
          public void onFailure(Throwable caught)
          {
             Log.error(caught.getMessage(), caught);
+            submittedRequest = null;
          }
 
          @Override
          public void onSuccess(GetGlossaryResult result)
          {
-            ArrayList<TranslationMemoryGlossaryItem> memories = result.getGlossaries();
-            display.createTable(memories);
+            if (result.getRequest().equals(lastRequest))
+            {
+               Log.debug("received glossary result for query");
+               displayGlossaryResult(result);
+               lastRequest = null;
+            }
+            else
+            {
+               Log.debug("ignoring old glossary result for query");
+            }
+            submittedRequest = null;
+            if (lastRequest != null)
+            {
+               // submit the waiting request
+               submitGlossaryRequest(lastRequest);
+            }
          }
       });
+      submittedRequest = action;
    }
 
+   private void displayGlossaryResult(GetGlossaryResult result)
+   {
+      String query = submittedRequest.getQuery();
+      display.getGlossaryTextBox().setText(query);
+      display.getSearchType().setValue(submittedRequest.getSearchType());
+
+      dataProvider.getList().clear();
+      for (final TranslationMemoryGlossaryItem glossary : result.getGlossaries())
+      {
+         dataProvider.getList().add(glossary);
+      }
+      display.setPageSize(dataProvider.getList().size());
+      dataProvider.refresh();
+   }
 
    @Override
    protected void onUnbind()
@@ -154,6 +244,3 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    {
    }
 }
-
-
- 

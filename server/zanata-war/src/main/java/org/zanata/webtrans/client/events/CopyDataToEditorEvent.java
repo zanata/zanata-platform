@@ -2,22 +2,22 @@ package org.zanata.webtrans.client.events;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class TransMemoryCopyEvent extends GwtEvent<TransMemoryCopyHandler>
+public class CopyDataToEditorEvent extends GwtEvent<CopyDataToEditorHandler>
 {
 
    /**
     * Handler type.
     */
-   private static Type<TransMemoryCopyHandler> TYPE;
+   private static Type<CopyDataToEditorHandler> TYPE;
 
    /**
     * Gets the type associated with this event.
     * 
     * @return returns the handler type
     */
-   public static Type<TransMemoryCopyHandler> getType()
+   public static Type<CopyDataToEditorHandler> getType()
    {
-      return TYPE != null ? TYPE : (TYPE = new Type<TransMemoryCopyHandler>());
+      return TYPE != null ? TYPE : (TYPE = new Type<CopyDataToEditorHandler>());
    }
 
    private String sourceResult, targetResult;
@@ -28,20 +28,20 @@ public class TransMemoryCopyEvent extends GwtEvent<TransMemoryCopyHandler>
     * @param sourceResult
     * @param targetResult
     */
-   public TransMemoryCopyEvent(String sourceResult, String targetResult)
+   public CopyDataToEditorEvent(String sourceResult, String targetResult)
    {
       this.sourceResult = sourceResult;
       this.targetResult = targetResult;
    }
 
    @Override
-   protected void dispatch(TransMemoryCopyHandler handler)
+   protected void dispatch(CopyDataToEditorHandler handler)
    {
       handler.onTransMemoryCopy(this);
    }
 
    @Override
-   public GwtEvent.Type<TransMemoryCopyHandler> getAssociatedType()
+   public GwtEvent.Type<CopyDataToEditorHandler> getAssociatedType()
    {
       return getType();
    }

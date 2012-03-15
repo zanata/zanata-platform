@@ -52,8 +52,8 @@ import org.zanata.util.ShortString;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
-import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
+import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 @Name("webtrans.gwt.GetTransMemoryHandler")
 @Scope(ScopeType.STATELESS)
@@ -122,10 +122,10 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
             TranslationMemoryGlossaryItem item = matchesMap.get(key);
             if (item == null)
             {
-               item = new TranslationMemoryGlossaryItem(textFlowContent, targetContent, score, percent);
+               item = new TranslationMemoryGlossaryItem(textFlowContent, targetContent, searchText, score, percent);
                matchesMap.put(key, item);
             }
-            item.addTransUnitId(textFlow.getId());
+            item.addSourceId(textFlow.getId());
          }
          results = new ArrayList<TranslationMemoryGlossaryItem>(matchesMap.values());
       }

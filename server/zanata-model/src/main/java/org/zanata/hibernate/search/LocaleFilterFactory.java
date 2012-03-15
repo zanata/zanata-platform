@@ -18,43 +18,43 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.ui;
+package org.zanata.hibernate.search;
 
-import com.google.gwt.user.client.ui.HTML;
+import org.apache.lucene.search.Filter;
+import org.hibernate.search.annotations.Factory;
+import org.hibernate.search.annotations.Key;
+import org.hibernate.search.filter.FilterKey;
+import org.hibernate.search.filter.StandardFilterKey;
+import org.zanata.common.LocaleId;
 
-public class DiffMatchPatchLabel extends HTML
+public class LocaleFilterFactory
 {
-   private String original;
-   private String plainText;
 
-   public DiffMatchPatchLabel()
+   @Factory
+   public Filter getFilter()
    {
-      super();
+      LocaleFilter filter = new LocaleFilter(this.locale);
+      return filter;
    }
 
-   public DiffMatchPatchLabel(String orig, String text)
+   private LocaleId locale;
+
+   public LocaleId getLocale()
    {
-      super();
-      this.original = orig;
-      setText(text);
+      return locale;
    }
 
-   @Override
-   public String getText()
+   public void setLocale(LocaleId locale)
    {
-      return plainText;
+      this.locale = locale;
    }
 
-   @Override
-   public void setText(String text)
+   @Key
+   public FilterKey getKey()
    {
-      this.plainText = text;
-      String diff = Highlighting.diffAsHtml(original, plainText);
-      setHTML(diff);
+      StandardFilterKey key = new StandardFilterKey();
+      key.addParameter(locale);
+      return key;
    }
 
-   public void setOriginal(String original)
-   {
-      this.original = original;
-   }
 }

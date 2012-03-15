@@ -268,7 +268,7 @@ public class TranslationPresenterTest
     * similar to showsSouthPanel() but with non-null selected TU
     */
    @Test
-   public void fireTMSearchOnShowSouthPanel()
+   public void fireTMGlossarySearchOnShowSouthPanel()
    {
       setupAndBindPresenter();
 
@@ -311,6 +311,8 @@ public class TranslationPresenterTest
       expect(mockTranslationEditorPresenter.getSelectedTransUnit()).andReturn(mockTU);
       // should not call this for null TU selected:
       mockTransMemoryPresenter.createTMRequestForTransUnit(mockTU);
+      mockGlossaryPresenter.createGlossaryRequestForTransUnit(mockTU);
+
       expectLastCall().once();
 
       replay(mockDisplay, mockTransMemoryPresenter, mockGlossaryPresenter, mockWorkspaceUsersPresenter, mockTranslationEditorPresenter);

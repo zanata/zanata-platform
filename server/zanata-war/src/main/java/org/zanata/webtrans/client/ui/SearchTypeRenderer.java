@@ -1,7 +1,7 @@
 package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.resources.EnumMessages;
-import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
+import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.inject.Inject;
  

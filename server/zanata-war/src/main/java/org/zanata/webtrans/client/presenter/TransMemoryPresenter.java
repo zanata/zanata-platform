@@ -4,7 +4,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.events.TransMemoryCopyEvent;
+import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.TransMemoryShorcutCopyHandler;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
@@ -14,8 +14,8 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
-import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
+import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -42,8 +42,6 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       HasValue<SearchType> getSearchType();
 
       HasText getTmTextBox();
-
-      void setDiffText(String query);
 
       void startProcessing();
 
@@ -130,7 +128,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
                }
                if (item != null)
                {
-                  eventBus.fireEvent(new TransMemoryCopyEvent(item.getSource(), item.getTarget()));
+                  eventBus.fireEvent(new CopyDataToEditorEvent(item.getSource(),  item.getTarget()));
                }
             }
          }
@@ -150,7 +148,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          @Override
          public void update(int index, TranslationMemoryGlossaryItem object, String value)
          {
-            eventBus.fireEvent(new TransMemoryCopyEvent(object.getSource(), object.getTarget()));
+            eventBus.fireEvent(new CopyDataToEditorEvent(object.getSource(), object.getTarget()));
          }
       });
    }
@@ -232,7 +230,6 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    {
       String query = submittedRequest.getQuery();
       display.getTmTextBox().setText(query);
-      display.setDiffText(query);
       display.getSearchType().setValue(submittedRequest.getSearchType());
 
       dataProvider.getList().clear();

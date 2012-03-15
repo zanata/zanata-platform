@@ -15,6 +15,7 @@
 	<g:LayoutPanel>
 		<g:layer top="0px" height="30px">
 			<g:HorizontalPanel>
+				<g:Label ui:field="headerLabel" styleName="{style.headerLabel}"/>
 				<g:TextBox ui:field="tmTextBox" />
                 <g:ValueListBox ui:field="searchType"/>
 				<g:Button ui:field="searchButton"/>

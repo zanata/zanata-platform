@@ -8,6 +8,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import org.easymock.Capture;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
@@ -477,7 +478,7 @@ public class AppPresenterTest
       TransUnitCount unitCount = new TransUnitCount(1, 2, 3);
       TransUnitWords wordCount = new TransUnitWords(4, 5, 6);
       testDocStats = new TranslationStats(unitCount, wordCount);
-      testDocInfo = new DocumentInfo(testDocId, TEST_DOCUMENT_NAME, TEST_DOCUMENT_PATH, testDocStats);
+      testDocInfo = new DocumentInfo(testDocId, TEST_DOCUMENT_NAME, TEST_DOCUMENT_PATH, LocaleId.EN_US, testDocStats);
    }
 
    /**

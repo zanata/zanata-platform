@@ -20,8 +20,10 @@
  */
 package org.zanata.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.util.Version;
@@ -36,15 +38,14 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.LocaleId;
-import org.zanata.hibernate.search.DefaultNgramAnalyzer;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
-import org.zanata.webtrans.shared.rpc.GetGlossary.SearchType;
+import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 /**
- *
+ * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
+ * 
  **/
 @Name("glossaryDAO")
 @AutoCreate
@@ -113,12 +114,30 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
       query.setParameter("content", content);
       return (HGlossaryEntry) query.uniqueResult();
    }
+   /* @formatter:on */
 
-   public List<Object[]> getSearchResult(String searchText, SearchType searchType, List<Long> termIds, final int maxResult) throws ParseException
+   @SuppressWarnings("unchecked")
+   public List<HGlossaryTerm> findByIdList(List<Long> idList)
+   {
+      if (idList == null || idList.isEmpty())
+      {
+         return new ArrayList<HGlossaryTerm>();
+      }
+      Query query = getSession().createQuery("FROM HGlossaryTerm WHERE id in (:idList)");
+      query.setParameterList("idList", idList);
+      query.setCacheable(false).setComment("GlossaryDAO.getByIdList");
+      return query.list();
+   }
+
+   public List<Object[]> getSearchResult(String searchText, SearchType searchType, LocaleId srcLocale, final int maxResult) throws ParseException
    {
       String queryText;
       switch (searchType)
       {
+      case RAW:
+         queryText = searchText;
+         break;
+
       case FUZZY:
          // search by N-grams
          queryText = QueryParser.escape(searchText);
@@ -132,16 +151,13 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
          throw new RuntimeException("Unknown query type: " + searchType);
       }
 
-      QueryParser parser = new QueryParser(Version.LUCENE_29, "content", new DefaultNgramAnalyzer(4));
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "content", new StandardAnalyzer(Version.LUCENE_29));
       org.apache.lucene.search.Query textQuery = parser.parse(queryText);
       FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HGlossaryTerm.class);
-      ftQuery.enableFullTextFilter("glossaryFilter").setParameter("ids", termIds);
+      ftQuery.enableFullTextFilter("glossaryLocaleFilter").setParameter("locale", srcLocale);
       ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
       @SuppressWarnings("unchecked")
       List<Object[]> matches = ftQuery.setMaxResults(maxResult).getResultList();
       return matches;
    }
 }
-
-
- 

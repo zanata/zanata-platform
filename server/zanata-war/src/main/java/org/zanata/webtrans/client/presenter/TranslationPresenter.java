@@ -379,7 +379,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          if (tu != null)
          {
             transMemoryPresenter.createTMRequestForTransUnit(tu);
-            // glossaryPresenter.createGlossaryRequestForTransUnit(tu);
+            glossaryPresenter.createGlossaryRequestForTransUnit(tu);
          }
       }
       else

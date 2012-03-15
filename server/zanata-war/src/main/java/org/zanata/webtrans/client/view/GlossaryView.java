@@ -1,49 +1,49 @@
 package org.zanata.webtrans.client.view;
 
-import java.util.ArrayList;
-
-import net.customware.gwt.presenter.client.EventBus;
-
-import org.zanata.webtrans.client.events.TransMemoryCopyEvent;
 import org.zanata.webtrans.client.presenter.GlossaryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
-import org.zanata.webtrans.client.ui.HighlightingLabel;
+import org.zanata.webtrans.client.ui.EnumListBox;
+import org.zanata.webtrans.client.ui.SearchTypeRenderer;
+import org.zanata.webtrans.client.ui.table.column.CopyButtonColumn;
+import org.zanata.webtrans.client.ui.table.column.DetailsColumn;
+import org.zanata.webtrans.client.ui.table.column.HighlightingLabelColumn;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
+import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.DefaultSelectionEventManager;
+import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.NoSelectionModel;
 import com.google.inject.Inject;
 
 public class GlossaryView extends Composite implements GlossaryPresenter.Display
 {
    private static GlossaryViewUiBinder uiBinder = GWT.create(GlossaryViewUiBinder.class);
 
-   private static final int CELL_PADDING = 5;
-   private static final int HEADER_ROW = 0;
-   private static final int SOURCE_COL = 0;
-   private static final int SUGGESTION_COL = 1;
-   private static final int SIMILARITY_COL = 2;
-   private static final int ACTION_COL = 4;
+   CellTable<TranslationMemoryGlossaryItem> glossaryTable;
+
+   private ListDataProvider<TranslationMemoryGlossaryItem> dataProvider;
 
    interface GlossaryViewUiBinder extends UiBinder<Widget, GlossaryView>
    {
@@ -53,34 +53,45 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    TextBox glossaryTextBox;
 
    @UiField
-   Label glossaryHeader;
-
-   @UiField
-   CheckBox exactButton;
-
-   @UiField
    Button searchButton;
+
+   @UiField
+   Label headerLabel;
+
+   @UiField(provided = true)
+   ValueListBox<SearchType> searchType;
 
    @UiField
    Button clearButton;
 
    @UiField
-   FlexTable resultTable;
+   ScrollPanel scrollPanel;
 
-   @Inject
-   private EventBus eventBus;
-
+   private final UiMessages messages;
    private boolean isFocused;
+   
+   private final HighlightingLabelColumn sourceColumn;
+   private final HighlightingLabelColumn targetColumn;
+   private final CopyButtonColumn copyColumn;
+   private final DetailsColumn detailsColumn;
 
    @Inject
-   public GlossaryView(final UiMessages messages, Resources resources)
+   public GlossaryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, Resources resources)
    {
+      this.messages = messages;
+      
+      sourceColumn = new HighlightingLabelColumn(true, false);
+      targetColumn = new HighlightingLabelColumn(false, true);
+      copyColumn = new CopyButtonColumn();
+      detailsColumn = new DetailsColumn(resources);
+      
+      searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);
+      dataProvider = new ListDataProvider<TranslationMemoryGlossaryItem>();
       initWidget(uiBinder.createAndBindUi(this));
-      exactButton.setText(messages.phraseButtonLabel());
-      exactButton.setValue(true);
+
+      headerLabel.setText(messages.glossaryHeading());
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
-      glossaryHeader.setText(messages.glossaryHeader());
    }
 
    @UiHandler("glossaryTextBox")
@@ -108,13 +119,7 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    void onClearButtonClicked(ClickEvent event)
    {
       glossaryTextBox.setText("");
-      clearResults();
-   }
-
-   @Override
-   public HasValue<Boolean> getExactButton()
-   {
-      return exactButton;
+      dataProvider.getList().clear();
    }
 
    @Override
@@ -134,66 +139,68 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       return this;
    }
 
-   public void clearResults()
-   {
-      resultTable.removeAllRows();
-   }
-
    @Override
    public void startProcessing()
    {
-      clearResults();
-      resultTable.setWidget(0, 0, new Label("Loading..."));
-   }
-
-   @Override
-   public void createTable(ArrayList<TranslationMemoryGlossaryItem> memories)
-   {
-      // TODO most of this should be in TransMemoryPresenter
-      clearResults();
-      addColumn("Source", SOURCE_COL);
-      addColumn("Suggestion", SUGGESTION_COL);
-      addColumn("Similarity", SIMILARITY_COL);
-
-      int row = HEADER_ROW;
-      for (final TranslationMemoryGlossaryItem memory : memories)
-      {
-         ++row;
-         final String sourceMessage = memory.getSource();
-         final String targetMessage = memory.getTarget();
-         final int similarity = memory.getSimilarityPercent();
-
-         resultTable.setWidget(row, SOURCE_COL, new HighlightingLabel(sourceMessage));
-         resultTable.setWidget(row, SUGGESTION_COL, new HighlightingLabel(targetMessage));
-         resultTable.setText(row, SIMILARITY_COL, similarity + "%");
-
-         final Anchor copyLink = new Anchor("Copy");
-         copyLink.addClickHandler(new ClickHandler()
-         {
-            @Override
-            public void onClick(ClickEvent event)
-            {
-               eventBus.fireEvent(new TransMemoryCopyEvent(sourceMessage, targetMessage));
-               Log.info("GlossaryCopyEvent event is sent. (" + targetMessage + ")");
-            }
-         });
-         resultTable.setWidget(row, ACTION_COL, copyLink);
-         copyLink.setTitle("Copy \"" + targetMessage + "\" to the editor.");
-      }
-      resultTable.setCellPadding(CELL_PADDING);
-   }
-
-   private void addColumn(String columnHeading, int pos)
-   {
-      Label widget = new Label(columnHeading);
-      widget.setWidth("100%");
-      widget.addStyleName("TransMemoryTableColumnHeader");
-      resultTable.setWidget(HEADER_ROW, pos, widget);
+      dataProvider.getList().clear();
    }
 
    @Override
    public boolean isFocused()
    {
       return isFocused;
+   }
+
+   @Override
+   public HasValue<SearchType> getSearchType()
+   {
+      return searchType;
+   }
+
+   public void renderTable()
+   {
+      glossaryTable = new CellTable<TranslationMemoryGlossaryItem>();
+      glossaryTable.addStyleName("glossaryTable");
+      glossaryTable.addStyleName("southTable");
+      glossaryTable.addColumn(sourceColumn, messages.srcTermLabel());
+      glossaryTable.addColumn(targetColumn, messages.targetTermLabel());
+      glossaryTable.addColumn(detailsColumn, messages.detailsLabel());
+      glossaryTable.addColumn(copyColumn);
+
+      final NoSelectionModel<TranslationMemoryGlossaryItem> selectionModel = new NoSelectionModel<TranslationMemoryGlossaryItem>();
+      final DefaultSelectionEventManager<TranslationMemoryGlossaryItem> manager = DefaultSelectionEventManager.createBlacklistManager(0, 1, 2);
+      glossaryTable.setSelectionModel(selectionModel, manager);
+
+      glossaryTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
+
+      dataProvider.addDataDisplay(glossaryTable);
+
+      scrollPanel.clear();
+      scrollPanel.add(glossaryTable);
+   }
+
+   @Override
+   public Column<TranslationMemoryGlossaryItem, String> getCopyColumn()
+   {
+      return copyColumn;
+   }
+   
+   @Override
+   public Column<TranslationMemoryGlossaryItem, ImageResource> getDetailsColumn()
+   {
+      return detailsColumn;
+   }
+
+   @Override
+   public void setDataProvider(ListDataProvider<TranslationMemoryGlossaryItem> dataProvider)
+   {
+      this.dataProvider = dataProvider;
+      renderTable();
+   }
+
+   @Override
+   public void setPageSize(int size)
+   {
+      glossaryTable.setPageSize(size);
    }
 }

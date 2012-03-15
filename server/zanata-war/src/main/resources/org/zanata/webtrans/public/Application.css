@@ -545,21 +545,25 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	white-space: pre-wrap;
 }
 
-.tmTable {
-	width: 70%;
+.tmTable{
+	width: 100%;
 }
 
-.tmTable td img {
+.glossaryTable {
+	width: 100%;
+}
+
+.southTable td img {
 	cursor: pointer;
 }
 
-.tmTable td {
+.southTable td {
 	font-family: sans-serif;
 	font-size: small;
 	padding: 0 10px 0 0;
 }
 
-.tmTable th {
+.southTable th {
 	border-bottom: 0px;
 	color: blue;
 	font-style: normal;
