@@ -69,6 +69,7 @@ public class TransMemoryPresenterTest
       capturedTransMemoryShortcutCopyEventHandler.reset();
    }
 
+   @SuppressWarnings("unchecked")
    public void canBind()
    {
       expect(mockDisplay.getSearchType()).andReturn(mockSearchType).anyTimes();
