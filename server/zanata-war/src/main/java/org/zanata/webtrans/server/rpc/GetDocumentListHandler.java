@@ -58,7 +58,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
          {
             DocumentId docId = new DocumentId(hDoc.getId());
             TranslationStats stats = documentDAO.getStatistics(hDoc.getId(), localeId);
-            DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), stats);
+            DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), hDoc.getLocale().getLocaleId(), stats);
             docs.add(doc);
          }
       }

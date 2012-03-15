@@ -49,8 +49,8 @@ import org.zanata.util.ShortString;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
-import org.zanata.webtrans.shared.rpc.GetGlossary.SearchType;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
+import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 @Name("webtrans.gwt.GetGlossaryHandler")
 @Scope(ScopeType.STATELESS)
@@ -69,40 +69,6 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
    @In
    private GlossaryDAO glossaryDAO;
 
-   /**
-    * Filtered term ids First filter: Entries that contains target locale Second
-    * filter: Source term in filtered entries
-    * 
-    * @param entries
-    */
-   private List<Long> getFilteredSrcTermIds(List<HGlossaryEntry> entries)
-   {
-      List<Long> termIds = new ArrayList<Long>();
-      for (HGlossaryEntry entry : entries)
-      {
-         HGlossaryTerm term = entry.getGlossaryTerms().get(entry.getSrcLocale());
-         if (term != null)
-         {
-            termIds.add(term.getId());
-         }
-      }
-      return termIds;
-   }
-
-   private HGlossaryTerm getTargetTerm(List<HGlossaryEntry> entries, Long id, HLocale locale)
-   {
-      HGlossaryTerm targetTerm = null;
-      for (HGlossaryEntry entry : entries)
-      {
-         if (entry.getId() == id)
-         {
-            return entry.getGlossaryTerms().get(locale);
-         }
-      }
-      return targetTerm;
-
-   }
-
    @Override
    public GetGlossaryResult execute(GetGlossary action, ExecutionContext context) throws ActionException
    {
@@ -120,9 +86,7 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
       try
       {
          List<HGlossaryEntry> entries = glossaryDAO.getEntriesByLocaleId(localeID);
-         List<Long> termIds = getFilteredSrcTermIds(entries);
-
-         List<Object[]> matches = glossaryDAO.getSearchResult(searchText, searchType, termIds, MAX_RESULTS);
+         List<Object[]> matches = glossaryDAO.getSearchResult(searchText, searchType, action.getSrcLocaleId(), MAX_RESULTS);
 
          Map<GlossaryKey, TranslationMemoryGlossaryItem> matchesMap = new LinkedHashMap<GlossaryKey, TranslationMemoryGlossaryItem>();
          for (Object[] match : matches)
@@ -135,20 +99,33 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
             }
 
             String srcTermContent = glossaryTerm.getContent();
-            HGlossaryTerm targetTerm = getTargetTerm(entries, glossaryTerm.getGlossaryEntry().getId(), hLocale);
+
+            HGlossaryTerm targetTerm = null;
+            for (HGlossaryEntry entry : entries)
+            {
+               if (entry.getId() == glossaryTerm.getGlossaryEntry().getId())
+               {
+                  targetTerm = entry.getGlossaryTerms().get(hLocale);
+               }
+            }
+
+            if (targetTerm == null)
+            {
+               continue;
+            }
+
             String targetTermContent = targetTerm.getContent();
 
-            int levDistance = LevenshteinUtil.getLevenshteinSubstringDistance(searchText, srcTermContent);
-            int maxDistance = searchText.length();
-            int percent = 100 * (maxDistance - levDistance) / maxDistance;
+            int percent = (int) (100 * LevenshteinUtil.getSimilarity(searchText, srcTermContent));
 
             GlossaryKey key = new GlossaryKey(targetTermContent, srcTermContent);
             TranslationMemoryGlossaryItem item = matchesMap.get(key);
             if (item == null)
             {
-               item = new TranslationMemoryGlossaryItem(srcTermContent, targetTermContent, score, percent);
+               item = new TranslationMemoryGlossaryItem(srcTermContent, targetTermContent, searchText, score, percent);
                matchesMap.put(key, item);
             }
+            item.addSourceId(glossaryTerm.getId());
          }
          results = new ArrayList<TranslationMemoryGlossaryItem>(matchesMap.values());
       }
@@ -212,7 +189,7 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
       Collections.sort(results, comp);
 
       log.info("Returning {0} Glossary matches for \"{1}\"", results.size(), abbrev);
-      return new GetGlossaryResult(results);
+      return new GetGlossaryResult(action, results);
    }
 
    @Override

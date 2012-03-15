@@ -54,6 +54,8 @@ import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
+import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;
@@ -1007,7 +1009,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       expect( transWorkspace.getWorkspaceContext() ).andReturn( workspaceContext );
       mockIdentity.checkLoggedIn();
       expectLastCall();      
-      mockIdentity.checkPermission(anyObject(), anyObject(String.class));
+      mockIdentity.checkPermission(anyObject(String.class), anyObject(HLocale.class), anyObject(HProject.class));
       expectLastCall();
       transWorkspace.publish( anyObject(SessionEventData.class) );
       expectLastCall();

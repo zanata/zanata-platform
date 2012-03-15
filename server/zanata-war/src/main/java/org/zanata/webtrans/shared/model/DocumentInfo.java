@@ -2,6 +2,7 @@ package org.zanata.webtrans.shared.model;
 
 import java.io.Serializable;
 
+import org.zanata.common.LocaleId;
 import org.zanata.common.TranslationStats;
 
 public class DocumentInfo implements HasIdentifier<DocumentId>, Serializable
@@ -10,6 +11,7 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, Serializable
    private DocumentId id;
    private String name;
    private String path;
+   private LocaleId sourceLocale;
    private TranslationStats stats;
 
    // for GWT
@@ -18,12 +20,13 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, Serializable
    {
    }
 
-   public DocumentInfo(DocumentId id, String name, String path, TranslationStats stats)
+   public DocumentInfo(DocumentId id, String name, String path, LocaleId sourceLocale, TranslationStats stats)
    {
       this.id = id;
       this.name = name;
       this.path = path;
       this.stats = stats;
+      this.sourceLocale = sourceLocale;
    }
 
    public DocumentId getId()
@@ -41,12 +44,14 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, Serializable
       return path;
    }
 
-   /**
-    * @return the stats
-    */
    public TranslationStats getStats()
    {
       return stats;
+   }
+
+   public LocaleId getSourceLocale()
+   {
+      return sourceLocale;
    }
 
    @Override

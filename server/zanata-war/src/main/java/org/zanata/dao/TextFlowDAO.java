@@ -47,7 +47,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.DefaultNgramAnalyzer;
 import org.zanata.model.HDocument;
 import org.zanata.model.HTextFlow;
-import org.zanata.webtrans.shared.rpc.GetTranslationMemory.SearchType;
+import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 @Name("textFlowDAO")
 @AutoCreate

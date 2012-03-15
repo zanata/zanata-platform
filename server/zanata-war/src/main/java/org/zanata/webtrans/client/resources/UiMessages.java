@@ -42,19 +42,38 @@ public interface UiMessages extends Messages
 
    @DefaultMessage("Similarity")
    String similarityLabel();
+   
+   @DefaultMessage("Details")
+   String detailsLabel();
 
    @DefaultMessage("Source")
    String sourceLabel();
 
    @DefaultMessage("Target")
    String targetLabel();
-
-   @DefaultMessage("Translation Memory")
-   String tmHeader();
-
-   @DefaultMessage("Glossary")
-   String glossaryHeader();
+   
+   @DefaultMessage("Source Term")
+   String srcTermLabel();
+   
+   @DefaultMessage("Target Term")
+   String targetTermLabel();
 
    @DefaultMessage("Copy \"{0}\" to the editor")
    String copyLinkTooltip(String targetMessage);
+
+   @DefaultMessage("Translation Memory")
+   String translationMemoryHeading();
+
+   @DefaultMessage("Glossary")
+   String glossaryHeading();
+
+   @DefaultMessage("Entry #{0}")
+   String entriesLabel(int count);
+
+   @DefaultMessage("Source Term [{0}]:")
+   String glossarySourceTermLabel(String locale);
+
+   @DefaultMessage("Target Term [{0}]:")
+   String glossaryTargetTermLabel(String locale);
+
 }

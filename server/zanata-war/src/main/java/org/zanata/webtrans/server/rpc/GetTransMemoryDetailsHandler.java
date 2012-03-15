@@ -22,8 +22,8 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.ActionHandlerFor;
+import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
-import org.zanata.webtrans.shared.rpc.TransMemoryDetails;
 import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
 
 @Name("webtrans.gwt.GetTransMemoryDetailsHandler")

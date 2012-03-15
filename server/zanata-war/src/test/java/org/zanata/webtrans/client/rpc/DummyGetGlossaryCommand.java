@@ -4,9 +4,10 @@ import java.util.ArrayList;
 
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
-import org.zanata.webtrans.shared.rpc.GetGlossary.SearchType;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
+import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -25,14 +26,16 @@ public class DummyGetGlossaryCommand implements Command
    @Override
    public void execute()
    {
+      Log.info("ENTER DummyGetGlossaryCommand.execute()");
       String query = action.getQuery();
       SearchType type = action.getSearchType();
       ArrayList<TranslationMemoryGlossaryItem> matches = new ArrayList<TranslationMemoryGlossaryItem>();
-      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", new Long(3), 100));
-      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", new Long(3), 100));
-      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", new Long(3), 100));
-      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", new Long(3), 100));
-      callback.onSuccess(new GetGlossaryResult(matches));
+      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", query, new Long(3), 100));
+      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", query, new Long(3), 100));
+      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", query, new Long(3), 100));
+      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", query, new Long(3), 100));
+      callback.onSuccess(new GetGlossaryResult(action, matches));
+      Log.info("EXIT DummyGetGlossaryCommand.execute()");
    }
 
 }

@@ -13,15 +13,17 @@ public class GetGlossaryResult implements Result
    private static final long serialVersionUID = 1L;
 
    private ArrayList<TranslationMemoryGlossaryItem> glossaries;
+   private GetGlossary request;
 
    @SuppressWarnings("unused")
    private GetGlossaryResult()
    {
    }
 
-   public GetGlossaryResult(ArrayList<TranslationMemoryGlossaryItem> glossaries)
+   public GetGlossaryResult(GetGlossary request, ArrayList<TranslationMemoryGlossaryItem> glossaries)
    {
       this.glossaries = glossaries;
+      this.request = request;
    }
 
    public ArrayList<TranslationMemoryGlossaryItem> getGlossaries()
@@ -32,5 +34,10 @@ public class GetGlossaryResult implements Result
    public void setGlossaries(ArrayList<TranslationMemoryGlossaryItem> glossaries)
    {
       this.glossaries = glossaries;
+   }
+
+   public GetGlossary getRequest()
+   {
+      return request;
    }
 }

@@ -115,6 +115,11 @@ public class ViewAllStatusAction implements Serializable
    {
       return this.iterationSlug;
    }
+   
+   public HProjectIteration getProjectIteration()
+   {
+      return projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+   }
 
    public List<Status> getAllStatus()
    {
@@ -148,6 +153,5 @@ public class ViewAllStatusAction implements Serializable
       Collections.sort(result);
       return result;
    }
-
 
 }

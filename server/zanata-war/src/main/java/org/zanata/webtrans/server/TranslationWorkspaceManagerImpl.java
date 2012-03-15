@@ -19,6 +19,7 @@ import org.zanata.action.ProjectIterationHome;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HIterationProject;
+import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
@@ -97,7 +98,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       String projectSlug = projectIteration.getProject().getSlug();
       String iterSlug = projectIteration.getSlug();
       HProject project = projectIteration.getProject();
-      boolean readOnly = isReadOnly(project.getStatus(), projectIteration.getStatus());
+      boolean readOnly = !isProjectIterationActive(project.getStatus(), projectIteration.getStatus());
       log.info("Project {0} iteration {1} updated, status={2}, readOnly={3}", projectSlug, iterSlug, projectIteration.getStatus(), readOnly);
 
       ProjectIterationId iterId = new ProjectIterationId(projectSlug, iterSlug);
@@ -112,10 +113,20 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       }
    }
 
-   private boolean isReadOnly(EntityStatus projectStatus, EntityStatus iterStatus)
+   private boolean isProjectIterationActive(EntityStatus projectStatus, EntityStatus iterStatus)
    {
-      boolean current = projectStatus.equals(EntityStatus.ACTIVE) && iterStatus.equals(EntityStatus.ACTIVE);
-      return !current;
+      return projectStatus.equals(EntityStatus.ACTIVE) && iterStatus.equals(EntityStatus.ACTIVE);
+   }
+   
+   private boolean checkPermission(HProject project, HLocale locale)
+   {
+      return ZanataIdentity.instance().hasPermission("modify-translation", project, locale);
+   }
+   
+   private boolean isReadOnly(HProject project, EntityStatus iterStatus, HLocale locale)
+   {
+      // There must be permissions and the project iteration must be in the correct state
+      return !this.checkPermission(project, locale) || !this.isProjectIterationActive(project.getStatus(), iterStatus);
    }
 
    @Destroy
@@ -158,14 +169,14 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    {
       Session session = (Session) Component.getInstance("session");
 
-      EntityStatus projectStatus = (EntityStatus) session.createQuery("select p.status from HProject as p where p.slug = :slug").setParameter("slug", workspaceId.getProjectIterationId().getProjectSlug()).uniqueResult();
-      if (projectStatus.equals(EntityStatus.OBSOLETE))
+      HProject project = (HProject) session.createQuery("select p from HProject as p where p.slug = :slug").setParameter("slug", workspaceId.getProjectIterationId().getProjectSlug()).uniqueResult();
+      if (project.getStatus() == EntityStatus.OBSOLETE)
       {
          throw new NoSuchWorkspaceException("Project is obsolete");
       }
 
       EntityStatus projectIterationStatus = (EntityStatus) session.createQuery("select it.status from HProjectIteration it where it.slug = :slug and it.project.slug = :pslug").setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug()).setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug()).uniqueResult();
-      if (projectIterationStatus.equals(EntityStatus.OBSOLETE))
+      if (projectIterationStatus == EntityStatus.OBSOLETE )
       {
          throw new NoSuchWorkspaceException("Project Iteration is obsolete");
       }
@@ -175,8 +186,14 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       {
          throw new NoSuchWorkspaceException("Invalid workspace Id");
       }
-
-      boolean readOnly = isReadOnly(projectStatus, projectIterationStatus);
+      
+      HLocale locale = (HLocale) session.createQuery("select l from HLocale l where localeId = :localeId").setParameter("localeId", workspaceId.getLocaleId()).uniqueResult(); 
+      if (locale == null)
+      {
+         throw new NoSuchWorkspaceException("Invalid Workspace Locale");
+      }
+      
+      boolean readOnly = isReadOnly(project, projectIterationStatus, locale);
       String localeDisplayName = ULocale.getDisplayName(workspaceId.getLocaleId().toJavaName(), ULocale.ENGLISH);
       return new WorkspaceContext(workspaceId, workspaceName, localeDisplayName, readOnly);
    }

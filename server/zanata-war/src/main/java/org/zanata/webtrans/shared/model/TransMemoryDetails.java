@@ -1,4 +1,4 @@
-package org.zanata.webtrans.shared.rpc;
+package org.zanata.webtrans.shared.model;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

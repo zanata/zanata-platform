@@ -12,15 +12,19 @@ import org.zanata.webtrans.shared.rpc.EditingTranslationResult;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
+import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
+import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.GetStatusCount;
 import org.zanata.webtrans.shared.rpc.GetStatusCountResult;
+import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
+import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
@@ -105,6 +109,18 @@ public class DummyDispatchAsync extends SeamDispatchAsync
          final EditingTranslationAction _action = (EditingTranslationAction) action;
          AsyncCallback<EditingTranslationResult> _callback = (AsyncCallback<EditingTranslationResult>) callback;
          Scheduler.get().scheduleDeferred(new DummyEditingTranslationCommand(_action, _callback));
+      }
+      else if (action instanceof GetTransMemoryDetailsAction)
+      {
+         final GetTransMemoryDetailsAction _action = (GetTransMemoryDetailsAction) action;
+         AsyncCallback<TransMemoryDetailsList> _callback = (AsyncCallback<TransMemoryDetailsList>) callback;
+         Scheduler.get().scheduleDeferred(new DummyGetTransMemoryDetailsCommand(_action, _callback));
+      }
+      else if (action instanceof GetGlossaryDetailsAction)
+      {
+         final GetGlossaryDetailsAction _action = (GetGlossaryDetailsAction) action;
+         AsyncCallback<GetGlossaryDetailsResult> _callback = (AsyncCallback<GetGlossaryDetailsResult>) callback;
+         Scheduler.get().scheduleDeferred(new DummyGetGlossaryDetailsCommand(_action, _callback));
       }
       else
       {

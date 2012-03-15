@@ -5,28 +5,8 @@ import net.customware.gwt.dispatch.shared.Action;
 import org.zanata.common.LocaleId;
 
 
-public class GetTranslationMemory implements Action<GetTranslationMemoryResult>
+public class GetTranslationMemory implements Action<GetTranslationMemoryResult>, HasSearchType
 {
-
-   public static enum SearchType
-   {
-      /**
-       * Search for exact terms, adjacent to each other and in correct order.
-       * (Lucene PhraseQuery)
-       */
-      EXACT,
-
-      /**
-       * Search for similar terms. (Lucene fuzzy query)
-       */
-      FUZZY,
-
-      /**
-       * Uses search string as a raw Lucene query without adding any escapes.
-       */
-      RAW
-   }
-
    private static final long serialVersionUID = 1L;
    private LocaleId localeId;
    private String query;
@@ -44,6 +24,7 @@ public class GetTranslationMemory implements Action<GetTranslationMemoryResult>
       this.searchType = searchType;
    }
 
+   @Override
    public SearchType getSearchType()
    {
       return searchType;

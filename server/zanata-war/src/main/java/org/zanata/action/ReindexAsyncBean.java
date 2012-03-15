@@ -23,6 +23,8 @@ import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.async.Asynchronous;
 import org.jboss.seam.log.Log;
 import org.zanata.model.HAccount;
+import org.zanata.model.HGlossaryEntry;
+import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HTextFlow;
 
@@ -63,6 +65,8 @@ public class ReindexAsyncBean
       indexables.add(HIterationProject.class);
       indexables.add(HAccount.class);
       indexables.add(HTextFlow.class);
+      indexables.add(HGlossaryTerm.class);
+      indexables.add(HGlossaryEntry.class);
    }
 
    /**

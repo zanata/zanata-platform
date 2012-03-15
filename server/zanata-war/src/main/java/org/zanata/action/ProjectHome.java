@@ -34,6 +34,7 @@ import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
@@ -44,7 +45,6 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
-import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.LocaleService;
 
@@ -129,6 +129,7 @@ public class ProjectHome extends SlugHome<HIterationProject>
    }
 
    @Override
+   @Transactional
    public String persist()
    {
       String retValue = "";
@@ -138,13 +139,9 @@ public class ProjectHome extends SlugHome<HIterationProject>
       if (authenticatedAccount != null)
       {
          updateOverrideLocales();
-         HPerson currentPerson = getEntityManager().find(HPerson.class, authenticatedAccount.getPerson().getId());
-         if (currentPerson != null)
-         {
-            getInstance().getMaintainers().add(currentPerson);
-            retValue = super.persist();
-            Events.instance().raiseEvent("projectAdded");
-         }
+         getInstance().addMaintainer(authenticatedAccount.getPerson());
+         retValue = super.persist();
+         Events.instance().raiseEvent("projectAdded");
       }
       return retValue;
    }

@@ -29,11 +29,9 @@ public interface SecurityChecker
 {
    
    /**
-    * Checks permission for a given action. By default this method will check for permissions on
-    * the secured entity, but it can be extended to do more complex checks.
+    * Checks permission for a given action.
     * 
     * @param operation The operation that is being executed.
-    * @param additionalArgs Additional arguments to be considered in the permission validation.
     * @return The result of the permission validation.
     */
    public boolean checkPermission(String operation);
