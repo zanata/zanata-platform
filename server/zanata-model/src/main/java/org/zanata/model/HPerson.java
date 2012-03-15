@@ -215,9 +215,9 @@ public class HPerson extends ModelEntityBase implements Serializable
    {
       // TODO consider implementing business key equality and using
       // getMaintainerProjects().contains(proj)
-      for (HPerson maintainer : proj.getMaintainers())
+      for (HProject project : getMaintainerProjects())
       {
-         if (maintainer.getId().equals( this.getId() ))
+         if (project.getId().equals( proj.getId() ))
          {
             return true;
          }
