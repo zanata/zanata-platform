@@ -1,6 +1,7 @@
 package org.zanata.webtrans.shared.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -18,9 +19,9 @@ public class TransUnit implements IsSerializable, Serializable
 
    private LocaleId localeId;
 
-   private String source;
-   private String sourceComment;
-   private String target;
+   private List<String> sources;
+   private List<String> sourceComments;
+   private List<String> targets;
    private String msgContext;
    private String lastModifiedBy;
    private String lastModifiedTime;
@@ -32,14 +33,14 @@ public class TransUnit implements IsSerializable, Serializable
    {
    }
 
-   public TransUnit(TransUnitId id, String resId, LocaleId localeId, String source, String sourceComment, String target, ContentState status, String lastModifiedBy, String lastModifiedTime, String msgContext, int rowIndex)
+   public TransUnit(TransUnitId id, String resId, LocaleId localeId, List<String> sources, List<String> sourceComments, List<String> targets, ContentState status, String lastModifiedBy, String lastModifiedTime, String msgContext, int rowIndex)
    {
       this.id = id;
       this.resId = resId;
       this.localeId = localeId;
-      this.source = source;
-      this.sourceComment = sourceComment;
-      this.target = target;
+      this.sources = sources;
+      this.sourceComments = sourceComments;
+      this.targets = targets;
       this.status = status;
       this.lastModifiedBy = lastModifiedBy;
       this.lastModifiedTime = lastModifiedTime;
@@ -62,34 +63,34 @@ public class TransUnit implements IsSerializable, Serializable
       return localeId;
    }
 
-   public String getSource()
+   public List<String> getSources()
    {
-      return source;
+      return sources;
    }
 
-   public String getSourceComment()
+   public void setSources(List<String> sources)
    {
-      return sourceComment;
+      this.sources = sources;
    }
 
-   public void setSource(String source)
+   public List<String> getSourceComments()
    {
-      this.source = source;
+      return sourceComments;
    }
 
-   public void setSourceComment(String sourceComment)
+   public void setSourceComments(List<String> sourceComments)
    {
-      this.sourceComment = sourceComment;
+      this.sourceComments = sourceComments;
    }
 
-   public String getTarget()
+   public List<String> getTargets()
    {
-      return target;
+      return targets;
    }
 
-   public void setTarget(String target)
+   public void setTargets(List<String> targets)
    {
-      this.target = target;
+      this.targets = targets;
    }
 
    public ContentState getStatus()

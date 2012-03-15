@@ -33,7 +33,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class SourcePanel extends Composite implements HasValue<TransUnit>, HasClickHandlers
@@ -55,20 +54,13 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
       sourceLabels = new VerticalPanel();
       sourceLabels.setSize("100%", "100%");
 
-      // for (String source : value.getSources)
-      // {
-      // HighlightingLabel sourceLabel = new HighlightingLabel(source);
-      // sourceLabel.setStylePrimaryName("TableEditorContent");
-      // sourceLabel.setTitle(messages.sourceCommentLabel() +
-      // value.getSourceComment());
-      // sourceLabels.add(sourceLabel);
-      // }
-
-      HighlightingLabel sourceLabel = new HighlightingLabel(value.getSource());
-      sourceLabel.setStylePrimaryName("TableEditorContent");
-      sourceLabel.setTitle(messages.sourceCommentLabel() + value.getSourceComment());
-
-      sourceLabels.add(sourceLabel);
+      for (int i = 0; i < value.getSources().size(); i++)
+      {
+         HighlightingLabel sourceLabel = new HighlightingLabel(value.getSources().get(i));
+         sourceLabel.setStylePrimaryName("TableEditorContent");
+         sourceLabel.setTitle(messages.sourceCommentLabel() + value.getSourceComments().get(i));
+         sourceLabels.add(sourceLabel);
+      }
       panel.add(sourceLabels);
    }
 
