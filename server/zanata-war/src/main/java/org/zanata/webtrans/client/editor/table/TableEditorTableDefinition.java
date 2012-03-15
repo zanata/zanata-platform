@@ -131,18 +131,18 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          {
             sourcePanel.highlightSearch(findMessage);
          }
-         sourcePanel.getLabel().sinkEvents(Event.ONCLICK);
-         sourcePanel.getLabel().addClickHandler(new ClickHandler()
-         {
-            @Override
-            public void onClick(ClickEvent event)
-            {
-               if (targetCellEditor.isOpened())
-               {
-                  targetCellEditor.savePendingChange(true);
-               }
-            }
-         });
+         // sourcePanel.getLabels().sinkEvents(Event.ONCLICK);
+         // sourcePanel.getLabels().addClickHandler(new ClickHandler()
+         // {
+         // @Override
+         // public void onClick(ClickEvent event)
+         // {
+         // if (targetCellEditor.isOpened())
+         // {
+         // targetCellEditor.savePendingChange(true);
+         // }
+         // }
+         // });
          panel.add(sourcePanel);
          sourcePanelMap.put(rowValue.getId(), panel);
 
