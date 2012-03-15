@@ -69,40 +69,6 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
    @In
    private GlossaryDAO glossaryDAO;
 
-   /**
-    * Filtered term ids First filter: Entries that contains target locale Second
-    * filter: Source term in filtered entries
-    * 
-    * @param entries
-    */
-   private List<Long> getFilteredSrcTermIds(List<HGlossaryEntry> entries)
-   {
-      List<Long> termIds = new ArrayList<Long>();
-      for (HGlossaryEntry entry : entries)
-      {
-         HGlossaryTerm term = entry.getGlossaryTerms().get(entry.getSrcLocale());
-         if (term != null)
-         {
-            termIds.add(term.getId());
-         }
-      }
-      return termIds;
-   }
-
-   private HGlossaryTerm getTargetTerm(List<HGlossaryEntry> entries, Long id, HLocale locale)
-   {
-      HGlossaryTerm targetTerm = null;
-      for (HGlossaryEntry entry : entries)
-      {
-         if (entry.getId() == id)
-         {
-            return entry.getGlossaryTerms().get(locale);
-         }
-      }
-      return targetTerm;
-
-   }
-
    @Override
    public GetGlossaryResult execute(GetGlossary action, ExecutionContext context) throws ActionException
    {
@@ -120,9 +86,7 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
       try
       {
          List<HGlossaryEntry> entries = glossaryDAO.getEntriesByLocaleId(localeID);
-         List<Long> termIds = getFilteredSrcTermIds(entries);
-
-         List<Object[]> matches = glossaryDAO.getSearchResult(searchText, searchType, termIds, MAX_RESULTS);
+         List<Object[]> matches = glossaryDAO.getSearchResult(searchText, searchType, action.getSrcLocaleId(), MAX_RESULTS);
 
          Map<GlossaryKey, TranslationMemoryGlossaryItem> matchesMap = new LinkedHashMap<GlossaryKey, TranslationMemoryGlossaryItem>();
          for (Object[] match : matches)
@@ -135,7 +99,21 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
             }
 
             String srcTermContent = glossaryTerm.getContent();
-            HGlossaryTerm targetTerm = getTargetTerm(entries, glossaryTerm.getGlossaryEntry().getId(), hLocale);
+
+            HGlossaryTerm targetTerm = null;
+            for (HGlossaryEntry entry : entries)
+            {
+               if (entry.getId() == glossaryTerm.getGlossaryEntry().getId())
+               {
+                  targetTerm = entry.getGlossaryTerms().get(hLocale);
+               }
+            }
+
+            if (targetTerm == null)
+            {
+               continue;
+            }
+
             String targetTermContent = targetTerm.getContent();
 
             int percent = (int) (100 * LevenshteinUtil.getSimilarity(searchText, srcTermContent));

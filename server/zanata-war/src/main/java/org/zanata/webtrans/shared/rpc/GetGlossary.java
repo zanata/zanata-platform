@@ -11,17 +11,19 @@ public class GetGlossary implements Action<GetGlossaryResult>, HasSearchType
    private LocaleId localeId;
    private String query;
    private SearchType searchType;
+   private LocaleId srcLocaleId;
 
    @SuppressWarnings("unused")
    private GetGlossary()
    {
    }
 
-   public GetGlossary(String query, LocaleId localeId, SearchType searchType)
+   public GetGlossary(String query, LocaleId localeId, LocaleId srcLocaleId, SearchType searchType)
    {
       this.query = query;
       this.localeId = localeId;
       this.searchType = searchType;
+      this.srcLocaleId = srcLocaleId;
    }
 
    @Override
@@ -48,6 +50,11 @@ public class GetGlossary implements Action<GetGlossaryResult>, HasSearchType
    public String getQuery()
    {
       return query;
+   }
+
+   public LocaleId getSrcLocaleId()
+   {
+      return srcLocaleId;
    }
 
    @Override

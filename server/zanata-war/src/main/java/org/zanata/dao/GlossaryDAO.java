@@ -129,7 +129,7 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
       return query.list();
    }
 
-   public List<Object[]> getSearchResult(String searchText, SearchType searchType, List<Long> termIds, final int maxResult) throws ParseException
+   public List<Object[]> getSearchResult(String searchText, SearchType searchType, LocaleId srcLocale, final int maxResult) throws ParseException
    {
       String queryText;
       switch (searchType)
@@ -151,12 +151,10 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long>
          throw new RuntimeException("Unknown query type: " + searchType);
       }
 
-      // textQuery.append + " AND localeId: $srcLocale"
-
       QueryParser parser = new QueryParser(Version.LUCENE_29, "content", new StandardAnalyzer(Version.LUCENE_29));
       org.apache.lucene.search.Query textQuery = parser.parse(queryText);
       FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HGlossaryTerm.class);
-      ftQuery.enableFullTextFilter("glossaryFilter").setParameter("ids", termIds);
+      ftQuery.enableFullTextFilter("glossaryLocaleFilter").setParameter("locale", srcLocale);
       ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
       @SuppressWarnings("unchecked")
       List<Object[]> matches = ftQuery.setMaxResults(maxResult).getResultList();

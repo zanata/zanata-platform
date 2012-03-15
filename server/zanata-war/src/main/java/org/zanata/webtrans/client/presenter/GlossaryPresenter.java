@@ -24,10 +24,15 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.common.LocaleId;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
+import org.zanata.webtrans.client.history.History;
+import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
@@ -58,9 +63,13 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    private final WorkspaceContext workspaceContext;
    private final CachingDispatchAsync dispatcher;
    private final GlossaryDetailsPresenter glossaryDetailsPresenter;
+   private final DocumentListPresenter docListPresenter;
+   private final History history;
    private GetGlossary submittedRequest = null;
    private GetGlossary lastRequest = null;
+
    private ListDataProvider<TranslationMemoryGlossaryItem> dataProvider;
+
 
    public interface Display extends WidgetDisplay
    {
@@ -84,12 +93,14 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    }
 
    @Inject
-   public GlossaryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, GlossaryDetailsPresenter glossaryDetailsPresenter, WorkspaceContext workspaceContext)
+   public GlossaryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, GlossaryDetailsPresenter glossaryDetailsPresenter, DocumentListPresenter docListPresenter, History history, WorkspaceContext workspaceContext)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
       this.workspaceContext = workspaceContext;
       this.glossaryDetailsPresenter = glossaryDetailsPresenter;
+      this.docListPresenter = docListPresenter;
+      this.history = history;
       dataProvider = new ListDataProvider<TranslationMemoryGlossaryItem>();
       display.setDataProvider(dataProvider);
    }
@@ -138,7 +149,16 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    private void createGlossaryRequest(final String query, GetGlossary.SearchType searchType)
    {
       display.startProcessing();
-      final GetGlossary action = new GetGlossary(query, workspaceContext.getWorkspaceId().getLocaleId(), searchType);
+      
+      HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+      DocumentId docId = docListPresenter.getDocumentId(token.getDocumentPath());
+      DocumentInfo docInfo = docListPresenter.getDocumentInfo(docId);
+      LocaleId srcLocale = LocaleId.EN_US;
+      if (docInfo != null)
+      {
+         srcLocale = docInfo.getSourceLocale();
+      }
+      final GetGlossary action = new GetGlossary(query, workspaceContext.getWorkspaceId().getLocaleId(), srcLocale, searchType);
       scheduleGlossaryRequest(action);
    }
 

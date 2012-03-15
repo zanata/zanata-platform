@@ -406,7 +406,7 @@ public class DocumentListPresenterTest
       verifyAllMocks();
 
       // simulate document click on second document
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(2222L), "doc122", "second/path/", new TranslationStats());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(2222L), "doc122", "second/path/", LocaleId.EN_US, new TranslationStats());
       capturedDocumentSelectionHandler.getValue().onSelection(new SelectionEvent<DocumentInfo>(docInfo)
       {
       });
@@ -599,10 +599,10 @@ public class DocumentListPresenterTest
       setupAndBindDocListPresenter();
 
       DocumentInfo docInfo = dlp.getDocumentInfo(new DocumentId(1111L));
-      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(1111L), "doc111", "first/path/", new TranslationStats()))));
+      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(1111L), "doc111", "first/path/", LocaleId.EN_US, new TranslationStats()))));
 
       docInfo = dlp.getDocumentInfo(new DocumentId(3333L));
-      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(3333L), "doc123", "third/path/", new TranslationStats()))));
+      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(3333L), "doc123", "third/path/", LocaleId.EN_US, new TranslationStats()))));
    }
 
    private void setupAndBindDocListPresenter()
@@ -622,13 +622,13 @@ public class DocumentListPresenterTest
       TransUnitCount unitCount = new TransUnitCount(1, 2, 3);
       TransUnitWords wordCount = new TransUnitWords(4, 5, 6);
 
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1111L), "matches", "no/filter", new TranslationStats(unitCount, wordCount));
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1111L), "matches", "no/filter", LocaleId.EN_US, new TranslationStats(unitCount, wordCount));
       docList.add(docInfo);
 
-      docInfo = new DocumentInfo(new DocumentId(2222L), "filter", "match/exact/", new TranslationStats(unitCount, wordCount));
+      docInfo = new DocumentInfo(new DocumentId(2222L), "filter", "match/exact/", LocaleId.EN_US, new TranslationStats(unitCount, wordCount));
       docList.add(docInfo);
 
-      docInfo = new DocumentInfo(new DocumentId(3333L), "filter", "does/not/match/exact/", new TranslationStats(unitCount, wordCount));
+      docInfo = new DocumentInfo(new DocumentId(3333L), "filter", "does/not/match/exact/", LocaleId.EN_US, new TranslationStats(unitCount, wordCount));
       docList.add(docInfo);
 
       return docList;
