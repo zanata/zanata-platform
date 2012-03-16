@@ -44,13 +44,13 @@ public class ConfigUtil
     * @param url
     * @return
     */
+   @SuppressWarnings("unchecked")
    public static String findPrefix(SubnodeConfiguration config, URL url)
    {
       String suffix = ".url";
       DataConfiguration dataConfig = new DataConfiguration(config);
 
-      for (@SuppressWarnings("unchecked")
-      Iterator<String> iterator = dataConfig.getKeys(); iterator.hasNext();)
+      for (Iterator<String> iterator = dataConfig.getKeys(); iterator.hasNext();)
       {
          String key = iterator.next();
          if (key.endsWith(suffix))
