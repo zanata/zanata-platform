@@ -109,8 +109,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       @Override
       public void setCellValue(TransUnit rowValue, TransUnit cellValue)
       {
-         cellValue.setSource(rowValue.getSource());
-         cellValue.setSourceComment(rowValue.getSourceComment());
+         cellValue.setSources(rowValue.getSources());
+         cellValue.setSourceComments(rowValue.getSourceComments());
       }
    };
 
@@ -131,18 +131,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          {
             sourcePanel.highlightSearch(findMessage);
          }
-         sourcePanel.getLabel().sinkEvents(Event.ONCLICK);
-         sourcePanel.getLabel().addClickHandler(new ClickHandler()
-         {
-            @Override
-            public void onClick(ClickEvent event)
-            {
-               if (targetCellEditor.isOpened())
-               {
-                  targetCellEditor.savePendingChange(true);
-               }
-            }
-         });
          panel.add(sourcePanel);
          sourcePanelMap.put(rowValue.getId(), panel);
 
@@ -171,7 +159,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       @Override
       public void setCellValue(TransUnit rowValue, TransUnit cellValue)
       {
-         cellValue.setTarget(rowValue.getTarget());
+         cellValue.setTargets(rowValue.getTargets());
       }
 
    };
@@ -197,14 +185,14 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             return;
          }
 
-         if (rowValue.getTarget().isEmpty() && !isReadOnly)
+         if (rowValue.getTargets().isEmpty() && !isReadOnly)
          {
             label.setText(messages.clickHere());
             label.setStylePrimaryName("TableEditorContent-Empty");
          }
          else
          {
-            label.setText(rowValue.getTarget());
+            label.setText(rowValue.getTargets());
             label.setStylePrimaryName("TableEditorContent");
          }
 

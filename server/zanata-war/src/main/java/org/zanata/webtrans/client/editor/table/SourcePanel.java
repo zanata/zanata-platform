@@ -33,13 +33,13 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class SourcePanel extends Composite implements HasValue<TransUnit>, HasClickHandlers
 {
 
    private final FlowPanel panel;
-   private final HighlightingLabel sourceLabel;
+   private final VerticalPanel sourceLabels;
    private TransUnit value;
 
    public SourcePanel(TransUnit value, TableResources resources, NavigationMessages messages)
@@ -51,16 +51,22 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
       initWidget(panel);
       setStylePrimaryName("TableEditorSource");
 
-      sourceLabel = new HighlightingLabel(value.getSource());
-      sourceLabel.setStylePrimaryName("TableEditorContent");
-      sourceLabel.setTitle(messages.sourceCommentLabel() + value.getSourceComment());
+      sourceLabels = new VerticalPanel();
+      sourceLabels.setSize("100%", "100%");
 
-      panel.add(sourceLabel);
+      for (int i = 0; i < value.getSources().size(); i++)
+      {
+         HighlightingLabel sourceLabel = new HighlightingLabel(value.getSources().get(i));
+         sourceLabel.setStylePrimaryName("TableEditorContent");
+         sourceLabel.setTitle(messages.sourceCommentLabel() + value.getSourceComments().get(i));
+         sourceLabels.add(sourceLabel);
+      }
+      panel.add(sourceLabels);
    }
 
-   public Label getLabel()
+   public VerticalPanel getLabels()
    {
-      return sourceLabel;
+      return sourceLabels;
    }
 
    @Override
@@ -102,7 +108,10 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
    
    public void highlightSearch(String search)
    {
-      sourceLabel.highlightSearch(search);
+      for (int i = 0; i < sourceLabels.getWidgetCount(); i++)
+      {
+         HighlightingLabel sourceLabel = (HighlightingLabel) sourceLabels.getWidget(i);
+         sourceLabel.highlightSearch(search);
+      }
    }
-
 }
