@@ -63,10 +63,21 @@
     <from casesensitive="true">^/project/view/([^/]+)/?$</from>
     <to last="true">/project/project.seam\?slug=$1</to>
   </rule>
+  
+  <!-- Project Iteration Rules -->
+  <rule>
+  	<from casesensitive="true">^/iteration/view/([^/]+)/(.+)$</from>
+  	<to last="true">/iteration/iteration.seam\?projectSlug=$1&amp;iterationSlug=$2</to>
+  </rule>
 
   <rule>
-    <from casesensitive="true">^/project/view/([^/]+)/iter/([^/]+)/files/([^/]+)/?$</from>
-    <to last="true">/project/iteration_files.seam\?project=$1&amp;iteration=$2&amp;localeId=$3</to>
+    <from casesensitive="true">^/iteration/view/([^/]+)/([^/]+)/files/([^/]+)/?$</from>
+    <to last="true">/iteration/files.seam\?project=$1&amp;iteration=$2&amp;localeId=$3</to>
+  </rule>
+  
+  <rule>
+  	<from casesensitive="true">^/iteration/edit(.+)?$</from>
+  	<to last="true">/iteration/edit.seam?$1</to>
   </rule>
 
   <!-- zanata.xml -->
@@ -231,10 +242,6 @@
     <to>$1/project/view/$2</to>
   </outbound-rule>
   <outbound-rule>
-    <from>^(/.+)?/project/iteration_files.seam\?project=([^&amp;]+)&amp;iteration=([^&amp;]+)&amp;localeId=([^&amp;]+)$</from>
-    <to>$1/project/view/$2/iter/$3/files/$4</to>
-  </outbound-rule>
-  <outbound-rule>
     <from>^(/.+)?/project/project.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)(?:&amp;slug=[^&amp;]+)?&amp;actionMethod=project%2Fproject\.xhtml%3AconfigurationAction\.getData.*$</from>
     <to>$1/project/view/$2/iter/$3/config</to>
   </outbound-rule>
@@ -245,6 +252,18 @@
   <outbound-rule>
     <from>^(/.+)?/project/home.seam(.+)?$</from>
     <to>$1/project/list$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/iteration/iteration.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)$</from>
+    <to>$1/iteration/view/$2/$3</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/iteration/files.seam\?project=([^&amp;]+)&amp;iteration=([^&amp;]+)&amp;localeId=([^&amp;]+)$</from>
+    <to>$1/iteration/view/$2/$3/files/$4</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/iteration/edit.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)$</from>
+    <to>$1/iteration/edit/$2/$3</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/account/login.seam(.+)?$</from>

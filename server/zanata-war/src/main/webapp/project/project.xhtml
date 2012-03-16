@@ -43,7 +43,10 @@
 	                   var="_iteration"
 	                   rowKeyVar="_it" >
 	      <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" headerClass="iterationHeader_active">
-	        <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
+	        <s:link view="/iteration/iteration.xhtml" propagation="none" value="#{messages['jsf.project.ViewIteration']}" styleClass="iteration_detail_link">
+			  <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+			  <f:param name="iterationSlug" value="#{_iteration.slug}"/>
+			</s:link>
 	      </rich:simpleTogglePanel>
 	    </rich:dataGrid>
     </s:fragment>
@@ -54,7 +57,10 @@
                      value="#{projectHome.readOnlyIterations}"
                      var="_iteration">
         <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" headerClass="iterationHeader_readOnly" opened="#{false}">
-          <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
+          <s:link view="/iteration/iteration.xhtml" propagation="none" value="#{messages['jsf.project.ViewIteration']}" styleClass="iteration_detail_link">
+			<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+			<f:param name="iterationSlug" value="#{_iteration.slug}"/>
+		  </s:link>
         </rich:simpleTogglePanel>
       </rich:dataGrid>
     </s:fragment>
@@ -65,7 +71,10 @@
                      value="#{projectHome.obsoleteIterations}"
                      var="_iteration">
         <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" headerClass="iterationHeader_obsolete" opened="#{false}">
-          <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
+          <s:link view="/iteration/iteration.xhtml" propagation="none" value="#{messages['jsf.project.ViewIteration']}" styleClass="iteration_detail_link">
+			<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+			<f:param name="iterationSlug" value="#{_iteration.slug}"/>
+		  </s:link>
         </rich:simpleTogglePanel>
       </rich:dataGrid>
     </s:fragment>

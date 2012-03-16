@@ -32,40 +32,59 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.ContentState;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.TransUnitWords;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
+import org.zanata.security.BaseSecurityChecker;
 import org.zanata.service.LocaleService;
 
 @Name("viewAllStatusAction")
 @Scope(ScopeType.PAGE)
-public class ViewAllStatusAction implements Serializable
+public class ViewAllStatusAction extends BaseSecurityChecker implements Serializable
 {
    private static final long serialVersionUID = 1L;
+   
    @Logger
    Log log;
-   private String iterationSlug;
-   private String projectSlug;
+   
+   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+   HAccount authenticatedAccount;
+   
    @In
    ProjectIterationDAO projectIterationDAO;
+   
    @In
    LocaleService localeServiceImpl;
 
+   private String iterationSlug;
+   
+   private String projectSlug;
+   
+   private boolean showAllLocales = false;
+   
+   private HProjectIteration projectIteration;
+
+   
    public static class Status implements Comparable<Status>
    {
       private String locale;
       private String nativeName;
       private TransUnitWords words;
       private int per;
+      private boolean userInLanguageTeam;
 
-      public Status(String locale, String nativeName, TransUnitWords words, int per)
+      public Status(String locale, String nativeName, TransUnitWords words, int per, boolean userInLanguageTeam)
       {
          this.locale = locale;
          this.nativeName = nativeName;
          this.words = words;
          this.per = per;
+         this.userInLanguageTeam = userInLanguageTeam;
       }
 
       public String getLocale()
@@ -86,6 +105,11 @@ public class ViewAllStatusAction implements Serializable
       public double getPer()
       {
          return per;
+      }
+      
+      public boolean isUserInLanguageTeam()
+      {
+         return userInLanguageTeam;
       }
 
       @Override
@@ -115,18 +139,13 @@ public class ViewAllStatusAction implements Serializable
    {
       return this.iterationSlug;
    }
-   
-   public HProjectIteration getProjectIteration()
-   {
-      return projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-   }
 
    public List<Status> getAllStatus()
    {
       List<Status> result = new ArrayList<Status>();
       HProjectIteration iteration = projectIterationDAO.getBySlug(this.projectSlug, this.iterationSlug);
       Map<String, TransUnitWords> stats = projectIterationDAO.getAllWordStatsStatistics(iteration.getId());
-      List<HLocale> locale = localeServiceImpl.getSupportedLangugeByProjectIteration(this.projectSlug, this.iterationSlug);
+      List<HLocale> locale = this.getDisplayLocales();
       Long total = projectIterationDAO.getTotalCountForIteration(iteration.getId());
       for (HLocale var : locale)
       {
@@ -147,11 +166,62 @@ public class ViewAllStatusAction implements Serializable
             per = (int) Math.ceil(100 * words.getApproved() / words.getTotal());
 
          }
-         Status op = new Status(var.getLocaleId().getId(), var.retrieveNativeName(), words, per);
+         boolean isMember = authenticatedAccount != null ? authenticatedAccount.getPerson().isMember(var) : false;
+         
+         Status op = new Status(var.getLocaleId().getId(), var.retrieveNativeName(), words, per, isMember);
          result.add(op);
       }
       Collections.sort(result);
       return result;
+   }
+
+   public boolean getShowAllLocales()
+   {
+      return showAllLocales;
+   }
+
+   public void setShowAllLocales(boolean showAllLocales)
+   {
+      this.showAllLocales = showAllLocales;
+   }
+   
+   public HProjectIteration getProjectIteration()
+   {
+      if( this.projectIteration == null )
+      {
+         this.projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      }
+      return this.projectIteration;
+   }
+   
+   public boolean isIterationReadOnly()
+   {
+      return this.getProjectIteration().getProject().getStatus() == EntityStatus.READONLY || 
+             this.getProjectIteration().getStatus() == EntityStatus.READONLY;
+   }
+   
+   public boolean isIterationObsolete()
+   {
+      return this.getProjectIteration().getProject().getStatus() == EntityStatus.OBSOLETE || 
+             this.getProjectIteration().getStatus() == EntityStatus.OBSOLETE;
+   }
+   
+   private List<HLocale> getDisplayLocales()
+   {
+      if( this.showAllLocales || authenticatedAccount == null )
+      {
+         return localeServiceImpl.getSupportedLangugeByProjectIteration(this.projectSlug, this.iterationSlug);
+      }
+      else 
+      {
+         return localeServiceImpl.getTranslation(projectSlug, iterationSlug, authenticatedAccount.getUsername());
+      }
+   }
+   
+   @Override
+   public Object getSecuredEntity()
+   {
+      return this.getProjectIteration();
    }
 
 }

@@ -579,7 +579,7 @@ a.action_link:hover {
 }
 /* -----------------------  End Customised Language list CSS  -------------------------*/
 
-/* -----------------------  Inline project iteration CSS  -------------------------*/
+/* -----------------------  Project iteration CSS  -------------------------*/
 
 .iterationHeader_active {
 	background-image: none;
@@ -595,10 +595,6 @@ a.action_link:hover {
 	background-color: #e5e5e5;
 	color: #000000;
 	border-color: #e5e5e5;
-}
-
-#iteration-status-panel {
-	width: 880px;
 }
 
 .list_view_header {
@@ -623,11 +619,19 @@ a.action_link:hover {
 	color: gray;
 }
 
-.list_view_header .menu_items {
+.menu_items {
 	float: right;
 	display: inline;
 	text-align: right;
 	margin-bottom: 6px;
+}
+
+.highlighted_datatable_row {
+	background-color: lightYellow;
+}
+
+a.iteration_detail_link {
+	float: right;
 }
 /* -----------------------  End Inline project iteration CSS  -------------------------*/
 
