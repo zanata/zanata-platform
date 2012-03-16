@@ -20,7 +20,7 @@ public class TransUnit implements IsSerializable, Serializable
    private LocaleId localeId;
 
    private List<String> sources;
-   private List<String> sourceComments;
+   private String sourceComment;
    private List<String> targets;
    private String msgContext;
    private String lastModifiedBy;
@@ -33,13 +33,13 @@ public class TransUnit implements IsSerializable, Serializable
    {
    }
 
-   public TransUnit(TransUnitId id, String resId, LocaleId localeId, List<String> sources, List<String> sourceComments, List<String> targets, ContentState status, String lastModifiedBy, String lastModifiedTime, String msgContext, int rowIndex)
+   public TransUnit(TransUnitId id, String resId, LocaleId localeId, List<String> sources, String sourceComment, List<String> targets, ContentState status, String lastModifiedBy, String lastModifiedTime, String msgContext, int rowIndex)
    {
       this.id = id;
       this.resId = resId;
       this.localeId = localeId;
       this.sources = sources;
-      this.sourceComments = sourceComments;
+      this.sourceComment = sourceComment;
       this.targets = targets;
       this.status = status;
       this.lastModifiedBy = lastModifiedBy;
@@ -73,14 +73,14 @@ public class TransUnit implements IsSerializable, Serializable
       this.sources = sources;
    }
 
-   public List<String> getSourceComments()
+   public String getSourceComment()
    {
-      return sourceComments;
+      return sourceComment;
    }
 
-   public void setSourceComments(List<String> sourceComments)
+   public void setSourceComment(String sourceComment)
    {
-      this.sourceComments = sourceComments;
+      this.sourceComment = sourceComment;
    }
 
    public List<String> getTargets()

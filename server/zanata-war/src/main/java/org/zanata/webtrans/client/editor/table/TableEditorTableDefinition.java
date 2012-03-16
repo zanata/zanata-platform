@@ -110,7 +110,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       public void setCellValue(TransUnit rowValue, TransUnit cellValue)
       {
          cellValue.setSources(rowValue.getSources());
-         cellValue.setSourceComments(rowValue.getSourceComments());
+         cellValue.setSourceComment(rowValue.getSourceComment());
       }
    };
 
@@ -170,56 +170,9 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, final AbstractCellView<TransUnit> view)
       {
          view.setStyleName("TableEditorCell TableEditorCell-Target");
-         final VerticalPanel targetPanel = new VerticalPanel();
-         targetPanel.addStyleName("TableEditorCell-Target-Table");
-
-         final HighlightingLabel label = new HighlightingLabel();
-
-         /**
-          * if editor is opening, do not render target cell, otherwise editor
-          * will be closed. targetCellEditor.isEditing not suitable since when
-          * we click the save button, cellValue is not null.
-          **/
-         if (targetCellEditor.isOpened() && targetCellEditor.getTargetCell().getId().equals(rowValue.getId()))
-         {
-            return;
-         }
-
-         if (rowValue.getTargets().isEmpty() && !isReadOnly)
-         {
-            label.setText(messages.clickHere());
-            label.setStylePrimaryName("TableEditorContent-Empty");
-         }
-         else
-         {
-            label.setText(rowValue.getTargets());
-            label.setStylePrimaryName("TableEditorContent");
-         }
-
-         if (findMessage != null && !findMessage.isEmpty())
-         {
-            label.highlightSearch(findMessage);
-         }
-         label.setTitle(messages.clickHere());
-
-         label.sinkEvents(Event.ONMOUSEDOWN);
-         final int rowIndex = view.getRowIndex();
-         label.addMouseDownHandler(new MouseDownHandler()
-         {
-            @Override
-            public void onMouseDown(MouseDownEvent event)
-            {
-               if (!isReadOnly && event.getNativeButton() == NativeEvent.BUTTON_LEFT)
-               {
-                  event.stopPropagation();
-                  event.preventDefault();
-                  eventBus.fireEvent(new OpenEditorEvent(rowIndex));
-               }
-            }
-         });
-         targetPanel.add(label);
-         targetPanel.setWidth("100%");
-         view.setWidget(targetPanel);
+         TargetEditorView targetEditor = new TargetEditorView(messages, eventBus, new RedirectingTableModel<TransUnit>(), isReadOnly);
+        
+         view.setWidget(targetEditor);
       }
    };
 
@@ -269,7 +222,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       }
    };
 
-   private InlineTargetCellEditor targetCellEditor;
    private final NavigationMessages messages;
 
    public void setFindMessage(String findMessage)
@@ -288,82 +240,9 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       // min-width of 46px is reserved by system for each column.
       operationsColumnDefinition.setMaximumColumnWidth(1);
       operationsColumnDefinition.setCellRenderer(operationsCellRenderer);
-
       targetColumnDefinition.setCellRenderer(targetCellRenderer);
-      CancelCallback<TransUnit> cancelCallBack = new CancelCallback<TransUnit>()
-      {
-         @Override
-         public void onCancel(TransUnit cellValue)
-         {
-            tableModel.onCancel(cellValue);
-         }
-      };
-      EditRowCallback transValueCallBack = new EditRowCallback()
-      {
-         @Override
-         public void gotoNextRow()
-         {
-            tableModel.gotoNextRow();
-         }
-
-         @Override
-         public void gotoPrevRow()
-         {
-            tableModel.gotoPrevRow();
-         }
-
-         @Override
-         public void gotoFirstRow()
-         {
-            tableModel.gotoFirstRow();
-         }
-
-         @Override
-         public void gotoLastRow()
-         {
-            tableModel.gotoLastRow();
-         }
-
-         @Override
-         public void gotoNextFuzzyNewRow()
-         {
-            tableModel.gotoNextFuzzyNew();
-         }
-
-         @Override
-         public void gotoPrevFuzzyNewRow()
-         {
-            tableModel.gotoPrevFuzzyNew();
-         }
-
-         @Override
-         public void gotoNextFuzzyRow()
-         {
-            tableModel.gotoNextFuzzy();
-         }
-
-         @Override
-         public void gotoPrevFuzzyRow()
-         {
-            tableModel.gotoPrevFuzzy();
-         }
-
-         @Override
-         public void gotoNextNewRow()
-         {
-            tableModel.gotoNextNew();
-         }
-
-         @Override
-         public void gotoPrevNewRow()
-         {
-            tableModel.gotoPrevNew();
-         }
-      };
       
-      this.targetCellEditor = new InlineTargetCellEditor(messages, cancelCallBack, transValueCallBack, eventBus, isReadOnly);
       this.transUnitDetailsContent = new TransUnitDetailsPanel(messages.transUnitDetailsHeading());
-      targetColumnDefinition.setCellEditor(targetCellEditor);
 
       addColumnDefinition(sourceColumnDefinition);
       addColumnDefinition(operationsColumnDefinition);
@@ -371,11 +250,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
       copyButtons = new ArrayList<Widget>();
       showingCopyButtons = true;
-   }
-
-   public InlineTargetCellEditor getTargetCellEditor()
-   {
-      return targetCellEditor;
    }
 
    public void setTransUnitDetails(TransUnit selectedTransUnit)

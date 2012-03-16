@@ -437,7 +437,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    public void cloneAction()
    {
       Log.info("InlineTargetCellEditor.java: Clone action.");
-      textArea.setValue(cellValue.getSource(), true);
+//      textArea.setValue(cellValue.getSource(), true);
       textArea.setFocus(true);
    }
 
