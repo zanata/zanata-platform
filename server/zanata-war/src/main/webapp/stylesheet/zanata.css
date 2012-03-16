@@ -581,6 +581,18 @@ a.action_link:hover {
 
 /* -----------------------  Project iteration CSS  -------------------------*/
 
+.iterations div {
+	list-style: none;
+	padding: 5px 5px 5px 5px;
+	margin-bottom: 3px;
+	border-color: black;
+	border-radius: 3px 3px 3px 3px;
+}
+
+.iterations div:hover {
+	background-color: lightgray;
+}
+
 .iterationHeader_active {
 	background-image: none;
 	border-width: medium;
@@ -628,10 +640,6 @@ a.action_link:hover {
 
 .highlighted_datatable_row {
 	background-color: lightYellow;
-}
-
-a.iteration_detail_link {
-	float: right;
 }
 /* -----------------------  End Inline project iteration CSS  -------------------------*/
 

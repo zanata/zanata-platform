@@ -38,45 +38,41 @@
     
     <s:fragment rendered="#{projectHome.activeIterations.size > 0}">
         <h2>#{messages['jsf.ActiveVersions']}</h2>
-	    <rich:dataGrid id="activeIterations" columns="1"
-	                   value="#{projectHome.activeIterations}"
-	                   var="_iteration"
-	                   rowKeyVar="_it" >
-	      <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" headerClass="iterationHeader_active">
-	        <s:link view="/iteration/iteration.xhtml" propagation="none" value="#{messages['jsf.project.ViewIteration']}" styleClass="iteration_detail_link">
-			  <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
-			  <f:param name="iterationSlug" value="#{_iteration.slug}"/>
-			</s:link>
-	      </rich:simpleTogglePanel>
-	    </rich:dataGrid>
+    	<div class="iterations">
+    		<ui:repeat value="#{projectHome.activeIterations}" var="_iteration">
+    			<a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}">
+    				<div>
+    					<h:outputText value="#{_iteration.slug}"/>
+    				</div>
+    			</a>
+    		</ui:repeat>
+    	</div>
     </s:fragment>
 
     <s:fragment rendered="#{projectHome.readOnlyIterations.size > 0}">
       <h2>#{messages['jsf.ReadOnlyVersions']}</h2>
-      <rich:dataGrid id="readOnlyIterations" columns="1"
-                     value="#{projectHome.readOnlyIterations}"
-                     var="_iteration">
-        <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" headerClass="iterationHeader_readOnly" opened="#{false}">
-          <s:link view="/iteration/iteration.xhtml" propagation="none" value="#{messages['jsf.project.ViewIteration']}" styleClass="iteration_detail_link">
-			<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
-			<f:param name="iterationSlug" value="#{_iteration.slug}"/>
-		  </s:link>
-        </rich:simpleTogglePanel>
-      </rich:dataGrid>
+    	<div class="iterations">
+    		<ui:repeat value="#{projectHome.readOnlyIterations}" var="_iteration">
+    			<a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}">
+    				<div>
+    					<h:outputText value="#{_iteration.slug}"/>
+    				</div>
+    			</a>
+    		</ui:repeat>
+    	</div>
     </s:fragment>
     
     <s:fragment rendered="#{projectHome.obsoleteIterations.size > 0 and projectIterationAction.checkViewObsolete()}">
       <h2>#{messages['jsf.ObsoleteVersions']}</h2>
-      <rich:dataGrid id="obsoleteIterations" columns="1"
-                     value="#{projectHome.obsoleteIterations}"
-                     var="_iteration">
-        <rich:simpleTogglePanel switchType="client" label="#{_iteration.slug}" headerClass="iterationHeader_obsolete" opened="#{false}">
-          <s:link view="/iteration/iteration.xhtml" propagation="none" value="#{messages['jsf.project.ViewIteration']}" styleClass="iteration_detail_link">
-			<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
-			<f:param name="iterationSlug" value="#{_iteration.slug}"/>
-		  </s:link>
-        </rich:simpleTogglePanel>
-      </rich:dataGrid>
+    	<div class="iterations">
+    		<ui:repeat value="#{projectHome.obsoleteIterations}" var="_iteration">
+    			<a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}">
+    				<div>
+    					<h:outputText value="#{_iteration.slug}"/>
+    				</div>
+    			</a>
+    		</ui:repeat>
+    	</div>
     </s:fragment>
     
     </s:decorate>

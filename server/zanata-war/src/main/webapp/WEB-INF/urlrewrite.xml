@@ -71,13 +71,13 @@
   </rule>
 
   <rule>
-    <from casesensitive="true">^/iteration/view/([^/]+)/([^/]+)/files/([^/]+)/?$</from>
+    <from casesensitive="true">^/iteration/files/([^/]+)/([^/]+)/([^/]+)/?$</from>
     <to last="true">/iteration/files.seam\?project=$1&amp;iteration=$2&amp;localeId=$3</to>
   </rule>
   
   <rule>
-  	<from casesensitive="true">^/iteration/edit(.+)?$</from>
-  	<to last="true">/iteration/edit.seam?$1</to>
+  	<from casesensitive="true">^/iteration/edit/([^/]+)/(.+)$</from>
+  	<to last="true">/iteration/edit.seam\?projectSlug=$1&amp;slug=$2</to>
   </rule>
 
   <!-- zanata.xml -->
@@ -259,10 +259,10 @@
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/iteration/files.seam\?project=([^&amp;]+)&amp;iteration=([^&amp;]+)&amp;localeId=([^&amp;]+)$</from>
-    <to>$1/iteration/view/$2/$3/files/$4</to>
+    <to>$1/iteration/files/$2/$3/$4</to>
   </outbound-rule>
   <outbound-rule>
-    <from>^(/.+)?/iteration/edit.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)$</from>
+    <from>^(/.+)?/iteration/edit.seam\?projectSlug=([^&amp;]+)&amp;slug=([^&amp;]+)$</from>
     <to>$1/iteration/edit/$2/$3</to>
   </outbound-rule>
   <outbound-rule>
