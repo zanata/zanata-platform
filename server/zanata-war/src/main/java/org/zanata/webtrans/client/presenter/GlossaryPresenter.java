@@ -164,7 +164,12 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
 
    public void createGlossaryRequestForTransUnit(TransUnit transUnit)
    {
-      String query = transUnit.getSource();
+      StringBuilder sources = new StringBuilder();
+      for(String source: transUnit.getSources()){
+         sources.append(source);
+         sources.append(" ");
+      }
+      String query = sources.toString();
       SearchType searchType = GetGlossary.SearchType.FUZZY;
       display.getGlossaryTextBox().setText("");
       createGlossaryRequest(query, searchType);
