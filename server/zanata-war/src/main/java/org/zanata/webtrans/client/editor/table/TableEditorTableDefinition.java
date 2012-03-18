@@ -27,25 +27,19 @@ import java.util.Map;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.CopySourceEvent;
-import org.zanata.webtrans.client.events.OpenEditorEvent;
 import org.zanata.webtrans.client.resources.NavigationMessages;
-import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
@@ -170,7 +164,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, final AbstractCellView<TransUnit> view)
       {
          view.setStyleName("TableEditorCell TableEditorCell-Target");
-         TargetEditorView targetEditor = new TargetEditorView(messages, eventBus, new RedirectingTableModel<TransUnit>(), isReadOnly);
+//         TargetEditorView targetEditor = new TargetEditorView(messages, eventBus, new RedirectingTableModel<TransUnit>(), isReadOnly, rowValue);
         
          view.setWidget(targetEditor);
       }

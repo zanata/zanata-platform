@@ -327,9 +327,10 @@
     <action execute="#{identity.checkPermission(projectIterationHome.instance, 'insert')}" />
     <navigation from-action="#{projectIterationHome.persist}">
       <rule if="#{projectIterationHome.managed}">
-        <redirect view-id="/project/project.xhtml">
-          <param name="slug" value="#{projectIterationHome.projectSlug}" />
-        </redirect>
+        <redirect view-id="/iteration/iteration.xhtml">
+      	  <param name="projectSlug" value="#{projectIterationHome.projectSlug}"/>
+          <param name="iterationSlug" value="#{projectIterationHome.instance.slug}" />
+      	</redirect>
       </rule>
     </navigation>
     <navigation from-action="#{projectIterationHome.cancel}">
@@ -339,7 +340,22 @@
     </navigation>
   </page>
 
-  <page view-id="/project/iteration_edit.xhtml">
+  <!-- Project Iteration -->
+    
+  <page view-id="/iteration/iteration.xhtml" >
+    <param name="projectSlug" value="#{viewAllStatusAction.projectSlug}" />
+    <param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
+  </page>
+  
+  <page view-id="/iteration/files.xhtml">
+    <param name="project" value="#{projectIterationFilesAction.projectSlug}" />
+    <param name="iteration" value="#{projectIterationFilesAction.iterationSlug}" />
+    <param name="localeId" value="#{projectIterationFilesAction.localeId}" />
+    
+    <action execute="#{projectIterationFilesAction.initialize()}" />
+  </page>
+  
+  <page view-id="/iteration/edit.xhtml">
     <param name="slug" value="#{projectIterationHome.slug}" />
     <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
     <param name="slug" value="#{projectIterationLocaleAction.iterationSlug}" />
@@ -348,35 +364,20 @@
     <!-- can't use <restrict> here either -->
     <action execute="#{identity.checkPermission(projectIterationHome.instance, 'update')}" />
     <navigation from-action="#{projectIterationHome.update}">
-      <redirect view-id="/project/project.xhtml">
-        <param name="slug" value="#{projectIterationHome.projectSlug}" />
+      <redirect view-id="/iteration/iteration.xhtml">
+      	<param name="projectSlug" value="#{projectIterationHome.projectSlug}"/>
+        <param name="iterationSlug" value="#{projectIterationHome.slug}" />
       </redirect>
     </navigation>
 
     <navigation from-action="#{projectIterationHome.cancel}">
-      <redirect view-id="/project/project.xhtml">
-        <param name="slug" value="#{projectIterationHome.projectSlug}" />
+      <redirect view-id="/iteration/iteration.xhtml">
+      	<param name="projectSlug" value="#{projectIterationHome.projectSlug}"/>
+        <param name="iterationSlug" value="#{projectIterationHome.slug}" />
       </redirect>
     </navigation>
   </page>
   
-  <page view-id="/project/iteration_status.xhtml" >
-    <param name="projectSlug" value="#{viewAllStatusAction.projectSlug}" />
-    <param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
-  </page>
-  
-  <page view-id="/project/iteration_files.xhtml">
-    <param name="project" value="#{projectIterationFilesAction.projectSlug}" />
-    <param name="iteration" value="#{projectIterationFilesAction.iterationSlug}" />
-    <param name="localeId" value="#{projectIterationFilesAction.localeId}" />
-    
-    <param name="project" value="#{projectIterationZipFileAction.projectSlug}" />
-    <param name="iteration" value="#{projectIterationZipFileAction.iterationSlug}" />
-    <param name="localeId" value="#{projectIterationZipFileAction.localeId}" />
-    
-    <action execute="#{projectIterationFilesAction.initialize()}" />
-  </page>
-
 
   <!-- Language -->
 
