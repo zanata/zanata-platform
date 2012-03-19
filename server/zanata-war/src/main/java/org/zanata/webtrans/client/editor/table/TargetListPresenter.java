@@ -23,17 +23,11 @@ import org.zanata.webtrans.shared.model.TransUnit;
 public class TargetListPresenter extends WidgetPresenter<TargetListDisplay> {
 
     private TargetListDisplay display;
-    private TransUnit transUnit;
 
     @Inject
     public TargetListPresenter(TargetListDisplay display, EventBus eventBus) {
         super(display, eventBus);
         this.display = display;
-    }
-
-    public void setTransUnit(TransUnit transUnit) {
-        this.transUnit = transUnit;
-        display.setTargets(transUnit.getTargets());
     }
 
     @Override

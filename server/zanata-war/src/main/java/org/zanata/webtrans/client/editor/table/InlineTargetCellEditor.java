@@ -23,44 +23,30 @@ package org.zanata.webtrans.client.editor.table;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.editor.CheckKey;
 import org.zanata.webtrans.client.editor.CheckKeyImpl;
-import org.zanata.webtrans.client.events.EditTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEventHandler;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.resources.EditorConfigConstants;
-import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.ValidationMessagePanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.PushButton;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import javax.inject.Provider;
 
 public class InlineTargetCellEditor implements CellEditor<TransUnit>
 {
@@ -142,21 +128,22 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    /**
     * The main grid used for layout.
     */
-   private FlowPanel topLayoutPanel;
+//   private FlowPanel topLayoutPanel;
 
-   private VerticalPanel verticalPanel;
-
+//   private VerticalPanel verticalPanel;
+           
    private Widget cellViewWidget;
 
    private TransUnit cellValue;
 
-   private EditorTextArea textArea;
-   private HorizontalPanel operationsPanel;
+//   private EditorTextArea textArea;
+//   private HorizontalPanel operationsPanel;
 
    private boolean isFocused = false;
    private boolean isOpened = false;
    private boolean isCancelButtonFocused = false;
-   private boolean isReadOnly;
+    private String findMessage;
+    private boolean isReadOnly;
 
    private boolean untranslatedMode = true, fuzzyMode = true;
    private boolean isEnterKeySavesEnabled = false, isEscKeyCloseEditor = false;
@@ -167,7 +154,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private String saveButtonShortcuts;
    private String saveButtonwithEnterShortcuts;
-   private PushButton saveButton, fuzzyButton, cancelButton, validateButton;
+//   private PushButton saveButton, fuzzyButton, cancelButton, validateButton;
    private ValidationMessagePanel validationMessagePanel;
 
    private boolean keypressed;
@@ -175,107 +162,118 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private int typingCycles;
 
    private final EventBus eventBus;
+    
+    @Inject
+    Provider<TargetListPresenter> targetListPresenterProvider;
+    private List<TargetListPresenter> targetListPresenters = Lists.newArrayList();
+    private TargetListPresenter currentTargetPresenter;
 
-   /**
+    /**
     * Construct a new {@link InlineTargetCellEditor} with the specified images.
     */
-   public InlineTargetCellEditor(final NavigationMessages messages, CancelCallback<TransUnit> callback, EditRowCallback rowCallback, final EventBus eventBus, final boolean isReadOnly)
+   public InlineTargetCellEditor(final String findMessage, CancelCallback<TransUnit> callback, EditRowCallback rowCallback, final EventBus eventBus, final boolean isReadOnly)
    {
-      this.isReadOnly = isReadOnly;
+       this.findMessage = findMessage;
+       this.isReadOnly = isReadOnly;
       final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       // Wrap contents in a table
 
       final int TYPING_TIMER_INTERVAL = 200; // ms
       final int TYPING_TIMER_RECURRENT_VALIDATION_PERIOD = 5; // intervals
 
-      verticalPanel = new VerticalPanel();
-      verticalPanel.setWidth("100%");
-      verticalPanel.setHeight("100%");
-
-      topLayoutPanel = new FlowPanel();
-      topLayoutPanel.setWidth("100%");
-
+//      verticalPanel = new VerticalPanel();
+//      verticalPanel.setWidth("100%");
+//      verticalPanel.setHeight("100%");
+//
+//      topLayoutPanel = new FlowPanel();
+//      topLayoutPanel.setWidth("100%");
+//
+       for (int i = 0; i < TableConstants.PAGE_SIZE; i++) {
+           TargetListPresenter targetListPresenter = targetListPresenterProvider.get();
+           targetListPresenter.getDisplay().setFindMessage(findMessage);
+           targetListPresenters.add(targetListPresenter);
+       }
       this.eventBus = eventBus;
       cancelCallback = callback;
       editRowCallback = rowCallback;
-      textArea = new EditorTextArea();
-      textArea.setStyleName("TableEditorContent-Edit");
-
-      textArea.addValueChangeHandler(new ValueChangeHandler<String>()
-      {
-         @Override
-         public void onValueChange(ValueChangeEvent<String> event)
-         {
-            autoSize();
-            fireValidationEvent(eventBus);
-         }
-
-      });
-
-      final Timer typingTimer = new Timer()
-      {
-         @Override
-         public void run()
-         {
-            if (keypressed)
-            {
-               // still typing, validate periodically
-               keypressed = false;
-               typingCycles++;
-               if (typingCycles % TYPING_TIMER_RECURRENT_VALIDATION_PERIOD == 0)
-               {
-                  fireValidationEvent(eventBus);
-               }
-            }
-            else
-            {
-               // finished, validate immediately
-               this.cancel();
-               typing = false;
-               fireValidationEvent(eventBus);
-            }
-         }
-      };
-
-      // used to determine whether user is still typing
-      textArea.addKeyDownHandler(new KeyDownHandler()
-      {
-
-         @Override
-         public void onKeyDown(KeyDownEvent event)
-         {
-            if (typing)
-            {
-               keypressed = true;
-            }
-            else
-            {
-               // set false so that next keypress is detectable
-               keypressed = false;
-               typing = true;
-               typingCycles = 0;
-               typingTimer.scheduleRepeating(TYPING_TIMER_INTERVAL);
-            }
-         }
-      });
-
-      textArea.addBlurHandler(new BlurHandler()
-      {
-         @Override
-         public void onBlur(BlurEvent event)
-         {
-				isFocused = false;
-         }
-      });
-      textArea.addFocusHandler(new FocusHandler()
-      {
-         @Override
-         public void onFocus(FocusEvent event)
-         {
-            isFocused = true;
-         }
-      });
-
+//      textArea = new EditorTextArea();
+//      textArea.setStyleName("TableEditorContent-Edit");
+//
+//      textArea.addValueChangeHandler(new ValueChangeHandler<String>()
+//      {
+//         @Override
+//         public void onValueChange(ValueChangeEvent<String> event)
+//         {
+//            autoSize();
+//            fireValidationEvent(eventBus);
+//         }
+//
+//      });
+//
+//      final Timer typingTimer = new Timer()
+//      {
+//         @Override
+//         public void run()
+//         {
+//            if (keypressed)
+//            {
+//               // still typing, validate periodically
+//               keypressed = false;
+//               typingCycles++;
+//               if (typingCycles % TYPING_TIMER_RECURRENT_VALIDATION_PERIOD == 0)
+//               {
+//                  fireValidationEvent(eventBus);
+//               }
+//            }
+//            else
+//            {
+//               // finished, validate immediately
+//               this.cancel();
+//               typing = false;
+//               fireValidationEvent(eventBus);
+//            }
+//         }
+//      };
+//
+//      // used to determine whether user is still typing
+//      textArea.addKeyDownHandler(new KeyDownHandler()
+//      {
+//
+//         @Override
+//         public void onKeyDown(KeyDownEvent event)
+//         {
+//            if (typing)
+//            {
+//               keypressed = true;
+//            }
+//            else
+//            {
+//               // set false so that next keypress is detectable
+//               keypressed = false;
+//               typing = true;
+//               typingCycles = 0;
+//               typingTimer.scheduleRepeating(TYPING_TIMER_INTERVAL);
+//            }
+//         }
+//      });
+//
+//      textArea.addBlurHandler(new BlurHandler()
+//      {
+//         @Override
+//         public void onBlur(BlurEvent event)
+//         {
+//				isFocused = false;
+//         }
+//      });
+//      textArea.addFocusHandler(new FocusHandler()
+//      {
+//         @Override
+//         public void onFocus(FocusEvent event)
+//         {
+//            isFocused = true;
+//         }
+//      });
+//
       eventBus.addHandler(RequestValidationEvent.getType(), new RequestValidationEventHandler()
       {
          @Override
@@ -304,141 +302,140 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       // });
 
       // KeyDown is used to override browser event
-      textArea.addKeyDownHandler(new KeyDownHandler()
-      {
-         @Override
-         public void onKeyDown(KeyDownEvent event)
-         {
-            eventBus.fireEvent(new EditTransUnitEvent());
-            checkKey.init(event.getNativeEvent());
-
-            if (checkKey.isCopyFromSourceKey())
-            {
-               cloneAction();
-            }
-            else if (checkKey.isNextEntryKey())
-            {
-               // See editCell() for saving event
-               saveAndMoveRow(NavigationType.NextEntry);
-            }
-            else if (checkKey.isPreviousEntryKey())
-            {
-               // See editCell() for saving event
-               saveAndMoveRow(NavigationType.PrevEntry);
-            }
-            else if (checkKey.isNextStateEntryKey())
-            {
-               saveAndMoveNextState(NavigationType.NextEntry);
-            }
-            else if (checkKey.isPreviousStateEntryKey())
-            {
-               saveAndMoveNextState(NavigationType.PrevEntry);
-            }
-            else if (checkKey.isSaveAsFuzzyKey())
-            {
-               event.stopPropagation();
-               event.preventDefault(); // stop browser save
-               acceptFuzzyEdit();
-            }
-            else if (checkKey.isSaveAsApprovedKey(isEnterKeySavesEnabled))
-            {
-               event.stopPropagation();
-               event.preventDefault();
-               saveApprovedAndMoveRow(NavigationType.NextEntry);
-            }
-            else if (checkKey.isCloseEditorKey(isEscKeyCloseEditor))
-            {
-               cancelEdit();
-            }
-            else if (checkKey.isUserTyping() && !checkKey.isBackspace())
-            {
-               growSize();
-            }
-            else if (checkKey.isUserTyping() && checkKey.isBackspace())
-            {
-               shrinkSize(false);
-            }
-         }
-      });
-
-      topLayoutPanel.add(textArea);
-
-      operationsPanel = new HorizontalPanel();
-
-      operationsPanel.addStyleName("float-right-div");
-      operationsPanel.setSpacing(4);
-
-      TableResources images = GWT.create(TableResources.class);
-
-      validateButton = new PushButton(new Image(images.cellEditorValidate()));
-      validateButton.setStyleName("gwt-Button");
-      validateButton.setTitle(messages.runValidation());
-      validateButton.addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            if (cellValue != null)
-            {
-               fireValidationEvent(eventBus);
-            }
-         }
-      });
-
-      saveButton = new PushButton(new Image(images.cellEditorAccept()));
-      saveButton.setStyleName("gwt-Button");
-      saveButtonShortcuts = messages.editSaveShortcut();
-      saveButton.setTitle(messages.editSaveShortcut());
-      saveButton.addClickHandler(acceptHandler);
-      saveButtonwithEnterShortcuts = messages.editSavewithEnterShortcut();
-
-      fuzzyButton = new PushButton(new Image(images.cellEditorFuzzy()));
-      fuzzyButton.setStyleName("gwt-Button");
-      fuzzyButton.setTitle(messages.saveAsFuzzy());
-      fuzzyButton.addClickHandler(fuzzyHandler);
-
-      cancelButton = new PushButton(new Image(images.cellEditorCancel()));
-      cancelButton.setStyleName("gwt-Button");
-      cancelButton.setTitle(messages.editCancelShortcut());
-      cancelButton.addClickHandler(cancelHandler);
-      cancelButton.addFocusHandler(new FocusHandler()
-      {
-         @Override
-         public void onFocus(FocusEvent event)
-         {
-            isCancelButtonFocused = true;
-         }
-      });
-      cancelButton.addBlurHandler(new BlurHandler()
-      {
-
-         @Override
-         public void onBlur(BlurEvent event)
-         {
-            isCancelButtonFocused = false;
-         }
-      });
-
-      operationsPanel.add(validateButton);
-      operationsPanel.add(saveButton);
-      operationsPanel.add(fuzzyButton);
-      operationsPanel.add(cancelButton);
-      topLayoutPanel.add(operationsPanel);
-
-      verticalPanel.add(topLayoutPanel);
-
-      validationMessagePanel = new ValidationMessagePanel(true, messages);
-      validationMessagePanel.setVisiblePolicy(true);
-
-      verticalPanel.add(validationMessagePanel);
-      verticalPanel.setCellVerticalAlignment(validationMessagePanel, HasVerticalAlignment.ALIGN_BOTTOM);
+//      textArea.addKeyDownHandler(new KeyDownHandler()
+//      {
+//         @Override
+//         public void onKeyDown(KeyDownEvent event)
+//         {
+//            eventBus.fireEvent(new EditTransUnitEvent());
+//            checkKey.init(event.getNativeEvent());
+//
+//            if (checkKey.isCopyFromSourceKey())
+//            {
+//               cloneAction();
+//            }
+//            else if (checkKey.isNextEntryKey())
+//            {
+//               // See editCell() for saving event
+//               saveAndMoveRow(NavigationType.NextEntry);
+//            }
+//            else if (checkKey.isPreviousEntryKey())
+//            {
+//               // See editCell() for saving event
+//               saveAndMoveRow(NavigationType.PrevEntry);
+//            }
+//            else if (checkKey.isNextStateEntryKey())
+//            {
+//               saveAndMoveNextState(NavigationType.NextEntry);
+//            }
+//            else if (checkKey.isPreviousStateEntryKey())
+//            {
+//               saveAndMoveNextState(NavigationType.PrevEntry);
+//            }
+//            else if (checkKey.isSaveAsFuzzyKey())
+//            {
+//               event.stopPropagation();
+//               event.preventDefault(); // stop browser save
+//               acceptFuzzyEdit();
+//            }
+//            else if (checkKey.isSaveAsApprovedKey(isEnterKeySavesEnabled))
+//            {
+//               event.stopPropagation();
+//               event.preventDefault();
+//               saveApprovedAndMoveRow(NavigationType.NextEntry);
+//            }
+//            else if (checkKey.isCloseEditorKey(isEscKeyCloseEditor))
+//            {
+//               cancelEdit();
+//            }
+//            else if (checkKey.isUserTyping() && !checkKey.isBackspace())
+//            {
+//               growSize();
+//            }
+//            else if (checkKey.isUserTyping() && checkKey.isBackspace())
+//            {
+//               shrinkSize(false);
+//            }
+//         }
+//      });
+//
+//      topLayoutPanel.add(textArea);
+//
+//      operationsPanel = new HorizontalPanel();
+//
+//      operationsPanel.addStyleName("float-right-div");
+//      operationsPanel.setSpacing(4);
+//
+//      TableResources images = GWT.create(TableResources.class);
+//
+//      validateButton = new PushButton(new Image(images.cellEditorValidate()));
+//      validateButton.setStyleName("gwt-Button");
+//      validateButton.setTitle(messages.runValidation());
+//      validateButton.addClickHandler(new ClickHandler()
+//      {
+//         @Override
+//         public void onClick(ClickEvent event)
+//         {
+//            if (cellValue != null)
+//            {
+//               fireValidationEvent(eventBus);
+//            }
+//         }
+//      });
+//
+//      saveButton = new PushButton(new Image(images.cellEditorAccept()));
+//      saveButton.setStyleName("gwt-Button");
+//      saveButtonShortcuts = messages.editSaveShortcut();
+//      saveButton.setTitle(messages.editSaveShortcut());
+//      saveButton.addClickHandler(acceptHandler);
+//      saveButtonwithEnterShortcuts = messages.editSavewithEnterShortcut();
+//
+//      fuzzyButton = new PushButton(new Image(images.cellEditorFuzzy()));
+//      fuzzyButton.setStyleName("gwt-Button");
+//      fuzzyButton.setTitle(messages.saveAsFuzzy());
+//      fuzzyButton.addClickHandler(fuzzyHandler);
+//
+//      cancelButton = new PushButton(new Image(images.cellEditorCancel()));
+//      cancelButton.setStyleName("gwt-Button");
+//      cancelButton.setTitle(messages.editCancelShortcut());
+//      cancelButton.addClickHandler(cancelHandler);
+//      cancelButton.addFocusHandler(new FocusHandler()
+//      {
+//         @Override
+//         public void onFocus(FocusEvent event)
+//         {
+//            isCancelButtonFocused = true;
+//         }
+//      });
+//      cancelButton.addBlurHandler(new BlurHandler()
+//      {
+//
+//         @Override
+//         public void onBlur(BlurEvent event)
+//         {
+//            isCancelButtonFocused = false;
+//         }
+//      });
+//
+//      operationsPanel.add(validateButton);
+//      operationsPanel.add(saveButton);
+//      operationsPanel.add(fuzzyButton);
+//      operationsPanel.add(cancelButton);
+//      topLayoutPanel.add(operationsPanel);
+//
+//      verticalPanel.add(topLayoutPanel);
+//
+//      validationMessagePanel = new ValidationMessagePanel(true, messages);
+//      validationMessagePanel.setVisiblePolicy(true);
+//
+//      verticalPanel.add(validationMessagePanel);
+//      verticalPanel.setCellVerticalAlignment(validationMessagePanel, HasVerticalAlignment.ALIGN_BOTTOM);
    }
 
    public void cloneAction()
    {
       Log.info("InlineTargetCellEditor.java: Clone action.");
-//      textArea.setValue(cellValue.getSource(), true);
-      textArea.setFocus(true);
+//      textArea.setFocus(true);
    }
 
    public void gotoRow(NavigationType nav)
@@ -499,11 +496,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private void restoreView()
    {
-      if (curCellEditInfo != null && cellViewWidget != null)
-      {
-         curCellEditInfo.getTable().setWidget(curRow, curCol, cellViewWidget);
-         cellViewWidget.getParent().setHeight(cellViewWidget.getOffsetHeight() + "px");
-      }
+//      if (curCellEditInfo != null && cellViewWidget != null)
+//      {
+//         curCellEditInfo.getTable().setWidget(curRow, curCol, cellViewWidget);
+//         cellViewWidget.getParent().setHeight(cellViewWidget.getOffsetHeight() + "px");
+//      }
+       if (currentTargetPresenter != null) {
+           currentTargetPresenter.getDisplay().setToView();
+       }
    }
 
    public boolean isEditing()
@@ -522,10 +522,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    }
 
    public void setText(String text)
-   {
+   {  //TODO copy TM or copy source will go here
       if (isEditing())
       {
-         textArea.setText(text);
+         currentTargetPresenter.getDisplay().getCurrentEditor().setText(text);
       }
    }
 
@@ -533,10 +533,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       if (isEditing())
       {
-         String preCursor = textArea.getText().substring(0, textArea.getCursorPos());
-         String postCursor = textArea.getText().substring(textArea.getCursorPos(), textArea.getText().length());
+          ToggleWidget currentEditor = currentTargetPresenter.getDisplay().getCurrentEditor();
+//          String preCursor = currentEditor.getText().substring(0, textArea.getCursorPos());
+//         String postCursor = textArea.getText().substring(textArea.getCursorPos(), textArea.getText().length());
          
-         textArea.setText(preCursor + text + postCursor);
+//         textArea.setText(preCursor + text + postCursor);
       }
    }
    
@@ -575,16 +576,18 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       curRow = curCellEditInfo.getRowIndex();
       curCol = curCellEditInfo.getCellIndex();
 
-      cellViewWidget = table.getWidget(curRow, curCol);
+//      cellViewWidget = table.getWidget(curRow, curCol);
 
-      table.setWidget(curRow, curCol, verticalPanel);
+      //construct list of editor each time
+       currentTargetPresenter = targetListPresenters.get(curRow);
 
-      textArea.setText(cellValue.getTarget());
+       currentTargetPresenter.getDisplay().setTargets(cellValue.getTargets());
 
-      autoSize();
+       table.setWidget(curRow, curCol, currentTargetPresenter.getDisplay().asWidget());
 
       this.cellValue = cellValue;
-      textArea.setFocus(true);
+
+//      textArea.setFocus(true);
       isOpened = true;
 
       DOM.scrollIntoView(table.getCellFormatter().getElement(curRow, curCol));
@@ -597,7 +600,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    public void savePendingChange(boolean cancelIfUnchanged)
    {
       // if something has changed, save as approved
-      if (isEditing() && !cellValue.getTarget().equals(textArea.getText()))
+//      if (isEditing() && !cellValue.getTarget().equals(textArea.getText()))
+      if (isEditing())
       {
          Log.debug("savePendingChange - acceptEdit");
          cellValue.setStatus(ContentState.Approved);
@@ -658,16 +662,16 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       {
          return;
       }
-      cellValue.setTarget(textArea.getText());
+      cellValue.setTargets(currentTargetPresenter.getDisplay().getNewTargets());
 
       // changing status to new when target cell is empty
-      if (cellValue.getTarget().isEmpty())
-         cellValue.setStatus(ContentState.New);
-      else if (cellValue.getStatus() == ContentState.New)
-         cellValue.setStatus(ContentState.Approved);
+//      if (cellValue.getTarget().isEmpty())
+//         cellValue.setStatus(ContentState.New);
+//      else if (cellValue.getStatus() == ContentState.New)
+//         cellValue.setStatus(ContentState.Approved);
 
       restoreView();
-      textArea.setFocus(false);
+//      textArea.setFocus(false);
       isOpened = false;
       isFocused = false;
 
@@ -681,12 +685,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     */
    protected void acceptFuzzyEdit()
    {
-      String text = textArea.getText();
-      cellValue.setTarget(text);
-      if (text == null || text.isEmpty())
-         cellValue.setStatus(ContentState.New);
-      else
-         cellValue.setStatus(ContentState.NeedReview);
+//      String text = textArea.getText();
+      cellValue.setTargets(currentTargetPresenter.getDisplay().getNewTargets());
+//      if (text == null || text.isEmpty())
+//         cellValue.setStatus(ContentState.New);
+//      else
+//         cellValue.setStatus(ContentState.NeedReview);
       curCallback.onComplete(curCellEditInfo, cellValue);
    }
 
@@ -702,7 +706,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
 
       restoreView();
-      textArea.setFocus(false);
+//      textArea.setFocus(false);
       isOpened = false;
       isFocused = false;
 
@@ -746,54 +750,54 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    public void autoSize()
    {
-      shrinkSize(true);
-      growSize();
+//      shrinkSize(true);
+//      growSize();
    }
 
-   /**
-    * forceShrink will resize the textArea to initialLines(3 lines) and growSize
-    * according to the scroll height
-    * 
-    * @param forceShrink
-    */
-   private void shrinkSize(boolean forceShrink)
-   {
-      if (forceShrink)
-      {
-         textArea.setVisibleLines(INITIAL_LINES);
-      }
-      else
-      {
-         if (textArea.getElement().getScrollHeight() <= (INITIAL_LINES * HEIGHT_PER_LINE))
-         {
-            textArea.setVisibleLines(INITIAL_LINES);
-         }
-         else
-         {
-            if (textArea.getElement().getScrollHeight() >= textArea.getElement().getClientHeight())
-            {
-               int newHeight = textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight() > 0 ? textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight() : HEIGHT_PER_LINE;
-               int newLine = (newHeight / HEIGHT_PER_LINE) - 1 > INITIAL_LINES ? (newHeight / HEIGHT_PER_LINE) - 1 : INITIAL_LINES;
-               textArea.setVisibleLines(textArea.getVisibleLines() - newLine);
-            }
-            growSize();
-         }
-      }
-   }
-
-   private void growSize()
-   {
-      if (textArea.getElement().getScrollHeight() > textArea.getElement().getClientHeight())
-      {
-         int newHeight = textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight();
-         int newLine = (newHeight / HEIGHT_PER_LINE) + 1;
-         textArea.setVisibleLines(textArea.getVisibleLines() + newLine);
-      }
-   }
+//   /**
+//    * forceShrink will resize the textArea to initialLines(3 lines) and growSize
+//    * according to the scroll height
+//    *
+//    * @param forceShrink
+//    */
+//   private void shrinkSize(boolean forceShrink)
+//   {
+//      if (forceShrink)
+//      {
+//         textArea.setVisibleLines(INITIAL_LINES);
+//      }
+//      else
+//      {
+//         if (textArea.getElement().getScrollHeight() <= (INITIAL_LINES * HEIGHT_PER_LINE))
+//         {
+//            textArea.setVisibleLines(INITIAL_LINES);
+//         }
+//         else
+//         {
+//            if (textArea.getElement().getScrollHeight() >= textArea.getElement().getClientHeight())
+//            {
+//               int newHeight = textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight() > 0 ? textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight() : HEIGHT_PER_LINE;
+//               int newLine = (newHeight / HEIGHT_PER_LINE) - 1 > INITIAL_LINES ? (newHeight / HEIGHT_PER_LINE) - 1 : INITIAL_LINES;
+//               textArea.setVisibleLines(textArea.getVisibleLines() - newLine);
+//            }
+//            growSize();
+//         }
+//      }
+//   }
+//
+//   private void growSize()
+//   {
+//      if (textArea.getElement().getScrollHeight() > textArea.getElement().getClientHeight())
+//      {
+//         int newHeight = textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight();
+//         int newLine = (newHeight / HEIGHT_PER_LINE) + 1;
+//         textArea.setVisibleLines(textArea.getVisibleLines() + newLine);
+//      }
+//   }
 
    public void setShowOperationButtons(boolean showButtons)
    {
-      operationsPanel.setVisible(showButtons);
+//      operationsPanel.setVisible(showButtons);
    }
 
    public void updateKeyBehaviour(Map<String, Boolean> configMap)
@@ -804,18 +808,18 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          fuzzyMode = configMap.get(EditorConfigConstants.BUTTON_FUZZY);
       }
 
-      if (configMap.containsKey(EditorConfigConstants.BUTTON_ENTER))
-      {
-         isEnterKeySavesEnabled = configMap.get(EditorConfigConstants.BUTTON_ENTER);
-         if (isEnterKeySavesEnabled)
-         {
-            saveButton.setTitle(saveButtonwithEnterShortcuts);
-         }
-         else
-         {
-            saveButton.setTitle(saveButtonShortcuts);
-         }
-      }
+//      if (configMap.containsKey(EditorConfigConstants.BUTTON_ENTER))
+//      {
+//         isEnterKeySavesEnabled = configMap.get(EditorConfigConstants.BUTTON_ENTER);
+//         if (isEnterKeySavesEnabled)
+//         {
+//            saveButton.setTitle(saveButtonwithEnterShortcuts);
+//         }
+//         else
+//         {
+//            saveButton.setTitle(saveButtonShortcuts);
+//         }
+//      }
 
       if (configMap.containsKey(EditorConfigConstants.BUTTON_ESC))
       {
@@ -832,7 +836,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    public void setCancelButtonFocused(boolean isCancelButtonFocused)
    {
       this.isCancelButtonFocused = isCancelButtonFocused;
-      cancelButton.setFocus(isCancelButtonFocused);
+//      cancelButton.setFocus(isCancelButtonFocused);
    }
 
    public TransUnit getTargetCell()
@@ -851,7 +855,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     */
    private void fireValidationEvent(final EventBus eventBus)
    {
-      eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSource(), textArea.getText(), false));
+//      eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSources(), currentTargetPresenter.getDisplay().getCurrentEditor().getText(), false));
    }
 
    public void setReadOnly(boolean isReadOnly)

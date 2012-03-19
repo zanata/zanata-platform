@@ -2,10 +2,9 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
-	<ui:style>
-		
-	</ui:style>
-	
+	<ui:with field="messages" type="org.zanata.webtrans.client.resources.NavigationMessages" />
+	<ui:with field="images" type="org.zanata.webtrans.client.editor.table.TableResources" />
+
 	<g:VerticalPanel>
 		<g:cell horizontalAlignment="ALIGN_CENTER">
 			<g:FlowPanel ui:field="topContainer"/>

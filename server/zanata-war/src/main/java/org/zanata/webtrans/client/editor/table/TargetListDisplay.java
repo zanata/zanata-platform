@@ -23,6 +23,12 @@ import java.util.List;
 public interface TargetListDisplay extends WidgetDisplay {
 
     void setTargets(List<String> targets);
+    
+    void setFindMessage(String findMessage);
 
     List<String> getNewTargets();
+
+    void setToView();
+
+    ToggleWidget getCurrentEditor();
 }

@@ -278,7 +278,7 @@ public class EditorColumnTableDefinition extends DefaultTableDefinition<TransUni
             }
         };
 
-        this.targetCellEditor = new InlineTargetCellEditor(messages, cancelCallBack, transValueCallBack, eventBus, isReadOnly);
+        this.targetCellEditor = new InlineTargetCellEditor(findMessage, cancelCallBack, transValueCallBack, eventBus, isReadOnly);
         this.transUnitDetailsContent = new TransUnitDetailsPanel(messages.transUnitDetailsHeading());
         targetColumnDefinition.setCellEditor(targetCellEditor);
 

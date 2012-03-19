@@ -20,39 +20,50 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
+import org.zanata.webtrans.client.ui.Editor;
 
 import java.util.List;
 
 public class TargetListView implements TargetListDisplay {
-    public static final int COLUMNS = 2;
+    public static final int COLUMNS = 1;
     public static final int DEFAULT_ROWS = 1;
 
-    private VerticalPanel rootPanel;
-
     private Grid editorGrid;
+    private String findMessage;
+    private List<Editor> editors;
 
     public TargetListView() {
-        rootPanel = new VerticalPanel();
         editorGrid = new Grid(DEFAULT_ROWS, COLUMNS);
+        editors = Lists.newArrayList();
     }
+
+
 
     @Override
     public void setTargets(List<String> targets) {
+        editors.clear();
         editorGrid.resize(targets.size(), COLUMNS);
         int rowIndex = 0;
         for (String target : targets) {
-            SingleTargetEditorWidget singleTarget = new SingleTargetEditorWidget();
-            singleTarget.setValue(target);
-            editorGrid.setWidget(rowIndex, 0, singleTarget);
+            Editor editor = new Editor(target, findMessage);
+            editor.setValue(target);
+            editorGrid.setWidget(rowIndex, 0, editor);
         }
+    }
+
+    @Override
+    public void setFindMessage(String findMessage) {
+        this.findMessage = findMessage;
     }
 
     @Override
     public List<String> getNewTargets() {
         List<String> result = Lists.newArrayList();
         for (IsWidget widget : editorGrid) {
-            if (widget instanceof SingleTargetEditorWidget) {
-                SingleTargetEditorWidget targetEditorWidget = (SingleTargetEditorWidget) widget;
+            if (widget instanceof Editor) {
+                Editor targetEditorWidget = (Editor) widget;
+                editors.add(targetEditorWidget);
                 result.add(targetEditorWidget.getValue());
             }
         }
@@ -60,8 +71,25 @@ public class TargetListView implements TargetListDisplay {
     }
 
     @Override
+    public void setToView() {
+        for (Editor editor : editors) {
+            editor.setViewMode(ToggleWidget.ViewMode.VIEW);
+        }
+    }
+
+    @Override
+    public ToggleWidget getCurrentEditor() {
+        for (Editor editor : editors) {
+            if (editor.getViewMode() == ToggleWidget.ViewMode.EDIT) {
+                return editor;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public Widget asWidget() {
-        return rootPanel;
+        return editorGrid;
     }
 
 }
