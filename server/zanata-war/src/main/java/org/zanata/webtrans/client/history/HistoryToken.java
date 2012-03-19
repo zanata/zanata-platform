@@ -21,6 +21,9 @@ public class HistoryToken
    public static final String VALUE_SEARCH_RESULTS_VIEW = "search";
    public static final String VALUE_EDITOR_VIEW = "doc";
 
+   public static final String KEY_SEARCH_DOC_TEXT = "search";
+   public static final String KEY_SEARCH_PROJECT_TEXT = "projectsearch";
+
    public static final String KEY_DOC_FILTER_TEXT = "filter";
 
    public static final String KEY_DOC_FILTER_OPTION = "filtertype";
@@ -30,12 +33,16 @@ public class HistoryToken
    private String fullDocPath;
    private boolean docFilterExact;
    private String docFilterText;
+   private String searchText;
+   private String projectSearchText;
 
    // defaults
    private static final MainView DEFAULT_VIEW = MainView.Documents;
    private static final String DEFAULT_DOCUMENT_PATH = "";
    private static final String DEFAULT_DOC_FILTER_TEXT = "";
    private static final boolean DEFAULT_DOC_FILTER_EXACT = false;
+   private static final String DEFAULT_SEARCH_TEXT = "";
+   private static final String DEFAULT_PROJECT_SEARCH_TEXT = "";
 
    public HistoryToken()
    {
@@ -43,6 +50,8 @@ public class HistoryToken
       fullDocPath = DEFAULT_DOCUMENT_PATH;
       docFilterText = DEFAULT_DOC_FILTER_TEXT;
       docFilterExact = DEFAULT_DOC_FILTER_EXACT;
+      searchText = DEFAULT_SEARCH_TEXT;
+      projectSearchText = DEFAULT_PROJECT_SEARCH_TEXT;
    }
 
    /**
@@ -60,6 +69,7 @@ public class HistoryToken
       }
 
       // decode characters that may still be url-encoded
+      //TODO need to encode/decode separators in filter and search strings in to/fromTokenString
       token = token.replaceAll("%3A", ":").replaceAll("%3B", ";").replaceAll("%2F", "/");
 
       for (String pairString : token.split(PAIR_SEPARATOR))
@@ -101,17 +111,52 @@ public class HistoryToken
             }
             // else default used
          }
-         else if (key.equals(HistoryToken.KEY_DOC_FILTER_TEXT))
+         else if (key.equals(KEY_DOC_FILTER_TEXT))
          {
             historyToken.setDocFilterText(value);
          }
-
+         else if (key.equals(KEY_SEARCH_DOC_TEXT))
+         {
+            historyToken.setSearchText(value);
+         }
+         else if (key.equals(KEY_SEARCH_PROJECT_TEXT))
+         {
+            historyToken.setProjectSearchText(value);
+         }
          else
+         {
             Log.info("unrecognised history key: " + key);
+         }
 
       }
 
       return historyToken;
+   }
+
+   public String getSearchText()
+   {
+      return this.searchText;
+   }
+
+   public void setSearchText(String value)
+   {
+      if (value == null || value.length() == 0)
+         this.searchText = DEFAULT_SEARCH_TEXT;
+      else
+         this.searchText = value;
+   }
+
+   public String getProjectSearchText()
+   {
+      return this.projectSearchText;
+   }
+
+   public void setProjectSearchText(String value)
+   {
+      if (value == null || value.length() == 0)
+         this.projectSearchText = DEFAULT_PROJECT_SEARCH_TEXT;
+      else
+         this.projectSearchText = value;
    }
 
    public String getDocumentPath()
@@ -216,6 +261,24 @@ public class HistoryToken
          else
             token += PAIR_SEPARATOR;
          token += KEY_DOC_FILTER_TEXT + DELIMITER_K_V + docFilterText;
+      }
+
+      if (!projectSearchText.equals(DEFAULT_PROJECT_SEARCH_TEXT))
+      {
+         if (first)
+            first = false;
+         else
+            token += PAIR_SEPARATOR;
+         token += KEY_SEARCH_PROJECT_TEXT + DELIMITER_K_V + projectSearchText;
+      }
+
+      if (!searchText.equals(DEFAULT_SEARCH_TEXT))
+      {
+         if (first)
+            first = false;
+         else
+            token += PAIR_SEPARATOR;
+         token += KEY_SEARCH_DOC_TEXT + DELIMITER_K_V + searchText;
       }
 
       return token;
