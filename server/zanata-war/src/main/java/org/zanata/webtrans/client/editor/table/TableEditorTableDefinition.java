@@ -27,6 +27,7 @@ import java.util.Map;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.CopySourceEvent;
+import org.zanata.webtrans.client.presenter.SourcePanelPresenter;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -57,9 +58,10 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
    private final boolean isReadOnly;
    private final TableResources images = GWT.create(TableResources.class);
+   private final SourcePanelPresenter sourcePanelPresenter;
 
    private String findMessage;
-   private SourcePanel sourcePanel;
+   // private SourcePanel sourcePanel;
    private ArrayList<Widget> copyButtons;
    private boolean showingCopyButtons;
    private EventBus eventBus;
@@ -119,8 +121,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          VerticalPanel panel = new VerticalPanel();
          panel.addStyleName("TableEditorCell-Source-Table");
 
-         sourcePanel = new SourcePanel(rowValue, images, messages);
-         
+         SourcePanel sourcePanel = sourcePanelPresenter.getSourcePanel(view.getRowIndex(), rowValue);
+
          if (findMessage != null && !findMessage.isEmpty())
          {
             sourcePanel.highlightSearch(findMessage);
@@ -223,11 +225,12 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       this.findMessage = findMessage;
    }
 
-   public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final EventBus eventBus, boolean isReadOnly)
+   public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final EventBus eventBus, final SourcePanelPresenter sourcePanelPresenter, boolean isReadOnly)
    {
       this.isReadOnly = isReadOnly;
       this.messages = messages;
       this.eventBus = eventBus;
+      this.sourcePanelPresenter = sourcePanelPresenter;
       setRowRenderer(rowRenderer);
       sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
 

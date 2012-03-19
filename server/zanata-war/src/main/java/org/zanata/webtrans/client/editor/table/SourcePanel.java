@@ -20,10 +20,14 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -33,40 +37,64 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class SourcePanel extends Composite implements HasValue<TransUnit>, HasClickHandlers
 {
 
-   private final FlowPanel panel;
-   private final VerticalPanel sourceLabels;
+   private FlowPanel panel;
+   private VerticalPanel sourceLabelsPanel;
    private TransUnit value;
+   private List<HighlightingLabel> hightlightingLabelList;
 
-   public SourcePanel(TransUnit value, TableResources resources, NavigationMessages messages)
+   public SourcePanel()
+   {
+   }
+
+   private final ClickHandler selectSourceHandler = new ClickHandler()
+   {
+
+      @Override
+      public void onClick(ClickEvent event)
+      {
+         Log.info(event.getSource().toString());
+      }
+   };
+
+   public void renderWidget(TransUnit value, NavigationMessages messages)
    {
       this.value = value;
+      hightlightingLabelList = new ArrayList<HighlightingLabel>();
+      
       panel = new FlowPanel();
       panel.setSize("100%", "100%");
 
       initWidget(panel);
       setStylePrimaryName("TableEditorSource");
 
-      sourceLabels = new VerticalPanel();
-      sourceLabels.setSize("100%", "100%");
+      sourceLabelsPanel = new VerticalPanel();
+      sourceLabelsPanel.setSize("100%", "100%");
 
-      for (int i = 0; i < value.getSources().size(); i++)
+      for (String source : value.getSources())
       {
-         HighlightingLabel sourceLabel = new HighlightingLabel(value.getSources().get(i));
-         sourceLabel.setStylePrimaryName("TableEditorContent");
-         sourceLabel.setTitle(messages.sourceCommentLabel() + value.getSourceComments().get(i));
-         sourceLabels.add(sourceLabel);
-      }
-      panel.add(sourceLabels);
-   }
+         HighlightingLabel hightlightingLabel = new HighlightingLabel(source);
+         hightlightingLabel.setStylePrimaryName("TableEditorContent");
+         hightlightingLabel.setTitle(messages.sourceCommentLabel() + value.getSourceComment());
 
-   public VerticalPanel getLabels()
-   {
-      return sourceLabels;
+         HorizontalPanel sourcePanel = new HorizontalPanel();
+         sourcePanel.setSize("100%", "100%");
+         sourcePanel.add(hightlightingLabel);
+         
+         RadioButton selectButton = new RadioButton("selectSource");
+         selectButton.addClickHandler(selectSourceHandler);
+
+         hightlightingLabelList.add(hightlightingLabel);
+         sourceLabelsPanel.add(sourcePanel);
+         sourceLabelsPanel.add(selectButton);
+      }
+      panel.add(sourceLabelsPanel);
    }
 
    @Override
@@ -108,9 +136,8 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
    
    public void highlightSearch(String search)
    {
-      for (int i = 0; i < sourceLabels.getWidgetCount(); i++)
+      for (HighlightingLabel sourceLabel : hightlightingLabelList)
       {
-         HighlightingLabel sourceLabel = (HighlightingLabel) sourceLabels.getWidget(i);
          sourceLabel.highlightSearch(search);
       }
    }
