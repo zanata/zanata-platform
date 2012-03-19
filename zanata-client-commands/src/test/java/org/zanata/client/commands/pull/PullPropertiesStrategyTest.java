@@ -70,7 +70,7 @@ public class PullPropertiesStrategyTest
    {
       TextFlow tf = new TextFlow();
       tf.setId(key);
-      tf.setContent(value);
+      tf.setContents(value);
       return tf;
    }
 
