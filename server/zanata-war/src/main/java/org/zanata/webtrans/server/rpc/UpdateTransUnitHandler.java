@@ -21,6 +21,7 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -242,10 +243,17 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          msgContext = hTextFlow.getPotEntryData().getContext();
       }
       
+      // TODO Plural Support
+      ArrayList<String> sources = new ArrayList<String>();
+      ArrayList<String> targets = new ArrayList<String>();
+
+      sources.add(hTextFlow.getContent());
+      targets.add(action.getContent());
+      
       TransUnit tu = new TransUnit(action.getTransUnitId(), hTextFlow.getResId(),
-                                   locale, hTextFlow.getContent(),
+                                   locale, sources,
                                    CommentsUtil.toString(hTextFlow.getComment()),
-                                   action.getContent(), target.getState(),
+                                   targets, target.getState(),
                                    authenticatedAccount.getPerson().getName(),
                                    SIMPLE_FORMAT.format(new Date()), msgContext, hTextFlow.getPos());
       // @formatter:on
@@ -316,11 +324,17 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          msgContext = hTextFlow.getPotEntryData().getContext();
       }
 
+      // TODO Plural Support
+      ArrayList<String> sources = new ArrayList<String>();
+      ArrayList<String> targets = new ArrayList<String>();
+
+      sources.add(hTextFlow.getContent());
+      targets.add(target.getContent());
       // @formatter:off
       TransUnit tu = new TransUnit(action.getTransUnitId(), hTextFlow.getResId(),
-                                   locale, hTextFlow.getContent(),
+                                   locale, sources,
                                    CommentsUtil.toString(hTextFlow.getComment()),
-                                   target.getContent(), target.getState(),
+                                   targets, target.getState(),
                                    target.getLastModifiedBy().getName(),
                                    SIMPLE_FORMAT.format(target.getLastChanged()), msgContext, hTextFlow.getPos());
       // @formatter:on

@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -855,6 +856,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     */
    private void fireValidationEvent(final EventBus eventBus)
    {
+       // TODO Plural Support
 //      eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSources(), currentTargetPresenter.getDisplay().getCurrentEditor().getText(), false));
    }
 

@@ -47,7 +47,7 @@ public class TargetListView implements TargetListDisplay {
         int rowIndex = 0;
         for (String target : targets) {
             Editor editor = new Editor(target, findMessage);
-            editor.setValue(target);
+            editor.setText(target);
             editorGrid.setWidget(rowIndex, 0, editor);
         }
     }
@@ -64,7 +64,7 @@ public class TargetListView implements TargetListDisplay {
             if (widget instanceof Editor) {
                 Editor targetEditorWidget = (Editor) widget;
                 editors.add(targetEditorWidget);
-                result.add(targetEditorWidget.getValue());
+                result.add(targetEditorWidget.getText());
             }
         }
         return result;

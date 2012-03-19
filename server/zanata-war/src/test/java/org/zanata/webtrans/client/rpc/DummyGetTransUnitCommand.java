@@ -49,13 +49,20 @@ final class DummyGetTransUnitCommand implements Command
       {
          int stateNum = Random.nextInt(ContentState.values().length);
          ContentState state = ContentState.values()[stateNum];
-         String source = i % 2 == 0 ? "\n<hellow \nnum=\"" + (i + 1) + "\" /> %s\n" : "\n<hellow \nnum=\"" + (i + 1) + "\" /> %slooooooooooooooooooooooooooooooooooooooonggggggggggggggggggggggggggggggggggggstringgggggggggggggggggggggggggggggggggggggg";
+         ArrayList<String> sources = new ArrayList<String>();
+         ArrayList<String> targets = new ArrayList<String>();
+
+         sources.add(i % 2 == 0 ? "\n<hellow \nnum=\"" + (i + 1) + "\" /> %s\n" : "\n<hellow \nnum=\"" + (i + 1) + "\" /> %slooooooooooooooooooooooooooooooooooooooonggggggggggggggggggggggggggggggggggggstringgggggggggggggggggggggggggggggggggggggg");
+         sources.add(i % 2 == 0 ? "\n<hellow \nnum=\"" + (i + 2) + "\" /> %s\n" : "\n<hellow \nnum=\"" + (i + 2) + "\" /> %slooooooooooooooooooooooooooooooooooooooonggggggggggggggggggggggggggggggggggggstringgggggggggggggggggggggggggggggggggggggg");
          String sourceComment = "comment " + (i + 1);
-         String target = "";
+
          if (state != ContentState.New)
-            target = "<world> \"" + (i + 1) + "\"</world>";
+         {
+            targets.add("<world> \"" + (i + 1) + "\"</world>");
+         }
+
          TransUnitId tuid = new TransUnitId(i + 1);
-         TransUnit unit = new TransUnit(tuid, tuid.toString(), localeId, source, sourceComment, target, state, "peter", "", "msgContext", i);
+         TransUnit unit = new TransUnit(tuid, tuid.toString(), localeId, sources, sourceComment, targets, state, "peter", "", "msgContext", i);
          units.add(unit);
       }
       return units;

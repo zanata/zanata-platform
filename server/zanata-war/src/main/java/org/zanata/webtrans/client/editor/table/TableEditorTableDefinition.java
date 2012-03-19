@@ -27,19 +27,26 @@ import java.util.Map;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.CopySourceEvent;
+import org.zanata.webtrans.client.events.OpenEditorEvent;
+import org.zanata.webtrans.client.presenter.SourcePanelPresenter;
 import org.zanata.webtrans.client.resources.NavigationMessages;
+import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
@@ -57,9 +64,10 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
    private final boolean isReadOnly;
    private final TableResources images = GWT.create(TableResources.class);
+   private final SourcePanelPresenter sourcePanelPresenter;
 
    private String findMessage;
-   private SourcePanel sourcePanel;
+   // private SourcePanel sourcePanel;
    private ArrayList<Widget> copyButtons;
    private boolean showingCopyButtons;
    private EventBus eventBus;
@@ -119,8 +127,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          VerticalPanel panel = new VerticalPanel();
          panel.addStyleName("TableEditorCell-Source-Table");
 
-         sourcePanel = new SourcePanel(rowValue, images, messages);
-         
+         SourcePanel sourcePanel = sourcePanelPresenter.getSourcePanel(view.getRowIndex(), rowValue);
+
          if (findMessage != null && !findMessage.isEmpty())
          {
             sourcePanel.highlightSearch(findMessage);
@@ -164,9 +172,56 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, final AbstractCellView<TransUnit> view)
       {
          view.setStyleName("TableEditorCell TableEditorCell-Target");
-//         TargetEditorView targetEditor = new TargetEditorView(messages, eventBus, new RedirectingTableModel<TransUnit>(), isReadOnly, rowValue);
-        
-         view.setWidget(targetEditor);
+         final VerticalPanel targetPanel = new VerticalPanel();
+         targetPanel.addStyleName("TableEditorCell-Target-Table");
+
+         final HighlightingLabel label = new HighlightingLabel();
+
+         /**
+          * if editor is opening, do not render target cell, otherwise editor
+          * will be closed. targetCellEditor.isEditing not suitable since when
+          * we click the save button, cellValue is not null.
+          **/
+         if (targetCellEditor.isOpened() && targetCellEditor.getTargetCell().getId().equals(rowValue.getId()))
+         {
+            return;
+         }
+
+         if (rowValue.getTargets().isEmpty() && !isReadOnly)
+         {
+            label.setText(messages.clickHere());
+            label.setStylePrimaryName("TableEditorContent-Empty");
+         }
+         else
+         {
+            label.setText(rowValue.getTargets().toString());
+            label.setStylePrimaryName("TableEditorContent");
+         }
+
+         if (findMessage != null && !findMessage.isEmpty())
+         {
+            label.highlightSearch(findMessage);
+         }
+         label.setTitle(messages.clickHere());
+
+         label.sinkEvents(Event.ONMOUSEDOWN);
+         final int rowIndex = view.getRowIndex();
+         label.addMouseDownHandler(new MouseDownHandler()
+         {
+            @Override
+            public void onMouseDown(MouseDownEvent event)
+            {
+               if (!isReadOnly && event.getNativeButton() == NativeEvent.BUTTON_LEFT)
+               {
+                  event.stopPropagation();
+                  event.preventDefault();
+                  eventBus.fireEvent(new OpenEditorEvent(rowIndex));
+               }
+            }
+         });
+         targetPanel.add(label);
+         targetPanel.setWidth("100%");
+         view.setWidget(targetPanel);
       }
    };
 
@@ -217,17 +272,19 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    };
 
    private final NavigationMessages messages;
+   private InlineTargetCellEditor targetCellEditor;
 
    public void setFindMessage(String findMessage)
    {
       this.findMessage = findMessage;
    }
 
-   public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final EventBus eventBus, boolean isReadOnly)
+   public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final EventBus eventBus, final SourcePanelPresenter sourcePanelPresenter, boolean isReadOnly)
    {
       this.isReadOnly = isReadOnly;
       this.messages = messages;
       this.eventBus = eventBus;
+      this.sourcePanelPresenter = sourcePanelPresenter;
       setRowRenderer(rowRenderer);
       sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
 
@@ -235,8 +292,79 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       operationsColumnDefinition.setMaximumColumnWidth(1);
       operationsColumnDefinition.setCellRenderer(operationsCellRenderer);
       targetColumnDefinition.setCellRenderer(targetCellRenderer);
-      
+      CancelCallback<TransUnit> cancelCallBack = new CancelCallback<TransUnit>()
+      {
+         @Override
+         public void onCancel(TransUnit cellValue)
+         {
+            tableModel.onCancel(cellValue);
+         }
+      };
+      EditRowCallback transValueCallBack = new EditRowCallback()
+      {
+         @Override
+         public void gotoNextRow()
+         {
+            tableModel.gotoNextRow();
+         }
+
+         @Override
+         public void gotoPrevRow()
+         {
+            tableModel.gotoPrevRow();
+         }
+
+         @Override
+         public void gotoFirstRow()
+         {
+            tableModel.gotoFirstRow();
+         }
+
+         @Override
+         public void gotoLastRow()
+         {
+            tableModel.gotoLastRow();
+         }
+
+         @Override
+         public void gotoNextFuzzyNewRow()
+         {
+            tableModel.gotoNextFuzzyNew();
+         }
+
+         @Override
+         public void gotoPrevFuzzyNewRow()
+         {
+            tableModel.gotoPrevFuzzyNew();
+         }
+
+         @Override
+         public void gotoNextFuzzyRow()
+         {
+            tableModel.gotoNextFuzzy();
+         }
+
+         @Override
+         public void gotoPrevFuzzyRow()
+         {
+            tableModel.gotoPrevFuzzy();
+         }
+
+         @Override
+         public void gotoNextNewRow()
+         {
+            tableModel.gotoNextNew();
+         }
+
+         @Override
+         public void gotoPrevNewRow()
+         {
+            tableModel.gotoPrevNew();
+         }
+      };
+      this.targetCellEditor = new InlineTargetCellEditor(findMessage, cancelCallBack, transValueCallBack, eventBus, isReadOnly);
       this.transUnitDetailsContent = new TransUnitDetailsPanel(messages.transUnitDetailsHeading());
+      targetColumnDefinition.setCellEditor(targetCellEditor);
 
       addColumnDefinition(sourceColumnDefinition);
       addColumnDefinition(operationsColumnDefinition);
@@ -244,6 +372,11 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
       copyButtons = new ArrayList<Widget>();
       showingCopyButtons = true;
+   }
+
+   public InlineTargetCellEditor getTargetCellEditor()
+   {
+      return targetCellEditor;
    }
 
    public void setTransUnitDetails(TransUnit selectedTransUnit)

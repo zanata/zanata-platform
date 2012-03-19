@@ -442,9 +442,10 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                clearCacheList();
                if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
                {
+                  // TODO Plural Support
                   Log.info("selected TU updated; clear selection");
                   display.getTargetCellEditor().cancelEdit();
-                  eventBus.fireEvent(new RunValidationEvent(event.getTransUnit().getId(), event.getTransUnit().getSource(), event.getTransUnit().getTarget()));
+                  eventBus.fireEvent(new RunValidationEvent(event.getTransUnit().getId(), event.getTransUnit().getSources().toString(), event.getTransUnit().getTargets().toString()));
                }
 
                Integer rowIndex = getRowIndex(event.getTransUnit());
@@ -623,7 +624,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             if (rowIndex != null)
             {
                tableModelHandler.gotoRow(rowIndex, true);
-               display.getTargetCellEditor().setText(event.getTransUnit().getSource());
+               // TODO Plural Support
+               display.getTargetCellEditor().setText(event.getTransUnit().getSources().toString());
                display.getTargetCellEditor().autoSize();
             }
          }
@@ -779,7 +781,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       @Override
       public boolean onSetRowValue(int row, TransUnit rowValue)
       {
-         final UpdateTransUnit updateTransUnit = new UpdateTransUnit(rowValue.getId(), rowValue.getTarget(), rowValue.getStatus());
+         // TODO Plural Support
+         final UpdateTransUnit updateTransUnit = new UpdateTransUnit(rowValue.getId(), rowValue.getTargets().toString(), rowValue.getStatus());
          eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifySaving()));
          dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
          {

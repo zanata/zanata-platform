@@ -137,7 +137,7 @@ public class EditorColumnTableDefinition extends DefaultTableDefinition<TransUni
                 label.setText(messages.clickHere());
                 label.setStylePrimaryName("TableEditorContent-Empty");
             } else {
-                label.setText(rowValue.getTargets());
+                label.setText(rowValue.getTargets().toString());
                 label.setStylePrimaryName("TableEditorContent");
             }
 
