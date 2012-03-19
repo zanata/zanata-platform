@@ -25,6 +25,7 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.MainView;
+import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -88,9 +89,10 @@ public class AppView extends Composite implements AppPresenter.Display
    // TODO may be able to make these provided=true widgets
    private Widget documentListView;
    private Widget translationView;
+   private Widget searchResultsView;
 
    @Inject
-   public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, TranslationPresenter.Display translationView)
+   public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView)
    {
       this.resources = resources;
 
@@ -113,6 +115,9 @@ public class AppView extends Composite implements AppPresenter.Display
       this.translationView = translationView.asWidget();
       this.container.add(this.translationView);
 
+      this.searchResultsView = searchResultsView.asWidget();
+      this.container.add(this.searchResultsView);
+
       Window.enableScrolling(false);
    }
 
@@ -128,13 +133,32 @@ public class AppView extends Composite implements AppPresenter.Display
       switch (view)
       {
       case Documents:
-         container.setWidgetTopBottom(documentListView, 0, Unit.PX, 0, Unit.PX);
-         container.setWidgetTopHeight(translationView, 0, Unit.PX, 0, Unit.PX);
+         setWidgetVisible(documentListView, true);
+         setWidgetVisible(searchResultsView, false);
+         setWidgetVisible(translationView, false);
+         break;
+      case Search:
+         setWidgetVisible(documentListView, false);
+         setWidgetVisible(searchResultsView, true);
+         setWidgetVisible(translationView, false);
          break;
       case Editor:
-         container.setWidgetTopBottom(translationView, 0, Unit.PX, 0, Unit.PX);
-         container.setWidgetTopHeight(documentListView, 0, Unit.PX, 0, Unit.PX);
+         setWidgetVisible(documentListView, false);
+         setWidgetVisible(searchResultsView, false);
+         setWidgetVisible(translationView, true);
          break;
+      }
+   }
+
+   private void setWidgetVisible(Widget widget, boolean visible)
+   {
+      if (visible)
+      {
+         container.setWidgetTopBottom(widget, 0, Unit.PX, 0, Unit.PX);
+      }
+      else
+      {
+         container.setWidgetTopHeight(widget, 0, Unit.PX, 0, Unit.PX);
       }
    }
 

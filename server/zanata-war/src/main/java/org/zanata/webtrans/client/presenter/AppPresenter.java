@@ -87,6 +87,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
    private final DocumentListPresenter documentListPresenter;
    private final TranslationPresenter translationPresenter;
+   private final SearchResultsPresenter searchResultsPresenter;
    private final History history;
    private final Identity identity;
    private final Window window;
@@ -105,7 +106,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
+   public AppPresenter(Display display, EventBus eventBus, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
    {
       super(display, eventBus);
       this.history = history;
@@ -113,6 +114,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       this.messages = messages;
       this.documentListPresenter = documentListPresenter;
       this.translationPresenter = translationPresenter;
+      this.searchResultsPresenter = searchResultsPresenter;
       this.window = window;
       this.windowLocation = windowLocation;
       this.workspaceContext = workspaceContext;
@@ -123,6 +125,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    {
       documentListPresenter.bind();
       translationPresenter.bind();
+      searchResultsPresenter.bind();
 
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
       {
@@ -294,19 +297,19 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       {
          switch (viewToShow)
          {
-         case Documents:
-            if (currentView == MainView.Editor)
-               translationPresenter.saveEditorPendingChange();
-            display.setDocumentLabel("", messages.noDocumentSelected());
-            currentDisplayStats = projectStats;
-            break;
-
          case Editor:
             if (selectedDocument != null)
             {
                display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
             }
             currentDisplayStats = selectedDocumentStats;
+            break;
+         //Documents or Search
+         default:
+            if (currentView == MainView.Editor)
+               translationPresenter.saveEditorPendingChange();
+            display.setDocumentLabel("", messages.noDocumentSelected());
+            currentDisplayStats = projectStats;
             break;
          }
          display.showInMainView(viewToShow);

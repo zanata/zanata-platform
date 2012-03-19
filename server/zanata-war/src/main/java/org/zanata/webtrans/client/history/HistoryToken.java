@@ -18,6 +18,7 @@ public class HistoryToken
    public static final String KEY_DOCUMENT = "doc";
 
    public static final String KEY_VIEW = "view";
+   public static final String VALUE_SEARCH_RESULTS_VIEW = "search";
    public static final String VALUE_EDITOR_VIEW = "doc";
 
    public static final String KEY_DOC_FILTER_TEXT = "filter";
@@ -86,7 +87,11 @@ public class HistoryToken
             {
                historyToken.setView(MainView.Editor);
             }
-            // else default will be used
+            else if (value.equals(VALUE_SEARCH_RESULTS_VIEW))
+            {
+               historyToken.setView(MainView.Search);
+            }
+            // else default (document list) will be used
          }
          else if (key.equals(KEY_DOC_FILTER_OPTION))
          {
@@ -173,8 +178,16 @@ public class HistoryToken
             first = false;
          else
             token += PAIR_SEPARATOR;
-         // editor is the only non-default view
-         token += KEY_VIEW + DELIMITER_K_V + VALUE_EDITOR_VIEW;
+         token += KEY_VIEW + DELIMITER_K_V;
+         if (view == MainView.Search)
+         {
+            token += VALUE_SEARCH_RESULTS_VIEW;
+         }
+         else
+         {
+            // must be editor
+            token += VALUE_EDITOR_VIEW;
+         }
       }
 
       if (!fullDocPath.equals(DEFAULT_DOCUMENT_PATH))
