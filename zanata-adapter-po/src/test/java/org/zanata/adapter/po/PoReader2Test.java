@@ -1,5 +1,6 @@
 package org.zanata.adapter.po;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -80,9 +81,9 @@ public class PoReader2Test
       List<TextFlow> resources = doc.getTextFlows();
 
       TextFlow tf1 = resources.get(3);
-      assertThat(tf1.getContent(), equalTo("Important"));
+      assertThat(tf1.getContents(), equalTo(asList("Important")));
       TextFlowTarget tfTarget = textFlowTargets.get(3);
-      assertThat(tfTarget.getContent(), equalTo("キーのインポート"));
+      assertThat(tfTarget.getContents(), equalTo(asList("キーのインポート")));
 
       // TODO test PO headers and attributes
    }
