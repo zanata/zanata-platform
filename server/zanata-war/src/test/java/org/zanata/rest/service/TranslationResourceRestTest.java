@@ -1,5 +1,6 @@
 package org.zanata.rest.service;
 
+import static java.util.Arrays.asList;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
@@ -238,7 +239,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
       Resource gotSr = resourceGetResponse.getEntity();
       assertThat(gotSr.getTextFlows().size(), is(1));
-      assertThat(gotSr.getTextFlows().get(0).getContent(), is("tf1"));
+      assertThat(gotSr.getTextFlows().get(0).getContents(), is(asList("tf1")));
 
    }
 
@@ -258,7 +259,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
       Resource gotSr = resourceGetResponse.getEntity();
       assertThat(gotSr.getTextFlows().size(), is(1));
-      assertThat(gotSr.getTextFlows().get(0).getContent(), is("tf1"));
+      assertThat(gotSr.getTextFlows().get(0).getContents(), is(asList("tf1")));
 
    }
 
@@ -292,7 +293,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
       Resource gotSr = resourceGetResponse.getEntity();
       assertThat(gotSr.getTextFlows().size(), is(1));
-      assertThat(gotSr.getTextFlows().get(0).getContent(), is("tf1"));
+      assertThat(gotSr.getTextFlows().get(0).getContents(), is(asList("tf1")));
 
       // @formatter:off
       /*
@@ -317,7 +318,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TranslationsResource entity = new TranslationsResource();
       TextFlowTarget target = new TextFlowTarget();
       target.setResId("tf1");
-      target.setContent("hello world");
+      target.setContents("hello world");
       target.setState(ContentState.Approved);
       target.setTranslator(new Person("root@localhost", "Admin user"));
       entity.getTextFlowTargets().add(target);
@@ -405,7 +406,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       assertThat("should have a textflow with this id", tft.getResId(), is("tf1"));
 
       assertThat("expected de target", tft, notNullValue());
-      assertThat("expected translation for de", tft.getContent(), is("hei verden"));
+      assertThat("expected translation for de", tft.getContents(), is(asList("hei verden")));
    }
 
    @Test
@@ -448,7 +449,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       for (int i = 0; i < 2; i++)
       {
          TextFlow textFlow = new TextFlow("tf1");
-         textFlow.setContent("hello world!");
+         textFlow.setContents("hello world!");
          textFlows.add(textFlow);
       }
       ClientResponse<?> response = transResource.putResource(docUrl, doc, null);
@@ -468,11 +469,11 @@ public class TranslationResourceRestTest extends ZanataRestTest
       textFlows.clear();
 
       TextFlow textFlow = new TextFlow("tf1");
-      textFlow.setContent("hello world!");
+      textFlow.setContents("hello world!");
       textFlows.add(textFlow);
 
       TextFlow tf3 = new TextFlow("tf3");
-      tf3.setContent("more text");
+      tf3.setContents("more text");
       textFlows.add(tf3);
 
       Marshaller m = null;
@@ -818,7 +819,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TranslationsResource entity = new TranslationsResource();
       TextFlowTarget target = new TextFlowTarget();
       target.setResId("tf1");
-      target.setContent("hello world");
+      target.setContents("hello world");
       target.setState(ContentState.Approved);
       target.setTranslator(new Person("root@localhost", "Admin user"));
       entity.getTextFlowTargets().add(target);
@@ -873,7 +874,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TranslationsResource entity = new TranslationsResource();
       TextFlowTarget target = new TextFlowTarget();
       target.setResId("tf1");
-      target.setContent("hello world");
+      target.setContents("hello world");
       target.setState(ContentState.Approved);
       target.setTranslator(new Person("root@localhost", "Admin user"));
       entity.getTextFlowTargets().add(target);
@@ -890,7 +891,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       // Now translate and push them again
       for( TextFlowTarget tft : translations.getTextFlowTargets() )
       {
-         tft.setContent("Translated");
+         tft.setContents("Translated");
          tft.setState(ContentState.Approved);
       }
       
@@ -1161,7 +1162,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    {
       TranslationsResource trans = new TranslationsResource();
       TextFlowTarget target = new TextFlowTarget();
-      target.setContent("hei verden");
+      target.setContents("hei verden");
       target.setDescription("translation of hello world");
       target.setResId("tf1");
       target.setState(ContentState.Approved);
@@ -1205,7 +1206,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    private TextFlow newTextFlow(String id, String sourceContent, String sourceComment)
    {
       TextFlow textFlow = new TextFlow(id, LocaleId.EN);
-      textFlow.setContent(sourceContent);
+      textFlow.setContents(sourceContent);
       if (sourceComment != null)
          getOrAddComment(textFlow).setValue(sourceComment);
       return textFlow;
@@ -1216,7 +1217,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TextFlowTarget target = new TextFlowTarget();
       target.setResId(id);
       target.setState(ContentState.Approved);
-      target.setContent(targetContent);
+      target.setContents(targetContent);
       if (targetComment != null)
          getOrAddComment(target).setValue(targetComment);
       return target;

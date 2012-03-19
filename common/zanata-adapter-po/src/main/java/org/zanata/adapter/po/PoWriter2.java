@@ -170,23 +170,52 @@ public class PoWriter2
          PotEntryHeader entryData = textFlow.getExtensions(true).findByType(PotEntryHeader.class);
          SimpleComment srcComment = textFlow.getExtensions().findByType(SimpleComment.class);
          Message message = new Message();
-         message.setMsgid(textFlow.getContent());
+         List<String> tfContents = textFlow.getContents();
+         switch (tfContents.size())
+         {
+         case 2:
+            message.setMsgidPlural(tfContents.get(1));
+            // fall through...
+         case 1:
+            message.setMsgid(tfContents.get(0));
+            break;
+         default:
+            throw new RuntimeException("POT format only supports 2 plural forms: resId=" + textFlow.getId());
+         }
+
          message.setMsgstr("");
          if (targetDoc != null)
          {
-            TextFlowTarget contentData = targets.get(textFlow.getId());
-            if (contentData != null)
+            TextFlowTarget tfTarget = targets.get(textFlow.getId());
+            if (tfTarget != null)
             {
                if (entryData == null)
                {
                   log.warn("Missing POT entry for text-flow ID " + textFlow.getId());
                }
-               else if (!contentData.getResId().equals(textFlow.getId()))
+               else if (!tfTarget.getResId().equals(textFlow.getId()))
                {
                   throw new RuntimeException("ID from target doesn't match text-flow ID");
                }
-               message.setMsgstr(contentData.getContent());
-               SimpleComment poComment = contentData.getExtensions().findByType(SimpleComment.class);
+               List<String> tftContents = tfTarget.getContents();
+
+               if (message.isPlural())
+               {
+                  for (int i = 0; i < tftContents.size(); i++)
+                  {
+                     message.addMsgstrPlural(tftContents.get(i), i);
+                  }
+               }
+               else
+               {
+                  if (tftContents.size() != 1)
+                  {
+                     throw new RuntimeException("plural forms not enabled for this text flow: resId=" + textFlow.getId());
+                  }
+                  message.setMsgstr(tftContents.get(0));
+               }
+
+               SimpleComment poComment = tfTarget.getExtensions().findByType(SimpleComment.class);
                if (poComment != null)
                {
                   String[] comments = poComment.getValue().split("\n");
@@ -202,7 +231,7 @@ public class PoWriter2
                      }
                   }
                }
-               if (contentData.getState() == ContentState.NeedReview)
+               if (tfTarget.getState() == ContentState.NeedReview)
                {
                   message.setFuzzy(true);
                }

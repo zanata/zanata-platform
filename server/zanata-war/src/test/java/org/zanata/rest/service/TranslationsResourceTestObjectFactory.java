@@ -20,7 +20,7 @@ public class TranslationsResourceTestObjectFactory
    {
       TranslationsResource entity = new TranslationsResource();
       TextFlowTarget target = new TextFlowTarget("rest1");
-      target.setContent("hello world");
+      target.setContents("hello world");
       target.setState(ContentState.Approved);
       target.setTranslator(new Person("root@localhost", "Administrator"));
       // for the convenience of test
@@ -34,12 +34,12 @@ public class TranslationsResourceTestObjectFactory
    {
       TranslationsResource entity = new TranslationsResource();
       TextFlowTarget target = new TextFlowTarget("rest1");
-      target.setContent("hello world");
+      target.setContents("hello world");
       target.setState(ContentState.Approved);
       target.setTranslator(new Person("root@localhost", "Administrator"));
       target.getExtensions(true);
       TextFlowTarget target2 = new TextFlowTarget("rest2");
-      target2.setContent("greeting world");
+      target2.setContents("greeting world");
       target2.setState(ContentState.Approved);
       target2.setTranslator(new Person("root@localhost", "Administrator"));
       target2.getExtensions(true);
