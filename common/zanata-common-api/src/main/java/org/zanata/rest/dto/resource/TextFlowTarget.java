@@ -19,18 +19,17 @@ import org.zanata.rest.dto.Extensible;
 import org.zanata.rest.dto.Person;
 import org.zanata.rest.dto.extensions.gettext.TextFlowTargetExtension;
 
-@XmlType(name = "textFlowTargetType", propOrder = { "description", "translator", "content", "extensions" })
-@JsonPropertyOrder( { "resId", "state", "translator", "content", "extensions" })
+@XmlType(name = "textFlowTargetType", propOrder = { "description", "translator", "content", "contents", "extensions" })
+@JsonPropertyOrder({ "resId", "state", "translator", "content", "contents", "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
-public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetExtension>
+public class TextFlowTarget extends TextContainer implements Serializable, Extensible<TextFlowTargetExtension>
 {
 
    private static final long serialVersionUID = 1L;
    private String resId;
    private ContentState state = ContentState.New;
    private Person translator;
-   private String content;
    private String description;
    private ExtensionSet<TextFlowTargetExtension> extensions;
    private Integer revision;
@@ -65,19 +64,6 @@ public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetEx
    public void setState(ContentState state)
    {
       this.state = state;
-   }
-
-   @XmlElement(name = "content", required = true)
-   public String getContent()
-   {
-      if (content == null)
-         return "";
-      return content;
-   }
-
-   public void setContent(String content)
-   {
-      this.content = content;
    }
 
    /**
@@ -140,8 +126,7 @@ public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetEx
    public int hashCode()
    {
       final int prime = 31;
-      int result = 1;
-      result = prime * result + ((content == null) ? 0 : content.hashCode());
+      int result = super.hashCode();
       result = prime * result + ((description == null) ? 0 : description.hashCode());
       result = prime * result + ((extensions == null) ? 0 : extensions.hashCode());
       result = prime * result + ((resId == null) ? 0 : resId.hashCode());
@@ -159,7 +144,7 @@ public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetEx
       {
          return true;
       }
-      if (obj == null)
+      if (!super.equals(obj))
       {
          return false;
       }
@@ -168,17 +153,6 @@ public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetEx
          return false;
       }
       TextFlowTarget other = (TextFlowTarget) obj;
-      if (content == null)
-      {
-         if (other.content != null)
-         {
-            return false;
-         }
-      }
-      else if (!content.equals(other.content))
-      {
-         return false;
-      }
       if (description == null)
       {
          if (other.description != null)
@@ -273,4 +247,5 @@ public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetEx
    {
       this.textFlowRevision = textFlowRevision;
    }
+
 }
