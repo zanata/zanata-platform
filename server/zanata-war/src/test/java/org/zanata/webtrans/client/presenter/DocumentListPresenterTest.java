@@ -271,7 +271,14 @@ public class DocumentListPresenterTest
       expect(mockEvent.getDocumentId()).andReturn(new DocumentId(2222L)).anyTimes();
       expect(mockEvent.getPreviousStatus()).andReturn(ContentState.NeedReview).anyTimes();
       expect(mockEvent.getWordCount()).andReturn(3).anyTimes();
-      TransUnit newTransUnit = new TransUnit(new TransUnitId(12345L), "resId", new LocaleId("es"), "this is the source", "this is the source comment", "this is the target", ContentState.Approved, "lastModifiedBy", "lastModifiedTime", "msgContext", 1);
+
+      ArrayList<String> sources = new ArrayList<String>();
+      sources.add("this is the source");
+
+      ArrayList<String> targets = new ArrayList<String>();
+      sources.add("this is the target");
+
+      TransUnit newTransUnit = new TransUnit(new TransUnitId(12345L), "resId", new LocaleId("es"), sources, "this is the source comment", targets, ContentState.Approved, "lastModifiedBy", "lastModifiedTime", "msgContext", 1);
       expect(mockEvent.getTransUnit()).andReturn(newTransUnit).anyTimes();
       replay(mockEvent);
       capturedTransUnitUpdatedEventHandler.getValue().onTransUnitUpdated(mockEvent);
@@ -310,7 +317,13 @@ public class DocumentListPresenterTest
       expect(mockEvent.getDocumentId()).andReturn(new DocumentId(2222L)).anyTimes();
       expect(mockEvent.getPreviousStatus()).andReturn(ContentState.NeedReview).anyTimes();
       expect(mockEvent.getWordCount()).andReturn(3).anyTimes();
-      TransUnit newTransUnit = new TransUnit(new TransUnitId(12345L), "resId", new LocaleId("es"), "this is the source", "this is the source comment", "this is the target", ContentState.Approved, "lastModifiedBy", "lastModifiedTime", "msgContext", 1);
+      ArrayList<String> sources = new ArrayList<String>();
+      sources.add("this is the source");
+
+      ArrayList<String> targets = new ArrayList<String>();
+      sources.add("this is the target");
+
+      TransUnit newTransUnit = new TransUnit(new TransUnitId(12345L), "resId", new LocaleId("es"), sources, "this is the source comment", targets, ContentState.Approved, "lastModifiedBy", "lastModifiedTime", "msgContext", 1);
       expect(mockEvent.getTransUnit()).andReturn(newTransUnit).anyTimes();
       replay(mockEvent);
       capturedTransUnitUpdatedEventHandler.getValue().onTransUnitUpdated(mockEvent);

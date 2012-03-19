@@ -155,11 +155,17 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
    public void createTMRequestForTransUnit(TransUnit transUnit)
    {
-      String query = transUnit.getSource();
+      StringBuilder sources = new StringBuilder();
+      for (String source : transUnit.getSources())
+      {
+         sources.append(source);
+         sources.append(" ");
+      }
+
       // Start automatically fuzzy search
       SearchType searchType = GetTranslationMemory.SearchType.FUZZY;
       display.getTmTextBox().setText("");
-      createTMRequest(query, searchType);
+      createTMRequest(sources.toString(), searchType);
    }
 
    private void createTMRequest(final String query, GetTranslationMemory.SearchType searchType)

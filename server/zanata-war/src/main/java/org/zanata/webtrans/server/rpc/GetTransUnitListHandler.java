@@ -146,10 +146,18 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          msgContext = textFlow.getPotEntryData().getContext();
       }
       HTextFlowTarget target = textFlow.getTargets().get(hLocale);
-      TransUnit tu = new TransUnit(new TransUnitId(textFlow.getId()), textFlow.getResId(), hLocale.getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New, "", "", msgContext, textFlow.getPos());
+
+      // TODO Plural Support
+      ArrayList<String> targets = new ArrayList<String>();
+      ArrayList<String> sources = new ArrayList<String>();
+      sources.add(textFlow.getContent());
+      TransUnit tu = new TransUnit(new TransUnitId(textFlow.getId()), textFlow.getResId(), hLocale.getLocaleId(), sources, CommentsUtil.toString(textFlow.getComment()), targets, ContentState.New, "", "", msgContext, textFlow.getPos());
       if (target != null)
       {
-         tu.setTarget(target.getContent());
+         targets = new ArrayList<String>();
+         targets.add(target.getContent());
+
+         tu.setTargets(targets);
          tu.setStatus(target.getState());
          if (target.getLastModifiedBy() != null)
          {

@@ -36,10 +36,12 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 
 public class SourcePanel extends Composite implements HasValue<TransUnit>, HasClickHandlers
 {
@@ -60,6 +62,7 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
       public void onClick(ClickEvent event)
       {
          Log.info(event.getSource().toString());
+
       }
    };
 
@@ -76,6 +79,7 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
 
       sourceLabelsPanel = new VerticalPanel();
       sourceLabelsPanel.setSize("100%", "100%");
+      sourceLabelsPanel.addStyleName("sourceLabelsTable");
 
       for (String source : value.getSources())
       {
@@ -86,13 +90,14 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
          HorizontalPanel sourcePanel = new HorizontalPanel();
          sourcePanel.setSize("100%", "100%");
          sourcePanel.add(hightlightingLabel);
-         
-         RadioButton selectButton = new RadioButton("selectSource");
+
+         RadioButton selectButton = new RadioButton(value.getId().toString() + "-selectSource");
          selectButton.addClickHandler(selectSourceHandler);
+         sourcePanel.add(selectButton);
+         sourcePanel.setCellHorizontalAlignment(selectButton, HasHorizontalAlignment.ALIGN_RIGHT);
 
          hightlightingLabelList.add(hightlightingLabel);
          sourceLabelsPanel.add(sourcePanel);
-         sourceLabelsPanel.add(selectButton);
       }
       panel.add(sourceLabelsPanel);
    }

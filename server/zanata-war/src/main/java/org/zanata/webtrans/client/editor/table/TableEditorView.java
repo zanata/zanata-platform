@@ -26,6 +26,7 @@ import java.util.Set;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.editor.HasPageNavigation;
+import org.zanata.webtrans.client.presenter.SourcePanelPresenter;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.ui.LoadingPanel;
@@ -64,15 +65,15 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    }
 
    @Inject
-   public TableEditorView(NavigationMessages messages, EventBus eventBus, WorkspaceContext workspaceContext, final Resources resources)
+   public TableEditorView(NavigationMessages messages, EventBus eventBus, WorkspaceContext workspaceContext, final Resources resources, final SourcePanelPresenter sourcePanelPresenter)
    {
-      this(messages, new RedirectingTableModel<TransUnit>(), eventBus, workspaceContext);
+      this(messages, new RedirectingTableModel<TransUnit>(), eventBus, workspaceContext, sourcePanelPresenter);
       loadingPanel = new LoadingPanel(resources);
    }
 
-   private TableEditorView(NavigationMessages messages, RedirectingTableModel<TransUnit> tableModel, EventBus eventBus, WorkspaceContext workspaceContext)
+   private TableEditorView(NavigationMessages messages, RedirectingTableModel<TransUnit> tableModel, EventBus eventBus, WorkspaceContext workspaceContext, final SourcePanelPresenter sourcePanelPresenter)
    {
-      this(new RedirectingCachedTableModel<TransUnit>(tableModel), new TableEditorTableDefinition(messages, new RedirectingCachedTableModel<TransUnit>(tableModel), eventBus, workspaceContext.isReadOnly()));
+      this(new RedirectingCachedTableModel<TransUnit>(tableModel), new TableEditorTableDefinition(messages, new RedirectingCachedTableModel<TransUnit>(tableModel), eventBus, sourcePanelPresenter, workspaceContext.isReadOnly()));
    }
 
    private TableEditorView(RedirectingCachedTableModel<TransUnit> tableModel, TableEditorTableDefinition tableDefinition)

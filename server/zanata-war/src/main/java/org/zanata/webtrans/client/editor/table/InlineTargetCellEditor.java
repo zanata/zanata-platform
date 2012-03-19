@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -579,7 +580,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       table.setWidget(curRow, curCol, verticalPanel);
 
-      textArea.setText(cellValue.getTarget());
+      textArea.setText(cellValue.getTargets().toString());
 
       autoSize();
 
@@ -597,7 +598,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    public void savePendingChange(boolean cancelIfUnchanged)
    {
       // if something has changed, save as approved
-      if (isEditing() && !cellValue.getTarget().equals(textArea.getText()))
+      if (isEditing() && !cellValue.getTargets().equals(textArea.getText()))
       {
          Log.debug("savePendingChange - acceptEdit");
          cellValue.setStatus(ContentState.Approved);
@@ -658,10 +659,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       {
          return;
       }
-      cellValue.setTarget(textArea.getText());
+      ArrayList<String> targets = new ArrayList<String>();
+      targets.add(textArea.getText());
+      cellValue.setTargets(targets);
 
       // changing status to new when target cell is empty
-      if (cellValue.getTarget().isEmpty())
+      if (cellValue.getTargets().isEmpty())
          cellValue.setStatus(ContentState.New);
       else if (cellValue.getStatus() == ContentState.New)
          cellValue.setStatus(ContentState.Approved);
@@ -682,7 +685,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    protected void acceptFuzzyEdit()
    {
       String text = textArea.getText();
-      cellValue.setTarget(text);
+      ArrayList<String> targets = new ArrayList<String>();
+      targets.add(text);
+      cellValue.setTargets(targets);
       if (text == null || text.isEmpty())
          cellValue.setStatus(ContentState.New);
       else
@@ -851,7 +856,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     */
    private void fireValidationEvent(final EventBus eventBus)
    {
-      eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSource(), textArea.getText(), false));
+      // TODO Plural Support
+      eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSources().toString(), textArea.getText(), false));
    }
 
    public void setReadOnly(boolean isReadOnly)

@@ -25,8 +25,6 @@ import java.util.Map;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.editor.table.SourcePanel;
 import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
@@ -40,29 +38,36 @@ import com.google.inject.Inject;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
-public class SourcePanelPresenter extends WidgetPresenter<SourcePanelPresenter.Display>
+public class SourcePanelPresenter
 {
    private final NavigationMessages messages;
    private final EventBus eventBus;
    private final DispatchAsync dispatcher;
    private final Map<Integer, SourcePanel> sourcePanelMap;
-   private final int pageSize;
+
+   // private final int pageSize;
 
    @Inject
-   public SourcePanelPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TableEditorPresenter.Display tableEditorPresenter, final NavigationMessages messages)
+   public SourcePanelPresenter(EventBus eventBus, CachingDispatchAsync dispatcher, final NavigationMessages messages)
    {
-      super(display, eventBus);
+      // super(display, eventBus);
       this.messages = messages;
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
 
       sourcePanelMap = new HashMap<Integer, SourcePanel>();
-      pageSize = tableEditorPresenter.getPageSize();
+      // pageSize = tableEditorPresenter.getPageSize();
+
+      for (int i = 0; i < 50; i++)
+      {
+         SourcePanel sourcePanel = new SourcePanel();
+         sourcePanelMap.put(i, sourcePanel);
+      }
    }
 
-   public interface Display extends WidgetDisplay
-   {
-   }
+   // public interface Display extends WidgetDisplay
+   // {
+   // }
 
    public SourcePanel getSourcePanel(int row, TransUnit value)
    {
@@ -81,22 +86,18 @@ public class SourcePanelPresenter extends WidgetPresenter<SourcePanelPresenter.D
       return sourcePanel;
    }
 
-   @Override
+   // @Override
    protected void onBind()
    {
-      for (int i = 0; i < pageSize; i++)
-      {
-         SourcePanel sourcePanel = new SourcePanel();
-         sourcePanelMap.put(i, sourcePanel);
-      }
+
    }
 
-   @Override
+   // @Override
    protected void onUnbind()
    {
    }
 
-   @Override
+   // @Override
    protected void onRevealDisplay()
    {
    }
