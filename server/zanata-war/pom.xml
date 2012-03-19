@@ -148,29 +148,47 @@
 				</executions>
 			</plugin>
 
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>compile</id>
-						<goals>
-							<goal>compile</goal>
-							<!-- compile, generateAsync, test -->
-						</goals>
-						<configuration>
-							<module>${zanata.gwt.module}</module>
-						</configuration>
-					</execution>
-					<execution>
-						<id>clean</id>
-						<phase>clean</phase>
-						<goals>
-							<goal>clean</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                            <!-- compile, generateAsync, test -->
+                        </goals>
+                        <configuration>
+                            <module>${zanata.gwt.module}</module>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>debug</id>
+                        <goals>
+                            <goal>debug</goal>
+                        </goals>
+                        <configuration>
+                            <module>${zanata.gwt.module}</module>
+                            <gen>${project.build.directory}/gwt-gen</gen>
+                            <webappDirectory>/NotBackedUp/tools/jboss-ewp-5.1/jboss-as-web/server/default/deploy/zanata.war</webappDirectory>
+                            <hostedWebapp>/NotBackedUp/tools/jboss-ewp-5.1/jboss-as-web/server/default/deploy/zanata.war</hostedWebapp>
+                            <buildOutputDirectory>${project.build.directory}/gwt-gen</buildOutputDirectory>
+                            <port>8080</port>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <runTarget>http://localhost:8080/zanata/webtrans/Application.html</runTarget>
+                    <noServer>true</noServer>
+                </configuration>
+            </plugin>
 
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -921,6 +939,16 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 		</dependency>
+
+        <!--to enable guava on gwt-->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava-gwt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+        </dependency>
 
 		<dependency>
 			<groupId>org.fedorahosted.openprops</groupId>
