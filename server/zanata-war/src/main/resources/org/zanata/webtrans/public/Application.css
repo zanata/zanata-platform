@@ -279,7 +279,7 @@ td.TableEditorCell-Target {
 	word-break: break-all;
 }
 
-@-moz-document {
+/*@-moz-document {
 {}
 	table.TableEditorCell-Source-Table { 
 		overflow-x:auto;
@@ -293,7 +293,7 @@ td.TableEditorCell-Target {
 	div.TransUnitDetail-Wrapper {
 		width: 450px;
 	}
-}
+}*/
 
 .TableEditorCell-Source-Table {
 	width: 100%;
@@ -587,6 +587,11 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	border-radius: 20px;
 	-moz-border-radius: 20px;
 	font-weight: bold;
+}
+.sourceTable {
+	border-spacing:5px;
+	width:100%;
+	height:100%;	
 }
 
 .sourceRow {
