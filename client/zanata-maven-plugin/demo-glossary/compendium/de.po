@@ -1,0 +1,2261 @@
+# PO-Compendium de
+# Copyright (C) 2003 Red Hat, Inc.
+# Bernd Groh <bgroh@redhat.com>, 2003
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: de\n"
+"POT-Creation-Date: 2003-06-03 11:43+1000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: German <de@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# bgroh@172.16.5.77
+# vfuehrer@172.16.44.7
+# ~ vfuehrer@172.16.44.7
+# ~ msgid "information security update"
+# ~ msgstr "Informationssicherheitsupdate"
+
+#: bgroh@172.16.5.77
+msgid "process"
+msgstr "Prozess"
+
+# bgroh@172.16.5.77
+#: hpeters@10.64.1.231
+msgid "implementation"
+msgstr "Implementierung"
+
+# bgroh@172.16.5.77
+# bgroh@172.16.5.77
+# ~ hpeters@10.64.1.231
+# ~ msgid "implementations"
+# ~ msgstr "Implementationen"
+
+#: nrichter@172.16.5.86
+msgid "disk drive"
+msgstr "Festplatte"
+
+#: nrichter@172.16.5.86
+msgid "mouse"
+msgstr "Maus"
+
+#: nrichter@172.16.5.86
+msgid "disaster"
+msgstr "Katastrophe"
+
+#: nrichter@172.16.5.86
+msgid "system adminstrator"
+msgstr "Systemadministrator"
+
+# nrichter@172.16.5.86
+#: hpeters@10.64.1.231
+msgid "organization"
+msgstr "Organisation"
+
+# nrichter@172.16.5.86
+# nrichter@172.16.5.86
+#: nrichter@172.16.5.86
+msgid "hardware failure"
+msgstr "Hardware-Ausfall"
+
+#: nrichter@172.16.5.86
+msgid "software failure"
+msgstr "Software-Ausfall"
+
+#: nrichter@172.16.5.86
+msgid "environmental failure"
+msgstr "Umgebungs-Ausfall"
+
+#: nrichter@172.16.5.86
+msgid "human errors"
+msgstr "Menschliches Versagen"
+
+#: nrichter@172.16.5.86
+msgid " Spare Hardware"
+msgstr "Ersatz-Hardware"
+
+#: nrichter@172.16.5.86
+msgid "spares"
+msgstr "Ersatzteile"
+
+#: nrichter@172.16.5.86
+msgid "skills"
+msgstr "Kompetenz"
+
+#: nrichter@172.16.5.86
+msgid "tool"
+msgstr "Tool"
+
+# nrichter@172.16.5.86
+# ~ hpeters@10.64.1.231
+# ~ msgid "tip"
+# ~ msgstr "Tipp"
+
+#: nrichter@172.16.5.86
+msgid "maintenance contract"
+msgstr "Wartungsvertrag"
+
+#: nrichter@172.16.5.86
+msgid "downtime"
+msgstr "Ausfallzeit"
+
+#: nrichter@172.16.5.86
+msgid "data center"
+msgstr "Datencenter"
+
+#: nrichter@172.16.5.86
+msgid "service contract"
+msgstr "Servicevertrag"
+
+#: nrichter@172.16.5.86
+msgid "hours of coverage"
+msgstr "Verfügungsstunden"
+
+#: nrichter@172.16.5.86
+msgid "response time"
+msgstr "Reaktionszeit"
+
+#: nrichter@172.16.5.86
+msgid "depot service"
+msgstr "Depot-Service"
+
+#: nrichter@172.16.5.86
+msgid "walk-in service"
+msgstr "Walk-In Service"
+
+#: nrichter@172.16.5.86
+msgid "drop-off service"
+msgstr "Drop-Off Service"
+
+# nrichter@172.16.5.86
+# hpeters@10.64.1.231
+# ~ hpeters@10.64.1.231
+# ~ msgid "note"
+# ~ msgstr "Anmerkung"
+
+# nrichter@172.16.5.86
+#: hpeters@10.64.1.231
+msgid "on site"
+msgstr "vor Ort"
+
+#: nrichter@172.16.5.86
+msgid "approach"
+msgstr "Herangehensweise"
+
+#: nrichter@172.16.5.86
+msgid "availability"
+msgstr "Verfügbarkeit"
+
+# nrichter@172.16.5.86
+#: bgroh@172.16.5.77
+msgid "operating system"
+msgstr "Betriebssystem"
+
+# nrichter@172.16.5.86
+# bgroh@172.16.5.77
+# ~ hpeters@10.64.1.231
+# ~ msgid "application"
+# ~ msgstr "Applikation"
+
+# nrichter@172.16.5.86
+#: hpeters@10.64.1.231
+msgid "support"
+msgstr "Unterstützung"
+
+#: nrichter@172.16.5.86
+msgid "email"
+msgstr "E-Mail"
+
+# nrichter@172.16.5.86
+#: hpeters@10.64.0.109
+msgid "policy"
+msgstr "Richtlinie"
+
+# bgroh@172.16.5.77
+# vfuehrer@172.16.44.7
+# vfuehrer@172.16.44.7
+# ~ hpeters@10.64.1.231
+# ~ msgid "warning"
+# ~ msgstr "Warnung"
+
+# Dies ist lediglich ein Testeintrag
+# Dies ist zum Pruefen der Funktionalitaet
+# Bitte ignorieren
+# vfuehrer@172.16.44.7
+# ~ vfuehrer@172.16.44.7
+# ~ msgid "test entry"
+# ~ msgstr "Testeintrag"
+
+# haha
+# hihi
+# huhu
+# vfuehrer@172.16.44.7
+# ~ vfuehrer@172.16.44.7
+# ~ msgid "more tests"
+# ~ msgstr "ein weiterer test"
+
+# platong
+# vfuehrer@172.16.44.7
+# ~ hpeters@10.64.1.231
+# ~ msgid "blah"
+# ~ msgstr "bling"
+
+# vfuehrer@172.16.44.7
+# ~ hpeters@10.64.1.231
+# ~ msgid "test entry"
+# ~ msgstr "Test"
+
+# ich bin ein
+# berliner
+# jetzt kommt der test
+msgid "i am a
+berliner"
+msgstr "ich bin ein
+berliner"
+
+# ich bin ein
+# berliner
+# jetzt kommt der test
+# more more more
+msgid "i am a
+berliner"
+msgstr "ich bin ein
+berliner"
+
+msgstr "ich bin ein
+berliner"
+# vfuehrer@172.16.44.7
+# ~ vfuehrer@172.16.44.7
+# ~ msgid "ich bin ein"
+# ~ msgstr "Test"
+
+# 2
+msgstr "ich bin ein
+berliner"
+# vfuehrer@172.16.44.7
+# vfuehrer@172.16.44.7
+# ~ hpeters@10.64.1.231
+# ~ msgid "ich bin auch ein berliner"
+# ~ msgstr "Test"
+
+#: vfuehrer@172.16.44.194
+msgid "Red Hat Network"
+msgstr "Red Hat Network"
+
+# ttrinks@10.64.6.26
+# ~ hpeters@10.64.1.231
+# ~ msgid "hello"
+# ~ msgstr "Hallo"
+
+#: jdimanos@10.64.6.15
+msgid " interceptor stack configuration"
+msgstr "Interceptor Stack-Konfiguration"
+
+#: jdimanos@10.64.6.15
+msgid " web container"
+msgstr "Webcontainer"
+
+# auch: Applikation
+#: hpeters@10.64.1.231
+msgid "application"
+msgstr "Anwendung"
+
+# kleine Anwendung, kleines Programm
+#: jdimanos@10.64.6.15
+msgid "applet"
+msgstr "Applet"
+
+# Test...
+# ttrinks@10.64.6.21
+#: hpeters@10.64.1.231
+msgid "to update"
+msgstr "aktualisieren"
+
+# Im farblich hervorgehobenen Hinweiskasten
+#: hpeters@10.64.1.231
+msgid "Note"
+msgstr "Anmerkung"
+
+# Im farblich hervorgehobenen Hinweiskasten
+#: hpeters@10.64.1.231
+msgid "Tip"
+msgstr "Tipp"
+
+# Im farblich hervorgehobenen Hinweiskasten
+#: hpeters@10.64.1.231
+msgid "Important"
+msgstr "Wichtig"
+
+# Im farblich hervorgehobenen Hinweiskasten
+#: hpeters@10.64.1.231
+msgid "Warning"
+msgstr "Warnung"
+
+# Im farblich hervorgehobenen Hinweiskasten
+#: hpeters@10.64.1.231
+msgid "Caution"
+msgstr "Achtung"
+
+# Am Ende eines Kapitels, Verweis auf Handbücher/Links etc
+#: hpeters@10.64.1.231
+msgid "Additional Resources"
+msgstr "Zusätzliche Informationsquellen"
+
+# Am Ende eines Kapitels, Verweise auf Websites
+#: hpeters@10.64.1.231
+msgid "Useful Websites"
+msgstr "Hilfreiche Websites"
+
+#: hpeters@10.64.1.231
+msgid "utility"
+msgstr "Dienstprogramm"
+
+#: hpeters@10.64.1.231
+msgid "to mount"
+msgstr "einhängen"
+
+#: hpeters@10.64.1.231
+msgid "mount point"
+msgstr "Einhängepunkt"
+
+# hpeters@10.64.1.231
+# ~ hpeters@10.64.0.109
+# ~ msgid "troubleshooting"
+# ~ msgstr "Problembehandlung"
+
+#: hpeters@10.64.1.231
+msgid "vulnerability"
+msgstr "Schwachstelle"
+
+#: hpeters@10.64.1.231
+msgid "exploit"
+msgstr "Sicherheitslücke"
+
+# ggf. einmal englisch in Klammern
+#: hpeters@10.64.1.231
+msgid "credentials"
+msgstr "Berechtigungsnachweise"
+
+# nicht: kundenspezifisch
+#: hpeters@10.64.1.231
+msgid "custom"
+msgstr "angepasst/benutzerdefiniert"
+
+#: hpeters@10.64.1.231
+msgid "advisory"
+msgstr "Hinweis"
+
+# Kontext: Errata
+#: hpeters@10.64.1.231
+msgid "synopsis"
+msgstr "Übersicht"
+
+# Kontext: RHN
+#: hpeters@10.64.1.231
+msgid "base channel"
+msgstr "Basis-Channel"
+
+# Kontext: RHN
+#: hpeters@10.64.1.231
+msgid "child channel"
+msgstr "Sub-Channel"
+
+# nicht: physikalisch
+#: hpeters@10.64.1.231
+msgid "physical"
+msgstr "physisch"
+
+#: hpeters@10.64.1.231
+msgid "circular reference"
+msgstr "Zirkelbezug"
+
+# Kontext: grafischer Desktop
+#: hpeters@10.64.1.231
+msgid "desktop panel"
+msgstr "Menüleiste"
+
+# Kontext: grafischer Desktop
+#: hpeters@10.64.1.231
+msgid "notification tray"
+msgstr "Benachrichtigungsfeld"
+
+# Timo: "purge" geht i.d.R über normales "delete" hinaus, da es nicht nur Binärdateien, sondern auch Konfigurationsdateien vom System entfernt
+#: hpeters@10.64.1.231
+msgid "to purge"
+msgstr "komplett entfernen"
+
+#: hpeters@10.64.1.231
+msgid "performance"
+msgstr "Leistung"
+
+#: hpeters@10.64.1.231
+msgid "access control list"
+msgstr "Zugriffskontrollliste"
+
+# nicht: Skripts
+#: hpeters@10.64.1.231
+msgid "scripts"
+msgstr "Skripte"
+
+#: hpeters@10.64.1.231
+msgid "bytecode enhancing"
+msgstr "Bytecode-Anreicherung"
+
+#: hpeters@10.64.1.231
+msgid "workstation"
+msgstr "Arbeitsplatzrechner"
+
+#: hpeters@10.64.1.231
+msgid "unmount"
+msgstr "aushängen"
+
+#: hpeters@10.64.1.231
+msgid "NFS share"
+msgstr "NFS-Freigabe"
+
+# Kontext: in GUI Fenstern/Bildschirmen
+#: hpeters@10.64.1.231
+msgid "tab"
+msgstr "Reiter"
+
+#: hpeters@10.64.1.231
+msgid "service"
+msgstr "Dienst"
+
+# Kontext: in GUI Fenstern/Bildschirmen
+#: hpeters@10.64.1.231
+msgid "button"
+msgstr "Schaltfläche"
+
+#: hpeters@10.64.1.231
+msgid "asterisk"
+msgstr "Sternchen"
+
+#: hpeters@10.64.1.231
+msgid "Samba share"
+msgstr "Samba-Freigabe"
+
+#: hpeters@10.64.1.231
+msgid "directive"
+msgstr "Direktive"
+
+# z. B. SQL statement / SQL-Anweisung
+#: hpeters@10.64.1.231
+msgid "statement"
+msgstr "Anweisung"
+
+#: hpeters@10.64.1.231
+msgid "to listen"
+msgstr "horchen (auf einen Port ~)"
+
+# hpeters@10.64.1.231
+# hpeters@10.64.0.109
+# hpeters@10.64.0.109
+#: hpeters@10.64.0.109
+msgid "repository"
+msgstr "Repository (das)"
+
+#: hpeters@10.64.1.231
+msgid "interface"
+msgstr "Schnittstelle"
+
+# hpeters@10.64.1.231
+#: hpeters@10.64.0.109
+msgid "graphical (user) interface"
+msgstr "grafische (Benutzer)Oberfläche"
+
+# (m)
+#: hpeters@10.64.1.231
+msgid "Kerberos realm"
+msgstr "Kerberos-Realm"
+
+# Als Kapitelüberschrift
+#: hpeters@10.64.1.231
+msgid "How It Works"
+msgstr "Funktionsweise"
+
+#: hpeters@10.64.1.231
+msgid "binary"
+msgstr "Binärdatei"
+
+#: hpeters@10.64.1.231
+msgid "binaries"
+msgstr "Binärdateien"
+
+#: jdimanos@10.64.6.29
+msgid "abstraction"
+msgstr "Abstraktion"
+
+#: jdimanos@10.64.6.29
+msgid "accessor"
+msgstr "Zugriffsberechtigter"
+
+#: jdimanos@10.64.6.29
+msgid "account"
+msgstr "Account"
+
+#: jdimanos@10.64.6.29
+msgid "account administrator"
+msgstr "Account Administrator"
+
+#: jdimanos@10.64.6.29
+msgid "address overflow"
+msgstr "Adressüberschreitung"
+
+#: jdimanos@10.64.6.29
+msgid "annotation"
+msgstr "Annotation"
+
+#: jdimanos@10.64.6.29
+msgid "anti-pattern"
+msgstr "Negativmuster"
+
+#: jdimanos@10.64.6.29
+msgid "AOP applications"
+msgstr "AOP-Applikationen"
+
+#: jdimanos@10.64.6.29
+msgid "AOP deployer"
+msgstr "AOP-Deployer"
+
+#: jdimanos@10.64.6.29
+msgid "AOP support"
+msgstr "AOP-Support"
+
+# Application Programm Interface - Anwenderprogrammschnittstelle
+# jdimanos@10.64.6.29
+# jdimanos@10.64.6.1
+# ~ hpeters@10.64.0.109
+# ~ msgid "API"
+# ~ msgstr "API"
+
+#: jdimanos@10.64.6.29
+msgid "appender"
+msgstr "Appender"
+
+#: jdimanos@10.64.6.29
+msgid "application client"
+msgstr "Application Client"
+
+#  auch (aber seltener) Applikationsrolle
+#: jdimanos@10.64.6.29
+msgid "application role"
+msgstr "Anwendungsrolle"
+
+#: jdimanos@10.64.6.29
+msgid "application server  implementation"
+msgstr "Applikationsserver-Implementierung"
+
+#: jdimanos@10.64.6.29
+msgid "Application Server Clustering"
+msgstr "Applikationsserver-Clustering"
+
+#: jdimanos@10.64.6.29
+msgid "applications isolation"
+msgstr "Anwendungsisolierung"
+
+#: jdimanos@10.64.6.29
+msgid "approach"
+msgstr "Ansatz, Methode"
+
+# jdimanos@10.64.6.29
+#: hpeters@10.64.0.109
+msgid "arbitrary"
+msgstr "beliebig"
+
+# bei Java. Sonst auch: Argument
+#: jdimanos@10.64.6.29
+msgid "argument"
+msgstr "Parameter"
+
+#: jdimanos@10.64.6.29
+msgid "aspect manager"
+msgstr "Aspect Manager"
+
+#: jdimanos@10.64.6.29
+msgid "assign"
+msgstr "zuweisen, zuteilen, bestimmen, festsetzen"
+
+#: jdimanos@10.64.6.29
+msgid "associated"
+msgstr "angeschlossen, angegliedert, verbunden, verknüpft, zugehörig"
+
+# jdimanos@10.64.6.29
+#: jdimanos@10.64.6.29
+msgid "association"
+msgstr "Assoziation"
+
+# Relation zwischen Instanzen verschiedener Klassen
+# jdimanos@10.64.6.29
+# ~ hpeters@10.64.0.109
+# ~ msgid "association"
+# ~ msgstr "Assoziation"
+
+#: jdimanos@10.64.6.29
+msgid "attribute"
+msgstr "Attribut"
+
+#: jdimanos@10.64.6.29
+msgid "authentication"
+msgstr "Authentifizierung, auch: Authentifikation"
+
+#: jdimanos@10.64.6.29
+msgid "auto-discovery"
+msgstr "Auto-Discovery"
+
+#: jdimanos@10.64.6.29
+msgid "Automatic Dirty Checking"
+msgstr "automatische Modifizierungsprüfung"
+
+#: jdimanos@10.64.6.29
+msgid "bean"
+msgstr "Bean (das)"
+
+#: jdimanos@10.64.6.29
+msgid "bean shell deployer"
+msgstr "Bean-Shell-Deployer"
+
+#: jdimanos@10.64.6.29
+msgid "bean shell scripts"
+msgstr "Bean-Shell-Skripts"
+
+#: jdimanos@10.64.6.29
+msgid "before completion phase"
+msgstr "Vorabschlussphase "
+
+#: jdimanos@10.64.6.29
+msgid "bidirectional"
+msgstr "bidirektional"
+
+# jdimanos@10.64.6.29
+# ~ hpeters@10.64.1.231
+# ~ msgid "binary"
+# ~ msgstr "Binärdatei"
+
+#: jdimanos@10.64.6.29
+msgid "binding IP address"
+msgstr "Binding-IP-Adresse (die zugewiesene IP-Adresse)"
+
+#: jdimanos@10.64.6.29
+msgid "bindings"
+msgstr "Bindings"
+
+# Ladeprogramm, Selbstaufbau. Das Bootstrap Protocol (BOOTP) dient dazu, einem Computer in einem TCP/IP-Netzwerk eine IP-Adresse und eine Reihe von weiteren Parametern zuzuweisen.
+#: jdimanos@10.64.6.29
+msgid "bootstrap"
+msgstr "Bootstrap"
+
+#: jdimanos@10.64.6.29
+msgid "buffer"
+msgstr "Puffer, Zwischenspeicher"
+
+#: jdimanos@10.64.6.29
+msgid "buffer overflow"
+msgstr "Pufferüberlauf"
+
+#: jdimanos@10.64.6.29
+msgid "bundle"
+msgstr "bündeln"
+
+#: jdimanos@10.64.6.29
+msgid "by definition"
+msgstr "definitionsgemäß"
+
+# jdimanos@10.64.6.29
+#: hpeters@10.64.0.109
+msgid "Cache "
+msgstr "Cachespeicher, Cache (der)"
+
+#: jdimanos@10.64.6.29
+msgid "cache region"
+msgstr "Cache-Bereich"
+
+# Man spricht auch von Caching, wenn ein Betriebssystem (Beispiel: AmigaOS) gewisse Ressourcen – wie z. B. Libraries oder Font-Daten – vorerst im Arbeitsspeicher belässt, obwohl sie nach Ende ihrer Benutzung nicht mehr gebraucht werden. So lange kein Speichermangel herrscht, können sie im Arbeitsspeicher verbleiben, um dann ohne Nachladen von der Festplatte sofort zur Verfügung zu stehen, wenn sie wieder gebraucht werden.
+# jdimanos@10.64.6.29
+#: hpeters@10.64.0.109
+msgid "Caching"
+msgstr "Caching, Zwischenspeichern"
+
+#: jdimanos@10.64.6.29
+msgid "Certificate Authority"
+msgstr "Zertifizierungsstelle"
+
+# Certificate Authority
+#: jdimanos@10.64.6.29
+msgid "CA"
+msgstr "Zertifizierungsstelle"
+
+#: hpeters@10.64.1.231
+msgid "volume"
+msgstr "Datenträger"
+
+# hpeters@10.64.1.231
+# hpeters@10.64.1.231
+#: hpeters@10.64.1.231
+msgid "volume group"
+msgstr "Datenträgergruppe"
+
+#: hpeters@10.64.1.231
+msgid "physical volume"
+msgstr "physischer Datenträger"
+
+#: hpeters@10.64.1.231
+msgid "logical volume"
+msgstr "logischer Datenträger"
+
+#: hpeters@10.64.1.231
+msgid "Logical Volume Manager (LVM)"
+msgstr "Logical Volume Manager (LVM)"
+
+#: hpeters@10.64.1.231
+msgid "to create"
+msgstr "erstellen, erzeugen, anlegen"
+
+# hpeters@10.64.1.231
+#: hpeters@10.64.0.109
+msgid "e.g."
+msgstr "z.B. (ohne Leerzeichen)"
+
+# hpeters@10.64.1.231
+#: hpeters@10.64.0.109
+msgid "i.e."
+msgstr "d.h. (ohne Leerzeichen)"
+
+#: jdimanos@10.64.6.1
+msgid "certificate chain"
+msgstr "Zertifikatskette "
+
+#: jdimanos@10.64.6.1
+msgid "certified application server"
+msgstr "zertifizierter Applikationsserver"
+
+#: jdimanos@10.64.6.1
+msgid "channel partners"
+msgstr "Channel Partner, auch: Vertriebspartner"
+
+#: jdimanos@10.64.6.1
+msgid "class name"
+msgstr "Klassenname"
+
+#: jdimanos@10.64.6.1
+msgid "classloader"
+msgstr "Klassenlader"
+
+#: jdimanos@10.64.6.1
+msgid "classpath"
+msgstr "Klassenpfad"
+
+#: jdimanos@10.64.6.1
+msgid "client"
+msgstr "Client"
+
+#: jdimanos@10.64.6.1
+msgid "client-side interceptors"
+msgstr "Clientbasierte Interzeptoren"
+
+# 
+# jdimanos@10.64.6.1
+#: hpeters@10.64.0.109
+msgid "Cluster"
+msgstr "Cluster"
+
+#: jdimanos@10.64.6.1
+msgid "clustering"
+msgstr "Clustering"
+
+#: jdimanos@10.64.6.1
+msgid "clustering architectures"
+msgstr "Clustering-Architekturen"
+
+#: jdimanos@10.64.6.1
+msgid "command line "
+msgstr "Befehlszeile"
+
+# jdimanos@10.64.6.1
+#: hpeters@10.64.0.109
+msgid "compiler"
+msgstr "Compiler"
+
+#: jdimanos@10.64.6.1
+msgid "concurrent"
+msgstr "gleichlaufend, gleichzeitig, simultan, nebenläufig"
+
+#: jdimanos@10.64.6.1
+msgid "configuration attribute"
+msgstr "Konfigurationseigenschaft"
+
+#: jdimanos@10.64.6.1
+msgid "configuration directory"
+msgstr "Konfigurationsverzeichnis"
+
+#: jdimanos@10.64.6.1
+msgid "configuration files"
+msgstr "Konfigurationsdateien"
+
+#: jdimanos@10.64.6.1
+msgid "configuration set"
+msgstr "Konfigurationseinstellungen"
+
+#: jdimanos@10.64.6.1
+msgid "configuration set selection screen"
+msgstr "Auswahlfenster für die Konfigurationseinstellungen"
+
+#: jdimanos@10.64.6.1
+msgid "conversion"
+msgstr "Datenkonvertierung"
+
+#: jdimanos@10.64.6.1
+msgid "core service"
+msgstr "Kerndienst"
+
+#: jdimanos@10.64.6.1
+msgid "data file"
+msgstr "Datendatei"
+
+#: jdimanos@10.64.6.1
+msgid "data model "
+msgstr "Datenbankmodell, auch: Datenmodell"
+
+# jdimanos@10.64.6.1
+# ~ hpeters@10.64.0.109
+# ~ msgid "debug (to)"
+# ~ msgstr "Fehler beheben, Fehler bereinigen"
+
+#: jdimanos@10.64.6.1
+msgid "default"
+msgstr "Standardeinstellung"
+
+#: jdimanos@10.64.6.1
+msgid "default location"
+msgstr "Standard-Speicherstelle"
+
+#: jdimanos@10.64.6.1
+msgid "default value"
+msgstr "Standardwert, voreingestellter Wert"
+
+#: jdimanos@10.64.6.1
+msgid "directory structure"
+msgstr "Verzeichnisstruktur"
+
+#: jdimanos@10.64.6.1
+msgid "DTD"
+msgstr "DTD, kurz für Document Type Definition, Dokumenttyp-Definition"
+
+#: jdimanos@10.64.6.1
+msgid "Email Notification Process"
+msgstr "E-Mail Benachrichtigungsprozess"
+
+#: jdimanos@10.64.6.1
+msgid "Encoding algorithm "
+msgstr "Verschlüsselungsalgorithmus"
+
+#: jdimanos@10.64.6.1
+msgid "End-Customer Fulfillment Notice"
+msgstr "Auslieferungsbestätigung an den Kunden"
+
+# Ein Ansatz für die Integration von Applikationen und Datenquellen. Dieser soll den Austausch von Daten und die Verbindung von Geschäftsabläufen vereinfachen.
+#: jdimanos@10.64.6.1
+msgid "EAI"
+msgstr "EAI, Enterprise Application Integration "
+
+# Der "Entry Point" beschreibt die Stelle in einem Programm, wo der eigentliche Programmcode beginnt.
+# jdimanos@10.64.6.1
+#: hpeters@10.64.0.109
+msgid "entry point"
+msgstr "Einsprungpunkt, Einsprungstelle"
+
+#: jdimanos@10.64.6.1
+msgid "environment"
+msgstr "Umgebung"
+
+#: jdimanos@10.64.6.1
+msgid "fully qualified name"
+msgstr "vollständiger Name"
+
+# fully qualified name
+#: jdimanos@10.64.6.1
+msgid "FQN"
+msgstr "vollständiger Name"
+
+#: jdimanos@10.64.6.1
+msgid "garbage collection"
+msgstr "automatische Speicherbereinigung"
+
+#: jdimanos@10.64.6.1
+msgid "global"
+msgstr "allgemeingültig"
+
+#: jdimanos@10.64.6.1
+msgid "gzipped "
+msgstr "mit GZIP komprimiert"
+
+#: jdimanos@10.64.6.1
+msgid "Integrity constraint"
+msgstr "Integritätsbedingung "
+
+# Nachladen assoziierter Objekte bei Bedarf
+#: jdimanos@10.64.6.1
+msgid "lazy fetching"
+msgstr "“Lazy Fetching”, Nachladen assoziierter Objekte bei Bedarf"
+
+#: jdimanos@10.64.6.1
+msgid "legacy data"
+msgstr "Altdaten, Stammdaten "
+
+#: jdimanos@10.64.6.1
+msgid "library"
+msgstr "Bibliothek"
+
+#: jdimanos@10.64.6.1
+msgid "load"
+msgstr "Auslastung"
+
+#: jdimanos@10.64.6.1
+msgid "load balancer"
+msgstr "Lastverteiler"
+
+#: jdimanos@10.64.6.1
+msgid "load-balancing factor"
+msgstr "Lastverteilungsfaktor"
+
+#: jdimanos@10.64.6.1
+msgid "local network"
+msgstr "lokales Netzwerk"
+
+#: jdimanos@10.64.6.1
+msgid "locally bound objects"
+msgstr "lokal gebundene Objekte"
+
+#: jdimanos@10.64.6.1
+msgid "location"
+msgstr "Speicherstelle"
+
+#: jdimanos@10.64.6.1
+msgid "log file"
+msgstr "Protokolldatei"
+
+#: jdimanos@10.64.6.1
+msgid "logging file"
+msgstr "Protokolldatei"
+
+#: jdimanos@10.64.6.1
+msgid "method call"
+msgstr "Methodenaufruf"
+
+#: jdimanos@10.64.6.1
+msgid "nest (to)"
+msgstr "verschachteln"
+
+#: jdimanos@10.64.6.1
+msgid "network traffic"
+msgstr "Netzwerkverkehr"
+
+#: jdimanos@10.64.6.1
+msgid "No-Arg-Constructor"
+msgstr "Konstruktor ohne Parameter"
+
+#: jdimanos@10.64.6.1
+msgid "Output"
+msgstr "Ausgabe, auch: Output, Meldung"
+
+#: jdimanos@10.64.6.1
+msgid "overflow"
+msgstr "Überlauf"
+
+#: jdimanos@10.64.6.1
+msgid "package"
+msgstr "Paket"
+
+#: jdimanos@10.64.6.1
+msgid "package selection screen"
+msgstr "Paket-Auswahlfenster"
+
+#: jdimanos@10.64.6.1
+msgid "parameterize"
+msgstr "parametrieren"
+
+#: jdimanos@10.64.6.1
+msgid "partition name"
+msgstr "Partitionsname"
+
+# bei hierarchischen Dateisystemen
+#: jdimanos@10.64.6.1
+msgid "path"
+msgstr "Pfad"
+
+#: jdimanos@10.64.6.1
+msgid "pathname"
+msgstr "Pfadname"
+
+#: jdimanos@10.64.6.1
+msgid "polymorphism "
+msgstr "Polymorphie"
+
+#: jdimanos@10.64.6.1
+msgid "portable"
+msgstr "übertragbar"
+
+# jdimanos@10.64.6.1
+#: hpeters@10.64.0.109
+msgid "post-compiler"
+msgstr "Post-Compiler"
+
+# jdimanos@10.64.6.1
+#: hpeters@10.64.0.109
+msgid "pre-compiler"
+msgstr "Pre-Compiler"
+
+#: jdimanos@10.64.6.1
+msgid "Primary Key"
+msgstr "Primärschlüssel"
+
+#: jdimanos@10.64.6.1
+msgid "replication queue"
+msgstr "Replikationswarteschlange"
+
+#: jdimanos@10.64.6.1
+msgid "request"
+msgstr "Anfrage"
+
+#: jdimanos@10.64.6.1
+msgid "security configuration"
+msgstr "Sicherheitskonfiguration "
+
+# jdimanos@10.64.6.1
+#: hpeters@10.64.0.109
+msgid "security configuration screen"
+msgstr "Bildschirm zur Sicherheitskonfiguration"
+
+#: jdimanos@10.64.6.1
+msgid "sent in the clear"
+msgstr "unverschlüsselt verschickt"
+
+#: jdimanos@10.64.6.1
+msgid "server configuration"
+msgstr "Server-Konfiguration"
+
+#: jdimanos@10.64.6.1
+msgid "server configuration name"
+msgstr "Server-Konfigurationsname"
+
+#: jdimanos@10.64.6.1
+msgid "server instance"
+msgstr "Server-Instanz"
+
+#: jdimanos@10.64.6.1
+msgid "server code"
+msgstr "Server-Code"
+
+# Der Begriff Serverlastverteilung oder englisch Server Load Balancing (SLB) beschreibt in der Netzwerktechnik Methoden zur Lastverteilung auf mehrere getrennte Server-Rechner im Netzwerk. Server Load Balancing kommt überall dort zum Einsatz, wo sehr viele Clients eine hohe Anfragendichte erzeugen und damit einen einzelnen Server-Rechner überlasten würden. Typische Kriterien zur Ermittlung der Notwendigkeit von SLB sind die Datenrate, die Anzahl der Clients und die Anfragerate.
+#: jdimanos@10.64.6.1
+msgid "Server Load Balancing"
+msgstr "Serverlastverteilung"
+
+#: jdimanos@10.64.6.1
+msgid "server name"
+msgstr "Server-Name"
+
+#: jdimanos@10.64.6.1
+msgid "server profile"
+msgstr "Server-Profil"
+
+#: jdimanos@10.64.6.1
+msgid "top-level directory"
+msgstr "Verzeichnis der obersten Ebene, Ursprungspunkt der Verzeichnishierarchie"
+
+#: jdimanos@10.64.6.1
+msgid "Tomcat"
+msgstr "Tomcat"
+
+#: jdimanos@10.64.6.1
+msgid "UUID "
+msgstr "UUID, kurz für Universally Unique Identifier"
+
+#: jdimanos@10.64.6.1
+msgid "SSO"
+msgstr "SSO, kurz für Single Sign On"
+
+# jdimanos@10.64.6.1
+# ~ hpeters@10.64.1.231
+# ~ msgid "utility"
+# ~ msgstr "Dienstprogramm"
+
+#: jdimanos@10.64.6.1
+msgid "Command Line Option"
+msgstr "Befehlszeilenoption"
+
+#: jdimanos@10.64.6.1
+msgid "concurrency control"
+msgstr "Nebenläufigkeitskontrolle"
+
+#: jdimanos@10.64.6.1
+msgid "recoverable"
+msgstr "wiederherstellbar"
+
+#: jdimanos@10.64.6.1
+msgid "event"
+msgstr "Ereignis"
+
+#: jdimanos@10.64.6.1
+msgid "snippet"
+msgstr "Codestück"
+
+#: jdimanos@10.64.6.1
+msgid "initializer"
+msgstr "Initialisierungsprogramm"
+
+#: jdimanos@10.64.6.1
+msgid "typecast"
+msgstr "Typumwandlung"
+
+#: jdimanos@10.64.6.1
+msgid "fatal exception error "
+msgstr "schwerer Ausnahmefehler"
+
+#: jdimanos@10.64.6.1
+msgid "indexed"
+msgstr "indiziert"
+
+#: jdimanos@10.64.6.1
+msgid "getter and setter methods"
+msgstr "Getter- und Setter-Methoden"
+
+#: jdimanos@10.64.6.1
+msgid "optimistic locking"
+msgstr "optimistisches Sperren"
+
+#: jdimanos@10.64.6.1
+msgid "surrogat key"
+msgstr "Surrogatschlüssel"
+
+#: jdimanos@10.64.6.1
+msgid "increment"
+msgstr "Erhöhung"
+
+#: jdimanos@10.64.6.1
+msgid "increment (to)"
+msgstr "erhöhen"
+
+#: jdimanos@10.64.6.1
+msgid "isolation level"
+msgstr "Isolationsebene"
+
+# jdimanos@10.64.6.1
+# hpeters@10.64.0.109
+#: hpeters@10.64.49.108
+msgid "backwards compatibility"
+msgstr "Abwärtskompatibilität"
+
+#: jdimanos@10.64.6.1
+msgid "cartesian product"
+msgstr "kartesisches Produkt"
+
+#: jdimanos@10.64.6.1
+msgid "component type"
+msgstr "Komponententyp"
+
+#: jdimanos@10.64.6.1
+msgid "typesafe"
+msgstr "typsicher"
+
+#: jdimanos@10.64.6.1
+msgid "new-line character"
+msgstr "Zeilenvorschubzeichen"
+
+# jdimanos@10.64.6.1
+#: hpeters@10.64.0.109
+msgid "Installation image"
+msgstr "Installations-Image"
+
+# IDE ist eine Abkürzung für integrated development environment
+#: jdimanos@10.64.6.1
+msgid "IDE"
+msgstr "Integrierte Entwicklungsumgebung"
+
+#: jdimanos@10.64.6.1
+msgid "API"
+msgstr "API, Programmierschnittstelle (Application Programming Interface)"
+
+#: jdimanos@10.64.6.1
+msgid "JSP"
+msgstr "JSP, JavaServerPage"
+
+# Model-View-Controller (MVC, wörtlich etwa „Modell-Präsentation-Steuerung“) bezeichnet ein Architekturmuster zur Aufteilung von Softwaresystemen in die drei Einheiten: Datenmodell (engl. Model), Präsentation (engl. View) und Programmsteuerung (engl. Controller). Ziel des Musters ist ein flexibles Programmdesign, das u. a. eine spätere Änderung oder Erweiterung erleichtern und eine Wiederverwendbarkeit der einzelnen Komponenten ermöglichen soll.
+#: jdimanos@10.64.6.1
+msgid "MVC "
+msgstr "MVC, Model-View-Controller (wörtlich etwa „Modell-Präsentation-Steuerung“) "
+
+#: jdimanos@10.64.6.1
+msgid "reference guide"
+msgstr "Referenzhandbuch"
+
+#: jdimanos@10.64.6.2
+msgid "source code"
+msgstr "Quellcode"
+
+#: jdimanos@10.64.6.2
+msgid "source file"
+msgstr "Quelldatei"
+
+# jdimanos@10.64.6.2
+#: hpeters@10.64.0.109
+msgid "snapshot"
+msgstr "Zwischensicherung, auch “Snapshot”"
+
+# jdimanos@10.64.6.2
+#: hpeters@10.64.0.109
+msgid "snapshot mode "
+msgstr "Zwischensicherungsmodus, auch Snapshot-Modus"
+
+#: hpeters@10.64.1.231
+msgid "physical extend"
+msgstr "physische (Speicher-) Einheiten"
+
+#: hpeters@10.64.0.109
+msgid "label"
+msgstr "Kennung"
+
+#: hpeters@10.64.0.109
+msgid "flag"
+msgstr "Flag (das)"
+
+# Kontext: Samba
+# hpeters@10.64.0.109
+#: hpeters@10.64.0.109
+msgid "share-level security"
+msgstr "Sicherheit auf Freigabenebene"
+
+# Kontext: Samba
+#: hpeters@10.64.0.109
+msgid "user-level security"
+msgstr "Sicherheit auf Benutzerebene"
+
+# Kontext: Samba
+# hpeters@10.64.0.109
+# ~ hpeters@10.64.0.109
+# ~ msgid "server-level security"
+# ~ msgstr "Sicherheit auf Server-Ebene"
+
+#: jdimanos@10.64.6.4
+msgid "revision history"
+msgstr "Änderungsverzeichnis"
+
+#: jdimanos@10.64.6.4
+msgid "guest operating system"
+msgstr "Gastbetriebssystem"
+
+#: hpeters@10.64.0.109
+msgid "to parse"
+msgstr "analysieren"
+
+#: jdimanos@10.67.8.3
+msgid "Reauthentication"
+msgstr "Wiederauthentifizierung"
+
+#: hpeters@10.64.0.109
+msgid "block device"
+msgstr "Blockgerät, blockorientiertes Gerät"
+
+#: hpeters@10.64.0.109
+msgid "character device"
+msgstr "Zeichengerät, zeichenorientiertes Gerät"
+
+#: hpeters@10.64.0.109
+msgid "chip set"
+msgstr "Chip-Satz"
+
+# Kontext: in Release Notes, z. B. "driver was re-based..."
+#: hpeters@10.64.0.109
+msgid "re-base"
+msgstr "grundlegend verändern"
+
+#: hpeters@10.64.0.109
+msgid "socket"
+msgstr "Socket (der)"
+
+# Kontext: RHN
+#: hpeters@10.64.0.109
+msgid "entitlement"
+msgstr "Berechtigung"
+
+# Kontext: RHN
+#: hpeters@10.64.0.109
+msgid "subscription"
+msgstr "Abonnement"
+
+#: hpeters@10.64.0.109
+msgid "remote"
+msgstr "Remote-, von Remote aus"
+
+#: hpeters@10.64.0.109
+msgid "remote logging"
+msgstr "Protokollieren von Remote aus"
+
+#: hpeters@10.64.0.109
+msgid "command line option"
+msgstr "Befehlszeilenoption"
+
+# hpeters@10.64.0.109
+#: hpeters@10.64.0.109
+msgid "command line argument"
+msgstr "Befehlszeilenparameter"
+
+#: hpeters@10.64.0.109
+msgid "stack"
+msgstr "Stapel"
+
+#: hpeters@10.64.0.109
+msgid "driver stack"
+msgstr "Treiberstapel"
+
+#: hpeters@10.64.0.109
+msgid "migration"
+msgstr "Migration"
+
+#: hpeters@10.64.0.109
+msgid "live migration"
+msgstr "Live-Migration"
+
+#: hpeters@10.64.0.109
+msgid "offline migration"
+msgstr "Offline-Migration"
+
+#: hpeters@10.64.0.109
+msgid "read-only"
+msgstr "schreibgeschützt"
+
+#: hpeters@10.64.0.109
+msgid "memory leak"
+msgstr "Speicherleck"
+
+#: hpeters@10.64.0.109
+msgid "virtualization"
+msgstr "Virtualisierung"
+
+#: hpeters@10.64.0.109
+msgid "host"
+msgstr "Host (der)"
+
+#: hpeters@10.64.0.109
+msgid "guest"
+msgstr "Gast"
+
+#: hpeters@10.64.0.109
+msgid "fully virtualized guest"
+msgstr "voll virtualisierter Gast"
+
+#: hpeters@10.64.0.109
+msgid "paravirtualized guest"
+msgstr "paravirtualisierter Gast"
+
+#: hpeters@10.64.0.109
+msgid "full virtualization"
+msgstr "volle Virtualisierung"
+
+#: hpeters@10.64.0.109
+msgid "paravirtualization"
+msgstr "Paravirtualisierung"
+
+# Kontext: Software-Abhängigkeiten z.B. bei Installation
+#: hpeters@10.64.0.109
+msgid "dependency"
+msgstr "Abhängigkeit"
+
+#: hpeters@10.64.0.109
+msgid "file system"
+msgstr "Dateisystem"
+
+#: hpeters@10.64.0.109
+msgid "object store"
+msgstr "Objektspeicher"
+
+#: hpeters@10.64.0.109
+msgid "property file"
+msgstr "Eigenschaftsdatei"
+
+#: hpeters@10.64.0.109
+msgid "quota"
+msgstr "Kontingent"
+
+#: hpeters@10.64.0.109
+msgid "user quota"
+msgstr "Benutzerkontingente"
+
+#: hpeters@10.64.0.109
+msgid "disk quota"
+msgstr "Festplattenkontingente"
+
+#: hpeters@10.64.0.109
+msgid "fence"
+msgstr "abgrenzen"
+
+# hpeters@10.64.0.109
+#: hpeters@10.64.0.109
+msgid "fence method"
+msgstr "Methode zur Datenabgrenzung"
+
+# hpeters@10.64.0.109
+#: hpeters@10.64.0.109
+msgid "fence device"
+msgstr "Gerät zur Datenabgrenzung"
+
+#: hpeters@10.64.0.109
+msgid "file descriptor"
+msgstr "Dateideskriptor"
+
+#: hpeters@10.64.0.109
+msgid "to scale"
+msgstr "skalieren"
+
+#: hpeters@10.64.0.109
+msgid "CPU speed scaling"
+msgstr "CPU Geschwindigkeitsskalierung"
+
+msgstr "Kernel-Fehlermeldung "oops""
+# hpeters@10.64.0.109
+msgstr "Kernel-Fehlermeldung "oops""
+# hpeters@10.64.0.109
+msgstr "Kernel-Fehlermeldung "oops""
+#: hpeters@10.64.0.109
+msgid "kernel oops error message"
+msgstr "CPU Geschwindigkeitsskalierung"
+
+#: hpeters@10.64.0.109
+msgid "to migrate"
+msgstr "migrieren"
+
+#: hpeters@10.64.0.109
+msgid "concurrency control"
+msgstr "Nebenläufigkeitskontrolle"
+
+#: hpeters@10.64.0.109
+msgid "to resolve dependencies"
+msgstr "Abhängigkeiten auflösen"
+
+#: hpeters@10.64.0.109
+msgid "name space"
+msgstr "Namensraum"
+
+#: hpeters@10.64.0.109
+msgid "thread"
+msgstr "Thread (der)"
+
+# in Handbüchern, oft tabellarisch
+#: hpeters@10.64.0.109
+msgid "quick reference"
+msgstr "Kurzanleitung"
+
+# Compiler bleibt üblicherweise Englisch, alles andere mit K und Deutsch (kompiliert, Kompilierung etc)
+#: hpeters@10.64.0.109
+msgid "to compile"
+msgstr "kompilieren"
+
+# Compiler bleibt üblicherweise Englisch, alles andere mit K und Deutsch (kompiliert, Kompilierung etc)
+#: hpeters@10.64.0.109
+msgid "compiled"
+msgstr "kompiliert"
+
+#: hpeters@10.64.0.109
+msgid "to cache"
+msgstr "cachen, zwischenspeichern"
+
+#: hpeters@10.64.0.109
+msgid "debugging"
+msgstr "Suche und Bereinigung von Programmfehlern (Debugging) (nur einmal EN in Klammern)"
+
+#: hpeters@10.64.0.109
+msgid "troubleshooting"
+msgstr "Suche und Beseitigung von Fehlern (Troubleshooting) (nur einmal EN in Klammern)"
+
+# hpeters@10.64.0.109
+#: hpeters@10.64.0.109
+msgid "image"
+msgstr "Image (das) (nur bei Fedora: Abbild)"
+
+# Kontext: Virtualisierung
+#: hpeters@10.64.0.109
+msgid "guest image"
+msgstr "Gast-Image"
+
+# Kontext: Virtualisierung
+#: hpeters@10.64.0.109
+msgid "file-based image"
+msgstr "dateibasiertes Image"
+
+#: hpeters@10.64.0.109
+msgid "stanza"
+msgstr "Stanza"
+
+# Kontext: Migration virtualisierter Gäste
+#: hpeters@10.64.0.109
+msgid "relocation server"
+msgstr "Migrations-Server"
+
+# Kontext: Migration virtualisierter Gäste
+#: hpeters@10.64.0.109
+msgid "relocation port"
+msgstr "Migrations-Port"
+
+# Deprecation ist Python-spezifisch, nicht direkt übersetzbar.
+#: hpeters@10.64.0.109
+msgid "python deprecation error"
+msgstr "Python-Fehler (Deprecation)"
+
+# Kontext: z.B. nicht mehr gebräuchliche Konfigurationsparameter
+#: hpeters@10.64.0.109
+msgid "deprecated"
+msgstr "veraltet"
+
+#: hpeters@10.64.0.109
+msgid "remote management"
+msgstr "Remote-Verwaltung"
+
+#: hpeters@10.64.0.109
+msgid "domain"
+msgstr "Domain (die)"
+
+#: hpeters@10.64.0.109
+msgid "resource"
+msgstr "Ressource"
+
+#: hpeters@10.64.0.109
+msgid "extension"
+msgstr "Erweiterung"
+
+#: hpeters@10.64.0.109
+msgid "partition"
+msgstr "Partition"
+
+#: hpeters@10.64.0.109
+msgid "operating system"
+msgstr "Betriebssystem"
+
+# Kontext: in Release Notes
+# hpeters@10.64.0.109
+#: hpeters@10.64.0.109
+msgid "Technology Preview"
+msgstr "Technologievorschau"
+
+# Kontext: Release Notes
+#: hpeters@10.64.0.109
+msgid "Known Issues"
+msgstr "Bekannte Probleme"
+
+# Kontext: Release Notes
+#: hpeters@10.64.0.109
+msgid "Resolved Issues"
+msgstr "Behobene Probleme"
+
+# Kontext: Release Notes
+#: hpeters@10.64.0.109
+msgid "Installation-Related Notes"
+msgstr "Installationsbezogene Hinweise"
+
+#: hpeters@10.64.0.109
+msgid "Real-Time Clock (RTC)"
+msgstr "Echtzeituhr (engl. Real Time Clock, RTC)"
+
+#: hpeters@10.64.0.109
+msgid "loopback device"
+msgstr "Loopback-Gerät"
+
+# hpeters@10.64.0.109
+#: hpeters@10.64.0.109
+msgid "throughput"
+msgstr "Durchsatz, Datendurchsatz"
+
+#: hpeters@10.64.0.109
+msgid "kickstart"
+msgstr "Kickstart (der)"
+
+#: hpeters@10.64.0.109
+msgid "kickstart file"
+msgstr "Kickstart-Datei"
+
+# Kontext: Virtualisierung
+#: hpeters@10.64.0.109
+msgid "hypervisor"
+msgstr "Hypervisor (der)"
+
+#: hpeters@10.64.0.109
+msgid "home directory"
+msgstr "Benutzerverzeichnis"
+
+#: hpeters@10.64.0.109
+msgid "installation tree"
+msgstr "Installationsbaum"
+
+#: hpeters@10.64.0.109
+msgid "mirror"
+msgstr "Spiegelserver"
+
+#: hpeters@10.64.0.109
+msgid "processor context switching, context switch"
+msgstr "Kontextwechsel des Prozessors"
+
+# Kontext: Netzwerk
+#: hpeters@10.64.0.109
+msgid "bridge"
+msgstr "Bridge (die)"
+
+#: hpeters@10.64.0.109
+msgid "traffic"
+msgstr "Datenverkehr"
+
+#: hpeters@10.64.0.109
+msgid "daemon"
+msgstr "Daemon (der)"
+
+#: hpeters@10.64.0.109
+msgid "subnet"
+msgstr "Subnetz"
+
+# Kontext: Netzwerk
+#: hpeters@10.64.0.109
+msgid "gateway"
+msgstr "Gateway (das)"
+
+# Kontext: Netzwerk
+#: hpeters@10.64.0.109
+msgid "netmask"
+msgstr "Netzmaske"
+
+#: hpeters@10.64.0.109
+msgid "license agreement"
+msgstr "Lizenzvereinbarung"
+
+#: hpeters@10.64.0.109
+msgid "dump"
+msgstr "Speicherauszug"
+
+#: hpeters@10.64.0.109
+msgid "password"
+msgstr "Passwort"
+
+# hpeters@10.64.0.109
+# hpeters@10.64.0.109
+#: hpeters@10.64.0.109
+msgid "passphrase"
+msgstr "Passphrase"
+
+# Kontext: z. B. intallation wizard
+#: hpeters@10.64.0.109
+msgid "wizard"
+msgstr "Assistent"
+
+#: hpeters@10.64.0.109
+msgid "runlevel"
+msgstr "Runlevel (der)"
+
+#: hpeters@10.64.0.109
+msgid "partition table"
+msgstr "Partitionstabelle"
+
+# bei AND, OR, etc
+#: hpeters@10.64.0.109
+msgid "Boolean"
+msgstr "Boolscher Operator (bei AND, OR, etc)"
+
+# meist nur den Wert true/false
+# hpeters@10.64.0.109
+#: hpeters@10.64.0.109
+msgid "Boolean"
+msgstr "Boolsche Variable (meist nur den Wert true/false)"
+
+#: hpeters@10.64.0.109
+msgid "loadbalancing"
+msgstr "Lastverteilung"
+
+#: hpeters@10.64.0.109
+msgid "interrupt"
+msgstr "Interrupt (der)"
+
+# Kontext: Als Titel eines Handbuchs/Kapitels
+# hpeters@10.64.0.109
+#: hpeters@10.64.0.109
+msgid "Getting Started Guide"
+msgstr "Handbuch zum Einstieg - Erste Schritte"
+
+#: hpeters@10.64.0.109
+msgid "nested"
+msgstr "verschachtelt"
+
+#: hpeters@10.64.0.109
+msgid "back-end"
+msgstr "Backend (das)"
+
+# Kontext: DNS
+#: hpeters@10.64.0.109
+msgid "resource record"
+msgstr "Ressourceneintrag"
+
+#: hpeters@10.64.0.109
+msgid "aliases"
+msgstr "Aliasse"
+
+#: hpeters@10.64.0.109
+msgid "intrusion detection systems (IDS) "
+msgstr "Intrusion-Detection-Systeme (IDS) "
+
+# Kontext: in Handbüchern Name eines Abschnitts unter "Additional Resources"
+#: hpeters@10.64.0.109
+msgid "Related Books"
+msgstr "Weiterführende Literatur"
+
+#: hpeters@10.64.0.109
+msgid "idle task"
+msgstr "Leerlaufprozess"
+
+#: hpeters@10.64.0.109
+msgid "one-way hash"
+msgstr "unidirektionaler Hash"
+
+# Kontext: auf Tastatur, S-Abf
+#: hpeters@10.64.0.109
+msgid "system request key"
+msgstr "Systemabfragetaste"
+
+# hpeters@10.64.0.109
+#: hpeters@10.64.0.109
+msgid "regular expression"
+msgstr "regulärer Ausdruck"
+
+# Kontext: DNS
+#: hpeters@10.64.0.109
+msgid "name resolution"
+msgstr "Namensauflösung"
+
+# Kontext: Virtualisierung
+#: hpeters@10.64.0.109
+msgid "binary translation"
+msgstr "Binärübersetzung"
+
+#: hpeters@10.64.0.109
+msgid "latency"
+msgstr "Latenz"
+
+#: hpeters@10.64.0.109
+msgid "instruction set"
+msgstr "Befehlssatz"
+
+#: hpeters@10.64.0.109
+msgid "keyboard layout"
+msgstr "Tastaturbelegung"
+
+# Kontext: VNC
+#: hpeters@10.64.0.109
+msgid "listening mode"
+msgstr "Lauschmodus"
+
+# Kontext: Typografie, http://www.typografie.info/typowiki/index.php?title=Seitenansprache
+#: hpeters@10.64.0.109
+msgid "pull-quote"
+msgstr "Seitenansprache"
+
+#: hpeters@10.64.0.109
+msgid "locale"
+msgstr "Gebietsschema"
+
+#: hpeters@10.64.0.109
+msgid "Lookup Table (LUT)"
+msgstr "Lookup-Tabelle (LUT)"
+
+#: hpeters@10.64.0.109
+msgid "array"
+msgstr "Array (das)"
+
+# system-config-services
+#: hpeters@10.64.0.109
+msgid "Services Configuration Tool"
+msgstr "Services Configuration Tool (App. ist nicht lokalisiert, also engl. Name)"
+
+#: hpeters@10.64.0.109
+msgid "shadow password"
+msgstr "Shadow-Passwort"
+
+#: jdimanos@10.67.6.143
+msgid "Mission Statement"
+msgstr "Firmenphilosophie"
+
+#: hpeters@10.64.0.109
+msgid "driver update"
+msgstr "Treiberaktualisierung"
+
+#: hpeters@10.64.0.109
+msgid "driver update disk"
+msgstr "Datenträger zur Treiberaktualisierung"
+
+#: hpeters@10.64.0.109
+msgid "driver update disk image"
+msgstr "Datenträger-Image zur Treiberaktualisierung"
+
+#: hpeters@10.64.0.109
+msgid "driver disk"
+msgstr "Treiberdatenträger"
+
+# IPL = Initial Program Load
+# hpeters@10.64.0.109
+# hpeters@10.64.0.109
+#: hpeters@10.64.0.109
+msgid "to IPL the system"
+msgstr "einen IPL des Systems durchführen, einleitendes Programmladen durchführen"
+
+# Fedora
+#: hpeters@10.64.0.109
+msgid "This program is free software; you can redistribute it and/or modify\n it under the terms of the GNU General Public License as published by\n the Free Software Foundation; either version 2 of the License, or\n (at your option) any later version.\n \n This program is distributed in the hope that it will be useful,\n but WITHOUT ANY WARRANTY; without even the implied warranty of\n MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n GNU General Public License for more details.\n \n You should have received a copy of the GNU General Public License\n along with this program; if not, write to the Free Software\n Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n"
+msgstr "Dieses Programm ist freie Software. Sie können es unter den Bedingungen\n der GNU General Public License, wie von der Free Software Foundation\n veröffentlicht, weitergeben und/oder modifizieren, entweder gemäß Version 2\n der Lizenz oder (nach Ihrer Option) jeder späteren Version.\n \n Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, dass es\n Ihnen von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne\n die implizite Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN\n BESTIMMTEN ZWECK. Details finden Sie in der GNU General Public License.\n \n Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem\n Programm erhalten haben. Falls nicht, schreiben Sie an die Free Software\n Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n"
+
+#: hpeters@10.64.0.109
+msgid "video card"
+msgstr "Grafikkarte"
+
+#: hpeters@10.64.0.109
+msgid "crossover cable"
+msgstr "Crossover-Kabel"
+
+#: hpeters@10.64.0.109
+msgid "patch cable"
+msgstr "Patch-Kabel"
+
+#: hpeters@10.64.0.109
+msgid "screenshot"
+msgstr "Screenshot (der) (nur bei Fedora: Bildschirmfoto)"
+
+# Kontext: mDNS
+#: hpeters@10.64.0.109
+msgid "resource advertising"
+msgstr "Resource-Advertising"
+
+#: hpeters@10.64.0.109
+msgid "reverse CHAP"
+msgstr "Reverse-CHAP"
+
+#: hpeters@10.64.0.109
+msgid "query"
+msgstr "Abfrage"
+
+#: ttrinks@10.64.0.100
+msgid "Installation Guide"
+msgstr "Installationshandbuch"
+
+#: ttrinks@10.67.4.210
+msgid "prompt (noun)"
+msgstr "Eingabeaufforderung"
+
+# ttrinks@10.67.4.210
+#: hpeters@10.64.0.109
+msgid "ISO-Image"
+msgstr "ISO-Image"
+
+#: ttrinks@10.3.249.123
+msgid "Bugfix"
+msgstr "Fehlerbehebung"
+
+#: ttrinks@10.3.249.123
+msgid "hibernation"
+msgstr "Ruhezustand"
+
+#: ttrinks@10.64.0.100
+msgid "x display manager"
+msgstr "X-Anzeigemanager"
+
+#: ttrinks@10.64.0.100
+msgid "deployment guide"
+msgstr "Deployment-Handbuch"
+
+#: hpeters@10.64.0.109
+msgid "content-based routing"
+msgstr "inhaltsbasiertes Routing"
+
+#: hpeters@10.64.0.109
+msgid "latency tracer"
+msgstr "Latency Tracer (wohl am besten), evtl. auch Latenz-Tracer"
+
+#: hpeters@10.64.0.109
+msgid "connection factory"
+msgstr "Verbindungs-Factory"
+
+# hpeters@10.64.0.109
+#: hpeters@10.64.0.109
+msgid "escape character"
+msgstr "Maskierungszeichen, auch Fluchtsymbol"
+
+#: hpeters@10.64.0.109
+msgid "deployment"
+msgstr "Deployment"
+
+#: hpeters@10.64.0.109
+msgid "to deploy"
+msgstr "einsetzen, implementieren - NICHT deployen, deployt etc."
+
+#: hpeters@10.64.0.109
+msgid "XYZ Quick Start Guide "
+msgstr "Handbuch zum schnellen Einstieg in die/das XYZ"
+
+# Kontext: Java
+#: hpeters@10.64.0.109
+msgid "EL expression"
+msgstr "EL-Ausdruck"
+
+# Kontext: XML
+#: hpeters@10.64.0.109
+msgid "well-formed"
+msgstr "wohlgeformt"
+
+#: hpeters@10.64.0.109
+msgid "HTML controls"
+msgstr "HTML-Steuerelemente"
+
+#: hpeters@10.64.0.109
+msgid "payload"
+msgstr "Nutzdaten"
+
+#: hpeters@10.64.0.109
+msgid "web service"
+msgstr "Webservice"
+
+#: hpeters@10.64.0.109
+msgid "thread of control"
+msgstr "Kontroll-Thread"
+
+#: hpeters@10.64.0.109
+msgid "protocol agnostic"
+msgstr "protokollunabhängig"
+
+#: hpeters@10.64.0.109
+msgid "stateful"
+msgstr "zustandsbehaftet"
+
+#: hpeters@10.64.0.109
+msgid "stateless"
+msgstr "zustandslos"
+
+# hpeters@10.64.0.109
+# ~ hpeters@10.64.0.109
+# ~ msgid "pluggable"
+# ~ msgstr "zuschaltbar"
+
+# hpeters@10.64.0.109
+#: hpeters@10.64.0.109
+msgid "pluggable"
+msgstr "modular, zuschaltbar"
+
+# hpeters@10.64.0.109
+# hpeters@10.64.0.109
+#: hpeters@10.64.0.109
+msgid "scope"
+msgstr "Sichtbarkeitsbereich (von Variablen) ...?, Geltungsbereich einer Transaktion"
+
+# zeitweise Unterbrechung der Bearbeitung einzelner Prozesse zugunsten anderer
+#: jdimanos@10.36.11.114
+msgid "Preemption"
+msgstr "zeitweise Unterbrechung "
+
+# auch: Adressraum
+#: jdimanos@10.36.7.121
+msgid "address space"
+msgstr "Adressbereich"
+
+#: jdimanos@10.36.7.121
+msgid "motherboard"
+msgstr "Motherboard"
+
+# http://de.wikipedia.org/wiki/Power_Management
+#: ttrinks@10.64.52.183
+msgid "power management"
+msgstr "Energieverwaltung"
+
+#: jdimanos@10.36.4.246
+msgid " join type"
+msgstr "Verbundtyp"
+
+#: hpeters@10.64.0.109
+msgid "privacy statement"
+msgstr "Datenschutzerklärung"
+
+#: jdimanos@10.36.5.194
+msgid "namespace"
+msgstr "Namensraum"
+
+#: hpeters@10.64.0.109
+msgid "cross-cutting concerns"
+msgstr "querschnittlichen Belange"
+
+#: hpeters@10.64.0.109
+msgid "commodity hardware"
+msgstr "Standardhardware"
+
+#: jdimanos@10.36.6.239
+msgid "memory leak"
+msgstr "Speicherleck"
+
+# JBoss clustering
+#: hpeters@10.64.0.109
+msgid "registry"
+msgstr "Registrierung"
+
+# auch: Zwischenlösung
+#: jdimanos@10.36.6.239
+msgid "Workaround"
+msgstr "Problemumgehung"
+
+#: hpeters@10.64.0.109
+msgid "authoritative"
+msgstr "autoritativ"
+
+msgstr "den "Nagle"-Algorithmus anwenden"
+# hpeters@10.64.0.109
+msgstr "den "Nagle"-Algorithmus anwenden"
+# hpeters@10.64.0.109
+# ~ hpeters@10.64.0.109
+# ~ msgid "to nagle"
+# ~ msgstr "autoritativ"
+
+msgstr "den "Nagle"-Algorithmus anwenden"
+# hpeters@10.64.0.109
+msgid "nagle -> den "Nagle"-Algorithmus anwenden"
+
+#: hpeters@10.64.0.109
+msgid "nagle"
+msgstr "den Nagle-Algorithmus anwenden"
+
+# ttrinks@10.64.53.30
+#: ttrinks@10.64.53.30
+msgid "tracing"
+msgstr "Ablaufverfolgung"
+
+# ttrinks@10.64.53.30
+# ~ hpeters@10.64.50.153
+# ~ msgid "deployment"
+# ~ msgstr "bereitstellung"
+
+# hpeters@10.64.50.140
+# hpeters@10.64.0.109
+#: hpeters@10.64.0.109
+msgid "Instrumentation"
+msgstr "Instrumentation, Instrumentierung"
+
+# Kontext: Java
+#: hpeters@10.64.50.153
+msgid "hard / weak / soft / reference"
+msgstr "harte / schwache / weiche Referenz"
+
+#: jdimanos@10.36.9.83
+msgid "event"
+msgstr "Ereignis"
+
+#: jdimanos@10.36.9.83
+msgid "FAQ"
+msgstr "FAQ; Häufig gestellte Fragen "
+
+#: jdimanos@10.36.9.83
+msgid "menu bar"
+msgstr "Menüleiste"
+
+#: jdimanos@10.36.9.83
+msgid "sanity check"
+msgstr "Integritätsprüfung"
+
+#: jdimanos@10.36.9.83
+msgid "to unlock"
+msgstr "entsperren"
+
+#: hpeters@10.64.50.178
+msgid "flow control"
+msgstr "Flusskontrolle"
+
+# hpeters@10.64.0.109
+#: hpeters@10.64.0.109
+msgid "postback"
+msgstr "Postback (der)"
+
+#: hpeters@10.64.51.114
+msgid "union clause"
+msgstr "Union-Klausel"
+
+# Kontext: SQL
+#: hpeters@10.64.51.123
+msgid "primary key"
+msgstr "Primärschlüssel"
+
+#: hpeters@10.64.0.109
+msgid "string representation"
+msgstr "Stringdarstellung"
+
+#: hpeters@10.64.51.143
+msgid "data record"
+msgstr "Datensatz"
+
+#: jdimanos@10.64.54.12
+msgid "volume group"
+msgstr "Volume Group"
+
+# auch: Kontrollsumme
+#: jdimanos@10.64.54.34
+msgid "checksum"
+msgstr "Prüfsumme"
+
+#: jdimanos@10.64.51.195
+msgid "authentication "
+msgstr "Authentifizierung"
+
+#: jdimanos@10.64.54.56
+msgid "checkbox "
+msgstr "Kontrollkästchen"
+
+#: jdimanos@10.64.51.235
+msgid "race condition"
+msgstr "Wettlaufsituation"
+
+#: hpeters@10.64.54.78
+msgid "strong typing"
+msgstr "starke Typisierung"
+
+# Kontext: JBoss Cache
+#: hpeters@10.64.0.109
+msgid "event queue"
+msgstr "Ereignis-Queue"
+
+# Kontext: JBoss Cache
+#: hpeters@10.64.0.109
+msgid "eviction"
+msgstr "Eviction (die)"
+
+# Kontext: JBoss Cache
+#: hpeters@10.64.0.109
+msgid "to evict"
+msgstr "räumen, entfernen"
+
+# Kontext: Java, auch Caches
+#: hpeters@10.64.0.109
+msgid "introspection"
+msgstr "Introspektion"
+
+#: hpeters@10.67.10.37
+msgid "data alignment"
+msgstr "Speicherausrichtung"
+
+#: jdimanos@10.64.48.241
+msgid "self-signed"
+msgstr "selbstbestätigt"
+
+#: jdimanos@10.64.48.244
+msgid "roles summary"
+msgstr "Rollenübersicht"
+
+#: jdimanos@10.64.48.244
+msgid "Initial draft"
+msgstr "Erstentwurf"
+
+#: hpeters@10.64.0.109
+msgid "power of two"
+msgstr "Zweierpotenz"
+
+#: hpeters@10.64.0.109
+msgid "power of two"
+msgstr "Zweierpotenz"
+
+# hpeters@10.64.49.108
+#: hpeters@10.64.49.108
+msgid "upwards compatibility"
+msgstr "Aufwärtskompatibilität"
+
+#: jdimanos@10.64.50.13
+msgid "file protection mode"
+msgstr "Dateischutzmodus"
+
+#: hpeters@10.64.55.167
+msgid "hook"
+msgstr "Hook (der)"
+
+# sich wiederholend
+#: jdimanos@10.64.50.78
+msgid "iterative "
+msgstr "iterativ"
+
+#: hpeters@10.64.50.149
+msgid "single point of failure"
+msgstr "einzelner Ausfallpunkt"
+
+#: hpeters@10.64.50.168
+msgid "failover"
+msgstr "Ausfallsicherung"
+
+#: hpeters@10.64.50.168
+msgid "failover to another cluster node"
+msgstr "zur Ausfallsicherung auf einen anderen Cluster-Knoten wechseln"
+
+#: jdimanos@10.64.128.239
+msgid "bijection"
+msgstr "Bijektion"
+
+#: jdimanos@10.64.128.239
+msgid "patch"
+msgstr "Patch (der)"
+
+#: jdimanos@10.64.52.239
+msgid "security vulnerability"
+msgstr "Sicherheitslücke"
+
+#: jdimanos@10.64.128.239
+msgid "scripting language"
+msgstr "Skriptsprache"
+
+#: jdimanos@10.64.128.239
+msgid "Boolean expression"
+msgstr "boolescher Ausdruck"
+
+# auch: Kuchendiagramm, Tortendiagramm
+#: jdimanos@10.64.128.239
+msgid "pie chart"
+msgstr "Kreisdiagramm"
+
+#: jdimanos@10.64.128.239
+msgid "bar chart"
+msgstr "Balkendiagramm"
+
+#: jdimanos@10.64.128.239
+msgid "line chart"
+msgstr "Liniendiagramm"
+
+#: jdimanos@10.64.128.239
+msgid "web browser"
+msgstr "Webbrowser"
+
+#: jdimanos@10.64.128.239
+msgid "Graphical Installer"
+msgstr "Grafischer Installer"
+
+#: jdimanos@10.64.48.70
+msgid "production environment"
+msgstr "Produktionsumgebung"
+
+#: jdimanos@10.64.128.239
+msgid "acknowledge mode"
+msgstr "Bestätigungsmodus"
+
+#: hpeters@10.64.48.77
+msgid "audit trail"
+msgstr "Audit-Protokoll"
+
+#: jdimanos@10.64.50.46
+msgid "security breach"
+msgstr "Sicherheitslücke"
+
+# Random Access Memory (das)
+#: jdimanos@10.64.50.46
+msgid "RAM"
+msgstr "RAM"
+
+#: jdimanos@10.64.50.251
+msgid "user credentials"
+msgstr "Benutzerdaten"
+
+#: jdimanos@10.64.128.239
+msgid "search domain"
+msgstr "Suchdomäne"
+
