@@ -70,6 +70,7 @@ public class AppPresenterTest
    Identity mockIdentity = createMock(Identity.class);
    WebTransMessages mockMessages = createMock(WebTransMessages.class);
    Person mockPerson = createMock(Person.class);
+   SearchResultsPresenter mockSearchResultsPresenter = createMock(SearchResultsPresenter.class);
    TranslationPresenter mockTranslationPresenter = createMock(TranslationPresenter.class);
    Window mockWindow = createMock(Window.class);
    Location mockWindowLocation = createMock(Window.Location.class);
@@ -102,7 +103,7 @@ public class AppPresenterTest
 
    private AppPresenter newAppPresenter()
    {
-      return new AppPresenter(mockDisplay, mockEventBus, mockTranslationPresenter, mockDocumentListPresenter, mockIdentity, mockWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
+      return new AppPresenter(mockDisplay, mockEventBus, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockIdentity, mockWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
    }
 
    // Note: unable to test 'sign out' and 'close window' links as these have
@@ -647,6 +648,9 @@ public class AppPresenterTest
       capturedSignoutLinkClickHandler = new Capture<ClickHandler>();
       expect(mockSignoutLink.addClickHandler(and(capture(capturedSignoutLinkClickHandler), isA(ClickHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
 
+      mockSearchResultsPresenter.bind();
+      expectLastCall().once();
+
       mockTranslationPresenter.bind();
       expectLastCall().once();
 
@@ -678,8 +682,8 @@ public class AppPresenterTest
    {
       reset(mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
       reset(mockEventBus, mockHistory, mockIdentity, mockLeaveWorkspaceLink);
-      reset(mockMessages, mockPerson, mockSignoutLink, mockTranslationPresenter);
-      reset(mockWindow, mockWindowLocation, mockWorkspaceContext);
+      reset(mockMessages, mockPerson, mockSearchResultsPresenter, mockSignoutLink);
+      reset(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
       reset(mockDismiss, mockDismissVisibility);
    }
 
@@ -687,8 +691,8 @@ public class AppPresenterTest
    {
       replay(mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
       replay(mockEventBus, mockHistory, mockIdentity, mockLeaveWorkspaceLink);
-      replay(mockMessages, mockPerson, mockSignoutLink, mockTranslationPresenter);
-      replay(mockWindow, mockWindowLocation, mockWorkspaceContext);
+      replay(mockMessages, mockPerson, mockSearchResultsPresenter, mockSignoutLink);
+      replay(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
       replay(mockDismiss, mockDismissVisibility);
    }
 
@@ -696,8 +700,8 @@ public class AppPresenterTest
    {
       verify(mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
       verify(mockEventBus, mockHistory, mockIdentity, mockLeaveWorkspaceLink);
-      verify(mockMessages, mockPerson, mockSignoutLink, mockTranslationPresenter);
-      verify(mockWindow, mockWindowLocation, mockWorkspaceContext);
+      verify(mockMessages, mockPerson, mockSearchResultsPresenter, mockSignoutLink);
+      verify(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
       verify(mockDismiss, mockDismissVisibility);
    }
 
