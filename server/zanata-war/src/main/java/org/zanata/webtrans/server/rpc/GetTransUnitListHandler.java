@@ -155,6 +155,9 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       if (target != null)
       {
          targets = new ArrayList<String>();
+          //FIXME hack for testing UI. remove before commit
+         targets.add(target.getContent());
+         targets.add(target.getContent());
          targets.add(target.getContent());
 
          tu.setTargets(targets);

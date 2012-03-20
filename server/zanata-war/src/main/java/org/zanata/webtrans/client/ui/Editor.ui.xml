@@ -11,10 +11,18 @@
 		</g:cell>
 		<g:cell horizontalAlignment="ALIGN_RIGHT">
 			<g:HorizontalPanel ui:field="buttons" styleName="gwt-Button">
-				<g:PushButton ui:field="validateButton" styleName="gwt-Button"/>
-				<g:PushButton ui:field="saveButton" styleName="gwt-Button"/>
-				<g:PushButton ui:field="fuzzyButton" styleName="gwt-Button"/>
-				<g:PushButton ui:field="cancelButton" styleName="gwt-Button"/>
+				<g:PushButton ui:field="validateButton" styleName="gwt-Button" title="{messages.runValidation}">
+                    <g:upFace image="{images.cellEditorValidate}" />
+				</g:PushButton>
+				<g:PushButton ui:field="saveButton" styleName="gwt-Button" title="{messages.editSavewithEnterShortcut}">
+                    <g:upFace image="{images.cellEditorAccept}" />
+				</g:PushButton>
+				<g:PushButton ui:field="fuzzyButton" styleName="gwt-Button" title="{messages.saveAsFuzzy}">
+                    <g:upFace image="{images.cellEditorFuzzy}" />
+				</g:PushButton>
+				<g:PushButton ui:field="cancelButton" styleName="gwt-Button" title="{messages.editCancelShortcut}">
+                    <g:upFace image="{images.cellEditorCancel}" />
+				</g:PushButton>
 			</g:HorizontalPanel>
 		</g:cell>
 	</g:VerticalPanel>

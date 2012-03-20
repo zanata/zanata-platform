@@ -36,6 +36,7 @@ import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEventHandler;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.resources.EditorConfigConstants;
+import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.ValidationMessagePanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
@@ -164,19 +165,20 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private final EventBus eventBus;
     
-    @Inject
     Provider<TargetListPresenter> targetListPresenterProvider;
+
     private List<TargetListPresenter> targetListPresenters = Lists.newArrayList();
     private TargetListPresenter currentTargetPresenter;
 
     /**
     * Construct a new {@link InlineTargetCellEditor} with the specified images.
     */
-   public InlineTargetCellEditor(final String findMessage, CancelCallback<TransUnit> callback, EditRowCallback rowCallback, final EventBus eventBus, final boolean isReadOnly)
+   public InlineTargetCellEditor(NavigationMessages messages, String findMessage, CancelCallback<TransUnit> callback, EditRowCallback rowCallback, final EventBus eventBus, final boolean isReadOnly, Provider<TargetListPresenter> targetListPresenterProvider)
    {
        this.findMessage = findMessage;
        this.isReadOnly = isReadOnly;
-      final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
+       this.targetListPresenterProvider = targetListPresenterProvider;
+       final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       // Wrap contents in a table
 
       final int TYPING_TIMER_INTERVAL = 200; // ms
@@ -190,7 +192,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 //      topLayoutPanel.setWidth("100%");
 //
        for (int i = 0; i < TableConstants.PAGE_SIZE; i++) {
-           TargetListPresenter targetListPresenter = targetListPresenterProvider.get();
+           TargetListPresenter targetListPresenter = this.targetListPresenterProvider.get();
            targetListPresenter.getDisplay().setFindMessage(findMessage);
            targetListPresenters.add(targetListPresenter);
        }
@@ -426,8 +428,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 //
 //      verticalPanel.add(topLayoutPanel);
 //
-//      validationMessagePanel = new ValidationMessagePanel(true, messages);
-//      validationMessagePanel.setVisiblePolicy(true);
+      validationMessagePanel = new ValidationMessagePanel(true, messages);
+      validationMessagePanel.setVisiblePolicy(true);
 //
 //      verticalPanel.add(validationMessagePanel);
 //      verticalPanel.setCellVerticalAlignment(validationMessagePanel, HasVerticalAlignment.ALIGN_BOTTOM);

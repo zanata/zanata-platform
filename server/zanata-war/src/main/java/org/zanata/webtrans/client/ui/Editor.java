@@ -26,40 +26,12 @@ import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 
 public class Editor extends Composite implements ToggleWidget {
-    private static EditorUiBinder uiBinder = GWT.create(EditorUiBinder.class);
-
-    private static final int INITIAL_LINES = 3;
-    private static final int HEIGHT_PER_LINE = 16;
-
-    @Override
-    public ViewMode getViewMode() {
-        if (label.isVisible()) {
-            return ViewMode.VIEW;
-        } else {
-            return ViewMode.EDIT;
-        }
-    }
-
-    @Override
-    public void setViewMode(ViewMode viewMode) {
-        label.setVisible(viewMode == ViewMode.VIEW);
-        textArea.setVisible(viewMode == ViewMode.EDIT);
-        buttons.setVisible(viewMode == ViewMode.EDIT);
-    }
-
-    @Override
-    public void setText(String text) {
-        label.setText(text);
-        textArea.setText(text);
-    }
-
-    @Override
-    public String getText() {
-        return textArea.getText();
-    }
-
     interface EditorUiBinder extends UiBinder<Widget, Editor> {
     }
+    private static EditorUiBinder uiBinder = GWT.create(EditorUiBinder.class);
+    private static final int INITIAL_LINES = 3;
+
+    private static final int HEIGHT_PER_LINE = 16;
 
     @UiField
     FlowPanel topContainer;
@@ -67,25 +39,23 @@ public class Editor extends Composite implements ToggleWidget {
     @UiField
     HorizontalPanel buttons;
 
-    @UiField(provided = true)
+    @UiField
     PushButton validateButton, saveButton, fuzzyButton, cancelButton;
 
     @UiField
     TableResources images;
+
     @UiField
     NavigationMessages messages;
-
-
     private EditorTextArea textArea;
-    private HighlightingLabel label;
 
+
+    private HighlightingLabel label;
 //   TableResources images = GWT.create(TableResources.class);
 
     public Editor(String displayString, String findMessage) {
         initWidget(uiBinder.createAndBindUi(this));
 
-        validateButton = new PushButton(new Image(images.cellEditorValidate()));
-        validateButton.setTitle(messages.runValidation());
         validateButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -95,18 +65,13 @@ public class Editor extends Composite implements ToggleWidget {
             }
         });
 
-        saveButton = new PushButton(new Image(images.cellEditorAccept()));
-        saveButton.setTitle(messages.editSaveShortcut());
         saveButton.addClickHandler(acceptHandler);
 
-        fuzzyButton = new PushButton(new Image(images.cellEditorFuzzy()));
-        fuzzyButton.setTitle(messages.saveAsFuzzy());
         fuzzyButton.addClickHandler(fuzzyHandler);
 
-        cancelButton = new PushButton(new Image(images.cellEditorCancel()));
-        cancelButton.setTitle(messages.editCancelShortcut());
         cancelButton.addClickHandler(cancelHandler);
 
+        label = new HighlightingLabel(displayString);
         if (displayString == null || displayString.isEmpty()) {
             label.setText(messages.clickHere());
             label.setStylePrimaryName("TableEditorContent-Empty");
@@ -146,6 +111,34 @@ public class Editor extends Composite implements ToggleWidget {
         }, MouseDownEvent.getType());
 
         sinkEvents(Event.ONCLICK);
+
+    }
+
+    @Override
+    public ViewMode getViewMode() {
+        if (label.isVisible()) {
+            return ViewMode.VIEW;
+        } else {
+            return ViewMode.EDIT;
+        }
+    }
+
+    @Override
+    public void setViewMode(ViewMode viewMode) {
+        label.setVisible(viewMode == ViewMode.VIEW);
+        textArea.setVisible(viewMode == ViewMode.EDIT);
+        buttons.setVisible(viewMode == ViewMode.EDIT);
+    }
+
+    @Override
+    public void setText(String text) {
+        label.setText(text);
+        textArea.setText(text);
+    }
+
+    @Override
+    public String getText() {
+        return textArea.getText();
     }
 
     /**

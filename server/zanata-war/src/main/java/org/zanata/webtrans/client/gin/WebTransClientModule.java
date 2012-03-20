@@ -32,6 +32,8 @@ import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.editor.filter.TransFilterView;
 import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
 import org.zanata.webtrans.client.editor.table.TableEditorView;
+import org.zanata.webtrans.client.editor.table.TargetListDisplay;
+import org.zanata.webtrans.client.editor.table.TargetListView;
 import org.zanata.webtrans.client.events.NativeEvent;
 import org.zanata.webtrans.client.events.NativeEventImpl;
 import org.zanata.webtrans.client.history.History;
@@ -109,6 +111,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(UndoRedoPresenter.class, UndoRedoPresenter.Display.class, UndoRedoView.class);
 
       bind(SourcePanelPresenter.class).in(Singleton.class);
+      bind(TargetListDisplay.class).to(TargetListView.class);
 
       bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);
       bind(NativeEvent.class).to(NativeEventImpl.class).in(Singleton.class);

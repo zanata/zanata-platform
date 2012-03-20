@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.inject.Provider;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.CopySourceEvent;
@@ -66,7 +67,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    private final TableResources images = GWT.create(TableResources.class);
    private final SourcePanelPresenter sourcePanelPresenter;
 
-   private String findMessage;
+    private String findMessage;
    // private SourcePanel sourcePanel;
    private ArrayList<Widget> copyButtons;
    private boolean showingCopyButtons;
@@ -279,7 +280,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       this.findMessage = findMessage;
    }
 
-   public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final EventBus eventBus, final SourcePanelPresenter sourcePanelPresenter, boolean isReadOnly)
+   public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final EventBus eventBus, final SourcePanelPresenter sourcePanelPresenter, boolean isReadOnly, Provider<TargetListPresenter> targetListPresenterProvider)
    {
       this.isReadOnly = isReadOnly;
       this.messages = messages;
@@ -362,7 +363,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             tableModel.gotoPrevNew();
          }
       };
-      this.targetCellEditor = new InlineTargetCellEditor(findMessage, cancelCallBack, transValueCallBack, eventBus, isReadOnly);
+      this.targetCellEditor = new InlineTargetCellEditor(messages, findMessage, cancelCallBack, transValueCallBack, eventBus, isReadOnly, targetListPresenterProvider);
       this.transUnitDetailsContent = new TransUnitDetailsPanel(messages.transUnitDetailsHeading());
       targetColumnDefinition.setCellEditor(targetCellEditor);
 
