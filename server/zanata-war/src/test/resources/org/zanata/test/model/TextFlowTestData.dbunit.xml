@@ -21,8 +21,12 @@
   	revision="1"
   	pos="0"
     obsolete="0"
-  	content="hello world"
   	wordCount="11"
+  />
+  <HTextFlowContent
+    pos="0"
+    content="hello world"
+    text_flow_id="1"
   />
   <HTextFlowTarget 
   	id="1"
@@ -93,8 +97,12 @@
   	revision="1"
   	pos="0"
     obsolete="0"
-  	content="mssgId1"
   	wordCount="1"
+  />
+  <HTextFlowContent
+    pos="0"
+    content="mssgId1"
+    text_flow_id="2"
   />
   <HTextFlow 
   	id="3"
@@ -103,8 +111,12 @@
   	revision="1"
   	pos="1"
     obsolete="0"
-  	content="mssgId2"
   	wordCount="1"
+  />
+  <HTextFlowContent
+    pos="0"
+    content="mssgId2"
+    text_flow_id="3"
   />
   <HTextFlow 
   	id="4"
@@ -113,8 +125,12 @@
   	revision="1"
   	pos="2"
     obsolete="0"
-  	content="mssgId3"
   	wordCount="1"
+  />
+  <HTextFlowContent
+    pos="0"
+    content="mssgId3"
+    text_flow_id="4"
   />
   
   <!-- Text Flow Target comments -->
@@ -195,8 +211,12 @@
   	revision="1"
   	pos="0"
     obsolete="0"
-  	content="mssgId4"
   	wordCount="1"
+  />
+  <HTextFlowContent
+    pos="0"
+    content="mssgId4"
+    text_flow_id="5"
   />
   <HTextFlowTarget 
   	id="8"

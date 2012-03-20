@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+	
+	<changeSet author="camunoz@redhat.com" id="1">
+		<comment>Add HTextFlowContent table to support plural forms.</comment>
+		<createTable tableName="HTextFlowContent">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="content" type="longtext">
+				<constraints nullable="false"/>
+			</column>
+			<column name="pos" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name="text_flow_id" type="bigint">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow" 
+			baseTableSchemaName="zanata" referencedTableSchemaName="zanata"
+			referencedTableName="HTextFlow" referencedColumnNames="id"
+			baseTableName="HTextFlowContent" baseColumnNames="text_flow_id"/>
+	</changeSet>
+	
+	<changeSet author="camunoz@redhat.com" id="2">
+		<comment>Add HTextFlowContentHistory table to support plural forms.</comment>
+		<createTable tableName="HTextFlowContentHistory">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="content" type="longtext">
+				<constraints nullable="false"/>
+			</column>
+			<column name="pos" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name="text_flow_id" type="bigint">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow_" 
+			referencedTableName="HTextFlowHistory" referencedColumnNames="id"
+			baseTableName="HTextFlowContentHistory" baseColumnNames="text_flow_id"/>
+	</changeSet>
+	
+	<changeSet author="camunoz@redhat.com" id="3">
+		<comment>Replace content columns from HTextFlow into the new HTextFlowContent table</comment>
+		<sql>
+			insert into HTextFlowContent(content, pos, text_flow_id) 
+			select content, 0, id from HTextFlow
+		</sql>
+		<sql>
+			insert into HTextFlowContentHistory(content, pos, text_flow_id) 
+			select content, 0, id from HTextFlowHistory
+		</sql>
+	</changeSet>
+	
+	<!-- <changeSet author="camunoz@redhat.com" id="4">
+		<comment>Remove unnecessary columns</comment>
+		<dropColumn tableName="HTextFlow" columnName="content"/>
+		<dropColumn tableName="HTextFlowHistory" columnName="content"/>
+	</changeSet> -->
+	
+</databaseChangeLog>

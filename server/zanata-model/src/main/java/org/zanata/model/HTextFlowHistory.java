@@ -21,6 +21,8 @@
 package org.zanata.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,7 +43,7 @@ public class HTextFlowHistory implements Serializable, ITextFlowHistory
    private Long id;
    private Integer revision;
    private HTextFlow textFlow;
-   private String content;
+   private List<String> contents;
    private boolean obsolete;
 
    private Integer pos;
@@ -53,7 +55,7 @@ public class HTextFlowHistory implements Serializable, ITextFlowHistory
    public HTextFlowHistory(HTextFlow textFlow)
    {
       this.revision = textFlow.getRevision();
-      this.content = textFlow.getContent();
+      this.contents = new ArrayList<String>(textFlow.getContents());
       this.textFlow = textFlow;
    }
 
@@ -98,14 +100,14 @@ public class HTextFlowHistory implements Serializable, ITextFlowHistory
 
    @Type(type = "text")
    @Override
-   public String getContent()
+   public List<String> getContents()
    {
-      return content;
+      return contents;
    }
 
-   public void setContent(String content)
+   public void setContents(List<String> contents)
    {
-      this.content = content;
+      this.contents = contents;
    }
 
    @Override

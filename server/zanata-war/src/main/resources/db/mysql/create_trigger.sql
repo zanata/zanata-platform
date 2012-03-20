@@ -21,7 +21,7 @@ GO
 DROP TRIGGER IF EXISTS `HTextFlow_Update`
 GO
 
-CREATE TRIGGER `HTextFlow_Update`
+/*CREATE TRIGGER `HTextFlow_Update`
    BEFORE UPDATE on `HTextFlow`
    FOR EACH ROW BEGIN
       IF NEW.revision != OLD.revision THEN
@@ -29,11 +29,11 @@ CREATE TRIGGER `HTextFlow_Update`
             VALUES (OLD.id,OLD.revision,OLD.content,OLD.obsolete,OLD.pos); /* don't GO */
       END IF; /* don't GO */
    END
-GO
+GO*/
 
 DROP TRIGGER IF EXISTS `HTextFlowTarget_Update`;
 
-CREATE TRIGGER `HTextFlowTarget_Update`
+/*CREATE TRIGGER `HTextFlowTarget_Update`
    BEFORE UPDATE on `HTextFlowTarget`
    FOR EACH ROW BEGIN
       IF NEW.versionNum != OLD.versionNum THEN
@@ -41,4 +41,4 @@ CREATE TRIGGER `HTextFlowTarget_Update`
             VALUES (OLD.id,OLD.versionNum,OLD.content,OLD.lastChanged,OLD.last_modified_by_id,OLD.state,OLD.tf_revision); /* don't GO */
       END IF; /* don't GO */
    END
-GO
+GO*/

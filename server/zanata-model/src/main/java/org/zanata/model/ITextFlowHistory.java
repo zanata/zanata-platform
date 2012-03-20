@@ -20,6 +20,8 @@
  */
 package org.zanata.model;
 
+import java.util.List;
+
 public interface ITextFlowHistory
 {
 
@@ -29,6 +31,6 @@ public interface ITextFlowHistory
 
    boolean isObsolete();
 
-   String getContent();
+   List<String> getContents();
 
 }

@@ -14,6 +14,7 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
+import org.zanata.testng.annotations.Disabled;
 
 public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest
 {
@@ -38,6 +39,7 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest
 
    // FIXME this test only works if resources-dev is on the classpath
    @Test
+   @Disabled(reason = "Text Flow Target History has been disabled")
    public void ensureHistoryIsRecorded()
    {
       Session session = getSession();

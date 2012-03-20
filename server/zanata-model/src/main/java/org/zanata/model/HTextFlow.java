@@ -20,10 +20,14 @@
  */
 package org.zanata.model;
 
-import static org.zanata.util.ZanataUtil.*;
+import static org.zanata.util.ZanataUtil.equal;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
@@ -33,6 +37,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.NamedQueries;
@@ -45,6 +50,8 @@ import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CollectionOfElements;
+import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyzer;
@@ -106,7 +113,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
 
    private boolean obsolete = false;
 
-   private String content;
+   private List<String> contents;
 
    private Map<HLocale, HTextFlowTarget> targets;
 
@@ -118,6 +125,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    
    private Long wordCount;
    
+   // FIXME Review: Is this still needed?
    private String contentHash;
 
    public HTextFlow()
@@ -208,6 +216,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    @JoinColumn(name = "document_id", insertable = false, updatable = false, nullable = false)
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
+   @AccessType("field")
    public HDocument getDocument()
    {
       return document;
@@ -236,21 +245,51 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
       this.comment = comment;
    }
 
-   @NotNull
-   @Type(type = "text")
-   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
-   @Override
-   @AccessType("field")
+   @Deprecated
    public String getContent()
    {
-      return content;
+      if( this.getContents().size() > 0 )
+      {
+         return this.getContents().get(0);
+      }
+      return null;
+   }
+   
+   @Deprecated
+   public void setContent( String content )
+   {
+      this.setContents( Arrays.asList(content) );
+   }
+   
+   //@NotNull
+   @NotEmpty
+   @Type(type = "text")
+   //@Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
+   @Override
+   @AccessType("field")
+   @CollectionOfElements(fetch = FetchType.EAGER)
+   @JoinTable(name = "HTextFlowContent", 
+      joinColumns = @JoinColumn(name = "text_flow_id")
+   )
+   @IndexColumn(name = "pos", nullable = false)
+   @Column(name = "content", nullable = false)
+   public List<String> getContents()
+   {
+      if( contents == null )
+      {
+         contents = new ArrayList<String>();
+      }
+      
+      // return a shallow copy of contents
+      List<String> copy = new ArrayList<String>(this.contents);
+      return copy;
    }
 
-   public void setContent(String content)
+   public void setContents(List<String> contents)
    {
-      if (!equal(this.content, content))
+      if (!equal(this.contents, contents))
       {
-         this.content = content;
+         this.contents = new ArrayList<String>( contents );
          updateWordCount();
          updateContentHash();
       }
@@ -322,7 +361,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
 
    private void updateWordCount()
    {
-      if (document == null || content == null)
+      if (document == null || contents == null)
       {
          // come back when the not-null constraints are satisfied!
          return;
@@ -330,16 +369,25 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
       String locale = toBCP47(document.getLocale());
       // TODO strip (eg) HTML tags before counting words. Needs more metadata
       // about the content type.
-      long count = OkapiUtil.countWords(content, locale);
+      long count = 0;
+      for( String content : this.getContents() )
+      {
+         count += OkapiUtil.countWords(content, locale);
+      }
       setWordCount(count);
    }
    
    private void updateContentHash()
    {
-      // don't bother setting the hash when content is null
-      if( content != null )
+      // Content Hash is kept for the first element in the contents list.
+      // don't bother setting the hash when the content is not set
+      if( contents != null && contents.size() > 0 && contents.get(0) != null )
       {
-         this.setContentHash( HashUtil.generateHash(content) );         
+         this.setContentHash( HashUtil.generateHash(contents.get(0)) );         
+      }
+      else
+      {
+         this.setContentHash(null);
       }
    }
 
@@ -362,7 +410,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    @Override
    public String toString()
    {
-      return "HTextFlow(" + "resId:" + getResId() + " content:" + getContent() + " revision:" + getRevision() + " comment:" + getComment() + " obsolete:" + isObsolete() + ")";
+      return "HTextFlow(" + "resId:" + getResId() + " contents:" + getContents() + " revision:" + getRevision() + " comment:" + getComment() + " obsolete:" + isObsolete() + ")";
    }
 
 }
