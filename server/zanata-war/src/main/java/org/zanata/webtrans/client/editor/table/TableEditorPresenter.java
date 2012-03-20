@@ -68,6 +68,7 @@ import org.zanata.webtrans.client.events.UpdateValidationWarningsEvent;
 import org.zanata.webtrans.client.events.UpdateValidationWarningsEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.client.presenter.SourcePanelPresenter;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationPanel;
@@ -188,6 +189,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    private final FilterViewConfirmationPanel filterViewConfirmationPanel = new FilterViewConfirmationPanel();
 
    private final WorkspaceContext workspaceContext;
+   
+   private final SourcePanelPresenter sourcePanelPresenter;
 
    private boolean filterTranslated, filterNeedReview, filterUntranslated;
 
@@ -261,13 +264,14 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    };
 
    @Inject
-   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext)
+   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourcePanelPresenter sourcePanelPresenter)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
       this.identity = identity;
       this.messages = messages;
       this.workspaceContext = workspaceContext;
+      this.sourcePanelPresenter = sourcePanelPresenter;
    }
 
    private void clearCacheList()
@@ -917,8 +921,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          {
             display.gotoPage(pageNum, false);
          }
-         selectTransUnit(display.getTransUnitValue(rowNum));
          display.gotoRow(rowNum, andEdit);
+         selectTransUnit(display.getTransUnitValue(rowNum));
 
          if (pageNum != prevPage)
          {
@@ -929,8 +933,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       @Override
       public void gotoRowInCurrentPage(int rowNum, boolean andEdit)
       {
-         selectTransUnit(display.getTransUnitValue(rowNum));
          display.gotoRow(rowNum, andEdit);
+         selectTransUnit(display.getTransUnitValue(rowNum));
       }
    };
 
@@ -1223,6 +1227,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          clearCacheList();
 
          eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
+         sourcePanelPresenter.setSelectedSource(display.getSelectedRowNumber());
       }
    }
 

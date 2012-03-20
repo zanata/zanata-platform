@@ -21,19 +21,21 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.editor.table.SourcePanel;
 import org.zanata.webtrans.client.resources.NavigationMessages;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.inject.Inject;
 
@@ -45,27 +47,45 @@ public class SourcePanelPresenter
 {
    private final NavigationMessages messages;
    private final EventBus eventBus;
-   private final DispatchAsync dispatcher;
    private final Map<Integer, SourcePanel> sourcePanelMap;
+   private String selectedSource;
 
    @Inject
-   public SourcePanelPresenter(EventBus eventBus, CachingDispatchAsync dispatcher, final NavigationMessages messages)
+   public SourcePanelPresenter(EventBus eventBus, final NavigationMessages messages)
    {
       this.messages = messages;
       this.eventBus = eventBus;
-      this.dispatcher = dispatcher;
 
       sourcePanelMap = new HashMap<Integer, SourcePanel>();
    }
 
-   private final ClickHandler selectSourceHandler = new ClickHandler()
+   private final ValueChangeHandler<Boolean> selectSourceHandler = new ValueChangeHandler<Boolean>()
    {
       @Override
-      public void onClick(ClickEvent event)
+      public void onValueChange(ValueChangeEvent<Boolean> event)
       {
-         Log.info(((RadioButton) event.getSource()).getTitle());
+         selectedSource = ((RadioButton) event.getSource()).getTitle();
+         Log.info("selectedSource:" + selectedSource);
       }
    };
+
+   public void setSelectedSource(int row)
+   {
+      SourcePanel sourcePanel = sourcePanelMap.get(row);
+      if (sourcePanel != null)
+      {
+         HasValue<Boolean> selectSourceButton = sourcePanel.getSelectSourceButtonList().get(0);
+         if (selectSourceButton != null)
+         {
+            selectSourceButton.setValue(true, true);
+         }
+      }
+   }
+
+   public String getSelectedSource()
+   {
+      return selectedSource;
+   }
 
    public SourcePanel getSourcePanel(int row, TransUnit value)
    {
@@ -80,11 +100,15 @@ public class SourcePanelPresenter
          sourcePanel = new SourcePanel();
          sourcePanelMap.put(row, sourcePanel);
       }
+
       sourcePanel.updateData(value, messages);
 
+      List<HasValue<Boolean>> selectSourceList = sourcePanel.getSelectSourceButtonList();
+
+      for (HasValue<Boolean> selectSource : selectSourceList)
+      {
+         selectSource.addValueChangeHandler(selectSourceHandler);
+      }
       return sourcePanel;
    }
-
-
-
 }
