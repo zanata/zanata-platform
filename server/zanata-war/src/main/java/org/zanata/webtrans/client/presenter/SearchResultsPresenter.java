@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  * 
@@ -26,13 +26,14 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
-import org.zanata.webtrans.client.history.Window.Location;
-import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
+import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
@@ -41,16 +42,25 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    public interface Display extends WidgetDisplay
    {
+      HasText getTestLabel();
+
       HasValue<String> getFilterTextBox();
    }
 
+   private final CachingDispatchAsync dispatcher;
    private final History history;
 
+   /**
+    * most recent history state that was responded to
+    */
+   private HistoryToken currentHistoryState = null;
+
    @Inject
-   public SearchResultsPresenter(Display display, EventBus eventBus, WorkspaceContext workspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages, History history, Location windowLocation)
+   public SearchResultsPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, History history)
    {
       super(display, eventBus);
       this.history = history;
+      this.dispatcher = dispatcher;
    }
 
    @Override
@@ -64,9 +74,9 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          public void onValueChange(ValueChangeEvent<String> event)
          {
             HistoryToken token = HistoryToken.fromTokenString(history.getToken());
-            if (event.getValue() != token.getDocFilterText())
+            if (event.getValue() != token.getProjectSearchText())
             {
-               token.setDocFilterText(event.getValue());
+               token.setProjectSearchText(event.getValue());
                history.newItem(token.toTokenString());
             }
          }
@@ -75,20 +85,43 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       //TODO respond to history change with full project search
       // decide whether to hook into existing search events or create
       // a new one.
-//      history.addValueChangeHandler(new ValueChangeHandler<String>()
-//      {
-//
-//         @Override
-//         public void onValueChange(ValueChangeEvent<String> event)
-//         {
-//            if (currentHistoryState == null)
-//               currentHistoryState = new HistoryToken(); // default values
-//
-//         }
-//      });
+      history.addValueChangeHandler(new ValueChangeHandler<String>()
+      {
 
-      //TODO remove this, for initial debugging only.
-      display.getFilterTextBox().setValue("the test works", false);
+         @Override
+         public void onValueChange(ValueChangeEvent<String> event)
+         {
+            if (currentHistoryState == null)
+               currentHistoryState = new HistoryToken(); // default values
+
+            HistoryToken token = HistoryToken.fromTokenString(event.getValue());
+
+            if (!token.getProjectSearchText().equals(currentHistoryState.getProjectSearchText()))
+            {
+               dispatcher.execute(new GetProjectTransUnitLists(token.getProjectSearchText()), new AsyncCallback<GetProjectTransUnitListsResult>() {
+
+                  @Override
+                  public void onFailure(Throwable caught)
+                  {
+                     display.getTestLabel().setText("Project TU search failed");
+                  }
+
+                  @Override
+                  public void onSuccess(GetProjectTransUnitListsResult result)
+                  {
+                     display.getTestLabel().setText("Project TU search returned documents: " + result.getDocumentPaths().size());
+                  }
+
+               });
+
+               //TODO set filter text box to value from history token.
+               //watch out for greying-out issue with this type of text box
+            }
+
+            currentHistoryState = token;
+         }
+      });
+
    }
 
    @Override

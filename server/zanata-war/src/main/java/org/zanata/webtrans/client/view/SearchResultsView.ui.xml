@@ -30,7 +30,9 @@
                     </g:LayoutPanel>
                 </g:layer>
                 <g:layer top='50px' bottom="2px">
-                    <g:ScrollPanel ui:field='searchResultsPanel'/>
+                    <g:ScrollPanel ui:field='searchResultsPanel'>
+                        <g:Label ui:field="testLabel"></g:Label>
+                    </g:ScrollPanel>
                 </g:layer>
             </g:LayoutPanel>
         </g:layer>
