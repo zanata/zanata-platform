@@ -311,7 +311,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
 
       validateExtensions(PoHeader.ID, PotEntryHeader.ID);
 
-      HDocument document = documentDAO.getByDocId(hProjectIteration, resource.getName());
+      HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, resource.getName());
       HLocale hLocale = validateSourceLocale(resource.getLang());
       int nextDocRev;
       if (document != null)
@@ -383,7 +383,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
          return response.build();
       }
 
-      HDocument doc = documentDAO.getByDocId(hProjectIteration, id);
+      HDocument doc = documentDAO.getByDocIdAndIteration(hProjectIteration, id);
 
       if (doc == null || doc.isObsolete())
       {
@@ -472,7 +472,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
 
       log.debug("resource details: {0}", resource);
       
-      HDocument document = documentDAO.getByDocId(hProjectIteration, id);
+      HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, id);
       HLocale hLocale = validateSourceLocale(resource.getLang());
       int nextDocRev;
       if (document == null)
@@ -567,7 +567,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
          return response.build();
       }
 
-      HDocument document = documentDAO.getByDocId(hProjectIteration, id);
+      HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, id);
       document.setObsolete(true);
       documentDAO.flush();
       return Response.ok().build();
@@ -605,7 +605,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
          return response.build();
       }
 
-      HDocument doc = documentDAO.getByDocId(hProjectIteration, id);
+      HDocument doc = documentDAO.getByDocIdAndIteration(hProjectIteration, id);
 
       if (doc == null)
       {
@@ -659,7 +659,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       log.debug("pass evaluation");
       log.debug("put resource meta: {0}", messageBody);
 
-      HDocument document = documentDAO.getByDocId(hProjectIteration, id);
+      HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, id);
       if (document == null)
       {
          return Response.status(Status.NOT_FOUND).build();
@@ -723,7 +723,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
          return response.build();
       }
 
-      HDocument document = documentDAO.getByDocId(hProjectIteration, id);
+      HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, id);
       if (document.isObsolete())
       {
          return Response.status(Status.NOT_FOUND).build();
@@ -777,7 +777,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
          return response.build();
       }
 
-      HDocument document = documentDAO.getByDocId(hProjectIteration, id);
+      HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, id);
       if (document.isObsolete())
       {
          return Response.status(Status.NOT_FOUND).build();
@@ -850,7 +850,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       }
 
       log.debug("pass evaluate");
-      HDocument document = documentDAO.getByDocId(hProjectIteration, id);
+      HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, id);
       if (document.isObsolete())
       {
          return Response.status(Status.NOT_FOUND).build();
