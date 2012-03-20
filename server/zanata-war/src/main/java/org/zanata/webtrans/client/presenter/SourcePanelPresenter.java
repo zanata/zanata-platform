@@ -27,11 +27,14 @@ import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.editor.table.SourcePanel;
-import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.inject.Inject;
 
 /**
@@ -45,29 +48,24 @@ public class SourcePanelPresenter
    private final DispatchAsync dispatcher;
    private final Map<Integer, SourcePanel> sourcePanelMap;
 
-   // private final int pageSize;
-
    @Inject
    public SourcePanelPresenter(EventBus eventBus, CachingDispatchAsync dispatcher, final NavigationMessages messages)
    {
-      // super(display, eventBus);
       this.messages = messages;
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
 
       sourcePanelMap = new HashMap<Integer, SourcePanel>();
-      // pageSize = tableEditorPresenter.getPageSize();
-
-      for (int i = 0; i < 50; i++)
-      {
-         SourcePanel sourcePanel = new SourcePanel();
-         sourcePanelMap.put(i, sourcePanel);
-      }
    }
 
-   // public interface Display extends WidgetDisplay
-   // {
-   // }
+   private final ClickHandler selectSourceHandler = new ClickHandler()
+   {
+      @Override
+      public void onClick(ClickEvent event)
+      {
+         Log.info(((RadioButton) event.getSource()).getTitle());
+      }
+   };
 
    public SourcePanel getSourcePanel(int row, TransUnit value)
    {
@@ -82,23 +80,11 @@ public class SourcePanelPresenter
          sourcePanel = new SourcePanel();
          sourcePanelMap.put(row, sourcePanel);
       }
-      sourcePanel.renderWidget(value, messages);
+      sourcePanel.updateData(value, messages);
+
       return sourcePanel;
    }
 
-   // @Override
-   protected void onBind()
-   {
 
-   }
 
-   // @Override
-   protected void onUnbind()
-   {
-   }
-
-   // @Override
-   protected void onRevealDisplay()
-   {
-   }
 }

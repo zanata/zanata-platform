@@ -41,36 +41,17 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 
 public class SourcePanel extends Composite implements HasValue<TransUnit>, HasClickHandlers
 {
 
-   private FlowPanel panel;
-   private VerticalPanel sourceLabelsPanel;
+   private final FlowPanel panel;
+   private final VerticalPanel sourceLabelsPanel;
    private TransUnit value;
-   private List<HighlightingLabel> hightlightingLabelList;
+   private final List<HighlightingLabel> hightlightingLabelList;
 
    public SourcePanel()
    {
-   }
-
-   private final ClickHandler selectSourceHandler = new ClickHandler()
-   {
-
-      @Override
-      public void onClick(ClickEvent event)
-      {
-         Log.info(event.getSource().toString());
-
-      }
-   };
-
-   public void renderWidget(TransUnit value, NavigationMessages messages)
-   {
-      this.value = value;
-      hightlightingLabelList = new ArrayList<HighlightingLabel>();
-      
       panel = new FlowPanel();
       panel.setSize("100%", "100%");
 
@@ -79,7 +60,17 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
 
       sourceLabelsPanel = new VerticalPanel();
       sourceLabelsPanel.setSize("100%", "100%");
-      sourceLabelsPanel.addStyleName("sourceLabelsTable");
+
+      hightlightingLabelList = new ArrayList<HighlightingLabel>();
+
+      panel.add(sourceLabelsPanel);
+   }
+
+   public void updateData(TransUnit value, NavigationMessages messages)
+   {
+      this.value = value;
+      hightlightingLabelList.clear();
+      sourceLabelsPanel.clear();
 
       for (String source : value.getSources())
       {
@@ -90,8 +81,10 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
          HorizontalPanel sourcePanel = new HorizontalPanel();
          sourcePanel.setSize("100%", "100%");
          sourcePanel.add(hightlightingLabel);
+         sourcePanel.addStyleName("sourceRow");
 
          RadioButton selectButton = new RadioButton(value.getId().toString() + "-selectSource");
+         selectButton.setTitle(source);
          selectButton.addClickHandler(selectSourceHandler);
          sourcePanel.add(selectButton);
          sourcePanel.setCellHorizontalAlignment(selectButton, HasHorizontalAlignment.ALIGN_RIGHT);
@@ -99,7 +92,6 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
          hightlightingLabelList.add(hightlightingLabel);
          sourceLabelsPanel.add(sourcePanel);
       }
-      panel.add(sourceLabelsPanel);
    }
 
    @Override
