@@ -24,17 +24,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.customware.gwt.presenter.client.EventBus;
-
 import org.zanata.webtrans.client.editor.table.SourcePanel;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.inject.Inject;
@@ -46,15 +42,13 @@ import com.google.inject.Inject;
 public class SourcePanelPresenter
 {
    private final NavigationMessages messages;
-   private final EventBus eventBus;
    private final Map<Integer, SourcePanel> sourcePanelMap;
    private String selectedSource;
 
    @Inject
-   public SourcePanelPresenter(EventBus eventBus, final NavigationMessages messages)
+   public SourcePanelPresenter(final NavigationMessages messages)
    {
       this.messages = messages;
-      this.eventBus = eventBus;
 
       sourcePanelMap = new HashMap<Integer, SourcePanel>();
    }

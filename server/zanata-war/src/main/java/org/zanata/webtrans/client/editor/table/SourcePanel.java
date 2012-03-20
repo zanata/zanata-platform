@@ -30,7 +30,6 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -81,13 +80,16 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
          hightlightingLabel.setTitle(messages.sourceCommentLabel() + value.getSourceComment());
 
          HorizontalPanel sourcePanel = new HorizontalPanel();
-         sourcePanel.setSize("100%", "100%");
-         sourcePanel.add(hightlightingLabel);
          sourcePanel.addStyleName("sourceRow");
+         sourcePanel.add(hightlightingLabel);
 
          RadioButton selectButton = new RadioButton("selectSource");
          selectButton.setTitle(source);
-         
+
+         if (value.getSources().size() == 1)
+         {
+            selectButton.setVisible(false);
+         }
          selectSourceButtonList.add(selectButton);
 
          sourcePanel.add(selectButton);
@@ -96,6 +98,7 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
          hightlightingLabelList.add(hightlightingLabel);
          sourceLabelsPanel.add(sourcePanel);
       }
+
    }
 
    public List<HasValue<Boolean>> getSelectSourceButtonList()
@@ -143,7 +146,7 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
    {
       return addHandler(handler, ClickEvent.getType());
    }
-   
+
    public void highlightSearch(String search)
    {
       for (HighlightingLabel sourceLabel : hightlightingLabelList)

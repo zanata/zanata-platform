@@ -598,4 +598,6 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	border:1px solid #E0E8EE;
 	padding-top:3px;
 	padding-bottom:3px;
+	height:100%;
+	width:100%;
 }
