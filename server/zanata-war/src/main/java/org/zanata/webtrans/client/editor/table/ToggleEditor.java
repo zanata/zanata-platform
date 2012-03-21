@@ -1,20 +1,20 @@
 package org.zanata.webtrans.client.editor.table;
 
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface ToggleEditor extends IsWidget, HasText {
-    
-    ViewMode getViewMode();
-    
-    void setViewMode(ViewMode viewMode);
+public interface ToggleEditor extends IsWidget, HasText
+{
 
-    void autoSize();
+   ViewMode getViewMode();
 
-    static enum ViewMode {
-        VIEW, EDIT
+   void setViewMode(ViewMode viewMode);
 
-    }
+   void autoSize();
+
+   static enum ViewMode
+   {
+      VIEW, EDIT
+
+   }
 }

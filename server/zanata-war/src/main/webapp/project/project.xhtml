@@ -40,11 +40,12 @@
         <h2>#{messages['jsf.ActiveVersions']}</h2>
     	<div class="iterations">
     		<ui:repeat value="#{projectHome.activeIterations}" var="_iteration">
-    			<a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}">
-    				<div>
+    			<a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}" class="version_link">
+    				<div class="version_link_div">
     					<h:outputText value="#{_iteration.slug}"/>
     				</div>
     			</a>
+    			
     		</ui:repeat>
     	</div>
     </s:fragment>
@@ -53,8 +54,8 @@
       <h2>#{messages['jsf.ReadOnlyVersions']}</h2>
     	<div class="iterations">
     		<ui:repeat value="#{projectHome.readOnlyIterations}" var="_iteration">
-    			<a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}">
-    				<div>
+    			<a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}" class="version_link">
+    				<div class="version_link_div">
     					<h:outputText value="#{_iteration.slug}"/>
     				</div>
     			</a>
@@ -66,8 +67,8 @@
       <h2>#{messages['jsf.ObsoleteVersions']}</h2>
     	<div class="iterations">
     		<ui:repeat value="#{projectHome.obsoleteIterations}" var="_iteration">
-    			<a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}">
-    				<div>
+    			<a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}" class="version_link">
+    				<div class="version_link_div">
     					<h:outputText value="#{_iteration.slug}"/>
     				</div>
     			</a>

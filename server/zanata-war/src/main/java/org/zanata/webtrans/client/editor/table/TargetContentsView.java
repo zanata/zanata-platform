@@ -23,24 +23,26 @@ import org.zanata.webtrans.client.ui.Editor;
 import java.util.Iterator;
 import java.util.List;
 
-public class TargetContentsView implements TargetContentsDisplay {
-    public static final int COLUMNS = 1;
-    public static final int DEFAULT_ROWS = 1;
+public class TargetContentsView implements TargetContentsDisplay
+{
+   public static final int COLUMNS = 1;
+   public static final int DEFAULT_ROWS = 1;
 
-    private Grid editorGrid;
-    private String findMessage;
-    private List<ToggleEditor> editors;
-    private Listener listener;
+   private Grid editorGrid;
+   private String findMessage;
+   private List<ToggleEditor> editors;
+   private Listener listener;
 
-    public TargetContentsView() {
-        editorGrid = new Grid(DEFAULT_ROWS, COLUMNS);
-        editorGrid.ensureDebugId("target-contents-grid");
-        editorGrid.setWidth("100%");
-        editors = Lists.newArrayList();
-    }
+   public TargetContentsView()
+   {
+      editorGrid = new Grid(DEFAULT_ROWS, COLUMNS);
+      editorGrid.addStyleName("TableEditorCell-Target-Table");
+      editorGrid.ensureDebugId("target-contents-grid");
+      editorGrid.setWidth("100%");
+      editors = Lists.newArrayList();
+   }
 
-
-    @Override
+   @Override
     public void setTargets(List<String> targets) {
         editors.clear();
         editorGrid.resize(targets.size(), COLUMNS);
@@ -54,26 +56,31 @@ public class TargetContentsView implements TargetContentsDisplay {
         }
     }
 
-    @Override
-    public void setFindMessage(String findMessage) {
-        this.findMessage = findMessage;
-    }
+   @Override
+   public void setFindMessage(String findMessage)
+   {
+      this.findMessage = findMessage;
+   }
 
-    @Override
-    public List<String> getNewTargets() {
-        List<String> result = Lists.newArrayList();
-        for (ToggleEditor editor : editors) {
-            result.add(editor.getText());
-        }
-        return result;
-    }
+   @Override
+   public List<String> getNewTargets()
+   {
+      List<String> result = Lists.newArrayList();
+      for (ToggleEditor editor : editors)
+      {
+         result.add(editor.getText());
+      }
+      return result;
+   }
 
-    @Override
-    public void setToView() {
-        for (ToggleEditor editor : editors) {
-            editor.setViewMode(ToggleEditor.ViewMode.VIEW);
-        }
-    }
+   @Override
+   public void setToView()
+   {
+      for (ToggleEditor editor : editors)
+      {
+         editor.setViewMode(ToggleEditor.ViewMode.VIEW);
+      }
+   }
 
     @Override
     public boolean isEditing() {

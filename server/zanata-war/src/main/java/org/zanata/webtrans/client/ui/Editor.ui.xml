@@ -8,15 +8,21 @@
 	<ui:with field="messages" type="org.zanata.webtrans.client.resources.NavigationMessages" />
 	<ui:with field="images" type="org.zanata.webtrans.client.editor.table.TableResources" />
 
-	<g:VerticalPanel width="100%">
+	<g:VerticalPanel width="100%" spacing="3">
 		<g:cell horizontalAlignment="ALIGN_LEFT">
-			<g:FlowPanel ui:field="topContainer" >
-                <g:PushButton ui:field="copySourceButton" styleName="gwt-Button">
-                    <g:upFace image="{images.copySrcButton}" />
-                </g:PushButton>
-                <fui:HighlightingLabel ui:field="label" />
-                <tui:EditorTextArea ui:field="textArea" width="95%"/>
-			</g:FlowPanel>
+			<g:HorizontalPanel ui:field="topContainer" width="100%" height="100%">
+				<g:cell width="20px">
+	                <g:PushButton ui:field="copySourceButton" styleName="gwt-Button">
+	                    <g:upFace image="{images.copySrcButton}" />
+	                </g:PushButton>
+                </g:cell>
+                <g:cell>
+                	<g:FlowPanel>
+		                <fui:HighlightingLabel ui:field="label" />
+		                <tui:EditorTextArea ui:field="textArea" width="99%"/>
+	                </g:FlowPanel>
+                </g:cell>
+			</g:HorizontalPanel>
 		</g:cell>
 		<g:cell horizontalAlignment="ALIGN_RIGHT">
 			<g:HorizontalPanel ui:field="buttons" styleName="gwt-Button">

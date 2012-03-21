@@ -203,7 +203,7 @@
                                 <!--&lt;!&ndash;/NotBackedUp/tools/jboss-ewp-5.1/jboss-as-web/server/default/deploy/zanata.war&ndash;&gt;-->
                             <!--&lt;!&ndash;</webappDirectory>&ndash;&gt;-->
                             <!--<hostedWebapp>-->
-                                <!--src/main/webapp-->
+                                <!--${project.build.directory}/zanata-internal-->
                             <!--</hostedWebapp>-->
                             <!--<buildOutputDirectory>${project.build.directory}/gwt-gen</buildOutputDirectory>-->
                             <!--<port>48881</port>-->
