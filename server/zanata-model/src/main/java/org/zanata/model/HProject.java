@@ -112,6 +112,9 @@ public abstract class HProject extends SlugEntityBase implements Serializable
       this.homeContent = homeContent;
    }
 
+   /**
+    * @see {@link #addMaintainer(HPerson)}
+    */
    @ManyToMany
    @JoinTable(name = "HProject_Maintainer", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "personId"))
    //   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE) // caching affects permission checks in security.drl
@@ -122,9 +125,18 @@ public abstract class HProject extends SlugEntityBase implements Serializable
       return maintainers;
    }
 
+   /**
+    * @see {@link #addMaintainer(HPerson)}
+    */
    public void setMaintainers(Set<HPerson> maintainers)
    {
       this.maintainers = maintainers;
+   }
+   
+   public void addMaintainer( HPerson maintainer )
+   {
+      this.getMaintainers().add(maintainer);
+      maintainer.getMaintainerProjects().add(this);
    }
 
    @ManyToMany
