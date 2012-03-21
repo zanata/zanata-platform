@@ -532,7 +532,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    @Override
    public void editCell(CellEditInfo cellEditInfo, TransUnit cellValue, Callback<TransUnit> callback)
    {
-      if (isReadOnly)
+      if (isReadOnly || targetContentsPresenter.getCurrentDisplay() == null)
       {
          return;
       }

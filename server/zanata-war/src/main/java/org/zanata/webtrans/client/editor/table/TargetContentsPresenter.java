@@ -15,20 +15,16 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
-import java.util.Iterator;
-import java.util.List;
-
-import javax.inject.Provider;
-
+import com.google.common.collect.Lists;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.customware.gwt.presenter.client.EventBus;
-
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.presenter.SourcePanelPresenter;
 import org.zanata.webtrans.shared.model.TransUnit;
 
-import com.google.common.collect.Lists;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import javax.inject.Provider;
+import java.util.List;
 
 @Singleton
 public class TargetContentsPresenter implements TargetContentsDisplay.Listener
@@ -39,8 +35,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    private EventBus eventBus;
    private SourcePanelPresenter sourcePanelPresenter;
    private List<TargetContentsDisplay> displayList;
-   private Iterator<ToggleEditor> currentEditorIterator;
    private ToggleEditor currentEditor;
+   private List<ToggleEditor> currentEditors;
 
    @Inject
    public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, EventBus eventBus, SourcePanelPresenter sourcePanelPresenter)
@@ -52,7 +48,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
 
    boolean isEditing()
    {
-      return currentDisplay.isEditing();
+      return currentDisplay != null && currentDisplay.isEditing();
    }
 
    public void setToViewMode()
@@ -80,8 +76,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    public void showEditors(int curRow)
    {
       currentDisplay = displayList.get(curRow);
-      currentEditorIterator = currentDisplay.iterator();
-      currentEditor = currentEditorIterator.next();
+      currentEditors = currentDisplay.getEditors();
+      currentEditor = currentEditors.get(0);
       currentEditor.setViewMode(ToggleEditor.ViewMode.EDIT);
    }
 
@@ -118,16 +114,19 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    @Override
    public void saveAsApproved(ToggleEditor editor)
    {
-      // TODO we should probably get new value out and save
-      if (currentEditorIterator.hasNext())
+      // TODO we should get new value out and save
+      currentDisplay.setToView();
+      int editorIndex = currentEditors.indexOf(editor);
+      if (editorIndex + 1 < currentEditors.size())
       {
-         editor.setViewMode(ToggleEditor.ViewMode.VIEW);
-         currentEditor = currentEditorIterator.next();
+         currentEditor = currentEditors.get(editorIndex + 1);
          currentEditor.setViewMode(ToggleEditor.ViewMode.EDIT);
       }
       else
       {
          // TODO if it's out of current editor index, we should move to next row
+         currentDisplay = null;
+         currentEditors = null;
          eventBus.fireEvent(new NavTransUnitEvent(NavTransUnitEvent.NavigationType.NextEntry));
       }
    }
@@ -142,8 +141,9 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    @Override
    public void toggleView(ToggleEditor editor)
    {
-      // TODO implement
-      throw new UnsupportedOperationException("Implement me!");
-      //
+      currentDisplay.setToView();
+      editor.setViewMode(ToggleEditor.ViewMode.EDIT);
+      currentEditor = editor;
    }
+
 }

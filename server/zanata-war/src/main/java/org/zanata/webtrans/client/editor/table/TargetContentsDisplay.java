@@ -42,6 +42,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, Iterable<ToggleEdi
    void setToView();
 
    boolean isEditing();
+    
+   List<ToggleEditor> getEditors();
 
    void setListener(Listener listener);
 }
