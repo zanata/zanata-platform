@@ -67,7 +67,7 @@
   <!-- Project Iteration Rules -->
   <rule>
   	<from casesensitive="true">^/iteration/view/([^/]+)/(.+)$</from>
-  	<to last="true">/iteration/iteration.seam\?projectSlug=$1&amp;iterationSlug=$2</to>
+  	<to last="true">/iteration/view.seam\?projectSlug=$1&amp;iterationSlug=$2</to>
   </rule>
 
   <rule>
@@ -254,7 +254,7 @@
     <to>$1/project/list$2</to>
   </outbound-rule>
   <outbound-rule>
-    <from>^(/.+)?/iteration/iteration.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)$</from>
+    <from>^(/.+)?/iteration/view.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)$</from>
     <to>$1/iteration/view/$2/$3</to>
   </outbound-rule>
   <outbound-rule>
