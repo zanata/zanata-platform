@@ -30,7 +30,6 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -47,13 +46,15 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
 
    private final FlowPanel panel;
    private final VerticalPanel sourceLabelsPanel;
-   private TransUnit value;
    private final List<HighlightingLabel> hightlightingLabelList;
+   private final NavigationMessages messages;
+   private TransUnit value;
 
    private List<HasValue<Boolean>> selectSourceButtonList;
 
-   public SourcePanel()
+   public SourcePanel(NavigationMessages messages)
    {
+      this.messages = messages;
       panel = new FlowPanel();
       panel.setSize("100%", "100%");
 
@@ -63,47 +64,17 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
       sourceLabelsPanel.addStyleName("sourceTable");
 
       hightlightingLabelList = new ArrayList<HighlightingLabel>();
-
+      selectSourceButtonList = new ArrayList<HasValue<Boolean>>();
       panel.add(sourceLabelsPanel);
    }
 
-   public void updateData(TransUnit value, NavigationMessages messages)
+   public HorizontalPanel getSource(int row)
    {
-      selectSourceButtonList = new ArrayList<HasValue<Boolean>>();
-      this.value = value;
-      hightlightingLabelList.clear();
-      sourceLabelsPanel.clear();
-
-      for (String source : value.getSources())
-      {
-         HighlightingLabel hightlightingLabel = new HighlightingLabel(source);
-         hightlightingLabel.setStylePrimaryName("TableEditorContent");
-         hightlightingLabel.setTitle(messages.sourceCommentLabel() + value.getSourceComment());
-
-         HorizontalPanel sourcePanel = new HorizontalPanel();
-         sourcePanel.setSize("100%", "100%");
-         sourcePanel.add(hightlightingLabel);
-         sourcePanel.addStyleName("sourceRow");
-
-         RadioButton selectButton = new RadioButton("selectSource");
-         selectButton.setTitle(source);
-         
-         selectSourceButtonList.add(selectButton);
-
-         sourcePanel.add(selectButton);
-         sourcePanel.setCellHorizontalAlignment(selectButton, HasHorizontalAlignment.ALIGN_RIGHT);
-
-         hightlightingLabelList.add(hightlightingLabel);
-         sourceLabelsPanel.add(sourcePanel);
-      }
+      return (HorizontalPanel) sourceLabelsPanel.getWidget(row);
    }
 
-   public List<HasValue<Boolean>> getSelectSourceButtonList()
+   public List<HasValue<Boolean>> getSelectSourceBtnValueList()
    {
-      if (selectSourceButtonList == null)
-      {
-         selectSourceButtonList = new ArrayList<HasValue<Boolean>>();
-      }
       return selectSourceButtonList;
    }
 
@@ -129,6 +100,37 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
          {
             ValueChangeEvent.fire(this, value);
          }
+
+         selectSourceButtonList.clear();
+         hightlightingLabelList.clear();
+         sourceLabelsPanel.clear();
+
+         for (String source : value.getSources())
+         {
+            HighlightingLabel hightlightingLabel = new HighlightingLabel(source);
+            hightlightingLabel.setStylePrimaryName("TableEditorContent");
+            hightlightingLabel.setTitle(messages.sourceCommentLabel() + value.getSourceComment());
+
+            HorizontalPanel sourcePanel = new HorizontalPanel();
+            sourcePanel.setStyleName("sourceRow");
+
+            sourcePanel.add(hightlightingLabel);
+
+            RadioButton selectButton = new RadioButton("selectSource");
+            selectButton.setTitle(source);
+
+            if (value.getSources().size() == 1)
+            {
+               selectButton.setVisible(false);
+            }
+            selectSourceButtonList.add(selectButton);
+
+            sourcePanel.add(selectButton);
+            sourcePanel.setCellHorizontalAlignment(selectButton, HasHorizontalAlignment.ALIGN_RIGHT);
+
+            hightlightingLabelList.add(hightlightingLabel);
+            sourceLabelsPanel.add(sourcePanel);
+         }
       }
    }
 
@@ -143,7 +145,7 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>, HasCl
    {
       return addHandler(handler, ClickEvent.getType());
    }
-   
+
    public void highlightSearch(String search)
    {
       for (HighlightingLabel sourceLabel : hightlightingLabelList)

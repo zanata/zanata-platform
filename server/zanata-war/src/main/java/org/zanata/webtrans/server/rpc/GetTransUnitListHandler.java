@@ -34,15 +34,18 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.zanata.common.ContentState;
+import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
+import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.po.HPoTargetHeader;
+import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.ActionHandlerFor;
-import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
@@ -60,12 +63,19 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
    Log log;
 
    @In
-   TextFlowDAO textFlowDAO;
+   private ResourceUtils resourceUtils;
+
+   @In
+   private TextFlowDAO textFlowDAO;
+
+   @In
+   private DocumentDAO documentDAO;
 
    @In
    private LocaleService localeServiceImpl;
 
    private static SimpleDateFormat SIMPLE_FORMAT = new SimpleDateFormat();
+   private static int MAX_TARGET_CONTENTS = 6;
 
    @Override
    public GetTransUnitListResult execute(GetTransUnitList action, ExecutionContext context) throws ActionException
@@ -106,12 +116,28 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          // textFlowDAO.getCountByDocument(action.getDocumentId().getValue());
       }
 
+      HDocument document = documentDAO.getById(action.getDocumentId().getId());
+      HPoTargetHeader headers = document.getPoTargetHeaders().get(hLocale);
+
+      int nPlurals;
+
+      if (headers != null)
+      {
+         nPlurals = resourceUtils.getNPluralForms(headers.getEntries(), hLocale);
+      }
+      else
+      {
+         nPlurals = resourceUtils.getNPluralForms("", hLocale);
+      }
+
+      nPlurals = (nPlurals > MAX_TARGET_CONTENTS || nPlurals < 1) ? 1 : nPlurals;
+
       List<TransUnit> units = new ArrayList<TransUnit>();
       for (HTextFlow textFlow : result)
       {
          if (!filter.isFilterOut(textFlow, hLocale))
          {
-            TransUnit tu = initTransUnit(textFlow, hLocale);
+            TransUnit tu = initTransUnit(textFlow, hLocale, nPlurals);
             if (action.getTargetTransUnitId() != null && tu.getId().equals(action.getTargetTransUnitId()))
             {
                gotoRow = units.size();
@@ -133,12 +159,13 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
 
       return new GetTransUnitListResult(action.getDocumentId(), units, size, gotoRow);
    }
+
    @Override
    public void rollback(GetTransUnitList action, GetTransUnitListResult result, ExecutionContext context) throws ActionException
    {
    }
 
-   private TransUnit initTransUnit(HTextFlow textFlow, HLocale hLocale)
+   private TransUnit initTransUnit(HTextFlow textFlow, HLocale hLocale, int nPlurals)
    {
       String msgContext = null;
       if (textFlow.getPotEntryData() != null)
@@ -147,14 +174,17 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       }
       HTextFlowTarget target = textFlow.getTargets().get(hLocale);
 
-      // TODO Plural Support
       ArrayList<String> targets = new ArrayList<String>();
       ArrayList<String> sources = new ArrayList<String>();
       sources.add(textFlow.getContent());
       TransUnit tu = new TransUnit(new TransUnitId(textFlow.getId()), textFlow.getResId(), hLocale.getLocaleId(), sources, CommentsUtil.toString(textFlow.getComment()), targets, ContentState.New, "", "", msgContext, textFlow.getPos());
       if (target != null)
       {
-         targets = new ArrayList<String>();
+         // TODO Plural Support
+         // for(int i=0;i<target.getContents.size();i<nPlurals;i++){
+         //
+         // }
+         targets.add(target.getContent());
 
          tu.setTargets(targets);
          tu.setStatus(target.getState());

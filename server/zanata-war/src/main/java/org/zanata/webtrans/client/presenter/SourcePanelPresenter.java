@@ -24,19 +24,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.customware.gwt.presenter.client.EventBus;
-
 import org.zanata.webtrans.client.editor.table.SourcePanel;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.shared.model.TransUnit;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 /**
@@ -46,15 +41,14 @@ import com.google.inject.Inject;
 public class SourcePanelPresenter
 {
    private final NavigationMessages messages;
-   private final EventBus eventBus;
    private final Map<Integer, SourcePanel> sourcePanelMap;
-   private String selectedSource;
+   private Widget selectedSource;
+   private Widget previousSource;
 
    @Inject
-   public SourcePanelPresenter(EventBus eventBus, final NavigationMessages messages)
+   public SourcePanelPresenter(final NavigationMessages messages)
    {
       this.messages = messages;
-      this.eventBus = eventBus;
 
       sourcePanelMap = new HashMap<Integer, SourcePanel>();
    }
@@ -64,17 +58,31 @@ public class SourcePanelPresenter
       @Override
       public void onValueChange(ValueChangeEvent<Boolean> event)
       {
-         selectedSource = ((RadioButton) event.getSource()).getTitle();
-         Log.info("selectedSource:" + selectedSource);
+         previousSource = selectedSource;
+
+         selectedSource = (Widget) event.getSource();
+
+         // Set border to selected source panel
+         selectedSource.getParent().setStyleName("selectedSourceRow");
+
+         if (previousSource != null)
+         {
+            previousSource.getParent().setStyleName("sourceRow");
+         }
       }
    };
 
+   /**
+    * Select first source in the list when row is selected
+    * 
+    * @param row
+    */
    public void setSelectedSource(int row)
    {
       SourcePanel sourcePanel = sourcePanelMap.get(row);
       if (sourcePanel != null)
       {
-         HasValue<Boolean> selectSourceButton = sourcePanel.getSelectSourceButtonList().get(0);
+         HasValue<Boolean> selectSourceButton = sourcePanel.getSelectSourceBtnValueList().get(0);
          if (selectSourceButton != null)
          {
             selectSourceButton.setValue(true, true);
@@ -84,7 +92,7 @@ public class SourcePanelPresenter
 
    public String getSelectedSource()
    {
-      return selectedSource;
+      return selectedSource.getTitle();
    }
 
    public SourcePanel getSourcePanel(int row, TransUnit value)
@@ -97,13 +105,13 @@ public class SourcePanelPresenter
       }
       else
       {
-         sourcePanel = new SourcePanel();
+         sourcePanel = new SourcePanel(messages);
          sourcePanelMap.put(row, sourcePanel);
       }
 
-      sourcePanel.updateData(value, messages);
+      sourcePanel.setValue(value);
 
-      List<HasValue<Boolean>> selectSourceList = sourcePanel.getSelectSourceButtonList();
+      List<HasValue<Boolean>> selectSourceList = sourcePanel.getSelectSourceBtnValueList();
 
       for (HasValue<Boolean> selectSource : selectSourceList)
       {
