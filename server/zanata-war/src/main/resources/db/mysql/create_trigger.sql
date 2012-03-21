@@ -31,7 +31,8 @@ CREATE TRIGGER `HTextFlow_Update`
    END
 GO
 
-DROP TRIGGER IF EXISTS `HTextFlowTarget_Update`;
+DROP TRIGGER IF EXISTS `HTextFlowTarget_Update`
+GO
 
 CREATE TRIGGER `HTextFlowTarget_Update`
    BEFORE UPDATE on `HTextFlowTarget`

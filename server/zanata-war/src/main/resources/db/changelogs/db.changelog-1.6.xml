@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+<databaseChangeLog 
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+						http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
     This changelog file (despite the filename) is actually part 2 of the changes for Zanata 1.5.
@@ -62,17 +65,17 @@
 	<changeSet author="aeng@redhat.com" id="7">
         <comment>Alter HProjectIteration - change status to char(1)</comment>
         <sql>UPDATE HProjectIteration SET status=SUBSTRING(status,1,1);</sql>
-        <modifyColumn tableName="HProjectIteration">
+        <ext:modifyColumn tableName="HProjectIteration">
             <column name="status" type="char(1)"/>
-        </modifyColumn>
+        </ext:modifyColumn>
     </changeSet>
 
     <changeSet author="sflaniga@redhat.com" id="1">
         <comment>Alter HProjectIteration/HProject - change status to char(1)</comment>
         <sql>UPDATE HProject SET status=SUBSTRING(status,1,1);</sql>
-        <modifyColumn tableName="HProject">
+        <ext:modifyColumn tableName="HProject">
             <column name="status" type="char(1)"/>
-        </modifyColumn>
+        </ext:modifyColumn>
     </changeSet>
     
     <changeSet author="camunoz@redhat.com" id="1-h2" dbms="h2">
@@ -95,19 +98,19 @@
     	<sql>UPDATE HTextFlow SET contentHash = MD5(content)</sql>	
     </changeSet>
 
-    <!-- renamed from changeset(camunoz@redhat.com:2) to ensure preconditions are checked again -->
-    <changeSet author="sflaniga@redhat.com" id="2" dbms="mysql">
+    <!-- renamed from changeset(camunoz@redhat.com:2 and sflanigan@redhat.com:2) to ensure preconditions are checked again -->
+    <changeSet author="camunoz@redhat.com" id="3" dbms="mysql">
       <preConditions onFail="MARK_RAN">
           <sqlCheck expectedResult="1">
-             SELECT * FROM INFORMATION_SCHEMA.COLUMNS
+             SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
              WHERE TABLE_SCHEMA=SCHEMA() AND TABLE_NAME='HTextFlow'
              AND COLUMN_NAME='contentHash' AND DATA_TYPE='varchar';
           </sqlCheck>
       </preConditions>
     	<comment>Change Content Hash column on HTextFlow to char(32)</comment>
-    	<modifyColumn tableName="HTextFlow">
+    	<ext:modifyColumn tableName="HTextFlow">
     		<column name="contentHash" type="char(32)"/>
-    	</modifyColumn>
+    	</ext:modifyColumn>
     </changeSet>
 
 	<!--

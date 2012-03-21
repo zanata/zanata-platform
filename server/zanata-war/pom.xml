@@ -1277,20 +1277,25 @@
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.liquibase.ext</groupId>
+			<artifactId>modify-column</artifactId>
+		</dependency>
 
 		<!-- openid4java -->
-    <dependency>
-       <groupId>org.htmlparser</groupId>
-       <artifactId>htmlparser</artifactId>
-       <version>1.6</version>
-       <exclusions>
-          <!--  htmlparser tries to bring in java.home/lib/tools.jar -->
-          <exclusion>
-             <artifactId>tools</artifactId>
-             <groupId>com.sun</groupId>
-          </exclusion>
-       </exclusions>
-    </dependency>
+	    <dependency>
+	       <groupId>org.htmlparser</groupId>
+	       <artifactId>htmlparser</artifactId>
+	       <version>1.6</version>
+	       <exclusions>
+	          <!--  htmlparser tries to bring in java.home/lib/tools.jar -->
+	          <exclusion>
+	             <artifactId>tools</artifactId>
+	             <groupId>com.sun</groupId>
+	          </exclusion>
+	       </exclusions>
+	    </dependency>
 
 		<dependency>
 			<groupId>org.openid4java</groupId>

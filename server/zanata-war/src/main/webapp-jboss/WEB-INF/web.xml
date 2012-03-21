@@ -66,36 +66,36 @@
 	 -->
 
 	<context-param>
-	    <param-name>LIQUIBASE_CHANGELOG</param-name>
+	    <param-name>liquibase.changelog</param-name>
 	    <param-value>db/db.changelog.xml</param-value>
 	</context-param>
 	 
 	<context-param>
-	    <param-name>LIQUIBASE_DATA_SOURCE</param-name>
+	    <param-name>liquibase.datasource</param-name>
 	    <param-value>java:/${ds.jndi.name}</param-value>
 	</context-param>
 	<!-- 
 	<context-param>
-	    <param-name>LIQUIBASE_HOST_EXCLUDES</param-name>
+	    <param-name>liquibase.host.excludes</param-name>
 	    <param-value>production1.example.com, production2.example.com</param-value>
 	</context-param>
 	 -->
 	 
 	<context-param>
-	    <param-name>LIQUIBASE_FAIL_ON_ERROR</param-name>
+	    <param-name>liquibase.onerror.fail</param-name>
 	    <param-value>true</param-value>
 	</context-param>
 	
 	<!-- 
 	<context-param>
-	    <param-name>LIQUIBASE_CONTEXTS</param-name>
+	    <param-name>liquibase.contexts</param-name>
 	    <param-value>production</param-value>
 	</context-param>
 	 --> 
 <!--
 -->
 	<listener>
-	    <listener-class>liquibase.servlet.LiquibaseServletListener</listener-class>
+	    <listener-class>liquibase.integration.servlet.LiquibaseServletListener</listener-class>
 	</listener>
 
 
