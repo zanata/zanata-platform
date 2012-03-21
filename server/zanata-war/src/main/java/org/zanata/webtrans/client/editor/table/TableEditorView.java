@@ -23,7 +23,6 @@ package org.zanata.webtrans.client.editor.table;
 import java.util.List;
 import java.util.Set;
 
-import com.google.inject.Provider;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.editor.HasPageNavigation;
@@ -66,15 +65,15 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    }
 
    @Inject
-   public TableEditorView(NavigationMessages messages, EventBus eventBus, WorkspaceContext workspaceContext, final Resources resources, final SourcePanelPresenter sourcePanelPresenter, Provider<TargetListPresenter> targetListPresenterProvider)
+   public TableEditorView(NavigationMessages messages, EventBus eventBus, WorkspaceContext workspaceContext, final Resources resources, final SourcePanelPresenter sourcePanelPresenter, TargetContentsPresenter targetContentsPresenter)
    {
-       this(messages, new RedirectingTableModel<TransUnit>(), eventBus, workspaceContext, sourcePanelPresenter, targetListPresenterProvider);
+       this(messages, new RedirectingTableModel<TransUnit>(), eventBus, workspaceContext, sourcePanelPresenter, targetContentsPresenter);
        loadingPanel = new LoadingPanel(resources);
    }
 
-   private TableEditorView(NavigationMessages messages, RedirectingTableModel<TransUnit> tableModel, EventBus eventBus, WorkspaceContext workspaceContext, final SourcePanelPresenter sourcePanelPresenter, Provider<TargetListPresenter> targetListPresenterProvider)
+   private TableEditorView(NavigationMessages messages, RedirectingTableModel<TransUnit> tableModel, EventBus eventBus, WorkspaceContext workspaceContext, final SourcePanelPresenter sourcePanelPresenter, TargetContentsPresenter targetContentsPresenter)
    {
-      this(new RedirectingCachedTableModel<TransUnit>(tableModel), new TableEditorTableDefinition(messages, new RedirectingCachedTableModel<TransUnit>(tableModel), eventBus, sourcePanelPresenter, workspaceContext.isReadOnly(), targetListPresenterProvider));
+      this(new RedirectingCachedTableModel<TransUnit>(tableModel), new TableEditorTableDefinition(messages, new RedirectingCachedTableModel<TransUnit>(tableModel), eventBus, sourcePanelPresenter, workspaceContext.isReadOnly(), targetContentsPresenter));
    }
 
    private TableEditorView(RedirectingCachedTableModel<TransUnit> tableModel, TableEditorTableDefinition tableDefinition)

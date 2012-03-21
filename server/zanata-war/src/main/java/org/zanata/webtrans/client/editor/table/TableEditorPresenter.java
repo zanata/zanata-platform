@@ -25,6 +25,7 @@ import static org.zanata.webtrans.client.editor.table.TableConstants.MAX_PAGE_RO
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -191,8 +192,9 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    private final WorkspaceContext workspaceContext;
    
    private final SourcePanelPresenter sourcePanelPresenter;
+    private TargetContentsPresenter targetContentsPresenter;
 
-   private boolean filterTranslated, filterNeedReview, filterUntranslated;
+    private boolean filterTranslated, filterNeedReview, filterUntranslated;
 
    private final UndoableTransUnitUpdateHandler undoableTransUnitUpdateHandler = new UndoableTransUnitUpdateHandler()
    {
@@ -264,7 +266,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    };
 
    @Inject
-   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourcePanelPresenter sourcePanelPresenter)
+   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourcePanelPresenter sourcePanelPresenter, TargetContentsPresenter targetContentsPresenter)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
@@ -272,6 +274,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       this.messages = messages;
       this.workspaceContext = workspaceContext;
       this.sourcePanelPresenter = sourcePanelPresenter;
+       this.targetContentsPresenter = targetContentsPresenter;
    }
 
    private void clearCacheList()
@@ -629,8 +632,10 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             {
                tableModelHandler.gotoRow(rowIndex, true);
                // TODO Plural Support
-               display.getTargetCellEditor().setText(event.getTransUnit().getSources().toString());
-               display.getTargetCellEditor().autoSize();
+                event.getTextArea().setText(sourcePanelPresenter.getSelectedSource());
+//                targetContentsPresenter.copySource(sourcePanelPresenter.getSelectedSource());
+//               display.getTargetCellEditor().setText(event.getTransUnit().getSources().toString());
+//               display.getTargetCellEditor().autoSize();
             }
          }
 
@@ -742,6 +747,12 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             @Override
             public void onSuccess(GetTransUnitListResult result)
             {
+                //FIXME hack!!
+                for (TransUnit transUnit : result.getUnits()) {
+                    transUnit.setTargets(Lists.newArrayList("123", "456", "789"));
+                }
+
+                targetContentsPresenter.initWidgets(display.getPageSize());
                SerializableResponse<TransUnit> response = new SerializableResponse<TransUnit>(result.getUnits());
                Log.info("Got " + result.getUnits().size() + " rows back of " + result.getTotalCount() + " available");
                callback.onRowsReady(request, response);

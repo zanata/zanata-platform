@@ -5,11 +5,13 @@ import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface ToggleWidget extends IsWidget, HasText {
+public interface ToggleEditor extends IsWidget, HasText {
     
     ViewMode getViewMode();
     
     void setViewMode(ViewMode viewMode);
+
+    void autoSize();
 
     static enum ViewMode {
         VIEW, EDIT

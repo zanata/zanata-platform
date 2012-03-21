@@ -15,14 +15,23 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
-import com.google.gwt.user.client.TakesValue;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
+import java.util.Iterator;
 import java.util.List;
 
-public interface TargetListDisplay extends WidgetDisplay {
+public interface TargetContentsDisplay extends WidgetDisplay {
 
-    void setTargets(List<String> targets);
+    interface Listener {
+        void validate(ToggleEditor editor);
+
+        void saveAsApproved(ToggleEditor editor);
+
+        void copySource(ToggleEditor editor);
+    }
+
+    List<ToggleEditor> setTargets(List<String> targets);
     
     void setFindMessage(String findMessage);
 
@@ -30,5 +39,9 @@ public interface TargetListDisplay extends WidgetDisplay {
 
     void setToView();
 
-    ToggleWidget getCurrentEditor();
+    ToggleEditor getCurrentEditor();
+
+    boolean isEditing();
+
+    void setListener(Listener listener);
 }

@@ -17,39 +17,43 @@ package org.zanata.webtrans.client.editor.table;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
 import org.zanata.webtrans.client.ui.Editor;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
+import java.util.Iterator;
 import java.util.List;
 
-public class TargetListView implements TargetListDisplay {
+public class TargetContentsView implements TargetContentsDisplay {
     public static final int COLUMNS = 1;
     public static final int DEFAULT_ROWS = 1;
 
     private Grid editorGrid;
     private String findMessage;
-    private List<Editor> editors;
+    private List<ToggleEditor> editors;
+    private Listener listener;
 
-    public TargetListView() {
+    public TargetContentsView() {
         editorGrid = new Grid(DEFAULT_ROWS, COLUMNS);
+        editorGrid.ensureDebugId("target-contents-grid");
+        editorGrid.setWidth("100%");
         editors = Lists.newArrayList();
     }
 
 
-
     @Override
-    public void setTargets(List<String> targets) {
+    public List<ToggleEditor> setTargets(List<String> targets) {
         editors.clear();
         editorGrid.resize(targets.size(), COLUMNS);
         int rowIndex = 0;
         for (String target : targets) {
-            Editor editor = new Editor(target, findMessage);
+            Editor editor = new Editor(target, findMessage, listener);
             editor.setText(target);
             editorGrid.setWidget(rowIndex, 0, editor);
+            editors.add(editor);
+            rowIndex++;
         }
+        return editors;
     }
 
     @Override
@@ -60,36 +64,46 @@ public class TargetListView implements TargetListDisplay {
     @Override
     public List<String> getNewTargets() {
         List<String> result = Lists.newArrayList();
-        for (IsWidget widget : editorGrid) {
-            if (widget instanceof Editor) {
-                Editor targetEditorWidget = (Editor) widget;
-                editors.add(targetEditorWidget);
-                result.add(targetEditorWidget.getText());
-            }
+        for (ToggleEditor editor : editors) {
+            result.add(editor.getText());
         }
         return result;
     }
 
     @Override
     public void setToView() {
-        for (Editor editor : editors) {
-            editor.setViewMode(ToggleWidget.ViewMode.VIEW);
+        for (ToggleEditor editor : editors) {
+            editor.setViewMode(ToggleEditor.ViewMode.VIEW);
         }
     }
 
     @Override
-    public ToggleWidget getCurrentEditor() {
-        for (Editor editor : editors) {
-            if (editor.getViewMode() == ToggleWidget.ViewMode.EDIT) {
+    public ToggleEditor getCurrentEditor() {
+        for (ToggleEditor editor : editors) {
+            if (editor.getViewMode() == ToggleEditor.ViewMode.EDIT) {
                 return editor;
             }
         }
-        return null;
+        return editors.get(0);
+    }
+
+    @Override
+    public boolean isEditing() {
+        for (ToggleEditor editor : editors) {
+            if (editor.getViewMode() == ToggleEditor.ViewMode.EDIT) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
     @Override
     public Widget asWidget() {
         return editorGrid;
     }
-
 }

@@ -20,12 +20,9 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
@@ -34,7 +31,6 @@ import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEventHandler;
-import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.resources.EditorConfigConstants;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.ValidationMessagePanel;
@@ -47,8 +43,6 @@ import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Widget;
-
-import javax.inject.Provider;
 
 public class InlineTargetCellEditor implements CellEditor<TransUnit>
 {
@@ -146,8 +140,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private boolean isCancelButtonFocused = false;
     private String findMessage;
     private boolean isReadOnly;
+    private TargetContentsPresenter targetContentsPresenter;
 
-   private boolean untranslatedMode = true, fuzzyMode = true;
+    private boolean untranslatedMode = true, fuzzyMode = true;
    private boolean isEnterKeySavesEnabled = false, isEscKeyCloseEditor = false;
 
    private int curRow;
@@ -165,19 +160,15 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private final EventBus eventBus;
     
-    Provider<TargetListPresenter> targetListPresenterProvider;
-
-    private List<TargetListPresenter> targetListPresenters = Lists.newArrayList();
-    private TargetListPresenter currentTargetPresenter;
 
     /**
     * Construct a new {@link InlineTargetCellEditor} with the specified images.
     */
-   public InlineTargetCellEditor(NavigationMessages messages, String findMessage, CancelCallback<TransUnit> callback, EditRowCallback rowCallback, final EventBus eventBus, final boolean isReadOnly, Provider<TargetListPresenter> targetListPresenterProvider)
+   public InlineTargetCellEditor(NavigationMessages messages, String findMessage, CancelCallback<TransUnit> callback, EditRowCallback rowCallback, final EventBus eventBus, final boolean isReadOnly, TargetContentsPresenter targetContentsPresenter)
    {
        this.findMessage = findMessage;
        this.isReadOnly = isReadOnly;
-       this.targetListPresenterProvider = targetListPresenterProvider;
+       this.targetContentsPresenter = targetContentsPresenter;
        final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       // Wrap contents in a table
 
@@ -191,11 +182,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 //      topLayoutPanel = new FlowPanel();
 //      topLayoutPanel.setWidth("100%");
 //
-       for (int i = 0; i < TableConstants.PAGE_SIZE; i++) {
-           TargetListPresenter targetListPresenter = this.targetListPresenterProvider.get();
-           targetListPresenter.getDisplay().setFindMessage(findMessage);
-           targetListPresenters.add(targetListPresenter);
-       }
+
       this.eventBus = eventBus;
       cancelCallback = callback;
       editRowCallback = rowCallback;
@@ -504,14 +491,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 //         curCellEditInfo.getTable().setWidget(curRow, curCol, cellViewWidget);
 //         cellViewWidget.getParent().setHeight(cellViewWidget.getOffsetHeight() + "px");
 //      }
-       if (currentTargetPresenter != null) {
-           currentTargetPresenter.getDisplay().setToView();
-       }
+       targetContentsPresenter.setToViewMode();
    }
 
    public boolean isEditing()
    {
-      return cellValue != null;
+      return cellValue != null && targetContentsPresenter.isEditing();
    }
 
    public boolean isFocused()
@@ -528,7 +513,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {  //TODO copy TM or copy source will go here
       if (isEditing())
       {
-         currentTargetPresenter.getDisplay().getCurrentEditor().setText(text);
+         targetContentsPresenter.setCurrentEditorText(text);
       }
    }
 
@@ -536,7 +521,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       if (isEditing())
       {
-          ToggleWidget currentEditor = currentTargetPresenter.getDisplay().getCurrentEditor();
+          targetContentsPresenter.insertTextInCursorPosition(text);
 //          String preCursor = currentEditor.getText().substring(0, textArea.getCursorPos());
 //         String postCursor = textArea.getText().substring(textArea.getCursorPos(), textArea.getText().length());
          
@@ -581,14 +566,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
 //      cellViewWidget = table.getWidget(curRow, curCol);
 
-      //construct list of editor each time
-       currentTargetPresenter = targetListPresenters.get(curRow);
 
-       currentTargetPresenter.getDisplay().setTargets(cellValue.getTargets());
+//       table.setWidget(curRow, curCol, currentTargetPresenter.getDisplay().asWidget());
 
-       table.setWidget(curRow, curCol, currentTargetPresenter.getDisplay().asWidget());
-
-      this.cellValue = cellValue;
+       this.cellValue = cellValue;
+       targetContentsPresenter.showEditors(cellValue);
 
 //      textArea.setFocus(true);
       isOpened = true;
@@ -665,7 +647,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       {
          return;
       }
-      cellValue.setTargets(currentTargetPresenter.getDisplay().getNewTargets());
+      cellValue.setTargets(targetContentsPresenter.getCurrentDisplay().getNewTargets());
 
       // changing status to new when target cell is empty
 //      if (cellValue.getTarget().isEmpty())
@@ -689,7 +671,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    protected void acceptFuzzyEdit()
    {
 //      String text = textArea.getText();
-      cellValue.setTargets(currentTargetPresenter.getDisplay().getNewTargets());
+      cellValue.setTargets(targetContentsPresenter.getCurrentDisplay().getNewTargets());
 //      if (text == null || text.isEmpty())
 //         cellValue.setStatus(ContentState.New);
 //      else

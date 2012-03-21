@@ -1,31 +1,32 @@
 package org.zanata.webtrans.client.ui;
 
-import com.google.gwt.user.client.ui.Focusable;
+import com.google.common.base.Strings;
+import com.google.gwt.uibinder.client.UiHandler;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.editor.table.EditorTextArea;
 import org.zanata.webtrans.client.editor.table.TableResources;
-import org.zanata.webtrans.client.editor.table.ToggleWidget;
+import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
+import org.zanata.webtrans.client.editor.table.ToggleEditor;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
-public class Editor extends Composite implements ToggleWidget {
+public class Editor extends Composite implements ToggleEditor {
+    private TargetContentsDisplay.Listener listener;
+
     interface EditorUiBinder extends UiBinder<Widget, Editor> {
     }
     private static EditorUiBinder uiBinder = GWT.create(EditorUiBinder.class);
@@ -47,19 +48,24 @@ public class Editor extends Composite implements ToggleWidget {
 
     @UiField
     NavigationMessages messages;
-    private EditorTextArea textArea;
 
+    @UiField
+    EditorTextArea textArea;
 
-    private HighlightingLabel label;
+    @UiField
+    HighlightingLabel label;
+    @UiField
+    PushButton copySourceButton;
 //   TableResources images = GWT.create(TableResources.class);
 
-    public Editor(String displayString, String findMessage) {
+    public Editor(String displayString, String findMessage, TargetContentsDisplay.Listener listener) {
+        this.listener = listener;
         initWidget(uiBinder.createAndBindUi(this));
 
         validateButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                if (getContent() != null && !getContent().isEmpty()) {
+                if (Strings.isNullOrEmpty(getContent())) {
                     // fireValidationEvent(eventBus);
                 }
             }
@@ -71,7 +77,7 @@ public class Editor extends Composite implements ToggleWidget {
 
         cancelButton.addClickHandler(cancelHandler);
 
-        label = new HighlightingLabel(displayString);
+        label.setText(displayString);
         if (displayString == null || displayString.isEmpty()) {
             label.setText(messages.clickHere());
             label.setStylePrimaryName("TableEditorContent-Empty");
@@ -80,38 +86,43 @@ public class Editor extends Composite implements ToggleWidget {
             label.setStylePrimaryName("TableEditorContent");
         }
 
-        if (findMessage != null && !findMessage.isEmpty()) {
+        if (!Strings.isNullOrEmpty(findMessage)) {
             label.highlightSearch(findMessage);
         }
 
         label.setTitle(messages.clickHere());
 
-        textArea = new EditorTextArea();
-        textArea.setStyleName("TableEditorContent-Edit");
+//        textArea.setStyleName("TableEditorContent-Edit");
         textArea.setVisible(false);
 
         textArea.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
                 autoSize();
-                // fireValidationEvent(eventBus);
+//                fireValidationEvent(eventBus);
             }
 
         });
+    }
 
-        topContainer.add(label);
-        topContainer.add(textArea);
+    @UiHandler("copySourceButton")
+    public void onCopySource(ClickEvent event) {
+        listener.copySource(this);
+    }
 
-        this.addHandler(new MouseDownHandler() {
-            @Override
-            public void onMouseDown(MouseDownEvent event) {
-                toggleView();
+    @UiHandler("validateButton")
+    public void onValidation(ClickEvent event) {
+        listener.validate(this);
+    }
 
-            }
-        }, MouseDownEvent.getType());
+    @UiHandler("saveButton")
+    public void onSaveAsApproved(ClickEvent event) {
+        listener.saveAsApproved(this);
+    }
 
-        sinkEvents(Event.ONCLICK);
-
+    @UiHandler("label")
+    public void onLabelClick(ClickEvent event) {
+        toggleView();
     }
 
     @Override
@@ -169,12 +180,14 @@ public class Editor extends Composite implements ToggleWidget {
     };
 
     private void toggleView() {
-        if (textArea.isVisible()) {
-            textArea.setVisible(false);
-            label.setVisible(true);
-        } else {
+        if (label.isVisible()) {
             textArea.setVisible(true);
+            buttons.setVisible(true);
             label.setVisible(false);
+        } else {
+            textArea.setVisible(false);
+            buttons.setVisible(false);
+            label.setVisible(true);
         }
     }
 
@@ -183,7 +196,8 @@ public class Editor extends Composite implements ToggleWidget {
         // cellValue.getSource(), textArea.getText(), false));
     }
 
-    private void autoSize() {
+    @Override
+    public void autoSize() {
         shrinkSize(true);
         growSize();
     }

@@ -24,31 +24,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.inject.Provider;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.CopySourceEvent;
-import org.zanata.webtrans.client.events.OpenEditorEvent;
 import org.zanata.webtrans.client.presenter.SourcePanelPresenter;
 import org.zanata.webtrans.client.resources.NavigationMessages;
-import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
@@ -67,6 +59,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    private final boolean isReadOnly;
    private final TableResources images = GWT.create(TableResources.class);
    private final SourcePanelPresenter sourcePanelPresenter;
+    private TargetContentsPresenter targetContentsPresenter;
 
     private String findMessage;
    // private SourcePanel sourcePanel;
@@ -177,51 +170,55 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          final VerticalPanel targetPanel = new VerticalPanel();
          targetPanel.addStyleName("TableEditorCell-Target-Table");
 
-         final HighlightingLabel label = new HighlightingLabel();
+          TargetContentsDisplay contentsDisplay = targetContentsPresenter.getNextTargetContentsDisplay(rowValue);
+          contentsDisplay.setToView();
+
+
+//          final HighlightingLabel label = new HighlightingLabel();
 
          /**
           * if editor is opening, do not render target cell, otherwise editor
           * will be closed. targetCellEditor.isEditing not suitable since when
           * we click the save button, cellValue is not null.
           **/
-         if (targetCellEditor.isOpened() && targetCellEditor.getTargetCell().getId().equals(rowValue.getId()))
-         {
-            return;
-         }
-
-         if (rowValue.getTargets().isEmpty() && !isReadOnly)
-         {
-            label.setText(messages.clickHere());
-            label.setStylePrimaryName("TableEditorContent-Empty");
-         }
-         else
-         {
-            label.setText(rowValue.getTargets().toString());
-            label.setStylePrimaryName("TableEditorContent");
-         }
-
-         if (findMessage != null && !findMessage.isEmpty())
-         {
-            label.highlightSearch(findMessage);
-         }
-         label.setTitle(messages.clickHere());
-
-         label.sinkEvents(Event.ONMOUSEDOWN);
-         final int rowIndex = view.getRowIndex();
-         label.addMouseDownHandler(new MouseDownHandler()
-         {
-            @Override
-            public void onMouseDown(MouseDownEvent event)
-            {
-               if (!isReadOnly && event.getNativeButton() == NativeEvent.BUTTON_LEFT)
-               {
-                  event.stopPropagation();
-                  event.preventDefault();
-                  eventBus.fireEvent(new OpenEditorEvent(rowIndex));
-               }
-            }
-         });
-         targetPanel.add(label);
+//         if (targetCellEditor.isOpened() && targetCellEditor.getTargetCell().getId().equals(rowValue.getId()))
+//         {
+//            return;
+//         }
+//
+//         if (rowValue.getTargets().isEmpty() && !isReadOnly)
+//         {
+//            label.setText(messages.clickHere());
+//            label.setStylePrimaryName("TableEditorContent-Empty");
+//         }
+//         else
+//         {
+//            label.setText(rowValue.getTargets().toString());
+//            label.setStylePrimaryName("TableEditorContent");
+//         }
+//
+//         if (findMessage != null && !findMessage.isEmpty())
+//         {
+//            label.highlightSearch(findMessage);
+//         }
+//         label.setTitle(messages.clickHere());
+//
+//         label.sinkEvents(Event.ONMOUSEDOWN);
+//         final int rowIndex = view.getRowIndex();
+//         label.addMouseDownHandler(new MouseDownHandler()
+//         {
+//            @Override
+//            public void onMouseDown(MouseDownEvent event)
+//            {
+//               if (!isReadOnly && event.getNativeButton() == NativeEvent.BUTTON_LEFT)
+//               {
+//                  event.stopPropagation();
+//                  event.preventDefault();
+//                  eventBus.fireEvent(new OpenEditorEvent(rowIndex));
+//               }
+//            }
+//         });
+         targetPanel.add(contentsDisplay.asWidget());
          targetPanel.setWidth("100%");
          view.setWidget(targetPanel);
       }
@@ -281,13 +278,14 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       this.findMessage = findMessage;
    }
 
-   public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final EventBus eventBus, final SourcePanelPresenter sourcePanelPresenter, boolean isReadOnly, Provider<TargetListPresenter> targetListPresenterProvider)
+   public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final EventBus eventBus, final SourcePanelPresenter sourcePanelPresenter, boolean isReadOnly, TargetContentsPresenter targetContentsPresenter)
    {
       this.isReadOnly = isReadOnly;
       this.messages = messages;
       this.eventBus = eventBus;
       this.sourcePanelPresenter = sourcePanelPresenter;
-      setRowRenderer(rowRenderer);
+       this.targetContentsPresenter = targetContentsPresenter;
+       setRowRenderer(rowRenderer);
       sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
 
       // min-width of 46px is reserved by system for each column.
@@ -364,7 +362,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             tableModel.gotoPrevNew();
          }
       };
-      this.targetCellEditor = new InlineTargetCellEditor(messages, findMessage, cancelCallBack, transValueCallBack, eventBus, isReadOnly, targetListPresenterProvider);
+      this.targetCellEditor = new InlineTargetCellEditor(messages, findMessage, cancelCallBack, transValueCallBack, eventBus, isReadOnly, targetContentsPresenter);
       this.transUnitDetailsContent = new TransUnitDetailsPanel(messages.transUnitDetailsHeading());
       targetColumnDefinition.setCellEditor(targetCellEditor);
 
