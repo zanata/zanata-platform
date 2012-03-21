@@ -170,7 +170,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          final VerticalPanel targetPanel = new VerticalPanel();
          targetPanel.addStyleName("TableEditorCell-Target-Table");
 
-          TargetContentsDisplay contentsDisplay = targetContentsPresenter.getNextTargetContentsDisplay(rowValue);
+          TargetContentsDisplay contentsDisplay = targetContentsPresenter.getNextTargetContentsDisplay(view.getRowIndex(), rowValue);
           contentsDisplay.setToView();
 
 

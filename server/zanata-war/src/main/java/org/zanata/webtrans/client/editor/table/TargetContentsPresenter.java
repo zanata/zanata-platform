@@ -15,20 +15,17 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.customware.gwt.presenter.client.EventBus;
+import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.presenter.SourcePanelPresenter;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitId;
 
 import javax.inject.Provider;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 @Singleton
 public class TargetContentsPresenter implements TargetContentsDisplay.Listener {
@@ -37,18 +34,15 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener {
     private Provider<TargetContentsDisplay> displayProvider;
     private EventBus eventBus;
     private SourcePanelPresenter sourcePanelPresenter;
-    private Map<TransUnit, TargetContentsDisplay> displays;
     private List<TargetContentsDisplay> displayList;
-    private Iterator<TargetContentsDisplay> displayIterator;
-    private List<ToggleEditor> currentEditors;
+    private Iterator<ToggleEditor> currentEditorIterator;
+    private ToggleEditor currentEditor;
 
     @Inject
     public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, EventBus eventBus, SourcePanelPresenter sourcePanelPresenter) {
         this.displayProvider = displayProvider;
         this.eventBus = eventBus;
         this.sourcePanelPresenter = sourcePanelPresenter;
-
-        displays = new HashMap<TransUnit, TargetContentsDisplay>();
     }
 
     boolean isEditing() {
@@ -62,8 +56,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener {
     }
 
     public void setCurrentEditorText(String text) {
-        if (currentDisplay != null) {
-            currentDisplay.getCurrentEditor().setText(text);
+        if (currentEditor != null) {
+            currentEditor.setText(text);
         }
     }
 
@@ -72,19 +66,16 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener {
         //throw new UnsupportedOperationException("Implement me!");
     }
 
-    public void showEditors(TransUnit cellValue) {
-        currentDisplay = displays.get(cellValue);
-        currentDisplay.getCurrentEditor().setViewMode(ToggleEditor.ViewMode.EDIT);
+    public void showEditors(int curRow) {
+        currentDisplay = displayList.get(curRow);
+        currentEditorIterator = currentDisplay.iterator();
+        currentEditor = currentEditorIterator.next();
+        currentEditor.setViewMode(ToggleEditor.ViewMode.EDIT);
     }
 
-    public TargetContentsDisplay getNextTargetContentsDisplay(TransUnit transUnit) {
-        TargetContentsDisplay result;
-        if (!displayIterator.hasNext()) {
-            Log.info("over one page's widget. going to another page? resetting iterator");
-            displayIterator = displayList.iterator();
-        }
-        result = displayIterator.next();
-        currentEditors = result.setTargets(transUnit.getTargets());
+    public TargetContentsDisplay getNextTargetContentsDisplay(int rowIndex, TransUnit transUnit) {
+        TargetContentsDisplay result = displayList.get(rowIndex);
+        result.setTargets(transUnit.getTargets());
         currentDisplay = result;
         return result;
     }
@@ -95,7 +86,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener {
             TargetContentsDisplay display = displayProvider.get();
             display.setListener(this);
             displayList.add(display);
-            displayIterator = displayList.iterator();
         }
     }
 
@@ -111,17 +101,26 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener {
     @Override
     public void saveAsApproved(ToggleEditor editor) {
         //TODO we should probably get new value out and save
-        editor.setViewMode(ToggleEditor.ViewMode.VIEW);
-        int currentIndex = currentEditors.indexOf(editor);
-        if (currentIndex + 1 < currentEditors.size()) {
-            currentEditors.get(currentIndex + 1).setViewMode(ToggleEditor.ViewMode.EDIT);
+        if (currentEditorIterator.hasNext()) {
+            editor.setViewMode(ToggleEditor.ViewMode.VIEW);
+            currentEditor = currentEditorIterator.next();
+            currentEditor.setViewMode(ToggleEditor.ViewMode.EDIT);
+        } else {
+            //TODO if it's out of current editor index, we should move to next row
+            eventBus.fireEvent(new NavTransUnitEvent(NavTransUnitEvent.NavigationType.NextEntry));
         }
-        //TODO if it's out of current editor index, we should move to next row
     }
 
     @Override
     public void copySource(ToggleEditor editor) {
         editor.setText(sourcePanelPresenter.getSelectedSource());
         editor.autoSize();
+    }
+
+    @Override
+    public void toggleView(ToggleEditor editor) {
+        //TODO implement
+        throw new UnsupportedOperationException("Implement me!");
+        //
     }
 }

@@ -122,7 +122,8 @@ public class Editor extends Composite implements ToggleEditor {
 
     @UiHandler("label")
     public void onLabelClick(ClickEvent event) {
-        toggleView();
+        listener.toggleView(this);
+//        toggleView();
     }
 
     @Override

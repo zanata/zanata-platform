@@ -19,7 +19,6 @@ import com.google.common.collect.Lists;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Widget;
 import org.zanata.webtrans.client.ui.Editor;
-import org.zanata.webtrans.shared.model.TransUnitId;
 
 import java.util.Iterator;
 import java.util.List;
@@ -42,7 +41,7 @@ public class TargetContentsView implements TargetContentsDisplay {
 
 
     @Override
-    public List<ToggleEditor> setTargets(List<String> targets) {
+    public void setTargets(List<String> targets) {
         editors.clear();
         editorGrid.resize(targets.size(), COLUMNS);
         int rowIndex = 0;
@@ -53,7 +52,6 @@ public class TargetContentsView implements TargetContentsDisplay {
             editors.add(editor);
             rowIndex++;
         }
-        return editors;
     }
 
     @Override
@@ -78,16 +76,6 @@ public class TargetContentsView implements TargetContentsDisplay {
     }
 
     @Override
-    public ToggleEditor getCurrentEditor() {
-        for (ToggleEditor editor : editors) {
-            if (editor.getViewMode() == ToggleEditor.ViewMode.EDIT) {
-                return editor;
-            }
-        }
-        return editors.get(0);
-    }
-
-    @Override
     public boolean isEditing() {
         for (ToggleEditor editor : editors) {
             if (editor.getViewMode() == ToggleEditor.ViewMode.EDIT) {
@@ -105,5 +93,10 @@ public class TargetContentsView implements TargetContentsDisplay {
     @Override
     public Widget asWidget() {
         return editorGrid;
+    }
+
+    @Override
+    public Iterator<ToggleEditor> iterator() {
+        return editors.iterator();
     }
 }

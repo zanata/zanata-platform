@@ -16,12 +16,13 @@
 package org.zanata.webtrans.client.editor.table;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
 import java.util.Iterator;
 import java.util.List;
 
-public interface TargetContentsDisplay extends WidgetDisplay {
+public interface TargetContentsDisplay extends WidgetDisplay, Iterable<ToggleEditor> {
 
     interface Listener {
         void validate(ToggleEditor editor);
@@ -29,17 +30,17 @@ public interface TargetContentsDisplay extends WidgetDisplay {
         void saveAsApproved(ToggleEditor editor);
 
         void copySource(ToggleEditor editor);
+
+        void toggleView(ToggleEditor editor);
     }
 
-    List<ToggleEditor> setTargets(List<String> targets);
+    void setTargets(List<String> targets);
     
     void setFindMessage(String findMessage);
 
     List<String> getNewTargets();
 
     void setToView();
-
-    ToggleEditor getCurrentEditor();
 
     boolean isEditing();
 

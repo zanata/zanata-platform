@@ -570,7 +570,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 //       table.setWidget(curRow, curCol, currentTargetPresenter.getDisplay().asWidget());
 
        this.cellValue = cellValue;
-       targetContentsPresenter.showEditors(cellValue);
+       targetContentsPresenter.showEditors(curRow);
 
 //      textArea.setFocus(true);
       isOpened = true;
