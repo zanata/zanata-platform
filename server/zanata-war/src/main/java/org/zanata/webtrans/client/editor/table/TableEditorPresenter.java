@@ -141,8 +141,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
       int getPageSize();
 
-      void setShowCopyButtons(boolean showButtons);
-
       void setFindMessage(String findMessage);
 
       void startProcessing();
@@ -313,7 +311,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       display.setPageSize(TableConstants.PAGE_SIZE);
       if (workspaceContext.isReadOnly())
       {
-         display.setShowCopyButtons(false);
+         display.getTargetCellEditor().setShowOperationButtons(false);
       }
 
       registerHandler(filterViewConfirmationPanel.getSaveChangesAndFilterButton().addClickHandler(new ClickHandler()
@@ -656,7 +654,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          public void onButtonDisplayChange(ButtonDisplayChangeEvent event)
          {
             display.getTargetCellEditor().setShowOperationButtons(event.isShowButtons());
-            display.setShowCopyButtons(event.isShowButtons());
          }
       }));
 

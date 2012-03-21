@@ -253,12 +253,6 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    }
 
    @Override
-   public void setShowCopyButtons(boolean showButtons)
-   {
-      this.tableDefinition.setShowCopyButtons(showButtons);
-   }
-
-   @Override
    public void setTransUnitDetails(TransUnit selectedTransUnit)
    {
       this.tableDefinition.setTransUnitDetails(selectedTransUnit);

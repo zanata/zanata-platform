@@ -24,86 +24,103 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import java.util.Iterator;
 import java.util.List;
 
-public class TargetContentsView implements TargetContentsDisplay {
-    public static final int COLUMNS = 1;
-    public static final int DEFAULT_ROWS = 1;
+public class TargetContentsView implements TargetContentsDisplay
+{
+   public static final int COLUMNS = 1;
+   public static final int DEFAULT_ROWS = 1;
 
-    private Grid editorGrid;
-    private String findMessage;
-    private List<ToggleEditor> editors;
-    private Listener listener;
+   private Grid editorGrid;
+   private String findMessage;
+   private List<ToggleEditor> editors;
+   private Listener listener;
 
-    public TargetContentsView() {
-        editorGrid = new Grid(DEFAULT_ROWS, COLUMNS);
-        editorGrid.ensureDebugId("target-contents-grid");
-        editorGrid.setWidth("100%");
-        editors = Lists.newArrayList();
-    }
+   public TargetContentsView()
+   {
+      editorGrid = new Grid(DEFAULT_ROWS, COLUMNS);
+      editorGrid.addStyleName("TableEditorCell-Target-Table");
+      editorGrid.ensureDebugId("target-contents-grid");
+      editorGrid.setWidth("100%");
+      editors = Lists.newArrayList();
+   }
 
+   @Override
+   public List<ToggleEditor> setTargets(List<String> targets)
+   {
+      editors.clear();
+      editorGrid.resize(targets.size(), COLUMNS);
+      int rowIndex = 0;
+      for (String target : targets)
+      {
+         Editor editor = new Editor(target, findMessage, listener);
+         editor.setText(target);
+         editorGrid.setWidget(rowIndex, 0, editor);
+         editors.add(editor);
+         rowIndex++;
+      }
+      return editors;
+   }
 
-    @Override
-    public List<ToggleEditor> setTargets(List<String> targets) {
-        editors.clear();
-        editorGrid.resize(targets.size(), COLUMNS);
-        int rowIndex = 0;
-        for (String target : targets) {
-            Editor editor = new Editor(target, findMessage, listener);
-            editor.setText(target);
-            editorGrid.setWidget(rowIndex, 0, editor);
-            editors.add(editor);
-            rowIndex++;
-        }
-        return editors;
-    }
+   @Override
+   public void setFindMessage(String findMessage)
+   {
+      this.findMessage = findMessage;
+   }
 
-    @Override
-    public void setFindMessage(String findMessage) {
-        this.findMessage = findMessage;
-    }
+   @Override
+   public List<String> getNewTargets()
+   {
+      List<String> result = Lists.newArrayList();
+      for (ToggleEditor editor : editors)
+      {
+         result.add(editor.getText());
+      }
+      return result;
+   }
 
-    @Override
-    public List<String> getNewTargets() {
-        List<String> result = Lists.newArrayList();
-        for (ToggleEditor editor : editors) {
-            result.add(editor.getText());
-        }
-        return result;
-    }
+   @Override
+   public void setToView()
+   {
+      for (ToggleEditor editor : editors)
+      {
+         editor.setViewMode(ToggleEditor.ViewMode.VIEW);
+      }
+   }
 
-    @Override
-    public void setToView() {
-        for (ToggleEditor editor : editors) {
-            editor.setViewMode(ToggleEditor.ViewMode.VIEW);
-        }
-    }
+   @Override
+   public ToggleEditor getCurrentEditor()
+   {
+      for (ToggleEditor editor : editors)
+      {
+         if (editor.getViewMode() == ToggleEditor.ViewMode.EDIT)
+         {
+            return editor;
+         }
+      }
+      return editors.get(0);
+   }
 
-    @Override
-    public ToggleEditor getCurrentEditor() {
-        for (ToggleEditor editor : editors) {
-            if (editor.getViewMode() == ToggleEditor.ViewMode.EDIT) {
-                return editor;
-            }
-        }
-        return editors.get(0);
-    }
+   @Override
+   public boolean isEditing()
+   {
+      for (ToggleEditor editor : editors)
+      {
+         if (editor.getViewMode() == ToggleEditor.ViewMode.EDIT)
+         {
+            return true;
+         }
+      }
+      return false;
+   }
 
-    @Override
-    public boolean isEditing() {
-        for (ToggleEditor editor : editors) {
-            if (editor.getViewMode() == ToggleEditor.ViewMode.EDIT) {
-                return true;
-            }
-        }
-        return false;
-    }
+   @Override
+   public void setListener(Listener listener)
+   {
+      this.listener = listener;
+   }
 
-    @Override
-    public void setListener(Listener listener) {
-        this.listener = listener;
-    }
-
-    @Override
-    public Widget asWidget() {
-        return editorGrid;
-    }
+   @Override
+   public Widget asWidget()
+   {
+      return editorGrid;
+   }
 }
