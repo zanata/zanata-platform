@@ -27,14 +27,20 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
 
 public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresenter.Display>
@@ -45,6 +51,12 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       HasText getTestLabel();
 
       HasValue<String> getFilterTextBox();
+
+      void clearAll();
+
+      HasClickHandlers addDocumentLabel(String docName);
+
+      HasData<TransUnit> addTUTable();
    }
 
    private final CachingDispatchAsync dispatcher;
@@ -82,9 +94,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
-      //TODO respond to history change with full project search
-      // decide whether to hook into existing search events or create
-      // a new one.
       history.addValueChangeHandler(new ValueChangeHandler<String>()
       {
 
@@ -103,6 +112,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                   @Override
                   public void onFailure(Throwable caught)
                   {
+                     display.clearAll();
                      display.getTestLabel().setText("Project TU search failed");
                   }
 
@@ -110,6 +120,27 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                   public void onSuccess(GetProjectTransUnitListsResult result)
                   {
                      display.getTestLabel().setText("Project TU search returned documents: " + result.getDocumentPaths().size());
+
+                     display.clearAll();
+                     for (final String doc : result.getDocumentPaths())
+                     {
+                        HasClickHandlers docLabel = display.addDocumentLabel(doc);
+                        docLabel.addClickHandler(new ClickHandler()
+                        {
+
+                           @Override
+                           public void onClick(ClickEvent event)
+                           {
+                              showDocInEditor(doc);
+                           }
+
+                        });
+                        HasData<TransUnit> table = display.addTUTable();
+                        ListDataProvider<TransUnit> dataProvider = new ListDataProvider<TransUnit>();
+                        dataProvider.addDataDisplay(table);
+                        //link dataProvider BEFORE adding units, so they display automatically
+                        dataProvider.getList().addAll(result.getUnits(doc));
+                     }
                   }
 
                });
@@ -122,6 +153,14 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       });
 
+   }
+
+   private void showDocInEditor(String doc)
+   {
+      HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+      token.setDocumentPath(doc);
+      token.setView(MainView.Editor);
+      history.newItem(token.toTokenString());
    }
 
    @Override

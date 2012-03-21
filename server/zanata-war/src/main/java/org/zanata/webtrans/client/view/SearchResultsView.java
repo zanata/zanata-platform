@@ -27,17 +27,22 @@ import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.ClearableTextBox;
+import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.HasData;
 import com.google.inject.Inject;
 
 public class SearchResultsView extends Composite implements SearchResultsPresenter.Display
@@ -50,7 +55,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @UiField
-   ScrollPanel searchResultsPanel;
+   VerticalPanel searchResultsPanel;
 
    @UiField(provided = true)
    ClearableTextBox filterTextBox;
@@ -82,6 +87,100 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    public HasText getTestLabel()
    {
       return testLabel;
+   }
+
+   @Override
+   public void clearAll()
+   {
+      searchResultsPanel.clear();
+   }
+
+   public HasClickHandlers addDocumentLabel(String docName)
+   {
+      Label docLabel = new Label(docName);
+      searchResultsPanel.add(docLabel);
+      docLabel.setTitle("View document in editor");
+      docLabel.getElement().setAttribute("style", "cursor:pointer;");
+      return docLabel;
+   }
+
+   @Override
+   public HasData<TransUnit> addTUTable()
+   {
+//      Label docLabel = new Label(docName);
+//      searchResultsPanel.add(docLabel);
+      CellTable<TransUnit> table = buildTable();
+      searchResultsPanel.add(table);
+      return table;
+   }
+
+   private CellTable<TransUnit> buildTable()
+   {
+      CellTable<TransUnit> table = new CellTable<TransUnit>();
+
+      TextColumn<TransUnit> rowIndexColumn = new TextColumn<TransUnit>()
+      {
+         @Override
+         public String getValue(TransUnit tu)
+         {
+            return new Integer(tu.getRowIndex()).toString();
+         }
+      };
+
+      TextColumn<TransUnit> sourceColumn = new TextColumn<TransUnit>()
+      {
+         @Override
+         public String getValue(TransUnit tu)
+         {
+            return tu.getSource();
+         }
+      };
+
+      //TODO highlight search match
+      //TODO show approved/fuzzy colour
+      TextColumn<TransUnit> targetColumn = new TextColumn<TransUnit>()
+      {
+
+         @Override
+         public String getValue(TransUnit tu)
+         {
+            return tu.getTarget();
+         }
+
+//         @Override
+//         public String getCellStyleNames(Context context, TransUnit tu)
+//         {
+//            if (tu.getStatus() == ContentState.Approved)
+//            {
+//               //add approved style
+//            }
+//            else if (tu.getStatus() == ContentState.NeedReview)
+//            {
+//               //add fuzzy style
+//            }
+//            //return style appended to super styles
+//            return super.getCellStyleNames(context, tu);
+//         }
+      };
+
+      //TODO put replace buttons here
+      TextColumn<TransUnit> replaceButtonColumn = new TextColumn<TransUnit>()
+      {
+
+         @Override
+         public String getValue(TransUnit tu)
+         {
+            return "Replace";
+         }
+      };
+
+      //TODO use localisable headings (should already exist somewhere)
+      table.addColumn(rowIndexColumn, "Index");
+      table.addColumn(sourceColumn, "Source");
+      table.addColumn(targetColumn, "Target");
+      table.addColumn(replaceButtonColumn, "Actions");
+
+      return table;
    }
 
 }
