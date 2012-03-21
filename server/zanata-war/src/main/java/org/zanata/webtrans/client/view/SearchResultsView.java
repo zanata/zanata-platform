@@ -22,6 +22,7 @@ package org.zanata.webtrans.client.view;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
@@ -29,11 +30,15 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.ClearableTextBox;
 import org.zanata.webtrans.shared.model.TransUnit;
 
+import com.google.gwt.cell.client.ActionCell;
+import com.google.gwt.cell.client.ActionCell.Delegate;
+import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
@@ -58,7 +63,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    VerticalPanel searchResultsPanel;
 
    @UiField(provided = true)
-   ClearableTextBox filterTextBox;
+   ClearableTextBox filterTextBox, replacementTextBox;
 
    @UiField
    Label testLabel;
@@ -67,6 +72,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    public SearchResultsView(Resources resources, UiMessages uiMessages, final CachingDispatchAsync dispatcher, EventBus eventBus)
    {
       filterTextBox = new ClearableTextBox(resources, uiMessages);
+      replacementTextBox = new ClearableTextBox(resources, uiMessages);
 
       initWidget(uiBinder.createAndBindUi(this));
    }
@@ -81,6 +87,12 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    public HasValue<String> getFilterTextBox()
    {
       return filterTextBox.getTextBox();
+   }
+
+   @Override
+   public HasValue<String> getReplacementTextBox()
+   {
+      return replacementTextBox.getTextBox();
    }
 
    @Override
@@ -105,16 +117,14 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
-   public HasData<TransUnit> addTUTable()
+   public HasData<TransUnit> addTUTable(Delegate<TransUnit> replaceDelegate)
    {
-//      Label docLabel = new Label(docName);
-//      searchResultsPanel.add(docLabel);
-      CellTable<TransUnit> table = buildTable();
+      CellTable<TransUnit> table = buildTable(replaceDelegate);
       searchResultsPanel.add(table);
       return table;
    }
 
-   private CellTable<TransUnit> buildTable()
+   private CellTable<TransUnit> buildTable(Delegate<TransUnit> replaceDelegate)
    {
       CellTable<TransUnit> table = new CellTable<TransUnit>();
 
@@ -137,7 +147,6 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       };
 
       //TODO highlight search match
-      //TODO show approved/fuzzy colour
       TextColumn<TransUnit> targetColumn = new TextColumn<TransUnit>()
       {
 
@@ -147,32 +156,27 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
             return tu.getTarget();
          }
 
-//         @Override
-//         public String getCellStyleNames(Context context, TransUnit tu)
-//         {
-//            if (tu.getStatus() == ContentState.Approved)
-//            {
-//               //add approved style
-//            }
-//            else if (tu.getStatus() == ContentState.NeedReview)
-//            {
-//               //add fuzzy style
-//            }
-//            //return style appended to super styles
-//            return super.getCellStyleNames(context, tu);
-//         }
-      };
-
-      //TODO put replace buttons here
-      TextColumn<TransUnit> replaceButtonColumn = new TextColumn<TransUnit>()
-      {
-
          @Override
-         public String getValue(TransUnit tu)
+         public String getCellStyleNames(Context context, TransUnit tu)
          {
-            return "Replace";
+            String styleNames = super.getCellStyleNames(context, tu);
+            if (styleNames == null)
+            {
+               styleNames = "";
+            }
+            if (tu.getStatus() == ContentState.Approved)
+            {
+               styleNames += " ApprovedStateDecoration";
+            }
+            else if (tu.getStatus() == ContentState.NeedReview)
+            {
+               styleNames += " FuzzyStateDecoration";
+            }
+            return styleNames;
          }
       };
+
+      ReplaceColumn replaceButtonColumn = new ReplaceColumn(replaceDelegate);
 
       //TODO use localisable headings (should already exist somewhere)
       table.addColumn(rowIndexColumn, "Index");
@@ -181,6 +185,22 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       table.addColumn(replaceButtonColumn, "Actions");
 
       return table;
+   }
+
+   private class ReplaceColumn extends Column<TransUnit, TransUnit>
+   {
+
+      public ReplaceColumn(Delegate<TransUnit> replaceDelegate)
+      {
+         super(new ActionCell<TransUnit>("Replace", replaceDelegate));
+      }
+
+      @Override
+      public TransUnit getValue(TransUnit tu)
+      {
+         return tu;
+      }
+
    }
 
 }

@@ -24,13 +24,19 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
+import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
+import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.cell.client.ActionCell.Delegate;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -52,11 +58,13 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
       HasValue<String> getFilterTextBox();
 
+      HasValue<String> getReplacementTextBox();
+
       void clearAll();
 
       HasClickHandlers addDocumentLabel(String docName);
 
-      HasData<TransUnit> addTUTable();
+      HasData<TransUnit> addTUTable(Delegate<TransUnit> replaceDelegate);
    }
 
    private final CachingDispatchAsync dispatcher;
@@ -135,7 +143,38 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                            }
 
                         });
-                        HasData<TransUnit> table = display.addTUTable();
+                        HasData<TransUnit> table = display.addTUTable(new Delegate<TransUnit>()
+                              {
+
+                           @Override
+                           public void execute(TransUnit tu)
+                           {
+                              //TODO do the replacement
+                              String target = tu.getTarget();
+                              target = target.replace(currentHistoryState.getProjectSearchText(), display.getReplacementTextBox().getValue());
+                              final UpdateTransUnit updateTransUnit = new UpdateTransUnit(tu.getId(), target, tu.getStatus());
+                              dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
+                              {
+                                 @Override
+                                 public void onFailure(Throwable e)
+                                 {
+                                    Log.error("Replace text failure " + e, e);
+                                    // TODO use localised string
+                                    eventBus.fireEvent(new NotificationEvent(Severity.Error, "Replace text failed"));
+                                 }
+
+                                 @Override
+                                 public void onSuccess(UpdateTransUnitResult result)
+                                 {
+                                    eventBus.fireEvent(new NotificationEvent(Severity.Info, "Successfully replaced text"));
+                                    // not sure if any undoable TU action is
+                                    // required here
+                                    //TODO show replacement in relevant table
+                                 }
+                              });
+                           }
+                        });
+
                         ListDataProvider<TransUnit> dataProvider = new ListDataProvider<TransUnit>();
                         dataProvider.addDataDisplay(table);
                         //link dataProvider BEFORE adding units, so they display automatically

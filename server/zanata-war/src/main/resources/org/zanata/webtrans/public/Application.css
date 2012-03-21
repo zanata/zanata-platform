@@ -408,6 +408,13 @@ tr.FuzzyStateDecoration td.TableEditorCell-Target table.TableEditorCell-Target-T
 	border-right: 3px solid #ffc000;
 }
 
+td.FuzzyStateDecoration div
+{
+	border-left: 3px solid #ffc000;
+	border-right: 3px solid #ffc000;
+	padding: 5px;
+}
+
 tr.FuzzyStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	{
 	border-left: 3px solid #ffc000;
@@ -431,6 +438,12 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target table.TableEditorCell-Targe
 	border-right: 3px solid #099b09;
 }
 
+td.ApprovedStateDecoration div
+{
+	border-left: 3px solid #099b09;
+	border-right: 3px solid #099b09;
+	padding: 5px;
+}
 
 
 tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
