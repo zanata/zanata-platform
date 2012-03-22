@@ -1,4 +1,4 @@
-package org.zanata.webtrans.client.editor.table;
+package org.zanata.webtrans.client.ui;
 
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;

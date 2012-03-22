@@ -46,7 +46,7 @@ import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.GlossaryDetailsPresenter;
 import org.zanata.webtrans.client.presenter.GlossaryPresenter;
 import org.zanata.webtrans.client.presenter.OptionsPanelPresenter;
-import org.zanata.webtrans.client.presenter.SourcePanelPresenter;
+import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.TransMemoryDetailsPresenter;
 import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.presenter.TransUnitNavigationPresenter;
@@ -110,7 +110,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(ValidationOptionsPresenter.class, ValidationOptionsPresenter.Display.class, ValidationOptionsView.class);
       bindPresenter(UndoRedoPresenter.class, UndoRedoPresenter.Display.class, UndoRedoView.class);
 
-      bind(SourcePanelPresenter.class).in(Singleton.class);
+      bind(SourceContentsPresenter.class).in(Singleton.class);
       bind(TargetContentsDisplay.class).to(TargetContentsView.class);
 
       bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);

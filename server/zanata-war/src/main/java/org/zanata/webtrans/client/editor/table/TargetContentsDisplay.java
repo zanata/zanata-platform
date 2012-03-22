@@ -17,6 +17,8 @@ package org.zanata.webtrans.client.editor.table;
 
 import java.util.List;
 
+import org.zanata.webtrans.client.ui.ToggleEditor;
+
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 public interface TargetContentsDisplay extends WidgetDisplay, Iterable<ToggleEditor>

@@ -5,7 +5,6 @@ import net.customware.gwt.presenter.client.EventBus;
 import org.zanata.webtrans.client.editor.table.EditorTextArea;
 import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
-import org.zanata.webtrans.client.editor.table.ToggleEditor;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 
 import com.google.common.base.Strings;
@@ -57,8 +56,6 @@ public class Editor extends Composite implements ToggleEditor
    HighlightingLabel label;
    @UiField
    PushButton copySourceButton;
-
-   // TableResources images = GWT.create(TableResources.class);
 
    public Editor(String displayString, String findMessage, TargetContentsDisplay.Listener listener)
    {
