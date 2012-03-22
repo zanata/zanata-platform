@@ -450,7 +450,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                   // TODO Plural Support
                   Log.info("selected TU updated; clear selection");
                   display.getTargetCellEditor().cancelEdit();
-                  eventBus.fireEvent(new RunValidationEvent(event.getTransUnit().getId(), event.getTransUnit().getSources().toString(), event.getTransUnit().getTargets().toString()));
+                  eventBus.fireEvent(new RunValidationEvent(event.getTransUnit().getSources().toString(), event.getTransUnit().getTargets().toString()));
                }
 
                Integer rowIndex = getRowIndex(event.getTransUnit());

@@ -22,8 +22,6 @@ package org.zanata.webtrans.client.events;
 
 import java.util.List;
 
-import org.zanata.webtrans.shared.model.TransUnitId;
-
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
@@ -48,12 +46,10 @@ public class UpdateValidationWarningsEvent extends GwtEvent<UpdateValidationWarn
       return TYPE != null ? TYPE : (TYPE = new Type<UpdateValidationWarningsEventHandler>());
    }
 
-   private TransUnitId id;
    private List<String> errors;
 
-   public UpdateValidationWarningsEvent(TransUnitId id, List<String> errors)
+   public UpdateValidationWarningsEvent(List<String> errors)
    {
-      this.id = id;
       this.errors = errors;
    }
 
@@ -68,11 +64,6 @@ public class UpdateValidationWarningsEvent extends GwtEvent<UpdateValidationWarn
    protected void dispatch(UpdateValidationWarningsEventHandler handler)
    {
       handler.onUpdate(this);
-   }
-
-   public TransUnitId getId()
-   {
-      return id;
    }
 
    public List<String> getErrors()
