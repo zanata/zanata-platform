@@ -155,7 +155,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
           TargetContentsDisplay contentsDisplay = targetContentsPresenter.getNextTargetContentsDisplay(view.getRowIndex(), rowValue);
           contentsDisplay.setToView();
 
-
 //          final HighlightingLabel label = new HighlightingLabel();
 
          /**

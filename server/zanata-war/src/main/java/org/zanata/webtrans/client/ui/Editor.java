@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.ui;
 
+import com.google.gwt.user.client.Event;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.editor.table.EditorTextArea;
@@ -130,6 +131,7 @@ public class Editor extends Composite implements ToggleEditor
    public void onSaveAsApproved(ClickEvent event)
    {
       listener.saveAsApproved(this);
+      event.stopPropagation();
    }
 
    @UiHandler("label")

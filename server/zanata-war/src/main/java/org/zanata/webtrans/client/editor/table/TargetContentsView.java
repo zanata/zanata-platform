@@ -15,7 +15,9 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Widget;
 import org.zanata.webtrans.client.ui.Editor;
@@ -91,6 +93,12 @@ public class TargetContentsView implements TargetContentsDisplay
             }
         }
         return false;
+    }
+
+    @Override
+    public List<ToggleEditor> getEditors()
+    {
+        return ImmutableList.copyOf(editors);
     }
 
     @Override

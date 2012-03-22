@@ -532,6 +532,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    @Override
    public void editCell(CellEditInfo cellEditInfo, TransUnit cellValue, Callback<TransUnit> callback)
    {
+      Log.info("****** edit cell at row**** " + cellEditInfo.getRowIndex());
       if (isReadOnly)
       {
          return;
