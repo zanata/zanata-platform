@@ -1,8 +1,5 @@
 package org.zanata.webtrans.client.ui;
 
-import com.google.gwt.user.client.Event;
-import net.customware.gwt.presenter.client.EventBus;
-
 import org.zanata.webtrans.client.editor.table.EditorTextArea;
 import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
@@ -18,8 +15,11 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class Editor extends Composite implements ToggleEditor
@@ -39,6 +39,12 @@ public class Editor extends Composite implements ToggleEditor
    HorizontalPanel topContainer;
 
    @UiField
+   HorizontalPanel bottomContainer;
+
+   @UiField
+   FlowPanel validationMessagePanelContainer;
+
+   @UiField
    HorizontalPanel buttons;
 
    @UiField
@@ -55,6 +61,7 @@ public class Editor extends Composite implements ToggleEditor
 
    @UiField
    HighlightingLabel label;
+
    @UiField
    PushButton copySourceButton;
 
@@ -62,18 +69,6 @@ public class Editor extends Composite implements ToggleEditor
    {
       this.listener = listener;
       initWidget(uiBinder.createAndBindUi(this));
-
-      validateButton.addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            if (Strings.isNullOrEmpty(getContent()))
-            {
-               // fireValidationEvent(eventBus);
-            }
-         }
-      });
 
       saveButton.addClickHandler(acceptHandler);
 
@@ -124,7 +119,10 @@ public class Editor extends Composite implements ToggleEditor
    @UiHandler("validateButton")
    public void onValidation(ClickEvent event)
    {
-      listener.validate(this);
+      if (!Strings.isNullOrEmpty(getContent()))
+      {
+         listener.validate(this);
+      }
    }
 
    @UiHandler("saveButton")
@@ -161,7 +159,12 @@ public class Editor extends Composite implements ToggleEditor
       textArea.setVisible(viewMode == ViewMode.EDIT);
       if (viewMode == ViewMode.EDIT)
       {
-          textArea.setFocus(true);
+         textArea.setFocus(true);
+		 listener.setValidationMessagePanel(this);
+         if (!Strings.isNullOrEmpty(getContent()))
+         {
+            listener.validate(this);
+         }
       }
       buttons.setVisible(viewMode == ViewMode.EDIT);
    }
@@ -212,11 +215,6 @@ public class Editor extends Composite implements ToggleEditor
       }
    };
 
-   private void fireValidationEvent(final EventBus eventBus)
-   {
-      // eventBus.fireEvent(new RunValidationEvent(cellValue.getId(),
-      // cellValue.getSource(), textArea.getText(), false));
-   }
 
    @Override
    public void setSaveButtonTitle(String title)
@@ -275,5 +273,12 @@ public class Editor extends Composite implements ToggleEditor
          int newLine = (newHeight / HEIGHT_PER_LINE) + 1;
          textArea.setVisibleLines(textArea.getVisibleLines() + newLine);
       }
+   }
+
+   @Override
+   public void addValidationMessagePanel(IsWidget validationMessagePanel)
+   {
+      validationMessagePanelContainer.clear();
+      validationMessagePanelContainer.add(validationMessagePanel);
    }
 }

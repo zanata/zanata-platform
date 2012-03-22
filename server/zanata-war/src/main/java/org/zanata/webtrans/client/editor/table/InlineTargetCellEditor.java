@@ -158,7 +158,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private String saveButtonShortcuts;
    private String saveButtonwithEnterShortcuts;
 //   private PushButton saveButton, fuzzyButton, cancelButton, validateButton;
-   private ValidationMessagePanel validationMessagePanel;
+   // private ValidationMessagePanel validationMessagePanel;
 
    private boolean keypressed;
    private boolean typing;
@@ -270,17 +270,18 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 //         }
 //      });
 //
-      eventBus.addHandler(RequestValidationEvent.getType(), new RequestValidationEventHandler()
-      {
-         @Override
-         public void onRequestValidation(RequestValidationEvent event)
-         {
-            if (isEditing())
-            {
-               fireValidationEvent(eventBus);
-            }
-         }
-      });
+      // eventBus.addHandler(RequestValidationEvent.getType(), new
+      // RequestValidationEventHandler()
+      // {
+      // @Override
+      // public void onRequestValidation(RequestValidationEvent event)
+      // {
+      // if (isEditing())
+      // {
+      // fireValidationEvent(eventBus);
+      // }
+      // }
+      // });
 
       // object creation is probably too much overhead for this, using simpler
       // boolean implementation.
@@ -421,8 +422,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 //
 //      verticalPanel.add(topLayoutPanel);
 //
-      validationMessagePanel = new ValidationMessagePanel(true, messages);
-      validationMessagePanel.setVisiblePolicy(true);
+      // validationMessagePanel = new ValidationMessagePanel(true, messages);
+      // validationMessagePanel.setVisiblePolicy(true);
 //
 //      verticalPanel.add(validationMessagePanel);
 //      verticalPanel.setCellVerticalAlignment(validationMessagePanel, HasVerticalAlignment.ALIGN_BOTTOM);
@@ -586,7 +587,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       DOM.scrollIntoView(table.getCellFormatter().getElement(curRow, curCol));
 
       // hide until validation results are available
-      validationMessagePanel.setVisible(false);
+      // validationMessagePanel.setVisible(false);
       fireValidationEvent(eventBus);
    }
 
@@ -860,8 +861,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    public void updateValidationMessagePanel(List<String> errors)
    {
-      validationMessagePanel.setContent(errors);
-      validationMessagePanel.setVisible(true);
+      // validationMesCsagePanel.setContent(errors);
+      // validationMessagePanel.setVisible(true);
    }
 
    /**
@@ -872,7 +873,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
        // TODO Plural Support
 //      eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSources(), currentTargetPresenter.getDisplay().getCurrentEditor().getText(), false));
    }
-
+   
    public void setReadOnly(boolean isReadOnly)
    {
       this.isReadOnly = isReadOnly;
