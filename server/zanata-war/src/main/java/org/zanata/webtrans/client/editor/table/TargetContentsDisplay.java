@@ -33,6 +33,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, Iterable<ToggleEdi
       void copySource(ToggleEditor editor);
 
       void toggleView(ToggleEditor editor);
+
+      void setValidationMessagePanel(ToggleEditor editor);
    }
 
    void setTargets(List<String> targets);
