@@ -57,9 +57,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     */
    public static final String DEFAULT_STYLENAME = "gwt-TargetCellEditor";
 
-   private static final int INITIAL_LINES = 3;
-   private static final int HEIGHT_PER_LINE = 16;
-
    /**
     * The click listener used to clone.
     */

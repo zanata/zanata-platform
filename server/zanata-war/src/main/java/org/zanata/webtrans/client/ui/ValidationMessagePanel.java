@@ -20,7 +20,6 @@ package org.zanata.webtrans.client.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 
 import com.google.gwt.core.client.GWT;

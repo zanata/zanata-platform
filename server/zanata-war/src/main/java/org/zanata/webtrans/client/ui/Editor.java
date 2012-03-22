@@ -3,25 +3,26 @@ package org.zanata.webtrans.client.ui;
 import org.zanata.webtrans.client.editor.table.EditorTextArea;
 import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
-import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PushButton;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class Editor extends Composite implements ToggleEditor
@@ -33,9 +34,12 @@ public class Editor extends Composite implements ToggleEditor
    }
 
    private static EditorUiBinder uiBinder = GWT.create(EditorUiBinder.class);
-   private static final int INITIAL_LINES = 3;
 
+   private static final int INITIAL_LINES = 3;
    private static final int HEIGHT_PER_LINE = 16;
+
+   private final int TYPING_TIMER_INTERVAL = 500; // ms
+   private final int TYPING_TIMER_RECURRENT_VALIDATION_PERIOD = 5; // intervals
 
    @UiField
    HorizontalPanel topContainer;
@@ -67,7 +71,11 @@ public class Editor extends Composite implements ToggleEditor
    @UiField
    PushButton copySourceButton;
 
-   public Editor(String displayString, String findMessage, TargetContentsDisplay.Listener listener)
+   private boolean keypressed;
+   private boolean typing;
+   private int typingCycles;
+
+   public Editor(String displayString, String findMessage, final TargetContentsDisplay.Listener listener)
    {
       this.listener = listener;
       initWidget(uiBinder.createAndBindUi(this));
@@ -106,9 +114,64 @@ public class Editor extends Composite implements ToggleEditor
          public void onValueChange(ValueChangeEvent<String> event)
          {
             autoSize();
+            fireValidationEvent();
          }
 
       });
+
+      final Timer typingTimer = new Timer()
+      {
+         @Override
+         public void run()
+         {
+            if (keypressed)
+            {
+               // still typing, validate periodically
+               keypressed = false;
+               typingCycles++;
+               if (typingCycles % TYPING_TIMER_RECURRENT_VALIDATION_PERIOD == 0)
+               {
+                  fireValidationEvent();
+               }
+            }
+            else
+            {
+               // finished, validate immediately
+               this.cancel();
+               typing = false;
+               fireValidationEvent();
+            }
+         }
+      };
+
+      // used to determine whether user is still typing
+      textArea.addKeyDownHandler(new KeyDownHandler()
+      {
+         @Override
+         public void onKeyDown(KeyDownEvent event)
+         {
+            if (typing)
+            {
+               keypressed = true;
+            }
+            else
+            {
+               // set false so that next keypress is detectable
+               keypressed = false;
+               typing = true;
+               typingCycles = 0;
+               typingTimer.scheduleRepeating(TYPING_TIMER_INTERVAL);
+            }
+         }
+      });
+   }
+
+   private void fireValidationEvent()
+   {
+      if (!Strings.isNullOrEmpty(getContent()))
+      {
+         listener.validate(this);
+      }
    }
 
    @UiHandler("copySourceButton")
@@ -120,10 +183,7 @@ public class Editor extends Composite implements ToggleEditor
    @UiHandler("validateButton")
    public void onValidation(ClickEvent event)
    {
-      if (!Strings.isNullOrEmpty(getContent()))
-      {
-         listener.validate(this);
-      }
+      fireValidationEvent();
    }
 
    @UiHandler("saveButton")
@@ -161,11 +221,8 @@ public class Editor extends Composite implements ToggleEditor
       if (viewMode == ViewMode.EDIT)
       {
          textArea.setFocus(true);
-		 listener.setValidationMessagePanel(this);
-         if (!Strings.isNullOrEmpty(getContent()))
-         {
-            listener.validate(this);
-         }
+         listener.setValidationMessagePanel(this);
+         fireValidationEvent();
       }
       buttons.setVisible(viewMode == ViewMode.EDIT);
    }
@@ -215,7 +272,6 @@ public class Editor extends Composite implements ToggleEditor
          // saveApprovedAndMoveRow(NavigationType.NextEntry);
       }
    };
-
 
    @Override
    public void setSaveButtonTitle(String title)
