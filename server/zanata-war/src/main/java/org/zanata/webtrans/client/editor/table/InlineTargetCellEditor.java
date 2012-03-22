@@ -20,9 +20,13 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
+import com.google.common.collect.Collections2;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
@@ -43,6 +47,8 @@ import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Widget;
+
+import javax.annotation.Nullable;
 
 public class InlineTargetCellEditor implements CellEditor<TransUnit>
 {
@@ -544,13 +550,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          {
             return;
          }
-         restoreView();
+//         restoreView();
       }
 
       // save the content in previous cell before start new editing
       if (curRow != cellEditInfo.getRowIndex())
       {
          savePendingChange(false);
+         restoreView();
       }
 
       Log.debug("starting edit");
@@ -587,19 +594,40 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       // if something has changed, save as approved
 //      if (isEditing() && !cellValue.getTarget().equals(textArea.getText()))
-      if (isEditing())
+      if (isEditing() && targetContentsPresenter.getCurrentDisplay() != null)
       {
-         Log.debug("savePendingChange - acceptEdit");
+         List<String> newTargets = targetContentsPresenter.getNewTargets();
+         if (!cellValue.getTargets().equals(newTargets))
+         {
+            Log.debug("savePendingChange - acceptEdit");
+            determineStatus(newTargets);
+            acceptEdit();
+         }
+      }
+      else if (cancelIfUnchanged)
+      {
+         Log.debug("savePendingChange- cancel edit");
+         cancelEdit();
+      }
+   }
+
+   private void determineStatus(List<String> newTargets)
+   {
+      Collection<String> emptyTargets = Collections2.filter(newTargets, new Predicate<String>()
+      {
+         @Override
+         public boolean apply(@Nullable String input)
+         {
+            return Strings.isNullOrEmpty(input);
+         }
+      });
+      if (emptyTargets.isEmpty())
+      {
          cellValue.setStatus(ContentState.Approved);
-         acceptEdit();
       }
       else
       {
-         if (cancelIfUnchanged)
-         {
-            Log.debug("savePendingChange- cancel edit");
-            cancelEdit();
-         }
+         cellValue.setStatus(ContentState.New);
       }
    }
 

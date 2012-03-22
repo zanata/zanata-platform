@@ -15,10 +15,14 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Provider;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
@@ -83,24 +87,35 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
       Log.info("show editors at row:" + rowIndex);
       currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
-      openFirstEditorAndChangeButtonTitles();
+      currentEditor = getOpenEditorOrFirstOneIfNoneIsOpen();
       currentEditor.setViewMode(ToggleEditor.ViewMode.EDIT);
    }
 
-   private void openFirstEditorAndChangeButtonTitles()
+   private ToggleEditor getOpenEditorOrFirstOneIfNoneIsOpen()
    {
-      currentEditor = currentEditors.get(0);
-      for (ToggleEditor editor : currentEditors)
+      Collection<ToggleEditor> openingEditors = findOpeningEditors();
+      if (openingEditors.isEmpty())
       {
-         if (editor == currentEditors.get(currentEditors.size() - 1))
-         {
-            editor.setSaveButtonTitle("Save and go to next");
-         }
-         else
-         {
-            editor.setSaveButtonTitle("Move to next");
-         }
+         //if no editor is open, return the first one
+          return currentEditors.get(0);
       }
+      else {
+          return openingEditors.iterator().next();
+      }
+   }
+
+   private Collection<ToggleEditor> findOpeningEditors()
+   {
+      Collection<ToggleEditor> openingEditor = Collections2.filter(currentEditors, new Predicate<ToggleEditor>()
+      {
+         @Override
+         public boolean apply(ToggleEditor editor)
+         {
+            return editor.getViewMode() == ToggleEditor.ViewMode.EDIT;
+         }
+      });
+      Preconditions.checkState(openingEditor.size() <= 1, "more than one editor is opened!");
+      return openingEditor;
    }
 
    public TargetContentsDisplay getNextTargetContentsDisplay(int rowIndex, TransUnit transUnit)
@@ -137,18 +152,15 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    public void saveAsApproved(ToggleEditor editor)
    {
       // TODO we should get new value out and save
-      currentDisplay.setToView();
       int editorIndex = currentEditors.indexOf(editor);
       if (editorIndex + 1 < currentEditors.size())
       {
+         currentDisplay.setToView();
          currentEditor = currentEditors.get(editorIndex + 1);
          currentEditor.setViewMode(ToggleEditor.ViewMode.EDIT);
       }
       else
       {
-         // TODO if it's out of current editor index, we should move to next row
-         currentDisplay = null;
-         currentEditors = null;
          eventBus.fireEvent(new NavTransUnitEvent(NavTransUnitEvent.NavigationType.NextEntry));
       }
    }
@@ -166,5 +178,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
       currentDisplay.setToView();
       editor.setViewMode(ToggleEditor.ViewMode.EDIT);
       currentEditor = editor;
+   }
+
+   public List<String> getNewTargets()
+   {
+      return currentDisplay.getNewTargets();
    }
 }

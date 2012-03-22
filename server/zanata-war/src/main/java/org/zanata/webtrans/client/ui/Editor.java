@@ -159,6 +159,10 @@ public class Editor extends Composite implements ToggleEditor
    {
       label.setVisible(viewMode == ViewMode.VIEW);
       textArea.setVisible(viewMode == ViewMode.EDIT);
+      if (viewMode == ViewMode.EDIT)
+      {
+          textArea.setFocus(true);
+      }
       buttons.setVisible(viewMode == ViewMode.EDIT);
    }
 
@@ -208,22 +212,6 @@ public class Editor extends Composite implements ToggleEditor
       }
    };
 
-   private void toggleView()
-   {
-      if (label.isVisible())
-      {
-         textArea.setVisible(true);
-         buttons.setVisible(true);
-         label.setVisible(false);
-      }
-      else
-      {
-         textArea.setVisible(false);
-         buttons.setVisible(false);
-         label.setVisible(true);
-      }
-   }
-
    private void fireValidationEvent(final EventBus eventBus)
    {
       // eventBus.fireEvent(new RunValidationEvent(cellValue.getId(),
@@ -231,16 +219,16 @@ public class Editor extends Composite implements ToggleEditor
    }
 
    @Override
+   public void setSaveButtonTitle(String title)
+   {
+      saveButton.setTitle(title);
+   }
+
+   @Override
    public void autoSize()
    {
       shrinkSize(true);
       growSize();
-   }
-
-   @Override
-   public void setSaveButtonTitle(String title)
-   {
-      saveButton.setTitle(title);
    }
 
    /**

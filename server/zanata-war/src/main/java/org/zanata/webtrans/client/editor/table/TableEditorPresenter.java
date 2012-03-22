@@ -1233,6 +1233,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
          eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
          sourceContentsPresenter.setSelectedSource(display.getSelectedRowNumber());
+         targetContentsPresenter.showEditors(display.getSelectedRowNumber());
       }
    }
 

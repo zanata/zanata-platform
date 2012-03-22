@@ -29,7 +29,7 @@
 				<g:PushButton ui:field="validateButton" styleName="gwt-Button" title="{messages.runValidation}">
                     <g:upFace image="{images.cellEditorValidate}" />
 				</g:PushButton>
-				<g:PushButton ui:field="saveButton" styleName="gwt-Button" title="{messages.editSavewithEnterShortcut}">
+				<g:PushButton ui:field="saveButton" styleName="gwt-Button" title="{messages.editMoveToNext}">
                     <g:upFace image="{images.cellEditorAccept}" />
 				</g:PushButton>
 				<g:PushButton ui:field="fuzzyButton" styleName="gwt-Button" title="{messages.saveAsFuzzy}">
