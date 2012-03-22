@@ -15,18 +15,21 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.collect.Lists;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import java.util.List;
+
+import javax.inject.Provider;
+
 import net.customware.gwt.presenter.client.EventBus;
+
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.shared.model.TransUnit;
 
-import javax.inject.Provider;
-import java.util.List;
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.collect.Lists;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 @Singleton
 public class TargetContentsPresenter implements TargetContentsDisplay.Listener
@@ -39,8 +42,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    private List<TargetContentsDisplay> displayList;
    private ToggleEditor currentEditor;
    private List<ToggleEditor> currentEditors;
-   //TODO this is really a hacky way of indicating InlineTargetCellEditor we are not meant to edit the cell, just clicking the buttons
-   private boolean isClickingButtons;
 
    @Inject
    public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, EventBus eventBus, SourceContentsPresenter sourceContentsPresenter)
@@ -82,8 +83,24 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
       Log.info("show editors at row:" + rowIndex);
       currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
-      currentEditor = currentEditors.get(0);
+      openFirstEditorAndChangeButtonTitles();
       currentEditor.setViewMode(ToggleEditor.ViewMode.EDIT);
+   }
+
+   private void openFirstEditorAndChangeButtonTitles()
+   {
+      currentEditor = currentEditors.get(0);
+      for (ToggleEditor editor : currentEditors)
+      {
+         if (editor == currentEditors.get(currentEditors.size() - 1))
+         {
+            editor.setSaveButtonTitle("Save and go to next");
+         }
+         else
+         {
+            editor.setSaveButtonTitle("Move to next");
+         }
+      }
    }
 
    public TargetContentsDisplay getNextTargetContentsDisplay(int rowIndex, TransUnit transUnit)
@@ -119,7 +136,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    @Override
    public void saveAsApproved(ToggleEditor editor)
    {
-      isClickingButtons = true;
       // TODO we should get new value out and save
       currentDisplay.setToView();
       int editorIndex = currentEditors.indexOf(editor);
@@ -150,10 +166,5 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
       currentDisplay.setToView();
       editor.setViewMode(ToggleEditor.ViewMode.EDIT);
       currentEditor = editor;
-   }
-
-   public boolean isClickingButtons()
-   {
-      return isClickingButtons;
    }
 }

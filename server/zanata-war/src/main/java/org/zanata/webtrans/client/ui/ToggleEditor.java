@@ -12,6 +12,8 @@ public interface ToggleEditor extends IsWidget, HasText
 
    void autoSize();
 
+   void setSaveButtonTitle(String title);
+
    static enum ViewMode
    {
       VIEW, EDIT

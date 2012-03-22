@@ -237,6 +237,12 @@ public class Editor extends Composite implements ToggleEditor
       growSize();
    }
 
+   @Override
+   public void setSaveButtonTitle(String title)
+   {
+      saveButton.setTitle(title);
+   }
+
    /**
     * forceShrink will resize the textArea to initialLines(3 lines) and growSize
     * according to the scroll height
