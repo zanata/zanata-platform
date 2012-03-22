@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.httpclient.URIException;
 import org.dbunit.operation.DatabaseOperation;
 import org.easymock.EasyMock;
@@ -1039,7 +1040,8 @@ public class TranslationResourceRestTest extends ZanataRestTest
             .uniqueResult();
       
       // Translate using webtrans
-      UpdateTransUnit action = new UpdateTransUnit(new TransUnitId(textFlowId), translation, translationState);
+      //TODO Plural support
+      UpdateTransUnit action = new UpdateTransUnit(new TransUnitId(textFlowId), Lists.newArrayList(translation), translationState);
       action.setWorkspaceId( workspaceId );
       
       UpdateTransUnitResult result =

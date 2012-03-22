@@ -167,6 +167,8 @@ public class Editor extends Composite implements ToggleEditor
          }
       }
       buttons.setVisible(viewMode == ViewMode.EDIT);
+      //sync label and text area
+      label.setText(textArea.getText());
    }
 
    @Override

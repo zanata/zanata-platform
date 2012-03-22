@@ -791,7 +791,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       public boolean onSetRowValue(int row, TransUnit rowValue)
       {
          // TODO Plural Support
-         final UpdateTransUnit updateTransUnit = new UpdateTransUnit(rowValue.getId(), rowValue.getTargets().toString(), rowValue.getStatus());
+         final UpdateTransUnit updateTransUnit = new UpdateTransUnit(rowValue.getId(), rowValue.getTargets(), rowValue.getStatus());
          eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifySaving()));
          dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
          {
@@ -1233,6 +1233,9 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
          eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
          sourceContentsPresenter.setSelectedSource(display.getSelectedRowNumber());
+         if (display.getTargetCellEditor().isEditing()) {
+            display.getTargetCellEditor().savePendingChange(true);
+         }
          targetContentsPresenter.showEditors(display.getSelectedRowNumber());
       }
    }

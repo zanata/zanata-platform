@@ -33,11 +33,8 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.editor.CheckKey;
 import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
-import org.zanata.webtrans.client.events.RequestValidationEvent;
-import org.zanata.webtrans.client.events.RequestValidationEventHandler;
 import org.zanata.webtrans.client.resources.EditorConfigConstants;
 import org.zanata.webtrans.client.resources.NavigationMessages;
-import org.zanata.webtrans.client.ui.ValidationMessagePanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -539,7 +536,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    @Override
    public void editCell(CellEditInfo cellEditInfo, TransUnit cellValue, Callback<TransUnit> callback)
    {
-      Log.info("****** edit cell at row**** " + cellEditInfo.getRowIndex());
       if (isReadOnly)
       {
          return;
@@ -558,7 +554,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       if (curRow != cellEditInfo.getRowIndex())
       {
          savePendingChange(false);
-         restoreView();
       }
 
       Log.debug("starting edit");
@@ -601,7 +596,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          if (!cellValue.getTargets().equals(newTargets))
          {
             Log.debug("savePendingChange - acceptEdit");
-            determineStatus(newTargets);
             acceptEdit();
          }
       }
@@ -610,9 +604,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          Log.debug("savePendingChange- cancel edit");
          cancelEdit();
       }
+      targetContentsPresenter.setToViewMode();
    }
 
-   private void determineStatus(List<String> newTargets)
+   private void determineStatus(List<String> newTargets, ContentState stateToSet)
    {
       Collection<String> emptyTargets = Collections2.filter(newTargets, new Predicate<String>()
       {
@@ -622,9 +617,13 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             return Strings.isNullOrEmpty(input);
          }
       });
-      if (emptyTargets.isEmpty())
+      if (emptyTargets.isEmpty() && stateToSet == ContentState.Approved)
       {
          cellValue.setStatus(ContentState.Approved);
+      } 
+      else if (emptyTargets.size() > 0 && stateToSet == ContentState.NeedReview)
+      {
+         cellValue.setStatus(ContentState.NeedReview);
       }
       else
       {
@@ -677,16 +676,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       {
          return;
       }
-      cellValue.setTargets(targetContentsPresenter.getCurrentDisplay().getNewTargets());
-
-      // changing status to new when target cell is empty
-//      if (cellValue.getTarget().isEmpty())
-//         cellValue.setStatus(ContentState.New);
-//      else if (cellValue.getStatus() == ContentState.New)
-//         cellValue.setStatus(ContentState.Approved);
+      List<String> newTargets = targetContentsPresenter.getNewTargets();
+      cellValue.setTargets(newTargets);
+      determineStatus(newTargets, ContentState.Approved);
 
       restoreView();
-//      textArea.setFocus(false);
       isOpened = false;
       isFocused = false;
 
@@ -701,11 +695,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    protected void acceptFuzzyEdit()
    {
 //      String text = textArea.getText();
-      cellValue.setTargets(targetContentsPresenter.getCurrentDisplay().getNewTargets());
-//      if (text == null || text.isEmpty())
-//         cellValue.setStatus(ContentState.New);
-//      else
-//         cellValue.setStatus(ContentState.NeedReview);
+      List<String> newTargets = targetContentsPresenter.getNewTargets();
+      cellValue.setTargets(newTargets);
+      determineStatus(newTargets, ContentState.NeedReview);
       curCallback.onComplete(curCellEditInfo, cellValue);
    }
 

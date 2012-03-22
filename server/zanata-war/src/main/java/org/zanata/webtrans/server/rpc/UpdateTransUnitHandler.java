@@ -22,8 +22,13 @@ package org.zanata.webtrans.server.rpc;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -59,6 +64,8 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
+
+import javax.annotation.Nullable;
 
 @Name("webtrans.gwt.UpdateTransUnitHandler")
 @Scope(ScopeType.STATELESS)
@@ -137,7 +144,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException
    {
       identity.checkLoggedIn();
-      log.debug("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContent());
+      log.debug("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContents());
 
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
 
@@ -196,12 +203,21 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          targetChanged = true;
       }
 
-      if (action.getContentState() == ContentState.New && StringUtils.isNotEmpty(action.getContent()))
+      Collection<String> emptyContents = Collections2.filter(action.getContents(), new Predicate<String>()
       {
-         log.error("invalid ContentState New for TransUnit {0} with content '{1}', assuming NeedReview", action.getTransUnitId(), action.getContent());
+         @Override
+         public boolean apply(@Nullable String input)
+         {
+            return Strings.isNullOrEmpty(input);
+         }
+      });
+
+      if (action.getContentState() == ContentState.New && emptyContents.isEmpty())
+      {
+         log.error("invalid ContentState New for TransUnit {0} with content '{1}', assuming NeedReview", action.getTransUnitId(), action.getContents());
          target.setState(ContentState.NeedReview);
       }
-      else if (action.getContentState() != ContentState.New && StringUtils.isEmpty(action.getContent()))
+      else if (action.getContentState() == ContentState.Approved && emptyContents.size() > 0)
       {
          log.error("invalid ContentState {0} for empty TransUnit {1}, assuming New", action.getContentState(), action.getTransUnitId());
          target.setState(ContentState.New);
@@ -216,11 +232,13 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       }
 
       String content = (target.getContent() != null ? target.getContent() : "");
-      UpdateTransUnit previous = new UpdateTransUnit(action.getTransUnitId(), content, prevStatus);
+      //TODO Plural support need to get contents from target
+      UpdateTransUnit previous = new UpdateTransUnit(action.getTransUnitId(), Lists.newArrayList(content), prevStatus);
 
-      if (!StringUtils.equals(action.getContent(), target.getContent()))
+      //TODO Plural support. need to use list from HTarget
+      if (!action.getContents().get(0).equals(target.getContent()))
       {
-         target.setContent(action.getContent());
+         target.setContent(action.getContents().get(0));
          targetChanged = true;
       }
 
@@ -245,15 +263,14 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       
       // TODO Plural Support
       ArrayList<String> sources = new ArrayList<String>();
-      ArrayList<String> targets = new ArrayList<String>();
 
       sources.add(hTextFlow.getContent());
-      targets.add(action.getContent());
+//      targets.add(action.getContents());
       
       TransUnit tu = new TransUnit(action.getTransUnitId(), hTextFlow.getResId(),
                                    locale, sources,
                                    CommentsUtil.toString(hTextFlow.getComment()),
-                                   targets, target.getState(),
+                                   action.getContents(), target.getState(),
                                    authenticatedAccount.getPerson().getName(),
                                    SIMPLE_FORMAT.format(new Date()), msgContext, hTextFlow.getPos());
       // @formatter:on
@@ -272,7 +289,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    public void rollback(UpdateTransUnit action, UpdateTransUnitResult result, ExecutionContext context) throws ActionException
    {
       ZanataIdentity.instance().checkLoggedIn();
-      log.debug("revert TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContent());
+      log.debug("revert TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContents());
 
       HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
       LocaleId locale = action.getWorkspaceId().getLocaleId();
@@ -307,10 +324,11 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
       ContentState prevStatus = target.getState();
 
-      if (!StringUtils.equals(result.getPrevious().getContent(), target.getContent()))
+      //TODO Plural support. need to compare the list from HTarget
+      if (!StringUtils.equals(result.getPrevious().getContents().get(0), target.getContent()))
       {
          target.setState(result.getPrevious().getContentState());
-         target.setContent(result.getPrevious().getContent());
+         target.setContent(result.getPrevious().getContents().get(0));
          target.setVersionNum(target.getVersionNum() + 1);
          target.setLastModifiedBy(authenticatedAccount.getPerson());
       }
