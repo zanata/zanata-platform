@@ -21,6 +21,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Widget;
 import org.zanata.webtrans.client.ui.Editor;
+import org.zanata.webtrans.client.ui.ToggleEditor;
 
 import java.util.Iterator;
 import java.util.List;

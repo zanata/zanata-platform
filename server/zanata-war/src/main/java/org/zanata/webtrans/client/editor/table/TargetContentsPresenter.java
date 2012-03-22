@@ -21,7 +21,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.customware.gwt.presenter.client.EventBus;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
-import org.zanata.webtrans.client.presenter.SourcePanelPresenter;
+import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
+import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import javax.inject.Provider;
@@ -34,7 +35,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    private TargetContentsDisplay currentDisplay;
    private Provider<TargetContentsDisplay> displayProvider;
    private EventBus eventBus;
-   private SourcePanelPresenter sourcePanelPresenter;
+   private SourceContentsPresenter sourceContentsPresenter;
    private List<TargetContentsDisplay> displayList;
    private ToggleEditor currentEditor;
    private List<ToggleEditor> currentEditors;
@@ -42,11 +43,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    private boolean isClickingButtons;
 
    @Inject
-   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, EventBus eventBus, SourcePanelPresenter sourcePanelPresenter)
+   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, EventBus eventBus, SourceContentsPresenter sourceContentsPresenter)
    {
       this.displayProvider = displayProvider;
       this.eventBus = eventBus;
-      this.sourcePanelPresenter = sourcePanelPresenter;
+      this.sourceContentsPresenter = sourceContentsPresenter;
    }
 
    boolean isEditing()
@@ -139,7 +140,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    @Override
    public void copySource(ToggleEditor editor)
    {
-      editor.setText(sourcePanelPresenter.getSelectedSource());
+      editor.setText(sourceContentsPresenter.getSelectedSource());
       editor.autoSize();
    }
 

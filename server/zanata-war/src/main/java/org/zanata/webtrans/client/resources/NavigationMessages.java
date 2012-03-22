@@ -103,8 +103,8 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Save as Fuzzy (Ctrl+S)")
    String saveAsFuzzy();
 
-   @DefaultMessage("Source comment: ")
-   String sourceCommentLabel();
+   @DefaultMessage("Source comment: {0}")
+   String sourceCommentLabel(String comment);
 
    @DefaultMessage("Undo")
    String undoLabel();

@@ -593,19 +593,3 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	width:100%;
 	height:100%;	
 }
-
-.selectedSourceRow {
-	border:1px solid #E0E8EE;
-	padding-top:3px;
-	padding-bottom:3px;
-	height:100%;
-	width:100%;
-}
-
-.sourceRow {
-	border: 0px;
-	padding-top:3px;
-	padding-bottom:3px;
-	height:100%;
-	width:100%;
-}

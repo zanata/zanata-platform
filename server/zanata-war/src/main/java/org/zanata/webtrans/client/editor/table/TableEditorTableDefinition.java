@@ -25,7 +25,7 @@ import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.zanata.webtrans.client.presenter.SourcePanelPresenter;
+import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -51,7 +51,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
    private final boolean isReadOnly;
    private final TableResources images = GWT.create(TableResources.class);
-   private final SourcePanelPresenter sourcePanelPresenter;
+   private final SourceContentsPresenter sourceContentsPresenter;
     private TargetContentsPresenter targetContentsPresenter;
 
     private String findMessage;
@@ -114,13 +114,13 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          VerticalPanel panel = new VerticalPanel();
          panel.addStyleName("TableEditorCell-Source-Table");
 
-         SourcePanel sourcePanel = sourcePanelPresenter.getSourcePanel(view.getRowIndex(), rowValue);
+         SourceContentsView sourceContentsView = sourceContentsPresenter.getSourceContent(view.getRowIndex(), rowValue);
 
          if (findMessage != null && !findMessage.isEmpty())
          {
-            sourcePanel.highlightSearch(findMessage);
+            sourceContentsView.highlightSearch(findMessage);
          }
-         panel.add(sourcePanel);
+         panel.add(sourceContentsView);
          sourcePanelMap.put(rowValue.getId(), panel);
 
          view.setWidget(panel);
@@ -213,12 +213,12 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       this.findMessage = findMessage;
    }
 
-   public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final EventBus eventBus, final SourcePanelPresenter sourcePanelPresenter, boolean isReadOnly, TargetContentsPresenter targetContentsPresenter)
+   public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final EventBus eventBus, final SourceContentsPresenter sourceContentsPresenter, boolean isReadOnly, TargetContentsPresenter targetContentsPresenter)
    {
       this.isReadOnly = isReadOnly;
       this.messages = messages;
       this.eventBus = eventBus;
-      this.sourcePanelPresenter = sourcePanelPresenter;
+      this.sourceContentsPresenter = sourceContentsPresenter;
        this.targetContentsPresenter = targetContentsPresenter;
        setRowRenderer(rowRenderer);
       sourceColumnDefinition.setCellRenderer(sourceCellRenderer);

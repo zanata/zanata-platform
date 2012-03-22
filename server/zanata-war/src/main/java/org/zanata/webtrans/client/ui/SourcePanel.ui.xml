@@ -1,0 +1,33 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
+
+	<ui:with field="messages"
+		type="org.zanata.webtrans.client.resources.NavigationMessages" />
+
+	<ui:style type="org.zanata.webtrans.client.ui.SourcePanel.Styles">
+		.selectedRow {
+			border: 1px solid #E0E8EE;
+			padding-top: 3px;
+			padding-bottom: 3px;
+		}
+		
+		.nonSelectedRow {
+			border: 0px;
+			padding-top: 3px;
+			padding-bottom: 3px;
+		}
+	</ui:style>
+
+
+	<g:HorizontalPanel width="100%" height="100%"
+		styleName="{style.nonSelectedRow}" ui:field="container">
+		<g:cell horizontalAlignment="ALIGN_LEFT">
+			<fui:HighlightingLabel ui:field="highlightingLabel"
+				stylePrimaryName="TableEditorContent" />
+		</g:cell>
+		<g:cell horizontalAlignment="ALIGN_RIGHT">
+			<g:RadioButton ui:field="selectButton" name="selectSourceButton" />
+		</g:cell>
+	</g:HorizontalPanel>
+</ui:UiBinder> 

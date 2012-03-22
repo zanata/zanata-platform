@@ -69,7 +69,7 @@ import org.zanata.webtrans.client.events.UpdateValidationWarningsEvent;
 import org.zanata.webtrans.client.events.UpdateValidationWarningsEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
-import org.zanata.webtrans.client.presenter.SourcePanelPresenter;
+import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationPanel;
@@ -189,7 +189,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
    private final WorkspaceContext workspaceContext;
    
-   private final SourcePanelPresenter sourcePanelPresenter;
+   private final SourceContentsPresenter sourceContentsPresenter;
     private TargetContentsPresenter targetContentsPresenter;
 
     private boolean filterTranslated, filterNeedReview, filterUntranslated;
@@ -264,14 +264,14 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    };
 
    @Inject
-   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourcePanelPresenter sourcePanelPresenter, TargetContentsPresenter targetContentsPresenter)
+   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourceContentsPresenter sourceContentsPresenter, TargetContentsPresenter targetContentsPresenter)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
       this.identity = identity;
       this.messages = messages;
       this.workspaceContext = workspaceContext;
-      this.sourcePanelPresenter = sourcePanelPresenter;
+      this.sourceContentsPresenter = sourceContentsPresenter;
        this.targetContentsPresenter = targetContentsPresenter;
    }
 
@@ -630,10 +630,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             {
                tableModelHandler.gotoRow(rowIndex, true);
                // TODO Plural Support
-                event.getTextArea().setText(sourcePanelPresenter.getSelectedSource());
-//                targetContentsPresenter.copySource(sourcePanelPresenter.getSelectedSource());
-//               display.getTargetCellEditor().setText(event.getTransUnit().getSources().toString());
-//               display.getTargetCellEditor().autoSize();
+                event.getTextArea().setText(sourceContentsPresenter.getSelectedSource());
             }
          }
 
@@ -1235,7 +1232,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          clearCacheList();
 
          eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
-         sourcePanelPresenter.setSelectedSource(display.getSelectedRowNumber());
+         sourceContentsPresenter.setSelectedSource(display.getSelectedRowNumber());
       }
    }
 
