@@ -25,7 +25,6 @@ import static org.zanata.webtrans.client.editor.table.TableConstants.MAX_PAGE_RO
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -36,6 +35,8 @@ import org.zanata.webtrans.client.action.UndoableTransUnitUpdateHandler;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
 import org.zanata.webtrans.client.events.ButtonDisplayChangeEventHandler;
+import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
+import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
 import org.zanata.webtrans.client.events.CopySourceEvent;
 import org.zanata.webtrans.client.events.CopySourceEventHandler;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
@@ -55,8 +56,6 @@ import org.zanata.webtrans.client.events.OpenEditorEvent;
 import org.zanata.webtrans.client.events.OpenEditorEventHandler;
 import org.zanata.webtrans.client.events.RedoFailureEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
-import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
-import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
@@ -65,8 +64,6 @@ import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.UndoAddEvent;
 import org.zanata.webtrans.client.events.UndoFailureEvent;
 import org.zanata.webtrans.client.events.UndoRedoFinishEvent;
-import org.zanata.webtrans.client.events.UpdateValidationWarningsEvent;
-import org.zanata.webtrans.client.events.UpdateValidationWarningsEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
@@ -90,6 +87,7 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -560,82 +558,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          }
       }));
 
-      registerHandler(eventBus.addHandler(CopyDataToEditorEvent.getType(), new CopyDataToEditorHandler()
-      {
-         @Override
-         public void onTransMemoryCopy(CopyDataToEditorEvent event)
-         {
-            if (selectedTransUnit == null)
-            {
-               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.noTextFlowToCopy()));
-            }
-            else
-            {
-               if (!display.getTargetCellEditor().isEditing())
-               {
-                  gotoCurrentRow();
-               }
-               if (display.getTargetCellEditor().isEditing())
-               {
-                  display.getTargetCellEditor().setText(event.getTargetResult());
-                  display.getTargetCellEditor().autoSize();
-                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
-               }
-               else
-               {
-                  // Error if failed to open editor
-                  eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnopened()));
-               }
-            }
-         }
-      }));
-      
-      registerHandler(eventBus.addHandler(InsertStringInEditorEvent.getType(), new InsertStringInEditorHandler()
-      {
-         @Override
-         public void onInsertString(InsertStringInEditorEvent event)
-         {
-            if (selectedTransUnit == null)
-            {
-               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.noTextFlowToCopy()));
-            }
-            else
-            {
-               if (!display.getTargetCellEditor().isEditing())
-               {
-                  gotoCurrentRow();
-               }
-               if (display.getTargetCellEditor().isEditing())
-               {
-                  display.getTargetCellEditor().insertTextInCursorPosition(event.getSuggestion());
-                  display.getTargetCellEditor().autoSize();
-                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
-               }
-               else
-               {
-                  // Error if failed to open editor
-                  eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnopened()));
-               }
-            }
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(CopySourceEvent.getType(), new CopySourceEventHandler()
-      {
-         @Override
-         public void onCopySource(CopySourceEvent event)
-         {
-            Integer rowIndex = getRowIndex(event.getTransUnit());
-            if (rowIndex != null)
-            {
-               tableModelHandler.gotoRow(rowIndex, true);
-               // TODO Plural Support
-                event.getTextArea().setText(sourceContentsPresenter.getSelectedSource());
-            }
-         }
-
-      }));
-
       registerHandler(eventBus.addHandler(OpenEditorEvent.getType(), new OpenEditorEventHandler()
       {
          @Override
@@ -651,15 +573,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          public void onButtonDisplayChange(ButtonDisplayChangeEvent event)
          {
             display.getTargetCellEditor().setShowOperationButtons(event.isShowButtons());
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(UpdateValidationWarningsEvent.getType(), new UpdateValidationWarningsEventHandler()
-      {
-         @Override
-         public void onUpdate(UpdateValidationWarningsEvent event)
-         {
-            display.getTargetCellEditor().updateValidationMessagePanel(event.getErrors());
          }
       }));
 

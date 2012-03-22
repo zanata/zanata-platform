@@ -20,7 +20,7 @@ package org.zanata.webtrans.client.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.zanata.webtrans.client.resources.NavigationMessages;
+import org.zanata.webtrans.client.resources.TableEditorMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -64,9 +64,9 @@ public class ValidationMessagePanel extends Composite
    private boolean collapsible;
    private List<String> errors = new ArrayList<String>();
 
-   private final NavigationMessages messages;
+   private final TableEditorMessages messages;
 
-   public ValidationMessagePanel(boolean collapsible, NavigationMessages messages)
+   public ValidationMessagePanel(boolean collapsible, TableEditorMessages messages)
    {
       contents = new VerticalPanel();
       this.messages = messages;

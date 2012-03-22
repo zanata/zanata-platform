@@ -126,9 +126,4 @@ public interface NavigationMessages extends Messages
 
    @DefaultMessage("Translation Unit Details")
    String transUnitDetailsHeading();
-
-   @DefaultMessage("Validation Warnings: {0}")
-   @AlternateMessage({ "=0", "Validation Warnings: none" })
-   String validationWarningsHeading(@PluralCount
-   int warningCount);
 }

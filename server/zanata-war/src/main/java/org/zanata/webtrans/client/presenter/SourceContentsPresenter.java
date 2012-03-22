@@ -24,7 +24,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.zanata.webtrans.client.editor.table.SourceContentsView;
+import org.zanata.webtrans.client.events.RequestValidationEvent;
+import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.ui.HasSelectableSource;
 import org.zanata.webtrans.shared.model.TransUnit;
 
@@ -44,10 +48,13 @@ public class SourceContentsPresenter
    private final Map<Integer, SourceContentsView> sourcePanelMap;
    private HasSelectableSource selectedSource;
    private HasSelectableSource previousSource;
+   
+   private final EventBus eventBus;
 
    @Inject
-   public SourceContentsPresenter()
+   public SourceContentsPresenter(final EventBus eventBus)
    {
+      this.eventBus = eventBus;
       sourcePanelMap = new HashMap<Integer, SourceContentsView>();
    }
    
@@ -64,7 +71,9 @@ public class SourceContentsPresenter
          {
             previousSource.setSelected(false);
          }
+
          Log.debug("Selected source: " + selectedSource.getSource());
+         eventBus.fireEvent(new RequestValidationEvent());
       }
    };
 

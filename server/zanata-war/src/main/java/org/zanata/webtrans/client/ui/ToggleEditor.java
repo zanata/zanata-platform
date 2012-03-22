@@ -12,6 +12,7 @@ public interface ToggleEditor extends IsWidget, HasText
 
    void autoSize();
 
+   void insertTextInCursorPosition(String suggestion);
 
    void setSaveButtonTitle(String title);
 
@@ -22,4 +23,5 @@ public interface ToggleEditor extends IsWidget, HasText
       VIEW, EDIT
 
    }
+
 }
