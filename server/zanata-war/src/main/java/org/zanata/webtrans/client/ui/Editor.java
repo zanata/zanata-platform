@@ -3,6 +3,8 @@ package org.zanata.webtrans.client.ui;
 import org.zanata.webtrans.client.editor.table.EditorTextArea;
 import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
+import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 
 import com.google.common.base.Strings;
@@ -104,7 +106,6 @@ public class Editor extends Composite implements ToggleEditor
          public void onValueChange(ValueChangeEvent<String> event)
          {
             autoSize();
-            // fireValidationEvent(eventBus);
          }
 
       });
@@ -280,5 +281,15 @@ public class Editor extends Composite implements ToggleEditor
    {
       validationMessagePanelContainer.clear();
       validationMessagePanelContainer.add(validationMessagePanel);
+   }
+
+   @Override
+   public void insertTextInCursorPosition(String suggestion)
+   {
+      String preCursor = textArea.getText().substring(0, textArea.getCursorPos());
+      String postCursor = textArea.getText().substring(textArea.getCursorPos(), textArea.getText().length());
+
+      textArea.setText(preCursor + suggestion + postCursor);
+
    }
 }

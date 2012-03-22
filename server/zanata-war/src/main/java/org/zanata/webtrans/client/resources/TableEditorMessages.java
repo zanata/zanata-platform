@@ -2,6 +2,9 @@ package org.zanata.webtrans.client.resources;
 
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
+import com.google.gwt.i18n.client.Messages.AlternateMessage;
+import com.google.gwt.i18n.client.Messages.DefaultMessage;
+import com.google.gwt.i18n.client.Messages.PluralCount;
 import com.google.gwt.i18n.client.Messages;
 
 @DefaultLocale
@@ -20,9 +23,6 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Please open the target in the editor first.")
    String notifyUnopened();
-
-   @DefaultMessage("No selected text flow to copy to.")
-   String noTextFlowToCopy();
 
    @DefaultMessage("Not logged in!")
    String notifyNotLoggedIn();
@@ -53,4 +53,9 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Workspace is set to edit mode")
    String notifyEditableWorkspace();
+
+   @DefaultMessage("Validation Warnings: {0}")
+   @AlternateMessage({ "=0", "Validation Warnings: none" })
+   String validationWarningsHeading(@PluralCount
+   int warningCount);
 }

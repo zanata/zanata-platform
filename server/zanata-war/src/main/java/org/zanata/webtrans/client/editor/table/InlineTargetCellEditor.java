@@ -523,18 +523,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          targetContentsPresenter.setCurrentEditorText(text);
       }
    }
-
-   public void insertTextInCursorPosition(String text)
-   {
-      if (isEditing())
-      {
-          targetContentsPresenter.insertTextInCursorPosition(text);
-//          String preCursor = currentEditor.getText().substring(0, textArea.getCursorPos());
-//         String postCursor = textArea.getText().substring(textArea.getCursorPos(), textArea.getText().length());
-         
-//         textArea.setText(preCursor + text + postCursor);
-      }
-   }
    
    @Override
    public void editCell(CellEditInfo cellEditInfo, TransUnit cellValue, Callback<TransUnit> callback)
@@ -585,10 +573,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       isOpened = true;
 
       DOM.scrollIntoView(table.getCellFormatter().getElement(curRow, curCol));
-
-      // hide until validation results are available
-      // validationMessagePanel.setVisible(false);
-      fireValidationEvent(eventBus);
    }
 
    public void savePendingChange(boolean cancelIfUnchanged)
@@ -858,22 +842,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       return cellValue;
    }
-
-   public void updateValidationMessagePanel(List<String> errors)
-   {
-      // validationMesCsagePanel.setContent(errors);
-      // validationMessagePanel.setVisible(true);
-   }
-
-   /**
-    * @param eventBus
-    */
-   private void fireValidationEvent(final EventBus eventBus)
-   {
-       // TODO Plural Support
-//      eventBus.fireEvent(new RunValidationEvent(cellValue.getId(), cellValue.getSources(), currentTargetPresenter.getDisplay().getCurrentEditor().getText(), false));
-   }
    
+
    public void setReadOnly(boolean isReadOnly)
    {
       this.isReadOnly = isReadOnly;
