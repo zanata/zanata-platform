@@ -852,12 +852,18 @@
 				<scope>test</scope>
 			</dependency>
 
+			<!-- Liquibase Dependencies -->
 			<dependency>
 				<groupId>org.liquibase</groupId>
 				<artifactId>liquibase-core</artifactId>
-				<version>1.9.5</version>
+				<version>2.0.3</version>
 			</dependency>
-
+			<dependency>
+				<groupId>org.liquibase.ext</groupId>
+				<artifactId>modify-column</artifactId>
+				<version>2.0.0</version>
+			</dependency>
+			
 			<dependency>
 				<groupId>commons-lang</groupId>
 				<artifactId>commons-lang</artifactId>
