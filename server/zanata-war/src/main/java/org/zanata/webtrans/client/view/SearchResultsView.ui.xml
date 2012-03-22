@@ -17,6 +17,10 @@
             -moz-border-radius: 7px;
             border-radius: 7px;
         }
+        .searchResultsPanel {
+            padding-left: 30px;
+            padding-right: 30px;
+        }
 
     </ui:style>
     <g:LayoutPanel>
@@ -37,7 +41,7 @@
                 </g:layer>
                 <g:layer top='50px' bottom="2px">
                     <g:ScrollPanel>
-                        <g:VerticalPanel ui:field='searchResultsPanel' width="100%">
+                        <g:VerticalPanel ui:field='searchResultsPanel' width="100%" styleName="{style.searchResultsPanel}">
                         </g:VerticalPanel>
                     </g:ScrollPanel>
                 </g:layer>

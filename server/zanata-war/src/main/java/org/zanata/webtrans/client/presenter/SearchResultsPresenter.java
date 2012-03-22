@@ -56,6 +56,14 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    {
       HasText getTestLabel();
 
+      /**
+       * Set the string that will be highlighted in target content.
+       * Set to null or empty string to disable highlight
+       * 
+       * @param highlightString
+       */
+      void setHighlightString(String highlightString);
+
       HasValue<String> getFilterTextBox();
 
       HasValue<String> getReplacementTextBox();
@@ -69,6 +77,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    private final CachingDispatchAsync dispatcher;
    private final History history;
+   private AsyncCallback<GetProjectTransUnitListsResult> projectSearchCallback;
+   private Delegate<TransUnit> replaceButtonDelegate;
 
    /**
     * most recent history state that was responded to
@@ -86,6 +96,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    @Override
    protected void onBind()
    {
+      projectSearchCallback = buildProjectSearchCallback();
+      replaceButtonDelegate = buildReplaceButtonDelegate();
 
       registerHandler(display.getFilterTextBox().addValueChangeHandler(new ValueChangeHandler<String>()
       {
@@ -115,77 +127,9 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
             if (!token.getProjectSearchText().equals(currentHistoryState.getProjectSearchText()))
             {
-               dispatcher.execute(new GetProjectTransUnitLists(token.getProjectSearchText()), new AsyncCallback<GetProjectTransUnitListsResult>() {
-
-                  @Override
-                  public void onFailure(Throwable caught)
-                  {
-                     display.clearAll();
-                     display.getTestLabel().setText("Project TU search failed");
-                  }
-
-                  @Override
-                  public void onSuccess(GetProjectTransUnitListsResult result)
-                  {
-                     display.getTestLabel().setText("Project TU search returned documents: " + result.getDocumentPaths().size());
-
-                     display.clearAll();
-                     for (final String doc : result.getDocumentPaths())
-                     {
-                        HasClickHandlers docLabel = display.addDocumentLabel(doc);
-                        docLabel.addClickHandler(new ClickHandler()
-                        {
-
-                           @Override
-                           public void onClick(ClickEvent event)
-                           {
-                              showDocInEditor(doc);
-                           }
-
-                        });
-                        HasData<TransUnit> table = display.addTUTable(new Delegate<TransUnit>()
-                              {
-
-                           @Override
-                           public void execute(TransUnit tu)
-                           {
-                              //TODO do the replacement
-                              String target = tu.getTarget();
-                              target = target.replace(currentHistoryState.getProjectSearchText(), display.getReplacementTextBox().getValue());
-                              final UpdateTransUnit updateTransUnit = new UpdateTransUnit(tu.getId(), target, tu.getStatus());
-                              dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
-                              {
-                                 @Override
-                                 public void onFailure(Throwable e)
-                                 {
-                                    Log.error("Replace text failure " + e, e);
-                                    // TODO use localised string
-                                    eventBus.fireEvent(new NotificationEvent(Severity.Error, "Replace text failed"));
-                                 }
-
-                                 @Override
-                                 public void onSuccess(UpdateTransUnitResult result)
-                                 {
-                                    eventBus.fireEvent(new NotificationEvent(Severity.Info, "Successfully replaced text"));
-                                    // not sure if any undoable TU action is
-                                    // required here
-                                    //TODO show replacement in relevant table
-                                 }
-                              });
-                           }
-                        });
-
-                        ListDataProvider<TransUnit> dataProvider = new ListDataProvider<TransUnit>();
-                        dataProvider.addDataDisplay(table);
-                        //link dataProvider BEFORE adding units, so they display automatically
-                        dataProvider.getList().addAll(result.getUnits(doc));
-                     }
-                  }
-
-               });
-
-               //TODO set filter text box to value from history token.
-               //watch out for greying-out issue with this type of text box
+               display.setHighlightString(token.getProjectSearchText());
+               display.getFilterTextBox().setValue(token.getProjectSearchText(), true);
+               dispatcher.execute(new GetProjectTransUnitLists(token.getProjectSearchText()), projectSearchCallback);
             }
 
             currentHistoryState = token;
@@ -210,7 +154,83 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    @Override
    public void onRevealDisplay()
    {
-      // Auto-generated method stub
+   }
+
+   private AsyncCallback<GetProjectTransUnitListsResult> buildProjectSearchCallback()
+   {
+      return new AsyncCallback<GetProjectTransUnitListsResult>() {
+
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            Log.error("[SearchResultsPresenter] failed project-wide search request: " + caught.getMessage());
+            eventBus.fireEvent(new NotificationEvent(Severity.Error, "Project-wide search failed"));
+            display.clearAll();
+            display.getTestLabel().setText("Project TU search failed");
+         }
+
+         @Override
+         public void onSuccess(GetProjectTransUnitListsResult result)
+         {
+            display.getTestLabel().setText("Project TU search returned documents: " + result.getDocumentPaths().size());
+
+            display.clearAll();
+            for (final String doc : result.getDocumentPaths())
+            {
+               HasClickHandlers docLabel = display.addDocumentLabel(doc);
+               docLabel.addClickHandler(new ClickHandler()
+               {
+
+                  @Override
+                  public void onClick(ClickEvent event)
+                  {
+                     showDocInEditor(doc);
+                  }
+
+               });
+
+               HasData<TransUnit> table = display.addTUTable(replaceButtonDelegate);
+               ListDataProvider<TransUnit> dataProvider = new ListDataProvider<TransUnit>();
+               dataProvider.addDataDisplay(table);
+               //link dataProvider BEFORE adding units, so they display automatically
+               dataProvider.getList().addAll(result.getUnits(doc));
+            }
+         }
+
+      };
+   }
+
+   private Delegate<TransUnit> buildReplaceButtonDelegate()
+   {
+      return new Delegate<TransUnit>() {
+
+         @Override
+         public void execute(TransUnit tu)
+         {
+            String target = tu.getTarget();
+            target = target.replace(currentHistoryState.getProjectSearchText(), display.getReplacementTextBox().getValue());
+            final UpdateTransUnit updateTransUnit = new UpdateTransUnit(tu.getId(), target, tu.getStatus());
+            dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
+            {
+               @Override
+               public void onFailure(Throwable e)
+               {
+                  Log.error("[SearchResultsPresenter] Replace text failure " + e, e);
+                  // TODO use localised string
+                  eventBus.fireEvent(new NotificationEvent(Severity.Error, "Replace text failed"));
+               }
+
+               @Override
+               public void onSuccess(UpdateTransUnitResult result)
+               {
+                  eventBus.fireEvent(new NotificationEvent(Severity.Info, "Successfully replaced text"));
+                  // not sure if any undoable TU action is
+                  // required here
+                  //TODO show replacement in relevant table
+               }
+            });
+         }
+      };
    }
 
 }

@@ -28,13 +28,17 @@ import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.ClearableTextBox;
+import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
+import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.ActionCell.Delegate;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -68,11 +72,15 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    @UiField
    Label testLabel;
 
+   private String highlightString;
+
+
    @Inject
    public SearchResultsView(Resources resources, UiMessages uiMessages, final CachingDispatchAsync dispatcher, EventBus eventBus)
    {
       filterTextBox = new ClearableTextBox(resources, uiMessages);
       replacementTextBox = new ClearableTextBox(resources, uiMessages);
+      highlightString = null;
 
       initWidget(uiBinder.createAndBindUi(this));
    }
@@ -81,6 +89,12 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    public Widget asWidget()
    {
       return this;
+   }
+
+   @Override
+   public void setHighlightString(String highlightString)
+   {
+      this.highlightString = highlightString;
    }
 
    @Override
@@ -112,7 +126,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       Label docLabel = new Label(docName);
       searchResultsPanel.add(docLabel);
       docLabel.setTitle("View document in editor");
-      docLabel.getElement().setAttribute("style", "cursor:pointer;");
+      docLabel.addStyleName("SearchResultsDocumentTitle");
       return docLabel;
    }
 
@@ -126,8 +140,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
 
    private CellTable<TransUnit> buildTable(Delegate<TransUnit> replaceDelegate)
    {
-      CellTable<TransUnit> table = new CellTable<TransUnit>();
-
+      //create columns
       TextColumn<TransUnit> rowIndexColumn = new TextColumn<TransUnit>()
       {
          @Override
@@ -146,8 +159,20 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
          }
       };
 
-      //TODO highlight search match
-      TextColumn<TransUnit> targetColumn = new TextColumn<TransUnit>()
+      Column<TransUnit, String> targetColumn = new Column<TransUnit, String>(new AbstractCell<String>() {
+
+         @Override
+         public void render(com.google.gwt.cell.client.Cell.Context context, String value, SafeHtmlBuilder sb)
+         {
+            HighlightingLabel label = new HighlightingLabel(value);
+            if (highlightString != null && highlightString.length() > 0)
+            {
+               label.highlightSearch(highlightString);
+            }
+            sb.appendHtmlConstant(label.getElement().getString());
+         }
+
+      })
       {
 
          @Override
@@ -178,11 +203,19 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
 
       ReplaceColumn replaceButtonColumn = new ReplaceColumn(replaceDelegate);
 
+      CellTable<TransUnit> table = new CellTable<TransUnit>();
+      table.setWidth("100%", true);
+
       //TODO use localisable headings (should already exist somewhere)
       table.addColumn(rowIndexColumn, "Index");
       table.addColumn(sourceColumn, "Source");
       table.addColumn(targetColumn, "Target");
       table.addColumn(replaceButtonColumn, "Actions");
+
+      table.setColumnWidth(rowIndexColumn, 70.0, Unit.PX);
+      table.setColumnWidth(sourceColumn, 50.0, Unit.PCT);
+      table.setColumnWidth(targetColumn, 50.0, Unit.PCT);
+      table.setColumnWidth(replaceButtonColumn, 100.0, Unit.PX);
 
       return table;
    }
