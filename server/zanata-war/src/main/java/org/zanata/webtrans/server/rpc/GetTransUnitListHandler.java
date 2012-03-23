@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -174,26 +175,19 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       }
       HTextFlowTarget target = textFlow.getTargets().get(hLocale);
 
-      ArrayList<String> targets = new ArrayList<String>();
-      ArrayList<String> sources = new ArrayList<String>();
-      sources.add(textFlow.getContent());
-      TransUnit tu = new TransUnit(new TransUnitId(textFlow.getId()), textFlow.getResId(), hLocale.getLocaleId(), sources, CommentsUtil.toString(textFlow.getComment()), targets, ContentState.New, "", "", msgContext, textFlow.getPos());
-      if (target != null)
+      TransUnit tu = new TransUnit(new TransUnitId(textFlow.getId()), textFlow.getResId(), hLocale.getLocaleId(),
+            textFlow.getContents(), CommentsUtil.toString(textFlow.getComment()), target.getContents(),
+            ContentState.New, "", "", msgContext, textFlow.getPos());
+      // TODO Plural Support may need to check whether target contents has correct number etc
+      // for(int i=0;i<target.getContents.size();i<nPlurals;i++){
+      //
+      // }
+      tu.setStatus(target.getState());
+      if (target.getLastModifiedBy() != null)
       {
-         // TODO Plural Support
-         // for(int i=0;i<target.getContents.size();i<nPlurals;i++){
-         //
-         // }
-         targets.add(target.getContent());
-
-         tu.setTargets(targets);
-         tu.setStatus(target.getState());
-         if (target.getLastModifiedBy() != null)
-         {
-            tu.setLastModifiedBy(target.getLastModifiedBy().getName());
-         }
-         tu.setLastModifiedTime(SIMPLE_FORMAT.format(target.getLastChanged()));
+         tu.setLastModifiedBy(target.getLastModifiedBy().getName());
       }
+      tu.setLastModifiedTime(SIMPLE_FORMAT.format(target.getLastChanged()));
       return tu;
    }
 

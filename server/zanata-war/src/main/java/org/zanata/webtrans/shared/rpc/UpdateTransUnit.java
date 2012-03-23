@@ -1,5 +1,6 @@
 package org.zanata.webtrans.shared.rpc;
 
+import com.google.common.collect.Lists;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
@@ -44,7 +45,8 @@ public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResu
    public UpdateTransUnit(TransUnitId transUnitId, List<String> contents, ContentState contentState)
    {
       this.transUnitId = transUnitId;
-      this.contents = contents;
+      //gwt rpc can't handle unmodifiable collection
+      this.contents = Lists.newArrayList(contents);
       this.contentState = contentState;
    }
 

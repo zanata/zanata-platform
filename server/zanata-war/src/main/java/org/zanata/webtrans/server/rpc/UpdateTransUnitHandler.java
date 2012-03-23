@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
@@ -231,14 +232,11 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          }
       }
 
-      String content = (target.getContent() != null ? target.getContent() : "");
-      //TODO Plural support need to get contents from target
-      UpdateTransUnit previous = new UpdateTransUnit(action.getTransUnitId(), Lists.newArrayList(content), prevStatus);
+      UpdateTransUnit previous = new UpdateTransUnit(action.getTransUnitId(), target.getContents(), prevStatus);
 
-      //TODO Plural support. need to use list from HTarget
-      if (!action.getContents().get(0).equals(target.getContent()))
+      if (!action.getContents().equals(target.getContents()))
       {
-         target.setContent(action.getContents().get(0));
+         target.setContents(action.getContents());
          targetChanged = true;
       }
 
@@ -260,15 +258,9 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       {
          msgContext = hTextFlow.getPotEntryData().getContext();
       }
-      
-      // TODO Plural Support
-      ArrayList<String> sources = new ArrayList<String>();
 
-      sources.add(hTextFlow.getContent());
-//      targets.add(action.getContents());
-      
       TransUnit tu = new TransUnit(action.getTransUnitId(), hTextFlow.getResId(),
-                                   locale, sources,
+                                   locale, hTextFlow.getContents(),
                                    CommentsUtil.toString(hTextFlow.getComment()),
                                    action.getContents(), target.getState(),
                                    authenticatedAccount.getPerson().getName(),
@@ -324,11 +316,10 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
       ContentState prevStatus = target.getState();
 
-      //TODO Plural support. need to compare the list from HTarget
-      if (!StringUtils.equals(result.getPrevious().getContents().get(0), target.getContent()))
+      if (!result.getPrevious().getContents().equals(target.getContents()))
       {
          target.setState(result.getPrevious().getContentState());
-         target.setContent(result.getPrevious().getContents().get(0));
+         target.setContents(result.getPrevious().getContents());
          target.setVersionNum(target.getVersionNum() + 1);
          target.setLastModifiedBy(authenticatedAccount.getPerson());
       }
@@ -342,17 +333,11 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          msgContext = hTextFlow.getPotEntryData().getContext();
       }
 
-      // TODO Plural Support
-      ArrayList<String> sources = new ArrayList<String>();
-      ArrayList<String> targets = new ArrayList<String>();
-
-      sources.add(hTextFlow.getContent());
-      targets.add(target.getContent());
       // @formatter:off
       TransUnit tu = new TransUnit(action.getTransUnitId(), hTextFlow.getResId(),
-                                   locale, sources,
+                                   locale, hTextFlow.getContents(),
                                    CommentsUtil.toString(hTextFlow.getComment()),
-                                   targets, target.getState(),
+                                   target.getContents(), target.getState(),
                                    target.getLastModifiedBy().getName(),
                                    SIMPLE_FORMAT.format(target.getLastChanged()), msgContext, hTextFlow.getPos());
       // @formatter:on

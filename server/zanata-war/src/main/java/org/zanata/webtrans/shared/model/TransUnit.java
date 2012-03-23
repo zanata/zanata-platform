@@ -3,6 +3,7 @@ package org.zanata.webtrans.shared.model;
 import java.io.Serializable;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 
@@ -38,9 +39,10 @@ public class TransUnit implements IsSerializable, Serializable
       this.id = id;
       this.resId = resId;
       this.localeId = localeId;
-      this.sources = sources;
+      //gwt rpc can't handle unmodifiable collection
+      this.sources = Lists.newArrayList(sources);
       this.sourceComment = sourceComment;
-      this.targets = targets;
+      this.targets = Lists.newArrayList(targets);
       this.status = status;
       this.lastModifiedBy = lastModifiedBy;
       this.lastModifiedTime = lastModifiedTime;
