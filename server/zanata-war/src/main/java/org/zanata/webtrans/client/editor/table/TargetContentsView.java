@@ -18,6 +18,7 @@ package org.zanata.webtrans.client.editor.table;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.common.base.Objects;
 import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 
@@ -43,6 +44,14 @@ public class TargetContentsView implements TargetContentsDisplay
       editorGrid.ensureDebugId("target-contents-grid");
       editorGrid.setWidth("100%");
       editors = Lists.newArrayList();
+   }
+
+   @Override
+   public ToggleEditor openEditorAndCloseOthers(ToggleEditor currentEditor)
+   {
+      setToView();
+      currentEditor.setViewMode(ToggleEditor.ViewMode.EDIT);
+      return currentEditor;
    }
 
    @Override
@@ -105,7 +114,7 @@ public class TargetContentsView implements TargetContentsDisplay
    @Override
    public List<ToggleEditor> getEditors()
    {
-      return ImmutableList.copyOf(editors);
+      return editors;
    }
 
    @Override
@@ -124,5 +133,13 @@ public class TargetContentsView implements TargetContentsDisplay
    public Iterator<ToggleEditor> iterator()
    {
       return editors.iterator();
+   }
+
+   @Override
+   public String toString()
+   {
+      return Objects.toStringHelper(this).
+            add("editors", editors).
+            toString();
    }
 }

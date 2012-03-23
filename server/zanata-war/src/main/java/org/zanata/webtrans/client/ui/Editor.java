@@ -229,9 +229,9 @@ public class Editor extends Composite implements ToggleEditor
       textArea.setVisible(viewMode == ViewMode.EDIT);
       if (viewMode == ViewMode.EDIT)
       {
-         textArea.setFocus(true);
          listener.setValidationMessagePanel(this);
          fireValidationEvent();
+         textArea.setFocus(true);
       }
       buttons.setVisible(viewMode == ViewMode.EDIT);
       //sync label and text area
@@ -354,6 +354,7 @@ public class Editor extends Composite implements ToggleEditor
    {
       return Objects.toStringHelper(this).
             add("label", label.getText()).
+            add("isOpen", textArea.isVisible()).
             toString();
    }
 }

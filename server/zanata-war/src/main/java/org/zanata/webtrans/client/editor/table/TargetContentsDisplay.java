@@ -24,6 +24,8 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 public interface TargetContentsDisplay extends WidgetDisplay, Iterable<ToggleEditor>
 {
 
+   ToggleEditor openEditorAndCloseOthers(ToggleEditor currentEditor);
+
    interface Listener
    {
       void validate(ToggleEditor editor);

@@ -58,7 +58,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    private List<TargetContentsDisplay> displayList;
    private ToggleEditor currentEditor;
    private List<ToggleEditor> currentEditors;
-   private InlineTargetCellEditor inlineTargetCellEditor;
 
    @Inject
    public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter)
@@ -150,7 +149,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    public void showEditors(int rowIndex)
    {
       TargetContentsDisplay previousDisplay = currentDisplay;
-      previousDisplay.setToView();
+      if (previousDisplay != null)
+      {
+         previousDisplay.setToView();
+      }
       currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
       if (previousDisplay != currentDisplay && (currentEditor == null || !currentEditors.contains(currentEditor)))
@@ -158,8 +160,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
          currentEditor = currentEditors.get(0);
          Log.info("changed row and open the first editor");
       }
-
-      currentEditor.setViewMode(ToggleEditor.ViewMode.EDIT);
+      currentEditor = currentDisplay.openEditorAndCloseOthers(currentEditor);
       Log.info("show editors at row:" + rowIndex + " current editor:" + currentEditor.getText());
    }
 
@@ -167,7 +168,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    {
       TargetContentsDisplay result = displayList.get(rowIndex);
       result.setTargets(transUnit.getTargets());
-      currentDisplay = result;
       return result;
    }
 
@@ -196,13 +196,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    @Override
    public void saveAsApproved(ToggleEditor editor)
    {
-      // TODO we should get new value out and save
       int editorIndex = currentEditors.indexOf(editor);
       if (editorIndex + 1 < currentEditors.size())
       {
-         currentDisplay.setToView();
-         currentEditor = currentEditors.get(editorIndex + 1);
-         currentEditor.setViewMode(ToggleEditor.ViewMode.EDIT);
+         currentEditor = currentDisplay.openEditorAndCloseOthers(currentEditors.get(editorIndex + 1));
       }
       else
       {
@@ -231,10 +228,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
       if (currentEditors.contains(editor))
       {
          //still in the same trans unit. won't trigger transunit selection or edit cell event
-         Log.info("same transunit just another editor");
-         currentDisplay.setToView();
-         currentEditor.setViewMode(ToggleEditor.ViewMode.EDIT);
+         Log.info("same transunit just another editor:" + editor);
+         currentEditor = currentDisplay.openEditorAndCloseOthers(editor);
       }
+      Log.info("current display:" + currentDisplay);
       //else, it's clicking an editor outside current selection. the table selection event will trigger and showEditors will take care of the rest
    }
 
