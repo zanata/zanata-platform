@@ -29,11 +29,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
 
 @Entity
 @org.hibernate.annotations.Entity(mutable = false)
-public class HTextFlowHistory implements Serializable, ITextFlowHistory
+public class HTextFlowHistory extends HTextContainer implements Serializable, ITextFlowHistory
 {
 
    private static final long serialVersionUID = 1L;
@@ -41,7 +40,6 @@ public class HTextFlowHistory implements Serializable, ITextFlowHistory
    private Long id;
    private Integer revision;
    private HTextFlow textFlow;
-   private String content;
    private boolean obsolete;
 
    private Integer pos;
@@ -53,7 +51,7 @@ public class HTextFlowHistory implements Serializable, ITextFlowHistory
    public HTextFlowHistory(HTextFlow textFlow)
    {
       this.revision = textFlow.getRevision();
-      this.content = textFlow.getContent();
+      setContents(textFlow.getContents());
       this.textFlow = textFlow;
    }
 
@@ -94,18 +92,6 @@ public class HTextFlowHistory implements Serializable, ITextFlowHistory
    public void setTextFlow(HTextFlow textFlow)
    {
       this.textFlow = textFlow;
-   }
-
-   @Type(type = "text")
-   @Override
-   public String getContent()
-   {
-      return content;
-   }
-
-   public void setContent(String content)
-   {
-      this.content = content;
    }
 
    @Override

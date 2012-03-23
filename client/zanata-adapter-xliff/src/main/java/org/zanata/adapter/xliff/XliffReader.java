@@ -1,5 +1,9 @@
 package org.zanata.adapter.xliff;
 
+import static java.util.Arrays.asList;
+
+import java.util.List;
+
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -76,7 +80,10 @@ public class XliffReader extends XliffCommon
                {
                   TextFlowTarget tfTarget = new TextFlowTarget();
                   extractTransUnit(xmlr, tfTarget);
-                  if(!StringUtils.isEmpty(tfTarget.getContent())){
+                  List<String> contents = tfTarget.getContents();
+                  boolean targetEmpty = contents.isEmpty() || StringUtils.isEmpty(contents.get(0));
+                  if (!targetEmpty)
+                  {
                      tfTarget.setState(ContentState.Approved);
                      transDoc.getTextFlowTargets().add(tfTarget);
                   } 
@@ -111,7 +118,7 @@ public class XliffReader extends XliffCommon
          {
             if (xmlr.isStartElement() && xmlr.getLocalName().equals(ELE_SOURCE))
             {
-               textFlow.setContent(getElementValue(xmlr));
+               textFlow.setContents(getElementValue(xmlr));
             }
             else if (xmlr.isStartElement() && xmlr.getLocalName().equals(ELE_CONTEXT_GROUP))
             {
@@ -122,10 +129,10 @@ public class XliffReader extends XliffCommon
       textFlow.setLang(srcLang);
    }
    
-   private void extractTransUnit(XMLStreamReader xmlr, TextFlowTarget textFlow) throws XMLStreamException
+   private void extractTransUnit(XMLStreamReader xmlr, TextFlowTarget textFlowTarget) throws XMLStreamException
    {
       Boolean endTransUnit = false;
-      textFlow.setResId(getAttributeValue(xmlr, ATTRI_ID));
+      textFlowTarget.setResId(getAttributeValue(xmlr, ATTRI_ID));
 
       while (xmlr.hasNext() && !endTransUnit)
       {
@@ -136,11 +143,11 @@ public class XliffReader extends XliffCommon
          {
             if (xmlr.isStartElement() && xmlr.getLocalName().equals(ELE_TARGET))
             {
-               textFlow.setContent(getElementValue(xmlr));
+               textFlowTarget.setContents(asList(getElementValue(xmlr)));
             }
             else if (xmlr.isStartElement() && xmlr.getLocalName().equals(ELE_CONTEXT_GROUP))
             {
-               textFlow.getExtensions(true).addAll(extractContextList(xmlr));
+               textFlowTarget.getExtensions(true).addAll(extractContextList(xmlr));
             }
          }
       }

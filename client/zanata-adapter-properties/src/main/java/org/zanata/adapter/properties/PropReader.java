@@ -67,7 +67,7 @@ public class PropReader
       if (content == null)
          return;
       TextFlowTarget textFlowTarget = new TextFlowTarget(key);
-      textFlowTarget.setContent(content);
+      textFlowTarget.setContents(content);
       if (!content.isEmpty())
       {
          textFlowTarget.setState(contentState);

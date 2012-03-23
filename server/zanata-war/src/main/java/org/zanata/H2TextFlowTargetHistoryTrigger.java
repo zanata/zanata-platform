@@ -26,15 +26,23 @@ public class H2TextFlowTargetHistoryTrigger extends TriggerAdapter
 
          log.debug("revision incremented from {0} to {1}. Executing trigger..", oldRev, newRev);
 
-         PreparedStatement prep = conn.prepareStatement("INSERT INTO HTextFlowTargetHistory (target_id,versionNum,content, lastChanged, last_modified_by_id, state, tf_revision) VALUES (?,?,?,?,?,?,?)");
+         PreparedStatement prep = conn.prepareStatement(
+               "INSERT INTO HTextFlowTargetHistory " +
+                     "(target_id,versionNum,content0,content1,content2,content3,content4,content5,lastChanged,last_modified_by_id,state,tf_revision) " +
+                     "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
 
          prep.setObject(1, oldRow.getObject("id"));
          prep.setObject(2, oldRow.getObject("versionNum"));
-         prep.setObject(3, oldRow.getObject("content"));
-         prep.setObject(4, oldRow.getObject("lastChanged"));
-         prep.setObject(5, oldRow.getObject("last_modified_by_id"));
-         prep.setObject(6, oldRow.getObject("state"));
-         prep.setObject(7, oldRow.getObject("tf_revision"));
+         prep.setObject(3, oldRow.getObject("content0"));
+         prep.setObject(4, oldRow.getObject("content1"));
+         prep.setObject(5, oldRow.getObject("content2"));
+         prep.setObject(6, oldRow.getObject("content3"));
+         prep.setObject(7, oldRow.getObject("content4"));
+         prep.setObject(8, oldRow.getObject("content5"));
+         prep.setObject(9, oldRow.getObject("lastChanged"));
+         prep.setObject(10, oldRow.getObject("last_modified_by_id"));
+         prep.setObject(11, oldRow.getObject("state"));
+         prep.setObject(12, oldRow.getObject("tf_revision"));
          prep.execute();
       }
       else

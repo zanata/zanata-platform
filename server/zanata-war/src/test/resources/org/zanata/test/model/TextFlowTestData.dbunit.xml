@@ -21,7 +21,7 @@
   	revision="1"
   	pos="0"
     obsolete="0"
-  	content="hello world"
+  	content0="hello world"
   	wordCount="11"
   />
   <HTextFlowTarget 
@@ -29,7 +29,7 @@
     versionNum="1"
     creationDate="2009-09-01 20:30:16"
     lastChanged="2009-09-01 20:30:16" 
-  	content="hei verden"
+  	content0="hei verden"
   	locale="1"
   	state="2"
   	tf_id="1"
@@ -40,7 +40,7 @@
     versionNum="1"
     creationDate="2009-09-01 20:30:16"
     lastChanged="2009-09-01 20:30:16" 
-  	content="hello welt"
+  	content0="hello welt"
   	locale="3"
   	state="2"
   	tf_id="1"
@@ -51,7 +51,7 @@
     versionNum="1"
     creationDate="2009-09-01 20:30:16"
     lastChanged="2009-09-01 20:30:16" 
-  	content="fuzzy hello"
+  	content0="fuzzy hello"
   	locale="5"
   	state="1"
   	tf_id="1"
@@ -62,7 +62,7 @@
     versionNum="1"
     creationDate="2009-09-01 20:30:16"
     lastChanged="2009-09-01 20:30:16" 
-  	content=""
+  	content0=""
   	locale="6"
   	state="0"
   	tf_id="1"
@@ -93,7 +93,7 @@
   	revision="1"
   	pos="0"
     obsolete="0"
-  	content="mssgId1"
+  	content0="mssgId1"
   	wordCount="1"
   />
   <HTextFlow 
@@ -103,7 +103,7 @@
   	revision="1"
   	pos="1"
     obsolete="0"
-  	content="mssgId2"
+  	content0="mssgId2"
   	wordCount="1"
   />
   <HTextFlow 
@@ -113,7 +113,7 @@
   	revision="1"
   	pos="2"
     obsolete="0"
-  	content="mssgId3"
+  	content0="mssgId3"
   	wordCount="1"
   />
   
@@ -136,7 +136,7 @@
     versionNum="1"
     creationDate="2009-09-01 20:30:16"
     lastChanged="2009-09-01 20:30:16" 
-  	content="mssgTrans1"
+  	content0="mssgTrans1"
   	locale="4"
   	state="1"
   	tf_id="2"
@@ -149,7 +149,7 @@
     versionNum="1"
     creationDate="2009-09-01 20:30:16"
     lastChanged="2009-09-01 20:30:16" 
-  	content="mssgTrans2"
+  	content0="mssgTrans2"
   	locale="4"
   	state="1"
   	tf_id="3"
@@ -162,7 +162,7 @@
     versionNum="1"
     creationDate="2009-09-01 20:30:16"
     lastChanged="2009-09-01 20:30:16" 
-  	content="mssgTrans3"
+  	content0="mssgTrans3"
   	locale="4"
   	state="1"
   	tf_id="4"
@@ -195,7 +195,7 @@
   	revision="1"
   	pos="0"
     obsolete="0"
-  	content="mssgId4"
+  	content0="mssgId4"
   	wordCount="1"
   />
   <HTextFlowTarget 
@@ -203,7 +203,7 @@
     versionNum="1"
     creationDate="2009-09-01 20:30:16"
     lastChanged="2009-09-01 20:30:16" 
-  	content="mssgTrans4"
+  	content0="mssgTrans4"
   	locale="4"
   	state="1"
   	tf_id="5"
