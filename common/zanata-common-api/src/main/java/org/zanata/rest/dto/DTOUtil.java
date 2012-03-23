@@ -1,12 +1,16 @@
 package org.zanata.rest.dto;
 
+import java.io.StringReader;
 import java.io.StringWriter;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
+import javax.xml.transform.stream.StreamSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +48,16 @@ public class DTOUtil
          log.error("toXML failed", e);
          return obj.getClass().getName() + "@" + Integer.toHexString(obj.hashCode());
       }
+   }
+
+   public static <T> T toObject(String xml, Class<T> clazz) throws JAXBException
+   {
+      JAXBContext jc = JAXBContext.newInstance(clazz);
+      Unmarshaller um = jc.createUnmarshaller();
+      StringReader reader = new StringReader(xml);
+      StreamSource source = new StreamSource(reader);
+      JAXBElement<T> elem = um.unmarshal(source, clazz);
+      return elem.getValue();
    }
 
 }

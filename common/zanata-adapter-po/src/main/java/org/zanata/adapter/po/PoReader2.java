@@ -85,7 +85,15 @@ public class PoReader2
             tfTarget.setResId(id);
             tfTarget.setDescription(ShortString.shorten(message.getMsgid()));
 
-            tfTarget.setContent(message.getMsgstr());
+            if (message.isPlural())
+            {
+               tfTarget.setContents(message.getMsgstrPlural());
+            }
+            else
+            {
+               tfTarget.setContents(message.getMsgstr());
+            }
+
             tfTarget.setState(getContentState(message));
 
             // add the PO comment
@@ -209,7 +217,14 @@ public class PoReader2
             String id = createId(message);
             // add the content (msgid)
             TextFlow tf = new TextFlow(id, sourceLocaleId);
-            tf.setContent(message.getMsgid());
+            if (message.isPlural())
+            {
+               tf.setContents(message.getMsgid(), message.getMsgidPlural());
+            }
+            else
+            {
+               tf.setContents(message.getMsgid());
+            }
             resources.add(tf);
 
             // add the entry header POT fields

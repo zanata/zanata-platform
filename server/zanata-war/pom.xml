@@ -285,6 +285,50 @@
 				</configuration>
 			</plugin>
 
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>hibernate3-maven-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <components>
+            <component>
+              <name>hbm2ddl</name>
+              <implementation>jpaconfiguration</implementation>
+            </component>
+          </components>
+          <componentProperties>
+            <export>false</export>
+            <update>false</update>
+            <drop>false</drop>
+            <create>false</create>
+            <outputfilename>schema.ddl</outputfilename>
+            <persistenceunit>zanataTestDatasource</persistenceunit>
+          </componentProperties>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>process-test-classes</phase>
+            <goals>
+              <goal>hbm2ddl</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+<!--
+          <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>5.1.9</version>
+          </dependency>
+ -->
+          <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.2.144</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
 		</plugins>
 
 		<pluginManagement>
@@ -332,6 +376,25 @@
 									<action>
 										<ignore />
 									</action>
+								</pluginExecution>
+								<pluginExecution>
+								    <pluginExecutionFilter>
+								        <groupId>
+								            org.codehaus.mojo
+								        </groupId>
+								        <artifactId>
+								            hibernate3-maven-plugin
+								        </artifactId>
+								        <versionRange>
+								            [2.2,)
+								        </versionRange>
+								        <goals>
+								            <goal>hbm2ddl</goal>
+								        </goals>
+								    </pluginExecutionFilter>
+								    <action>
+								        <ignore></ignore>
+								    </action>
 								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>

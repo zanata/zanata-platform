@@ -1,5 +1,6 @@
 package org.zanata.adapter.xliff;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -47,8 +48,8 @@ public class XliffReaderTest
       TextFlow firstTextFlow = doc.getTextFlows().get(0);
       TextFlow lastTextFlow = doc.getTextFlows().get(doc.getTextFlows().size() - 1);
 
-      assertThat(firstTextFlow.getContent(), equalTo("Translation Unit 1"));
-      assertThat(lastTextFlow.getContent(), equalTo("Translation Unit 3"));
+      assertThat(firstTextFlow.getContents(), equalTo(asList("Translation Unit 1")));
+      assertThat(lastTextFlow.getContents(), equalTo(asList("Translation Unit 3")));
    }
 
    @Test
@@ -70,8 +71,8 @@ public class XliffReaderTest
       TextFlowTarget firstTextFlow = tr.getTextFlowTargets().get(0);
       TextFlowTarget lastTextFlow = tr.getTextFlowTargets().get(tr.getTextFlowTargets().size() - 1);
      
-      assertThat(firstTextFlow.getContent(), equalTo("Translation 1"));
-      assertThat(lastTextFlow.getContent(), equalTo("Translation 3"));
+      assertThat(firstTextFlow.getContents(), equalTo(asList("Translation 1")));
+      assertThat(lastTextFlow.getContents(), equalTo(asList("Translation 3")));
    }
 
 

@@ -8,4 +8,8 @@
    <include relativeToChangelogFile="true" file="changelogs/db.changelog-1.4.xml"/> 
    <include relativeToChangelogFile="true" file="changelogs/db.changelog-1.5.xml"/>   
    <include relativeToChangelogFile="true" file="changelogs/db.changelog-1.6.xml"/>   
+   <include relativeToChangelogFile="true" file="changelogs/db.changelog-1.6a.xml"/>
+   
+   <!-- NB: triggers must be created after all table changes -->
+   <include relativeToChangelogFile="true" file="changelogs/db.changelog-triggers.xml"/>
 </databaseChangeLog>

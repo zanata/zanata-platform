@@ -930,8 +930,8 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
                      }
                      else if (incomingTarget.getState() == ContentState.Approved)
                      {
-                        String localContent = incomingTarget.getContent();
-                        boolean oldContent = textFlowTargetHistoryDAO.findContentInHistory(hTarget, localContent);
+                        List<String> incomingContents = incomingTarget.getContents();
+                        boolean oldContent = textFlowTargetHistoryDAO.findContentInHistory(hTarget, incomingContents);
                         if (!oldContent)
                         {
                            targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);

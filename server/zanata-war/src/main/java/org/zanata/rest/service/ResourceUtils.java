@@ -259,9 +259,9 @@ public class ResourceUtils
    public boolean transferFromTextFlowTarget(TextFlowTarget from, HTextFlowTarget to)
    {
       boolean changed = false;
-      if (!equals(from.getContent(), to.getContent()))
+      if (!equals(from.getContents(), to.getContents()))
       {
-         to.setContent(from.getContent());
+         to.setContents(from.getContents());
          changed = true;
       }
       if (!equals(from.getState(), to.getState()))
@@ -664,9 +664,9 @@ public class ResourceUtils
    private boolean transferFromTextFlow(TextFlow from, HTextFlow to, Set<String> enabledExtensions)
    {
       boolean changed = false;
-      if (!equals(from.getContent(), to.getContent()))
+      if (!equals(from.getContents(), to.getContents()))
       {
-         to.setContent(from.getContent());
+         to.setContents(from.getContents());
          changed = true;
       }
 
@@ -1122,7 +1122,7 @@ public class ResourceUtils
 
    public void transferToTextFlow(HTextFlow from, TextFlow to)
    {
-      to.setContent(from.getContent());
+      to.setContents(from.getContents());
       to.setRevision(from.getRevision());
       // TODO HTextFlow should have a lang
       // to.setLang(from.get)
@@ -1281,7 +1281,7 @@ public class ResourceUtils
     */
    public void transferToTextFlowTarget(HTextFlowTarget from, TextFlowTarget to)
    {
-      to.setContent(from.getContent());
+      to.setContents(from.getContents());
       to.setState(from.getState());
       to.setRevision(from.getVersionNum());
       to.setTextFlowRevision(from.getTextFlowRevision());
