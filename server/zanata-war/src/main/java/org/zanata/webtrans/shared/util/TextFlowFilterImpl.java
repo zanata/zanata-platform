@@ -24,6 +24,7 @@ import org.zanata.common.ContentState;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.search.FilterConstraints;
 
 /**
  * 
@@ -35,6 +36,11 @@ public class TextFlowFilterImpl implements TextFlowFilter
    private boolean filterTranslated, filterNeedReview, filterUntranslated;
    private String phrase;
    private boolean acceptAll;
+
+   public TextFlowFilterImpl(FilterConstraints constraints)
+   {
+      this(constraints.getSearchString(), constraints.isIncludeApproved(), constraints.isIncludeFuzzy(), constraints.isIncludeNew());
+   }
 
    public TextFlowFilterImpl(String phrase, boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated)
    {
