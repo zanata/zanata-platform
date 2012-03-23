@@ -153,14 +153,12 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
       previousDisplay.setToView();
       currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
-      if (previousDisplay != currentDisplay && (currentEditor == null || !currentEditors.contains(currentEditor)))
-      {
-         currentEditor = currentEditors.get(0);
-         Log.info("changed row and open the first editor");
-      }
 
-      currentEditor.setViewMode(ToggleEditor.ViewMode.EDIT);
-      Log.info("show editors at row:" + rowIndex + " current editor:" + currentEditor.getText());
+      if (currentEditor != null)
+      {
+         currentEditor.setViewMode(ToggleEditor.ViewMode.EDIT);
+         Log.info("show editors at row:" + rowIndex + " current editor:" + currentEditor.getText());
+      }
    }
 
    public TargetContentsDisplay getNextTargetContentsDisplay(int rowIndex, TransUnit transUnit)
@@ -209,9 +207,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
          eventBus.fireEvent(new NavTransUnitEvent(NavTransUnitEvent.NavigationType.NextEntry));
       }
    }
-   
+
    @Override
-   public void onCancel(ToggleEditor editor) {
+   public void onCancel(ToggleEditor editor)
+   {
       editor.setViewMode(ViewMode.VIEW);
    }
 
@@ -226,16 +225,18 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    @Override
    public void toggleView(ToggleEditor editor)
    {
-//      editor.setViewMode(ToggleEditor.ViewMode.EDIT);
+      // editor.setViewMode(ToggleEditor.ViewMode.EDIT);
       currentEditor = editor;
       if (currentEditors.contains(editor))
       {
-         //still in the same trans unit. won't trigger transunit selection or edit cell event
+         // still in the same trans unit. won't trigger transunit selection or
+         // edit cell event
          Log.info("same transunit just another editor");
          currentDisplay.setToView();
          currentEditor.setViewMode(ToggleEditor.ViewMode.EDIT);
       }
-      //else, it's clicking an editor outside current selection. the table selection event will trigger and showEditors will take care of the rest
+      // else, it's clicking an editor outside current selection. the table
+      // selection event will trigger and showEditors will take care of the rest
    }
 
    public List<String> getNewTargets()
