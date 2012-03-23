@@ -1,5 +1,7 @@
 package org.zanata.webtrans.client.ui;
 
+import com.google.common.base.Objects;
+import com.google.gwt.event.dom.client.MouseDownEvent;
 import org.zanata.webtrans.client.editor.table.EditorTextArea;
 import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
@@ -200,9 +202,10 @@ public class Editor extends Composite implements ToggleEditor
 
 
    @UiHandler("label")
-   public void onLabelClick(ClickEvent event)
+   public void onLabelClick(MouseDownEvent event)
    {
       listener.toggleView(this);
+//      event.stopPropagation();
       // toggleView();
    }
 
@@ -344,5 +347,13 @@ public class Editor extends Composite implements ToggleEditor
 
       textArea.setText(preCursor + suggestion + postCursor);
 
+   }
+
+   @Override
+   public String toString()
+   {
+      return Objects.toStringHelper(this).
+            add("label", label.getText()).
+            toString();
    }
 }

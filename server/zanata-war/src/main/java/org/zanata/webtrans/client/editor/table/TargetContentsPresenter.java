@@ -15,7 +15,6 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Provider;
@@ -42,9 +41,6 @@ import org.zanata.webtrans.client.ui.ValidationMessagePanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -62,6 +58,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    private List<TargetContentsDisplay> displayList;
    private ToggleEditor currentEditor;
    private List<ToggleEditor> currentEditors;
+   private InlineTargetCellEditor inlineTargetCellEditor;
 
    @Inject
    public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter)
@@ -152,39 +149,18 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
 
    public void showEditors(int rowIndex)
    {
-      Log.info("show editors at row:" + rowIndex);
+      TargetContentsDisplay previousDisplay = currentDisplay;
+      previousDisplay.setToView();
       currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
-      currentEditor = getOpenEditorOrFirstOneIfNoneIsOpen();
+      if (previousDisplay != currentDisplay && (currentEditor == null || !currentEditors.contains(currentEditor)))
+      {
+         currentEditor = currentEditors.get(0);
+         Log.info("changed row and open the first editor");
+      }
+
       currentEditor.setViewMode(ToggleEditor.ViewMode.EDIT);
-   }
-
-   private ToggleEditor getOpenEditorOrFirstOneIfNoneIsOpen()
-   {
-      Collection<ToggleEditor> openingEditors = findOpeningEditors();
-      if (openingEditors.isEmpty())
-      {
-         // if no editor is open, return the first one
-         return currentEditors.get(0);
-      }
-      else
-      {
-         return openingEditors.iterator().next();
-      }
-   }
-
-   private Collection<ToggleEditor> findOpeningEditors()
-   {
-      Collection<ToggleEditor> openingEditor = Collections2.filter(currentEditors, new Predicate<ToggleEditor>()
-      {
-         @Override
-         public boolean apply(ToggleEditor editor)
-         {
-            return editor.getViewMode() == ToggleEditor.ViewMode.EDIT;
-         }
-      });
-      Preconditions.checkState(openingEditor.size() <= 1, "more than one editor is opened!");
-      return openingEditor;
+      Log.info("show editors at row:" + rowIndex + " current editor:" + currentEditor.getText());
    }
 
    public TargetContentsDisplay getNextTargetContentsDisplay(int rowIndex, TransUnit transUnit)
@@ -250,9 +226,16 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    @Override
    public void toggleView(ToggleEditor editor)
    {
-      currentDisplay.setToView();
-      editor.setViewMode(ToggleEditor.ViewMode.EDIT);
+//      editor.setViewMode(ToggleEditor.ViewMode.EDIT);
       currentEditor = editor;
+      if (currentEditors.contains(editor))
+      {
+         //still in the same trans unit. won't trigger transunit selection or edit cell event
+         Log.info("same transunit just another editor");
+         currentDisplay.setToView();
+         currentEditor.setViewMode(ToggleEditor.ViewMode.EDIT);
+      }
+      //else, it's clicking an editor outside current selection. the table selection event will trigger and showEditors will take care of the rest
    }
 
    public List<String> getNewTargets()
