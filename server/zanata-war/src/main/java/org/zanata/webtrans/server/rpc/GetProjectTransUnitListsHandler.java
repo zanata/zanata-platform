@@ -82,11 +82,12 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
       ZanataIdentity.instance().checkLoggedIn();
       log.info("Searching all targets for workspace {0}", action.getWorkspaceId().toString());
 
-      HashMap<String, List<TransUnit>> results = new HashMap<String, List<TransUnit>>();
+      HashMap<Long, List<TransUnit>> matchingTUs = new HashMap<Long, List<TransUnit>>();
+      HashMap<Long, String> docPaths = new HashMap<Long, String>();
       if ((action.getSearchString() == null || action.getSearchString().isEmpty()))
       {
          //TODO empty searches shouldn't be requested, consider replacing this with an error.
-         return new GetProjectTransUnitListsResult(results);
+         return new GetProjectTransUnitListsResult(docPaths, matchingTUs);
       }
 
       HLocale hLocale;
@@ -122,12 +123,14 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          }
          if (!units.isEmpty())
          {
-            results.put(doc.getDocId(), units);
+            matchingTUs.put(doc.getId(), units);
+            docPaths.put(doc.getId(), doc.getDocId());
          }
       }
 
-      return new GetProjectTransUnitListsResult(results);
+      return new GetProjectTransUnitListsResult(docPaths, matchingTUs);
    }
+
    @Override
    public void rollback(GetProjectTransUnitLists action, GetProjectTransUnitListsResult result, ExecutionContext context) throws ActionException
    {

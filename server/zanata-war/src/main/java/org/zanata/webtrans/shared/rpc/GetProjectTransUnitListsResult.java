@@ -38,28 +38,39 @@ public class GetProjectTransUnitListsResult implements Result
    private static final long serialVersionUID = 1L;
 
    /**
-    * Document path+name, matching TransUnits
+    * Document id, matching TransUnits
     */
-   private Map<String, List<TransUnit>> documents;
+   private Map<Long, List<TransUnit>> documents;
+
+   /**
+    * Document id, full document name+path
+    */
+   private Map<Long, String> docPaths;
 
    @SuppressWarnings("unused")
    private GetProjectTransUnitListsResult()
    {
    }
 
-   public GetProjectTransUnitListsResult(Map<String, List<TransUnit>> documents)
+   public GetProjectTransUnitListsResult(Map<Long, String> docPaths, Map<Long, List<TransUnit>> documents)
    {
+      this.docPaths = docPaths;
       this.documents = documents;
    }
 
-   public List<TransUnit> getUnits(String document)
+   public List<TransUnit> getUnits(Long documentId)
    {
-      return documents.get(document);
+      return documents.get(documentId);
    }
 
-   public Set<String> getDocumentPaths()
+   public String getDocPath(Long docId)
    {
-      return documents.keySet();
+      return docPaths.get(docId);
+   }
+
+   public Set<Long> getDocumentIds()
+   {
+      return docPaths.keySet();
    }
 
 }

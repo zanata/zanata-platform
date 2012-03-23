@@ -20,11 +20,17 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
@@ -81,6 +87,12 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private Delegate<TransUnit> replaceButtonDelegate;
 
    /**
+    * Model objects for tables in display. Changes to these are reflected in the
+    * view.
+    */
+   private Map<Long, ListDataProvider<TransUnit>> documentDataProviders;
+
+   /**
     * most recent history state that was responded to
     */
    private HistoryToken currentHistoryState = null;
@@ -98,6 +110,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    {
       projectSearchCallback = buildProjectSearchCallback();
       replaceButtonDelegate = buildReplaceButtonDelegate();
+      documentDataProviders = new HashMap<Long, ListDataProvider<TransUnit>>();
 
       registerHandler(display.getFilterTextBox().addValueChangeHandler(new ValueChangeHandler<String>()
       {
@@ -136,6 +149,31 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       });
 
+      registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler() {
+
+         @Override
+         public void onTransUnitUpdated(TransUnitUpdatedEvent event)
+         {
+            ListDataProvider<TransUnit> dataProvider = documentDataProviders.get(event.getDocumentId().getId());
+            if (dataProvider == null)
+            {
+               return;
+            }
+
+            List<TransUnit> transUnits = dataProvider.getList();
+            //TransUnit does not appear to have .equals(o), so list items are manually compared
+            for (int i = 0; i < transUnits.size(); i++)
+            {
+               if (transUnits.get(i).getId().getId() == event.getTransUnit().getId().getId())
+               {
+                  transUnits.set(i, event.getTransUnit());
+                  return;
+               }
+            }
+         }
+
+      }));
+
    }
 
    private void showDocInEditor(String doc)
@@ -172,14 +210,15 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void onSuccess(GetProjectTransUnitListsResult result)
          {
-            display.getTestLabel().setText("Project TU search returned documents: " + result.getDocumentPaths().size());
+            display.getTestLabel().setText("Project TU search returned documents: " + result.getDocumentIds().size());
 
+            documentDataProviders.clear();
             display.clearAll();
-            for (final String doc : result.getDocumentPaths())
+            for (Long docId : result.getDocumentIds())
             {
+               final String doc = result.getDocPath(docId);
                HasClickHandlers docLabel = display.addDocumentLabel(doc);
-               docLabel.addClickHandler(new ClickHandler()
-               {
+               docLabel.addClickHandler(new ClickHandler() {
 
                   @Override
                   public void onClick(ClickEvent event)
@@ -193,7 +232,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                ListDataProvider<TransUnit> dataProvider = new ListDataProvider<TransUnit>();
                dataProvider.addDataDisplay(table);
                //link dataProvider BEFORE adding units, so they display automatically
-               dataProvider.getList().addAll(result.getUnits(doc));
+               dataProvider.getList().addAll(result.getUnits(docId));
+               documentDataProviders.put(docId, dataProvider);
             }
          }
 
