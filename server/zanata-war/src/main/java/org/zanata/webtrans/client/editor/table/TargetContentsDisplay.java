@@ -35,6 +35,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, Iterable<ToggleEdi
       void toggleView(ToggleEditor editor);
 
       void setValidationMessagePanel(ToggleEditor editor);
+
+      void onCancel(ToggleEditor editor);
    }
 
    void setTargets(List<String> targets);

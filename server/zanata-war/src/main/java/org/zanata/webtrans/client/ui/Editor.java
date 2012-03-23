@@ -84,8 +84,6 @@ public class Editor extends Composite implements ToggleEditor
 
       fuzzyButton.addClickHandler(fuzzyHandler);
 
-      cancelButton.addClickHandler(cancelHandler);
-
       label.setText(displayString);
       if (displayString == null || displayString.isEmpty())
       {
@@ -192,6 +190,14 @@ public class Editor extends Composite implements ToggleEditor
       listener.saveAsApproved(this);
       event.stopPropagation();
    }
+   
+   @UiHandler("cancelButton")
+   public void onCancel(ClickEvent event)
+   {
+      listener.onCancel(this);
+      event.stopPropagation();
+   }
+
 
    @UiHandler("label")
    public void onLabelClick(ClickEvent event)
@@ -250,17 +256,6 @@ public class Editor extends Composite implements ToggleEditor
       public void onClick(ClickEvent event)
       {
          // acceptFuzzyEdit();
-      }
-   };
-
-   /**
-    * The click listener used to cancel.
-    */
-   private ClickHandler cancelHandler = new ClickHandler()
-   {
-      public void onClick(ClickEvent event)
-      {
-         // cancelEdit();
       }
    };
 
