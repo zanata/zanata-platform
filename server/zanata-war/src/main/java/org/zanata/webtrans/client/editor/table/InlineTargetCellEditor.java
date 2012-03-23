@@ -736,52 +736,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       return true;
    }
 
-   public void autoSize()
-   {
-//      shrinkSize(true);
-//      growSize();
-   }
-
-//   /**
-//    * forceShrink will resize the textArea to initialLines(3 lines) and growSize
-//    * according to the scroll height
-//    *
-//    * @param forceShrink
-//    */
-//   private void shrinkSize(boolean forceShrink)
-//   {
-//      if (forceShrink)
-//      {
-//         textArea.setVisibleLines(INITIAL_LINES);
-//      }
-//      else
-//      {
-//         if (textArea.getElement().getScrollHeight() <= (INITIAL_LINES * HEIGHT_PER_LINE))
-//         {
-//            textArea.setVisibleLines(INITIAL_LINES);
-//         }
-//         else
-//         {
-//            if (textArea.getElement().getScrollHeight() >= textArea.getElement().getClientHeight())
-//            {
-//               int newHeight = textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight() > 0 ? textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight() : HEIGHT_PER_LINE;
-//               int newLine = (newHeight / HEIGHT_PER_LINE) - 1 > INITIAL_LINES ? (newHeight / HEIGHT_PER_LINE) - 1 : INITIAL_LINES;
-//               textArea.setVisibleLines(textArea.getVisibleLines() - newLine);
-//            }
-//            growSize();
-//         }
-//      }
-//   }
-//
-//   private void growSize()
-//   {
-//      if (textArea.getElement().getScrollHeight() > textArea.getElement().getClientHeight())
-//      {
-//         int newHeight = textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight();
-//         int newLine = (newHeight / HEIGHT_PER_LINE) + 1;
-//         textArea.setVisibleLines(textArea.getVisibleLines() + newLine);
-//      }
-//   }
 
    public void setShowOperationButtons(boolean showButtons)
    {
