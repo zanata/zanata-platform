@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -88,14 +89,24 @@ public class XliffWriter extends XliffCommon
    private static void writeTransUnitSource(IndentingXMLStreamWriter writer, TextFlow textFlow) throws XMLStreamException
    {
       writer.writeStartElement(ELE_SOURCE);
-      writer.writeCharacters(textFlow.getContent());
+      List<String> contents = textFlow.getContents();
+      if (contents.size() != 1)
+      {
+         throw new RuntimeException("file format does not support plural forms: resId=" + textFlow.getId());
+      }
+      writer.writeCharacters(contents.get(0));
       writer.writeEndElement();// end source tag
    }
 
    private static void writeTransUnitTarget(IndentingXMLStreamWriter writer, TextFlowTarget target) throws XMLStreamException
    {
       writer.writeStartElement(ELE_TARGET);
-      writer.writeCharacters(target.getContent());
+      List<String> contents = target.getContents();
+      if (contents.size() != 1)
+      {
+         throw new RuntimeException("file format does not support plural forms: resId=" + target.getResId());
+      }
+      writer.writeCharacters(contents.get(0));
       writer.writeEndElement();// end target tag
    }
 

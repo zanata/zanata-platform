@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.fedorahosted.openprops.Properties;
@@ -61,7 +62,12 @@ public class PropWriter
       Properties props = new Properties();
       for (TextFlow textFlow : doc.getTextFlows())
       {
-         props.setProperty(textFlow.getId(), textFlow.getContent());
+         List<String> contents = textFlow.getContents();
+         if (contents.size() != 1)
+         {
+            throw new RuntimeException("file format does not support plural forms: resId=" + textFlow.getId());
+         }
+         props.setProperty(textFlow.getId(), textFlow.getContents().get(0));
          SimpleComment simpleComment = textFlow.getExtensions(true).findByType(SimpleComment.class);
          if (simpleComment != null && simpleComment.getValue() != null)
             props.setComment(textFlow.getId(), simpleComment.getValue());
@@ -140,7 +146,7 @@ public class PropWriter
 
    private static void textFlowTargetToProperty(String resId, TextFlowTarget target, Properties targetProp, boolean createSkeletons)
    {
-      if (target == null || target.getState() != ContentState.Approved)
+      if (target == null || target.getState() != ContentState.Approved || target.getContents() == null || target.getContents().size() == 0)
       {
          // don't save fuzzy or empty values
          if (createSkeletons)
@@ -149,7 +155,12 @@ public class PropWriter
          }
          return;
       }
-      targetProp.setProperty(target.getResId(), target.getContent());
+      List<String> contents = target.getContents();
+      if (contents.size() != 1)
+      {
+         throw new RuntimeException("file format does not support plural forms: resId=" + resId);
+      }
+      targetProp.setProperty(target.getResId(), contents.get(0));
       SimpleComment simpleComment = target.getExtensions(true).findByType(SimpleComment.class);
       if (simpleComment != null && simpleComment.getValue() != null)
       {

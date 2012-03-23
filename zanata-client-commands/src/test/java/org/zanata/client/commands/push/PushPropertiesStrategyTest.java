@@ -1,5 +1,6 @@
 package org.zanata.client.commands.push;
 
+import static java.util.Arrays.asList;
 import static org.testng.Assert.*;
 
 import java.io.File;
@@ -82,9 +83,9 @@ public class PushPropertiesStrategyTest
    private void checkResults(Resource doc)
    {
       assertEquals(doc.getTextFlows().get(0).getId(), "key");
-      assertEquals(doc.getTextFlows().get(0).getContent(), "value");
+      assertEquals(doc.getTextFlows().get(0).getContents(), asList("value"));
       assertEquals(doc.getTextFlows().get(1).getId(), "unicode");
-      assertEquals(doc.getTextFlows().get(1).getContent(), "レス");
+      assertEquals(doc.getTextFlows().get(1).getContents(), asList("レス"));
    }
 
 }
