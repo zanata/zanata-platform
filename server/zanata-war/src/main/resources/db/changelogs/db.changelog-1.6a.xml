@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+    <!--
+    This changelog file is the real changelog for Zanata 1.6.
+     -->
+
+    <changeSet author="sflaniga@redhat.com" id="1-h2" dbms="h2">
+        <comment>rename HTextFlow.content to content0, add HTextFlow.content1-5</comment> 
+        <renameColumn tableName="HTextFlow"
+            oldColumnName="content"
+            newColumnName="content0"
+            columnDataType="longtext" />
+        <addColumn tableName="HTextFlow">
+            <column name="content1" type="longtext"/>
+            <column name="content2" type="longtext"/>
+            <column name="content3" type="longtext"/>
+            <column name="content4" type="longtext"/>
+            <column name="content5" type="longtext"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sflaniga@redhat.com" id="1" dbms="mysql">
+        <comment>rename HTextFlow.content to content0, add HTextFlow.content1-5</comment>
+        <sql>
+            ALTER TABLE HTextFlow
+            CHANGE COLUMN content content0 longtext,
+            ADD COLUMN content1 longtext,
+            ADD COLUMN content2 longtext,
+            ADD COLUMN content3 longtext,
+            ADD COLUMN content4 longtext,
+            ADD COLUMN content5 longtext
+        </sql> 
+    </changeSet>
+    <changeSet author="sflaniga@redhat.com" id="2-h2" dbms="h2">
+        <comment>rename HTextFlowHistory.content to content0, add HTextFlowHistory.content[1-5]</comment> 
+        <renameColumn tableName="HTextFlowHistory"
+            oldColumnName="content"
+            newColumnName="content0"
+            columnDataType="longtext" />
+        <addColumn tableName="HTextFlowHistory">
+            <column name="content1" />
+            <column name="content2" />
+            <column name="content3" />
+            <column name="content4" />
+            <column name="content5" />
+        </addColumn>
+    </changeSet>
+    <changeSet author="sflaniga@redhat.com" id="2" dbms="mysql">
+        <comment>rename HTextFlowHistory.content to content0, add HTextFlowHistory.content[1-5]</comment> 
+        <sql>
+            ALTER TABLE HTextFlowHistory
+            CHANGE COLUMN content content0 longtext,
+            ADD COLUMN content1 longtext,
+            ADD COLUMN content2 longtext,
+            ADD COLUMN content3 longtext,
+            ADD COLUMN content4 longtext,
+            ADD COLUMN content5 longtext
+        </sql> 
+    </changeSet>
+    <changeSet author="sflaniga@redhat.com" id="3-h2" dbms="h2">
+        <comment>rename HTextFlowTarget.content to content0, add HTextFlowTarget.content[1-5]</comment> 
+        <renameColumn tableName="HTextFlowTarget"
+            oldColumnName="content"
+            newColumnName="content0"
+            columnDataType="longtext" />
+        <addColumn tableName="HTextFlowTarget">
+            <column name="content1" />
+            <column name="content2" />
+            <column name="content3" />
+            <column name="content4" />
+            <column name="content5" />
+        </addColumn>
+    </changeSet>
+    <changeSet author="sflaniga@redhat.com" id="3" dbms="mysql">
+        <comment>rename HTextFlowTarget.content to content0, add HTextFlowTarget.content[1-5]</comment> 
+        <sql>
+            ALTER TABLE HTextFlowTarget
+            CHANGE COLUMN content content0 longtext,
+            ADD COLUMN content1 longtext,
+            ADD COLUMN content2 longtext,
+            ADD COLUMN content3 longtext,
+            ADD COLUMN content4 longtext,
+            ADD COLUMN content5 longtext
+        </sql> 
+    </changeSet>
+    <changeSet author="sflaniga@redhat.com" id="4-h2" dbms="h2">
+        <comment>rename HTextFlowTargetHistory.content to content0, add HTextFlowTargetHistory.content[1-5]</comment> 
+        <renameColumn tableName="HTextFlowTargetHistory"
+            oldColumnName="content"
+            newColumnName="content0"
+            columnDataType="longtext" />
+        <addColumn tableName="HTextFlowTargetHistory">
+            <column name="content1" />
+            <column name="content2" />
+            <column name="content3" />
+            <column name="content4" />
+            <column name="content5" />
+        </addColumn>
+    </changeSet>
+    <changeSet author="sflaniga@redhat.com" id="4" dbms="mysql">
+        <comment>rename HTextFlowTargetHistory.content to content0, add HTextFlowTargetHistory.content[1-5]</comment> 
+        <sql>
+            ALTER TABLE HTextFlowTargetHistory
+            CHANGE COLUMN content content0 longtext,
+            ADD COLUMN content1 longtext,
+            ADD COLUMN content2 longtext,
+            ADD COLUMN content3 longtext,
+            ADD COLUMN content4 longtext,
+            ADD COLUMN content5 longtext
+        </sql> 
+    </changeSet>
+    
+</databaseChangeLog>

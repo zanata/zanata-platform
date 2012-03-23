@@ -20,6 +20,14 @@
  */
 package org.zanata.model;
 
+import static org.zanata.util.ListUtil.*;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,13 +46,16 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.NotNull;
 import org.zanata.common.ContentState;
+import org.zanata.common.HasContents;
 import org.zanata.hibernate.search.ContentStateBridge;
+import org.zanata.hibernate.search.DefaultNgramAnalyzer;
 import org.zanata.hibernate.search.LocaleIdBridge;
 
 /**
@@ -71,7 +82,8 @@ import org.zanata.hibernate.search.LocaleIdBridge;
                        "group by tft.textFlow.contentHash")
 })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class HTextFlowTarget extends ModelEntityBase implements ITextFlowTargetHistory, HasSimpleComment
+//@Indexed
+public class HTextFlowTarget extends ModelEntityBase implements HasContents, HasSimpleComment, ITextFlowTargetHistory, Serializable
 {
 
    private static final long serialVersionUID = 302308010797605435L;
@@ -79,7 +91,11 @@ public class HTextFlowTarget extends ModelEntityBase implements ITextFlowTargetH
    private HTextFlow textFlow;
    private HLocale locale;
 
-   private String content;
+   private String content0, content1, content2, content3, content4, content5;
+
+   @Transient
+   private List<String> immutableContents;
+
    private ContentState state = ContentState.New;
    private Integer textFlowRevision;
    private HPerson lastModifiedBy;
@@ -183,18 +199,168 @@ public class HTextFlowTarget extends ModelEntityBase implements ITextFlowTargetH
       // setResourceRevision(textFlow.getRevision());
    }
 
-   @NotNull
-   @Type(type = "text")
-   // @Field(index=Index.NO) // no searching on target text yet
+   /**
+    * As of release 1.6, replaced by {@link #getContents()}
+    * @return
+    */
    @Override
+   @Deprecated
+   @Transient
    public String getContent()
    {
-      return content;
+      return content0;
    }
 
+   /**
+    * As of release 1.6, replaced by {@link #setContents()}
+    * @return
+    */
+   @Deprecated
    public void setContent(String content)
    {
-      this.content = content;
+      setContents(content);
+   }
+
+   @Transient
+   public List<String> getContents()
+   {
+      if (immutableContents != null)
+      {
+         return immutableContents;
+      }
+      List<String> list = new ArrayList<String>(MAX_PLURALS);
+      if (content0 != null)
+      {
+         list.add(content0);
+         if (content1 != null)
+         {
+            list.add(content1);
+            if (content2 != null)
+            {
+               list.add(content2);
+               if (content3 != null)
+               {
+                  list.add(content3);
+                  if (content4 != null)
+                  {
+                     list.add(content4);
+                     if (content5 != null)
+                     {
+                        list.add(content5);
+                     }
+                  }
+               }
+            }
+         }
+      }
+      this.immutableContents = Collections.unmodifiableList(list);
+      return immutableContents;
+   }
+
+   @Override
+   public void setContents(List<String> contents)
+   {
+      if (contents.size() > MAX_PLURALS)
+      {
+         throw new RuntimeException("too many plural forms");
+      }
+      this.immutableContents = Collections.unmodifiableList(new ArrayList<String>(contents));
+      this.content0 = getElemOrNull(contents, 0);
+      this.content1 = getElemOrNull(contents, 1);
+      this.content2 = getElemOrNull(contents, 2);
+      this.content3 = getElemOrNull(contents, 3);
+      this.content4 = getElemOrNull(contents, 4);
+      this.content5 = getElemOrNull(contents, 5);
+   }
+
+   @Override
+   public void setContents(String... args)
+   {
+      setContents(Arrays.asList(args));
+   }
+
+   @Type(type = "text")
+   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
+   @SuppressWarnings("unused")
+   private String getContent0()
+   {
+      return content0;
+   }
+
+   @SuppressWarnings("unused")
+   private void setContent0(String content0)
+   {
+      this.content0 = content0;
+   }
+
+   @Type(type = "text")
+   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
+   @SuppressWarnings("unused")
+   private String getContent1()
+   {
+      return content1;
+   }
+
+   @SuppressWarnings("unused")
+   private void setContent1(String content1)
+   {
+      this.content1 = content1;
+   }
+
+   @Type(type = "text")
+   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
+   @SuppressWarnings("unused")
+   private String getContent2()
+   {
+      return content2;
+   }
+
+   @SuppressWarnings("unused")
+   private void setContent2(String content2)
+   {
+      this.content2 = content2;
+   }
+
+   @Type(type = "text")
+   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
+   @SuppressWarnings("unused")
+   private String getContent3()
+   {
+      return content3;
+   }
+
+   @SuppressWarnings("unused")
+   private void setContent3(String content3)
+   {
+      this.content3 = content3;
+   }
+
+   @Type(type = "text")
+   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
+   @SuppressWarnings("unused")
+   private String getContent4()
+   {
+      return content4;
+   }
+
+   @SuppressWarnings("unused")
+   private void setContent4(String content4)
+   {
+      this.content4 = content4;
+   }
+
+   @Type(type = "text")
+   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
+   @SuppressWarnings("unused")
+   private String getContent5()
+   {
+      return content5;
+   }
+
+   @SuppressWarnings("unused")
+   private void setContent5(String content5)
+   {
+      this.content5 = content5;
    }
 
    // TODO use orphanRemoval=true: requires JPA 2.0
@@ -217,13 +383,13 @@ public class HTextFlowTarget extends ModelEntityBase implements ITextFlowTargetH
    @Override
    public String toString()
    {
-      return "HTextFlowTarget(" + "content:" + getContent() + " locale:" + getLocale() + " state:" + getState() + " comment:" + getComment() + " textflow:" + getTextFlow().getContent() + ")";
+      return "HTextFlowTarget(" + "contents:" + getContents() + " locale:" + getLocale() + " state:" + getState() + " comment:" + getComment() + " textflow:" + getTextFlow().getContents() + ")";
    }
 
    @Transient
    public void clear()
    {
-      setContent("");
+      setContents();
       setState(ContentState.New);
       setComment(null);
       setLastModifiedBy(null);

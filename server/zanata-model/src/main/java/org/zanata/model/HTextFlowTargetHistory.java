@@ -31,12 +31,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
 import org.zanata.common.ContentState;
 
 @Entity
 @org.hibernate.annotations.Entity(mutable = false)
-public class HTextFlowTargetHistory implements Serializable, ITextFlowTargetHistory
+public class HTextFlowTargetHistory extends HTextContainer implements Serializable, ITextFlowTargetHistory
 {
 
    private static final long serialVersionUID = 1L;
@@ -46,8 +45,6 @@ public class HTextFlowTargetHistory implements Serializable, ITextFlowTargetHist
    private HTextFlowTarget textFlowTarget;
 
    private Integer versionNum;
-
-   private String content;
 
    private Date lastChanged;
 
@@ -94,18 +91,6 @@ public class HTextFlowTargetHistory implements Serializable, ITextFlowTargetHist
    public void setVersionNum(Integer versionNum)
    {
       this.versionNum = versionNum;
-   }
-
-   @Override
-   @Type(type = "text")
-   public String getContent()
-   {
-      return content;
-   }
-
-   public void setContent(String content)
-   {
-      this.content = content;
    }
 
    public Date getLastChanged()

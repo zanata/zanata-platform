@@ -20,8 +20,14 @@
  */
 package org.zanata.dao;
 
+import java.util.List;
+
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
@@ -35,6 +41,7 @@ import org.zanata.model.HTextFlowTargetHistory;
 @Scope(ScopeType.STATELESS)
 public class TextFlowTargetHistoryDAO extends AbstractDAOImpl<HTextFlowTargetHistory, Long>
 {
+   private static final ContentPropertySelector contentsSelector = new ContentPropertySelector();
 
    public TextFlowTargetHistoryDAO()
    {
@@ -46,12 +53,18 @@ public class TextFlowTargetHistoryDAO extends AbstractDAOImpl<HTextFlowTargetHis
       super(HTextFlowTargetHistory.class, session);
    }
 
-   public boolean findContentInHistory(HTextFlowTarget target, String content)
+   public boolean findContentInHistory(HTextFlowTarget target, List<String> contents)
    {
-      Query query = getSession().createQuery("select count(*) from HTextFlowTargetHistory t where t.textFlowTarget.id =:id and content = :content");
-      query.setParameter("id", target.getId());
-      query.setParameter("content", content);
-      Long count = (Long) query.uniqueResult();
+      Criteria crit = getSession().createCriteria(HTextFlowTargetHistory.class);
+      HTextFlowTargetHistory exampleHist = new HTextFlowTargetHistory();
+      crit.add(Restrictions.eq("textFlowTarget", target));
+      exampleHist.setContents(contents);
+      Example example = Example.create(exampleHist);
+      // include all content fields, whether null or not:
+      example.setPropertySelector(contentsSelector);
+      crit.add(example);
+      crit.setProjection(Projections.rowCount());
+      Integer count = (Integer) crit.uniqueResult();
       return count != 0;
    }
 

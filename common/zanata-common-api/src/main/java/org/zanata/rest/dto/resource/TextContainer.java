@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.zanata.common.HasContents;
 
 /**
  * This class contains string contents for a single translatable message.
@@ -42,7 +43,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @XmlTransient
-public class TextContainer implements Serializable
+class TextContainer implements Serializable, HasContents
 {
    private static final long serialVersionUID = 1L;
 
@@ -66,7 +67,7 @@ public class TextContainer implements Serializable
    private List<String> contents;
 
    /**
-    * As of release 1.6, replaced by {@link #getContents()}
+    * @deprecated As of release 1.6, replaced by {@link #getContents()}
     * @return
     */
    @Deprecated
@@ -79,7 +80,7 @@ public class TextContainer implements Serializable
    }
 
    /**
-    * As of release 1.6, replaced by {@link #setContents()}
+    * @deprecated As of release 1.6, replaced by {@link #setContents()}
     * @return
     */
    @Deprecated
@@ -114,34 +115,34 @@ public class TextContainer implements Serializable
    }
 
    @JsonIgnore
-   public void setContents(String... args)
+   public void setContents(String... contents)
    {
-      setContents(Arrays.asList(args));
+      setContents(Arrays.asList(contents));
    }
 
    @JsonIgnore
-   public void setContents(List<String> contentList)
+   public void setContents(List<String> contents)
    {
-      if (contentList == null)
+      if (contents == null)
       {
          this.content = null;
          this.contents = null;
          return;
       }
 
-      switch (contentList.size())
+      switch (contents.size())
       {
       case 0:
          this.content = null;
          this.contents = null;
          break;
       case 1:
-         this.content = contentList.get(0);
+         this.content = contents.get(0);
          this.contents = null;
          break;
       default:
          this.content = null;
-         this.contents = contentList;
+         this.contents = contents;
       }
    }
 

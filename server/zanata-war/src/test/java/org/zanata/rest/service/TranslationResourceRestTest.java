@@ -1029,7 +1029,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       // @formatter:on
       
       // Translation unit id to update
-      Long textFlowId = (Long)getSession().createQuery("select tf.id from HTextFlow tf where tf.content = ? and " +
+      Long textFlowId = (Long) getSession().createQuery("select tf.id from HTextFlow tf where tf.content0 = ? and " +
             "tf.document.docId = ? and " +
             "tf.document.projectIteration.slug = ? and " +
             "tf.document.projectIteration.project.slug = ?")

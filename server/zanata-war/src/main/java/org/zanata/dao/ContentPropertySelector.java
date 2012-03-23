@@ -1,5 +1,5 @@
 /*
- * Copyright 2011, Red Hat, Inc. and individual contributors
+ * Copyright 2012, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -19,22 +19,17 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.rest.service;
+package org.zanata.dao;
 
-/**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
- */
-public enum MergeType
+import org.hibernate.criterion.Example.PropertySelector;
+import org.hibernate.type.Type;
+
+class ContentPropertySelector implements PropertySelector
 {
-   /**
-    * Adds new translations, imports extension headers, but rejects old
-    * translations which have already been seen in the history, even if
-    * their states have changed (eg from Fuzzy to Approved).
-    */
-   AUTO,
-   /**
-    * Straight import - completely replaces server's translations; may delete content.
-    */
-   IMPORT;
+   private static final long serialVersionUID = 1L;
+   @Override
+   public boolean include(Object propertyValue, String propertyName, Type type)
+   {
+      return propertyName.startsWith("content");
+   }
 }

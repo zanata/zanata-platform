@@ -1,5 +1,5 @@
 /*
- * Copyright 2011, Red Hat, Inc. and individual contributors
+ * Copyright 2012, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -19,22 +19,27 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.rest.service;
+package org.zanata.util;
+
+import java.util.List;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public enum MergeType
+public class ListUtil
 {
-   /**
-    * Adds new translations, imports extension headers, but rejects old
-    * translations which have already been seen in the history, even if
-    * their states have changed (eg from Fuzzy to Approved).
-    */
-   AUTO,
-   /**
-    * Straight import - completely replaces server's translations; may delete content.
-    */
-   IMPORT;
+
+   public static <T> T getElemOrNull(List<T> list, int position)
+   {
+      if (list.size() > position)
+      {
+         return list.get(position);
+      }
+      else
+      {
+         return null;
+      }
+   }
+
 }
