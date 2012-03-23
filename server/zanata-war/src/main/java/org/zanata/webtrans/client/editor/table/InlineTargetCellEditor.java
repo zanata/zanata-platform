@@ -574,6 +574,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       if (isEditing() && targetContentsPresenter.getCurrentDisplay() != null)
       {
          List<String> newTargets = targetContentsPresenter.getNewTargets();
+         Log.info("saving " + curRow + " with " + newTargets);
          if (!cellValue.getTargets().equals(newTargets))
          {
             Log.debug("savePendingChange - acceptEdit");
