@@ -208,11 +208,14 @@ public class PoWriter2
                }
                else
                {
-                  if (tftContents.size() != 1)
+                  if (tftContents.size() != 0)
                   {
-                     throw new RuntimeException("plural forms not enabled for this text flow: resId=" + textFlow.getId());
+                     message.setMsgstr(tftContents.get(0));
+                     if (tftContents.size() > 1)
+                     {
+                        throw new RuntimeException("plural forms not enabled for this text flow: resId=" + textFlow.getId());
+                     }
                   }
-                  message.setMsgstr(tftContents.get(0));
                }
 
                SimpleComment poComment = tfTarget.getExtensions().findByType(SimpleComment.class);
