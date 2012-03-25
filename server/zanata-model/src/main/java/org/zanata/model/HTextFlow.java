@@ -25,7 +25,6 @@ import static org.zanata.util.ZanataUtil.equal;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +43,11 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PostLoad;
+import javax.persistence.PostPersist;
+import javax.persistence.PostUpdate;
+import javax.persistence.PreUpdate;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.BatchSize;
@@ -54,11 +58,8 @@ import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
-import org.hibernate.search.annotations.Analyzer;
-import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FilterCacheModeType;
 import org.hibernate.search.annotations.FullTextFilterDef;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
@@ -66,7 +67,6 @@ import org.hibernate.validator.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.common.LocaleId;
-import org.zanata.hibernate.search.DefaultNgramAnalyzer;
 import org.zanata.hibernate.search.IdFilterFactory;
 import org.zanata.model.po.HPotEntryData;
 import org.zanata.util.HashUtil;
@@ -127,6 +127,12 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    
    // FIXME Review: Is this still needed?
    private String contentHash;
+
+   // Only for internal use (persistence transient)
+   private Integer oldRevision;
+   
+   // Only for internal use (persistence transient) 
+   private HTextFlowHistory initialState;
 
    public HTextFlow()
    {
@@ -246,6 +252,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    }
 
    @Deprecated
+   @Transient
    public String getContent()
    {
       if( this.getContents().size() > 0 )
@@ -294,11 +301,20 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
          updateContentHash();
       }
    }
+   
+   public void setContents(String ... contents)
+   {
+      this.setContents(Arrays.asList(contents));
+   }
 
-   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "textFlow")
+   @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST}, mappedBy = "textFlow")
    @MapKey(name = "revision")
    public Map<Integer, HTextFlowHistory> getHistory()
    {
+      if( this.history == null )
+      {
+         this.history = new HashMap<Integer, HTextFlowHistory>();
+      }
       return history;
    }
 
@@ -402,6 +418,29 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
       }
       LocaleId docLocaleId = docLocale.getLocaleId();
       return docLocaleId.getId();
+   }
+   
+   @PreUpdate
+   private void preUpdate()
+   {
+      if( !this.revision.equals(this.oldRevision) )
+      {
+         // there is an initial state
+         if( this.initialState != null )
+         {
+            this.getHistory().put(getRevision()-1, 
+                  this.initialState);
+         }
+      }
+   }
+   
+   @PostUpdate
+   @PostPersist
+   @PostLoad
+   private void updateInternalHistory()
+   {
+      this.oldRevision = this.revision;
+      this.initialState = new HTextFlowHistory(this);
    }
 
    /**
