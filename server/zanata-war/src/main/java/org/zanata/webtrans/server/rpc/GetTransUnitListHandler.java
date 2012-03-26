@@ -175,7 +175,10 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       HTextFlowTarget target = textFlow.getTargets().get(hLocale);
 
       List<String> targetContents = new ArrayList<String>(nPlurals - 1);
-      targetContents.addAll(target.getContents());
+      if (target != null && target.getContents() != null)
+      {
+         targetContents.addAll(target.getContents());
+      }
 
       if (targetContents.size() > nPlurals)
       {
