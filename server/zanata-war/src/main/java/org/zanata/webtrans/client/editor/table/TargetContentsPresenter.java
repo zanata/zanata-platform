@@ -51,6 +51,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class TargetContentsPresenter implements TargetContentsDisplay.Listener
 {
+   private static final int NO_OPEN_EDITOR = -1;
    private final EventBus eventBus;
    private final TableEditorMessages messages;
    private final SourceContentsPresenter sourceContentsPresenter;
@@ -59,7 +60,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    private TargetContentsDisplay currentDisplay;
    private Provider<TargetContentsDisplay> displayProvider;
    private List<TargetContentsDisplay> displayList;
-   private int currentEditorIndex;
+   private int currentEditorIndex = NO_OPEN_EDITOR;
    private List<ToggleEditor> currentEditors;
    private TransUnitsEditModel cellEditor;
 
@@ -167,11 +168,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
       if (previousDisplay != currentDisplay)
       {
 //         currentEditor = null;
-         currentEditorIndex = -1;
+         currentEditorIndex = NO_OPEN_EDITOR;
       }
       currentEditors = currentDisplay.getEditors();
 
-      if (currentEditorIndex != -1)
+      if (currentEditorIndex != NO_OPEN_EDITOR)
       {
          currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
       	 Log.info("show editors at row:" + rowIndex + " current editor:" + currentEditorIndex);
