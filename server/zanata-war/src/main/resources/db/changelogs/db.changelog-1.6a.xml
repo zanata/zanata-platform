@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog 
+   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" 
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+                  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+    This changelog file is the real changelog for Zanata 1.6.
+     -->
+
+	<changeSet author="aeng@redhat.com" id="5" dbms="h2">
+        <comment>Alter glossary tables - add auto increment</comment>
+        <dropUniqueConstraint tableName="HGlossaryTerm" constraintName="UKglossaryterm_glossary_entry_id"/>
+        <dropPrimaryKey tableName="HGlossaryEntry"/>
+        
+<!--         <dropUniqueConstraint tableName="HTermComment" constraintName="UKtermComment_glossaryTerm"/> -->
+        <dropPrimaryKey tableName="HGlossaryTerm"/>
+        
+        <dropPrimaryKey tableName="HTermComment"/>
+        
+        <addAutoIncrement tableName="HGlossaryEntry" columnName="id" columnDataType="bigint"/>
+        <addAutoIncrement tableName="HGlossaryTerm" columnName="id" columnDataType="bigint"/>
+        <addAutoIncrement tableName="HTermComment" columnName="id" columnDataType="bigint"/>
+    </changeSet>
+    
+</databaseChangeLog>
