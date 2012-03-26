@@ -1041,7 +1041,6 @@ public class TranslationResourceRestTest extends ZanataRestTest
             .uniqueResult();
       
       // Translate using webtrans
-      //TODO Plural support
       UpdateTransUnit action = new UpdateTransUnit(new TransUnitId(textFlowId), Lists.newArrayList(translation), translationState);
       action.setWorkspaceId( workspaceId );
       

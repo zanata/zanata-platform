@@ -21,19 +21,14 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
+import javax.annotation.Nullable;
+
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -66,7 +61,9 @@ import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
-import javax.annotation.Nullable;
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
+import com.google.common.collect.Collections2;
 
 @Name("webtrans.gwt.UpdateTransUnitHandler")
 @Scope(ScopeType.STATELESS)
