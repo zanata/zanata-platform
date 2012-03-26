@@ -54,7 +54,7 @@ public class HTextFlowHistoryJPATest extends ZanataDbunitJpaTest
       assertThat(historyElems.size(), is(0));
 
       d.incrementRevision();
-      tf.setContent("hello world again");
+      tf.setContents("hello world again");
       tf.setRevision(d.getRevision());
       session.flush();
 

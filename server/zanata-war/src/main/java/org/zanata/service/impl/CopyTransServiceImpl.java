@@ -156,7 +156,7 @@ public class CopyTransServiceImpl implements CopyTransService
             hTarget.setTextFlowRevision(textFlow.getRevision());
             hTarget.setLastChanged(oldTFT.getLastChanged());
             hTarget.setLastModifiedBy(oldTFT.getLastModifiedBy());
-            hTarget.setContent(oldTFT.getContent());
+            hTarget.setContents(oldTFT.getContents());
             hTarget.setState(oldTFT.getState());
             HSimpleComment hcomment = hTarget.getComment();
             if (hcomment == null)
