@@ -139,6 +139,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
       if (currentDisplay != null)
       {
          currentDisplay.setToView();
+         Log.info("setting to view mode:" + displayList.indexOf(currentDisplay));
       }
    }
 
@@ -156,20 +157,25 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
       if (previousDisplay != null)
       {
          previousDisplay.setToView();
+         currentEditor = null;
       }
       currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
 
-      if (currentEditor != null)
+      if (currentEditor != null && currentEditors.contains(currentEditor))
       {
          currentEditor = currentDisplay.openEditorAndCloseOthers(currentEditor);
-      	 Log.info("show editors at row:" + rowIndex + " current editor:" + currentEditor.getText());
+      	 Log.info("show editors at row:" + rowIndex + " current editor:" + currentEditor);
       }
    }
 
    public TargetContentsDisplay getNextTargetContentsDisplay(int rowIndex, TransUnit transUnit)
    {
       TargetContentsDisplay result = displayList.get(rowIndex);
+      if (currentDisplay != null && currentDisplay != result)
+      {
+         currentDisplay.setToView();
+      }
       result.setTargets(transUnit.getTargets());
       return result;
    }
@@ -256,8 +262,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
       editor.addValidationMessagePanel(validationMessagePanel);
    }
 
-
-   //TODO since we are still using scroll page table to handle save, we still need to reference it
    public void setCellEditor(TransUnitsEditModel cellEditor)
    {
       this.cellEditor = cellEditor;

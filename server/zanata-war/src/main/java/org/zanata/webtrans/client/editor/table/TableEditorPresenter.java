@@ -655,8 +655,10 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             public void onSuccess(GetTransUnitListResult result)
             {
                 //FIXME hack!!
+               int index = 0;
                 for (TransUnit transUnit : result.getUnits()) {
-                    transUnit.setTargets(Lists.newArrayList("123", "456", "789"));
+                    transUnit.setTargets(Lists.newArrayList(index + " - 123", index + " - 456", index  + " - 789"));
+                   index++;
                 }
 
                 targetContentsPresenter.initWidgets(display.getPageSize());
