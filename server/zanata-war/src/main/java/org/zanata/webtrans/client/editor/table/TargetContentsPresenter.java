@@ -221,6 +221,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    public void onCancel(ToggleEditor editor)
    {
       editor.setViewMode(ViewMode.VIEW);
+      editor.setText(cellEditor.getTargetCell().getTargets().get(editor.getIndex()));
    }
 
    @Override

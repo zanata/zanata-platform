@@ -18,6 +18,8 @@ public interface ToggleEditor extends IsWidget, HasText
 
    void addValidationMessagePanel(IsWidget validationMessagePanel);
 
+   int getIndex();
+   
    static enum ViewMode
    {
       VIEW, EDIT
