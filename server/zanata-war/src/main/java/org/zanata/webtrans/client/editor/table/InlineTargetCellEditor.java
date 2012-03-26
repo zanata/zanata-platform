@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import javax.annotation.Nullable;
 
-public class InlineTargetCellEditor implements CellEditor<TransUnit>
+public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnitsEditModel
 {
    /**
     * Default style name.
@@ -75,39 +75,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     *****************/
 
    /**
-    * The click listener used to save as fuzzy.
-    */
-   private ClickHandler fuzzyHandler = new ClickHandler()
-   {
-      public void onClick(ClickEvent event)
-      {
-         acceptFuzzyEdit();
-      }
-   };
-
-   /**
-    * The click listener used to cancel.
-    */
-   private ClickHandler cancelHandler = new ClickHandler()
-   {
-      public void onClick(ClickEvent event)
-      {
-         cancelEdit();
-      }
-   };
-
-   /**
-    * The click listener used to accept.
-    */
-   private ClickHandler acceptHandler = new ClickHandler()
-   {
-      public void onClick(ClickEvent event)
-      {
-         saveApprovedAndMoveRow(NavigationType.NextEntry);
-      }
-   };
-
-   /**
     * The current {@link CellEditor.Callback}.
     */
    private Callback<TransUnit> curCallback = null;
@@ -120,15 +87,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     * The current {@link CellEditor.CellEditInfo}.
     */
    private CellEditInfo curCellEditInfo = null;
-
-   /**
-    * The main grid used for layout.
-    */
-//   private FlowPanel topLayoutPanel;
-
-//   private VerticalPanel verticalPanel;
-           
-   private Widget cellViewWidget;
 
    private TransUnit cellValue;
 
@@ -169,128 +127,16 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
        this.findMessage = findMessage;
        this.isReadOnly = isReadOnly;
        this.targetContentsPresenter = targetContentsPresenter;
+      this.targetContentsPresenter.setCellEditor(this);
        final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       // Wrap contents in a table
 
       final int TYPING_TIMER_INTERVAL = 200; // ms
       final int TYPING_TIMER_RECURRENT_VALIDATION_PERIOD = 5; // intervals
 
-//      verticalPanel = new VerticalPanel();
-//      verticalPanel.setWidth("100%");
-//      verticalPanel.setHeight("100%");
-//
-//      topLayoutPanel = new FlowPanel();
-//      topLayoutPanel.setWidth("100%");
-//
-
       this.eventBus = eventBus;
       cancelCallback = callback;
       editRowCallback = rowCallback;
-//      textArea = new EditorTextArea();
-//      textArea.setStyleName("TableEditorContent-Edit");
-//
-//      textArea.addValueChangeHandler(new ValueChangeHandler<String>()
-//      {
-//         @Override
-//         public void onValueChange(ValueChangeEvent<String> event)
-//         {
-//            autoSize();
-//            fireValidationEvent(eventBus);
-//         }
-//
-//      });
-//
-//      final Timer typingTimer = new Timer()
-//      {
-//         @Override
-//         public void run()
-//         {
-//            if (keypressed)
-//            {
-//               // still typing, validate periodically
-//               keypressed = false;
-//               typingCycles++;
-//               if (typingCycles % TYPING_TIMER_RECURRENT_VALIDATION_PERIOD == 0)
-//               {
-//                  fireValidationEvent(eventBus);
-//               }
-//            }
-//            else
-//            {
-//               // finished, validate immediately
-//               this.cancel();
-//               typing = false;
-//               fireValidationEvent(eventBus);
-//            }
-//         }
-//      };
-//
-//      // used to determine whether user is still typing
-//      textArea.addKeyDownHandler(new KeyDownHandler()
-//      {
-//
-//         @Override
-//         public void onKeyDown(KeyDownEvent event)
-//         {
-//            if (typing)
-//            {
-//               keypressed = true;
-//            }
-//            else
-//            {
-//               // set false so that next keypress is detectable
-//               keypressed = false;
-//               typing = true;
-//               typingCycles = 0;
-//               typingTimer.scheduleRepeating(TYPING_TIMER_INTERVAL);
-//            }
-//         }
-//      });
-//
-//      textArea.addBlurHandler(new BlurHandler()
-//      {
-//         @Override
-//         public void onBlur(BlurEvent event)
-//         {
-//				isFocused = false;
-//         }
-//      });
-//      textArea.addFocusHandler(new FocusHandler()
-//      {
-//         @Override
-//         public void onFocus(FocusEvent event)
-//         {
-//            isFocused = true;
-//         }
-//      });
-//
-      // eventBus.addHandler(RequestValidationEvent.getType(), new
-      // RequestValidationEventHandler()
-      // {
-      // @Override
-      // public void onRequestValidation(RequestValidationEvent event)
-      // {
-      // if (isEditing())
-      // {
-      // fireValidationEvent(eventBus);
-      // }
-      // }
-      // });
-
-      // object creation is probably too much overhead for this, using simpler
-      // boolean implementation.
-      // textArea.addKeyUpHandler(new KeyUpHandler()
-      // {
-      // @Override
-      // public void onKeyUp(KeyUpEvent event)
-      // {
-      // checkKey.init(event.getNativeEvent());
-      // if (checkKey.isUserTyping())
-      // {
-      // runValidationTimer.schedule(REFRESH_INTERVAL);
-      // }
-      // }
-      // });
 
       // KeyDown is used to override browser event
 //      textArea.addKeyDownHandler(new KeyDownHandler()
@@ -350,77 +196,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 //         }
 //      });
 //
-//      topLayoutPanel.add(textArea);
-//
-//      operationsPanel = new HorizontalPanel();
-//
-//      operationsPanel.addStyleName("float-right-div");
-//      operationsPanel.setSpacing(4);
-//
-//      TableResources images = GWT.create(TableResources.class);
-//
-//      validateButton = new PushButton(new Image(images.cellEditorValidate()));
-//      validateButton.setStyleName("gwt-Button");
-//      validateButton.setTitle(messages.runValidation());
-//      validateButton.addClickHandler(new ClickHandler()
-//      {
-//         @Override
-//         public void onClick(ClickEvent event)
-//         {
-//            if (cellValue != null)
-//            {
-//               fireValidationEvent(eventBus);
-//            }
-//         }
-//      });
-//
-//      saveButton = new PushButton(new Image(images.cellEditorAccept()));
-//      saveButton.setStyleName("gwt-Button");
-//      saveButtonShortcuts = messages.editSaveShortcut();
-//      saveButton.setTitle(messages.editSaveShortcut());
-//      saveButton.addClickHandler(acceptHandler);
-//      saveButtonwithEnterShortcuts = messages.editSavewithEnterShortcut();
-//
-//      fuzzyButton = new PushButton(new Image(images.cellEditorFuzzy()));
-//      fuzzyButton.setStyleName("gwt-Button");
-//      fuzzyButton.setTitle(messages.saveAsFuzzy());
-//      fuzzyButton.addClickHandler(fuzzyHandler);
-//
-//      cancelButton = new PushButton(new Image(images.cellEditorCancel()));
-//      cancelButton.setStyleName("gwt-Button");
-//      cancelButton.setTitle(messages.editCancelShortcut());
-//      cancelButton.addClickHandler(cancelHandler);
-//      cancelButton.addFocusHandler(new FocusHandler()
-//      {
-//         @Override
-//         public void onFocus(FocusEvent event)
-//         {
-//            isCancelButtonFocused = true;
-//         }
-//      });
-//      cancelButton.addBlurHandler(new BlurHandler()
-//      {
-//
-//         @Override
-//         public void onBlur(BlurEvent event)
-//         {
-//            isCancelButtonFocused = false;
-//         }
-//      });
-//
-//      operationsPanel.add(validateButton);
-//      operationsPanel.add(saveButton);
-//      operationsPanel.add(fuzzyButton);
-//      operationsPanel.add(cancelButton);
-//      topLayoutPanel.add(operationsPanel);
-//
-//      verticalPanel.add(topLayoutPanel);
-//
-      // validationMessagePanel = new ValidationMessagePanel(true, messages);
-      // validationMessagePanel.setVisiblePolicy(true);
-//
-//      verticalPanel.add(validationMessagePanel);
-//      verticalPanel.setCellVerticalAlignment(validationMessagePanel, HasVerticalAlignment.ALIGN_BOTTOM);
    }
 
    public void cloneAction()
@@ -483,16 +258,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       {
          editRowCallback.gotoPrevFuzzyRow();
       }
-   }
-
-   private void restoreView()
-   {
-//      if (curCellEditInfo != null && cellViewWidget != null)
-//      {
-//         curCellEditInfo.getTable().setWidget(curRow, curCol, cellViewWidget);
-//         cellViewWidget.getParent().setHeight(cellViewWidget.getOffsetHeight() + "px");
-//      }
-       targetContentsPresenter.setToViewMode();
    }
 
    public boolean isEditing()
@@ -662,7 +427,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       cellValue.setTargets(newTargets);
       determineStatus(newTargets, ContentState.Approved);
 
-      restoreView();
+      targetContentsPresenter.setToViewMode();
       isOpened = false;
       isFocused = false;
 
@@ -674,7 +439,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    /**
     * Save the contents of the cell and set status to fuzzy.
     */
-   protected void acceptFuzzyEdit()
+   @Override
+   public void acceptFuzzyEdit()
    {
 //      String text = textArea.getText();
       List<String> newTargets = targetContentsPresenter.getNewTargets();
@@ -694,7 +460,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          return;
       }
 
-      restoreView();
+      targetContentsPresenter.setToViewMode();
 //      textArea.setFocus(false);
       isOpened = false;
       isFocused = false;
@@ -713,7 +479,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       curCallback = null;
       curCellEditInfo = null;
-      cellViewWidget = null;
+      /*
+     The main grid used for layout.
+    */
       cellValue = null;
    }
 

@@ -19,8 +19,11 @@ import java.util.List;
 
 import javax.inject.Provider;
 
+import com.google.common.base.Preconditions;
+import com.google.gwt.gen2.table.client.CellEditor;
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
@@ -58,6 +61,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    private List<TargetContentsDisplay> displayList;
    private ToggleEditor currentEditor;
    private List<ToggleEditor> currentEditors;
+   private TransUnitsEditModel cellEditor;
 
    @Inject
    public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter)
@@ -207,6 +211,13 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    }
 
    @Override
+   public void saveAsFuzzy(ToggleEditor editor)
+   {
+      Preconditions.checkState(cellEditor != null, "InlineTargetCellEditor must be set for triggering table save event");
+      cellEditor.acceptFuzzyEdit();
+   }
+
+   @Override
    public void onCancel(ToggleEditor editor)
    {
       editor.setViewMode(ViewMode.VIEW);
@@ -223,12 +234,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    @Override
    public void toggleView(ToggleEditor editor)
    {
-     //      editor.setViewMode(ToggleEditor.ViewMode.EDIT);
       currentEditor = editor;
       if (currentEditors.contains(editor))
       {
          //still in the same trans unit. won't trigger transunit selection or edit cell event
-         Log.info("same transunit just another editor:" + editor);
          currentEditor = currentDisplay.openEditorAndCloseOthers(editor);
       }
       Log.info("current display:" + currentDisplay);
@@ -245,5 +254,12 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    {
       validationMessagePanel.clear();
       editor.addValidationMessagePanel(validationMessagePanel);
+   }
+
+
+   //TODO since we are still using scroll page table to handle save, we still need to reference it
+   public void setCellEditor(TransUnitsEditModel cellEditor)
+   {
+      this.cellEditor = cellEditor;
    }
 }

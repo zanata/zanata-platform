@@ -17,6 +17,7 @@ package org.zanata.webtrans.client.editor.table;
 
 import java.util.List;
 
+import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
@@ -39,6 +40,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, Iterable<ToggleEdi
       void setValidationMessagePanel(ToggleEditor editor);
 
       void onCancel(ToggleEditor editor);
+
+      void saveAsFuzzy(ToggleEditor editor);
    }
 
    void setTargets(List<String> targets);

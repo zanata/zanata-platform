@@ -192,6 +192,13 @@ public class Editor extends Composite implements ToggleEditor
       listener.saveAsApproved(this);
       event.stopPropagation();
    }
+
+   @UiHandler("fuzzyButton")
+   public void onSaveAsFuzzy(ClickEvent event)
+   {
+      listener.saveAsFuzzy(this);
+      event.stopPropagation();
+   }
    
    @UiHandler("cancelButton")
    public void onCancel(ClickEvent event)
@@ -354,6 +361,7 @@ public class Editor extends Composite implements ToggleEditor
    {
       return Objects.toStringHelper(this).
             add("label", label.getText()).
+            add("textArea", textArea.getText()).
             add("isOpen", textArea.isVisible()).
             toString();
    }
