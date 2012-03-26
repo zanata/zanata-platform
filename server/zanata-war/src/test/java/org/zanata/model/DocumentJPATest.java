@@ -141,17 +141,17 @@ public class DocumentJPATest extends ZanataDbunitJpaTest
 
       hdoc.incrementRevision();
 
-      flow1.setContent("nwe content!");
+      flow1.setContents("nwe content!");
 
       dao.syncRevisions(hdoc, flow1);
 
       em.flush();
 
       HTextFlowTarget target = new HTextFlowTarget(flow1, de_DE);
-      target.setContent("hello world");
+      target.setContents("hello world");
       em.persist(target);
       em.flush();
-      target.setContent("h2");
+      target.setContents("h2");
       em.flush();
 
       List<HTextFlowTargetHistory> hist = em.createQuery("from HTextFlowTargetHistory h where h.textFlowTarget =:target").setParameter("target", target).getResultList();
