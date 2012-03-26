@@ -38,19 +38,18 @@ import org.zanata.common.ContentState;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
-import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
-import org.zanata.webtrans.shared.util.TextFlowFilter;
-import org.zanata.webtrans.shared.util.TextFlowFilterImpl;
 
 /**
  * @see GetProjectTransUnitLists
@@ -74,6 +73,9 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
    @In
    private LocaleService localeServiceImpl;
 
+   @In
+   private TextFlowSearchService textFlowSearchServiceImpl;
+
    private static SimpleDateFormat SIMPLE_FORMAT = new SimpleDateFormat();
 
    @Override
@@ -90,6 +92,10 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          return new GetProjectTransUnitListsResult(docPaths, matchingTUs);
       }
 
+      //TODO handle exception thrown by search service
+      List<HTextFlow> matchingFlows = textFlowSearchServiceImpl.findTextFlows(action.getWorkspaceId(), FilterConstraints.filterBy(action.getSearchString()).ignoreSource().excludeNew());
+
+
       HLocale hLocale;
       try
       {
@@ -100,32 +106,16 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          throw new ActionException(e.getMessage());
       }
 
-      List<HDocument> documents = documentDAO.getAllByProjectIteration(action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
-
-      boolean includeTranslated = true;
-      boolean includeFuzzy = true;
-      boolean includeNew = false;
-      TextFlowFilter filter = new TextFlowFilterImpl(action.getSearchString(), includeTranslated, includeFuzzy, includeNew);
-
-      List<HTextFlow> result;
-      for (HDocument doc : documents)
+      for (HTextFlow htf : matchingFlows)
       {
-         log.info("Fetch TransUnits:" + action.getSearchString());
-         result = textFlowDAO.getTransUnitList(doc.getId());
-
-         List<TransUnit> units = new ArrayList<TransUnit>();
-         for (HTextFlow textFlow : result)
+         List<TransUnit> listForDoc = matchingTUs.get(htf.getDocument().getId());
+         if (listForDoc == null)
          {
-            if (!filter.isFilterOut(textFlow, hLocale))
-            {
-               units.add(initTransUnit(textFlow, hLocale));
-            }
+            listForDoc = new ArrayList<TransUnit>();
          }
-         if (!units.isEmpty())
-         {
-            matchingTUs.put(doc.getId(), units);
-            docPaths.put(doc.getId(), doc.getDocId());
-         }
+         listForDoc.add(initTransUnit(htf, hLocale));
+         matchingTUs.put(htf.getDocument().getId(), listForDoc);
+         docPaths.put(htf.getDocument().getId(), htf.getDocument().getDocId());
       }
 
       return new GetProjectTransUnitListsResult(docPaths, matchingTUs);

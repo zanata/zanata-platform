@@ -60,16 +60,18 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
 
    @In
    TextFlowDAO textFlowDAO;
-   
+
    @In
    private LocaleService localeServiceImpl;
 
    @In
    DocumentDAO documentDAO;
-   
-   
+
+   @In
+   TextFlowFilter textFlowFilterImpl;
+
    @Override
-   public List<HTextFlow> findTextFlows(WorkspaceId workspace, String searchTerm, FilterConstraints constraints)
+   public List<HTextFlow> findTextFlows(WorkspaceId workspace, FilterConstraints constraints)
    {
       LocaleId localeId = workspace.getLocaleId();
       String projectSlug = workspace.getProjectIterationId().getProjectSlug();
@@ -101,7 +103,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
 
       for (HDocument doc : documents)
       {
-         log.warn("Inefficient fetch TransUnits:" + searchTerm);
+         log.warn("Inefficient fetch TransUnits:" + constraints.getSearchString());
          List<HTextFlow> result = textFlowDAO.getTransUnitList(doc.getId());
 
          for (HTextFlow textFlow : result)
@@ -118,7 +120,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
 
    
    @Override
-   public List<HTextFlow> findTextFlows(WorkspaceId workspace, DocumentId doc, String searchTerm, FilterConstraints constraints)
+   public List<HTextFlow> findTextFlows(WorkspaceId workspace, DocumentId doc, FilterConstraints constraints)
    {
       // TODO Auto-generated method stub
       return null;

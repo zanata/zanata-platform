@@ -51,7 +51,7 @@ public interface TextFlowSearchService
     * @param constraints determine fields that will be checked for searchTerm
     * @return
     */
-   List<HTextFlow> findTextFlows(WorkspaceId workspace, DocumentId doc, String searchTerm, FilterConstraints constraints);
+   List<HTextFlow> findTextFlows(WorkspaceId workspace, DocumentId doc, FilterConstraints constraints);
 
    /**
     * Find matching textflows within a project iteration for a locale
@@ -61,6 +61,6 @@ public interface TextFlowSearchService
     * @param constraints determine fields that will be checked for searchTerm
     * @return
     */
-   List<HTextFlow> findTextFlows(WorkspaceId workspace, String searchTerm, FilterConstraints constraints);
+   List<HTextFlow> findTextFlows(WorkspaceId workspace, FilterConstraints constraints);
 
 }

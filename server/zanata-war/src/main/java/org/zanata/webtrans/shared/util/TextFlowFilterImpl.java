@@ -1,5 +1,5 @@
 /*
- * Copyright 2011, Red Hat, Inc. and individual contributors
+ * Copyright 2012, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -20,6 +20,10 @@
  */
 package org.zanata.webtrans.shared.util;
 
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.zanata.common.ContentState;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
@@ -31,32 +35,41 @@ import org.zanata.search.FilterConstraints;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
+@Name("textFlowFilterImpl")
+@AutoCreate
+@Scope(ScopeType.EVENT)
 public class TextFlowFilterImpl implements TextFlowFilter
 {
-   private boolean filterTranslated, filterNeedReview, filterUntranslated;
+   private boolean includeTranslated, includeNeedReview, includeUntranslated;
    private String phrase;
-   private boolean acceptAll;
 
    public TextFlowFilterImpl(FilterConstraints constraints)
    {
       this(constraints.getSearchString(), constraints.isIncludeApproved(), constraints.isIncludeFuzzy(), constraints.isIncludeNew());
    }
 
+   //TODO phase this constructor out?
    public TextFlowFilterImpl(String phrase, boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated)
    {
-      this.filterTranslated = filterTranslated;
-      this.filterNeedReview = filterNeedReview;
-      this.filterUntranslated = filterUntranslated;
-      if (phrase != null && !phrase.isEmpty())
+      this.includeTranslated = filterTranslated;
+      this.includeNeedReview = filterNeedReview;
+      this.includeUntranslated = filterUntranslated;
+      if (phrase == null)
+      {
+         this.phrase = "";
+      }
+      else
       {
          this.phrase = phrase.toLowerCase();
       }
-      acceptAll = false;
    }
 
    public TextFlowFilterImpl()
    {
-      acceptAll = true;
+      includeTranslated = true;
+      includeNeedReview = true;
+      includeUntranslated = true;
+      phrase = "";
    }
 
    /**
@@ -68,22 +81,23 @@ public class TextFlowFilterImpl implements TextFlowFilter
    @Override
    public boolean isFilterOut(HTextFlow textFlow, HLocale locale)
    {
-      if (acceptAll)
+      if (isAcceptAll())
       {
          return false;
       }
 
+      
       HTextFlowTarget target = textFlow.getTargets().get(locale);
       if (isMatchSearch(textFlow, target))
       {
-         if ((filterTranslated == filterNeedReview) && (filterNeedReview == filterUntranslated) && (filterUntranslated == filterTranslated))
+         if ((includeTranslated == includeNeedReview) && (includeNeedReview == includeUntranslated) && (includeUntranslated == includeTranslated))
          {
             return false;
          }
 
          if (target == null)
          {
-            if (filterUntranslated)
+            if (includeUntranslated)
             {
                return false;
             }
@@ -91,15 +105,15 @@ public class TextFlowFilterImpl implements TextFlowFilter
          else
          {
             ContentState state = target.getState();
-            if (state == ContentState.Approved && filterTranslated)
+            if (state == ContentState.Approved && includeTranslated)
             {
                return false;
             }
-            if (state == ContentState.NeedReview && filterNeedReview)
+            if (state == ContentState.NeedReview && includeNeedReview)
             {
                return false;
             }
-            if (state == ContentState.New && filterUntranslated)
+            if (state == ContentState.New && includeUntranslated)
             {
                return false;
             }
@@ -110,17 +124,40 @@ public class TextFlowFilterImpl implements TextFlowFilter
 
    private boolean isMatchSearch(HTextFlow textFlow, HTextFlowTarget target)
    {
-      if (phrase != null && !phrase.isEmpty())
+      if (phrase == null || phrase.isEmpty())
       {
-         if (target != null)
+         return true;
+      }
+
+      //TODO check filter constraints for whether to check source and target
+      boolean phraseInSource = false;
+      for (String source : textFlow.getContents())
+      {
+         if (source.toLowerCase().contains(phrase))
          {
-            return textFlow.getContent().toLowerCase().contains(phrase) || target.getContent().toLowerCase().contains(phrase);
-         }
-         else
-         {
-            return textFlow.getContent().toLowerCase().contains(phrase);
+            phraseInSource = true;
+            break;
          }
       }
-      return true;
+
+      boolean phraseInTarget = false;
+      if (target != null)
+      {
+         for (String targ : target.getContents())
+         {
+            if (targ.toLowerCase().contains(phrase))
+            {
+               phraseInTarget = true;
+               break;
+            }
+         }
+      }
+
+      return phraseInSource || phraseInTarget;
+   }
+
+   public boolean isAcceptAll()
+   {
+      return phrase.isEmpty() && includeUntranslated && includeNeedReview && includeTranslated;
    }
 }
