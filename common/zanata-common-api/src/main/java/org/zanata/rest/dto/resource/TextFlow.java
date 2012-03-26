@@ -23,8 +23,8 @@ import org.zanata.rest.dto.Extensible;
 import org.zanata.rest.dto.LocaleIdAdapter;
 import org.zanata.rest.dto.extensions.gettext.TextFlowExtension;
 
-@XmlType(name = "textFlowType", propOrder = { "content", "contents", "extensions" })
-@JsonPropertyOrder({ "id", "lang", "content", "contents", "extensions" })
+@XmlType(name = "textFlowType", propOrder = { "content", "contents", "plural", "extensions" })
+@JsonPropertyOrder({ "id", "lang", "content", "contents", "plural", "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
 public class TextFlow extends TextContainer implements Extensible<TextFlowExtension>, Serializable
@@ -41,6 +41,7 @@ public class TextFlow extends TextContainer implements Extensible<TextFlowExtens
    private ExtensionSet<TextFlowExtension> extensions;
 
    private Integer revision;
+   private boolean plural;
 
    /**
     * This constructor sets the lang value to en-US
@@ -96,6 +97,22 @@ public class TextFlow extends TextContainer implements Extensible<TextFlowExtens
    public void setId(String id)
    {
       this.id = id;
+   }
+
+   /**
+    * @return whether this message supports plurals
+    */
+   public boolean isPlural()
+   {
+      return plural;
+   }
+
+   /**
+    * @param pluralSupported the pluralSupported to set
+    */
+   public void setPlural(boolean pluralSupported)
+   {
+      this.plural = pluralSupported;
    }
 
    @XmlJavaTypeAdapter(type = LocaleId.class, value = LocaleIdAdapter.class)
