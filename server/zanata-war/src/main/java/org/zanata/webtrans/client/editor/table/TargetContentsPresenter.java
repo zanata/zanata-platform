@@ -59,7 +59,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    private TargetContentsDisplay currentDisplay;
    private Provider<TargetContentsDisplay> displayProvider;
    private List<TargetContentsDisplay> displayList;
-   private ToggleEditor currentEditor;
+   private int currentEditorIndex;
    private List<ToggleEditor> currentEditors;
    private TransUnitsEditModel cellEditor;
 
@@ -89,7 +89,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
          {
             if (isEditing())
             {
-               eventBus.fireEvent(new RunValidationEvent(sourceContentsPresenter.getSelectedSource(), currentEditor.getText(), false));
+               eventBus.fireEvent(new RunValidationEvent(sourceContentsPresenter.getSelectedSource(),
+                     getCurrentEditor().getText(), false));
             }
          }
       });
@@ -101,7 +102,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
          {
             if (isEditing())
             {
-               currentEditor.insertTextInCursorPosition(event.getSuggestion());
+               getCurrentEditor().insertTextInCursorPosition(event.getSuggestion());
                eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
             }
             else
@@ -118,7 +119,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
          {
             if (isEditing())
             {
-               currentEditor.setText(event.getTargetResult());
+               getCurrentEditor().setText(event.getTargetResult());
                eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
             }
             else
@@ -127,6 +128,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
             }
          }
       });
+   }
+
+   private ToggleEditor getCurrentEditor()
+   {
+      return currentEditors.get(currentEditorIndex);
    }
 
    boolean isEditing()
@@ -139,15 +145,14 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
       if (currentDisplay != null)
       {
          currentDisplay.setToView();
-         Log.info("setting to view mode:" + displayList.indexOf(currentDisplay));
       }
    }
 
    public void setCurrentEditorText(String text)
    {
-      if (currentEditor != null)
+      if (getCurrentEditor() != null)
       {
-         currentEditor.setText(text);
+         getCurrentEditor().setText(text);
       }
    }
 
@@ -157,15 +162,19 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
       if (previousDisplay != null)
       {
          previousDisplay.setToView();
-         currentEditor = null;
       }
       currentDisplay = displayList.get(rowIndex);
+      if (previousDisplay != currentDisplay)
+      {
+//         currentEditor = null;
+         currentEditorIndex = -1;
+      }
       currentEditors = currentDisplay.getEditors();
 
-      if (currentEditor != null && currentEditors.contains(currentEditor))
+      if (currentEditorIndex != -1)
       {
-         currentEditor = currentDisplay.openEditorAndCloseOthers(currentEditor);
-      	 Log.info("show editors at row:" + rowIndex + " current editor:" + currentEditor);
+         currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
+      	 Log.info("show editors at row:" + rowIndex + " current editor:" + currentEditorIndex);
       }
    }
 
@@ -208,7 +217,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
       int editorIndex = currentEditors.indexOf(editor);
       if (editorIndex + 1 < currentEditors.size())
       {
-         currentEditor = currentDisplay.openEditorAndCloseOthers(currentEditors.get(editorIndex + 1));
+         currentDisplay.openEditorAndCloseOthers(editorIndex + 1);
+         currentEditorIndex++;
       }
       else
       {
@@ -241,11 +251,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    @Override
    public void toggleView(ToggleEditor editor)
    {
-      currentEditor = editor;
+      currentEditorIndex = editor.getIndex();
       if (currentEditors.contains(editor))
       {
          //still in the same trans unit. won't trigger transunit selection or edit cell event
-         currentEditor = currentDisplay.openEditorAndCloseOthers(editor);
+         currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
       }
       Log.info("current display:" + currentDisplay);
       //else, it's clicking an editor outside current selection. the table selection event will trigger and showEditors will take care of the rest

@@ -18,11 +18,10 @@ package org.zanata.webtrans.client.editor.table;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.common.base.Objects;
 import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Widget;
@@ -47,11 +46,10 @@ public class TargetContentsView implements TargetContentsDisplay
    }
 
    @Override
-   public ToggleEditor openEditorAndCloseOthers(ToggleEditor currentEditor)
+   public void openEditorAndCloseOthers(int currentEditor)
    {
       setToView();
-      currentEditor.setViewMode(ToggleEditor.ViewMode.EDIT);
-      return currentEditor;
+      editors.get(currentEditor).setViewMode(ToggleEditor.ViewMode.EDIT);
    }
 
    @Override
@@ -68,7 +66,9 @@ public class TargetContentsView implements TargetContentsDisplay
          editors.add(editor);
          rowIndex++;
       }
-      //TODO last one has different title. The title should be in NavigationMessages not hardcoded string
+
+      // TODO last one has different title. The title should be in
+      // NavigationMessages not hardcoded string
       editors.get(editors.size() - 1).setSaveButtonTitle("Save and go to next");
    }
 
@@ -138,8 +138,6 @@ public class TargetContentsView implements TargetContentsDisplay
    @Override
    public String toString()
    {
-      return Objects.toStringHelper(this).
-            add("editors", editors).
-            toString();
+      return Objects.toStringHelper(this).add("editors", editors).toString();
    }
 }

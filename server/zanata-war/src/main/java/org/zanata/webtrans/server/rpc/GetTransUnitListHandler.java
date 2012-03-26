@@ -194,12 +194,19 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
 
       TransUnit tu = new TransUnit(new TransUnitId(textFlow.getId()), textFlow.getResId(), hLocale.getLocaleId(), textFlow.getContents(), CommentsUtil.toString(textFlow.getComment()), targetContents, ContentState.New, "", "", msgContext, textFlow.getPos());
 
-      tu.setStatus(target.getState());
-      if (target.getLastModifiedBy() != null)
+      if (target == null)
       {
-         tu.setLastModifiedBy(target.getLastModifiedBy().getName());
+         tu.setStatus(ContentState.New);
       }
-      tu.setLastModifiedTime(SIMPLE_FORMAT.format(target.getLastChanged()));
+      else
+      {
+         tu.setStatus(target.getState());
+         if (target.getLastModifiedBy() != null)
+         {
+            tu.setLastModifiedBy(target.getLastModifiedBy().getName());
+         }
+         tu.setLastModifiedTime(SIMPLE_FORMAT.format(target.getLastChanged()));
+      }
       return tu;
    }
 
