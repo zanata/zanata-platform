@@ -21,6 +21,7 @@ import java.util.List;
 import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.ui.Grid;
@@ -56,20 +57,33 @@ public class TargetContentsView implements TargetContentsDisplay
    public void setTargets(List<String> targets)
    {
       editors.clear();
-      editorGrid.resize(targets.size(), COLUMNS);
+      int size = (targets == null || targets.size() <= 0) ? 1 : targets.size();
+      editorGrid.resize(size, COLUMNS);
+
       int rowIndex = 0;
-      for (String target : targets)
+      if (targets == null || targets.size() == 0)
       {
-         Editor editor = new Editor(target, findMessage, rowIndex, listener);
-         editor.setText(target);
+         Editor editor = new Editor("", findMessage, rowIndex, listener);
+         editor.setText("");
          editorGrid.setWidget(rowIndex, 0, editor);
          editors.add(editor);
-         rowIndex++;
+         editor.setSaveButtonTitle("Save as approved");
       }
+      else
+      {
+         for (String target : targets)
+         {
+            Editor editor = new Editor(target, findMessage, rowIndex, listener);
+            editor.setText(target);
+            editorGrid.setWidget(rowIndex, 0, editor);
+            editors.add(editor);
+            rowIndex++;
+         }
 
-      // TODO last one has different title. The title should be in
-      // NavigationMessages not hardcoded string
-      editors.get(editors.size() - 1).setSaveButtonTitle("Save and go to next");
+         // TODO last one has different title. The title should be in
+         // NavigationMessages not hardcoded string
+         editors.get(editors.size() - 1).setSaveButtonTitle("Save and go to next");
+      }
    }
 
    @Override

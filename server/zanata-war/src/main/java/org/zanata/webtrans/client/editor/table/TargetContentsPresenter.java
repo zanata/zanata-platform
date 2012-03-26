@@ -19,11 +19,8 @@ import java.util.List;
 
 import javax.inject.Provider;
 
-import com.google.common.base.Preconditions;
-import com.google.gwt.gen2.table.client.CellEditor;
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
@@ -44,6 +41,7 @@ import org.zanata.webtrans.client.ui.ValidationMessagePanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -185,6 +183,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
       {
          currentDisplay.setToView();
       }
+     
       result.setTargets(transUnit.getTargets());
       return result;
    }
