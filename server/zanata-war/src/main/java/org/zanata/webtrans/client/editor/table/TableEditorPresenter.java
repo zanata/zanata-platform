@@ -55,6 +55,7 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.OpenEditorEvent;
 import org.zanata.webtrans.client.events.OpenEditorEventHandler;
 import org.zanata.webtrans.client.events.RedoFailureEvent;
+import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
@@ -186,11 +187,11 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    private final FilterViewConfirmationPanel filterViewConfirmationPanel = new FilterViewConfirmationPanel();
 
    private final WorkspaceContext workspaceContext;
-   
-   private final SourceContentsPresenter sourceContentsPresenter;
-    private TargetContentsPresenter targetContentsPresenter;
 
-    private boolean filterTranslated, filterNeedReview, filterUntranslated;
+   private final SourceContentsPresenter sourceContentsPresenter;
+   private TargetContentsPresenter targetContentsPresenter;
+
+   private boolean filterTranslated, filterNeedReview, filterUntranslated;
 
    private final UndoableTransUnitUpdateHandler undoableTransUnitUpdateHandler = new UndoableTransUnitUpdateHandler()
    {
@@ -270,7 +271,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       this.messages = messages;
       this.workspaceContext = workspaceContext;
       this.sourceContentsPresenter = sourceContentsPresenter;
-       this.targetContentsPresenter = targetContentsPresenter;
+      this.targetContentsPresenter = targetContentsPresenter;
    }
 
    private void clearCacheList()
@@ -445,10 +446,9 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                clearCacheList();
                if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
                {
-                  // TODO Plural Support
                   Log.info("selected TU updated; clear selection");
                   display.getTargetCellEditor().cancelEdit();
-                  eventBus.fireEvent(new RunValidationEvent(event.getTransUnit().getSources().toString(), event.getTransUnit().getTargets().toString()));
+                  eventBus.fireEvent(new RequestValidationEvent());
                }
 
                Integer rowIndex = getRowIndex(event.getTransUnit());
@@ -654,14 +654,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             @Override
             public void onSuccess(GetTransUnitListResult result)
             {
-                //FIXME hack!!
-               int index = 0;
-                for (TransUnit transUnit : result.getUnits()) {
-                    transUnit.setTargets(Lists.newArrayList(index + " - 123", index + " - 456", index  + " - 789"));
-                   index++;
-                }
-
-                targetContentsPresenter.initWidgets(display.getPageSize());
+               targetContentsPresenter.initWidgets(display.getPageSize());
                SerializableResponse<TransUnit> response = new SerializableResponse<TransUnit>(result.getUnits());
                Log.info("Got " + result.getUnits().size() + " rows back of " + result.getTotalCount() + " available");
                callback.onRowsReady(request, response);
@@ -705,7 +698,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       @Override
       public boolean onSetRowValue(int row, TransUnit rowValue)
       {
-         // TODO Plural Support
          final UpdateTransUnit updateTransUnit = new UpdateTransUnit(rowValue.getId(), rowValue.getTargets(), rowValue.getStatus());
          eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifySaving()));
          dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()

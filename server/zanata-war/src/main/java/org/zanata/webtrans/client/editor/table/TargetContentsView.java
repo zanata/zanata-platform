@@ -62,7 +62,7 @@ public class TargetContentsView implements TargetContentsDisplay
       int rowIndex = 0;
       for (String target : targets)
       {
-         Editor editor = new Editor(target, findMessage, listener);
+         Editor editor = new Editor(target, findMessage, rowIndex, listener);
          editor.setText(target);
          editorGrid.setWidget(rowIndex, 0, editor);
          editors.add(editor);

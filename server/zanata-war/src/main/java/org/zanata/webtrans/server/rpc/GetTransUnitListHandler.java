@@ -24,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -175,13 +174,23 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       }
       HTextFlowTarget target = textFlow.getTargets().get(hLocale);
 
-      TransUnit tu = new TransUnit(new TransUnitId(textFlow.getId()), textFlow.getResId(), hLocale.getLocaleId(),
-            textFlow.getContents(), CommentsUtil.toString(textFlow.getComment()), target.getContents(),
-            ContentState.New, "", "", msgContext, textFlow.getPos());
-      // TODO Plural Support may need to check whether target contents has correct number etc
-      // for(int i=0;i<target.getContents.size();i<nPlurals;i++){
-      //
-      // }
+      List<String> targetContents = new ArrayList<String>(nPlurals - 1);
+      targetContents.addAll(target.getContents());
+
+      if (targetContents.size() > nPlurals)
+      {
+         targetContents = targetContents.subList(0, nPlurals);
+      }
+      else if (targetContents.size() < nPlurals)
+      {
+         while (targetContents.size() < nPlurals)
+         {
+            targetContents.add("");
+         }
+      }
+
+      TransUnit tu = new TransUnit(new TransUnitId(textFlow.getId()), textFlow.getResId(), hLocale.getLocaleId(), textFlow.getContents(), CommentsUtil.toString(textFlow.getComment()), targetContents, ContentState.New, "", "", msgContext, textFlow.getPos());
+
       tu.setStatus(target.getState());
       if (target.getLastModifiedBy() != null)
       {

@@ -550,6 +550,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
 //      cancelButton.setFocus(isCancelButtonFocused);
    }
 
+   @Override
    public TransUnit getTargetCell()
    {
       return cellValue;

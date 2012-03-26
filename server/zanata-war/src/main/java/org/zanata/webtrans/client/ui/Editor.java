@@ -43,6 +43,8 @@ public class Editor extends Composite implements ToggleEditor
    private final int TYPING_TIMER_INTERVAL = 500; // ms
    private final int TYPING_TIMER_RECURRENT_VALIDATION_PERIOD = 5; // intervals
 
+   private final int index;
+
    @UiField
    HorizontalPanel topContainer;
 
@@ -77,9 +79,10 @@ public class Editor extends Composite implements ToggleEditor
    private boolean typing;
    private int typingCycles;
 
-   public Editor(String displayString, String findMessage, final TargetContentsDisplay.Listener listener)
+   public Editor(String displayString, String findMessage, int index, final TargetContentsDisplay.Listener listener)
    {
       this.listener = listener;
+      this.index = index;
       initWidget(uiBinder.createAndBindUi(this));
 
       saveButton.addClickHandler(acceptHandler);
@@ -364,5 +367,11 @@ public class Editor extends Composite implements ToggleEditor
             add("textArea", textArea.getText()).
             add("isOpen", textArea.isVisible()).
             toString();
+   }
+
+   @Override
+   public int getIndex()
+   {
+      return index;
    }
 }
