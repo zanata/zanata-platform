@@ -112,7 +112,18 @@
             ADD COLUMN content3 longtext,
             ADD COLUMN content4 longtext,
             ADD COLUMN content5 longtext
-        </sql> 
+        </sql>
+    </changeSet> 
+	<changeSet author="aeng@redhat.com" id="5" dbms="h2">
+        <comment>Alter glossary tables - add auto increment</comment>
+        <dropUniqueConstraint tableName="HGlossaryTerm" constraintName="UKglossaryterm_glossary_entry_id"/>
+        <dropPrimaryKey tableName="HGlossaryEntry"/>
+        <dropPrimaryKey tableName="HGlossaryTerm"/> 
+        <dropPrimaryKey tableName="HTermComment"/>
+        
+        <addAutoIncrement tableName="HGlossaryEntry" columnName="id" columnDataType="bigint"/>
+        <addAutoIncrement tableName="HGlossaryTerm" columnName="id" columnDataType="bigint"/>
+        <addAutoIncrement tableName="HTermComment" columnName="id" columnDataType="bigint"/>
     </changeSet>
     
 </databaseChangeLog>
