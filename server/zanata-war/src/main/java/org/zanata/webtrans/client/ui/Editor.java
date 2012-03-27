@@ -196,7 +196,7 @@ public class Editor extends Composite implements ToggleEditor
    @UiHandler("saveButton")
    public void onSaveAsApproved(ClickEvent event)
    {
-      listener.saveAsApproved(index);
+      listener.saveAsApproved();
       event.stopPropagation();
    }
 

@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.editor.table;
 
+import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 /**
@@ -12,4 +13,14 @@ public interface TransUnitsEditModel
    void acceptFuzzyEdit();
 
    TransUnit getTargetCell();
+
+   void gotoNewRow(NavTransUnitEvent.NavigationType nav);
+
+   void gotoFuzzyAndNewRow(NavTransUnitEvent.NavigationType nav);
+
+   void gotoFuzzyRow(NavTransUnitEvent.NavigationType nav);
+
+   void savePendingChange(boolean cancelIfUnchanged);
+
+   void saveAndMoveRow(NavTransUnitEvent.NavigationType nav);
 }

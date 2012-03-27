@@ -24,28 +24,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
-import com.google.common.collect.Collections2;
-import net.customware.gwt.presenter.client.EventBus;
+import javax.annotation.Nullable;
 
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.editor.CheckKey;
-import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
-import org.zanata.webtrans.client.resources.EditorConfigConstants;
-import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
+import com.google.common.collect.Collections2;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.Widget;
-
-import javax.annotation.Nullable;
 
 public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnitsEditModel
 {
@@ -53,26 +44,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
     * Default style name.
     */
    public static final String DEFAULT_STYLENAME = "gwt-TargetCellEditor";
-
-   /**
-    * The click listener used to clone.
-    */
-   /************
-    * private ClickHandler cloneHandler = new ClickHandler() { public void
-    * onClick(ClickEvent event) { textArea.setText(cellValue.getSource());
-    * textArea.setFocus(true); autoSize(); enableSaveButton();
-    * Log.info("InlineTargetCellEditor.java: Clone action."); } };
-    *************/
-   /**
-    * The click listener used to clone and save.
-    */
-   /****************
-    * private ClickHandler cloneAndSaveHandler = new ClickHandler() { public
-    * void onClick(ClickEvent event) { cloneHandler.onClick(null);
-    * acceptHandler.onClick(null); Log.info(
-    * "InlineTargetCellEditor.java: Clone-and-save action (The last clone action is called by this action)."
-    * ); } };
-    *****************/
 
    /**
     * The current {@link CellEditor.Callback}.
@@ -90,121 +61,38 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
 
    private TransUnit cellValue;
 
-//   private EditorTextArea textArea;
-//   private HorizontalPanel operationsPanel;
-
    private boolean isFocused = false;
    private boolean isOpened = false;
    private boolean isCancelButtonFocused = false;
-    private String findMessage;
-    private boolean isReadOnly;
-    private TargetContentsPresenter targetContentsPresenter;
-
-    private boolean untranslatedMode = true, fuzzyMode = true;
-   private boolean isEnterKeySavesEnabled = false, isEscKeyCloseEditor = false;
+   private String findMessage;
+   private boolean isReadOnly;
+   private TargetContentsPresenter targetContentsPresenter;
 
    private int curRow;
    private int curCol;
    private HTMLTable table;
 
-   private String saveButtonShortcuts;
-   private String saveButtonwithEnterShortcuts;
-//   private PushButton saveButton, fuzzyButton, cancelButton, validateButton;
-   // private ValidationMessagePanel validationMessagePanel;
-
-   private boolean keypressed;
-   private boolean typing;
-   private int typingCycles;
-
-   private final EventBus eventBus;
-    
-
-    /**
+   /**
     * Construct a new {@link InlineTargetCellEditor} with the specified images.
     */
-   public InlineTargetCellEditor(NavigationMessages messages, String findMessage, CancelCallback<TransUnit> callback, EditRowCallback rowCallback, final EventBus eventBus, final boolean isReadOnly, TargetContentsPresenter targetContentsPresenter)
+   public InlineTargetCellEditor(String findMessage, CancelCallback<TransUnit> callback, EditRowCallback rowCallback, final boolean isReadOnly, TargetContentsPresenter targetContentsPresenter)
    {
-       this.findMessage = findMessage;
-       this.isReadOnly = isReadOnly;
-       this.targetContentsPresenter = targetContentsPresenter;
+      this.findMessage = findMessage;
+      this.isReadOnly = isReadOnly;
+      this.targetContentsPresenter = targetContentsPresenter;
       this.targetContentsPresenter.setCellEditor(this);
-       final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
-      // Wrap contents in a table
 
-      final int TYPING_TIMER_INTERVAL = 200; // ms
-      final int TYPING_TIMER_RECURRENT_VALIDATION_PERIOD = 5; // intervals
-
-      this.eventBus = eventBus;
       cancelCallback = callback;
       editRowCallback = rowCallback;
-
-      // KeyDown is used to override browser event
-//      textArea.addKeyDownHandler(new KeyDownHandler()
-//      {
-//         @Override
-//         public void onKeyDown(KeyDownEvent event)
-//         {
-//            eventBus.fireEvent(new EditTransUnitEvent());
-//            checkKey.init(event.getNativeEvent());
-//
-//            if (checkKey.isCopyFromSourceKey())
-//            {
-//               cloneAction();
-//            }
-//            else if (checkKey.isNextEntryKey())
-//            {
-//               // See editCell() for saving event
-//               saveAndMoveRow(NavigationType.NextEntry);
-//            }
-//            else if (checkKey.isPreviousEntryKey())
-//            {
-//               // See editCell() for saving event
-//               saveAndMoveRow(NavigationType.PrevEntry);
-//            }
-//            else if (checkKey.isNextStateEntryKey())
-//            {
-//               saveAndMoveNextState(NavigationType.NextEntry);
-//            }
-//            else if (checkKey.isPreviousStateEntryKey())
-//            {
-//               saveAndMoveNextState(NavigationType.PrevEntry);
-//            }
-//            else if (checkKey.isSaveAsFuzzyKey())
-//            {
-//               event.stopPropagation();
-//               event.preventDefault(); // stop browser save
-//               acceptFuzzyEdit();
-//            }
-//            else if (checkKey.isSaveAsApprovedKey(isEnterKeySavesEnabled))
-//            {
-//               event.stopPropagation();
-//               event.preventDefault();
-//               saveApprovedAndMoveRow(NavigationType.NextEntry);
-//            }
-//            else if (checkKey.isCloseEditorKey(isEscKeyCloseEditor))
-//            {
-//               cancelEdit();
-//            }
-//            else if (checkKey.isUserTyping() && !checkKey.isBackspace())
-//            {
-//               growSize();
-//            }
-//            else if (checkKey.isUserTyping() && checkKey.isBackspace())
-//            {
-//               shrinkSize(false);
-//            }
-//         }
-//      });
-//
    }
 
    public void cloneAction()
    {
       Log.info("InlineTargetCellEditor.java: Clone action.");
-//      textArea.setFocus(true);
+      // textArea.setFocus(true);
    }
 
-   public void gotoRow(NavigationType nav)
+   private void gotoRow(NavigationType nav)
    {
       if (nav == NavigationType.NextEntry)
       {
@@ -224,7 +112,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       }
    }
 
-   private void gotoNewRow(NavigationType nav)
+   @Override
+   public void gotoNewRow(NavigationType nav)
    {
       if (nav == NavigationType.NextEntry)
       {
@@ -236,7 +125,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       }
    }
 
-   private void gotoFuzzyAndNewRow(NavigationType nav)
+   @Override
+   public void gotoFuzzyAndNewRow(NavigationType nav)
    {
       if (nav == NavigationType.NextEntry)
       {
@@ -248,7 +138,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       }
    }
 
-   private void gotoFuzzyRow(NavigationType nav)
+   @Override
+   public void gotoFuzzyRow(NavigationType nav)
    {
       if (nav == NavigationType.NextEntry)
       {
@@ -276,13 +167,13 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
    }
 
    public void setText(String text)
-   {  //TODO copy TM or copy source will go here
+   { // TODO copy TM or copy source will go here
       if (isEditing())
       {
          targetContentsPresenter.setCurrentEditorText(text);
       }
    }
-   
+
    @Override
    public void editCell(CellEditInfo cellEditInfo, TransUnit cellValue, Callback<TransUnit> callback)
    {
@@ -297,7 +188,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
          {
             return;
          }
-//         restoreView();
       }
 
       // save the content in previous cell before start new editing
@@ -318,28 +208,22 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       curRow = curCellEditInfo.getRowIndex();
       curCol = curCellEditInfo.getCellIndex();
 
-//      cellViewWidget = table.getWidget(curRow, curCol);
+      this.cellValue = cellValue;
+      targetContentsPresenter.showEditors(curRow);
 
-
-//       table.setWidget(curRow, curCol, currentTargetPresenter.getDisplay().asWidget());
-
-       this.cellValue = cellValue;
-       targetContentsPresenter.showEditors(curRow);
-
-//      textArea.setFocus(true);
       isOpened = true;
 
       DOM.scrollIntoView(table.getCellFormatter().getElement(curRow, curCol));
    }
 
+   @Override
    public void savePendingChange(boolean cancelIfUnchanged)
    {
-      // if something has changed, save as approved
-//      if (isEditing() && !cellValue.getTarget().equals(textArea.getText()))
       if (isEditing() && targetContentsPresenter.getCurrentDisplay() != null)
       {
          List<String> newTargets = targetContentsPresenter.getNewTargets();
          Log.info("saving " + curRow + " with " + newTargets);
+         // if something has changed, save as approved
          if (!cellValue.getTargets().equals(newTargets))
          {
             Log.debug("savePendingChange - acceptEdit");
@@ -367,7 +251,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       if (emptyTargets.isEmpty() && stateToSet == ContentState.Approved)
       {
          cellValue.setStatus(ContentState.Approved);
-      } 
+      }
       else if (emptyTargets.size() > 0 && stateToSet == ContentState.NeedReview)
       {
          cellValue.setStatus(ContentState.NeedReview);
@@ -378,38 +262,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       }
    }
 
+   @Override
    public void saveAndMoveRow(NavigationType nav)
    {
       savePendingChange(true);
-      gotoRow(nav);
-   }
-
-   public void saveAndMoveNextState(NavigationType nav)
-   {
-      savePendingChange(true);
-
-      if (untranslatedMode && fuzzyMode)
-      {
-         gotoFuzzyAndNewRow(nav);
-      }
-      else if (untranslatedMode)
-      {
-         gotoNewRow(nav);
-      }
-      else if (fuzzyMode)
-      {
-         gotoFuzzyRow(nav);
-      }
-   }
-
-   /**
-    * save the contents of the cell as approved and move to next fuzzy or
-    * untranslated
-    */
-   private void saveApprovedAndMoveRow(NavigationType nav)
-   {
-      cellValue.setStatus(ContentState.Approved);
-      acceptEdit();
       gotoRow(nav);
    }
 
@@ -442,7 +298,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
    @Override
    public void acceptFuzzyEdit()
    {
-//      String text = textArea.getText();
+      // String text = textArea.getText();
       List<String> newTargets = targetContentsPresenter.getNewTargets();
       cellValue.setTargets(newTargets);
       determineStatus(newTargets, ContentState.NeedReview);
@@ -461,7 +317,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       }
 
       targetContentsPresenter.setToViewMode();
-//      textArea.setFocus(false);
+      // textArea.setFocus(false);
       isOpened = false;
       isFocused = false;
 
@@ -480,8 +336,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       curCallback = null;
       curCellEditInfo = null;
       /*
-     The main grid used for layout.
-    */
+       * The main grid used for layout.
+       */
       cellValue = null;
    }
 
@@ -505,19 +361,20 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       return true;
    }
 
-
    public void updateKeyBehaviour(Map<String, Boolean> configMap)
    {
-//      if (configMap.containsKey(EditorConfigConstants.BUTTON_FUZZY) && configMap.containsKey(EditorConfigConstants.BUTTON_UNTRANSLATED))
-//      {
-//         untranslatedMode = configMap.get(EditorConfigConstants.BUTTON_UNTRANSLATED);
-//         fuzzyMode = configMap.get(EditorConfigConstants.BUTTON_FUZZY);
-//      }
-//
-//      if (configMap.containsKey(EditorConfigConstants.BUTTON_ESC))
-//      {
-//         isEscKeyCloseEditor = configMap.get(EditorConfigConstants.BUTTON_ESC);
-//      }
+      // if (configMap.containsKey(EditorConfigConstants.BUTTON_FUZZY) &&
+      // configMap.containsKey(EditorConfigConstants.BUTTON_UNTRANSLATED))
+      // {
+      // untranslatedMode =
+      // configMap.get(EditorConfigConstants.BUTTON_UNTRANSLATED);
+      // fuzzyMode = configMap.get(EditorConfigConstants.BUTTON_FUZZY);
+      // }
+      //
+      // if (configMap.containsKey(EditorConfigConstants.BUTTON_ESC))
+      // {
+      // isEscKeyCloseEditor = configMap.get(EditorConfigConstants.BUTTON_ESC);
+      // }
 
    }
 
@@ -529,7 +386,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
    public void setCancelButtonFocused(boolean isCancelButtonFocused)
    {
       this.isCancelButtonFocused = isCancelButtonFocused;
-//      cancelButton.setFocus(isCancelButtonFocused);
    }
 
    @Override
@@ -537,7 +393,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
    {
       return cellValue;
    }
-   
 
    public void setReadOnly(boolean isReadOnly)
    {

@@ -197,16 +197,16 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
    }
 
    @Override
-   public void saveAsApproved(int editorIndex)
+   public void saveAsApproved()
    {
-      if (editorIndex + 1 < currentEditors.size())
+      if (currentEditorIndex + 1 < currentEditors.size())
       {
-         currentDisplay.openEditorAndCloseOthers(editorIndex + 1);
+         currentDisplay.openEditorAndCloseOthers(currentEditorIndex + 1);
          currentEditorIndex++;
       }
       else
       {
-         eventBus.fireEvent(new NavTransUnitEvent(NavTransUnitEvent.NavigationType.NextEntry));
+         cellEditor.saveAndMoveRow(NavTransUnitEvent.NavigationType.NextEntry);
       }
    }
 
@@ -376,5 +376,40 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
       // {
       // shrinkSize(false);
       // }
+   }
+
+   public void moveToNextState(NavTransUnitEvent.NavigationType nav)
+   {
+      cellEditor.savePendingChange(true);
+      if (configHolder.isFuzzyAndUntranslated())
+      {
+         cellEditor.gotoFuzzyAndNewRow(nav);
+      }
+      else if (configHolder.isButtonUntranslated())
+      {
+         cellEditor.gotoNewRow(nav);
+      }
+      else if (configHolder.isButtonFuzzy())
+      {
+         cellEditor.gotoFuzzyRow(nav);
+      }
+   }
+
+   public void saveAndMoveRow(NavTransUnitEvent.NavigationType nav)
+   {
+      cellEditor.saveAndMoveRow(nav);
+   }
+
+   public void moveToPreviousEntry()
+   {
+      if (currentEditorIndex - 1 >= 0)
+      {
+         currentDisplay.openEditorAndCloseOthers(currentEditorIndex - 1);
+         currentEditorIndex--;
+      }
+      else
+      {
+         cellEditor.saveAndMoveRow(NavTransUnitEvent.NavigationType.PrevEntry);
+      }
    }
 }

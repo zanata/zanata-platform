@@ -37,7 +37,7 @@ public interface TargetContentsDisplay extends WidgetDisplay, Iterable<ToggleEdi
    {
       void validate(ToggleEditor editor);
 
-      void saveAsApproved(int editorIndex);
+      void saveAsApproved();
 
       void copySource(ToggleEditor editor);
 

@@ -91,4 +91,9 @@ public class UserConfigHolder
             .put(EditorConfigConstants.BUTTON_UNTRANSLATED, buttonUntranslated)
             .build();
    }
+
+   public boolean isFuzzyAndUntranslated()
+   {
+      return buttonFuzzy && buttonUntranslated;
+   }
 }
