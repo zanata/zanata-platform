@@ -62,6 +62,15 @@ public class TargetContentsView implements TargetContentsDisplay
    }
 
    @Override
+   public void showButtons(boolean displayButtons)
+   {
+      for (ToggleEditor editor : editors)
+      {
+         editor.showButtons(displayButtons);
+      }
+   }
+
+   @Override
    public void setTargets(List<String> targets)
    {
       editors.clear();

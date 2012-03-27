@@ -56,7 +56,7 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
 
       HasClickHandlers getNextStateButton();
 
-      void setNavModeTooltip(Map<String, Boolean> configMap);
+      void setNavModeTooltip(boolean isButtonFuzzy, boolean isButtonUntranslated);
 
       void setModalNavVisible(boolean visible);
    }

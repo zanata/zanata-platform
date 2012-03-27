@@ -29,6 +29,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, Iterable<ToggleEdi
 
    void setSaveButtonTitle(String title);
 
+   void showButtons(boolean displayButtons);
+
    interface Listener
    {
       void validate(ToggleEditor editor);
@@ -44,6 +46,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, Iterable<ToggleEdi
       void onCancel(ToggleEditor editor);
 
       void saveAsFuzzy(ToggleEditor editor);
+
+      boolean isDisplayButtons();
    }
 
    void setTargets(List<String> targets);

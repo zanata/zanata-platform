@@ -149,7 +149,8 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
             Log.info("Show editor buttons: " + event.getValue());
-            eventBus.fireEvent(new ButtonDisplayChangeEvent(event.getValue()));
+            configHolder.setDisplayButtons(event.getValue());
+            eventBus.fireEvent(new UserConfigChangeEvent());
          }
       }));
 

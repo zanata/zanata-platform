@@ -21,6 +21,8 @@ import javax.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
+import org.zanata.webtrans.client.events.ButtonDisplayChangeEventHandler;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
@@ -49,6 +51,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
 
 @Singleton
 public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
@@ -64,6 +67,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
    private final SourceContentsPresenter sourceContentsPresenter;
    private final UserConfigHolder configHolder;
    private NavigationMessages navMessages;
+   private WorkspaceContext workspaceContext;
    private final ValidationMessagePanel validationMessagePanel;
 
    private TargetContentsDisplay currentDisplay;
@@ -77,7 +81,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
    public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, 
                                   final TableEditorMessages messages, 
                                   final SourceContentsPresenter sourceContentsPresenter, UserConfigHolder configHolder,
-                                  NavigationMessages navMessages)
+                                  NavigationMessages navMessages, WorkspaceContext workspaceContext)
    {
       this.displayProvider = displayProvider;
       this.eventBus = eventBus;
@@ -85,6 +89,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.configHolder = configHolder;
       this.navMessages = navMessages;
+      this.workspaceContext = workspaceContext;
 
       validationMessagePanel = new ValidationMessagePanel(true, messages);
       eventBus.addHandler(UserConfigChangeEvent.getType(), this);
@@ -138,7 +143,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
       if (currentEditorIndex != NO_OPEN_EDITOR)
       {
          currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
-      	 Log.info("show editors at row:" + rowIndex + " current editor:" + currentEditorIndex);
+      	 Log.debug("show editors at row:" + rowIndex + " current editor:" + currentEditorIndex);
       }
    }
 
@@ -152,6 +157,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
      
       result.setTargets(transUnit.getTargets());
       result.setSaveButtonTitle(decideButtonTitle());
+      if (workspaceContext.isReadOnly())
+      {
+         Log.debug("read only mode. Hide buttons");
+         result.showButtons(false);
+      }
       return result;
    }
 
@@ -205,6 +215,12 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
    }
 
    @Override
+   public boolean isDisplayButtons()
+   {
+      return configHolder.isDisplayButtons();
+   }
+
+   @Override
    public void onCancel(ToggleEditor editor)
    {
       editor.setViewMode(ViewMode.VIEW);
@@ -228,7 +244,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
          //still in the same trans unit. won't trigger transunit selection or edit cell event
          currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
       }
-      Log.info("current display:" + currentDisplay);
+      Log.debug("current display:" + currentDisplay);
       //else, it's clicking an editor outside current selection. the table selection event will trigger and showEditors will take care of the rest
    }
 
@@ -256,6 +272,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
       for (TargetContentsDisplay display : displayList)
       {
          display.setSaveButtonTitle(title);
+         display.showButtons(configHolder.isDisplayButtons());
       }
    }
 

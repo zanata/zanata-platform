@@ -85,9 +85,8 @@ public class Editor extends Composite implements ToggleEditor
       this.index = index;
       initWidget(uiBinder.createAndBindUi(this));
 
-      saveButton.addClickHandler(acceptHandler);
-
-      fuzzyButton.addClickHandler(fuzzyHandler);
+      //determine whether to show or hide buttons
+      showButtons(listener.isDisplayButtons());
 
       label.setText(displayString);
       if (displayString == null || displayString.isEmpty())
@@ -215,8 +214,6 @@ public class Editor extends Composite implements ToggleEditor
    public void onLabelClick(MouseDownEvent event)
    {
       listener.toggleView(this);
-//      event.stopPropagation();
-      // toggleView();
    }
 
    @Override
@@ -243,7 +240,7 @@ public class Editor extends Composite implements ToggleEditor
          fireValidationEvent();
          textArea.setFocus(true);
       }
-      buttons.setVisible(viewMode == ViewMode.EDIT);
+      buttons.setVisible(viewMode == ViewMode.EDIT && listener.isDisplayButtons());
       //sync label and text area
       label.setText(textArea.getText());
    }
@@ -260,28 +257,6 @@ public class Editor extends Composite implements ToggleEditor
    {
       return textArea.getText();
    }
-
-   /**
-    * The click listener used to save as fuzzy.
-    */
-   private ClickHandler fuzzyHandler = new ClickHandler()
-   {
-      public void onClick(ClickEvent event)
-      {
-         // acceptFuzzyEdit();
-      }
-   };
-
-   /**
-    * The click listener used to accept.
-    */
-   private ClickHandler acceptHandler = new ClickHandler()
-   {
-      public void onClick(ClickEvent event)
-      {
-         // saveApprovedAndMoveRow(NavigationType.NextEntry);
-      }
-   };
 
    @Override
    public void setSaveButtonTitle(String title)
@@ -373,5 +348,12 @@ public class Editor extends Composite implements ToggleEditor
    public int getIndex()
    {
       return index;
+   }
+
+   @Override
+   public void showButtons(boolean displayButtons)
+   {
+      copySourceButton.setVisible(displayButtons);
+      buttons.setVisible(getViewMode() == ViewMode.EDIT && displayButtons);
    }
 }

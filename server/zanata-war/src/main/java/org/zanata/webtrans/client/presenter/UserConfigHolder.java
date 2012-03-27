@@ -30,6 +30,7 @@ public class UserConfigHolder
    private boolean buttonEsc = false;
    private boolean buttonFuzzy = true;
    private boolean buttonUntranslated = true;
+   private boolean displayButtons = true;
 
    public boolean isButtonEnter()
    {
@@ -69,6 +70,16 @@ public class UserConfigHolder
    void setButtonUntranslated(boolean buttonUntranslated)
    {
       this.buttonUntranslated = buttonUntranslated;
+   }
+
+   public boolean isDisplayButtons()
+   {
+      return displayButtons;
+   }
+
+   void setDisplayButtons(boolean displayButtons)
+   {
+      this.displayButtons = displayButtons;
    }
 
    Map<String, Boolean> getConfigMap()

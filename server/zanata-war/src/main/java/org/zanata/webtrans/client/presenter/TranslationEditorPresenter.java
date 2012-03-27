@@ -65,16 +65,18 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    private final TableEditorPresenter tableEditorPresenter;
    // private final UndoRedoPresenter undoRedoPresenter;
    private final TransFilterPresenter transFilterPresenter;
+   private UserConfigHolder configHolder;
 
 
    @Inject
-   public TranslationEditorPresenter(Display display, EventBus eventBus, final CachingDispatchAsync dispatcher, final TableEditorPresenter tableEditorPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter, final UndoRedoPresenter undoRedoPresenter, final TransFilterPresenter transFilterPresenter)
+   public TranslationEditorPresenter(Display display, EventBus eventBus, final CachingDispatchAsync dispatcher, final TableEditorPresenter tableEditorPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter, final UndoRedoPresenter undoRedoPresenter, final TransFilterPresenter transFilterPresenter, UserConfigHolder configHolder)
    {
       super(display, eventBus);
       this.tableEditorPresenter = tableEditorPresenter;
       this.transUnitNavigationPresenter = transUnitNavigationPresenter;
       // this.undoRedoPresenter = undoRedoPresenter;
       this.transFilterPresenter = transFilterPresenter;
+      this.configHolder = configHolder;
    }
 
    @Override
@@ -130,7 +132,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
          @Override
          public void onValueChanged(UserConfigChangeEvent event)
          {
-            transUnitNavigationPresenter.getDisplay().setNavModeTooltip(event.getConfigMap());
+            transUnitNavigationPresenter.getDisplay().setNavModeTooltip(configHolder.isButtonFuzzy(), configHolder.isButtonUntranslated());
             tableEditorPresenter.getDisplay().getTargetCellEditor().updateKeyBehaviour(event.getConfigMap());
          }
       }));

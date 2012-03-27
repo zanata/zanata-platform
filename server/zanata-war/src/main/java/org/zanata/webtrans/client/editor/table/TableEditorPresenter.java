@@ -308,10 +308,10 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    {
       display.setTableModelHandler(tableModelHandler);
       display.setPageSize(TableConstants.PAGE_SIZE);
-      if (workspaceContext.isReadOnly())
-      {
-         display.getTargetCellEditor().setShowOperationButtons(false);
-      }
+//      if (workspaceContext.isReadOnly())
+//      {
+//         display.getTargetCellEditor().setShowOperationButtons(false);
+//      }
 
       registerHandler(filterViewConfirmationPanel.getSaveChangesAndFilterButton().addClickHandler(new ClickHandler()
       {
@@ -564,15 +564,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          public void onOpenEditor(OpenEditorEvent event)
          {
             tableModelHandler.gotoRowInCurrentPage(event.getRowNum(), true);
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(ButtonDisplayChangeEvent.getType(), new ButtonDisplayChangeEventHandler()
-      {
-         @Override
-         public void onButtonDisplayChange(ButtonDisplayChangeEvent event)
-         {
-            display.getTargetCellEditor().setShowOperationButtons(event.isShowButtons());
          }
       }));
 
