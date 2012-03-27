@@ -17,11 +17,11 @@ package org.zanata.webtrans.client.editor.table;
 
 import java.util.ArrayList;
 
+import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+
 import org.zanata.webtrans.client.ui.ToggleEditor;
 
 import com.google.gwt.event.dom.client.KeyDownEvent;
-
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 public interface TargetContentsDisplay extends WidgetDisplay, Iterable<ToggleEditor>
 {
@@ -36,7 +36,9 @@ public interface TargetContentsDisplay extends WidgetDisplay, Iterable<ToggleEdi
    {
       void validate(ToggleEditor editor);
 
-      void saveAsApproved(int editorIndex);
+      void saveAsApprovedAndMoveNext();
+      
+      void saveAsApprovedAndMovePrevious();
 
       void copySource(ToggleEditor editor);
 

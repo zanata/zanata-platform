@@ -295,21 +295,21 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
                         }
                      }
                   }
-                  if (event.getNativeEvent().getType().equals("keydown"))
-                  {
-                     if (checkKey.isPreviousEntryKey())
-                     {
-                        Log.info("Go to previous entry");
-                        stopDefaultAction(event);
-                        translationEditorPresenter.gotoPrevRow(false);
-                     }
-                     else if (checkKey.isNextEntryKey())
-                     {
-                        Log.info("Go to next entry");
-                        stopDefaultAction(event);
-                        translationEditorPresenter.gotoNextRow(false);
-                     }
-                  }
+//                  if (event.getNativeEvent().getType().equals("keydown"))
+//                  {
+//                     if (checkKey.isPreviousEntryKey())
+//                     {
+//                        Log.info("Go to previous entry");
+//                        stopDefaultAction(event);
+//                        translationEditorPresenter.gotoPrevRow(false);
+//                     }
+//                     else if (checkKey.isNextEntryKey())
+//                     {
+//                        Log.info("Go to next entry");
+//                        stopDefaultAction(event);
+//                        translationEditorPresenter.gotoNextRow(false);
+//                     }
+//                  }
                }
             }
          }

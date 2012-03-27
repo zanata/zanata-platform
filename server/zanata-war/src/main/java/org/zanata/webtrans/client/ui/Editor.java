@@ -12,6 +12,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -84,10 +85,9 @@ public class Editor extends Composite implements ToggleEditor
       this.index = index;
       initWidget(uiBinder.createAndBindUi(this));
 
-      //determine whether to show or hide buttons
+      // determine whether to show or hide buttons
       showButtons(listener.isDisplayButtons());
 
-      label.setText(displayString);
       if (displayString == null || displayString.isEmpty())
       {
          label.setText(messages.clickHere());
@@ -116,6 +116,14 @@ public class Editor extends Composite implements ToggleEditor
          {
             autoSize();
             fireValidationEvent();
+            if (Strings.isNullOrEmpty(event.getValue()))
+            {
+               label.setText(messages.clickHere());
+            }
+            else
+            {
+               label.setText(event.getValue());
+            }
          }
 
       });
@@ -196,7 +204,7 @@ public class Editor extends Composite implements ToggleEditor
    @UiHandler("saveButton")
    public void onSaveAsApproved(ClickEvent event)
    {
-      listener.saveAsApproved(index);
+      listener.saveAsApprovedAndMoveNext();
       event.stopPropagation();
    }
 
@@ -206,7 +214,7 @@ public class Editor extends Composite implements ToggleEditor
       listener.saveAsFuzzy();
       event.stopPropagation();
    }
-   
+
    @UiHandler("cancelButton")
    public void onCancel(ClickEvent event)
    {
@@ -214,10 +222,10 @@ public class Editor extends Composite implements ToggleEditor
       event.stopPropagation();
    }
 
-
    @UiHandler("label")
    public void onLabelClick(MouseDownEvent event)
    {
+      // TODO fire up select row event first before toogle view
       listener.toggleView(this);
    }
 
@@ -246,15 +254,21 @@ public class Editor extends Composite implements ToggleEditor
          textArea.setFocus(true);
       }
       buttons.setVisible(viewMode == ViewMode.EDIT && listener.isDisplayButtons());
-      //sync label and text area
-      label.setText(textArea.getText());
    }
 
    @Override
    public void setText(String text)
    {
-      label.setText(text);
-      textArea.setText(text);
+      if (text != null && !text.isEmpty())
+      {
+         label.setText(text);
+         textArea.setText(text);
+      }
+      else
+      {
+         label.setText(messages.clickHere());
+         textArea.setText("");
+      }
    }
 
    @Override
@@ -282,7 +296,8 @@ public class Editor extends Composite implements ToggleEditor
     * 
     * @param forceShrink
     */
-   private void shrinkSize(boolean forceShrink)
+   @Override
+   public void shrinkSize(boolean forceShrink)
    {
       if (forceShrink)
       {
@@ -312,7 +327,8 @@ public class Editor extends Composite implements ToggleEditor
       return textArea.getText();
    }
 
-   private void growSize()
+   @Override
+   public void growSize()
    {
       if (textArea.getElement().getScrollHeight() > textArea.getElement().getClientHeight())
       {
@@ -330,6 +346,12 @@ public class Editor extends Composite implements ToggleEditor
    }
 
    @Override
+   public void removeValidationMessagePanel()
+   {
+      validationMessagePanelContainer.clear();
+   }
+
+   @Override
    public void insertTextInCursorPosition(String suggestion)
    {
       String preCursor = textArea.getText().substring(0, textArea.getCursorPos());
@@ -342,11 +364,7 @@ public class Editor extends Composite implements ToggleEditor
    @Override
    public String toString()
    {
-      return Objects.toStringHelper(this).
-            add("label", label.getText()).
-            add("textArea", textArea.getText()).
-            add("isOpen", textArea.isVisible()).
-            toString();
+      return Objects.toStringHelper(this).add("label", label.getText()).add("textArea", textArea.getText()).add("isOpen", textArea.isVisible()).toString();
    }
 
    @Override

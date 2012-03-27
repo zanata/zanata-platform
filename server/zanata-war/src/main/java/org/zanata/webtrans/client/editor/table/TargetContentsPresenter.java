@@ -28,6 +28,7 @@ import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.InsertStringInEditorHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
+import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
@@ -55,12 +56,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
-      UserConfigChangeHandler,
-      UpdateValidationWarningsEventHandler,
-      RequestValidationEventHandler,
-      InsertStringInEditorHandler,
-      CopyDataToEditorHandler
+public class TargetContentsPresenter implements TargetContentsDisplay.Listener, UserConfigChangeHandler, UpdateValidationWarningsEventHandler, RequestValidationEventHandler, InsertStringInEditorHandler, CopyDataToEditorHandler
 {
    private static final int NO_OPEN_EDITOR = -1;
    private final EventBus eventBus;
@@ -81,10 +77,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
    private TransUnitsEditModel cellEditor;
 
    @Inject
-   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, 
-                                  final TableEditorMessages messages, 
-                                  final SourceContentsPresenter sourceContentsPresenter, UserConfigHolder configHolder,
-                                  NavigationMessages navMessages, WorkspaceContext workspaceContext)
+   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, UserConfigHolder configHolder, NavigationMessages navMessages, WorkspaceContext workspaceContext)
    {
       this.displayProvider = displayProvider;
       this.eventBus = eventBus;
@@ -139,7 +132,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
       currentDisplay = displayList.get(rowIndex);
       if (previousDisplay != currentDisplay)
       {
-//         currentEditor = null;
+         // currentEditor = null;
          currentEditorIndex = NO_OPEN_EDITOR;
       }
       currentEditors = currentDisplay.getEditors();
@@ -147,7 +140,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
       if (currentEditorIndex != NO_OPEN_EDITOR)
       {
          currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
-      	 Log.debug("show editors at row:" + rowIndex + " current editor:" + currentEditorIndex);
+         Log.debug("show editors at row:" + rowIndex + " current editor:" + currentEditorIndex);
       }
    }
 
@@ -158,7 +151,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
       {
          currentDisplay.setToView();
       }
-     
+
       result.setTargets(transUnit.getTargets());
       result.setSaveButtonTitle(decideButtonTitle());
       if (workspaceContext.isReadOnly())
@@ -197,16 +190,30 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
    }
 
    @Override
-   public void saveAsApproved(int editorIndex)
+   public void saveAsApprovedAndMoveNext()
    {
-      if (editorIndex + 1 < currentEditors.size())
+      if (currentEditorIndex + 1 < currentEditors.size())
       {
-         currentDisplay.openEditorAndCloseOthers(editorIndex + 1);
+         currentDisplay.openEditorAndCloseOthers(currentEditorIndex + 1);
          currentEditorIndex++;
       }
       else
       {
-         eventBus.fireEvent(new NavTransUnitEvent(NavTransUnitEvent.NavigationType.NextEntry));
+         cellEditor.saveAndMoveRow(NavTransUnitEvent.NavigationType.NextEntry);
+      }
+   }
+
+   @Override
+   public void saveAsApprovedAndMovePrevious()
+   {
+      if (currentEditorIndex - 1 >= 0)
+      {
+         currentDisplay.openEditorAndCloseOthers(currentEditorIndex - 1);
+         currentEditorIndex--;
+      }
+      else
+      {
+		 cellEditor.saveAndMoveRow(NavTransUnitEvent.NavigationType.PrevEntry);
       }
    }
 
@@ -227,7 +234,16 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
    public void onCancel(ToggleEditor editor)
    {
       editor.setViewMode(ViewMode.VIEW);
-      editor.setText(cellEditor.getTargetCell().getTargets().get(editor.getIndex()));
+      if (cellEditor.getTargetCell().getTargets() != null && cellEditor.getTargetCell().getTargets().size() > editor.getIndex())
+      {
+         editor.setText(cellEditor.getTargetCell().getTargets().get(editor.getIndex()));
+      }
+      else
+      {
+         editor.setText(null);
+      }
+      validationMessagePanel.clear();
+      editor.removeValidationMessagePanel();
    }
 
    @Override
@@ -244,11 +260,13 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
       currentEditorIndex = editor.getIndex();
       if (currentEditors.contains(editor))
       {
-         //still in the same trans unit. won't trigger transunit selection or edit cell event
+         // still in the same trans unit. won't trigger transunit selection
+         // or edit cell event
          currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
       }
       Log.debug("current display:" + currentDisplay);
-      //else, it's clicking an editor outside current selection. the table selection event will trigger and showEditors will take care of the rest
+      // else, it's clicking an editor outside current selection. the table
+      // selection event will trigger and showEditors will take care of the rest
    }
 
    public ArrayList<String> getNewTargets()
@@ -290,8 +308,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
    {
       if (isEditing())
       {
-         eventBus.fireEvent(new RunValidationEvent(sourceContentsPresenter.getSelectedSource(),
-               getCurrentEditor().getText(), false));
+         eventBus.fireEvent(new RunValidationEvent(sourceContentsPresenter.getSelectedSource(), getCurrentEditor().getText(), false));
       }
    }
 
@@ -323,8 +340,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
       }
    }
 
-
-
    @Override
    public void onTextAreaKeyDown(KeyDownEvent event, ToggleEditor editor)
    {
@@ -337,12 +352,12 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
       else if (checkKey.isNextEntryKey())
       {
          // See editCell() for saving event
-         // saveAsApproved(editor);
+         saveAsApprovedAndMoveNext();
       }
       else if (checkKey.isPreviousEntryKey())
       {
          // See editCell() for saving event
-         // saveAndMoveRow(NavigationType.PrevEntry);
+         saveAsApprovedAndMovePrevious();
       }
       else if (checkKey.isNextStateEntryKey())
       {
@@ -356,7 +371,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
       {
          event.stopPropagation();
          event.preventDefault(); // stop browser save
-         // acceptFuzzyEdit();
+         saveAsFuzzy();
       }
       // else if (checkKey.isSaveAsApprovedKey(isEnterKeySavesEnabled))
       // {
@@ -368,13 +383,36 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
       // {
       // cancelEdit();
       // }
-      // else if (checkKey.isUserTyping() && !checkKey.isBackspace())
-      // {
-      // growSize();
-      // }
-      // else if (checkKey.isUserTyping() && checkKey.isBackspace())
-      // {
-      // shrinkSize(false);
-      // }
+      else if (checkKey.isUserTyping() && !checkKey.isBackspace())
+      {
+         editor.growSize();
+      }
+      else if (checkKey.isUserTyping() && checkKey.isBackspace())
+      {
+         editor.shrinkSize(false);
+      }
    }
+
+   public void moveToNextState(NavTransUnitEvent.NavigationType nav)
+   {
+      cellEditor.savePendingChange(true);
+      if (configHolder.isFuzzyAndUntranslated())
+      {
+         cellEditor.gotoFuzzyAndNewRow(nav);
+      }
+      else if (configHolder.isButtonUntranslated())
+      {
+         cellEditor.gotoNewRow(nav);
+      }
+      else if (configHolder.isButtonFuzzy())
+      {
+         cellEditor.gotoFuzzyRow(nav);
+      }
+   }
+
+   public void saveAndMoveRow(NavTransUnitEvent.NavigationType nav)
+   {
+      cellEditor.saveAndMoveRow(nav);
+   }
+
 }

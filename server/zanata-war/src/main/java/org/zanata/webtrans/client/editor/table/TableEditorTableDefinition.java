@@ -49,17 +49,13 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    public static final int TARGET_COL = 1;
 
    private final boolean isReadOnly;
-   private final TableResources images = GWT.create(TableResources.class);
    private final SourceContentsPresenter sourceContentsPresenter;
-    private TargetContentsPresenter targetContentsPresenter;
+   private TargetContentsPresenter targetContentsPresenter;
 
-    private String findMessage;
-   // private SourcePanel sourcePanel;
-   private boolean showingCopyButtons;
+   private String findMessage;
    private EventBus eventBus;
-   
-   private TransUnitDetailsPanel transUnitDetailsContent;
 
+   private TransUnitDetailsPanel transUnitDetailsContent;
 
    private final RowRenderer<TransUnit> rowRenderer = new RowRenderer<TransUnit>()
    {
@@ -151,60 +147,15 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          view.setStyleName("TableEditorCell TableEditorCell-Target");
          final VerticalPanel targetPanel = new VerticalPanel();
 
-          TargetContentsDisplay contentsDisplay = targetContentsPresenter.getNextTargetContentsDisplay(view.getRowIndex(), rowValue);
-          contentsDisplay.setToView();
+         TargetContentsDisplay contentsDisplay = targetContentsPresenter.getNextTargetContentsDisplay(view.getRowIndex(), rowValue);
+         contentsDisplay.setToView();
 
-//          final HighlightingLabel label = new HighlightingLabel();
-
-         /**
-          * if editor is opening, do not render target cell, otherwise editor
-          * will be closed. targetCellEditor.isEditing not suitable since when
-          * we click the save button, cellValue is not null.
-          **/
-//         if (targetCellEditor.isOpened() && targetCellEditor.getTargetCell().getId().equals(rowValue.getId()))
-//         {
-//            return;
-//         }
-//
-//         if (rowValue.getTargets().isEmpty() && !isReadOnly)
-//         {
-//            label.setText(messages.clickHere());
-//            label.setStylePrimaryName("TableEditorContent-Empty");
-//         }
-//         else
-//         {
-//            label.setText(rowValue.getTargets().toString());
-//            label.setStylePrimaryName("TableEditorContent");
-//         }
-//
-//         if (findMessage != null && !findMessage.isEmpty())
-//         {
-//            label.highlightSearch(findMessage);
-//         }
-//         label.setTitle(messages.clickHere());
-//
-//         label.sinkEvents(Event.ONMOUSEDOWN);
-//         final int rowIndex = view.getRowIndex();
-//         label.addMouseDownHandler(new MouseDownHandler()
-//         {
-//            @Override
-//            public void onMouseDown(MouseDownEvent event)
-//            {
-//               if (!isReadOnly && event.getNativeButton() == NativeEvent.BUTTON_LEFT)
-//               {
-//                  event.stopPropagation();
-//                  event.preventDefault();
-//                  eventBus.fireEvent(new OpenEditorEvent(rowIndex));
-//               }
-//            }
-//         });
          targetPanel.add(contentsDisplay.asWidget());
          targetPanel.setWidth("100%");
          view.setWidget(targetPanel);
       }
    };
 
-   private final NavigationMessages messages;
    private InlineTargetCellEditor targetCellEditor;
 
    public void setFindMessage(String findMessage)
@@ -215,11 +166,10 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final EventBus eventBus, final SourceContentsPresenter sourceContentsPresenter, boolean isReadOnly, TargetContentsPresenter targetContentsPresenter)
    {
       this.isReadOnly = isReadOnly;
-      this.messages = messages;
       this.eventBus = eventBus;
       this.sourceContentsPresenter = sourceContentsPresenter;
-       this.targetContentsPresenter = targetContentsPresenter;
-       setRowRenderer(rowRenderer);
+      this.targetContentsPresenter = targetContentsPresenter;
+      setRowRenderer(rowRenderer);
       sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
       targetColumnDefinition.setCellRenderer(targetCellRenderer);
 
@@ -293,13 +243,12 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             tableModel.gotoPrevNew();
          }
       };
-      this.targetCellEditor = new InlineTargetCellEditor(messages, findMessage, cancelCallBack, transValueCallBack, eventBus, isReadOnly, targetContentsPresenter);
+      this.targetCellEditor = new InlineTargetCellEditor(findMessage, cancelCallBack, transValueCallBack, isReadOnly, targetContentsPresenter);
       this.transUnitDetailsContent = new TransUnitDetailsPanel(messages.transUnitDetailsHeading());
       targetColumnDefinition.setCellEditor(targetCellEditor);
 
       addColumnDefinition(sourceColumnDefinition);
       addColumnDefinition(targetColumnDefinition);
-      showingCopyButtons = true;
    }
 
    public InlineTargetCellEditor getTargetCellEditor()

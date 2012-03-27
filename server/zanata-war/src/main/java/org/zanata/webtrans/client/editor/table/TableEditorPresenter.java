@@ -521,37 +521,36 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                // Send message to server to stop editing current selection
                // stopEditing(selectedTransUnit);
 
-               InlineTargetCellEditor editor = display.getTargetCellEditor();
-
                // If goto Next or Prev Fuzzy/New Trans Unit
                if (event.getRowType() == NavigationType.PrevEntry)
                {
-                  editor.saveAndMoveRow(NavigationType.PrevEntry);
+//                  editor.saveAndMoveRow(NavigationType.PrevEntry);
+                  targetContentsPresenter.saveAsApprovedAndMoveNext();
                }
 
                if (event.getRowType() == NavigationType.NextEntry)
                {
-                  editor.saveAndMoveRow(NavigationType.NextEntry);
+                  targetContentsPresenter.saveAsApprovedAndMovePrevious();
                }
 
                if (event.getRowType() == NavigationType.PrevState)
                {
-                  editor.saveAndMoveNextState(NavigationType.PrevEntry);
+                  targetContentsPresenter.moveToNextState(NavigationType.PrevEntry);
                }
 
                if (event.getRowType() == NavigationType.NextState)
                {
-                  editor.saveAndMoveNextState(NavigationType.NextEntry);
+                  targetContentsPresenter.moveToNextState(NavigationType.NextEntry);
                }
 
                if (event.getRowType() == NavigationType.FirstEntry)
                {
-                  editor.saveAndMoveRow(NavigationType.FirstEntry);
+                  targetContentsPresenter.saveAndMoveRow(NavigationType.FirstEntry);
                }
 
                if (event.getRowType() == NavigationType.LastEntry)
                {
-                  editor.saveAndMoveRow(NavigationType.LastEntry);
+                  targetContentsPresenter.saveAndMoveRow(NavigationType.LastEntry);
                }
 
             }
