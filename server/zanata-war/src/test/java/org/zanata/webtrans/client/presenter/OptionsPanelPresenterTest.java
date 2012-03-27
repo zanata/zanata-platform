@@ -81,6 +81,7 @@ public class OptionsPanelPresenterTest
    Capture<ButtonDisplayChangeEvent> capturedButtonDisplayChangeEvent = new Capture<ButtonDisplayChangeEvent>();
    Capture<FilterViewEvent> capturedFilterViewEvent = new Capture<FilterViewEvent>();
    Capture<UserConfigChangeEvent> capturedUserConfigChangeEvent = new Capture<UserConfigChangeEvent>();
+   private UserConfigHolder configHolder;
 
 
    @BeforeMethod
@@ -90,6 +91,7 @@ public class OptionsPanelPresenterTest
       resetAllCaptures();
 
       //new presenter to test
+      configHolder = new UserConfigHolder();
       optionsPanelPresenter = newOptionsPanelPresenter();
    }
 
@@ -406,7 +408,7 @@ public class OptionsPanelPresenterTest
       @SuppressWarnings("unchecked")
       ValueChangeEvent<Boolean> event = createMock(ValueChangeEvent.class);
       expect(event.getValue()).andReturn(editorButtonsOptionCheckValue).anyTimes();
-      mockEventBus.fireEvent(and(capture(capturedButtonDisplayChangeEvent), isA(ButtonDisplayChangeEvent.class)));
+      mockEventBus.fireEvent(and(capture(capturedUserConfigChangeEvent), isA(UserConfigChangeEvent.class)));
       expectLastCall().once();
 
       replay(event);
@@ -416,7 +418,7 @@ public class OptionsPanelPresenterTest
       capturedEditorButtonsChkValueChangeEventHandler.getValue().onValueChange(event);
 
       verifyAllMocks();
-      assertThat(capturedButtonDisplayChangeEvent.getValue().isShowButtons(), is(editorButtonsOptionCheckValue));
+      assertThat(configHolder.isDisplayButtons(), is(editorButtonsOptionCheckValue));
    }
 
    public void enterOptionChecked()
@@ -656,6 +658,6 @@ public class OptionsPanelPresenterTest
     */
    private OptionsPanelPresenter newOptionsPanelPresenter()
    {
-      return new OptionsPanelPresenter(mockDisplay, mockEventBus, mockValidationDetailsPresenter, mockWorkspaceContext, new UserConfigHolder());
+      return new OptionsPanelPresenter(mockDisplay, mockEventBus, mockValidationDetailsPresenter, mockWorkspaceContext, configHolder);
    }
 }
