@@ -525,12 +525,12 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                if (event.getRowType() == NavigationType.PrevEntry)
                {
 //                  editor.saveAndMoveRow(NavigationType.PrevEntry);
-                  targetContentsPresenter.moveToPreviousEntry();
+                  targetContentsPresenter.saveAsApprovedAndMoveNext();
                }
 
                if (event.getRowType() == NavigationType.NextEntry)
                {
-                  targetContentsPresenter.saveAsApproved();
+                  targetContentsPresenter.saveAsApprovedAndMovePrevious();
                }
 
                if (event.getRowType() == NavigationType.PrevState)

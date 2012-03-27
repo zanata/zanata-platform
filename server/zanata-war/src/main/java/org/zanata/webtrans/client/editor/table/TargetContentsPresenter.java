@@ -352,12 +352,12 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       else if (checkKey.isNextEntryKey())
       {
          // See editCell() for saving event
-         saveAsApprovedAndMoveNext(editor.getIndex());
+         saveAsApprovedAndMoveNext();
       }
       else if (checkKey.isPreviousEntryKey())
       {
          // See editCell() for saving event
-         saveAsApprovedAndMovePrevious(editor.getIndex());
+         saveAsApprovedAndMovePrevious();
       }
       else if (checkKey.isNextStateEntryKey())
       {
