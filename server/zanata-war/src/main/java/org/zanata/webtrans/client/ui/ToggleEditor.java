@@ -22,6 +22,8 @@ public interface ToggleEditor extends IsWidget, HasText
 
    void showButtons(boolean displayButtons);
 
+   void setAsLastEditor();
+
    static enum ViewMode
    {
       VIEW, EDIT

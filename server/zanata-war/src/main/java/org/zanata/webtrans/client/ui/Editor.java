@@ -2,6 +2,7 @@ package org.zanata.webtrans.client.ui;
 
 import com.google.common.base.Objects;
 import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.user.client.ui.Image;
 import org.zanata.webtrans.client.editor.table.EditorTextArea;
 import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
@@ -355,5 +356,11 @@ public class Editor extends Composite implements ToggleEditor
    {
       copySourceButton.setVisible(displayButtons);
       buttons.setVisible(getViewMode() == ViewMode.EDIT && displayButtons);
+   }
+
+   @Override
+   public void setAsLastEditor()
+   {
+      saveButton.getUpFace().setImage(new Image(images.cellEditorAccept()));
    }
 }

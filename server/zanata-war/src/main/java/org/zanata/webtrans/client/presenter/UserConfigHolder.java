@@ -15,13 +15,11 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.zanata.webtrans.client.resources.EditorConfigConstants;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Singleton;
+import org.zanata.webtrans.client.resources.EditorConfigConstants;
+
+import java.util.Map;
 
 @Singleton
 public class UserConfigHolder
