@@ -24,10 +24,16 @@ public interface ToggleEditor extends IsWidget, HasText
 
    void setAsLastEditor();
 
+   void shrinkSize(boolean forceShrink);
+
+   void growSize();
+
    static enum ViewMode
    {
       VIEW, EDIT
 
    }
+
+   void removeValidationMessagePanel();
 
 }
