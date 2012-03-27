@@ -58,16 +58,17 @@ import com.google.inject.Singleton;
 public class TargetContentsPresenter implements TargetContentsDisplay.Listener, UserConfigChangeHandler, UpdateValidationWarningsEventHandler, RequestValidationEventHandler, InsertStringInEditorHandler, CopyDataToEditorHandler
 {
    private static final int NO_OPEN_EDITOR = -1;
+   private static final int LAST_INDEX = -2;
    private final EventBus eventBus;
    private final TableEditorMessages messages;
    private final SourceContentsPresenter sourceContentsPresenter;
    private final UserConfigHolder configHolder;
-   private final CheckKey checkKey;
 
+   private final CheckKey checkKey;
    private NavigationMessages navMessages;
    private WorkspaceContext workspaceContext;
-   private final ValidationMessagePanel validationMessagePanel;
 
+   private final ValidationMessagePanel validationMessagePanel;
    private TargetContentsDisplay currentDisplay;
    private Provider<TargetContentsDisplay> displayProvider;
    private ArrayList<TargetContentsDisplay> displayList;
@@ -129,12 +130,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          previousDisplay.setToView();
       }
       currentDisplay = displayList.get(rowIndex);
-      if (previousDisplay != currentDisplay)
-      {
-         // currentEditor = null;
-         currentEditorIndex = NO_OPEN_EDITOR;
-      }
       currentEditors = currentDisplay.getEditors();
+      if (currentEditorIndex == LAST_INDEX)
+      {
+         currentEditorIndex = currentEditors.size() - 1;
+      }
 
       if (currentEditorIndex != NO_OPEN_EDITOR)
       {
@@ -193,6 +193,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else
       {
+         currentEditorIndex = 0;
          cellEditor.saveAndMoveRow(NavTransUnitEvent.NavigationType.NextEntry);
       }
    }
@@ -207,6 +208,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else
       {
+         currentEditorIndex = LAST_INDEX;
          cellEditor.saveAndMoveRow(NavTransUnitEvent.NavigationType.PrevEntry);
       }
    }
@@ -251,7 +253,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    public void toggleView(ToggleEditor editor)
    {
       currentEditorIndex = editor.getIndex();
-      if (currentEditors.contains(editor))
+      if (currentEditors != null && currentEditors.contains(editor))
       {
          // still in the same trans unit. won't trigger transunit selection
          // or edit cell event
@@ -354,11 +356,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else if (checkKey.isNextStateEntryKey())
       {
-         // saveAndMoveNextState(NavigationType.NextEntry);
+         saveAsApprovedAndMoveNext();
       }
       else if (checkKey.isPreviousStateEntryKey())
       {
-         // saveAndMoveNextState(NavigationType.PrevEntry);
+         saveAsApprovedAndMovePrevious();
       }
       else if (checkKey.isSaveAsFuzzyKey())
       {
