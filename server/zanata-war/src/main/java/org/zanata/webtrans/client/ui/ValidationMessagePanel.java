@@ -85,6 +85,8 @@ public class ValidationMessagePanel extends Composite
    {
       contentPanel.clear();
       contents.clear();
+      collapse();
+      setHeaderText(messages.validationWarningsHeading(0));
    }
 
    public void setContent(List<String> errors)

@@ -5,6 +5,7 @@ import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
@@ -12,7 +13,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -254,6 +254,11 @@ public class Editor extends Composite implements ToggleEditor
          textArea.setFocus(true);
       }
       buttons.setVisible(viewMode == ViewMode.EDIT && listener.isDisplayButtons());
+
+      if (viewMode == ViewMode.VIEW)
+      {
+         removeValidationMessagePanel();
+      }
    }
 
    @Override

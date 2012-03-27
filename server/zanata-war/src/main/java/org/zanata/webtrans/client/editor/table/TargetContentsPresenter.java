@@ -243,7 +243,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          editor.setText(null);
       }
       validationMessagePanel.clear();
-      editor.removeValidationMessagePanel();
    }
 
    @Override
@@ -373,16 +372,16 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          event.preventDefault(); // stop browser save
          saveAsFuzzy();
       }
-      // else if (checkKey.isSaveAsApprovedKey(isEnterKeySavesEnabled))
-      // {
-      // event.stopPropagation();
-      // event.preventDefault();
-      // saveApprovedAndMoveRow(NavigationType.NextEntry);
-      // }
-      // else if (checkKey.isCloseEditorKey(isEscKeyCloseEditor))
-      // {
-      // cancelEdit();
-      // }
+      else if (checkKey.isSaveAsApprovedKey(configHolder.isButtonEnter()))
+      {
+         event.stopPropagation();
+         event.preventDefault();
+         saveAsApprovedAndMoveNext();
+      }
+      else if (checkKey.isCloseEditorKey(configHolder.isButtonEsc()))
+      {
+         onCancel(editor);
+      }
       else if (checkKey.isUserTyping() && !checkKey.isBackspace())
       {
          editor.growSize();

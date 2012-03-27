@@ -37,7 +37,7 @@
 				<g:cell>
 					<g:FlowPanel ui:field="validationMessagePanelContainer"/>
 				</g:cell>
-				<g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_RIGHT">
+				<g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_RIGHT" width="100px">
 					<g:HorizontalPanel ui:field="buttons" styleName="gwt-Button">
 						<g:PushButton ui:field="validateButton" styleName="gwt-Button" title="{messages.runValidation}">
 		                    <g:upFace image="{images.cellEditorValidate}" />
