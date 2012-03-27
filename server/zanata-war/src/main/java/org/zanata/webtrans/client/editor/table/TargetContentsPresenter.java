@@ -21,8 +21,8 @@ import javax.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
-import org.zanata.webtrans.client.events.ButtonDisplayChangeEventHandler;
+import org.zanata.webtrans.client.editor.CheckKey;
+import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
@@ -45,13 +45,14 @@ import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
 import org.zanata.webtrans.client.ui.ValidationMessagePanel;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
 
 @Singleton
 public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
@@ -66,6 +67,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
    private final TableEditorMessages messages;
    private final SourceContentsPresenter sourceContentsPresenter;
    private final UserConfigHolder configHolder;
+   private final CheckKey checkKey;
+
    private NavigationMessages navMessages;
    private WorkspaceContext workspaceContext;
    private final ValidationMessagePanel validationMessagePanel;
@@ -91,6 +94,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
       this.navMessages = navMessages;
       this.workspaceContext = workspaceContext;
 
+      checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       validationMessagePanel = new ValidationMessagePanel(true, messages);
       eventBus.addHandler(UserConfigChangeEvent.getType(), this);
       eventBus.addHandler(UpdateValidationWarningsEvent.getType(), this);
@@ -193,9 +197,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
    }
 
    @Override
-   public void saveAsApproved(ToggleEditor editor)
+   public void saveAsApproved(int editorIndex)
    {
-      int editorIndex = currentEditors.indexOf(editor);
       if (editorIndex + 1 < currentEditors.size())
       {
          currentDisplay.openEditorAndCloseOthers(editorIndex + 1);
@@ -208,7 +211,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
    }
 
    @Override
-   public void saveAsFuzzy(ToggleEditor editor)
+   public void saveAsFuzzy()
    {
       Preconditions.checkState(cellEditor != null, "InlineTargetCellEditor must be set for triggering table save event");
       cellEditor.acceptFuzzyEdit();
@@ -317,6 +320,61 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
       else
       {
          eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnopened()));
+      }
+   }
+
+
+
+   @Override
+   public void onTextAreaKeyDown(KeyDownEvent event, ToggleEditor editor)
+   {
+      checkKey.init(event.getNativeEvent());
+
+      if (checkKey.isCopyFromSourceKey())
+      {
+         copySource(editor);
+      }
+      else if (checkKey.isNextEntryKey())
+      {
+         // See editCell() for saving event
+         saveAsApproved(editor);
+      }
+      else if (checkKey.isPreviousEntryKey())
+      {
+         // See editCell() for saving event
+         saveAndMoveRow(NavigationType.PrevEntry);
+      }
+      else if (checkKey.isNextStateEntryKey())
+      {
+         saveAndMoveNextState(NavigationType.NextEntry);
+      }
+      else if (checkKey.isPreviousStateEntryKey())
+      {
+         saveAndMoveNextState(NavigationType.PrevEntry);
+      }
+      else if (checkKey.isSaveAsFuzzyKey())
+      {
+         event.stopPropagation();
+         event.preventDefault(); // stop browser save
+         acceptFuzzyEdit();
+      }
+      else if (checkKey.isSaveAsApprovedKey(isEnterKeySavesEnabled))
+      {
+         event.stopPropagation();
+         event.preventDefault();
+         saveApprovedAndMoveRow(NavigationType.NextEntry);
+      }
+      else if (checkKey.isCloseEditorKey(isEscKeyCloseEditor))
+      {
+         cancelEdit();
+      }
+      else if (checkKey.isUserTyping() && !checkKey.isBackspace())
+      {
+         growSize();
+      }
+      else if (checkKey.isUserTyping() && checkKey.isBackspace())
+      {
+         shrinkSize(false);
       }
    }
 }

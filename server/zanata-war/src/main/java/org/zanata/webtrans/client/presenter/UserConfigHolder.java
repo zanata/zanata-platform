@@ -15,7 +15,6 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.zanata.webtrans.client.resources.EditorConfigConstants;
