@@ -219,7 +219,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
    @Override
    public void savePendingChange(boolean cancelIfUnchanged)
    {
-      if (isEditing() && targetContentsPresenter.getCurrentDisplay() != null)
+      if (isEditing())
       {
          List<String> newTargets = targetContentsPresenter.getNewTargets();
          Log.info("saving " + curRow + " with " + newTargets);

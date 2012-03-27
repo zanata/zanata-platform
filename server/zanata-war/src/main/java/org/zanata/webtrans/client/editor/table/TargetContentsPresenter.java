@@ -28,7 +28,6 @@ import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.InsertStringInEditorHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
-import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
@@ -178,11 +177,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
    }
 
-   public TargetContentsDisplay getCurrentDisplay()
-   {
-      return currentDisplay;
-   }
-
    @Override
    public void validate(ToggleEditor editor)
    {
@@ -213,7 +207,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else
       {
-		 cellEditor.saveAndMoveRow(NavTransUnitEvent.NavigationType.PrevEntry);
+         cellEditor.saveAndMoveRow(NavTransUnitEvent.NavigationType.PrevEntry);
       }
    }
 
