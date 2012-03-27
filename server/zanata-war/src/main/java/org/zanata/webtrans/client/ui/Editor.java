@@ -1,19 +1,17 @@
 package org.zanata.webtrans.client.ui;
 
-import com.google.common.base.Objects;
-import com.google.gwt.event.dom.client.MouseDownEvent;
 import org.zanata.webtrans.client.editor.table.EditorTextArea;
 import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 
-import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -23,6 +21,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
@@ -85,9 +84,8 @@ public class Editor extends Composite implements ToggleEditor
       this.index = index;
       initWidget(uiBinder.createAndBindUi(this));
 
-      saveButton.addClickHandler(acceptHandler);
-
-      fuzzyButton.addClickHandler(fuzzyHandler);
+      //determine whether to show or hide buttons
+      showButtons(listener.isDisplayButtons());
 
       label.setText(displayString);
       if (displayString == null || displayString.isEmpty())
@@ -177,6 +175,12 @@ public class Editor extends Composite implements ToggleEditor
       }
    }
 
+   @UiHandler("textArea")
+   public void onKeyDown(KeyDownEvent event)
+   {
+      listener.onTextAreaKeyDown(event, this);
+   }
+
    @UiHandler("copySourceButton")
    public void onCopySource(ClickEvent event)
    {
@@ -192,14 +196,14 @@ public class Editor extends Composite implements ToggleEditor
    @UiHandler("saveButton")
    public void onSaveAsApproved(ClickEvent event)
    {
-      listener.saveAsApproved(this);
+      listener.saveAsApproved(index);
       event.stopPropagation();
    }
 
    @UiHandler("fuzzyButton")
    public void onSaveAsFuzzy(ClickEvent event)
    {
-      listener.saveAsFuzzy(this);
+      listener.saveAsFuzzy();
       event.stopPropagation();
    }
    
@@ -215,8 +219,6 @@ public class Editor extends Composite implements ToggleEditor
    public void onLabelClick(MouseDownEvent event)
    {
       listener.toggleView(this);
-//      event.stopPropagation();
-      // toggleView();
    }
 
    @Override
@@ -243,7 +245,7 @@ public class Editor extends Composite implements ToggleEditor
          fireValidationEvent();
          textArea.setFocus(true);
       }
-      buttons.setVisible(viewMode == ViewMode.EDIT);
+      buttons.setVisible(viewMode == ViewMode.EDIT && listener.isDisplayButtons());
       //sync label and text area
       label.setText(textArea.getText());
    }
@@ -260,28 +262,6 @@ public class Editor extends Composite implements ToggleEditor
    {
       return textArea.getText();
    }
-
-   /**
-    * The click listener used to save as fuzzy.
-    */
-   private ClickHandler fuzzyHandler = new ClickHandler()
-   {
-      public void onClick(ClickEvent event)
-      {
-         // acceptFuzzyEdit();
-      }
-   };
-
-   /**
-    * The click listener used to accept.
-    */
-   private ClickHandler acceptHandler = new ClickHandler()
-   {
-      public void onClick(ClickEvent event)
-      {
-         // saveApprovedAndMoveRow(NavigationType.NextEntry);
-      }
-   };
 
    @Override
    public void setSaveButtonTitle(String title)
@@ -373,5 +353,18 @@ public class Editor extends Composite implements ToggleEditor
    public int getIndex()
    {
       return index;
+   }
+
+   @Override
+   public void showButtons(boolean displayButtons)
+   {
+      copySourceButton.setVisible(displayButtons);
+      buttons.setVisible(getViewMode() == ViewMode.EDIT && displayButtons);
+   }
+
+   @Override
+   public void setAsLastEditor()
+   {
+      saveButton.getUpFace().setImage(new Image(images.cellEditorAccept()));
    }
 }

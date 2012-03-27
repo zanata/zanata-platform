@@ -13,6 +13,10 @@ public class UserConfigChangeEvent extends GwtEvent<UserConfigChangeHandler>
     */
    private static Type<UserConfigChangeHandler> TYPE;
 
+   public UserConfigChangeEvent()
+   {
+   }
+
    /**
     * Gets the type associated with this event.
     * 
@@ -27,11 +31,12 @@ public class UserConfigChangeEvent extends GwtEvent<UserConfigChangeHandler>
       return TYPE;
    }
 
-   private HashMap<String, Boolean> configMap;
+   private Map<String, Boolean> configMap;
 
    public UserConfigChangeEvent(Map<String, Boolean> configMap)
    {
-      this.configMap = (HashMap<String, Boolean>) configMap;
+      //TODO instead of passing config map around, all receivers should directly reference UserConfigHolder to get value
+      this.configMap = configMap;
    }
 
    public Map<String, Boolean> getConfigMap()

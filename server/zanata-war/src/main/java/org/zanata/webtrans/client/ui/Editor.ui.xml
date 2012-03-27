@@ -43,7 +43,7 @@
 		                    <g:upFace image="{images.cellEditorValidate}" />
 						</g:PushButton>
 						<g:PushButton ui:field="saveButton" styleName="gwt-Button" title="{messages.editMoveToNext}">
-		                    <g:upFace image="{images.cellEditorAccept}" />
+		                    <g:upFace image="{images.cellEditorMoveDown}" />
 						</g:PushButton>
 						<g:PushButton ui:field="fuzzyButton" styleName="gwt-Button" title="{messages.saveAsFuzzy}">
 		                    <g:upFace image="{images.cellEditorFuzzy}" />

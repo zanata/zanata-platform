@@ -18,6 +18,7 @@ package org.zanata.webtrans.client.editor.table;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.google.common.base.Preconditions;
 import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 
@@ -53,6 +54,27 @@ public class TargetContentsView implements TargetContentsDisplay
    }
 
    @Override
+   public void setSaveButtonTitle(String title)
+   {
+      Preconditions.checkState(editors.size() > 0);
+      lastEditor().setSaveButtonTitle(title);
+   }
+
+   private ToggleEditor lastEditor()
+   {
+      return editors.get(editors.size() - 1);
+   }
+
+   @Override
+   public void showButtons(boolean displayButtons)
+   {
+      for (ToggleEditor editor : editors)
+      {
+         editor.showButtons(displayButtons);
+      }
+   }
+
+   @Override
    public void setTargets(ArrayList<String> targets)
    {
       editors.clear();
@@ -66,7 +88,6 @@ public class TargetContentsView implements TargetContentsDisplay
          editor.setText("");
          editorGrid.setWidget(rowIndex, 0, editor);
          editors.add(editor);
-         editor.setSaveButtonTitle("Save as approved");
       }
       else
       {
@@ -78,11 +99,8 @@ public class TargetContentsView implements TargetContentsDisplay
             editors.add(editor);
             rowIndex++;
          }
-
-         // TODO last one has different title. The title should be in
-         // NavigationMessages not hardcoded string
-         editors.get(editors.size() - 1).setSaveButtonTitle("Save and go to next");
       }
+      lastEditor().setAsLastEditor();
    }
 
    @Override

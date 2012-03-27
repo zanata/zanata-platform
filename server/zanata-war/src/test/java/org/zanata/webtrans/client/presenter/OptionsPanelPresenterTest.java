@@ -656,6 +656,6 @@ public class OptionsPanelPresenterTest
     */
    private OptionsPanelPresenter newOptionsPanelPresenter()
    {
-      return new OptionsPanelPresenter(mockDisplay, mockEventBus, mockValidationDetailsPresenter, mockWorkspaceContext);
+      return new OptionsPanelPresenter(mockDisplay, mockEventBus, mockValidationDetailsPresenter, mockWorkspaceContext, new UserConfigHolder());
    }
 }

@@ -506,36 +506,18 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
    }
 
 
-   public void setShowOperationButtons(boolean showButtons)
-   {
-//      operationsPanel.setVisible(showButtons);
-   }
-
    public void updateKeyBehaviour(Map<String, Boolean> configMap)
    {
-      if (configMap.containsKey(EditorConfigConstants.BUTTON_FUZZY) && configMap.containsKey(EditorConfigConstants.BUTTON_UNTRANSLATED))
-      {
-         untranslatedMode = configMap.get(EditorConfigConstants.BUTTON_UNTRANSLATED);
-         fuzzyMode = configMap.get(EditorConfigConstants.BUTTON_FUZZY);
-      }
-
-//      if (configMap.containsKey(EditorConfigConstants.BUTTON_ENTER))
+//      if (configMap.containsKey(EditorConfigConstants.BUTTON_FUZZY) && configMap.containsKey(EditorConfigConstants.BUTTON_UNTRANSLATED))
 //      {
-//         isEnterKeySavesEnabled = configMap.get(EditorConfigConstants.BUTTON_ENTER);
-//         if (isEnterKeySavesEnabled)
-//         {
-//            saveButton.setTitle(saveButtonwithEnterShortcuts);
-//         }
-//         else
-//         {
-//            saveButton.setTitle(saveButtonShortcuts);
-//         }
+//         untranslatedMode = configMap.get(EditorConfigConstants.BUTTON_UNTRANSLATED);
+//         fuzzyMode = configMap.get(EditorConfigConstants.BUTTON_FUZZY);
 //      }
-
-      if (configMap.containsKey(EditorConfigConstants.BUTTON_ESC))
-      {
-         isEscKeyCloseEditor = configMap.get(EditorConfigConstants.BUTTON_ESC);
-      }
+//
+//      if (configMap.containsKey(EditorConfigConstants.BUTTON_ESC))
+//      {
+//         isEscKeyCloseEditor = configMap.get(EditorConfigConstants.BUTTON_ESC);
+//      }
 
    }
 
