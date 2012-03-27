@@ -361,23 +361,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       return true;
    }
 
-   public void updateKeyBehaviour(Map<String, Boolean> configMap)
-   {
-      // if (configMap.containsKey(EditorConfigConstants.BUTTON_FUZZY) &&
-      // configMap.containsKey(EditorConfigConstants.BUTTON_UNTRANSLATED))
-      // {
-      // untranslatedMode =
-      // configMap.get(EditorConfigConstants.BUTTON_UNTRANSLATED);
-      // fuzzyMode = configMap.get(EditorConfigConstants.BUTTON_FUZZY);
-      // }
-      //
-      // if (configMap.containsKey(EditorConfigConstants.BUTTON_ESC))
-      // {
-      // isEscKeyCloseEditor = configMap.get(EditorConfigConstants.BUTTON_ESC);
-      // }
-
-   }
-
    public boolean isCancelButtonFocused()
    {
       return isCancelButtonFocused;

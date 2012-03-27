@@ -38,9 +38,13 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.inject.Inject;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 
 public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavigationPresenter.Display> implements HasNavTransUnitHandlers
 {
+
+   private UserConfigHolder configHolder;
 
    public interface Display extends WidgetDisplay
    {
@@ -62,9 +66,10 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
    }
 
    @Inject
-   public TransUnitNavigationPresenter(Display display, EventBus eventBus)
+   public TransUnitNavigationPresenter(Display display, EventBus eventBus, UserConfigHolder configHolder)
    {
       super(display, eventBus);
+      this.configHolder = configHolder;
    }
 
    @Override
@@ -141,6 +146,14 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
          }
       }));
 
+      registerHandler(eventBus.addHandler(UserConfigChangeEvent.getType(), new UserConfigChangeHandler()
+      {
+         @Override
+         public void onValueChanged(UserConfigChangeEvent event)
+         {
+            display.setNavModeTooltip(configHolder.isButtonFuzzy(), configHolder.isButtonUntranslated());
+         }
+      }));
    }
 
    @Override
