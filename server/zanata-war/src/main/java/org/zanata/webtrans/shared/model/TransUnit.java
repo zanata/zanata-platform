@@ -1,9 +1,8 @@
 package org.zanata.webtrans.shared.model;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.ArrayList;
 
-import com.google.common.collect.Lists;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 
@@ -20,9 +19,10 @@ public class TransUnit implements IsSerializable, Serializable
 
    private LocaleId localeId;
 
-   private List<String> sources;
+   private boolean plural;
+   private ArrayList<String> sources;
    private String sourceComment;
-   private List<String> targets;
+   private ArrayList<String> targets;
    private String msgContext;
    private String lastModifiedBy;
    private String lastModifiedTime;
@@ -34,15 +34,15 @@ public class TransUnit implements IsSerializable, Serializable
    {
    }
 
-   public TransUnit(TransUnitId id, String resId, LocaleId localeId, List<String> sources, String sourceComment, List<String> targets, ContentState status, String lastModifiedBy, String lastModifiedTime, String msgContext, int rowIndex)
+   public TransUnit(TransUnitId id, String resId, LocaleId localeId, boolean plural, ArrayList<String> sources, String sourceComment, ArrayList<String> targets, ContentState status, String lastModifiedBy, String lastModifiedTime, String msgContext, int rowIndex)
    {
       this.id = id;
       this.resId = resId;
       this.localeId = localeId;
-      //gwt rpc can't handle unmodifiable collection
-      this.sources = Lists.newArrayList(sources);
+      this.plural = plural;
+      this.sources = sources;
       this.sourceComment = sourceComment;
-      this.targets = Lists.newArrayList(targets);
+      this.targets = targets;
       this.status = status;
       this.lastModifiedBy = lastModifiedBy;
       this.lastModifiedTime = lastModifiedTime;
@@ -65,12 +65,28 @@ public class TransUnit implements IsSerializable, Serializable
       return localeId;
    }
 
-   public List<String> getSources()
+   /**
+    * @return the pluralSupported
+    */
+   public boolean isPlural()
+   {
+      return plural;
+   }
+
+   /**
+    * @param plural the plural to set
+    */
+   public void setPlural(boolean plural)
+   {
+      this.plural = plural;
+   }
+
+   public ArrayList<String> getSources()
    {
       return sources;
    }
 
-   public void setSources(List<String> sources)
+   public void setSources(ArrayList<String> sources)
    {
       this.sources = sources;
    }
@@ -85,12 +101,12 @@ public class TransUnit implements IsSerializable, Serializable
       this.sourceComment = sourceComment;
    }
 
-   public List<String> getTargets()
+   public ArrayList<String> getTargets()
    {
       return targets;
    }
 
-   public void setTargets(List<String> targets)
+   public void setTargets(ArrayList<String> targets)
    {
       this.targets = targets;
    }

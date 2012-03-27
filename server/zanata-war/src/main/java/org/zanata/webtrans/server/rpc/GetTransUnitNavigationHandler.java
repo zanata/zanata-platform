@@ -76,7 +76,7 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
       }
 
       HTextFlow tf = textFlowDAO.findById(action.getId(), false);
-      List<Long> results = new ArrayList<Long>();
+      ArrayList<Long> results = new ArrayList<Long>();
       List<HTextFlow> textFlows = new ArrayList<HTextFlow>();
       if (action.getPhrase() != null && !action.getPhrase().isEmpty())
       {

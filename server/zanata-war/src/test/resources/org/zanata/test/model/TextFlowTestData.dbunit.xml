@@ -20,7 +20,8 @@
   	resId="tf1"
   	revision="1"
   	pos="0"
-    obsolete="0"
+   obsolete="0"
+   plural="false"
   	content0="hello world"
   	wordCount="11"
   />
@@ -92,7 +93,8 @@
   	resId="tf2"
   	revision="1"
   	pos="0"
-    obsolete="0"
+   obsolete="0"
+   plural="false"
   	content0="mssgId1"
   	wordCount="1"
   />
@@ -102,7 +104,8 @@
   	resId="tf3"
   	revision="1"
   	pos="1"
-    obsolete="0"
+   obsolete="0"
+   plural="false"
   	content0="mssgId2"
   	wordCount="1"
   />
@@ -112,7 +115,8 @@
   	resId="tf4"
   	revision="1"
   	pos="2"
-    obsolete="0"
+   obsolete="0"
+   plural="false"
   	content0="mssgId3"
   	wordCount="1"
   />
@@ -194,7 +198,8 @@
   	resId="tf1"
   	revision="1"
   	pos="0"
-    obsolete="0"
+   obsolete="0"
+   plural="false"
   	content0="mssgId4"
   	wordCount="1"
   />
