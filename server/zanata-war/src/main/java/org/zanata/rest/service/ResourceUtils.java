@@ -100,6 +100,8 @@ public class ResourceUtils
 
    private static final Log log = Logging.getLog(ResourceUtils.class);
 
+   //   private static int MAX_TARGET_CONTENTS = 6;
+
    private Properties pluralForms = new Properties();
 
    @PostConstruct
@@ -1029,7 +1031,14 @@ public class ResourceUtils
       return null;
    }
 
-   public int getNPluralForms(String entries, HLocale targetLocale)
+   public int getNumPlurals(HDocument document, HLocale hLocale)
+   {
+      HPoTargetHeader headers = document.getPoTargetHeaders().get(hLocale);
+      String headerEntries = headers != null ? headers.getEntries() : "";
+      return getNPluralForms(headerEntries, hLocale);
+   }
+
+   private int getNPluralForms(String entries, HLocale targetLocale)
    {
       int nPlurals = 1;
 
@@ -1073,6 +1082,7 @@ public class ResourceUtils
          log.error("Error getting nPlurals:" + entries);
       }
 
+      //      nPlurals = (nPlurals > MAX_TARGET_CONTENTS || nPlurals < 1) ? 1 : nPlurals;
       return nPlurals;
    }
 

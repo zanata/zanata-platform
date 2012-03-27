@@ -3,6 +3,7 @@ package org.zanata.adapter.po;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -283,14 +284,46 @@ public class PoReader2
       return messageParser;
    }
 
+   private static boolean allNonEmpty(Collection<?> coll)
+   {
+      if (coll == null)
+         return false;
+      for (Object o : coll)
+      {
+         if (o == null)
+            return false;
+      }
+      return true;
+   }
+
+   private static boolean allEmpty(List<String> strings)
+   {
+      if (strings == null)
+         return true;
+      for (String s : strings)
+      {
+         if (s != null && !s.isEmpty())
+            return false;
+      }
+      return true;
+   }
+
    static ContentState getContentState(Message message)
    {
-      if (message.getMsgstr() == null || message.getMsgstr().isEmpty())
-         return ContentState.New;
-      else if (message.isFuzzy())
+      boolean fuzzy = message.isFuzzy();
+      if (message.isPlural() && allEmpty(message.getMsgstrPlural()))
+      {
+         fuzzy = false;
+      }
+      if (fuzzy)
+      {
          return ContentState.NeedReview;
-      else
+      }
+      if ((message.getMsgstr() != null && !message.getMsgstr().isEmpty()) || allNonEmpty(message.getMsgstrPlural()))
+      {
          return ContentState.Approved;
+      }
+      return ContentState.New;
    }
 
    static String createId(Message message)

@@ -21,6 +21,7 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -50,6 +51,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.ActionHandlerFor;
@@ -64,6 +66,7 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
 @Name("webtrans.gwt.UpdateTransUnitHandler")
 @Scope(ScopeType.STATELESS)
@@ -80,6 +83,9 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
    @Logger
    Log log;
+
+   @In
+   private ResourceUtils resourceUtils;
 
    @In
    Session session;
@@ -105,7 +111,8 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    @In
    private LocaleService localeServiceImpl;
 
-   private static SimpleDateFormat SIMPLE_FORMAT = new SimpleDateFormat();
+   // NB SimpleDateFormat is not thread safe! (we could use a ThreadLocal)
+   private SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 
    /**
     * Used by Seam
@@ -229,7 +236,8 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          }
       }
 
-      UpdateTransUnit previous = new UpdateTransUnit(action.getTransUnitId(), target.getContents(), prevStatus);
+      ArrayList<String> contents = Lists.newArrayList(target.getContents());
+      UpdateTransUnit previous = new UpdateTransUnit(action.getTransUnitId(), contents, prevStatus);
 
       if (!action.getContents().equals(target.getContents()))
       {
@@ -256,12 +264,18 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          msgContext = hTextFlow.getPotEntryData().getContext();
       }
 
-      TransUnit tu = new TransUnit(action.getTransUnitId(), hTextFlow.getResId(),
-                                   locale, hTextFlow.getContents(),
-                                   CommentsUtil.toString(hTextFlow.getComment()),
-                                   action.getContents(), target.getState(),
-                                   authenticatedAccount.getPerson().getName(),
-                                   SIMPLE_FORMAT.format(new Date()), msgContext, hTextFlow.getPos());
+      ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);
+      TransUnit tu = new TransUnit(
+            action.getTransUnitId(), 
+            hTextFlow.getResId(),
+            locale, 
+            hTextFlow.isPlural(),
+            sourceContents,
+            CommentsUtil.toString(hTextFlow.getComment()),
+            action.getContents(), 
+            target.getState(),
+            authenticatedAccount.getPerson().getName(),
+            simpleDateFormat.format(new Date()), msgContext, hTextFlow.getPos());
       // @formatter:on
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu, identity.getCredentials().getUsername());
 
@@ -330,13 +344,21 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          msgContext = hTextFlow.getPotEntryData().getContext();
       }
 
+      int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale);
+      ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);
+      ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(hTextFlow, target, nPlurals);
       // @formatter:off
-      TransUnit tu = new TransUnit(action.getTransUnitId(), hTextFlow.getResId(),
-                                   locale, hTextFlow.getContents(),
-                                   CommentsUtil.toString(hTextFlow.getComment()),
-                                   target.getContents(), target.getState(),
-                                   target.getLastModifiedBy().getName(),
-                                   SIMPLE_FORMAT.format(target.getLastChanged()), msgContext, hTextFlow.getPos());
+      TransUnit tu = new TransUnit(
+            action.getTransUnitId(), 
+            hTextFlow.getResId(),
+            locale, 
+            hTextFlow.isPlural(),
+            sourceContents,
+            CommentsUtil.toString(hTextFlow.getComment()),
+            targetContents, 
+            target.getState(),
+            target.getLastModifiedBy().getName(),
+            simpleDateFormat.format(target.getLastChanged()), msgContext, hTextFlow.getPos());
       // @formatter:on
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu, ZanataIdentity.instance().getCredentials().getUsername());
 

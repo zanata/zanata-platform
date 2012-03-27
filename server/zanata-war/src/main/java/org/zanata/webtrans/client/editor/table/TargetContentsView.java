@@ -15,13 +15,12 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.ui.Grid;
@@ -34,7 +33,7 @@ public class TargetContentsView implements TargetContentsDisplay
 
    private Grid editorGrid;
    private String findMessage;
-   private List<ToggleEditor> editors;
+   private ArrayList<ToggleEditor> editors;
    private Listener listener;
 
    public TargetContentsView()
@@ -54,7 +53,7 @@ public class TargetContentsView implements TargetContentsDisplay
    }
 
    @Override
-   public void setTargets(List<String> targets)
+   public void setTargets(ArrayList<String> targets)
    {
       editors.clear();
       int size = (targets == null || targets.size() <= 0) ? 1 : targets.size();
@@ -93,9 +92,9 @@ public class TargetContentsView implements TargetContentsDisplay
    }
 
    @Override
-   public List<String> getNewTargets()
+   public ArrayList<String> getNewTargets()
    {
-      List<String> result = Lists.newArrayList();
+      ArrayList<String> result = Lists.newArrayList();
       for (ToggleEditor editor : editors)
       {
          result.add(editor.getText());
@@ -126,7 +125,7 @@ public class TargetContentsView implements TargetContentsDisplay
    }
 
    @Override
-   public List<ToggleEditor> getEditors()
+   public ArrayList<ToggleEditor> getEditors()
    {
       return editors;
    }

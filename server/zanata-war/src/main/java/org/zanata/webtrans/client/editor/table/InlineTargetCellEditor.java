@@ -20,8 +20,8 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.Predicate;
@@ -338,7 +338,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
 //      if (isEditing() && !cellValue.getTarget().equals(textArea.getText()))
       if (isEditing() && targetContentsPresenter.getCurrentDisplay() != null)
       {
-         List<String> newTargets = targetContentsPresenter.getNewTargets();
+         ArrayList<String> newTargets = targetContentsPresenter.getNewTargets();
          Log.info("saving " + curRow + " with " + newTargets);
          if (!cellValue.getTargets().equals(newTargets))
          {
@@ -354,7 +354,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       targetContentsPresenter.setToViewMode();
    }
 
-   private void determineStatus(List<String> newTargets, ContentState stateToSet)
+   private void determineStatus(ArrayList<String> newTargets, ContentState stateToSet)
    {
       Collection<String> emptyTargets = Collections2.filter(newTargets, new Predicate<String>()
       {
@@ -423,7 +423,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       {
          return;
       }
-      List<String> newTargets = targetContentsPresenter.getNewTargets();
+      ArrayList<String> newTargets = targetContentsPresenter.getNewTargets();
       cellValue.setTargets(newTargets);
       determineStatus(newTargets, ContentState.Approved);
 
@@ -443,7 +443,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
    public void acceptFuzzyEdit()
    {
 //      String text = textArea.getText();
-      List<String> newTargets = targetContentsPresenter.getNewTargets();
+      ArrayList<String> newTargets = targetContentsPresenter.getNewTargets();
       cellValue.setTargets(newTargets);
       determineStatus(newTargets, ContentState.NeedReview);
       curCallback.onComplete(curCellEditInfo, cellValue);

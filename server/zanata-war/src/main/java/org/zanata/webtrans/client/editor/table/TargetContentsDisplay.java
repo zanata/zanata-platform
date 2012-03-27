@@ -15,9 +15,8 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
-import java.util.List;
+import java.util.ArrayList;
 
-import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
@@ -44,17 +43,17 @@ public interface TargetContentsDisplay extends WidgetDisplay, Iterable<ToggleEdi
       void saveAsFuzzy(ToggleEditor editor);
    }
 
-   void setTargets(List<String> targets);
+   void setTargets(ArrayList<String> targets);
 
    void setFindMessage(String findMessage);
 
-   List<String> getNewTargets();
+   ArrayList<String> getNewTargets();
 
    void setToView();
 
    boolean isEditing();
     
-   List<ToggleEditor> getEditors();
+   ArrayList<ToggleEditor> getEditors();
 
    void setListener(Listener listener);
 }

@@ -15,7 +15,7 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import javax.inject.Provider;
 
@@ -57,9 +57,9 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
 
    private TargetContentsDisplay currentDisplay;
    private Provider<TargetContentsDisplay> displayProvider;
-   private List<TargetContentsDisplay> displayList;
+   private ArrayList<TargetContentsDisplay> displayList;
    private int currentEditorIndex = NO_OPEN_EDITOR;
-   private List<ToggleEditor> currentEditors;
+   private ArrayList<ToggleEditor> currentEditors;
    private TransUnitsEditModel cellEditor;
 
    @Inject
@@ -261,7 +261,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
       //else, it's clicking an editor outside current selection. the table selection event will trigger and showEditors will take care of the rest
    }
 
-   public List<String> getNewTargets()
+   public ArrayList<String> getNewTargets()
    {
       return currentDisplay.getNewTargets();
    }
