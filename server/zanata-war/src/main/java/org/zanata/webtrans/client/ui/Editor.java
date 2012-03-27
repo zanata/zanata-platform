@@ -21,6 +21,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
@@ -359,5 +360,11 @@ public class Editor extends Composite implements ToggleEditor
    {
       copySourceButton.setVisible(displayButtons);
       buttons.setVisible(getViewMode() == ViewMode.EDIT && displayButtons);
+   }
+
+   @Override
+   public void setAsLastEditor()
+   {
+      saveButton.getUpFace().setImage(new Image(images.cellEditorAccept()));
    }
 }

@@ -337,44 +337,44 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
       else if (checkKey.isNextEntryKey())
       {
          // See editCell() for saving event
-         saveAsApproved(editor);
+         // saveAsApproved(editor);
       }
       else if (checkKey.isPreviousEntryKey())
       {
          // See editCell() for saving event
-         saveAndMoveRow(NavigationType.PrevEntry);
+         // saveAndMoveRow(NavigationType.PrevEntry);
       }
       else if (checkKey.isNextStateEntryKey())
       {
-         saveAndMoveNextState(NavigationType.NextEntry);
+         // saveAndMoveNextState(NavigationType.NextEntry);
       }
       else if (checkKey.isPreviousStateEntryKey())
       {
-         saveAndMoveNextState(NavigationType.PrevEntry);
+         // saveAndMoveNextState(NavigationType.PrevEntry);
       }
       else if (checkKey.isSaveAsFuzzyKey())
       {
          event.stopPropagation();
          event.preventDefault(); // stop browser save
-         acceptFuzzyEdit();
+         // acceptFuzzyEdit();
       }
-      else if (checkKey.isSaveAsApprovedKey(isEnterKeySavesEnabled))
-      {
-         event.stopPropagation();
-         event.preventDefault();
-         saveApprovedAndMoveRow(NavigationType.NextEntry);
-      }
-      else if (checkKey.isCloseEditorKey(isEscKeyCloseEditor))
-      {
-         cancelEdit();
-      }
-      else if (checkKey.isUserTyping() && !checkKey.isBackspace())
-      {
-         growSize();
-      }
-      else if (checkKey.isUserTyping() && checkKey.isBackspace())
-      {
-         shrinkSize(false);
-      }
+      // else if (checkKey.isSaveAsApprovedKey(isEnterKeySavesEnabled))
+      // {
+      // event.stopPropagation();
+      // event.preventDefault();
+      // saveApprovedAndMoveRow(NavigationType.NextEntry);
+      // }
+      // else if (checkKey.isCloseEditorKey(isEscKeyCloseEditor))
+      // {
+      // cancelEdit();
+      // }
+      // else if (checkKey.isUserTyping() && !checkKey.isBackspace())
+      // {
+      // growSize();
+      // }
+      // else if (checkKey.isUserTyping() && checkKey.isBackspace())
+      // {
+      // shrinkSize(false);
+      // }
    }
 }

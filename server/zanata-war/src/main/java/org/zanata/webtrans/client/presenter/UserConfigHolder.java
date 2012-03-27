@@ -22,6 +22,7 @@ import org.zanata.webtrans.client.resources.EditorConfigConstants;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Singleton;
 
+
 @Singleton
 public class UserConfigHolder
 {

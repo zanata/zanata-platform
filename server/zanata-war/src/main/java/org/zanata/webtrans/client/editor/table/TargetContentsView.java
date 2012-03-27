@@ -58,7 +58,12 @@ public class TargetContentsView implements TargetContentsDisplay
    public void setSaveButtonTitle(String title)
    {
       Preconditions.checkState(editors.size() > 0);
-      editors.get(editors.size() - 1).setSaveButtonTitle(title);
+      lastEditor().setSaveButtonTitle(title);
+   }
+
+   private ToggleEditor lastEditor()
+   {
+      return editors.get(editors.size() - 1);
    }
 
    @Override
@@ -96,6 +101,7 @@ public class TargetContentsView implements TargetContentsDisplay
             rowIndex++;
          }
       }
+      lastEditor().setAsLastEditor();
    }
 
    @Override
