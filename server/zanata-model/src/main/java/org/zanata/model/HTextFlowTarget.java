@@ -20,6 +20,12 @@
  */
 package org.zanata.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,21 +33,32 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PostLoad;
+import javax.persistence.PostPersist;
+import javax.persistence.PostUpdate;
+import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CollectionOfElements;
+import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.zanata.common.ContentState;
 import org.zanata.hibernate.search.ContentStateBridge;
@@ -79,12 +96,21 @@ public class HTextFlowTarget extends ModelEntityBase implements ITextFlowTargetH
    private HTextFlow textFlow;
    private HLocale locale;
 
-   private String content;
+   private List<String> contents;
    private ContentState state = ContentState.New;
    private Integer textFlowRevision;
    private HPerson lastModifiedBy;
 
    private HSimpleComment comment;
+   
+   public Map<Integer, HTextFlowTargetHistory> history;
+   
+   // Only for internal use (persistence transient)
+   private Integer oldVersionNum;
+   
+   // Only for internal use (persistence transient) 
+   private HTextFlowTargetHistory initialState;
+   
 
    public HTextFlowTarget()
    {
@@ -183,18 +209,50 @@ public class HTextFlowTarget extends ModelEntityBase implements ITextFlowTargetH
       // setResourceRevision(textFlow.getRevision());
    }
 
-   @NotNull
-   @Type(type = "text")
-   // @Field(index=Index.NO) // no searching on target text yet
-   @Override
+   @Deprecated
+   @Transient
    public String getContent()
    {
-      return content;
+      if( this.getContents().size() > 0 )
+      {
+         return this.getContents().get(0);
+      }
+      return null;
+   }
+   
+   @Deprecated
+   public void setContent( String content )
+   {
+      this.setContents( Arrays.asList(content) );
+   }
+   
+   @Override
+   @NotEmpty
+   @Type(type = "text")
+   @AccessType("field")
+   @CollectionOfElements(fetch = FetchType.EAGER)
+   @JoinTable(name = "HTextFlowTargetContent", 
+      joinColumns = @JoinColumn(name = "text_flow_target_id")
+   )
+   @IndexColumn(name = "pos", nullable = false)
+   @Column(name = "content", nullable = false)
+   public List<String> getContents()
+   {
+      if( contents == null )
+      {
+         contents = new ArrayList<String>();
+      }
+      return contents;
    }
 
-   public void setContent(String content)
+   public void setContents(List<String> contents)
    {
-      this.content = content;
+      this.contents = contents;
+   }
+   
+   public void setContents(String ... contents)
+   {
+      this.setContents(Arrays.asList(contents));
    }
 
    // TODO use orphanRemoval=true: requires JPA 2.0
@@ -210,6 +268,41 @@ public class HTextFlowTarget extends ModelEntityBase implements ITextFlowTargetH
    {
       this.comment = comment;
    }
+   
+   @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST}, mappedBy = "textFlowTarget")
+   @MapKey(name = "versionNum")
+   public Map<Integer, HTextFlowTargetHistory> getHistory()
+   {
+      if( this.history == null )
+      {
+         this.history = new HashMap<Integer, HTextFlowTargetHistory>();
+      }
+      return history;
+   }
+
+   public void setHistory(Map<Integer, HTextFlowTargetHistory> history)
+   {
+      this.history = history;
+   }
+   
+   @PreUpdate
+   private void preUpdate()
+   {
+      // insert history if this has changed from its initial state
+      if( this.initialState != null && this.initialState.hasChanged(this) )
+      {
+         this.getHistory().put(this.oldVersionNum, this.initialState);
+      }
+   }
+   
+   @PostUpdate
+   @PostPersist
+   @PostLoad
+   private void updateInternalHistory()
+   {
+      this.oldVersionNum = this.getVersionNum();
+      this.initialState = new HTextFlowTargetHistory(this);
+   }
 
    /**
     * Used for debugging
@@ -223,7 +316,7 @@ public class HTextFlowTarget extends ModelEntityBase implements ITextFlowTargetH
    @Transient
    public void clear()
    {
-      setContent("");
+      setContents("");
       setState(ContentState.New);
       setComment(null);
       setLastModifiedBy(null);

@@ -20,6 +20,8 @@
  */
 package org.zanata.model;
 
+import static org.zanata.util.ZanataUtil.equal;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +110,7 @@ public class HTextFlowHistory implements Serializable, ITextFlowHistory
    @AccessType("field")
    @CollectionOfElements(fetch = FetchType.EAGER)
    @JoinTable(name = "HTextFlowContentHistory", 
-      joinColumns = @JoinColumn(name = "text_flow_id")
+      joinColumns = @JoinColumn(name = "text_flow_history_id")
    )
    @IndexColumn(name = "pos", nullable = false)
    @Column(name = "content", nullable = false)
@@ -143,6 +145,20 @@ public class HTextFlowHistory implements Serializable, ITextFlowHistory
    public void setObsolete(boolean obsolete)
    {
       this.obsolete = obsolete;
+   }
+   
+   /**
+    * Determines whether a Text Flow has changed when compared to this
+    * history object.
+    * Currently, this method only checks for changes in the revision number.
+    * 
+    * @param current The current Text Flow state. 
+    * @return True, if the revision number in the Text Flow has changed.
+    * False, otherwise.
+    */
+   public boolean hasChanged(HTextFlow current)
+   {
+      return !equal(current.getRevision(), this.getRevision());
    }
 
 }

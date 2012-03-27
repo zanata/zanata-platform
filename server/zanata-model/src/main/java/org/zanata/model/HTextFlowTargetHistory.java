@@ -20,19 +20,29 @@
  */
 package org.zanata.model;
 
+import static org.zanata.util.ZanataUtil.equal;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.AccessType;
+import org.hibernate.annotations.CollectionOfElements;
+import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.zanata.common.ContentState;
+import org.zanata.util.ZanataUtil;
 
 @Entity
 @org.hibernate.annotations.Entity(mutable = false)
@@ -47,7 +57,7 @@ public class HTextFlowTargetHistory implements Serializable, ITextFlowTargetHist
 
    private Integer versionNum;
 
-   private String content;
+   private List<String> contents;
 
    private Date lastChanged;
 
@@ -56,6 +66,21 @@ public class HTextFlowTargetHistory implements Serializable, ITextFlowTargetHist
    private ContentState state;
 
    private Integer textFlowRevision;
+
+   public HTextFlowTargetHistory()
+   {
+   }
+
+   public HTextFlowTargetHistory(HTextFlowTarget target)
+   {
+      this.contents = new ArrayList<String>(target.getContents()); 
+      this.lastChanged = target.getLastChanged();
+      this.lastModifiedBy = target.getLastModifiedBy();
+      this.state = target.getState();
+      this.textFlowRevision = target.getTextFlowRevision();
+      this.textFlowTarget = target;
+      this.versionNum = target.getVersionNum();
+   }
 
    @Id
    @GeneratedValue
@@ -98,14 +123,21 @@ public class HTextFlowTargetHistory implements Serializable, ITextFlowTargetHist
 
    @Override
    @Type(type = "text")
-   public String getContent()
+   @AccessType("field")
+   @CollectionOfElements(fetch = FetchType.EAGER)
+   @JoinTable(name = "HTextFlowTargetContentHistory", 
+      joinColumns = @JoinColumn(name = "text_flow_target_history_id")
+   )
+   @IndexColumn(name = "pos", nullable = false)
+   @Column(name = "content", nullable = false)
+   public List<String> getContents()
    {
-      return content;
+      return contents;
    }
 
-   public void setContent(String content)
+   public void setContents(List<String> contents)
    {
-      this.content = content;
+      this.contents = contents;
    }
 
    public Date getLastChanged()
@@ -152,5 +184,25 @@ public class HTextFlowTargetHistory implements Serializable, ITextFlowTargetHist
    public void setTextFlowRevision(Integer textFlowRevision)
    {
       this.textFlowRevision = textFlowRevision;
+   }
+   
+   /**
+    * Determines whether a Text Flow Target has changed when compared to this
+    * history object.
+    * 
+    * @param current The current Text Flow Target state. 
+    * @return True, if any of the Text Flow Target fields have changed from the
+    * state recorded in this History object. False, otherwise.
+    */
+   public boolean hasChanged(HTextFlowTarget current)
+   {
+      return    !equal(current.getContents(), this.contents)
+             || !equal(current.getLastChanged(), this.lastChanged)
+             || !equal(current.getLastModifiedBy(), this.lastModifiedBy)
+             || !equal(current.getState(), this.state)
+             || !equal(current.getTextFlowRevision(), this.textFlowRevision)
+             || !equal(current.getLastChanged(), this.lastChanged)
+             || !equal(current.getTextFlow().getId(), this.textFlowTarget.getId())
+             || !equal(current.getVersionNum(), this.versionNum);
    }
 }

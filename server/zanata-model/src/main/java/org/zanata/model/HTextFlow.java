@@ -268,11 +268,9 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
       this.setContents( Arrays.asList(content) );
    }
    
-   //@NotNull
+   @Override
    @NotEmpty
    @Type(type = "text")
-   //@Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
-   @Override
    @AccessType("field")
    @CollectionOfElements(fetch = FetchType.EAGER)
    @JoinTable(name = "HTextFlowContent", 
@@ -286,17 +284,14 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
       {
          contents = new ArrayList<String>();
       }
-      
-      // return a shallow copy of contents
-      List<String> copy = new ArrayList<String>(this.contents);
-      return copy;
+      return contents;
    }
 
    public void setContents(List<String> contents)
    {
       if (!equal(this.contents, contents))
       {
-         this.contents = new ArrayList<String>( contents );
+         this.contents = contents;
          updateWordCount();
          updateContentHash();
       }
@@ -423,14 +418,10 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    @PreUpdate
    private void preUpdate()
    {
-      if( !this.revision.equals(this.oldRevision) )
+      // there is an initial state and there have been any changes
+      if( this.initialState != null && this.initialState.hasChanged(this) )
       {
-         // there is an initial state
-         if( this.initialState != null )
-         {
-            this.getHistory().put(getRevision()-1, 
-                  this.initialState);
-         }
+         this.getHistory().put(this.oldRevision, this.initialState);
       }
    }
    

@@ -20,7 +20,6 @@
 			</column>
 		</createTable>
 		<addForeignKeyConstraint constraintName="FKcontent_text_flow" 
-			baseTableSchemaName="zanata" referencedTableSchemaName="zanata"
 			referencedTableName="HTextFlow" referencedColumnNames="id"
 			baseTableName="HTextFlowContent" baseColumnNames="text_flow_id"/>
 	</changeSet>
@@ -37,13 +36,13 @@
 			<column name="pos" type="int">
 				<constraints nullable="false"/>
 			</column>
-			<column name="text_flow_id" type="bigint">
+			<column name="text_flow_history_id" type="bigint">
 				<constraints nullable="false"/>
 			</column>
 		</createTable>
-		<addForeignKeyConstraint constraintName="FKcontent_text_flow_" 
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow_history" 
 			referencedTableName="HTextFlowHistory" referencedColumnNames="id"
-			baseTableName="HTextFlowContentHistory" baseColumnNames="text_flow_id"/>
+			baseTableName="HTextFlowContentHistory" baseColumnNames="text_flow_history_id"/>
 	</changeSet>
 	
 	<changeSet author="camunoz@redhat.com" id="3">
@@ -58,10 +57,64 @@
 		</sql>
 	</changeSet>
 	
-	<!-- <changeSet author="camunoz@redhat.com" id="4">
+	<changeSet author="camunoz@redhat.com" id="4">
+		<comment>Add HTextFlowTargetContent table to support plural forms.</comment>
+		<createTable tableName="HTextFlowTargetContent">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="content" type="longtext">
+				<constraints nullable="false"/>
+			</column>
+			<column name="pos" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name="text_flow_target_id" type="bigint">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow_target" 
+			referencedTableName="HTextFlowTarget" referencedColumnNames="id"
+			baseTableName="HTextFlowTargetContent" baseColumnNames="text_flow_target_id"/>
+	</changeSet>
+	
+	<changeSet author="camunoz@redhat.com" id="5">
+		<comment>Add HTextFlowTargetContentHistory table to support plural forms.</comment>
+		<createTable tableName="HTextFlowTargetContentHistory">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="content" type="longtext">
+				<constraints nullable="false"/>
+			</column>
+			<column name="pos" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name="text_flow_target_history_id" type="bigint">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow_target_history" 
+			referencedTableName="HTextFlowTargetHistory" referencedColumnNames="id"
+			baseTableName="HTextFlowTargetContentHistory" baseColumnNames="text_flow_target_history_id"/>
+	</changeSet>
+	
+	<changeSet author="camunoz@redhat.com" id="6">
+		<comment>Replace content columns from HTextFlowTarget into the new HTextFlowTargetContent table</comment>
+		<sql>
+			insert into HTextFlowTargetContent(content, pos, text_flow_id) 
+			select content, 0, id from HTextFlowTarget
+		</sql>
+		<sql>
+			insert into HTextFlowTargetContentHistory(content, pos, text_flow_id) 
+			select content, 0, id from HTextFlowTargetHistory
+		</sql>
+	</changeSet>
+	
+	<changeSet author="camunoz@redhat.com" id="7">
 		<comment>Remove unnecessary columns</comment>
 		<dropColumn tableName="HTextFlow" columnName="content"/>
 		<dropColumn tableName="HTextFlowHistory" columnName="content"/>
-	</changeSet> -->
+	</changeSet>
 	
 </databaseChangeLog>

@@ -39,7 +39,6 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest
 
    // FIXME this test only works if resources-dev is on the classpath
    @Test
-   @Disabled(reason = "Text Flow Target History has been disabled")
    public void ensureHistoryIsRecorded()
    {
       Session session = getSession();
@@ -58,15 +57,21 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest
       session.flush();
 
       List<HTextFlowTargetHistory> historyElems = getHistory(target);
-      assertThat(historyElems.size(), is(0));
+      assertThat("Incorrect History size on persist", historyElems.size(), is(0));
 
       target.setContent("blah!");
       session.flush();
 
       historyElems = getHistory(target);
 
-      assertThat(historyElems.size(), is(1));
+      assertThat("Incorrect History size on first update", historyElems.size(), is(1));
+      
+      target.setContent("hola mundo!");
+      session.flush();
 
+      historyElems = getHistory(target);
+
+      assertThat("Incorrect History size on second update", historyElems.size(), is(2));
    }
 
    @SuppressWarnings("unchecked")
