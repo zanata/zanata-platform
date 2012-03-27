@@ -80,20 +80,16 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
 
    private final ValidationOptionsPresenter validationOptionsPresenter;
 
-   private Map<String, Boolean> configMap = new HashMap<String, Boolean>();
    private final WorkspaceContext workspaceContext;
+   private UserConfigHolder configHolder;
 
    @Inject
-   public OptionsPanelPresenter(final Display display, final EventBus eventBus, final ValidationOptionsPresenter validationDetailsPresenter, final WorkspaceContext workspaceContext)
+   public OptionsPanelPresenter(final Display display, final EventBus eventBus, final ValidationOptionsPresenter validationDetailsPresenter, final WorkspaceContext workspaceContext, UserConfigHolder configHolder)
    {
       super(display, eventBus);
       this.validationOptionsPresenter = validationDetailsPresenter;
       this.workspaceContext = workspaceContext;
-
-      configMap.put(EditorConfigConstants.BUTTON_ENTER, false);
-      configMap.put(EditorConfigConstants.BUTTON_ESC, false);
-      configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
-      configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
+      this.configHolder = configHolder;
    }
 
    private final ValueChangeHandler<Boolean> filterChangeHandler = new ValueChangeHandler<Boolean>()
@@ -163,8 +159,8 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
             Log.info("Enable 'Enter' Key to save and move to next string: " + event.getValue());
-            configMap.put(EditorConfigConstants.BUTTON_ENTER, event.getValue());
-            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
+            configHolder.setButtonEnter(event.getValue());
+            eventBus.fireEvent(new UserConfigChangeEvent(configHolder.getConfigMap()));
          }
       }));
 
@@ -174,15 +170,15 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
             Log.info("Enable 'Esc' Key to close editor: " + event.getValue());
-            configMap.put(EditorConfigConstants.BUTTON_ESC, event.getValue());
-            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
+            configHolder.setButtonEsc(event.getValue());
+            eventBus.fireEvent(new UserConfigChangeEvent(configHolder.getConfigMap()));
          }
       }));
 
       // editor buttons always shown by default
       display.getEditorButtonsChk().setValue(true, false);
-      display.getEnterChk().setValue(configMap.get(EditorConfigConstants.BUTTON_ENTER), false);
-      display.getEscChk().setValue(configMap.get(EditorConfigConstants.BUTTON_ESC), false);
+      display.getEnterChk().setValue(configHolder.isButtonEnter(), false);
+      display.getEscChk().setValue(configHolder.isButtonEsc(), false);
 
       registerHandler(display.getModalNavigationOptionsSelect().addChangeHandler(new ChangeHandler()
       {
@@ -192,20 +188,20 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
             String selectedOption = display.getSelectedFilter();
             if (selectedOption.equals(Display.KEY_FUZZY_UNTRANSLATED))
             {
-               configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
-               configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
+               configHolder.setButtonUntranslated(true);
+               configHolder.setButtonFuzzy(true);
             }
             else if (selectedOption.equals(Display.KEY_FUZZY))
             {
-               configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
-               configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, false);
+               configHolder.setButtonFuzzy(true);
+               configHolder.setButtonUntranslated(false);
             }
             else if (selectedOption.equals(Display.KEY_UNTRANSLATED))
             {
-               configMap.put(EditorConfigConstants.BUTTON_FUZZY, false);
-               configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
+               configHolder.setButtonFuzzy(false);
+               configHolder.setButtonUntranslated(true);
             }
-            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
+            eventBus.fireEvent(new UserConfigChangeEvent(configHolder.getConfigMap()));
          }
       }));
 

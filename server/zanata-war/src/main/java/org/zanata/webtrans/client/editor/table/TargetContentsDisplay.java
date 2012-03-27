@@ -27,6 +27,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, Iterable<ToggleEdi
 
    void openEditorAndCloseOthers(int currentEditor);
 
+   void setSaveButtonTitle(String title);
+
    interface Listener
    {
       void validate(ToggleEditor editor);

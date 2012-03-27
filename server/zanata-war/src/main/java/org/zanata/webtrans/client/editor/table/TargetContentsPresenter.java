@@ -33,7 +33,11 @@ import org.zanata.webtrans.client.events.RequestValidationEventHandler;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.UpdateValidationWarningsEvent;
 import org.zanata.webtrans.client.events.UpdateValidationWarningsEventHandler;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
@@ -47,12 +51,19 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class TargetContentsPresenter implements TargetContentsDisplay.Listener
+public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
+      UserConfigChangeHandler,
+      UpdateValidationWarningsEventHandler,
+      RequestValidationEventHandler,
+      InsertStringInEditorHandler,
+      CopyDataToEditorHandler
 {
    private static final int NO_OPEN_EDITOR = -1;
    private final EventBus eventBus;
    private final TableEditorMessages messages;
    private final SourceContentsPresenter sourceContentsPresenter;
+   private final UserConfigHolder configHolder;
+   private NavigationMessages navMessages;
    private final ValidationMessagePanel validationMessagePanel;
 
    private TargetContentsDisplay currentDisplay;
@@ -63,70 +74,24 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    private TransUnitsEditModel cellEditor;
 
    @Inject
-   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter)
+   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, 
+                                  final TableEditorMessages messages, 
+                                  final SourceContentsPresenter sourceContentsPresenter, UserConfigHolder configHolder,
+                                  NavigationMessages navMessages)
    {
       this.displayProvider = displayProvider;
       this.eventBus = eventBus;
       this.messages = messages;
       this.sourceContentsPresenter = sourceContentsPresenter;
+      this.configHolder = configHolder;
+      this.navMessages = navMessages;
 
       validationMessagePanel = new ValidationMessagePanel(true, messages);
-
-      eventBus.addHandler(UpdateValidationWarningsEvent.getType(), new UpdateValidationWarningsEventHandler()
-      {
-         @Override
-         public void onUpdate(UpdateValidationWarningsEvent event)
-         {
-            validationMessagePanel.setContent(event.getErrors());
-         }
-      });
-
-      eventBus.addHandler(RequestValidationEvent.getType(), new RequestValidationEventHandler()
-      {
-         @Override
-         public void onRequestValidation(RequestValidationEvent event)
-         {
-            if (isEditing())
-            {
-               eventBus.fireEvent(new RunValidationEvent(sourceContentsPresenter.getSelectedSource(),
-                     getCurrentEditor().getText(), false));
-            }
-         }
-      });
-
-      eventBus.addHandler(InsertStringInEditorEvent.getType(), new InsertStringInEditorHandler()
-      {
-         @Override
-         public void onInsertString(InsertStringInEditorEvent event)
-         {
-            if (isEditing())
-            {
-               getCurrentEditor().insertTextInCursorPosition(event.getSuggestion());
-               eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
-            }
-            else
-            {
-               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnopened()));
-            }
-         }
-      });
-
-      eventBus.addHandler(CopyDataToEditorEvent.getType(), new CopyDataToEditorHandler()
-      {
-         @Override
-         public void onTransMemoryCopy(CopyDataToEditorEvent event)
-         {
-            if (isEditing())
-            {
-               getCurrentEditor().setText(event.getTargetResult());
-               eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
-            }
-            else
-            {
-               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnopened()));
-            }
-         }
-      });
+      eventBus.addHandler(UserConfigChangeEvent.getType(), this);
+      eventBus.addHandler(UpdateValidationWarningsEvent.getType(), this);
+      eventBus.addHandler(RequestValidationEvent.getType(), this);
+      eventBus.addHandler(InsertStringInEditorEvent.getType(), this);
+      eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
    }
 
    private ToggleEditor getCurrentEditor()
@@ -186,7 +151,13 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
       }
      
       result.setTargets(transUnit.getTargets());
+      result.setSaveButtonTitle(decideButtonTitle());
       return result;
+   }
+
+   private String decideButtonTitle()
+   {
+      return (configHolder.isButtonEnter()) ? navMessages.editSaveWithEnterShortcut() : navMessages.editSaveShortcut();
    }
 
    public void initWidgets(int pageSize)
@@ -276,5 +247,59 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener
    public void setCellEditor(TransUnitsEditModel cellEditor)
    {
       this.cellEditor = cellEditor;
+   }
+
+   @Override
+   public void onValueChanged(UserConfigChangeEvent event)
+   {
+      String title = decideButtonTitle();
+      for (TargetContentsDisplay display : displayList)
+      {
+         display.setSaveButtonTitle(title);
+      }
+   }
+
+   @Override
+   public void onUpdate(UpdateValidationWarningsEvent event)
+   {
+      validationMessagePanel.setContent(event.getErrors());
+   }
+
+   @Override
+   public void onRequestValidation(RequestValidationEvent event)
+   {
+      if (isEditing())
+      {
+         eventBus.fireEvent(new RunValidationEvent(sourceContentsPresenter.getSelectedSource(),
+               getCurrentEditor().getText(), false));
+      }
+   }
+
+   @Override
+   public void onInsertString(InsertStringInEditorEvent event)
+   {
+      if (isEditing())
+      {
+         getCurrentEditor().insertTextInCursorPosition(event.getSuggestion());
+         eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
+      }
+      else
+      {
+         eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnopened()));
+      }
+   }
+
+   @Override
+   public void onTransMemoryCopy(CopyDataToEditorEvent event)
+   {
+      if (isEditing())
+      {
+         getCurrentEditor().setText(event.getTargetResult());
+         eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
+      }
+      else
+      {
+         eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnopened()));
+      }
    }
 }
