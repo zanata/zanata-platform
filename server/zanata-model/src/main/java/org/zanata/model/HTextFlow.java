@@ -114,6 +114,7 @@ public class HTextFlow extends HTextContainer implements HasContents, HasSimpleC
    private Long wordCount;
    
    private String contentHash;
+   private boolean plural;
 
    public HTextFlow()
    {
@@ -167,6 +168,22 @@ public class HTextFlow extends HTextContainer implements HasContents, HasSimpleC
    public void setResId(String resId)
    {
       this.resId = resId;
+   }
+
+   /**
+    * @return whether this message supports plurals
+    */
+   public boolean isPlural()
+   {
+      return plural;
+   }
+
+   /**
+    * @param pluralSupported the pluralSupported to set
+    */
+   public void setPlural(boolean pluralSupported)
+   {
+      this.plural = pluralSupported;
    }
 
    @NotNull

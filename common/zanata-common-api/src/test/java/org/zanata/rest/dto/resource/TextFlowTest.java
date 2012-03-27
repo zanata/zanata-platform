@@ -96,10 +96,11 @@ public class TextFlowTest {
       String expectedXML =
             "<TextFlow xmlns:ns2=\"http://zanata.org/namespace/api/gettext/\">\n" +
                   "    <content>abc</content>\n" +
+                  "    <plural>false</plural>\n" +
                   "</TextFlow>";
       assertEquals(tf.toString(), expectedXML);
       String expectedJSON =
-            "{\"content\":\"abc\"}";
+            "{\"content\":\"abc\",\"plural\":false}";
       assertEquals(om.writeValueAsString(tf), expectedJSON);
    }
 
@@ -108,6 +109,7 @@ public class TextFlowTest {
    {
       TextFlow tf = new TextFlow();
       tf.setContents("abc", "def");
+      tf.setPlural(true);
 
       String expectedXML =
             "<TextFlow xmlns:ns2=\"http://zanata.org/namespace/api/gettext/\">\n" +
@@ -115,12 +117,13 @@ public class TextFlowTest {
                   "        <content>abc</content>\n" +
                   "        <content>def</content>\n" +
                   "    </contents>\n" +
+                  "    <plural>true</plural>\n" +
                   "</TextFlow>";
 
       assertEquals(tf.toString(), expectedXML);
 
       String expectedJSON =
-            "{\"content\":\"\",\"contents\":[\"abc\",\"def\"]}";
+            "{\"content\":\"\",\"contents\":[\"abc\",\"def\"],\"plural\":true}";
       assertEquals(om.writeValueAsString(tf), expectedJSON);
    }
 

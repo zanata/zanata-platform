@@ -43,11 +43,11 @@
             newColumnName="content0"
             columnDataType="longtext" />
         <addColumn tableName="HTextFlowHistory">
-            <column name="content1" />
-            <column name="content2" />
-            <column name="content3" />
-            <column name="content4" />
-            <column name="content5" />
+            <column name="content1" type="longtext" />
+            <column name="content2" type="longtext" />
+            <column name="content3" type="longtext" />
+            <column name="content4" type="longtext" />
+            <column name="content5" type="longtext" />
         </addColumn>
     </changeSet>
     <changeSet author="sflaniga@redhat.com" id="2" dbms="mysql">
@@ -69,11 +69,11 @@
             newColumnName="content0"
             columnDataType="longtext" />
         <addColumn tableName="HTextFlowTarget">
-            <column name="content1" />
-            <column name="content2" />
-            <column name="content3" />
-            <column name="content4" />
-            <column name="content5" />
+            <column name="content1" type="longtext" />
+            <column name="content2" type="longtext" />
+            <column name="content3" type="longtext" />
+            <column name="content4" type="longtext" />
+            <column name="content5" type="longtext" />
         </addColumn>
     </changeSet>
     <changeSet author="sflaniga@redhat.com" id="3" dbms="mysql">
@@ -95,11 +95,11 @@
             newColumnName="content0"
             columnDataType="longtext" />
         <addColumn tableName="HTextFlowTargetHistory">
-            <column name="content1" />
-            <column name="content2" />
-            <column name="content3" />
-            <column name="content4" />
-            <column name="content5" />
+            <column name="content1" type="longtext" />
+            <column name="content2" type="longtext" />
+            <column name="content3" type="longtext" />
+            <column name="content4" type="longtext" />
+            <column name="content5" type="longtext" />
         </addColumn>
     </changeSet>
     <changeSet author="sflaniga@redhat.com" id="4" dbms="mysql">
@@ -126,4 +126,16 @@
         <addAutoIncrement tableName="HTermComment" columnName="id" columnDataType="bigint"/>
     </changeSet>
     
+    <!--
+    TODO when merging this into the list-based plural implementation, we
+    should add the plural field as part of the same ALTER TABLE which
+    removes the old content field.
+    -->
+    <changeSet author="sflaniga@redhat.com" id="5">
+        <comment>add plural boolean</comment>
+        <addColumn tableName="HTextFlow">
+            <column name="plural" type="boolean" valueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

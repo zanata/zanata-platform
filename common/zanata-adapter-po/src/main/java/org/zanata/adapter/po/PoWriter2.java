@@ -169,17 +169,21 @@ public class PoWriter2
 
          PotEntryHeader entryData = textFlow.getExtensions(true).findByType(PotEntryHeader.class);
          SimpleComment srcComment = textFlow.getExtensions().findByType(SimpleComment.class);
-         Message message = new Message();
          List<String> tfContents = textFlow.getContents();
-         switch (tfContents.size())
+         Message message = new Message();
+         message.setMsgid(tfContents.get(0));
+
+         if (textFlow.isPlural())
          {
-         case 2:
+            if (tfContents.size() < 1)
+            {
+               throw new RuntimeException("textflow has plural flag but only has one form: resId=" + textFlow.getId());
+            }
             message.setMsgidPlural(tfContents.get(1));
-            // fall through...
-         case 1:
-            message.setMsgid(tfContents.get(0));
-            break;
-         default:
+         }
+
+         if (tfContents.size() > 2)
+         {
             throw new RuntimeException("POT format only supports 2 plural forms: resId=" + textFlow.getId());
          }
 
