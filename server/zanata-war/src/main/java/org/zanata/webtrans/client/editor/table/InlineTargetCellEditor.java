@@ -222,10 +222,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       if (isEditing())
       {
          ArrayList<String> newTargets = targetContentsPresenter.getNewTargets();
-         Log.info("saving " + curRow + " with " + newTargets);
          // if something has changed, save as approved
          if (!cellValue.getTargets().equals(newTargets))
          {
+            Log.info("saving " + curRow + " with " + newTargets);
             Log.debug("savePendingChange - acceptEdit");
             acceptEdit();
          }

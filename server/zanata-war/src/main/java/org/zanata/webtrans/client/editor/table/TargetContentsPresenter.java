@@ -124,11 +124,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
    public void showEditors(int rowIndex)
    {
-      TargetContentsDisplay previousDisplay = currentDisplay;
-      if (previousDisplay != null)
-      {
-         previousDisplay.setToView();
-      }
       currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
       if (currentEditorIndex == LAST_INDEX)
@@ -136,7 +131,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          currentEditorIndex = currentEditors.size() - 1;
       }
 
-      if (currentEditorIndex != NO_OPEN_EDITOR)
+      if (currentEditorIndex != NO_OPEN_EDITOR && currentEditorIndex < currentEditors.size())
       {
          currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
          Log.debug("show editors at row:" + rowIndex + " current editor:" + currentEditorIndex);
@@ -258,6 +253,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          // still in the same trans unit. won't trigger transunit selection
          // or edit cell event
          currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
+      }
+      else
+      {
+         currentDisplay.setToView();
       }
       Log.debug("current display:" + currentDisplay);
       // else, it's clicking an editor outside current selection. the table
