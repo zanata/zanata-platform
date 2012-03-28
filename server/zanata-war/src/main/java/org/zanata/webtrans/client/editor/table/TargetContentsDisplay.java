@@ -52,7 +52,7 @@ public interface TargetContentsDisplay extends WidgetDisplay, Iterable<ToggleEdi
 
       boolean isDisplayButtons();
 
-      void onTextAreaKeyDown(KeyDownEvent event, ToggleEditor editor);
+      void onEditorKeyDown(KeyDownEvent event, ToggleEditor editor);
    }
 
    void setTargets(ArrayList<String> targets);

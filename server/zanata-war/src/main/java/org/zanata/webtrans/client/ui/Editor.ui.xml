@@ -9,13 +9,16 @@
 	<ui:with field="images" type="org.zanata.webtrans.client.editor.table.TableResources" />
 	
 	<ui:style>
+		.rootContainer {
+			outline:none;
+		}
 		.bottomContainer {
 			width:100%;
 			padding-left:20px;
 		}
 	</ui:style>
 	
-	
+	<g:FocusPanel ui:field="rootContainer" styleName="{style.rootContainer}">
 	<g:VerticalPanel width="100%" spacing="3">
 		<g:cell horizontalAlignment="ALIGN_LEFT">
 			<g:HorizontalPanel ui:field="topContainer" width="100%" height="100%">
@@ -57,4 +60,5 @@
 			</g:HorizontalPanel>
 		</g:cell>
 	</g:VerticalPanel>
+	</g:FocusPanel>
 </ui:UiBinder> 

@@ -337,7 +337,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    }
 
    @Override
-   public void onTextAreaKeyDown(KeyDownEvent event, ToggleEditor editor)
+   public void onEditorKeyDown(KeyDownEvent event, ToggleEditor editor)
    {
       checkKey.init(event.getNativeEvent());
 

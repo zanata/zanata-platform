@@ -10,8 +10,6 @@ import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
@@ -23,6 +21,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -46,6 +45,9 @@ public class Editor extends Composite implements ToggleEditor
    private final int TYPING_TIMER_RECURRENT_VALIDATION_PERIOD = 5; // intervals
 
    private final int index;
+
+   @UiField
+   FocusPanel rootContainer;
 
    @UiField
    HorizontalPanel topContainer;
@@ -81,6 +83,31 @@ public class Editor extends Composite implements ToggleEditor
    private boolean typing;
    private int typingCycles;
 
+   private final Timer typingTimer = new Timer()
+   {
+      @Override
+      public void run()
+      {
+         if (keypressed)
+         {
+            // still typing, validate periodically
+            keypressed = false;
+            typingCycles++;
+            if (typingCycles % TYPING_TIMER_RECURRENT_VALIDATION_PERIOD == 0)
+            {
+               fireValidationEvent();
+            }
+         }
+         else
+         {
+            // finished, validate immediately
+            this.cancel();
+            typing = false;
+            fireValidationEvent();
+         }
+      }
+   };
+
    public Editor(String displayString, String findMessage, int index, final TargetContentsDisplay.Listener listener)
    {
       this.listener = listener;
@@ -110,71 +137,6 @@ public class Editor extends Composite implements ToggleEditor
 
       // textArea.setStyleName("TableEditorContent-Edit");
       textArea.setVisible(false);
-
-      textArea.addValueChangeHandler(new ValueChangeHandler<String>()
-      {
-         @Override
-         public void onValueChange(ValueChangeEvent<String> event)
-         {
-            autoSize();
-            fireValidationEvent();
-            if (Strings.isNullOrEmpty(event.getValue()))
-            {
-               label.setText(messages.clickHere());
-            }
-            else
-            {
-               label.setText(event.getValue());
-            }
-         }
-
-      });
-
-      final Timer typingTimer = new Timer()
-      {
-         @Override
-         public void run()
-         {
-            if (keypressed)
-            {
-               // still typing, validate periodically
-               keypressed = false;
-               typingCycles++;
-               if (typingCycles % TYPING_TIMER_RECURRENT_VALIDATION_PERIOD == 0)
-               {
-                  fireValidationEvent();
-               }
-            }
-            else
-            {
-               // finished, validate immediately
-               this.cancel();
-               typing = false;
-               fireValidationEvent();
-            }
-         }
-      };
-
-      // used to determine whether user is still typing
-      textArea.addKeyDownHandler(new KeyDownHandler()
-      {
-         @Override
-         public void onKeyDown(KeyDownEvent event)
-         {
-            if (typing)
-            {
-               keypressed = true;
-            }
-            else
-            {
-               // set false so that next keypress is detectable
-               keypressed = false;
-               typing = true;
-               typingCycles = 0;
-               typingTimer.scheduleRepeating(TYPING_TIMER_INTERVAL);
-            }
-         }
-      });
    }
 
    private void fireValidationEvent()
@@ -182,10 +144,44 @@ public class Editor extends Composite implements ToggleEditor
       listener.validate(this);
    }
 
+   @UiHandler("rootContainer")
+   public void onKeyDownRoot(KeyDownEvent event)
+   {
+      listener.onEditorKeyDown(event, this);
+   }
+
+   @UiHandler("textArea")
+   public void onValueChange(ValueChangeEvent<String> event)
+   {
+      autoSize();
+      fireValidationEvent();
+      if (Strings.isNullOrEmpty(event.getValue()))
+      {
+         label.setText(messages.clickHere());
+      }
+      else
+      {
+         label.setText(event.getValue());
+      }
+   }
+
    @UiHandler("textArea")
    public void onKeyDown(KeyDownEvent event)
    {
-      listener.onTextAreaKeyDown(event, this);
+      // used to determine whether user is still typing
+      if (typing)
+      {
+         keypressed = true;
+      }
+      else
+      {
+         // set false so that next keypress is detectable
+         keypressed = false;
+         typing = true;
+         typingCycles = 0;
+         typingTimer.scheduleRepeating(TYPING_TIMER_INTERVAL);
+      }
+      // listener.onTextAreaKeyDown(event, this);
    }
 
    @UiHandler("copySourceButton")
