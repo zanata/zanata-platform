@@ -155,7 +155,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
          throw new RuntimeException("Unknown query type: " + searchType);
       }
 
-      QueryParser parser = new QueryParser(Version.LUCENE_29, "content", new DefaultNgramAnalyzer());
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "content0", new DefaultNgramAnalyzer());
       org.apache.lucene.search.Query textQuery = parser.parse(queryText);
       FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
       ftQuery.enableFullTextFilter("textFlowFilter").setParameter("ids", translatedIds);

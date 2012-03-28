@@ -145,7 +145,7 @@ public class Editor extends Composite implements ToggleEditor
    }
 
    @UiHandler("rootContainer")
-   public void onKeyDownRoot(KeyDownEvent event)
+   public void onKeyDown(KeyDownEvent event)
    {
       listener.onEditorKeyDown(event, this);
    }
@@ -166,7 +166,7 @@ public class Editor extends Composite implements ToggleEditor
    }
 
    @UiHandler("textArea")
-   public void onKeyDown(KeyDownEvent event)
+   public void onKeyDownTextArea(KeyDownEvent event)
    {
       // used to determine whether user is still typing
       if (typing)

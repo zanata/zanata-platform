@@ -243,7 +243,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             tableModel.gotoPrevNew();
          }
       };
-      this.targetCellEditor = new InlineTargetCellEditor(findMessage, cancelCallBack, transValueCallBack, isReadOnly, targetContentsPresenter);
+      this.targetCellEditor = new InlineTargetCellEditor(cancelCallBack, transValueCallBack, isReadOnly, targetContentsPresenter);
       this.transUnitDetailsContent = new TransUnitDetailsPanel(messages.transUnitDetailsHeading());
       targetColumnDefinition.setCellEditor(targetCellEditor);
 

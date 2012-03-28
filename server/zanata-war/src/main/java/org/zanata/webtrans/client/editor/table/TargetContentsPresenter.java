@@ -122,7 +122,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
    }
 
-   public void showEditors(int rowIndex)
+   public void showEditors(int rowIndex, int editorIndex)
    {
       currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
@@ -410,5 +410,4 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       cellEditor.saveAndMoveRow(nav);
    }
-
 }
