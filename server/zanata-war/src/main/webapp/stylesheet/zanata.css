@@ -581,16 +581,28 @@ a.action_link:hover {
 
 /* -----------------------  Project iteration CSS  -------------------------*/
 
-.iterations div {
-	list-style: none;
-	padding: 5px 5px 5px 5px;
-	margin-bottom: 3px;
-	border-color: black;
-	border-radius: 3px 3px 3px 3px;
+.version_link_div {
+	border:1px solid #7092C3;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	padding:5px;
+	margin-bottom:3px;
 }
 
-.iterations div:hover {
-	background-color: lightgray;
+.version_link_div:hover {
+	border:1px solid #990000;
+	background-color: #F3F2F2;
+}
+
+a.version_link {
+	font-size: 14px;
+	font-weight: bold;
+	color: #7092C3;
+	text-decoration: none;
+}
+
+a.version_link:hover {
+	color: #990000;
 }
 
 .iterationHeader_active {

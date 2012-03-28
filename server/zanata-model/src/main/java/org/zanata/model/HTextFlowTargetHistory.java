@@ -35,6 +35,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.CollectionOfElements;
@@ -42,11 +44,30 @@ import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.zanata.common.ContentState;
-import org.zanata.util.ZanataUtil;
 
 @Entity
 @org.hibernate.annotations.Entity(mutable = false)
-public class HTextFlowTargetHistory implements Serializable, ITextFlowTargetHistory
+@NamedQueries({
+   @NamedQuery(name = "HTextFlowTargetHistory.findContentInHistory[1]",
+               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ? " +
+               		  "and contents[0] = ?"),
+   @NamedQuery(name = "HTextFlowTargetHistory.findContentInHistory[2]",
+               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ? " +
+                       "and contents[0] = ? and contents[1] = ?"),
+   @NamedQuery(name = "HTextFlowTargetHistory.findContentInHistory[3]",
+               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ? " +
+                       "and contents[0] = ? and contents[1] = ? and contents[2] = ?"),
+   @NamedQuery(name = "HTextFlowTargetHistory.findContentInHistory[4]",
+               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ? " +
+                       "and contents[0] = ? and contents[1] = ? and contents[2] = ? and contents[3] = ?"),
+   @NamedQuery(name = "HTextFlowTargetHistory.findContentInHistory[5]",
+               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ? " +
+                       "and contents[0] = ? and contents[1] = ? and contents[2] = ? and contents[3] = ? and contents[4] = ?"),
+   @NamedQuery(name = "HTextFlowTargetHistory.findContentInHistory[6]",
+               query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ? " +
+                       "and contents[0] = ? and contents[1] = ? and contents[2] = ? and contents[3] = ? and contents[4] = ? and contents[5] = ?"),
+})
+public class HTextFlowTargetHistory extends HTextContainer implements Serializable, ITextFlowTargetHistory
 {
 
    private static final long serialVersionUID = 1L;
@@ -96,7 +117,7 @@ public class HTextFlowTargetHistory implements Serializable, ITextFlowTargetHist
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "target_id")
    public HTextFlowTarget getTextFlowTarget()
    {
@@ -124,7 +145,7 @@ public class HTextFlowTargetHistory implements Serializable, ITextFlowTargetHist
    @Override
    @Type(type = "text")
    @AccessType("field")
-   @CollectionOfElements(fetch = FetchType.EAGER)
+   @CollectionOfElements
    @JoinTable(name = "HTextFlowTargetContentHistory", 
       joinColumns = @JoinColumn(name = "text_flow_target_history_id")
    )

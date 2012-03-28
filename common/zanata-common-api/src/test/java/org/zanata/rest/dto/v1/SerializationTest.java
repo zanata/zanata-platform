@@ -163,9 +163,9 @@ public class SerializationTest
       sourceResource.setContentType(ContentType.PO);
       sourceResource.setLang(LocaleId.EN);
       TextFlow tf = new TextFlow();
-      tf.setContent("ttff");
+      tf.setContents("ttff");
       TextFlow tf2 = new TextFlow();
-      tf2.setContent("ttff2");
+      tf2.setContents("ttff2");
       sourceResource.getTextFlows().add(tf);
       sourceResource.getTextFlows().add(tf2);
       sourceResource.getExtensions(true).add(new PoHeader("comment", new HeaderEntry("h1", "v1"), new HeaderEntry("h2", "v2")));
@@ -186,7 +186,7 @@ public class SerializationTest
    public void serializeAndDeserializeTextFlow() throws ValidationException, JsonGenerationException, JsonMappingException, IOException
    {
       TextFlow tf = new TextFlow();
-      tf.setContent("ttff");
+      tf.setContents("ttff");
       SimpleComment comment = new SimpleComment("test");
       PotEntryHeader pot = new PotEntryHeader();
       pot.setContext("context");
@@ -219,7 +219,7 @@ public class SerializationTest
    {
       TextFlowTarget tf = new TextFlowTarget();
       tf.setTranslator(createPerson());
-      tf.setContent("ttff");
+      tf.setContents("ttff");
       SimpleComment comment = new SimpleComment("testcomment");
       tf.getExtensions(true).add(comment);
 
@@ -244,7 +244,7 @@ public class SerializationTest
    {
       TranslationsResource entity = new TranslationsResource();
       TextFlowTarget target = new TextFlowTarget("rest1");
-      target.setContent("hello world");
+      target.setContents("hello world");
       target.setState(ContentState.Approved);
       target.setTranslator(new Person("root@localhost", "Admin user"));
       // for the convenience of test

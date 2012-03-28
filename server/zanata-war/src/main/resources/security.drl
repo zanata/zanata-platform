@@ -118,13 +118,12 @@ rule UpdateProjectOrAddIteration
   no-loop
   activation-group "permissions"
 when
+  check: PermissionCheck(action == "update" || action == "add-iteration", granted == false)
   authenticatedPerson: HPerson() 
   eval(authenticatedPerson != null)
   $project: HProject(
     eval(authenticatedPerson.isMaintainer($project))
   )
-  check: PermissionCheck(
-    target == $project, action == "update" || action == "add-iteration", granted == false)
 then
   check.grant();
 end

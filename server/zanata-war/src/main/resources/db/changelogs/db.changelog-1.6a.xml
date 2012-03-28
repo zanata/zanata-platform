@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
-	
+<databaseChangeLog 
+   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" 
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+                  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+    This changelog file is the real changelog for Zanata 1.6.
+     -->
 	<changeSet author="camunoz@redhat.com" id="1">
 		<comment>Add HTextFlowContent table to support plural forms.</comment>
 		<createTable tableName="HTextFlowContent">
@@ -52,7 +58,7 @@
 			select content, 0, id from HTextFlow
 		</sql>
 		<sql>
-			insert into HTextFlowContentHistory(content, pos, text_flow_id) 
+			insert into HTextFlowContentHistory(content, pos, text_flow_history_id) 
 			select content, 0, id from HTextFlowHistory
 		</sql>
 	</changeSet>
@@ -102,11 +108,11 @@
 	<changeSet author="camunoz@redhat.com" id="6">
 		<comment>Replace content columns from HTextFlowTarget into the new HTextFlowTargetContent table</comment>
 		<sql>
-			insert into HTextFlowTargetContent(content, pos, text_flow_id) 
+			insert into HTextFlowTargetContent(content, pos, text_flow_target_id) 
 			select content, 0, id from HTextFlowTarget
 		</sql>
 		<sql>
-			insert into HTextFlowTargetContentHistory(content, pos, text_flow_id) 
+			insert into HTextFlowTargetContentHistory(content, pos, text_flow_target_history_id) 
 			select content, 0, id from HTextFlowTargetHistory
 		</sql>
 	</changeSet>
@@ -115,6 +121,11 @@
 		<comment>Remove unnecessary columns</comment>
 		<dropColumn tableName="HTextFlow" columnName="content"/>
 		<dropColumn tableName="HTextFlowHistory" columnName="content"/>
+		<dropColumn tableName="HTextFlowTarget" columnName="content"/>
+		<dropColumn tableName="HTextFlowTargetHistory" columnName="content"/>
+		<addColumn tableName="HTextFlow">
+            <column name="plural" type="boolean" valueBoolean="false"/>
+        </addColumn>
 	</changeSet>
-	
+
 </databaseChangeLog>

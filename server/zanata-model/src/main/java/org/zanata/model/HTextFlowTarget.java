@@ -20,6 +20,7 @@
  */
 package org.zanata.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -61,6 +62,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.zanata.common.ContentState;
+import org.zanata.common.HasContents;
 import org.zanata.hibernate.search.ContentStateBridge;
 import org.zanata.hibernate.search.LocaleIdBridge;
 
@@ -88,7 +90,8 @@ import org.zanata.hibernate.search.LocaleIdBridge;
                        "group by tft.textFlow.contentHash")
 })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class HTextFlowTarget extends ModelEntityBase implements ITextFlowTargetHistory, HasSimpleComment
+//@Indexed
+public class HTextFlowTarget extends ModelEntityBase implements HasContents, HasSimpleComment, ITextFlowTargetHistory, Serializable
 {
 
    private static final long serialVersionUID = 302308010797605435L;
@@ -209,6 +212,11 @@ public class HTextFlowTarget extends ModelEntityBase implements ITextFlowTargetH
       // setResourceRevision(textFlow.getRevision());
    }
 
+   /**
+    * As of release 1.6, replaced by {@link #getContents()}
+    * @return
+    */
+   @Override
    @Deprecated
    @Transient
    public String getContent()
@@ -221,16 +229,16 @@ public class HTextFlowTarget extends ModelEntityBase implements ITextFlowTargetH
    }
    
    @Deprecated
+   @Transient
    public void setContent( String content )
    {
       this.setContents( Arrays.asList(content) );
    }
    
    @Override
-   @NotEmpty
    @Type(type = "text")
    @AccessType("field")
-   @CollectionOfElements(fetch = FetchType.EAGER)
+   @CollectionOfElements
    @JoinTable(name = "HTextFlowTargetContent", 
       joinColumns = @JoinColumn(name = "text_flow_target_id")
    )
@@ -310,13 +318,13 @@ public class HTextFlowTarget extends ModelEntityBase implements ITextFlowTargetH
    @Override
    public String toString()
    {
-      return "HTextFlowTarget(" + "content:" + getContent() + " locale:" + getLocale() + " state:" + getState() + " comment:" + getComment() + " textflow:" + getTextFlow().getContents() + ")";
+      return "HTextFlowTarget(" + "contents:" + getContents() + " locale:" + getLocale() + " state:" + getState() + " comment:" + getComment() + " textflow:" + getTextFlow().getContents() + ")";
    }
 
    @Transient
    public void clear()
    {
-      setContents("");
+      setContents();
       setState(ContentState.New);
       setComment(null);
       setLastModifiedBy(null);

@@ -1,6 +1,7 @@
 package org.zanata.rest.dto.resource;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -22,11 +23,11 @@ import org.zanata.rest.dto.Extensible;
 import org.zanata.rest.dto.LocaleIdAdapter;
 import org.zanata.rest.dto.extensions.gettext.TextFlowExtension;
 
-@XmlType(name = "textFlowType", propOrder = { "content", "extensions" })
-@JsonPropertyOrder( { "id", "lang", "content", "extensions" })
+@XmlType(name = "textFlowType", propOrder = { "content", "contents", "plural", "extensions" })
+@JsonPropertyOrder({ "id", "lang", "content", "contents", "plural", "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
-public class TextFlow implements Extensible<TextFlowExtension>, Serializable
+public class TextFlow extends TextContainer implements Extensible<TextFlowExtension>, Serializable
 {
    private static final long serialVersionUID = 1L;
 
@@ -37,12 +38,10 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
    @NotNull
    private LocaleId lang;
 
-   @NotNull
-   private String content;
-
    private ExtensionSet<TextFlowExtension> extensions;
 
    private Integer revision;
+   private boolean plural;
 
    /**
     * This constructor sets the lang value to en-US
@@ -51,7 +50,7 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
 
    public TextFlow()
    {
-      this(null, null, null);
+      this(null, null, (String) null);
    }
 
    /**
@@ -61,7 +60,7 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
 
    public TextFlow(String id)
    {
-      this(id, LocaleId.EN_US, null);
+      this(id, LocaleId.EN_US, (String) null);
    }
 
    /**
@@ -72,14 +71,21 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
 
    public TextFlow(String id, LocaleId lang)
    {
-      this(id, lang, null);
+      this(id, lang, (String) null);
    }
 
-   public TextFlow(String id, LocaleId lang, String content)
+   public TextFlow(String id, LocaleId lang, String... content)
    {
       this.id = id;
       this.lang = lang;
-      this.content = content;
+      setContents(content);
+   }
+
+   public TextFlow(String id, LocaleId lang, List<String> contentList)
+   {
+      this.id = id;
+      this.lang = lang;
+      setContents(contentList);
    }
 
    @XmlAttribute(name = "id", required = true)
@@ -93,6 +99,22 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
       this.id = id;
    }
 
+   /**
+    * @return whether this message supports plurals
+    */
+   public boolean isPlural()
+   {
+      return plural;
+   }
+
+   /**
+    * @param pluralSupported the pluralSupported to set
+    */
+   public void setPlural(boolean pluralSupported)
+   {
+      this.plural = pluralSupported;
+   }
+
    @XmlJavaTypeAdapter(type = LocaleId.class, value = LocaleIdAdapter.class)
    @XmlAttribute(name = "lang", namespace = Namespaces.XML, required = false)
    public LocaleId getLang()
@@ -103,19 +125,6 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
    public void setLang(LocaleId lang)
    {
       this.lang = lang;
-   }
-
-   @XmlElement(name = "content", required = true)
-   public String getContent()
-   {
-      if (content == null)
-         return "";
-      return content;
-   }
-
-   public void setContent(String content)
-   {
-      this.content = content;
    }
 
    @XmlElementWrapper(name = "extensions", required = false)
@@ -148,8 +157,7 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
    public int hashCode()
    {
       final int prime = 31;
-      int result = 1;
-      result = prime * result + ((content == null) ? 0 : content.hashCode());
+      int result = super.hashCode();
       result = prime * result + ((extensions == null) ? 0 : extensions.hashCode());
       result = prime * result + ((id == null) ? 0 : id.hashCode());
       result = prime * result + ((lang == null) ? 0 : lang.hashCode());
@@ -164,7 +172,7 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
       {
          return true;
       }
-      if (obj == null)
+      if (!super.equals(obj))
       {
          return false;
       }
@@ -173,17 +181,6 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
          return false;
       }
       TextFlow other = (TextFlow) obj;
-      if (content == null)
-      {
-         if (other.content != null)
-         {
-            return false;
-         }
-      }
-      else if (!content.equals(other.content))
-      {
-         return false;
-      }
       if (extensions == null)
       {
          if (other.extensions != null)
@@ -241,4 +238,5 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
    {
       revision = i;
    }
+
 }

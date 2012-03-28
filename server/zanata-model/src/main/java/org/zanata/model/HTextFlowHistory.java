@@ -40,10 +40,11 @@ import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
+import org.hibernate.validator.NotEmpty;
 
 @Entity
 @org.hibernate.annotations.Entity(mutable = false)
-public class HTextFlowHistory implements Serializable, ITextFlowHistory
+public class HTextFlowHistory extends HTextContainer implements Serializable, ITextFlowHistory
 {
 
    private static final long serialVersionUID = 1L;
@@ -94,7 +95,7 @@ public class HTextFlowHistory implements Serializable, ITextFlowHistory
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "tf_id")
    public HTextFlow getTextFlow()
    {
@@ -106,9 +107,10 @@ public class HTextFlowHistory implements Serializable, ITextFlowHistory
       this.textFlow = textFlow;
    }
 
+   @NotEmpty
    @Type(type = "text")
    @AccessType("field")
-   @CollectionOfElements(fetch = FetchType.EAGER)
+   @CollectionOfElements
    @JoinTable(name = "HTextFlowContentHistory", 
       joinColumns = @JoinColumn(name = "text_flow_history_id")
    )

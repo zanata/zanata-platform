@@ -46,10 +46,10 @@ public interface ValidationMessages extends Messages
 
    // Java variables validator
 
-   @DefaultMessage("{x} variables")
+   @DefaultMessage("'{x}' variables")
    String javaVariablesValidatorName();
 
-   @DefaultMessage("Check that java style ({x}) variables are consistent")
+   @DefaultMessage("Check that java style ('{x}') variables are consistent")
    String javaVariablesValidatorDescription();
 
    @Description("Lists variables that appear a different number of times between source and target strings")

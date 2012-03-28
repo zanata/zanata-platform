@@ -20,8 +20,14 @@
  */
 package org.zanata.dao;
 
+import java.util.List;
+
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
@@ -35,7 +41,7 @@ import org.zanata.model.HTextFlowTargetHistory;
 @Scope(ScopeType.STATELESS)
 public class TextFlowTargetHistoryDAO extends AbstractDAOImpl<HTextFlowTargetHistory, Long>
 {
-
+   
    public TextFlowTargetHistoryDAO()
    {
       super(HTextFlowTargetHistory.class);
@@ -46,13 +52,32 @@ public class TextFlowTargetHistoryDAO extends AbstractDAOImpl<HTextFlowTargetHis
       super(HTextFlowTargetHistory.class, session);
    }
 
-   public boolean findContentInHistory(HTextFlowTarget target, String content)
+   public boolean findContentInHistory(HTextFlowTarget target, List<String> contents)
    {
-      Query query = getSession().createQuery("select count(*) from HTextFlowTargetHistory t where t.textFlowTarget.id =:id and content = :content");
-      query.setParameter("id", target.getId());
-      query.setParameter("content", content);
-      Long count = (Long) query.uniqueResult();
-      return count != 0;
+      Query query;
+      
+      // use named queries for the smaller more common cases
+      if( contents.size() <= 6 )
+      {
+         query = getSession().getNamedQuery("HTextFlowTargetHistory.findContentInHistory[" + contents.size() + "]");
+      }
+      else
+      {
+         StringBuilder queryStr = new StringBuilder("select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ?");
+         for( int i=0; i<contents.size(); i++ )
+         {
+            queryStr.append(" and contents[" + i + "] = ?");
+         }
+         query = getSession().createQuery(queryStr.toString());
+      }
+      query.setParameter(0, target);
+      query.setParameter(1, contents.size());
+      int paramPos = 2;
+      for( String c : contents )
+      {
+         query.setParameter(paramPos++, c);
+      }
+      return (Long)query.uniqueResult() != 0;
    }
 
    public boolean findConflictInHistory(HTextFlowTarget target, Integer verNum, String username)

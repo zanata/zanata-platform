@@ -5,17 +5,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
-import liquibase.FileOpener;
 import liquibase.change.custom.CustomTaskChange;
 import liquibase.database.Database;
-import liquibase.database.DatabaseConnection;
+import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.CustomChangeException;
-import liquibase.exception.InvalidChangeDefinitionException;
+import liquibase.exception.DatabaseException;
 import liquibase.exception.SetupException;
-import liquibase.exception.UnsupportedChangeException;
-import liquibase.log.LogFactory;
+import liquibase.exception.ValidationErrors;
+import liquibase.logging.LogFactory;
+import liquibase.logging.Logger;
+import liquibase.resource.ResourceAccessor;
 
 import org.zanata.util.OkapiUtil;
 
@@ -34,19 +34,20 @@ public class CountWordsInHTextFlow implements CustomTaskChange
    }
 
    @Override
-   public void setFileOpener(FileOpener fileOpener)
+   public void setFileOpener(ResourceAccessor accessor)
    {
    }
 
    @Override
-   public void validate(Database database) throws InvalidChangeDefinitionException
+   public ValidationErrors validate(Database database)
    {
+      return new ValidationErrors();
    }
 
    @Override
-   public void execute(Database database) throws CustomChangeException, UnsupportedChangeException
+   public void execute(Database database) throws CustomChangeException
    {
-      DatabaseConnection conn = database.getConnection();
+      JdbcConnection conn = (JdbcConnection)database.getConnection();
       try
       {
          Statement stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
@@ -93,6 +94,10 @@ public class CountWordsInHTextFlow implements CustomTaskChange
          }
       }
       catch (SQLException e)
+      {
+         throw new CustomChangeException(e);
+      }
+      catch (DatabaseException e)
       {
          throw new CustomChangeException(e);
       }

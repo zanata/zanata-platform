@@ -95,7 +95,7 @@ import org.zanata.util.OkapiUtil;
             "AND tft.textFlow.document.projectIteration.status<>org.zanata.common.EntityStatus.OBSOLETE " +
             "AND tft.textFlow.document.projectIteration.project.status<>org.zanata.common.EntityStatus.OBSOLETE"
 ))
-public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComment
+public class HTextFlow extends HTextContainer implements Serializable, ITextFlowHistory, HasSimpleComment
 {
    private static final Logger log = LoggerFactory.getLogger(HTextFlow.class);
 
@@ -250,29 +250,12 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    {
       this.comment = comment;
    }
-
-   @Deprecated
-   @Transient
-   public String getContent()
-   {
-      if( this.getContents().size() > 0 )
-      {
-         return this.getContents().get(0);
-      }
-      return null;
-   }
-   
-   @Deprecated
-   public void setContent( String content )
-   {
-      this.setContents( Arrays.asList(content) );
-   }
    
    @Override
    @NotEmpty
    @Type(type = "text")
    @AccessType("field")
-   @CollectionOfElements(fetch = FetchType.EAGER)
+   @CollectionOfElements
    @JoinTable(name = "HTextFlowContent", 
       joinColumns = @JoinColumn(name = "text_flow_id")
    )
@@ -295,11 +278,6 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
          updateWordCount();
          updateContentHash();
       }
-   }
-   
-   public void setContents(String ... contents)
-   {
-      this.setContents(Arrays.asList(contents));
    }
 
    @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST}, mappedBy = "textFlow")
@@ -418,10 +396,13 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    @PreUpdate
    private void preUpdate()
    {
-      // there is an initial state and there have been any changes
-      if( this.initialState != null && this.initialState.hasChanged(this) )
+      if( !this.revision.equals(this.oldRevision) )
       {
-         this.getHistory().put(this.oldRevision, this.initialState);
+         // there is an initial state
+         if( this.initialState != null )
+         {
+            this.getHistory().put(this.oldRevision, this.initialState);
+         }
       }
    }
    
