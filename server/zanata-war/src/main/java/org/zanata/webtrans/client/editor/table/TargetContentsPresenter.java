@@ -19,8 +19,10 @@ import java.util.ArrayList;
 
 import javax.inject.Provider;
 
+import com.google.gwt.core.client.Scheduler;
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.jboss.seam.async.Schedule;
 import org.zanata.webtrans.client.editor.CheckKey;
 import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
@@ -129,6 +131,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       if (currentEditorIndex == LAST_INDEX)
       {
          currentEditorIndex = currentEditors.size() - 1;
+      }
+      else if (currentEditorIndex != NO_OPEN_EDITOR)
+      {
+         currentEditorIndex = 0;
       }
 
       if (currentEditorIndex != NO_OPEN_EDITOR && currentEditorIndex < currentEditors.size())
@@ -247,20 +253,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void toggleView(ToggleEditor editor)
    {
+      //This is called in deferred mode. See Editor for more information.
       currentEditorIndex = editor.getIndex();
-      if (currentEditors != null && currentEditors.contains(editor))
-      {
-         // still in the same trans unit. won't trigger transunit selection
-         // or edit cell event
-         currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
-      }
-      else if (currentDisplay != null)
-      {
-         currentDisplay.setToView();
-      }
-      Log.debug("current display:" + currentDisplay);
-      // else, it's clicking an editor outside current selection. the table
-      // selection event will trigger and showEditors will take care of the rest
+      currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
+      Log.info("current display:" + currentDisplay);
    }
 
    public ArrayList<String> getNewTargets()

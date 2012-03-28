@@ -6,10 +6,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -41,8 +39,8 @@ public class Editor extends Composite implements ToggleEditor
    private static final int INITIAL_LINES = 3;
    private static final int HEIGHT_PER_LINE = 16;
 
-   private final int TYPING_TIMER_INTERVAL = 500; // ms
-   private final int TYPING_TIMER_RECURRENT_VALIDATION_PERIOD = 5; // intervals
+   private static final int TYPING_TIMER_INTERVAL = 500; // ms
+   private static final int TYPING_TIMER_RECURRENT_VALIDATION_PERIOD = 5; // intervals
 
    private final int index;
 
@@ -226,7 +224,14 @@ public class Editor extends Composite implements ToggleEditor
    @UiHandler("label")
    public void onLabelClick(MouseDownEvent event)
    {
-      listener.toggleView(this);
+      Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand()
+      {
+         @Override
+         public void execute()
+         {
+            listener.toggleView(Editor.this);
+         }
+      });
    }
 
    @Override
