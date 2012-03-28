@@ -1,17 +1,15 @@
 package org.zanata.webtrans.client.ui;
 
+import com.google.gwt.event.dom.client.BlurEvent;
 import org.zanata.webtrans.client.editor.table.EditorTextArea;
 import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
@@ -261,6 +259,15 @@ public class Editor extends Composite implements ToggleEditor
       }
    }
 
+   @UiHandler("textArea")
+   public void onBlur(BlurEvent event)
+   {
+      if (textArea.isVisible())
+      {
+         textArea.setFocus(true);
+      }
+   }
+
    @Override
    public void setText(String text)
    {
@@ -325,11 +332,6 @@ public class Editor extends Composite implements ToggleEditor
             growSize();
          }
       }
-   }
-
-   private String getContent()
-   {
-      return textArea.getText();
    }
 
    @Override

@@ -254,7 +254,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          // or edit cell event
          currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
       }
-      else
+      else if (currentDisplay != null)
       {
          currentDisplay.setToView();
       }
