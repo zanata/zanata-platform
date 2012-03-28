@@ -138,14 +138,14 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
    }
 
-   public TargetContentsDisplay getNextTargetContentsDisplay(int rowIndex, TransUnit transUnit)
+   public TargetContentsDisplay getNextTargetContentsDisplay(int rowIndex, TransUnit transUnit, String findMessages)
    {
       TargetContentsDisplay result = displayList.get(rowIndex);
       if (currentDisplay != null && currentDisplay != result)
       {
          currentDisplay.setToView();
       }
-
+      result.setFindMessage(findMessages);
       result.setTargets(transUnit.getTargets());
       result.setSaveButtonTitle(decideButtonTitle());
       if (workspaceContext.isReadOnly())
