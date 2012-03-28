@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class Editor extends Composite implements ToggleEditor
 {
+   private String findMessage;
    private TargetContentsDisplay.Listener listener;
 
    interface EditorUiBinder extends UiBinder<Widget, Editor>
@@ -81,6 +82,7 @@ public class Editor extends Composite implements ToggleEditor
 
    public Editor(String displayString, String findMessage, int index, final TargetContentsDisplay.Listener listener)
    {
+      this.findMessage = findMessage;
       this.listener = listener;
       this.index = index;
       initWidget(uiBinder.createAndBindUi(this));
@@ -88,21 +90,7 @@ public class Editor extends Composite implements ToggleEditor
       // determine whether to show or hide buttons
       showButtons(listener.isDisplayButtons());
 
-      if (displayString == null || displayString.isEmpty())
-      {
-         label.setText(messages.clickHere());
-         label.setStylePrimaryName("TableEditorContent-Empty");
-      }
-      else
-      {
-         label.setText(displayString);
-         label.setStylePrimaryName("TableEditorContent");
-      }
-
-      if (!Strings.isNullOrEmpty(findMessage))
-      {
-         label.highlightSearch(findMessage);
-      }
+      setLabelText(displayString);
 
       label.setTitle(messages.clickHere());
 
@@ -116,14 +104,7 @@ public class Editor extends Composite implements ToggleEditor
          {
             autoSize();
             fireValidationEvent();
-            if (Strings.isNullOrEmpty(event.getValue()))
-            {
-               label.setText(messages.clickHere());
-            }
-            else
-            {
-               label.setText(event.getValue());
-            }
+            setLabelText(event.getValue());
          }
 
       });
@@ -173,6 +154,25 @@ public class Editor extends Composite implements ToggleEditor
             }
          }
       });
+   }
+
+   private void setLabelText(String displayString)
+   {
+      if (Strings.isNullOrEmpty(displayString))
+      {
+         label.setText(messages.clickHere());
+         label.setStylePrimaryName("TableEditorContent-Empty");
+      }
+      else
+      {
+         label.setText(displayString);
+         label.setStylePrimaryName("TableEditorContent");
+      }
+
+      if (!Strings.isNullOrEmpty(findMessage))
+      {
+         label.highlightSearch(findMessage);
+      }
    }
 
    private void fireValidationEvent()
@@ -271,14 +271,14 @@ public class Editor extends Composite implements ToggleEditor
    @Override
    public void setText(String text)
    {
-      if (text != null && !text.isEmpty())
+      if (!Strings.isNullOrEmpty(text))
       {
-         label.setText(text);
+         setLabelText(text);
          textArea.setText(text);
       }
       else
       {
-         label.setText(messages.clickHere());
+         setLabelText(messages.clickHere());
          textArea.setText("");
       }
    }

@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.editor.table;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.base.Strings;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
@@ -111,7 +112,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
          SourceContentsView sourceContentsView = sourceContentsPresenter.getSourceContent(view.getRowIndex(), rowValue);
 
-         if (findMessage != null && !findMessage.isEmpty())
+         if (!Strings.isNullOrEmpty(findMessage))
          {
             sourceContentsView.highlightSearch(findMessage);
          }
@@ -147,7 +148,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          view.setStyleName("TableEditorCell TableEditorCell-Target");
          final VerticalPanel targetPanel = new VerticalPanel();
 
-         TargetContentsDisplay contentsDisplay = targetContentsPresenter.getNextTargetContentsDisplay(view.getRowIndex(), rowValue);
+         TargetContentsDisplay contentsDisplay = targetContentsPresenter.getNextTargetContentsDisplay(view.getRowIndex(), rowValue, findMessage);
          contentsDisplay.setToView();
 
          targetPanel.add(contentsDisplay.asWidget());

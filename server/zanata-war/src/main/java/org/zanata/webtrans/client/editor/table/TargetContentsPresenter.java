@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import javax.inject.Provider;
 
+import com.google.common.base.Strings;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.editor.CheckKey;
@@ -138,14 +139,14 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
    }
 
-   public TargetContentsDisplay getNextTargetContentsDisplay(int rowIndex, TransUnit transUnit)
+   public TargetContentsDisplay getNextTargetContentsDisplay(int rowIndex, TransUnit transUnit, String findMessages)
    {
       TargetContentsDisplay result = displayList.get(rowIndex);
       if (currentDisplay != null && currentDisplay != result)
       {
          currentDisplay.setToView();
       }
-
+      result.setFindMessage(findMessages);
       result.setTargets(transUnit.getTargets());
       result.setSaveButtonTitle(decideButtonTitle());
       if (workspaceContext.isReadOnly())
