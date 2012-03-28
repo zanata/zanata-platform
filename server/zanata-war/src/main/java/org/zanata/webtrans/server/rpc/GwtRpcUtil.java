@@ -56,18 +56,22 @@ class GwtRpcUtil
     */
    static ArrayList<String> getTargetContentsWithPadding(HTextFlow textFlow, HTextFlowTarget target, int nPlurals)
    {
-      int resultSize = textFlow.isPlural() ? nPlurals : 1;
-      ArrayList<String> result = new ArrayList<String>(resultSize);
+      int expectedResultSize = textFlow.isPlural() ? nPlurals : 1;
+      ArrayList<String> result = new ArrayList<String>(expectedResultSize);
       if (target != null)
       {
          List<String> targetContents = target.getContents();
-         if (targetContents.size() > resultSize)
+         if (targetContents.size() > expectedResultSize)
          {
             log.warn("TextFlowTarget {} has {} strings: trimming excess plurals", target.getId(), targetContents.size());
+            result.addAll(targetContents.subList(0, expectedResultSize));
          }
-         result.addAll(targetContents.subList(0, resultSize));
+         else
+         {
+            result.addAll(targetContents);
+         }
       }
-      while (result.size() < resultSize)
+      while (result.size() < expectedResultSize)
       {
          result.add("");
       }
