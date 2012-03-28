@@ -69,6 +69,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private final CheckKey checkKey;
    private NavigationMessages navMessages;
    private WorkspaceContext workspaceContext;
+   private Scheduler scheduler;
 
    private final ValidationMessagePanel validationMessagePanel;
    private TargetContentsDisplay currentDisplay;
@@ -79,7 +80,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private TransUnitsEditModel cellEditor;
 
    @Inject
-   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, UserConfigHolder configHolder, NavigationMessages navMessages, WorkspaceContext workspaceContext)
+   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, UserConfigHolder configHolder, NavigationMessages navMessages, WorkspaceContext workspaceContext, Scheduler scheduler)
    {
       this.displayProvider = displayProvider;
       this.eventBus = eventBus;
@@ -88,6 +89,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       this.configHolder = configHolder;
       this.navMessages = navMessages;
       this.workspaceContext = workspaceContext;
+      this.scheduler = scheduler;
 
       checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       validationMessagePanel = new ValidationMessagePanel(true, messages);
@@ -134,6 +136,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else if (currentEditorIndex != NO_OPEN_EDITOR)
       {
+         //TODO by default selection will select the first one and open
          currentEditorIndex = 0;
       }
 
@@ -251,12 +254,20 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    }
 
    @Override
-   public void toggleView(ToggleEditor editor)
+   public void toggleView(final ToggleEditor editor)
    {
-      //This is called in deferred mode. See Editor for more information.
-      currentEditorIndex = editor.getIndex();
-      currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
-      Log.info("current display:" + currentDisplay);
+      //this will get deferred execution since we want to trigger table selection event first
+      scheduler.scheduleDeferred(new Scheduler.ScheduledCommand()
+      {
+         @Override
+         public void execute()
+         {
+            currentEditorIndex = editor.getIndex();
+            currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
+            Log.info("current display:" + currentDisplay);
+         }
+      });
+
    }
 
    public ArrayList<String> getNewTargets()

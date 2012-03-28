@@ -224,14 +224,7 @@ public class Editor extends Composite implements ToggleEditor
    @UiHandler("label")
    public void onLabelClick(MouseDownEvent event)
    {
-      Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand()
-      {
-         @Override
-         public void execute()
-         {
-            listener.toggleView(Editor.this);
-         }
-      });
+      listener.toggleView(Editor.this);
    }
 
    @Override
