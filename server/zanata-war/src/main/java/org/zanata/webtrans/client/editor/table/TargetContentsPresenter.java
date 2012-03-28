@@ -238,7 +238,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       {
          editor.setText(null);
       }
-      validationMessagePanel.clear();
    }
 
    @Override
@@ -246,6 +245,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       editor.setText(sourceContentsPresenter.getSelectedSource());
       editor.autoSize();
+      validate(editor);
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
    }
 
@@ -314,6 +314,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       {
          getCurrentEditor().insertTextInCursorPosition(event.getSuggestion());
          eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
+         validate(getCurrentEditor());
       }
       else
       {
@@ -328,6 +329,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       {
          getCurrentEditor().setText(event.getTargetResult());
          eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
+         validate(getCurrentEditor());
       }
       else
       {

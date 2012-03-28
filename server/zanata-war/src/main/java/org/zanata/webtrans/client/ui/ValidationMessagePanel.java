@@ -92,6 +92,11 @@ public class ValidationMessagePanel extends Composite
    public void setContent(List<String> errors)
    {
       this.errors = errors;
+      if (errors == null || errors.isEmpty())
+      {
+         clear();
+         return;
+      }
       contentPanel.clear();
       contents.clear();
 

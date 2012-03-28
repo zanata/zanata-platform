@@ -10,6 +10,8 @@ import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
@@ -177,10 +179,7 @@ public class Editor extends Composite implements ToggleEditor
 
    private void fireValidationEvent()
    {
-      if (!Strings.isNullOrEmpty(getContent()))
-      {
-         listener.validate(this);
-      }
+      listener.validate(this);
    }
 
    @UiHandler("textArea")
@@ -251,6 +250,7 @@ public class Editor extends Composite implements ToggleEditor
       {
          listener.setValidationMessagePanel(this);
          fireValidationEvent();
+         autoSize();
          textArea.setFocus(true);
       }
       buttons.setVisible(viewMode == ViewMode.EDIT && listener.isDisplayButtons());
@@ -363,7 +363,6 @@ public class Editor extends Composite implements ToggleEditor
       String postCursor = textArea.getText().substring(textArea.getCursorPos(), textArea.getText().length());
 
       textArea.setText(preCursor + suggestion + postCursor);
-
    }
 
    @Override
