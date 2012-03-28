@@ -1,14 +1,9 @@
 package org.zanata.webtrans.client.ui;
 
-import com.google.gwt.event.dom.client.BlurEvent;
-import org.zanata.webtrans.client.editor.table.EditorTextArea;
-import org.zanata.webtrans.client.editor.table.TableResources;
-import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
-import org.zanata.webtrans.client.resources.NavigationMessages;
-
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -26,6 +21,10 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
+import org.zanata.webtrans.client.editor.table.EditorTextArea;
+import org.zanata.webtrans.client.editor.table.TableResources;
+import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
+import org.zanata.webtrans.client.resources.NavigationMessages;
 
 public class Editor extends Composite implements ToggleEditor
 {
@@ -222,7 +221,6 @@ public class Editor extends Composite implements ToggleEditor
    @UiHandler("label")
    public void onLabelClick(MouseDownEvent event)
    {
-      // TODO fire up select row event first before toogle view
       listener.toggleView(this);
    }
 
@@ -249,22 +247,20 @@ public class Editor extends Composite implements ToggleEditor
          listener.setValidationMessagePanel(this);
          fireValidationEvent();
          autoSize();
-         textArea.setFocus(true);
+         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand()
+         {
+            @Override
+            public void execute()
+            {
+               textArea.setFocus(true);
+            }
+         });
       }
       buttons.setVisible(viewMode == ViewMode.EDIT && listener.isDisplayButtons());
 
       if (viewMode == ViewMode.VIEW)
       {
          removeValidationMessagePanel();
-      }
-   }
-
-   @UiHandler("textArea")
-   public void onBlur(BlurEvent event)
-   {
-      if (textArea.isVisible())
-      {
-         textArea.setFocus(true);
       }
    }
 

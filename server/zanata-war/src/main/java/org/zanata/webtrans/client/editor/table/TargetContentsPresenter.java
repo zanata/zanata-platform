@@ -19,7 +19,6 @@ import java.util.ArrayList;
 
 import javax.inject.Provider;
 
-import com.google.common.base.Strings;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.editor.CheckKey;
