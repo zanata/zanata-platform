@@ -31,19 +31,6 @@ public class UserConfigChangeEvent extends GwtEvent<UserConfigChangeHandler>
       return TYPE;
    }
 
-   private Map<String, Boolean> configMap;
-
-   public UserConfigChangeEvent(Map<String, Boolean> configMap)
-   {
-      //TODO instead of passing config map around, all receivers should directly reference UserConfigHolder to get value
-      this.configMap = configMap;
-   }
-
-   public Map<String, Boolean> getConfigMap()
-   {
-      return configMap;
-   }
-
    @Override
    protected void dispatch(UserConfigChangeHandler handler)
    {

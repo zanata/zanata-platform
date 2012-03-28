@@ -185,6 +185,7 @@
                             </hostedWebapp>
                             <buildOutputDirectory>${project.build.directory}/gwt-gen</buildOutputDirectory>
                             <port>8080</port>
+                            <logLevel>DEBUG</logLevel>
                         </configuration>
                     </execution>
                 </executions>

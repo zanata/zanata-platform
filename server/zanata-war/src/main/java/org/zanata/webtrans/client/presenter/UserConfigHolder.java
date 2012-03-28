@@ -15,11 +15,6 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import java.util.Map;
-
-import org.zanata.webtrans.client.resources.EditorConfigConstants;
-
-import com.google.common.collect.ImmutableMap;
 import com.google.inject.Singleton;
 
 
@@ -77,19 +72,10 @@ public class UserConfigHolder
       return displayButtons;
    }
 
-   void setDisplayButtons(boolean displayButtons)
+   //TODO TableEditorPresenter will call this one workspaceContext change event. Thus the method must be public.
+   public void setDisplayButtons(boolean displayButtons)
    {
       this.displayButtons = displayButtons;
-   }
-
-   Map<String, Boolean> getConfigMap()
-   {
-      return ImmutableMap.<String, Boolean>builder()
-            .put(EditorConfigConstants.BUTTON_ENTER, buttonEnter)
-            .put(EditorConfigConstants.BUTTON_ESC, buttonEsc)
-            .put(EditorConfigConstants.BUTTON_FUZZY, buttonFuzzy)
-            .put(EditorConfigConstants.BUTTON_UNTRANSLATED, buttonUntranslated)
-            .build();
    }
 
    public boolean isFuzzyAndUntranslated()

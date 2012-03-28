@@ -20,33 +20,36 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
-import static org.zanata.webtrans.client.editor.table.TableConstants.MAX_PAGE_ROW;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.gen2.table.client.TableModel;
+import com.google.gwt.gen2.table.client.TableModel.Callback;
+import com.google.gwt.gen2.table.client.TableModelHelper.Request;
+import com.google.gwt.gen2.table.client.TableModelHelper.SerializableResponse;
+import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
+import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
+import com.google.gwt.gen2.table.event.client.PageChangeHandler;
+import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-
 import org.zanata.common.EditState;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateAction;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateHandler;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
-import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
-import org.zanata.webtrans.client.events.ButtonDisplayChangeEventHandler;
-import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
-import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
-import org.zanata.webtrans.client.events.CopySourceEvent;
-import org.zanata.webtrans.client.events.CopySourceEventHandler;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
-import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
-import org.zanata.webtrans.client.events.InsertStringInEditorHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
@@ -56,7 +59,6 @@ import org.zanata.webtrans.client.events.OpenEditorEvent;
 import org.zanata.webtrans.client.events.OpenEditorEventHandler;
 import org.zanata.webtrans.client.events.RedoFailureEvent;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
-import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
@@ -65,9 +67,11 @@ import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.UndoAddEvent;
 import org.zanata.webtrans.client.events.UndoFailureEvent;
 import org.zanata.webtrans.client.events.UndoRedoFinishEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationPanel;
@@ -87,24 +91,10 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.collect.Lists;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.gen2.table.client.TableModel;
-import com.google.gwt.gen2.table.client.TableModel.Callback;
-import com.google.gwt.gen2.table.client.TableModelHelper.Request;
-import com.google.gwt.gen2.table.client.TableModelHelper.SerializableResponse;
-import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
-import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
-import com.google.gwt.gen2.table.event.client.PageChangeHandler;
-import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.zanata.webtrans.client.editor.table.TableConstants.MAX_PAGE_ROW;
 
 public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.Display> implements HasPageNavigation
 {
@@ -190,6 +180,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
    private final SourceContentsPresenter sourceContentsPresenter;
    private TargetContentsPresenter targetContentsPresenter;
+   private UserConfigHolder configHolder;
 
    private boolean filterTranslated, filterNeedReview, filterUntranslated;
 
@@ -263,7 +254,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    };
 
    @Inject
-   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourceContentsPresenter sourceContentsPresenter, TargetContentsPresenter targetContentsPresenter)
+   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourceContentsPresenter sourceContentsPresenter, TargetContentsPresenter targetContentsPresenter, UserConfigHolder configHolder)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
@@ -272,6 +263,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       this.workspaceContext = workspaceContext;
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.targetContentsPresenter = targetContentsPresenter;
+      this.configHolder = configHolder;
    }
 
    private void clearCacheList()
@@ -572,7 +564,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          {
             boolean readOnly = event.isReadOnly();
             workspaceContext.setReadOnly(readOnly);
-            eventBus.fireEvent(new ButtonDisplayChangeEvent(!readOnly));
+            configHolder.setDisplayButtons(false);
+            eventBus.fireEvent(new UserConfigChangeEvent());
             display.getTargetCellEditor().setReadOnly(readOnly);
 
             if (readOnly)

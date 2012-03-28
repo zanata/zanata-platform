@@ -20,22 +20,6 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-
-import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
-import org.zanata.webtrans.client.events.FilterViewEvent;
-import org.zanata.webtrans.client.events.FilterViewEventHandler;
-import org.zanata.webtrans.client.events.UserConfigChangeEvent;
-import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
-import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
-import org.zanata.webtrans.client.resources.EditorConfigConstants;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -44,6 +28,15 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+import org.zanata.webtrans.client.events.FilterViewEvent;
+import org.zanata.webtrans.client.events.FilterViewEventHandler;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
 
 public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter.Display>
 {
@@ -161,7 +154,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          {
             Log.info("Enable 'Enter' Key to save and move to next string: " + event.getValue());
             configHolder.setButtonEnter(event.getValue());
-            eventBus.fireEvent(new UserConfigChangeEvent(configHolder.getConfigMap()));
+            eventBus.fireEvent(new UserConfigChangeEvent());
          }
       }));
 
@@ -172,7 +165,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          {
             Log.info("Enable 'Esc' Key to close editor: " + event.getValue());
             configHolder.setButtonEsc(event.getValue());
-            eventBus.fireEvent(new UserConfigChangeEvent(configHolder.getConfigMap()));
+            eventBus.fireEvent(new UserConfigChangeEvent());
          }
       }));
 
@@ -202,7 +195,7 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
                configHolder.setButtonFuzzy(false);
                configHolder.setButtonUntranslated(true);
             }
-            eventBus.fireEvent(new UserConfigChangeEvent(configHolder.getConfigMap()));
+            eventBus.fireEvent(new UserConfigChangeEvent());
          }
       }));
 
@@ -219,7 +212,8 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
    void setReadOnly(boolean readOnly)
    {
       boolean displayButtons = readOnly ? false : display.getEditorButtonsChk().getValue();
-      eventBus.fireEvent(new ButtonDisplayChangeEvent(displayButtons));
+      configHolder.setDisplayButtons(displayButtons);
+      eventBus.fireEvent(new UserConfigChangeEvent());
       display.setEditorOptionsVisible(!readOnly);
       display.setValidationOptionsVisible(!readOnly);
    }

@@ -50,7 +50,8 @@ public class TargetContentsView implements TargetContentsDisplay
    public void openEditorAndCloseOthers(int currentEditor)
    {
       setToView();
-      editors.get(currentEditor).setViewMode(ToggleEditor.ViewMode.EDIT);
+      ToggleEditor editor = editors.get(currentEditor);
+      editor.setViewMode(ToggleEditor.ViewMode.EDIT);
    }
 
    @Override
