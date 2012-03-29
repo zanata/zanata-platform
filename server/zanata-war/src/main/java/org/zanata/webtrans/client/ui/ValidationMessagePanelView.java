@@ -34,12 +34,12 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ValidationMessagePanel extends Composite
+public class ValidationMessagePanelView extends Composite implements ValidationMessagePanelDisplay
 {
 
    private static UI uiBinder = GWT.create(UI.class);
 
-   interface UI extends UiBinder<Widget, ValidationMessagePanel>
+   interface UI extends UiBinder<Widget, ValidationMessagePanelView>
    {
    }
 
@@ -48,6 +48,12 @@ public class ValidationMessagePanel extends Composite
       String header();
 
       String headerClickable();
+
+      String content();
+
+      String scrollSection();
+
+      String container();
    }
 
    @UiField
@@ -64,14 +70,14 @@ public class ValidationMessagePanel extends Composite
    private boolean collapsible;
    private List<String> errors = new ArrayList<String>();
 
-   private final TableEditorMessages messages;
+   @UiField
+   TableEditorMessages messages;
 
-   public ValidationMessagePanel(boolean collapsible, TableEditorMessages messages)
+   public ValidationMessagePanelView()
    {
       contents = new VerticalPanel();
-      this.messages = messages;
       initWidget(uiBinder.createAndBindUi(this));
-      setCollapsible(collapsible);
+      setCollapsible(true);
       setHeaderText(messages.validationWarningsHeading(0));
       collapse();
    }
@@ -81,6 +87,7 @@ public class ValidationMessagePanel extends Composite
       headerLabel.setText(header);
    }
 
+   @Override
    public void clear()
    {
       contentPanel.clear();
@@ -89,6 +96,7 @@ public class ValidationMessagePanel extends Composite
       setHeaderText(messages.validationWarningsHeading(0));
    }
 
+   @Override
    public void setContent(List<String> errors)
    {
       this.errors = errors;

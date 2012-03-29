@@ -23,7 +23,7 @@ import org.zanata.webtrans.client.ui.ToggleEditor;
 
 import com.google.gwt.event.dom.client.KeyDownEvent;
 
-public interface TargetContentsDisplay extends WidgetDisplay, Iterable<ToggleEditor>
+public interface TargetContentsDisplay extends WidgetDisplay
 {
 
    void openEditorAndCloseOthers(int currentEditor);

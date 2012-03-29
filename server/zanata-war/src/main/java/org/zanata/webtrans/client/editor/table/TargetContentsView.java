@@ -156,12 +156,6 @@ public class TargetContentsView implements TargetContentsDisplay
    }
 
    @Override
-   public Iterator<ToggleEditor> iterator()
-   {
-      return editors.iterator();
-   }
-
-   @Override
    public String toString()
    {
       return Objects.toStringHelper(this).add("editors", editors).toString();

@@ -19,10 +19,8 @@ import java.util.ArrayList;
 
 import javax.inject.Provider;
 
-import com.google.gwt.core.client.Scheduler;
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.jboss.seam.async.Schedule;
 import org.zanata.webtrans.client.editor.CheckKey;
 import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
@@ -45,13 +43,14 @@ import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
-import org.zanata.webtrans.client.ui.ValidationMessagePanel;
+import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -71,7 +70,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private WorkspaceContext workspaceContext;
    private Scheduler scheduler;
 
-   private final ValidationMessagePanel validationMessagePanel;
+   private final ValidationMessagePanelDisplay validationMessagePanel;
    private TargetContentsDisplay currentDisplay;
    private Provider<TargetContentsDisplay> displayProvider;
    private ArrayList<TargetContentsDisplay> displayList;
@@ -80,7 +79,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private TransUnitsEditModel cellEditor;
 
    @Inject
-   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, UserConfigHolder configHolder, NavigationMessages navMessages, WorkspaceContext workspaceContext, Scheduler scheduler)
+   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, UserConfigHolder configHolder, NavigationMessages navMessages, WorkspaceContext workspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel)
    {
       this.displayProvider = displayProvider;
       this.eventBus = eventBus;
@@ -90,9 +89,9 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       this.navMessages = navMessages;
       this.workspaceContext = workspaceContext;
       this.scheduler = scheduler;
+      this.validationMessagePanel = validationMessagePanel;
 
       checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
-      validationMessagePanel = new ValidationMessagePanel(true, messages);
       eventBus.addHandler(UserConfigChangeEvent.getType(), this);
       eventBus.addHandler(UpdateValidationWarningsEvent.getType(), this);
       eventBus.addHandler(RequestValidationEvent.getType(), this);
@@ -118,14 +117,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
    }
 
-   public void setCurrentEditorText(String text)
-   {
-      if (getCurrentEditor() != null)
-      {
-         getCurrentEditor().setText(text);
-      }
-   }
-
    public void showEditors(int rowIndex, int editorIndex)
    {
       currentDisplay = displayList.get(rowIndex);
@@ -136,7 +127,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else if (currentEditorIndex != NO_OPEN_EDITOR)
       {
-         //TODO by default selection will select the first one and open
+         // TODO by default selection will select the first one and open
          currentEditorIndex = 0;
       }
 
@@ -150,10 +141,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    public TargetContentsDisplay getNextTargetContentsDisplay(int rowIndex, TransUnit transUnit, String findMessages)
    {
       TargetContentsDisplay result = displayList.get(rowIndex);
-      if (currentDisplay != null && currentDisplay != result)
-      {
-         currentDisplay.setToView();
-      }
       result.setFindMessage(findMessages);
       result.setTargets(transUnit.getTargets());
       result.setSaveButtonTitle(decideButtonTitle());
@@ -256,13 +243,14 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void toggleView(final ToggleEditor editor)
    {
-      //this will get deferred execution since we want to trigger table selection event first
+      // this will get deferred execution since we want to trigger table
+      // selection event first
       scheduler.scheduleDeferred(new Scheduler.ScheduledCommand()
       {
          @Override
          public void execute()
          {
-            Log.info("current display:" + currentDisplay);
+            Log.debug("current display:" + currentDisplay);
             currentEditorIndex = editor.getIndex();
             currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
          }
@@ -282,6 +270,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       editor.addValidationMessagePanel(validationMessagePanel);
    }
 
+   // TODO InlineTargetCellEditor is not managed by gin. Therefore this can't be
+   // injected
    public void setCellEditor(TransUnitsEditModel cellEditor)
    {
       this.cellEditor = cellEditor;
@@ -314,33 +304,35 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    }
 
    @Override
-   public void onInsertString(InsertStringInEditorEvent event)
+   public void onInsertString(final InsertStringInEditorEvent event)
    {
-      if (isEditing())
-      {
-         getCurrentEditor().insertTextInCursorPosition(event.getSuggestion());
-         eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
-         validate(getCurrentEditor());
-      }
-      else
-      {
-         eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnopened()));
-      }
+      copyTextWhenIsEditing(event.getSuggestion(), true);
    }
 
    @Override
-   public void onTransMemoryCopy(CopyDataToEditorEvent event)
+   public void onTransMemoryCopy(final CopyDataToEditorEvent event)
    {
-      if (isEditing())
+      copyTextWhenIsEditing(event.getTargetResult(), false);
+   }
+
+   private void copyTextWhenIsEditing(String text, boolean isInsertText)
+   {
+      if (!isEditing())
       {
-         getCurrentEditor().setText(event.getTargetResult());
-         eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
-         validate(getCurrentEditor());
+         eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnopened()));
+         return;
+      }
+
+      if (isInsertText)
+      {
+         getCurrentEditor().insertTextInCursorPosition(text);
       }
       else
       {
-         eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnopened()));
+         getCurrentEditor().setText(text);
       }
+      eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
+      validate(getCurrentEditor());
    }
 
    @Override
@@ -354,12 +346,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else if (checkKey.isNextEntryKey())
       {
-         // See editCell() for saving event
          saveAsApprovedAndMoveNext();
       }
       else if (checkKey.isPreviousEntryKey())
       {
-         // See editCell() for saving event
          saveAsApprovedAndMovePrevious();
       }
       else if (checkKey.isNextStateEntryKey())

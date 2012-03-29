@@ -151,14 +151,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       return isOpened;
    }
 
-   public void setText(String text)
-   { // TODO copy TM or copy source will go here
-      if (isEditing())
-      {
-         targetContentsPresenter.setCurrentEditorText(text);
-      }
-   }
-
    @Override
    public void editCell(CellEditInfo cellEditInfo, TransUnit cellValue, Callback<TransUnit> callback)
    {

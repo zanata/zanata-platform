@@ -2,7 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
     xmlns:g="urn:import:com.google.gwt.user.client.ui">
     
-    <ui:style type="org.zanata.webtrans.client.ui.ValidationMessagePanel.Styles">
+    <ui:style type="org.zanata.webtrans.client.ui.ValidationMessagePanelView.Styles">
         .container {
            width:100%;
         }
@@ -42,7 +42,9 @@
         }
         
     </ui:style>
-    
+
+    <ui:with field="messages" type="org.zanata.webtrans.client.resources.TableEditorMessages" />
+
     <g:VerticalPanel styleName="{style.container}">
         <g:Label ui:field="headerLabel"/>
         <g:ScrollPanel styleName="{style.scrollSection}">
