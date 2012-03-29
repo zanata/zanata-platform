@@ -48,7 +48,6 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.LevenshteinUtil;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
-import org.zanata.util.ShortString;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
@@ -77,10 +76,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
    {
       ZanataIdentity.instance().checkLoggedIn();
 
-      final String searchText = action.getQuery();
-      ShortString abbrev = new ShortString(searchText);
-      final SearchType searchType = action.getSearchType();
-      log.info("Fetching TM matches({0}) for \"{1}\"", searchType, abbrev);
+      log.info("Fetching matches for {0}", action.getQuery());
 
       LocaleId localeID = action.getLocaleId();
       HLocale hLocale = localeServiceImpl.getByLocaleId(localeID);
@@ -90,7 +86,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       {
          // FIXME this won't scale well
          List<Long> idsWithTranslations = textFlowDAO.findIdsWithTranslations(localeID);
-         List<Object[]> matches = textFlowDAO.getSearchResult(searchText, searchType, idsWithTranslations, MAX_RESULTS);
+         List<Object[]> matches = textFlowDAO.getSearchResult(action.getQuery(), idsWithTranslations, MAX_RESULTS);
          Map<TMKey, TranslationMemoryGlossaryItem> matchesMap = new LinkedHashMap<TMKey, TranslationMemoryGlossaryItem>(matches.size());
          for (Object[] match : matches)
          {
@@ -114,10 +110,20 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
             {
                continue;
             }
+
+            int percent;
+            if (action.getQuery().getSearchType() == SearchType.FUZZY_PLURAL)
+            {
+               percent = (int) (100 * LevenshteinUtil.getSimilarity(action.getQuery().getQueries(), textFlow.getContents()));
+            }
+            else
+            {
+               final String searchText = action.getQuery().getQueries().get(0);
+               percent = (int) (100 * LevenshteinUtil.getSimilarity(searchText, textFlow.getContents().get(0)));
+            }
+            // FIXME return all contents in TranslationMemoryGlossaryItem
             String textFlowContent = textFlow.getContent();
             String targetContent = target.getContent();
-
-            int percent = (int) (100 * LevenshteinUtil.getSimilarity(searchText, textFlowContent));
             TMKey key = new TMKey(textFlowContent, targetContent);
             TranslationMemoryGlossaryItem item = matchesMap.get(key);
             if (item == null)
@@ -131,14 +137,15 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       }
       catch (ParseException e)
       {
-         if (searchType == SearchType.RAW)
+         if (action.getQuery().getSearchType() == SearchType.RAW)
          {
-            log.warn("Can't parse raw query '" + searchText + "'");
+            // TODO tell the user
+            log.warn("Can't parse raw query " + action.getQuery());
          }
          else
          {
             // escaping failed!
-            log.error("Can't parse query '" + searchText + "'", e);
+            log.error("Can't parse query " + action.getQuery(), e);
          }
          results = new ArrayList<TranslationMemoryGlossaryItem>(0);
       }
@@ -189,7 +196,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 
       Collections.sort(results, comp);
 
-      log.info("Returning {0} TM matches for \"{1}\"", results.size(), abbrev);
+      log.info("Returning {0} TM matches for {1}", results.size(), action.getQuery());
       return new GetTranslationMemoryResult(action, results);
    }
 

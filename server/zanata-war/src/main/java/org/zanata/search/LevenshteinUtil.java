@@ -1,5 +1,7 @@
 package org.zanata.search;
 
+import java.util.List;
+
 public class LevenshteinUtil
 {
 
@@ -114,7 +116,7 @@ public class LevenshteinUtil
       return candidate;
    }
 
-   public static double getSimilarity(final String s1, String s2)
+   public static double getSimilarity(final String s1, final String s2)
    {
       int levDistance = getLevenshteinDistance(s1, s2);
       int maxDistance = Math.max(s1.length(), s2.length());
@@ -122,7 +124,56 @@ public class LevenshteinUtil
       return similarity;
    }
 
-   public static double getSubstringSimilarity(final String needle, String haystack)
+   private static int countExtraStringLengths(List<String> strings, int fromIndex)
+   {
+      int total = 0;
+      for (int i = fromIndex; i < strings.size(); i++)
+      {
+         String s = strings.get(i);
+         total += s.length();
+      }
+      return total;
+   }
+
+   public static double getSimilarity(final List<String> strings1, final List<String> strings2)
+   {
+      // length of the shorter list
+      int minListSize;
+
+      // count the extra strings first:
+      int extraStringLengths; // total of "extra" strings in the longer list
+      if (strings1.size() < strings2.size())
+      {
+         minListSize = strings1.size();
+         extraStringLengths = countExtraStringLengths(strings2, minListSize);
+      }
+      else
+      {
+         minListSize = strings2.size();
+         extraStringLengths = countExtraStringLengths(strings1, minListSize);
+      }
+
+      // total of Levenshtein distance between corresponding strings in the
+      // two lists, plus the length of any extra strings if one list is longer
+      int totalLevDistance = extraStringLengths;
+      // total of max editing distance between all the corresponding strings,
+      // plus length of extra strings
+      int totalMaxDistance = extraStringLengths;
+
+      // now count the strings which correspond between both lists
+      for (int i = 0; i < minListSize; i++)
+      {
+         String s1 = strings1.get(i);
+         String s2 = strings2.get(i);
+         int levenshteinDistance = getLevenshteinDistance(s1, s2);
+         totalLevDistance += levenshteinDistance;
+         totalMaxDistance += Math.max(s1.length(), s2.length());
+      }
+      double similarity = (totalMaxDistance - totalLevDistance) / (double) totalMaxDistance;
+      return similarity;
+   }
+
+   public static double getSubstringSimilarity(final String needle, final String haystack)
    {
       int levDistance = getLevenshteinSubstringDistance(needle, haystack);
       int maxDistance = Math.max(needle.length(), haystack.length());

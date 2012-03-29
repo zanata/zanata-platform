@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.util.Version;
@@ -47,6 +48,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.DefaultNgramAnalyzer;
 import org.zanata.model.HDocument;
 import org.zanata.model.HTextFlow;
+import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 @Name("textFlowDAO")
@@ -54,6 +56,9 @@ import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 @Scope(ScopeType.STATELESS)
 public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 {
+   private static final Version LUCENE_VERSION = Version.LUCENE_29;
+   private static final String CONTENT_FIELDS[] = { "content0", "content1", "content2", "content3", "content4", "content5" };
+
    @In
    private FullTextEntityManager entityManager;
 
@@ -133,31 +138,52 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 
    }
 
-   public List<Object[]> getSearchResult(String searchText, SearchType searchType, List<Long> translatedIds, final int maxResult) throws ParseException
+   public List<Object[]> getSearchResult(TransMemoryQuery query, List<Long> translatedIds, final int maxResult) throws ParseException
    {
-      String queryText;
-      switch (searchType)
+      String queryText = null;
+      switch (query.getSearchType())
       {
       case RAW:
-         queryText = searchText;
+         queryText = query.getQueries().get(0);
          break;
 
       case FUZZY:
          // search by N-grams
-         queryText = QueryParser.escape(searchText);
+         queryText = QueryParser.escape(query.getQueries().get(0));
          break;
 
       case EXACT:
-         queryText = "\"" + QueryParser.escape(searchText) + "\"";
+         queryText = "\"" + QueryParser.escape(query.getQueries().get(0)) + "\"";
          break;
 
+      case FUZZY_PLURAL:
+         // nothing yet, we just use the queries as they are
+         break;
       default:
-         throw new RuntimeException("Unknown query type: " + searchType);
+         throw new RuntimeException("Unknown query type: " + query.getSearchType());
       }
 
-      // FIXME use MultiFieldQueryParser with content[0-5]
-      QueryParser parser = new QueryParser(Version.LUCENE_29, "content0", new DefaultNgramAnalyzer());
-      org.apache.lucene.search.Query textQuery = parser.parse(queryText);
+      org.apache.lucene.search.Query textQuery;
+      DefaultNgramAnalyzer analyzer = new DefaultNgramAnalyzer();
+      if (query.getSearchType() == SearchType.FUZZY_PLURAL)
+      {
+         int queriesSize = query.getQueries().size();
+         if (queriesSize > CONTENT_FIELDS.length)
+         {
+            log.warn("query contains {0} fields, but we only index {1}", queriesSize, CONTENT_FIELDS.length);
+         }
+         String[] searchFields = new String[queriesSize];
+         System.arraycopy(CONTENT_FIELDS, 0, searchFields, 0, queriesSize);
+
+         String[] queries = query.getQueries().toArray(new String[queriesSize]);
+         textQuery = MultiFieldQueryParser.parse(LUCENE_VERSION, queries, searchFields, analyzer);
+      }
+      else
+      {
+         MultiFieldQueryParser parser = new MultiFieldQueryParser(
+               LUCENE_VERSION, CONTENT_FIELDS, analyzer);
+         textQuery = parser.parse(queryText);
+      }
       FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
       ftQuery.enableFullTextFilter("textFlowFilter").setParameter("ids", translatedIds);
 
