@@ -36,6 +36,7 @@ public class DiffMatchPatchLabelColumn extends Column<TranslationMemoryGlossaryI
 
    private final boolean displaySource;
    private final boolean displayTarget;
+   private String query;
 
    public DiffMatchPatchLabelColumn(boolean displaySource, boolean displayTarget)
    {
@@ -44,11 +45,16 @@ public class DiffMatchPatchLabelColumn extends Column<TranslationMemoryGlossaryI
       this.displayTarget = displayTarget;
    }
 
+   public void setQuery(String query)
+   {
+      this.query = query;
+   }
+
    @Override
    public DiffMatchPatchLabel getValue(TranslationMemoryGlossaryItem object)
    {
       DiffMatchPatchLabel label = new DiffMatchPatchLabel();
-      label.setOriginal(object.getQuery());
+      label.setOriginal(query);
       if (displaySource)
       {
          label.setText(object.getSource());

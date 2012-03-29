@@ -122,7 +122,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
             TranslationMemoryGlossaryItem item = matchesMap.get(key);
             if (item == null)
             {
-               item = new TranslationMemoryGlossaryItem(textFlowContent, targetContent, searchText, score, percent);
+               item = new TranslationMemoryGlossaryItem(textFlowContent, targetContent, score, percent);
                matchesMap.put(key, item);
             }
             item.addSourceId(textFlow.getId());

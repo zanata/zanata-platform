@@ -10,7 +10,6 @@ public class TranslationMemoryGlossaryItem implements Serializable
 
    private String source;
    private String target;
-   private String query;
 
    private ArrayList<Long> sourceIdList = new ArrayList<Long>();
    private float relevanceScore;
@@ -22,11 +21,10 @@ public class TranslationMemoryGlossaryItem implements Serializable
    {
    }
 
-   public TranslationMemoryGlossaryItem(String source, String memory, String query, float relevanceScore, int similarityPercent)
+   public TranslationMemoryGlossaryItem(String source, String memory, float relevanceScore, int similarityPercent)
    {
       this.source = source;
       this.target = memory;
-      this.query = query;
       this.relevanceScore = relevanceScore;
       this.similarityPercent = similarityPercent;
    }
@@ -81,8 +79,4 @@ public class TranslationMemoryGlossaryItem implements Serializable
       return source;
    }
 
-   public String getQuery()
-   {
-      return query;
-   }
 }

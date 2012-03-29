@@ -155,6 +155,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
          throw new RuntimeException("Unknown query type: " + searchType);
       }
 
+      // FIXME use MultiFieldQueryParser with content[0-5]
       QueryParser parser = new QueryParser(Version.LUCENE_29, "content0", new DefaultNgramAnalyzer());
       org.apache.lucene.search.Query textQuery = parser.parse(queryText);
       FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
