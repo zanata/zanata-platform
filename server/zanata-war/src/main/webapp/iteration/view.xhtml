@@ -9,6 +9,7 @@
 	template="../WEB-INF/layout/template.xhtml">
 
 
+   <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug}</ui:define>
 	<ui:define name="center_content">
 		<rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 			

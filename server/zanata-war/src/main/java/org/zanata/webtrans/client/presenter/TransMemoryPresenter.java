@@ -1,5 +1,8 @@
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -10,6 +13,7 @@ import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
@@ -56,7 +60,8 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       Column<TranslationMemoryGlossaryItem, String> getCopyColumn();
 
       void setDataProvider(ListDataProvider<TranslationMemoryGlossaryItem> dataProvider);
-      void setQuery(String query);
+
+      void setQueries(List<String> queries);
    }
 
    private final WorkspaceContext workspaceContext;
@@ -88,7 +93,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          public void onClick(ClickEvent event)
          {
             String query = display.getTmTextBox().getText();
-            createTMRequest(query, display.getSearchType().getValue());
+            createTMRequest(new TransMemoryQuery(query, display.getSearchType().getValue()));
          }
       });
 
@@ -156,24 +161,16 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
    public void createTMRequestForTransUnit(TransUnit transUnit)
    {
-      StringBuilder sources = new StringBuilder();
-      for (String source : transUnit.getSources())
-      {
-         sources.append(source);
-         sources.append(" ");
-      }
-
       // Start automatically fuzzy search
-      SearchType searchType = GetTranslationMemory.SearchType.FUZZY;
-      display.getTmTextBox().setText("");
-      createTMRequest(sources.toString(), searchType);
+      SearchType searchType = SearchType.FUZZY_PLURAL;
+      createTMRequest(new TransMemoryQuery(transUnit.getSources(), searchType));
    }
 
-   private void createTMRequest(final String query, GetTranslationMemory.SearchType searchType)
+   private void createTMRequest(TransMemoryQuery query)
    {
       dataProvider.getList().clear();
       display.startProcessing();
-      final GetTranslationMemory action = new GetTranslationMemory(query, workspaceContext.getWorkspaceId().getLocaleId(), searchType);
+      final GetTranslationMemory action = new GetTranslationMemory(query, workspaceContext.getWorkspaceId().getLocaleId());
       scheduleTMRequest(action);
    }
 
@@ -235,11 +232,8 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
    private void displayTMResult(GetTranslationMemoryResult result)
    {
-      String query = submittedRequest.getQuery();
-      display.getTmTextBox().setText(query);
-      display.setQuery(query);
-      display.getSearchType().setValue(submittedRequest.getSearchType());
-
+      ArrayList<String> queries = submittedRequest.getQuery().getQueries();
+      display.setQueries(queries);
       dataProvider.getList().clear();
       for (final TranslationMemoryGlossaryItem memory : result.getMemories())
       {

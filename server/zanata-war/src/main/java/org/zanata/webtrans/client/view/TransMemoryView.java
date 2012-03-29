@@ -1,5 +1,7 @@
 package org.zanata.webtrans.client.view;
 
+import java.util.List;
+
 import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
@@ -97,9 +99,10 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    }
 
    @Override
-   public void setQuery(String query)
+   public void setQueries(List<String> queries)
    {
-      sourceColumn.setQuery(query);
+      // FIXME highlight multiple strings properly (for TextFlow searches)
+      sourceColumn.setQuery(queries.get(0));
    }
 
    @UiHandler("tmTextBox")
