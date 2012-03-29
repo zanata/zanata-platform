@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.ui;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
@@ -326,7 +327,11 @@ public class Editor extends Composite implements ToggleEditor
             {
                int newHeight = textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight() > 0 ? textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight() : HEIGHT_PER_LINE;
                int newLine = (newHeight / HEIGHT_PER_LINE) - 1 > INITIAL_LINES ? (newHeight / HEIGHT_PER_LINE) - 1 : INITIAL_LINES;
-               textArea.setVisibleLines(textArea.getVisibleLines() - newLine);
+               int lines = textArea.getVisibleLines() - newLine;
+               if (lines > 0)
+               {
+                  textArea.setVisibleLines(lines);
+               }
             }
             growSize();
          }

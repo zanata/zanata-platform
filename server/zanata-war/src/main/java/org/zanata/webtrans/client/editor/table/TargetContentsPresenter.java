@@ -262,9 +262,9 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          @Override
          public void execute()
          {
+            Log.info("current display:" + currentDisplay);
             currentEditorIndex = editor.getIndex();
             currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
-            Log.info("current display:" + currentDisplay);
          }
       });
 
