@@ -22,6 +22,7 @@
 package org.zanata.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.persistence.Transient;
@@ -120,7 +121,7 @@ abstract class HTextContainer implements HasContents, Serializable
    @Override
    public void setContents(String... args)
    {
-      setContents(Arrays.asList(args));
+      setContents(new ArrayList<String>(Arrays.asList(args)));
    }
 
 }
