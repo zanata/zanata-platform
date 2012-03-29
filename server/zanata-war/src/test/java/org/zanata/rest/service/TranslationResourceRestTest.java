@@ -76,6 +76,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.util.HashUtil;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.server.rpc.UpdateTransUnitHandler;
@@ -978,7 +979,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    // END of tests
    
    /**
-    * Simulates the translation of a Unit using the web editor.
+    * Simulates the translation of a Unit using the web editor. Only suitable for non-plural translations.
     * 
     * @param projectSlug Project
     * @param iterationSlug Project Iteration
@@ -1029,11 +1030,11 @@ public class TranslationResourceRestTest extends ZanataRestTest
       // @formatter:on
       
       // Translation unit id to update
-      Long textFlowId = (Long) getSession().createQuery("select tf.id from HTextFlow tf where tf.content0 = ? and " +
+      Long textFlowId = (Long) getSession().createQuery("select tf.id from HTextFlow tf where tf.contentHash = ? and " +
             "tf.document.docId = ? and " +
             "tf.document.projectIteration.slug = ? and " +
             "tf.document.projectIteration.project.slug = ?")
-            .setString(0, textFlowContent)
+            .setString(0, HashUtil.generateHash(textFlowContent))
             .setString(1, docId)
             .setString(2, iterationSlug)
             .setString(3, projectSlug)

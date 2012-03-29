@@ -73,10 +73,6 @@ public class PoReader2
          {
             // TODO append obsolete
          }
-         else if (message.isPlural())
-         {
-            // TODO skip for now
-         }
          else
          {
             String id = createId(message);
@@ -208,15 +204,12 @@ public class PoReader2
          {
             // TODO append obsolete
          }
-         else if (message.isPlural())
-         {
-            // TODO skip for now
-         }
          else
          {
             String id = createId(message);
             // add the content (msgid)
             TextFlow tf = new TextFlow(id, sourceLocaleId);
+            tf.setPlural(message.isPlural());
             if (message.isPlural())
             {
                tf.setContents(message.getMsgid(), message.getMsgidPlural());

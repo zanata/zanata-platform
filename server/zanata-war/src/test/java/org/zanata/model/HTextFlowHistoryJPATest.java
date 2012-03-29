@@ -14,6 +14,7 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
+import org.zanata.testng.annotations.Disabled;
 
 public class HTextFlowHistoryJPATest extends ZanataDbunitJpaTest
 {
@@ -51,16 +52,25 @@ public class HTextFlowHistoryJPATest extends ZanataDbunitJpaTest
 
       List<HTextFlowHistory> historyElems = getHistory(tf);
 
-      assertThat(historyElems.size(), is(0));
+      assertThat("Incorrect History size on persist", historyElems.size(), is(0));
 
       d.incrementRevision();
-      tf.setContent("hello world again");
+      tf.setContents("hello world again");
       tf.setRevision(d.getRevision());
       session.flush();
 
       historyElems = getHistory(tf);
 
-      assertThat(historyElems.size(), is(1));
+      assertThat("Incorrect History size on first update", historyElems.size(), is(1));
+      
+      d.incrementRevision();
+      tf.setContents("hello world a third time");
+      tf.setRevision( d.getRevision() );
+      session.flush();
+      
+      historyElems = getHistory(tf);
+
+      assertThat("Incorrect History size on second update", historyElems.size(), is(2));
 
    }
 

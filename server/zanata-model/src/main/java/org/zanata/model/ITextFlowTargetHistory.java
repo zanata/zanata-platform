@@ -21,6 +21,7 @@
 package org.zanata.model;
 
 import java.util.Date;
+import java.util.List;
 
 import org.zanata.common.ContentState;
 
@@ -34,7 +35,7 @@ public interface ITextFlowTargetHistory
 
    HPerson getLastModifiedBy();
 
-   String getContent();
+   List<String> getContents();
 
    Date getLastChanged();
 

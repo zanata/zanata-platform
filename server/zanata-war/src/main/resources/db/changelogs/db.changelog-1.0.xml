@@ -20,19 +20,4 @@
     	<comment>h2 baseline schema</comment>
     	<sqlFile path="db/h2/h2_baseline.sql" stripComments="true" />
     </changeSet>
-
-    <!--
-    NB: Triggers should be modified directly in these changeSets; don't add new changeSets for them.
-    Don't change the author, or LiquiBase will treat it as a separate changeSet.
-    NB: Author changed from "flies" to "zanata" to ensure that updated
-    triggers are run when upgrading database from Liquibase 1.x to 2.x.
-     -->
-    <changeSet author="zanata" id="mysql_triggers" runOnChange="true" dbms="mysql">
-    	<comment>mysql triggers</comment>
-    	<sqlFile path="db/mysql/create_trigger.sql" stripComments="false" endDelimiter="GO" />
-    </changeSet>
-    <changeSet author="zanata" id="h2_triggers" runOnChange="true" dbms="h2">
-    	<comment>h2 triggers</comment>
-    	<sqlFile path="db/h2/create_trigger.sql" stripComments="true" />
-    </changeSet>
 </databaseChangeLog>

@@ -1,115 +1,131 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+<databaseChangeLog 
+   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" 
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+                  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
     This changelog file is the real changelog for Zanata 1.6.
      -->
+	<changeSet author="camunoz@redhat.com" id="1">
+		<comment>Add HTextFlowContent table to support plural forms.</comment>
+		<createTable tableName="HTextFlowContent">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="content" type="longtext">
+				<constraints nullable="false"/>
+			</column>
+			<column name="pos" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name="text_flow_id" type="bigint">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow" 
+			referencedTableName="HTextFlow" referencedColumnNames="id"
+			baseTableName="HTextFlowContent" baseColumnNames="text_flow_id"/>
+	</changeSet>
+	
+	<changeSet author="camunoz@redhat.com" id="2">
+		<comment>Add HTextFlowContentHistory table to support plural forms.</comment>
+		<createTable tableName="HTextFlowContentHistory">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="content" type="longtext">
+				<constraints nullable="false"/>
+			</column>
+			<column name="pos" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name="text_flow_history_id" type="bigint">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow_history" 
+			referencedTableName="HTextFlowHistory" referencedColumnNames="id"
+			baseTableName="HTextFlowContentHistory" baseColumnNames="text_flow_history_id"/>
+	</changeSet>
+	
+	<changeSet author="camunoz@redhat.com" id="3">
+		<comment>Replace content columns from HTextFlow into the new HTextFlowContent table</comment>
+		<sql>
+			insert into HTextFlowContent(content, pos, text_flow_id) 
+			select content, 0, id from HTextFlow
+		</sql>
+		<sql>
+			insert into HTextFlowContentHistory(content, pos, text_flow_history_id) 
+			select content, 0, id from HTextFlowHistory
+		</sql>
+	</changeSet>
+	
+	<changeSet author="camunoz@redhat.com" id="4">
+		<comment>Add HTextFlowTargetContent table to support plural forms.</comment>
+		<createTable tableName="HTextFlowTargetContent">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="content" type="longtext">
+				<constraints nullable="false"/>
+			</column>
+			<column name="pos" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name="text_flow_target_id" type="bigint">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow_target" 
+			referencedTableName="HTextFlowTarget" referencedColumnNames="id"
+			baseTableName="HTextFlowTargetContent" baseColumnNames="text_flow_target_id"/>
+	</changeSet>
+	
+	<changeSet author="camunoz@redhat.com" id="5">
+		<comment>Add HTextFlowTargetContentHistory table to support plural forms.</comment>
+		<createTable tableName="HTextFlowTargetContentHistory">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="content" type="longtext">
+				<constraints nullable="false"/>
+			</column>
+			<column name="pos" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name="text_flow_target_history_id" type="bigint">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow_target_history" 
+			referencedTableName="HTextFlowTargetHistory" referencedColumnNames="id"
+			baseTableName="HTextFlowTargetContentHistory" baseColumnNames="text_flow_target_history_id"/>
+	</changeSet>
+	
+	<changeSet author="camunoz@redhat.com" id="6">
+		<comment>Replace content columns from HTextFlowTarget into the new HTextFlowTargetContent table</comment>
+		<sql>
+			insert into HTextFlowTargetContent(content, pos, text_flow_target_id) 
+			select content, 0, id from HTextFlowTarget
+		</sql>
+		<sql>
+			insert into HTextFlowTargetContentHistory(content, pos, text_flow_target_history_id) 
+			select content, 0, id from HTextFlowTargetHistory
+		</sql>
+	</changeSet>
+	
+	<changeSet author="camunoz@redhat.com" id="7">
+		<comment>Remove unnecessary columns</comment>
+		<dropColumn tableName="HTextFlow" columnName="content"/>
+		<dropColumn tableName="HTextFlowHistory" columnName="content"/>
+		<dropColumn tableName="HTextFlowTarget" columnName="content"/>
+		<dropColumn tableName="HTextFlowTargetHistory" columnName="content"/>
+		<addColumn tableName="HTextFlow">
+            <column name="plural" type="boolean" valueBoolean="false"/>
+        </addColumn>
+	</changeSet>
 
-    <changeSet author="sflaniga@redhat.com" id="1-h2" dbms="h2">
-        <comment>rename HTextFlow.content to content0, add HTextFlow.content1-5</comment> 
-        <renameColumn tableName="HTextFlow"
-            oldColumnName="content"
-            newColumnName="content0"
-            columnDataType="longtext" />
-        <addColumn tableName="HTextFlow">
-            <column name="content1" type="longtext"/>
-            <column name="content2" type="longtext"/>
-            <column name="content3" type="longtext"/>
-            <column name="content4" type="longtext"/>
-            <column name="content5" type="longtext"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="sflaniga@redhat.com" id="1" dbms="mysql">
-        <comment>rename HTextFlow.content to content0, add HTextFlow.content1-5</comment>
-        <sql>
-            ALTER TABLE HTextFlow
-            CHANGE COLUMN content content0 longtext,
-            ADD COLUMN content1 longtext,
-            ADD COLUMN content2 longtext,
-            ADD COLUMN content3 longtext,
-            ADD COLUMN content4 longtext,
-            ADD COLUMN content5 longtext
-        </sql> 
-    </changeSet>
-    <changeSet author="sflaniga@redhat.com" id="2-h2" dbms="h2">
-        <comment>rename HTextFlowHistory.content to content0, add HTextFlowHistory.content[1-5]</comment> 
-        <renameColumn tableName="HTextFlowHistory"
-            oldColumnName="content"
-            newColumnName="content0"
-            columnDataType="longtext" />
-        <addColumn tableName="HTextFlowHistory">
-            <column name="content1" />
-            <column name="content2" />
-            <column name="content3" />
-            <column name="content4" />
-            <column name="content5" />
-        </addColumn>
-    </changeSet>
-    <changeSet author="sflaniga@redhat.com" id="2" dbms="mysql">
-        <comment>rename HTextFlowHistory.content to content0, add HTextFlowHistory.content[1-5]</comment> 
-        <sql>
-            ALTER TABLE HTextFlowHistory
-            CHANGE COLUMN content content0 longtext,
-            ADD COLUMN content1 longtext,
-            ADD COLUMN content2 longtext,
-            ADD COLUMN content3 longtext,
-            ADD COLUMN content4 longtext,
-            ADD COLUMN content5 longtext
-        </sql> 
-    </changeSet>
-    <changeSet author="sflaniga@redhat.com" id="3-h2" dbms="h2">
-        <comment>rename HTextFlowTarget.content to content0, add HTextFlowTarget.content[1-5]</comment> 
-        <renameColumn tableName="HTextFlowTarget"
-            oldColumnName="content"
-            newColumnName="content0"
-            columnDataType="longtext" />
-        <addColumn tableName="HTextFlowTarget">
-            <column name="content1" />
-            <column name="content2" />
-            <column name="content3" />
-            <column name="content4" />
-            <column name="content5" />
-        </addColumn>
-    </changeSet>
-    <changeSet author="sflaniga@redhat.com" id="3" dbms="mysql">
-        <comment>rename HTextFlowTarget.content to content0, add HTextFlowTarget.content[1-5]</comment> 
-        <sql>
-            ALTER TABLE HTextFlowTarget
-            CHANGE COLUMN content content0 longtext,
-            ADD COLUMN content1 longtext,
-            ADD COLUMN content2 longtext,
-            ADD COLUMN content3 longtext,
-            ADD COLUMN content4 longtext,
-            ADD COLUMN content5 longtext
-        </sql> 
-    </changeSet>
-    <changeSet author="sflaniga@redhat.com" id="4-h2" dbms="h2">
-        <comment>rename HTextFlowTargetHistory.content to content0, add HTextFlowTargetHistory.content[1-5]</comment> 
-        <renameColumn tableName="HTextFlowTargetHistory"
-            oldColumnName="content"
-            newColumnName="content0"
-            columnDataType="longtext" />
-        <addColumn tableName="HTextFlowTargetHistory">
-            <column name="content1" />
-            <column name="content2" />
-            <column name="content3" />
-            <column name="content4" />
-            <column name="content5" />
-        </addColumn>
-    </changeSet>
-    <changeSet author="sflaniga@redhat.com" id="4" dbms="mysql">
-        <comment>rename HTextFlowTargetHistory.content to content0, add HTextFlowTargetHistory.content[1-5]</comment> 
-        <sql>
-            ALTER TABLE HTextFlowTargetHistory
-            CHANGE COLUMN content content0 longtext,
-            ADD COLUMN content1 longtext,
-            ADD COLUMN content2 longtext,
-            ADD COLUMN content3 longtext,
-            ADD COLUMN content4 longtext,
-            ADD COLUMN content5 longtext
-        </sql> 
-    </changeSet>
-    
 </databaseChangeLog>

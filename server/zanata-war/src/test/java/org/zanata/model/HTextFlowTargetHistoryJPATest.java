@@ -59,23 +59,26 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest
       session.flush();
 
       List<HTextFlowTargetHistory> historyElems = getHistory(target);
-      assertThat(historyElems.size(), is(0));
+      assertThat("Incorrect History size on persist", historyElems.size(), is(0));
 
       target.setContents("blah!");
       session.flush();
 
       historyElems = getHistory(target);
 
-      assertThat(historyElems.size(), is(1));
+      assertThat("Incorrect History size on first update", historyElems.size(), is(1));
+      
+      target.setContent("hola mundo!");
+      session.flush();
+
+      historyElems = getHistory(target);
+
+      assertThat("Incorrect History size on second update", historyElems.size(), is(2));
+      assertThat(historyElems.size(), is(2));
       HTextFlowTargetHistory hist = historyElems.get(0);
       assertThat(hist.getContents(), is(Arrays.asList("helleu world")));
    }
 
-   @SuppressWarnings("unchecked")
-   private List<HTextFlowTargetHistory> getHistory(HTextFlowTarget tft)
-   {
-      return getSession().createCriteria(HTextFlowTargetHistory.class).add(Restrictions.eq("textFlowTarget", tft)).list();
-   }
 
    @Test
    public void ensureHistoryIsRecordedPlural()
@@ -86,7 +89,7 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest
       session.save(d);
       session.flush();
 
-      HTextFlow tf = new HTextFlow(d, "mytf", "hello world", "hello worlds");
+      HTextFlow tf = new HTextFlow(d, "mytf", "hello world");
       d.getTextFlows().add(tf);
       session.flush();
 
@@ -113,4 +116,11 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest
       assert !historyDAO.findContentInHistory(target, Arrays.asList("blah", "blah!"));
    }
 
+   @SuppressWarnings("unchecked")
+   private List<HTextFlowTargetHistory> getHistory(HTextFlowTarget tft)
+   {
+      //getSession().createSQLQuery("select count(*) from HTextFlowTargetHistory ");
+      //return getSession().createQuery("select distinct h from HTextFlowTargetHistory h where textFlowTarget = ?").setParameter(0, tft).list();
+      return getSession().createCriteria(HTextFlowTargetHistory.class).add(Restrictions.eq("textFlowTarget", tft)).list();
+   }
 }
