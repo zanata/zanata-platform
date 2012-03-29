@@ -475,6 +475,16 @@ td.ApprovedStateDecoration div div
 	padding: 5px;
 }
 
+td.FuzzyStateDecoration div div pre, td.ApprovedStateDecoration div div pre
+{
+	font-size: 14px;
+	font-family: sans-serif;
+	white-space: pre-wrap;
+	word-wrap: normal;
+	padding: 0px;
+	margin: 0px;
+}
+
 .Severity-Error {
 	background-color: #ffcccc;
 }
