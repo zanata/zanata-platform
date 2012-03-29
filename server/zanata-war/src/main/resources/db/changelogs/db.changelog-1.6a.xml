@@ -118,7 +118,7 @@
 	</changeSet>
 	
 	<changeSet author="camunoz@redhat.com" id="7">
-		<comment>Remove unnecessary columns</comment>
+		<comment>Remove unnecessary columns / Add new columns</comment>
 		<dropColumn tableName="HTextFlow" columnName="content"/>
 		<dropColumn tableName="HTextFlowHistory" columnName="content"/>
 		<dropColumn tableName="HTextFlowTarget" columnName="content"/>
@@ -126,6 +126,162 @@
 		<addColumn tableName="HTextFlow">
             <column name="plural" type="boolean" valueBoolean="false"/>
         </addColumn>
+	</changeSet>
+	
+	<!-- 
+		Make sure db constraints are created. 
+		Specific problem with MySQL and the MyISAM storage engine (doesn't allow foreign keys)
+	-->
+	
+	<changeSet author="camunoz@redhat.com" id="8" dbms="mysql">
+		<comment>Change engine to INNODB on MySQL for every table created with liquibase</comment>
+		<sql>alter table HProject_Locale engine = INNODB</sql>
+		<sql>alter table HProjectIteration_Locale engine = INNODB</sql>
+		<sql>alter table HGlossaryEntry engine = INNODB</sql>
+		<sql>alter table HGlossaryTerm engine = INNODB</sql>
+		<sql>alter table HTermComment engine = INNODB</sql>
+		<sql>alter table HTextFlowContent engine = INNODB</sql>
+		<sql>alter table HTextFlowContentHistory engine = INNODB</sql>
+		<sql>alter table HTextFlowTargetContent engine = INNODB</sql>
+		<sql>alter table HTextFlowTargetContentHistory engine = INNODB</sql>
+	</changeSet>
+	
+	<!-- Foreign Keys in db.changelog-1.3.xml -->
+	<changeSet author="camunoz@redhat.com" id="9" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="FKHPROJECTLOCALEPRO"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint 
+			baseTableName = "HProject_Locale" 
+			baseColumnNames = "projectId" 
+			constraintName = "FKHPROJECTLOCALEPRO"
+			referencedTableName = "HProject"
+			referencedColumnNames = "id"/>
+	</changeSet>
+	<changeSet author="camunoz@redhat.com" id="10" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="FKHPROJECTLOCALELOC"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint 
+			baseTableName = "HProject_Locale" 
+			baseColumnNames = "localeId" 
+			constraintName = "FKHPROJECTLOCALELOC"
+			referencedTableName = "HLocale"
+			referencedColumnNames = "id"/>
+	</changeSet>
+	<changeSet author="camunoz@redhat.com" id="11" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="FKHPROJECTITELOCPRO"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint 
+			baseTableName = "HProjectIteration_Locale" 
+			baseColumnNames = "projectIterationId" 
+			constraintName = "FKHPROJECTITELOCPRO"
+			referencedTableName = "HProjectIteration"
+			referencedColumnNames = "id"/>
+	</changeSet>
+	<changeSet author="camunoz@redhat.com" id="12" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="FKHPROJECTITELOCLOC"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint 
+			baseTableName = "HProjectIteration_Locale" 
+			baseColumnNames = "localeId" 
+			constraintName = "FKHPROJECTITELOCLOC"
+			referencedTableName = "HLocale"
+			referencedColumnNames = "id"/>
+	</changeSet>
+	
+	<!-- Foreign Keys in db.changelog-1.5.xml -->
+	<changeSet author="camunoz@redhat.com" id="13" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="UKglossaryterm_glossary_entry_id"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint baseTableName="HGlossaryTerm"
+			baseColumnNames="glossaryEntryId" constraintName="UKglossaryterm_glossary_entry_id"
+			referencedTableName="HGlossaryEntry" referencedColumnNames="id" />
+	</changeSet>
+	<changeSet author="camunoz@redhat.com" id="14" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="UKglossaryterm_localeId"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint baseTableName="HGlossaryTerm"
+			baseColumnNames="localeId" constraintName="UKglossaryterm_localeId"
+			referencedTableName="HLocale" referencedColumnNames="id" />
+	</changeSet>
+	<changeSet author="camunoz@redhat.com" id="15" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="UKtermComment_glossaryTerm"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint baseTableName="HTermComment"
+			baseColumnNames="glossaryTermId" constraintName="UKtermComment_glossaryTerm"
+			referencedTableName="HGlossaryTerm" referencedColumnNames="id" />
+	</changeSet>
+	<changeSet author="camunoz@redhat.com" id="16" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="UKglossaryentry_srcLocaleId"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint baseTableName="HGlossaryEntry"
+            baseColumnNames="srcLocaleId" constraintName="UKglossaryentry_srcLocaleId"
+            referencedTableName="HLocale" referencedColumnNames="id" />
+	</changeSet>
+	
+	<!-- Foreign Keys in db.changelog-1.6a.xml -->
+	<changeSet author="camunoz@redhat.com" id="17" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="FKcontent_text_flow"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow" 
+			referencedTableName="HTextFlow" referencedColumnNames="id"
+			baseTableName="HTextFlowContent" baseColumnNames="text_flow_id"/>
+	</changeSet>
+	<changeSet author="camunoz@redhat.com" id="18" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="FKcontent_text_flow_history"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow_history" 
+			referencedTableName="HTextFlowHistory" referencedColumnNames="id"
+			baseTableName="HTextFlowContentHistory" baseColumnNames="text_flow_history_id"/>
+	</changeSet>
+	<changeSet author="camunoz@redhat.com" id="19" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="FKcontent_text_flow_target"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow_target" 
+			referencedTableName="HTextFlowTarget" referencedColumnNames="id"
+			baseTableName="HTextFlowTargetContent" baseColumnNames="text_flow_target_id"/>
+	</changeSet>
+	<changeSet author="camunoz@redhat.com" id="20" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="FKcontent_text_flow_target_history"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow_target_history" 
+			referencedTableName="HTextFlowTargetHistory" referencedColumnNames="id"
+			baseTableName="HTextFlowTargetContentHistory" baseColumnNames="text_flow_target_history_id"/>
 	</changeSet>
 
 </databaseChangeLog>
