@@ -265,7 +265,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
                 * Only when the Table is showed,editor is closed, search field
                 * not focused, the keyboard event will be processed.
                 **/
-               if (!translationEditorPresenter.isTargetCellEditorFocused() &&
+               if (!translationEditorPresenter.isEditing() &&
                   !translationEditorPresenter.isTransFilterFocused() && 
                   !transMemoryPresenter.getDisplay().isFocused() && 
                   !glossaryPresenter.getDisplay().isFocused() &&
@@ -273,23 +273,17 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
                {
                   if (event.getNativeEvent().getType().equals("keyup"))
                   {
-                     if (checkKey.isCopyFromSourceKey())
-                     {
-                        if (translationEditorPresenter.getSelectedTransUnit() != null)
-                        {
-                           stopDefaultAction(event);
-                           translationEditorPresenter.gotoCurrentRow();
-                           translationEditorPresenter.cloneAction();
-                        }
-                     }
-                     else if (checkKey.isEnterKey() && !checkKey.isCtrlKey())
+                     if (checkKey.isEnterKey() && !checkKey.isCtrlKey())
                      {
                         if (translationEditorPresenter.getSelectedTransUnit() != null)
                         {
                            if (!translationEditorPresenter.isCancelButtonFocused())
                            {
-                              stopDefaultAction(event);
-                              translationEditorPresenter.gotoCurrentRow();
+                              event.cancel();
+                              event.getNativeEvent().stopPropagation();
+                              event.getNativeEvent().preventDefault();
+                              
+                              translationEditorPresenter.openEditorOnSelectedRow();
                            }
                            translationEditorPresenter.setCancelButtonFocused(false);
                         }
@@ -312,13 +306,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 //                  }
                }
             }
-         }
-
-         public void stopDefaultAction(NativePreviewEvent event)
-         {
-            event.cancel();
-            event.getNativeEvent().stopPropagation();
-            event.getNativeEvent().preventDefault();
          }
       });
 

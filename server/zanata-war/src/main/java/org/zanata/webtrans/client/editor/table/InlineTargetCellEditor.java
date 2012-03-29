@@ -22,7 +22,6 @@ package org.zanata.webtrans.client.editor.table;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -61,10 +60,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
 
    private TransUnit cellValue;
 
-   private boolean isFocused = false;
    private boolean isOpened = false;
    private boolean isCancelButtonFocused = false;
-   private String findMessage;
    private boolean isReadOnly;
    private TargetContentsPresenter targetContentsPresenter;
 
@@ -75,21 +72,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
    /**
     * Construct a new {@link InlineTargetCellEditor} with the specified images.
     */
-   public InlineTargetCellEditor(String findMessage, CancelCallback<TransUnit> callback, EditRowCallback rowCallback, final boolean isReadOnly, TargetContentsPresenter targetContentsPresenter)
+   public InlineTargetCellEditor(CancelCallback<TransUnit> callback, EditRowCallback rowCallback, final boolean isReadOnly, TargetContentsPresenter targetContentsPresenter)
    {
-      this.findMessage = findMessage;
       this.isReadOnly = isReadOnly;
       this.targetContentsPresenter = targetContentsPresenter;
       this.targetContentsPresenter.setCellEditor(this);
 
       cancelCallback = callback;
       editRowCallback = rowCallback;
-   }
-
-   public void cloneAction()
-   {
-      Log.info("InlineTargetCellEditor.java: Clone action.");
-      // textArea.setFocus(true);
    }
 
    private void gotoRow(NavigationType nav)
@@ -156,11 +146,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       return cellValue != null && targetContentsPresenter.isEditing();
    }
 
-   public boolean isFocused()
-   {
-      return isFocused;
-   }
-
    public boolean isOpened()
    {
       return isOpened;
@@ -209,7 +194,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       curCol = curCellEditInfo.getCellIndex();
 
       this.cellValue = cellValue;
-      targetContentsPresenter.showEditors(curRow);
+      targetContentsPresenter.showEditors(curRow, -1);
 
       isOpened = true;
 
@@ -285,7 +270,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
 
       targetContentsPresenter.setToViewMode();
       isOpened = false;
-      isFocused = false;
 
       // Send the new cell value to the callback
       curCallback.onComplete(curCellEditInfo, cellValue);
@@ -317,9 +301,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       }
 
       targetContentsPresenter.setToViewMode();
-      // textArea.setFocus(false);
       isOpened = false;
-      isFocused = false;
 
       // Call the callback
       if (curCallback != null)
@@ -381,5 +363,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
    {
       this.isReadOnly = isReadOnly;
       // cancelEdit();
+   }
+
+   public void showEditors(int rowIndex, int editorIndex)
+   {
+      targetContentsPresenter.showEditors(rowIndex, editorIndex);
+
    }
 }

@@ -148,14 +148,9 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       tableEditorPresenter.getDisplay().getTargetCellEditor().savePendingChange(true);
    }
 
-   public void cloneAction()
+   public boolean isEditing()
    {
-      tableEditorPresenter.getDisplay().getTargetCellEditor().cloneAction();
-   }
-
-   public boolean isTargetCellEditorFocused()
-   {
-      return tableEditorPresenter.getDisplay().getTargetCellEditor().isFocused();
+      return tableEditorPresenter.getDisplay().getTargetCellEditor().isEditing();
    }
 
    public boolean isCancelButtonFocused()
@@ -186,5 +181,11 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    public void gotoNextRow(boolean andEdit)
    {
       tableEditorPresenter.gotoNextRow(andEdit);
+   }
+
+   public void openEditorOnSelectedRow()
+   {
+      tableEditorPresenter.getDisplay().getTargetCellEditor().showEditors(tableEditorPresenter.getSelectedRowIndex(), 0);
+
    }
 }

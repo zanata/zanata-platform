@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.client.gin;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.inject.Provides;
 import net.customware.gwt.presenter.client.DefaultEventBus;
 import net.customware.gwt.presenter.client.Display;
 import net.customware.gwt.presenter.client.EventBus;
@@ -134,6 +136,12 @@ public class WebTransClientModule extends AbstractPresenterModule
    protected <D extends Display> void bindDisplay(Class<D> display, Class<? extends D> displayImpl)
    {
       bind(display).to(displayImpl).in(Singleton.class);
+   }
+
+   @Provides
+   public Scheduler provideScheduler()
+   {
+      return Scheduler.get();
    }
 
    static class WorkspaceContextProvider implements Provider<WorkspaceContext>

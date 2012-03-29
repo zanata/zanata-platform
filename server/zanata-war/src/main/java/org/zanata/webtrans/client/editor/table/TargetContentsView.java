@@ -16,8 +16,10 @@
 package org.zanata.webtrans.client.editor.table;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
+import com.google.common.collect.Collections2;
 import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 
@@ -79,27 +81,19 @@ public class TargetContentsView implements TargetContentsDisplay
    public void setTargets(ArrayList<String> targets)
    {
       editors.clear();
-      int size = (targets == null || targets.size() <= 0) ? 1 : targets.size();
-      editorGrid.resize(size, COLUMNS);
-
-      int rowIndex = 0;
-      if (targets == null || targets.size() == 0)
+      if (targets == null || targets.size() <= 0)
       {
-         Editor editor = new Editor("", findMessage, rowIndex, listener);
-         editor.setText("");
+         targets = Lists.newArrayList("");
+      }
+      editorGrid.resize(targets.size(), COLUMNS);
+      int rowIndex = 0;
+      for (String target : targets)
+      {
+         Editor editor = new Editor(target, findMessage, rowIndex, listener);
+         editor.setText(target);
          editorGrid.setWidget(rowIndex, 0, editor);
          editors.add(editor);
-      }
-      else
-      {
-         for (String target : targets)
-         {
-            Editor editor = new Editor(target, findMessage, rowIndex, listener);
-            editor.setText(target);
-            editorGrid.setWidget(rowIndex, 0, editor);
-            editors.add(editor);
-            rowIndex++;
-         }
+         rowIndex++;
       }
       lastEditor().setAsLastEditor();
    }

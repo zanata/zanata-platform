@@ -1143,6 +1143,10 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       tableModelHandler.gotoNextRow(andEdit);
    }
 
+   public int getSelectedRowIndex()
+   {
+      return curRowIndex;
+   }
    /**
     * Load a document into the editor
     * 

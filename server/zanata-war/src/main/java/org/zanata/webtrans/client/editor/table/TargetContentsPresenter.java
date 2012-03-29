@@ -19,8 +19,10 @@ import java.util.ArrayList;
 
 import javax.inject.Provider;
 
+import com.google.gwt.core.client.Scheduler;
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.jboss.seam.async.Schedule;
 import org.zanata.webtrans.client.editor.CheckKey;
 import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
@@ -67,6 +69,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private final CheckKey checkKey;
    private NavigationMessages navMessages;
    private WorkspaceContext workspaceContext;
+   private Scheduler scheduler;
 
    private final ValidationMessagePanel validationMessagePanel;
    private TargetContentsDisplay currentDisplay;
@@ -77,7 +80,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private TransUnitsEditModel cellEditor;
 
    @Inject
-   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, UserConfigHolder configHolder, NavigationMessages navMessages, WorkspaceContext workspaceContext)
+   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, UserConfigHolder configHolder, NavigationMessages navMessages, WorkspaceContext workspaceContext, Scheduler scheduler)
    {
       this.displayProvider = displayProvider;
       this.eventBus = eventBus;
@@ -86,6 +89,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       this.configHolder = configHolder;
       this.navMessages = navMessages;
       this.workspaceContext = workspaceContext;
+      this.scheduler = scheduler;
 
       checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       validationMessagePanel = new ValidationMessagePanel(true, messages);
@@ -122,13 +126,18 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
    }
 
-   public void showEditors(int rowIndex)
+   public void showEditors(int rowIndex, int editorIndex)
    {
       currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
       if (currentEditorIndex == LAST_INDEX)
       {
          currentEditorIndex = currentEditors.size() - 1;
+      }
+      else if (currentEditorIndex != NO_OPEN_EDITOR)
+      {
+         //TODO by default selection will select the first one and open
+         currentEditorIndex = 0;
       }
 
       if (currentEditorIndex != NO_OPEN_EDITOR && currentEditorIndex < currentEditors.size())
@@ -138,14 +147,14 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
    }
 
-   public TargetContentsDisplay getNextTargetContentsDisplay(int rowIndex, TransUnit transUnit)
+   public TargetContentsDisplay getNextTargetContentsDisplay(int rowIndex, TransUnit transUnit, String findMessages)
    {
       TargetContentsDisplay result = displayList.get(rowIndex);
       if (currentDisplay != null && currentDisplay != result)
       {
          currentDisplay.setToView();
       }
-
+      result.setFindMessage(findMessages);
       result.setTargets(transUnit.getTargets());
       result.setSaveButtonTitle(decideButtonTitle());
       if (workspaceContext.isReadOnly())
@@ -245,22 +254,20 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    }
 
    @Override
-   public void toggleView(ToggleEditor editor)
+   public void toggleView(final ToggleEditor editor)
    {
-      currentEditorIndex = editor.getIndex();
-      if (currentEditors != null && currentEditors.contains(editor))
+      //this will get deferred execution since we want to trigger table selection event first
+      scheduler.scheduleDeferred(new Scheduler.ScheduledCommand()
       {
-         // still in the same trans unit. won't trigger transunit selection
-         // or edit cell event
-         currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
-      }
-      else if (currentDisplay != null)
-      {
-         currentDisplay.setToView();
-      }
-      Log.debug("current display:" + currentDisplay);
-      // else, it's clicking an editor outside current selection. the table
-      // selection event will trigger and showEditors will take care of the rest
+         @Override
+         public void execute()
+         {
+            Log.info("current display:" + currentDisplay);
+            currentEditorIndex = editor.getIndex();
+            currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
+         }
+      });
+
    }
 
    public ArrayList<String> getNewTargets()
@@ -337,7 +344,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    }
 
    @Override
-   public void onTextAreaKeyDown(KeyDownEvent event, ToggleEditor editor)
+   public void onEditorKeyDown(KeyDownEvent event, ToggleEditor editor)
    {
       checkKey.init(event.getNativeEvent());
 
@@ -410,5 +417,4 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       cellEditor.saveAndMoveRow(nav);
    }
-
 }

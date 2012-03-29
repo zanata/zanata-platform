@@ -1,34 +1,34 @@
 package org.zanata.webtrans.client.ui;
 
-import com.google.gwt.event.dom.client.BlurEvent;
-import org.zanata.webtrans.client.editor.table.EditorTextArea;
-import org.zanata.webtrans.client.editor.table.TableResources;
-import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
-import org.zanata.webtrans.client.resources.NavigationMessages;
-
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
+import org.zanata.webtrans.client.editor.table.EditorTextArea;
+import org.zanata.webtrans.client.editor.table.TableResources;
+import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
+import org.zanata.webtrans.client.resources.NavigationMessages;
 
 public class Editor extends Composite implements ToggleEditor
 {
+   private String findMessage;
    private TargetContentsDisplay.Listener listener;
 
    interface EditorUiBinder extends UiBinder<Widget, Editor>
@@ -40,10 +40,13 @@ public class Editor extends Composite implements ToggleEditor
    private static final int INITIAL_LINES = 3;
    private static final int HEIGHT_PER_LINE = 16;
 
-   private final int TYPING_TIMER_INTERVAL = 500; // ms
-   private final int TYPING_TIMER_RECURRENT_VALIDATION_PERIOD = 5; // intervals
+   private static final int TYPING_TIMER_INTERVAL = 500; // ms
+   private static final int TYPING_TIMER_RECURRENT_VALIDATION_PERIOD = 5; // intervals
 
    private final int index;
+
+   @UiField
+   FocusPanel rootContainer;
 
    @UiField
    HorizontalPanel topContainer;
@@ -79,8 +82,34 @@ public class Editor extends Composite implements ToggleEditor
    private boolean typing;
    private int typingCycles;
 
+   private final Timer typingTimer = new Timer()
+   {
+      @Override
+      public void run()
+      {
+         if (keypressed)
+         {
+            // still typing, validate periodically
+            keypressed = false;
+            typingCycles++;
+            if (typingCycles % TYPING_TIMER_RECURRENT_VALIDATION_PERIOD == 0)
+            {
+               fireValidationEvent();
+            }
+         }
+         else
+         {
+            // finished, validate immediately
+            this.cancel();
+            typing = false;
+            fireValidationEvent();
+         }
+      }
+   };
+
    public Editor(String displayString, String findMessage, int index, final TargetContentsDisplay.Listener listener)
    {
+      this.findMessage = findMessage;
       this.listener = listener;
       this.index = index;
       initWidget(uiBinder.createAndBindUi(this));
@@ -88,7 +117,17 @@ public class Editor extends Composite implements ToggleEditor
       // determine whether to show or hide buttons
       showButtons(listener.isDisplayButtons());
 
-      if (displayString == null || displayString.isEmpty())
+      setLabelText(displayString);
+
+      label.setTitle(messages.clickHere());
+
+      // textArea.setStyleName("TableEditorContent-Edit");
+      textArea.setVisible(false);
+   }
+
+   private void setLabelText(String displayString)
+   {
+      if (Strings.isNullOrEmpty(displayString))
       {
          label.setText(messages.clickHere());
          label.setStylePrimaryName("TableEditorContent-Empty");
@@ -103,76 +142,6 @@ public class Editor extends Composite implements ToggleEditor
       {
          label.highlightSearch(findMessage);
       }
-
-      label.setTitle(messages.clickHere());
-
-      // textArea.setStyleName("TableEditorContent-Edit");
-      textArea.setVisible(false);
-
-      textArea.addValueChangeHandler(new ValueChangeHandler<String>()
-      {
-         @Override
-         public void onValueChange(ValueChangeEvent<String> event)
-         {
-            autoSize();
-            fireValidationEvent();
-            if (Strings.isNullOrEmpty(event.getValue()))
-            {
-               label.setText(messages.clickHere());
-            }
-            else
-            {
-               label.setText(event.getValue());
-            }
-         }
-
-      });
-
-      final Timer typingTimer = new Timer()
-      {
-         @Override
-         public void run()
-         {
-            if (keypressed)
-            {
-               // still typing, validate periodically
-               keypressed = false;
-               typingCycles++;
-               if (typingCycles % TYPING_TIMER_RECURRENT_VALIDATION_PERIOD == 0)
-               {
-                  fireValidationEvent();
-               }
-            }
-            else
-            {
-               // finished, validate immediately
-               this.cancel();
-               typing = false;
-               fireValidationEvent();
-            }
-         }
-      };
-
-      // used to determine whether user is still typing
-      textArea.addKeyDownHandler(new KeyDownHandler()
-      {
-         @Override
-         public void onKeyDown(KeyDownEvent event)
-         {
-            if (typing)
-            {
-               keypressed = true;
-            }
-            else
-            {
-               // set false so that next keypress is detectable
-               keypressed = false;
-               typing = true;
-               typingCycles = 0;
-               typingTimer.scheduleRepeating(TYPING_TIMER_INTERVAL);
-            }
-         }
-      });
    }
 
    private void fireValidationEvent()
@@ -180,10 +149,44 @@ public class Editor extends Composite implements ToggleEditor
       listener.validate(this);
    }
 
-   @UiHandler("textArea")
+   @UiHandler("rootContainer")
    public void onKeyDown(KeyDownEvent event)
    {
-      listener.onTextAreaKeyDown(event, this);
+      listener.onEditorKeyDown(event, this);
+   }
+
+   @UiHandler("textArea")
+   public void onValueChange(ValueChangeEvent<String> event)
+   {
+      autoSize();
+      fireValidationEvent();
+      if (Strings.isNullOrEmpty(event.getValue()))
+      {
+         label.setText(messages.clickHere());
+      }
+      else
+      {
+         label.setText(event.getValue());
+      }
+   }
+
+   @UiHandler("textArea")
+   public void onKeyDownTextArea(KeyDownEvent event)
+   {
+      // used to determine whether user is still typing
+      if (typing)
+      {
+         keypressed = true;
+      }
+      else
+      {
+         // set false so that next keypress is detectable
+         keypressed = false;
+         typing = true;
+         typingCycles = 0;
+         typingTimer.scheduleRepeating(TYPING_TIMER_INTERVAL);
+      }
+      // listener.onTextAreaKeyDown(event, this);
    }
 
    @UiHandler("copySourceButton")
@@ -222,8 +225,7 @@ public class Editor extends Composite implements ToggleEditor
    @UiHandler("label")
    public void onLabelClick(MouseDownEvent event)
    {
-      // TODO fire up select row event first before toogle view
-      listener.toggleView(this);
+      listener.toggleView(Editor.this);
    }
 
    @Override
@@ -249,7 +251,14 @@ public class Editor extends Composite implements ToggleEditor
          listener.setValidationMessagePanel(this);
          fireValidationEvent();
          autoSize();
-         textArea.setFocus(true);
+         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand()
+         {
+            @Override
+            public void execute()
+            {
+               textArea.setFocus(true);
+            }
+         });
       }
       buttons.setVisible(viewMode == ViewMode.EDIT && listener.isDisplayButtons());
 
@@ -259,26 +268,17 @@ public class Editor extends Composite implements ToggleEditor
       }
    }
 
-   @UiHandler("textArea")
-   public void onBlur(BlurEvent event)
-   {
-      if (textArea.isVisible())
-      {
-         textArea.setFocus(true);
-      }
-   }
-
    @Override
    public void setText(String text)
    {
-      if (text != null && !text.isEmpty())
+      if (!Strings.isNullOrEmpty(text))
       {
-         label.setText(text);
+         setLabelText(text);
          textArea.setText(text);
       }
       else
       {
-         label.setText(messages.clickHere());
+         setLabelText(messages.clickHere());
          textArea.setText("");
       }
    }
@@ -327,7 +327,11 @@ public class Editor extends Composite implements ToggleEditor
             {
                int newHeight = textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight() > 0 ? textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight() : HEIGHT_PER_LINE;
                int newLine = (newHeight / HEIGHT_PER_LINE) - 1 > INITIAL_LINES ? (newHeight / HEIGHT_PER_LINE) - 1 : INITIAL_LINES;
-               textArea.setVisibleLines(textArea.getVisibleLines() - newLine);
+               int lines = textArea.getVisibleLines() - newLine;
+               if (lines > 0)
+               {
+                  textArea.setVisibleLines(lines);
+               }
             }
             growSize();
          }
