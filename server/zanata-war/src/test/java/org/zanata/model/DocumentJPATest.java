@@ -123,7 +123,6 @@ public class DocumentJPATest extends ZanataDbunitJpaTest
    // FIXME this test only works if resources-dev is on the classpath
    @SuppressWarnings("unchecked")
    @Test
-   @Disabled(reason = "Text Flow History has been disabled")
    public void ensureHistoryOnTextFlow()
    {
       EntityManager em = getEm();

@@ -71,6 +71,7 @@ import org.zanata.hibernate.search.IdFilterFactory;
 import org.zanata.model.po.HPotEntryData;
 import org.zanata.util.HashUtil;
 import org.zanata.util.OkapiUtil;
+import org.zanata.util.StringUtil;
 
 /**
  * Represents a flow of source text that should be processed as a stand-alone
@@ -125,8 +126,9 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    
    private Long wordCount;
    
-   // FIXME Review: Is this still needed?
    private String contentHash;
+   
+   private boolean plural;
 
    // Only for internal use (persistence transient)
    private Integer oldRevision;
@@ -187,6 +189,22 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    public void setResId(String resId)
    {
       this.resId = resId;
+   }
+   
+   /**
+    * @return whether this message supports plurals
+    */
+   public boolean isPlural()
+   {
+      return plural;
+   }
+
+   /**
+    * @param pluralSupported the pluralSupported to set
+    */
+   public void setPlural(boolean pluralSupported)
+   {
+      this.plural = pluralSupported;
    }
 
    @NotNull
@@ -368,16 +386,8 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    
    private void updateContentHash()
    {
-      // Content Hash is kept for the first element in the contents list.
-      // don't bother setting the hash when the content is not set
-      if( contents != null && contents.size() > 0 && contents.get(0) != null )
-      {
-         this.setContentHash( HashUtil.generateHash(contents.get(0)) );         
-      }
-      else
-      {
-         this.setContentHash(null);
-      }
+      String contents = StringUtil.concat(getContents(), '|');
+      this.setContentHash(HashUtil.generateHash(contents));
    }
 
    private String toBCP47(HLocale hLocale)
