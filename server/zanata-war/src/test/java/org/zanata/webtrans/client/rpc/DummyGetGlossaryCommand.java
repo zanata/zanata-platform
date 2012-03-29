@@ -30,10 +30,10 @@ public class DummyGetGlossaryCommand implements Command
       String query = action.getQuery();
       SearchType type = action.getSearchType();
       ArrayList<TranslationMemoryGlossaryItem> matches = new ArrayList<TranslationMemoryGlossaryItem>();
-      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", query, new Long(3), 100));
-      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", query, new Long(3), 100));
-      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", query, new Long(3), 100));
-      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", query, new Long(3), 100));
+      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", new Long(3), 100));
+      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", new Long(3), 100));
+      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", new Long(3), 100));
+      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", new Long(3), 100));
       callback.onSuccess(new GetGlossaryResult(action, matches));
       Log.info("EXIT DummyGetGlossaryCommand.execute()");
    }

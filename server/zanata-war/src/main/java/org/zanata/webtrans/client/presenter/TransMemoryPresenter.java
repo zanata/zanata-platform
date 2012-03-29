@@ -56,6 +56,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       Column<TranslationMemoryGlossaryItem, String> getCopyColumn();
 
       void setDataProvider(ListDataProvider<TranslationMemoryGlossaryItem> dataProvider);
+      void setQuery(String query);
    }
 
    private final WorkspaceContext workspaceContext;
@@ -236,6 +237,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    {
       String query = submittedRequest.getQuery();
       display.getTmTextBox().setText(query);
+      display.setQuery(query);
       display.getSearchType().setValue(submittedRequest.getSearchType());
 
       dataProvider.getList().clear();

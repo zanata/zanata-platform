@@ -96,6 +96,12 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       searchButton.setText(messages.searchButtonLabel());
    }
 
+   @Override
+   public void setQuery(String query)
+   {
+      sourceColumn.setQuery(query);
+   }
+
    @UiHandler("tmTextBox")
    void onTmTextBoxKeyUp(KeyUpEvent event)
    {
