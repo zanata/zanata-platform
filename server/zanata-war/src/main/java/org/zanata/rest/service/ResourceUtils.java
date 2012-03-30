@@ -671,6 +671,11 @@ public class ResourceUtils
          to.setContents(from.getContents());
          changed = true;
       }
+      if (!equals(from.isPlural(), to.isPlural()))
+      {
+         to.setPlural(from.isPlural());
+         changed = true;
+      }
 
       // TODO from.getLang()
 

@@ -135,6 +135,26 @@ public class LevenshteinUtil
       return total;
    }
 
+   /**
+    * Quick and dirty similarity score for a query string against a list of strings.
+    * Returns the mean similarity of s1 against each string in the list.
+    * @param s1
+    * @param strings2
+    * @return
+    */
+   public static double getSimilarity(final String s1, final List<String> strings2)
+   {
+      double totalSimilarity = 0.0;
+      int stringCount = strings2.size();
+      for (int i = 0; i < stringCount; i++)
+      {
+         String s2 = strings2.get(i);
+         totalSimilarity += getSimilarity(s1, s2);
+      }
+      double meanSimilarity = totalSimilarity / stringCount;
+      return meanSimilarity;
+   }
+
    public static double getSimilarity(final List<String> strings1, final List<String> strings2)
    {
       // length of the shorter list
