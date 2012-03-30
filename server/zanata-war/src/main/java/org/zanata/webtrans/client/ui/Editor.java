@@ -119,8 +119,6 @@ public class Editor extends Composite implements ToggleEditor
       setLabelText(displayString);
 
       label.setTitle(messages.clickHere());
-
-      // textArea.setStyleName("TableEditorContent-Edit");
       textArea.setVisible(false);
    }
 
