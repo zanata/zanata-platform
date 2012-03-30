@@ -121,10 +121,29 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
-      if (editorIndex != NO_OPEN_EDITOR)
+
+      currentEditorIndex = editorIndex;
+
+      if (currentEditorIndex == LAST_INDEX)
       {
-         currentEditorIndex = editorIndex;
+         currentEditorIndex = currentEditors.size() - 1;
       }
+      else if (currentEditorIndex != NO_OPEN_EDITOR)
+      {
+         currentEditorIndex = 0;
+      }
+
+      if (currentEditorIndex != NO_OPEN_EDITOR && currentEditorIndex < currentEditors.size())
+      {
+         currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
+         Log.debug("show editors at row:" + rowIndex + " current editor:" + currentEditorIndex);
+      }
+   }
+
+   public void showEditors(int rowIndex)
+   {
+      currentDisplay = displayList.get(rowIndex);
+      currentEditors = currentDisplay.getEditors();
 
       if (currentEditorIndex == LAST_INDEX)
       {

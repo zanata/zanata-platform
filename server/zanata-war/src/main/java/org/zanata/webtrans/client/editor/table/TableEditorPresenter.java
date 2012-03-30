@@ -1124,7 +1124,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
          sourceContentsPresenter.setSelectedSource(display.getSelectedRowNumber());
          display.getTargetCellEditor().savePendingChange(true);
-         display.gotoRow(display.getSelectedRowNumber(), true);
+         //TODO opening up editor shounldn't be done here. 
+//         display.gotoRow(display.getSelectedRowNumber(), true);
       }
    }
 
