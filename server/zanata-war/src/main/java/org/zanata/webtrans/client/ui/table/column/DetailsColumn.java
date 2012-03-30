@@ -2,12 +2,11 @@ package org.zanata.webtrans.client.ui.table.column;
 
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.ui.table.cell.ClickableImageResourceCell;
-import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
 
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.Column;
 
-public class DetailsColumn extends Column<TranslationMemoryGlossaryItem, ImageResource>
+public class DetailsColumn<T> extends Column<T, ImageResource>
 {
    private final Resources imageResource;
    
@@ -18,7 +17,7 @@ public class DetailsColumn extends Column<TranslationMemoryGlossaryItem, ImageRe
    }
 
    @Override
-   public ImageResource getValue(TranslationMemoryGlossaryItem object)
+   public ImageResource getValue(T object)
    {
       return imageResource.informationImage();
    }

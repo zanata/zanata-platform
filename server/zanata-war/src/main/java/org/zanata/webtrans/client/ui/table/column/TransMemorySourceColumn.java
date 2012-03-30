@@ -20,49 +20,35 @@
  */
 package org.zanata.webtrans.client.ui.table.column;
 
+import java.util.List;
+
 import org.zanata.webtrans.client.ui.DiffMatchPatchLabel;
 import org.zanata.webtrans.client.ui.table.cell.DiffMatchPatchLabelCell;
-import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
+import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 
 import com.google.gwt.user.cellview.client.Column;
 
-/**
- * 
- * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
- **/
-public class DiffMatchPatchLabelColumn extends Column<TranslationMemoryGlossaryItem, DiffMatchPatchLabel>
+public class TransMemorySourceColumn extends Column<TransMemoryResultItem, DiffMatchPatchLabel>
 {
+   private List<String> queries;
 
-   private final boolean displaySource;
-   private final boolean displayTarget;
-   private String query;
-
-   public DiffMatchPatchLabelColumn(boolean displaySource, boolean displayTarget)
+   public TransMemorySourceColumn()
    {
       super(new DiffMatchPatchLabelCell());
-      this.displaySource = displaySource;
-      this.displayTarget = displayTarget;
    }
 
-   public void setQuery(String query)
+   public void setQueries(List<String> queries)
    {
-      this.query = query;
+      this.queries = queries;
    }
 
    @Override
-   public DiffMatchPatchLabel getValue(TranslationMemoryGlossaryItem object)
+   public DiffMatchPatchLabel getValue(TransMemoryResultItem object)
    {
       DiffMatchPatchLabel label = new DiffMatchPatchLabel();
-      label.setOriginal(query);
-      if (displaySource)
-      {
-         label.setText(object.getSource());
-      }
-      else if (displayTarget)
-      {
-         label.setText(object.getTarget());
-      }
+      // FIXME display multiple source/target strings
+      label.setOriginal(queries.get(0));
+      label.setText(object.getSource());
       return label;
    }
 

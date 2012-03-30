@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import net.customware.gwt.dispatch.shared.Result;
 
-import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
+import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 
 
 public class GetTranslationMemoryResult implements Result
@@ -13,7 +13,7 @@ public class GetTranslationMemoryResult implements Result
    private static final long serialVersionUID = 1L;
 
    private GetTranslationMemory request;
-   private ArrayList<TranslationMemoryGlossaryItem> transmemories;
+   private ArrayList<TransMemoryResultItem> transmemories;
 
 
    @SuppressWarnings("unused")
@@ -21,7 +21,7 @@ public class GetTranslationMemoryResult implements Result
    {
    }
 
-   public GetTranslationMemoryResult(GetTranslationMemory request, ArrayList<TranslationMemoryGlossaryItem> transmemories)
+   public GetTranslationMemoryResult(GetTranslationMemory request, ArrayList<TransMemoryResultItem> transmemories)
    {
       this.request = request;
       this.transmemories = transmemories;
@@ -35,7 +35,7 @@ public class GetTranslationMemoryResult implements Result
       return request;
    }
 
-   public ArrayList<TranslationMemoryGlossaryItem> getMemories()
+   public ArrayList<TransMemoryResultItem> getMemories()
    {
       return transmemories;
    }

@@ -20,20 +20,25 @@
  */
 package org.zanata.webtrans.client.ui.table.column;
 
-import org.zanata.webtrans.shared.model.SearchResultItem;
+import org.zanata.webtrans.client.ui.HighlightingLabel;
+import org.zanata.webtrans.client.ui.table.cell.HighlightingLabelCell;
+import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 
-import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.cellview.client.Column;
 
-/**
- * 
- * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
- **/
-public class SimilarityColumn<T extends SearchResultItem> extends TextColumn<T>
+public class TransMemoryTargetColumn extends Column<TransMemoryResultItem, HighlightingLabel>
 {
-   @Override
-   public String getValue(T object)
+   public TransMemoryTargetColumn()
    {
-      return object.getSimilarityPercent() + "%";
+      super(new HighlightingLabelCell());
    }
+
+   @Override
+   public HighlightingLabel getValue(TransMemoryResultItem object)
+   {
+      HighlightingLabel label = new HighlightingLabel();
+      label.setText(object.getTarget());
+      return label;
+   }
+
 }
