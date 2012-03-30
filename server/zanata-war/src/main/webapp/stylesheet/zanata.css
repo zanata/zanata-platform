@@ -290,6 +290,17 @@ a.action_link:hover {
 	padding: 10px 20px;
 }
 
+.user_img {
+	box-shadow: 0 0 2px #aaa;
+	-moz-box-shadow:0 0 2px #aaa;
+	border: 1px solid #CCC;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	margin-top: 5px;
+	margin-right: 5px;
+	float: right;
+}
+
 #loading_top_right {
 	position: fixed;
 	right: 2px;
