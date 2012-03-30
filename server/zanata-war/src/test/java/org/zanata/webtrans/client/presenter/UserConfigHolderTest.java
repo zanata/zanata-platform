@@ -20,13 +20,10 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.testng.collections.Maps;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Random;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class UserConfigHolderTest
 {

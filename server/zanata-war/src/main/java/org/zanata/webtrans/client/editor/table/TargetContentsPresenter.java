@@ -73,7 +73,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private final ValidationMessagePanelDisplay validationMessagePanel;
    private TargetContentsDisplay currentDisplay;
    private Provider<TargetContentsDisplay> displayProvider;
-   private ArrayList<TargetContentsDisplay> displayList;
+   private ArrayList<TargetContentsDisplay> displayList = Lists.newArrayList();
    private int currentEditorIndex = NO_OPEN_EDITOR;
    private ArrayList<ToggleEditor> currentEditors;
    private TransUnitsEditModel cellEditor;
