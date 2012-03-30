@@ -41,8 +41,7 @@ import org.zanata.model.HTextFlowTargetHistory;
 @Scope(ScopeType.STATELESS)
 public class TextFlowTargetHistoryDAO extends AbstractDAOImpl<HTextFlowTargetHistory, Long>
 {
-   private static final ContentPropertySelector contentsSelector = new ContentPropertySelector();
-
+   
    public TextFlowTargetHistoryDAO()
    {
       super(HTextFlowTargetHistory.class);
@@ -55,17 +54,30 @@ public class TextFlowTargetHistoryDAO extends AbstractDAOImpl<HTextFlowTargetHis
 
    public boolean findContentInHistory(HTextFlowTarget target, List<String> contents)
    {
-      Criteria crit = getSession().createCriteria(HTextFlowTargetHistory.class);
-      HTextFlowTargetHistory exampleHist = new HTextFlowTargetHistory();
-      crit.add(Restrictions.eq("textFlowTarget", target));
-      exampleHist.setContents(contents);
-      Example example = Example.create(exampleHist);
-      // include all content fields, whether null or not:
-      example.setPropertySelector(contentsSelector);
-      crit.add(example);
-      crit.setProjection(Projections.rowCount());
-      Integer count = (Integer) crit.uniqueResult();
-      return count != 0;
+      Query query;
+      
+      // use named queries for the smaller more common cases
+      if( contents.size() <= 6 )
+      {
+         query = getSession().getNamedQuery("HTextFlowTargetHistory.findContentInHistory[" + contents.size() + "]");
+      }
+      else
+      {
+         StringBuilder queryStr = new StringBuilder("select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ?");
+         for( int i=0; i<contents.size(); i++ )
+         {
+            queryStr.append(" and contents[" + i + "] = ?");
+         }
+         query = getSession().createQuery(queryStr.toString());
+      }
+      query.setParameter(0, target);
+      query.setParameter(1, contents.size());
+      int paramPos = 2;
+      for( String c : contents )
+      {
+         query.setParameter(paramPos++, c);
+      }
+      return (Long)query.uniqueResult() != 0;
    }
 
    public boolean findConflictInHistory(HTextFlowTarget target, Integer verNum, String username)

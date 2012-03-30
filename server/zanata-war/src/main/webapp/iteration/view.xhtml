@@ -78,7 +78,7 @@
 						rendered="#{identity.loggedIn and not viewAllStatusAction.isIterationObsolete()}"
 						styleClass="#{viewAllStatusAction.showAllLocales and stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
 						<h:outputLink
-							rendered="#{not applicationConfiguration.debug and viewAllStatusAction.isIterationReadOnly()}"
+							rendered="#{not applicationConfiguration.debug and not viewAllStatusAction.isUserAllowedToTranslate(stats.locale) }"
 							value="#{request.contextPath}/webtrans/Application.html">
 							<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 							<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
@@ -88,7 +88,7 @@
 						</h:outputLink>
 
 						<h:outputLink
-							rendered="#{applicationConfiguration.debug and viewAllStatusAction.isIterationReadOnly()}"
+							rendered="#{applicationConfiguration.debug and not viewAllStatusAction.isUserAllowedToTranslate(stats.locale)}"
 							value="#{request.contextPath}/webtrans/Application.html">
 							<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 							<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
@@ -99,7 +99,7 @@
       					</h:outputLink>
 
 						<h:outputLink
-							rendered="#{not applicationConfiguration.debug and not viewAllStatusAction.isIterationReadOnly()}"
+							rendered="#{not applicationConfiguration.debug and viewAllStatusAction.isUserAllowedToTranslate(stats.locale)}"
 							value="#{request.contextPath}/webtrans/Application.html">
 							<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 							<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
@@ -109,7 +109,7 @@
       					</h:outputLink>
       					
 						<h:outputLink
-							rendered="#{applicationConfiguration.debug and not viewAllStatusAction.isIterationReadOnly()}"
+							rendered="#{applicationConfiguration.debug and viewAllStatusAction.isUserAllowedToTranslate(stats.locale)}"
 							value="#{request.contextPath}/webtrans/Application.html">
 							<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 							<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />

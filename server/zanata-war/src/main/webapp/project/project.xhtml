@@ -38,42 +38,78 @@
     <rich:spacer height="10px" />
     
     <s:fragment rendered="#{projectHome.activeIterations.size > 0}">
-        <h2>#{messages['jsf.ActiveVersions']}</h2>
     	<div class="iterations">
-    		<ui:repeat value="#{projectHome.activeIterations}" var="_iteration">
-    			<a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}" class="version_link">
+    		 <rich:dataGrid id="activeIterations" columns="5"
+                     value="#{projectHome.activeIterations}"
+                     var="_iteration"
+                     columnClasses="iteration_grid_col"
+                     styleClass="noBorderTable">
+                <f:facet name="header">
+                	<h:outputText value="#{messages['jsf.ActiveVersions']}"/>
+                </f:facet>
+        		<a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}" class="version_link">
     				<div class="version_link_div">
-    					<h:outputText value="#{_iteration.slug}"/>
+    					<div class="version_title">
+	    					<h:outputText value="#{_iteration.slug}"/>
+    					</div>
+    					<div class="version_info">
+    						Documents: #{_iteration.documents.size()}
+    					</div>
     				</div>
     			</a>
-    			
-    		</ui:repeat>
-    	</div>
-    </s:fragment>
-
-    <s:fragment rendered="#{projectHome.readOnlyIterations.size > 0}">
-      <h2>#{messages['jsf.ReadOnlyVersions']}</h2>
-    	<div class="iterations">
-    		<ui:repeat value="#{projectHome.readOnlyIterations}" var="_iteration">
-    			<a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}" class="version_link">
-    				<div class="version_link_div">
-    					<h:outputText value="#{_iteration.slug}"/>
-    				</div>
-    			</a>
-    		</ui:repeat>
+     	 	</rich:dataGrid>
     	</div>
     </s:fragment>
     
-    <s:fragment rendered="#{projectHome.obsoleteIterations.size > 0 and projectIterationAction.checkViewObsolete()}">
-      <h2>#{messages['jsf.ObsoleteVersions']}</h2>
+    <rich:spacer height="10px" />
+
+    <s:fragment rendered="#{projectHome.readOnlyIterations.size > 0}">
     	<div class="iterations">
-    		<ui:repeat value="#{projectHome.obsoleteIterations}" var="_iteration">
-    			<a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}" class="version_link">
+    		 <rich:dataGrid id="readOnlyIterations" columns="5"
+                     value="#{projectHome.readOnlyIterations}"
+                     var="_iteration"
+                     columnClasses="iteration_grid_col"
+                     styleClass="noBorderTable">
+                <f:facet name="header">
+                	<h:outputText value="#{messages['jsf.ReadOnlyVersions']}"/>
+                </f:facet>
+        		<a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}" class="version_link">
     				<div class="version_link_div">
-    					<h:outputText value="#{_iteration.slug}"/>
+    					<div class="version_title">
+	    					<h:outputText value="#{_iteration.slug}"/>
+    					</div>
+    					<div class="version_info">
+    						Documents: #{_iteration.documents.size()}
+    					</div>
     				</div>
     			</a>
-    		</ui:repeat>
+     	 	</rich:dataGrid>
+    	</div>
+    </s:fragment>
+    
+    <rich:spacer height="10px" />
+    
+    <s:fragment rendered="#{projectHome.obsoleteIterations.size > 0 and projectIterationAction.checkViewObsolete()}">
+    	<div class="iterations">
+    		 <rich:dataGrid id="obsoleteIterations" columns="5"
+                     value="#{projectHome.obsoleteIterations}"
+                     var="_iteration"
+                     columnClasses="iteration_grid_col"
+                     styleClass="noBorderTable">
+                <f:facet name="header">
+                	<h:outputText value="#{messages['jsf.ObsoleteVersions']}"/>
+                </f:facet>
+        		<a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}" class="version_link">
+    				<div class="version_link_div">
+    					<div class="version_title">
+	    					<h:outputText value="#{_iteration.slug}"/>
+    					</div>
+    					<div class="version_info">
+    						Documents: #{_iteration.documents.size()}
+    					</div>
+    				</div>
+    			</a>
+     	 	</rich:dataGrid>
     	</div>
     </s:fragment>
     

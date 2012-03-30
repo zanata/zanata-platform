@@ -46,6 +46,7 @@ public class FileRestTest extends ZanataRawRestTest
    @Override
    protected void prepareDBUnitOperations()
    {
+      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/TextFlowTestData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
@@ -66,8 +67,8 @@ public class FileRestTest extends ZanataRawRestTest
          @Override
          protected void onResponse(EnhancedMockHttpServletResponse response)
          {
-            assertHeaderValue(response, "Content-Disposition", "attachment; filename=\"document.txt.po\"");
             assertThat(response.getStatus(), is(200)); // Ok
+            assertHeaderValue(response, "Content-Disposition", "attachment; filename=\"document.txt.po\"");
             assertThat(response.getContentType(), is(MediaType.APPLICATION_OCTET_STREAM));
             assertPoFileCorrect( response.getContentAsString() );    
             assertPoFileContainsTranslations( response.getContentAsString(), 
