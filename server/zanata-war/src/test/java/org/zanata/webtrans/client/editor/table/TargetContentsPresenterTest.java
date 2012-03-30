@@ -109,7 +109,7 @@ public class TargetContentsPresenterTest
    public void canSetToViewMode() 
    {
       //given show editor at row 0
-      presenter.showEditors(0, 0);
+      presenter.showEditors(0);
 
       presenter.setToViewMode();
 
@@ -204,7 +204,7 @@ public class TargetContentsPresenterTest
       //given current display is at row 1
       ArgumentCaptor<Scheduler.ScheduledCommand> commandCaptor = ArgumentCaptor.forClass(Scheduler.ScheduledCommand.class);
       when(editor.getIndex()).thenReturn(99);
-      presenter.showEditors(0, 0);
+      presenter.showEditors(0);
 
       presenter.toggleView(editor);
 
@@ -226,7 +226,7 @@ public class TargetContentsPresenterTest
    @Test
    public void canGetNewTargets()
    {
-      presenter.showEditors(1, 0);
+      presenter.showEditors(1);
       when(display2.getNewTargets()).thenReturn(targetContents);
 
       ArrayList<String> result = presenter.getNewTargets();
@@ -295,7 +295,7 @@ public class TargetContentsPresenterTest
       when(display1.getEditors()).thenReturn(mockedList);
       when(mockedList.get(anyInt())).thenReturn(currentEditor);
       when(display1.isEditing()).thenReturn(true);
-      presenter.showEditors(0, 0);
+      presenter.showEditors(0);
    }
 
    @Test
