@@ -119,7 +119,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
             else
             {
                final String searchText = action.getQuery().getQueries().get(0);
-               percent = (int) (100 * LevenshteinUtil.getSimilarity(searchText, textFlow.getContents().get(0)));
+               percent = (int) (100 * LevenshteinUtil.getSimilarity(searchText, textFlow.getContents()));
             }
             // FIXME return all contents in TranslationMemoryGlossaryItem
             String textFlowContent = textFlow.getContent();
