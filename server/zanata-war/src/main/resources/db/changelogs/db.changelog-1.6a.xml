@@ -9,112 +9,8 @@
     <!--
     This changelog file is the real changelog for Zanata 1.6.
      -->
-
-    <changeSet author="sflaniga@redhat.com" id="1-h2" dbms="h2">
-        <comment>rename HTextFlow.content to content0, add HTextFlow.content1-5</comment> 
-        <renameColumn tableName="HTextFlow"
-            oldColumnName="content"
-            newColumnName="content0"
-            columnDataType="longtext" />
-        <addColumn tableName="HTextFlow">
-            <column name="content1" type="longtext"/>
-            <column name="content2" type="longtext"/>
-            <column name="content3" type="longtext"/>
-            <column name="content4" type="longtext"/>
-            <column name="content5" type="longtext"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="sflaniga@redhat.com" id="1" dbms="mysql">
-        <comment>rename HTextFlow.content to content0, add HTextFlow.content1-5</comment>
-        <sql>
-            ALTER TABLE HTextFlow
-            CHANGE COLUMN content content0 longtext,
-            ADD COLUMN content1 longtext,
-            ADD COLUMN content2 longtext,
-            ADD COLUMN content3 longtext,
-            ADD COLUMN content4 longtext,
-            ADD COLUMN content5 longtext
-        </sql> 
-    </changeSet>
-    <changeSet author="sflaniga@redhat.com" id="2-h2" dbms="h2">
-        <comment>rename HTextFlowHistory.content to content0, add HTextFlowHistory.content[1-5]</comment> 
-        <renameColumn tableName="HTextFlowHistory"
-            oldColumnName="content"
-            newColumnName="content0"
-            columnDataType="longtext" />
-        <addColumn tableName="HTextFlowHistory">
-            <column name="content1" type="longtext" />
-            <column name="content2" type="longtext" />
-            <column name="content3" type="longtext" />
-            <column name="content4" type="longtext" />
-            <column name="content5" type="longtext" />
-        </addColumn>
-    </changeSet>
-    <changeSet author="sflaniga@redhat.com" id="2" dbms="mysql">
-        <comment>rename HTextFlowHistory.content to content0, add HTextFlowHistory.content[1-5]</comment> 
-        <sql>
-            ALTER TABLE HTextFlowHistory
-            CHANGE COLUMN content content0 longtext,
-            ADD COLUMN content1 longtext,
-            ADD COLUMN content2 longtext,
-            ADD COLUMN content3 longtext,
-            ADD COLUMN content4 longtext,
-            ADD COLUMN content5 longtext
-        </sql> 
-    </changeSet>
-    <changeSet author="sflaniga@redhat.com" id="3-h2" dbms="h2">
-        <comment>rename HTextFlowTarget.content to content0, add HTextFlowTarget.content[1-5]</comment> 
-        <renameColumn tableName="HTextFlowTarget"
-            oldColumnName="content"
-            newColumnName="content0"
-            columnDataType="longtext" />
-        <addColumn tableName="HTextFlowTarget">
-            <column name="content1" type="longtext" />
-            <column name="content2" type="longtext" />
-            <column name="content3" type="longtext" />
-            <column name="content4" type="longtext" />
-            <column name="content5" type="longtext" />
-        </addColumn>
-    </changeSet>
-    <changeSet author="sflaniga@redhat.com" id="3" dbms="mysql">
-        <comment>rename HTextFlowTarget.content to content0, add HTextFlowTarget.content[1-5]</comment> 
-        <sql>
-            ALTER TABLE HTextFlowTarget
-            CHANGE COLUMN content content0 longtext,
-            ADD COLUMN content1 longtext,
-            ADD COLUMN content2 longtext,
-            ADD COLUMN content3 longtext,
-            ADD COLUMN content4 longtext,
-            ADD COLUMN content5 longtext
-        </sql> 
-    </changeSet>
-    <changeSet author="sflaniga@redhat.com" id="4-h2" dbms="h2">
-        <comment>rename HTextFlowTargetHistory.content to content0, add HTextFlowTargetHistory.content[1-5]</comment> 
-        <renameColumn tableName="HTextFlowTargetHistory"
-            oldColumnName="content"
-            newColumnName="content0"
-            columnDataType="longtext" />
-        <addColumn tableName="HTextFlowTargetHistory">
-            <column name="content1" type="longtext" />
-            <column name="content2" type="longtext" />
-            <column name="content3" type="longtext" />
-            <column name="content4" type="longtext" />
-            <column name="content5" type="longtext" />
-        </addColumn>
-    </changeSet>
-    <changeSet author="sflaniga@redhat.com" id="4" dbms="mysql">
-        <comment>rename HTextFlowTargetHistory.content to content0, add HTextFlowTargetHistory.content[1-5]</comment> 
-        <sql>
-            ALTER TABLE HTextFlowTargetHistory
-            CHANGE COLUMN content content0 longtext,
-            ADD COLUMN content1 longtext,
-            ADD COLUMN content2 longtext,
-            ADD COLUMN content3 longtext,
-            ADD COLUMN content4 longtext,
-            ADD COLUMN content5 longtext
-        </sql>
-    </changeSet> 
-	<changeSet author="aeng@redhat.com" id="5" dbms="h2">
+ 
+	<changeSet author="aeng@redhat.com" id="1" dbms="h2">
         <comment>Alter glossary tables - add auto increment</comment>
         <dropUniqueConstraint tableName="HGlossaryTerm" constraintName="UKglossaryterm_glossary_entry_id"/>
         <dropPrimaryKey tableName="HGlossaryEntry"/>
@@ -125,17 +21,280 @@
         <addAutoIncrement tableName="HGlossaryTerm" columnName="id" columnDataType="bigint"/>
         <addAutoIncrement tableName="HTermComment" columnName="id" columnDataType="bigint"/>
     </changeSet>
-    
-    <!--
-    TODO when merging this into the list-based plural implementation, we
-    should add the plural field as part of the same ALTER TABLE which
-    removes the old content field.
-    -->
-    <changeSet author="sflaniga@redhat.com" id="5">
-        <comment>add plural boolean</comment>
-        <addColumn tableName="HTextFlow">
+
+	<changeSet author="camunoz@redhat.com" id="1">
+		<comment>Add HTextFlowContent table to support plural forms.</comment>
+		<createTable tableName="HTextFlowContent">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="content" type="longtext">
+				<constraints nullable="false"/>
+			</column>
+			<column name="pos" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name="text_flow_id" type="bigint">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow" 
+			referencedTableName="HTextFlow" referencedColumnNames="id"
+			baseTableName="HTextFlowContent" baseColumnNames="text_flow_id"/>
+	</changeSet>
+	
+	<changeSet author="camunoz@redhat.com" id="2">
+		<comment>Add HTextFlowContentHistory table to support plural forms.</comment>
+		<createTable tableName="HTextFlowContentHistory">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="content" type="longtext">
+				<constraints nullable="false"/>
+			</column>
+			<column name="pos" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name="text_flow_history_id" type="bigint">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow_history" 
+			referencedTableName="HTextFlowHistory" referencedColumnNames="id"
+			baseTableName="HTextFlowContentHistory" baseColumnNames="text_flow_history_id"/>
+	</changeSet>
+	
+	<changeSet author="camunoz@redhat.com" id="3">
+		<comment>Replace content columns from HTextFlow into the new HTextFlowContent table</comment>
+		<sql>
+			insert into HTextFlowContent(content, pos, text_flow_id) 
+			select content, 0, id from HTextFlow
+		</sql>
+		<sql>
+			insert into HTextFlowContentHistory(content, pos, text_flow_history_id) 
+			select content, 0, id from HTextFlowHistory
+		</sql>
+	</changeSet>
+	
+	<changeSet author="camunoz@redhat.com" id="4">
+		<comment>Add HTextFlowTargetContent table to support plural forms.</comment>
+		<createTable tableName="HTextFlowTargetContent">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="content" type="longtext">
+				<constraints nullable="false"/>
+			</column>
+			<column name="pos" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name="text_flow_target_id" type="bigint">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow_target" 
+			referencedTableName="HTextFlowTarget" referencedColumnNames="id"
+			baseTableName="HTextFlowTargetContent" baseColumnNames="text_flow_target_id"/>
+	</changeSet>
+	
+	<changeSet author="camunoz@redhat.com" id="5">
+		<comment>Add HTextFlowTargetContentHistory table to support plural forms.</comment>
+		<createTable tableName="HTextFlowTargetContentHistory">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="content" type="longtext">
+				<constraints nullable="false"/>
+			</column>
+			<column name="pos" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name="text_flow_target_history_id" type="bigint">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow_target_history" 
+			referencedTableName="HTextFlowTargetHistory" referencedColumnNames="id"
+			baseTableName="HTextFlowTargetContentHistory" baseColumnNames="text_flow_target_history_id"/>
+	</changeSet>
+	
+	<changeSet author="camunoz@redhat.com" id="6">
+		<comment>Replace content columns from HTextFlowTarget into the new HTextFlowTargetContent table</comment>
+		<sql>
+			insert into HTextFlowTargetContent(content, pos, text_flow_target_id) 
+			select content, 0, id from HTextFlowTarget
+		</sql>
+		<sql>
+			insert into HTextFlowTargetContentHistory(content, pos, text_flow_target_history_id) 
+			select content, 0, id from HTextFlowTargetHistory
+		</sql>
+	</changeSet>
+	
+	<changeSet author="camunoz@redhat.com" id="7">
+		<comment>Remove unnecessary columns / Add new columns</comment>
+		<dropColumn tableName="HTextFlow" columnName="content"/>
+		<dropColumn tableName="HTextFlowHistory" columnName="content"/>
+		<dropColumn tableName="HTextFlowTarget" columnName="content"/>
+		<dropColumn tableName="HTextFlowTargetHistory" columnName="content"/>
+		<addColumn tableName="HTextFlow">
             <column name="plural" type="boolean" valueBoolean="false"/>
         </addColumn>
-    </changeSet>
+	</changeSet>
+	
+	<!-- 
+		Make sure db constraints are created. 
+		Specific problem with MySQL and the MyISAM storage engine (doesn't allow foreign keys)
+	-->
+	
+	<changeSet author="camunoz@redhat.com" id="8" dbms="mysql">
+		<comment>Change engine to INNODB on MySQL for every table created with liquibase</comment>
+		<sql>alter table HProject_Locale engine = INNODB</sql>
+		<sql>alter table HProjectIteration_Locale engine = INNODB</sql>
+		<sql>alter table HGlossaryEntry engine = INNODB</sql>
+		<sql>alter table HGlossaryTerm engine = INNODB</sql>
+		<sql>alter table HTermComment engine = INNODB</sql>
+		<sql>alter table HTextFlowContent engine = INNODB</sql>
+		<sql>alter table HTextFlowContentHistory engine = INNODB</sql>
+		<sql>alter table HTextFlowTargetContent engine = INNODB</sql>
+		<sql>alter table HTextFlowTargetContentHistory engine = INNODB</sql>
+	</changeSet>
+	
+	<!-- Foreign Keys in db.changelog-1.3.xml -->
+	<changeSet author="camunoz@redhat.com" id="9" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="FKHPROJECTLOCALEPRO"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint 
+			baseTableName = "HProject_Locale" 
+			baseColumnNames = "projectId" 
+			constraintName = "FKHPROJECTLOCALEPRO"
+			referencedTableName = "HProject"
+			referencedColumnNames = "id"/>
+	</changeSet>
+	<changeSet author="camunoz@redhat.com" id="10" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="FKHPROJECTLOCALELOC"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint 
+			baseTableName = "HProject_Locale" 
+			baseColumnNames = "localeId" 
+			constraintName = "FKHPROJECTLOCALELOC"
+			referencedTableName = "HLocale"
+			referencedColumnNames = "id"/>
+	</changeSet>
+	<changeSet author="camunoz@redhat.com" id="11" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="FKHPROJECTITELOCPRO"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint 
+			baseTableName = "HProjectIteration_Locale" 
+			baseColumnNames = "projectIterationId" 
+			constraintName = "FKHPROJECTITELOCPRO"
+			referencedTableName = "HProjectIteration"
+			referencedColumnNames = "id"/>
+	</changeSet>
+	<changeSet author="camunoz@redhat.com" id="12" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="FKHPROJECTITELOCLOC"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint 
+			baseTableName = "HProjectIteration_Locale" 
+			baseColumnNames = "localeId" 
+			constraintName = "FKHPROJECTITELOCLOC"
+			referencedTableName = "HLocale"
+			referencedColumnNames = "id"/>
+	</changeSet>
+	
+	<!-- Foreign Keys in db.changelog-1.5.xml -->
+	<changeSet author="camunoz@redhat.com" id="13" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="UKglossaryterm_glossary_entry_id"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint baseTableName="HGlossaryTerm"
+			baseColumnNames="glossaryEntryId" constraintName="UKglossaryterm_glossary_entry_id"
+			referencedTableName="HGlossaryEntry" referencedColumnNames="id" />
+	</changeSet>
+	<changeSet author="camunoz@redhat.com" id="14" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="UKglossaryterm_localeId"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint baseTableName="HGlossaryTerm"
+			baseColumnNames="localeId" constraintName="UKglossaryterm_localeId"
+			referencedTableName="HLocale" referencedColumnNames="id" />
+	</changeSet>
+	<changeSet author="camunoz@redhat.com" id="15" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="UKtermComment_glossaryTerm"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint baseTableName="HTermComment"
+			baseColumnNames="glossaryTermId" constraintName="UKtermComment_glossaryTerm"
+			referencedTableName="HGlossaryTerm" referencedColumnNames="id" />
+	</changeSet>
+	<changeSet author="camunoz@redhat.com" id="16" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="UKglossaryentry_srcLocaleId"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint baseTableName="HGlossaryEntry"
+            baseColumnNames="srcLocaleId" constraintName="UKglossaryentry_srcLocaleId"
+            referencedTableName="HLocale" referencedColumnNames="id" />
+	</changeSet>
+	
+	<!-- Foreign Keys in db.changelog-1.6a.xml -->
+	<changeSet author="camunoz@redhat.com" id="17" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="FKcontent_text_flow"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow" 
+			referencedTableName="HTextFlow" referencedColumnNames="id"
+			baseTableName="HTextFlowContent" baseColumnNames="text_flow_id"/>
+	</changeSet>
+	<changeSet author="camunoz@redhat.com" id="18" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="FKcontent_text_flow_history"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow_history" 
+			referencedTableName="HTextFlowHistory" referencedColumnNames="id"
+			baseTableName="HTextFlowContentHistory" baseColumnNames="text_flow_history_id"/>
+	</changeSet>
+	<changeSet author="camunoz@redhat.com" id="19" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="FKcontent_text_flow_target"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow_target" 
+			referencedTableName="HTextFlowTarget" referencedColumnNames="id"
+			baseTableName="HTextFlowTargetContent" baseColumnNames="text_flow_target_id"/>
+	</changeSet>
+	<changeSet author="camunoz@redhat.com" id="20" dbms="mysql">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists foreignKeyName="FKcontent_text_flow_target_history"/>
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint constraintName="FKcontent_text_flow_target_history" 
+			referencedTableName="HTextFlowTargetHistory" referencedColumnNames="id"
+			baseTableName="HTextFlowTargetContentHistory" baseColumnNames="text_flow_target_history_id"/>
+	</changeSet>
 
 </databaseChangeLog>

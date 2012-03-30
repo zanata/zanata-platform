@@ -1,5 +1,5 @@
 /*
- * Copyright 2012, Red Hat, Inc. and individual contributors
+ * Copyright 2010, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,18 +18,21 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.zanata.testng.annotations;
 
-package org.zanata.dao;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.hibernate.criterion.Example.PropertySelector;
-import org.hibernate.type.Type;
-
-class ContentPropertySelector implements PropertySelector
+/**
+ * Marks a test method as being intentionally disabled.
+ * 
+ * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Disabled
 {
-   private static final long serialVersionUID = 1L;
-   @Override
-   public boolean include(Object propertyValue, String propertyName, Type type)
-   {
-      return propertyName.startsWith("content");
-   }
+   String reason() default "";
 }

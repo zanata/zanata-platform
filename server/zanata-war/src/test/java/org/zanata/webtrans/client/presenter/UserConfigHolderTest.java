@@ -28,6 +28,7 @@ import java.util.Random;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@Test(groups = {"unit-tests"})
 public class UserConfigHolderTest
 {
 

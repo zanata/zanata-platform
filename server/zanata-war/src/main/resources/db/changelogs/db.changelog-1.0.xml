@@ -20,4 +20,13 @@
     	<comment>h2 baseline schema</comment>
     	<sqlFile path="db/h2/h2_baseline.sql" stripComments="true" />
     </changeSet>
+    
+    <changeSet id="1" author="camunoz@redhat.com" dbms="mysql" failOnError="false" runAlways="true">
+    	<comment>Set session's default storage engine to INNODB (mysql ver &gt; 5.5)</comment>
+    	<sql>SET storage_engine=InnoDB</sql>
+    </changeSet>
+    <changeSet id="2" author="camunoz@redhat.com" dbms="mysql" failOnError="false" runAlways="true">
+    	<comment>Set session's default storage engine to INNODB (mysql ver &lt; 5.5)</comment>
+    	<sql>SET default_storage_engine=InnoDB</sql>
+    </changeSet>
 </databaseChangeLog>
