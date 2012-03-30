@@ -20,9 +20,11 @@
  */
 package org.zanata.model;
 
-import static org.zanata.util.ZanataUtil.*;
+import static org.zanata.util.ZanataUtil.equal;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,18 +36,28 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PostLoad;
+import javax.persistence.PostPersist;
+import javax.persistence.PostUpdate;
+import javax.persistence.PreUpdate;
+import javax.persistence.Transient;
 
+import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CollectionOfElements;
+import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.FilterCacheModeType;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Indexed;
@@ -54,7 +66,6 @@ import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.IdFilterFactory;
 import org.zanata.model.po.HPotEntryData;
@@ -85,7 +96,7 @@ import org.zanata.util.StringUtil;
             "AND tft.textFlow.document.projectIteration.status<>org.zanata.common.EntityStatus.OBSOLETE " +
             "AND tft.textFlow.document.projectIteration.project.status<>org.zanata.common.EntityStatus.OBSOLETE"
 ))
-public class HTextFlow extends HTextContainer implements HasContents, HasSimpleComment, ITextFlowHistory, Serializable
+public class HTextFlow extends HTextContainer implements Serializable, ITextFlowHistory, HasSimpleComment
 {
    private static final Logger log = LoggerFactory.getLogger(HTextFlow.class);
 
@@ -103,6 +114,8 @@ public class HTextFlow extends HTextContainer implements HasContents, HasSimpleC
 
    private boolean obsolete = false;
 
+   private List<String> contents;
+
    private Map<HLocale, HTextFlowTarget> targets;
 
    public Map<Integer, HTextFlowHistory> history;
@@ -114,19 +127,27 @@ public class HTextFlow extends HTextContainer implements HasContents, HasSimpleC
    private Long wordCount;
    
    private String contentHash;
+   
    private boolean plural;
+
+   // Only for internal use (persistence transient)
+   private Integer oldRevision;
+   
+   // Only for internal use (persistence transient) 
+   private HTextFlowHistory initialState;
 
    public HTextFlow()
    {
 
    }
 
-   public HTextFlow(HDocument document, String resId, String... content)
+   public HTextFlow(HDocument document, String resId, String content)
    {
       setDocument(document);
       setResId(resId);
-      setContents(content);
+      setContent(content);
    }
+
 
    @Id
    @GeneratedValue
@@ -169,7 +190,7 @@ public class HTextFlow extends HTextContainer implements HasContents, HasSimpleC
    {
       this.resId = resId;
    }
-
+   
    /**
     * @return whether this message supports plurals
     */
@@ -219,6 +240,7 @@ public class HTextFlow extends HTextContainer implements HasContents, HasSimpleC
    @JoinColumn(name = "document_id", insertable = false, updatable = false, nullable = false)
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
+   @AccessType("field")
    public HDocument getDocument()
    {
       return document;
@@ -246,20 +268,44 @@ public class HTextFlow extends HTextContainer implements HasContents, HasSimpleC
    {
       this.comment = comment;
    }
-
+   
    @Override
-   public void setContents(List<String> contents)
+   @NotEmpty
+   @Type(type = "text")
+   @AccessType("field")
+   @CollectionOfElements
+   @JoinTable(name = "HTextFlowContent", 
+      joinColumns = @JoinColumn(name = "text_flow_id")
+   )
+   @IndexColumn(name = "pos", nullable = false)
+   @Column(name = "content", nullable = false)
+   public List<String> getContents()
    {
-      super.setContents(contents);
-      // if this becomes expensive, consider an EntityListener to do this only if contents changed
-      updateWordCount();
-      updateContentHash();
+      if( contents == null )
+      {
+         contents = new ArrayList<String>();
+      }
+      return contents;
    }
 
-   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "textFlow")
+   public void setContents(List<String> contents)
+   {
+      if (!equal(this.contents, contents))
+      {
+         this.contents = contents;
+         updateWordCount();
+         updateContentHash();
+      }
+   }
+
+   @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST}, mappedBy = "textFlow")
    @MapKey(name = "revision")
    public Map<Integer, HTextFlowHistory> getHistory()
    {
+      if( this.history == null )
+      {
+         this.history = new HashMap<Integer, HTextFlowHistory>();
+      }
       return history;
    }
 
@@ -322,7 +368,7 @@ public class HTextFlow extends HTextContainer implements HasContents, HasSimpleC
 
    private void updateWordCount()
    {
-      if (document == null)
+      if (document == null || contents == null)
       {
          // come back when the not-null constraints are satisfied!
          return;
@@ -331,7 +377,7 @@ public class HTextFlow extends HTextContainer implements HasContents, HasSimpleC
       // TODO strip (eg) HTML tags before counting words. Needs more metadata
       // about the content type.
       long count = 0;
-      for (String content : getContents())
+      for( String content : this.getContents() )
       {
          count += OkapiUtil.countWords(content, locale);
       }
@@ -355,6 +401,28 @@ public class HTextFlow extends HTextContainer implements HasContents, HasSimpleC
       }
       LocaleId docLocaleId = docLocale.getLocaleId();
       return docLocaleId.getId();
+   }
+   
+   @PreUpdate
+   private void preUpdate()
+   {
+      if( !this.revision.equals(this.oldRevision) )
+      {
+         // there is an initial state
+         if( this.initialState != null )
+         {
+            this.getHistory().put(this.oldRevision, this.initialState);
+         }
+      }
+   }
+   
+   @PostUpdate
+   @PostPersist
+   @PostLoad
+   private void updateInternalHistory()
+   {
+      this.oldRevision = this.revision;
+      this.initialState = new HTextFlowHistory(this);
    }
 
    /**
