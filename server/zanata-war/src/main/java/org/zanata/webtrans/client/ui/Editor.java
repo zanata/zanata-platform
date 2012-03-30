@@ -159,14 +159,7 @@ public class Editor extends Composite implements ToggleEditor
    {
       autoSize();
       fireValidationEvent();
-      if (Strings.isNullOrEmpty(event.getValue()))
-      {
-         label.setText(messages.clickHere());
-      }
-      else
-      {
-         label.setText(event.getValue());
-      }
+      setLabelText(event.getValue());
    }
 
    @UiHandler("textArea")
@@ -272,14 +265,13 @@ public class Editor extends Composite implements ToggleEditor
    {
       if (!Strings.isNullOrEmpty(text))
       {
-         setLabelText(text);
          textArea.setText(text);
       }
       else
       {
-         setLabelText(messages.clickHere());
          textArea.setText("");
       }
+      setLabelText(text);
    }
 
    @Override
