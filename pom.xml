@@ -122,6 +122,14 @@
 			<organizationUrl>http://www.redhat.com/</organizationUrl>
 			<timezone>8</timezone>
 		</developer>
+        <developer>
+            <id>pahuang@redhat.com</id>
+            <name>Patrick Huang</name>
+            <email>pahuang@redhat.com</email>
+            <organization>Red Hat</organization>
+            <organizationUrl>http://www.redhat.com/</organizationUrl>
+            <timezone>10</timezone>
+        </developer>
 		<developer>
 			<id>sflaniga@redhat.com</id>
 			<name>Sean Flanigan</name>
@@ -170,6 +178,8 @@
 		<icu4j.version>4.8</icu4j.version>
 		<enunciate.version>1.24</enunciate.version>
 
+        <cobertura.total-branch-rate>50</cobertura.total-branch-rate>
+        <cobertura.total-line-rate>50</cobertura.total-line-rate>
 		<cobertura.halt.failure>false</cobertura.halt.failure>
 		<javadoc.skip>true</javadoc.skip>
 
@@ -216,7 +226,7 @@
 					<!-- TODO set to true?
 					<failIfNoTests>false</failIfNoTests>				
 					 -->
-					</configuration>
+			    </configuration>
 			</plugin>
 
 			<plugin>
@@ -456,24 +466,10 @@
 			</properties>
 			<reporting>
 				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>cobertura-maven-plugin</artifactId>
-						<version>2.4</version>
-						<configuration>
-							<configuration>
-								<formats>
-									<format>xml</format>
-									<format>html</format>
-								</formats>
-							</configuration>
-							<check>
-								<!-- <totalBranchRate>${cobertura.total-branch-rate}</totalBranchRate> -->
-								<!-- <totalLineRate>${cobertura.total-line-rate}</totalLineRate> -->
-								<haltOnFailure>${cobertura.halt.failure}</haltOnFailure>
-							</check>
-						</configuration>
-					</plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>cobertura-maven-plugin</artifactId>
+                    </plugin>
 
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
