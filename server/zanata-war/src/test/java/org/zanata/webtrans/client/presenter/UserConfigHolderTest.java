@@ -25,12 +25,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Random;
 
+@Test(groups = { "unit-tests" })
 public class UserConfigHolderTest
 {
 
    private UserConfigHolder configHolder;
 
-   @BeforeMethod
+   @BeforeMethod(alwaysRun = true)
    protected void setUp() throws Exception
    {
       configHolder = new UserConfigHolder();
