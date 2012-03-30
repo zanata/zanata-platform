@@ -97,17 +97,12 @@ public class TargetContentsPresenterTest
       verify(eventBus).addHandler(CopyDataToEditorEvent.getType(), presenter);
 
       presenter.setCellEditor(cellEditor);
-      initWidget();
-   }
 
-   private void initWidget()
-   {
       when(displayProvider.get()).thenReturn(display1).thenReturn(display2);
-
       presenter.initWidgets(PAGE_SIZE);
 
-      verify(display1, atLeastOnce()).setListener(presenter);
-      verify(display2, atLeastOnce()).setListener(presenter);
+      verify(display1).setListener(presenter);
+      verify(display2).setListener(presenter);
    }
 
    @Test
