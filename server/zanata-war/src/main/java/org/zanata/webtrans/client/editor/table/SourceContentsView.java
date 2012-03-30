@@ -23,66 +23,73 @@ package org.zanata.webtrans.client.editor.table;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.ui.Grid;
 import org.zanata.webtrans.client.ui.SourcePanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class SourceContentsView extends Composite
+public class SourceContentsView extends Composite implements SourceContentsDisplay
 {
 
-   private final FlowPanel container;
-   private final VerticalPanel sourcePanelContainer;
+   public static final int COLUMNS = 1;
+   public static final int DEFAULT_ROWS = 1;
+   private final Grid sourcePanelContainer;
    private TransUnit value;
    private List<HasClickHandlers> sourcePanelList;
 
    public SourceContentsView()
    {
       sourcePanelList = new ArrayList<HasClickHandlers>();
-      container = new FlowPanel();
+      FlowPanel container = new FlowPanel();
       container.setSize("100%", "100%");
 
       initWidget(container);
 
-      sourcePanelContainer = new VerticalPanel();
+      sourcePanelContainer = new Grid(DEFAULT_ROWS, COLUMNS);
       sourcePanelContainer.addStyleName("sourceTable");
 
       container.add(sourcePanelContainer);
    }
 
+   @Override
    public List<HasClickHandlers> getSourcePanelList()
    {
       return sourcePanelList;
    }
 
+   @Override
    public void setValue(TransUnit value)
    {
       setValue(value, true);
    }
 
+   @Override
    public void setValue(TransUnit value, boolean fireEvents)
    {
       if (this.value != value)
       {
          this.value = value;
 
-         sourcePanelContainer.clear();
+         sourcePanelContainer.resizeRows(value.getSources().size());
          sourcePanelList.clear();
 
+         int rowIndex = 0;
          for (String source : value.getSources())
          {
             SourcePanel sourcePanel = new SourcePanel();
-            sourcePanel.setValue(source, value.getSourceComment(), (value.getSources().size() > 1));
-            sourcePanelContainer.add(sourcePanel);
+            sourcePanel.setValue(source, value.getSourceComment(), value.isPlural());
+            sourcePanelContainer.setWidget(rowIndex, 0, sourcePanel);
             sourcePanelList.add(sourcePanel);
+            rowIndex++;
          }
       }
    }
 
+   @Override
    public void highlightSearch(String search)
    {
       for (Widget sourceLabel : sourcePanelContainer)

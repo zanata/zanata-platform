@@ -20,13 +20,18 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
+import com.google.inject.Provider;
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
 import org.zanata.webtrans.client.editor.table.SourceContentsView;
+import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.ui.HasSelectableSource;
@@ -45,17 +50,18 @@ import com.google.inject.Inject;
  */
 public class SourceContentsPresenter
 {
-   private final Map<Integer, SourceContentsView> sourcePanelMap;
    private HasSelectableSource selectedSource;
    private HasSelectableSource previousSource;
    
    private final EventBus eventBus;
+   private Provider<SourceContentsDisplay> displayProvider;
+   private ArrayList<SourceContentsDisplay> displayList;
 
    @Inject
-   public SourceContentsPresenter(final EventBus eventBus)
+   public SourceContentsPresenter(final EventBus eventBus, Provider<SourceContentsDisplay> displayProvider)
    {
       this.eventBus = eventBus;
-      sourcePanelMap = new HashMap<Integer, SourceContentsView>();
+      this.displayProvider = displayProvider;
    }
    
    private final ClickHandler selectSourceHandler = new ClickHandler()
@@ -84,7 +90,7 @@ public class SourceContentsPresenter
     */
    public void setSelectedSource(int row)
    {
-      SourceContentsView sourceContentsView = sourcePanelMap.get(row);
+      SourceContentsDisplay sourceContentsView = displayList.get(row);
       if (sourceContentsView != null)
       {
          ClickEvent.fireNativeEvent(Document.get().createClickEvent(0, 0, 0, 0, 0, false, false, false, false), sourceContentsView.getSourcePanelList().get(0));
@@ -96,19 +102,9 @@ public class SourceContentsPresenter
       return selectedSource.getSource();
    }
 
-   public SourceContentsView getSourceContent(int row, TransUnit value)
+   public SourceContentsDisplay getSourceContent(int row, TransUnit value)
    {
-      SourceContentsView sourceContentsView;
-
-      if (sourcePanelMap.containsKey(row))
-      {
-         sourceContentsView = sourcePanelMap.get(row);
-      }
-      else
-      {
-         sourceContentsView = new SourceContentsView();
-         sourcePanelMap.put(row, sourceContentsView);
-      }
+      SourceContentsDisplay sourceContentsView = displayList.get(row);
 
       sourceContentsView.setValue(value);
 
@@ -119,5 +115,15 @@ public class SourceContentsPresenter
          sourcePanel.addClickHandler(selectSourceHandler);
       }
       return sourceContentsView;
+   }
+
+   public void initWidgets(int pageSize)
+   {
+      displayList = Lists.newArrayList();
+      for (int i = 0; i < pageSize; i++)
+      {
+         SourceContentsDisplay display = displayProvider.get();
+         displayList.add(display);
+      }
    }
 }
