@@ -121,10 +121,13 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
-      if (editorIndex != NO_OPEN_EDITOR)
+      
+      if (editorIndex == NO_OPEN_EDITOR)
       {
-         currentEditorIndex = editorIndex;
+         return;
       }
+      
+      currentEditorIndex = editorIndex;
 
       if (currentEditorIndex == LAST_INDEX)
       {
@@ -132,7 +135,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else if (currentEditorIndex != NO_OPEN_EDITOR)
       {
-         // TODO by default selection will select the first one and open
          currentEditorIndex = 0;
       }
 
