@@ -121,6 +121,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
+      if (editorIndex != NO_OPEN_EDITOR)
+      {
+         currentEditorIndex = editorIndex;
+      }
+
       if (currentEditorIndex == LAST_INDEX)
       {
          currentEditorIndex = currentEditors.size() - 1;

@@ -32,6 +32,8 @@ import org.zanata.webtrans.client.EventProcessor;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.editor.filter.TransFilterView;
+import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
+import org.zanata.webtrans.client.editor.table.SourceContentsView;
 import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
 import org.zanata.webtrans.client.editor.table.TableEditorView;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
@@ -116,6 +118,7 @@ public class WebTransClientModule extends AbstractPresenterModule
 
       bind(SourceContentsPresenter.class).in(Singleton.class);
       bind(TargetContentsDisplay.class).to(TargetContentsView.class);
+      bind(SourceContentsDisplay.class).to(SourceContentsView.class);
       bind(ValidationMessagePanelDisplay.class).to(ValidationMessagePanelView.class).in(Singleton.class);
 
       bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);

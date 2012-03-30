@@ -97,21 +97,16 @@ public class TargetContentsPresenterTest
       verify(eventBus).addHandler(CopyDataToEditorEvent.getType(), presenter);
 
       presenter.setCellEditor(cellEditor);
-      initWidget();
-   }
 
-   private void initWidget()
-   {
       when(displayProvider.get()).thenReturn(display1).thenReturn(display2);
-
       presenter.initWidgets(PAGE_SIZE);
 
-      verify(display1, atLeastOnce()).setListener(presenter);
-      verify(display2, atLeastOnce()).setListener(presenter);
+      verify(display1).setListener(presenter);
+      verify(display2).setListener(presenter);
    }
 
    @Test
-   public void canSetToViewMode() throws Exception
+   public void canSetToViewMode() 
    {
       //given show editor at row 0
       presenter.showEditors(0, 0);
@@ -123,7 +118,7 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void canGetNextTargetContentsDisplay() throws Exception
+   public void canGetNextTargetContentsDisplay() 
    {
       //given NOT read only mode, enter NOT as save
       String buttonTitle = "Save (Ctrl + Enter)";
@@ -145,7 +140,7 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void canGetNextTargetContentsDisplayWithDifferentButtonTitle() throws Exception
+   public void canGetNextTargetContentsDisplayWithDifferentButtonTitle() 
    {
       //given read only mode, enter as save option
       String buttonTitle = "Save (Enter)";
@@ -168,13 +163,7 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void testShowEditors() throws Exception
-   {
-
-   }
-
-   @Test
-   public void canValidate() throws Exception
+   public void canValidate()
    {
       when(sourceContentPresenter.getSelectedSource()).thenReturn("source");
       when(editor.getText()).thenReturn("target");
@@ -189,7 +178,7 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void canSaveAsFuzzy() throws Exception
+   public void canSaveAsFuzzy()
    {
       presenter.saveAsFuzzy();
 
@@ -197,12 +186,12 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void canCopySource() throws Exception
+   public void canCopySource()
    {
       when(sourceContentPresenter.getSelectedSource()).thenReturn("source");
 
       presenter.copySource(editor);
-      
+
       verify(editor).setText("source");
       verify(editor).autoSize();
       verify(eventBus).fireEvent(isA(RunValidationEvent.class));
@@ -210,7 +199,7 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void toggleViewIsDeferredExecuted() throws Exception
+   public void toggleViewIsDeferredExecuted()
    {
       //given current display is at row 1
       ArgumentCaptor<Scheduler.ScheduledCommand> commandCaptor = ArgumentCaptor.forClass(Scheduler.ScheduledCommand.class);
@@ -225,7 +214,7 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void isDisplayButtonsReturnFromUserConfig() throws Exception
+   public void isDisplayButtonsReturnFromUserConfig()
    {
       when(configHolder.isDisplayButtons()).thenReturn(true);
       assertThat(presenter.isDisplayButtons(), Matchers.equalTo(true));
@@ -235,7 +224,7 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void canGetNewTargets() throws Exception
+   public void canGetNewTargets()
    {
       presenter.showEditors(1, 0);
       when(display2.getNewTargets()).thenReturn(targetContents);
@@ -246,7 +235,7 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void canSetValidationMessagePanel() throws Exception
+   public void canSetValidationMessagePanel()
    {
       presenter.setValidationMessagePanel(editor);
 
@@ -255,10 +244,10 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void canChangeViewOnUserConfigChange() throws Exception
+   public void canChangeViewOnUserConfigChange()
    {
       when(configHolder.isButtonEnter()).thenReturn(true);
-      
+
       presenter.onValueChanged(new UserConfigChangeEvent());
 
       verify(display1).showButtons(configHolder.isDisplayButtons());
@@ -268,7 +257,7 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void canUpdateValidationResult() throws Exception
+   public void canUpdateValidationResult()
    {
       ArrayList<String> errors = Lists.newArrayList("bad", "wrong");
 
@@ -278,7 +267,7 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void onRequestValidationWillNotFireRunValidationEventIfNotEditing() throws Exception
+   public void onRequestValidationWillNotFireRunValidationEventIfNotEditing()
    {
       //given current display is null
 
@@ -288,7 +277,7 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void onRequestValidationWillFireRunValidationEventIfItsEditing() throws Exception
+   public void onRequestValidationWillFireRunValidationEventIfItsEditing()
    {
       //given current display is row 1 and current editor has target content
       givenCurrentEditorAs(editor);
@@ -318,7 +307,7 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void onCancelCanResetTextBack() throws Exception
+   public void onCancelCanResetTextBack()
    {
       when(cellEditor.getTargetCell()).thenReturn(transUnit);
       when(transUnit.getTargets()).thenReturn(Lists.newArrayList("a", "b", "c"));
@@ -331,7 +320,7 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void onCancelCanSetTextBackToNull() throws Exception
+   public void onCancelCanSetTextBackToNull()
    {
       when(cellEditor.getTargetCell()).thenReturn(transUnit);
       when(transUnit.getTargets()).thenReturn(null);
@@ -343,7 +332,7 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void testOnInsertString() throws Exception
+   public void testOnInsertString()
    {
       when(tableEditorMessages.notifyCopied()).thenReturn("copied");
       givenCurrentEditorAs(editor);
@@ -372,7 +361,7 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void testOnTransMemoryCopy() throws Exception
+   public void testOnTransMemoryCopy()
    {
       when(tableEditorMessages.notifyCopied()).thenReturn("copied");
       givenCurrentEditorAs(editor);
@@ -389,19 +378,25 @@ public class TargetContentsPresenterTest
    }
 
    @Test
-   public void testSaveAsApprovedAndMoveNext() throws Exception
+   public void testShowEditors()
    {
 
    }
 
    @Test
-   public void testSaveAsApprovedAndMovePrevious() throws Exception
+   public void testSaveAsApprovedAndMoveNext()
    {
 
    }
 
    @Test
-   public void testOnEditorKeyDown() throws Exception
+   public void testSaveAsApprovedAndMovePrevious() 
+   {
+
+   }
+
+   @Test
+   public void testOnEditorKeyDown() 
    {
 
    }

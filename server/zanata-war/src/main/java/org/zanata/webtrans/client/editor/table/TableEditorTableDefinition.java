@@ -110,13 +110,14 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          VerticalPanel panel = new VerticalPanel();
          panel.addStyleName("TableEditorCell-Source-Table");
 
-         SourceContentsView sourceContentsView = sourceContentsPresenter.getSourceContent(view.getRowIndex(), rowValue);
+         SourceContentsDisplay sourceContentsView = sourceContentsPresenter.getSourceContent(view.getRowIndex(), rowValue);
 
          if (!Strings.isNullOrEmpty(findMessage))
          {
             sourceContentsView.highlightSearch(findMessage);
          }
          panel.add(sourceContentsView);
+         //FIXME Plural support potentially this map could contain all panels with all id
          sourcePanelMap.put(rowValue.getId(), panel);
 
          view.setWidget(panel);
