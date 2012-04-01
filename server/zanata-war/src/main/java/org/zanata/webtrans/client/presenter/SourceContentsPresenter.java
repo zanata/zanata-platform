@@ -52,7 +52,7 @@ public class SourceContentsPresenter
 {
    private HasSelectableSource selectedSource;
    private HasSelectableSource previousSource;
-   
+
    private final EventBus eventBus;
    private Provider<SourceContentsDisplay> displayProvider;
    private ArrayList<SourceContentsDisplay> displayList;
@@ -63,7 +63,7 @@ public class SourceContentsPresenter
       this.eventBus = eventBus;
       this.displayProvider = displayProvider;
    }
-   
+
    private final ClickHandler selectSourceHandler = new ClickHandler()
    {
       @Override
@@ -71,12 +71,13 @@ public class SourceContentsPresenter
       {
          previousSource = selectedSource;
          selectedSource = (HasSelectableSource) event.getSource();
-         selectedSource.setSelected(true);
 
          if (previousSource != null)
          {
             previousSource.setSelected(false);
          }
+
+         selectedSource.setSelected(true);
 
          Log.debug("Selected source: " + selectedSource.getSource());
          eventBus.fireEvent(new RequestValidationEvent());

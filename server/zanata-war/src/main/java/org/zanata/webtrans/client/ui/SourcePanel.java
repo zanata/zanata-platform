@@ -22,6 +22,7 @@ package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.resources.NavigationMessages;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -104,12 +105,12 @@ public class SourcePanel extends Composite implements HasClickHandlers, HasSelec
    {
       if (selected)
       {
-         container.setStylePrimaryName(style.selectedRow());
+         container.setStyleName(style.selectedRow());
          selectButton.setValue(selected, true);
       }
       else
       {
-         container.setStylePrimaryName(style.nonSelectedRow());
+         container.setStyleName(style.nonSelectedRow());
       }
    }
 
