@@ -20,8 +20,6 @@
  */
 package org.zanata.webtrans.client.ui.table.column;
 
-import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
-
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.user.cellview.client.Column;
 
@@ -30,7 +28,7 @@ import com.google.gwt.user.cellview.client.Column;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class CopyButtonColumn extends Column<TranslationMemoryGlossaryItem, String>
+public class CopyButtonColumn<T> extends Column<T, String>
 {
 
    public CopyButtonColumn()
@@ -39,7 +37,7 @@ public class CopyButtonColumn extends Column<TranslationMemoryGlossaryItem, Stri
    }
 
    @Override
-   public String getValue(TranslationMemoryGlossaryItem object)
+   public String getValue(T object)
    {
       return "Copy";
    }

@@ -21,7 +21,6 @@ import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
-import org.zanata.testng.annotations.Disabled;
 
 @Test(groups = { "jpa-tests" })
 public class DocumentJPATest extends ZanataDbunitJpaTest

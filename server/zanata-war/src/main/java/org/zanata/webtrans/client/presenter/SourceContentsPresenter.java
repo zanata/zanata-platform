@@ -21,28 +21,23 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.google.common.collect.Lists;
-import com.google.inject.Provider;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
-import org.zanata.webtrans.client.editor.table.SourceContentsView;
-import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
-import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.ui.HasSelectableSource;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.collect.Lists;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -81,6 +76,7 @@ public class SourceContentsPresenter
 
          Log.debug("Selected source: " + selectedSource.getSource());
          eventBus.fireEvent(new RequestValidationEvent());
+
       }
    };
 

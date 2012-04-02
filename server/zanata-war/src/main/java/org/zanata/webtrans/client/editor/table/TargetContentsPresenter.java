@@ -104,7 +104,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       return currentEditors.get(currentEditorIndex);
    }
 
-   boolean isEditing()
+   public boolean isEditing()
    {
       return currentDisplay != null && currentDisplay.isEditing();
    }
@@ -122,7 +122,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
 
-      currentEditorIndex = editorIndex;
+      if (editorIndex != NO_OPEN_EDITOR)
+      {
+         currentEditorIndex = editorIndex;
+      }
 
       if (currentEditorIndex == LAST_INDEX)
       {
@@ -135,28 +138,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
       if (currentEditorIndex != NO_OPEN_EDITOR && currentEditorIndex < currentEditors.size())
       {
-         currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
-         Log.debug("show editors at row:" + rowIndex + " current editor:" + currentEditorIndex);
-      }
-   }
-
-   public void showEditors(int rowIndex)
-   {
-      currentDisplay = displayList.get(rowIndex);
-      currentEditors = currentDisplay.getEditors();
-
-      if (currentEditorIndex == LAST_INDEX)
-      {
-         currentEditorIndex = currentEditors.size() - 1;
-      }
-      else if (currentEditorIndex != NO_OPEN_EDITOR)
-      {
-         // TODO by default selection will select the first one and open
-         currentEditorIndex = 0;
-      }
-
-      if (currentEditorIndex != NO_OPEN_EDITOR && currentEditorIndex < currentEditors.size())
-      {
+         validationMessagePanel.clear();
          currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
          Log.debug("show editors at row:" + rowIndex + " current editor:" + currentEditorIndex);
       }
@@ -293,7 +275,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       validationMessagePanel.clear();
       editor.addValidationMessagePanel(validationMessagePanel);
    }
-
+   
    // TODO InlineTargetCellEditor is not managed by gin. Therefore this can't be
    // injected
    public void setCellEditor(TransUnitsEditModel cellEditor)

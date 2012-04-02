@@ -1,5 +1,5 @@
 /*
- * Copyright 2011, Red Hat, Inc. and individual contributors
+ * Copyright 2012, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,36 +18,27 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.validation;
+package org.zanata.webtrans.client.ui.table.column;
 
-/**
- *
- * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
- **/
-public class ValidationUtils
+import org.zanata.webtrans.client.ui.HighlightingLabel;
+import org.zanata.webtrans.client.ui.table.cell.HighlightingLabelCell;
+import org.zanata.webtrans.shared.model.TransMemoryResultItem;
+
+import com.google.gwt.user.cellview.client.Column;
+
+public class TransMemoryTargetColumn extends Column<TransMemoryResultItem, HighlightingLabel>
 {
-   public static int countMatches(String str, String sub)
+   public TransMemoryTargetColumn()
    {
-      if (isEmpty(str) || isEmpty(sub))
-      {
-         return 0;
-      }
-      int count = 0;
-      int idx = 0;
-      while ((idx = str.indexOf(sub, idx)) != -1)
-      {
-         count++;
-         idx += sub.length();
-      }
-      return count;
+      super(new HighlightingLabelCell());
    }
 
-   public static boolean isEmpty(String str)
+   @Override
+   public HighlightingLabel getValue(TransMemoryResultItem object)
    {
-      return str == null || str.length() == 0;
+      HighlightingLabel label = new HighlightingLabel();
+      label.setText(object.getTarget());
+      return label;
    }
+
 }
-
-
- 

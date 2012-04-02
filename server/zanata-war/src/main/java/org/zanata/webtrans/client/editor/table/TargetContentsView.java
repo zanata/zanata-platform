@@ -16,10 +16,7 @@
 package org.zanata.webtrans.client.editor.table;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 
-import com.google.common.collect.Collections2;
 import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 

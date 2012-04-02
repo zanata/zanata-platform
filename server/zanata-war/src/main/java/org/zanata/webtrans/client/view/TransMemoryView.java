@@ -9,10 +9,10 @@ import org.zanata.webtrans.client.ui.EnumListBox;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.client.ui.table.column.CopyButtonColumn;
 import org.zanata.webtrans.client.ui.table.column.DetailsColumn;
-import org.zanata.webtrans.client.ui.table.column.DiffMatchPatchLabelColumn;
-import org.zanata.webtrans.client.ui.table.column.HighlightingLabelColumn;
 import org.zanata.webtrans.client.ui.table.column.SimilarityColumn;
-import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
+import org.zanata.webtrans.client.ui.table.column.TransMemorySourceColumn;
+import org.zanata.webtrans.client.ui.table.column.TransMemoryTargetColumn;
+import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.gwt.core.client.GWT;
@@ -68,27 +68,27 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    @UiField
    ScrollPanel scrollPanel;
 
-   CellTable<TranslationMemoryGlossaryItem> tmTable;
+   CellTable<TransMemoryResultItem> tmTable;
 
    private boolean isFocused;
 
    private UiMessages messages;
-   private ListDataProvider<TranslationMemoryGlossaryItem> dataProvider;
+   private ListDataProvider<TransMemoryResultItem> dataProvider;
 
-   private DiffMatchPatchLabelColumn sourceColumn;
-   private HighlightingLabelColumn targetColumn;
-   private CopyButtonColumn copyColumn;
-   private DetailsColumn detailsColumn;
+   private TransMemorySourceColumn sourceColumn;
+   private TransMemoryTargetColumn targetColumn;
+   private CopyButtonColumn<TransMemoryResultItem> copyColumn;
+   private DetailsColumn<TransMemoryResultItem> detailsColumn;
 
    @Inject
    public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, final Resources resources)
    {
       this.messages = messages;
 
-      sourceColumn = new DiffMatchPatchLabelColumn(true, false);
-      targetColumn = new HighlightingLabelColumn(false, true);
-      copyColumn = new CopyButtonColumn();
-      detailsColumn = new DetailsColumn(resources);
+      sourceColumn = new TransMemorySourceColumn();
+      targetColumn = new TransMemoryTargetColumn();
+      copyColumn = new CopyButtonColumn<TransMemoryResultItem>();
+      detailsColumn = new DetailsColumn<TransMemoryResultItem>(resources);
 
       searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);
       initWidget(uiBinder.createAndBindUi(this));
@@ -101,8 +101,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    @Override
    public void setQueries(List<String> queries)
    {
-      // FIXME highlight multiple strings properly (for TextFlow searches)
-      sourceColumn.setQuery(queries.get(0));
+      sourceColumn.setQueries(queries);
    }
 
    @UiHandler("tmTextBox")
@@ -181,19 +180,19 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    }
 
    @Override
-   public Column<TranslationMemoryGlossaryItem, ImageResource> getDetailsColumn()
+   public Column<TransMemoryResultItem, ImageResource> getDetailsColumn()
    {
       return detailsColumn;
    }
 
    @Override
-   public Column<TranslationMemoryGlossaryItem, String> getCopyColumn()
+   public Column<TransMemoryResultItem, String> getCopyColumn()
    {
       return copyColumn;
    }
 
    @Override
-   public void setDataProvider(ListDataProvider<TranslationMemoryGlossaryItem> dataProvider)
+   public void setDataProvider(ListDataProvider<TransMemoryResultItem> dataProvider)
    {
       this.dataProvider = dataProvider;
       renderTable();
@@ -201,17 +200,17 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 
    private void renderTable()
    {
-      tmTable = new CellTable<TranslationMemoryGlossaryItem>();
+      tmTable = new CellTable<TransMemoryResultItem>();
       tmTable.addStyleName("tmTable");
       tmTable.addStyleName("southTable");
       tmTable.addColumn(sourceColumn, messages.sourceLabel());
       tmTable.addColumn(targetColumn, messages.targetLabel());
-      tmTable.addColumn(new SimilarityColumn(), messages.similarityLabel());
+      tmTable.addColumn(new SimilarityColumn<TransMemoryResultItem>(), messages.similarityLabel());
       tmTable.addColumn(detailsColumn, messages.detailsLabel());
       tmTable.addColumn(copyColumn);
 
-      final NoSelectionModel<TranslationMemoryGlossaryItem> selectionModel = new NoSelectionModel<TranslationMemoryGlossaryItem>();
-      final DefaultSelectionEventManager<TranslationMemoryGlossaryItem> manager = DefaultSelectionEventManager.createBlacklistManager(0, 1, 2);
+      final NoSelectionModel<TransMemoryResultItem> selectionModel = new NoSelectionModel<TransMemoryResultItem>();
+      final DefaultSelectionEventManager<TransMemoryResultItem> manager = DefaultSelectionEventManager.createBlacklistManager(0, 1, 2);
       tmTable.setSelectionModel(selectionModel, manager);
 
       tmTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);

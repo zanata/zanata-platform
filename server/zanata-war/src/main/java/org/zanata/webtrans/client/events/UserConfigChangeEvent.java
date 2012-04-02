@@ -1,8 +1,5 @@
 package org.zanata.webtrans.client.events;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.gwt.event.shared.GwtEvent;
 
 public class UserConfigChangeEvent extends GwtEvent<UserConfigChangeHandler>

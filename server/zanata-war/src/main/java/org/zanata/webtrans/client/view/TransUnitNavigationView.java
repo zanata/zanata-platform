@@ -21,7 +21,6 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.presenter.TransUnitNavigationPresenter;
-import org.zanata.webtrans.client.resources.EditorConfigConstants;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.Resources;
 

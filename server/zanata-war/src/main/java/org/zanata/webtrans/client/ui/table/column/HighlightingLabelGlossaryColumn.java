@@ -22,7 +22,7 @@ package org.zanata.webtrans.client.ui.table.column;
 
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.client.ui.table.cell.HighlightingLabelCell;
-import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
+import org.zanata.webtrans.shared.model.GlossaryResultItem;
 
 import com.google.gwt.user.cellview.client.Column;
 
@@ -31,12 +31,12 @@ import com.google.gwt.user.cellview.client.Column;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class HighlightingLabelColumn extends Column<TranslationMemoryGlossaryItem, HighlightingLabel>
+public class HighlightingLabelGlossaryColumn extends Column<GlossaryResultItem, HighlightingLabel>
 {
    private final boolean displaySource;
    private final boolean displayTarget;
 
-   public HighlightingLabelColumn(boolean displaySource, boolean displayTarget)
+   public HighlightingLabelGlossaryColumn(boolean displaySource, boolean displayTarget)
    {
       super(new HighlightingLabelCell());
       this.displaySource = displaySource;
@@ -44,7 +44,7 @@ public class HighlightingLabelColumn extends Column<TranslationMemoryGlossaryIte
    }
 
    @Override
-   public HighlightingLabel getValue(TranslationMemoryGlossaryItem object)
+   public HighlightingLabel getValue(GlossaryResultItem object)
    {
       HighlightingLabel label = new HighlightingLabel();
       if (displaySource)

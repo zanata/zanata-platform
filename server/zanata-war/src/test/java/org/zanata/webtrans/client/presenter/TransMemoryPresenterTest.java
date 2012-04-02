@@ -21,7 +21,7 @@ import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.presenter.TransMemoryPresenter.Display;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
+import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
@@ -52,9 +52,9 @@ public class TransMemoryPresenterTest
    HasValue<SearchType> mockSearchType = createMock(HasValue.class);
    HasClickHandlers mockSearchButton = createMock(HasClickHandlers.class);
    @SuppressWarnings("unchecked")
-   Column<TranslationMemoryGlossaryItem, ImageResource> mockDetailsColumn = createMock(Column.class);
+   Column<TransMemoryResultItem, ImageResource> mockDetailsColumn = createMock(Column.class);
    @SuppressWarnings("unchecked")
-   Column<TranslationMemoryGlossaryItem, String> mockCopyColumn = createMock(Column.class);
+   Column<TransMemoryResultItem, String> mockCopyColumn = createMock(Column.class);
 
    Capture<TransUnitSelectionHandler> capturedTransUnitSelectionEventHandler = new Capture<TransUnitSelectionHandler>();
    Capture<ClickHandler> capturedClearButtonClickHandler = new Capture<ClickHandler>();

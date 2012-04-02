@@ -14,7 +14,12 @@
 		}
 		.bottomContainer {
 			width:100%;
-			padding-left:20px;
+			padding-left:28px;
+		}
+		
+		.textArea {
+			width:98%;
+			margin-left:5px;
 		}
 	</ui:style>
 	
@@ -28,9 +33,9 @@
 	                </g:PushButton>
                 </g:cell>
                 <g:cell>
-                	<g:FlowPanel>
+                	<g:FlowPanel styleName="TableEditorCell-Target">
 		                <fui:HighlightingLabel ui:field="label" />
-		                <tui:EditorTextArea ui:field="textArea" width="99%"/>
+		                <tui:EditorTextArea ui:field="textArea" styleName="{style.textArea}"/>
 	                </g:FlowPanel>
                 </g:cell>
 			</g:HorizontalPanel>

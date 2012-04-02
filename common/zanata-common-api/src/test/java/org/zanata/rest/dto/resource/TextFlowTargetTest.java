@@ -1,9 +1,8 @@
 package org.zanata.rest.dto.resource;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import javax.xml.bind.JAXBException;
 

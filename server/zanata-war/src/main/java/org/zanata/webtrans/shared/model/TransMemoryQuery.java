@@ -75,7 +75,8 @@ public class TransMemoryQuery implements IsSerializable
    @Override
    public String toString()
    {
-      return "TransMemoryQuery [searchType=" + searchType + ", queries=" + queries + "]";
+      return "TransMemoryQuery [searchType=" + searchType + ", queries=" + (queries) + "]";
+      //      return "TransMemoryQuery [searchType=" + searchType + ", queries=" + ShortString.shorten(queries) + "]";
    }
 
    @Override

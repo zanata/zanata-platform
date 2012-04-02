@@ -34,7 +34,7 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
+import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
@@ -68,7 +68,7 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
    private GetGlossary submittedRequest = null;
    private GetGlossary lastRequest = null;
 
-   private ListDataProvider<TranslationMemoryGlossaryItem> dataProvider;
+   private ListDataProvider<GlossaryResultItem> dataProvider;
 
 
    public interface Display extends WidgetDisplay
@@ -83,11 +83,11 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
 
       boolean isFocused();
 
-      Column<TranslationMemoryGlossaryItem, String> getCopyColumn();
+      Column<GlossaryResultItem, String> getCopyColumn();
 
-      Column<TranslationMemoryGlossaryItem, ImageResource> getDetailsColumn();
+      Column<GlossaryResultItem, ImageResource> getDetailsColumn();
 
-      void setDataProvider(ListDataProvider<TranslationMemoryGlossaryItem> dataProvider);
+      void setDataProvider(ListDataProvider<GlossaryResultItem> dataProvider);
 
       void setPageSize(int size);
    }
@@ -101,7 +101,7 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
       this.glossaryDetailsPresenter = glossaryDetailsPresenter;
       this.docListPresenter = docListPresenter;
       this.history = history;
-      dataProvider = new ListDataProvider<TranslationMemoryGlossaryItem>();
+      dataProvider = new ListDataProvider<GlossaryResultItem>();
       display.setDataProvider(dataProvider);
    }
 
@@ -127,19 +127,19 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
          }
       }));
 
-      display.getCopyColumn().setFieldUpdater(new FieldUpdater<TranslationMemoryGlossaryItem, String>()
+      display.getCopyColumn().setFieldUpdater(new FieldUpdater<GlossaryResultItem, String>()
       {
          @Override
-         public void update(int index, TranslationMemoryGlossaryItem object, String value)
+         public void update(int index, GlossaryResultItem object, String value)
          {
             eventBus.fireEvent(new InsertStringInEditorEvent(object.getSource(), object.getTarget()));
          }
       });
 
-      display.getDetailsColumn().setFieldUpdater(new FieldUpdater<TranslationMemoryGlossaryItem, ImageResource>()
+      display.getDetailsColumn().setFieldUpdater(new FieldUpdater<GlossaryResultItem, ImageResource>()
       {
          @Override
-         public void update(int index, TranslationMemoryGlossaryItem object, ImageResource value)
+         public void update(int index, GlossaryResultItem object, ImageResource value)
          {
             glossaryDetailsPresenter.show(object);
          }
@@ -230,7 +230,7 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
       display.getSearchType().setValue(submittedRequest.getSearchType());
 
       dataProvider.getList().clear();
-      for (final TranslationMemoryGlossaryItem glossary : result.getGlossaries())
+      for (final GlossaryResultItem glossary : result.getGlossaries())
       {
          dataProvider.getList().add(glossary);
       }

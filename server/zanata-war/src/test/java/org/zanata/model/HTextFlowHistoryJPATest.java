@@ -14,7 +14,6 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
-import org.zanata.testng.annotations.Disabled;
 
 public class HTextFlowHistoryJPATest extends ZanataDbunitJpaTest
 {

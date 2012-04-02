@@ -24,7 +24,6 @@ import static org.zanata.util.ZanataUtil.equal;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +46,6 @@ import javax.persistence.PostLoad;
 import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
 import javax.persistence.PreUpdate;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.BatchSize;

@@ -7,8 +7,8 @@ import org.zanata.webtrans.client.ui.EnumListBox;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.client.ui.table.column.CopyButtonColumn;
 import org.zanata.webtrans.client.ui.table.column.DetailsColumn;
-import org.zanata.webtrans.client.ui.table.column.HighlightingLabelColumn;
-import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
+import org.zanata.webtrans.client.ui.table.column.HighlightingLabelGlossaryColumn;
+import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.gwt.core.client.GWT;
@@ -41,9 +41,9 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
 {
    private static GlossaryViewUiBinder uiBinder = GWT.create(GlossaryViewUiBinder.class);
 
-   CellTable<TranslationMemoryGlossaryItem> glossaryTable;
+   CellTable<GlossaryResultItem> glossaryTable;
 
-   private ListDataProvider<TranslationMemoryGlossaryItem> dataProvider;
+   private ListDataProvider<GlossaryResultItem> dataProvider;
 
    interface GlossaryViewUiBinder extends UiBinder<Widget, GlossaryView>
    {
@@ -70,23 +70,23 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    private final UiMessages messages;
    private boolean isFocused;
    
-   private final HighlightingLabelColumn sourceColumn;
-   private final HighlightingLabelColumn targetColumn;
-   private final CopyButtonColumn copyColumn;
-   private final DetailsColumn detailsColumn;
+   private final HighlightingLabelGlossaryColumn sourceColumn;
+   private final HighlightingLabelGlossaryColumn targetColumn;
+   private final CopyButtonColumn<GlossaryResultItem> copyColumn;
+   private final DetailsColumn<GlossaryResultItem> detailsColumn;
 
    @Inject
    public GlossaryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, Resources resources)
    {
       this.messages = messages;
       
-      sourceColumn = new HighlightingLabelColumn(true, false);
-      targetColumn = new HighlightingLabelColumn(false, true);
-      copyColumn = new CopyButtonColumn();
-      detailsColumn = new DetailsColumn(resources);
+      sourceColumn = new HighlightingLabelGlossaryColumn(true, false);
+      targetColumn = new HighlightingLabelGlossaryColumn(false, true);
+      copyColumn = new CopyButtonColumn<GlossaryResultItem>();
+      detailsColumn = new DetailsColumn<GlossaryResultItem>(resources);
       
       searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);
-      dataProvider = new ListDataProvider<TranslationMemoryGlossaryItem>();
+      dataProvider = new ListDataProvider<GlossaryResultItem>();
       initWidget(uiBinder.createAndBindUi(this));
 
       headerLabel.setText(messages.glossaryHeading());
@@ -159,7 +159,7 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
 
    public void renderTable()
    {
-      glossaryTable = new CellTable<TranslationMemoryGlossaryItem>();
+      glossaryTable = new CellTable<GlossaryResultItem>();
       glossaryTable.addStyleName("glossaryTable");
       glossaryTable.addStyleName("southTable");
       glossaryTable.addColumn(sourceColumn, messages.srcTermLabel());
@@ -167,8 +167,8 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       glossaryTable.addColumn(detailsColumn, messages.detailsLabel());
       glossaryTable.addColumn(copyColumn);
 
-      final NoSelectionModel<TranslationMemoryGlossaryItem> selectionModel = new NoSelectionModel<TranslationMemoryGlossaryItem>();
-      final DefaultSelectionEventManager<TranslationMemoryGlossaryItem> manager = DefaultSelectionEventManager.createBlacklistManager(0, 1, 2);
+      final NoSelectionModel<GlossaryResultItem> selectionModel = new NoSelectionModel<GlossaryResultItem>();
+      final DefaultSelectionEventManager<GlossaryResultItem> manager = DefaultSelectionEventManager.createBlacklistManager(0, 1, 2);
       glossaryTable.setSelectionModel(selectionModel, manager);
 
       glossaryTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
@@ -180,19 +180,19 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
    }
 
    @Override
-   public Column<TranslationMemoryGlossaryItem, String> getCopyColumn()
+   public Column<GlossaryResultItem, String> getCopyColumn()
    {
       return copyColumn;
    }
    
    @Override
-   public Column<TranslationMemoryGlossaryItem, ImageResource> getDetailsColumn()
+   public Column<GlossaryResultItem, ImageResource> getDetailsColumn()
    {
       return detailsColumn;
    }
 
    @Override
-   public void setDataProvider(ListDataProvider<TranslationMemoryGlossaryItem> dataProvider)
+   public void setDataProvider(ListDataProvider<GlossaryResultItem> dataProvider)
    {
       this.dataProvider = dataProvider;
       renderTable();

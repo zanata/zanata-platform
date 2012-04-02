@@ -42,7 +42,6 @@ import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.LogProvider;
 import org.jboss.seam.log.Logging;
-import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.Configuration;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.NotLoggedInException;

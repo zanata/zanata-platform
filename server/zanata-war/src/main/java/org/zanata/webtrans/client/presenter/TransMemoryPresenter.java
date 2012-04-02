@@ -15,7 +15,7 @@ import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
+import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
@@ -55,11 +55,11 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
       boolean isFocused();
 
-      Column<TranslationMemoryGlossaryItem, ImageResource> getDetailsColumn();
+      Column<TransMemoryResultItem, ImageResource> getDetailsColumn();
 
-      Column<TranslationMemoryGlossaryItem, String> getCopyColumn();
+      Column<TransMemoryResultItem, String> getCopyColumn();
 
-      void setDataProvider(ListDataProvider<TranslationMemoryGlossaryItem> dataProvider);
+      void setDataProvider(ListDataProvider<TransMemoryResultItem> dataProvider);
 
       void setQueries(List<String> queries);
    }
@@ -69,7 +69,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    private GetTranslationMemory submittedRequest = null;
    private GetTranslationMemory lastRequest = null;
    private TransMemoryDetailsPresenter tmInfoPresenter;
-   private ListDataProvider<TranslationMemoryGlossaryItem> dataProvider;
+   private ListDataProvider<TransMemoryResultItem> dataProvider;
 
    @Inject
    public TransMemoryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, TransMemoryDetailsPresenter tmInfoPresenter, WorkspaceContext workspaceContext)
@@ -79,7 +79,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       this.workspaceContext = workspaceContext;
       this.tmInfoPresenter = tmInfoPresenter;
 
-      dataProvider = new ListDataProvider<TranslationMemoryGlossaryItem>();
+      dataProvider = new ListDataProvider<TransMemoryResultItem>();
       display.setDataProvider(dataProvider);
    }
 
@@ -123,7 +123,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          {
             if (!workspaceContext.isReadOnly())
             {
-               TranslationMemoryGlossaryItem item;
+               TransMemoryResultItem item;
                try
                {
                   item = dataProvider.getList().get(event.getIndex());
@@ -140,19 +140,19 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          }
       }));
 
-      display.getDetailsColumn().setFieldUpdater(new FieldUpdater<TranslationMemoryGlossaryItem, ImageResource>()
+      display.getDetailsColumn().setFieldUpdater(new FieldUpdater<TransMemoryResultItem, ImageResource>()
       {
          @Override
-         public void update(int index, TranslationMemoryGlossaryItem object, ImageResource value)
+         public void update(int index, TransMemoryResultItem object, ImageResource value)
          {
             tmInfoPresenter.show(object);
          }
       });
 
-      display.getCopyColumn().setFieldUpdater(new FieldUpdater<TranslationMemoryGlossaryItem, String>()
+      display.getCopyColumn().setFieldUpdater(new FieldUpdater<TransMemoryResultItem, String>()
       {
          @Override
-         public void update(int index, TranslationMemoryGlossaryItem object, String value)
+         public void update(int index, TransMemoryResultItem object, String value)
          {
             eventBus.fireEvent(new CopyDataToEditorEvent(object.getSource(), object.getTarget()));
          }
@@ -235,7 +235,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       ArrayList<String> queries = submittedRequest.getQuery().getQueries();
       display.setQueries(queries);
       dataProvider.getList().clear();
-      for (final TranslationMemoryGlossaryItem memory : result.getMemories())
+      for (final TransMemoryResultItem memory : result.getMemories())
       {
          dataProvider.getList().add(memory);
       }
