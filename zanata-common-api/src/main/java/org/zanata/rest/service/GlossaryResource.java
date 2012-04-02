@@ -21,8 +21,6 @@
 
 package org.zanata.rest.service;
 
-import java.io.InputStream;
-
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
