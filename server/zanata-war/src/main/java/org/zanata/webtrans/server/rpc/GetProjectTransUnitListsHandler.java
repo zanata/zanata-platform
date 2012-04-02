@@ -88,13 +88,14 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
       HashMap<Long, String> docPaths = new HashMap<Long, String>();
       if ((action.getSearchString() == null || action.getSearchString().isEmpty()))
       {
-         //TODO empty searches shouldn't be requested, consider replacing this with an error.
+         //TODO empty searches shouldn't be requested, consider replacing this with an error,
+         //or making behaviour return all targets for the project (consider performance).
          return new GetProjectTransUnitListsResult(docPaths, matchingTUs);
       }
 
       //TODO handle exception thrown by search service
-      List<HTextFlow> matchingFlows = textFlowSearchServiceImpl.findTextFlows(action.getWorkspaceId(), FilterConstraints.filterBy(action.getSearchString()).ignoreSource().excludeNew());
-
+      List<HTextFlowTarget> matchingFlows = textFlowSearchServiceImpl.findTextFlowTargets(action.getWorkspaceId(), FilterConstraints.filterBy(action.getSearchString()).ignoreSource().excludeNew());
+      log.info("Returned {0} results for search", matchingFlows.size());
 
       HLocale hLocale;
       try
@@ -106,8 +107,10 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          throw new ActionException(e.getMessage());
       }
 
-      for (HTextFlow htf : matchingFlows)
+      for (HTextFlowTarget htft : matchingFlows)
       {
+         HTextFlow htf = htft.getTextFlow();
+         log.info("Textflow is {0}, Target is {1}", htf, htft);
          List<TransUnit> listForDoc = matchingTUs.get(htf.getDocument().getId());
          if (listForDoc == null)
          {
@@ -126,6 +129,8 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
    {
    }
 
+   //TODO update to handle plurals properly.
+   //TODO move to shared location with other search code
    private TransUnit initTransUnit(HTextFlow textFlow, HLocale hLocale)
    {
       String msgContext = null;

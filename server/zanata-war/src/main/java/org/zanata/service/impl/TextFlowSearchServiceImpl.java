@@ -20,9 +20,17 @@
  */
 package org.zanata.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.lucene.index.Term;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.util.Version;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.FullTextQuery;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -34,16 +42,16 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
-import org.zanata.model.HDocument;
-import org.zanata.model.HLocale;
+import org.zanata.hibernate.search.ContainingWorkspaceBridge;
+import org.zanata.hibernate.search.DefaultNgramAnalyzer;
 import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.FilterConstraints;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.util.TextFlowFilter;
-import org.zanata.webtrans.shared.util.TextFlowFilterImpl;
 
 /**
  * @author David Mason, damason@redhat.com
@@ -70,59 +78,68 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
    @In
    TextFlowFilter textFlowFilterImpl;
 
+   @In
+   private FullTextEntityManager entityManager;
+
+
    @Override
-   public List<HTextFlow> findTextFlows(WorkspaceId workspace, FilterConstraints constraints)
+   public List<HTextFlowTarget> findTextFlowTargets(WorkspaceId workspace, FilterConstraints constraints)
    {
       LocaleId localeId = workspace.getLocaleId();
       String projectSlug = workspace.getProjectIterationId().getProjectSlug();
       String iterationSlug = workspace.getProjectIterationId().getIterationSlug();
 
-      //TODO decide whether null or empty searchTerm is valid.
-      //allowing it to get all may simplify jobs, but may be clearer
-      //to use a different class for gets vs. filters.
-      //On the other hand, this service could use a getter service
-      //for its pre-filter retrieval, although it will likely be
-      //doing its own querying eventually...
+      // TODO consider whether to allow null and empty search strings.
+      // May want to fork to use a different method to retrieve all targets if
+      // empty targets are required.
 
       //check that locale is valid for the workspace
-      HLocale hLocale;
       try
       {
-         hLocale = localeServiceImpl.validateLocaleByProjectIteration(localeId, projectSlug, iterationSlug);
+         localeServiceImpl.validateLocaleByProjectIteration(localeId, projectSlug, iterationSlug);
       }
       catch (ZanataServiceException e)
       {
          throw new ZanataServiceException("Failed to validate locale", e);
       }
 
-      List<HDocument> documents = documentDAO.getAllByProjectIteration(projectSlug, iterationSlug);
+      //TODO add indexing and flag for case-sensitive search
 
-      TextFlowFilter filter = new TextFlowFilterImpl(constraints);
-
-      List<HTextFlow> allMatchingResults = new ArrayList<HTextFlow>();
-
-      for (HDocument doc : documents)
+      org.apache.lucene.search.Query searchPhraseQuery;
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "content", new DefaultNgramAnalyzer());
+      try
       {
-         log.warn("Inefficient fetch TransUnits:" + constraints.getSearchString());
-         List<HTextFlow> result = textFlowDAO.getTransUnitList(doc.getId());
-
-         for (HTextFlow textFlow : result)
-         {
-            if (!filter.isFilterOut(textFlow, hLocale))
-            {
-               allMatchingResults.add(textFlow);
-            }
-         }
+         searchPhraseQuery = parser.parse("\"" + QueryParser.escape(constraints.getSearchString()) + "\"");
+      }
+      catch (ParseException e)
+      {
+         throw new ZanataServiceException("Failed to parse query", e);
       }
 
-      return allMatchingResults;
+      String textFlowPrefix = "textFlow";
+      TermQuery projectQuery = new TermQuery(new Term(textFlowPrefix + ContainingWorkspaceBridge.PROJECT_FIELD, projectSlug));
+      TermQuery iterationQuery = new TermQuery(new Term(textFlowPrefix + ContainingWorkspaceBridge.ITERATION_FIELD, iterationSlug));
+      TermQuery localeQuery = new TermQuery(new Term("locale", localeId.getId()));
+
+      BooleanQuery mustMatchAllQuery = new BooleanQuery();
+      mustMatchAllQuery.add(projectQuery, Occur.MUST);
+      mustMatchAllQuery.add(iterationQuery, Occur.MUST);
+      mustMatchAllQuery.add(localeQuery, Occur.MUST);
+      mustMatchAllQuery.add(searchPhraseQuery, Occur.MUST);
+
+      FullTextQuery ftQuery = entityManager.createFullTextQuery(mustMatchAllQuery, HTextFlowTarget.class);
+
+      @SuppressWarnings("unchecked")
+      List<HTextFlowTarget> matches = (List<HTextFlowTarget>) ftQuery.getResultList();
+
+      return  matches;
    }
 
    
    @Override
    public List<HTextFlow> findTextFlows(WorkspaceId workspace, DocumentId doc, FilterConstraints constraints)
    {
-      // TODO Auto-generated method stub
+      // TODO Implement findTextFlows within document
       return null;
    }
 }
