@@ -55,15 +55,17 @@ import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.validator.NotEmpty;
+import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.NotNull;
 import org.zanata.common.ContentState;
 import org.zanata.common.HasContents;
+import org.zanata.hibernate.search.ContainingWorkspaceBridge;
 import org.zanata.hibernate.search.ContentStateBridge;
+import org.zanata.hibernate.search.DefaultNgramAnalyzer;
 import org.zanata.hibernate.search.LocaleIdBridge;
 
 /**
@@ -90,7 +92,7 @@ import org.zanata.hibernate.search.LocaleIdBridge;
                        "group by tft.textFlow.contentHash")
 })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-//@Indexed
+@Indexed
 public class HTextFlowTarget extends ModelEntityBase implements HasContents, HasSimpleComment, ITextFlowTargetHistory, Serializable
 {
 
@@ -200,7 +202,8 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    @NaturalId
    @ManyToOne
    @JoinColumn(name = "tf_id")
-   @IndexedEmbedded(depth = 2)
+   @Field(index = Index.UN_TOKENIZED)
+   @FieldBridge(impl = ContainingWorkspaceBridge.class)
    public HTextFlow getTextFlow()
    {
       return textFlow;
@@ -219,6 +222,11 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    @Override
    @Deprecated
    @Transient
+   //FIXME index contents rather than content
+   //TODO add case sensitive content field to index.
+   // This will require a different analyzer as DefaultNgramAnalyzer and its
+   // parent and grandparent class are implicitly case insensitive.
+   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
    public String getContent()
    {
       if( this.getContents().size() > 0 )
@@ -302,7 +310,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
          this.getHistory().put(this.oldVersionNum, this.initialState);
       }
    }
-   
+
    @PostUpdate
    @PostPersist
    @PostLoad
