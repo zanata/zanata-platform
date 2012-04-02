@@ -20,21 +20,23 @@
  */
 package org.zanata.webtrans.client.ui.table.column;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.webtrans.client.ui.DiffMatchPatchLabel;
-import org.zanata.webtrans.client.ui.table.cell.DiffMatchPatchLabelCell;
+import org.zanata.webtrans.client.ui.table.cell.StaticWidgetCell;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class TransMemorySourceColumn extends Column<TransMemoryResultItem, DiffMatchPatchLabel>
+public class TransMemorySourceColumn extends Column<TransMemoryResultItem, VerticalPanel>
 {
    private List<String> queries;
 
    public TransMemorySourceColumn()
    {
-      super(new DiffMatchPatchLabelCell());
+      super(new StaticWidgetCell<VerticalPanel>());
    }
 
    public void setQueries(List<String> queries)
@@ -43,13 +45,30 @@ public class TransMemorySourceColumn extends Column<TransMemoryResultItem, DiffM
    }
 
    @Override
-   public DiffMatchPatchLabel getValue(TransMemoryResultItem object)
+   public VerticalPanel getValue(TransMemoryResultItem object)
    {
-      DiffMatchPatchLabel label = new DiffMatchPatchLabel();
-      // FIXME display multiple source/target strings
-      label.setOriginal(queries.get(0));
-      label.setText(object.getSource());
-      return label;
+      VerticalPanel panel = new VerticalPanel();
+      ArrayList<String> sourceContents = object.getSourceContents();
+
+      // display multiple source/target strings
+      for (int i = 0; i < sourceContents.size(); i++)
+      {
+         String sourceContent = sourceContents.get(i);
+         String query;
+         if (queries.size() > i)
+         {
+            query = queries.get(i);
+         }
+         else
+         {
+            query = queries.get(0);
+         }
+         DiffMatchPatchLabel label = new DiffMatchPatchLabel();
+         label.setOriginal(query);
+         label.setText(sourceContent);
+         panel.add(label);
+      }
+      return panel;
    }
 
 }

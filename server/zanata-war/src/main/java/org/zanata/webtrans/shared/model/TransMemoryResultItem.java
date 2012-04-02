@@ -49,7 +49,7 @@ public class TransMemoryResultItem extends SearchResultItem implements Serializa
     * @param relevanceScore
     * @param similarityPercent
     */
-   public TransMemoryResultItem(ArrayList<String> sourceContents, ArrayList<String> targetContents, float relevanceScore, int similarityPercent)
+   public TransMemoryResultItem(ArrayList<String> sourceContents, ArrayList<String> targetContents, double relevanceScore, double similarityPercent)
    {
       super(relevanceScore, similarityPercent);
       this.sourceContents = sourceContents;

@@ -21,24 +21,31 @@
 package org.zanata.webtrans.client.ui.table.column;
 
 import org.zanata.webtrans.client.ui.HighlightingLabel;
-import org.zanata.webtrans.client.ui.table.cell.HighlightingLabelCell;
+import org.zanata.webtrans.client.ui.table.cell.StaticWidgetCell;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class TransMemoryTargetColumn extends Column<TransMemoryResultItem, HighlightingLabel>
+public class TransMemoryTargetColumn extends Column<TransMemoryResultItem, VerticalPanel>
 {
    public TransMemoryTargetColumn()
    {
-      super(new HighlightingLabelCell());
+      super(new StaticWidgetCell<VerticalPanel>());
    }
 
    @Override
-   public HighlightingLabel getValue(TransMemoryResultItem object)
+   public VerticalPanel getValue(TransMemoryResultItem object)
    {
-      HighlightingLabel label = new HighlightingLabel();
-      label.setText(object.getTarget());
-      return label;
+      VerticalPanel panel = new VerticalPanel();
+      // display multiple source/target strings
+      for (String targetContent : object.getTargetContents())
+      {
+         HighlightingLabel label = new HighlightingLabel();
+         label.setText(targetContent);
+         panel.add(label);
+      }
+      return panel;
    }
 
 }

@@ -21,7 +21,7 @@
 package org.zanata.webtrans.client.ui.table.column;
 
 import org.zanata.webtrans.client.ui.DiffMatchPatchLabel;
-import org.zanata.webtrans.client.ui.table.cell.DiffMatchPatchLabelCell;
+import org.zanata.webtrans.client.ui.table.cell.StaticWidgetCell;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 
 import com.google.gwt.user.cellview.client.Column;
@@ -40,7 +40,7 @@ public class DiffMatchPatchLabelGlossaryColumn extends Column<GlossaryResultItem
 
    public DiffMatchPatchLabelGlossaryColumn(boolean displaySource, boolean displayTarget)
    {
-      super(new DiffMatchPatchLabelCell());
+      super(new StaticWidgetCell<DiffMatchPatchLabel>());
       this.displaySource = displaySource;
       this.displayTarget = displayTarget;
    }

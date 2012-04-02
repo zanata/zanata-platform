@@ -50,7 +50,7 @@ public class GlossaryResultItem extends SearchResultItem implements Serializable
     * @param relevanceScore
     * @param similarityPercent
     */
-   public GlossaryResultItem(String source, String target, float relevanceScore, int similarityPercent)
+   public GlossaryResultItem(String source, String target, double relevanceScore, double similarityPercent)
    {
       super(relevanceScore, similarityPercent);
       this.source = source;

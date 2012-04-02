@@ -111,15 +111,15 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
                continue;
             }
 
-            int percent;
+            double percent;
             if (action.getQuery().getSearchType() == SearchType.FUZZY_PLURAL)
             {
-               percent = (int) (100 * LevenshteinUtil.getSimilarity(action.getQuery().getQueries(), textFlow.getContents()));
+               percent = 100 * LevenshteinUtil.getSimilarity(action.getQuery().getQueries(), textFlow.getContents());
             }
             else
             {
                final String searchText = action.getQuery().getQueries().get(0);
-               percent = (int) (100 * LevenshteinUtil.getSimilarity(searchText, textFlow.getContents()));
+               percent = 100 * LevenshteinUtil.getSimilarity(searchText, textFlow.getContents());
             }
             ArrayList<String> textFlowContents = new ArrayList<String>(textFlow.getContents());
             ArrayList<String> targetContents = new ArrayList<String>(target.getContents());
@@ -160,36 +160,37 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
          public int compare(TransMemoryResultItem m1, TransMemoryResultItem m2)
          {
             int result;
-            result = compare(m1.getSimilarityPercent(), m2.getSimilarityPercent());
+            result = Double.compare(m1.getSimilarityPercent(), m2.getSimilarityPercent());
             if (result != 0)
+            {
+               // sort higher similarity first
                return -result;
-            // FIXME compare List<String>, not String
-            result = compare(m1.getSource().length(), m2.getSource().length());
-            if (result != 0)
-               return result; // shorter matches are preferred, if similarity is
-                              // the same
-            result = compare(m1.getRelevanceScore(), m2.getRelevanceScore());
-            if (result != 0)
-               return -result;
-            // FIXME compare List<String>, not String
-            return m1.getSource().compareTo(m2.getSource());
+            }
+            result = compare(m1.getSourceContents(), m2.getSourceContents());
+            // sort longer string lists first (more plural forms)
+            return -result;
          }
 
-         private int compare(int a, int b)
+         private int compare(List<String> list1, List<String> list2)
          {
-            if (a < b)
+            for (int i = 0; i < list1.size() && i < list2.size(); i++)
+            {
+               String s1 = list1.get(i);
+               String s2 = list2.get(i);
+               int comp = s1.compareTo(s2);
+               if (comp != 0)
+               {
+                  return comp;
+               }
+            }
+            if (list1.size() < list2.size())
+            {
                return -1;
-            if (a > b)
+            }
+            else if (list1.size() > list2.size())
+            {
                return 1;
-            return 0;
-         }
-
-         private int compare(float a, float b)
-         {
-            if (a < b)
-               return -1;
-            if (a > b)
-               return 1;
+            }
             return 0;
          }
 
