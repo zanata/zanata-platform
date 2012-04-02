@@ -334,6 +334,35 @@ a.action_link:hover {
 }
 /* -----------------------  End Footer CSS  -------------------------*/
 
+/* -----------------------  Loading Frame CSS (loading.xhtml)  -------------------------*/
+
+/* Use this class for parent containers that
+ * wish to use the loading.xhtml component 
+ */
+.loading_parent {
+	position:relative;
+}
+
+.loading_frame {
+	background: #333; 
+	width: 50px; 
+	height:50px; 
+	position: absolute; 
+	top:50px; 
+	left:50%; 
+	display:block; 
+	-webkit-border-radius:10px; 
+	border-radius:10px; 
+	opacity:0.6; 
+	text-align: center;
+}
+
+.loading_frame .loading_image {
+	margin-top:9px;
+}
+
+/* -----------------------  End Loading Frame CSS (loading.xhtml)  -------------------------*/
+
 /* -----------------------  JSF components CSS  -------------------------*/
 .rich-panel-header, .rich-table-headercell {
 	border-radius: 5px;

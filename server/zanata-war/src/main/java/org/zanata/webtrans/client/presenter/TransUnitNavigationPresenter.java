@@ -20,8 +20,6 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import java.util.Map;
-
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -31,6 +29,8 @@ import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -38,8 +38,6 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.inject.Inject;
-import org.zanata.webtrans.client.events.UserConfigChangeEvent;
-import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 
 public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavigationPresenter.Display> implements HasNavTransUnitHandlers
 {

@@ -23,7 +23,6 @@ package org.zanata.webtrans.shared.model;
 
 import java.util.ArrayList;
 
-import org.zanata.util.ShortString;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.gwt.user.client.rpc.IsSerializable;

@@ -23,7 +23,6 @@ package org.zanata.webtrans.client.editor.table;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.common.base.Strings;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
@@ -32,7 +31,7 @@ import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
-import com.google.gwt.core.client.GWT;
+import com.google.common.base.Strings;
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;

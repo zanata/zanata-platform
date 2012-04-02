@@ -27,7 +27,6 @@ import java.util.Set;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
-import org.zanata.model.HPerson;
 
 
 public interface LocaleService

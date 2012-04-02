@@ -141,6 +141,8 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    public List<Object[]> getSearchResult(TransMemoryQuery query, List<Long> translatedIds, final int maxResult) throws ParseException
    {
       String queryText = null;
+      String[] multiQueryText = null;
+      
       switch (query.getSearchType())
       {
       case RAW:
@@ -157,7 +159,11 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
          break;
 
       case FUZZY_PLURAL:
-         // nothing yet, we just use the queries as they are
+         multiQueryText = new String[ query.getQueries().size() ];
+         for(int i=0; i<query.getQueries().size(); i++)
+         {
+            multiQueryText[i] = QueryParser.escape( query.getQueries().get(i) );
+         }
          break;
       default:
          throw new RuntimeException("Unknown query type: " + query.getSearchType());
@@ -167,7 +173,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       DefaultNgramAnalyzer analyzer = new DefaultNgramAnalyzer();
       if (query.getSearchType() == SearchType.FUZZY_PLURAL)
       {
-         int queriesSize = query.getQueries().size();
+         int queriesSize = multiQueryText.length;
          if (queriesSize > CONTENT_FIELDS.length)
          {
             log.warn("query contains {0} fields, but we only index {1}", queriesSize, CONTENT_FIELDS.length);
@@ -175,8 +181,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
          String[] searchFields = new String[queriesSize];
          System.arraycopy(CONTENT_FIELDS, 0, searchFields, 0, queriesSize);
 
-         String[] queries = query.getQueries().toArray(new String[queriesSize]);
-         textQuery = MultiFieldQueryParser.parse(LUCENE_VERSION, queries, searchFields, analyzer);
+         textQuery = MultiFieldQueryParser.parse(LUCENE_VERSION, multiQueryText, searchFields, analyzer);
       }
       else
       {

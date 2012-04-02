@@ -26,8 +26,6 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
-import org.zanata.webtrans.client.events.UserConfigChangeEvent;
-import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -185,6 +183,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
 
    public void openEditorOnSelectedRow()
    {
+      tableEditorPresenter.getDisplay().gotoRow(tableEditorPresenter.getSelectedRowIndex(), true);
       tableEditorPresenter.getDisplay().getTargetCellEditor().showEditors(tableEditorPresenter.getSelectedRowIndex(), 0);
 
    }
