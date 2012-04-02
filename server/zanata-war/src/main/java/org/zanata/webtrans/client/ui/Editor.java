@@ -250,12 +250,11 @@ public class Editor extends Composite implements ToggleEditor
             }
          });
       }
-      buttons.setVisible(viewMode == ViewMode.EDIT && listener.isDisplayButtons());
-
-      if (viewMode == ViewMode.VIEW)
+      else
       {
-          removeValidationMessagePanel();
+         removeValidationMessagePanel();
       }
+      buttons.setVisible(viewMode == ViewMode.EDIT && listener.isDisplayButtons());
    }
 
    @Override

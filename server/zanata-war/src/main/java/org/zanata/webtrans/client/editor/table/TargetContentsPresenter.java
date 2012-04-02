@@ -133,7 +133,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else if (currentEditorIndex != NO_OPEN_EDITOR)
       {
-         // TODO by default selection will select the first one and open
          currentEditorIndex = 0;
       }
 

@@ -46,7 +46,6 @@ import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
 import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
 import org.zanata.webtrans.shared.validation.action.ValidationAction;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.inject.Inject;
 
 /**
