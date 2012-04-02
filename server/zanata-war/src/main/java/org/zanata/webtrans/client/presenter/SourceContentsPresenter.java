@@ -81,6 +81,7 @@ public class SourceContentsPresenter
 
          Log.debug("Selected source: " + selectedSource.getSource());
          eventBus.fireEvent(new RequestValidationEvent());
+
       }
    };
 

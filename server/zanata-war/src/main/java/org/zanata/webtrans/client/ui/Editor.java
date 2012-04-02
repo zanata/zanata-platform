@@ -1,5 +1,10 @@
 package org.zanata.webtrans.client.ui;
 
+import org.zanata.webtrans.client.editor.table.EditorTextArea;
+import org.zanata.webtrans.client.editor.table.TableResources;
+import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
+import org.zanata.webtrans.client.resources.NavigationMessages;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
@@ -20,10 +25,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
-import org.zanata.webtrans.client.editor.table.EditorTextArea;
-import org.zanata.webtrans.client.editor.table.TableResources;
-import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
-import org.zanata.webtrans.client.resources.NavigationMessages;
 
 public class Editor extends Composite implements ToggleEditor
 {
@@ -176,7 +177,6 @@ public class Editor extends Composite implements ToggleEditor
          typingCycles = 0;
          typingTimer.scheduleRepeating(TYPING_TIMER_INTERVAL);
       }
-      // listener.onTextAreaKeyDown(event, this);
    }
 
    @UiHandler("copySourceButton")
@@ -254,7 +254,7 @@ public class Editor extends Composite implements ToggleEditor
 
       if (viewMode == ViewMode.VIEW)
       {
-         removeValidationMessagePanel();
+          removeValidationMessagePanel();
       }
    }
 

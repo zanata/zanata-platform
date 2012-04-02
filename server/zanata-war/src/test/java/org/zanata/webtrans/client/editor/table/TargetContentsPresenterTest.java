@@ -15,10 +15,23 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
-import com.google.common.collect.Lists;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.event.shared.GwtEvent;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+
+import javax.inject.Provider;
+
 import net.customware.gwt.presenter.client.EventBus;
+
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
@@ -45,20 +58,9 @@ import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 
-import javax.inject.Provider;
-import java.util.ArrayList;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import com.google.common.collect.Lists;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.event.shared.GwtEvent;
 
 @Test(groups = { "unit-tests" })
 public class TargetContentsPresenterTest
@@ -109,7 +111,7 @@ public class TargetContentsPresenterTest
    public void canSetToViewMode() 
    {
       //given show editor at row 0
-      presenter.showEditors(0);
+      presenter.showEditors(0, -1);
 
       presenter.setToViewMode();
 
@@ -204,7 +206,7 @@ public class TargetContentsPresenterTest
       //given current display is at row 1
       ArgumentCaptor<Scheduler.ScheduledCommand> commandCaptor = ArgumentCaptor.forClass(Scheduler.ScheduledCommand.class);
       when(editor.getIndex()).thenReturn(99);
-      presenter.showEditors(0);
+      presenter.showEditors(0, -1);
 
       presenter.toggleView(editor);
 
@@ -226,14 +228,14 @@ public class TargetContentsPresenterTest
    @Test
    public void canGetNewTargets()
    {
-      presenter.showEditors(1);
+      presenter.showEditors(1, -1);
       when(display2.getNewTargets()).thenReturn(targetContents);
 
       ArrayList<String> result = presenter.getNewTargets();
 
       MatcherAssert.assertThat(result, Matchers.sameInstance(targetContents));
    }
-
+   
    @Test
    public void canSetValidationMessagePanel()
    {
@@ -242,7 +244,6 @@ public class TargetContentsPresenterTest
       verify(validationPanel).clear();
       verify(editor).addValidationMessagePanel(validationPanel);
    }
-
    @Test
    public void canChangeViewOnUserConfigChange()
    {
@@ -295,7 +296,7 @@ public class TargetContentsPresenterTest
       when(display1.getEditors()).thenReturn(mockedList);
       when(mockedList.get(anyInt())).thenReturn(currentEditor);
       when(display1.isEditing()).thenReturn(true);
-      presenter.showEditors(0);
+      presenter.showEditors(0, -1);
    }
 
    @Test
