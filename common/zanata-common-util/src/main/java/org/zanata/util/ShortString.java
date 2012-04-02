@@ -1,5 +1,8 @@
 package org.zanata.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * ShortStrings are meant for use in logging. They don't incur the cost of
  * shortening until toString() is called. This means they hold on to the entire
@@ -32,6 +35,20 @@ public class ShortString
       if (s.length() <= MAX_LENGTH)
          return s;
       return s.substring(0, MAX_LENGTH - ELLIPSIS.length()) + ELLIPSIS;
+   }
+
+   /**
+    * @param strings
+    * @return
+    */
+   public static String shorten(List<String> strings)
+   {
+      List<String> shortStrings = new ArrayList<String>(strings.size());
+      for (String s : strings)
+      {
+         shortStrings.add(shorten(s));
+      }
+      return shortStrings.toString();
    }
 
 }

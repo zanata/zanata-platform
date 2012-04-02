@@ -47,7 +47,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.util.ShortString;
 import org.zanata.webtrans.server.ActionHandlerFor;
-import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
+import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
@@ -81,14 +81,14 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
 
       LocaleId localeID = action.getLocaleId();
       HLocale hLocale = localeServiceImpl.getByLocaleId(localeID);
-      ArrayList<TranslationMemoryGlossaryItem> results;
+      ArrayList<GlossaryResultItem> results;
 
       try
       {
          List<HGlossaryEntry> entries = glossaryDAO.getEntriesByLocaleId(localeID);
          List<Object[]> matches = glossaryDAO.getSearchResult(searchText, searchType, action.getSrcLocaleId(), MAX_RESULTS);
 
-         Map<GlossaryKey, TranslationMemoryGlossaryItem> matchesMap = new LinkedHashMap<GlossaryKey, TranslationMemoryGlossaryItem>();
+         Map<GlossaryKey, GlossaryResultItem> matchesMap = new LinkedHashMap<GlossaryKey, GlossaryResultItem>();
          for (Object[] match : matches)
          {
             float score = (Float) match[0];
@@ -119,15 +119,15 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
             int percent = (int) (100 * LevenshteinUtil.getSimilarity(searchText, srcTermContent));
 
             GlossaryKey key = new GlossaryKey(targetTermContent, srcTermContent);
-            TranslationMemoryGlossaryItem item = matchesMap.get(key);
+            GlossaryResultItem item = matchesMap.get(key);
             if (item == null)
             {
-               item = new TranslationMemoryGlossaryItem(srcTermContent, targetTermContent, score, percent);
+               item = new GlossaryResultItem(srcTermContent, targetTermContent, score, percent);
                matchesMap.put(key, item);
             }
             item.addSourceId(glossaryTerm.getId());
          }
-         results = new ArrayList<TranslationMemoryGlossaryItem>(matchesMap.values());
+         results = new ArrayList<GlossaryResultItem>(matchesMap.values());
       }
       catch (ParseException e)
       {
@@ -140,17 +140,17 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
             // escaping failed!
             log.error("Can't parse query '" + searchText + "'", e);
          }
-         results = new ArrayList<TranslationMemoryGlossaryItem>(0);
+         results = new ArrayList<GlossaryResultItem>(0);
       }
 
       /**
        * NB just because this Comparator returns 0 doesn't mean the matches are
        * identical.
        */
-      Comparator<TranslationMemoryGlossaryItem> comp = new Comparator<TranslationMemoryGlossaryItem>()
+      Comparator<GlossaryResultItem> comp = new Comparator<GlossaryResultItem>()
       {
          @Override
-         public int compare(TranslationMemoryGlossaryItem m1, TranslationMemoryGlossaryItem m2)
+         public int compare(GlossaryResultItem m1, GlossaryResultItem m2)
          {
             int result;
             result = compare(m1.getSimilarityPercent(), m2.getSimilarityPercent());

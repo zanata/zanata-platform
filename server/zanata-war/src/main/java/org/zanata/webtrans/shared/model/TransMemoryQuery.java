@@ -23,6 +23,7 @@ package org.zanata.webtrans.shared.model;
 
 import java.util.ArrayList;
 
+import org.zanata.util.ShortString;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -75,7 +76,8 @@ public class TransMemoryQuery implements IsSerializable
    @Override
    public String toString()
    {
-      return "TransMemoryQuery [searchType=" + searchType + ", queries=" + queries + "]";
+      return "TransMemoryQuery [searchType=" + searchType + ", queries=" + (queries) + "]";
+      //      return "TransMemoryQuery [searchType=" + searchType + ", queries=" + ShortString.shorten(queries) + "]";
    }
 
    @Override

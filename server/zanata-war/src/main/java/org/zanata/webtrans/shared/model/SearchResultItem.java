@@ -3,28 +3,24 @@ package org.zanata.webtrans.shared.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class TranslationMemoryGlossaryItem implements Serializable
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public abstract class SearchResultItem implements Serializable, IsSerializable
 {
 
    private static final long serialVersionUID = -7381018377520206564L;
-
-   private String source;
-   private String target;
 
    private ArrayList<Long> sourceIdList = new ArrayList<Long>();
    private float relevanceScore;
    private int similarityPercent;
 
    // for GWT
-   @SuppressWarnings("unused")
-   private TranslationMemoryGlossaryItem()
+   protected SearchResultItem()
    {
    }
 
-   public TranslationMemoryGlossaryItem(String source, String memory, float relevanceScore, int similarityPercent)
+   protected SearchResultItem(float relevanceScore, int similarityPercent)
    {
-      this.source = source;
-      this.target = memory;
       this.relevanceScore = relevanceScore;
       this.similarityPercent = similarityPercent;
    }
@@ -37,16 +33,6 @@ public class TranslationMemoryGlossaryItem implements Serializable
    public void addSourceId(Long sourceId)
    {
       this.sourceIdList.add(sourceId);
-   }
-
-   public void setTarget(String target)
-   {
-      this.target = target;
-   }
-
-   public String getTarget()
-   {
-      return target;
    }
 
    public void setRelevanceScore(float relevanceScore)
@@ -67,16 +53,6 @@ public class TranslationMemoryGlossaryItem implements Serializable
    public void setSimilarityPercent(int similarityPercent)
    {
       this.similarityPercent = similarityPercent;
-   }
-
-   public void setSource(String source)
-   {
-      this.source = source;
-   }
-
-   public String getSource()
-   {
-      return source;
    }
 
 }

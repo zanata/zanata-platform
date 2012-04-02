@@ -20,20 +20,50 @@
  */
 package org.zanata.webtrans.client.ui.table.column;
 
-import org.zanata.webtrans.shared.model.SearchResultItem;
+import org.zanata.webtrans.client.ui.DiffMatchPatchLabel;
+import org.zanata.webtrans.client.ui.table.cell.DiffMatchPatchLabelCell;
+import org.zanata.webtrans.shared.model.GlossaryResultItem;
 
-import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.cellview.client.Column;
 
 /**
  * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class SimilarityColumn<T extends SearchResultItem> extends TextColumn<T>
+public class DiffMatchPatchLabelGlossaryColumn extends Column<GlossaryResultItem, DiffMatchPatchLabel>
 {
-   @Override
-   public String getValue(T object)
+
+   private final boolean displaySource;
+   private final boolean displayTarget;
+   private String query;
+
+   public DiffMatchPatchLabelGlossaryColumn(boolean displaySource, boolean displayTarget)
    {
-      return object.getSimilarityPercent() + "%";
+      super(new DiffMatchPatchLabelCell());
+      this.displaySource = displaySource;
+      this.displayTarget = displayTarget;
    }
+
+   public void setQuery(String query)
+   {
+      this.query = query;
+   }
+
+   @Override
+   public DiffMatchPatchLabel getValue(GlossaryResultItem object)
+   {
+      DiffMatchPatchLabel label = new DiffMatchPatchLabel();
+      label.setOriginal(query);
+      if (displaySource)
+      {
+         label.setText(object.getSource());
+      }
+      else if (displayTarget)
+      {
+         label.setText(object.getTarget());
+      }
+      return label;
+   }
+
 }
