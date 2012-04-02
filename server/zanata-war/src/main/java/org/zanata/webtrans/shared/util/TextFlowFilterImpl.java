@@ -86,7 +86,6 @@ public class TextFlowFilterImpl implements TextFlowFilter
          return false;
       }
 
-      
       HTextFlowTarget target = textFlow.getTargets().get(locale);
       if (isMatchSearch(textFlow, target))
       {
