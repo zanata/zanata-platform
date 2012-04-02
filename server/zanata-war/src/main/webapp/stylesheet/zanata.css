@@ -290,6 +290,17 @@ a.action_link:hover {
 	padding: 10px 20px;
 }
 
+.user_img {
+	box-shadow: 0 0 2px #aaa;
+	-moz-box-shadow:0 0 2px #aaa;
+	border: 1px solid #CCC;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	margin-top: 5px;
+	margin-right: 5px;
+	float: right;
+}
+
 #loading_top_right {
 	position: fixed;
 	right: 2px;
@@ -324,7 +335,7 @@ a.action_link:hover {
 /* -----------------------  End Footer CSS  -------------------------*/
 
 /* -----------------------  JSF components CSS  -------------------------*/
-.rich-panel-header {
+.rich-panel-header, .rich-table-headercell {
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	text-align: center;
@@ -347,7 +358,7 @@ a.action_link:hover {
 }
 
 /* the specificity here is necessary to override the defaults */
-.rich-panel .rich-panel-header,.rich-stglpanel .rich-stglpanel-header {
+.rich-panel .rich-panel-header,.rich-stglpanel .rich-stglpanel-header, .rich-table .rich-table-header {
 	background-image: none;
 	padding: 2px 3px;
 }
@@ -580,6 +591,14 @@ a.action_link:hover {
 /* -----------------------  End Customised Language list CSS  -------------------------*/
 
 /* -----------------------  Project iteration CSS  -------------------------*/
+.iterations table {
+	border: none;
+}
+
+.iteration_grid_col {
+	border: none;
+	min-width: 100px;
+}
 
 .version_link_div {
 	border:1px solid #7092C3;
@@ -587,11 +606,25 @@ a.action_link:hover {
 	border-radius: 5px;
 	padding:5px;
 	margin-bottom:3px;
+	min-width: 100px; 
+	min-height: 100px;
 }
 
 .version_link_div:hover {
 	border:1px solid #990000;
 	background-color: #F3F2F2;
+}
+
+.version_link_div .version_title {
+	word-break: break-word; 
+	word-wrap: break-word; 
+	width: 100px;
+}
+
+.version_link_div .version_info {
+	margin-top:20px; 
+	font-size: 10px; 
+	font-style: normal;
 }
 
 a.version_link {

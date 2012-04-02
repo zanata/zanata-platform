@@ -11,8 +11,11 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+import org.zanata.testng.TestMethodListener;
 
+@Listeners(TestMethodListener.class)
 @Test(groups = { "jpa-tests" })
 public abstract class ZanataJpaTest
 {

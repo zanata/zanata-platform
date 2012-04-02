@@ -20,15 +20,27 @@
  */
 package org.zanata.model;
 
-import java.io.Serializable;
+import static org.zanata.util.ZanataUtil.equal;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.AccessType;
+import org.hibernate.annotations.CollectionOfElements;
+import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.Type;
+import org.hibernate.validator.NotEmpty;
 
 @Entity
 @org.hibernate.annotations.Entity(mutable = false)
@@ -40,6 +52,7 @@ public class HTextFlowHistory extends HTextContainer implements Serializable, IT
    private Long id;
    private Integer revision;
    private HTextFlow textFlow;
+   private List<String> contents;
    private boolean obsolete;
 
    private Integer pos;
@@ -51,7 +64,7 @@ public class HTextFlowHistory extends HTextContainer implements Serializable, IT
    public HTextFlowHistory(HTextFlow textFlow)
    {
       this.revision = textFlow.getRevision();
-      setContents(textFlow.getContents());
+      this.contents = new ArrayList<String>(textFlow.getContents());
       this.textFlow = textFlow;
    }
 
@@ -82,7 +95,7 @@ public class HTextFlowHistory extends HTextContainer implements Serializable, IT
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "tf_id")
    public HTextFlow getTextFlow()
    {
@@ -92,6 +105,26 @@ public class HTextFlowHistory extends HTextContainer implements Serializable, IT
    public void setTextFlow(HTextFlow textFlow)
    {
       this.textFlow = textFlow;
+   }
+
+   @NotEmpty
+   @Type(type = "text")
+   @AccessType("field")
+   @CollectionOfElements
+   @JoinTable(name = "HTextFlowContentHistory", 
+      joinColumns = @JoinColumn(name = "text_flow_history_id")
+   )
+   @IndexColumn(name = "pos", nullable = false)
+   @Column(name = "content", nullable = false)
+   @Override
+   public List<String> getContents()
+   {
+      return contents;
+   }
+
+   public void setContents(List<String> contents)
+   {
+      this.contents = contents;
    }
 
    @Override
@@ -114,6 +147,20 @@ public class HTextFlowHistory extends HTextContainer implements Serializable, IT
    public void setObsolete(boolean obsolete)
    {
       this.obsolete = obsolete;
+   }
+   
+   /**
+    * Determines whether a Text Flow has changed when compared to this
+    * history object.
+    * Currently, this method only checks for changes in the revision number.
+    * 
+    * @param current The current Text Flow state. 
+    * @return True, if the revision number in the Text Flow has changed.
+    * False, otherwise.
+    */
+   public boolean hasChanged(HTextFlow current)
+   {
+      return !equal(current.getRevision(), this.getRevision());
    }
 
 }

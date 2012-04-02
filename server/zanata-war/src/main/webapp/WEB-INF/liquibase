@@ -7,7 +7,7 @@ SCRIPT_PATH=`dirname ${BASH_SOURCE[0]}`
 war=$SCRIPT_PATH/..
 
 if [ -z $JBOSS_HOME ]; then
-  echo "Error: JBOSS_HOME not set.  For instance: export JBOSS_HOME=/opt/jboss-ewp-5.0/jboss-as-web"
+  echo "Error: JBOSS_HOME not set.  For instance: export JBOSS_HOME=/opt/jboss-ewp-5.1/jboss-as-web"
   exit 1
 fi
 

@@ -31,6 +31,7 @@
 				</div>
         		<div id="header_top_right">
 					<s:fragment rendered="#{identity.loggedIn}">
+					   
 					   <h:outputText value="#{identity.username} " />
 					   
 					   <rich:spacer width="10px" /> 
@@ -52,6 +53,10 @@
 					
 					
 				</div>
+				
+				<h:graphicImage value="#{userSessionAction.getUserImageUrl(35)}" height="35" rendered="#{identity.loggedIn}"
+					styleClass="user_img"/>
+				
 				<div id="loading_top_right">
 					<a:status>
 					<f:facet name="start">

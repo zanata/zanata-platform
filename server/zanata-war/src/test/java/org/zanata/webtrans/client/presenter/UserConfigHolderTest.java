@@ -15,16 +15,17 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.Random;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import java.util.Random;
-
+@Test(groups = {"unit-tests"})
 public class UserConfigHolderTest
 {
 
