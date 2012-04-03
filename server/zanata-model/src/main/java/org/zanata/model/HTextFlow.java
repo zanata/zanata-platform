@@ -271,7 +271,7 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    @NotEmpty
    @Type(type = "text")
    @AccessType("field")
-   @CollectionOfElements
+   @CollectionOfElements(fetch = FetchType.EAGER)
    @JoinTable(name = "HTextFlowContent", 
       joinColumns = @JoinColumn(name = "text_flow_id")
    )
@@ -290,7 +290,7 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    {
       if (!equal(this.contents, contents))
       {
-         this.contents = contents;
+         this.contents = new ArrayList<String>(contents);
          updateWordCount();
          updateContentHash();
       }

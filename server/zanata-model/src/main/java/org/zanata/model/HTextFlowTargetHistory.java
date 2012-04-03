@@ -94,13 +94,13 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
 
    public HTextFlowTargetHistory(HTextFlowTarget target)
    {
-      this.contents = new ArrayList<String>(target.getContents()); 
       this.lastChanged = target.getLastChanged();
       this.lastModifiedBy = target.getLastModifiedBy();
       this.state = target.getState();
       this.textFlowRevision = target.getTextFlowRevision();
       this.textFlowTarget = target;
       this.versionNum = target.getVersionNum();
+      this.setContents(target.getContents()); 
    }
 
    @Id
@@ -145,7 +145,7 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
    @Override
    @Type(type = "text")
    @AccessType("field")
-   @CollectionOfElements
+   @CollectionOfElements(fetch = FetchType.EAGER)
    @JoinTable(name = "HTextFlowTargetContentHistory", 
       joinColumns = @JoinColumn(name = "text_flow_target_history_id")
    )
@@ -158,7 +158,7 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
 
    public void setContents(List<String> contents)
    {
-      this.contents = contents;
+      this.contents = new ArrayList<String>(contents);
    }
 
    public Date getLastChanged()

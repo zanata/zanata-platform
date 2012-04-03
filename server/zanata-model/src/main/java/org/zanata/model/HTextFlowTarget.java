@@ -237,7 +237,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    @Override
    @Type(type = "text")
    @AccessType("field")
-   @CollectionOfElements
+   @CollectionOfElements(fetch = FetchType.EAGER)
    @JoinTable(name = "HTextFlowTargetContent", 
       joinColumns = @JoinColumn(name = "text_flow_target_id")
    )
@@ -254,7 +254,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
 
    public void setContents(List<String> contents)
    {
-      this.contents = contents;
+      this.contents = new ArrayList<String>(contents);
    }
    
    public void setContents(String ... contents)

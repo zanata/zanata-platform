@@ -536,6 +536,13 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target div.TableEditorCell-Target
 	white-space: pre-wrap;
 }
 
+.translationContainer .tmTable pre {
+   border: 1px solid #E0E8EE;
+   margin-top: 2px;
+   padding: 2px;
+   margin-bottom: 2px;
+}
+
 .tmTable{
 	width: 100%;
 }
