@@ -240,6 +240,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void copySource(ToggleEditor editor)
    {
+      editor.setViewMode(ViewMode.EDIT);
       editor.setText(sourceContentsPresenter.getSelectedSource());
       editor.autoSize();
       validate(editor);

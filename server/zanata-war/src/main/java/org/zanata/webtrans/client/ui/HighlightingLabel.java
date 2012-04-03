@@ -56,10 +56,10 @@ public class HighlightingLabel extends HTML
 
    private void highlight()
    {
-      Element element = getElement().getFirstChildElement();
+      Element preElement = getElement().getFirstChildElement();
       String text = plainText == null ? "" : plainText.replaceAll("\n", "¶\n");
-      Highlighting.syntaxHighlight(text, element);
-      element.addClassName("cm-s-default");
+      Highlighting.syntaxHighlight(text, preElement);
+      preElement.addClassName("cm-s-default");
    }
 
    public void highlightSearch(String search)

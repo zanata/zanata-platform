@@ -34,6 +34,6 @@ public class SimilarityColumn<T extends SearchResultItem> extends TextColumn<T>
    @Override
    public String getValue(T object)
    {
-      return object.getSimilarityPercent() + "%";
+      return (int) object.getSimilarityPercent() + "%";
    }
 }

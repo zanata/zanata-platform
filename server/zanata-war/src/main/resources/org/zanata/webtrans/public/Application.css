@@ -69,6 +69,10 @@ Removes some of the styling on the page-level splitters
 	margin-bottom: 3px;
 }
 
+.gwt-Button {
+	outline:none;
+}
+
 .gwt-CollapsiblePanel { //
 	width: 220px;
 }
@@ -530,6 +534,13 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target div.TableEditorCell-Target
 	font-family: sans-serif;
 	word-wrap: break-word;
 	white-space: pre-wrap;
+}
+
+.translationContainer .tmTable pre {
+   border: 1px solid #E0E8EE;
+   margin-top: 2px;
+   padding: 2px;
+   margin-bottom: 2px;
 }
 
 .tmTable{

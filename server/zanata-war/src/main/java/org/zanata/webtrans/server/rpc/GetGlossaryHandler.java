@@ -116,7 +116,7 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
 
             String targetTermContent = targetTerm.getContent();
 
-            int percent = (int) (100 * LevenshteinUtil.getSimilarity(searchText, srcTermContent));
+            double percent = 100 * LevenshteinUtil.getSimilarity(searchText, srcTermContent);
 
             GlossaryKey key = new GlossaryKey(targetTermContent, srcTermContent);
             GlossaryResultItem item = matchesMap.get(key);
@@ -153,29 +153,20 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
          public int compare(GlossaryResultItem m1, GlossaryResultItem m2)
          {
             int result;
-            result = compare(m1.getSimilarityPercent(), m2.getSimilarityPercent());
+            result = Double.compare(m1.getSimilarityPercent(), m2.getSimilarityPercent());
             if (result != 0)
                return -result;
             result = compare(m1.getSource().length(), m2.getSource().length());
             if (result != 0)
                return result; // shorter matches are preferred, if similarity is
                               // the same
-            result = compare(m1.getRelevanceScore(), m2.getRelevanceScore());
+            result = Double.compare(m1.getRelevanceScore(), m2.getRelevanceScore());
             if (result != 0)
                return -result;
             return m1.getSource().compareTo(m2.getSource());
          }
 
          private int compare(int a, int b)
-         {
-            if (a < b)
-               return -1;
-            if (a > b)
-               return 1;
-            return 0;
-         }
-
-         private int compare(float a, float b)
          {
             if (a < b)
                return -1;

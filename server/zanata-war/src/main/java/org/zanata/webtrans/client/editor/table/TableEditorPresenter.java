@@ -20,26 +20,15 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.gen2.table.client.TableModel;
-import com.google.gwt.gen2.table.client.TableModel.Callback;
-import com.google.gwt.gen2.table.client.TableModelHelper.Request;
-import com.google.gwt.gen2.table.client.TableModelHelper.SerializableResponse;
-import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
-import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
-import com.google.gwt.gen2.table.event.client.PageChangeHandler;
-import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
+import static org.zanata.webtrans.client.editor.table.TableConstants.MAX_PAGE_ROW;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
 import org.zanata.common.EditState;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateAction;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateHandler;
@@ -91,10 +80,23 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.zanata.webtrans.client.editor.table.TableConstants.MAX_PAGE_ROW;
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.gen2.table.client.TableModel;
+import com.google.gwt.gen2.table.client.TableModel.Callback;
+import com.google.gwt.gen2.table.client.TableModelHelper.Request;
+import com.google.gwt.gen2.table.client.TableModelHelper.SerializableResponse;
+import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
+import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
+import com.google.gwt.gen2.table.event.client.PageChangeHandler;
+import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 
 public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.Display> implements HasPageNavigation
 {
@@ -1124,6 +1126,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
          sourceContentsPresenter.setSelectedSource(display.getSelectedRowNumber());
          display.getTargetCellEditor().savePendingChange(true);
+
+         display.gotoRow(display.getSelectedRowNumber(), true);
       }
    }
 
