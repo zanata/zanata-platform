@@ -69,6 +69,10 @@ Removes some of the styling on the page-level splitters
 	margin-bottom: 3px;
 }
 
+.gwt-Button {
+	outline:none;
+}
+
 .gwt-CollapsiblePanel { //
 	width: 220px;
 }
