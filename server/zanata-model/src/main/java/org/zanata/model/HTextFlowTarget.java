@@ -58,11 +58,13 @@ import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.NotNull;
 import org.zanata.common.ContentState;
 import org.zanata.common.HasContents;
+import org.zanata.hibernate.search.CaseSensitiveNgramAnalyzer;
 import org.zanata.hibernate.search.ContainingWorkspaceBridge;
 import org.zanata.hibernate.search.ContentStateBridge;
 import org.zanata.hibernate.search.DefaultNgramAnalyzer;
@@ -226,7 +228,10 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    //TODO add case sensitive content field to index.
    // This will require a different analyzer as DefaultNgramAnalyzer and its
    // parent and grandparent class are implicitly case insensitive.
-   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
+   @Fields({
+      @Field(name="content-nocase", index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class)),
+      @Field(name="content-case", index = Index.TOKENIZED, analyzer = @Analyzer(impl = CaseSensitiveNgramAnalyzer.class))
+   })
    public String getContent()
    {
       if( this.getContents().size() > 0 )

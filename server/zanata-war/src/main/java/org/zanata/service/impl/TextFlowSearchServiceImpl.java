@@ -22,11 +22,13 @@ package org.zanata.service.impl;
 
 import java.util.List;
 
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.util.Version;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -42,6 +44,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
+import org.zanata.hibernate.search.CaseSensitiveNgramAnalyzer;
 import org.zanata.hibernate.search.ContainingWorkspaceBridge;
 import org.zanata.hibernate.search.DefaultNgramAnalyzer;
 import org.zanata.model.HTextFlow;
@@ -103,10 +106,25 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          throw new ZanataServiceException("Failed to validate locale", e);
       }
 
-      //TODO add indexing and flag for case-sensitive search
+      //TODO add case-sensitive flag to FilterConstraints
 
-      org.apache.lucene.search.Query searchPhraseQuery;
-      QueryParser parser = new QueryParser(Version.LUCENE_29, "content", new DefaultNgramAnalyzer());
+      boolean caseSensitive = false;
+
+      String searchField;
+      Analyzer ngramAnalyzer;
+      if (caseSensitive)
+      {
+         searchField = "content-case";
+         ngramAnalyzer = new CaseSensitiveNgramAnalyzer();
+      }
+      else
+      {
+         searchField = "content-nocase";
+         ngramAnalyzer = new DefaultNgramAnalyzer();
+      }
+
+      Query searchPhraseQuery;
+      QueryParser parser = new QueryParser(Version.LUCENE_29, searchField, ngramAnalyzer);
       try
       {
          searchPhraseQuery = parser.parse("\"" + QueryParser.escape(constraints.getSearchString()) + "\"");
