@@ -23,13 +23,13 @@ package org.zanata.webtrans.client.editor.table;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.user.client.ui.Grid;
 import org.zanata.webtrans.client.ui.SourcePanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Widget;
 
 public class SourceContentsView extends Composite implements SourceContentsDisplay
