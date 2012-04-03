@@ -108,11 +108,9 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
 
       //TODO add case-sensitive flag to FilterConstraints
 
-      boolean caseSensitive = false;
-
       String searchField;
       Analyzer ngramAnalyzer;
-      if (caseSensitive)
+      if (constraints.isCaseSensitive())
       {
          searchField = "content-case";
          ngramAnalyzer = new CaseSensitiveNgramAnalyzer();

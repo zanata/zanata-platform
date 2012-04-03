@@ -142,7 +142,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             {
                display.setHighlightString(token.getProjectSearchText());
                display.getFilterTextBox().setValue(token.getProjectSearchText(), true);
-               dispatcher.execute(new GetProjectTransUnitLists(token.getProjectSearchText()), projectSearchCallback);
+               dispatcher.execute(new GetProjectTransUnitLists(token.getProjectSearchText(), token.getProjectSearchCaseSensitive()), projectSearchCallback);
             }
 
             currentHistoryState = token;

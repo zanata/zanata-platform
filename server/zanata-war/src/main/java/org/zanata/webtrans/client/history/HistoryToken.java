@@ -24,6 +24,9 @@ public class HistoryToken
    public static final String KEY_SEARCH_DOC_TEXT = "search";
    public static final String KEY_SEARCH_PROJECT_TEXT = "projectsearch";
 
+   public static final String KEY_SEARCH_PROJECT_CASE = "projectsearchcase";
+   public static final String VALUE_SEARCH_PROJECT_CASE_SENSITIVE = "sensitive";
+
    public static final String KEY_DOC_FILTER_TEXT = "filter";
 
    public static final String KEY_DOC_FILTER_OPTION = "filtertype";
@@ -35,6 +38,7 @@ public class HistoryToken
    private String docFilterText;
    private String searchText;
    private String projectSearchText;
+   private boolean projectSearchCaseSensitive;
 
    // defaults
    private static final MainView DEFAULT_VIEW = MainView.Documents;
@@ -43,6 +47,7 @@ public class HistoryToken
    private static final boolean DEFAULT_DOC_FILTER_EXACT = false;
    private static final String DEFAULT_SEARCH_TEXT = "";
    private static final String DEFAULT_PROJECT_SEARCH_TEXT = "";
+   private static final boolean DEFAULT_PROJECT_SEARCH_CASE_SENSITIVE = false;
 
    public HistoryToken()
    {
@@ -52,6 +57,7 @@ public class HistoryToken
       docFilterExact = DEFAULT_DOC_FILTER_EXACT;
       searchText = DEFAULT_SEARCH_TEXT;
       projectSearchText = DEFAULT_PROJECT_SEARCH_TEXT;
+      projectSearchCaseSensitive = DEFAULT_PROJECT_SEARCH_CASE_SENSITIVE;
    }
 
    /**
@@ -123,6 +129,16 @@ public class HistoryToken
          {
             historyToken.setProjectSearchText(value);
          }
+         else if (key.equals(KEY_SEARCH_PROJECT_CASE))
+         {
+            Log.info("found project search case key");
+            if (value.equals(VALUE_SEARCH_PROJECT_CASE_SENSITIVE))
+            {
+               historyToken.setProjectSearchCaseSensitive(true);
+               Log.info("found project search case sensitive value");
+            }
+            //else default used
+         }
          else
          {
             Log.info("unrecognised history key: " + key);
@@ -157,6 +173,16 @@ public class HistoryToken
          this.projectSearchText = DEFAULT_PROJECT_SEARCH_TEXT;
       else
          this.projectSearchText = value;
+   }
+
+   public boolean getProjectSearchCaseSensitive()
+   {
+      return this.projectSearchCaseSensitive;
+   }
+
+   public void setProjectSearchCaseSensitive(boolean caseSensitive)
+   {
+      this.projectSearchCaseSensitive = caseSensitive;
    }
 
    public String getDocumentPath()
@@ -270,6 +296,16 @@ public class HistoryToken
          else
             token += PAIR_SEPARATOR;
          token += KEY_SEARCH_PROJECT_TEXT + DELIMITER_K_V + projectSearchText;
+      }
+
+      if (projectSearchCaseSensitive != DEFAULT_PROJECT_SEARCH_CASE_SENSITIVE)
+      {
+         if (first)
+            first = false;
+         else
+            token += PAIR_SEPARATOR;
+         // sensitive is the only non-default filter value
+         token += KEY_SEARCH_PROJECT_CASE + DELIMITER_K_V + VALUE_SEARCH_PROJECT_CASE_SENSITIVE;
       }
 
       if (!searchText.equals(DEFAULT_SEARCH_TEXT))

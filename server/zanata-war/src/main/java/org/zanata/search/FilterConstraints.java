@@ -34,6 +34,8 @@ public class FilterConstraints
 {
    private String searchString;
 
+   private boolean isCaseSensitive;
+
    private boolean searchInSource;
    private boolean searchInTarget;
 
@@ -41,19 +43,20 @@ public class FilterConstraints
    private boolean includeFuzzy;
    private boolean includeApproved;
 
-   private FilterConstraints(String searchString, boolean searchInSource, boolean searchInTarget, boolean includeNew, boolean includeFuzzy, boolean includeApproved)
+   private FilterConstraints(String searchString, boolean caseSensitive, boolean searchInSource, boolean searchInTarget, boolean includeNew, boolean includeFuzzy, boolean includeApproved)
    {
+      this.searchString = searchString;
+      this.isCaseSensitive = caseSensitive;
       this.searchInSource = searchInSource;
       this.searchInTarget = searchInTarget;
       this.includeNew = includeNew;
       this.includeFuzzy = includeFuzzy;
       this.includeApproved = includeApproved;
-      this.searchString = searchString;
    }
 
    /**
-    * Create a chainable filter constraints that specifies a search in both
-    * source and target, including all content states.
+    * Create a chainable filter constraints that specifies a case-insensitive
+    * search in both source and target, including all content states.
     * 
     * Use chainable methods to alter these constraints
     * 
@@ -62,20 +65,39 @@ public class FilterConstraints
     */
    public static FilterConstraints filterBy(String searchString)
    {
-      return new FilterConstraints(searchString, true, true, true, true, true);
+      return new FilterConstraints(searchString, false, true, true, true, true, true);
    }
 
    public static FilterConstraints keepAll()
    {
-      return new FilterConstraints("", true, true, true, true, true);
+      return new FilterConstraints("", false, true, true, true, true, true);
    }
    
    public static FilterConstraints keepNone()
    {
-      return new FilterConstraints("", false, false, false, false, false);
+      return new FilterConstraints("", false, false, false, false, false, false);
    }
 
+
    //chainable setters
+
+   public FilterConstraints ignoreCase()
+   {
+      isCaseSensitive = false;
+      return this;
+   }
+
+   public FilterConstraints matchCase()
+   {
+      isCaseSensitive = true;
+      return this;
+   }
+
+   public FilterConstraints caseSensitive(boolean caseSensitive)
+   {
+      this.isCaseSensitive = caseSensitive;
+      return this;
+   }
 
    public FilterConstraints filterTarget()
    {
@@ -143,6 +165,11 @@ public class FilterConstraints
    public String getSearchString()
    {
       return searchString;
+   }
+
+   public boolean isCaseSensitive()
+   {
+      return this.isCaseSensitive;
    }
 
    public boolean isSearchInSource()
