@@ -6,10 +6,12 @@
 	xmlns:a="http://richfaces.org/a4j"
 	xmlns:rich="http://richfaces.org/rich">
 	
-	<a:status for="#{regionId}" startStyleClass="loading_frame">
-		<f:facet name="start">
-			<h:graphicImage value="/public-img/loading-lg.gif" height="32" width="32" styleClass="loading_image" />
-		</f:facet>
-	</a:status>
+	<div class="loading_parent">
+		<a:status for="#{regionId}" startStyleClass="loading_frame">
+			<f:facet name="start">
+				<h:graphicImage value="/public-img/loading-lg.gif" height="32" width="32" styleClass="loading_image" />
+			</f:facet>
+		</a:status>
+	</div>
 	
 </ui:composition>
