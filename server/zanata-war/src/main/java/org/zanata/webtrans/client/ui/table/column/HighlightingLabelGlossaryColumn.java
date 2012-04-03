@@ -21,24 +21,20 @@
 package org.zanata.webtrans.client.ui.table.column;
 
 import org.zanata.webtrans.client.ui.HighlightingLabel;
-import org.zanata.webtrans.client.ui.table.cell.StaticWidgetCell;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
-
-import com.google.gwt.user.cellview.client.Column;
 
 /**
  * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class HighlightingLabelGlossaryColumn extends Column<GlossaryResultItem, HighlightingLabel>
+public class HighlightingLabelGlossaryColumn extends StaticWidgetColumn<GlossaryResultItem, HighlightingLabel>
 {
    private final boolean displaySource;
    private final boolean displayTarget;
 
    public HighlightingLabelGlossaryColumn(boolean displaySource, boolean displayTarget)
    {
-      super(new StaticWidgetCell<HighlightingLabel>());
       this.displaySource = displaySource;
       this.displayTarget = displayTarget;
    }

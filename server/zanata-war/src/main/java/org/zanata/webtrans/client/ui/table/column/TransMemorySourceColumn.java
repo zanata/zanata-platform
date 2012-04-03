@@ -24,20 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.webtrans.client.ui.DiffMatchPatchLabel;
-import org.zanata.webtrans.client.ui.table.cell.StaticWidgetCell;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 
-import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class TransMemorySourceColumn extends Column<TransMemoryResultItem, VerticalPanel>
+public class TransMemorySourceColumn extends StaticWidgetColumn<TransMemoryResultItem, VerticalPanel>
 {
    private List<String> queries;
-
-   public TransMemorySourceColumn()
-   {
-      super(new StaticWidgetCell<VerticalPanel>());
-   }
 
    public void setQueries(List<String> queries)
    {
