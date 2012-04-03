@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  * 
@@ -20,21 +20,42 @@
  */
 package org.zanata.hibernate.search;
 
-import java.util.Locale;
+import java.io.Reader;
 
-import net.sf.okapi.lib.search.lucene.analysis.NgramAnalyzer;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.ngram.NGramTokenizer;
 
-public class DefaultNgramAnalyzer extends NgramAnalyzer
+public class DefaultNgramAnalyzer extends Analyzer
 {
+
+   private int ngramLength = 3;
+
+   private boolean ignoreCase = true;
 
    public DefaultNgramAnalyzer()
    {
-      super(Locale.ENGLISH, 3);
    }
 
    public DefaultNgramAnalyzer(int ngramLength)
    {
-      super(Locale.ENGLISH, ngramLength);
+      this.ngramLength = ngramLength;
+   }
+
+   @Override
+   public TokenStream tokenStream(String fieldName, Reader reader)
+   {
+      TokenStream tokenStream;
+      NGramTokenizer ngramTokenizer = new NGramTokenizer(reader, ngramLength, ngramLength);
+      if (ignoreCase)
+      {
+         tokenStream = new ULowerCaseFilter(ngramTokenizer);
+      }
+      else
+      {
+         tokenStream = ngramTokenizer;
+      }
+      return tokenStream;
    }
 
 }
