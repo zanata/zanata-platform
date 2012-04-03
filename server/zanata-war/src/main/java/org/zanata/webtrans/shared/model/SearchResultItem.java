@@ -11,15 +11,15 @@ public abstract class SearchResultItem implements Serializable, IsSerializable
    private static final long serialVersionUID = -7381018377520206564L;
 
    private ArrayList<Long> sourceIdList = new ArrayList<Long>();
-   private float relevanceScore;
-   private int similarityPercent;
+   private double relevanceScore;
+   private double similarityPercent;
 
    // for GWT
    protected SearchResultItem()
    {
    }
 
-   protected SearchResultItem(float relevanceScore, int similarityPercent)
+   protected SearchResultItem(double relevanceScore, double similarityPercent)
    {
       this.relevanceScore = relevanceScore;
       this.similarityPercent = similarityPercent;
@@ -35,24 +35,14 @@ public abstract class SearchResultItem implements Serializable, IsSerializable
       this.sourceIdList.add(sourceId);
    }
 
-   public void setRelevanceScore(float relevanceScore)
-   {
-      this.relevanceScore = relevanceScore;
-   }
-
-   public float getRelevanceScore()
+   public double getRelevanceScore()
    {
       return relevanceScore;
    }
 
-   public int getSimilarityPercent()
+   public double getSimilarityPercent()
    {
       return similarityPercent;
-   }
-
-   public void setSimilarityPercent(int similarityPercent)
-   {
-      this.similarityPercent = similarityPercent;
    }
 
 }

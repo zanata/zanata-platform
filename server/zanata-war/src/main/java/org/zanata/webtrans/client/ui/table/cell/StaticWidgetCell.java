@@ -20,26 +20,37 @@
  */
 package org.zanata.webtrans.client.ui.table.cell;
 
-import org.zanata.webtrans.client.ui.HighlightingLabel;
+import java.util.Set;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class HighlightingLabelCell extends AbstractCell<HighlightingLabel>
+public class StaticWidgetCell<W extends UIObject> extends AbstractCell<W>
 {
 
-   public HighlightingLabelCell()
+   public StaticWidgetCell()
    {
       super();
    }
 
+   public StaticWidgetCell(Set<String> consumedEvents)
+   {
+      super(consumedEvents);
+   }
+
+   public StaticWidgetCell(String... consumedEvents)
+   {
+      super(consumedEvents);
+   }
+
    @Override
-   public void render(Context context, HighlightingLabel value, SafeHtmlBuilder sb)
+   public void render(Context context, W value, SafeHtmlBuilder sb)
    {
       sb.appendHtmlConstant(value.getElement().getString());
    }

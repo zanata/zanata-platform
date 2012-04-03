@@ -31,10 +31,10 @@ public class DummyGetTranslationMemoryCommand implements Command
       source.add("<s>source1</s>");
       ArrayList<String> target = new ArrayList<String>();
       target.add("<tr> &lt;target3</tr>");
-      matches.add(new TransMemoryResultItem(source, target, new Long(3), 85));
-      matches.add(new TransMemoryResultItem(source, target, new Long(3), 85));
-      matches.add(new TransMemoryResultItem(source, target, new Long(3), 85));
-      matches.add(new TransMemoryResultItem(source, target, new Long(3), 85));
+      matches.add(new TransMemoryResultItem(source, target, 3, 85));
+      matches.add(new TransMemoryResultItem(source, target, 3, 85));
+      matches.add(new TransMemoryResultItem(source, target, 3, 85));
+      matches.add(new TransMemoryResultItem(source, target, 3, 85));
       callback.onSuccess(new GetTranslationMemoryResult(action, matches));
       Log.info("EXIT DummyGetTranslationMemoryCommand.execute()");
    }

@@ -21,7 +21,7 @@
 package org.zanata.webtrans.client.ui.table.column;
 
 import org.zanata.webtrans.client.ui.HighlightingLabel;
-import org.zanata.webtrans.client.ui.table.cell.HighlightingLabelCell;
+import org.zanata.webtrans.client.ui.table.cell.StaticWidgetCell;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 
 import com.google.gwt.user.cellview.client.Column;
@@ -38,7 +38,7 @@ public class HighlightingLabelGlossaryColumn extends Column<GlossaryResultItem, 
 
    public HighlightingLabelGlossaryColumn(boolean displaySource, boolean displayTarget)
    {
-      super(new HighlightingLabelCell());
+      super(new StaticWidgetCell<HighlightingLabel>());
       this.displaySource = displaySource;
       this.displayTarget = displayTarget;
    }
