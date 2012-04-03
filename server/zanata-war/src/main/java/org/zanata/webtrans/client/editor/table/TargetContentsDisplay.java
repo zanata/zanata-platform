@@ -21,6 +21,7 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.webtrans.client.ui.ToggleEditor;
 
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 
 public interface TargetContentsDisplay extends WidgetDisplay
