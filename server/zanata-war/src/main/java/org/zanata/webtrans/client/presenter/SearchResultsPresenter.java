@@ -55,6 +55,11 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
 
+/**
+ * View for project-wide search and replace within textflow targets
+ * 
+ * @author David Mason, damason@redhat.com
+ */
 public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresenter.Display>
 {
 
@@ -73,6 +78,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       HasValue<String> getFilterTextBox();
 
       HasValue<String> getReplacementTextBox();
+
+      HasValue<Boolean> getCaseSensitiveChk();
 
       void clearAll();
 
@@ -127,6 +134,21 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
+      registerHandler(display.getCaseSensitiveChk().addValueChangeHandler(new ValueChangeHandler<Boolean>()
+      {
+
+         @Override
+         public void onValueChange(ValueChangeEvent<Boolean> event)
+         {
+            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+            if (event.getValue() != token.getProjectSearchCaseSensitive())
+            {
+               token.setProjectSearchCaseSensitive(event.getValue());
+               history.newItem(token.toTokenString());
+            }
+         }
+      }));
+
       history.addValueChangeHandler(new ValueChangeHandler<String>()
       {
 
@@ -138,11 +160,22 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
             HistoryToken token = HistoryToken.fromTokenString(event.getValue());
 
-            if (!token.getProjectSearchText().equals(currentHistoryState.getProjectSearchText()))
+            boolean caseSensitivityChanged = token.getProjectSearchCaseSensitive() != currentHistoryState.getProjectSearchCaseSensitive();
+            boolean searchTextChanged = !token.getProjectSearchText().equals(currentHistoryState.getProjectSearchText());
+            if (caseSensitivityChanged ||  searchTextChanged)
             {
                display.setHighlightString(token.getProjectSearchText());
                display.getFilterTextBox().setValue(token.getProjectSearchText(), true);
-               dispatcher.execute(new GetProjectTransUnitLists(token.getProjectSearchText(), token.getProjectSearchCaseSensitive()), projectSearchCallback);
+               display.getCaseSensitiveChk().setValue(token.getProjectSearchCaseSensitive(), false);
+
+               documentDataProviders.clear();
+               display.clearAll();
+
+               if (!token.getProjectSearchText().isEmpty())
+               {
+                  //TODO show loading indicator
+                  dispatcher.execute(new GetProjectTransUnitLists(token.getProjectSearchText(), token.getProjectSearchCaseSensitive()), projectSearchCallback);
+               }
             }
 
             currentHistoryState = token;

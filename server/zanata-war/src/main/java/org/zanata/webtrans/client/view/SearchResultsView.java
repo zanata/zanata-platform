@@ -44,6 +44,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
@@ -54,6 +55,11 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.HasData;
 import com.google.inject.Inject;
 
+/**
+ * UI for project-wide search & replace
+ * 
+ * @author David Mason, damason@redhat.com
+ */
 public class SearchResultsView extends Composite implements SearchResultsPresenter.Display
 {
 
@@ -71,6 +77,9 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
 
    @UiField
    Label testLabel;
+
+   @UiField
+   CheckBox caseSensitiveChk;
 
    private String highlightString;
 
@@ -234,6 +243,12 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
          return tu;
       }
 
+   }
+
+   @Override
+   public HasValue<Boolean> getCaseSensitiveChk()
+   {
+      return caseSensitiveChk;
    }
 
 }
