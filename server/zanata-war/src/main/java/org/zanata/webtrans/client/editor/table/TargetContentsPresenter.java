@@ -259,7 +259,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          {
             Log.debug("current display:" + currentDisplay);
             currentEditorIndex = editor.getIndex();
-            currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
+            if (currentDisplay != null)
+            {
+               currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
+            }
          }
       });
 
@@ -276,7 +279,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       validationMessagePanel.clear();
       editor.addValidationMessagePanel(validationMessagePanel);
    }
-   
+
    // TODO InlineTargetCellEditor is not managed by gin. Therefore this can't be
    // injected
    public void setCellEditor(TransUnitsEditModel cellEditor)
