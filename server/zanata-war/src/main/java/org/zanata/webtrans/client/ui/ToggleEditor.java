@@ -22,11 +22,11 @@ public interface ToggleEditor extends IsWidget, HasText
 
    void showCopySourceButton(boolean displayButtons);
 
-   void setAsLastEditor();
-
    void shrinkSize(boolean forceShrink);
 
    void growSize();
+
+   void setFocus();
 
    static enum ViewMode
    {

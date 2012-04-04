@@ -18,10 +18,12 @@ package org.zanata.webtrans.client.editor.table;
 import java.util.ArrayList;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PushButton;
@@ -69,15 +71,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    }
 
    @Override
-   public void openEditorAndCloseOthers(int currentEditor)
-   {
-      setToView();
-      ToggleEditor editor = editors.get(currentEditor);
-      editor.setViewMode(ToggleEditor.ViewMode.EDIT);
-      buttons.setVisible(true);
-   }
-
-   @Override
    public void setSaveButtonTitle(String title)
    {
       Preconditions.checkState(editors.size() > 0);
@@ -97,6 +90,28 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       {
          editor.showCopySourceButton(displayButtons);
       }
+   }
+
+   @Override
+   public void openEditors()
+   {
+      for (ToggleEditor editor : editors)
+      {
+         editor.setViewMode(ToggleEditor.ViewMode.EDIT);
+      }
+   }
+
+   @Override
+   public void focusEditor(final int currentEditorIndex)
+   {
+      Scheduler.get().scheduleDeferred(new Command()
+      {
+         @Override
+         public void execute()
+         {
+            editors.get(currentEditorIndex).setFocus();
+         }
+      });
    }
 
    @Override
@@ -166,7 +181,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       {
          editor.setViewMode(ToggleEditor.ViewMode.VIEW);
       }
-      buttons.setVisible(false);
    }
 
    @Override

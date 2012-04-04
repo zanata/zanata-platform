@@ -11,7 +11,6 @@ import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -188,12 +187,6 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
       listener.copySource(this);
    }
 
-//   @UiHandler("validateButton")
-   public void onValidation(ClickEvent event)
-   {
-      fireValidationEvent();
-   }
-
    @UiHandler("label")
    public void onLabelClick(MouseDownEvent event)
    {
@@ -218,18 +211,18 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
    {
       label.setVisible(viewMode == ViewMode.VIEW);
       textArea.setVisible(viewMode == ViewMode.EDIT);
-      if (viewMode == ViewMode.EDIT)
-      {
-         autoSize();
-         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand()
-         {
-            @Override
-            public void execute()
-            {
-               textArea.setFocus(true);
-            }
-         });
-      }
+//      if (viewMode == ViewMode.EDIT)
+//      {
+//         autoSize();
+//         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand()
+//         {
+//            @Override
+//            public void execute()
+//            {
+//               textArea.setFocus(true);
+//            }
+//         });
+//      }
    }
 
    @Override
@@ -324,6 +317,12 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
    }
 
    @Override
+   public void setFocus()
+   {
+      textArea.setFocus(true);
+   }
+
+   @Override
    public void addValidationMessagePanel(IsWidget validationMessagePanel)
    {
       validationMessagePanelContainer.clear();
@@ -355,11 +354,6 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
    public void showCopySourceButton(boolean displayButtons)
    {
       copySourceButton.setVisible(displayButtons);
-   }
-
-   @Override
-   public void setAsLastEditor()
-   {
    }
 
    @Override

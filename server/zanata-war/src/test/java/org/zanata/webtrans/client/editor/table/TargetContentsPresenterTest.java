@@ -116,6 +116,7 @@ public class TargetContentsPresenterTest
       presenter.setToViewMode();
 
       verify(display1).setToView();
+      verify(display1).showButtons(false);
       verifyZeroInteractions(display2);
    }
 
@@ -214,7 +215,7 @@ public class TargetContentsPresenterTest
 
       verify(scheduler).scheduleDeferred(commandCaptor.capture());
       commandCaptor.getValue().execute();
-      verify(display1).openEditorAndCloseOthers(99);
+//      verify(display1).openEditorAndCloseOthers(99);
    }
 
    @Test

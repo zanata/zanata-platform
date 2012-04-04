@@ -113,6 +113,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       if (currentDisplay != null)
       {
          currentDisplay.setToView();
+         currentDisplay.showButtons(false);
       }
    }
 
@@ -120,6 +121,12 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
+
+      currentDisplay.openEditors();
+      if (configHolder.isDisplayButtons())
+      {
+         currentDisplay.showButtons(true);
+      }
 
       if (editorIndex != NO_OPEN_EDITOR)
       {
@@ -138,8 +145,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       if (currentEditorIndex != NO_OPEN_EDITOR && currentEditorIndex < currentEditors.size())
       {
          validationMessagePanel.clear();
-         currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
-         Log.debug("show editors at row:" + rowIndex + " current editor:" + currentEditorIndex);
+         currentDisplay.focusEditor(currentEditorIndex);
+         Log.info("show editors at row:" + rowIndex + " current editor:" + currentEditorIndex);
       }
    }
 
@@ -186,7 +193,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       if (currentEditorIndex + 1 < currentEditors.size())
       {
-         currentDisplay.openEditorAndCloseOthers(currentEditorIndex + 1);
+         currentDisplay.focusEditor(currentEditorIndex + 1);
          currentEditorIndex++;
       }
       else
@@ -201,7 +208,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       if (currentEditorIndex - 1 >= 0)
       {
-         currentDisplay.openEditorAndCloseOthers(currentEditorIndex - 1);
+         currentDisplay.focusEditor(currentEditorIndex - 1);
          currentEditorIndex--;
       }
       else
@@ -265,7 +272,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
             currentEditorIndex = editor.getIndex();
             if (currentDisplay != null)
             {
-               currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
+               currentDisplay.focusEditor(currentEditorIndex);
             }
          }
       });
