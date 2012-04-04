@@ -227,10 +227,10 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
              * keyup is used because TargetCellEditor will intercept the event
              * again (Firefox) See textArea.addKeyDownHandler@InlineTargetCellEditor
              **/
-            if (display.asWidget().isVisible())
+            if (display.asWidget().isVisible() && (event.getNativeEvent().getType().equals("keyup") || event.getNativeEvent().getType().equals("keydown")))
             {
                checkKey.init(event.getNativeEvent());
-
+               
                if (translationEditorPresenter.getSelectedTransUnit() != null && checkKey.isCopyFromTransMem())
                {
                   int index;

@@ -340,7 +340,7 @@ a.action_link:hover {
  * wish to use the loading.xhtml component 
  */
 .loading_parent {
-	position:relative;
+	position: relative;
 }
 
 .loading_frame {

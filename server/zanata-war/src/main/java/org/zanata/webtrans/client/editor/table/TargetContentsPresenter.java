@@ -35,8 +35,6 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEventHandler;
 import org.zanata.webtrans.client.events.RunValidationEvent;
-import org.zanata.webtrans.client.events.UpdateValidationWarningsEvent;
-import org.zanata.webtrans.client.events.UpdateValidationWarningsEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
@@ -58,7 +56,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class TargetContentsPresenter implements TargetContentsDisplay.Listener, UserConfigChangeHandler, UpdateValidationWarningsEventHandler, RequestValidationEventHandler, InsertStringInEditorHandler, CopyDataToEditorHandler
+public class TargetContentsPresenter implements TargetContentsDisplay.Listener, UserConfigChangeHandler, RequestValidationEventHandler, InsertStringInEditorHandler, CopyDataToEditorHandler
 {
    private static final int NO_OPEN_EDITOR = -1;
    private static final int LAST_INDEX = -2;
@@ -95,7 +93,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
       checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       eventBus.addHandler(UserConfigChangeEvent.getType(), this);
-      eventBus.addHandler(UpdateValidationWarningsEvent.getType(), this);
       eventBus.addHandler(RequestValidationEvent.getType(), this);
       eventBus.addHandler(InsertStringInEditorEvent.getType(), this);
       eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
@@ -179,7 +176,9 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void validate(ToggleEditor editor)
    {
-      eventBus.fireEvent(new RunValidationEvent(sourceContentsPresenter.getSelectedSource(), editor.getText(), false));
+      RunValidationEvent event = new RunValidationEvent(sourceContentsPresenter.getSelectedSource(), editor.getText(), false);
+      event.addWidget(validationMessagePanel);
+      eventBus.fireEvent(event);
    }
 
    @Override
@@ -264,7 +263,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          {
             Log.debug("current display:" + currentDisplay);
             currentEditorIndex = editor.getIndex();
-            currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
+            if (currentDisplay != null)
+            {
+               currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
+            }
          }
       });
 
@@ -281,7 +283,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       validationMessagePanel.clear();
       editor.addValidationMessagePanel(validationMessagePanel);
    }
-   
+
    // TODO InlineTargetCellEditor is not managed by gin. Therefore this can't be
    // injected
    public void setCellEditor(TransUnitsEditModel cellEditor)
@@ -301,17 +303,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    }
 
    @Override
-   public void onUpdate(UpdateValidationWarningsEvent event)
-   {
-      validationMessagePanel.setContent(event.getErrors());
-   }
-
-   @Override
    public void onRequestValidation(RequestValidationEvent event)
    {
       if (isEditing())
       {
-         eventBus.fireEvent(new RunValidationEvent(sourceContentsPresenter.getSelectedSource(), getCurrentEditor().getText(), false));
+         validate(getCurrentEditor());
       }
    }
 

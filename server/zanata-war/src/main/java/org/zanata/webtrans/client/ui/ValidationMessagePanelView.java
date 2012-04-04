@@ -96,27 +96,6 @@ public class ValidationMessagePanelView extends Composite implements ValidationM
       setHeaderText(messages.validationWarningsHeading(0));
    }
 
-   @Override
-   public void setContent(List<String> errors)
-   {
-      this.errors = errors;
-      if (errors == null || errors.isEmpty())
-      {
-         clear();
-         return;
-      }
-      contentPanel.clear();
-      contents.clear();
-
-      for (String error : errors)
-      {
-         contents.add(new Label(error));
-      }
-      contentPanel.add(contents);
-      setHeaderText(messages.validationWarningsHeading(errors.size()));
-      expand();
-   }
-
    @UiHandler("headerLabel")
    public void onHeaderLabelClick(ClickEvent event)
    {
@@ -163,6 +142,27 @@ public class ValidationMessagePanelView extends Composite implements ValidationM
    public List<String> getErrors()
    {
       return errors;
+   }
+
+   @Override
+   public void updateValidationWarning(List<String> errors)
+   {
+      this.errors = errors;
+      if (errors == null || errors.isEmpty())
+      {
+         clear();
+         return;
+      }
+      contentPanel.clear();
+      contents.clear();
+
+      for (String error : errors)
+      {
+         contents.add(new Label(error));
+      }
+      contentPanel.add(contents);
+      setHeaderText(messages.validationWarningsHeading(errors.size()));
+      expand();
    }
 
 }

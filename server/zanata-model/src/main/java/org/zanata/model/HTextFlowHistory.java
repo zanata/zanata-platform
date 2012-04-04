@@ -64,8 +64,8 @@ public class HTextFlowHistory extends HTextContainer implements Serializable, IT
    public HTextFlowHistory(HTextFlow textFlow)
    {
       this.revision = textFlow.getRevision();
-      this.contents = new ArrayList<String>(textFlow.getContents());
       this.textFlow = textFlow;
+      this.setContents(textFlow.getContents());
    }
 
    @Id
@@ -110,7 +110,7 @@ public class HTextFlowHistory extends HTextContainer implements Serializable, IT
    @NotEmpty
    @Type(type = "text")
    @AccessType("field")
-   @CollectionOfElements
+   @CollectionOfElements(fetch = FetchType.EAGER)
    @JoinTable(name = "HTextFlowContentHistory", 
       joinColumns = @JoinColumn(name = "text_flow_history_id")
    )
@@ -124,7 +124,7 @@ public class HTextFlowHistory extends HTextContainer implements Serializable, IT
 
    public void setContents(List<String> contents)
    {
-      this.contents = contents;
+      this.contents = new ArrayList<String>(contents);
    }
 
    @Override

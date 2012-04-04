@@ -1,8 +1,11 @@
 package org.zanata.webtrans.client.ui;
 
+import java.util.List;
+
 import org.zanata.webtrans.client.editor.table.EditorTextArea;
 import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
+import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 
 import com.google.common.base.Objects;
@@ -26,7 +29,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 
-public class Editor extends Composite implements ToggleEditor
+public class Editor extends Composite implements ToggleEditor, HasUpdateValidationWarning
 {
    private String findMessage;
    private TargetContentsDisplay.Listener listener;
@@ -382,5 +385,11 @@ public class Editor extends Composite implements ToggleEditor
    public void setAsLastEditor()
    {
       saveButton.getUpFace().setImage(new Image(images.cellEditorAccept()));
+   }
+
+   @Override
+   public void updateValidationWarning(List<String> errors)
+   {
+      // TODO update label css is errors is empty
    }
 }
