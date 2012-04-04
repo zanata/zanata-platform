@@ -11,7 +11,9 @@ import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -156,6 +158,13 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
    }
 
    @UiHandler("textArea")
+   public void onTextAreaFocus(FocusEvent event)
+   {
+      listener.setValidationMessagePanel(this);
+      fireValidationEvent();
+   }
+
+   @UiHandler("textArea")
    public void onKeyDownTextArea(KeyDownEvent event)
    {
       // used to determine whether user is still typing
@@ -211,8 +220,6 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
       textArea.setVisible(viewMode == ViewMode.EDIT);
       if (viewMode == ViewMode.EDIT)
       {
-         listener.setValidationMessagePanel(this);
-         fireValidationEvent();
          autoSize();
          Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand()
          {
@@ -222,10 +229,6 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
                textArea.setFocus(true);
             }
          });
-      }
-      else
-      {
-         removeValidationMessagePanel();
       }
    }
 
@@ -325,12 +328,6 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
    {
       validationMessagePanelContainer.clear();
       validationMessagePanelContainer.add(validationMessagePanel);
-   }
-
-   @Override
-   public void removeValidationMessagePanel()
-   {
-      validationMessagePanelContainer.clear();
    }
 
    @Override
