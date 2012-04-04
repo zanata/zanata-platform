@@ -15,10 +15,16 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -188,7 +194,7 @@ public class TargetContentsPresenterTest
 
       presenter.copySource(editor);
 
-      verify(editor).setText("source");
+      verify(editor).setTextAndValidate("source", true);
       verify(editor).setViewMode(ToggleEditor.ViewMode.EDIT);
       verify(display1).showButtons(true);
       verify(editor).autoSize();
@@ -360,9 +366,9 @@ public class TargetContentsPresenterTest
       // TODO update for plurals
       presenter.onTransMemoryCopy(new CopyDataToEditorEvent(Arrays.asList("target")));
 
-      verify(editor).setText("target");
+      verify(editor).setTextAndValidate("target", true);
       ArgumentCaptor<GwtEvent> eventArgumentCaptor = ArgumentCaptor.forClass(GwtEvent.class);
-      verify(eventBus, times(2)).fireEvent(eventArgumentCaptor.capture());
+      verify(eventBus, times(1)).fireEvent(eventArgumentCaptor.capture());
       NotificationEvent notificationEvent = findEvent(eventArgumentCaptor, NotificationEvent.class);
       MatcherAssert.assertThat(notificationEvent.getMessage(), Matchers.equalTo("copied"));
       RunValidationEvent runValidationEvent = findEvent(eventArgumentCaptor, RunValidationEvent.class);

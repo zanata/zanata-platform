@@ -237,7 +237,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          {
             content = targets.get(editor.getIndex());
          }
-         editor.setText(content);
+         editor.setTextAndValidate(content, true);
       }
    }
 
@@ -246,9 +246,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       editor.setViewMode(ViewMode.EDIT);
       currentDisplay.showButtons(true);
-      editor.setText(sourceContentsPresenter.getSelectedSource());
+      editor.setTextAndValidate(sourceContentsPresenter.getSelectedSource(), true);
       editor.autoSize();
-      validate(editor);
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
    }
 
@@ -342,8 +341,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          for (int i = 0; i < contents.size(); i++)
          {
             ToggleEditor editor = currentEditors.get(i);
-            editor.setText(contents.get(i));
-            validate(editor);
+            editor.setTextAndValidate(contents.get(i), true);
          }
       }
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));

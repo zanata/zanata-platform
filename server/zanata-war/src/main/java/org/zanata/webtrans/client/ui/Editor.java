@@ -61,8 +61,7 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
    @UiField
    TableResources images;
 
-   @UiField
-   NavigationMessages messages;
+   NavigationMessages messages = GWT.create(NavigationMessages.class);
 
    @UiField
    EditorTextArea textArea;
@@ -227,6 +226,16 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
       else
       {
          removeValidationMessagePanel();
+      }
+   }
+
+   @Override
+   public void setTextAndValidate(String text, boolean isRunValidate)
+   {
+      setText(text);
+      if (isRunValidate)
+      {
+         fireValidationEvent();
       }
    }
 

@@ -5,7 +5,6 @@
     xmlns:tui="urn:import:org.zanata.webtrans.client.editor.table"
         >
 	
-	<ui:with field="messages" type="org.zanata.webtrans.client.resources.NavigationMessages" />
 	<ui:with field="images" type="org.zanata.webtrans.client.editor.table.TableResources" />
 	
 	<ui:style>

@@ -2,9 +2,10 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-	<ui:with field="images"
-		type="org.zanata.webtrans.client.editor.table.TableResources" />
+	<ui:with field="images" type="org.zanata.webtrans.client.editor.table.TableResources" />
 
+    <ui:with field="messages" type="org.zanata.webtrans.client.resources.TableEditorMessages" />
+	
 	<ui:style
 		type="org.zanata.webtrans.client.ui.ValidationMessagePanelView.Styles">
 			.container {
@@ -28,8 +29,7 @@
 				background: #F3F2F2;
 				border: 1px solid #E0E8EE;
 				color: #686868;
-				
-				width: 100%
+				width: 100%;
 			}
 			
 			.content {
@@ -45,8 +45,7 @@
 			}
 		</ui:style>
 
-	<ui:with field="messages"
-		type="org.zanata.webtrans.client.resources.TableEditorMessages" />
+	
 
 	<g:VerticalPanel styleName="{style.container}">
 		<g:HorizontalPanel styleName="{style.header}">
