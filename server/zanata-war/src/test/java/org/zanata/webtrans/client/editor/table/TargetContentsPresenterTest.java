@@ -15,18 +15,13 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.inject.Provider;
 
@@ -367,7 +362,8 @@ public class TargetContentsPresenterTest
       when(tableEditorMessages.notifyCopied()).thenReturn("copied");
       givenCurrentEditorAs(editor);
 
-      presenter.onTransMemoryCopy(new CopyDataToEditorEvent("source", "target"));
+      // TODO update for plurals
+      presenter.onTransMemoryCopy(new CopyDataToEditorEvent(Arrays.asList("target")));
 
       verify(editor).setText("target");
       ArgumentCaptor<GwtEvent> eventArgumentCaptor = ArgumentCaptor.forClass(GwtEvent.class);
