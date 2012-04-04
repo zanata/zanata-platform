@@ -193,6 +193,8 @@ public class TargetContentsPresenterTest
       presenter.copySource(editor);
 
       verify(editor).setText("source");
+      verify(editor).setViewMode(ToggleEditor.ViewMode.EDIT);
+      verify(display1).showButtons(true);
       verify(editor).autoSize();
       verify(eventBus).fireEvent(isA(RunValidationEvent.class));
       verify(eventBus).fireEvent(isA(NotificationEvent.class));
@@ -302,7 +304,7 @@ public class TargetContentsPresenterTest
       when(transUnit.getTargets()).thenReturn(Lists.newArrayList("a", "b", "c"));
       when(editor.getIndex()).thenReturn(1);
 
-      presenter.onCancel(editor);
+      presenter.onCancel();
 
       verify(editor).setViewMode(ToggleEditor.ViewMode.VIEW);
       verify(editor).setText("b");
@@ -314,7 +316,7 @@ public class TargetContentsPresenterTest
       when(cellEditor.getTargetCell()).thenReturn(transUnit);
       when(transUnit.getTargets()).thenReturn(null);
 
-      presenter.onCancel(editor);
+      presenter.onCancel();
 
       verify(editor).setViewMode(ToggleEditor.ViewMode.VIEW);
       verify(editor).setText(null);

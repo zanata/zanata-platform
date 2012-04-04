@@ -5,7 +5,6 @@ import java.util.List;
 import org.zanata.webtrans.client.editor.table.EditorTextArea;
 import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
-import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 
 import com.google.common.base.Objects;
@@ -24,7 +23,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
@@ -59,12 +57,6 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
 
    @UiField
    FlowPanel validationMessagePanelContainer;
-
-   @UiField
-   HorizontalPanel buttons;
-
-   @UiField
-   PushButton validateButton, saveButton, fuzzyButton, cancelButton;
 
    @UiField
    TableResources images;
@@ -118,7 +110,7 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
       initWidget(uiBinder.createAndBindUi(this));
 
       // determine whether to show or hide buttons
-      showButtons(listener.isDisplayButtons());
+      showCopySourceButton(listener.isDisplayButtons());
 
       setLabelText(displayString);
 
@@ -188,31 +180,10 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
       listener.copySource(this);
    }
 
-   @UiHandler("validateButton")
+//   @UiHandler("validateButton")
    public void onValidation(ClickEvent event)
    {
       fireValidationEvent();
-   }
-
-   @UiHandler("saveButton")
-   public void onSaveAsApproved(ClickEvent event)
-   {
-      listener.saveAsApprovedAndMoveNext();
-      event.stopPropagation();
-   }
-
-   @UiHandler("fuzzyButton")
-   public void onSaveAsFuzzy(ClickEvent event)
-   {
-      listener.saveAsFuzzy();
-      event.stopPropagation();
-   }
-
-   @UiHandler("cancelButton")
-   public void onCancel(ClickEvent event)
-   {
-      listener.onCancel(this);
-      event.stopPropagation();
    }
 
    @UiHandler("label")
@@ -257,7 +228,6 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
       {
          removeValidationMessagePanel();
       }
-      buttons.setVisible(viewMode == ViewMode.EDIT && listener.isDisplayButtons());
    }
 
    @Override
@@ -283,7 +253,8 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
    @Override
    public void setSaveButtonTitle(String title)
    {
-      saveButton.setTitle(title);
+      //TODO no need to have this method
+//      saveButton.setTitle(title);
    }
 
    @Override
@@ -375,16 +346,14 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
    }
 
    @Override
-   public void showButtons(boolean displayButtons)
+   public void showCopySourceButton(boolean displayButtons)
    {
       copySourceButton.setVisible(displayButtons);
-      buttons.setVisible(getViewMode() == ViewMode.EDIT && displayButtons);
    }
 
    @Override
    public void setAsLastEditor()
    {
-      saveButton.getUpFace().setImage(new Image(images.cellEditorAccept()));
    }
 
    @Override

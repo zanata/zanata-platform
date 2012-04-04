@@ -20,7 +20,7 @@ public interface ToggleEditor extends IsWidget, HasText
 
    int getIndex();
 
-   void showButtons(boolean displayButtons);
+   void showCopySourceButton(boolean displayButtons);
 
    void setAsLastEditor();
 

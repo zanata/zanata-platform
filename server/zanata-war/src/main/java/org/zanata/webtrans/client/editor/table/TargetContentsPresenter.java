@@ -175,7 +175,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    public void validate(ToggleEditor editor)
    {
       RunValidationEvent event = new RunValidationEvent(sourceContentsPresenter.getSelectedSource(), editor.getText(), false);
-      event.addWidget(validationMessagePanel);
+//      event.addWidget(validationMessagePanel);
       eventBus.fireEvent(event);
    }
 
@@ -223,9 +223,9 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    }
 
    @Override
-   public void onCancel(ToggleEditor editor)
+   public void onCancel()
    {
-      editor.setViewMode(ViewMode.VIEW);
+      /*editor.setViewMode(ViewMode.VIEW);
       if (cellEditor.getTargetCell().getTargets() != null && cellEditor.getTargetCell().getTargets().size() > editor.getIndex())
       {
          editor.setText(cellEditor.getTargetCell().getTargets().get(editor.getIndex()));
@@ -233,13 +233,14 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       else
       {
          editor.setText(null);
-      }
+      }*/
    }
 
    @Override
    public void copySource(ToggleEditor editor)
    {
       editor.setViewMode(ViewMode.EDIT);
+      currentDisplay.showButtons(true);
       editor.setText(sourceContentsPresenter.getSelectedSource());
       editor.autoSize();
       validate(editor);
@@ -377,7 +378,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else if (checkKey.isCloseEditorKey(configHolder.isButtonEsc()))
       {
-         onCancel(editor);
+         onCancel();
       }
       else if (checkKey.isUserTyping() && !checkKey.isBackspace())
       {
