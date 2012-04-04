@@ -72,7 +72,8 @@ public class TargetContentsPresenterTest
    @Mock private TargetContentsDisplay display1;
    @Mock private TargetContentsDisplay display2;
    @Mock private ValidationMessagePanelDisplay validationPanel;
-   @Mock private ToggleEditor editor;
+   @Mock
+   private ToggleEditor editor, editor2, editor3;
    @Mock private TransUnit transUnit;
    @Mock private UserConfigHolder configHolder;
    @Mock private TransUnitsEditModel cellEditor;
@@ -81,7 +82,7 @@ public class TargetContentsPresenterTest
    @Captor private ArgumentCaptor<NotificationEvent> notificationEventCaptor;
 
    @BeforeMethod
-   public void beforeClass()
+   public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
       presenter = new TargetContentsPresenter(displayProvider, eventBus, tableEditorMessages, sourceContentPresenter, configHolder, navMessages, workspaceContext, scheduler, validationPanel);
@@ -293,6 +294,8 @@ public class TargetContentsPresenterTest
    @Test
    public void onCancelCanResetTextBack()
    {
+      when(display1.getEditors()).thenReturn(Lists.newArrayList(editor, editor2, editor3));
+      presenter.showEditors(0, 1);
       when(cellEditor.getTargetCell()).thenReturn(transUnit);
       when(transUnit.getTargets()).thenReturn(Lists.newArrayList("a", "b", "c"));
       when(editor.getIndex()).thenReturn(1);
@@ -306,6 +309,8 @@ public class TargetContentsPresenterTest
    @Test
    public void onCancelCanSetTextBackToNull()
    {
+      when(display1.getEditors()).thenReturn(Lists.newArrayList(editor, editor2, editor3));
+      presenter.showEditors(0, 1);
       when(cellEditor.getTargetCell()).thenReturn(transUnit);
       when(transUnit.getTargets()).thenReturn(null);
 
