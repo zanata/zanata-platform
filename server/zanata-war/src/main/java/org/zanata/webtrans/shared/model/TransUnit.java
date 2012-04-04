@@ -1,6 +1,7 @@
 package org.zanata.webtrans.shared.model;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -25,6 +26,8 @@ public class TransUnit implements IsSerializable, Serializable
    private String lastModifiedBy;
    private String lastModifiedTime;
    private int rowIndex;
+
+   private static Comparator<TransUnit> rowIndexComparator;
 
    // for GWT
    @SuppressWarnings("unused")
@@ -140,6 +143,31 @@ public class TransUnit implements IsSerializable, Serializable
    public void setLastModifiedTime(String lastModifiedTime)
    {
       this.lastModifiedTime = lastModifiedTime;
+   }
+
+   public static Comparator<TransUnit> getRowIndexComparator()
+   {
+      if (rowIndexComparator == null)
+      {
+         rowIndexComparator = new Comparator<TransUnit>()
+               {
+
+            @Override
+            public int compare(TransUnit o1, TransUnit o2)
+            {
+               if (o1 == o2)
+               {
+                  return 0;
+               }
+               if (o1 != null)
+               {
+                  return (o2 != null ? new Integer(o1.getRowIndex()).compareTo(o2.getRowIndex()) : 1);
+               }
+               return -1;
+            }
+         };
+      }
+      return rowIndexComparator;
    }
 
 }

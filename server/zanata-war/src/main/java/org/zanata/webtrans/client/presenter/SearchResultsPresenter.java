@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +30,9 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
-import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -264,8 +265,9 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                HasData<TransUnit> table = display.addTUTable(replaceButtonDelegate);
                ListDataProvider<TransUnit> dataProvider = new ListDataProvider<TransUnit>();
                dataProvider.addDataDisplay(table);
-               //link dataProvider BEFORE adding units, so they display automatically
-               dataProvider.getList().addAll(result.getUnits(docId));
+               List<TransUnit> data = dataProvider.getList();
+               data.addAll(result.getUnits(docId));
+               Collections.sort(data, TransUnit.getRowIndexComparator());
                documentDataProviders.put(docId, dataProvider);
             }
          }
