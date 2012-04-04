@@ -63,9 +63,9 @@ import com.google.inject.Inject;
 public class SearchResultsView extends Composite implements SearchResultsPresenter.Display
 {
 
-   private static DocumentListViewUiBinder uiBinder = GWT.create(DocumentListViewUiBinder.class);
+   private static SearchResultsViewUiBinder uiBinder = GWT.create(SearchResultsViewUiBinder.class);
 
-   interface DocumentListViewUiBinder extends UiBinder<LayoutPanel, SearchResultsView>
+   interface SearchResultsViewUiBinder extends UiBinder<LayoutPanel, SearchResultsView>
    {
    }
 
@@ -116,6 +116,12 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    public HasValue<String> getReplacementTextBox()
    {
       return replacementTextBox.getTextBox();
+   }
+
+   @Override
+   public HasValue<Boolean> getCaseSensitiveChk()
+   {
+      return caseSensitiveChk;
    }
 
    @Override
@@ -242,13 +248,6 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       {
          return tu;
       }
-
-   }
-
-   @Override
-   public HasValue<Boolean> getCaseSensitiveChk()
-   {
-      return caseSensitiveChk;
    }
 
 }
