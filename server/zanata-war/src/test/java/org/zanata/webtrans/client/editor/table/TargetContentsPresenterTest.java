@@ -47,7 +47,6 @@ import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
-import org.zanata.webtrans.client.events.UpdateValidationWarningsEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
@@ -93,7 +92,6 @@ public class TargetContentsPresenterTest
       presenter = new TargetContentsPresenter(displayProvider, eventBus, tableEditorMessages, sourceContentPresenter, configHolder, navMessages, workspaceContext, scheduler, validationPanel);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.getType(), presenter);
-      verify(eventBus).addHandler(UpdateValidationWarningsEvent.getType(), presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
       verify(eventBus).addHandler(InsertStringInEditorEvent.getType(), presenter);
       verify(eventBus).addHandler(CopyDataToEditorEvent.getType(), presenter);
@@ -255,16 +253,6 @@ public class TargetContentsPresenterTest
       verify(display1).setSaveButtonTitle(navMessages.editSaveWithEnterShortcut());
       verify(display2).showButtons(configHolder.isDisplayButtons());
       verify(display2).setSaveButtonTitle(navMessages.editSaveWithEnterShortcut());
-   }
-
-   @Test
-   public void canUpdateValidationResult()
-   {
-      ArrayList<String> errors = Lists.newArrayList("bad", "wrong");
-
-      presenter.onUpdate(new UpdateValidationWarningsEvent(errors));
-
-      verify(validationPanel).setContent(errors);
    }
 
    @Test
