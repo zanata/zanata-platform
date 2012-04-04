@@ -16,6 +16,8 @@
 package org.zanata.webtrans.client.editor.table;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Provider;
 
@@ -223,16 +225,19 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    }
 
    @Override
-   public void onCancel(ToggleEditor editor)
+   public void onCancel()
    {
-      editor.setViewMode(ViewMode.VIEW);
-      if (cellEditor.getTargetCell().getTargets() != null && cellEditor.getTargetCell().getTargets().size() > editor.getIndex())
+      //activeEditor.setViewMode(ViewMode.VIEW);
+      ArrayList<String> targets = cellEditor.getTargetCell().getTargets();
+      for (int i = 0; i < currentEditors.size(); i++)
       {
-         editor.setText(cellEditor.getTargetCell().getTargets().get(editor.getIndex()));
-      }
-      else
-      {
-         editor.setText(null);
+         ToggleEditor editor = currentEditors.get(i);
+         String content = null;
+         if (targets != null && targets.size() > editor.getIndex())
+         {
+            content = targets.get(editor.getIndex());
+         }
+         editor.setText(content);
       }
    }
 
@@ -240,6 +245,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    public void copySource(ToggleEditor editor)
    {
       editor.setViewMode(ViewMode.EDIT);
+      currentDisplay.showButtons(true);
       editor.setText(sourceContentsPresenter.getSelectedSource());
       editor.autoSize();
       validate(editor);
@@ -309,7 +315,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void onInsertString(final InsertStringInEditorEvent event)
    {
-      copyTextWhenIsEditing(event.getSuggestion(), true);
+      copyTextWhenIsEditing(Arrays.asList(event.getSuggestion()), true);
    }
 
    @Override
@@ -318,7 +324,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       copyTextWhenIsEditing(event.getTargetResult(), false);
    }
 
-   private void copyTextWhenIsEditing(String text, boolean isInsertText)
+   private void copyTextWhenIsEditing(List<String> contents, boolean isInsertText)
    {
       if (!isEditing())
       {
@@ -328,14 +334,19 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
       if (isInsertText)
       {
-         getCurrentEditor().insertTextInCursorPosition(text);
+         getCurrentEditor().insertTextInCursorPosition(contents.get(0));
+         validate(getCurrentEditor());
       }
       else
       {
-         getCurrentEditor().setText(text);
+         for (int i = 0; i < contents.size(); i++)
+         {
+            ToggleEditor editor = currentEditors.get(i);
+            editor.setText(contents.get(i));
+            validate(editor);
+         }
       }
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
-      validate(getCurrentEditor());
    }
 
    @Override
@@ -377,7 +388,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else if (checkKey.isCloseEditorKey(configHolder.isButtonEsc()))
       {
-         onCancel(editor);
+         onCancel();
       }
       else if (checkKey.isUserTyping() && !checkKey.isBackspace())
       {

@@ -12,19 +12,23 @@
 			}
 			
 			.label {
+				font-size: 11px;
+				font-weight: bold;
+				font-style: normal;
 			}
 			
 			.clickable {
 				cursor: pointer;
+				font-size: 11px;
+				font-weight: bold;
+				font-style: normal;
 			}
 			
 			.header {
-				font-size: 11px;
-				font-weight: bold;
 				background: #F3F2F2;
 				border: 1px solid #E0E8EE;
 				color: #686868;
-				font-style: normal;
+				
 				width: 100%
 			}
 			

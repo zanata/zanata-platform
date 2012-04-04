@@ -98,6 +98,7 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
          public void onSuccess(TransMemoryDetailsList result)
          {
             tmDetails = result;
+            // FIXME handle plurals
             display.getSourceText().setText(item.getSource());
             display.getTargetText().setText(item.getTarget());
             display.clearDocs();

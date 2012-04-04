@@ -46,7 +46,7 @@ public interface TargetContentsDisplay extends WidgetDisplay
 
       void setValidationMessagePanel(ToggleEditor editor);
       
-      void onCancel(ToggleEditor editor);
+      void onCancel();
 
       void saveAsFuzzy();
 

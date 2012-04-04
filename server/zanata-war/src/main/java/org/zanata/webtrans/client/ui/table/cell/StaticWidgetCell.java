@@ -30,6 +30,7 @@ import com.google.gwt.user.client.ui.UIObject;
  * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
+ * @param <W> the column type
  **/
 public class StaticWidgetCell<W extends UIObject> extends AbstractCell<W>
 {

@@ -15,18 +15,13 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.inject.Provider;
 
@@ -77,7 +72,8 @@ public class TargetContentsPresenterTest
    @Mock private TargetContentsDisplay display1;
    @Mock private TargetContentsDisplay display2;
    @Mock private ValidationMessagePanelDisplay validationPanel;
-   @Mock private ToggleEditor editor;
+   @Mock
+   private ToggleEditor editor, editor2, editor3;
    @Mock private TransUnit transUnit;
    @Mock private UserConfigHolder configHolder;
    @Mock private TransUnitsEditModel cellEditor;
@@ -86,7 +82,7 @@ public class TargetContentsPresenterTest
    @Captor private ArgumentCaptor<NotificationEvent> notificationEventCaptor;
 
    @BeforeMethod
-   public void beforeClass()
+   public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
       presenter = new TargetContentsPresenter(displayProvider, eventBus, tableEditorMessages, sourceContentPresenter, configHolder, navMessages, workspaceContext, scheduler, validationPanel);
@@ -193,6 +189,8 @@ public class TargetContentsPresenterTest
       presenter.copySource(editor);
 
       verify(editor).setText("source");
+      verify(editor).setViewMode(ToggleEditor.ViewMode.EDIT);
+      verify(display1).showButtons(true);
       verify(editor).autoSize();
       verify(eventBus).fireEvent(isA(RunValidationEvent.class));
       verify(eventBus).fireEvent(isA(NotificationEvent.class));
@@ -298,11 +296,13 @@ public class TargetContentsPresenterTest
    @Test
    public void onCancelCanResetTextBack()
    {
+      when(display1.getEditors()).thenReturn(Lists.newArrayList(editor, editor2, editor3));
+      presenter.showEditors(0, 1);
       when(cellEditor.getTargetCell()).thenReturn(transUnit);
       when(transUnit.getTargets()).thenReturn(Lists.newArrayList("a", "b", "c"));
       when(editor.getIndex()).thenReturn(1);
 
-      presenter.onCancel(editor);
+      presenter.onCancel();
 
       verify(editor).setViewMode(ToggleEditor.ViewMode.VIEW);
       verify(editor).setText("b");
@@ -311,10 +311,12 @@ public class TargetContentsPresenterTest
    @Test
    public void onCancelCanSetTextBackToNull()
    {
+      when(display1.getEditors()).thenReturn(Lists.newArrayList(editor, editor2, editor3));
+      presenter.showEditors(0, 1);
       when(cellEditor.getTargetCell()).thenReturn(transUnit);
       when(transUnit.getTargets()).thenReturn(null);
 
-      presenter.onCancel(editor);
+      presenter.onCancel();
 
       verify(editor).setViewMode(ToggleEditor.ViewMode.VIEW);
       verify(editor).setText(null);
@@ -355,7 +357,8 @@ public class TargetContentsPresenterTest
       when(tableEditorMessages.notifyCopied()).thenReturn("copied");
       givenCurrentEditorAs(editor);
 
-      presenter.onTransMemoryCopy(new CopyDataToEditorEvent("source", "target"));
+      // TODO update for plurals
+      presenter.onTransMemoryCopy(new CopyDataToEditorEvent(Arrays.asList("target")));
 
       verify(editor).setText("target");
       ArgumentCaptor<GwtEvent> eventArgumentCaptor = ArgumentCaptor.forClass(GwtEvent.class);
