@@ -134,7 +134,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
                }
                if (item != null)
                {
-                  eventBus.fireEvent(new CopyDataToEditorEvent(item.getSource(),  item.getTarget()));
+                  eventBus.fireEvent(new CopyDataToEditorEvent(item.getTargetContents()));
                }
             }
          }
@@ -154,7 +154,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          @Override
          public void update(int index, TransMemoryResultItem object, String value)
          {
-            eventBus.fireEvent(new CopyDataToEditorEvent(object.getSource(), object.getTarget()));
+            eventBus.fireEvent(new CopyDataToEditorEvent(object.getTargetContents()));
          }
       });
    }

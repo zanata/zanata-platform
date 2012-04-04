@@ -205,9 +205,9 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       tmTable.addStyleName("southTable");
       tmTable.addColumn(sourceColumn, messages.sourceLabel());
       tmTable.addColumn(targetColumn, messages.targetLabel());
+      tmTable.addColumn(copyColumn);
       tmTable.addColumn(new SimilarityColumn<TransMemoryResultItem>(), messages.similarityLabel());
       tmTable.addColumn(detailsColumn, messages.detailsLabel());
-      tmTable.addColumn(copyColumn);
 
       final NoSelectionModel<TransMemoryResultItem> selectionModel = new NoSelectionModel<TransMemoryResultItem>();
       final DefaultSelectionEventManager<TransMemoryResultItem> manager = DefaultSelectionEventManager.createBlacklistManager(0, 1, 2);
