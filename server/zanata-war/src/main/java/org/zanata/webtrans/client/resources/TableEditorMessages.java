@@ -2,6 +2,7 @@ package org.zanata.webtrans.client.resources;
 
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
+import com.google.gwt.i18n.client.Messages.DefaultMessage;
 import com.google.gwt.i18n.client.Messages;
 
 @DefaultLocale
@@ -55,4 +56,7 @@ public interface TableEditorMessages extends Messages
    @AlternateMessage({ "=0", "Validation Warnings: none" })
    String validationWarningsHeading(@PluralCount
    int warningCount);
+
+   @DefaultMessage("Run Validation")
+   String runValidation();
 }
