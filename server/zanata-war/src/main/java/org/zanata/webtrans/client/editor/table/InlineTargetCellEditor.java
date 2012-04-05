@@ -186,7 +186,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       curCol = curCellEditInfo.getCellIndex();
 
       this.cellValue = cellValue;
-      targetContentsPresenter.showEditors(curRow, -1);
+      targetContentsPresenter.showEditors(curRow, TargetContentsPresenter.NO_OPEN_EDITOR);
 
       isOpened = true;
 

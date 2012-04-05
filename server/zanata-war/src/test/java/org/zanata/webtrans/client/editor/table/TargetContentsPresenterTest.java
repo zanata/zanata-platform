@@ -192,14 +192,15 @@ public class TargetContentsPresenterTest
    public void canCopySource()
    {
       when(sourceContentPresenter.getSelectedSource()).thenReturn("source");
+      presenter.showEditors(0, TargetContentsPresenter.NO_OPEN_EDITOR);
 
       presenter.copySource(editor);
 
-      verify(editor).setTextAndValidate("source", true);
+      verify(editor).setTextAndValidate("source");
       verify(editor).setViewMode(ToggleEditor.ViewMode.EDIT);
       verify(display1).showButtons(true);
       verify(editor).autoSize();
-      verify(eventBus).fireEvent(isA(RunValidationEvent.class));
+      verify(editor).setFocus();
       verify(eventBus).fireEvent(isA(NotificationEvent.class));
    }
 
@@ -307,12 +308,16 @@ public class TargetContentsPresenterTest
       presenter.showEditors(0, 1);
       when(cellEditor.getTargetCell()).thenReturn(transUnit);
       when(transUnit.getTargets()).thenReturn(Lists.newArrayList("a", "b", "c"));
-      when(editor.getIndex()).thenReturn(1);
+      when(editor.getIndex()).thenReturn(0);
+      when(editor2.getIndex()).thenReturn(1);
+      when(editor3.getIndex()).thenReturn(2);
 
       presenter.onCancel();
 
-      verify(editor).setViewMode(ToggleEditor.ViewMode.VIEW);
-      verify(editor).setText("b");
+      verify(display1).setToView();
+      verify(editor).setTextAndValidate("a");
+      verify(editor2).setTextAndValidate("b");
+      verify(editor3).setTextAndValidate("c");
    }
 
    @Test
@@ -325,8 +330,10 @@ public class TargetContentsPresenterTest
 
       presenter.onCancel();
 
-      verify(editor).setViewMode(ToggleEditor.ViewMode.VIEW);
-      verify(editor).setText(null);
+      verify(display1).setToView();
+      verify(editor).setTextAndValidate(null);
+      verify(editor2).setTextAndValidate(null);
+      verify(editor3).setTextAndValidate(null);
    }
 
    @Test
@@ -367,14 +374,9 @@ public class TargetContentsPresenterTest
       // TODO update for plurals
       presenter.onTransMemoryCopy(new CopyDataToEditorEvent(Arrays.asList("target")));
 
-      verify(editor).setTextAndValidate("target", true);
-      ArgumentCaptor<GwtEvent> eventArgumentCaptor = ArgumentCaptor.forClass(GwtEvent.class);
-      verify(eventBus, times(2)).fireEvent(eventArgumentCaptor.capture());
-      NotificationEvent notificationEvent = findEvent(eventArgumentCaptor, NotificationEvent.class);
-      MatcherAssert.assertThat(notificationEvent.getMessage(), Matchers.equalTo("copied"));
-      // RunValidationEvent runValidationEvent = findEvent(eventArgumentCaptor,
-      // RunValidationEvent.class);
-      // MatcherAssert.assertThat(runValidationEvent, Matchers.notNullValue());
+      verify(editor).setTextAndValidate("target");
+      verify(eventBus).fireEvent(notificationEventCaptor.capture());
+      MatcherAssert.assertThat(notificationEventCaptor.getValue().getMessage(), Matchers.equalTo("copied"));
    }
 
    @Test

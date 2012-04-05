@@ -34,6 +34,6 @@ public interface ToggleEditor extends IsWidget, HasText
 
    }
 
-   void setTextAndValidate(String text, boolean isRunValidate);
+   void setTextAndValidate(String text);
 
 }

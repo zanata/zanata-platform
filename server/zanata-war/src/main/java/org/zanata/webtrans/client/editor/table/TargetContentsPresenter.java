@@ -58,7 +58,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class TargetContentsPresenter implements TargetContentsDisplay.Listener, UserConfigChangeHandler, RequestValidationEventHandler, InsertStringInEditorHandler, CopyDataToEditorHandler
 {
-   private static final int NO_OPEN_EDITOR = -1;
+   public static final int NO_OPEN_EDITOR = -1;
    private static final int LAST_INDEX = -2;
    private final EventBus eventBus;
    private final TableEditorMessages messages;
@@ -119,6 +119,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
    public void showEditors(int rowIndex, int editorIndex)
    {
+      Log.info("enter show editor with editor index:" + editorIndex + " current editor index:" + currentEditorIndex);
       currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
       currentDisplay.openEditors();
@@ -136,10 +137,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       if (currentEditorIndex == LAST_INDEX)
       {
          currentEditorIndex = currentEditors.size() - 1;
-      }
-      else if (currentEditorIndex != NO_OPEN_EDITOR)
-      {
-         currentEditorIndex = 0;
       }
 
       if (currentEditorIndex != NO_OPEN_EDITOR && currentEditorIndex < currentEditors.size())
@@ -183,6 +180,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void validate(ToggleEditor editor)
    {
+      currentEditorIndex = editor.getIndex();
       RunValidationEvent event = new RunValidationEvent(sourceContentsPresenter.getSelectedSource(), editor.getText(), false);
       event.addWidget(validationMessagePanel);
       eventBus.fireEvent(event);
@@ -234,27 +232,29 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void onCancel()
    {
-      //activeEditor.setViewMode(ViewMode.VIEW);
       ArrayList<String> targets = cellEditor.getTargetCell().getTargets();
-      for (int i = 0; i < currentEditors.size(); i++)
+      for (ToggleEditor editor : currentEditors)
       {
-         ToggleEditor editor = currentEditors.get(i);
          String content = null;
          if (targets != null && targets.size() > editor.getIndex())
          {
             content = targets.get(editor.getIndex());
          }
-         editor.setTextAndValidate(content, true);
+         editor.setTextAndValidate(content);
       }
+      setToViewMode();
    }
 
    @Override
    public void copySource(ToggleEditor editor)
    {
-      editor.setViewMode(ViewMode.EDIT);
+      Log.info("copy source");
+      currentEditorIndex = editor.getIndex();
       currentDisplay.showButtons(true);
-      editor.setTextAndValidate(sourceContentsPresenter.getSelectedSource(), true);
+      editor.setTextAndValidate(sourceContentsPresenter.getSelectedSource());
+      editor.setViewMode(ViewMode.EDIT);
       editor.autoSize();
+      editor.setFocus();
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
    }
 
@@ -268,8 +268,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          @Override
          public void execute()
          {
-            Log.debug("current display:" + currentDisplay);
             currentEditorIndex = editor.getIndex();
+            Log.info("toggle view current editor index:" + currentEditorIndex);
             if (currentDisplay != null)
             {
                currentDisplay.focusEditor(currentEditorIndex);
@@ -353,7 +353,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          for (int i = 0; i < contents.size(); i++)
          {
             ToggleEditor editor = currentEditors.get(i);
-            editor.setTextAndValidate(contents.get(i), true);
+            editor.setTextAndValidate(contents.get(i));
          }
       }
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));

@@ -10,7 +10,6 @@ import org.zanata.webtrans.client.resources.NavigationMessages;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -211,28 +210,13 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
    {
       label.setVisible(viewMode == ViewMode.VIEW);
       textArea.setVisible(viewMode == ViewMode.EDIT);
-//      if (viewMode == ViewMode.EDIT)
-//      {
-//         autoSize();
-//         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand()
-//         {
-//            @Override
-//            public void execute()
-//            {
-//               textArea.setFocus(true);
-//            }
-//         });
-//      }
    }
 
    @Override
-   public void setTextAndValidate(String text, boolean isRunValidate)
+   public void setTextAndValidate(String text)
    {
       setText(text);
-      if (isRunValidate)
-      {
-         fireValidationEvent();
-      }
+      fireValidationEvent();
    }
 
    @Override
