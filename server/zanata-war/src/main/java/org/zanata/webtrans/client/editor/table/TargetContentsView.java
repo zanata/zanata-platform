@@ -128,8 +128,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
          editors.add(editor);
          rowIndex++;
       }
-      //TODO remove move down image and message
-//      lastEditor().setAsLastEditor();
    }
 
    @UiHandler("saveButton")

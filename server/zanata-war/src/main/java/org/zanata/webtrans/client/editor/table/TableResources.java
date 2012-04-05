@@ -36,9 +36,6 @@ public interface TableResources extends ClientBundle
    @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/3floppy_unmount.png")
    ImageResource cellEditorAccept();
 
-   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/move_task_down.png")
-   ImageResource cellEditorMoveDown();
-
    @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/button_cancel.png")
    ImageResource cellEditorCancel();
 
