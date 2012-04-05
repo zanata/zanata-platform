@@ -65,7 +65,8 @@ public class HTextFlowHistory extends HTextContainer implements Serializable, IT
    {
       this.revision = textFlow.getRevision();
       this.textFlow = textFlow;
-      this.setContents(textFlow.getContents());
+      //FIXME re-enable this
+//      this.setContents(textFlow.getContents());
    }
 
    @Id

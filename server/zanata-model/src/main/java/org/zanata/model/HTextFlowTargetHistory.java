@@ -100,7 +100,8 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
       this.textFlowRevision = target.getTextFlowRevision();
       this.textFlowTarget = target;
       this.versionNum = target.getVersionNum();
-      this.setContents(target.getContents()); 
+      //FIXME re-enable this
+//      this.setContents(target.getContents());
    }
 
    @Id

@@ -86,10 +86,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public void showButtons(boolean displayButtons)
    {
       buttons.setVisible(isEditing() && displayButtons);
-      for (ToggleEditor editor : editors)
-      {
-         editor.showCopySourceButton(displayButtons);
-      }
    }
 
    @Override

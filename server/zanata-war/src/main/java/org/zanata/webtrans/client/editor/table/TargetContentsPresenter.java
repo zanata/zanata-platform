@@ -121,8 +121,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
-
       currentDisplay.openEditors();
+
       if (configHolder.isDisplayButtons())
       {
          currentDisplay.showButtons(true);
@@ -301,11 +301,16 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void onValueChanged(UserConfigChangeEvent event)
    {
+      //TODO optimise a bit. If some config hasn't changed or not relevant in this context, don't bother doing anything
       String title = decideButtonTitle();
       for (TargetContentsDisplay display : displayList)
       {
          display.setSaveButtonTitle(title);
          display.showButtons(configHolder.isDisplayButtons());
+         for (ToggleEditor editor : display.getEditors())
+         {
+            editor.showCopySourceButton(configHolder.isDisplayButtons());
+         }
       }
    }
 
