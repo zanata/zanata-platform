@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -276,7 +277,7 @@ public class TargetContentsPresenterTest
 
       presenter.onRequestValidation(new RequestValidationEvent());
 
-      verify(eventBus).fireEvent(runValidationEventCaptor.capture());
+      verify(eventBus, times(2)).fireEvent(runValidationEventCaptor.capture());
       MatcherAssert.assertThat(runValidationEventCaptor.getValue().getTarget(), Matchers.equalTo("target"));
    }
 
@@ -338,7 +339,7 @@ public class TargetContentsPresenterTest
 
       verify(editor).insertTextInCursorPosition("suggestion");
       ArgumentCaptor<GwtEvent> eventArgumentCaptor = ArgumentCaptor.forClass(GwtEvent.class);
-      verify(eventBus, times(2)).fireEvent(eventArgumentCaptor.capture());
+      verify(eventBus, times(3)).fireEvent(eventArgumentCaptor.capture());
       NotificationEvent notificationEvent = findEvent(eventArgumentCaptor, NotificationEvent.class);
       MatcherAssert.assertThat(notificationEvent.getMessage(), Matchers.equalTo("copied"));
       RunValidationEvent runValidationEvent = findEvent(eventArgumentCaptor, RunValidationEvent.class);
@@ -367,7 +368,7 @@ public class TargetContentsPresenterTest
       presenter.onTransMemoryCopy(new CopyDataToEditorEvent(Arrays.asList("target")));
 
       verify(editor).setTextAndValidate("target");
-      verify(eventBus).fireEvent(notificationEventCaptor.capture());
+      verify(eventBus, atLeastOnce()).fireEvent(notificationEventCaptor.capture());
       MatcherAssert.assertThat(notificationEventCaptor.getValue().getMessage(), Matchers.equalTo("copied"));
    }
 
