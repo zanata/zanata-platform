@@ -108,6 +108,24 @@
 		<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
 	</listener>
 
+    <!--java melody for monitoring stats-->
+    <filter>
+        <filter-name>monitoring</filter-name>
+        <filter-class>org.zanata.seam.interceptor.MonitoringWrapper</filter-class>
+        <init-param>
+            <param-name>javamelody.datasources</param-name>
+            <param-value>java:${ds.jndi.name}</param-value>
+        </init-param>
+        <init-param>
+            <param-name>monitoring-path</param-name>
+            <param-value>/admin/monitoring</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>monitoring</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
 	<filter>
 		<filter-name>Seam Filter</filter-name>
 		<filter-class>org.jboss.seam.servlet.SeamFilter</filter-class>
@@ -142,23 +160,7 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-    <!--java melody for monitoring stats-->
-    <filter>
-        <filter-name>monitoring</filter-name>
-        <filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
-        <init-param>
-            <param-name>javamelody.datasources</param-name>
-            <param-value>java:${ds.jndi.name}</param-value>
-        </init-param>
-        <init-param>
-            <param-name>monitoring-path</param-name>
-            <param-value>/admin/monitoring</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>monitoring</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+
 
 	<servlet>
 		<servlet-name>Seam Resource Servlet</servlet-name>
