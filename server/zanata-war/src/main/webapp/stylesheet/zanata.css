@@ -230,6 +230,16 @@ a.table_link:hover {
 }
 
 
+a.iteration_link {
+	font-weight: bold;
+	color: #7092C3;
+}
+
+a.iteration_link:hover {
+	color: #990000;
+}
+
+
 .obsolete {
 	font-style: italic;
 	text-decoration: line-through;
