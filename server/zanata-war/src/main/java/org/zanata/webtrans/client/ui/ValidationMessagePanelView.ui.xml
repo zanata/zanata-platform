@@ -53,7 +53,7 @@
 				<g:Label ui:field="headerLabel" />
 			</g:cell>
 			<g:cell horizontalAlignment="ALIGN_RIGHT" width="95px" verticalAlignment="ALIGN_MIDDLE">
-				<g:Anchor ui:field="runValidationAnchor" styleName="{style.clickable}" />
+				<g:Anchor ui:field="runValidationAnchor" styleName="{style.clickable}"/>
 			</g:cell>
 			<g:cell horizontalAlignment="ALIGN_RIGHT" width="16px" verticalAlignment="ALIGN_MIDDLE">
 				<g:PushButton ui:field="validateButton" styleName="gwt-Button" title="{messages.runValidation}">

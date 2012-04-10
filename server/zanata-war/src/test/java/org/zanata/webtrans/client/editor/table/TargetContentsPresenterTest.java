@@ -91,7 +91,7 @@ public class TargetContentsPresenterTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TargetContentsPresenter(displayProvider, eventBus, tableEditorMessages, sourceContentPresenter, configHolder, navMessages, workspaceContext, scheduler, validationPanel);
+      presenter = new TargetContentsPresenter(displayProvider, eventBus, tableEditorMessages, sourceContentPresenter, configHolder, workspaceContext, scheduler, validationPanel);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.getType(), presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
@@ -137,7 +137,6 @@ public class TargetContentsPresenterTest
       assertThat(result, sameInstance(display1));
       verify(display1).setTargets(targetContents);
       verify(display1).setFindMessage(findMessages);
-      verify(display1).setSaveButtonTitle(buttonTitle);
       verifyNoMoreInteractions(display1);
       verifyZeroInteractions(display2);
    }
@@ -159,7 +158,6 @@ public class TargetContentsPresenterTest
       assertThat(result, sameInstance(display2));
       verify(display2).setTargets(targetContents);
       verify(display2).setFindMessage(findMessages);
-      verify(display2).setSaveButtonTitle(buttonTitle);
       verify(display2).showButtons(false);
       verifyNoMoreInteractions(display2);
       verifyZeroInteractions(display1);
@@ -256,9 +254,7 @@ public class TargetContentsPresenterTest
       presenter.onValueChanged(new UserConfigChangeEvent());
 
       verify(display1).showButtons(configHolder.isDisplayButtons());
-      verify(display1).setSaveButtonTitle(navMessages.editSaveWithEnterShortcut());
       verify(display2).showButtons(configHolder.isDisplayButtons());
-      verify(display2).setSaveButtonTitle(navMessages.editSaveWithEnterShortcut());
    }
 
    @Test

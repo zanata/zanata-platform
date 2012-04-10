@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 
-public class Editor extends Composite implements ToggleEditor, HasUpdateValidationWarning
+public class Editor extends Composite implements ToggleEditor
 {
    private String findMessage;
    private TargetContentsDisplay.Listener listener;
@@ -138,7 +138,10 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
 
    private void fireValidationEvent()
    {
-      listener.validate(this);
+      if (getViewMode() == ViewMode.EDIT)
+      {
+         listener.validate(this);
+      }
    }
 
    @UiHandler("rootContainer")
@@ -240,13 +243,6 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
    }
 
    @Override
-   public void setSaveButtonTitle(String title)
-   {
-      //TODO no need to have this method
-//      saveButton.setTitle(title);
-   }
-
-   @Override
    public void autoSize()
    {
       shrinkSize(true);
@@ -309,8 +305,14 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
    @Override
    public void addValidationMessagePanel(IsWidget validationMessagePanel)
    {
-      validationMessagePanelContainer.clear();
+      removeValidationMessagePanel();
       validationMessagePanelContainer.add(validationMessagePanel);
+   }
+
+   @Override
+   public void removeValidationMessagePanel()
+   {
+      validationMessagePanelContainer.clear();
    }
 
    @Override
@@ -343,6 +345,13 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
    @Override
    public void updateValidationWarning(List<String> errors)
    {
-      // TODO update label css is errors is empty
+      if (!errors.isEmpty())
+      {
+         textArea.addStyleName("HasValidationError");
+      }
+      else
+      {
+         textArea.removeStyleName("HasValidationError");
+      }
    }
 }

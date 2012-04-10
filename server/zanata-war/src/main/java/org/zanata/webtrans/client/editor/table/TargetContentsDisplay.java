@@ -25,12 +25,7 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 
 public interface TargetContentsDisplay extends WidgetDisplay
 {
-
-   void setSaveButtonTitle(String title);
-
    void showButtons(boolean displayButtons);
-
-   void openEditors();
 
    void focusEditor(int currentEditorIndex);
 
