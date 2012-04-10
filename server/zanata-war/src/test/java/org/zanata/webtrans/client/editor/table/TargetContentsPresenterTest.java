@@ -91,7 +91,7 @@ public class TargetContentsPresenterTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TargetContentsPresenter(displayProvider, eventBus, tableEditorMessages, sourceContentPresenter, configHolder, navMessages, workspaceContext, scheduler, validationPanel);
+      presenter = new TargetContentsPresenter(displayProvider, eventBus, tableEditorMessages, sourceContentPresenter, configHolder, workspaceContext, scheduler, validationPanel);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.getType(), presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
