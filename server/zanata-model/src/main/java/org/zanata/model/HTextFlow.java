@@ -116,7 +116,7 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
 
    private Map<HLocale, HTextFlowTarget> targets;
 
-   public Map<Integer, HTextFlowHistory> history;
+   private Map<Integer, HTextFlowHistory> history;
 
    private HSimpleComment comment;
 
@@ -133,6 +133,9 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    
    // Only for internal use (persistence transient) 
    private HTextFlowHistory initialState;
+   
+   // Only for internal use (persistence transient) 
+   private boolean lazyRelationsCopied = false;
 
    public HTextFlow()
    {
@@ -279,6 +282,10 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    @Column(name = "content", nullable = false)
    public List<String> getContents()
    {
+      // Copy lazily loaded relations to the history object as this cannot be done
+      // in the entity callbacks
+      copyLazyLoadedRelationsToHistory();
+      
       if( contents == null )
       {
          contents = new ArrayList<String>();
@@ -288,6 +295,10 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
 
    public void setContents(List<String> contents)
    {
+      // Copy lazily loaded relations to the history object as this cannot be done
+      // in the entity callbacks
+      copyLazyLoadedRelationsToHistory();
+      
       if (!equal(this.contents, contents))
       {
          this.contents = new ArrayList<String>(contents);
@@ -421,6 +432,19 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    {
       this.oldRevision = this.revision;
       this.initialState = new HTextFlowHistory(this);
+      this.lazyRelationsCopied = false;
+   }
+   
+   /**
+    * Copies all lazy loaded relations to the history object.
+    */
+   private void copyLazyLoadedRelationsToHistory()
+   {
+      if( this.initialState != null && this.initialState.getContents() == null && !this.lazyRelationsCopied )
+      {
+         this.initialState.setContents( this.contents );
+         this.lazyRelationsCopied = true;
+      }
    }
 
    /**

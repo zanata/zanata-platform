@@ -41,6 +41,7 @@ public class TransMemorySourceColumn extends StaticWidgetColumn<TransMemoryResul
    public VerticalPanel getValue(TransMemoryResultItem object)
    {
       VerticalPanel panel = new VerticalPanel();
+      panel.setSize("100%", "100%");
       ArrayList<String> sourceContents = object.getSourceContents();
 
       // display multiple source/target strings

@@ -65,8 +65,9 @@ public class HTextFlowHistory extends HTextContainer implements Serializable, IT
    {
       this.revision = textFlow.getRevision();
       this.textFlow = textFlow;
-      //FIXME re-enable this
-//      this.setContents(textFlow.getContents());
+      // This cannot be done at this point due to an issue with hibernate in which a listener cannot access
+      // loading collections
+      //this.setContents(textFlow.getContents());
    }
 
    @Id
@@ -96,7 +97,7 @@ public class HTextFlowHistory extends HTextContainer implements Serializable, IT
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
-   @ManyToOne(fetch = FetchType.EAGER)
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "tf_id")
    public HTextFlow getTextFlow()
    {
