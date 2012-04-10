@@ -195,17 +195,22 @@ table.fullwidth {
 
 a.action_link {
 	display: block;
-	font-size: 130%;
+	font-size: 14px;
 	font-weight: bold;
 	background-color: #EDF0FF;
-	border: 2px solid #E6E9F7;
+	border: 1px solid #A2C4F5;
 	padding: 4px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
 	color: #7092C3;
-	text-decoration: none;
-	margin: 1px;
+	margin-top: 4px;
 	text-align: center;
+}
+
+a.action_link:hover {
+	background-color: #EDF0FF;
+	border:1px solid #990000;
+	color:#990000;
 }
 
 a.table_link {
@@ -243,12 +248,6 @@ a.obsolete_link,a.obsolete_link:visited,a.obsolete_link:link {
 a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	font-style: italic;
 	color: #ACC2E1;
-}
-
-a.action_link:hover {
-	background-color: #F5F8FF;
-	border: 2px solid #F6F9F7;
-	color: #80A2C3;
 }
 
 
