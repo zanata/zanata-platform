@@ -185,7 +185,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void validate(ToggleEditor editor)
    {
-      // currentEditorIndex = editor.getIndex();
+      currentEditorIndex = editor.getIndex();
       RunValidationEvent event = new RunValidationEvent(sourceContentsPresenter.getSelectedSource(), editor.getText(), false);
       event.addWidget(validationMessagePanel);
       event.addWidget(editor);

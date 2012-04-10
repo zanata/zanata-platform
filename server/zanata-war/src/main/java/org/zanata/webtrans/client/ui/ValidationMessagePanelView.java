@@ -25,6 +25,7 @@ import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;

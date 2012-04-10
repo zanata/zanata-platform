@@ -139,7 +139,10 @@ public class Editor extends Composite implements ToggleEditor
 
    private void fireValidationEvent()
    {
-      listener.validate(this);
+      if (getViewMode() == ViewMode.EDIT)
+      {
+         listener.validate(this);
+      }
    }
 
    @UiHandler("rootContainer")
