@@ -205,16 +205,16 @@ public class TargetContentsPresenterTest
    @Test
    public void toggleViewIsDeferredExecuted()
    {
-      //given current display is at row 1
       ArgumentCaptor<Scheduler.ScheduledCommand> commandCaptor = ArgumentCaptor.forClass(Scheduler.ScheduledCommand.class);
       when(editor.getIndex()).thenReturn(99);
-      presenter.showEditors(0, -1);
+      presenter.showEditors(0, TargetContentsPresenter.NO_OPEN_EDITOR);
 
       presenter.toggleView(editor);
 
       verify(scheduler).scheduleDeferred(commandCaptor.capture());
       commandCaptor.getValue().execute();
-//      verify(display1).openEditorAndCloseOthers(99);
+
+      verify(display1).focusEditor(99);
    }
 
    @Test
@@ -230,7 +230,7 @@ public class TargetContentsPresenterTest
    @Test
    public void canGetNewTargets()
    {
-      presenter.showEditors(1, -1);
+      presenter.showEditors(1, TargetContentsPresenter.NO_OPEN_EDITOR);
       when(display2.getNewTargets()).thenReturn(targetContents);
 
       ArrayList<String> result = presenter.getNewTargets();
@@ -271,7 +271,7 @@ public class TargetContentsPresenterTest
    public void onRequestValidationWillFireRunValidationEventIfItsEditing()
    {
       //given current display is row 1 and current editor has target content
-      givenCurrentEditorAs(editor);
+      givenCurrentEditorsAs(editor);
       when(editor.getText()).thenReturn("target");
 
       presenter.onRequestValidation(new RequestValidationEvent());
@@ -280,13 +280,11 @@ public class TargetContentsPresenterTest
       MatcherAssert.assertThat(runValidationEventCaptor.getValue().getTarget(), Matchers.equalTo("target"));
    }
 
-   private void givenCurrentEditorAs(ToggleEditor currentEditor)
+   private void givenCurrentEditorsAs(ToggleEditor... currentEditors)
    {
-      ArrayList<ToggleEditor> mockedList = Mockito.mock(ArrayList.class);
-      when(display1.getEditors()).thenReturn(mockedList);
-      when(mockedList.get(anyInt())).thenReturn(currentEditor);
+      when(display1.getEditors()).thenReturn(Lists.newArrayList(currentEditors));
       when(display1.isEditing()).thenReturn(true);
-      presenter.showEditors(0, -1);
+      presenter.showEditors(0, 0);
    }
 
    @Test
@@ -300,8 +298,7 @@ public class TargetContentsPresenterTest
    @Test
    public void onCancelCanResetTextBack()
    {
-      when(display1.getEditors()).thenReturn(Lists.newArrayList(editor, editor2, editor3));
-      presenter.showEditors(0, 1);
+      givenCurrentEditorsAs(editor, editor2, editor3);
       when(cellEditor.getTargetCell()).thenReturn(transUnit);
       when(transUnit.getTargets()).thenReturn(Lists.newArrayList("a", "b", "c"));
       when(editor.getIndex()).thenReturn(0);
@@ -319,8 +316,7 @@ public class TargetContentsPresenterTest
    @Test
    public void onCancelCanSetTextBackToNull()
    {
-      when(display1.getEditors()).thenReturn(Lists.newArrayList(editor, editor2, editor3));
-      presenter.showEditors(0, 1);
+      givenCurrentEditorsAs(editor, editor2, editor3);
       when(cellEditor.getTargetCell()).thenReturn(transUnit);
       when(transUnit.getTargets()).thenReturn(null);
 
@@ -336,7 +332,7 @@ public class TargetContentsPresenterTest
    public void testOnInsertString()
    {
       when(tableEditorMessages.notifyCopied()).thenReturn("copied");
-      givenCurrentEditorAs(editor);
+      givenCurrentEditorsAs(editor);
 
       presenter.onInsertString(new InsertStringInEditorEvent("", "suggestion"));
 
@@ -365,7 +361,7 @@ public class TargetContentsPresenterTest
    public void testOnTransMemoryCopy()
    {
       when(tableEditorMessages.notifyCopied()).thenReturn("copied");
-      givenCurrentEditorAs(editor);
+      givenCurrentEditorsAs(editor);
 
       // TODO update for plurals
       presenter.onTransMemoryCopy(new CopyDataToEditorEvent(Arrays.asList("target")));
