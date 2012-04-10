@@ -77,9 +77,6 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Save as Approved (Enter)")
    String editSaveWithEnterShortcut();
 
-   @DefaultMessage("Move to next")
-   String editMoveToNext();
-
    @DefaultMessage("Cancel")
    String editCancelShortcut();
 
@@ -98,7 +95,7 @@ public interface NavigationMessages extends Messages
    // String editCloneAndSaveShortcut();
 
    @DefaultMessage("Copy message from source language (Alt+G)")
-   String copySourcetoTarget();
+   String copySourceToTarget();
 
    @DefaultMessage("{0} ({1})")
    String actionToolTip(String actionName, String shortcut);
