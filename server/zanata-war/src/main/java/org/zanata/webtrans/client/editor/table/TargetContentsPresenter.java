@@ -16,6 +16,8 @@
 package org.zanata.webtrans.client.editor.table;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Provider;
 
@@ -33,13 +35,10 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEventHandler;
 import org.zanata.webtrans.client.events.RunValidationEvent;
-import org.zanata.webtrans.client.events.UpdateValidationWarningsEvent;
-import org.zanata.webtrans.client.events.UpdateValidationWarningsEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
-import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
@@ -56,9 +55,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class TargetContentsPresenter implements TargetContentsDisplay.Listener, UserConfigChangeHandler, UpdateValidationWarningsEventHandler, RequestValidationEventHandler, InsertStringInEditorHandler, CopyDataToEditorHandler
+public class TargetContentsPresenter implements TargetContentsDisplay.Listener, UserConfigChangeHandler, RequestValidationEventHandler, InsertStringInEditorHandler, CopyDataToEditorHandler
 {
-   private static final int NO_OPEN_EDITOR = -1;
+   public static final int NO_OPEN_EDITOR = -1;
    private static final int LAST_INDEX = -2;
    private final EventBus eventBus;
    private final TableEditorMessages messages;
@@ -66,7 +65,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private final UserConfigHolder configHolder;
 
    private final CheckKey checkKey;
-   private NavigationMessages navMessages;
    private WorkspaceContext workspaceContext;
    private Scheduler scheduler;
 
@@ -79,21 +77,19 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private TransUnitsEditModel cellEditor;
 
    @Inject
-   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, UserConfigHolder configHolder, NavigationMessages navMessages, WorkspaceContext workspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel)
+   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, UserConfigHolder configHolder, WorkspaceContext workspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel)
    {
       this.displayProvider = displayProvider;
       this.eventBus = eventBus;
       this.messages = messages;
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.configHolder = configHolder;
-      this.navMessages = navMessages;
       this.workspaceContext = workspaceContext;
       this.scheduler = scheduler;
       this.validationMessagePanel = validationMessagePanel;
 
       checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       eventBus.addHandler(UserConfigChangeEvent.getType(), this);
-      eventBus.addHandler(UpdateValidationWarningsEvent.getType(), this);
       eventBus.addHandler(RequestValidationEvent.getType(), this);
       eventBus.addHandler(InsertStringInEditorEvent.getType(), this);
       eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
@@ -114,13 +110,26 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       if (currentDisplay != null)
       {
          currentDisplay.setToView();
+         currentDisplay.showButtons(false);
       }
    }
 
    public void showEditors(int rowIndex, int editorIndex)
    {
+      Log.info("enter show editor with editor index:" + editorIndex + " current editor index:" + currentEditorIndex);
       currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
+
+      for (ToggleEditor editor : currentDisplay.getEditors())
+      {
+         editor.setViewMode(ToggleEditor.ViewMode.EDIT);
+         validate(editor);
+      }
+
+      if (configHolder.isDisplayButtons())
+      {
+         currentDisplay.showButtons(true);
+      }
 
       if (editorIndex != NO_OPEN_EDITOR)
       {
@@ -131,16 +140,12 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       {
          currentEditorIndex = currentEditors.size() - 1;
       }
-      else if (currentEditorIndex != NO_OPEN_EDITOR)
-      {
-         currentEditorIndex = 0;
-      }
 
       if (currentEditorIndex != NO_OPEN_EDITOR && currentEditorIndex < currentEditors.size())
       {
          validationMessagePanel.clear();
-         currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
-         Log.debug("show editors at row:" + rowIndex + " current editor:" + currentEditorIndex);
+         currentDisplay.focusEditor(currentEditorIndex);
+         Log.info("show editors at row:" + rowIndex + " current editor:" + currentEditorIndex);
       }
    }
 
@@ -149,18 +154,12 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       TargetContentsDisplay result = displayList.get(rowIndex);
       result.setFindMessage(findMessages);
       result.setTargets(transUnit.getTargets());
-      result.setSaveButtonTitle(decideButtonTitle());
       if (workspaceContext.isReadOnly())
       {
          Log.debug("read only mode. Hide buttons");
          result.showButtons(false);
       }
       return result;
-   }
-
-   private String decideButtonTitle()
-   {
-      return (configHolder.isButtonEnter()) ? navMessages.editSaveWithEnterShortcut() : navMessages.editSaveShortcut();
    }
 
    public void initWidgets(int pageSize)
@@ -177,7 +176,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void validate(ToggleEditor editor)
    {
-      eventBus.fireEvent(new RunValidationEvent(sourceContentsPresenter.getSelectedSource(), editor.getText(), false));
+      currentEditorIndex = editor.getIndex();
+      RunValidationEvent event = new RunValidationEvent(sourceContentsPresenter.getSelectedSource(), editor.getText(), false);
+      event.addWidget(validationMessagePanel);
+      event.addWidget(editor);
+      eventBus.fireEvent(event);
    }
 
    @Override
@@ -185,7 +188,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       if (currentEditorIndex + 1 < currentEditors.size())
       {
-         currentDisplay.openEditorAndCloseOthers(currentEditorIndex + 1);
+         currentDisplay.focusEditor(currentEditorIndex + 1);
          currentEditorIndex++;
       }
       else
@@ -200,7 +203,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       if (currentEditorIndex - 1 >= 0)
       {
-         currentDisplay.openEditorAndCloseOthers(currentEditorIndex - 1);
+         currentDisplay.focusEditor(currentEditorIndex - 1);
          currentEditorIndex--;
       }
       else
@@ -224,26 +227,31 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    }
 
    @Override
-   public void onCancel(ToggleEditor editor)
+   public void onCancel()
    {
-      editor.setViewMode(ViewMode.VIEW);
-      if (cellEditor.getTargetCell().getTargets() != null && cellEditor.getTargetCell().getTargets().size() > editor.getIndex())
+      ArrayList<String> targets = cellEditor.getTargetCell().getTargets();
+      for (ToggleEditor editor : currentEditors)
       {
-         editor.setText(cellEditor.getTargetCell().getTargets().get(editor.getIndex()));
+         String content = null;
+         if (targets != null && targets.size() > editor.getIndex())
+         {
+            content = targets.get(editor.getIndex());
+         }
+         editor.setTextAndValidate(content);
       }
-      else
-      {
-         editor.setText(null);
-      }
+      setToViewMode();
    }
 
    @Override
    public void copySource(ToggleEditor editor)
    {
+      Log.info("copy source");
+      currentEditorIndex = editor.getIndex();
+      currentDisplay.showButtons(true);
+      editor.setTextAndValidate(sourceContentsPresenter.getSelectedSource());
       editor.setViewMode(ViewMode.EDIT);
-      editor.setText(sourceContentsPresenter.getSelectedSource());
       editor.autoSize();
-      validate(editor);
+      editor.setFocus();
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
    }
 
@@ -257,11 +265,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          @Override
          public void execute()
          {
-            Log.debug("current display:" + currentDisplay);
             currentEditorIndex = editor.getIndex();
+            Log.info("toggle view current editor index:" + currentEditorIndex);
             if (currentDisplay != null)
             {
-               currentDisplay.openEditorAndCloseOthers(currentEditorIndex);
+               currentDisplay.focusEditor(currentEditorIndex);
             }
          }
       });
@@ -290,18 +298,16 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void onValueChanged(UserConfigChangeEvent event)
    {
-      String title = decideButtonTitle();
+      // TODO optimise a bit. If some config hasn't changed or not relevant in
+      // this context, don't bother doing anything
       for (TargetContentsDisplay display : displayList)
       {
-         display.setSaveButtonTitle(title);
          display.showButtons(configHolder.isDisplayButtons());
+         for (ToggleEditor editor : display.getEditors())
+         {
+            editor.showCopySourceButton(configHolder.isDisplayButtons());
+         }
       }
-   }
-
-   @Override
-   public void onUpdate(UpdateValidationWarningsEvent event)
-   {
-      validationMessagePanel.setContent(event.getErrors());
    }
 
    @Override
@@ -309,14 +315,18 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       if (isEditing())
       {
-         eventBus.fireEvent(new RunValidationEvent(sourceContentsPresenter.getSelectedSource(), getCurrentEditor().getText(), false));
+         for (ToggleEditor editor : currentDisplay.getEditors())
+         {
+            editor.setViewMode(ToggleEditor.ViewMode.EDIT);
+            validate(editor);
+         }
       }
    }
 
    @Override
    public void onInsertString(final InsertStringInEditorEvent event)
    {
-      copyTextWhenIsEditing(event.getSuggestion(), true);
+      copyTextWhenIsEditing(Arrays.asList(event.getSuggestion()), true);
    }
 
    @Override
@@ -325,7 +335,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       copyTextWhenIsEditing(event.getTargetResult(), false);
    }
 
-   private void copyTextWhenIsEditing(String text, boolean isInsertText)
+   private void copyTextWhenIsEditing(List<String> contents, boolean isInsertText)
    {
       if (!isEditing())
       {
@@ -335,14 +345,18 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
       if (isInsertText)
       {
-         getCurrentEditor().insertTextInCursorPosition(text);
+         getCurrentEditor().insertTextInCursorPosition(contents.get(0));
+         validate(getCurrentEditor());
       }
       else
       {
-         getCurrentEditor().setText(text);
+         for (int i = 0; i < contents.size(); i++)
+         {
+            ToggleEditor editor = currentEditors.get(i);
+            editor.setTextAndValidate(contents.get(i));
+         }
       }
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
-      validate(getCurrentEditor());
    }
 
    @Override
@@ -384,7 +398,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else if (checkKey.isCloseEditorKey(configHolder.isButtonEsc()))
       {
-         onCancel(editor);
+         onCancel();
       }
       else if (checkKey.isUserTyping() && !checkKey.isBackspace())
       {

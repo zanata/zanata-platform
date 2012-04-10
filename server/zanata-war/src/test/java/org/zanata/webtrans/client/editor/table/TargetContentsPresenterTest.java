@@ -27,6 +27,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.inject.Provider;
 
@@ -47,7 +48,6 @@ import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
-import org.zanata.webtrans.client.events.UpdateValidationWarningsEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
@@ -78,7 +78,8 @@ public class TargetContentsPresenterTest
    @Mock private TargetContentsDisplay display1;
    @Mock private TargetContentsDisplay display2;
    @Mock private ValidationMessagePanelDisplay validationPanel;
-   @Mock private ToggleEditor editor;
+   @Mock
+   private ToggleEditor editor, editor2, editor3;
    @Mock private TransUnit transUnit;
    @Mock private UserConfigHolder configHolder;
    @Mock private TransUnitsEditModel cellEditor;
@@ -87,13 +88,12 @@ public class TargetContentsPresenterTest
    @Captor private ArgumentCaptor<NotificationEvent> notificationEventCaptor;
 
    @BeforeMethod
-   public void beforeClass()
+   public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TargetContentsPresenter(displayProvider, eventBus, tableEditorMessages, sourceContentPresenter, configHolder, navMessages, workspaceContext, scheduler, validationPanel);
+      presenter = new TargetContentsPresenter(displayProvider, eventBus, tableEditorMessages, sourceContentPresenter, configHolder, workspaceContext, scheduler, validationPanel);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.getType(), presenter);
-      verify(eventBus).addHandler(UpdateValidationWarningsEvent.getType(), presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
       verify(eventBus).addHandler(InsertStringInEditorEvent.getType(), presenter);
       verify(eventBus).addHandler(CopyDataToEditorEvent.getType(), presenter);
@@ -116,6 +116,7 @@ public class TargetContentsPresenterTest
       presenter.setToViewMode();
 
       verify(display1).setToView();
+      verify(display1).showButtons(false);
       verifyZeroInteractions(display2);
    }
 
@@ -136,7 +137,6 @@ public class TargetContentsPresenterTest
       assertThat(result, sameInstance(display1));
       verify(display1).setTargets(targetContents);
       verify(display1).setFindMessage(findMessages);
-      verify(display1).setSaveButtonTitle(buttonTitle);
       verifyNoMoreInteractions(display1);
       verifyZeroInteractions(display2);
    }
@@ -158,7 +158,6 @@ public class TargetContentsPresenterTest
       assertThat(result, sameInstance(display2));
       verify(display2).setTargets(targetContents);
       verify(display2).setFindMessage(findMessages);
-      verify(display2).setSaveButtonTitle(buttonTitle);
       verify(display2).showButtons(false);
       verifyNoMoreInteractions(display2);
       verifyZeroInteractions(display1);
@@ -191,28 +190,31 @@ public class TargetContentsPresenterTest
    public void canCopySource()
    {
       when(sourceContentPresenter.getSelectedSource()).thenReturn("source");
+      presenter.showEditors(0, TargetContentsPresenter.NO_OPEN_EDITOR);
 
       presenter.copySource(editor);
 
-      verify(editor).setText("source");
+      verify(editor).setTextAndValidate("source");
+      verify(editor).setViewMode(ToggleEditor.ViewMode.EDIT);
+      verify(display1).showButtons(true);
       verify(editor).autoSize();
-      verify(eventBus).fireEvent(isA(RunValidationEvent.class));
+      verify(editor).setFocus();
       verify(eventBus).fireEvent(isA(NotificationEvent.class));
    }
 
    @Test
    public void toggleViewIsDeferredExecuted()
    {
-      //given current display is at row 1
       ArgumentCaptor<Scheduler.ScheduledCommand> commandCaptor = ArgumentCaptor.forClass(Scheduler.ScheduledCommand.class);
       when(editor.getIndex()).thenReturn(99);
-      presenter.showEditors(0, -1);
+      presenter.showEditors(0, TargetContentsPresenter.NO_OPEN_EDITOR);
 
       presenter.toggleView(editor);
 
       verify(scheduler).scheduleDeferred(commandCaptor.capture());
       commandCaptor.getValue().execute();
-      verify(display1).openEditorAndCloseOthers(99);
+
+      verify(display1).focusEditor(99);
    }
 
    @Test
@@ -228,7 +230,7 @@ public class TargetContentsPresenterTest
    @Test
    public void canGetNewTargets()
    {
-      presenter.showEditors(1, -1);
+      presenter.showEditors(1, TargetContentsPresenter.NO_OPEN_EDITOR);
       when(display2.getNewTargets()).thenReturn(targetContents);
 
       ArrayList<String> result = presenter.getNewTargets();
@@ -252,19 +254,7 @@ public class TargetContentsPresenterTest
       presenter.onValueChanged(new UserConfigChangeEvent());
 
       verify(display1).showButtons(configHolder.isDisplayButtons());
-      verify(display1).setSaveButtonTitle(navMessages.editSaveWithEnterShortcut());
       verify(display2).showButtons(configHolder.isDisplayButtons());
-      verify(display2).setSaveButtonTitle(navMessages.editSaveWithEnterShortcut());
-   }
-
-   @Test
-   public void canUpdateValidationResult()
-   {
-      ArrayList<String> errors = Lists.newArrayList("bad", "wrong");
-
-      presenter.onUpdate(new UpdateValidationWarningsEvent(errors));
-
-      verify(validationPanel).setContent(errors);
    }
 
    @Test
@@ -281,7 +271,7 @@ public class TargetContentsPresenterTest
    public void onRequestValidationWillFireRunValidationEventIfItsEditing()
    {
       //given current display is row 1 and current editor has target content
-      givenCurrentEditorAs(editor);
+      givenCurrentEditorsAs(editor);
       when(editor.getText()).thenReturn("target");
 
       presenter.onRequestValidation(new RequestValidationEvent());
@@ -290,13 +280,11 @@ public class TargetContentsPresenterTest
       MatcherAssert.assertThat(runValidationEventCaptor.getValue().getTarget(), Matchers.equalTo("target"));
    }
 
-   private void givenCurrentEditorAs(ToggleEditor currentEditor)
+   private void givenCurrentEditorsAs(ToggleEditor... currentEditors)
    {
-      ArrayList<ToggleEditor> mockedList = Mockito.mock(ArrayList.class);
-      when(display1.getEditors()).thenReturn(mockedList);
-      when(mockedList.get(anyInt())).thenReturn(currentEditor);
+      when(display1.getEditors()).thenReturn(Lists.newArrayList(currentEditors));
       when(display1.isEditing()).thenReturn(true);
-      presenter.showEditors(0, -1);
+      presenter.showEditors(0, 0);
    }
 
    @Test
@@ -310,33 +298,41 @@ public class TargetContentsPresenterTest
    @Test
    public void onCancelCanResetTextBack()
    {
+      givenCurrentEditorsAs(editor, editor2, editor3);
       when(cellEditor.getTargetCell()).thenReturn(transUnit);
       when(transUnit.getTargets()).thenReturn(Lists.newArrayList("a", "b", "c"));
-      when(editor.getIndex()).thenReturn(1);
+      when(editor.getIndex()).thenReturn(0);
+      when(editor2.getIndex()).thenReturn(1);
+      when(editor3.getIndex()).thenReturn(2);
 
-      presenter.onCancel(editor);
+      presenter.onCancel();
 
-      verify(editor).setViewMode(ToggleEditor.ViewMode.VIEW);
-      verify(editor).setText("b");
+      verify(display1).setToView();
+      verify(editor).setTextAndValidate("a");
+      verify(editor2).setTextAndValidate("b");
+      verify(editor3).setTextAndValidate("c");
    }
 
    @Test
    public void onCancelCanSetTextBackToNull()
    {
+      givenCurrentEditorsAs(editor, editor2, editor3);
       when(cellEditor.getTargetCell()).thenReturn(transUnit);
       when(transUnit.getTargets()).thenReturn(null);
 
-      presenter.onCancel(editor);
+      presenter.onCancel();
 
-      verify(editor).setViewMode(ToggleEditor.ViewMode.VIEW);
-      verify(editor).setText(null);
+      verify(display1).setToView();
+      verify(editor).setTextAndValidate(null);
+      verify(editor2).setTextAndValidate(null);
+      verify(editor3).setTextAndValidate(null);
    }
 
    @Test
    public void testOnInsertString()
    {
       when(tableEditorMessages.notifyCopied()).thenReturn("copied");
-      givenCurrentEditorAs(editor);
+      givenCurrentEditorsAs(editor);
 
       presenter.onInsertString(new InsertStringInEditorEvent("", "suggestion"));
 
@@ -365,17 +361,14 @@ public class TargetContentsPresenterTest
    public void testOnTransMemoryCopy()
    {
       when(tableEditorMessages.notifyCopied()).thenReturn("copied");
-      givenCurrentEditorAs(editor);
+      givenCurrentEditorsAs(editor);
 
-      presenter.onTransMemoryCopy(new CopyDataToEditorEvent("source", "target"));
+      // TODO update for plurals
+      presenter.onTransMemoryCopy(new CopyDataToEditorEvent(Arrays.asList("target")));
 
-      verify(editor).setText("target");
-      ArgumentCaptor<GwtEvent> eventArgumentCaptor = ArgumentCaptor.forClass(GwtEvent.class);
-      verify(eventBus, times(2)).fireEvent(eventArgumentCaptor.capture());
-      NotificationEvent notificationEvent = findEvent(eventArgumentCaptor, NotificationEvent.class);
-      MatcherAssert.assertThat(notificationEvent.getMessage(), Matchers.equalTo("copied"));
-      RunValidationEvent runValidationEvent = findEvent(eventArgumentCaptor, RunValidationEvent.class);
-      MatcherAssert.assertThat(runValidationEvent, Matchers.notNullValue());
+      verify(editor).setTextAndValidate("target");
+      verify(eventBus).fireEvent(notificationEventCaptor.capture());
+      MatcherAssert.assertThat(notificationEventCaptor.getValue().getMessage(), Matchers.equalTo("copied"));
    }
 
    @Test

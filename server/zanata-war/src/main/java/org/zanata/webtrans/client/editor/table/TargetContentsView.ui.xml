@@ -1,0 +1,30 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
+             xmlns:tui="urn:import:org.zanata.webtrans.client.editor.table"
+        >
+
+
+    <ui:with field="messages" type="org.zanata.webtrans.client.resources.NavigationMessages" />
+    <ui:with field="images" type="org.zanata.webtrans.client.editor.table.TableResources" />
+
+    <g:VerticalPanel width="100%">
+        <g:cell verticalAlignment="ALIGN_TOP">
+            <g:Grid ui:field="editorGrid" />
+        </g:cell>
+        <g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_RIGHT" width="100px">
+            <g:HorizontalPanel ui:field="buttons" styleName="gwt-Button" visible="false">
+                <g:PushButton ui:field="saveButton" styleName="gwt-Button" title="{messages.editMoveToNext}">
+                    <g:upFace image="{images.cellEditorAccept}" />
+                </g:PushButton>
+                <g:PushButton ui:field="fuzzyButton" styleName="gwt-Button" title="{messages.saveAsFuzzy}">
+                    <g:upFace image="{images.cellEditorFuzzy}" />
+                </g:PushButton>
+                <g:PushButton ui:field="cancelButton" styleName="gwt-Button" title="{messages.editCancelShortcut}">
+                    <g:upFace image="{images.cellEditorCancel}" />
+                </g:PushButton>
+            </g:HorizontalPanel>
+        </g:cell>
+    </g:VerticalPanel>
+</ui:UiBinder>

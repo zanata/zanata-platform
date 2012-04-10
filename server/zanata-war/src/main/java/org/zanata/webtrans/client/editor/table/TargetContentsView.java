@@ -21,24 +21,48 @@ import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 
 import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class TargetContentsView implements TargetContentsDisplay
+public class TargetContentsView extends Composite implements TargetContentsDisplay
 {
-   public static final int COLUMNS = 1;
-   public static final int DEFAULT_ROWS = 1;
+   interface Binder extends UiBinder<VerticalPanel, TargetContentsView>
+   {
+   }
+   private static Binder binder = GWT.create(Binder.class);
 
-   private Grid editorGrid;
+   public static final int COLUMNS = 1;
+
+   @UiField
+   Grid editorGrid;
+   @UiField
+   HorizontalPanel buttons;
+   @UiField
+   PushButton saveButton;
+   @UiField
+   PushButton fuzzyButton;
+   @UiField
+   PushButton cancelButton;
+   private VerticalPanel rootPanel;
    private String findMessage;
    private ArrayList<ToggleEditor> editors;
    private Listener listener;
 
    public TargetContentsView()
    {
-      editorGrid = new Grid(DEFAULT_ROWS, COLUMNS);
+      rootPanel = binder.createAndBindUi(this);
       editorGrid.addStyleName("TableEditorCell-Target-Table");
       editorGrid.ensureDebugId("target-contents-grid");
       editorGrid.setWidth("100%");
@@ -46,32 +70,22 @@ public class TargetContentsView implements TargetContentsDisplay
    }
 
    @Override
-   public void openEditorAndCloseOthers(int currentEditor)
-   {
-      setToView();
-      ToggleEditor editor = editors.get(currentEditor);
-      editor.setViewMode(ToggleEditor.ViewMode.EDIT);
-   }
-
-   @Override
-   public void setSaveButtonTitle(String title)
-   {
-      Preconditions.checkState(editors.size() > 0);
-      lastEditor().setSaveButtonTitle(title);
-   }
-
-   private ToggleEditor lastEditor()
-   {
-      return editors.get(editors.size() - 1);
-   }
-
-   @Override
    public void showButtons(boolean displayButtons)
    {
-      for (ToggleEditor editor : editors)
+      buttons.setVisible(isEditing() && displayButtons);
+   }
+
+   @Override
+   public void focusEditor(final int currentEditorIndex)
+   {
+      Scheduler.get().scheduleDeferred(new Command()
       {
-         editor.showButtons(displayButtons);
-      }
+         @Override
+         public void execute()
+         {
+            editors.get(currentEditorIndex).setFocus();
+         }
+      });
    }
 
    @Override
@@ -92,7 +106,27 @@ public class TargetContentsView implements TargetContentsDisplay
          editors.add(editor);
          rowIndex++;
       }
-      lastEditor().setAsLastEditor();
+   }
+
+   @UiHandler("saveButton")
+   public void onSaveAsApproved(ClickEvent event)
+   {
+      listener.saveAsApprovedAndMoveNext();
+      event.stopPropagation();
+   }
+
+   @UiHandler("fuzzyButton")
+   public void onSaveAsFuzzy(ClickEvent event)
+   {
+      listener.saveAsFuzzy();
+      event.stopPropagation();
+   }
+
+   @UiHandler("cancelButton")
+   public void onCancel(ClickEvent event)
+   {
+      listener.onCancel();
+      event.stopPropagation();
    }
 
    @Override
@@ -117,6 +151,7 @@ public class TargetContentsView implements TargetContentsDisplay
    {
       for (ToggleEditor editor : editors)
       {
+         editor.removeValidationMessagePanel();
          editor.setViewMode(ToggleEditor.ViewMode.VIEW);
       }
    }
@@ -149,7 +184,7 @@ public class TargetContentsView implements TargetContentsDisplay
    @Override
    public Widget asWidget()
    {
-      return editorGrid;
+      return rootPanel;
    }
 
    @Override

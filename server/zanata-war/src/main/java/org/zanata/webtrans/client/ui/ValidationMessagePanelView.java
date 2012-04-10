@@ -16,10 +16,13 @@
 
 package org.zanata.webtrans.client.ui;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
+import net.customware.gwt.presenter.client.EventBus;
+
+import org.zanata.webtrans.client.editor.table.TableResources;
+import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 
 import com.google.gwt.core.client.GWT;
@@ -28,11 +31,14 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
 public class ValidationMessagePanelView extends Composite implements ValidationMessagePanelDisplay
 {
@@ -45,9 +51,9 @@ public class ValidationMessagePanelView extends Composite implements ValidationM
 
    interface Styles extends CssResource
    {
-      String header();
+      String label();
 
-      String headerClickable();
+      String clickable();
 
       String content();
 
@@ -62,21 +68,34 @@ public class ValidationMessagePanelView extends Composite implements ValidationM
    @UiField
    FlowPanel contentPanel;
 
+   @UiField
+   Anchor runValidationAnchor;
+
    VerticalPanel contents;
-   
+
+   @UiField
+   PushButton validateButton;
+
    @UiField
    Styles style;
 
+   @UiField
+   TableResources images;
+
    private boolean collapsible;
    private List<String> errors = new ArrayList<String>();
+   private final EventBus eventBus;
 
    @UiField
    TableEditorMessages messages;
 
-   public ValidationMessagePanelView()
+   @Inject
+   public ValidationMessagePanelView(final EventBus eventBus)
    {
+      this.eventBus = eventBus;
       contents = new VerticalPanel();
       initWidget(uiBinder.createAndBindUi(this));
+      runValidationAnchor.setText(messages.runValidation());
       setCollapsible(true);
       setHeaderText(messages.validationWarningsHeading(0));
       collapse();
@@ -96,29 +115,8 @@ public class ValidationMessagePanelView extends Composite implements ValidationM
       setHeaderText(messages.validationWarningsHeading(0));
    }
 
-   @Override
-   public void setContent(List<String> errors)
-   {
-      this.errors = errors;
-      if (errors == null || errors.isEmpty())
-      {
-         clear();
-         return;
-      }
-      contentPanel.clear();
-      contents.clear();
-
-      for (String error : errors)
-      {
-         contents.add(new Label(error));
-      }
-      contentPanel.add(contents);
-      setHeaderText(messages.validationWarningsHeading(errors.size()));
-      expand();
-   }
-
    @UiHandler("headerLabel")
-   public void onHeaderLabelClick(ClickEvent event)
+   public void onHeaderClick(ClickEvent event)
    {
       if (collapsible)
       {
@@ -131,6 +129,18 @@ public class ValidationMessagePanelView extends Composite implements ValidationM
             collapse();
          }
       }
+   }
+
+   @UiHandler("runValidationAnchor")
+   public void onClick(ClickEvent event)
+   {
+      onValidationButtonClick(event);
+   }
+
+   @UiHandler("validateButton")
+   public void onValidationButtonClick(ClickEvent event)
+   {
+      eventBus.fireEvent(new RequestValidationEvent());
    }
 
    public void expand()
@@ -151,18 +161,40 @@ public class ValidationMessagePanelView extends Composite implements ValidationM
    public void setCollapsible(boolean collapsible)
    {
       this.collapsible = collapsible;
-      if(collapsible){
-         headerLabel.setStyleName(style.headerClickable());
+      if (collapsible)
+      {
+         headerLabel.setStyleName(style.clickable());
       }
       else
       {
-         headerLabel.setStyleName(style.header());
+         headerLabel.setStyleName(style.label());
       }
    }
 
    public List<String> getErrors()
    {
       return errors;
+   }
+
+   @Override
+   public void updateValidationWarning(List<String> errors)
+   {
+      this.errors = errors;
+      if (errors == null || errors.isEmpty())
+      {
+         clear();
+         return;
+      }
+      contentPanel.clear();
+      contents.clear();
+
+      for (String error : errors)
+      {
+         contents.add(new Label(error));
+      }
+      contentPanel.add(contents);
+      setHeaderText(messages.validationWarningsHeading(errors.size()));
+      expand();
    }
 
 }

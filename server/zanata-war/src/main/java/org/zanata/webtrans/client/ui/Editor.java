@@ -1,5 +1,7 @@
 package org.zanata.webtrans.client.ui;
 
+import java.util.List;
+
 import org.zanata.webtrans.client.editor.table.EditorTextArea;
 import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
@@ -8,8 +10,8 @@ import org.zanata.webtrans.client.resources.NavigationMessages;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -21,7 +23,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
@@ -58,16 +59,9 @@ public class Editor extends Composite implements ToggleEditor
    FlowPanel validationMessagePanelContainer;
 
    @UiField
-   HorizontalPanel buttons;
-
-   @UiField
-   PushButton validateButton, saveButton, fuzzyButton, cancelButton;
-
-   @UiField
    TableResources images;
 
-   @UiField
-   NavigationMessages messages;
+   NavigationMessages messages = GWT.create(NavigationMessages.class);
 
    @UiField
    EditorTextArea textArea;
@@ -115,7 +109,7 @@ public class Editor extends Composite implements ToggleEditor
       initWidget(uiBinder.createAndBindUi(this));
 
       // determine whether to show or hide buttons
-      showButtons(listener.isDisplayButtons());
+      showCopySourceButton(listener.isDisplayButtons());
 
       setLabelText(displayString);
 
@@ -144,7 +138,10 @@ public class Editor extends Composite implements ToggleEditor
 
    private void fireValidationEvent()
    {
-      listener.validate(this);
+      if (getViewMode() == ViewMode.EDIT)
+      {
+         listener.validate(this);
+      }
    }
 
    @UiHandler("rootContainer")
@@ -159,6 +156,13 @@ public class Editor extends Composite implements ToggleEditor
       autoSize();
       fireValidationEvent();
       setLabelText(event.getValue());
+   }
+
+   @UiHandler("textArea")
+   public void onTextAreaFocus(FocusEvent event)
+   {
+      listener.setValidationMessagePanel(this);
+      fireValidationEvent();
    }
 
    @UiHandler("textArea")
@@ -185,33 +189,6 @@ public class Editor extends Composite implements ToggleEditor
       listener.copySource(this);
    }
 
-   @UiHandler("validateButton")
-   public void onValidation(ClickEvent event)
-   {
-      fireValidationEvent();
-   }
-
-   @UiHandler("saveButton")
-   public void onSaveAsApproved(ClickEvent event)
-   {
-      listener.saveAsApprovedAndMoveNext();
-      event.stopPropagation();
-   }
-
-   @UiHandler("fuzzyButton")
-   public void onSaveAsFuzzy(ClickEvent event)
-   {
-      listener.saveAsFuzzy();
-      event.stopPropagation();
-   }
-
-   @UiHandler("cancelButton")
-   public void onCancel(ClickEvent event)
-   {
-      listener.onCancel(this);
-      event.stopPropagation();
-   }
-
    @UiHandler("label")
    public void onLabelClick(MouseDownEvent event)
    {
@@ -236,25 +213,13 @@ public class Editor extends Composite implements ToggleEditor
    {
       label.setVisible(viewMode == ViewMode.VIEW);
       textArea.setVisible(viewMode == ViewMode.EDIT);
-      if (viewMode == ViewMode.EDIT)
-      {
-         listener.setValidationMessagePanel(this);
-         fireValidationEvent();
-         autoSize();
-         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand()
-         {
-            @Override
-            public void execute()
-            {
-               textArea.setFocus(true);
-            }
-         });
-      }
-      else
-      {
-         removeValidationMessagePanel();
-      }
-      buttons.setVisible(viewMode == ViewMode.EDIT && listener.isDisplayButtons());
+   }
+
+   @Override
+   public void setTextAndValidate(String text)
+   {
+      setText(text);
+      fireValidationEvent();
    }
 
    @Override
@@ -275,12 +240,6 @@ public class Editor extends Composite implements ToggleEditor
    public String getText()
    {
       return textArea.getText();
-   }
-
-   @Override
-   public void setSaveButtonTitle(String title)
-   {
-      saveButton.setTitle(title);
    }
 
    @Override
@@ -338,9 +297,15 @@ public class Editor extends Composite implements ToggleEditor
    }
 
    @Override
+   public void setFocus()
+   {
+      textArea.setFocus(true);
+   }
+
+   @Override
    public void addValidationMessagePanel(IsWidget validationMessagePanel)
    {
-      validationMessagePanelContainer.clear();
+      removeValidationMessagePanel();
       validationMessagePanelContainer.add(validationMessagePanel);
    }
 
@@ -372,15 +337,21 @@ public class Editor extends Composite implements ToggleEditor
    }
 
    @Override
-   public void showButtons(boolean displayButtons)
+   public void showCopySourceButton(boolean displayButtons)
    {
       copySourceButton.setVisible(displayButtons);
-      buttons.setVisible(getViewMode() == ViewMode.EDIT && displayButtons);
    }
 
    @Override
-   public void setAsLastEditor()
+   public void updateValidationWarning(List<String> errors)
    {
-      saveButton.getUpFace().setImage(new Image(images.cellEditorAccept()));
+      if (!errors.isEmpty())
+      {
+         textArea.addStyleName("HasValidationError");
+      }
+      else
+      {
+         textArea.removeStyleName("HasValidationError");
+      }
    }
 }

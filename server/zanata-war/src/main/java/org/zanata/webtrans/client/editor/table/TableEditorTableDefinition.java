@@ -149,7 +149,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          final VerticalPanel targetPanel = new VerticalPanel();
 
          TargetContentsDisplay contentsDisplay = targetContentsPresenter.getNextTargetContentsDisplay(view.getRowIndex(), rowValue, findMessage);
-         contentsDisplay.setToView();
+         targetContentsPresenter.setToViewMode();
 
          targetPanel.add(contentsDisplay.asWidget());
          targetPanel.setWidth("100%");

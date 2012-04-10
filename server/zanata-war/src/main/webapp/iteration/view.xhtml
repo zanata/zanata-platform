@@ -55,7 +55,7 @@
 							<f:facet name="header">#{messages['jsf.Language']}</f:facet>
 							<h:outputLink rendered="#{identity.loggedIn}"
 								value="#{request.contextPath}/webtrans/Application.html"
-								title="#{messages['jsf.iteration.stats.OpenInWebEditor']}">
+								title="#{messages['jsf.iteration.stats.OpenInWebEditor']}" styleClass="iteration_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
 								<f:param name="localeId" value="#{stats.locale}" />
@@ -70,7 +70,7 @@
 							<f:facet name="header">#{messages['jsf.Name']}</f:facet>
 							<h:outputLink rendered="#{identity.loggedIn}"
 								value="#{request.contextPath}/webtrans/Application.html"
-								title="#{messages['jsf.iteration.stats.OpenInWebEditor']}">
+								title="#{messages['jsf.iteration.stats.OpenInWebEditor']}" styleClass="iteration_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
 								<f:param name="localeId" value="#{stats.locale}" />
@@ -85,7 +85,7 @@
 							styleClass="#{viewAllStatusAction.showAllLocales and stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
 							<h:outputLink
 								rendered="#{not applicationConfiguration.debug and not viewAllStatusAction.isUserAllowedToTranslate(stats.locale) }"
-								value="#{request.contextPath}/webtrans/Application.html">
+								value="#{request.contextPath}/webtrans/Application.html" styleClass="iteration_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
 								<f:param name="localeId" value="#{stats.locale}" />
@@ -95,7 +95,7 @@
 	
 							<h:outputLink
 								rendered="#{applicationConfiguration.debug and not viewAllStatusAction.isUserAllowedToTranslate(stats.locale)}"
-								value="#{request.contextPath}/webtrans/Application.html">
+								value="#{request.contextPath}/webtrans/Application.html" styleClass="iteration_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
 								<f:param name="localeId" value="#{stats.locale}" />
@@ -106,7 +106,7 @@
 	
 							<h:outputLink
 								rendered="#{not applicationConfiguration.debug and viewAllStatusAction.isUserAllowedToTranslate(stats.locale)}"
-								value="#{request.contextPath}/webtrans/Application.html">
+								value="#{request.contextPath}/webtrans/Application.html" styleClass="iteration_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
 								<f:param name="localeId" value="#{stats.locale}" />
@@ -116,7 +116,7 @@
 	      					
 							<h:outputLink
 								rendered="#{applicationConfiguration.debug and viewAllStatusAction.isUserAllowedToTranslate(stats.locale)}"
-								value="#{request.contextPath}/webtrans/Application.html">
+								value="#{request.contextPath}/webtrans/Application.html" styleClass="iteration_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
 								<f:param name="localeId" value="#{stats.locale}" />
@@ -130,7 +130,7 @@
 							styleClass="#{viewAllStatusAction.showAllLocales and stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
 							<s:link
 								view="/iteration/files.xhtml" propagation="none"
-								value="#{messages['jsf.Files']}">
+								value="#{messages['jsf.Files']}" styleClass="iteration_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
 								<f:param name="localeId" value="#{stats.locale}" />

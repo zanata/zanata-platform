@@ -121,9 +121,6 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Click here for more info")
    String clickHereForMoreInfo();
 
-   @DefaultMessage("Run Validation")
-   String runValidation();
-
    @DefaultMessage("Translation Unit Details")
    String transUnitDetailsHeading();
 }

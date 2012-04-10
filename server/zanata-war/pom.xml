@@ -1048,6 +1048,11 @@
             <artifactId>jsr305</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>net.bull.javamelody</groupId>
+            <artifactId>javamelody-core</artifactId>
+        </dependency>
+
 		<dependency>
 			<groupId>org.fedorahosted.openprops</groupId>
 			<artifactId>openprops</artifactId>

@@ -5,7 +5,6 @@
     xmlns:tui="urn:import:org.zanata.webtrans.client.editor.table"
         >
 	
-	<ui:with field="messages" type="org.zanata.webtrans.client.resources.NavigationMessages" />
 	<ui:with field="images" type="org.zanata.webtrans.client.editor.table.TableResources" />
 	
 	<ui:style>
@@ -16,10 +15,10 @@
 			width:100%;
 			padding-left:28px;
 		}
-		
+
 		.textArea {
 			width:98%;
-			margin-left:5px;
+			margin-left:3px;
 		}
 	</ui:style>
 	
@@ -45,23 +44,6 @@
 				<g:cell>
 					<g:FlowPanel ui:field="validationMessagePanelContainer"/>
 				</g:cell>
-				<g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_RIGHT" width="100px">
-					<g:HorizontalPanel ui:field="buttons" styleName="gwt-Button">
-						<g:PushButton ui:field="validateButton" styleName="gwt-Button" title="{messages.runValidation}">
-		                    <g:upFace image="{images.cellEditorValidate}" />
-						</g:PushButton>
-						<g:PushButton ui:field="saveButton" styleName="gwt-Button" title="{messages.editMoveToNext}">
-		                    <g:upFace image="{images.cellEditorMoveDown}" />
-						</g:PushButton>
-						<g:PushButton ui:field="fuzzyButton" styleName="gwt-Button" title="{messages.saveAsFuzzy}">
-		                    <g:upFace image="{images.cellEditorFuzzy}" />
-						</g:PushButton>
-						<g:PushButton ui:field="cancelButton" styleName="gwt-Button" title="{messages.editCancelShortcut}">
-		                    <g:upFace image="{images.cellEditorCancel}" />
-						</g:PushButton>
-					</g:HorizontalPanel>
-				</g:cell>
-				
 			</g:HorizontalPanel>
 		</g:cell>
 	</g:VerticalPanel>

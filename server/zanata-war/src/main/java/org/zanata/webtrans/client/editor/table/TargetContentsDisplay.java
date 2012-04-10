@@ -25,12 +25,9 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 
 public interface TargetContentsDisplay extends WidgetDisplay
 {
-
-   void openEditorAndCloseOthers(int currentEditor);
-
-   void setSaveButtonTitle(String title);
-
    void showButtons(boolean displayButtons);
+
+   void focusEditor(int currentEditorIndex);
 
    interface Listener
    {
@@ -46,7 +43,7 @@ public interface TargetContentsDisplay extends WidgetDisplay
 
       void setValidationMessagePanel(ToggleEditor editor);
       
-      void onCancel(ToggleEditor editor);
+      void onCancel();
 
       void saveAsFuzzy();
 

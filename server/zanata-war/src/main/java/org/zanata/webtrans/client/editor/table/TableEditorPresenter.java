@@ -25,6 +25,8 @@ import static org.zanata.webtrans.client.editor.table.TableConstants.MAX_PAGE_RO
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.Command;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -183,6 +185,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    private final SourceContentsPresenter sourceContentsPresenter;
    private TargetContentsPresenter targetContentsPresenter;
    private UserConfigHolder configHolder;
+   private Scheduler scheduler;
 
    private boolean filterTranslated, filterNeedReview, filterUntranslated;
 
@@ -256,7 +259,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    };
 
    @Inject
-   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourceContentsPresenter sourceContentsPresenter, TargetContentsPresenter targetContentsPresenter, UserConfigHolder configHolder)
+   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourceContentsPresenter sourceContentsPresenter, TargetContentsPresenter targetContentsPresenter, UserConfigHolder configHolder, Scheduler scheduler)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
@@ -266,6 +269,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.targetContentsPresenter = targetContentsPresenter;
       this.configHolder = configHolder;
+      this.scheduler = scheduler;
    }
 
    private void clearCacheList()
@@ -1110,25 +1114,34 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
     * 
     * @param transUnit the new TO to select
     */
-   public void selectTransUnit(TransUnit transUnit)
+   public void selectTransUnit(final TransUnit transUnit)
    {
-      tableModelHandler.updatePageAndRowIndex();
-
-      display.setTransUnitDetails(transUnit);
-
-      if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
+      //we want to make sure select transunit always happen first
+      scheduler.scheduleEntry(new Command()
       {
-         selectedTransUnit = transUnit;
-         Log.info("SelectedTransUnit: " + selectedTransUnit.getId());
-         // Clean the cache when we click the new entry
-         clearCacheList();
+         @Override
+         public void execute()
+         {
+            tableModelHandler.updatePageAndRowIndex();
 
-         eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
-         sourceContentsPresenter.setSelectedSource(display.getSelectedRowNumber());
-         display.getTargetCellEditor().savePendingChange(true);
+            display.setTransUnitDetails(transUnit);
 
-         display.gotoRow(display.getSelectedRowNumber(), true);
-      }
+            if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
+            {
+               selectedTransUnit = transUnit;
+               Log.info("SelectedTransUnit: " + selectedTransUnit.getId());
+               // Clean the cache when we click the new entry
+               clearCacheList();
+
+               eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
+               sourceContentsPresenter.setSelectedSource(display.getSelectedRowNumber());
+               display.getTargetCellEditor().savePendingChange(true);
+
+               display.gotoRow(display.getSelectedRowNumber(), true);
+            }
+         }
+      });
+
    }
 
    public void gotoCurrentRow()
