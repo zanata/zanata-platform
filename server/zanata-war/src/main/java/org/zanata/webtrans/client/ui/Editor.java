@@ -7,6 +7,7 @@ import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
@@ -27,7 +28,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 
-public class Editor extends Composite implements ToggleEditor, HasUpdateValidationWarning
+public class Editor extends Composite implements ToggleEditor
 {
    private String findMessage;
    private TargetContentsDisplay.Listener listener;
@@ -309,8 +310,14 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
    @Override
    public void addValidationMessagePanel(IsWidget validationMessagePanel)
    {
-      validationMessagePanelContainer.clear();
+      removeValidationMessagePanel();
       validationMessagePanelContainer.add(validationMessagePanel);
+   }
+
+   @Override
+   public void removeValidationMessagePanel()
+   {
+      validationMessagePanelContainer.clear();
    }
 
    @Override
@@ -343,6 +350,13 @@ public class Editor extends Composite implements ToggleEditor, HasUpdateValidati
    @Override
    public void updateValidationWarning(List<String> errors)
    {
-      // TODO update label css is errors is empty
+      if (!errors.isEmpty())
+      {
+         textArea.addStyleName("HasValidationError");
+      }
+      else
+      {
+         textArea.removeStyleName("HasValidationError");
+      }
    }
 }

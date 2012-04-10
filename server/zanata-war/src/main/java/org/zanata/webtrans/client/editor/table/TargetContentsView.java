@@ -89,15 +89,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    }
 
    @Override
-   public void openEditors()
-   {
-      for (ToggleEditor editor : editors)
-      {
-         editor.setViewMode(ToggleEditor.ViewMode.EDIT);
-      }
-   }
-
-   @Override
    public void focusEditor(final int currentEditorIndex)
    {
       Scheduler.get().scheduleDeferred(new Command()
@@ -175,6 +166,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    {
       for (ToggleEditor editor : editors)
       {
+         editor.removeValidationMessagePanel();
          editor.setViewMode(ToggleEditor.ViewMode.VIEW);
       }
    }

@@ -122,7 +122,12 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       Log.info("enter show editor with editor index:" + editorIndex + " current editor index:" + currentEditorIndex);
       currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
-      currentDisplay.openEditors();
+
+      for (ToggleEditor editor : currentDisplay.getEditors())
+      {
+         editor.setViewMode(ToggleEditor.ViewMode.EDIT);
+         validate(editor);
+      }
 
       if (configHolder.isDisplayButtons())
       {
@@ -180,9 +185,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void validate(ToggleEditor editor)
    {
-      currentEditorIndex = editor.getIndex();
+      // currentEditorIndex = editor.getIndex();
       RunValidationEvent event = new RunValidationEvent(sourceContentsPresenter.getSelectedSource(), editor.getText(), false);
       event.addWidget(validationMessagePanel);
+      event.addWidget(editor);
       eventBus.fireEvent(event);
    }
 

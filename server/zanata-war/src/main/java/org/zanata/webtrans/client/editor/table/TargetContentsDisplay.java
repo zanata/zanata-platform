@@ -30,8 +30,6 @@ public interface TargetContentsDisplay extends WidgetDisplay
 
    void showButtons(boolean displayButtons);
 
-   void openEditors();
-
    void focusEditor(int currentEditorIndex);
 
    interface Listener
