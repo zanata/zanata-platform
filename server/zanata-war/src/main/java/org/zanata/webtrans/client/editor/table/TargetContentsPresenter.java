@@ -39,7 +39,6 @@ import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
-import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
@@ -66,7 +65,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private final UserConfigHolder configHolder;
 
    private final CheckKey checkKey;
-   private NavigationMessages navMessages;
    private WorkspaceContext workspaceContext;
    private Scheduler scheduler;
 
@@ -79,14 +77,13 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private TransUnitsEditModel cellEditor;
 
    @Inject
-   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, UserConfigHolder configHolder, NavigationMessages navMessages, WorkspaceContext workspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel)
+   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, UserConfigHolder configHolder, WorkspaceContext workspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel)
    {
       this.displayProvider = displayProvider;
       this.eventBus = eventBus;
       this.messages = messages;
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.configHolder = configHolder;
-      this.navMessages = navMessages;
       this.workspaceContext = workspaceContext;
       this.scheduler = scheduler;
       this.validationMessagePanel = validationMessagePanel;
@@ -157,18 +154,12 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       TargetContentsDisplay result = displayList.get(rowIndex);
       result.setFindMessage(findMessages);
       result.setTargets(transUnit.getTargets());
-      result.setSaveButtonTitle(decideButtonTitle());
       if (workspaceContext.isReadOnly())
       {
          Log.debug("read only mode. Hide buttons");
          result.showButtons(false);
       }
       return result;
-   }
-
-   private String decideButtonTitle()
-   {
-      return (configHolder.isButtonEnter()) ? navMessages.editSaveWithEnterShortcut() : navMessages.editSaveShortcut();
    }
 
    public void initWidgets(int pageSize)
@@ -307,11 +298,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void onValueChanged(UserConfigChangeEvent event)
    {
-      //TODO optimise a bit. If some config hasn't changed or not relevant in this context, don't bother doing anything
-      String title = decideButtonTitle();
+      // TODO optimise a bit. If some config hasn't changed or not relevant in
+      // this context, don't bother doing anything
       for (TargetContentsDisplay display : displayList)
       {
-         display.setSaveButtonTitle(title);
          display.showButtons(configHolder.isDisplayButtons());
          for (ToggleEditor editor : display.getEditors())
          {
@@ -325,7 +315,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       if (isEditing())
       {
-         validate(getCurrentEditor());
+         for (ToggleEditor editor : currentDisplay.getEditors())
+         {
+            editor.setViewMode(ToggleEditor.ViewMode.EDIT);
+            validate(editor);
+         }
       }
    }
 

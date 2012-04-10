@@ -17,6 +17,11 @@ package org.zanata.webtrans.client.editor.table;
 
 import java.util.ArrayList;
 
+import org.zanata.webtrans.client.ui.Editor;
+import org.zanata.webtrans.client.ui.ToggleEditor;
+
+import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -25,16 +30,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.zanata.webtrans.client.ui.Editor;
-import org.zanata.webtrans.client.ui.ToggleEditor;
-
-import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TargetContentsView extends Composite implements TargetContentsDisplay
@@ -68,18 +67,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       editorGrid.ensureDebugId("target-contents-grid");
       editorGrid.setWidth("100%");
       editors = Lists.newArrayList();
-   }
-
-   @Override
-   public void setSaveButtonTitle(String title)
-   {
-      Preconditions.checkState(editors.size() > 0);
-      lastEditor().setSaveButtonTitle(title);
-   }
-
-   private ToggleEditor lastEditor()
-   {
-      return editors.get(editors.size() - 1);
    }
 
    @Override
