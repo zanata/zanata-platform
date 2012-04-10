@@ -59,7 +59,6 @@
 		<param-value>DEFAULT</param-value>
 	</context-param>
 
-
 	<!-- 
 	Make sure Liquibase is the first listener, so that it can update the database schema before
 	anyone uses the database.
@@ -69,7 +68,7 @@
 	    <param-name>liquibase.changelog</param-name>
 	    <param-value>db/db.changelog.xml</param-value>
 	</context-param>
-	 
+
 	<context-param>
 	    <param-name>liquibase.datasource</param-name>
 	    <param-value>java:/${ds.jndi.name}</param-value>
@@ -99,8 +98,9 @@
 	</listener>
 
 
-
-
+    <listener>
+        <listener-class>net.bull.javamelody.SessionListener</listener-class>
+    </listener>
 
 	<!-- Seam -->
 
@@ -141,6 +141,24 @@
 		<filter-name>UrlRewriteFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+
+    <!--java melody for monitoring stats-->
+    <filter>
+        <filter-name>monitoring</filter-name>
+        <filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+        <init-param>
+            <param-name>javamelody.datasources</param-name>
+            <param-value>java:${ds.jndi.name}</param-value>
+        </init-param>
+        <init-param>
+            <param-name>monitoring-path</param-name>
+            <param-value>/admin/monitoring</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>monitoring</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
 	<servlet>
 		<servlet-name>Seam Resource Servlet</servlet-name>
