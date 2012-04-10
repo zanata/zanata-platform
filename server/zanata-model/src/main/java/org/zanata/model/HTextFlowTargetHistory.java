@@ -100,7 +100,9 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
       this.textFlowRevision = target.getTextFlowRevision();
       this.textFlowTarget = target;
       this.versionNum = target.getVersionNum();
-      this.setContents(target.getContents()); 
+      // This cannot be done at this point due to an issue with hibernate in which a listener cannot access
+      // loading collections
+      //this.setContents(target.getContents()); 
    }
 
    @Id
@@ -117,7 +119,7 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
-   @ManyToOne(fetch = FetchType.EAGER)
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "target_id")
    public HTextFlowTarget getTextFlowTarget()
    {
@@ -171,7 +173,7 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
       this.lastChanged = lastChanged;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "last_modified_by_id", nullable = true)
    @Override
    public HPerson getLastModifiedBy()

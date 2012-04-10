@@ -113,6 +113,9 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    // Only for internal use (persistence transient) 
    private HTextFlowTargetHistory initialState;
    
+   // Only for internal use (persistence transient) 
+   private boolean lazyRelationsCopied = false;
+   
 
    public HTextFlowTarget()
    {
@@ -245,6 +248,10 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    @Column(name = "content", nullable = false)
    public List<String> getContents()
    {
+      // Copy lazily loaded relations to the history object as this cannot be done
+      // in the entity callbacks
+      copyLazyLoadedRelationsToHistory();
+      
       if( contents == null )
       {
          contents = new ArrayList<String>();
@@ -254,6 +261,10 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
 
    public void setContents(List<String> contents)
    {
+      // Copy lazily loaded relations to the history object as this cannot be done
+      // in the entity callbacks
+      copyLazyLoadedRelationsToHistory();
+      
       this.contents = new ArrayList<String>(contents);
    }
    
@@ -309,6 +320,19 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    {
       this.oldVersionNum = this.getVersionNum();
       this.initialState = new HTextFlowTargetHistory(this);
+      this.lazyRelationsCopied = false;
+   }
+   
+   /**
+    * Copies all lazy loaded relations to the history object.
+    */
+   private void copyLazyLoadedRelationsToHistory()
+   {
+      if( this.initialState != null && this.initialState.getContents() == null && !this.lazyRelationsCopied )
+      {
+         this.initialState.setContents( this.contents );
+         this.lazyRelationsCopied = true;
+      }
    }
 
    /**
