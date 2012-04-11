@@ -28,11 +28,6 @@
               <s:token allowMultiplePosts="true" />
               <rich:dataTable id="threads" value="#{allVersionGroups}"
                               var="group">
-
-                  <rich:column sortBy="#{group.slug}">
-                      <f:facet name="header">#{messages['jsf.Slug']}</f:facet>
-                      #{group.slug}
-                  </rich:column>
                   <rich:column sortBy="#{group.name}">
                       <f:facet name="header">#{messages['jsf.Name']}</f:facet>
                       #{group.name}
@@ -40,6 +35,10 @@
                   <rich:column>
                       <f:facet name="header">#{messages['jsf.Description']}</f:facet>
                       #{group.description}
+                  </rich:column>
+                  <rich:column sortBy="#{group.creationDate}">
+                      <f:facet name="header">#{messages['jsf.CreationDate']}</f:facet>
+                      #{group.creationDate}
                   </rich:column>
               </rich:dataTable>
           </a4j:form>
