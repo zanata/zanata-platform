@@ -91,8 +91,12 @@
 	    <param-value>production</param-value>
 	</context-param>
 	 --> 
-<!--
--->
+
+    <context-param>
+        <param-name>javamelody.datasources</param-name>
+        <param-value>java:/${ds.jndi.name}</param-value>
+    </context-param>
+
 	<listener>
 	    <listener-class>liquibase.integration.servlet.LiquibaseServletListener</listener-class>
 	</listener>
@@ -112,10 +116,6 @@
     <filter>
         <filter-name>monitoring</filter-name>
         <filter-class>org.zanata.seam.interceptor.MonitoringWrapper</filter-class>
-        <init-param>
-            <param-name>javamelody.datasources</param-name>
-            <param-value>java:${ds.jndi.name}</param-value>
-        </init-param>
         <init-param>
             <param-name>monitoring-path</param-name>
             <param-value>/admin/monitoring</param-value>
