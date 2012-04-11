@@ -297,4 +297,74 @@
 			baseTableName="HTextFlowTargetContentHistory" baseColumnNames="text_flow_target_history_id"/>
 	</changeSet>
 
+    <changeSet author="aeng@redhat.com" id="21">
+            <comment>Add table to store iteration group</comment>
+            <createTable tableName="HIterationGroup">
+                <column name="id" type="bigint" autoIncrement="true">
+                    <constraints nullable="false" primaryKey="true"/>
+                </column>
+
+                <column name="name" type="varchar(80)">
+                    <constraints nullable="false" />
+                </column>
+
+                <column name="slug" type="varchar(40)">
+                    <constraints nullable="false" unique="true"/>
+                </column>
+
+                <column name="description" type="varchar(100)"/>
+
+                <column name="status" type="char(1)">
+                    <constraints nullable="false" />
+                </column>
+
+                <column name="creationDate" type="DATETIME">
+                    <constraints nullable="false" />
+                </column>
+
+                <column name="lastChanged" type="DATETIME">
+                    <constraints nullable="false" />
+                </column>
+
+                <column name="versionNum" type="int">
+                    <constraints nullable="false" />
+                </column>
+
+            </createTable>
+
+            <addUniqueConstraint tableName="HIterationGroup" columnNames="slug" constraintName="UKslug" />
+        </changeSet>
+
+        <changeSet author="aeng@redhat.com" id="22">
+            <comment>Add table to store many-many HIterationGroup to HPerson</comment>
+            <createTable tableName="HIterationGroup_Maintainer">
+                <column name="iterationGroupId" type="bigint"/>
+                <column name="personId" type="bigint"/>
+            </createTable>
+            <addPrimaryKey tableName="HIterationGroup_Maintainer" columnNames="iterationGroupId, personId" />
+            <addForeignKeyConstraint baseTableName="HIterationGroup_Maintainer"
+                                     baseColumnNames="iterationGroupId" constraintName="FKiterationGroupMaintainer_iterationGroupId"
+                                     referencedTableName="HIterationGroup" referencedColumnNames="id" />
+
+            <addForeignKeyConstraint baseTableName="HIterationGroup_Maintainer"
+                                     baseColumnNames="personId" constraintName="FKiterationGroupMaintainer_personId"
+                                     referencedTableName="HPerson" referencedColumnNames="id" />
+        </changeSet>
+
+        <changeSet author="aeng@redhat.com" id="23">
+            <comment>Add table to store many-many HIterationGroup to HProjectIteration</comment>
+            <createTable tableName="HIterationGroup_ProjectIteration">
+                <column name="iterationGroupId" type="bigint"/>
+                <column name="projectIterationId" type="bigint"/>
+            </createTable>
+            <addPrimaryKey tableName="HIterationGroup_ProjectIteration" columnNames="iterationGroupId, projectIterationId" />
+            <addForeignKeyConstraint baseTableName="HIterationGroup_ProjectIteration"
+                                     baseColumnNames="iterationGroupId" constraintName="FKiterationGroup_ProjectIteration_iterationGroupId"
+                                     referencedTableName="HIterationGroup" referencedColumnNames="id" />
+
+            <addForeignKeyConstraint baseTableName="HIterationGroup_ProjectIteration"
+                                     baseColumnNames="projectIterationId" constraintName="FKiterationGroup_ProjectIteration_projectIterationId"
+                                     referencedTableName="HProjectIteration" referencedColumnNames="id" />
+        </changeSet>
+
 </databaseChangeLog>
