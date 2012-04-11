@@ -28,6 +28,8 @@ public class LoginAction
    @Test
    public void canSignIn()
    {
+      System.getProperties().put("webdriver.firefox.useExisting", "true");
+
       WebDriver driver = new WebDriverFactory().getDriver();
 
       driver.get("http://localhost:8080/zanata");
