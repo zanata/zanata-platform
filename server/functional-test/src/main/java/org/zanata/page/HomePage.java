@@ -28,6 +28,7 @@ public class HomePage extends AbstractPage
    public HomePage(final WebDriver driver)
    {
       super(driver);
+      PageFactory.initElements(driver, this);
    }
 
    public SignInPage clickSignInLink()

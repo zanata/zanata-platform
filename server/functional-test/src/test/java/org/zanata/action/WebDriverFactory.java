@@ -22,6 +22,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import com.google.common.base.Strings;
 
 public class WebDriverFactory
@@ -32,9 +33,14 @@ public class WebDriverFactory
    {
       if (driver == null)
       {
-         driver = configureFirefoxDriver();
+         driver = configureHtmlDriver();
       }
       return driver;
+   }
+
+   private WebDriver configureHtmlDriver()
+   {
+      return new HtmlUnitDriver(true);
    }
 
    private WebDriver configureChromeDriver()

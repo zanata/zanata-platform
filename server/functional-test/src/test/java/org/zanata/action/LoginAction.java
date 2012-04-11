@@ -17,6 +17,7 @@ package org.zanata.action;
 
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
+import org.zanata.page.HomePage;
 import org.zanata.page.SignInPage;
 
 import static org.hamcrest.MatcherAssert.*;
@@ -28,14 +29,20 @@ public class LoginAction
    @Test
    public void canSignIn()
    {
-      System.getProperties().put("webdriver.firefox.useExisting", "true");
+//      System.getProperties().put("webdriver.firefox.useExisting", "true");
 
       WebDriver driver = new WebDriverFactory().getDriver();
 
       driver.get("http://localhost:8080/zanata");
 
-      String title = new SignInPage(driver).getTitle();
-      assertThat(title, equalTo("Zanata:Log in"));
+      HomePage homePage = new HomePage(driver);
+      SignInPage signInPage = homePage.clickSignInLink();
+
+      assertThat(signInPage.getTitle(), equalTo("Zanata:Log in"));
+
+      homePage = signInPage.signInAndGoToPage("admin", "admin", HomePage.class);
+
+      assertThat(homePage.getTitle(), equalTo("Zanata:Home"));
    }
 
 
