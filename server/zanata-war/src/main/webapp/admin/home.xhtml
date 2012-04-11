@@ -13,7 +13,7 @@
 		<rich:jQuery selector="#tab_admin"
 			query="addClass('ui-tabs-selected')" />
 		<h1>#{messages['jsf.Administration']}</h1>
-		
+
 		<ul style="padding-left:20px">
 			<li id="Admin_Server_configuration_home"><s:link
 					id="Admin_Server_configuration_a_home"
@@ -31,6 +31,8 @@
 					view="/admin/glossary.xhtml" propagation="none" styleClass="table_link">#{messages['jsf.Glossary']}</s:link></li>
 			<li id="Admin_Manage_stats_home"><s:link id="Admin_Manage_stats_a_home"
 					view="/admin/stats.xhtml" propagation="none" styleClass="table_link">#{messages['jsf.OverallStatistics']}</s:link></li>
+            <li id="Admin_Monitoring_home"><s:link id="Admin_Mornitoring_a_home"
+                    view="/admin/monitoring" propagation="none" styleClass="table_link">#{messages['jsf.Monitoring']}</s:link></li>
 		</ul>
 
 
