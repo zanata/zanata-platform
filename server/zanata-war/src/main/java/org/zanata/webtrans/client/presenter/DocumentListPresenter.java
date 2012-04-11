@@ -33,7 +33,6 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
-import org.zanata.webtrans.client.editor.filter.ContentFilter;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
@@ -103,7 +102,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
     */
    private HashMap<String, DocumentId> idsByPath;
 
-   // private ContentFilter<DocumentInfo> filter;
    private final PathDocumentFilter filter = new PathDocumentFilter();
 
    // used to determine whether to re-run filter
@@ -293,14 +291,13 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
     * @author David Mason, damason@redhat.com
     * 
     */
-   final class PathDocumentFilter implements ContentFilter<DocumentInfo>
+   final class PathDocumentFilter
    {
       private static final String DOCUMENT_FILTER_LIST_DELIMITER = ",";
 
       private HashSet<String> patterns = new HashSet<String>();
       private boolean isFullText = false;
 
-      @Override
       public boolean accept(DocumentInfo value)
       {
          if (patterns.isEmpty())

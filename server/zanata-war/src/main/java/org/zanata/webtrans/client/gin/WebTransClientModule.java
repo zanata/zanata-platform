@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.client.gin;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.inject.Provides;
 import net.customware.gwt.presenter.client.DefaultEventBus;
 import net.customware.gwt.presenter.client.Display;
 import net.customware.gwt.presenter.client.EventBus;
@@ -30,8 +32,12 @@ import org.zanata.webtrans.client.EventProcessor;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.editor.filter.TransFilterView;
+import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
+import org.zanata.webtrans.client.editor.table.SourceContentsView;
 import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
 import org.zanata.webtrans.client.editor.table.TableEditorView;
+import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
+import org.zanata.webtrans.client.editor.table.TargetContentsView;
 import org.zanata.webtrans.client.events.NativeEvent;
 import org.zanata.webtrans.client.events.NativeEventImpl;
 import org.zanata.webtrans.client.history.History;
@@ -45,6 +51,7 @@ import org.zanata.webtrans.client.presenter.GlossaryDetailsPresenter;
 import org.zanata.webtrans.client.presenter.GlossaryPresenter;
 import org.zanata.webtrans.client.presenter.OptionsPanelPresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
+import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.TransMemoryDetailsPresenter;
 import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.presenter.TransUnitNavigationPresenter;
@@ -58,6 +65,8 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.rpc.DelegatingDispatchAsync;
 import org.zanata.webtrans.client.ui.OptionsPanelView;
+import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
+import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
 import org.zanata.webtrans.client.validation.ValidationService;
 import org.zanata.webtrans.client.view.AppView;
 import org.zanata.webtrans.client.view.DocumentListView;
@@ -110,6 +119,11 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(ValidationOptionsPresenter.class, ValidationOptionsPresenter.Display.class, ValidationOptionsView.class);
       bindPresenter(UndoRedoPresenter.class, UndoRedoPresenter.Display.class, UndoRedoView.class);
 
+      bind(SourceContentsPresenter.class).in(Singleton.class);
+      bind(TargetContentsDisplay.class).to(TargetContentsView.class);
+      bind(SourceContentsDisplay.class).to(SourceContentsView.class);
+      bind(ValidationMessagePanelDisplay.class).to(ValidationMessagePanelView.class).in(Singleton.class);
+
       bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);
       bind(NativeEvent.class).to(NativeEventImpl.class).in(Singleton.class);
       bind(History.class).to(HistoryImpl.class).in(Singleton.class);
@@ -131,6 +145,12 @@ public class WebTransClientModule extends AbstractPresenterModule
    protected <D extends Display> void bindDisplay(Class<D> display, Class<? extends D> displayImpl)
    {
       bind(display).to(displayImpl).in(Singleton.class);
+   }
+
+   @Provides
+   public Scheduler provideScheduler()
+   {
+      return Scheduler.get();
    }
 
    static class WorkspaceContextProvider implements Provider<WorkspaceContext>

@@ -1,11 +1,11 @@
 package org.zanata.client.commands.push;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.notNull;
 
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.core.Response.Status;
@@ -15,7 +15,6 @@ import org.easymock.IMocksControl;
 import org.jboss.resteasy.client.ClientResponse;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.client.commands.ConfigurableProjectCommand;
 import org.zanata.client.commands.DummyResponse;
 import org.zanata.client.commands.OptionsUtil;
 import org.zanata.client.commands.ZanataCommand;

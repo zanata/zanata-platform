@@ -8,6 +8,7 @@
     xmlns:rich="http://richfaces.org/rich"
     template="../WEB-INF/layout/template.xhtml">
 
+<ui:define name="page_title">#{projectHome.instance.name} - Add Version</ui:define>
 <ui:define name="center_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
     <h1>#{messages['jsf.NameCreateANewVersion']}</h1>

@@ -35,12 +35,14 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
+import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitWords;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.BaseSecurityChecker;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 
 @Name("viewAllStatusAction")
@@ -54,6 +56,9 @@ public class ViewAllStatusAction extends BaseSecurityChecker implements Serializ
    
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
+   
+   @In
+   ZanataIdentity identity;
    
    @In
    ProjectIterationDAO projectIterationDAO;
@@ -204,6 +209,13 @@ public class ViewAllStatusAction extends BaseSecurityChecker implements Serializ
    {
       return this.getProjectIteration().getProject().getStatus() == EntityStatus.OBSOLETE || 
              this.getProjectIteration().getStatus() == EntityStatus.OBSOLETE;
+   }
+   
+   public boolean isUserAllowedToTranslate(String localeId)
+   {
+      return !isIterationReadOnly() && !isIterationObsolete() 
+             && identity != null && identity.hasPermission("add-translation", getProjectIteration().getProject(),
+                   localeServiceImpl.getByLocaleId(new LocaleId(localeId)));
    }
    
    private List<HLocale> getDisplayLocales()

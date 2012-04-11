@@ -3,31 +3,30 @@ package org.zanata.webtrans.shared.rpc;
 import net.customware.gwt.dispatch.shared.Action;
 
 import org.zanata.common.LocaleId;
+import org.zanata.webtrans.shared.model.TransMemoryQuery;
 
 
 public class GetTranslationMemory implements Action<GetTranslationMemoryResult>, HasSearchType
 {
    private static final long serialVersionUID = 1L;
    private LocaleId localeId;
-   private String query;
-   private SearchType searchType;
+   private TransMemoryQuery query;
 
    @SuppressWarnings("unused")
    private GetTranslationMemory()
    {
    }
 
-   public GetTranslationMemory(String query, LocaleId localeId, SearchType searchType)
+   public GetTranslationMemory(TransMemoryQuery query, LocaleId localeId)
    {
       this.query = query;
       this.localeId = localeId;
-      this.searchType = searchType;
    }
 
    @Override
    public SearchType getSearchType()
    {
-      return searchType;
+      return query.getSearchType();
    }
 
    public void setLocaleId(LocaleId localeId)
@@ -40,12 +39,7 @@ public class GetTranslationMemory implements Action<GetTranslationMemoryResult>,
       return localeId;
    }
 
-   public void setQuery(String query)
-   {
-      this.query = query;
-   }
-
-   public String getQuery()
+   public TransMemoryQuery getQuery()
    {
       return query;
    }
@@ -57,7 +51,6 @@ public class GetTranslationMemory implements Action<GetTranslationMemoryResult>,
       int result = 1;
       result = prime * result + ((localeId == null) ? 0 : localeId.hashCode());
       result = prime * result + ((query == null) ? 0 : query.hashCode());
-      result = prime * result + ((searchType == null) ? 0 : searchType.hashCode());
       return result;
    }
 
@@ -96,10 +89,6 @@ public class GetTranslationMemory implements Action<GetTranslationMemoryResult>,
          }
       }
       else if (!query.equals(other.query))
-      {
-         return false;
-      }
-      if (searchType != other.searchType)
       {
          return false;
       }

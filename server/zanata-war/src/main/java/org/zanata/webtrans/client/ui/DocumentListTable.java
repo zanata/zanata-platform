@@ -1,12 +1,10 @@
 package org.zanata.webtrans.client.ui;
 
 import java.util.Comparator;
-import java.util.HashMap;
 
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.ui.table.cell.TransUnitCountGraphCell;
 import org.zanata.webtrans.client.ui.table.column.DirectoryColumn;
 import org.zanata.webtrans.client.ui.table.column.DocumentColumn;
 import org.zanata.webtrans.client.ui.table.column.RemainingWordsHoursColumn;

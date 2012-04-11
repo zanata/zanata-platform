@@ -227,10 +227,10 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
              * keyup is used because TargetCellEditor will intercept the event
              * again (Firefox) See textArea.addKeyDownHandler@InlineTargetCellEditor
              **/
-            if (display.asWidget().isVisible())
+            if (display.asWidget().isVisible() && (event.getNativeEvent().getType().equals("keyup") || event.getNativeEvent().getType().equals("keydown")))
             {
                checkKey.init(event.getNativeEvent());
-
+               
                if (translationEditorPresenter.getSelectedTransUnit() != null && checkKey.isCopyFromTransMem())
                {
                   int index;
@@ -265,7 +265,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
                 * Only when the Table is showed,editor is closed, search field
                 * not focused, the keyboard event will be processed.
                 **/
-               if (!translationEditorPresenter.isTargetCellEditorFocused() &&
+               if (!translationEditorPresenter.isEditing() &&
                   !translationEditorPresenter.isTransFilterFocused() && 
                   !transMemoryPresenter.getDisplay().isFocused() && 
                   !glossaryPresenter.getDisplay().isFocused() &&
@@ -273,23 +273,16 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
                {
                   if (event.getNativeEvent().getType().equals("keyup"))
                   {
-                     if (checkKey.isCopyFromSourceKey())
-                     {
-                        if (translationEditorPresenter.getSelectedTransUnit() != null)
-                        {
-                           stopDefaultAction(event);
-                           translationEditorPresenter.gotoCurrentRow();
-                           translationEditorPresenter.cloneAction();
-                        }
-                     }
-                     else if (checkKey.isEnterKey() && !checkKey.isCtrlKey())
+                     if (checkKey.isEnterKey() && !checkKey.isCtrlKey())
                      {
                         if (translationEditorPresenter.getSelectedTransUnit() != null)
                         {
                            if (!translationEditorPresenter.isCancelButtonFocused())
                            {
-                              stopDefaultAction(event);
-                              translationEditorPresenter.gotoCurrentRow();
+                              event.getNativeEvent().stopPropagation();
+                              event.getNativeEvent().preventDefault();
+                              
+                              translationEditorPresenter.openEditorOnSelectedRow();
                            }
                            translationEditorPresenter.setCancelButtonFocused(false);
                         }
@@ -300,25 +293,20 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
                      if (checkKey.isPreviousEntryKey())
                      {
                         Log.info("Go to previous entry");
-                        stopDefaultAction(event);
+                        event.getNativeEvent().stopPropagation();
+                        event.getNativeEvent().preventDefault();
                         translationEditorPresenter.gotoPrevRow(false);
                      }
                      else if (checkKey.isNextEntryKey())
                      {
                         Log.info("Go to next entry");
-                        stopDefaultAction(event);
+                        event.getNativeEvent().stopPropagation();
+                        event.getNativeEvent().preventDefault();
                         translationEditorPresenter.gotoNextRow(false);
                      }
                   }
                }
             }
-         }
-
-         public void stopDefaultAction(NativePreviewEvent event)
-         {
-            event.cancel();
-            event.getNativeEvent().stopPropagation();
-            event.getNativeEvent().preventDefault();
          }
       });
 

@@ -26,6 +26,7 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Events;
@@ -37,6 +38,7 @@ import org.zanata.model.type.UserApiKey;
 @Name("org.jboss.seam.security.identityStore")
 @Install(precedence = Install.DEPLOYMENT, value = true)
 @Scope(APPLICATION)
+@Startup
 @BypassInterceptors
 public class ZanataJpaIdentityStore extends JpaIdentityStore
 {

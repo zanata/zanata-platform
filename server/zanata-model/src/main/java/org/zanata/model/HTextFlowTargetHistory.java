@@ -94,13 +94,15 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
 
    public HTextFlowTargetHistory(HTextFlowTarget target)
    {
-      this.contents = new ArrayList<String>(target.getContents()); 
       this.lastChanged = target.getLastChanged();
       this.lastModifiedBy = target.getLastModifiedBy();
       this.state = target.getState();
       this.textFlowRevision = target.getTextFlowRevision();
       this.textFlowTarget = target;
       this.versionNum = target.getVersionNum();
+      // This cannot be done at this point due to an issue with hibernate in which a listener cannot access
+      // loading collections
+      //this.setContents(target.getContents()); 
    }
 
    @Id
@@ -117,7 +119,7 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
-   @ManyToOne(fetch = FetchType.EAGER)
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "target_id")
    public HTextFlowTarget getTextFlowTarget()
    {
@@ -145,7 +147,7 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
    @Override
    @Type(type = "text")
    @AccessType("field")
-   @CollectionOfElements
+   @CollectionOfElements(fetch = FetchType.EAGER)
    @JoinTable(name = "HTextFlowTargetContentHistory", 
       joinColumns = @JoinColumn(name = "text_flow_target_history_id")
    )
@@ -158,7 +160,7 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
 
    public void setContents(List<String> contents)
    {
-      this.contents = contents;
+      this.contents = new ArrayList<String>(contents);
    }
 
    public Date getLastChanged()
@@ -171,7 +173,7 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
       this.lastChanged = lastChanged;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "last_modified_by_id", nullable = true)
    @Override
    public HPerson getLastModifiedBy()

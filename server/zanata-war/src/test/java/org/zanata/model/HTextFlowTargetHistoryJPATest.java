@@ -40,7 +40,8 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
-   @Test
+   //FIXME workaround (disabled history)
+   @Test(enabled = false)
    public void ensureHistoryIsRecorded()
    {
       Session session = getSession();
@@ -80,7 +81,8 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest
    }
 
 
-   @Test
+   //FIXME workaround (disabled history)
+   @Test(enabled = false)
    public void ensureHistoryIsRecordedPlural()
    {
       Session session = getSession();

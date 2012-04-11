@@ -25,7 +25,8 @@ import java.util.List;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.validation.ValidationObject;
-import org.zanata.webtrans.shared.validation.ValidationUtils;
+
+import com.google.common.base.Strings;
 
 /**
  *
@@ -50,7 +51,7 @@ public abstract class ValidationAction implements ValidationObject
 
    public void validate(String source, String target)
    {
-      if (!ValidationUtils.isEmpty(target))
+      if (!Strings.isNullOrEmpty(target))
          doValidate(source, target);
    }
 

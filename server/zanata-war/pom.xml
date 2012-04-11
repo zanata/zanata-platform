@@ -47,23 +47,23 @@
 		</resources>
 
 		<plugins>
-		<plugin>
-			<artifactId>maven-antrun-plugin</artifactId>
-			<version>1.6</version>
-			<executions>
-			 <execution>
-				<phase>prepare-package</phase>
-				<configuration>
-					<tasks>
-						<mkdir dir="${project.build.directory}/zanata" />
-					</tasks>
-				</configuration>
-				<goals>
-					<goal>run</goal>
-				</goals>
-			 </execution>
-			</executions>
-		</plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                 <execution>
+                    <phase>prepare-package</phase>
+                    <configuration>
+                        <tasks>
+                            <mkdir dir="${project.build.directory}/zanata" />
+                        </tasks>
+                    </configuration>
+                    <goals>
+                        <goal>run</goal>
+                    </goals>
+                 </execution>
+                </executions>
+            </plugin>
 			<plugin>
 			    <artifactId>maven-clean-plugin</artifactId>
 			    <version>2.4.1</version>
@@ -169,7 +169,29 @@
 							<goal>clean</goal>
 						</goals>
 					</execution>
-				</executions>
+                    <execution>
+                        <id>debug</id>
+                        <goals>
+                            <goal>debug</goal>
+                        </goals>
+                        <configuration>
+                            <module>${zanata.gwt.module}</module>
+                            <gen>${project.build.directory}/gwt-gen</gen>
+                            <webappDirectory>
+                                ${as.deploy}/zanata.war
+                            </webappDirectory>
+                            <hostedWebapp>
+                                ${as.deploy}/zanata.war
+                            </hostedWebapp>
+                            <buildOutputDirectory>${project.build.directory}/gwt-gen</buildOutputDirectory>
+                            <port>8080</port>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <runTarget>zanata/webtrans/Application.html</runTarget>
+                    <noServer>true</noServer>
+                </configuration>
 			</plugin>
 
 			<plugin>
@@ -180,6 +202,37 @@
 					</suiteXmlFiles>
 				</configuration>
 			</plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <instrumentation>
+                        <excludes>
+                            <!--TODO move all gwt wrapper class under specific package. i.e boundary-->
+                            <!--<exclude>**/boundary/**/*</exclude>-->
+                            <exclude>**/test/**/*</exclude>
+                            <!--<exclude>**/supersource/**/*</exclude>-->
+                            <exclude>**/client/**/*View</exclude>
+                            <exclude>**/client/Application*</exclude>
+                            <exclude>**/client/auth/**</exclude>
+                            <exclude>**/client/events/**</exclude>
+                            <exclude>**/client/gin/**</exclude>
+                            <exclude>**/client/ui/**</exclude>
+                            <exclude>**/client/view/**</exclude>
+                            <!--below are some trivial classes(java bean) at the moment-->
+                            <exclude>**/shared/auth/**</exclude>
+                            <exclude>**/shared/model/**</exclude>
+                            <exclude>**/*Exception*</exclude>
+                        </excludes>
+                    </instrumentation>
+                    <check>
+                        <totalBranchRate>${cobertura.total-branch-rate}</totalBranchRate>
+                        <totalLineRate>${cobertura.total-line-rate}</totalLineRate>
+                        <haltOnFailure>${cobertura.halt.failure}</haltOnFailure>
+                    </check>
+                </configuration>
+            </plugin>
 			
 			<!-- Configure Failsafe to run in integration-test phase -->
 			<plugin>
@@ -985,6 +1038,21 @@
 			<artifactId>guava</artifactId>
 		</dependency>
 
+ 		<!--to enable guava on gwt-->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava-gwt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.bull.javamelody</groupId>
+            <artifactId>javamelody-core</artifactId>
+        </dependency>
+
 		<dependency>
 			<groupId>org.fedorahosted.openprops</groupId>
 			<artifactId>openprops</artifactId>
@@ -1258,6 +1326,11 @@
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
 		</dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
 
 		<dependency>
 			<groupId>org.testng</groupId>

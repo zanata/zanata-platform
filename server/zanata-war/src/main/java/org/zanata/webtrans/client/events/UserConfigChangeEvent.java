@@ -1,8 +1,5 @@
 package org.zanata.webtrans.client.events;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.gwt.event.shared.GwtEvent;
 
 public class UserConfigChangeEvent extends GwtEvent<UserConfigChangeHandler>
@@ -12,6 +9,10 @@ public class UserConfigChangeEvent extends GwtEvent<UserConfigChangeHandler>
     * Handler type.
     */
    private static Type<UserConfigChangeHandler> TYPE;
+
+   public UserConfigChangeEvent()
+   {
+   }
 
    /**
     * Gets the type associated with this event.
@@ -25,18 +26,6 @@ public class UserConfigChangeEvent extends GwtEvent<UserConfigChangeHandler>
          TYPE = new Type<UserConfigChangeHandler>();
       }
       return TYPE;
-   }
-
-   private HashMap<String, Boolean> configMap;
-
-   public UserConfigChangeEvent(Map<String, Boolean> configMap)
-   {
-      this.configMap = (HashMap<String, Boolean>) configMap;
-   }
-
-   public Map<String, Boolean> getConfigMap()
-   {
-      return configMap;
    }
 
    @Override

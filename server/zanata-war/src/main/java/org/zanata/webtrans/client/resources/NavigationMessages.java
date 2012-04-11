@@ -75,7 +75,7 @@ public interface NavigationMessages extends Messages
    String editSaveShortcut();
 
    @DefaultMessage("Save as Approved (Enter)")
-   String editSavewithEnterShortcut();
+   String editSaveWithEnterShortcut();
 
    @DefaultMessage("Cancel")
    String editCancelShortcut();
@@ -95,7 +95,7 @@ public interface NavigationMessages extends Messages
    // String editCloneAndSaveShortcut();
 
    @DefaultMessage("Copy message from source language (Alt+G)")
-   String copySourcetoTarget();
+   String copySourceToTarget();
 
    @DefaultMessage("{0} ({1})")
    String actionToolTip(String actionName, String shortcut);
@@ -103,8 +103,8 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Save as Fuzzy (Ctrl+S)")
    String saveAsFuzzy();
 
-   @DefaultMessage("Source comment: ")
-   String sourceCommentLabel();
+   @DefaultMessage("Source comment: {0}")
+   String sourceCommentLabel(String comment);
 
    @DefaultMessage("Undo")
    String undoLabel();
@@ -118,14 +118,6 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Click here for more info")
    String clickHereForMoreInfo();
 
-   @DefaultMessage("Run Validation")
-   String runValidation();
-
    @DefaultMessage("Translation Unit Details")
    String transUnitDetailsHeading();
-
-   @DefaultMessage("Validation Warnings: {0}")
-   @AlternateMessage({ "=0", "Validation Warnings: none" })
-   String validationWarningsHeading(@PluralCount
-   int warningCount);
 }

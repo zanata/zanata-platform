@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.ui;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HTML;
 
 public class DiffMatchPatchLabel extends HTML
@@ -29,12 +30,12 @@ public class DiffMatchPatchLabel extends HTML
 
    public DiffMatchPatchLabel()
    {
-      super();
+      super("<pre></pre>");
    }
 
    public DiffMatchPatchLabel(String orig, String text)
    {
-      super();
+      this();
       this.original = orig;
       setText(text);
    }
@@ -49,8 +50,9 @@ public class DiffMatchPatchLabel extends HTML
    public void setText(String text)
    {
       this.plainText = text;
-      String diff = Highlighting.diffAsHtml(original, plainText);
-      setHTML(diff);
+      String diffHtml = Highlighting.diffAsHtml(original, plainText);
+      Element preElement = getElement().getFirstChildElement();
+      preElement.setInnerHTML(diffHtml);
    }
 
    public void setOriginal(String original)

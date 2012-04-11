@@ -20,7 +20,9 @@
  */
 package org.zanata.webtrans.client.events;
 
-import org.zanata.webtrans.shared.model.TransUnitId;
+import java.util.ArrayList;
+
+import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -47,19 +49,11 @@ public class RunValidationEvent extends GwtEvent<RunValidationEventHandler>
    }
 
    private String source, target;
-   private TransUnitId id;
    private boolean fireNotification = true;
+   private ArrayList<HasUpdateValidationWarning> widgetList = new ArrayList<HasUpdateValidationWarning>();
 
-   public RunValidationEvent(TransUnitId id, String source, String target)
+   public RunValidationEvent(String source, String target, boolean fireNotification)
    {
-      this.id = id;
-      this.source = source;
-      this.target = target;
-   }
-
-   public RunValidationEvent(TransUnitId id, String source, String target, boolean fireNotification)
-   {
-      this.id = id;
       this.source = source;
       this.target = target;
       this.fireNotification = fireNotification;
@@ -88,14 +82,19 @@ public class RunValidationEvent extends GwtEvent<RunValidationEventHandler>
       return target;
    }
 
-   public TransUnitId getId()
-   {
-      return id;
-   }
-
    public boolean isFireNotification()
    {
       return fireNotification;
+   }
+
+   public void addWidget(HasUpdateValidationWarning validationMessagePanel)
+   {
+      widgetList.add(validationMessagePanel);
+   }
+
+   public ArrayList<HasUpdateValidationWarning> getWidgetList()
+   {
+      return widgetList;
    }
 }
 

@@ -1,6 +1,6 @@
 package org.zanata.webtrans.shared.rpc;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import net.customware.gwt.dispatch.shared.Result;
 
@@ -13,20 +13,20 @@ public class GetTransUnitsNavigationResult implements Result
    private static final long serialVersionUID = 1L;
 
    private DocumentId documentId;
-   private List<Long> units;
+   private ArrayList<Long> units;
 
    @SuppressWarnings("unused")
    private GetTransUnitsNavigationResult()
    {
    }
 
-   public GetTransUnitsNavigationResult(DocumentId documentId, List<Long> units)
+   public GetTransUnitsNavigationResult(DocumentId documentId, ArrayList<Long> units)
    {
       this.documentId = documentId;
       this.units = units;
    }
 
-   public List<Long> getUnits()
+   public ArrayList<Long> getUnits()
    {
       return units;
    }

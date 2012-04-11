@@ -48,9 +48,8 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.LevenshteinUtil;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
-import org.zanata.util.ShortString;
 import org.zanata.webtrans.server.ActionHandlerFor;
-import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
+import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
@@ -77,21 +76,18 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
    {
       ZanataIdentity.instance().checkLoggedIn();
 
-      final String searchText = action.getQuery();
-      ShortString abbrev = new ShortString(searchText);
-      final SearchType searchType = action.getSearchType();
-      log.info("Fetching TM matches({0}) for \"{1}\"", searchType, abbrev);
+      log.info("Fetching matches for {0}", action.getQuery());
 
       LocaleId localeID = action.getLocaleId();
       HLocale hLocale = localeServiceImpl.getByLocaleId(localeID);
-      ArrayList<TranslationMemoryGlossaryItem> results;
+      ArrayList<TransMemoryResultItem> results;
 
       try
       {
          // FIXME this won't scale well
          List<Long> idsWithTranslations = textFlowDAO.findIdsWithTranslations(localeID);
-         List<Object[]> matches = textFlowDAO.getSearchResult(searchText, searchType, idsWithTranslations, MAX_RESULTS);
-         Map<TMKey, TranslationMemoryGlossaryItem> matchesMap = new LinkedHashMap<TMKey, TranslationMemoryGlossaryItem>(matches.size());
+         List<Object[]> matches = textFlowDAO.getSearchResult(action.getQuery(), idsWithTranslations, MAX_RESULTS);
+         Map<TMKey, TransMemoryResultItem> matchesMap = new LinkedHashMap<TMKey, TransMemoryResultItem>(matches.size());
          for (Object[] match : matches)
          {
             float score = (Float) match[0];
@@ -114,74 +110,87 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
             {
                continue;
             }
-            String textFlowContent = textFlow.getContent();
-            String targetContent = target.getContent();
 
-            int percent = (int) (100 * LevenshteinUtil.getSimilarity(searchText, textFlowContent));
-            TMKey key = new TMKey(textFlowContent, targetContent);
-            TranslationMemoryGlossaryItem item = matchesMap.get(key);
+            double percent;
+            if (action.getQuery().getSearchType() == SearchType.FUZZY_PLURAL)
+            {
+               percent = 100 * LevenshteinUtil.getSimilarity(action.getQuery().getQueries(), textFlow.getContents());
+            }
+            else
+            {
+               final String searchText = action.getQuery().getQueries().get(0);
+               percent = 100 * LevenshteinUtil.getSimilarity(searchText, textFlow.getContents());
+            }
+            ArrayList<String> textFlowContents = new ArrayList<String>(textFlow.getContents());
+            ArrayList<String> targetContents = new ArrayList<String>(target.getContents());
+            TMKey key = new TMKey(textFlowContents, targetContents);
+            TransMemoryResultItem item = matchesMap.get(key);
             if (item == null)
             {
-               item = new TranslationMemoryGlossaryItem(textFlowContent, targetContent, searchText, score, percent);
+               item = new TransMemoryResultItem(textFlowContents, targetContents, score, percent);
                matchesMap.put(key, item);
             }
             item.addSourceId(textFlow.getId());
          }
-         results = new ArrayList<TranslationMemoryGlossaryItem>(matchesMap.values());
+         results = new ArrayList<TransMemoryResultItem>(matchesMap.values());
       }
       catch (ParseException e)
       {
-         if (searchType == SearchType.RAW)
+         if (action.getQuery().getSearchType() == SearchType.RAW)
          {
-            log.warn("Can't parse raw query '" + searchText + "'");
+            // TODO tell the user
+            log.warn("Can't parse raw query " + action.getQuery());
          }
          else
          {
             // escaping failed!
-            log.error("Can't parse query '" + searchText + "'", e);
+            log.error("Can't parse query " + action.getQuery(), e);
          }
-         results = new ArrayList<TranslationMemoryGlossaryItem>(0);
+         results = new ArrayList<TransMemoryResultItem>(0);
       }
 
       /**
        * NB just because this Comparator returns 0 doesn't mean the matches are
        * identical.
        */
-      Comparator<TranslationMemoryGlossaryItem> comp = new Comparator<TranslationMemoryGlossaryItem>()
+      Comparator<TransMemoryResultItem> comp = new Comparator<TransMemoryResultItem>()
       {
 
          @Override
-         public int compare(TranslationMemoryGlossaryItem m1, TranslationMemoryGlossaryItem m2)
+         public int compare(TransMemoryResultItem m1, TransMemoryResultItem m2)
          {
             int result;
-            result = compare(m1.getSimilarityPercent(), m2.getSimilarityPercent());
+            result = Double.compare(m1.getSimilarityPercent(), m2.getSimilarityPercent());
             if (result != 0)
+            {
+               // sort higher similarity first
                return -result;
-            result = compare(m1.getSource().length(), m2.getSource().length());
-            if (result != 0)
-               return result; // shorter matches are preferred, if similarity is
-                              // the same
-            result = compare(m1.getRelevanceScore(), m2.getRelevanceScore());
-            if (result != 0)
-               return -result;
-            return m1.getSource().compareTo(m2.getSource());
+            }
+            result = compare(m1.getSourceContents(), m2.getSourceContents());
+            // sort longer string lists first (more plural forms)
+            return -result;
          }
 
-         private int compare(int a, int b)
+         private int compare(List<String> list1, List<String> list2)
          {
-            if (a < b)
+            for (int i = 0; i < list1.size() && i < list2.size(); i++)
+            {
+               String s1 = list1.get(i);
+               String s2 = list2.get(i);
+               int comp = s1.compareTo(s2);
+               if (comp != 0)
+               {
+                  return comp;
+               }
+            }
+            if (list1.size() < list2.size())
+            {
                return -1;
-            if (a > b)
+            }
+            else if (list1.size() > list2.size())
+            {
                return 1;
-            return 0;
-         }
-
-         private int compare(float a, float b)
-         {
-            if (a < b)
-               return -1;
-            if (a > b)
-               return 1;
+            }
             return 0;
          }
 
@@ -189,7 +198,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 
       Collections.sort(results, comp);
 
-      log.info("Returning {0} TM matches for \"{1}\"", results.size(), abbrev);
+      log.info("Returning {0} TM matches for {1}", results.size(), action.getQuery());
       return new GetTranslationMemoryResult(action, results);
    }
 
@@ -201,23 +210,23 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
    static class TMKey
    {
 
-      private final String textFlowContent;
-      private final String targetContent;
+      private final List<String> textFlowContents;
+      private final List<String> targetContents;
 
-      public TMKey(String textFlowContent, String targetContent)
+      public TMKey(List<String> textFlowContents, List<String> targetContents)
       {
-         this.textFlowContent = textFlowContent;
-         this.targetContent = targetContent;
+         this.textFlowContents = textFlowContents;
+         this.targetContents = targetContents;
       }
 
-      public String getTextFlowContent()
+      public List<String> getTextFlowContents()
       {
-         return textFlowContent;
+         return textFlowContents;
       }
 
-      public String getTargetContent()
+      public List<String> getTargetContents()
       {
-         return targetContent;
+         return targetContents;
       }
 
       @Override
@@ -226,22 +235,17 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
          if (obj instanceof TMKey)
          {
             TMKey o = (TMKey) obj;
-            return equal(textFlowContent, o.textFlowContent) && equal(targetContent, o.targetContent);
+            return textFlowContents.equals(o.textFlowContents) && targetContents.equals(o.targetContents);
          }
          return false;
-      }
-
-      private static boolean equal(String s1, String s2)
-      {
-         return s1 == null ? s2 == null : s1.equals(s2);
       }
 
       @Override
       public int hashCode()
       {
          int result = 1;
-         result = 37 * result + textFlowContent != null ? textFlowContent.hashCode() : 0;
-         result = 37 * result + targetContent != null ? targetContent.hashCode() : 0;
+         result = 37 * result + (textFlowContents != null ? textFlowContents.hashCode() : 0);
+         result = 37 * result + (targetContents != null ? targetContents.hashCode() : 0);
          return result;
       }
 

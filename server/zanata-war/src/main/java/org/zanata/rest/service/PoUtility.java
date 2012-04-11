@@ -97,7 +97,7 @@ public class PoUtility
       return result;
    }
 
-   static Properties headerToProperties(String entries)
+   public static Properties headerToProperties(String entries)
    {
       Properties result = new Properties();
       try

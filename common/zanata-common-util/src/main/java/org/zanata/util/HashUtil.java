@@ -3,6 +3,7 @@ package org.zanata.util;
 import java.security.MessageDigest;
 
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.DigestUtils;
 
 public class HashUtil
 {
@@ -20,5 +21,9 @@ public class HashUtil
          throw new RuntimeException(exc);
       }
    }
-
+   
+   public static String md5Hex(String message)
+   {
+      return DigestUtils.md5Hex(message);
+   }
 }

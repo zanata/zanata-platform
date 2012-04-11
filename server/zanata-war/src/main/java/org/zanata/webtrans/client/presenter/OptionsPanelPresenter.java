@@ -20,22 +20,6 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-
-import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
-import org.zanata.webtrans.client.events.FilterViewEvent;
-import org.zanata.webtrans.client.events.FilterViewEventHandler;
-import org.zanata.webtrans.client.events.UserConfigChangeEvent;
-import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
-import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
-import org.zanata.webtrans.client.resources.EditorConfigConstants;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -44,6 +28,15 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+import org.zanata.webtrans.client.events.FilterViewEvent;
+import org.zanata.webtrans.client.events.FilterViewEventHandler;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
 
 public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter.Display>
 {
@@ -80,20 +73,16 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
 
    private final ValidationOptionsPresenter validationOptionsPresenter;
 
-   private Map<String, Boolean> configMap = new HashMap<String, Boolean>();
    private final WorkspaceContext workspaceContext;
+   private UserConfigHolder configHolder;
 
    @Inject
-   public OptionsPanelPresenter(final Display display, final EventBus eventBus, final ValidationOptionsPresenter validationDetailsPresenter, final WorkspaceContext workspaceContext)
+   public OptionsPanelPresenter(final Display display, final EventBus eventBus, final ValidationOptionsPresenter validationDetailsPresenter, final WorkspaceContext workspaceContext, UserConfigHolder configHolder)
    {
       super(display, eventBus);
       this.validationOptionsPresenter = validationDetailsPresenter;
       this.workspaceContext = workspaceContext;
-
-      configMap.put(EditorConfigConstants.BUTTON_ENTER, false);
-      configMap.put(EditorConfigConstants.BUTTON_ESC, false);
-      configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
-      configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
+      this.configHolder = configHolder;
    }
 
    private final ValueChangeHandler<Boolean> filterChangeHandler = new ValueChangeHandler<Boolean>()
@@ -153,7 +142,8 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
             Log.info("Show editor buttons: " + event.getValue());
-            eventBus.fireEvent(new ButtonDisplayChangeEvent(event.getValue()));
+            configHolder.setDisplayButtons(event.getValue());
+            eventBus.fireEvent(new UserConfigChangeEvent());
          }
       }));
 
@@ -163,8 +153,8 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
             Log.info("Enable 'Enter' Key to save and move to next string: " + event.getValue());
-            configMap.put(EditorConfigConstants.BUTTON_ENTER, event.getValue());
-            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
+            configHolder.setButtonEnter(event.getValue());
+            eventBus.fireEvent(new UserConfigChangeEvent());
          }
       }));
 
@@ -174,15 +164,15 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
             Log.info("Enable 'Esc' Key to close editor: " + event.getValue());
-            configMap.put(EditorConfigConstants.BUTTON_ESC, event.getValue());
-            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
+            configHolder.setButtonEsc(event.getValue());
+            eventBus.fireEvent(new UserConfigChangeEvent());
          }
       }));
 
       // editor buttons always shown by default
       display.getEditorButtonsChk().setValue(true, false);
-      display.getEnterChk().setValue(configMap.get(EditorConfigConstants.BUTTON_ENTER), false);
-      display.getEscChk().setValue(configMap.get(EditorConfigConstants.BUTTON_ESC), false);
+      display.getEnterChk().setValue(configHolder.isButtonEnter(), false);
+      display.getEscChk().setValue(configHolder.isButtonEsc(), false);
 
       registerHandler(display.getModalNavigationOptionsSelect().addChangeHandler(new ChangeHandler()
       {
@@ -192,20 +182,20 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
             String selectedOption = display.getSelectedFilter();
             if (selectedOption.equals(Display.KEY_FUZZY_UNTRANSLATED))
             {
-               configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
-               configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
+               configHolder.setButtonUntranslated(true);
+               configHolder.setButtonFuzzy(true);
             }
             else if (selectedOption.equals(Display.KEY_FUZZY))
             {
-               configMap.put(EditorConfigConstants.BUTTON_FUZZY, true);
-               configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, false);
+               configHolder.setButtonFuzzy(true);
+               configHolder.setButtonUntranslated(false);
             }
             else if (selectedOption.equals(Display.KEY_UNTRANSLATED))
             {
-               configMap.put(EditorConfigConstants.BUTTON_FUZZY, false);
-               configMap.put(EditorConfigConstants.BUTTON_UNTRANSLATED, true);
+               configHolder.setButtonFuzzy(false);
+               configHolder.setButtonUntranslated(true);
             }
-            eventBus.fireEvent(new UserConfigChangeEvent(configMap));
+            eventBus.fireEvent(new UserConfigChangeEvent());
          }
       }));
 
@@ -222,7 +212,8 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
    void setReadOnly(boolean readOnly)
    {
       boolean displayButtons = readOnly ? false : display.getEditorButtonsChk().getValue();
-      eventBus.fireEvent(new ButtonDisplayChangeEvent(displayButtons));
+      configHolder.setDisplayButtons(displayButtons);
+      eventBus.fireEvent(new UserConfigChangeEvent());
       display.setEditorOptionsVisible(!readOnly);
       display.setValidationOptionsVisible(!readOnly);
    }
