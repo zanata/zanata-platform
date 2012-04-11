@@ -177,6 +177,10 @@
     </navigation>
   </page>
 
+    <page view-id="/admin/versiongroupmanager.xhtml" >
+        <action execute="#{versionGroupAction.loadAllGroups}" />
+    </page>
+
   <!-- Profile -->
 
   <page view-id="/profile/edit.xhtml">
