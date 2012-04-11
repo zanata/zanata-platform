@@ -151,7 +151,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       return  matches;
    }
 
-   
+
    @Override
    public List<HTextFlow> findTextFlows(WorkspaceId workspace, DocumentId doc, FilterConstraints constraints)
    {
