@@ -11,6 +11,8 @@
     </parent>
     <groupId>org.zanata</groupId>
     <artifactId>functional-test</artifactId>
+    <!--if we want to use pom packaging, we need to explicitly enable some plugins and various things-->
+    <!--<packaging>pom</packaging>-->
     <name>functional-test</name>
 
     <properties>
@@ -71,4 +73,16 @@
             <version>${hamcrest.version}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <!--at the moment we can't run test without manually boot up a local server-->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <failIfNoTests>false</failIfNoTests>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
