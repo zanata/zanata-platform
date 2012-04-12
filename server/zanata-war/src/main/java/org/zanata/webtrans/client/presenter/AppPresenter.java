@@ -83,6 +83,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       void setStats(TranslationStats transStats);
 
       void setReadOnlyVisible(boolean visible);
+
+      void setSearchLinkTarget(String historyToken);
    }
 
    private final DocumentListPresenter documentListPresenter;
@@ -225,7 +227,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             if (token.getView().equals(MainView.Documents))
             {
                if (selectedDocument == null)
+               {
                   return; // abort if no doc to edit
+               }
                token.setView(MainView.Editor);
             }
             else
@@ -245,6 +249,11 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             processHistoryEvent(event);
          }
       }));
+
+      //TODO this only sets the initial value of the target history. We need to be able to update it after we get into editor as well??
+      HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+      token.setView(MainView.Search);
+      display.setSearchLinkTarget(token.toTokenString());
 
       display.setUserLabel(identity.getPerson().getName());
       String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
@@ -282,8 +291,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          eventBus.fireEvent(new DocumentSelectionEvent(docId));
       }
 
-      // if there is no valid document, don't show the editor
-      if (docId == null)
+      // if there is no valid document and it's not doing search and replace, don't show the editor
+      if (docId == null && token.getView() != MainView.Search)
       {
          token.setView(MainView.Documents);
       }
@@ -307,7 +316,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          //Documents or Search
          default:
             if (currentView == MainView.Editor)
+            {
                translationPresenter.saveEditorPendingChange();
+            }
             display.setDocumentLabel("", messages.noDocumentSelected());
             currentDisplayStats = projectStats;
             break;

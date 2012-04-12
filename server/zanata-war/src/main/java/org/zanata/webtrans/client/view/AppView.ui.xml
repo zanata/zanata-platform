@@ -102,6 +102,14 @@
             cursor: pointer;
             display: inline;
         }
+
+        .search-replace-link a {
+            color: white;
+            text-decoration: underline;
+            cursor: pointer;
+            display: inline;
+            margin-right: 10px;
+        }
 		
 	</ui:style>
 	<g:LayoutPanel>
@@ -149,11 +157,16 @@
 						</g:HTMLPanel>
 					</g:cell>
 					<g:cell verticalAlignment="ALIGN_MIDDLE">
-		            <g:HTMLPanel>
-						<g:Label ui:field="notificationMessage" styleName="{style.notificationInfo}"/>
-		                  <g:Label ui:field="dismissLink" styleName="{style.notification-dismiss}"><ui:msg>(clear)</ui:msg></g:Label>
-		            </g:HTMLPanel>
+                        <g:HTMLPanel>
+                            <g:Label ui:field="notificationMessage" styleName="{style.notificationInfo}"/>
+                            <g:Label ui:field="dismissLink" styleName="{style.notification-dismiss}">
+                                <ui:msg>(clear)</ui:msg>
+                            </g:Label>
+                        </g:HTMLPanel>
 		            </g:cell>
+                    <g:cell verticalAlignment="ALIGN_MIDDLE" horizontalAlignment="ALIGN_RIGHT">
+                        <g:Hyperlink ui:field="searchAndReplaceLink" text="Project wide search and replace" styleName="{style.search-replace-link}" />
+                    </g:cell>
 				</g:HorizontalPanel>
 				</g:layer>
 				<g:layer right="5px" width="200px">	      

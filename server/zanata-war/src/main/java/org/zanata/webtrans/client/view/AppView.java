@@ -30,7 +30,6 @@ import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style.Unit;
@@ -43,6 +42,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasVisibility;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -84,6 +84,8 @@ public class AppView extends Composite implements AppPresenter.Display
 
    @UiField
    Styles style;
+   @UiField
+   Hyperlink searchAndReplaceLink;
 
 
    // TODO may be able to make these provided=true widgets
@@ -254,5 +256,11 @@ public class AppView extends Composite implements AppPresenter.Display
    public void setReadOnlyVisible(boolean visible)
    {
       readOnlyLabel.setVisible(visible);
+   }
+
+   @Override
+   public void setSearchLinkTarget(String historyToken)
+   {
+      searchAndReplaceLink.setTargetHistoryToken(historyToken);
    }
 }

@@ -605,6 +605,9 @@ public class AppPresenterTest
       expectLastCall().anyTimes();
       mockDisplay.setReadOnlyVisible(false);
       expectLastCall().once();
+      mockDisplay.setSearchLinkTarget("view:search");
+      expectLastCall().once();
+
       // initially empty project stats
       emptyProjectStats = new TranslationStats();
       mockDisplay.setStats(eq(emptyProjectStats));
@@ -705,4 +708,9 @@ public class AppPresenterTest
       verify(mockDismiss, mockDismissVisibility);
    }
 
+   public void huangpTest()
+   {
+      String result = "Abc abc ABc aBc".replaceAll("(?i)ab", "o");
+      System.out.println("result = " + result);
+   }
 }

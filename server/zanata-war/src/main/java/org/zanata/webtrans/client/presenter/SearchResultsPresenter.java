@@ -59,7 +59,7 @@ import com.google.inject.Inject;
 
 /**
  * View for project-wide search and replace within textflow targets
- * 
+ *
  * @author David Mason, damason@redhat.com
  */
 public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresenter.Display>
@@ -72,7 +72,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       /**
        * Set the string that will be highlighted in target content.
        * Set to null or empty string to disable highlight
-       * 
+       *
        * @param highlightString
        */
       void setHighlightString(String highlightString);
@@ -283,13 +283,15 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void execute(TransUnit tu)
          {
-            //FIXME update to use plurals
-            String target = tu.getTargets().get(0);
-            target = target.replace(currentHistoryState.getProjectSearchText(), display.getReplacementTextBox().getValue());
-            ArrayList<String> targets = new ArrayList<String>();
-            targets.add(target);
+            for (int i = 0; i < tu.getTargets().size(); i++)
+            {
+               //TODO in GWT we can't replace text in case-insensitive way easily. We either do the hacky native javascript way or move the replace logic to server
+               //see http://www.jroller.com/brodkin/entry/case_insensitive_string_replaceall
+               String newTarget = tu.getTargets().get(i).replace(currentHistoryState.getProjectSearchText(), display.getReplacementTextBox().getValue());
+               tu.getTargets().set(i, newTarget);
+            }
 
-            final UpdateTransUnit updateTransUnit = new UpdateTransUnit(tu.getId(), targets, tu.getStatus());
+            final UpdateTransUnit updateTransUnit = new UpdateTransUnit(tu.getId(), tu.getTargets(), tu.getStatus());
             dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
             {
                @Override

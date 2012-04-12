@@ -20,17 +20,19 @@
  */
 package org.zanata.webtrans.client.view;
 
-import net.customware.gwt.presenter.client.EventBus;
+import java.util.Collection;
+import java.util.List;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.ClearableTextBox;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TransUnit;
-
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
+import com.google.common.collect.Collections2;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.ActionCell.Delegate;
@@ -38,6 +40,8 @@ import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -48,6 +52,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -82,7 +87,6 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    CheckBox caseSensitiveChk;
 
    private String highlightString;
-
 
    @Inject
    public SearchResultsView(Resources resources, UiMessages uiMessages)
@@ -155,7 +159,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
 
    private CellTable<TransUnit> buildTable(Delegate<TransUnit> replaceDelegate)
    {
-      //create columns
+      // create columns
       TextColumn<TransUnit> rowIndexColumn = new TextColumn<TransUnit>()
       {
          @Override
@@ -165,47 +169,56 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
          }
       };
 
-      TextColumn<TransUnit> sourceColumn = new TextColumn<TransUnit>()
+      Column<TransUnit, List<String>> sourceColumn = new Column<TransUnit, List<String>>(new AbstractCell<List<String>>()
       {
          @Override
-         public String getValue(TransUnit tu)
+         public void render(Context context, List<String> contents, SafeHtmlBuilder sb)
          {
-            //FIXME update to use plurals
-            return tu.getSources().get(0);
+            for (String source : notEmptyContents(contents))
+            {
+               //we use highlighting label here just so source and target contents can line up nicely
+               HighlightingLabel label = new HighlightingLabel(source);
+               appendContent(sb, label.getElement().getString());
+            }
+         }
+      })
+      {
+         @Override
+         public List<String> getValue(TransUnit transUnit)
+         {
+            return transUnit.getSources();
          }
       };
 
-      Column<TransUnit, String> targetColumn = new Column<TransUnit, String>(new AbstractCell<String>() {
-
+      Column<TransUnit, List<String>> targetColumn = new Column<TransUnit, List<String>>(new AbstractCell<List<String>>()
+      {
          @Override
-         public void render(com.google.gwt.cell.client.Cell.Context context, String value, SafeHtmlBuilder sb)
+         public void render(Context context, List<String> contents, SafeHtmlBuilder sb)
          {
-            HighlightingLabel label = new HighlightingLabel(value);
-            if (highlightString != null && highlightString.length() > 0)
-            {
-               label.highlightSearch(highlightString);
-            }
-            sb.appendHtmlConstant(label.getElement().getString());
-         }
 
+            for (String target : notEmptyContents(contents))
+            {
+               HighlightingLabel label = new HighlightingLabel(target);
+               if (!Strings.isNullOrEmpty(highlightString))
+               {
+                  label.highlightSearch(highlightString);
+               }
+               appendContent(sb, label.getElement().getString());
+            }
+         }
       })
       {
 
          @Override
-         public String getValue(TransUnit tu)
+         public List<String> getValue(TransUnit tu)
          {
-            //FIXME update to use plurals
-            return tu.getTargets().get(0);
+            return tu.getTargets();
          }
 
          @Override
          public String getCellStyleNames(Context context, TransUnit tu)
          {
-            String styleNames = super.getCellStyleNames(context, tu);
-            if (styleNames == null)
-            {
-               styleNames = "";
-            }
+            String styleNames = Strings.nullToEmpty(super.getCellStyleNames(context, tu));
             if (tu.getStatus() == ContentState.Approved)
             {
                styleNames += " ApprovedStateDecoration";
@@ -223,11 +236,14 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       CellTable<TransUnit> table = new CellTable<TransUnit>();
       table.setWidth("100%", true);
 
-      //TODO use localisable headings (should already exist somewhere)
+      // TODO use localisable headings (should already exist somewhere)
       table.addColumn(rowIndexColumn, "Index");
       table.addColumn(sourceColumn, "Source");
       table.addColumn(targetColumn, "Target");
       table.addColumn(replaceButtonColumn, "Actions");
+
+      sourceColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
+      targetColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 
       table.setColumnWidth(rowIndexColumn, 70.0, Unit.PX);
       table.setColumnWidth(sourceColumn, 50.0, Unit.PCT);
@@ -235,6 +251,23 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       table.setColumnWidth(replaceButtonColumn, 100.0, Unit.PX);
 
       return table;
+   }
+
+   private static void appendContent(SafeHtmlBuilder sb, String content)
+   {
+      sb.appendHtmlConstant("<div style='border-bottom: dotted 1px grey;'>").appendHtmlConstant(content).appendHtmlConstant("</div>");
+   }
+
+   private static Collection<String> notEmptyContents(List<String> contents)
+   {
+      return Collections2.filter(contents, new Predicate<String>()
+      {
+         @Override
+         public boolean apply(String input)
+         {
+            return !Strings.isNullOrEmpty(input);
+         }
+      });
    }
 
    private class ReplaceColumn extends Column<TransUnit, TransUnit>
