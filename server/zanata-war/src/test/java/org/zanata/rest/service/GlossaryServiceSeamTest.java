@@ -1,7 +1,7 @@
 package org.zanata.rest.service;
 
-
-import java.net.URI;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import javax.ws.rs.core.MediaType;
 
@@ -12,18 +12,19 @@ import org.jboss.resteasy.spi.interception.ClientExecutionInterceptor;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDBUnitSeamTest;
+import org.zanata.common.LocaleId;
 import org.zanata.rest.client.IGlossaryResource;
 import org.zanata.rest.client.TestProxyFactory;
-import org.zanata.rest.dto.VersionInfo;
-
-import org.zanata.rest.service.SeamMockClientExecutor;
+import org.zanata.rest.dto.Glossary;
+import org.zanata.rest.dto.GlossaryEntry;
+import org.zanata.rest.dto.GlossaryTerm;
 
 @Test(groups = { "seam-tests" })
-public abstract class GlossaryServiceSeamTest extends ZanataDBUnitSeamTest
+public class GlossaryServiceSeamTest extends ZanataDBUnitSeamTest
 {
-   private static final String AUTH_KEY = "b6d7044e9ee3b2447c28fb7c50d86d98";
-   private static final String USERNAME = "admin";
    private static final String GLOSSARY_DATA_DBUNIT_XML = "org/zanata/test/model/GlossaryData.dbunit.xml";
+   private static final String ACCOUNT_DATA_DBUNIT_XML = "org/zanata/test/model/AccountData.dbunit.xml";
+   private static final String LOCALE_DATA_DBUNIT_XML = "org/zanata/test/model/LocalesData.dbunit.xml";
 
    protected IGlossaryResource glossaryResource;
 
@@ -42,17 +43,45 @@ public abstract class GlossaryServiceSeamTest extends ZanataDBUnitSeamTest
    @BeforeMethod
    public void setup() throws Exception
    {
-      TestProxyFactory clientRequestFactory = new TestProxyFactory(new URI("http://example.com/"), USERNAME, AUTH_KEY, new SeamMockClientExecutor(this), new VersionInfo("SNAPSHOT", ""));
+      TestProxyFactory clientRequestFactory = new TestProxyFactory(new SeamMockClientExecutor(this));
       clientRequestFactory.registerPrefixInterceptor(new MetaTypeAccept());
+
       glossaryResource = clientRequestFactory.getGlossaryResource();
+
    }
 
    @Override
    protected void prepareDBUnitOperations()
    {
       beforeTestOperations.add(new DataSetOperation(GLOSSARY_DATA_DBUNIT_XML, DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation(LOCALE_DATA_DBUNIT_XML, DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation(ACCOUNT_DATA_DBUNIT_XML, DatabaseOperation.CLEAN_INSERT));
+      afterTestOperations.add(new DataSetOperation(ACCOUNT_DATA_DBUNIT_XML, DatabaseOperation.DELETE_ALL));
       afterTestOperations.add(new DataSetOperation(GLOSSARY_DATA_DBUNIT_XML, DatabaseOperation.DELETE_ALL));
+      afterTestOperations.add(new DataSetOperation(LOCALE_DATA_DBUNIT_XML, DatabaseOperation.DELETE_ALL));
    }
 
-   // FIXME write the tests!
+   @Test
+   public void testPutGlossaries()
+   {
+      Glossary glossary = new Glossary();
+      GlossaryEntry glossaryEntry1 = new GlossaryEntry();
+      glossaryEntry1.setSrcLang(LocaleId.EN_US);
+      glossaryEntry1.setSourcereference("TEST SOURCE REF DATA");
+
+      GlossaryTerm glossaryTerm1 = new GlossaryTerm();
+      glossaryTerm1.setLocale(LocaleId.EN_US);
+      glossaryTerm1.setContent("test data content 1 (source lang)");
+      glossaryTerm1.getComments().add("COMMENT 1");
+
+      glossaryEntry1.getGlossaryTerms().add(glossaryTerm1);
+
+      glossary.getGlossaryEntries().add(glossaryEntry1);
+
+      ClientResponse<String> response = glossaryResource.put(glossary);
+      
+      ClientResponse<Glossary> response1 = glossaryResource.getEntries();
+      assertThat(response1.getEntity().getGlossaryEntries().size(), is(1));
+
+   }
 }

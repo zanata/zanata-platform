@@ -29,7 +29,6 @@ import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.NotNull;
 
@@ -97,7 +96,6 @@ public class HTermComment
    @ManyToOne
    @JoinColumn(name = "glossaryTermId", insertable = false, updatable = false, nullable = false)
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
-   @NaturalId
    public HGlossaryTerm getGlossaryTerm()
    {
       return glossaryTerm;

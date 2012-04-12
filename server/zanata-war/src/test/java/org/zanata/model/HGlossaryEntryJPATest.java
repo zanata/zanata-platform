@@ -27,18 +27,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.dbunit.operation.DatabaseOperation;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.hibernate.Session;
 import org.junit.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.dao.LocaleDAO;
-import org.zanata.model.HGlossaryEntry;
-import org.zanata.model.HGlossaryTerm;
-import org.zanata.model.HLocale;
 import org.zanata.service.impl.LocaleServiceImpl;
 
 /**
@@ -57,16 +56,20 @@ public class HGlossaryEntryJPATest extends ZanataDbunitJpaTest
       return mock;
    }
 
-   private GlossaryDAO dao;
+   private GlossaryDAO glossaryDAO;
    HGlossaryEntry entry;
    LocaleServiceImpl localeService;
 
+   @BeforeMethod(firstTimeOnly = true)
+   public void beforeMethod()
+   {
+      glossaryDAO = new GlossaryDAO((Session) em.getDelegate());
+   }
 
    @Test
    public void testHashMap()
    {
-
-      List<HGlossaryEntry> entryList = dao.getEntries();
+      List<HGlossaryEntry> entryList = glossaryDAO.getEntries();
 
       for (HGlossaryEntry hGlossaryEntry : entryList)
       {
@@ -82,58 +85,33 @@ public class HGlossaryEntryJPATest extends ZanataDbunitJpaTest
    @Test
    public void testTermsSize()
    {
-      List<HGlossaryEntry> entryList = dao.getEntries();
+      List<HGlossaryEntry> entryList = glossaryDAO.getEntries();
       assertThat(entryList.get(0).getGlossaryTerms().size(), is(3));
+   }
+
+   @Test
+   public void testDeleteGlossaries()
+   {
+      List<HGlossaryEntry> hGlossaryEntries = glossaryDAO.getEntries();
+
+      for (HGlossaryEntry hGlossaryEntry : hGlossaryEntries)
+      {
+         glossaryDAO.makeTransient(hGlossaryEntry);
+      }
+      glossaryDAO.flush();
+
+      assertThat(glossaryDAO.getEntries().size(), is(0));
+
+      assertThat(((Long)super.getSession().createQuery("select count(*) from HTermComment").uniqueResult()), is(0L));
+      assertThat(((Long)super.getSession().createQuery("select count(*) from HGlossaryTerm").uniqueResult()), is(0L));
    }
 
    @Override
    protected void prepareDBUnitOperations()
    {
-      localeService = new LocaleServiceImpl();
-      LocaleDAO localeDAO = new LocaleDAO(getSession());
-      localeService.setLocaleDAO(localeDAO);
+      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/GlossaryData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
 
-      dao = new GlossaryDAO((Session) getEm().getDelegate());
-
-      localeService.save(LocaleId.EN_US);
-      localeService.save(LocaleId.DE);
-      localeService.save(LocaleId.ES);
-
-      entry = new HGlossaryEntry();
-      entry.setVersionNum(1);
-      entry.setCreationDate(new Date());
-      entry.setLastChanged(new Date());
-
-      entry.setSrcLocale(localeService.getByLocaleId(LocaleId.EN_US));
-      entry.setSourceRef("source ref");
-
-      // Glossary Term 1 - EN_US
-      setupTerm("TERM 1", localeService.getByLocaleId(LocaleId.EN_US));
-
-      // Glossary Term 2 - DE
-      setupTerm("TERM 2", localeService.getByLocaleId(LocaleId.DE));
-
-      // Glossary Term 3 - ES
-      setupTerm("TERM 3", localeService.getByLocaleId(LocaleId.ES));
-
-      dao.makePersistent(entry);
-      dao.flush();
-      dao.clear();
-
-   }
-
-   private void setupTerm(String content, HLocale locale)
-   {
-      HGlossaryTerm term = new HGlossaryTerm(content);
-      term.setVersionNum(1);
-      term.setCreationDate(new Date());
-      term.setLastChanged(new Date());
-
-      // Glossary Term Locale
-      term.setLocale(locale);
-      term.setGlossaryEntry(entry);
-
-      entry.getGlossaryTerms().put(locale, term);
    }
 }
 

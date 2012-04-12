@@ -31,7 +31,7 @@ public interface IGlossaryResource extends GlossaryResource
 
    @Override
    @PUT
-   public ClientResponse<Glossary> put(Glossary glossary);
+   public ClientResponse<String> put(Glossary glossary);
 
    @Override
    @DELETE
