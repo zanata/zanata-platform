@@ -1,6 +1,7 @@
 package org.zanata.webtrans.shared.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Comparator;
 
 import org.zanata.common.ContentState;
@@ -19,9 +20,10 @@ public class TransUnit implements IsSerializable, Serializable
 
    private LocaleId localeId;
 
-   private String source;
+   private boolean plural;
+   private ArrayList<String> sources;
    private String sourceComment;
-   private String target;
+   private ArrayList<String> targets;
    private String msgContext;
    private String lastModifiedBy;
    private String lastModifiedTime;
@@ -35,14 +37,15 @@ public class TransUnit implements IsSerializable, Serializable
    {
    }
 
-   public TransUnit(TransUnitId id, String resId, LocaleId localeId, String source, String sourceComment, String target, ContentState status, String lastModifiedBy, String lastModifiedTime, String msgContext, int rowIndex)
+   public TransUnit(TransUnitId id, String resId, LocaleId localeId, boolean plural, ArrayList<String> sources, String sourceComment, ArrayList<String> targets, ContentState status, String lastModifiedBy, String lastModifiedTime, String msgContext, int rowIndex)
    {
       this.id = id;
       this.resId = resId;
       this.localeId = localeId;
-      this.source = source;
+      this.plural = plural;
+      this.sources = sources;
       this.sourceComment = sourceComment;
-      this.target = target;
+      this.targets = targets;
       this.status = status;
       this.lastModifiedBy = lastModifiedBy;
       this.lastModifiedTime = lastModifiedTime;
@@ -65,9 +68,30 @@ public class TransUnit implements IsSerializable, Serializable
       return localeId;
    }
 
-   public String getSource()
+   /**
+    * @return the pluralSupported
+    */
+   public boolean isPlural()
    {
-      return source;
+      return plural;
+   }
+
+   /**
+    * @param plural the plural to set
+    */
+   public void setPlural(boolean plural)
+   {
+      this.plural = plural;
+   }
+
+   public ArrayList<String> getSources()
+   {
+      return sources;
+   }
+
+   public void setSources(ArrayList<String> sources)
+   {
+      this.sources = sources;
    }
 
    public String getSourceComment()
@@ -75,24 +99,19 @@ public class TransUnit implements IsSerializable, Serializable
       return sourceComment;
    }
 
-   public void setSource(String source)
-   {
-      this.source = source;
-   }
-
    public void setSourceComment(String sourceComment)
    {
       this.sourceComment = sourceComment;
    }
 
-   public String getTarget()
+   public ArrayList<String> getTargets()
    {
-      return target;
+      return targets;
    }
 
-   public void setTarget(String target)
+   public void setTargets(ArrayList<String> targets)
    {
-      this.target = target;
+      this.targets = targets;
    }
 
    public ContentState getStatus()

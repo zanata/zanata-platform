@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.events;
 
 import com.google.gwt.event.shared.GwtEvent;
+import org.zanata.webtrans.client.ui.ToggleEditor;
 
 public class OpenEditorEvent extends GwtEvent<OpenEditorEventHandler>
 {
@@ -25,10 +26,17 @@ public class OpenEditorEvent extends GwtEvent<OpenEditorEventHandler>
    }
 
    private int rowNum;
+   private ToggleEditor editor;
 
-   public OpenEditorEvent(int rowIndex)
+   public OpenEditorEvent(int rowIndex, ToggleEditor editor)
    {
       this.rowNum = rowIndex;
+      this.editor = editor;
+   }
+
+   public ToggleEditor getEditor()
+   {
+      return editor;
    }
 
    public int getRowNum()

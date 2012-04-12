@@ -170,7 +170,8 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
          @Override
          public String getValue(TransUnit tu)
          {
-            return tu.getSource();
+            //FIXME update to use plurals
+            return tu.getSources().get(0);
          }
       };
 
@@ -193,7 +194,8 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
          @Override
          public String getValue(TransUnit tu)
          {
-            return tu.getTarget();
+            //FIXME update to use plurals
+            return tu.getTargets().get(0);
          }
 
          @Override

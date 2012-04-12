@@ -107,7 +107,7 @@ public interface CheckKey
    boolean isCopyFromSourceKey();
    
    /**
-    * Copy from translation memory: CTRL+(1/2/3/4)
+    * Copy from translation memory: CTRL+SHIFT+(1/2/3/4)
     * 
     */
    boolean isCopyFromTransMem();

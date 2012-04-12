@@ -7,7 +7,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
-import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
+import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
 
@@ -86,7 +86,7 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsPre
       }));
    }
 
-   public void show(final TranslationMemoryGlossaryItem item)
+   public void show(final GlossaryResultItem item)
    {
       // request glossary details from the server
       dispatcher.execute(new GetGlossaryDetailsAction(item.getSourceIdList()), new AsyncCallback<GetGlossaryDetailsResult>()

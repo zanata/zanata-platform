@@ -12,11 +12,11 @@ import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
 import net.customware.gwt.presenter.client.EventBus;
 import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+
 import org.easymock.Capture;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
@@ -78,9 +78,9 @@ public class OptionsPanelPresenterTest
    Capture<FilterViewEventHandler> capturedFilterViewEventHandler = new Capture<FilterViewEventHandler>();
    Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdateEventHandler = new Capture<WorkspaceContextUpdateEventHandler>();
 
-   Capture<ButtonDisplayChangeEvent> capturedButtonDisplayChangeEvent = new Capture<ButtonDisplayChangeEvent>();
    Capture<FilterViewEvent> capturedFilterViewEvent = new Capture<FilterViewEvent>();
    Capture<UserConfigChangeEvent> capturedUserConfigChangeEvent = new Capture<UserConfigChangeEvent>();
+   private UserConfigHolder configHolder;
 
 
    @BeforeMethod
@@ -90,6 +90,7 @@ public class OptionsPanelPresenterTest
       resetAllCaptures();
 
       //new presenter to test
+      configHolder = new UserConfigHolder();
       optionsPanelPresenter = newOptionsPanelPresenter();
    }
 
@@ -152,7 +153,7 @@ public class OptionsPanelPresenterTest
       expectBindMethodBehaviour(startReadOnly);
 
       //expected response
-      mockEventBus.fireEvent(and(capture(capturedButtonDisplayChangeEvent), isA(ButtonDisplayChangeEvent.class)));
+      mockEventBus.fireEvent(and(capture(capturedUserConfigChangeEvent), isA(UserConfigChangeEvent.class)));
       mockDisplay.setEditorOptionsVisible(changeToEditable);
       mockDisplay.setValidationOptionsVisible(changeToEditable);
 
@@ -174,7 +175,7 @@ public class OptionsPanelPresenterTest
 
       verifyAllMocks();
       //check that buttons are hidden/shown
-      assertThat(capturedButtonDisplayChangeEvent.getValue().isShowButtons(), is(changeToEditable && editorButtonsOptionChecked));
+      assertThat(configHolder.isDisplayButtons(), is(changeToEditable && editorButtonsOptionChecked));
    }
 
    public void filterViewApprovedCheckbox()
@@ -406,7 +407,7 @@ public class OptionsPanelPresenterTest
       @SuppressWarnings("unchecked")
       ValueChangeEvent<Boolean> event = createMock(ValueChangeEvent.class);
       expect(event.getValue()).andReturn(editorButtonsOptionCheckValue).anyTimes();
-      mockEventBus.fireEvent(and(capture(capturedButtonDisplayChangeEvent), isA(ButtonDisplayChangeEvent.class)));
+      mockEventBus.fireEvent(and(capture(capturedUserConfigChangeEvent), isA(UserConfigChangeEvent.class)));
       expectLastCall().once();
 
       replay(event);
@@ -416,50 +417,51 @@ public class OptionsPanelPresenterTest
       capturedEditorButtonsChkValueChangeEventHandler.getValue().onValueChange(event);
 
       verifyAllMocks();
-      assertThat(capturedButtonDisplayChangeEvent.getValue().isShowButtons(), is(editorButtonsOptionCheckValue));
+      assertThat(configHolder.isDisplayButtons(), is(editorButtonsOptionCheckValue));
    }
 
    public void enterOptionChecked()
    {
       boolean enterOptionCheckValue = true;
       Capture<ValueChangeHandler<Boolean>> enterCheckboxValueChangeHandler = capturedEnterChkValueChangeEventHandler;
-      String configItemKey = "Enter";
-      testOptionCheckTriggersUserConfigEvent(enterOptionCheckValue, enterCheckboxValueChangeHandler, configItemKey);
+      testOptionCheckTriggersUserConfigEvent(enterOptionCheckValue, enterCheckboxValueChangeHandler);
+      assertThat(configHolder.isButtonEnter(), is(enterOptionCheckValue));
+
    }
 
    public void enterOptionUnchecked()
    {
       boolean enterOptionCheckValue = false;
       Capture<ValueChangeHandler<Boolean>> enterCheckboxValueChangeHandler = capturedEnterChkValueChangeEventHandler;
-      String configItemKey = "Enter";
-      testOptionCheckTriggersUserConfigEvent(enterOptionCheckValue, enterCheckboxValueChangeHandler, configItemKey);
+      testOptionCheckTriggersUserConfigEvent(enterOptionCheckValue, enterCheckboxValueChangeHandler);
+      assertThat(configHolder.isButtonEnter(), is(enterOptionCheckValue));
    }
 
    public void escOptionChecked()
    {
       boolean escOptionCheckValue = true;
       Capture<ValueChangeHandler<Boolean>> escCheckboxValueChangeHandler = capturedEscChkValueChangeEventHandler;
-      String configItemKey = "Esc";
-      testOptionCheckTriggersUserConfigEvent(escOptionCheckValue, escCheckboxValueChangeHandler, configItemKey);
+      testOptionCheckTriggersUserConfigEvent(escOptionCheckValue, escCheckboxValueChangeHandler);
+      assertThat(configHolder.isButtonEsc(), is(escOptionCheckValue));
+
    }
 
    public void escOptionUnchecked()
    {
       boolean escOptionCheckValue = false;
       Capture<ValueChangeHandler<Boolean>> escCheckboxValueChangeHandler = capturedEscChkValueChangeEventHandler;
-      String configItemKey = "Esc";
-      testOptionCheckTriggersUserConfigEvent(escOptionCheckValue, escCheckboxValueChangeHandler, configItemKey);
+      testOptionCheckTriggersUserConfigEvent(escOptionCheckValue, escCheckboxValueChangeHandler);
+      assertThat(configHolder.isButtonEsc(), is(escOptionCheckValue));
    }
 
    /**
     * Test that user config event is generated in response to
     * checking/unchecking an editor option checkbox.
-    * 
+    *
     * @param optionCheckValue new value used for value change event
     * @param checkboxValueChangeHandler handler for the checkbox under test
-    * @param configItemKey expected key in user config map
     */
-   private void testOptionCheckTriggersUserConfigEvent(boolean optionCheckValue, Capture<ValueChangeHandler<Boolean>> checkboxValueChangeHandler, String configItemKey)
+   private void testOptionCheckTriggersUserConfigEvent(boolean optionCheckValue, Capture<ValueChangeHandler<Boolean>> checkboxValueChangeHandler)
    {
       expectBindMethodBehaviour(false);
 
@@ -477,7 +479,6 @@ public class OptionsPanelPresenterTest
       checkboxValueChangeHandler.getValue().onValueChange(event);
 
       verifyAllMocks();
-      assertThat(capturedUserConfigChangeEvent.getValue().getConfigMap().get(configItemKey), is(optionCheckValue));
    }
 
 
@@ -528,8 +529,8 @@ public class OptionsPanelPresenterTest
       capturedNavigationOptionsSelectChangeHandler.getValue().onChange(event);
 
       verifyAllMocks();
-      assertThat(capturedUserConfigChangeEvent.getValue().getConfigMap().get("Fuzzy"), is(expectFuzzyNavigation));
-      assertThat(capturedUserConfigChangeEvent.getValue().getConfigMap().get("Untranslated"), is(expectUntranslatedNavigation));
+      assertThat(configHolder.isButtonFuzzy(), is(expectFuzzyNavigation));
+      assertThat(configHolder.isButtonUntranslated(), is(expectUntranslatedNavigation));
    }
 
 
@@ -547,7 +548,7 @@ public class OptionsPanelPresenterTest
 
       if (readOnlyWorkspace)
       {
-         mockEventBus.fireEvent(and(capture(capturedButtonDisplayChangeEvent), isA(ButtonDisplayChangeEvent.class)));
+         mockEventBus.fireEvent(and(capture(capturedUserConfigChangeEvent), isA(UserConfigChangeEvent.class)));
          expectLastCall().once();
          mockDisplay.setEditorOptionsVisible(false);
          expectLastCall().once();
@@ -626,7 +627,6 @@ public class OptionsPanelPresenterTest
       capturedFilterViewEventHandler.reset();
       capturedWorkspaceContextUpdateEventHandler.reset();
 
-      capturedButtonDisplayChangeEvent.reset();
       capturedFilterViewEvent.reset();
       capturedUserConfigChangeEvent.reset();
    }
@@ -656,6 +656,6 @@ public class OptionsPanelPresenterTest
     */
    private OptionsPanelPresenter newOptionsPanelPresenter()
    {
-      return new OptionsPanelPresenter(mockDisplay, mockEventBus, mockValidationDetailsPresenter, mockWorkspaceContext);
+      return new OptionsPanelPresenter(mockDisplay, mockEventBus, mockValidationDetailsPresenter, mockWorkspaceContext, configHolder);
    }
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import net.customware.gwt.dispatch.shared.Result;
 
-import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
+import org.zanata.webtrans.shared.model.GlossaryResultItem;
 
 
 public class GetGlossaryResult implements Result
@@ -12,7 +12,7 @@ public class GetGlossaryResult implements Result
 
    private static final long serialVersionUID = 1L;
 
-   private ArrayList<TranslationMemoryGlossaryItem> glossaries;
+   private ArrayList<GlossaryResultItem> glossaries;
    private GetGlossary request;
 
    @SuppressWarnings("unused")
@@ -20,18 +20,18 @@ public class GetGlossaryResult implements Result
    {
    }
 
-   public GetGlossaryResult(GetGlossary request, ArrayList<TranslationMemoryGlossaryItem> glossaries)
+   public GetGlossaryResult(GetGlossary request, ArrayList<GlossaryResultItem> glossaries)
    {
       this.glossaries = glossaries;
       this.request = request;
    }
 
-   public ArrayList<TranslationMemoryGlossaryItem> getGlossaries()
+   public ArrayList<GlossaryResultItem> getGlossaries()
    {
       return glossaries;
    }
 
-   public void setGlossaries(ArrayList<TranslationMemoryGlossaryItem> glossaries)
+   public void setGlossaries(ArrayList<GlossaryResultItem> glossaries)
    {
       this.glossaries = glossaries;
    }

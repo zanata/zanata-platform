@@ -21,12 +21,15 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+
+import javax.annotation.Nullable;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -48,6 +51,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.ActionHandlerFor;
@@ -58,6 +62,11 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
+
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
 @Name("webtrans.gwt.UpdateTransUnitHandler")
 @Scope(ScopeType.STATELESS)
@@ -74,6 +83,9 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
    @Logger
    Log log;
+
+   @In
+   private ResourceUtils resourceUtils;
 
    @In
    Session session;
@@ -99,7 +111,8 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    @In
    private LocaleService localeServiceImpl;
 
-   private static SimpleDateFormat SIMPLE_FORMAT = new SimpleDateFormat();
+   // NB SimpleDateFormat is not thread safe! (we could use a ThreadLocal)
+   private SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 
    /**
     * Used by Seam
@@ -136,7 +149,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException
    {
       identity.checkLoggedIn();
-      log.debug("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContent());
+      log.debug("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContents());
 
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
 
@@ -195,12 +208,21 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          targetChanged = true;
       }
 
-      if (action.getContentState() == ContentState.New && StringUtils.isNotEmpty(action.getContent()))
+      Collection<String> emptyContents = Collections2.filter(action.getContents(), new Predicate<String>()
       {
-         log.error("invalid ContentState New for TransUnit {0} with content '{1}', assuming NeedReview", action.getTransUnitId(), action.getContent());
+         @Override
+         public boolean apply(@Nullable String input)
+         {
+            return Strings.isNullOrEmpty(input);
+         }
+      });
+
+      if (action.getContentState() == ContentState.New && emptyContents.isEmpty())
+      {
+         log.error("invalid ContentState New for TransUnit {0} with content '{1}', assuming NeedReview", action.getTransUnitId(), action.getContents());
          target.setState(ContentState.NeedReview);
       }
-      else if (action.getContentState() != ContentState.New && StringUtils.isEmpty(action.getContent()))
+      else if (action.getContentState() == ContentState.Approved && emptyContents.size() > 0)
       {
          log.error("invalid ContentState {0} for empty TransUnit {1}, assuming New", action.getContentState(), action.getTransUnitId());
          target.setState(ContentState.New);
@@ -214,12 +236,12 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          }
       }
 
-      String content = (target.getContent() != null ? target.getContent() : "");
-      UpdateTransUnit previous = new UpdateTransUnit(action.getTransUnitId(), content, prevStatus);
+      ArrayList<String> contents = Lists.newArrayList(target.getContents());
+      UpdateTransUnit previous = new UpdateTransUnit(action.getTransUnitId(), contents, prevStatus);
 
-      if (!StringUtils.equals(action.getContent(), target.getContent()))
+      if (!action.getContents().equals(target.getContents()))
       {
-         target.setContent(action.getContent());
+         target.setContents(action.getContents());
          targetChanged = true;
       }
 
@@ -241,13 +263,19 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       {
          msgContext = hTextFlow.getPotEntryData().getContext();
       }
-      
-      TransUnit tu = new TransUnit(action.getTransUnitId(), hTextFlow.getResId(),
-                                   locale, hTextFlow.getContent(),
-                                   CommentsUtil.toString(hTextFlow.getComment()),
-                                   action.getContent(), target.getState(),
-                                   authenticatedAccount.getPerson().getName(),
-                                   SIMPLE_FORMAT.format(new Date()), msgContext, hTextFlow.getPos());
+
+      ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);
+      TransUnit tu = new TransUnit(
+            action.getTransUnitId(), 
+            hTextFlow.getResId(),
+            locale, 
+            hTextFlow.isPlural(),
+            sourceContents,
+            CommentsUtil.toString(hTextFlow.getComment()),
+            action.getContents(), 
+            target.getState(),
+            authenticatedAccount.getPerson().getName(),
+            simpleDateFormat.format(new Date()), msgContext, hTextFlow.getPos());
       // @formatter:on
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu, identity.getCredentials().getUsername());
 
@@ -264,7 +292,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    public void rollback(UpdateTransUnit action, UpdateTransUnitResult result, ExecutionContext context) throws ActionException
    {
       ZanataIdentity.instance().checkLoggedIn();
-      log.debug("revert TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContent());
+      log.debug("revert TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContents());
 
       HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
       LocaleId locale = action.getWorkspaceId().getLocaleId();
@@ -299,10 +327,10 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
       ContentState prevStatus = target.getState();
 
-      if (!StringUtils.equals(result.getPrevious().getContent(), target.getContent()))
+      if (!result.getPrevious().getContents().equals(target.getContents()))
       {
          target.setState(result.getPrevious().getContentState());
-         target.setContent(result.getPrevious().getContent());
+         target.setContents(result.getPrevious().getContents());
          target.setVersionNum(target.getVersionNum() + 1);
          target.setLastModifiedBy(authenticatedAccount.getPerson());
       }
@@ -316,13 +344,21 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          msgContext = hTextFlow.getPotEntryData().getContext();
       }
 
+      int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale);
+      ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);
+      ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(hTextFlow, target, nPlurals);
       // @formatter:off
-      TransUnit tu = new TransUnit(action.getTransUnitId(), hTextFlow.getResId(),
-                                   locale, hTextFlow.getContent(),
-                                   CommentsUtil.toString(hTextFlow.getComment()),
-                                   target.getContent(), target.getState(),
-                                   target.getLastModifiedBy().getName(),
-                                   SIMPLE_FORMAT.format(target.getLastChanged()), msgContext, hTextFlow.getPos());
+      TransUnit tu = new TransUnit(
+            action.getTransUnitId(), 
+            hTextFlow.getResId(),
+            locale, 
+            hTextFlow.isPlural(),
+            sourceContents,
+            CommentsUtil.toString(hTextFlow.getComment()),
+            targetContents, 
+            target.getState(),
+            target.getLastModifiedBy().getName(),
+            simpleDateFormat.format(target.getLastChanged()), msgContext, hTextFlow.getPos());
       // @formatter:on
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu, ZanataIdentity.instance().getCredentials().getUsername());
 

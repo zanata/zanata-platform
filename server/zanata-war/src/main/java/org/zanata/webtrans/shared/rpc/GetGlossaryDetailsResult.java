@@ -1,6 +1,6 @@
 package org.zanata.webtrans.shared.rpc;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import net.customware.gwt.dispatch.shared.Result;
 
@@ -11,7 +11,7 @@ public class GetGlossaryDetailsResult implements Result
 
    private static final long serialVersionUID = 1L;
    
-   private List<GlossaryDetails> glossaryDetails;
+   private ArrayList<GlossaryDetails> glossaryDetails;
 
    @SuppressWarnings("unused")
    private GetGlossaryDetailsResult()
@@ -19,12 +19,12 @@ public class GetGlossaryDetailsResult implements Result
       this(null);
    }
 
-   public GetGlossaryDetailsResult(List<GlossaryDetails> glossaryDetails)
+   public GetGlossaryDetailsResult(ArrayList<GlossaryDetails> glossaryDetails)
    {
       this.glossaryDetails = glossaryDetails;
    }
 
-   public List<GlossaryDetails> getGlossaryDetails()
+   public ArrayList<GlossaryDetails> getGlossaryDetails()
    {
       return glossaryDetails;
    }

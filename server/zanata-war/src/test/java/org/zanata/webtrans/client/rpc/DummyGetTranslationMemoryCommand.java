@@ -2,10 +2,9 @@ package org.zanata.webtrans.client.rpc;
 
 import java.util.ArrayList;
 
-import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
+import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
-import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Command;
@@ -27,13 +26,15 @@ public class DummyGetTranslationMemoryCommand implements Command
    public void execute()
    {
       Log.info("ENTER DummyGetTranslationMemoryCommand.execute()");
-      String query = action.getQuery();
-      SearchType type = action.getSearchType();
-      ArrayList<TranslationMemoryGlossaryItem> matches = new ArrayList<TranslationMemoryGlossaryItem>();
-      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;target3</tr>", query, new Long(3), 85));
-      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;target3</tr>", query, new Long(3), 85));
-      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;target3</tr>", query, new Long(3), 85));
-      matches.add(new TranslationMemoryGlossaryItem("<s>source1</s>", "<tr> &lt;target3</tr>", query, new Long(3), 85));
+      ArrayList<TransMemoryResultItem> matches = new ArrayList<TransMemoryResultItem>();
+      ArrayList<String> source = new ArrayList<String>();
+      source.add("<s>source1</s>");
+      ArrayList<String> target = new ArrayList<String>();
+      target.add("<tr> &lt;target3</tr>");
+      matches.add(new TransMemoryResultItem(source, target, 3, 85));
+      matches.add(new TransMemoryResultItem(source, target, 3, 85));
+      matches.add(new TransMemoryResultItem(source, target, 3, 85));
+      matches.add(new TransMemoryResultItem(source, target, 3, 85));
       callback.onSuccess(new GetTranslationMemoryResult(action, matches));
       Log.info("EXIT DummyGetTranslationMemoryCommand.execute()");
    }

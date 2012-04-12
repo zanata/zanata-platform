@@ -20,8 +20,6 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import java.util.Map;
-
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -31,6 +29,8 @@ import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -41,6 +41,8 @@ import com.google.inject.Inject;
 
 public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavigationPresenter.Display> implements HasNavTransUnitHandlers
 {
+
+   private UserConfigHolder configHolder;
 
    public interface Display extends WidgetDisplay
    {
@@ -56,15 +58,16 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
 
       HasClickHandlers getNextStateButton();
 
-      void setNavModeTooltip(Map<String, Boolean> configMap);
+      void setNavModeTooltip(boolean isButtonFuzzy, boolean isButtonUntranslated);
 
       void setModalNavVisible(boolean visible);
    }
 
    @Inject
-   public TransUnitNavigationPresenter(Display display, EventBus eventBus)
+   public TransUnitNavigationPresenter(Display display, EventBus eventBus, UserConfigHolder configHolder)
    {
       super(display, eventBus);
+      this.configHolder = configHolder;
    }
 
    @Override
@@ -141,6 +144,14 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
          }
       }));
 
+      registerHandler(eventBus.addHandler(UserConfigChangeEvent.getType(), new UserConfigChangeHandler()
+      {
+         @Override
+         public void onValueChanged(UserConfigChangeEvent event)
+         {
+            display.setNavModeTooltip(configHolder.isButtonFuzzy(), configHolder.isButtonUntranslated());
+         }
+      }));
    }
 
    @Override

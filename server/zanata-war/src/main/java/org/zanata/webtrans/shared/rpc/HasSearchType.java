@@ -19,7 +19,12 @@ public interface HasSearchType
       /**
        * Uses search string as a raw Lucene query without adding any escapes.
        */
-      RAW
+      RAW,
+
+      /**
+       * Fuzzy search for TextFlows which have similar strings for corresponding plural forms
+       */
+      FUZZY_PLURAL;
    }
 
    SearchType getSearchType();

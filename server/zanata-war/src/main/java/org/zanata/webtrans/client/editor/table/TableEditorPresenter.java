@@ -25,6 +25,8 @@ import static org.zanata.webtrans.client.editor.table.TableConstants.MAX_PAGE_RO
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.Command;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -33,18 +35,12 @@ import org.zanata.common.EditState;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateAction;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateHandler;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
-import org.zanata.webtrans.client.events.ButtonDisplayChangeEvent;
-import org.zanata.webtrans.client.events.ButtonDisplayChangeEventHandler;
-import org.zanata.webtrans.client.events.CopySourceEvent;
-import org.zanata.webtrans.client.events.CopySourceEventHandler;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
-import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
-import org.zanata.webtrans.client.events.InsertStringInEditorHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
@@ -53,9 +49,7 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.OpenEditorEvent;
 import org.zanata.webtrans.client.events.OpenEditorEventHandler;
 import org.zanata.webtrans.client.events.RedoFailureEvent;
-import org.zanata.webtrans.client.events.RunValidationEvent;
-import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
-import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
+import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
@@ -64,10 +58,11 @@ import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.UndoAddEvent;
 import org.zanata.webtrans.client.events.UndoFailureEvent;
 import org.zanata.webtrans.client.events.UndoRedoFinishEvent;
-import org.zanata.webtrans.client.events.UpdateValidationWarningsEvent;
-import org.zanata.webtrans.client.events.UpdateValidationWarningsEventHandler;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationPanel;
@@ -139,8 +134,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
       int getPageSize();
 
-      void setShowCopyButtons(boolean showButtons);
-
       void setFindMessage(String findMessage);
 
       void startProcessing();
@@ -188,6 +181,11 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    private final FilterViewConfirmationPanel filterViewConfirmationPanel = new FilterViewConfirmationPanel();
 
    private final WorkspaceContext workspaceContext;
+
+   private final SourceContentsPresenter sourceContentsPresenter;
+   private TargetContentsPresenter targetContentsPresenter;
+   private UserConfigHolder configHolder;
+   private Scheduler scheduler;
 
    private boolean filterTranslated, filterNeedReview, filterUntranslated;
 
@@ -261,13 +259,17 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    };
 
    @Inject
-   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext)
+   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourceContentsPresenter sourceContentsPresenter, TargetContentsPresenter targetContentsPresenter, UserConfigHolder configHolder, Scheduler scheduler)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
       this.identity = identity;
       this.messages = messages;
       this.workspaceContext = workspaceContext;
+      this.sourceContentsPresenter = sourceContentsPresenter;
+      this.targetContentsPresenter = targetContentsPresenter;
+      this.configHolder = configHolder;
+      this.scheduler = scheduler;
    }
 
    private void clearCacheList()
@@ -304,10 +306,10 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    {
       display.setTableModelHandler(tableModelHandler);
       display.setPageSize(TableConstants.PAGE_SIZE);
-      if (workspaceContext.isReadOnly())
-      {
-         display.setShowCopyButtons(false);
-      }
+//      if (workspaceContext.isReadOnly())
+//      {
+//         display.getTargetCellEditor().setShowOperationButtons(false);
+//      }
 
       registerHandler(filterViewConfirmationPanel.getSaveChangesAndFilterButton().addClickHandler(new ClickHandler()
       {
@@ -444,7 +446,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                {
                   Log.info("selected TU updated; clear selection");
                   display.getTargetCellEditor().cancelEdit();
-                  eventBus.fireEvent(new RunValidationEvent(event.getTransUnit().getId(), event.getTransUnit().getSource(), event.getTransUnit().getTarget()));
+                  eventBus.fireEvent(new RequestValidationEvent());
                }
 
                Integer rowIndex = getRowIndex(event.getTransUnit());
@@ -517,117 +519,39 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                // Send message to server to stop editing current selection
                // stopEditing(selectedTransUnit);
 
-               InlineTargetCellEditor editor = display.getTargetCellEditor();
-
                // If goto Next or Prev Fuzzy/New Trans Unit
                if (event.getRowType() == NavigationType.PrevEntry)
                {
-                  editor.saveAndMoveRow(NavigationType.PrevEntry);
+                  targetContentsPresenter.saveAsApprovedAndMovePrevious();
                }
 
                if (event.getRowType() == NavigationType.NextEntry)
                {
-                  editor.saveAndMoveRow(NavigationType.NextEntry);
+                  targetContentsPresenter.saveAsApprovedAndMoveNext();
                }
 
                if (event.getRowType() == NavigationType.PrevState)
                {
-                  editor.saveAndMoveNextState(NavigationType.PrevEntry);
+                  targetContentsPresenter.moveToNextState(NavigationType.PrevEntry);
                }
 
                if (event.getRowType() == NavigationType.NextState)
                {
-                  editor.saveAndMoveNextState(NavigationType.NextEntry);
+                  targetContentsPresenter.moveToNextState(NavigationType.NextEntry);
                }
 
                if (event.getRowType() == NavigationType.FirstEntry)
                {
-                  editor.saveAndMoveRow(NavigationType.FirstEntry);
+                  targetContentsPresenter.saveAndMoveRow(NavigationType.FirstEntry);
                }
 
                if (event.getRowType() == NavigationType.LastEntry)
                {
-                  editor.saveAndMoveRow(NavigationType.LastEntry);
+                  targetContentsPresenter.saveAndMoveRow(NavigationType.LastEntry);
                }
 
             }
          }
-      }));
-
-      registerHandler(eventBus.addHandler(CopyDataToEditorEvent.getType(), new CopyDataToEditorHandler()
-      {
-         @Override
-         public void onTransMemoryCopy(CopyDataToEditorEvent event)
-         {
-            if (selectedTransUnit == null)
-            {
-               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.noTextFlowToCopy()));
-            }
-            else
-            {
-               if (!display.getTargetCellEditor().isEditing())
-               {
-                  gotoCurrentRow();
-               }
-               if (display.getTargetCellEditor().isEditing())
-               {
-                  display.getTargetCellEditor().setText(event.getTargetResult());
-                  display.getTargetCellEditor().autoSize();
-                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
-               }
-               else
-               {
-                  // Error if failed to open editor
-                  eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnopened()));
-               }
-            }
-         }
-      }));
-      
-      registerHandler(eventBus.addHandler(InsertStringInEditorEvent.getType(), new InsertStringInEditorHandler()
-      {
-         @Override
-         public void onInsertString(InsertStringInEditorEvent event)
-         {
-            if (selectedTransUnit == null)
-            {
-               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.noTextFlowToCopy()));
-            }
-            else
-            {
-               if (!display.getTargetCellEditor().isEditing())
-               {
-                  gotoCurrentRow();
-               }
-               if (display.getTargetCellEditor().isEditing())
-               {
-                  display.getTargetCellEditor().insertTextInCursorPosition(event.getSuggestion());
-                  display.getTargetCellEditor().autoSize();
-                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
-               }
-               else
-               {
-                  // Error if failed to open editor
-                  eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnopened()));
-               }
-            }
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(CopySourceEvent.getType(), new CopySourceEventHandler()
-      {
-         @Override
-         public void onCopySource(CopySourceEvent event)
-         {
-            Integer rowIndex = getRowIndex(event.getTransUnit());
-            if (rowIndex != null)
-            {
-               tableModelHandler.gotoRow(rowIndex, true);
-               display.getTargetCellEditor().setText(event.getTransUnit().getSource());
-               display.getTargetCellEditor().autoSize();
-            }
-         }
-
       }));
 
       registerHandler(eventBus.addHandler(OpenEditorEvent.getType(), new OpenEditorEventHandler()
@@ -639,25 +563,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          }
       }));
 
-      registerHandler(eventBus.addHandler(ButtonDisplayChangeEvent.getType(), new ButtonDisplayChangeEventHandler()
-      {
-         @Override
-         public void onButtonDisplayChange(ButtonDisplayChangeEvent event)
-         {
-            display.getTargetCellEditor().setShowOperationButtons(event.isShowButtons());
-            display.setShowCopyButtons(event.isShowButtons());
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(UpdateValidationWarningsEvent.getType(), new UpdateValidationWarningsEventHandler()
-      {
-         @Override
-         public void onUpdate(UpdateValidationWarningsEvent event)
-         {
-            display.getTargetCellEditor().updateValidationMessagePanel(event.getErrors());
-         }
-      }));
-
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
       {
          @Override
@@ -665,7 +570,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          {
             boolean readOnly = event.isReadOnly();
             workspaceContext.setReadOnly(readOnly);
-            eventBus.fireEvent(new ButtonDisplayChangeEvent(!readOnly));
+            configHolder.setDisplayButtons(false);
+            eventBus.fireEvent(new UserConfigChangeEvent());
             display.getTargetCellEditor().setReadOnly(readOnly);
 
             if (readOnly)
@@ -736,6 +642,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             @Override
             public void onSuccess(GetTransUnitListResult result)
             {
+               targetContentsPresenter.initWidgets(display.getPageSize());
+               sourceContentsPresenter.initWidgets(display.getPageSize());
                SerializableResponse<TransUnit> response = new SerializableResponse<TransUnit>(result.getUnits());
                Log.info("Got " + result.getUnits().size() + " rows back of " + result.getTotalCount() + " available");
                callback.onRowsReady(request, response);
@@ -779,7 +687,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       @Override
       public boolean onSetRowValue(int row, TransUnit rowValue)
       {
-         final UpdateTransUnit updateTransUnit = new UpdateTransUnit(rowValue.getId(), rowValue.getTarget(), rowValue.getStatus());
+         final UpdateTransUnit updateTransUnit = new UpdateTransUnit(rowValue.getId(), rowValue.getTargets(), rowValue.getStatus());
          eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifySaving()));
          dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
          {
@@ -914,8 +822,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          {
             display.gotoPage(pageNum, false);
          }
-         selectTransUnit(display.getTransUnitValue(rowNum));
          display.gotoRow(rowNum, andEdit);
+         selectTransUnit(display.getTransUnitValue(rowNum));
 
          if (pageNum != prevPage)
          {
@@ -926,8 +834,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       @Override
       public void gotoRowInCurrentPage(int rowNum, boolean andEdit)
       {
-         selectTransUnit(display.getTransUnitValue(rowNum));
          display.gotoRow(rowNum, andEdit);
+         selectTransUnit(display.getTransUnitValue(rowNum));
       }
    };
 
@@ -1206,21 +1114,34 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
     * 
     * @param transUnit the new TO to select
     */
-   public void selectTransUnit(TransUnit transUnit)
+   public void selectTransUnit(final TransUnit transUnit)
    {
-      tableModelHandler.updatePageAndRowIndex();
-
-      display.setTransUnitDetails(transUnit);
-
-      if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
+      //we want to make sure select transunit always happen first
+      scheduler.scheduleEntry(new Command()
       {
-         selectedTransUnit = transUnit;
-         Log.info("SelectedTransUnit: " + selectedTransUnit.getId());
-         // Clean the cache when we click the new entry
-         clearCacheList();
+         @Override
+         public void execute()
+         {
+            tableModelHandler.updatePageAndRowIndex();
 
-         eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
-      }
+            display.setTransUnitDetails(transUnit);
+
+            if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
+            {
+               selectedTransUnit = transUnit;
+               Log.info("SelectedTransUnit: " + selectedTransUnit.getId());
+               // Clean the cache when we click the new entry
+               clearCacheList();
+
+               eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
+               sourceContentsPresenter.setSelectedSource(display.getSelectedRowNumber());
+               display.getTargetCellEditor().savePendingChange(true);
+
+               display.gotoRow(display.getSelectedRowNumber(), true);
+            }
+         }
+      });
+
    }
 
    public void gotoCurrentRow()
@@ -1239,6 +1160,10 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       tableModelHandler.gotoNextRow(andEdit);
    }
 
+   public int getSelectedRowIndex()
+   {
+      return curRowIndex;
+   }
    /**
     * Load a document into the editor
     * 

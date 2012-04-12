@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -282,9 +283,13 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void execute(TransUnit tu)
          {
-            String target = tu.getTarget();
+            //FIXME update to use plurals
+            String target = tu.getTargets().get(0);
             target = target.replace(currentHistoryState.getProjectSearchText(), display.getReplacementTextBox().getValue());
-            final UpdateTransUnit updateTransUnit = new UpdateTransUnit(tu.getId(), target, tu.getStatus());
+            ArrayList<String> targets = new ArrayList<String>();
+            targets.add(target);
+
+            final UpdateTransUnit updateTransUnit = new UpdateTransUnit(tu.getId(), targets, tu.getStatus());
             dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
             {
                @Override
@@ -301,7 +306,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                   eventBus.fireEvent(new NotificationEvent(Severity.Info, "Successfully replaced text"));
                   // not sure if any undoable TU action is
                   // required here
-                  //TODO show replacement in relevant table
                }
             });
          }

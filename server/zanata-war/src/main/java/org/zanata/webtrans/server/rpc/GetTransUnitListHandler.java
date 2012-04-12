@@ -34,11 +34,14 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.zanata.common.ContentState;
+import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
+import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.ActionHandlerFor;
@@ -59,12 +62,19 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
    Log log;
 
    @In
-   TextFlowDAO textFlowDAO;
+   private ResourceUtils resourceUtils;
+
+   @In
+   private TextFlowDAO textFlowDAO;
+
+   @In
+   private DocumentDAO documentDAO;
 
    @In
    private LocaleService localeServiceImpl;
 
-   private static SimpleDateFormat SIMPLE_FORMAT = new SimpleDateFormat();
+   // NB SimpleDateFormat is not thread safe! (we could use a ThreadLocal)
+   private SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 
    @Override
    public GetTransUnitListResult execute(GetTransUnitList action, ExecutionContext context) throws ActionException
@@ -84,20 +94,20 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
 
       int gotoRow = -1, size = 0;
 
-      List<HTextFlow> result;
+      List<HTextFlow> textFlows;
       TextFlowFilter filter;
 
       if ((action.getPhrase() != null && !action.getPhrase().isEmpty()) || (action.isFilterTranslated() || action.isFilterNeedReview() || action.isFilterUntranslated()))
       {
          log.info("Fetch TransUnits:" + action.getPhrase());
          filter = new TextFlowFilterImpl(action.getPhrase(), action.isFilterTranslated(), action.isFilterNeedReview(), action.isFilterUntranslated());
-         result = textFlowDAO.getTransUnitList(action.getDocumentId().getValue());
+         textFlows = textFlowDAO.getTransUnitList(action.getDocumentId().getValue());
       }
       else
       {
          log.info("Fetch TransUnits:*");
          filter = new TextFlowFilterImpl();
-         result = textFlowDAO.getTransUnitList(action.getDocumentId().getValue());
+         textFlows = textFlowDAO.getTransUnitList(action.getDocumentId().getValue());
          // result =
          // textFlowDAO.getTransUnitList(action.getDocumentId().getValue(),
          // action.getOffset(), action.getCount());
@@ -105,12 +115,15 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          // textFlowDAO.getCountByDocument(action.getDocumentId().getValue());
       }
 
-      List<TransUnit> units = new ArrayList<TransUnit>();
-      for (HTextFlow textFlow : result)
+      HDocument document = documentDAO.getById(action.getDocumentId().getId());
+      int nPlurals = resourceUtils.getNumPlurals(document, hLocale);
+
+      ArrayList<TransUnit> units = new ArrayList<TransUnit>();
+      for (HTextFlow textFlow : textFlows)
       {
          if (!filter.isFilterOut(textFlow, hLocale))
          {
-            TransUnit tu = initTransUnit(textFlow, hLocale);
+            TransUnit tu = initTransUnit(textFlow, hLocale, nPlurals);
             if (action.getTargetTransUnitId() != null && tu.getId().equals(action.getTargetTransUnitId()))
             {
                gotoRow = units.size();
@@ -132,12 +145,13 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
 
       return new GetTransUnitListResult(action.getDocumentId(), units, size, gotoRow);
    }
+
    @Override
    public void rollback(GetTransUnitList action, GetTransUnitListResult result, ExecutionContext context) throws ActionException
    {
    }
 
-   private TransUnit initTransUnit(HTextFlow textFlow, HLocale hLocale)
+   private TransUnit initTransUnit(HTextFlow textFlow, HLocale hLocale, int nPlurals)
    {
       String msgContext = null;
       if (textFlow.getPotEntryData() != null)
@@ -145,16 +159,36 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          msgContext = textFlow.getPotEntryData().getContext();
       }
       HTextFlowTarget target = textFlow.getTargets().get(hLocale);
-      TransUnit tu = new TransUnit(new TransUnitId(textFlow.getId()), textFlow.getResId(), hLocale.getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New, "", "", msgContext, textFlow.getPos());
-      if (target != null)
+
+      ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(textFlow);
+      ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(textFlow, target, nPlurals);
+      TransUnit tu = new TransUnit(
+            new TransUnitId(textFlow.getId()),
+            textFlow.getResId(),
+            hLocale.getLocaleId(),
+            textFlow.isPlural(),
+            sourceContents,
+            CommentsUtil.toString(textFlow.getComment()),
+            targetContents,
+            ContentState.New,
+            "",
+            "",
+            msgContext,
+            textFlow.getPos());
+
+      tu.setPlural(textFlow.isPlural());
+      if (target == null)
       {
-         tu.setTarget(target.getContent());
+         tu.setStatus(ContentState.New);
+      }
+      else
+      {
          tu.setStatus(target.getState());
          if (target.getLastModifiedBy() != null)
          {
             tu.setLastModifiedBy(target.getLastModifiedBy().getName());
          }
-         tu.setLastModifiedTime(SIMPLE_FORMAT.format(target.getLastChanged()));
+         tu.setLastModifiedTime(simpleDateFormat.format(target.getLastChanged()));
       }
       return tu;
    }

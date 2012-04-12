@@ -9,6 +9,19 @@
     <!--
     This changelog file is the real changelog for Zanata 1.6.
      -->
+ 
+	<changeSet author="aeng@redhat.com" id="1" dbms="h2">
+        <comment>Alter glossary tables - add auto increment</comment>
+        <dropUniqueConstraint tableName="HGlossaryTerm" constraintName="UKglossaryterm_glossary_entry_id"/>
+        <dropPrimaryKey tableName="HGlossaryEntry"/>
+        <dropPrimaryKey tableName="HGlossaryTerm"/> 
+        <dropPrimaryKey tableName="HTermComment"/>
+        
+        <addAutoIncrement tableName="HGlossaryEntry" columnName="id" columnDataType="bigint"/>
+        <addAutoIncrement tableName="HGlossaryTerm" columnName="id" columnDataType="bigint"/>
+        <addAutoIncrement tableName="HTermComment" columnName="id" columnDataType="bigint"/>
+    </changeSet>
+
 	<changeSet author="camunoz@redhat.com" id="1">
 		<comment>Add HTextFlowContent table to support plural forms.</comment>
 		<createTable tableName="HTextFlowContent">

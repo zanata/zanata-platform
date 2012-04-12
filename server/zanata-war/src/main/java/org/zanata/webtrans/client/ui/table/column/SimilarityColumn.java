@@ -20,7 +20,7 @@
  */
 package org.zanata.webtrans.client.ui.table.column;
 
-import org.zanata.webtrans.shared.model.TranslationMemoryGlossaryItem;
+import org.zanata.webtrans.shared.model.SearchResultItem;
 
 import com.google.gwt.user.cellview.client.TextColumn;
 
@@ -29,11 +29,11 @@ import com.google.gwt.user.cellview.client.TextColumn;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class SimilarityColumn extends TextColumn<TranslationMemoryGlossaryItem>
+public class SimilarityColumn<T extends SearchResultItem> extends TextColumn<T>
 {
    @Override
-   public String getValue(TranslationMemoryGlossaryItem object)
+   public String getValue(T object)
    {
-      return object.getSimilarityPercent() + "%";
+      return (int) object.getSimilarityPercent() + "%";
    }
 }

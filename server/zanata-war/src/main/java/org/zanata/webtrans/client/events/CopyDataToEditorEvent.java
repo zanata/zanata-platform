@@ -1,5 +1,7 @@
 package org.zanata.webtrans.client.events;
 
+import java.util.List;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 public class CopyDataToEditorEvent extends GwtEvent<CopyDataToEditorHandler>
@@ -20,17 +22,14 @@ public class CopyDataToEditorEvent extends GwtEvent<CopyDataToEditorHandler>
       return TYPE != null ? TYPE : (TYPE = new Type<CopyDataToEditorHandler>());
    }
 
-   private String sourceResult, targetResult;
+   private List<String> targetResult;
 
    /**
     * ContentState may be New, NeedApproved or null. stepValue may be -1 or +1.
-    * 
-    * @param sourceResult
     * @param targetResult
     */
-   public CopyDataToEditorEvent(String sourceResult, String targetResult)
+   public CopyDataToEditorEvent(List<String> targetResult)
    {
-      this.sourceResult = sourceResult;
       this.targetResult = targetResult;
    }
 
@@ -46,12 +45,7 @@ public class CopyDataToEditorEvent extends GwtEvent<CopyDataToEditorHandler>
       return getType();
    }
 
-   public String getSourceResult()
-   {
-      return sourceResult;
-   }
-
-   public String getTargetResult()
+   public List<String> getTargetResult()
    {
       return targetResult;
    }

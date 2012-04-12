@@ -41,6 +41,7 @@ import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.rest.service.ResourceUtils;
 import org.zanata.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -76,6 +77,9 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
    @In
    private TextFlowSearchService textFlowSearchServiceImpl;
 
+   @In
+   private ResourceUtils resourceUtils;
+
    private static SimpleDateFormat SIMPLE_FORMAT = new SimpleDateFormat();
 
    @Override
@@ -107,6 +111,7 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          throw new ActionException(e.getMessage());
       }
 
+
       for (HTextFlowTarget htft : matchingFlows)
       {
          HTextFlow htf = htft.getTextFlow();
@@ -116,7 +121,9 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          {
             listForDoc = new ArrayList<TransUnit>();
          }
-         listForDoc.add(initTransUnit(htf, hLocale));
+         //TODO cache this rather than looking up repeatedly
+         int nPlurals = resourceUtils.getNumPlurals(htf.getDocument(), hLocale);
+         listForDoc.add(initTransUnit(htf, hLocale, nPlurals));
          matchingTUs.put(htf.getDocument().getId(), listForDoc);
          docPaths.put(htf.getDocument().getId(), htf.getDocument().getDocId());
       }
@@ -129,9 +136,9 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
    {
    }
 
-   //TODO update to handle plurals properly.
+   private SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
    //TODO move to shared location with other search code
-   private TransUnit initTransUnit(HTextFlow textFlow, HLocale hLocale)
+   private TransUnit initTransUnit(HTextFlow textFlow, HLocale hLocale, int nPlurals)
    {
       String msgContext = null;
       if (textFlow.getPotEntryData() != null)
@@ -139,16 +146,36 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          msgContext = textFlow.getPotEntryData().getContext();
       }
       HTextFlowTarget target = textFlow.getTargets().get(hLocale);
-      TransUnit tu = new TransUnit(new TransUnitId(textFlow.getId()), textFlow.getResId(), hLocale.getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New, "", "", msgContext, textFlow.getPos());
-      if (target != null)
+
+      ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(textFlow);
+      ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(textFlow, target, nPlurals);
+      TransUnit tu = new TransUnit(
+            new TransUnitId(textFlow.getId()),
+            textFlow.getResId(),
+            hLocale.getLocaleId(),
+            textFlow.isPlural(),
+            sourceContents,
+            CommentsUtil.toString(textFlow.getComment()),
+            targetContents,
+            ContentState.New,
+            "",
+            "",
+            msgContext,
+            textFlow.getPos());
+
+      tu.setPlural(textFlow.isPlural());
+      if (target == null)
       {
-         tu.setTarget(target.getContent());
+         tu.setStatus(ContentState.New);
+      }
+      else
+      {
          tu.setStatus(target.getState());
          if (target.getLastModifiedBy() != null)
          {
             tu.setLastModifiedBy(target.getLastModifiedBy().getName());
          }
-         tu.setLastModifiedTime(SIMPLE_FORMAT.format(target.getLastChanged()));
+         tu.setLastModifiedTime(simpleDateFormat.format(target.getLastChanged()));
       }
       return tu;
    }

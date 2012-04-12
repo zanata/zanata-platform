@@ -22,28 +22,20 @@ package org.zanata.webtrans.client.ui.table.cell;
 
 import org.zanata.webtrans.client.ui.TransUnitCountGraph;
 
-import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 /**
  * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class TransUnitCountGraphCell extends AbstractCell<TransUnitCountGraph>
+public class TransUnitCountGraphCell extends StaticWidgetCell<TransUnitCountGraph>
 {
    public TransUnitCountGraphCell()
    {
       super("mouseover", "mouseout");
-   }
-
-   @Override
-   public void render(com.google.gwt.cell.client.Cell.Context context, TransUnitCountGraph value, SafeHtmlBuilder sb)
-   {
-      sb.appendHtmlConstant(value.getElement().getString());
    }
 
    @Override

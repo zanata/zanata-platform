@@ -3,6 +3,7 @@ package org.zanata.webtrans.shared.rpc;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
+import java.util.ArrayList;
 
 
 public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResult>
@@ -10,7 +11,7 @@ public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResu
    private static final long serialVersionUID = 1L;
 
    private TransUnitId transUnitId;
-   private String content;
+   private ArrayList<String> contents;
    private ContentState contentState;
    private boolean isRedo = false;
    private Integer verNum;
@@ -40,16 +41,16 @@ public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResu
    {
    }
 
-   public UpdateTransUnit(TransUnitId transUnitId, String content, ContentState contentState)
+   public UpdateTransUnit(TransUnitId transUnitId, ArrayList<String> contents, ContentState contentState)
    {
       this.transUnitId = transUnitId;
-      this.content = content;
+      this.contents = contents;
       this.contentState = contentState;
    }
 
-   public String getContent()
+   public ArrayList<String> getContents()
    {
-      return content;
+      return contents;
    }
 
    public TransUnitId getTransUnitId()

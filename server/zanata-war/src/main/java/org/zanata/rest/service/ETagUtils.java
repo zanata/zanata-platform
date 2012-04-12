@@ -112,7 +112,7 @@ public class ETagUtils
 
    public EntityTag generateETagForDocument(HProjectIteration iteration, String id, Set<String> extensions)
    {
-      HDocument doc = documentDAO.getByDocId(iteration, id);
+      HDocument doc = documentDAO.getByDocIdAndIteration(iteration, id);
       if (doc == null)
          throw new NoSuchEntityException("Document '" + id + "' not found.");
 

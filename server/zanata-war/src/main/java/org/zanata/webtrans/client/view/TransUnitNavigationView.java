@@ -20,11 +20,7 @@
  */
 package org.zanata.webtrans.client.view;
 
-import java.util.Map;
-
-import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.presenter.TransUnitNavigationPresenter;
-import org.zanata.webtrans.client.resources.EditorConfigConstants;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.Resources;
 
@@ -77,25 +73,19 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
       setFuzzyUntranslatedModeTooltip();
    }
 
-   public void setNavModeTooltip(Map<String, Boolean> configMap)
+   public void setNavModeTooltip(boolean fuzzyMode, boolean untranslatedMode)
    {
-      if (configMap.containsKey(EditorConfigConstants.BUTTON_FUZZY) && configMap.containsKey(EditorConfigConstants.BUTTON_UNTRANSLATED))
+      if (fuzzyMode && !untranslatedMode)
       {
-         boolean fuzzyMode = configMap.get(EditorConfigConstants.BUTTON_FUZZY);
-         boolean untranslatedMode = configMap.get(EditorConfigConstants.BUTTON_UNTRANSLATED);
-
-         if (fuzzyMode && !untranslatedMode)
-         {
-            setFuzzyModeTooltip();
-         }
-         else if (untranslatedMode && !fuzzyMode)
-         {
-            setUntranslatedModeTooltip();
-         }
-         else if (untranslatedMode && fuzzyMode)
-         {
-            setFuzzyUntranslatedModeTooltip();
-         }
+         setFuzzyModeTooltip();
+      }
+      else if (untranslatedMode && !fuzzyMode)
+      {
+         setUntranslatedModeTooltip();
+      }
+      else if (untranslatedMode && fuzzyMode)
+      {
+         setFuzzyUntranslatedModeTooltip();
       }
    }
 
