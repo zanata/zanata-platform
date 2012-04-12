@@ -18,33 +18,39 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.service.impl;
+package org.zanata.dao;
 
 import java.util.List;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.dao.VersionGroupDAO;
 import org.zanata.model.HIterationGroup;
-import org.zanata.service.VersionGroupService;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("versionGroupServiceImpl")
+@Name("versionGroupDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class VersionGroupServiceImpl implements VersionGroupService
+public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long>
 {
-   @In
-   private VersionGroupDAO versionGroupDAO;
+   public VersionGroupDAO()
+   {
+      super(HIterationGroup.class);
+   }
 
-   @Override
+   public VersionGroupDAO(Session session)
+   {
+      super(HIterationGroup.class, session);
+   }
+
    public List<HIterationGroup> getAllVersionGroups()
    {
-      return versionGroupDAO.getAllVersionGroups();
+      Query query = getSession().createQuery("from HIterationGroup");
+      return query.list();
    }
 }
