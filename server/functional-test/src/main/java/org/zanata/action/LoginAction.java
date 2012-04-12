@@ -15,35 +15,34 @@
  */
 package org.zanata.action;
 
-import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.HomePage;
 import org.zanata.page.SignInPage;
+import org.zanata.page.WebDriverFactory;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 public class LoginAction
 {
+   private final WebDriver driver;
 
-   @Test
-   public void canSignIn()
+   public LoginAction()
    {
-//      System.getProperties().put("webdriver.firefox.useExisting", "true");
-
-      WebDriver driver = new WebDriverFactory().getDriver();
-
-      driver.get("http://localhost:8080/zanata");
-
-      HomePage homePage = new HomePage(driver);
-      SignInPage signInPage = homePage.clickSignInLink();
-
-      assertThat(signInPage.getTitle(), equalTo("Zanata:Log in"));
-
-      homePage = signInPage.signInAndGoToPage("admin", "admin", HomePage.class);
-
-      assertThat(homePage.getTitle(), equalTo("Zanata:Home"));
+      driver = WebDriverFactory.INSTANCE.getDriver();
    }
 
+   public HomePage signIn(String homeUrl, String username, String password)
+   {
+//      System.getProperties().put("webdriver.firefox.useExisting", "true");
+      driver.get(homeUrl);
+
+      SignInPage signInPage = new HomePage(driver).clickSignInLink();
+      assertThat(signInPage.getTitle(), equalTo("Zanata:Log in"));
+
+      HomePage homePage = signInPage.signInAndGoToPage(username, password, HomePage.class);
+      assertThat(homePage.getTitle(), equalTo("Zanata:Home"));
+      return homePage;
+   }
 
 }

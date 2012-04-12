@@ -16,6 +16,7 @@
     <properties>
         <webdriver.version>0.9.7376</webdriver.version>
         <selenium.version>2.20.0</selenium.version>
+        <hamcrest.version>1.2.1</hamcrest.version>
     </properties>
 
     <dependencies>
@@ -38,6 +39,16 @@
             <groupId>org.seleniumhq.webdriver</groupId>
             <artifactId>webdriver-chrome</artifactId>
             <version>${webdriver.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-all</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -54,13 +65,12 @@
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-core</artifactId>
-            <version>1.2.1</version>
-            <scope>test</scope>
+            <version>${hamcrest.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-library</artifactId>
-            <version>1.2.1</version>
+            <version>${hamcrest.version}</version>
         </dependency>
     </dependencies>
 </project>

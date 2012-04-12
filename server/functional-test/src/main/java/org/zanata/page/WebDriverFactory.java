@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.zanata.action;
+package org.zanata.page;
 
 import java.io.File;
 
@@ -25,15 +25,23 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import com.google.common.base.Strings;
 
-public class WebDriverFactory
+public enum WebDriverFactory
 {
+   INSTANCE;
+
    private WebDriver driver;
 
    public WebDriver getDriver()
    {
       if (driver == null)
       {
-         driver = configureHtmlDriver();
+         synchronized (this)
+         {
+            if (driver == null)
+            {
+               driver = configureHtmlDriver();
+            }
+         }
       }
       return driver;
    }
@@ -45,6 +53,7 @@ public class WebDriverFactory
 
    private WebDriver configureChromeDriver()
    {
+      System.getProperties().put("webdriver.chrome.bin", "/opt/google/chrome/google-chrome");
       return new ChromeDriver();
    }
 
@@ -80,4 +89,8 @@ public class WebDriverFactory
       return firefoxProfile;
    }
 
+   static enum BrowserType
+   {
+      Chrome, FireFox, HtmlUnit
+   }
 }

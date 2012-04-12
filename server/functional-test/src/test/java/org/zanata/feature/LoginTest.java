@@ -13,26 +13,25 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.zanata.page;
+package org.zanata.feature;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
+import org.hamcrest.Matchers;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.zanata.action.LoginAction;
+import org.zanata.page.HomePage;
 
-public class HomePage extends AbstractPage
+import static org.hamcrest.MatcherAssert.assertThat;
+
+public class LoginTest
 {
-   @FindBy(id = "Sign_in")
-   private WebElement signInLink;
+   @Test
+   @Ignore
+   public void canLogIn() {
+      LoginAction loginAction = new LoginAction();
+      HomePage homePage = loginAction.signIn("http://localhost:8080/zanata", "admin", "admin");
 
-   public HomePage(final WebDriver driver)
-   {
-      super(driver);
+      assertThat(homePage, Matchers.notNullValue());
    }
 
-   public SignInPage clickSignInLink()
-   {
-      signInLink.click();
-      return PageFactory.initElements(getDriver(), SignInPage.class);
-   }
 }
