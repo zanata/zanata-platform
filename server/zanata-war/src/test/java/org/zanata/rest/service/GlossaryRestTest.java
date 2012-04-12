@@ -158,7 +158,7 @@ public class GlossaryRestTest extends ZanataRestTest
       glossary.getGlossaryEntries().add(glossaryEntry1);
       glossary.getGlossaryEntries().add(glossaryEntry2);
 
-      ClientResponse<Glossary> response = glossaryService.put(glossary);
+      ClientResponse<String> response = glossaryService.put(glossary);
 
       assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
    }

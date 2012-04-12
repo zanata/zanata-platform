@@ -33,7 +33,6 @@
      		<classes>
 <!-- FIXME get these tests working again
             <class name="org.zanata.server.rpc.ActivateWorkspaceActionSeamTest"/>
-            <class name="org.zanata.rest.service.GlossaryServiceSeamTest"/>
             <class name="org.zanata.dao.LocaleMemberDAOTest"/>
  -->
 
@@ -41,6 +40,7 @@
      			<class name="org.zanata.rest.service.ResourceServiceSeamTest"/>
      			<class name="org.zanata.rest.service.TranslationServiceSeamTest"/>
      			<class name="org.zanata.rest.service.VersionSeamTest"/>
+                <class name="org.zanata.rest.service.GlossaryServiceSeamTest"/>
      		</classes>
      	</test>
      	<test name="Raw Rest Tests">

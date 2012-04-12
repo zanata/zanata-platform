@@ -140,11 +140,17 @@
             <column name="plural" type="boolean" valueBoolean="false"/>
         </addColumn>
 	</changeSet>
-	
-	<!-- 
-		Make sure db constraints are created. 
-		Specific problem with MySQL and the MyISAM storage engine (doesn't allow foreign keys)
-	-->
+
+    <changeSet author="aeng@redhat.com" id="7.5">
+        <comment>Clear orphan records in HTermComment and HGlossaryTerm</comment>
+        <sql>delete from HTermComment where glossaryTermId NOT in (select id from HGlossaryTerm)</sql>
+        <sql>delete from HGlossaryTerm where glossaryEntryId NOT in (select id from HGlossaryEntry)</sql>
+    </changeSet>
+
+    <!--
+         Make sure db constraints are created.
+         Specific problem with MySQL and the MyISAM storage engine (doesn't allow foreign keys)
+     -->
 	
 	<changeSet author="camunoz@redhat.com" id="8" dbms="mysql">
 		<comment>Change engine to INNODB on MySQL for every table created with liquibase</comment>
