@@ -38,7 +38,9 @@
                   </rich:column>
                   <rich:column sortBy="#{group.creationDate}">
                       <f:facet name="header">#{messages['jsf.CreationDate']}</f:facet>
-                      #{group.creationDate}
+                      <h:outputText value="#{group.creationDate}">
+                          <f:convertDateTime type="date" dateStyle="default"/>
+                      </h:outputText>
                   </rich:column>
               </rich:dataTable>
           </a4j:form>

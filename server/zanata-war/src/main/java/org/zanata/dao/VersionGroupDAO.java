@@ -28,6 +28,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.common.EntityStatus;
 import org.zanata.model.HIterationGroup;
 
 /**
@@ -48,9 +49,10 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long>
       super(HIterationGroup.class, session);
    }
 
-   public List<HIterationGroup> getAllVersionGroups()
+   public List<HIterationGroup> getAllActiveVersionGroups()
    {
-      Query query = getSession().createQuery("from HIterationGroup");
+      Query query = getSession().createQuery("from HIterationGroup g where g.status = :status");
+      query.setParameter("status", EntityStatus.ACTIVE);
       return query.list();
    }
 }

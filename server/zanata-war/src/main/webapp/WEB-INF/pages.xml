@@ -177,9 +177,24 @@
     </navigation>
   </page>
 
+    <!-- Version Group -->
+
     <page view-id="/admin/versiongroupmanager.xhtml" >
-        <action execute="#{versionGroupAction.loadAllGroups}" />
+        <action execute="#{versionGroupHome.loadAllActiveGroups}" />
     </page>
+
+    <page view-id="/admin/versiongroupdetails.xhtml">
+        <restrict>#{s:hasPermission(versionGroupHome.instance, 'insert')}</restrict>
+        <navigation from-action="#{versionGroupHome.persist}">
+            <rule if="#{versionGroupHome.managed}">
+                <redirect view-id="/admin/versiongroupmanager.xhtml"/>
+            </rule>
+        </navigation>
+        <navigation from-action="#{versionGroupHome.cancel}">
+            <redirect view-id="/admin/versiongroupmanager.xhtml" />
+        </navigation>
+    </page>
+
 
   <!-- Profile -->
 

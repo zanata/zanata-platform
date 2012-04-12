@@ -1,0 +1,21 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	template="../WEB-INF/layout/template.xhtml">
+
+   <ui:define name="page_title">Version Group Details</ui:define>
+	<ui:define name="center_content">
+        <rich:jQuery selector="#tab_admin" query="addClass('ui-tabs-selected')" />
+        <h1>#{messages['jsf.CreateNewVersionGroup']}</h1>
+
+        <ui:include src="../WEB-INF/layout/version_group_details_form.xhtml" />
+
+	</ui:define>
+
+</ui:composition>
