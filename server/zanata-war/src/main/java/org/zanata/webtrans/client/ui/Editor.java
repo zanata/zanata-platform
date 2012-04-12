@@ -322,6 +322,7 @@ public class Editor extends Composite implements ToggleEditor
       String postCursor = textArea.getText().substring(textArea.getCursorPos(), textArea.getText().length());
 
       textArea.setText(preCursor + suggestion + postCursor);
+      textArea.setCursorPos(textArea.getText().indexOf(suggestion) + suggestion.length());
    }
 
    @Override
