@@ -16,8 +16,7 @@
 package org.zanata.feature;
 
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.testng.annotations.Test;
 import org.zanata.action.LoginAction;
 import org.zanata.page.HomePage;
 
@@ -26,7 +25,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class LoginTest
 {
    @Test
-   @Ignore
    public void canLogIn() {
       LoginAction loginAction = new LoginAction();
       HomePage homePage = loginAction.signIn("http://localhost:8080/zanata", "admin", "admin");
