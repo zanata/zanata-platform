@@ -85,7 +85,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
 
 
    @Inject
-   public SearchResultsView(Resources resources, UiMessages uiMessages, final CachingDispatchAsync dispatcher, EventBus eventBus)
+   public SearchResultsView(Resources resources, UiMessages uiMessages)
    {
       filterTextBox = new ClearableTextBox(resources, uiMessages);
       replacementTextBox = new ClearableTextBox(resources, uiMessages);
@@ -161,7 +161,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
          @Override
          public String getValue(TransUnit tu)
          {
-            return new Integer(tu.getRowIndex()).toString();
+            return Integer.toString(tu.getRowIndex());
          }
       };
 

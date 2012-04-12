@@ -127,7 +127,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          public void onValueChange(ValueChangeEvent<String> event)
          {
             HistoryToken token = HistoryToken.fromTokenString(history.getToken());
-            if (event.getValue() != token.getProjectSearchText())
+            if (!event.getValue().equals(token.getProjectSearchText()))
             {
                token.setProjectSearchText(event.getValue());
                history.newItem(token.toTokenString());
@@ -186,7 +186,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler() {
 
          @Override
-         public void onTransUnitUpdated(TransUnitUpdatedEvent event)
+         public void onTransUnitUpdated(final TransUnitUpdatedEvent event)
          {
             ListDataProvider<TransUnit> dataProvider = documentDataProviders.get(event.getDocumentId().getId());
             if (dataProvider == null)
