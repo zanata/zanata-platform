@@ -707,10 +707,4 @@ public class AppPresenterTest
       verify(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
       verify(mockDismiss, mockDismissVisibility);
    }
-
-   public void huangpTest()
-   {
-      String result = "Abc abc ABc aBc".replaceAll("(?i)ab", "o");
-      System.out.println("result = " + result);
-   }
 }
