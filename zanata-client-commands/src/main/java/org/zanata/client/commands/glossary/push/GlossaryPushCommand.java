@@ -139,7 +139,7 @@ public class GlossaryPushCommand extends ConfigurableCommand<GlossaryPushOptions
       
       Glossary glossary = reader.extractGlossary(glossaryFile);
       log.debug(glossary.toString());
-      ClientResponse<Glossary> response = glossaryResource.put(glossary);
+      ClientResponse<String> response = glossaryResource.put(glossary);
       ClientUtility.checkResult(response, uri);
    }
 }
