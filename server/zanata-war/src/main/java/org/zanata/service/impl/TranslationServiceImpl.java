@@ -15,12 +15,8 @@
  */
 package org.zanata.service.impl;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Nullable;
 
 import org.hibernate.Session;
@@ -35,7 +31,6 @@ import org.slf4j.LoggerFactory;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectDAO;
-import org.zanata.dao.TextFlowTargetHistoryDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
@@ -45,11 +40,9 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
-import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
 
 @Name("translationServiceImpl")
 @AutoCreate
@@ -60,9 +53,6 @@ public class TranslationServiceImpl implements TranslationService
 
    @In
    Session session;
-
-   @In
-   TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
 
    @In
    ProjectDAO projectDAO;
@@ -77,14 +67,19 @@ public class TranslationServiceImpl implements TranslationService
    HAccount authenticatedAccount;
 
    @Override
-   public Map.Entry<HTextFlow, HTextFlowTarget> translate(Long textFlowId, LocaleId localeId, ContentState stateToSet, List<String> contentsToSave)
+   public TranslationResult translate(Long textFlowId, LocaleId localeId, ContentState stateToSet, List<String> contentsToSave)
    {
+      TranslationResultImpl result = new TranslationResultImpl();
+
       HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, textFlowId);
+      result.textFlow = hTextFlow;
+
       HProjectIteration projectIteration = hTextFlow.getDocument().getProjectIteration();
       HIterationProject project = projectIteration.getProject();
       HLocale hLocale = localeServiceImpl.validateLocaleByProjectIteration(localeId, project.getSlug(), projectIteration.getSlug());
 
       HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale);
+      result.prevTextFlowTarget = hTextFlowTarget;
 
       boolean targetChanged = false;
 
@@ -110,7 +105,6 @@ public class TranslationServiceImpl implements TranslationService
          targetChanged = true;
       }
 
-      //TODO detection of target change can be done by using hibernate interceptor
       if (targetChanged)
       {
          hTextFlowTarget.setVersionNum(hTextFlowTarget.getVersionNum() + 1);
@@ -123,7 +117,8 @@ public class TranslationServiceImpl implements TranslationService
       session.flush();
 
       //return text flow and new text flow target
-      return new AbstractMap.SimpleEntry<org.zanata.model.HTextFlow, org.zanata.model.HTextFlowTarget>(hTextFlow, hTextFlowTarget);
+      result.newTextFlowTarget = hTextFlowTarget;
+      return result;
    }
 
    private boolean determineContentState(Long textFlowId, ContentState stateToSet, List<String> contentToSave, HTextFlowTarget target)
@@ -162,5 +157,30 @@ public class TranslationServiceImpl implements TranslationService
             return Strings.isNullOrEmpty(input);
          }
       });
+   }
+
+   public static class TranslationResultImpl implements TranslationResult
+   {
+      private HTextFlow textFlow;
+      private HTextFlowTarget prevTextFlowTarget;
+      private HTextFlowTarget newTextFlowTarget;
+
+      @Override
+      public HTextFlow getTextFlow()
+      {
+         return textFlow;
+      }
+
+      @Override
+      public HTextFlowTarget getPreviousTextFlowTarget()
+      {
+         return prevTextFlowTarget;
+      }
+
+      @Override
+      public HTextFlowTarget getNewTextFlowTarget()
+      {
+         return newTextFlowTarget;
+      }
    }
 }

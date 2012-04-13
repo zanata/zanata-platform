@@ -28,7 +28,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 
 @Name("webtrans.gwt.ReplaceTextHandler")
 @Scope(ScopeType.STATELESS)
-@ActionHandlerFor(UpdateTransUnit.class)
+@ActionHandlerFor(ReplaceText.class)
 public class ReplaceTextHandler extends AbstractActionHandler<ReplaceText, ReplaceTextResult>
 {
    private static final String ACTION_MODIFY_TRANSLATION = "modify-translation";

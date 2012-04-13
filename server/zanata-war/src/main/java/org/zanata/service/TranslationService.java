@@ -16,15 +16,20 @@
 package org.zanata.service;
 
 import java.util.List;
-import java.util.Map;
 
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 
 public interface TranslationService
 {
-   Map.Entry<HTextFlow, HTextFlowTarget> translate(Long textFlowId, LocaleId localeId, ContentState contentState, List<String> targetContents);
+   TranslationResult translate(Long textFlowId, LocaleId localeId, ContentState contentState, List<String> targetContents);
+
+   public interface TranslationResult
+   {
+      HTextFlow getTextFlow();
+      HTextFlowTarget getPreviousTextFlowTarget();
+      HTextFlowTarget getNewTextFlowTarget();
+   }
 }
