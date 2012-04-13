@@ -80,8 +80,6 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
    @In
    private ResourceUtils resourceUtils;
 
-   private static SimpleDateFormat SIMPLE_FORMAT = new SimpleDateFormat();
-
    @Override
    public GetProjectTransUnitListsResult execute(GetProjectTransUnitLists action, ExecutionContext context) throws ActionException
    {
@@ -92,12 +90,13 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
       HashMap<Long, String> docPaths = new HashMap<Long, String>();
       if ((action.getSearchString() == null || action.getSearchString().isEmpty()))
       {
-         //TODO empty searches shouldn't be requested, consider replacing this with an error,
-         //or making behaviour return all targets for the project (consider performance).
+         // TODO empty searches shouldn't be requested, consider replacing this
+         // with an error, or making behaviour return all targets for the
+         // project (consider performance).
          return new GetProjectTransUnitListsResult(docPaths, matchingTUs);
       }
 
-      //TODO handle exception thrown by search service
+      // TODO handle exception thrown by search service
       List<HTextFlowTarget> matchingFlows = textFlowSearchServiceImpl.findTextFlowTargets(action.getWorkspaceId(), FilterConstraints.filterBy(action.getSearchString()).ignoreSource().excludeNew().caseSensitive(action.isCaseSensitive()));
       log.info("Returned {0} results for search", matchingFlows.size());
 
@@ -111,17 +110,20 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          throw new ActionException(e.getMessage());
       }
 
-
       for (HTextFlowTarget htft : matchingFlows)
       {
          HTextFlow htf = htft.getTextFlow();
-         log.info("Textflow is {0}, Target is {1}", htf, htft);
          List<TransUnit> listForDoc = matchingTUs.get(htf.getDocument().getId());
          if (listForDoc == null)
          {
             listForDoc = new ArrayList<TransUnit>();
          }
-         //TODO cache this rather than looking up repeatedly
+         // FIXME add a check for leading and trailing whitespace to compensate
+         // for NGramAnalyzer trimming strings before tokenization. This should
+         // be removed when updating to a lucene version with the whitespace
+         // issue resolved
+
+         // TODO cache this rather than looking up repeatedly
          int nPlurals = resourceUtils.getNumPlurals(htf.getDocument(), hLocale);
          listForDoc.add(initTransUnit(htf, hLocale, nPlurals));
          matchingTUs.put(htf.getDocument().getId(), listForDoc);
@@ -137,7 +139,8 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
    }
 
    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-   //TODO move to shared location with other search code
+
+   // TODO move to shared location with other search code
    private TransUnit initTransUnit(HTextFlow textFlow, HLocale hLocale, int nPlurals)
    {
       String msgContext = null;
