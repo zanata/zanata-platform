@@ -106,20 +106,20 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          throw new ZanataServiceException("Failed to validate locale", e);
       }
 
-      //TODO add case-sensitive flag to FilterConstraints
-
       String searchField;
       Analyzer ngramAnalyzer;
       if (constraints.isCaseSensitive())
       {
-         searchField = "content-case";
+         searchField = "content-case0";
          ngramAnalyzer = new CaseSensitiveNgramAnalyzer();
       }
       else
       {
-         searchField = "content-nocase";
+         searchField = "content-nocase0";
          ngramAnalyzer = new DefaultNgramAnalyzer();
       }
+
+      //TODO search in all content fields (content 0..5 or more)
 
       Query searchPhraseQuery;
       QueryParser parser = new QueryParser(Version.LUCENE_29, searchField, ngramAnalyzer);

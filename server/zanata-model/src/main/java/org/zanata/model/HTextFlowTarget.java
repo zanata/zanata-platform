@@ -55,20 +55,19 @@ import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
-import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Parameter;
 import org.hibernate.validator.NotNull;
 import org.zanata.common.ContentState;
 import org.zanata.common.HasContents;
-import org.zanata.hibernate.search.CaseSensitiveNgramAnalyzer;
 import org.zanata.hibernate.search.ContainingWorkspaceBridge;
 import org.zanata.hibernate.search.ContentStateBridge;
-import org.zanata.hibernate.search.DefaultNgramAnalyzer;
 import org.zanata.hibernate.search.LocaleIdBridge;
+import org.zanata.hibernate.search.StringListBridge;
 
 /**
  * Represents a flow of translated text that should be processed as a
@@ -82,7 +81,7 @@ import org.zanata.hibernate.search.LocaleIdBridge;
 @NamedQueries({
    @NamedQuery(name = "HTextFlowTarget.findLatestEquivalentTranslations",
                query = "select tft, tfExample, max(tft.lastChanged) " +
-               		  "from HTextFlowTarget tft, HTextFlow tfExample " +
+                       "from HTextFlowTarget tft, HTextFlow tfExample " +
                        "left join fetch tft.textFlow " +
                        "where " +
                        "tfExample.resId = tft.textFlow.resId " +
@@ -109,18 +108,17 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    private HPerson lastModifiedBy;
 
    private HSimpleComment comment;
-   
+
    public Map<Integer, HTextFlowTargetHistory> history;
-   
+
    // Only for internal use (persistence transient)
    private Integer oldVersionNum;
-   
-   // Only for internal use (persistence transient) 
+
+   // Only for internal use (persistence transient)
    private HTextFlowTargetHistory initialState;
-   
-   // Only for internal use (persistence transient) 
+
+   // Only for internal use (persistence transient)
    private boolean lazyRelationsCopied = false;
-   
 
    public HTextFlowTarget()
    {
@@ -133,7 +131,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       this.textFlowRevision = textFlow.getRevision();
    }
 
-
    @Id
    @GeneratedValue
    public Long getId()
@@ -145,7 +142,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    {
       this.id = id;
    }
-
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
@@ -222,51 +218,55 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
 
    /**
     * As of release 1.6, replaced by {@link #getContents()}
+    * 
     * @return
     */
    @Override
    @Deprecated
    @Transient
-   //FIXME index contents rather than content
-   //TODO add case sensitive content field to index.
-   // This will require a different analyzer as DefaultNgramAnalyzer and its
-   // parent and grandparent class are implicitly case insensitive.
-   @Fields({
-      @Field(name="content-nocase", index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class)),
-      @Field(name="content-case", index = Index.TOKENIZED, analyzer = @Analyzer(impl = CaseSensitiveNgramAnalyzer.class))
-   })
    public String getContent()
    {
-      if( this.getContents().size() > 0 )
+      if (this.getContents().size() > 0)
       {
          return this.getContents().get(0);
       }
       return null;
    }
-   
+
    @Deprecated
    @Transient
-   public void setContent( String content )
+   public void setContent(String content)
    {
-      this.setContents( Arrays.asList(content) );
+      this.setContents(Arrays.asList(content));
    }
-   
+
    @Override
    @Type(type = "text")
    @AccessType("field")
    @CollectionOfElements(fetch = FetchType.EAGER)
    @JoinTable(name = "HTextFlowTargetContent", 
-      joinColumns = @JoinColumn(name = "text_flow_target_id")
+              joinColumns = @JoinColumn(name = "text_flow_target_id")
    )
    @IndexColumn(name = "pos", nullable = false)
    @Column(name = "content", nullable = false)
+   @Fields({
+      @Field(name="content-nocase",
+             index = Index.TOKENIZED,
+             bridge = @FieldBridge(impl = StringListBridge.class,
+                                   params = {@Parameter(name="case", value="fold")})),
+      @Field(name = "content-case",
+             index = Index.TOKENIZED,
+             bridge = @FieldBridge(impl = StringListBridge.class,
+                                   params = {@Parameter(name="case", value="preserve")}))
+   })
+
    public List<String> getContents()
    {
-      // Copy lazily loaded relations to the history object as this cannot be done
-      // in the entity callbacks
+      // Copy lazily loaded relations to the history object as this cannot be
+      // done in the entity callbacks
       copyLazyLoadedRelationsToHistory();
-      
-      if( contents == null )
+
+      if (contents == null)
       {
          contents = new ArrayList<String>();
       }
@@ -275,14 +275,14 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
 
    public void setContents(List<String> contents)
    {
-      // Copy lazily loaded relations to the history object as this cannot be done
-      // in the entity callbacks
+      // Copy lazily loaded relations to the history object as this cannot be
+      // done in the entity callbacks
       copyLazyLoadedRelationsToHistory();
-      
+
       this.contents = new ArrayList<String>(contents);
    }
-   
-   public void setContents(String ... contents)
+
+   public void setContents(String... contents)
    {
       this.setContents(Arrays.asList(contents));
    }
@@ -300,12 +300,12 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    {
       this.comment = comment;
    }
-   
-   @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST}, mappedBy = "textFlowTarget")
+
+   @OneToMany(cascade = { CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST }, mappedBy = "textFlowTarget")
    @MapKey(name = "versionNum")
    public Map<Integer, HTextFlowTargetHistory> getHistory()
    {
-      if( this.history == null )
+      if (this.history == null)
       {
          this.history = new HashMap<Integer, HTextFlowTargetHistory>();
       }
@@ -316,12 +316,12 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    {
       this.history = history;
    }
-   
+
    @PreUpdate
    private void preUpdate()
    {
       // insert history if this has changed from its initial state
-      if( this.initialState != null && this.initialState.hasChanged(this) )
+      if (this.initialState != null && this.initialState.hasChanged(this))
       {
          this.getHistory().put(this.oldVersionNum, this.initialState);
       }
@@ -336,15 +336,15 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       this.initialState = new HTextFlowTargetHistory(this);
       this.lazyRelationsCopied = false;
    }
-   
+
    /**
     * Copies all lazy loaded relations to the history object.
     */
    private void copyLazyLoadedRelationsToHistory()
    {
-      if( this.initialState != null && this.initialState.getContents() == null && !this.lazyRelationsCopied )
+      if (this.initialState != null && this.initialState.getContents() == null && !this.lazyRelationsCopied)
       {
-         this.initialState.setContents( this.contents );
+         this.initialState.setContents(this.contents);
          this.lazyRelationsCopied = true;
       }
    }
