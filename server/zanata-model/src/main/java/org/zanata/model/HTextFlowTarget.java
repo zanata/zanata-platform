@@ -55,20 +55,19 @@ import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
-import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Parameter;
 import org.hibernate.validator.NotNull;
 import org.zanata.common.ContentState;
 import org.zanata.common.HasContents;
-import org.zanata.hibernate.search.CaseSensitiveNgramAnalyzer;
 import org.zanata.hibernate.search.ContainingWorkspaceBridge;
 import org.zanata.hibernate.search.ContentStateBridge;
-import org.zanata.hibernate.search.DefaultNgramAnalyzer;
 import org.zanata.hibernate.search.LocaleIdBridge;
+import org.zanata.hibernate.search.StringListBridge;
 
 /**
  * Represents a flow of translated text that should be processed as a
@@ -82,7 +81,7 @@ import org.zanata.hibernate.search.LocaleIdBridge;
 @NamedQueries({
    @NamedQuery(name = "HTextFlowTarget.findLatestEquivalentTranslations",
                query = "select tft, tfExample, max(tft.lastChanged) " +
-               		  "from HTextFlowTarget tft, HTextFlow tfExample " +
+                       "from HTextFlowTarget tft, HTextFlow tfExample " +
                        "left join fetch tft.textFlow " +
                        "where " +
                        "tfExample.resId = tft.textFlow.resId " +
@@ -227,14 +226,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    @Override
    @Deprecated
    @Transient
-   //FIXME index contents rather than content
-   //TODO add case sensitive content field to index.
-   // This will require a different analyzer as DefaultNgramAnalyzer and its
-   // parent and grandparent class are implicitly case insensitive.
-   @Fields({
-      @Field(name="content-nocase", index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class)),
-      @Field(name="content-case", index = Index.TOKENIZED, analyzer = @Analyzer(impl = CaseSensitiveNgramAnalyzer.class))
-   })
    public String getContent()
    {
       if( this.getContents().size() > 0 )
@@ -260,6 +251,17 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    )
    @IndexColumn(name = "pos", nullable = false)
    @Column(name = "content", nullable = false)
+   @Fields({
+      @Field(name="content-nocase",
+             index = Index.TOKENIZED,
+             bridge = @FieldBridge(impl = StringListBridge.class,
+                                   params = {@Parameter(name="case", value="fold")})),
+      @Field(name = "content-case",
+             index = Index.TOKENIZED,
+             bridge = @FieldBridge(impl = StringListBridge.class,
+                                   params = {@Parameter(name="case", value="preserve")}))
+   })
+
    public List<String> getContents()
    {
       // Copy lazily loaded relations to the history object as this cannot be done
