@@ -17,6 +17,11 @@
 			id="Projects" view="/project/home.xhtml" propagation="none">
 			<span><img src="#{request.contextPath}/public-img/silk/photos.png" />#{messages['jsf.Projects']}</span>
 		</s:link> </li>
+		<li id="tab_version_groups" class="ui-tabs-nav-issues">
+			<s:link id="version-groups" view="/version-group/home.xhtml" propagation="none">
+				<span><img src="#{request.contextPath}/public-img/silk/photos.png" />#{messages['jsf.VersionGroups']}</span>
+			</s:link> 
+		</li>
 		<li id="tab_tribes"><s:link id="Languages"
 			view="/language/home.xhtml" propagation="none">
 			<span><img src="#{request.contextPath}/public-img/silk/world.png" />#{messages['jsf.Languages']}</span>
@@ -52,9 +57,6 @@
 				<li id="Admin_Manage_languages"><s:link
 					id="Admin_Manage_languages_a" view="/admin/languagemanager.xhtml"
 					propagation="none">#{messages['jsf.ManageLanguage']}</s:link></li>
-                <li id="Admin_Manage_version_groups"><s:link
-                        id="Admin_Manage_version_groups_a" view="/admin/versiongroupmanager.xhtml"
-                        propagation="none">#{messages['jsf.ManageVersionGroups']}</s:link></li>
                 <li id="Admin_Manage_search"><s:link id="Admin_Manage_search_a"
 					view="/admin/search.xhtml" propagation="none">#{messages['jsf.ManageSearch']}</s:link></li>
 				<li id="Admin_Glossary">

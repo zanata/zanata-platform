@@ -49,7 +49,7 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long>
       super(HIterationGroup.class, session);
    }
 
-   public List<HIterationGroup> getAllActiveVersionGroups()
+   public List<HIterationGroup> getAllActiveversionGroups()
    {
       Query query = getSession().createQuery("from HIterationGroup g where g.status = :status");
       query.setParameter("status", EntityStatus.ACTIVE);

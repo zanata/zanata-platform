@@ -21,9 +21,15 @@
 package org.zanata.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
@@ -39,6 +45,8 @@ public class HIterationGroup extends SlugEntityBase
    private String name;
 
    private String description;
+   
+   private Set<HPerson> maintainers;
 
 
    @Length(max = 80)
@@ -64,5 +72,27 @@ public class HIterationGroup extends SlugEntityBase
    public void setDescription(String description)
    {
       this.description = description;
+   }
+   
+   @ManyToMany
+   @JoinTable(name = "HIterationGroup_Maintainer", joinColumns = @JoinColumn(name = "iterationGroupId"), inverseJoinColumns = @JoinColumn(name = "personId"))
+   public Set<HPerson> getMaintainers()
+   {
+      if (maintainers == null)
+         maintainers = new HashSet<HPerson>();
+      return maintainers;
+   }
+
+   /**
+    * @see {@link #addMaintainer(HPerson)}
+    */
+   public void setMaintainers(Set<HPerson> maintainers)
+   {
+      this.maintainers = maintainers;
+   }
+   
+   public void addMaintainer( HPerson maintainer )
+   {
+      this.getMaintainers().add(maintainer);
    }
 }

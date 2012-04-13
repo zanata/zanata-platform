@@ -179,21 +179,26 @@
 
     <!-- Version Group -->
 
-    <page view-id="/admin/versiongroupmanager.xhtml" >
+    <page view-id="/version-group/home.xhtml" >
         <action execute="#{versionGroupHome.loadAllActiveGroups}" />
     </page>
 
-    <page view-id="/admin/versiongroupdetails.xhtml">
+    <page view-id="/version-group/create_version_group.xhtml">
         <restrict>#{s:hasPermission(versionGroupHome.instance, 'insert')}</restrict>
         <navigation from-action="#{versionGroupHome.persist}">
             <rule if="#{versionGroupHome.managed}">
-                <redirect view-id="/admin/versiongroupmanager.xhtml"/>
+                <redirect view-id="/version-group/home.xhtml"/>
             </rule>
         </navigation>
         <navigation from-action="#{versionGroupHome.cancel}">
-            <redirect view-id="/admin/versiongroupmanager.xhtml" />
+            <redirect view-id="/version-group/home.xhtml" />
         </navigation>
     </page>
+    
+    <page view-id="/version-group/version_group.xhtml">
+    	<param name="slug" value="#{versionGroupHome.slug}" />
+    	<action execute="#{versionGroupHome.validateSuppliedId}" />
+  	</page>
 
 
   <!-- Profile -->

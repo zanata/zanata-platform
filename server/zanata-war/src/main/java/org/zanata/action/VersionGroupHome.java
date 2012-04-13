@@ -62,7 +62,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
    public void loadAllActiveGroups()
    {
-      allVersionGroups = versionGroupServiceImpl.getAllActiveVersionGroups();
+      allVersionGroups = versionGroupServiceImpl.getAllActiveversionGroups();
    }
 
    @Override

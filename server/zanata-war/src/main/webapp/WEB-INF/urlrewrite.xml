@@ -207,7 +207,18 @@
     <from casesensitive="true">^/rest/(.+)$</from>
     <to last="true">/seam/resource/restv1/$1</to>
   </rule>
-
+  
+  <!-- Version group -->
+  <rule>
+    <from casesensitive="true">^/version-group/list(.+)?$</from>
+    <to last="true">/version-group/home.seam$1</to>
+  </rule>
+  
+  <rule>
+    <from casesensitive="true">^/version-group/view/(.+)$</from>
+    <to last="true">/version-group/version_group.seam\?slug=$1</to>
+  </rule>
+    
   <outbound-rule>
     <from>^(/.+)?/admin/(.+).seam$</from>
     <to>$1/admin/$2</to>
@@ -304,6 +315,16 @@
   <outbound-rule>
     <from>^(/.+)?/account/changepassword.seam(.+)?$</from>
     <to>$1/account/changepassword$2</to>
+  </outbound-rule>
+  
+  <outbound-rule>
+    <from>^(/.+)?/version-group/home.seam(.+)?$</from>
+    <to>$1/version-group/list$2</to>
+  </outbound-rule>
+  
+  <outbound-rule>
+    <from>^(/.+)?/version-group/version_group.seam\?slug=(.+)$</from>
+    <to>$1/version-group/view/$2</to>
   </outbound-rule>
   
   <outbound-rule>

@@ -1,36 +1,42 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:f="http://java.sun.com/jsf/core"    
     xmlns:rich="http://richfaces.org/rich" 
     xmlns:a4j="http://richfaces.org/a4j"
-    xmlns:s="http://jboss.com/products/seam/taglib">
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    template="../WEB-INF/layout/template.xhtml">
 
-  <ui:composition template="../WEB-INF/layout/template.xhtml">
    
-    <ui:define name="page_title">#{messages['jsf.ManageVersionGroups']}</ui:define>
+    <ui:define name="page_title">#{messages['jsf.VersionGroups']}</ui:define>
+    
     <ui:define name="left_content">
-    	<rich:panel>
+    	<rich:panel rendered="#{identity.loggedIn}">
             <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-            <s:link styleClass="action_link" view="/admin/versiongroupdetails.xhtml"
+            <s:link styleClass="action_link" 
+            		view="/version-group/create_version_group.xhtml"
+            		rendered="#{versionGroupHome.checkPermission('insert')}"
                     value="#{messages['jsf.CreateNewVersionGroup']}" />
     	</rich:panel>
     </ui:define>
    
     <ui:define name="center_content">
-      <rich:jQuery selector="#tab_admin" query="addClass('ui-tabs-selected')" />
+      <rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
 
       <rich:panel>
-        <f:facet name="header">#{messages['jsf.VersionGroupManager']}</f:facet>
+        <f:facet name="header">#{messages['jsf.VersionGroups']}</f:facet>
 
           <a4j:form>
               <s:token allowMultiplePosts="true" />
               <rich:dataTable id="threads" value="#{allVersionGroups}"
                               var="group">
                   <rich:column sortBy="#{group.name}">
-                      <f:facet name="header">#{messages['jsf.Name']}</f:facet>
-                      #{group.name}
+                  	  <f:facet name="header">#{messages['jsf.Name']}</f:facet>
+                      <s:link id="versionGroup" styleClass="table_link" value="#{group.name}" propagation="none"
+                             view="/version-group/version_group.xhtml"> 
+                            <f:param name="slug" value="#{group.slug}"/>
+                      </s:link>
                   </rich:column>
                   <rich:column>
                       <f:facet name="header">#{messages['jsf.Description']}</f:facet>
@@ -48,4 +54,3 @@
     </ui:define>
     
   </ui:composition>
-</html>

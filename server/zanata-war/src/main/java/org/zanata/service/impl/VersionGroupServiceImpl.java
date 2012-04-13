@@ -43,8 +43,8 @@ public class VersionGroupServiceImpl implements VersionGroupService
    private VersionGroupDAO versionGroupDAO;
 
    @Override
-   public List<HIterationGroup> getAllActiveVersionGroups()
+   public List<HIterationGroup> getAllActiveversionGroups()
    {
-      return versionGroupDAO.getAllActiveVersionGroups();
+      return versionGroupDAO.getAllActiveversionGroups();
    }
 }

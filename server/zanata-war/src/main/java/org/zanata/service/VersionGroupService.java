@@ -29,5 +29,5 @@ import org.zanata.model.HIterationGroup;
  */
 public interface VersionGroupService
 {
-   List<HIterationGroup> getAllActiveVersionGroups();
+   List<HIterationGroup> getAllActiveversionGroups();
 }
