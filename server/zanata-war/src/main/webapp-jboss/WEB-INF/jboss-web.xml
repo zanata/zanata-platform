@@ -1,6 +1,12 @@
 <!DOCTYPE jboss-web PUBLIC
     "-//JBoss//DTD Web Application 4.2//EN"
     "http://www.jboss.org/j2ee/dtd/jboss-web_4_2.dtd">
+
+<!-- 
+NB: Any changes to this file must be reported in the release notes,
+in case changes are required for production deployment (eg cfengine).
+-->
+
 <jboss-web>  
     <class-loading java2ClassLoadingCompliance="false">
         <loader-repository>
@@ -9,5 +15,6 @@
         </loader-repository>
     </class-loading>
     <security-domain>java:/jaas/${jaas.configure}</security-domain>
+    <!-- _context_root_ -->
     <depends>jboss.jca:service=DataSourceBinding,name=${ds.jndi.name}</depends>
 </jboss-web>
