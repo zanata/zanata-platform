@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j"
+    template="../WEB-INF/layout/template.xhtml">
+   
+    <ui:define name="page_title">#{versionGroupHome.instance.name} - Add Maintainer</ui:define>
+    <ui:define name="left_content">
+		<rich:panel>
+      	<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+      	<s:link styleClass="action_link" view="/project/maintainerdetail.xhtml"
+          value="#{messages['jsf.AddMaintainer']}"
+        />
+    	</rich:panel>
+    </ui:define>
+   
+    <ui:define name="center_content">
+        
+      <script type="text/javascript">
+        function confirmDelete()
+        {
+          return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisPersonThisActionCannotBeUndone']}");
+        }
+      </script>
+      <rich:panel rendered="#{projectMaintainerManageAction.checkPermission('update')}">
+        <f:facet name="header">#{messages['jsf.ProjectMaintainerManager']}</f:facet>
+		<h:messages />
+		
+        <h:form>
+            <s:token allowMultiplePosts="true" />
+	        <rich:dataTable 
+	            id="threads"
+	            value="#{allList}" 
+	            var="maintainer">
+	
+	          <rich:column width="auto">
+	            <f:facet name="header">#{messages['jsf.Username']}</f:facet>
+	            #{maintainer.account.username}
+	          </rich:column>
+	          <rich:column width="auto">
+	            <f:facet name="header">#{messages['jsf.Name']}</f:facet>
+	            #{maintainer.name}
+	          </rich:column>
+	          <rich:column width="auto">
+	            <f:facet name="header">#{messages['jsf.Email']}</f:facet>
+	            #{maintainer.email}
+	          </rich:column>
+	          <rich:column width="auto">
+	            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>          
+	            <h:commandLink value="#{messages['jsf.Remove']}" action="#{projectMaintainerManageAction.deleteMaintainer(projectMaintainerManageAction.selectedPerson)}"
+	                      onclick="return confirmDelete()"/>
+	          </rich:column>
+	  	    </rich:dataTable>
+        </h:form>              
+      </rich:panel>
+    </ui:define>
+    
+  </ui:composition>

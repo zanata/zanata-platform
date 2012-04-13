@@ -31,8 +31,11 @@ import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
+import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
 import org.zanata.service.VersionGroupService;
 
@@ -53,6 +56,9 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
    @DataModel
    List<HIterationGroup> allVersionGroups;
 
+   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+   HAccount authenticatedAccount;
+   
    @Override
    protected HIterationGroup loadInstance()
    {
@@ -137,6 +143,11 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
          return null;
       getInstance().setStatus(status);
 
+      if (authenticatedAccount != null)
+      {
+         getInstance().addMaintainer(authenticatedAccount.getPerson());
+      }
+      
       return super.persist();
    }
 

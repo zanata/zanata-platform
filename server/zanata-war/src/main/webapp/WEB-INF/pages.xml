@@ -199,6 +199,21 @@
     	<param name="slug" value="#{versionGroupHome.slug}" />
     	<action execute="#{versionGroupHome.validateSuppliedId}" />
   	</page>
+  	
+  	<page view-id="/version-group/edit.xhtml" login-required="true">
+	    <param name="slug" value="#{versionGroupHome.slug}" />
+	    <action execute="#{identity.checkPermission(versionGroupHome.instance, 'update')}" />
+	    <navigation from-action="#{versionGroupHome.update}">
+	      <redirect view-id="/version-group/version_group.xhtml">
+	        <param name="slug" value="#{versionGroupHome.slug}" />
+	      </redirect>
+	    </navigation>
+	    <navigation from-action="#{versionGroupHome.cancel}">
+	      <redirect view-id="/version-group/version_group.xhtml">
+	        <param name="slug" value="#{versionGroupHome.slug}" />
+	      </redirect>
+	    </navigation>
+  	</page>
 
 
   <!-- Profile -->

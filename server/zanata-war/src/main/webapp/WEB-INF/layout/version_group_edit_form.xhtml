@@ -42,11 +42,15 @@
 
     </rich:panel>
 
-    <div class="actionButtons"><h:commandButton
-            value="#{messages['jsf.Save']}"
-            action="#{versionGroupHome.persist}" /> <s:button
-            view="/version-group/home.xhtml"
-            value="#{messages['jsf.Cancel']}" propagation="end" />
+    <div class="actionButtons">
+    	<h:commandButton value="#{messages['jsf.Save']}" 
+    						action="#{versionGroupHome.persist}" 
+    						rendered="#{!versionGroupHome.managed}"/> 
+        <h:commandButton id="update"
+                      value="#{messages['jsf.Update']}"
+                     action="#{versionGroupHome.update}"
+                   rendered="#{versionGroupHome.managed}"/>
+        <s:button view="/version-group/home.xhtml" value="#{messages['jsf.Cancel']}" propagation="end" />
     </div>
 
 </a4j:form>
