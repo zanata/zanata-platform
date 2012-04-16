@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
@@ -45,8 +46,8 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.hibernate.search.CaseSensitiveNgramAnalyzer;
-import org.zanata.hibernate.search.ContainingWorkspaceBridge;
 import org.zanata.hibernate.search.DefaultNgramAnalyzer;
+import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.FilterConstraints;
@@ -106,23 +107,27 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          throw new ZanataServiceException("Failed to validate locale", e);
       }
 
-      //TODO add case-sensitive flag to FilterConstraints
-
-      String searchField;
+      String searchFieldPrefix;
       Analyzer ngramAnalyzer;
       if (constraints.isCaseSensitive())
       {
-         searchField = "content-case";
+         searchFieldPrefix = IndexFieldLabels.CONTENT_CASE_PRESERVED;
          ngramAnalyzer = new CaseSensitiveNgramAnalyzer();
       }
       else
       {
-         searchField = "content-nocase";
+         searchFieldPrefix = IndexFieldLabels.CONTENT_CASE_FOLDED;
          ngramAnalyzer = new DefaultNgramAnalyzer();
       }
 
+      String[] searchFields = new String[6];
+      for (int i = 0; i < 6; i++)
+      {
+         searchFields[i] = searchFieldPrefix + i;
+      }
+
       Query searchPhraseQuery;
-      QueryParser parser = new QueryParser(Version.LUCENE_29, searchField, ngramAnalyzer);
+      QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_29, searchFields, ngramAnalyzer);
       try
       {
          searchPhraseQuery = parser.parse("\"" + QueryParser.escape(constraints.getSearchString()) + "\"");
@@ -132,10 +137,9 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          throw new ZanataServiceException("Failed to parse query", e);
       }
 
-      String textFlowPrefix = "textFlow";
-      TermQuery projectQuery = new TermQuery(new Term(textFlowPrefix + ContainingWorkspaceBridge.PROJECT_FIELD, projectSlug));
-      TermQuery iterationQuery = new TermQuery(new Term(textFlowPrefix + ContainingWorkspaceBridge.ITERATION_FIELD, iterationSlug));
-      TermQuery localeQuery = new TermQuery(new Term("locale", localeId.getId()));
+      TermQuery projectQuery = new TermQuery(new Term(IndexFieldLabels.PROJECT_FIELD, projectSlug));
+      TermQuery iterationQuery = new TermQuery(new Term(IndexFieldLabels.ITERATION_FIELD, iterationSlug));
+      TermQuery localeQuery = new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD, localeId.getId()));
 
       BooleanQuery mustMatchAllQuery = new BooleanQuery();
       mustMatchAllQuery.add(projectQuery, Occur.MUST);
