@@ -9,7 +9,7 @@
     xmlns:a4j="http://richfaces.org/a4j"
     template="../WEB-INF/layout/template.xhtml">
    
-    <ui:define name="page_title">#{messages['jsf.VersionGroups']}:#{messages['jsf.VersionGroupMaintainers']}</ui:define>
+    <ui:define name="page_title">#{messages['jsf.Groups']}:#{messages['jsf.Maintainers']}</ui:define>
     <ui:define name="left_content">
 		<rich:panel>
       	<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
@@ -30,7 +30,7 @@
         }
       </script>
       <rich:panel rendered="#{versionGroupMaintainerManageAction.checkPermission('update')}">
-        <f:facet name="header">#{messages['jsf.VersionGroupMaintainers']}</f:facet>
+        <f:facet name="header">#{messages['jsf.Maintainers']}</f:facet>
 		<h:messages />
 		
         <h:form>

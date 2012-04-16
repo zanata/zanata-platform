@@ -29,6 +29,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.dao.VersionGroupDAO;
 import org.zanata.model.HIterationGroup;
+import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionGroupService;
 
 /**
@@ -43,8 +44,20 @@ public class VersionGroupServiceImpl implements VersionGroupService
    private VersionGroupDAO versionGroupDAO;
 
    @Override
-   public List<HIterationGroup> getAllActiveversionGroups()
+   public List<HIterationGroup> getAllActiveVersionGroups()
    {
-      return versionGroupDAO.getAllActiveversionGroups();
+      return versionGroupDAO.getAllActiveVersionGroups();
+   }
+
+   @Override
+   public HIterationGroup getBySlug(String slug)
+   {
+      return versionGroupDAO.getBySlug(slug);
+   }
+
+   @Override
+   public List<HProjectIteration> findAllContainingName(String searchTerm)
+   {
+      return versionGroupDAO.findAllContainingName(searchTerm);
    }
 }

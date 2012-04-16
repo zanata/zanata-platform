@@ -20,13 +20,10 @@
  */
 package org.zanata.model;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -45,9 +42,10 @@ public class HIterationGroup extends SlugEntityBase
    private String name;
 
    private String description;
-   
+
    private Set<HPerson> maintainers;
 
+   private Set<HProjectIteration> projectIterations;
 
    @Length(max = 80)
    @NotEmpty
@@ -73,13 +71,15 @@ public class HIterationGroup extends SlugEntityBase
    {
       this.description = description;
    }
-   
+
    @ManyToMany
    @JoinTable(name = "HIterationGroup_Maintainer", joinColumns = @JoinColumn(name = "iterationGroupId"), inverseJoinColumns = @JoinColumn(name = "personId"))
    public Set<HPerson> getMaintainers()
    {
       if (maintainers == null)
+      {
          maintainers = new HashSet<HPerson>();
+      }
       return maintainers;
    }
 
@@ -90,10 +90,31 @@ public class HIterationGroup extends SlugEntityBase
    {
       this.maintainers = maintainers;
    }
-   
-   public void addMaintainer( HPerson maintainer )
+
+   public void addMaintainer(HPerson maintainer)
    {
       this.getMaintainers().add(maintainer);
       maintainer.getMaintainerVersionGroups().add(this);
+   }
+
+   @ManyToMany
+   @JoinTable(name = "HIterationGroup_ProjectIteration", joinColumns = @JoinColumn(name = "iterationGroupId"), inverseJoinColumns = @JoinColumn(name = "projectIterationId"))
+   public Set<HProjectIteration> getProjectIterations()
+   {
+      if (projectIterations == null)
+      {
+         projectIterations = new HashSet<HProjectIteration>();
+      }
+      return projectIterations;
+   }
+
+   public void setProjectIterations(Set<HProjectIteration> projectIterations)
+   {
+      this.projectIterations = projectIterations;
+   }
+
+   public void addProjectIteration(HProjectIteration iteration)
+   {
+      this.getProjectIterations().add(iteration);
    }
 }

@@ -9,7 +9,7 @@
     template="../WEB-INF/layout/template.xhtml">
 
    
-    <ui:define name="page_title">#{messages['jsf.VersionGroups']}</ui:define>
+    <ui:define name="page_title">#{messages['jsf.Groups']}</ui:define>
     
     <ui:define name="left_content">
     	<rich:panel rendered="#{identity.loggedIn}">
@@ -17,7 +17,7 @@
             <s:link styleClass="action_link" 
             		view="/version-group/create_version_group.xhtml"
             		rendered="#{versionGroupHome.checkPermission('insert')}"
-                    value="#{messages['jsf.CreateNewVersionGroup']}" />
+                    value="#{messages['jsf.CreateNewGroup']}" />
     	</rich:panel>
     </ui:define>
    
@@ -25,7 +25,7 @@
       <rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
 
       <rich:panel>
-        <f:facet name="header">#{messages['jsf.VersionGroups']}</f:facet>
+        <f:facet name="header">#{messages['jsf.Groups']}</f:facet>
 
           <a4j:form>
               <s:token allowMultiplePosts="true" />

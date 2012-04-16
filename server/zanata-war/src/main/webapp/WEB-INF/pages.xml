@@ -198,6 +198,7 @@
     <page view-id="/version-group/version_group.xhtml">
     	<param name="slug" value="#{versionGroupHome.slug}" />
     	<action execute="#{versionGroupHome.validateSuppliedId}" />
+    	<action execute="#{versionGroupAction.init(slug)}" />
   	</page>
   	
   	<page view-id="/version-group/edit.xhtml" login-required="true">
@@ -220,7 +221,6 @@
         <param name="slug" value="#{versionGroupHome.slug}" />
         <action execute="#{versionGroupMaintainerManageAction.loadAllMaintainers()}" />
     </page>
-
 
     <page view-id="/version-group/maintainerdetail.xhtml">
         <param name="slug" value="#{versionGroupMaintainerManageAction.slug}" />

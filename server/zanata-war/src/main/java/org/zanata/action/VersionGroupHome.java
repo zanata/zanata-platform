@@ -31,7 +31,6 @@ import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
-import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
@@ -68,7 +67,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
    public void loadAllActiveGroups()
    {
-      allVersionGroups = versionGroupServiceImpl.getAllActiveversionGroups();
+      allVersionGroups = versionGroupServiceImpl.getAllActiveVersionGroups();
    }
 
    @Override

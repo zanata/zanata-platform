@@ -33,6 +33,7 @@ import org.jboss.seam.annotations.Scope;
 import org.zanata.common.EntityStatus;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProjectIteration;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -52,7 +53,7 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long>
       super(HIterationGroup.class, session);
    }
 
-   public List<HIterationGroup> getAllActiveversionGroups()
+   public List<HIterationGroup> getAllActiveVersionGroups()
    {
       Query query = getSession().createQuery("from HIterationGroup g where g.status = :status");
       query.setParameter("status", EntityStatus.ACTIVE);
@@ -72,5 +73,10 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long>
       Query q = getSession().createQuery("select g.maintainers from HIterationGroup as g where g.slug = :slug");
       q.setParameter("slug", slug);
       return q.list();
+   }
+
+   public List<HProjectIteration> findAllContainingName(String searrunJchTerm)
+   {
+      return null;
    }
 }

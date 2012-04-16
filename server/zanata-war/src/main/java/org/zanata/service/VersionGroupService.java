@@ -23,11 +23,16 @@ package org.zanata.service;
 import java.util.List;
 
 import org.zanata.model.HIterationGroup;
+import org.zanata.model.HProjectIteration;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public interface VersionGroupService
 {
-   List<HIterationGroup> getAllActiveversionGroups();
+   List<HIterationGroup> getAllActiveVersionGroups();
+
+   HIterationGroup getBySlug(String slug);
+
+   List<HProjectIteration> findAllContainingName(String searchTerm);
 }
