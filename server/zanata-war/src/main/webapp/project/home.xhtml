@@ -15,7 +15,7 @@
     <rich:panel rendered="#{identity.loggedIn}">
       <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
       <s:link styleClass="action_link"
-      				rendered="#{projectHome.checkPermission('insert')}"
+      				rendered="#{s:hasPermission(projectHome.instance, 'insert')}"
       				value="#{messages['jsf.CreateProject']}"
                     view="/project/create_project.xhtml"
                     propagation="none"/>
@@ -49,7 +49,7 @@
 	            <h:outputText value="#{messages['jsf.ReadOnly']}"/>
 	            
 	            <rich:spacer width="5" />
-	            <s:fragment rendered="#{projectAction.checkViewObsolete()}">
+	            <s:fragment rendered="#{s:hasPermission('HProject','view-obsolete')}">
 		            <h:selectBooleanCheckbox title="Filter obsolete projects" value="#{projectAction.showObsolete}">
 		                <a4j:support event="onchange" reRender="main_content" />
 		            </h:selectBooleanCheckbox>

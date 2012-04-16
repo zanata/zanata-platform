@@ -42,13 +42,12 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
-import org.zanata.security.BaseSecurityChecker;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.service.LocaleService;
 
 @Name("languageTeamAction")
 @Scope(ScopeType.PAGE)
-public class LanguageTeamAction extends BaseSecurityChecker implements Serializable
+public class LanguageTeamAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
    
@@ -116,6 +115,17 @@ public class LanguageTeamAction extends BaseSecurityChecker implements Serializa
 
    public HLocale getLocale()
    {
+      /*
+       * Preload the HLocaleMember objects.
+       * This line is needed as Hibernate has problems when invoking lazily loaded collections
+       * from postLoad entity listener methods. In this case, the drools engine will attempt to
+       * access the 'members' collection from inside the security listener's postLoad method to
+       * evaluate rules.
+       */
+      if( locale != null )
+      {
+         this.locale.getMembers();
+      }
       return locale;
    }
 
@@ -157,7 +167,7 @@ public class LanguageTeamAction extends BaseSecurityChecker implements Serializa
       FacesMessages.instance().add("You have left the {0} language team", this.locale.retrieveNativeName());
    }
    
-   @Restrict("#{languageTeamAction.checkPermission('manage-language-team')}")
+   @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
    public void saveTeamCoordinator( HLocaleMember member )
    {
       this.localeDAO.makePersistent(this.locale);
@@ -171,16 +181,16 @@ public class LanguageTeamAction extends BaseSecurityChecker implements Serializa
          FacesMessages.instance().add("{0} has been removed from Team Coordinators", member.getPerson().getAccount().getUsername());
       }
    }
-   
-   @Restrict("#{languageTeamAction.checkPermission('manage-language-team')}")
+
+   @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
    public void addTeamMember( final Long personId )
    {
       this.languageTeamServiceImpl.joinLanguageTeam(this.language, personId);
       // reload the locale for changes
       this.locale = localeServiceImpl.getByLocaleId(new LocaleId(language));
    }
-   
-   @Restrict("#{languageTeamAction.checkPermission('manage-language-team')}")
+
+   @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
    public void removeMembership( HLocaleMember member )
    {
       this.languageTeamServiceImpl.leaveLanguageTeam(this.language, member.getPerson().getId());
@@ -204,18 +214,4 @@ public class LanguageTeamAction extends BaseSecurityChecker implements Serializa
       this.searchResults = this.personDAO.findAllContainingName( this.searchTerm );
    }
    
-   @Override
-   public Object getSecuredEntity()
-   {
-      /*
-       * Preload the HLocaleMember objects.
-       * This line is needed as Hibernate has problems when invoking lazily loaded collections
-       * from postLoad entity listener methods. In this case, the drools engine will attempt to
-       * access the 'members' collection from inside the security listener's postLoad method to
-       * evaluate rules.
-       */
-      this.locale.getMembers();
-      return this.locale;
-   }
-
 }
