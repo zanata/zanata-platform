@@ -73,7 +73,15 @@ public class TestProxyFactory extends ZanataProxyFactory
    @Override
    public IGlossaryResource getGlossaryResource()
    {
-      return null;
+      try
+      {
+         return createProxy(IGlossaryResource.class, new URI("/restv1/glossary"));
+      }
+      catch (URISyntaxException e)
+      {
+         log.debug("exception:" + e.getMessage());
+         throw new RuntimeException(e);
+      }
    }
 
 }

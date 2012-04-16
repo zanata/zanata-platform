@@ -19,6 +19,8 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.codehaus.enunciate.jaxrs.TypeHint;
+import org.hibernate.Session;
+import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
@@ -60,6 +62,9 @@ public class GlossaryService implements GlossaryResource, SecurityChecker
 
    @In
    private Identity identity;
+
+   @In
+   private Session session;
 
    @In
    private LocaleService localeServiceImpl;

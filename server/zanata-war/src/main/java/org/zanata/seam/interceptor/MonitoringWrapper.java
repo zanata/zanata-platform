@@ -15,19 +15,20 @@
  */
 package org.zanata.seam.interceptor;
 
-import net.bull.javamelody.MonitoringFilter;
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.servlet.ContextualHttpServletRequest;
-import org.zanata.security.ZanataIdentity;
-
+import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import org.jboss.seam.Component;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.servlet.ContextualHttpServletRequest;
+import org.zanata.security.ZanataIdentity;
+
+import net.bull.javamelody.MonitoringFilter;
 
 public class MonitoringWrapper extends MonitoringFilter
 {
@@ -46,9 +47,14 @@ public class MonitoringWrapper extends MonitoringFilter
             public void process() throws Exception
             {
                ZanataIdentity identity = (ZanataIdentity) Component.getInstance(ZanataIdentity.class, ScopeType.SESSION);
-               if (identity == null || !identity.hasRole("admin"))
+               if (identity == null || !identity.isLoggedIn())
                {
-                  httpResponse.sendRedirect("/zanata/account/sign_form");
+                  String signInUrl = httpRequest.getContextPath() + "/account/sign_form";
+                  httpResponse.sendRedirect(signInUrl);
+               }
+               else if (!identity.hasRole("admin"))
+               {
+                  httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Only admin can access monitoring!");
                }
             }
          }.run();
