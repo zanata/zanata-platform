@@ -15,11 +15,11 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.zanata.dao.AccountDAO;
-import org.zanata.dao.VersionGroupDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HPerson;
 import org.zanata.security.BaseSecurityChecker;
+import org.zanata.service.VersionGroupService;
 
 @Name("versionGroupMaintainerManageAction")
 @Scope(ScopeType.PAGE)
@@ -36,7 +36,8 @@ public class VersionGroupMaintainerManageAction extends BaseSecurityChecker impl
    private String slug;
 
    @In
-   VersionGroupDAO versionGroupDAO;
+   private VersionGroupService versionGroupServiceImpl;
+
    @In
    AccountDAO accountDAO;
    @Logger
@@ -44,7 +45,7 @@ public class VersionGroupMaintainerManageAction extends BaseSecurityChecker impl
 
    public void loadAllMaintainers()
    {
-      allList = versionGroupDAO.getMaintainerBySlug(this.slug);
+      allList = versionGroupServiceImpl.getMaintainerBySlug(this.slug);
    }
 
    public HPerson getSelectedPerson()
@@ -64,14 +65,14 @@ public class VersionGroupMaintainerManageAction extends BaseSecurityChecker impl
 
    public HIterationGroup getIterationGroup()
    {
-      return versionGroupDAO.getBySlug(this.slug);
+      return versionGroupServiceImpl.getBySlug(this.slug);
    }
 
    @Restrict("#{versionGroupMaintainerManageAction.checkPermission('update')}")
    public void deleteMaintainer(HPerson person)
    {
       log.debug("try to delete maintainer {0} from slug {1}", person.getName(), this.slug);
-      HIterationGroup iterationGroup = versionGroupDAO.getBySlug(this.slug);
+      HIterationGroup iterationGroup = versionGroupServiceImpl.getBySlug(this.slug);
       Set<HPerson> personList = iterationGroup.getMaintainers();
       for (HPerson l : personList)
       {
@@ -83,8 +84,8 @@ public class VersionGroupMaintainerManageAction extends BaseSecurityChecker impl
          }
       }
 
-      versionGroupDAO.makePersistent(iterationGroup);
-      versionGroupDAO.flush();
+      versionGroupServiceImpl.makePersistent(iterationGroup);
+      versionGroupServiceImpl.flush();
    }
 
    @Restrict("#{versionGroupMaintainerManageAction.checkPermission('update')}")
@@ -93,11 +94,11 @@ public class VersionGroupMaintainerManageAction extends BaseSecurityChecker impl
       HAccount a = accountDAO.getByUsername(account);
       if (a != null && a.isEnabled())
       {
-         HIterationGroup iterationGroup = versionGroupDAO.getBySlug(this.slug);
+         HIterationGroup iterationGroup = versionGroupServiceImpl.getBySlug(this.slug);
          Set<HPerson> personList = iterationGroup.getMaintainers();
          personList.add(a.getPerson());
-         versionGroupDAO.makePersistent(iterationGroup);
-         versionGroupDAO.flush();
+         versionGroupServiceImpl.makePersistent(iterationGroup);
+         versionGroupServiceImpl.flush();
          log.debug("add {0} into maintainers", account);
          return "success";
       }

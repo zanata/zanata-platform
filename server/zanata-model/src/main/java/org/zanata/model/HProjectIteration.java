@@ -41,8 +41,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.Where;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.NotNull;
 import org.jboss.seam.annotations.security.Restrict;
+import org.zanata.hibernate.search.GroupSearchBridge;
 import org.zanata.model.type.EntityStatusType;
 import org.zanata.rest.dto.ProjectIteration;
 
@@ -55,6 +61,7 @@ import org.zanata.rest.dto.ProjectIteration;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @TypeDef(name = "entityStatus", typeClass = EntityStatusType.class)
 @Restrict
+@Indexed
 public class HProjectIteration extends SlugEntityBase
 {
 
@@ -83,6 +90,8 @@ public class HProjectIteration extends SlugEntityBase
    @NotNull
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
+   @Field(index = Index.UN_TOKENIZED)
+   @FieldBridge(impl = GroupSearchBridge.class)
    public HIterationProject getProject()
    {
       return project;

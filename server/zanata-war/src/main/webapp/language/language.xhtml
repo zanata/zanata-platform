@@ -30,7 +30,7 @@
                     <f:facet name="header">#{messages['jsf.Name']}</f:facet>
                     #{member.person.name}
                   </rich:column>
-                  <rich:column width="auto" rendered="#{languageTeamAction.checkPermission('manage-language-team')}">
+                  <rich:column width="auto" rendered="#{btrilanguageTeamAction.checkPermission('manage-language-team')}">
                     <f:facet name="header">#{messages['jsf.Email']}</f:facet>
                     <h:outputText>
                         #{member.person.email}

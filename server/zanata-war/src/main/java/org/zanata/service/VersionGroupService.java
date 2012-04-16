@@ -22,7 +22,9 @@ package org.zanata.service;
 
 import java.util.List;
 
+import org.apache.lucene.queryParser.ParseException;
 import org.zanata.model.HIterationGroup;
+import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 
 /**
@@ -35,4 +37,10 @@ public interface VersionGroupService
    HIterationGroup getBySlug(String slug);
 
    List<HProjectIteration> findAllContainingName(String searchTerm);
+
+   List<HPerson> getMaintainerBySlug(String slug);
+
+   void makePersistent(HIterationGroup iterationGroup);
+
+   void flush();
 }

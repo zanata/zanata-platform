@@ -22,15 +22,22 @@ package org.zanata.dao;
 
 import java.util.List;
 
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.util.Version;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.jpa.FullTextEntityManager;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.EntityStatus;
+import org.zanata.exception.ZanataServiceException;
+import org.zanata.hibernate.search.DefaultNgramAnalyzer;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
@@ -43,6 +50,9 @@ import org.zanata.model.HProjectIteration;
 @Scope(ScopeType.STATELESS)
 public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long>
 {
+   @In
+   private FullTextEntityManager entityManager;
+
    public VersionGroupDAO()
    {
       super(HIterationGroup.class);
@@ -75,8 +85,26 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long>
       return q.list();
    }
 
-   public List<HProjectIteration> findAllContainingName(String searrunJchTerm)
+   public List<HProjectIteration> findAllContainingName(String searchTerm)
    {
-      return null;
+      DefaultNgramAnalyzer analyzer = new DefaultNgramAnalyzer();
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "slug", analyzer);
+      org.apache.lucene.search.Query searchPhraseQuery;
+      try
+      {
+         searchPhraseQuery = parser.parse("\"" + QueryParser.escape(searchTerm) + "\"");
+
+      }
+      catch (ParseException e)
+      {
+         throw new ZanataServiceException("Failed to parse query", e);
+      }
+//      TermQuery projectQuery = new TermQuery(new Term(GroupSearchBridge.PROJECT_FIELD + GroupSearchBridge.PROJECT_FIELD, projectSlug));
+
+      org.hibernate.search.jpa.FullTextQuery ftQuery = entityManager.createFullTextQuery(searchPhraseQuery, HProjectIteration.class);
+
+      List<HProjectIteration> matches = (List<HProjectIteration>) ftQuery.getResultList();
+
+      return  matches;
    }
 }

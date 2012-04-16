@@ -1,1 +1,42 @@
+Manifest-Version: 1.0
+Class-Path: zanata-common-api-1.6-SNAPSHOT.jar dom4j-1.6.1-brew.jar sl
+ f4j-api-1.6.1.jar guava-r06.jar resteasy-jaxrs-2.1.0.GA.jar jaxrs-api
+ -2.1.0.GA.jar scannotation-1.0.2.jar commons-httpclient-3.1.jar commo
+ ns-codec-1.3.jar httpclient-4.0.3.jar httpcore-4.0.1.jar jcip-annotat
+ ions-1.0.jar resteasy-jaxb-provider-2.1.0.GA.jar jaxb-impl-2.1.12.jar
+  jaxb-api-2.1.jar sjsxp-1.0.1.jar jackson-core-asl-1.5.0.jar jackson-
+ mapper-asl-1.5.0.jar jackson-xc-1.5.0.jar commons-lang-2.5.jar zanata
+ -common-util-1.6-SNAPSHOT.jar commons-io-2.0.1.jar zanata-model-1.6-S
+ NAPSHOT.jar okapi-lib-search-0.7.jar okapi-core-0.7.jar javacc-4.1.ja
+ r icu4j-4.8.jar trov4j-2.1.0.jar lucene-core-2.9.2.jar okapi-step-wor
+ dcount-0.9.jar okapi-step-tokenization-0.9.jar okapi-filter-plaintext
+ -0.9.jar okapi-filter-regex-0.9.jar okapi-lib-extra-0.9.jar okapi-ste
+ p-common-0.9.jar jboss-seam-2.2.0.GA.jar xstream-1.1.3.jar jboss-el-1
+ .0_02.CR4.jar hibernate-search-3.1.1.GA.jar hsqldb-1.8.0.8-brew.jar z
+ anata-adapter-po-1.6-SNAPSHOT.jar jgettext-0.6.jar resteasy-atom-prov
+ ider-2.1.0.GA.jar jboss-seam-ui-2.2.0.GA.jar jboss-seam-jul-2.2.0.GA.
+ jar commons-beanutils-1.7.0.jar jboss-seam-debug-2.2.0.GA.jar jsf-fac
+ elets-1.1.15.B1.jar jboss-seam-mail-2.2.0.GA.jar jboss-seam-remoting-
+ 2.2.0.GA.jar jboss-seam-resteasy-2.2.0.GA.jar resteasy-jackson-provid
+ er-2.1.0.GA.jar jackson-jaxrs-1.5.0.jar drools-core-5.0.1.jar mvel2-2
+ .0.10.jar drools-api-5.0.1.jar joda-time-1.6.jar drools-compiler-5.0.
+ 1.jar antlr-runtime-3.1.1.jar core-3.4.2.v_883_R34x.jar janino-2.5.15
+ .jar richfaces-api-3.3.3.Final.jar richfaces-impl-3.3.3.Final.jar com
+ mons-digester-1.8.1.jar richfaces-ui-3.3.3.Final.jar ehcache-core-2.5
+ .1.jar dbunit-2.2.jar urlrewritefilter-3.0.4.jar slf4j-log4j12-1.6.1.
+ jar javamelody-core-1.36.0.jar jrobin-1.5.9.jar openprops-0.5.jar enu
+ nciate-core-annotations-1.24.jar quartz-1.5.2.jar testng-6.4.jar bsh-
+ 2.0b4.jar jcommander-1.12.jar snakeyaml-1.6.jar commons-fileupload-1.
+ 2.1.jar gwt-servlet-2.4.0.jar gin-1.5.0.jar guice-3.0.jar javax.injec
+ t-1.jar aopalliance-1.0.jar guice-assistedinject-3.0-rc2.jar gwt-disp
+ atch-1.0.0.jar gwt-log-3.1.7.jar gwteventservice-1.2.0.jar eventservi
+ ce-rpc-1.2.0.jar eventservice-1.2.0.jar liquibase-core-2.0.3.jar modi
+ fy-column-2.0.0.jar htmlparser-1.6.jar openid4java-0.9.5.jar openid4j
+ ava-consumer-0.9.5.jar openid4java-nodeps-0.9.5.jar nekohtml-1.9.7.ja
+ r openid4java-server-0.9.5.jar openid4java-server-JdbcServerAssociati
+ onStore-0.9.5.jar spring-jdbc-2.0.6.jar spring-beans-2.0.6.jar spring
+ -core-2.0.6.jar spring-context-2.0.6.jar spring-dao-2.0.6.jar openid4
+ java-consumer-SampleConsumer-0.9.5.jar openid4java-server-SampleServe
+ r-0.9.5.jar openxri-client-1.2.0.jar openxri-syntax-1.2.0.jar jug-1.1
+ .2.jar xmlsec-1.3.0.jar
 

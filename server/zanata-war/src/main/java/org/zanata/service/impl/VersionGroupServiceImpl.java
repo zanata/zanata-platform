@@ -22,6 +22,7 @@ package org.zanata.service.impl;
 
 import java.util.List;
 
+import org.apache.lucene.queryParser.ParseException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -29,6 +30,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.dao.VersionGroupDAO;
 import org.zanata.model.HIterationGroup;
+import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionGroupService;
 
@@ -59,5 +61,23 @@ public class VersionGroupServiceImpl implements VersionGroupService
    public List<HProjectIteration> findAllContainingName(String searchTerm)
    {
       return versionGroupDAO.findAllContainingName(searchTerm);
+   }
+
+   @Override
+   public List<HPerson> getMaintainerBySlug(String slug)
+   {
+      return versionGroupDAO.getMaintainerBySlug(slug);
+   }
+
+   @Override
+   public void makePersistent(HIterationGroup iterationGroup)
+   {
+      versionGroupDAO.makePersistent(iterationGroup);
+   }
+
+   @Override
+   public void flush()
+   {
+      versionGroupDAO.flush();
    }
 }
