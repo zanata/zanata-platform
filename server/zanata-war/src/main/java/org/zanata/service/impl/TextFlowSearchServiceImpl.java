@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
@@ -106,23 +107,27 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          throw new ZanataServiceException("Failed to validate locale", e);
       }
 
-      String searchField;
+      String searchFieldPrefix;
       Analyzer ngramAnalyzer;
       if (constraints.isCaseSensitive())
       {
-         searchField = IndexFieldLabels.CONTENT_CASE_PRESERVED + "0";
+         searchFieldPrefix = IndexFieldLabels.CONTENT_CASE_PRESERVED;
          ngramAnalyzer = new CaseSensitiveNgramAnalyzer();
       }
       else
       {
-         searchField = IndexFieldLabels.CONTENT_CASE_FOLDED + "0";
+         searchFieldPrefix = IndexFieldLabels.CONTENT_CASE_FOLDED;
          ngramAnalyzer = new DefaultNgramAnalyzer();
       }
 
-      //TODO search in all content fields (content 0..5 or more)
+      String[] searchFields = new String[6];
+      for (int i = 0; i < 6; i++)
+      {
+         searchFields[i] = searchFieldPrefix + i;
+      }
 
       Query searchPhraseQuery;
-      QueryParser parser = new QueryParser(Version.LUCENE_29, searchField, ngramAnalyzer);
+      QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_29, searchFields, ngramAnalyzer);
       try
       {
          searchPhraseQuery = parser.parse("\"" + QueryParser.escape(constraints.getSearchString()) + "\"");
