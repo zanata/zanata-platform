@@ -19,11 +19,10 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
-import org.zanata.security.BaseSecurityChecker;
 
 @Name("projectMaintainerManageAction")
 @Scope(ScopeType.PAGE)
-public class ProjectMaintainerManageAction extends BaseSecurityChecker implements Serializable
+public class ProjectMaintainerManageAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
    @DataModel
@@ -65,7 +64,7 @@ public class ProjectMaintainerManageAction extends BaseSecurityChecker implement
       return projectDAO.getBySlug(this.slug);
    }
 
-   @Restrict("#{projectMaintainerManageAction.checkPermission('update')}")
+   @Restrict("#{s:hasPermission(projectMaintainerManageAction.project, 'update')}")
    public void deleteMaintainer(HPerson person)
    {
       log.debug("try to delete maintainer {0} from slug {1}", person.getName(), this.slug);
@@ -85,7 +84,7 @@ public class ProjectMaintainerManageAction extends BaseSecurityChecker implement
       projectDAO.flush();
    }
 
-   @Restrict("#{projectMaintainerManageAction.checkPermission('update')}")
+   @Restrict("#{s:hasPermission(projectMaintainerManageAction.project, 'update')}")
    public String addMaintainers(String account)
    {
       HAccount a = accountDAO.getByUsername(account);
@@ -106,12 +105,6 @@ public class ProjectMaintainerManageAction extends BaseSecurityChecker implement
    public String cancel()
    {
       return "cancel";
-   }
-   
-   @Override
-   public Object getSecuredEntity()
-   {
-      return this.getProject();
    }
 
 }

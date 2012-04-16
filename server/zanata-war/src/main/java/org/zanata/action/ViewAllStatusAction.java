@@ -40,14 +40,14 @@ import org.zanata.common.TransUnitWords;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.security.BaseSecurityChecker;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 
 @Name("viewAllStatusAction")
 @Scope(ScopeType.PAGE)
-public class ViewAllStatusAction extends BaseSecurityChecker implements Serializable
+public class ViewAllStatusAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
    
@@ -198,6 +198,11 @@ public class ViewAllStatusAction extends BaseSecurityChecker implements Serializ
       }
       return this.projectIteration;
    }
+
+   public HProject getProject()
+   {
+      return this.getProjectIteration().getProject();
+   }
    
    public boolean isIterationReadOnly()
    {
@@ -214,8 +219,7 @@ public class ViewAllStatusAction extends BaseSecurityChecker implements Serializ
    public boolean isUserAllowedToTranslate(String localeId)
    {
       return !isIterationReadOnly() && !isIterationObsolete() 
-             && identity != null && identity.hasPermission("add-translation", getProjectIteration().getProject(),
-                   localeServiceImpl.getByLocaleId(new LocaleId(localeId)));
+             && identity.hasPermission("add-translation", getProject(), localeServiceImpl.getByLocaleId(localeId));
    }
    
    private List<HLocale> getDisplayLocales()
@@ -224,16 +228,11 @@ public class ViewAllStatusAction extends BaseSecurityChecker implements Serializ
       {
          return localeServiceImpl.getSupportedLangugeByProjectIteration(this.projectSlug, this.iterationSlug);
       }
-      else 
+      else
       {
          return localeServiceImpl.getTranslation(projectSlug, iterationSlug, authenticatedAccount.getUsername());
       }
    }
-   
-   @Override
-   public Object getSecuredEntity()
-   {
-      return this.getProjectIteration();
-   }
+
 
 }

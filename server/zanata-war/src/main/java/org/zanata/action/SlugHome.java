@@ -32,14 +32,13 @@ import org.hibernate.criterion.NaturalIdentifier;
 import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.security.Identity;
 import org.zanata.common.EntityStatus;
-import org.zanata.security.SecurityChecker;
 
 /**
  * This implementation uses a field 'slug' to refer to the id of the object.
  * 
  * @author asgeirf
  */
-public abstract class SlugHome<E> extends EntityHome<E> implements SecurityChecker
+public abstract class SlugHome<E> extends EntityHome<E>
 {
 
    private static final long serialVersionUID = 1L;
@@ -61,12 +60,6 @@ public abstract class SlugHome<E> extends EntityHome<E> implements SecurityCheck
 
    @Override
    public abstract Object getId();
-   
-   @Override
-   public boolean checkPermission(String operation)
-   {
-      return Identity.instance() != null && Identity.instance().hasPermission(this.getInstance(), operation);
-   }
 
    public List<SelectItem> getStatusList()
    {
@@ -76,7 +69,7 @@ public abstract class SlugHome<E> extends EntityHome<E> implements SecurityCheck
          {
             if (status == OBSOLETE)
             {
-               if (checkPermission("mark-obsolete"))
+               if (Identity.instance().hasPermission(getInstance(), "mark-obsolete"))
                {
                   SelectItem option = new SelectItem(status, status.name());
                   statusList.add(option);

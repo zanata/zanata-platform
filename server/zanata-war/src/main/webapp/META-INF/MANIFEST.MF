@@ -1,1 +1,5 @@
+Manifest-Version: 1.0
+Class-Path: zanata-common-api-1.6-SNAPSHOT.jar zanata-common-util-1.6-
+ SNAPSHOT.jar zanata-model-1.6-SNAPSHOT.jar zanata-adapter-po-1.6-SNAP
+ SHOT.jar
 

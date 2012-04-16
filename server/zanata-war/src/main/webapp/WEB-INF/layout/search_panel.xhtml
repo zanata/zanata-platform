@@ -8,7 +8,7 @@
   
   <h:form>
   	 <h:outputText rendered="#{s:hasRole('admin')}" value="#{messages['jsf.Obsolete']}"/>
-     <h:selectBooleanCheckbox id="inc_obs" value="#{projectSearch.includeObsolete}" rendered="#{projectAction.checkViewObsolete()}"
+     <h:selectBooleanCheckbox id="inc_obs" value="#{projectSearch.includeObsolete}" rendered="#{s:hasPermission('HProject', 'view-obsolete')}"
      	title="#{messages['jsf.project.search.IncludeObsoleteTooltip']}"/>
      <h:inputText id="q" styleClass="with_icon search_icon"  value="#{projectSearch.searchQuery}"/>
      <h:commandButton value="#{messages['jsf.SearchProjects']}" action="#{projectSearch.search}"/>
