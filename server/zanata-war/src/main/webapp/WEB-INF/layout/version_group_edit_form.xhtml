@@ -50,7 +50,10 @@
                       value="#{messages['jsf.Update']}"
                      action="#{versionGroupHome.update}"
                    rendered="#{versionGroupHome.managed}"/>
-        <s:button view="/version-group/home.xhtml" value="#{messages['jsf.Cancel']}" propagation="end" />
+        <s:button id="cancel"
+                  value="#{messages['jsf.Cancel']}"
+                  propagation="none"
+                  action="#{versionGroupHome.cancel}"/>
     </div>
 
 </a4j:form>

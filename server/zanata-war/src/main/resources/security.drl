@@ -8,6 +8,7 @@ import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HIterationGroup;
 
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.Role;
@@ -377,6 +378,25 @@ when
     target == $iteration, 
     action == "download-single" || action == "download-all",
     granted == false)
+then
+  check.grant();
+end
+
+/*****************************************************************************************
+
+  Version Group rules
+
+******************************************************************************************/
+rule UpdateVersionGroup
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(action == "update", granted == false)
+  authenticatedPerson: HPerson()
+  eval(authenticatedPerson != null)
+  $group: HIterationGroup(
+    eval(authenticatedPerson.isMaintainer($group))
+  )
 then
   check.grant();
 end

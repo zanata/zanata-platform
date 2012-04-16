@@ -157,4 +157,9 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
       String state = super.update();
       return state;
    }
+
+   public String cancel()
+   {
+      return "cancel";
+   }
 }

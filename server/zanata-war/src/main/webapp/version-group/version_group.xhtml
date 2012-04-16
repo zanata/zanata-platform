@@ -9,7 +9,7 @@
     xmlns:a4j="http://richfaces.org/a4j"
     template="../WEB-INF/layout/template.xhtml">
     
-<ui:define name="page_title">#{versionGroupHome.instance.name}</ui:define>
+<ui:define name="page_title">#{messages['jsf.VersionGroups']}:#{versionGroupHome.instance.name}</ui:define>
 <ui:define name="center_content">
 	<s:decorate id="main_content">
     	<rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
@@ -19,6 +19,8 @@
     	 <h:outputText value="#{versionGroupHome.instance.description}" rendered="#{!empty versionGroupHome.instance.description}"/>
     	 
     	 <rich:spacer height="10px" />
+
+
     </s:decorate>
     
 </ui:define>

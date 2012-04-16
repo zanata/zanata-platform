@@ -55,7 +55,9 @@ public class HPerson extends ModelEntityBase implements Serializable
    private String email;
 
    private Set<HProject> maintainerProjects;
-   
+
+   private Set<HIterationGroup> maintainerVersionGroups;
+
    private Set<HLocaleMember> languageTeamMemberships;
 
 
@@ -117,6 +119,19 @@ public class HPerson extends ModelEntityBase implements Serializable
    public void setMaintainerProjects(Set<HProject> maintainerProjects)
    {
       this.maintainerProjects = maintainerProjects;
+   }
+
+   @ManyToMany(fetch = FetchType.EAGER, mappedBy = "maintainers")
+   public Set<HIterationGroup> getMaintainerVersionGroups()
+   {
+      if (maintainerVersionGroups == null)
+         maintainerVersionGroups = new HashSet<HIterationGroup>();
+      return maintainerVersionGroups;
+   }
+
+   public void setMaintainerVersionGroups(Set<HIterationGroup> maintainerVersionGroups)
+   {
+      this.maintainerVersionGroups = maintainerVersionGroups;
    }
 
    @Transient
@@ -218,6 +233,19 @@ public class HPerson extends ModelEntityBase implements Serializable
       for (HProject project : getMaintainerProjects())
       {
          if (project.getId().equals( proj.getId() ))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   @Transient
+   public boolean isMaintainer(HIterationGroup grp)
+   {
+      for (HIterationGroup group: getMaintainerVersionGroups())
+      {
+         if (group.getId().equals( grp.getId() ))
          {
             return true;
          }

@@ -9,26 +9,28 @@
     xmlns:a4j="http://richfaces.org/a4j"
     template="../WEB-INF/layout/template.xhtml">
    
-    <ui:define name="page_title">#{versionGroupHome.instance.name} - Add Maintainer</ui:define>
+    <ui:define name="page_title">#{messages['jsf.VersionGroups']}:#{messages['jsf.VersionGroupMaintainers']}</ui:define>
     <ui:define name="left_content">
 		<rich:panel>
       	<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-      	<s:link styleClass="action_link" view="/project/maintainerdetail.xhtml"
+      	<s:link styleClass="action_link" view="/version-group/maintainerdetail.xhtml"
           value="#{messages['jsf.AddMaintainer']}"
         />
     	</rich:panel>
     </ui:define>
    
     <ui:define name="center_content">
-        
+
+      <rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
+
       <script type="text/javascript">
         function confirmDelete()
         {
-          return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisPersonThisActionCannotBeUndone']}");
+          return confirm("#{messages['jsf.AreYouSureYouWishToRemoveThisPersonAsVersionGroupMaintainer']}");
         }
       </script>
-      <rich:panel rendered="#{projectMaintainerManageAction.checkPermission('update')}">
-        <f:facet name="header">#{messages['jsf.ProjectMaintainerManager']}</f:facet>
+      <rich:panel rendered="#{versionGroupMaintainerManageAction.checkPermission('update')}">
+        <f:facet name="header">#{messages['jsf.VersionGroupMaintainers']}</f:facet>
 		<h:messages />
 		
         <h:form>
@@ -52,7 +54,7 @@
 	          </rich:column>
 	          <rich:column width="auto">
 	            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>          
-	            <h:commandLink value="#{messages['jsf.Remove']}" action="#{projectMaintainerManageAction.deleteMaintainer(projectMaintainerManageAction.selectedPerson)}"
+	            <h:commandLink value="#{messages['jsf.Remove']}" action="#{versionGroupMaintainerManageAction.deleteMaintainer(versionGroupMaintainerManageAction.selectedPerson)}"
 	                      onclick="return confirmDelete()"/>
 	          </rich:column>
 	  	    </rich:dataTable>

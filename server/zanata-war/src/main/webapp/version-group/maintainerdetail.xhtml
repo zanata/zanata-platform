@@ -9,11 +9,12 @@
 	xmlns:a4j="http://richfaces.org/a4j"
 	template="../WEB-INF/layout/template.xhtml">
 
-<ui:define name="page_title">#{projectHome.instance.name} - Maintainers</ui:define>
+<ui:define name="page_title">#{messages['jsf.VersionGroups']}:#{versionGroupHome.instance.name} - Add Maintainers</ui:define>
 	<ui:define name="center_content" >
+        <rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
 	    <h:form>
   	    <s:token allowMultiplePosts="true" />
-            <rich:panel rendered="#{projectMaintainerManageAction.checkPermission('update')}">
+            <rich:panel rendered="#{versionGroupMaintainerManageAction.checkPermission('update')}">
 	    <h:panelGrid>
 	      <f:facet name="header">#{messages['jsf.AddMaintainer']}</f:facet>
 		<s:decorate id="userField"
@@ -48,10 +49,10 @@
 	    <div class="actionButtons">
 		<h:commandButton
 	   		value="#{messages['jsf.Save']}"
-			action="#{projectMaintainerManageAction.addMaintainers(accountSearch.maintainer)}" />
+			action="#{versionGroupMaintainerManageAction.addMaintainers(accountSearch.maintainer)}" />
 		<s:button
-			view="/project/assign_maintainer.xhtml"
-			value="#{messages['jsf.Cancel']}" propagation="none"  action="#{projectMaintainerManageAction.cancel}" />
+			view="/version-group/assign_maintainer.xhtml"
+			value="#{messages['jsf.Cancel']}" propagation="none"  action="#{versionGroupMaintainerManageAction.cancel}" />
 	    </div>
 		</rich:panel>
 	  </h:form>

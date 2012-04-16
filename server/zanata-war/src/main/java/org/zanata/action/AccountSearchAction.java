@@ -42,7 +42,7 @@ import org.zanata.model.HPerson;
 public class AccountSearchAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
-   private String projectMaintainer;
+   private String maintainer;
    private HPerson person;
    private List<HAccount> searchResults = new ArrayList<HAccount>();
 
@@ -54,14 +54,14 @@ public class AccountSearchAction implements Serializable
    @Logger
    Log log;
 
-   public void setProjectMaintainer(String sr)
+   public void setMaintainer(String sr)
    {
-      this.projectMaintainer = sr;
+      this.maintainer = sr;
    }
 
-   public String getProjectMaintainer()
+   public String getMaintainer()
    {
-      return this.projectMaintainer;
+      return this.maintainer;
    }
 
    public List<HAccount> getSearchResults()
@@ -77,7 +77,7 @@ public class AccountSearchAction implements Serializable
 
    public void update()
    {
-      person = personDAO.findByUsername(this.projectMaintainer);
+      person = personDAO.findByUsername(this.maintainer);
    }
 
    public HPerson getPerson()

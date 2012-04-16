@@ -22,14 +22,17 @@ package org.zanata.dao;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.EntityStatus;
 import org.zanata.model.HIterationGroup;
+import org.zanata.model.HPerson;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -54,5 +57,20 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long>
       Query query = getSession().createQuery("from HIterationGroup g where g.status = :status");
       query.setParameter("status", EntityStatus.ACTIVE);
       return query.list();
+   }
+
+   public HIterationGroup getBySlug(String slug)
+   {
+      Criteria criteria = getSession().createCriteria(HIterationGroup.class);
+      criteria.add(Restrictions.naturalId().set("slug", slug));
+      criteria.setCacheable(true).setComment("VersionGroupDAO.getBySlug");
+      return (HIterationGroup) criteria.uniqueResult();
+   }
+
+   public List<HPerson> getMaintainerBySlug(String slug)
+   {
+      Query q = getSession().createQuery("select g.maintainers from HIterationGroup as g where g.slug = :slug");
+      q.setParameter("slug", slug);
+      return q.list();
    }
 }

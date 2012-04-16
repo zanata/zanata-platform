@@ -9,7 +9,7 @@
 	xmlns:a4j="http://richfaces.org/a4j"
 	template="../WEB-INF/layout/template.xhtml">
 
-   <ui:define name="page_title">Version Group Details</ui:define>
+   <ui:define name="page_title">#{messages['jsf.VersionGroups']}:#{messages['jsf.CreateNewVersionGroup']}</ui:define>
 	<ui:define name="center_content">
         <rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
         <h1>#{messages['jsf.CreateNewVersionGroup']}</h1>

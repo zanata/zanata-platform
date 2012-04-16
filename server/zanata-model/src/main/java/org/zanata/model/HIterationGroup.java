@@ -94,5 +94,6 @@ public class HIterationGroup extends SlugEntityBase
    public void addMaintainer( HPerson maintainer )
    {
       this.getMaintainers().add(maintainer);
+      maintainer.getMaintainerVersionGroups().add(this);
    }
 }
