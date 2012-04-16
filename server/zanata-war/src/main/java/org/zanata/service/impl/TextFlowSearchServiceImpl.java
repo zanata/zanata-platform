@@ -45,8 +45,8 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.hibernate.search.CaseSensitiveNgramAnalyzer;
-import org.zanata.hibernate.search.ContainingWorkspaceBridge;
 import org.zanata.hibernate.search.DefaultNgramAnalyzer;
+import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.FilterConstraints;
@@ -110,12 +110,12 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       Analyzer ngramAnalyzer;
       if (constraints.isCaseSensitive())
       {
-         searchField = "content-case0";
+         searchField = IndexFieldLabels.CONTENT_CASE_PRESERVED + "0";
          ngramAnalyzer = new CaseSensitiveNgramAnalyzer();
       }
       else
       {
-         searchField = "content-nocase0";
+         searchField = IndexFieldLabels.CONTENT_CASE_FOLDED + "0";
          ngramAnalyzer = new DefaultNgramAnalyzer();
       }
 
@@ -132,10 +132,9 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          throw new ZanataServiceException("Failed to parse query", e);
       }
 
-      String textFlowPrefix = "textFlow";
-      TermQuery projectQuery = new TermQuery(new Term(textFlowPrefix + ContainingWorkspaceBridge.PROJECT_FIELD, projectSlug));
-      TermQuery iterationQuery = new TermQuery(new Term(textFlowPrefix + ContainingWorkspaceBridge.ITERATION_FIELD, iterationSlug));
-      TermQuery localeQuery = new TermQuery(new Term("locale", localeId.getId()));
+      TermQuery projectQuery = new TermQuery(new Term(IndexFieldLabels.PROJECT_FIELD, projectSlug));
+      TermQuery iterationQuery = new TermQuery(new Term(IndexFieldLabels.ITERATION_FIELD, iterationSlug));
+      TermQuery localeQuery = new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD, localeId.getId()));
 
       BooleanQuery mustMatchAllQuery = new BooleanQuery();
       mustMatchAllQuery.add(projectQuery, Occur.MUST);

@@ -66,6 +66,7 @@ import org.zanata.common.ContentState;
 import org.zanata.common.HasContents;
 import org.zanata.hibernate.search.ContainingWorkspaceBridge;
 import org.zanata.hibernate.search.ContentStateBridge;
+import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.LocaleIdBridge;
 import org.zanata.hibernate.search.StringListBridge;
 
@@ -250,11 +251,11 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    @IndexColumn(name = "pos", nullable = false)
    @Column(name = "content", nullable = false)
    @Fields({
-      @Field(name="content-nocase",
+      @Field(name=IndexFieldLabels.CONTENT_CASE_FOLDED,
              index = Index.TOKENIZED,
              bridge = @FieldBridge(impl = StringListBridge.class,
                                    params = {@Parameter(name="case", value="fold")})),
-      @Field(name = "content-case",
+      @Field(name = IndexFieldLabels.CONTENT_CASE_PRESERVED,
              index = Index.TOKENIZED,
              bridge = @FieldBridge(impl = StringListBridge.class,
                                    params = {@Parameter(name="case", value="preserve")}))
