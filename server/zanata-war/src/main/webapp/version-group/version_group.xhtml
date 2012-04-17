@@ -69,7 +69,7 @@
                 <p>
                     <h:inputText value="#{versionGroupAction.searchTerm}" />
                     <a4j:commandButton value="#{messages['jsf.Search']}"
-                                       action="#{versionGroupAction.searchForProjects}"
+                                       action="#{versionGroupAction.searchProjectAndVersion}"
                                        reRender="searchResults"
                                        status="searchStatus" />
                     <h:commandButton value="#{messages['jsf.Close']}"

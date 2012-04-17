@@ -31,20 +31,15 @@ import org.zanata.model.HIterationProject;
  */
 public class GroupSearchBridge implements FieldBridge
 {
-   public static final String PROJECT_FIELD = ".project";
+   public static final String PROJECT_FIELD = "project";
 
    @Override
    public void set(String name, Object value, Document document, LuceneOptions luceneOptions)
    {
       HIterationProject project = (HIterationProject) value;
 
-      addStringField(name + PROJECT_FIELD, project.getSlug(), document, luceneOptions);
-   }
-
-   private void addStringField(String fieldName, String fieldValue, Document luceneDocument, LuceneOptions luceneOptions)
-   {
-      Field field = new Field(fieldName, fieldValue, luceneOptions.getStore(), luceneOptions.getIndex(), luceneOptions.getTermVector());
+      Field field = new Field(PROJECT_FIELD, project.getSlug(), luceneOptions.getStore(), luceneOptions.getIndex(), luceneOptions.getTermVector());
       field.setBoost(luceneOptions.getBoost());
-      luceneDocument.add(field);
+      document.add(field);
    }
 }

@@ -131,11 +131,11 @@ public class VersionGroupAction extends BaseSecurityChecker implements Serializa
     * { return true; } } return false; }
     */
 
-   public void searchForProjects()
+   public void searchProjectAndVersion()
    {
       try
       {
-         this.searchResults = versionGroupServiceImpl.findAllContainingName(this.searchTerm);
+         this.searchResults = versionGroupServiceImpl.findBySlugAndProjectSlug(this.searchTerm);
       }
       catch (ParseException e)
       {

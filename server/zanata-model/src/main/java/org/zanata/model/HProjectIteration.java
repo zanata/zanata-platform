@@ -88,7 +88,7 @@ public class HProjectIteration extends SlugEntityBase
    @NotNull
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
-   @Field(index = Index.UN_TOKENIZED)
+   @Field
    @FieldBridge(impl = GroupSearchBridge.class)
    public HIterationProject getProject()
    {

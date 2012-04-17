@@ -26,12 +26,18 @@ import java.util.Map;
 
 import javax.ws.rs.core.EntityTag;
 
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.queryParser.MultiFieldQueryParser;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.util.Version;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.jpa.FullTextEntityManager;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.ContentState;
@@ -39,6 +45,7 @@ import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
+import org.zanata.hibernate.search.GroupSearchBridge;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -50,6 +57,8 @@ import org.zanata.util.HashUtil;
 @Scope(ScopeType.STATELESS)
 public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long>
 {
+   @In
+   private FullTextEntityManager entityManager;
 
    public ProjectIterationDAO()
    {
@@ -288,5 +297,17 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
+   }
+
+   public List<HProjectIteration> findBySlugAndProjectSlug(String searchTerm) throws ParseException
+   {
+      final String FIELDS[] = { "slug", GroupSearchBridge.PROJECT_FIELD };
+
+      MultiFieldQueryParser parser = new MultiFieldQueryParser(Version.LUCENE_29, FIELDS, new StandardAnalyzer(Version.LUCENE_29));
+      org.apache.lucene.search.Query textQuery = parser.parse(searchTerm);
+
+      org.hibernate.search.jpa.FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HProjectIteration.class);
+      List<HProjectIteration> matches = (List<HProjectIteration>) ftQuery.getResultList();
+      return matches;
    }
 }

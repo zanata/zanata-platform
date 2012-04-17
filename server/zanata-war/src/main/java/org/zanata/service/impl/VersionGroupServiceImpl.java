@@ -28,6 +28,7 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.VersionGroupDAO;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HPerson;
@@ -45,6 +46,9 @@ public class VersionGroupServiceImpl implements VersionGroupService
    @In
    private VersionGroupDAO versionGroupDAO;
 
+   @In
+   private ProjectIterationDAO projectIterationDAO;
+
    @Override
    public List<HIterationGroup> getAllActiveVersionGroups()
    {
@@ -58,9 +62,9 @@ public class VersionGroupServiceImpl implements VersionGroupService
    }
 
    @Override
-   public List<HProjectIteration> findAllContainingName(String searchTerm) throws ParseException
+   public List<HProjectIteration> findBySlugAndProjectSlug(String searchTerm) throws ParseException
    {
-      return versionGroupDAO.findAllContainingName(searchTerm);
+      return projectIterationDAO.findBySlugAndProjectSlug(searchTerm);
    }
 
    @Override
