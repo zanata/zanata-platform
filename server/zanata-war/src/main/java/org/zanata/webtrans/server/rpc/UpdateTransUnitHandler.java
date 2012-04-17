@@ -22,10 +22,7 @@ package org.zanata.webtrans.server.rpc;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-
-import javax.annotation.Nullable;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
@@ -36,16 +33,13 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
-import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
@@ -54,6 +48,7 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.service.TranslationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
@@ -63,10 +58,7 @@ import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
+import static com.google.common.collect.Lists.*;
 
 @Name("webtrans.gwt.UpdateTransUnitHandler")
 @Scope(ScopeType.STATELESS)
@@ -83,12 +75,12 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
    @Logger
    Log log;
+   
+   @In
+   TranslationService translationServiceImpl;
 
    @In
    private ResourceUtils resourceUtils;
-
-   @In
-   Session session;
 
    @In
    ZanataIdentity identity;
@@ -100,9 +92,6 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    ProjectDAO projectDAO;
 
    @In
-   ProjectIterationDAO projectIterationDAO;
-
-   @In
    private TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
 
    @In
@@ -110,9 +99,6 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
    @In
    private LocaleService localeServiceImpl;
-
-   // NB SimpleDateFormat is not thread safe! (we could use a ThreadLocal)
-   private SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 
    /**
     * Used by Seam
@@ -125,20 +111,18 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
     * Used for tests
     */
    public UpdateTransUnitHandler(
-         Session session,
          ZanataIdentity identity,
          ProjectDAO projectDAO,
-         ProjectIterationDAO projectIterationDAO,
          TextFlowTargetHistoryDAO textFlowTargetHistoryDAO,
          TranslationWorkspaceManager translationWorkspaceManager,
          LocaleService localeServiceImpl,
-         HAccount authenticatedAccount)
+         HAccount authenticatedAccount,
+         TranslationService translationService)
    {
+      this.translationServiceImpl = translationService;
       this.log = Logging.getLog(UpdateTransUnitHandler.class);
-      this.session = session;
       this.identity = identity;
       this.projectDAO = projectDAO;
-      this.projectIterationDAO = projectIterationDAO;
       this.textFlowTargetHistoryDAO = textFlowTargetHistoryDAO;
       this.translationWorkspaceManager = translationWorkspaceManager;
       this.localeServiceImpl = localeServiceImpl;
@@ -148,112 +132,27 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    @Override
    public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException
    {
-      identity.checkLoggedIn();
-      log.debug("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContents());
+      LocaleId localeId = action.getWorkspaceId().getLocaleId();
+      log.debug("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), localeId, action.getContentState(), action.getContents());
+      TranslationWorkspace workspace = checkSecurityAndGetWorkspace(action);
 
-      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
-
-      if (workspace.getWorkspaceContext().isReadOnly())
-      {
-         throw new ActionException("Project or version is read-only");
-      }
-
-      HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
-      HProject hProject = projectDAO.getBySlug( action.getWorkspaceId().getProjectIterationId().getProjectSlug() );
-      LocaleId locale = action.getWorkspaceId().getLocaleId();
-      
-      HLocale hLocale;
+      TranslationService.TranslationResult translationResult;
       try
       {
-         hLocale = localeServiceImpl.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
+         translationResult = translationServiceImpl.translate(action.getTransUnitId().getValue(), localeId, action.getContentState(), action.getContents());
       }
-      catch (ZanataServiceException e)
+      catch (Exception e)
       {
          throw new ActionException(e.getMessage());
       }
 
-      identity.checkPermission(ACTION_MODIFY_TRANSLATION, hLocale, hProject);
+      HTextFlow hTextFlow = translationResult.getTextFlow();
+      HTextFlowTarget newTarget = translationResult.getNewTextFlowTarget();
+      HTextFlowTarget prevTarget = translationResult.getPreviousTextFlowTarget();
 
-      HTextFlowTarget target = hTextFlow.getTargets().get(hLocale);
+      manageRedo(action, prevTarget);
 
-      if (action.isRedo())
-      {
-         if (target == null)
-         {
-            throw new ActionException("Redo Failure due to empty string.");
-         }
-         if (!target.getVersionNum().equals(action.getVerNum()))
-         {
-            if (!target.getLastModifiedBy().getAccount().getUsername().equals(authenticatedAccount.getUsername()) || textFlowTargetHistoryDAO.findConflictInHistory(target, action.getVerNum(), authenticatedAccount.getUsername()))
-            {
-               throw new ActionException("Find conflict, Redo Failure.");
-            }
-         }
-      }
-
-      boolean targetChanged = false;
-
-      ContentState prevStatus;
-      if (target != null)
-      {
-         prevStatus = target.getState();
-      }
-      else
-      {
-         prevStatus = ContentState.New;
-         target = new HTextFlowTarget(hTextFlow, hLocale);
-         target.setVersionNum(0); // this will be incremented when content is
-                                  // set (below)
-         hTextFlow.getTargets().put(hLocale, target);
-         targetChanged = true;
-      }
-
-      Collection<String> emptyContents = Collections2.filter(action.getContents(), new Predicate<String>()
-      {
-         @Override
-         public boolean apply(@Nullable String input)
-         {
-            return Strings.isNullOrEmpty(input);
-         }
-      });
-
-      if (action.getContentState() == ContentState.New && emptyContents.isEmpty())
-      {
-         log.error("invalid ContentState New for TransUnit {0} with content '{1}', assuming NeedReview", action.getTransUnitId(), action.getContents());
-         target.setState(ContentState.NeedReview);
-      }
-      else if (action.getContentState() == ContentState.Approved && emptyContents.size() > 0)
-      {
-         log.error("invalid ContentState {0} for empty TransUnit {1}, assuming New", action.getContentState(), action.getTransUnitId());
-         target.setState(ContentState.New);
-      }
-      else
-      {
-         target.setState(action.getContentState());
-         if (prevStatus != action.getContentState())
-         {
-            targetChanged = true;
-         }
-      }
-
-      ArrayList<String> contents = Lists.newArrayList(target.getContents());
-      UpdateTransUnit previous = new UpdateTransUnit(action.getTransUnitId(), contents, prevStatus);
-
-      if (!action.getContents().equals(target.getContents()))
-      {
-         target.setContents(action.getContents());
-         targetChanged = true;
-      }
-
-      if (targetChanged)
-      {
-         target.setVersionNum(target.getVersionNum() + 1);
-         target.setTextFlowRevision(hTextFlow.getRevision());
-         log.debug("last modified by :" + authenticatedAccount.getPerson().getName());
-         target.setLastModifiedBy(authenticatedAccount.getPerson());
-      }
-
-      session.flush();
+      UpdateTransUnit previous = new UpdateTransUnit(action.getTransUnitId(), newArrayList(prevTarget.getContents()), prevTarget.getState());
 
       int wordCount = hTextFlow.getWordCount().intValue();
       // @formatter:off
@@ -268,74 +167,88 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       TransUnit tu = new TransUnit(
             action.getTransUnitId(), 
             hTextFlow.getResId(),
-            locale, 
+            localeId,
             hTextFlow.isPlural(),
             sourceContents,
             CommentsUtil.toString(hTextFlow.getComment()),
             action.getContents(), 
-            target.getState(),
+            newTarget.getState(),
             authenticatedAccount.getPerson().getName(),
-            simpleDateFormat.format(new Date()), msgContext, hTextFlow.getPos());
+            new SimpleDateFormat().format(new Date()), msgContext, hTextFlow.getPos());
       // @formatter:on
-      TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu, identity.getCredentials().getUsername());
+      TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, newTarget.getState(), tu, identity.getCredentials().getUsername());
 
       workspace.publish(event);
 
       UpdateTransUnitResult result = new UpdateTransUnitResult(true);
       result.setPrevious(previous);
-      result.setCurrentVersionNum(target.getVersionNum());
+      result.setCurrentVersionNum(newTarget.getVersionNum());
 
       return result;
+   }
+
+   private TranslationWorkspace checkSecurityAndGetWorkspace(UpdateTransUnit action) throws ActionException
+   {
+      identity.checkLoggedIn();
+      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
+      if (workspace.getWorkspaceContext().isReadOnly())
+      {
+         throw new ActionException("Project or version is read-only");
+      }
+
+      HProject hProject = projectDAO.getBySlug( action.getWorkspaceId().getProjectIterationId().getProjectSlug() );
+      HLocale hLocale = localeServiceImpl.getByLocaleId(action.getWorkspaceId().getLocaleId());
+      identity.checkPermission(ACTION_MODIFY_TRANSLATION, hLocale, hProject);
+
+      return workspace;
+   }
+
+   private void manageRedo(UpdateTransUnit action, HTextFlowTarget prevTarget) throws ActionException
+   {
+      if (action.isRedo())
+      {
+         if (prevTarget == null)
+         {
+            throw new ActionException("Redo Failure due to empty string.");
+         }
+         if (!prevTarget.getVersionNum().equals(action.getVerNum()))
+         {
+            if (!prevTarget.getLastModifiedBy().getAccount().getUsername().equals(authenticatedAccount.getUsername()) || textFlowTargetHistoryDAO.findConflictInHistory(prevTarget, action.getVerNum(), authenticatedAccount.getUsername()))
+            {
+               throw new ActionException("Find conflict, Redo Failure.");
+            }
+         }
+      }
    }
 
    @Override
    public void rollback(UpdateTransUnit action, UpdateTransUnitResult result, ExecutionContext context) throws ActionException
    {
-      ZanataIdentity.instance().checkLoggedIn();
-      log.debug("revert TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContents());
+      LocaleId localeId = action.getWorkspaceId().getLocaleId();
+      log.debug("revert TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), localeId, action.getContentState(), action.getContents());
+      TranslationWorkspace workspace = checkSecurityAndGetWorkspace(action);
 
-      HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
-      LocaleId locale = action.getWorkspaceId().getLocaleId();
-      HLocale hLocale;
-      try
-      {
-         hLocale = localeServiceImpl.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
-      }
-      catch (ZanataServiceException e)
-      {
-         throw new ActionException(e.getMessage());
-      }
+      HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
+      //TODO This part of the code is related to undo/redo and it's not functioning so will be commented out. IN fact the whole method seems not being used at the moment(except undo calls it).
+//      HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
+//      HTextFlowTarget target = hTextFlow.getTargets().get(hLocale);
+//
+//      if (target == null)
+//      {
+//         throw new ActionException("Undo Failure due to empty string.");
+//      }
+//
+//      if (!target.getVersionNum().equals(result.getCurrentVersionNum()))
+//      {
+//         if (!target.getLastModifiedBy().getAccount().getUsername().equals(authenticatedAccount.getUsername()) || textFlowTargetHistoryDAO.findConflictInHistory(target, result.getCurrentVersionNum(), authenticatedAccount.getUsername()))
+//         {
+//            throw new ActionException("Find conflict, Undo Failure.");
+//         }
+//      }
 
-      HProject hProject = hTextFlow.getDocument().getProjectIteration().getProject();
-      identity.checkPermission(ACTION_MODIFY_TRANSLATION, hLocale, hProject);
-      HAccount authenticatedAccount = (HAccount) Contexts.getSessionContext().get(JpaIdentityStore.AUTHENTICATED_USER);
-
-      HTextFlowTarget target = hTextFlow.getTargets().get(hLocale);
-
-      if (target == null)
-      {
-         throw new ActionException("Undo Failure due to empty string.");
-      }
-
-      if (!target.getVersionNum().equals(result.getCurrentVersionNum()))
-      {
-         if (!target.getLastModifiedBy().getAccount().getUsername().equals(authenticatedAccount.getUsername()) || textFlowTargetHistoryDAO.findConflictInHistory(target, result.getCurrentVersionNum(), authenticatedAccount.getUsername()))
-         {
-            throw new ActionException("Find conflict, Undo Failure.");
-         }
-      }
-
-      ContentState prevStatus = target.getState();
-
-      if (!result.getPrevious().getContents().equals(target.getContents()))
-      {
-         target.setState(result.getPrevious().getContentState());
-         target.setContents(result.getPrevious().getContents());
-         target.setVersionNum(target.getVersionNum() + 1);
-         target.setLastModifiedBy(authenticatedAccount.getPerson());
-      }
-
-      session.flush();
+      TranslationService.TranslationResult translationResult = translationServiceImpl.translate(action.getTransUnitId().getValue(), localeId, result.getPrevious().getContentState(), result.getPrevious().getContents());
+      HTextFlow hTextFlow = translationResult.getTextFlow();
+      HTextFlowTarget prevTarget = translationResult.getPreviousTextFlowTarget();
 
       int wordCount = hTextFlow.getWordCount().intValue();
       String msgContext = null;
@@ -346,23 +259,29 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
       int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale);
       ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);
-      ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(hTextFlow, target, nPlurals);
+      ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(hTextFlow, prevTarget, nPlurals);
+      String modifiedBy = null;
+      String lastChanged = null;
+      if (prevTarget != null && prevTarget.getLastModifiedBy() != null && prevTarget.getLastChanged() != null)
+      {
+         modifiedBy = prevTarget.getLastModifiedBy().getName();
+         lastChanged = new SimpleDateFormat().format(prevTarget.getLastChanged());
+      }
+
       // @formatter:off
       TransUnit tu = new TransUnit(
             action.getTransUnitId(), 
             hTextFlow.getResId(),
-            locale, 
+            localeId,
             hTextFlow.isPlural(),
             sourceContents,
             CommentsUtil.toString(hTextFlow.getComment()),
             targetContents, 
-            target.getState(),
-            target.getLastModifiedBy().getName(),
-            simpleDateFormat.format(target.getLastChanged()), msgContext, hTextFlow.getPos());
+            result.getPrevious().getContentState(),
+            modifiedBy,
+            lastChanged, msgContext, hTextFlow.getPos());
       // @formatter:on
-      TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu, ZanataIdentity.instance().getCredentials().getUsername());
-
-      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
+      TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, result.getPrevious().getContentState(), tu, identity.getCredentials().getUsername());
       workspace.publish(event);
    }
 

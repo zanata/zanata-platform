@@ -13,6 +13,7 @@ import static org.hamcrest.Matchers.isOneOf;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +60,8 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.client.ITranslationResources;
@@ -75,8 +78,10 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.TranslationService;
 import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.service.impl.TranslationServiceImpl;
 import org.zanata.util.HashUtil;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
@@ -127,6 +132,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    ITranslationResources transResource;
    
    UpdateTransUnitHandler transUnitHandler;
+   private LocaleId de_de;
 
 
    @BeforeClass
@@ -928,7 +934,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    @Test
    public void headersAfterWebtransEdit() throws Exception
    {
-      LocaleId de_DE = new LocaleId("de");
+      de_de = new LocaleId("de");
       getZero();
       
       // Push a document with no translations
@@ -940,12 +946,12 @@ public class TranslationResourceRestTest extends ZanataRestTest
       HAccount translator = accountDAO.getByUsername("demo");
       
       // Translate using the web editor
-      this.simulateWebEditorTranslation("sample-project", "1.0", "my.txt", "tf1", translator, de_DE, "Translated", ContentState.Approved);
+      this.simulateWebEditorTranslation("sample-project", "1.0", "my.txt", "tf1", translator, de_de, "Translated", ContentState.Approved);
       
       super.newSession();
       
       // Fetch the translations again
-      ClientResponse<TranslationsResource> response = transResource.getTranslations("my.txt", de_DE, new StringSet("gettext"));
+      ClientResponse<TranslationsResource> response = transResource.getTranslations("my.txt", de_de, new StringSet("gettext"));
       
       TranslationsResource translations = response.getEntity();
       assertThat( translations.getTextFlowTargets().size(), greaterThan(0) );
@@ -998,7 +1004,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       // Mock certain objects
       TranslationWorkspaceManager transWorkerManager = mockControl.createMock(TranslationWorkspaceManager.class);
       TranslationWorkspace transWorkspace = mockControl.createMock(TranslationWorkspace.class);
-      
+
       WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId(projectSlug, iterationSlug), localeId);
       WorkspaceContext workspaceContext = new WorkspaceContext(workspaceId, "sample-workspace", localeId.getId(), false);
       
@@ -1014,24 +1020,25 @@ public class TranslationResourceRestTest extends ZanataRestTest
       expectLastCall();      
       mockIdentity.checkPermission(anyObject(String.class), anyObject(HLocale.class), anyObject(HProject.class));
       expectLastCall();
-      transWorkspace.publish( anyObject(SessionEventData.class) );
+      transWorkspace.publish(anyObject(SessionEventData.class));
       expectLastCall();
       mockControl.replay();
-      
+
+      TranslationServiceImpl translationService = new TranslationServiceImpl(getSession(), projectDAO, transWorkerManager, localeService, translator);
+
       // @formatter:off      
       transUnitHandler = new UpdateTransUnitHandler(
-            getSession(), 
-            mockIdentity, 
-            projectDAO, 
-            projectIterationDAO, 
-            textFlowTargetHistoryDAO, 
+            mockIdentity,
+            projectDAO,
+            textFlowTargetHistoryDAO,
             transWorkerManager,
             localeService,
-            translator);
+            translator,
+            translationService);
       // @formatter:on
-      
+
       // Translation unit id to update
-      Long textFlowId = (Long) getSession().createQuery("select tf.id from HTextFlow tf where tf.contentHash = ? and " +
+      HTextFlow hTextFlow = (HTextFlow) getSession().createQuery("select tf from HTextFlow tf where tf.contentHash = ? and " +
             "tf.document.docId = ? and " +
             "tf.document.projectIteration.slug = ? and " +
             "tf.document.projectIteration.project.slug = ?")
@@ -1040,13 +1047,13 @@ public class TranslationResourceRestTest extends ZanataRestTest
             .setString(2, iterationSlug)
             .setString(3, projectSlug)
             .uniqueResult();
-      
+      Long textFlowId = hTextFlow.getId();
+
       // Translate using webtrans
       UpdateTransUnit action = new UpdateTransUnit(new TransUnitId(textFlowId), Lists.newArrayList(translation), translationState);
       action.setWorkspaceId( workspaceId );
       
-      UpdateTransUnitResult result =
-         transUnitHandler.execute(action, null);
+      UpdateTransUnitResult result = transUnitHandler.execute(action, null);
       
       assertThat( result.isSuccess(), is(true) );
       mockControl.verify();
