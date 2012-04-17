@@ -17,8 +17,10 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.log.Log;
+import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountResetPasswordKey;
+import org.zanata.service.UserAccountService;
 import org.zanata.util.HashUtil;
 
 @Name("passwordResetRequest")
@@ -30,7 +32,10 @@ public class PasswordResetRequestAction
    Log log;
 
    @In
-   private EntityManager entityManager;
+   private AccountDAO accountDAO;
+
+   @In
+   private UserAccountService userAccountServiceImpl;
 
    @In(create = true)
    private Renderer renderer;
@@ -71,45 +76,26 @@ public class PasswordResetRequestAction
       return email;
    }
 
-   private void removeAnyExistingResetRequests()
-   {
-      Session session = (Session) entityManager.getDelegate();
-      HAccountResetPasswordKey key = (HAccountResetPasswordKey) session.createCriteria(HAccountResetPasswordKey.class).add(Restrictions.naturalId().set("account", account)).uniqueResult();
-      if (key != null)
-      {
-         entityManager.remove(key);
-         entityManager.flush();
-      }
-
-   }
-
    @End
    public String requestReset()
    {
-      Session session = (Session) entityManager.getDelegate();
-      account = (HAccount) session.createCriteria(HAccount.class).add(Restrictions.naturalId().set("username", getUsername())).uniqueResult();
-      if (account == null || !account.isEnabled() || account.getPerson() == null || !account.getPerson().getEmail().equals(getEmail()))
+      account = accountDAO.getByUsernameAndEmail( username, email );
+      HAccountResetPasswordKey key = userAccountServiceImpl.requestPasswordReset(account);
+
+      if( key == null )
       {
          FacesMessages.instance().add("No such account found");
          return null;
       }
+      else
+      {
+         setActivationKey(key.getKeyHash());
+         renderer.render("/WEB-INF/facelets/email/password_reset.xhtml");
+         log.info("Sent password reset key to {0} ({1})", account.getPerson().getName(), account.getUsername());
+         FacesMessages.instance().add("You will soon receive an email with a link to reset your password.");
+         return "/home.xhtml";
+      }
 
-      removeAnyExistingResetRequests();
-
-      HAccountResetPasswordKey key = new HAccountResetPasswordKey();
-      key.setAccount(account);
-      key.setKeyHash(HashUtil.generateHash(account.getUsername() + account.getPasswordHash() + account.getPerson().getEmail() + account.getPerson().getName() + System.currentTimeMillis()));
-      entityManager.persist(key);
-
-      setActivationKey(key.getKeyHash());
-
-      renderer.render("/WEB-INF/facelets/email/password_reset.xhtml");
-
-      log.info("Sent password reset key to {0} ({1})", account.getPerson().getName(), account.getUsername());
-
-      FacesMessages.instance().add("You will soon receive an email with a link to reset your password.");
-
-      return "/home.xhtml";
    }
 
    public String getActivationKey()
