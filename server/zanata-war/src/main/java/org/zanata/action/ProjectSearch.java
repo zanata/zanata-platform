@@ -2,18 +2,9 @@ package org.zanata.action;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.util.Version;
-import org.hibernate.search.jpa.FullTextEntityManager;
-import org.hibernate.search.jpa.FullTextQuery;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Begin;
@@ -21,6 +12,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.EntityStatus;
+import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HProject;
 
 @Name("projectSearch")
@@ -42,7 +34,7 @@ public class ProjectSearch
    private boolean includeObsolete;
 
    @In
-   EntityManager entityManager;
+   private ProjectDAO projectDAO;
 
    public String getSearchQuery()
    {
@@ -86,18 +78,14 @@ public class ProjectSearch
    @Begin(join=true)
    public void search()
    {
-      FullTextQuery query;
       try
       {
-         query = searchQuery(searchQuery);
+         searchResults = projectDAO.searchQuery(searchQuery, pageSize + 1, pageSize * (currentPage - 1));
       }
       catch (ParseException pe)
       {
          return;
       }
-      
-      searchResults = query.setMaxResults(pageSize + 1).setFirstResult(pageSize * (currentPage - 1)).getResultList();
-      
       // Manually filtering collection as status field is not indexed by hibernate search
       if( !this.includeObsolete )
       {
@@ -111,16 +99,6 @@ public class ProjectSearch
          });
       }
       resultSize = searchResults.size();
-   }
-
-   @SuppressWarnings("deprecation")
-   private FullTextQuery searchQuery(String searchQuery) throws ParseException
-   {
-      String[] projectFields = { "slug", "name", "description" };
-      QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_29, projectFields, new StandardAnalyzer(Version.LUCENE_24));
-      parser.setAllowLeadingWildcard(true);
-      Query luceneQuery = parser.parse(QueryParser.escape(searchQuery));
-      return ((FullTextEntityManager) entityManager).createFullTextQuery(luceneQuery, HProject.class);
    }
 
    public int getPageSize()

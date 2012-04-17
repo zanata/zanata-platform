@@ -23,12 +23,14 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.List;
 
+import org.apache.lucene.queryParser.ParseException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
+import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.BaseSecurityChecker;
@@ -131,7 +133,14 @@ public class VersionGroupAction extends BaseSecurityChecker implements Serializa
 
    public void searchForProjects()
    {
-      this.searchResults = versionGroupServiceImpl.findAllContainingName(this.searchTerm);
+      try
+      {
+         this.searchResults = versionGroupServiceImpl.findAllContainingName(this.searchTerm);
+      }
+      catch (ParseException e)
+      {
+         return;
+      }
    }
 
    @Override

@@ -2,12 +2,20 @@ package org.zanata.dao;
 
 import java.util.List;
 
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.queryParser.MultiFieldQueryParser;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.util.Version;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.FullTextQuery;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.EntityStatus;
@@ -20,6 +28,9 @@ import org.zanata.model.HProjectIteration;
 @Scope(ScopeType.STATELESS)
 public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
 {
+   @In
+   private FullTextEntityManager entityManager;
+
    public ProjectDAO()
    {
       super(HProject.class);
@@ -178,5 +189,18 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
+   }
+
+
+   public List<HProject> searchQuery(String searchQuery, int maxResult, int firstResult) throws ParseException
+   {
+      String[] projectFields = { "slug", "name", "description" };
+      QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_29, projectFields, new StandardAnalyzer(Version.LUCENE_24));
+      parser.setAllowLeadingWildcard(true);
+      org.apache.lucene.search.Query luceneQuery = parser.parse(QueryParser.escape(searchQuery));
+      FullTextQuery query=  entityManager.createFullTextQuery(luceneQuery, HProject.class);
+      query.setMaxResults(maxResult).setFirstResult(firstResult).getResultList();
+
+      return query.getResultList();
    }
 }

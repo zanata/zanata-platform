@@ -58,7 +58,7 @@ public class VersionGroupServiceImpl implements VersionGroupService
    }
 
    @Override
-   public List<HProjectIteration> findAllContainingName(String searchTerm)
+   public List<HProjectIteration> findAllContainingName(String searchTerm) throws ParseException
    {
       return versionGroupDAO.findAllContainingName(searchTerm);
    }

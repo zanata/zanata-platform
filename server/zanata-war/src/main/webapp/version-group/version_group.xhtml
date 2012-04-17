@@ -85,21 +85,13 @@
                         <rich:dataTable id="resultTable"
                                         value="#{versionGroupAction.searchResults}" var="projectIteration">
                             <f:facet name="header">#{messages['jsf.SearchResults']}</f:facet>
-                            <rich:column sortBy="#{projectIteration.name}">
+                            <rich:column sortBy="#{projectIteration.project.name}">
                                 <f:facet name="header">#{messages['jsf.Name']}</f:facet>
-                                #{person.name}
+                                #{projectIteration.project.name}
                             </rich:column>
-                            <rich:column sortBy="#{person.account.username}">
-                                <f:facet name="header">#{messages['jsf.Username']}</f:facet>
-                                #{person.account.username}
-                            </rich:column>
-                            <rich:column>
-                                <f:facet name="header"></f:facet>
-                                <h:commandButton value="#{messages['jsf.Add']}"
-                                                 action="#{languageTeamAction.addTeamMember(person.id)}"
-                                                 rendered="#{!languageTeamAction.isPersonInTeam(person.id)}" />
-                                <h:outputText value="#{messages['jsf.AlreadyInTeam']}"
-                                              rendered="#{languageTeamAction.isPersonInTeam(person.id)}" />
+                            <rich:column sortBy="#{projectIteration.slug}">
+                                <f:facet name="header">#{messages['jsf.Name']}</f:facet>
+                                #{projectIteration.slug}
                             </rich:column>
                         </rich:dataTable>
                     </h:form>

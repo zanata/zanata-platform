@@ -36,7 +36,7 @@ public interface VersionGroupService
 
    HIterationGroup getBySlug(String slug);
 
-   List<HProjectIteration> findAllContainingName(String searchTerm);
+   List<HProjectIteration> findAllContainingName(String searchTerm) throws ParseException;
 
    List<HPerson> getMaintainerBySlug(String slug);
 

@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -45,7 +44,6 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.NotNull;
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.hibernate.search.GroupSearchBridge;
@@ -176,5 +174,4 @@ public class HProjectIteration extends SlugEntityBase
    {
       return super.toString() + "project=" + project + "]";
    }
-
 }
