@@ -155,7 +155,7 @@
 		<rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
 			<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
 			<s:link styleClass="action_link"
-				rendered="#{s:hasPermission(viewAllStatusAction.projecIteration, 'update')}"
+				rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'update')}"
 				value="#{messages['jsf.EditVersion']}" view="/iteration/edit.xhtml"
 				propagation="none">
 				<f:param name="projectSlug" value="#{viewAllStatusAction.projectSlug}"/>
