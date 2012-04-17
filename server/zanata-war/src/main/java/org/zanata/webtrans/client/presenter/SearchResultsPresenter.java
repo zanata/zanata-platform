@@ -20,7 +20,6 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +54,8 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.MultiSelectionModel;
+import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.Inject;
 
 /**
@@ -83,11 +84,13 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
       HasValue<Boolean> getCaseSensitiveChk();
 
+      HasClickHandlers getReplaceAllButton();
+
       void clearAll();
 
       HasClickHandlers addDocumentLabel(String docName);
 
-      HasData<TransUnit> addTUTable(Delegate<TransUnit> replaceDelegate);
+      HasData<TransUnit> addTUTable(Delegate<TransUnit> replaceDelegate, SelectionModel<TransUnit> selectionModel);
    }
 
    private final CachingDispatchAsync dispatcher;
@@ -100,6 +103,12 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     * view.
     */
    private Map<Long, ListDataProvider<TransUnit>> documentDataProviders;
+
+   /**
+    * Selection model objects for tables in display. Used to determine which
+    * transunits are selected
+    */
+   private Map<Long, MultiSelectionModel<TransUnit>> documentSelectionModels;
 
    /**
     * most recent history state that was responded to
@@ -120,6 +129,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       projectSearchCallback = buildProjectSearchCallback();
       replaceButtonDelegate = buildReplaceButtonDelegate();
       documentDataProviders = new HashMap<Long, ListDataProvider<TransUnit>>();
+      documentSelectionModels = new HashMap<Long, MultiSelectionModel<TransUnit>>();
 
       registerHandler(display.getFilterTextBox().addValueChangeHandler(new ValueChangeHandler<String>()
       {
@@ -151,6 +161,24 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
+      registerHandler(display.getReplaceAllButton().addClickHandler(new ClickHandler()
+      {
+
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            // FIXME inefficient. Replace this implementation with single event
+
+            for (MultiSelectionModel<TransUnit> sm : documentSelectionModels.values())
+            {
+               for (TransUnit tu : sm.getSelectedSet())
+               {
+                  replaceButtonDelegate.execute(tu);
+               }
+            }
+         }
+      }));
+
       history.addValueChangeHandler(new ValueChangeHandler<String>()
       {
 
@@ -171,6 +199,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                display.getCaseSensitiveChk().setValue(token.getProjectSearchCaseSensitive(), false);
 
                documentDataProviders.clear();
+               documentSelectionModels.clear();
                display.clearAll();
 
                if (!token.getProjectSearchText().isEmpty())
@@ -201,7 +230,15 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             {
                if (transUnits.get(i).getId().getId() == event.getTransUnit().getId().getId())
                {
+                  // must de-select before setting to prevent this TU being
+                  // 'stuck' selected for the life of the selection model
+                  MultiSelectionModel<TransUnit> selectionModel = documentSelectionModels.get(event.getDocumentId().getId());
+//                  boolean isSelected = selectionModel.isSelected(transUnits.get(i)); //get selected state
+                  selectionModel.setSelected(transUnits.get(i), false);
+
                   transUnits.set(i, event.getTransUnit());
+//                  selectionModel.setSelected(transUnits.get(i), isSelected); //return to previous selection state
+
                   return;
                }
             }
@@ -247,7 +284,9 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          {
             display.getTestLabel().setText("Project TU search returned documents: " + result.getDocumentIds().size());
 
+            //TODO extract clearAllData function for these 3 lines
             documentDataProviders.clear();
+            documentSelectionModels.clear();
             display.clearAll();
             for (Long docId : result.getDocumentIds())
             {
@@ -263,13 +302,17 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
                });
 
-               HasData<TransUnit> table = display.addTUTable(replaceButtonDelegate);
+               MultiSelectionModel<TransUnit> selectionModel = new MultiSelectionModel<TransUnit>();
+
+               HasData<TransUnit> table = display.addTUTable(replaceButtonDelegate, selectionModel);
                ListDataProvider<TransUnit> dataProvider = new ListDataProvider<TransUnit>();
                dataProvider.addDataDisplay(table);
+
                List<TransUnit> data = dataProvider.getList();
                data.addAll(result.getUnits(docId));
                Collections.sort(data, TransUnit.getRowIndexComparator());
                documentDataProviders.put(docId, dataProvider);
+               documentSelectionModels.put(docId, selectionModel);
             }
          }
 

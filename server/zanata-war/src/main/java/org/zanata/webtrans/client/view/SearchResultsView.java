@@ -30,6 +30,7 @@ import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.ClearableTextBox;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TransUnit;
+
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
@@ -37,17 +38,17 @@ import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.ActionCell.Delegate;
 import com.google.gwt.cell.client.Cell.Context;
+import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
@@ -57,7 +58,9 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.Inject;
 
 /**
@@ -85,6 +88,9 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
 
    @UiField
    CheckBox caseSensitiveChk;
+
+   @UiField
+   Button replaceAllButton;
 
    private String highlightString;
 
@@ -129,6 +135,12 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
+   public HasClickHandlers getReplaceAllButton()
+   {
+      return replaceAllButton;
+   }
+
+   @Override
    public HasText getTestLabel()
    {
       return testLabel;
@@ -150,16 +162,18 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
-   public HasData<TransUnit> addTUTable(Delegate<TransUnit> replaceDelegate)
+   public HasData<TransUnit> addTUTable(Delegate<TransUnit> replaceDelegate, SelectionModel<TransUnit> selectionModel)
    {
-      CellTable<TransUnit> table = buildTable(replaceDelegate);
+      CellTable<TransUnit> table = buildTable(replaceDelegate, selectionModel);
       searchResultsPanel.add(table);
       return table;
    }
 
-   private CellTable<TransUnit> buildTable(Delegate<TransUnit> replaceDelegate)
+   private CellTable<TransUnit> buildTable(Delegate<TransUnit> replaceDelegate, SelectionModel<TransUnit> selectionModel)
    {
       // create columns
+      CheckColumn checkboxColumn = new CheckColumn(selectionModel);
+
       TextColumn<TransUnit> rowIndexColumn = new TextColumn<TransUnit>()
       {
          @Override
@@ -234,9 +248,11 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       ReplaceColumn replaceButtonColumn = new ReplaceColumn(replaceDelegate);
 
       CellTable<TransUnit> table = new CellTable<TransUnit>();
+      table.setSelectionModel(selectionModel, DefaultSelectionEventManager.<TransUnit> createCheckboxManager());
       table.setWidth("100%", true);
 
       // TODO use localisable headings (should already exist somewhere)
+      table.addColumn(checkboxColumn, "Select");
       table.addColumn(rowIndexColumn, "Index");
       table.addColumn(sourceColumn, "Source");
       table.addColumn(targetColumn, "Target");
@@ -245,6 +261,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       sourceColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
       targetColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 
+      table.setColumnWidth(checkboxColumn, 50.0, Unit.PX);
       table.setColumnWidth(rowIndexColumn, 70.0, Unit.PX);
       table.setColumnWidth(sourceColumn, 50.0, Unit.PCT);
       table.setColumnWidth(targetColumn, 50.0, Unit.PCT);
@@ -268,6 +285,25 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
             return !Strings.isNullOrEmpty(input);
          }
       });
+   }
+
+   private class CheckColumn extends Column<TransUnit, Boolean>
+   {
+
+      private SelectionModel<TransUnit> selectionModel;
+
+      public CheckColumn(SelectionModel<TransUnit> selectionModel)
+      {
+         super(new CheckboxCell(true, false));
+         this.selectionModel = selectionModel;
+      }
+
+      @Override
+      public Boolean getValue(TransUnit tu)
+      {
+         return selectionModel.isSelected(tu);
+      }
+
    }
 
    private class ReplaceColumn extends Column<TransUnit, TransUnit>
