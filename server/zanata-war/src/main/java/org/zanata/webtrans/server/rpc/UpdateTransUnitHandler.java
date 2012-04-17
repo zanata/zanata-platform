@@ -33,16 +33,13 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
-import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
@@ -86,9 +83,6 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    private ResourceUtils resourceUtils;
 
    @In
-   Session session;
-
-   @In
    ZanataIdentity identity;
    
    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
@@ -96,9 +90,6 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
    @In
    ProjectDAO projectDAO;
-
-   @In
-   ProjectIterationDAO projectIterationDAO;
 
    @In
    private TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
@@ -130,10 +121,8 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          HAccount authenticatedAccount)
    {
       this.log = Logging.getLog(UpdateTransUnitHandler.class);
-      this.session = session;
       this.identity = identity;
       this.projectDAO = projectDAO;
-      this.projectIterationDAO = projectIterationDAO;
       this.textFlowTargetHistoryDAO = textFlowTargetHistoryDAO;
       this.translationWorkspaceManager = translationWorkspaceManager;
       this.localeServiceImpl = localeServiceImpl;
@@ -239,26 +228,27 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       log.debug("revert TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), localeId, action.getContentState(), action.getContents());
       TranslationWorkspace workspace = checkSecurityAndGetWorkspace(action);
 
-      //TODO what is this trying to do??
-      HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
       HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
-      HTextFlowTarget target = hTextFlow.getTargets().get(hLocale);
-
-      if (target == null)
-      {
-         throw new ActionException("Undo Failure due to empty string.");
-      }
-
-      if (!target.getVersionNum().equals(result.getCurrentVersionNum()))
-      {
-         if (!target.getLastModifiedBy().getAccount().getUsername().equals(authenticatedAccount.getUsername()) || textFlowTargetHistoryDAO.findConflictInHistory(target, result.getCurrentVersionNum(), authenticatedAccount.getUsername()))
-         {
-            throw new ActionException("Find conflict, Undo Failure.");
-         }
-      }
-      //end question
+      //TODO This part of the code is related to undo/redo and it's not functioning so will be commented out. IN fact the whole method seems not being used at the moment(except undo calls it).
+//      HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
+//      HTextFlowTarget target = hTextFlow.getTargets().get(hLocale);
+//
+//      if (target == null)
+//      {
+//         throw new ActionException("Undo Failure due to empty string.");
+//      }
+//
+//      if (!target.getVersionNum().equals(result.getCurrentVersionNum()))
+//      {
+//         if (!target.getLastModifiedBy().getAccount().getUsername().equals(authenticatedAccount.getUsername()) || textFlowTargetHistoryDAO.findConflictInHistory(target, result.getCurrentVersionNum(), authenticatedAccount.getUsername()))
+//         {
+//            throw new ActionException("Find conflict, Undo Failure.");
+//         }
+//      }
 
       TranslationService.TranslationResult translationResult = translationServiceImpl.translate(action.getTransUnitId().getValue(), localeId, result.getPrevious().getContentState(), result.getPrevious().getContents());
+      HTextFlow hTextFlow = translationResult.getTextFlow();
+      HTextFlowTarget prevTarget = translationResult.getPreviousTextFlowTarget();
 
       int wordCount = hTextFlow.getWordCount().intValue();
       String msgContext = null;
@@ -269,7 +259,15 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
       int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale);
       ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);
-      ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(hTextFlow, target, nPlurals);
+      ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(hTextFlow, prevTarget, nPlurals);
+      String modifiedBy = null;
+      String lastChanged = null;
+      if (prevTarget != null)
+      {
+         modifiedBy = prevTarget.getLastModifiedBy().getName();
+         lastChanged = new SimpleDateFormat().format(prevTarget.getLastChanged());
+      }
+
       // @formatter:off
       TransUnit tu = new TransUnit(
             action.getTransUnitId(), 
@@ -279,9 +277,9 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
             sourceContents,
             CommentsUtil.toString(hTextFlow.getComment()),
             targetContents, 
-            target.getState(),
-            target.getLastModifiedBy().getName(),
-            new SimpleDateFormat().format(target.getLastChanged()), msgContext, hTextFlow.getPos());
+            result.getPrevious().getContentState(),
+            modifiedBy,
+            lastChanged, msgContext, hTextFlow.getPos());
       // @formatter:on
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, result.getPrevious().getContentState(), tu, identity.getCredentials().getUsername());
       workspace.publish(event);
