@@ -36,11 +36,13 @@ public interface VersionGroupService
 
    HIterationGroup getBySlug(String slug);
 
-   List<HProjectIteration> findBySlugAndProjectSlug(String searchTerm) throws ParseException;
+   List<HProjectIteration> searchBySlugAndProjectSlug(String searchTerm) throws ParseException;
 
    List<HPerson> getMaintainerBySlug(String slug);
 
    void makePersistent(HIterationGroup iterationGroup);
 
    void flush();
+
+   boolean joinVersionGroup(HIterationGroup group, Long projectIterationId);
 }

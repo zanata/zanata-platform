@@ -62,7 +62,7 @@
     </rich:dataList>
   </rich:panel>
 
-    <rich:modalPanel id="versionAddPanel" width="530" height="320">
+    <rich:modalPanel id="versionAddPanel" width="530" height="320" autosized="true">
         <f:subview id="projectVersionSearch">
             <a4j:form>
                 <h1>Find Project Version</h1>
@@ -78,21 +78,31 @@
             </a4j:form>
             <a4j:region>
                 <a4j:status id="searchStatus" startText="Searching..." stopText="" />
-                <a4j:outputPanel id="searchResults" layout="block"
-                                 style="overflow:auto;">
+                <a4j:outputPanel id="searchResults" layout="block" style="overflow:auto;">
                     <h:outputText id="noResultsMessage" rendered="#{empty versionGroupAction.searchResults}" value="No results to display." />
                     <h:form rendered="#{not empty versionGroupAction.searchResults}">
                         <rich:dataTable id="resultTable"
                                         value="#{versionGroupAction.searchResults}" var="projectIteration">
                             <f:facet name="header">#{messages['jsf.SearchResults']}</f:facet>
                             <rich:column sortBy="#{projectIteration.project.name}">
-                                <f:facet name="header">#{messages['jsf.Name']}</f:facet>
+                                <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
                                 #{projectIteration.project.name}
                             </rich:column>
                             <rich:column sortBy="#{projectIteration.slug}">
-                                <f:facet name="header">#{messages['jsf.Name']}</f:facet>
+                                <f:facet name="header">#{messages['jsf.Version']}</f:facet>
                                 #{projectIteration.slug}
                             </rich:column>
+
+                            <rich:column>
+                                <f:facet name="header"></f:facet>
+                                <h:commandButton value="#{messages['jsf.Add']}"
+                                                 action="#{versionGroupAction.joinVersionGroup(projectIteration.id)}"
+                                                 rendered="#{!versionGroupAction.isVersionInGroup(projectIteration.id)}" />
+                                <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
+                                              rendered="#{versionGroupAction.isVersionInGroup(projectIteration.id)}" />
+                            </rich:column>
+
+
                         </rich:dataTable>
                     </h:form>
                 </a4j:outputPanel>

@@ -62,9 +62,9 @@ public class VersionGroupServiceImpl implements VersionGroupService
    }
 
    @Override
-   public List<HProjectIteration> findBySlugAndProjectSlug(String searchTerm) throws ParseException
+   public List<HProjectIteration> searchBySlugAndProjectSlug(String searchTerm) throws ParseException
    {
-      return projectIterationDAO.findBySlugAndProjectSlug(searchTerm);
+      return projectIterationDAO.searchBySlugAndProjectSlug(searchTerm);
    }
 
    @Override
@@ -83,5 +83,20 @@ public class VersionGroupServiceImpl implements VersionGroupService
    public void flush()
    {
       versionGroupDAO.flush();
+   }
+
+   @Override
+   public boolean joinVersionGroup(HIterationGroup group, Long projectIterationId)
+   {
+      HProjectIteration projectIteration = projectIterationDAO.findById(projectIterationId, false);
+      if (!group.getProjectIterations().contains(projectIteration))
+      {
+         group.addProjectIteration(projectIteration);
+         versionGroupDAO.makePersistent(group);
+         flush();
+         return true;
+      }
+      return false;
+
    }
 }

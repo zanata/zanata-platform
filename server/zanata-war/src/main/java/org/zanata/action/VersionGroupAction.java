@@ -30,7 +30,6 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
-import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.BaseSecurityChecker;
@@ -72,14 +71,24 @@ public class VersionGroupAction extends BaseSecurityChecker implements Serializa
       return searchResults;
    }
 
+   public boolean isVersionInGroup(Long projectIterationId)
+   {
+      for (HProjectIteration iteration : group.getProjectIterations())
+      {
+         if (iteration.getId().equals(projectIterationId))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   public void joinVersionGroup(Long projectIterationId)
+   {
+      versionGroupServiceImpl.joinVersionGroup(group, projectIterationId);
+   }
+
    /*
-    * public boolean isVersionInGroup(HProjectIteration projectIteration) { if
-    * (projectIteration == null) { return false; } for (HLocaleMember lm :
-    * this.locale.getMembers()) { if
-    * (lm.getPerson().getId().equals(projectIteration.getId())) { return true; }
-    * } return false; }
-    * 
-    * 
     * @Transactional
     * 
     * @Restrict("#{s:hasRole('admin')}") public void joinGroup() {
@@ -135,7 +144,7 @@ public class VersionGroupAction extends BaseSecurityChecker implements Serializa
    {
       try
       {
-         this.searchResults = versionGroupServiceImpl.findBySlugAndProjectSlug(this.searchTerm);
+         this.searchResults = versionGroupServiceImpl.searchBySlugAndProjectSlug(this.searchTerm);
       }
       catch (ParseException e)
       {

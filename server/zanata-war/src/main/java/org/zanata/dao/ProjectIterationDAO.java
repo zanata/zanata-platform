@@ -299,7 +299,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       return totalCount.intValue();
    }
 
-   public List<HProjectIteration> findBySlugAndProjectSlug(String searchTerm) throws ParseException
+   public List<HProjectIteration> searchBySlugAndProjectSlug(String searchTerm) throws ParseException
    {
       final String FIELDS[] = { "slug", GroupSearchBridge.PROJECT_FIELD };
 
