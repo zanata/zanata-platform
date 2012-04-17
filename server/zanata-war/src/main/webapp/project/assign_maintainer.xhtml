@@ -20,6 +20,7 @@
     </ui:define>
    
     <ui:define name="center_content">
+      <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
         
       <script type="text/javascript">
         function confirmDelete()
@@ -50,9 +51,9 @@
 	            <f:facet name="header">#{messages['jsf.Email']}</f:facet>
 	            #{maintainer.email}
 	          </rich:column>
-	          <rich:column width="auto">
+	          <rich:column width="auto" styleClass="centered">
 	            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>          
-	            <h:commandLink value="#{messages['jsf.Remove']}" action="#{projectMaintainerManageAction.deleteMaintainer(projectMaintainerManageAction.selectedPerson)}"
+	            <h:commandButton value="#{messages['jsf.Remove']}" action="#{projectMaintainerManageAction.deleteMaintainer(projectMaintainerManageAction.selectedPerson)}"
 	                      onclick="return confirmDelete()"/>
 	          </rich:column>
 	  	    </rich:dataTable>

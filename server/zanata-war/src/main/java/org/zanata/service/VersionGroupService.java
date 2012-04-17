@@ -44,5 +44,7 @@ public interface VersionGroupService
 
    void flush();
 
-   boolean joinVersionGroup(HIterationGroup group, Long projectIterationId);
+   boolean joinVersionGroup(String slug, Long projectIterationId);
+
+   boolean leaveVersionGroup(String slug, Long projectIterationId);
 }

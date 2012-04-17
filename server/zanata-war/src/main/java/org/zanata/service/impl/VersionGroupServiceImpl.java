@@ -86,17 +86,40 @@ public class VersionGroupServiceImpl implements VersionGroupService
    }
 
    @Override
-   public boolean joinVersionGroup(HIterationGroup group, Long projectIterationId)
+   public boolean joinVersionGroup(String slug, Long projectIterationId)
    {
       HProjectIteration projectIteration = projectIterationDAO.findById(projectIterationId, false);
-      if (!group.getProjectIterations().contains(projectIteration))
+      HIterationGroup group = getBySlug(slug);
+      if (group != null && projectIteration != null)
       {
-         group.addProjectIteration(projectIteration);
-         versionGroupDAO.makePersistent(group);
-         flush();
-         return true;
+         if (!group.getProjectIterations().contains(projectIteration))
+         {
+            group.addProjectIteration(projectIteration);
+            versionGroupDAO.makePersistent(group);
+            flush();
+            return true;
+         }
       }
       return false;
 
+   }
+
+   @Override
+   public boolean leaveVersionGroup(String slug, Long projectIterationId)
+   {
+      HProjectIteration projectIteration = projectIterationDAO.findById(projectIterationId, false);
+      HIterationGroup group = getBySlug(slug);
+
+      if (group != null && projectIteration != null)
+      {
+         if (group.getProjectIterations().contains(projectIteration))
+         {
+            group.getProjectIterations().remove(projectIteration);
+            versionGroupDAO.makePersistent(group);
+            flush();
+            return true;
+         }
+      }
+      return false;
    }
 }

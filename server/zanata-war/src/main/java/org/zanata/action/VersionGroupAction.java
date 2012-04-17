@@ -29,6 +29,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.log.Log;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HProjectIteration;
@@ -46,9 +47,17 @@ public class VersionGroupAction implements Serializable
    @Logger
    Log log;
 
+   @DataModel
+   List<HIterationGroup> allVersionGroups;
+
    private HIterationGroup group;
    private String searchTerm;
    private List<HProjectIteration> searchResults;
+
+   public void loadAllActiveGroups()
+   {
+      allVersionGroups = versionGroupServiceImpl.getAllActiveVersionGroups();
+   }
 
    public void init(String slug)
    {
@@ -84,7 +93,12 @@ public class VersionGroupAction implements Serializable
 
    public void joinVersionGroup(Long projectIterationId)
    {
-      versionGroupServiceImpl.joinVersionGroup(group, projectIterationId);
+      versionGroupServiceImpl.joinVersionGroup(group.getSlug(), projectIterationId);
+   }
+
+   public void leaveVersionGroup(Long projectIterationId)
+   {
+      versionGroupServiceImpl.leaveVersionGroup(group.getSlug(), projectIterationId);
    }
 
    /*

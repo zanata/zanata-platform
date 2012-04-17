@@ -52,9 +52,9 @@
 	            <f:facet name="header">#{messages['jsf.Email']}</f:facet>
 	            #{maintainer.email}
 	          </rich:column>
-	          <rich:column width="auto">
+	          <rich:column width="auto" styleClass="centered">
 	            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>          
-	            <h:commandLink value="#{messages['jsf.Remove']}" action="#{versionGroupMaintainerManageAction.deleteMaintainer(versionGroupMaintainerManageAction.selectedPerson)}"
+	            <h:commandButton value="#{messages['jsf.Remove']}" action="#{versionGroupMaintainerManageAction.deleteMaintainer(versionGroupMaintainerManageAction.selectedPerson)}"
 	                      onclick="return confirmDelete()"/>
 	          </rich:column>
 	  	    </rich:dataTable>

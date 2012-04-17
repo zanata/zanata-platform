@@ -54,7 +54,7 @@
                       <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
                       <a4j:commandButton value="#{messages['jsf.Remove']}"
                           action="#{languageTeamAction.removeMembership(member)}"
-                          reRender="memberPanel,actionPanel" />
+                          reRender="memberPanel,actionPanel, userAddPanel" />
                   </rich:column>
                 </rich:dataTable>
             </rich:panel>
@@ -123,11 +123,11 @@
                     <f:facet name="header">#{messages['jsf.Username']}</f:facet>
                     #{person.account.username}
                   </rich:column>
-                  <rich:column>
-                    <f:facet name="header"></f:facet>
-                    <h:commandButton value="#{messages['jsf.Add']}"
+                  <rich:column styleClass="centered">
+                    <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+                    <a4j:commandButton value="#{messages['jsf.Add']}"
                                      action="#{languageTeamAction.addTeamMember(person.id)}"
-                                     rendered="#{!languageTeamAction.isPersonInTeam(person.id)}" />
+                                     rendered="#{!languageTeamAction.isPersonInTeam(person.id)}" reRender="userAddPanel, memberPanel" />
                     <h:outputText value="#{messages['jsf.AlreadyInTeam']}"
                                   rendered="#{languageTeamAction.isPersonInTeam(person.id)}" />
                   </rich:column>

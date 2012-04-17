@@ -20,8 +20,6 @@
  */
 package org.zanata.action;
 
-import java.util.List;
-
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.NoResultException;
 
@@ -30,13 +28,11 @@ import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
-import org.zanata.service.VersionGroupService;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -49,12 +45,6 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
    private EntityStatus status = EntityStatus.ACTIVE;
 
-   @In
-   private VersionGroupService versionGroupServiceImpl;
-
-   @DataModel
-   List<HIterationGroup> allVersionGroups;
-
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
    
@@ -63,11 +53,6 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
    {
       Session session = (Session) getEntityManager().getDelegate();
       return (HIterationGroup) session.createCriteria(getEntityClass()).add(Restrictions.naturalId().set("slug", getSlug())).setCacheable(true).uniqueResult();
-   }
-
-   public void loadAllActiveGroups()
-   {
-      allVersionGroups = versionGroupServiceImpl.getAllActiveVersionGroups();
    }
 
    @Override
