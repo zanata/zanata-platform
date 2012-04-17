@@ -85,7 +85,7 @@
 		}
 		
 		.divider {
-			color: #e0e0e0;	
+			color: #e0e0e0;
 			padding-left:3px;
 			padding-right:3px;
 		}
@@ -103,7 +103,7 @@
             display: inline;
         }
 
-        .search-replace-link a {
+        .search-replace-link {
             color: white;
             text-decoration: underline;
             cursor: pointer;
@@ -165,7 +165,7 @@
                         </g:HTMLPanel>
 		            </g:cell>
                     <g:cell verticalAlignment="ALIGN_MIDDLE" horizontalAlignment="ALIGN_RIGHT">
-                        <g:Hyperlink ui:field="searchAndReplaceLink" text="Project wide search and replace" styleName="{style.search-replace-link}" />
+                        <g:Label ui:field="searchAndReplaceLink" styleName="{style.search-replace-link}" ><ui:msg>Project wide search and replace</ui:msg></g:Label>
                     </g:cell>
 				</g:HorizontalPanel>
 				</g:layer>
