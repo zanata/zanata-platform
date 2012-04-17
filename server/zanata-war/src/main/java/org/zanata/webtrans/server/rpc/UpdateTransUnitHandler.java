@@ -111,15 +111,15 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
     * Used for tests
     */
    public UpdateTransUnitHandler(
-         Session session,
          ZanataIdentity identity,
          ProjectDAO projectDAO,
-         ProjectIterationDAO projectIterationDAO,
          TextFlowTargetHistoryDAO textFlowTargetHistoryDAO,
          TranslationWorkspaceManager translationWorkspaceManager,
          LocaleService localeServiceImpl,
-         HAccount authenticatedAccount)
+         HAccount authenticatedAccount,
+         TranslationService translationService)
    {
+      this.translationServiceImpl = translationService;
       this.log = Logging.getLog(UpdateTransUnitHandler.class);
       this.identity = identity;
       this.projectDAO = projectDAO;
@@ -262,7 +262,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(hTextFlow, prevTarget, nPlurals);
       String modifiedBy = null;
       String lastChanged = null;
-      if (prevTarget != null)
+      if (prevTarget != null && prevTarget.getLastModifiedBy() != null && prevTarget.getLastChanged() != null)
       {
          modifiedBy = prevTarget.getLastModifiedBy().getName();
          lastChanged = new SimpleDateFormat().format(prevTarget.getLastChanged());

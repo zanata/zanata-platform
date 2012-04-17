@@ -52,19 +52,33 @@ public class TranslationServiceImpl implements TranslationService
    private static final Logger LOGGER = LoggerFactory.getLogger(TranslationServiceImpl.class);
 
    @In
-   Session session;
+   private Session session;
 
    @In
-   ProjectDAO projectDAO;
+   private ProjectDAO projectDAO;
 
    @In
-   TranslationWorkspaceManager translationWorkspaceManager;
+   private TranslationWorkspaceManager translationWorkspaceManager;
 
    @In
    private LocaleService localeServiceImpl;
 
    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
-   HAccount authenticatedAccount;
+   private HAccount authenticatedAccount;
+
+   public TranslationServiceImpl()
+   {
+   }
+
+   //for test
+   public TranslationServiceImpl(Session session, ProjectDAO projectDAO, TranslationWorkspaceManager translationWorkspaceManager, LocaleService localeService, HAccount authenticatedAccount)
+   {
+      this.session = session;
+      this.projectDAO = projectDAO;
+      this.translationWorkspaceManager = translationWorkspaceManager;
+      this.localeServiceImpl = localeService;
+      this.authenticatedAccount = authenticatedAccount;
+   }
 
    @Override
    public TranslationResult translate(Long textFlowId, LocaleId localeId, ContentState stateToSet, List<String> contentsToSave)
@@ -79,7 +93,6 @@ public class TranslationServiceImpl implements TranslationService
       HLocale hLocale = localeServiceImpl.validateLocaleByProjectIteration(localeId, project.getSlug(), projectIteration.getSlug());
 
       HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale);
-      result.prevTextFlowTarget = hTextFlowTarget;
 
       boolean targetChanged = false;
 
@@ -90,6 +103,7 @@ public class TranslationServiceImpl implements TranslationService
          hTextFlow.getTargets().put(hLocale, hTextFlowTarget);
          targetChanged = true;
       }
+      result.prevTextFlowTarget = hTextFlowTarget;
 
       //work on content state
       ContentState previousState = hTextFlowTarget.getState();
