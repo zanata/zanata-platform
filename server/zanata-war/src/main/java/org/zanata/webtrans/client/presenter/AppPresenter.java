@@ -69,6 +69,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       HasClickHandlers getDocumentsLink();
 
+      HasClickHandlers getSearchLink();
+
       void setUserLabel(String userLabel);
 
       void setWorkspaceNameLabel(String workspaceNameLabel, String workspaceTitle);
@@ -84,7 +86,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       void setReadOnlyVisible(boolean visible);
 
-      void setSearchLinkTarget(String historyToken);
    }
 
    private final DocumentListPresenter documentListPresenter;
@@ -240,6 +241,21 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          }
       }));
 
+      registerHandler(display.getSearchLink().addClickHandler(new ClickHandler()
+      {
+
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+            if (!token.getView().equals(MainView.Search))
+            {
+               token.setView(MainView.Search);
+               history.newItem(token.toTokenString());
+            }
+         }
+      }));
+
       registerHandler(history.addValueChangeHandler(new ValueChangeHandler<String>()
       {
 
@@ -249,11 +265,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             processHistoryEvent(event);
          }
       }));
-
-      //TODO this only sets the initial value of the target history. We need to be able to update it after we get into editor as well??
-      HistoryToken token = HistoryToken.fromTokenString(history.getToken());
-      token.setView(MainView.Search);
-      display.setSearchLinkTarget(token.toTokenString());
 
       display.setUserLabel(identity.getPerson().getName());
       String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
@@ -291,8 +302,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          eventBus.fireEvent(new DocumentSelectionEvent(docId));
       }
 
-      // if there is no valid document and it's not doing search and replace, don't show the editor
-      if (docId == null && token.getView() != MainView.Search)
+      // if there is no valid document, don't show the editor
+      // default to document list instead
+      if (docId == null && token.getView() == MainView.Editor)
       {
          token.setView(MainView.Documents);
       }
