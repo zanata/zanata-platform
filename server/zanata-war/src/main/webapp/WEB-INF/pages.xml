@@ -413,6 +413,7 @@
   <page view-id="/iteration/view.xhtml" >
     <param name="projectSlug" value="#{viewAllStatusAction.projectSlug}" />
     <param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
+    <action execute="#{viewAllStatusAction.validateIteration}"/>
   </page>
   
   <page view-id="/iteration/files.xhtml">

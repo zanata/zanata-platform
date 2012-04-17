@@ -31,6 +31,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.framework.EntityNotFoundException;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.ContentState;
@@ -143,6 +144,14 @@ public class ViewAllStatusAction implements Serializable
    public String getIterationSlug()
    {
       return this.iterationSlug;
+   }
+
+   public void validateIteration()
+   {
+      if( this.getProjectIteration() == null )
+      {
+         throw new EntityNotFoundException(this.iterationSlug, HProjectIteration.class);
+      }
    }
 
    public List<Status> getAllStatus()
