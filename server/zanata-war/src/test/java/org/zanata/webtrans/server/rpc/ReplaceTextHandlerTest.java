@@ -22,6 +22,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -44,19 +45,22 @@ public class ReplaceTextHandlerTest
    private ReplaceTextHandler handler;
    @Mock private UpdateTransUnitHandler mockUpdateTransUnitHandler;
    @Mock private ExecutionContext context;
+   private TransUnit.TransUnitBuilder transUnitBuilder;
 
-   @BeforeClass
-   public void setUp()
+   @BeforeMethod
+   public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
       handler = new ReplaceTextHandler();
       handler.updateTransUnitHandler = mockUpdateTransUnitHandler;
+      transUnitBuilder = TransUnit.TransUnitBuilder.builder()
+            .setId(1).setResId("").setLocaleId("en-US").addSource("abc");
    }
 
    @Test
-   public void canReplaceText() throws ActionException
+   public void canReplaceTextCaseInsensitively() throws ActionException
    {
-      TransUnit transUnit = new TransUnit(new TransUnitId(1L), "1", new LocaleId("en-US"), true, Lists.newArrayList("abc"), "comment", Lists.newArrayList("abc", "AbC", "ABC"), ContentState.New, null, null, null, 0);
+      TransUnit transUnit = transUnitBuilder.addTargets("abc", "AbC", "ABC").build();
       ReplaceText action = new ReplaceText(transUnit, "abc", "123", CASE_INSENSITIVE);
 
       handler.execute(action, context);
@@ -64,5 +68,34 @@ public class ReplaceTextHandlerTest
       ArgumentCaptor<UpdateTransUnit> captor = ArgumentCaptor.forClass(UpdateTransUnit.class);
       verify(mockUpdateTransUnitHandler).execute(captor.capture(), eq(context));
       MatcherAssert.assertThat(captor.getValue().getContents(), Matchers.equalTo(Lists.newArrayList("123", "123", "123")));
+   }
+
+   @Test
+   public void canReplaceTextCaseSensitively() throws ActionException
+   {
+      TransUnit transUnit = transUnitBuilder.addTargets("abc", "AbC", "ABC").build();
+      ReplaceText action = new ReplaceText(transUnit, "abc", "123", CASE_SENSITIVE);
+
+      handler.execute(action, context);
+
+      ArgumentCaptor<UpdateTransUnit> captor = ArgumentCaptor.forClass(UpdateTransUnit.class);
+      verify(mockUpdateTransUnitHandler).execute(captor.capture(), eq(context));
+      MatcherAssert.assertThat(captor.getValue().getContents(), Matchers.equalTo(Lists.newArrayList("123", "AbC", "ABC")));
+   }
+
+   @Test(expectedExceptions = {ActionException.class})
+   public void willThrowExceptionIfSearchTextIsEmpty() throws ActionException
+   {
+      TransUnit transUnit = transUnitBuilder.build();
+      ReplaceText action = new ReplaceText(transUnit, "", "123", CASE_SENSITIVE);
+      handler.execute(action, context);
+   }
+
+   @Test(expectedExceptions = {ActionException.class})
+   public void willThrowExceptionIfReplaceTextIsEmpty() throws ActionException
+   {
+      TransUnit transUnit = transUnitBuilder.build();
+      ReplaceText action = new ReplaceText(transUnit, "abc", null, CASE_SENSITIVE);
+      handler.execute(action, context);
    }
 }

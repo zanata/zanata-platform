@@ -155,8 +155,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       UpdateTransUnit previous = new UpdateTransUnit(action.getTransUnitId(), newArrayList(prevTarget.getContents()), prevTarget.getState());
 
       int wordCount = hTextFlow.getWordCount().intValue();
-      // @formatter:off
-      
+
       String msgContext = null;
       if(hTextFlow.getPotEntryData() != null) 
       {
@@ -164,18 +163,21 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       }
 
       ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);
-      TransUnit tu = new TransUnit(
-            action.getTransUnitId(), 
-            hTextFlow.getResId(),
-            localeId,
-            hTextFlow.isPlural(),
-            sourceContents,
-            CommentsUtil.toString(hTextFlow.getComment()),
-            action.getContents(), 
-            newTarget.getState(),
-            authenticatedAccount.getPerson().getName(),
-            new SimpleDateFormat().format(new Date()), msgContext, hTextFlow.getPos());
-      // @formatter:on
+      TransUnit tu = TransUnit.TransUnitBuilder.builder()
+            .setId(action.getTransUnitId())
+            .setResId(hTextFlow.getResId())
+            .setLocaleId(localeId)
+            .setPlural(hTextFlow.isPlural())
+            .setSources(sourceContents)
+            .setSourceComment(CommentsUtil.toString(hTextFlow.getComment()))
+            .setTargets(action.getContents())
+            .setStatus(newTarget.getState())
+            .setLastModifiedBy(authenticatedAccount.getPerson().getName())
+            .setLastModifiedTime(new SimpleDateFormat().format(new Date()))
+            .setMsgContext(msgContext)
+            .setRowIndex(hTextFlow.getPos())
+            .build();
+
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, newTarget.getState(), tu, identity.getCredentials().getUsername());
 
       workspace.publish(event);
@@ -260,27 +262,28 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale);
       ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);
       ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(hTextFlow, prevTarget, nPlurals);
-      String modifiedBy = null;
-      String lastChanged = null;
+      String modifiedBy = "";
+      String lastChanged = "";
       if (prevTarget != null && prevTarget.getLastModifiedBy() != null && prevTarget.getLastChanged() != null)
       {
          modifiedBy = prevTarget.getLastModifiedBy().getName();
          lastChanged = new SimpleDateFormat().format(prevTarget.getLastChanged());
       }
 
-      // @formatter:off
-      TransUnit tu = new TransUnit(
-            action.getTransUnitId(), 
-            hTextFlow.getResId(),
-            localeId,
-            hTextFlow.isPlural(),
-            sourceContents,
-            CommentsUtil.toString(hTextFlow.getComment()),
-            targetContents, 
-            result.getPrevious().getContentState(),
-            modifiedBy,
-            lastChanged, msgContext, hTextFlow.getPos());
-      // @formatter:on
+      TransUnit tu = TransUnit.TransUnitBuilder.builder()
+            .setId(action.getTransUnitId())
+            .setResId(hTextFlow.getResId())
+            .setLocaleId(localeId)
+            .setPlural(hTextFlow.isPlural())
+            .setSources(sourceContents)
+            .setSourceComment(CommentsUtil.toString(hTextFlow.getComment()))
+            .setTargets(targetContents)
+            .setStatus(result.getPrevious().getContentState())
+            .setLastModifiedBy(modifiedBy)
+            .setLastModifiedTime(lastChanged)
+            .setMsgContext(msgContext)
+            .setRowIndex(hTextFlow.getPos())
+            .build();
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, result.getPrevious().getContentState(), tu, identity.getCredentials().getUsername());
       workspace.publish(event);
    }
