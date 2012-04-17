@@ -234,7 +234,7 @@ public class GlossaryService implements GlossaryResource
     */
    @Override
    @DELETE
-   @Restrict("#{s:Permission('', 'glossary-delete')}")
+   @Restrict("#{s:hasPermission('', 'glossary-delete')}")
    public Response deleteGlossaries()
    {
       ResponseBuilder response = request.evaluatePreconditions();
