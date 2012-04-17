@@ -93,7 +93,6 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.security.BaseSecurityChecker;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 
@@ -107,7 +106,7 @@ import com.google.common.collect.Sets;
 /**
  * This service allows clients to push and pull both source documents and translations.
  */
-public class TranslationResourcesService extends BaseSecurityChecker implements TranslationResourcesResource
+public class TranslationResourcesService implements TranslationResourcesResource
 {
 
    // security actions
@@ -210,7 +209,6 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       this.textFlowDAO = textFlowDAO;
       this.textFlowTargetDAO = textFlowTargetDAO;
       this.resourceUtils = resourceUtils;
-      this.identity = identity;
       this.eTagUtils = eTagUtils;
       this.personDAO = personDAO;
       this.textFlowTargetHistoryDAO = textFlowTargetHistoryDAO;
@@ -304,7 +302,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
     */
    @Override
    @POST
-   @Restrict("#{translationResourcesService.checkPermission('import-template')}")
+   @Restrict("#{s:hasPermission(translationResourcesService.securedIteration, 'import-template')}")
    public Response post(Resource resource, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans)
    {
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
@@ -457,7 +455,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    @Override
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE)
-   @Restrict("#{translationResourcesService.checkPermission('import-template')}")
+   @Restrict("#{s:hasPermission(translationResourcesService.securedIteration, 'import-template')}")
    // /r/{id}
    public Response putResource(@PathParam("id") String idNoSlash, Resource resource, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans)
    {
@@ -552,7 +550,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    @Override
    @DELETE
    @Path(RESOURCE_SLUG_TEMPLATE)
-   @Restrict("#{translationResourcesService.checkPermission('import-template')}")
+   @Restrict("#{s:hasPermission(translationResourcesService.securedIteration, 'import-template')}")
    // /r/{id}
    public Response deleteResource(@PathParam("id") String idNoSlash)
    {
@@ -640,7 +638,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    @Override
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
-   @Restrict("#{translationResourcesService.checkPermission('import-template')}")
+   @Restrict("#{s:hasPermission(translationResourcesService.securedIteration, 'import-template')}")
    // /r/{id}/meta
    public Response putResourceMeta(@PathParam("id") String idNoSlash, ResourceMeta messageBody, @QueryParam("ext") Set<String> extensions)
    {
@@ -761,7 +759,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    @Override
    @DELETE
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   @Restrict("#{translationResourcesService.checkPermission('import-translation')}")
+   @Restrict("#{s:hasPermission(translationResourcesService.securedIteration, 'import-translation')}")
    // /r/{id}/translations/{locale}
    public Response deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
    {
@@ -821,7 +819,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
    @Override
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   @Restrict("#{translationResourcesService.checkPermission('import-translation')}")
+   @Restrict("#{s:hasPermission(translationResourcesService.securedIteration, 'import-translation')}")
    // /r/{id}/translations/{locale}
    public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") Set<String> extensions, @QueryParam("merge") @DefaultValue("auto") String merge)
    {
@@ -1080,8 +1078,7 @@ public class TranslationResourcesService extends BaseSecurityChecker implements 
       }
    }
    
-   @Override
-   public Object getSecuredEntity()
+   public HProjectIteration getSecuredIteration()
    {
       return retrieveAndCheckIteration(false);
    }

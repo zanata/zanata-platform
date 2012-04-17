@@ -39,7 +39,7 @@
 
 <ui:define name="left_content">
 
-  <rich:panel id="loggedIn" rendered="#{identity.loggedIn and versionGroupHome.checkPermission('update')}">
+  <rich:panel id="loggedIn" rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'update')}">
     <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
 
     <a href="#" class="action_link" onclick="#{rich:component('versionAddPanel')}.show()">#{messages['jsf.AddProjectVersions']}</a>

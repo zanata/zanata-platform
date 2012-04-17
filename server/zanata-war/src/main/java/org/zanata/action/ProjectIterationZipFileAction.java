@@ -12,11 +12,10 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.process.IterationZipFileBuildProcess;
 import org.zanata.process.IterationZipFileBuildProcessHandle;
 import org.zanata.process.ProcessHandle;
-import org.zanata.security.BaseSecurityChecker;
 
 @Name("projectIterationZipFileAction")
 @Scope(ScopeType.CONVERSATION)
-public class ProjectIterationZipFileAction extends BaseSecurityChecker
+public class ProjectIterationZipFileAction
 {
    
    @In
@@ -34,7 +33,7 @@ public class ProjectIterationZipFileAction extends BaseSecurityChecker
    private ProcessHandle zipFilePrepHandle;
 
    @Begin(join = true)
-   @Restrict("#{projectIterationZipFileAction.checkPermission('download-all')}")
+   @Restrict("#{s:hasPermission(projectIterationZipFileAction.projectIteration, 'download-all')}")
    public void prepareIterationZipFile()
    {
       if( this.zipFilePrepHandle != null && this.zipFilePrepHandle.isInProgress() )
@@ -66,8 +65,7 @@ public class ProjectIterationZipFileAction extends BaseSecurityChecker
       }
    }
    
-   @Override
-   public Object getSecuredEntity()
+   public Object getProjectIteration()
    {
       return this.projectIterationDAO.getBySlug(this.projectSlug, this.iterationSlug);
    }

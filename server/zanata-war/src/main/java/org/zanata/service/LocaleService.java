@@ -47,6 +47,8 @@ public interface LocaleService
 
    HLocale getByLocaleId(LocaleId locale);
 
+   HLocale getByLocaleId(String localeId);
+
    HLocale validateLocaleByProjectIteration(LocaleId locale, String project, String iterationSlug) throws ZanataServiceException;
 
    HLocale validateSourceLocale(LocaleId locale) throws ZanataServiceException;

@@ -29,7 +29,7 @@
           return confirm("#{messages['jsf.AreYouSureYouWishToRemoveThisPersonAsVersionGroupMaintainer']}");
         }
       </script>
-      <rich:panel rendered="#{versionGroupMaintainerManageAction.checkPermission('update')}">
+      <rich:panel rendered="#{s:hasPermission(versionGroupMaintainerManageAction.iterationGroup, 'update')}">
         <f:facet name="header">#{messages['jsf.Maintainers']}</f:facet>
 		<h:messages />
 		

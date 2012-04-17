@@ -27,7 +27,7 @@
           return confirm("#{messages['jsf.AreYouSureYouWishToRemoveThisPersonAsProjectMaintainer']}");
         }
       </script>
-      <rich:panel rendered="#{projectMaintainerManageAction.checkPermission('update')}">
+      <rich:panel rendered="#{s:hasPermission(projectMaintainerManageAction.project, 'update')}">
         <f:facet name="header">#{messages['jsf.ProjectMaintainerManager']}</f:facet>
 		<h:messages />
 		

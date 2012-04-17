@@ -20,7 +20,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.hibernate.Session;
-import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
@@ -36,13 +35,12 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
-import org.zanata.security.SecurityChecker;
 import org.zanata.service.LocaleService;
 
 @Name("glossaryService")
 @Path(GlossaryService.SERVICE_PATH)
 @Transactional
-public class GlossaryService implements GlossaryResource, SecurityChecker
+public class GlossaryService implements GlossaryResource
 {
    @Context
    private UriInfo uri;
@@ -152,7 +150,7 @@ public class GlossaryService implements GlossaryResource, SecurityChecker
    @Override
    @PUT
    @Consumes( { MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   @Restrict("#{glossaryService.checkPermission('glossary-insert')}")
+   @Restrict("#{s:hasPermission('', 'glossary-insert')}")
    public Response put(Glossary glossary)
    {
       ResponseBuilder response;
@@ -186,7 +184,7 @@ public class GlossaryService implements GlossaryResource, SecurityChecker
    @Override
    @DELETE
    @Path("/{locale}")
-   @Restrict("#{glossaryService.checkPermission('glossary-delete')}")
+   @Restrict("#{s:hasPermission('', 'glossary-delete')}")
    public Response deleteGlossary(@PathParam("locale") LocaleId targetLocale)
    {
       ResponseBuilder response = request.evaluatePreconditions();
@@ -236,7 +234,7 @@ public class GlossaryService implements GlossaryResource, SecurityChecker
     */
    @Override
    @DELETE
-   @Restrict("#{glossaryService.checkPermission('glossary-delete')}")
+   @Restrict("#{s:hasPermission('', 'glossary-delete')}")
    public Response deleteGlossaries()
    {
       ResponseBuilder response = request.evaluatePreconditions();
@@ -366,11 +364,5 @@ public class GlossaryService implements GlossaryResource, SecurityChecker
          }
          glossary.getGlossaryEntries().add(glossaryEntry);
       }
-   }
-   
-   @Override
-   public boolean checkPermission(String operation)
-   {
-      return identity != null && identity.hasPermission("", operation);
    }
 }

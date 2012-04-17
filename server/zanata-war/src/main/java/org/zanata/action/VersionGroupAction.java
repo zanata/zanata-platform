@@ -32,12 +32,11 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HProjectIteration;
-import org.zanata.security.BaseSecurityChecker;
 import org.zanata.service.VersionGroupService;
 
 @Name("versionGroupAction")
 @Scope(ScopeType.PAGE)
-public class VersionGroupAction extends BaseSecurityChecker implements Serializable
+public class VersionGroupAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
@@ -151,11 +150,4 @@ public class VersionGroupAction extends BaseSecurityChecker implements Serializa
          return;
       }
    }
-
-   @Override
-   public Object getSecuredEntity()
-   {
-      return group;
-   }
-
 }

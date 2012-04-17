@@ -14,7 +14,7 @@
         <rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
 	    <h:form>
   	    <s:token allowMultiplePosts="true" />
-            <rich:panel rendered="#{versionGroupMaintainerManageAction.checkPermission('update')}">
+            <rich:panel rendered="#{s:hasPermission(versionGroupMaintainerManageAction.iterationGroup, 'update')}">
 	    <h:panelGrid>
 	      <f:facet name="header">#{messages['jsf.AddMaintainer']}</f:facet>
 		<s:decorate id="userField"

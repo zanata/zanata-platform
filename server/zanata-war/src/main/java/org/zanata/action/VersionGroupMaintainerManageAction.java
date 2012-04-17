@@ -18,12 +18,11 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HPerson;
-import org.zanata.security.BaseSecurityChecker;
 import org.zanata.service.VersionGroupService;
 
 @Name("versionGroupMaintainerManageAction")
 @Scope(ScopeType.PAGE)
-public class VersionGroupMaintainerManageAction extends BaseSecurityChecker implements Serializable
+public class VersionGroupMaintainerManageAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
@@ -34,18 +33,21 @@ public class VersionGroupMaintainerManageAction extends BaseSecurityChecker impl
    HPerson selectedPerson;
 
    private String slug;
+   private HIterationGroup iterationGroup;
 
    @In
    private VersionGroupService versionGroupServiceImpl;
 
    @In
    AccountDAO accountDAO;
+
    @Logger
    Log log;
 
-   public void loadAllMaintainers()
+   public void init()
    {
       allList = versionGroupServiceImpl.getMaintainerBySlug(this.slug);
+      iterationGroup = versionGroupServiceImpl.getBySlug(this.slug);
    }
 
    public HPerson getSelectedPerson()
@@ -63,12 +65,7 @@ public class VersionGroupMaintainerManageAction extends BaseSecurityChecker impl
       return this.slug;
    }
 
-   public HIterationGroup getIterationGroup()
-   {
-      return versionGroupServiceImpl.getBySlug(this.slug);
-   }
-
-   @Restrict("#{versionGroupMaintainerManageAction.checkPermission('update')}")
+   @Restrict("#{s:hasPermission(iterationGroup,'update)}")
    public void deleteMaintainer(HPerson person)
    {
       log.debug("try to delete maintainer {0} from slug {1}", person.getName(), this.slug);
@@ -88,7 +85,7 @@ public class VersionGroupMaintainerManageAction extends BaseSecurityChecker impl
       versionGroupServiceImpl.flush();
    }
 
-   @Restrict("#{versionGroupMaintainerManageAction.checkPermission('update')}")
+   @Restrict("#{s:hasPermission(iterationGroup,'update)}")
    public String addMaintainers(String account)
    {
       HAccount a = accountDAO.getByUsername(account);
@@ -110,11 +107,9 @@ public class VersionGroupMaintainerManageAction extends BaseSecurityChecker impl
    {
       return "cancel";
    }
-   
-   @Override
-   public Object getSecuredEntity()
-   {
-      return this.getIterationGroup();
-   }
 
+   public HIterationGroup getIterationGroup()
+   {
+      return iterationGroup;
+   }
 }

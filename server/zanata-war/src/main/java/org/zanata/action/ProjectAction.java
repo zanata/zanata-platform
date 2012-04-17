@@ -33,11 +33,10 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HProject;
-import org.zanata.security.BaseSecurityChecker;
 
 @Name("projectAction")
 @Scope(ScopeType.PAGE)
-public class ProjectAction extends BaseSecurityChecker implements Serializable
+public class ProjectAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
@@ -85,23 +84,6 @@ public class ProjectAction extends BaseSecurityChecker implements Serializable
    public DataModel getProjectPagedListDataModel()
    {
       return projectPagedListDataModel;
-   }
-
-   @Override
-   public Object getSecuredEntity()
-   {
-      return securedEntity;
-   }
-
-   /**
-    * Check permission with target object name and operation
-    * 
-    * @param operation
-    * @return
-    */
-   public boolean checkViewObsolete()
-   {
-      return identity != null && identity.hasPermission("HProject", "view-obsolete", null);
    }
 
    public boolean isShowObsolete()
