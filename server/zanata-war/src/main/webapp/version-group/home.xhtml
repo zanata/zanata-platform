@@ -16,7 +16,7 @@
             <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
             <s:link styleClass="action_link" 
             		view="/version-group/create_version_group.xhtml"
-            		rendered="#{versionGroupHome.checkPermission('insert')}"
+            		rendered="#{s:hasPermission(versionGroupHome.instance, 'insert')}"
                     value="#{messages['jsf.CreateNewGroup']}" />
     	</rich:panel>
     </ui:define>

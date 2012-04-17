@@ -391,7 +391,7 @@ rule UpdateVersionGroup
   no-loop
   activation-group "permissions"
 when
-  check: PermissionCheck(action == "update", granted == false)
+  check: PermissionCheck(action == "update" || action == "insert", granted == false)
   authenticatedPerson: HPerson()
   eval(authenticatedPerson != null)
   $group: HIterationGroup(

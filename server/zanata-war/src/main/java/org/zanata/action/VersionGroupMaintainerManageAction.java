@@ -65,7 +65,7 @@ public class VersionGroupMaintainerManageAction implements Serializable
       return this.slug;
    }
 
-   @Restrict("#{s:hasPermission(iterationGroup,'update)}")
+   @Restrict("#{s:hasPermission(versionGroupMaintainerManageAction.iterationGroup,'update')}")
    public void deleteMaintainer(HPerson person)
    {
       log.debug("try to delete maintainer {0} from slug {1}", person.getName(), this.slug);
@@ -85,7 +85,7 @@ public class VersionGroupMaintainerManageAction implements Serializable
       versionGroupServiceImpl.flush();
    }
 
-   @Restrict("#{s:hasPermission(iterationGroup,'update)}")
+   @Restrict("#{s:hasPermission(versionGroupMaintainerManageAction.iterationGroup,'update')}")
    public String addMaintainers(String account)
    {
       HAccount a = accountDAO.getByUsername(account);

@@ -224,6 +224,7 @@
 
     <page view-id="/version-group/maintainerdetail.xhtml">
         <param name="slug" value="#{versionGroupMaintainerManageAction.slug}" />
+        <action execute="#{versionGroupMaintainerManageAction.init()}" />
         <navigation from-action="#{versionGroupMaintainerManageAction.addMaintainers(accountSearch.maintainer)}">
             <rule if-outcome="success">
                 <redirect view-id="/version-group/assign_maintainer.xhtml" >
