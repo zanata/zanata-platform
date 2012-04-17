@@ -40,6 +40,7 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
+import org.zanata.webtrans.shared.rpc.ReplaceText;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
@@ -283,16 +284,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void execute(TransUnit tu)
          {
-            for (int i = 0; i < tu.getTargets().size(); i++)
-            {
-               //TODO in GWT we can't replace text in case-insensitive way easily. We either do the hacky native javascript way or move the replace logic to server
-               //see http://www.jroller.com/brodkin/entry/case_insensitive_string_replaceall
-               String newTarget = tu.getTargets().get(i).replace(currentHistoryState.getProjectSearchText(), display.getReplacementTextBox().getValue());
-               tu.getTargets().set(i, newTarget);
-            }
-
-            final UpdateTransUnit updateTransUnit = new UpdateTransUnit(tu.getId(), tu.getTargets(), tu.getStatus());
-            dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
+            ReplaceText action = new ReplaceText(tu, currentHistoryState.getProjectSearchText(), display.getReplacementTextBox().getValue(), display.getCaseSensitiveChk().getValue());
+            dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>()
             {
                @Override
                public void onFailure(Throwable e)

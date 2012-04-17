@@ -15,36 +15,26 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.TransUnit;
 
-public class ReplaceText extends AbstractWorkspaceAction<ReplaceTextResult>
+public class ReplaceText extends UpdateTransUnit
 {
-   private TransUnitId transUnitId;
-   private Integer verNum;
    private String searchText;
    private String replaceText;
+   private boolean caseSensitive;
 
    @SuppressWarnings("unused")
    private ReplaceText()
    {
+      super();
    }
 
-   public ReplaceText(TransUnitId transUnitId, Integer verNum, String searchText, String replaceText)
+   public ReplaceText(TransUnit transUnit, String searchText, String replaceText, boolean isCaseSensitive)
    {
-      this.transUnitId = transUnitId;
-      this.verNum = verNum;
+      super(transUnit.getId(), transUnit.getTargets(), transUnit.getStatus());
+      caseSensitive = isCaseSensitive;
       this.searchText = searchText;
       this.replaceText = replaceText;
-   }
-
-   public TransUnitId getTransUnitId()
-   {
-      return transUnitId;
-   }
-
-   public Integer getVerNum()
-   {
-      return verNum;
    }
 
    public String getSearchText()
@@ -55,5 +45,10 @@ public class ReplaceText extends AbstractWorkspaceAction<ReplaceTextResult>
    public String getReplaceText()
    {
       return replaceText;
+   }
+
+   public boolean isCaseSensitive()
+   {
+      return caseSensitive;
    }
 }
