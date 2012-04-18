@@ -61,37 +61,37 @@ public class AppPresenterTest
 
    private AppPresenter appPresenter;
 
-   HasClickHandlers mockDismiss = createMock(HasClickHandlers.class);
-   HasVisibility mockDismissVisibility = createMock(HasVisibility.class);
-   Display mockDisplay = createMock(AppPresenter.Display.class);
-   DocumentListPresenter mockDocumentListPresenter = createMock(DocumentListPresenter.class);
-   HasClickHandlers mockDocumentsLink = createMock(HasClickHandlers.class);
+   HasClickHandlers mockDismiss;
+   HasVisibility mockDismissVisibility;
+   Display mockDisplay;
+   DocumentListPresenter mockDocumentListPresenter;
+   HasClickHandlers mockDocumentsLink;
+   EventBus mockEventBus;
+   History mockHistory;
+   Identity mockIdentity;
+   HasClickHandlers mockLeaveWorkspaceLink;
+   WebTransMessages mockMessages;
+   Person mockPerson;
    HasClickHandlers mockSearchLink;
-   EventBus mockEventBus = createMock(EventBus.class);
-   History mockHistory = createMock(History.class);
-   Identity mockIdentity = createMock(Identity.class);
-   WebTransMessages mockMessages = createMock(WebTransMessages.class);
-   Person mockPerson = createMock(Person.class);
-   SearchResultsPresenter mockSearchResultsPresenter = createMock(SearchResultsPresenter.class);
-   TranslationPresenter mockTranslationPresenter = createMock(TranslationPresenter.class);
-   Window mockWindow = createMock(Window.class);
-   Location mockWindowLocation = createMock(Window.Location.class);
-   WorkspaceContext mockWorkspaceContext = createMock(WorkspaceContext.class);
-   HasClickHandlers mockLeaveWorkspaceLink = createMock(HasClickHandlers.class);
-   HasClickHandlers mockSignoutLink = createMock(HasClickHandlers.class);
+   SearchResultsPresenter mockSearchResultsPresenter;
+   HasClickHandlers mockSignoutLink;
+   TranslationPresenter mockTranslationPresenter;
+   Window mockWindow;
+   Location mockWindowLocation;
+   WorkspaceContext mockWorkspaceContext;
 
-   private Capture<NotificationEventHandler> capturedNotificationEventHandler;
    private Capture<ClickHandler> capturedDismissLinkClickHandler;
-   private Capture<DocumentStatsUpdatedEventHandler> capturedDocumentStatsUpdatedEventHandler;
-   private Capture<ProjectStatsUpdatedEventHandler> capturedProjectStatsUpdatedEventHandler;
-   private Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdatedEventHandler;
-   private Capture<ClickHandler> capturedLeaveWorkspaceLinkClickHandler;
-   private Capture<ClickHandler> capturedSignoutLinkClickHandler;
-   private Capture<ValueChangeHandler<String>> capturedHistoryValueChangeHandler;
    private Capture<ClickHandler> capturedDocumentLinkClickHandler;
-   private Capture<ClickHandler> capturedSearchLinkClickHandler;
    private Capture<DocumentSelectionEvent> capturedDocumentSelectionEvent;
+   private Capture<DocumentStatsUpdatedEventHandler> capturedDocumentStatsUpdatedEventHandler;
    private Capture<String> capturedHistoryTokenString;
+   private Capture<ValueChangeHandler<String>> capturedHistoryValueChangeHandler;
+   private Capture<ClickHandler> capturedLeaveWorkspaceLinkClickHandler;
+   private Capture<NotificationEventHandler> capturedNotificationEventHandler;
+   private Capture<ProjectStatsUpdatedEventHandler> capturedProjectStatsUpdatedEventHandler;
+   private Capture<ClickHandler> capturedSearchLinkClickHandler;
+   private Capture<ClickHandler> capturedSignoutLinkClickHandler;
+   private Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdatedEventHandler;
 
    private DocumentInfo testDocInfo;
    private DocumentId testDocId;
@@ -101,12 +101,37 @@ public class AppPresenterTest
    @BeforeClass
    public void createMocks()
    {
-      //FIXME move creation of all mocks and captures here.
-
+      mockDismiss = createMock(HasClickHandlers.class);
+      mockDismissVisibility = createMock(HasVisibility.class);
+      mockDisplay = createMock(AppPresenter.Display.class);
+      mockDocumentListPresenter = createMock(DocumentListPresenter.class);
+      mockDocumentsLink = createMock(HasClickHandlers.class);
+      mockEventBus = createMock(EventBus.class);
+      mockHistory = createMock(History.class);
+      mockIdentity = createMock(Identity.class);
+      mockLeaveWorkspaceLink = createMock(HasClickHandlers.class);
+      mockMessages = createMock(WebTransMessages.class);
+      mockPerson = createMock(Person.class);
       mockSearchLink = createMock(HasClickHandlers.class);
+      mockSearchResultsPresenter = createMock(SearchResultsPresenter.class);
+      mockSignoutLink = createMock(HasClickHandlers.class);
+      mockTranslationPresenter = createMock(TranslationPresenter.class);
+      mockWindow = createMock(Window.class);
+      mockWindowLocation = createMock(Window.Location.class);
+      mockWorkspaceContext = createMock(WorkspaceContext.class);
 
-      capturedSearchLinkClickHandler = new Capture<ClickHandler>();
+      capturedDismissLinkClickHandler = new Capture<ClickHandler>();
+      capturedDocumentLinkClickHandler = new Capture<ClickHandler>();
+      capturedDocumentSelectionEvent = new Capture<DocumentSelectionEvent>();
+      capturedDocumentStatsUpdatedEventHandler = new Capture<DocumentStatsUpdatedEventHandler>();
       capturedHistoryTokenString = new Capture<String>();
+      capturedHistoryValueChangeHandler = new Capture<ValueChangeHandler<String>>();
+      capturedLeaveWorkspaceLinkClickHandler = new Capture<ClickHandler>();
+      capturedNotificationEventHandler = new Capture<NotificationEventHandler>();
+      capturedProjectStatsUpdatedEventHandler = new Capture<ProjectStatsUpdatedEventHandler>();
+      capturedSearchLinkClickHandler = new Capture<ClickHandler>();
+      capturedSignoutLinkClickHandler = new Capture<ClickHandler>();
+      capturedWorkspaceContextUpdatedEventHandler = new Capture<WorkspaceContextUpdateEventHandler>();
    }
 
    @BeforeMethod
@@ -469,7 +494,7 @@ public class AppPresenterTest
 
       HistoryToken capturedToken = HistoryToken.fromTokenString(capturedHistoryTokenString.getValue());
       assertThat("clicking search link should set view in history token to search", capturedToken.getView(), is(MainView.Search));
-      //TODO could check that nothing else has changes in token
+      //TODO could check that nothing else has changed in token
    }
 
    public void testShowsHidesReadonlyLabel()
@@ -644,25 +669,18 @@ public class AppPresenterTest
       mockDocumentListPresenter.bind();
       expectLastCall().once();
 
-      capturedDocumentLinkClickHandler = new Capture<ClickHandler>();
-      expect(mockDocumentsLink.addClickHandler(and(capture(capturedDocumentLinkClickHandler), isA(ClickHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
+      expectClickHandlerRegistrationOnce(mockDocumentsLink, capturedDocumentLinkClickHandler);
+      expectClickHandlerRegistrationOnce(mockSearchLink, capturedSearchLinkClickHandler);
+      expectClickHandlerRegistrationOnce(mockDismiss, capturedDismissLinkClickHandler);
+      expectClickHandlerRegistrationOnce(mockLeaveWorkspaceLink, capturedLeaveWorkspaceLinkClickHandler);
+      expectClickHandlerRegistrationOnce(mockSignoutLink, capturedSignoutLinkClickHandler);
 
-      expect(mockSearchLink.addClickHandler(and(capture(capturedSearchLinkClickHandler), isA(ClickHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-
-      capturedDismissLinkClickHandler = new Capture<ClickHandler>();
-      expect(mockDismiss.addClickHandler(and(capture(capturedDismissLinkClickHandler), isA(ClickHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-
-      capturedNotificationEventHandler = new Capture<NotificationEventHandler>();
       expect(mockEventBus.addHandler(eq(NotificationEvent.getType()), and(capture(capturedNotificationEventHandler), isA(NotificationEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-      capturedDocumentStatsUpdatedEventHandler = new Capture<DocumentStatsUpdatedEventHandler>();
       expect(mockEventBus.addHandler(eq(DocumentStatsUpdatedEvent.getType()), and(capture(capturedDocumentStatsUpdatedEventHandler), isA(DocumentStatsUpdatedEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-      capturedProjectStatsUpdatedEventHandler = new Capture<ProjectStatsUpdatedEventHandler>();
       expect(mockEventBus.addHandler(eq(ProjectStatsUpdatedEvent.getType()), and(capture(capturedProjectStatsUpdatedEventHandler), isA(ProjectStatsUpdatedEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
 
-      capturedWorkspaceContextUpdatedEventHandler = new Capture<WorkspaceContextUpdateEventHandler>();
       expect(mockEventBus.addHandler(eq(WorkspaceContextUpdateEvent.getType()), and(capture(capturedWorkspaceContextUpdatedEventHandler), isA(WorkspaceContextUpdateEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
 
-      capturedDocumentSelectionEvent = new Capture<DocumentSelectionEvent>();
       mockEventBus.fireEvent(and(capture(capturedDocumentSelectionEvent), isA(DocumentSelectionEvent.class)));
       expectLastCall().anyTimes();
 
@@ -670,16 +688,12 @@ public class AppPresenterTest
 
       expect(mockIdentity.getPerson()).andReturn(mockPerson).anyTimes();
 
-      capturedLeaveWorkspaceLinkClickHandler = new Capture<ClickHandler>();
-      expect(mockLeaveWorkspaceLink.addClickHandler(and(capture(capturedLeaveWorkspaceLinkClickHandler), isA(ClickHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
 
       expect(mockMessages.windowTitle(TEST_WORKSPACE_NAME, TEST_LOCALE_NAME)).andReturn(TEST_WINDOW_TITLE).anyTimes();
       expect(mockMessages.noDocumentSelected()).andReturn(NO_DOCUMENTS_STRING).anyTimes();
 
       expect(mockPerson.getName()).andReturn(TEST_PERSON_NAME).anyTimes();
 
-      capturedSignoutLinkClickHandler = new Capture<ClickHandler>();
-      expect(mockSignoutLink.addClickHandler(and(capture(capturedSignoutLinkClickHandler), isA(ClickHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
 
       mockSearchResultsPresenter.bind();
       expectLastCall().once();
@@ -697,10 +711,21 @@ public class AppPresenterTest
       expect(mockWorkspaceContext.isReadOnly()).andReturn(false).anyTimes();
    }
 
+   /**
+    * Expect a single handler registration on a mock object, and capture the
+    * click handler in the given {@link Capture}
+    * 
+    * @param mockObjectToClick
+    * @param captureForHandler
+    */
+   private void expectClickHandlerRegistrationOnce(HasClickHandlers mockObjectToClick, Capture<ClickHandler> captureForHandler)
+   {
+      expect(mockObjectToClick.addClickHandler(and(capture(captureForHandler), isA(ClickHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
+   }
+
    @SuppressWarnings("unchecked")
    private void setupMockHistory(String tokenToReturn)
    {
-      capturedHistoryValueChangeHandler = new Capture<ValueChangeHandler<String>>();
       expect(mockHistory.addValueChangeHandler(and(capture(capturedHistoryValueChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).anyTimes();
       expect(mockHistory.getToken()).andReturn(tokenToReturn).anyTimes();
       mockHistory.fireCurrentHistoryState();
@@ -721,10 +746,18 @@ public class AppPresenterTest
 
    private void resetAllCaptures()
    {
-      //FIXME reset other captures here
-      capturedSearchLinkClickHandler.reset();
+      capturedDismissLinkClickHandler.reset();
+      capturedDocumentLinkClickHandler.reset();
+      capturedDocumentSelectionEvent.reset();
+      capturedDocumentStatsUpdatedEventHandler.reset();
       capturedHistoryTokenString.reset();
-
+      capturedHistoryValueChangeHandler.reset();
+      capturedLeaveWorkspaceLinkClickHandler.reset();
+      capturedNotificationEventHandler.reset();
+      capturedProjectStatsUpdatedEventHandler.reset();
+      capturedSearchLinkClickHandler.reset();
+      capturedSignoutLinkClickHandler.reset();
+      capturedWorkspaceContextUpdatedEventHandler.reset();
    }
 
    private void replayAllMocks()
