@@ -35,26 +35,17 @@ public interface Resources extends ClientBundle
 
    @Source("org/zanata/webtrans/images/banner_bg.png")
    DataResource bannerBackground();
-
+   
    @Source("org/zanata/webtrans/images/z-logo-16px.png")
    ImageResource logo();
 
    @Source("org/zanata/webtrans/images/x.png")
    ImageResource xButton();
-   
-   @Source("org/zanata/webtrans/images/x2.png")
-   ImageResource minimizeButton();
 
-   @Source("org/zanata/webtrans/images/silk/user.png")
-   ImageResource userOnline();
-
-   @Source("org/zanata/webtrans/images/silk/page_white_text.png")
+   @Source("org/zanata/webtrans/images/crystal_project/_16x16/filesystems/file_doc.png")
    ImageResource documentImage();
 
-   @Source("org/zanata/webtrans/images/silk/folder.png")
-   ImageResource folderImage();
-
-   @Source("org/zanata/webtrans/images/silk/information.png")
+   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/info.png")
    ImageResource informationImage();
 
    @Source("org/zanata/webtrans/images/next_entry.png")
@@ -75,9 +66,6 @@ public interface Resources extends ClientBundle
    @Source("org/zanata/webtrans/images/last_entry.png")
    ImageResource lastEntry();
 
-   @Source("org/zanata/webtrans/images/tm_view.png")
-   ImageResource tmViewButton();
-
    @Source("org/zanata/webtrans/images/first_page.png")
    ImageResource firstPageImage();
 
@@ -89,34 +77,6 @@ public interface Resources extends ClientBundle
 
    @Source("org/zanata/webtrans/images/last_page.png")
    ImageResource lastPageImage();
-
-   @Source("org/zanata/webtrans/images/first_page_disabled.png")
-   ImageResource firstPageDisabledImage();
-
-   @Source("org/zanata/webtrans/images/prev_page_disabled.png")
-   ImageResource prevPageDisabledImage();
-
-   @Source("org/zanata/webtrans/images/next_page_disabled.png")
-   ImageResource nextPageDisabledImage();
-
-   @Source("org/zanata/webtrans/images/last_page_disabled.png")
-   ImageResource lastPageDisabledImage();
-
-   // unused after intro of grey-out icons to reflect disabled state
-   @Source("org/zanata/webtrans/images/no_page.png")
-   ImageResource noPageImage();
-
-   @Source("org/zanata/webtrans/images/approved_unit.png")
-   ImageResource approvedUnit();
-
-   @Source("org/zanata/webtrans/images/error_unit.png")
-   ImageResource errorUnit();
-
-   @Source("org/zanata/webtrans/images/fuzzy_unit.png")
-   ImageResource fuzzyUnit();
-
-   @Source("org/zanata/webtrans/images/new_unit.png")
-   ImageResource newUnit();
 
    @Source("org/zanata/webtrans/images/undo.png")
    ImageResource undo();
