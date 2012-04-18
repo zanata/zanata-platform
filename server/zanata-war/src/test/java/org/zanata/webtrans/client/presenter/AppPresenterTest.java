@@ -206,17 +206,16 @@ public class AppPresenterTest
 
    public void testUpdateProjectStatsFromEditorView()
    {
+      expectLoadDocAndViewEditor();
+
       replayAllMocks();
       appPresenter.bind();
-      verifyAllMocks();
-      HistoryToken token = loadDocAndViewEditor();
 
-      reset(mockDisplay);
-      // not expecting stats change yet
-      replay(mockDisplay);
+      HistoryToken token = simulateLoadDocAndViewEditor();
+
       TranslationStats updatedStats = new TranslationStats(new TransUnitCount(9, 9, 9), new TransUnitWords(9, 9, 9));
       capturedProjectStatsUpdatedEventHandler.getValue().onProjectStatsRetrieved(new ProjectStatsUpdatedEvent(updatedStats));
-      verify(mockDisplay);
+      verifyAllMocks();
 
       returnToDoclistView(token, updatedStats);
    }
@@ -341,11 +340,12 @@ public class AppPresenterTest
     */
    public void testStatsAndNameChangeWithView()
    {
+      expectLoadDocAndViewEditor();
       replayAllMocks();
       appPresenter.bind();
-      verifyAllMocks();
 
-      HistoryToken token = loadDocAndViewEditor();
+      HistoryToken token = simulateLoadDocAndViewEditor();
+      verifyAllMocks();
       token = returnToDoclistView(token, emptyProjectStats);
       returnToEditorView(token, testDocStats);
    }
@@ -353,12 +353,13 @@ public class AppPresenterTest
 
    public void testShowsUpdatedDocumentStats()
    {
+      expectLoadDocAndViewEditor();
       replayAllMocks();
       appPresenter.bind();
-      verifyAllMocks();
 
       // must be in editor to see document stats
-      loadDocAndViewEditor();
+      simulateLoadDocAndViewEditor();
+      verifyAllMocks();
 
       TranslationStats updatedStats = new TranslationStats(new TransUnitCount(9, 9, 9), new TransUnitWords(9, 9, 9));
 
@@ -373,10 +374,11 @@ public class AppPresenterTest
 
    public void testDoesNotShowWrongDocumentStats()
    {
+      expectLoadDocAndViewEditor();
       replayAllMocks();
       appPresenter.bind();
+      simulateLoadDocAndViewEditor();
       verifyAllMocks();
-      loadDocAndViewEditor();
 
       TranslationStats updatedStats = new TranslationStats(new TransUnitCount(9, 9, 9), new TransUnitWords(9, 9, 9));
 
@@ -392,10 +394,11 @@ public class AppPresenterTest
 
    public void testUpdateDocumentStatsFromDoclistView()
    {
+      expectLoadDocAndViewEditor();
       replayAllMocks();
       appPresenter.bind();
+      HistoryToken token = simulateLoadDocAndViewEditor();
       verifyAllMocks();
-      HistoryToken token = loadDocAndViewEditor();
       token = returnToDoclistView(token, emptyProjectStats);
 
       reset(mockDisplay);
@@ -431,10 +434,10 @@ public class AppPresenterTest
 
    public void testDocumentsLinkGeneratesHistoryToken()
    {
+      ClickEvent docLinkClickEvent = createMock(ClickEvent.class);
+      expectLoadDocAndViewEditor();
       replayAllMocks();
       appPresenter.bind();
-      verifyAllMocks();
-      ClickEvent docLinkClickEvent = createMock(ClickEvent.class);
       // replay(docLinkClickEvent);
 
       // don't generate MainView.Editor token if a document isn't loaded
@@ -442,7 +445,8 @@ public class AppPresenterTest
 
       assertThat(capturedHistoryTokenString.hasCaptured(), is(false));
 
-      HistoryToken token = loadDocAndViewEditor();
+      HistoryToken token = simulateLoadDocAndViewEditor();
+      verifyAllMocks();
 
       // make mock history return correct state
       reset(mockHistory);
@@ -532,24 +536,8 @@ public class AppPresenterTest
       testDocInfo = new DocumentInfo(testDocId, TEST_DOCUMENT_NAME, TEST_DOCUMENT_PATH, LocaleId.EN_US, testDocStats);
    }
 
-   /**
-    * Simulate selecting test document and viewing it in the editor. The
-    * application presenter must be bound before calling this method.
-    * 
-    * This also tests that:
-    * <ul>
-    * <li>A history event with a valid document will correctly display the
-    * editor view.</li>
-    * <li>The document path, name and stats are displayed in the editor.</li>
-    * </ul>
-    * 
-    * @return a {@link HistoryToken} representing the current application state
-    */
-   private HistoryToken loadDocAndViewEditor()
+   private void expectLoadDocAndViewEditor()
    {
-
-      reset(mockDisplay, mockDocumentListPresenter);
-
       buildTestDocumentInfo();
       expect(mockDocumentListPresenter.getDocumentId(TEST_DOCUMENT_PATH + TEST_DOCUMENT_NAME)).andReturn(testDocId).anyTimes();
       expect(mockDocumentListPresenter.getDocumentInfo(testDocId)).andReturn(testDocInfo).anyTimes();
@@ -562,9 +550,10 @@ public class AppPresenterTest
 
       mockDisplay.showInMainView(MainView.Editor);
       expectLastCall().once();
+   }
 
-      replay(mockDisplay, mockDocumentListPresenter);
-
+   private HistoryToken simulateLoadDocAndViewEditor()
+   {
       HistoryToken docInEditorToken = new HistoryToken();
       docInEditorToken.setDocumentPath(TEST_DOCUMENT_PATH + TEST_DOCUMENT_NAME);
       docInEditorToken.setView(MainView.Editor);
@@ -572,7 +561,6 @@ public class AppPresenterTest
       {
       });
       verify(mockDisplay, mockDocumentListPresenter);
-
       return docInEditorToken;
    }
 
