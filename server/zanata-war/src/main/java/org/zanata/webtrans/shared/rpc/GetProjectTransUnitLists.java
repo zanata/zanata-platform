@@ -18,26 +18,40 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.hibernate.search;
+package org.zanata.webtrans.shared.rpc;
 
-//FIXME rename to CaseInsensitiveNgramAnalyzer when merged into master
 
 /**
- * Analyzer that tokenizes into lower-case trigrams.
+ * Get all text flows from a project that contain the given search string,
+ * grouped by document.
  * 
  * @author David Mason, damason@redhat.com
+ * 
  */
-public class DefaultNgramAnalyzer extends ConfigurableNgramAnalyzer
+public class GetProjectTransUnitLists extends AbstractWorkspaceAction<GetProjectTransUnitListsResult>
 {
+   private static final long serialVersionUID = 1L;
+   private String searchString;
+   private boolean caseSensitive;
 
-   public DefaultNgramAnalyzer()
+   @SuppressWarnings("unused")
+   private GetProjectTransUnitLists()
    {
-      super(3, true);
    }
 
-   public DefaultNgramAnalyzer(int ngramLength)
+   public GetProjectTransUnitLists(String searchString, boolean caseSensitive)
    {
-      super(ngramLength, true);
+      this.searchString = searchString;
+      this.caseSensitive = caseSensitive;
    }
 
+   public String getSearchString()
+   {
+      return this.searchString;
+   }
+
+   public boolean isCaseSensitive()
+   {
+      return this.caseSensitive;
+   }
 }

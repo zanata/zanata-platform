@@ -68,15 +68,10 @@
 		</dependency>
 
 		<dependency>
-			<groupId>net.sf.okapi.lib</groupId>
-			<artifactId>okapi-lib-search</artifactId>
-			<version>0.7</version>
-		</dependency>
-
-		<dependency>
 			<groupId>net.sf.okapi.steps</groupId>
 			<artifactId>okapi-step-wordcount</artifactId>
 			<version>0.9</version>
+			<!-- see latest version at http://repository-okapi.forge.cloudbees.com/snapshot/net/sf/okapi/steps/okapi-step-wordcount/ -->
 		</dependency>
 
 		<dependency>
@@ -88,6 +83,13 @@
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
+			<!-- okapi-lib-search would otherwise use lucene 3.0.0 -->
+			<version>${lucene.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-analyzers</artifactId>
 			<!-- okapi-lib-search would otherwise use lucene 3.0.0 -->
 			<version>${lucene.version}</version>
 		</dependency>

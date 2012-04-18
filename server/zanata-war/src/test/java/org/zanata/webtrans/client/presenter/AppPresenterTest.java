@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.*;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.easymock.Capture;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
@@ -65,11 +66,13 @@ public class AppPresenterTest
    Display mockDisplay = createMock(AppPresenter.Display.class);
    DocumentListPresenter mockDocumentListPresenter = createMock(DocumentListPresenter.class);
    HasClickHandlers mockDocumentsLink = createMock(HasClickHandlers.class);
+   HasClickHandlers mockSearchLink;
    EventBus mockEventBus = createMock(EventBus.class);
    History mockHistory = createMock(History.class);
    Identity mockIdentity = createMock(Identity.class);
    WebTransMessages mockMessages = createMock(WebTransMessages.class);
    Person mockPerson = createMock(Person.class);
+   SearchResultsPresenter mockSearchResultsPresenter = createMock(SearchResultsPresenter.class);
    TranslationPresenter mockTranslationPresenter = createMock(TranslationPresenter.class);
    Window mockWindow = createMock(Window.class);
    Location mockWindowLocation = createMock(Window.Location.class);
@@ -86,6 +89,7 @@ public class AppPresenterTest
    private Capture<ClickHandler> capturedSignoutLinkClickHandler;
    private Capture<ValueChangeHandler<String>> capturedHistoryValueChangeHandler;
    private Capture<ClickHandler> capturedDocumentLinkClickHandler;
+   private Capture<ClickHandler> capturedSearchLinkClickHandler;
    private Capture<DocumentSelectionEvent> capturedDocumentSelectionEvent;
    private Capture<String> capturedHistoryTokenString;
 
@@ -94,15 +98,27 @@ public class AppPresenterTest
    private TranslationStats testDocStats;
    private TranslationStats emptyProjectStats;
 
+   @BeforeClass
+   public void createMocks()
+   {
+      //FIXME move creation of all mocks and captures here.
+
+      mockSearchLink = createMock(HasClickHandlers.class);
+
+      capturedSearchLinkClickHandler = new Capture<ClickHandler>();
+      capturedHistoryTokenString = new Capture<String>();
+   }
+
    @BeforeMethod
    void beforeMethod()
    {
       resetAllMocks();
+      resetAllCaptures();
    }
 
    private AppPresenter newAppPresenter()
    {
-      return new AppPresenter(mockDisplay, mockEventBus, mockTranslationPresenter, mockDocumentListPresenter, mockIdentity, mockWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
+      return new AppPresenter(mockDisplay, mockEventBus, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockIdentity, mockWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
    }
 
    // Note: unable to test 'sign out' and 'close window' links as these have
@@ -442,6 +458,20 @@ public class AppPresenterTest
       assertThat("document path should be maintained when clicking documents link", capturedToken.getDocumentPath(), is(token.getDocumentPath()));
    }
 
+   public void testSearchLinkGeneratesHistoryToken()
+   {
+      setupAndBindAppPresenter();
+      verifyAllMocks();
+
+      //simulate click
+      ClickEvent searchLinkClickEvent = createMock(ClickEvent.class);
+      capturedSearchLinkClickHandler.getValue().onClick(searchLinkClickEvent);
+
+      HistoryToken capturedToken = HistoryToken.fromTokenString(capturedHistoryTokenString.getValue());
+      assertThat("clicking search link should set view in history token to search", capturedToken.getView(), is(MainView.Search));
+      //TODO could check that nothing else has changes in token
+   }
+
    public void testShowsHidesReadonlyLabel()
    {
       setupAndBindAppPresenter();
@@ -588,6 +618,7 @@ public class AppPresenterTest
       expect(mockDisplay.getSignOutLink()).andReturn(mockSignoutLink).anyTimes();
       expect(mockDisplay.getLeaveWorkspaceLink()).andReturn(mockLeaveWorkspaceLink).anyTimes();
       expect(mockDisplay.getDocumentsLink()).andReturn(mockDocumentsLink).anyTimes();
+      expect(mockDisplay.getSearchLink()).andReturn(mockSearchLink).anyTimes();
       expect(mockDisplay.getDismiss()).andReturn(mockDismiss).anyTimes();
       expect(mockDisplay.getDismissVisibility()).andReturn(mockDismissVisibility).anyTimes();
 
@@ -604,6 +635,7 @@ public class AppPresenterTest
       expectLastCall().anyTimes();
       mockDisplay.setReadOnlyVisible(false);
       expectLastCall().once();
+
       // initially empty project stats
       emptyProjectStats = new TranslationStats();
       mockDisplay.setStats(eq(emptyProjectStats));
@@ -614,6 +646,8 @@ public class AppPresenterTest
 
       capturedDocumentLinkClickHandler = new Capture<ClickHandler>();
       expect(mockDocumentsLink.addClickHandler(and(capture(capturedDocumentLinkClickHandler), isA(ClickHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
+
+      expect(mockSearchLink.addClickHandler(and(capture(capturedSearchLinkClickHandler), isA(ClickHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
 
       capturedDismissLinkClickHandler = new Capture<ClickHandler>();
       expect(mockDismiss.addClickHandler(and(capture(capturedDismissLinkClickHandler), isA(ClickHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
@@ -647,6 +681,9 @@ public class AppPresenterTest
       capturedSignoutLinkClickHandler = new Capture<ClickHandler>();
       expect(mockSignoutLink.addClickHandler(and(capture(capturedSignoutLinkClickHandler), isA(ClickHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
 
+      mockSearchResultsPresenter.bind();
+      expectLastCall().once();
+
       mockTranslationPresenter.bind();
       expectLastCall().once();
 
@@ -669,7 +706,6 @@ public class AppPresenterTest
       mockHistory.fireCurrentHistoryState();
       expectLastCall().anyTimes();
 
-      capturedHistoryTokenString = new Capture<String>();
       mockHistory.newItem(capture(capturedHistoryTokenString));
       expectLastCall().anyTimes();
    }
@@ -678,27 +714,34 @@ public class AppPresenterTest
    {
       reset(mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
       reset(mockEventBus, mockHistory, mockIdentity, mockLeaveWorkspaceLink);
-      reset(mockMessages, mockPerson, mockSignoutLink, mockTranslationPresenter);
-      reset(mockWindow, mockWindowLocation, mockWorkspaceContext);
-      reset(mockDismiss, mockDismissVisibility);
+      reset(mockMessages, mockPerson, mockSearchResultsPresenter, mockSignoutLink);
+      reset(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
+      reset(mockDismiss, mockDismissVisibility, mockSearchLink);
+   }
+
+   private void resetAllCaptures()
+   {
+      //FIXME reset other captures here
+      capturedSearchLinkClickHandler.reset();
+      capturedHistoryTokenString.reset();
+
    }
 
    private void replayAllMocks()
    {
       replay(mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
       replay(mockEventBus, mockHistory, mockIdentity, mockLeaveWorkspaceLink);
-      replay(mockMessages, mockPerson, mockSignoutLink, mockTranslationPresenter);
-      replay(mockWindow, mockWindowLocation, mockWorkspaceContext);
-      replay(mockDismiss, mockDismissVisibility);
+      replay(mockMessages, mockPerson, mockSearchResultsPresenter, mockSignoutLink);
+      replay(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
+      replay(mockDismiss, mockDismissVisibility, mockSearchLink);
    }
 
    private void verifyAllMocks()
    {
       verify(mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
       verify(mockEventBus, mockHistory, mockIdentity, mockLeaveWorkspaceLink);
-      verify(mockMessages, mockPerson, mockSignoutLink, mockTranslationPresenter);
-      verify(mockWindow, mockWindowLocation, mockWorkspaceContext);
-      verify(mockDismiss, mockDismissVisibility);
+      verify(mockMessages, mockPerson, mockSearchResultsPresenter, mockSignoutLink);
+      verify(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
+      verify(mockDismiss, mockDismissVisibility, mockSearchLink);
    }
-
 }
