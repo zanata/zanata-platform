@@ -172,48 +172,35 @@ public class AppPresenterTest
 
    public void testShowsNotificationEvents()
    {
-      replayAllMocks();
-      appPresenter.bind();
-      verifyAllMocks();
-
-      reset(mockDisplay);
       String testMessage = "test notification message";
       mockDisplay.setNotificationMessage(testMessage, Severity.Warning);
       expectLastCall().once();
-      expect(mockDisplay.getDismissVisibility()).andReturn(mockDismissVisibility).anyTimes();
-      replay(mockDisplay);
-
-      reset(mockDismissVisibility);
       mockDismissVisibility.setVisible(true);
       expectLastCall().once();
-      replay(mockDismissVisibility);
 
+      replayAllMocks();
 
+      appPresenter.bind();
       NotificationEvent notification = new NotificationEvent(Severity.Warning, testMessage);
       capturedNotificationEventHandler.getValue().onNotification(notification);
 
-      verify(mockDisplay);
-      verify(mockDismissVisibility);
+      verifyAllMocks();
    }
 
    public void testShowsUpdatedProjectStats()
    {
-      replayAllMocks();
-      appPresenter.bind();
-      verifyAllMocks();
-
-      reset(mockDisplay);
       Capture<TranslationStats> capturedTranslationStats = new Capture<TranslationStats>();
       mockDisplay.setStats(and(capture(capturedTranslationStats), isA(TranslationStats.class)));
       expectLastCall().once();
-      replay(mockDisplay);
 
+      replayAllMocks();
+
+      appPresenter.bind();
       TranslationStats testStats = new TranslationStats(new TransUnitCount(6, 5, 4), new TransUnitWords(3, 2, 1));
       ProjectStatsUpdatedEvent event = new ProjectStatsUpdatedEvent(testStats);
       capturedProjectStatsUpdatedEventHandler.getValue().onProjectStatsRetrieved(event);
 
-      verify(mockDisplay);
-
+      verifyAllMocks();
       assertThat(capturedTranslationStats.getValue(), is(equalTo(testStats)));
    }
 
