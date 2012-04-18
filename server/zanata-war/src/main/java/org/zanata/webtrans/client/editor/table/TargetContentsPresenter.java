@@ -135,6 +135,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       {
          currentEditorIndex = editorIndex;
       }
+      else
+      {
+         currentEditorIndex = 0;
+      }
 
       if (currentEditorIndex == LAST_INDEX)
       {
