@@ -93,7 +93,7 @@
                                         value="#{versionGroupAction.searchResults}" var="projectIteration">
                             <f:facet name="header">#{messages['jsf.SearchResults']}</f:facet>
                             <rich:column sortBy="#{projectIteration.project.name}">
-                                <f:facet name="header">#{messages['jsf.Project']}</f:facet>
+                                <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
                                 #{projectIteration.project.name}
                             </rich:column>
                             <rich:column sortBy="#{projectIteration.slug}">

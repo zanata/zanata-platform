@@ -29,8 +29,11 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
+import org.zanata.model.HDocument;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionGroupService;
@@ -52,6 +55,7 @@ public class VersionGroupAction implements Serializable
 
    private HIterationGroup group;
    private String searchTerm;
+   private String groupNameFilter;
    private List<HProjectIteration> searchResults;
 
    public void loadAllActiveGroups()
@@ -91,67 +95,18 @@ public class VersionGroupAction implements Serializable
       return false;
    }
 
+   @Transactional
+   @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
    public void joinVersionGroup(Long projectIterationId)
    {
       versionGroupServiceImpl.joinVersionGroup(group.getSlug(), projectIterationId);
    }
 
+   @Transactional
    public void leaveVersionGroup(Long projectIterationId)
    {
       versionGroupServiceImpl.leaveVersionGroup(group.getSlug(), projectIterationId);
    }
-
-   /*
-    * @Transactional
-    * 
-    * @Restrict("#{s:hasRole('admin')}") public void joinGroup() {
-    * log.debug("starting join tribe"); if (authenticatedAccount == null) {
-    * log.error("failed to load auth person"); return; } try {
-    * languageTeamServiceImpl.joinLanguageTeam(this.language,
-    * authenticatedAccount.getPerson().getId());
-    * Events.instance().raiseEvent("personJoinedTribe");
-    * log.info("{0} joined tribe {1}", authenticatedAccount.getUsername(),
-    * this.language);
-    * FacesMessages.instance().add("You are now a member of the {0} language team"
-    * , this.locale.retrieveNativeName()); } catch (Exception e) {
-    * FacesMessages.instance().add(Severity.ERROR, e.getMessage()); } }
-    * 
-    * @Transactional public void leaveGroup() {
-    * log.debug("starting leave tribe"); if (authenticatedAccount == null) {
-    * log.error("failed to load auth person"); return; }
-    * languageTeamServiceImpl.leaveLanguageTeam(this.language,
-    * authenticatedAccount.getPerson().getId());
-    * Events.instance().raiseEvent("personLeftTribe");
-    * log.info("{0} left tribe {1}", authenticatedAccount.getUsername(),
-    * this.language);
-    * FacesMessages.instance().add("You have left the {0} language team",
-    * this.locale.retrieveNativeName()); }
-    * 
-    * @Restrict("#{languageTeamAction.checkPermission('manage-language-team')}")
-    * public void saveTeamCoordinator(HLocaleMember member) {
-    * this.localeDAO.makePersistent(this.locale); this.localeDAO.flush(); if
-    * (member.isCoordinator()) {
-    * FacesMessages.instance().add("{0} has been made a Team Coordinator",
-    * member.getPerson().getAccount().getUsername()); } else {
-    * FacesMessages.instance
-    * ().add("{0} has been removed from Team Coordinators",
-    * member.getPerson().getAccount().getUsername()); } }
-    * 
-    * @Restrict("#{languageTeamAction.checkPermission('manage-language-team')}")
-    * public void addTeamMember(final Long personId) {
-    * this.languageTeamServiceImpl.joinLanguageTeam(this.language, personId); //
-    * reload the locale for changes this.locale =
-    * localeServiceImpl.getByLocaleId(new LocaleId(language)); }
-    * 
-    * @Restrict("#{languageTeamAction.checkPermission('manage-language-team')}")
-    * public void removeMembership(HLocaleMember member) {
-    * this.languageTeamServiceImpl.leaveLanguageTeam(this.language,
-    * member.getPerson().getId()); this.locale.getMembers().remove(member); }
-    * 
-    * public boolean isPersonInTeam(final Long personId) { for (HLocaleMember lm
-    * : this.locale.getMembers()) { if (lm.getPerson().getId().equals(personId))
-    * { return true; } } return false; }
-    */
 
    public void searchProjectAndVersion()
    {
@@ -163,5 +118,29 @@ public class VersionGroupAction implements Serializable
       {
          return;
       }
+   }
+
+   public boolean filterGroupByName( Object groupObject )
+   {
+      final HIterationGroup group = (HIterationGroup)groupObject;
+      
+      if( this.groupNameFilter != null && this.groupNameFilter.length() > 0 )
+      {
+         return group.getName().toLowerCase().contains( this.groupNameFilter.toLowerCase() );
+      }
+      else
+      {
+         return true;
+      }
+   }
+   
+   public String getGroupNameFilter()
+   {
+      return groupNameFilter;
+   }
+
+   public void setGroupNameFilter(String groupNameFilter)
+   {
+      this.groupNameFilter = groupNameFilter;
    }
 }

@@ -102,7 +102,7 @@ public class VersionGroupMaintainerManageAction implements Serializable
       }
       if (!a.isEnabled())
       {
-         FacesMessages.instance().add("This account has been disabled.");
+         FacesMessages.instance().add("This account is disabled.");
          return "failure";
       }
       FacesMessages.instance().add("This account does not exist.");

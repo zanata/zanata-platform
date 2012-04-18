@@ -12,8 +12,8 @@
         <s:decorate id="userField"
                     template="../layout/edit.xhtml">
             <ui:define name="label">#{messages['jsf.Username']}</ui:define>
-            <h:inputText id="input" value="#{accountSearch.maintainer}" size="40">
-                <a4j:support event="onblur" reRender="output" action="#{accountSearch.update}" />
+            <h:inputText id="input" value="#{accountSearch.maintainer}" size="40" >
+                <a4j:support event="onchange" reRender="results" action="#{accountSearch.update}" />
             </h:inputText>
             <rich:suggestionbox width="290" suggestionAction="#{accountSearch.search}" var="account" for="input">
                 <h:column>
