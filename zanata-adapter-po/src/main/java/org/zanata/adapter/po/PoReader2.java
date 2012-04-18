@@ -310,8 +310,12 @@ public class PoReader2
 
    static ContentState getContentState(Message message)
    {
-      boolean fuzzy = message.isFuzzy();
-      if (message.isPlural() && allEmpty(message.getMsgstrPlural()))
+      return getContentState(message.isFuzzy(), message.getMsgstr(), message.isPlural(), message.getMsgstrPlural());
+   }
+
+   private static ContentState getContentState(boolean fuzzy, String msgstr, boolean plural, List<String> msgstrPlural)
+   {
+      if (plural && allEmpty(msgstrPlural))
       {
          fuzzy = false;
       }
@@ -319,11 +323,21 @@ public class PoReader2
       {
          return ContentState.NeedReview;
       }
-      if ((message.getMsgstr() != null && !message.getMsgstr().isEmpty()) || allNonEmpty(message.getMsgstrPlural()))
+
+      if (plural)
       {
-         return ContentState.Approved;
+         if (allNonEmpty(msgstrPlural))
+            return ContentState.Approved;
+         else
+            return ContentState.New;
       }
-      return ContentState.New;
+      else
+      {
+         if (msgstr == null || msgstr.isEmpty())
+            return ContentState.New;
+         else
+            return ContentState.Approved;
+      }
    }
 
    static String createId(Message message)
