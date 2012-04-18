@@ -20,7 +20,9 @@
  */
 package org.zanata.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.lucene.queryParser.ParseException;
 import org.jboss.seam.ScopeType;
@@ -32,6 +34,7 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.VersionGroupDAO;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionGroupService;
 

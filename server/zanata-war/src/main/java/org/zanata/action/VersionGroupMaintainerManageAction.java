@@ -89,6 +89,7 @@ public class VersionGroupMaintainerManageAction implements Serializable
    public String addMaintainers(String account)
    {
       HAccount a = accountDAO.getByUsername(account);
+
       if (a != null && a.isEnabled())
       {
          HIterationGroup iterationGroup = versionGroupServiceImpl.getBySlug(this.slug);
@@ -98,6 +99,11 @@ public class VersionGroupMaintainerManageAction implements Serializable
          versionGroupServiceImpl.flush();
          log.debug("add {0} into maintainers", account);
          return "success";
+      }
+      if (!a.isEnabled())
+      {
+         FacesMessages.instance().add("This account has been disabled.");
+         return "failure";
       }
       FacesMessages.instance().add("This account does not exist.");
       return "failure";

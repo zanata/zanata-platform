@@ -9,11 +9,11 @@
     xmlns:a4j="http://richfaces.org/a4j"
     template="../WEB-INF/layout/template.xhtml">
    
-    <ui:define name="page_title">#{projectHome.instance.name} - Add Maintainer</ui:define>
+    <ui:define name="page_title">#{projectHome.instance.name}:#{messages['jsf.AddProjectMaintainer']}</ui:define>
     <ui:define name="left_content">
 		<rich:panel>
       	    <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-            <a href="#" class="action_link" onclick="#{rich:component('maintainerAddPanel')}.show()">#{messages['jsf.AddMaintainer']}</a>
+            <a href="#" class="action_link" onclick="#{rich:component('maintainerAddPanel')}.show()">#{messages['jsf.AddProjectMaintainer']}</a>
     	</rich:panel>
     </ui:define>
    
@@ -59,9 +59,10 @@
       </rich:panel>
 
 
-        <rich:modalPanel id="maintainerAddPanel" width="480" autosized="true" moveable="false">
+        <rich:modalPanel id="maintainerAddPanel" width="505" autosized="true" moveable="false">
             <rich:panel rendered="#{s:hasPermission(projectMaintainerManageAction.project, 'update')}">
                 <a4j:form>
+                    <h1>#{messages['jsf.AddProjectMaintainer']}</h1>
                     <ui:include src="../WEB-INF/layout/add_maintainer_form.xhtml" />
 
                     <div style="clear: both" />

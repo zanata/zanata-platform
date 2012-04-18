@@ -9,11 +9,11 @@
     xmlns:a4j="http://richfaces.org/a4j"
     template="../WEB-INF/layout/template.xhtml">
    
-    <ui:define name="page_title">#{messages['jsf.Groups']}:#{messages['jsf.Maintainers']}</ui:define>
+    <ui:define name="page_title">#{messages['jsf.Groups']}:#{messages['jsf.AddGroupMaintainer']}</ui:define>
     <ui:define name="left_content">
 		<rich:panel>
             <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-            <a href="#" class="action_link" onclick="#{rich:component('maintainerAddPanel')}.show()">#{messages['jsf.AddMaintainer']}</a>
+            <a href="#" class="action_link" onclick="#{rich:component('maintainerAddPanel')}.show()">#{messages['jsf.AddGroupMaintainer']}</a>
     	</rich:panel>
     </ui:define>
    
@@ -28,7 +28,7 @@
         }
       </script>
       <rich:panel rendered="#{s:hasPermission(versionGroupMaintainerManageAction.iterationGroup, 'update')}">
-        <f:facet name="header">#{messages['jsf.Maintainers']}</f:facet>
+        <f:facet name="header">#{messages['jsf.GroupMaintainers']}</f:facet>
 		<h:messages />
 		
         <h:form>
@@ -59,9 +59,10 @@
         </h:form>              
       </rich:panel>
 
-        <rich:modalPanel id="maintainerAddPanel" width="480" autosized="true" moveable="false">
+        <rich:modalPanel id="maintainerAddPanel" width="505" autosized="true" moveable="false">
             <rich:panel rendered="#{s:hasPermission(versionGroupMaintainerManageAction.iterationGroup, 'update')}">
                 <a4j:form>
+                    <h1>#{messages['jsf.AddGroupMaintainer']}</h1>
                     <ui:include src="../WEB-INF/layout/add_maintainer_form.xhtml" />
 
                     <div style="clear: both" />

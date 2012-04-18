@@ -42,7 +42,7 @@
 }
 
 .search_icon {
-	background-image: url(../public-img/silk/zoom.png);
+	background-image: url(../public-img/crystal_project/_16x16/actions/search.png);
 }
 
 .input_help {
@@ -96,7 +96,7 @@
 .name {
 	vertical-align: top;
 	font-weight: bold;
-	width: 90px;
+	width: 130px;
 	float: left;
 	padding: 5px;
 	margin-top: 3px;
@@ -158,7 +158,7 @@ div.info {
 
 /* Styles from the security-stuff in seamspace*/
 div.checkmark {
-	background: url(../public-img/silk/tick.png) top left no-repeat;
+	background: url(../public-img/crystal_project/_16x16/actions/button_ok.png) top left no-repeat;
 	width: 16px;
 	height: 16px;
 	margin-left: auto;
@@ -166,7 +166,7 @@ div.checkmark {
 }
 
 div.cross {
-	background: url(../public-img/silk/cross.png) top left no-repeat;
+	background: url(../public-img/crystal_project/_16x16/actions/button_cancel.png) top left no-repeat;
 	width: 16px;
 	height: 16px;
 	margin-left: auto;
