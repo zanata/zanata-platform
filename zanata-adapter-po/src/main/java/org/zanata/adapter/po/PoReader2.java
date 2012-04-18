@@ -3,7 +3,6 @@ package org.zanata.adapter.po;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,6 +24,7 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.HashUtil;
 import org.zanata.util.ShortString;
+import org.zanata.util.StringUtil;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -284,38 +284,35 @@ public class PoReader2
       return messageParser;
    }
 
-   private static boolean allNonEmpty(Collection<?> coll)
+   private static boolean allNonEmpty(Message message)
    {
-      if (coll == null)
-         return false;
-      for (Object o : coll)
+      if (message.isPlural())
       {
-         if (o == null)
-            return false;
+         return !message.getMsgstrPlural().isEmpty() && StringUtil.allNonEmpty(message.getMsgstrPlural());
       }
-      return true;
+      else
+      {
+         return message.getMsgstr() != null && !message.getMsgstr().isEmpty();
+      }
    }
 
-   private static boolean allEmpty(List<String> strings)
+   private static boolean allEmpty(Message message)
    {
-      if (strings == null)
-         return true;
-      for (String s : strings)
+      if (message.isPlural())
       {
-         if (s != null && !s.isEmpty())
-            return false;
+         return StringUtil.allEmpty(message.getMsgstrPlural());
       }
-      return true;
+      else
+      {
+         return message.getMsgstr() == null || message.getMsgstr().isEmpty();
+      }
    }
 
    static ContentState getContentState(Message message)
    {
-      return getContentState(message.isFuzzy(), message.getMsgstr(), message.isPlural(), message.getMsgstrPlural());
-   }
+      boolean fuzzy = message.isFuzzy();
 
-   private static ContentState getContentState(boolean fuzzy, String msgstr, boolean plural, List<String> msgstrPlural)
-   {
-      if (plural && allEmpty(msgstrPlural))
+      if (allEmpty(message))
       {
          fuzzy = false;
       }
@@ -323,20 +320,13 @@ public class PoReader2
       {
          return ContentState.NeedReview;
       }
-
-      if (plural)
+      if (allNonEmpty(message))
       {
-         if (allNonEmpty(msgstrPlural))
-            return ContentState.Approved;
-         else
-            return ContentState.New;
+         return ContentState.Approved;
       }
       else
       {
-         if (msgstr == null || msgstr.isEmpty())
-            return ContentState.New;
-         else
-            return ContentState.Approved;
+         return ContentState.New;
       }
    }
 

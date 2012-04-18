@@ -1,6 +1,7 @@
 package org.zanata.util;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,6 +26,30 @@ public class StringUtil
    public static List<String> split(String s, String delim)
    {
       return Arrays.asList(s.split(","));
+   }
+
+   public static boolean allNonEmpty(Collection<String> strings)
+   {
+      for (String s : strings)
+      {
+         if (s == null || s.isEmpty())
+         {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   public static boolean allEmpty(Collection<String> strings)
+   {
+      for (String s : strings)
+      {
+         if (s != null && !s.isEmpty())
+         {
+            return false;
+         }
+      }
+      return true;
    }
 
 }
