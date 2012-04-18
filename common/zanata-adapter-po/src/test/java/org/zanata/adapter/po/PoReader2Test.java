@@ -15,10 +15,12 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.fedorahosted.tennera.jgettext.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 import org.xml.sax.InputSource;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
@@ -116,4 +118,125 @@ public class PoReader2Test
       poReader.extractTarget(inputSource, srcDoc);
    }
 
+   public void testContentStateApprovedSingle()
+   {
+      Message m = new Message();
+      m.setMsgstr("s");
+      ContentState actual1 = PoReader2.getContentState(m);
+      assertThat(actual1, is(ContentState.Approved));
+   }
+
+   public void testContentStateApprovedPlural1()
+   {
+      Message m = new Message();
+      m.setMsgidPlural("plural");
+      m.addMsgstrPlural("s0", 0);
+      ContentState actual1 = PoReader2.getContentState(m);
+      assertThat(actual1, is(ContentState.Approved));
+   }
+
+   public void testContentStateApprovedPlural2()
+   {
+      Message m = new Message();
+      m.setMsgidPlural("plural");
+      m.addMsgstrPlural("s0", 0);
+      m.addMsgstrPlural("s1", 1);
+      ContentState actual1 = PoReader2.getContentState(m);
+      assertThat(actual1, is(ContentState.Approved));
+   }
+
+   public void testContentStateNewSingle1()
+   {
+      Message m = new Message();
+      m.setMsgstr("");
+      ContentState actual1 = PoReader2.getContentState(m);
+      assertThat(actual1, is(ContentState.New));
+   }
+
+   public void testContentStateNewSingle2()
+   {
+      Message m = new Message();
+      ContentState actual1 = PoReader2.getContentState(m);
+      assertThat(actual1, is(ContentState.New));
+   }
+
+   public void testContentStateNewPlural1()
+   {
+      Message m = new Message();
+      m.setMsgidPlural("plural");
+      m.addMsgstrPlural("", 0);
+      ContentState actual1 = PoReader2.getContentState(m);
+      assertThat(actual1, is(ContentState.New));
+   }
+
+   public void testContentStateNewPlural2()
+   {
+      Message m = new Message();
+      m.setMsgidPlural("plural");
+      m.addMsgstrPlural("", 0);
+      m.addMsgstrPlural("s1", 1);
+      ContentState actual1 = PoReader2.getContentState(m);
+      assertThat(actual1, is(ContentState.New));
+   }
+
+   public void testContentStateNewPlural3()
+   {
+      Message m = new Message();
+      m.setMsgidPlural("plural");
+      ContentState actual1 = PoReader2.getContentState(m);
+      assertThat(actual1, is(ContentState.New));
+   }
+
+   public void testContentStateNewPlural4()
+   {
+      Message m = new Message();
+      m.setMsgidPlural("plural");
+      m.addMsgstrPlural("", 0);
+      m.addMsgstrPlural("", 1);
+      ContentState actual1 = PoReader2.getContentState(m);
+      assertThat(actual1, is(ContentState.New));
+   }
+
+   public void testContentStateNeedReviewSingle()
+   {
+      Message m = new Message();
+      m.setFuzzy(true);
+      m.setMsgstr("s");
+      ContentState actual1 = PoReader2.getContentState(m);
+      assertThat(actual1, is(ContentState.NeedReview));
+   }
+
+   public void testContentStateNeedReviewPlural1()
+   {
+      Message m = new Message();
+      m.setFuzzy(true);
+      m.setMsgidPlural("plural");
+      m.addMsgstrPlural("s", 0);
+      ContentState actual1 = PoReader2.getContentState(m);
+      assertThat(actual1, is(ContentState.NeedReview));
+   }
+
+   public void testContentStateNeedReviewPlural2()
+   {
+      Message m = new Message();
+      m.setFuzzy(true);
+      m.setMsgidPlural("plural");
+      m.addMsgstrPlural("", 0);
+      m.addMsgstrPlural("s1", 1);
+      ContentState actual1 = PoReader2.getContentState(m);
+      assertThat(actual1, is(ContentState.NeedReview));
+   }
+
+   public void testContentStateNeedReviewPlural3()
+   {
+      Message m = new Message();
+      m.setFuzzy(true);
+      m.setMsgidPlural("plural");
+      m.addMsgstrPlural("s0", 0);
+      m.addMsgstrPlural("s1", 1);
+      ContentState actual1 = PoReader2.getContentState(m);
+      assertThat(actual1, is(ContentState.NeedReview));
+   }
+
 }
+
