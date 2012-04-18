@@ -57,7 +57,6 @@ public class TranslationFileUploadAction
 
    public void setDocId(String docId)
    {
-      System.out.println("Callin setter with:" + docId);
       this.docId = docId;
    }
 
@@ -83,10 +82,7 @@ public class TranslationFileUploadAction
 
    public void uploadFile()
    {
-      System.out.println("Uploaded doc: " + this.docId + "!!!!");
-      System.out.println("Contents:");
-      TranslationsResource transRes =
-            null;
+      TranslationsResource transRes = null;
       try
       {
          transRes = this.translationFileServiceImpl.parseTranslationFile(this.fileContents, this.fileName);
@@ -94,7 +90,9 @@ public class TranslationFileUploadAction
       catch (ZanataServiceException zex)
       {
          FacesMessages.instance().add("Invalid file type");
+         return;
       }
-      System.out.println("Translation resource: " + transRes);
+
+
    }
 }
