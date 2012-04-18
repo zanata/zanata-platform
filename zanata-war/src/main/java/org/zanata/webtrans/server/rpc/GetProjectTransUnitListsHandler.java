@@ -20,13 +20,9 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -35,13 +31,10 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.zanata.common.ContentState;
-import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.rest.service.ResourceUtils;
 import org.zanata.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -52,6 +45,9 @@ import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
 
 import com.ibm.icu.lang.UCharacter;
+
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
 
 /**
  * @see GetProjectTransUnitLists
@@ -67,19 +63,13 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
    Log log;
 
    @In
-   TextFlowDAO textFlowDAO;
-
-   @In
-   DocumentDAO documentDAO;
-
-   @In
    private LocaleService localeServiceImpl;
 
    @In
    private TextFlowSearchService textFlowSearchServiceImpl;
 
    @In
-   private ResourceUtils resourceUtils;
+   private TransUnitTransformer transUnitTransformer;
 
    @Override
    public GetProjectTransUnitListsResult execute(GetProjectTransUnitLists action, ExecutionContext context) throws ActionException
@@ -155,61 +145,13 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
             listForDoc = new ArrayList<TransUnit>();
          }
 
-         // TODO cache this rather than looking up repeatedly
-         int nPlurals = resourceUtils.getNumPlurals(htf.getDocument(), hLocale);
-         listForDoc.add(initTransUnit(htf, hLocale, nPlurals));
+         TransUnit transUnit = transUnitTransformer.transform(htf, hLocale);
+         listForDoc.add(transUnit);
          matchingTUs.put(htf.getDocument().getId(), listForDoc);
          docPaths.put(htf.getDocument().getId(), htf.getDocument().getDocId());
       }
 
       return new GetProjectTransUnitListsResult(docPaths, matchingTUs);
-   }
-
-   @Override
-   public void rollback(GetProjectTransUnitLists action, GetProjectTransUnitListsResult result, ExecutionContext context) throws ActionException
-   {
-   }
-
-   private SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-
-   // TODO move to shared location with other search code
-   private TransUnit initTransUnit(HTextFlow textFlow, HLocale hLocale, int nPlurals)
-   {
-      String msgContext = null;
-      if (textFlow.getPotEntryData() != null)
-      {
-         msgContext = textFlow.getPotEntryData().getContext();
-      }
-      HTextFlowTarget target = textFlow.getTargets().get(hLocale);
-
-      ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(textFlow);
-      ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(textFlow, target, nPlurals);
-
-      TransUnit.Builder builder = TransUnit.Builder.newTransUnitBuilder()
-            .setId(textFlow.getId())
-            .setResId(textFlow.getResId())
-            .setLocaleId(hLocale.getLocaleId())
-            .setPlural(textFlow.isPlural())
-            .setSources(sourceContents)
-            .setSourceComment(CommentsUtil.toString(textFlow.getComment()))
-            .setTargets(targetContents)
-            .setMsgContext(msgContext)
-            .setRowIndex(textFlow.getPos());
-
-      if (target == null)
-      {
-         builder.setStatus(ContentState.New);
-      }
-      else
-      {
-         builder.setStatus(target.getState());
-         if (target.getLastModifiedBy() != null)
-         {
-            builder.setLastModifiedBy(target.getLastModifiedBy().getName());
-         }
-         builder.setLastModifiedTime(simpleDateFormat.format(target.getLastChanged()));
-      }
-      return builder.build();
    }
 
    private String foldCase(String original)
@@ -220,6 +162,11 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          buffer[i] = (char) UCharacter.foldCase(buffer[i], true);
       }
       return new String(buffer);
+   }
+
+   @Override
+   public void rollback(GetProjectTransUnitLists action, GetProjectTransUnitListsResult result, ExecutionContext context) throws ActionException
+   {
    }
 
 }
