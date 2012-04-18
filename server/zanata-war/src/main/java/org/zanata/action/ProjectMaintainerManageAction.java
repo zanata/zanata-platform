@@ -101,10 +101,4 @@ public class ProjectMaintainerManageAction implements Serializable
       FacesMessages.instance().add("This account does not exist.");
       return "failure";
    }
-
-   public String cancel()
-   {
-      return "cancel";
-   }
-
 }

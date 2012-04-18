@@ -103,11 +103,6 @@ public class VersionGroupMaintainerManageAction implements Serializable
       return "failure";
    }
 
-   public String cancel()
-   {
-      return "cancel";
-   }
-
    public HIterationGroup getIterationGroup()
    {
       return iterationGroup;

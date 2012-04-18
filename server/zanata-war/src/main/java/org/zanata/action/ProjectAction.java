@@ -81,7 +81,7 @@ public class ProjectAction implements Serializable
       this.scrollerPage = scrollerPage;
    }
 
-   public DataModel R()
+   public DataModel getProjectPagedListDataModel()
    {
       return projectPagedListDataModel;
    }

@@ -19,30 +19,26 @@
     	 <h:outputText value="#{versionGroupHome.instance.description}" rendered="#{!empty versionGroupHome.instance.description}"/>
     	 
     	 <rich:spacer height="10px" />
-
-        <s:fragment rendered="#{!empty versionGroupHome.instance.projectIterations}">
-                <rich:dataTable id="iterationsDataTable" value="#{versionGroupHome.instance.projectIterations.toArray()}"
-                                var="iteration">
-                    <rich:column sortBy="#{iteration.project.slug}">
-                        <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
-                        <s:link view="/iteration/view/#{iteration.project.slug}" styleClass="table_link">
-                            #{iteration.project.slug}
-                        </s:link>
-                    </rich:column>
-                    <rich:column sortBy="#{iteration.slug}">
-                        <f:facet name="header">#{messages['jsf.Version']}</f:facet>
-                        <s:link view="/iteration/view/#{iteration.project.slug}/#{iteration.slug}" styleClass="table_link">
-                            #{iteration.slug}
-                        </s:link>
-                    </rich:column>
-                    <rich:column rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}" styleClass="centered">
-                        <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-                        <a4j:commandButton value="#{messages['jsf.Remove']}"
-                                           action="#{versionGroupAction.leaveVersionGroup(iteration.id)}" reRender="iterationsDataTable, versionAddPanel" />
-                    </rich:column>
-                </rich:dataTable>
-        </s:fragment>
-
+            <rich:dataTable value="#{versionGroupHome.instance.projectIterations.toArray()}"
+                            var="iteration" id="iterationsDataTable">
+                <rich:column sortBy="#{iteration.project.slug}">
+                    <f:facet name="header">#{messages['jsf.Project']}</f:facet>
+                    <s:link view="/project/view/#{iteration.project.slug}" styleClass="table_link">
+                        #{iteration.project.slug}
+                    </s:link>
+                </rich:column>
+                <rich:column sortBy="#{iteration.slug}">
+                    <f:facet name="header">#{messages['jsf.Version']}</f:facet>
+                    <s:link view="/iteration/view/#{iteration.project.slug}/#{iteration.slug}" styleClass="table_link">
+                        #{iteration.slug}
+                    </s:link>
+                </rich:column>
+                <rich:column rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}" styleClass="centered">
+                    <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+                    <a4j:commandButton value="#{messages['jsf.Remove']}"
+                                       action="#{versionGroupAction.leaveVersionGroup(iteration.id)}" reRender="iterationsDataTable, versionAddPanel" />
+                </rich:column>
+            </rich:dataTable>
     </a4j:form>
     
 </ui:define>
@@ -95,7 +91,7 @@
                                         value="#{versionGroupAction.searchResults}" var="projectIteration">
                             <f:facet name="header">#{messages['jsf.SearchResults']}</f:facet>
                             <rich:column sortBy="#{projectIteration.project.name}">
-                                <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
+                                <f:facet name="header">#{messages['jsf.Project']}</f:facet>
                                 #{projectIteration.project.name}
                             </rich:column>
                             <rich:column sortBy="#{projectIteration.slug}">

@@ -12,10 +12,8 @@
     <ui:define name="page_title">#{projectHome.instance.name} - Add Maintainer</ui:define>
     <ui:define name="left_content">
 		<rich:panel>
-      	<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-      	<s:link styleClass="action_link" view="/project/maintainerdetail.xhtml"
-          value="#{messages['jsf.AddMaintainer']}"
-        />
+      	    <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+            <a href="#" class="action_link" onclick="#{rich:component('maintainerAddPanel')}.show()">#{messages['jsf.AddMaintainer']}</a>
     	</rich:panel>
     </ui:define>
    
@@ -59,6 +57,26 @@
 	  	    </rich:dataTable>
         </h:form>              
       </rich:panel>
+
+
+        <rich:modalPanel id="maintainerAddPanel" width="480" autosized="true" moveable="false">
+            <rich:panel rendered="#{s:hasPermission(projectMaintainerManageAction.project, 'update')}">
+                <a4j:form>
+                    <ui:include src="../WEB-INF/layout/add_maintainer_form.xhtml" />
+
+                    <div style="clear: both" />
+
+                    <div class="actionButtons">
+                        <a4j:commandButton
+                                value="#{messages['jsf.Add']}"
+                                action="#{projectMaintainerManageAction.addMaintainers(accountSearch.maintainer)}" reRender="results, threads" />
+                        <h:commandButton value="#{messages['jsf.Close']}"
+                                         onclick="#{rich:component('maintainerAddPanel')}.hide(); return false;" />
+                    </div>
+                </a4j:form>
+            </rich:panel>
+
+        </rich:modalPanel>
     </ui:define>
     
   </ui:composition>

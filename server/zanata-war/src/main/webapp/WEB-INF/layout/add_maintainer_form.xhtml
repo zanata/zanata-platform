@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j">
+
+    <h:panelGrid>
+        <f:facet name="header">#{messages['jsf.AddMaintainer']}</f:facet>
+        <s:decorate id="userField"
+                    template="../layout/edit.xhtml">
+            <ui:define name="label">#{messages['jsf.Username']}</ui:define>
+            <h:inputText id="input" value="#{accountSearch.maintainer}" size="40">
+                <a4j:support event="onblur" reRender="output" action="#{accountSearch.update}" />
+            </h:inputText>
+            <rich:suggestionbox width="290" suggestionAction="#{accountSearch.search}" var="account" for="input">
+                <h:column>
+                    <h:outputText value="#{account.username}"/>
+                </h:column>
+            </rich:suggestionbox>
+        </s:decorate>
+    </h:panelGrid>
+    <a4j:outputPanel id="results">
+        <div>
+            <h:panelGrid id="output" >
+                <s:decorate id="output1" template="../layout/display.xhtml">
+                    <ui:define name="label">#{messages['jsf.Name']} </ui:define>
+                    <h:outputText value="#{accountSearch.person.name}" />
+                </s:decorate>
+                <s:decorate id="output2" template="../layout/display.xhtml">
+                    <ui:define name="label">#{messages['jsf.Email']} </ui:define>
+                    <h:outputText value="#{accountSearch.person.email}" />
+                </s:decorate>
+            </h:panelGrid>
+        </div>
+    </a4j:outputPanel>
+
+</ui:composition>
