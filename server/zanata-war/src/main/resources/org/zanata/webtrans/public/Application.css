@@ -450,14 +450,14 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	color:#0000AA;
 }
 
-td.FuzzyStateDecoration div div
+td.FuzzyStateDecoration div div div
 {
 	border-left: 3px solid #ffc000;
 	border-right: 3px solid #ffc000;
 	padding: 5px;
 }
 
-td.ApprovedStateDecoration div div
+td.ApprovedStateDecoration div div div
 {
 	border-left: 3px solid #099b09;
 	border-right: 3px solid #099b09;
