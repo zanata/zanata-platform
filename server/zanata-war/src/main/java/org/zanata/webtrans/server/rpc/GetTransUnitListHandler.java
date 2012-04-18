@@ -46,7 +46,6 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.util.TextFlowFilter;
@@ -72,9 +71,6 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
 
    @In
    private LocaleService localeServiceImpl;
-
-   // NB SimpleDateFormat is not thread safe! (we could use a ThreadLocal)
-   private SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 
    @Override
    public GetTransUnitListResult execute(GetTransUnitList action, ExecutionContext context) throws ActionException
@@ -162,35 +158,32 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
 
       ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(textFlow);
       ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(textFlow, target, nPlurals);
-      TransUnit tu = new TransUnit(
-            new TransUnitId(textFlow.getId()),
-            textFlow.getResId(),
-            hLocale.getLocaleId(),
-            textFlow.isPlural(),
-            sourceContents,
-            CommentsUtil.toString(textFlow.getComment()),
-            targetContents,
-            ContentState.New,
-            "",
-            "",
-            msgContext,
-            textFlow.getPos());
 
-      tu.setPlural(textFlow.isPlural());
+      TransUnit.Builder builder = TransUnit.Builder.newTransUnitBuilder()
+            .setId(textFlow.getId())
+            .setResId(textFlow.getResId())
+            .setLocaleId(hLocale.getLocaleId())
+            .setPlural(textFlow.isPlural())
+            .setSources(sourceContents)
+            .setSourceComment(CommentsUtil.toString(textFlow.getComment()))
+            .setTargets(targetContents)
+            .setMsgContext(msgContext)
+            .setRowIndex(textFlow.getPos());
+
       if (target == null)
       {
-         tu.setStatus(ContentState.New);
+         builder.setStatus(ContentState.New);
       }
       else
       {
-         tu.setStatus(target.getState());
+         builder.setStatus(target.getState());
          if (target.getLastModifiedBy() != null)
          {
-            tu.setLastModifiedBy(target.getLastModifiedBy().getName());
+            builder.setLastModifiedBy(target.getLastModifiedBy().getName());
          }
-         tu.setLastModifiedTime(simpleDateFormat.format(target.getLastChanged()));
+         builder.setLastModifiedTime(new SimpleDateFormat().format(target.getLastChanged()));
       }
-      return tu;
+      return builder.build();
    }
 
 }

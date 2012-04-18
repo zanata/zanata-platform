@@ -152,35 +152,32 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
 
       ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(textFlow);
       ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(textFlow, target, nPlurals);
-      TransUnit tu = new TransUnit(
-            new TransUnitId(textFlow.getId()),
-            textFlow.getResId(),
-            hLocale.getLocaleId(),
-            textFlow.isPlural(),
-            sourceContents,
-            CommentsUtil.toString(textFlow.getComment()),
-            targetContents,
-            ContentState.New,
-            "",
-            "",
-            msgContext,
-            textFlow.getPos());
 
-      tu.setPlural(textFlow.isPlural());
+      TransUnit.Builder builder = TransUnit.Builder.newTransUnitBuilder()
+            .setId(textFlow.getId())
+            .setResId(textFlow.getResId())
+            .setLocaleId(hLocale.getLocaleId())
+            .setPlural(textFlow.isPlural())
+            .setSources(sourceContents)
+            .setSourceComment(CommentsUtil.toString(textFlow.getComment()))
+            .setTargets(targetContents)
+            .setMsgContext(msgContext)
+            .setRowIndex(textFlow.getPos());
+
       if (target == null)
       {
-         tu.setStatus(ContentState.New);
+         builder.setStatus(ContentState.New);
       }
       else
       {
-         tu.setStatus(target.getState());
+         builder.setStatus(target.getState());
          if (target.getLastModifiedBy() != null)
          {
-            tu.setLastModifiedBy(target.getLastModifiedBy().getName());
+            builder.setLastModifiedBy(target.getLastModifiedBy().getName());
          }
-         tu.setLastModifiedTime(simpleDateFormat.format(target.getLastChanged()));
+         builder.setLastModifiedTime(simpleDateFormat.format(target.getLastChanged()));
       }
-      return tu;
+      return builder.build();
    }
 
 }

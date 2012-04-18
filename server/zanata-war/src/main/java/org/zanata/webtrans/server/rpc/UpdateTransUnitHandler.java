@@ -27,7 +27,6 @@ import java.util.Date;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -38,7 +37,6 @@ import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectDAO;
-import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
@@ -163,7 +161,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       }
 
       ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);
-      TransUnit tu = TransUnit.TransUnitBuilder.builder()
+      TransUnit tu = TransUnit.Builder.newTransUnitBuilder()
             .setId(action.getTransUnitId())
             .setResId(hTextFlow.getResId())
             .setLocaleId(localeId)
@@ -270,7 +268,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          lastChanged = new SimpleDateFormat().format(prevTarget.getLastChanged());
       }
 
-      TransUnit tu = TransUnit.TransUnitBuilder.builder()
+      TransUnit tu = TransUnit.Builder.newTransUnitBuilder()
             .setId(action.getTransUnitId())
             .setResId(hTextFlow.getResId())
             .setLocaleId(localeId)

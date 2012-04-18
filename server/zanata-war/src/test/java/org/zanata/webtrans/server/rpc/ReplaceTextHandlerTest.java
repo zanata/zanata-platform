@@ -21,13 +21,9 @@ import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.common.ContentState;
-import org.zanata.common.LocaleId;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.ReplaceText;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import com.google.common.collect.Lists;
@@ -45,7 +41,7 @@ public class ReplaceTextHandlerTest
    private ReplaceTextHandler handler;
    @Mock private UpdateTransUnitHandler mockUpdateTransUnitHandler;
    @Mock private ExecutionContext context;
-   private TransUnit.TransUnitBuilder transUnitBuilder;
+   private TransUnit.Builder transUnitBuilder;
 
    @BeforeMethod
    public void beforeMethod()
@@ -53,7 +49,7 @@ public class ReplaceTextHandlerTest
       MockitoAnnotations.initMocks(this);
       handler = new ReplaceTextHandler();
       handler.updateTransUnitHandler = mockUpdateTransUnitHandler;
-      transUnitBuilder = TransUnit.TransUnitBuilder.builder()
+      transUnitBuilder = TransUnit.Builder.newTransUnitBuilder()
             .setId(1).setResId("").setLocaleId("en-US").addSource("abc");
    }
 

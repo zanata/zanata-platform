@@ -70,8 +70,12 @@ final class DummyGetTransUnitCommand implements Command
          }
 
          TransUnitId tuid = new TransUnitId(i + 1);
-         TransUnit unit = new TransUnit(tuid, tuid.toString(), localeId, plural, sources, sourceComment, targets, state, "peter", "", "msgContext", i);
-         units.add(unit);
+         TransUnit.Builder builder = TransUnit.Builder.newTransUnitBuilder()
+               .setId(tuid).setResId(tuid.toString())
+               .setLocaleId(localeId).setPlural(plural).setSources(sources).setSourceComment(sourceComment)
+               .setTargets(targets).setStatus(state).setLastModifiedBy("peter")
+               .setMsgContext("msgContext").setRowIndex(i);
+         units.add(builder.build());
       }
       return units;
    }

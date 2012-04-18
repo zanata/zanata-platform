@@ -279,7 +279,12 @@ public class DocumentListPresenterTest
       ArrayList<String> targets = new ArrayList<String>();
       sources.add("this is the target");
 
-      TransUnit newTransUnit = new TransUnit(new TransUnitId(12345L), "resId", new LocaleId("es"), plural, sources, "this is the source comment", targets, ContentState.Approved, "lastModifiedBy", "lastModifiedTime", "msgContext", 1);
+      TransUnit newTransUnit = TransUnit.Builder.newTransUnitBuilder()
+            .setId(12345L).setResId("resId").setLocaleId("es").setPlural(plural)
+            .setSources(sources).setSourceComment("this is the source comment")
+            .setTargets(targets).setStatus(ContentState.Approved).setLastModifiedBy("lastModifiedBy")
+            .setLastModifiedTime("lastModifiedTime").setMsgContext("msgContext").setRowIndex(1)
+            .build();
       expect(mockEvent.getTransUnit()).andReturn(newTransUnit).anyTimes();
       replay(mockEvent);
       capturedTransUnitUpdatedEventHandler.getValue().onTransUnitUpdated(mockEvent);
@@ -325,7 +330,12 @@ public class DocumentListPresenterTest
       ArrayList<String> targets = new ArrayList<String>();
       sources.add("this is the target");
 
-      TransUnit newTransUnit = new TransUnit(new TransUnitId(12345L), "resId", new LocaleId("es"), plural, sources, "this is the source comment", targets, ContentState.Approved, "lastModifiedBy", "lastModifiedTime", "msgContext", 1);
+      TransUnit newTransUnit = TransUnit.Builder.newTransUnitBuilder()
+            .setId(12345L).setResId("resId").setLocaleId("es").setPlural(plural)
+            .setSources(sources).setSourceComment("this is the source comment")
+            .setTargets(targets).setStatus(ContentState.Approved).setLastModifiedBy("lastModifiedBy")
+            .setLastModifiedTime("lastModifiedTime").setMsgContext("msgContext").setRowIndex(1)
+            .build();
       expect(mockEvent.getTransUnit()).andReturn(newTransUnit).anyTimes();
       replay(mockEvent);
       capturedTransUnitUpdatedEventHandler.getValue().onTransUnitUpdated(mockEvent);

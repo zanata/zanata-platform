@@ -8,6 +8,7 @@ import java.util.Comparator;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -41,7 +42,8 @@ public class TransUnit implements IsSerializable, Serializable
    {
    }
 
-   public TransUnit(TransUnitId id, String resId, LocaleId localeId, boolean plural, ArrayList<String> sources, String sourceComment, ArrayList<String> targets, ContentState status, String lastModifiedBy, String lastModifiedTime, String msgContext, int rowIndex)
+   //TODO make it truly an immutable class. TableEditorTableDefinition and InlineTargetCellEditor still uses some of the setter methods
+   private TransUnit(TransUnitId id, String resId, LocaleId localeId, boolean plural, ArrayList<String> sources, String sourceComment, ArrayList<String> targets, ContentState status, String lastModifiedBy, String lastModifiedTime, String msgContext, int rowIndex)
    {
       this.id = id;
       this.resId = resId;
@@ -83,7 +85,7 @@ public class TransUnit implements IsSerializable, Serializable
    /**
     * @param plural the plural to set
     */
-   public void setPlural(boolean plural)
+   void setPlural(boolean plural)
    {
       this.plural = plural;
    }
@@ -133,7 +135,7 @@ public class TransUnit implements IsSerializable, Serializable
       return msgContext;
    }
 
-   public void setMsgContext(String msgContext)
+   void setMsgContext(String msgContext)
    {
       this.msgContext = msgContext;
    }
@@ -143,7 +145,7 @@ public class TransUnit implements IsSerializable, Serializable
       return rowIndex;
    }
 
-   public void setRowIndex(int rowIndex)
+   void setRowIndex(int rowIndex)
    {
       this.rowIndex = rowIndex;
    }
@@ -153,7 +155,7 @@ public class TransUnit implements IsSerializable, Serializable
       return lastModifiedBy;
    }
 
-   public void setLastModifiedBy(String lastModifiedBy)
+   void setLastModifiedBy(String lastModifiedBy)
    {
       this.lastModifiedBy = lastModifiedBy;
    }
@@ -163,7 +165,7 @@ public class TransUnit implements IsSerializable, Serializable
       return lastModifiedTime;
    }
 
-   public void setLastModifiedTime(String lastModifiedTime)
+   void setLastModifiedTime(String lastModifiedTime)
    {
       this.lastModifiedTime = lastModifiedTime;
    }
@@ -193,7 +195,7 @@ public class TransUnit implements IsSerializable, Serializable
       return rowIndexComparator;
    }
 
-   public static class TransUnitBuilder
+   public static class Builder
    {
       private ContentState status = ContentState.New;
       private TransUnitId id;
@@ -208,7 +210,7 @@ public class TransUnit implements IsSerializable, Serializable
       private String lastModifiedTime;
       private int rowIndex;
 
-      public TransUnitBuilder(TransUnit transUnit)
+      private Builder(TransUnit transUnit)
       {
          this.status = transUnit.status;
          this.id = transUnit.id;
@@ -224,7 +226,7 @@ public class TransUnit implements IsSerializable, Serializable
          this.rowIndex = transUnit.rowIndex;
       }
 
-      private TransUnitBuilder()
+      private Builder()
       {
       }
 
@@ -238,13 +240,19 @@ public class TransUnit implements IsSerializable, Serializable
 
          lastModifiedBy = Strings.nullToEmpty(lastModifiedBy);
          lastModifiedTime = Strings.nullToEmpty(lastModifiedTime);
+         status = Objects.firstNonNull(status, ContentState.New);
 
          return new TransUnit(id, resId, localeId, plural, sources, sourceComment, targets, status, lastModifiedBy, lastModifiedTime, msgContext, rowIndex);
       }
 
-      public static TransUnitBuilder builder()
+      public static Builder newTransUnitBuilder()
       {
-         return new TransUnitBuilder();
+         return new Builder();
+      }
+
+      public static Builder from(TransUnit transUnit)
+      {
+         return new Builder(transUnit);
       }
 
       private static ArrayList<String> nullToEmpty(ArrayList<String> contents)
@@ -252,97 +260,97 @@ public class TransUnit implements IsSerializable, Serializable
          return contents == null ? Lists.<String>newArrayList() : contents;
       }
 
-      public TransUnitBuilder setStatus(ContentState status)
+      public Builder setStatus(ContentState status)
       {
          this.status = status;
          return this;
       }
 
-      public TransUnitBuilder setId(TransUnitId id)
+      public Builder setId(TransUnitId id)
       {
          this.id = id;
          return this;
       }
 
-      public TransUnitBuilder setId(long id)
+      public Builder setId(long id)
       {
          this.id = new TransUnitId(id);
          return this;
       }
 
-      public TransUnitBuilder setResId(String resId)
+      public Builder setResId(String resId)
       {
          this.resId = resId;
          return this;
       }
 
-      public TransUnitBuilder setLocaleId(LocaleId localeId)
+      public Builder setLocaleId(LocaleId localeId)
       {
          this.localeId = localeId;
          return this;
       }
 
-      public TransUnitBuilder setLocaleId(String localeString)
+      public Builder setLocaleId(String localeString)
       {
          this.localeId = new LocaleId(localeString);
          return this;
       }
 
-      public TransUnitBuilder setPlural(boolean plural)
+      public Builder setPlural(boolean plural)
       {
          this.plural = plural;
          return this;
       }
 
-      public TransUnitBuilder setSources(ArrayList<String> sources)
+      public Builder setSources(ArrayList<String> sources)
       {
          this.sources = nullToEmpty(sources);
          return this;
       }
 
-      public TransUnitBuilder addSource(String... sourceStrings)
+      public Builder addSource(String... sourceStrings)
       {
          Collections.addAll(sources, sourceStrings);
          return this;
       }
 
-      public TransUnitBuilder setSourceComment(String sourceComment)
+      public Builder setSourceComment(String sourceComment)
       {
          this.sourceComment = sourceComment;
          return this;
       }
 
-      public TransUnitBuilder setTargets(ArrayList<String> targets)
+      public Builder setTargets(ArrayList<String> targets)
       {
          this.targets = nullToEmpty(targets);
          return this;
       }
 
-      public TransUnitBuilder addTargets(String... targetStrings)
+      public Builder addTargets(String... targetStrings)
       {
          Collections.addAll(targets, targetStrings);
          return this;
       }
 
-      public TransUnitBuilder setMsgContext(String msgContext)
+      public Builder setMsgContext(String msgContext)
       {
          this.msgContext = msgContext;
          return this;
       }
 
-      public TransUnitBuilder setLastModifiedBy(String lastModifiedBy)
+      public Builder setLastModifiedBy(String lastModifiedBy)
       {
          this.lastModifiedBy = lastModifiedBy;
          return this;
       }
 
-      public TransUnitBuilder setLastModifiedTime(String lastModifiedTime)
+      public Builder setLastModifiedTime(String lastModifiedTime)
       {
          this.lastModifiedTime = lastModifiedTime;
          return this;
       }
 
-      public TransUnitBuilder setRowIndex(int rowIndex)
+      public Builder setRowIndex(int rowIndex)
       {
          this.rowIndex = rowIndex;
          return this;
