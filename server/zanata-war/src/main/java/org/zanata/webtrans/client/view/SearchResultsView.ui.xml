@@ -26,18 +26,21 @@
     <g:LayoutPanel>
         <g:layer top="0px" bottom="8px">
             <g:LayoutPanel styleName="{style.mainPanel}">
-                <g:layer top='2px' height='20px' left="2px" right="2px">
+                <g:layer top='2px' height='26px' left="2px" right="2px">
                     <g:LayoutPanel>
                         <g:layer top="0px" height="20px" left="0px" width="250px">
                             <fui:ClearableTextBox ui:field='filterTextBox'/>
                         </g:layer>
-                        <g:layer top="0px" height="20px" left="250px" width="150px">
+                        <g:layer top="0px" height="26px" left="250px" width="150px">
                             <g:CheckBox ui:field="caseSensitiveChk"><ui:msg>Case sensitive</ui:msg></g:CheckBox>
                         </g:layer>
-                        <g:layer top="0px" height="20px" left="400px" right="400px">
+                        <g:layer top="0px" height="20px" left="400px" width="250px">
                             <fui:ClearableTextBox ui:field='replacementTextBox'/>
                         </g:layer>
-                        <g:layer top="0px" height="20px" width="400px" right="0px">
+                        <g:layer top="0px" height="26px" left="675px" width="150px">
+                            <g:Button ui:field='replaceAllButton'><ui:msg>Replace All Selected</ui:msg></g:Button>
+                        </g:layer>
+                        <g:layer top="0px" height="26px" left="850px" right="0px">
                             <g:Label ui:field="testLabel"></g:Label>
                         </g:layer>
                     </g:LayoutPanel>
