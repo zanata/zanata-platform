@@ -139,6 +139,8 @@ public class AppPresenterTest
    {
       resetAllMocks();
       resetAllCaptures();
+
+      setupDefaultMockExpectations();
    }
 
    private AppPresenter newAppPresenter()
@@ -153,7 +155,6 @@ public class AppPresenterTest
 
    public void testPerformsRequiredActionsOnBind()
    {
-      setupDefaultMockExpectations();
 
       // default mock expectations include:
       // - bind doclistpresenter
@@ -175,7 +176,9 @@ public class AppPresenterTest
 
    public void testShowsNotificationEvents()
    {
-      setupAndBindAppPresenter();
+      replayAllMocks();
+      appPresenter = newAppPresenter();
+      appPresenter.bind();
       verifyAllMocks();
 
       reset(mockDisplay);
@@ -200,7 +203,9 @@ public class AppPresenterTest
 
    public void testShowsUpdatedProjectStats()
    {
-      setupAndBindAppPresenter();
+      replayAllMocks();
+      appPresenter = newAppPresenter();
+      appPresenter.bind();
       verifyAllMocks();
 
       reset(mockDisplay);
@@ -220,7 +225,9 @@ public class AppPresenterTest
 
    public void testUpdateProjectStatsFromEditorView()
    {
-      setupAndBindAppPresenter();
+      replayAllMocks();
+      appPresenter = newAppPresenter();
+      appPresenter.bind();
       verifyAllMocks();
       HistoryToken token = loadDocAndViewEditor();
 
@@ -236,7 +243,9 @@ public class AppPresenterTest
 
    public void testHistoryTriggersDocumentSelectionEvent()
    {
-      setupAndBindAppPresenter();
+      replayAllMocks();
+      appPresenter = newAppPresenter();
+      appPresenter.bind();
       verifyAllMocks();
 
       reset(mockDisplay, mockDocumentListPresenter);
@@ -264,7 +273,9 @@ public class AppPresenterTest
 
    public void testHistoryTriggersViewChange()
    {
-      setupAndBindAppPresenter();
+      replayAllMocks();
+      appPresenter = newAppPresenter();
+      appPresenter.bind();
       verifyAllMocks();
 
       reset(mockDisplay, mockDocumentListPresenter);
@@ -294,7 +305,9 @@ public class AppPresenterTest
 
    public void testNoEditorWithoutValidDocument()
    {
-      setupAndBindAppPresenter();
+      replayAllMocks();
+      appPresenter = newAppPresenter();
+      appPresenter.bind();
       verifyAllMocks();
 
       reset(mockDisplay, mockDocumentListPresenter);
@@ -315,7 +328,9 @@ public class AppPresenterTest
 
    public void testHistoryTriggersDocumentNameStatsUpdate()
    {
-      setupAndBindAppPresenter();
+      replayAllMocks();
+      appPresenter = newAppPresenter();
+      appPresenter.bind();
       verifyAllMocks();
 
       reset(mockDisplay, mockDocumentListPresenter);
@@ -350,7 +365,9 @@ public class AppPresenterTest
     */
    public void testStatsAndNameChangeWithView()
    {
-      setupAndBindAppPresenter();
+      replayAllMocks();
+      appPresenter = newAppPresenter();
+      appPresenter.bind();
       verifyAllMocks();
 
       HistoryToken token = loadDocAndViewEditor();
@@ -361,7 +378,9 @@ public class AppPresenterTest
 
    public void testShowsUpdatedDocumentStats()
    {
-      setupAndBindAppPresenter();
+      replayAllMocks();
+      appPresenter = newAppPresenter();
+      appPresenter.bind();
       verifyAllMocks();
 
       // must be in editor to see document stats
@@ -380,7 +399,9 @@ public class AppPresenterTest
 
    public void testDoesNotShowWrongDocumentStats()
    {
-      setupAndBindAppPresenter();
+      replayAllMocks();
+      appPresenter = newAppPresenter();
+      appPresenter.bind();
       verifyAllMocks();
       loadDocAndViewEditor();
 
@@ -398,7 +419,9 @@ public class AppPresenterTest
 
    public void testUpdateDocumentStatsFromDoclistView()
    {
-      setupAndBindAppPresenter();
+      replayAllMocks();
+      appPresenter = newAppPresenter();
+      appPresenter.bind();
       verifyAllMocks();
       HistoryToken token = loadDocAndViewEditor();
       token = returnToDoclistView(token, emptyProjectStats);
@@ -415,7 +438,6 @@ public class AppPresenterTest
 
    public void testDismiss()
    {
-      setupDefaultMockExpectations();
       appPresenter = newAppPresenter();
       String testMessage = "testing";
 
@@ -438,7 +460,9 @@ public class AppPresenterTest
 
    public void testDocumentsLinkGeneratesHistoryToken()
    {
-      setupAndBindAppPresenter();
+      replayAllMocks();
+      appPresenter = newAppPresenter();
+      appPresenter.bind();
       verifyAllMocks();
       ClickEvent docLinkClickEvent = createMock(ClickEvent.class);
       // replay(docLinkClickEvent);
@@ -485,7 +509,9 @@ public class AppPresenterTest
 
    public void testSearchLinkGeneratesHistoryToken()
    {
-      setupAndBindAppPresenter();
+      replayAllMocks();
+      appPresenter = newAppPresenter();
+      appPresenter.bind();
       verifyAllMocks();
 
       //simulate click
@@ -499,7 +525,9 @@ public class AppPresenterTest
 
    public void testShowsHidesReadonlyLabel()
    {
-      setupAndBindAppPresenter();
+      replayAllMocks();
+      appPresenter = newAppPresenter();
+      appPresenter.bind();
       verifyAllMocks();
 
       // display expect show readonly
@@ -628,14 +656,6 @@ public class AppPresenterTest
       capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(previousToken.toTokenString())
       {
       });
-   }
-
-   private void setupAndBindAppPresenter()
-   {
-      setupDefaultMockExpectations();
-      replayAllMocks();
-      appPresenter = newAppPresenter();
-      appPresenter.bind();
    }
 
    private void setupDefaultMockExpectations()
