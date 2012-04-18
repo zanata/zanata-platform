@@ -483,7 +483,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                      }
                   }
                }
-               if (!display.isProcessing() && event.getUsername().equals(identity.getPerson().getId().toString()) && selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
+               if (!display.isProcessing() && event.getUsername().equals(identity.getPerson().getId().toString()) && selectedTransUnit != null)
                {
                   tableModelHandler.gotoRow(curRowIndex, true);
                }
