@@ -40,6 +40,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasVisibility;
 
@@ -687,17 +689,16 @@ public class AppPresenterTest
       mockDocumentListPresenter.bind();
       expectLastCall().once();
 
-      expectClickHandlerRegistrationOnce(mockDocumentsLink, capturedDocumentLinkClickHandler);
-      expectClickHandlerRegistrationOnce(mockSearchLink, capturedSearchLinkClickHandler);
-      expectClickHandlerRegistrationOnce(mockDismiss, capturedDismissLinkClickHandler);
-      expectClickHandlerRegistrationOnce(mockLeaveWorkspaceLink, capturedLeaveWorkspaceLinkClickHandler);
-      expectClickHandlerRegistrationOnce(mockSignoutLink, capturedSignoutLinkClickHandler);
+      expectClickHandlerRegistration(mockDocumentsLink, capturedDocumentLinkClickHandler);
+      expectClickHandlerRegistration(mockSearchLink, capturedSearchLinkClickHandler);
+      expectClickHandlerRegistration(mockDismiss, capturedDismissLinkClickHandler);
+      expectClickHandlerRegistration(mockLeaveWorkspaceLink, capturedLeaveWorkspaceLinkClickHandler);
+      expectClickHandlerRegistration(mockSignoutLink, capturedSignoutLinkClickHandler);
 
-      expect(mockEventBus.addHandler(eq(NotificationEvent.getType()), and(capture(capturedNotificationEventHandler), isA(NotificationEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-      expect(mockEventBus.addHandler(eq(DocumentStatsUpdatedEvent.getType()), and(capture(capturedDocumentStatsUpdatedEventHandler), isA(DocumentStatsUpdatedEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-      expect(mockEventBus.addHandler(eq(ProjectStatsUpdatedEvent.getType()), and(capture(capturedProjectStatsUpdatedEventHandler), isA(ProjectStatsUpdatedEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-
-      expect(mockEventBus.addHandler(eq(WorkspaceContextUpdateEvent.getType()), and(capture(capturedWorkspaceContextUpdatedEventHandler), isA(WorkspaceContextUpdateEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
+      expectEventHandlerRegistration(NotificationEvent.getType(), NotificationEventHandler.class, capturedNotificationEventHandler);
+      expectEventHandlerRegistration(DocumentStatsUpdatedEvent.getType(), DocumentStatsUpdatedEventHandler.class, capturedDocumentStatsUpdatedEventHandler);
+      expectEventHandlerRegistration(ProjectStatsUpdatedEvent.getType(), ProjectStatsUpdatedEventHandler.class, capturedProjectStatsUpdatedEventHandler);
+      expectEventHandlerRegistration(WorkspaceContextUpdateEvent.getType(), WorkspaceContextUpdateEventHandler.class, capturedWorkspaceContextUpdatedEventHandler);
 
       mockEventBus.fireEvent(and(capture(capturedDocumentSelectionEvent), isA(DocumentSelectionEvent.class)));
       expectLastCall().anyTimes();
@@ -729,6 +730,12 @@ public class AppPresenterTest
       expect(mockWorkspaceContext.isReadOnly()).andReturn(false).anyTimes();
    }
 
+   private <H extends EventHandler> void expectEventHandlerRegistration(Type<H> expectedType, Class<H> expectedClass, Capture<H> handlerCapture)
+   {
+      expect(mockEventBus.addHandler(eq(expectedType), and(capture(handlerCapture), isA(expectedClass)))).andReturn(createMock(HandlerRegistration.class)).once();
+   }
+
+
    /**
     * Expect a single handler registration on a mock object, and capture the
     * click handler in the given {@link Capture}
@@ -736,7 +743,7 @@ public class AppPresenterTest
     * @param mockObjectToClick
     * @param captureForHandler
     */
-   private void expectClickHandlerRegistrationOnce(HasClickHandlers mockObjectToClick, Capture<ClickHandler> captureForHandler)
+   private void expectClickHandlerRegistration(HasClickHandlers mockObjectToClick, Capture<ClickHandler> captureForHandler)
    {
       expect(mockObjectToClick.addClickHandler(and(capture(captureForHandler), isA(ClickHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
    }
