@@ -291,10 +291,7 @@ public class AppPresenterTest
       replay(mockDisplay, mockDocumentListPresenter);
 
       HistoryToken editorWithoutDocToken = new HistoryToken();
-      editorWithoutDocToken.setView(MainView.Editor);
-      capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(editorWithoutDocToken.toTokenString())
-      {
-      });
+      simulateReturnToEditorView(editorWithoutDocToken);
 
       // not expecting show view editor
       verify(mockDisplay);
@@ -341,14 +338,15 @@ public class AppPresenterTest
    {
       expectLoadDocAndViewEditor();
       expectReturnToDocListView(emptyProjectStats);
+      expectReturnToEditorView(testDocStats);
+
       replayAllMocks();
       appPresenter.bind();
-
       HistoryToken token = simulateLoadDocAndViewEditor();
       simulateReturnToDocListView(token);
-      verifyAllMocks();
+      simulateReturnToEditorView(token);
 
-      returnToEditorView(token, testDocStats);
+      verifyAllMocks();
    }
 
 
@@ -395,22 +393,21 @@ public class AppPresenterTest
 
    public void testUpdateDocumentStatsFromDoclistView()
    {
+      TranslationStats updatedStats = new TranslationStats(new TransUnitCount(9, 9, 9), new TransUnitWords(9, 9, 9));
+
       expectLoadDocAndViewEditor();
       expectReturnToDocListView(emptyProjectStats);
+      expectReturnToEditorView(updatedStats);
       replayAllMocks();
+
       appPresenter.bind();
       HistoryToken token = simulateLoadDocAndViewEditor();
       simulateReturnToDocListView(token);
-      verifyAllMocks();
-
-      reset(mockDisplay);
-      // not expecting stats change yet
-      replay(mockDisplay);
-      TranslationStats updatedStats = new TranslationStats(new TransUnitCount(9, 9, 9), new TransUnitWords(9, 9, 9));
+      //update document stats
       capturedDocumentStatsUpdatedEventHandler.getValue().onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(testDocId, updatedStats));
-      verify(mockDisplay);
+      simulateReturnToEditorView(token);
 
-      returnToEditorView(token, updatedStats);
+      verifyAllMocks();
    }
 
    public void testDismiss()
@@ -560,9 +557,9 @@ public class AppPresenterTest
 
       // test document name and stats should be shown
       mockDisplay.setDocumentLabel(TEST_DOCUMENT_PATH, TEST_DOCUMENT_NAME);
-      expectLastCall().anyTimes();
+      expectLastCall().once();
       mockDisplay.setStats(eq(testDocStats));
-      expectLastCall().anyTimes();
+      expectLastCall().once();
 
       mockDisplay.showInMainView(MainView.Editor);
       expectLastCall().once();
@@ -630,27 +627,32 @@ public class AppPresenterTest
    }
 
    /**
-    * Return to the editor view with the test document already loaded
+    * Return to the editor view (requires test document already loaded)
     * 
     * @param previousToken a token representing the state of the application
     *           before returning to the editor view
+    * @see #expectReturnToEditorView(TranslationStats)
     */
-   private void returnToEditorView(HistoryToken previousToken, TranslationStats expectedStats)
+   private void simulateReturnToEditorView(HistoryToken previousToken)
    {
-      //FIXME split into expectations and simulation
-      // return to editor
-      reset(mockDisplay);
-      mockDisplay.showInMainView(MainView.Editor);
-      expectLastCall().once();
-      mockDisplay.setDocumentLabel(TEST_DOCUMENT_PATH, TEST_DOCUMENT_NAME);
-      expectLastCall().once();
-      mockDisplay.setStats(eq(expectedStats));
-      expectLastCall().once();
-      replay(mockDisplay);
       previousToken.setView(MainView.Editor);
       capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(previousToken.toTokenString())
       {
       });
+   }
+
+   /**
+    * @see #simulateReturnToEditorView(HistoryToken)
+    * @param documentStats the stats object that has been set for the given document
+    */
+   private void expectReturnToEditorView(TranslationStats documentStats)
+   {
+      mockDisplay.showInMainView(MainView.Editor);
+      expectLastCall().once();
+      mockDisplay.setDocumentLabel(TEST_DOCUMENT_PATH, TEST_DOCUMENT_NAME);
+      expectLastCall().once();
+      mockDisplay.setStats(eq(documentStats));
+      expectLastCall().once();
    }
 
    private void setupDefaultMockExpectations()
