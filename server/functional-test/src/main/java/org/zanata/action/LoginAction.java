@@ -15,15 +15,10 @@
  */
 package org.zanata.action;
 
-import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.page.HomePage;
 import org.zanata.page.SignInPage;
-import org.zanata.page.WebDriverFactory;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 
 public class LoginAction extends AbstractAction
 {
@@ -34,9 +29,17 @@ public class LoginAction extends AbstractAction
 //      System.getProperties().put("webdriver.firefox.useExisting", "true");
       LOGGER.info("accessing zanata at: {}", hostUrl);
 
-      SignInPage signInPage = new HomePage(driver).clickSignInLink();
+      HomePage homePage = new HomePage(driver);
+      if (homePage.hasLoggedIn() && homePage.loggedInAs().equals(username))
+      {
+         LOGGER.info("already logged in as {}", username);
+         return homePage;
+      } else
+      {
+         SignInPage signInPage = homePage.clickSignInLink();
+         return signInPage.signInAndGoToPage(username, password, HomePage.class);
+      }
 
-      return signInPage.signInAndGoToPage(username, password, HomePage.class);
    }
 
 }

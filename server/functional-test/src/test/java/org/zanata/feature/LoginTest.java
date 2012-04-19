@@ -22,14 +22,20 @@ import org.zanata.page.HomePage;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-//@Test(enabled = false)
 public class LoginTest
 {
    @Test
    public void canLogIn() {
-      HomePage homePage = new LoginAction().signIn("admin", "admin");
+      LoginAction loginAction = new LoginAction();
+      HomePage homePage = loginAction.signIn("admin", "admin");
 
       assertThat(homePage.getTitle(), Matchers.equalTo("Zanata:Home"));
+      assertThat(homePage.hasLoggedIn(), Matchers.is(true));
+      assertThat(homePage.loggedInAs(), Matchers.equalTo("admin"));
+
+      //try to log in again won't cause any problem
+      loginAction.signIn("admin", "admin");
+      assertThat(homePage.loggedInAs(), Matchers.equalTo("admin"));
    }
 
 }
