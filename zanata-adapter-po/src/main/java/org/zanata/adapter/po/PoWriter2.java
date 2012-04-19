@@ -181,6 +181,13 @@ public class PoWriter2
             }
             message.setMsgidPlural(tfContents.get(1));
          }
+         else
+         {
+            if (tfContents.size() > 1)
+            {
+               throw new RuntimeException("textflow has no plural flag but multiple plural forms: resId=" + textFlow.getId());
+            }
+         }
 
          if (tfContents.size() > 2)
          {
@@ -205,14 +212,23 @@ public class PoWriter2
 
                if (message.isPlural())
                {
+                  if (tftContents.isEmpty())
+                  {
+                     message.addMsgstrPlural("", 0);
+                  }
                   for (int i = 0; i < tftContents.size(); i++)
                   {
                      message.addMsgstrPlural(tftContents.get(i), i);
                   }
+                  // FIXME make sure we match nplurals
                }
                else
                {
-                  if (tftContents.size() != 0)
+                  if (tftContents.size() == 0)
+                  {
+                     message.setMsgstr("");
+                  }
+                  else
                   {
                      message.setMsgstr(tftContents.get(0));
                      if (tftContents.size() > 1)
