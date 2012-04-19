@@ -27,6 +27,7 @@
         <!--<cargo.servlet.port>9898</cargo.servlet.port>-->
         <!--<cargo.home>${project.build.directory}/${cargo.container}</cargo.home>-->
         <cargo.home>${java.io.tmpdir}/cargo/installs/jboss-ewp-5.1.2/jboss-ewp-5.1/jboss-as-web</cargo.home>
+        <!--TODO this is still pointing to a local file. Need either download from somewhere(too big) or having the jboss always ready-->
         <cargo.installation>file:///NotBackedUp/downloads/jboss-ewp-5.1.2.zip</cargo.installation>
         <context.path>zanata</context.path>
 
@@ -99,6 +100,12 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -187,7 +194,6 @@
                 <configuration>
                     <wait>${cargo.wait}</wait>
                     <container>
-                        <timeout>180000</timeout>
                         <containerId>${cargo.container}</containerId>
 
                         <zipUrlInstaller>
@@ -203,9 +209,6 @@
                             <dependency>
                                 <groupId>javax.servlet</groupId>
                                 <artifactId>servlet-api</artifactId>
-                            </dependency>
-                            <dependency>
-                                <location>src/test/resources/zanata-ds.xml</location>
                             </dependency>
 
                         </dependencies>

@@ -15,33 +15,34 @@
  */
 package org.zanata.page;
 
+import java.util.List;
+
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
+import com.google.common.base.Preconditions;
 
-public class HomePage extends AbstractPage
+public class ProjectPage extends AbstractPage
 {
-   @FindBy(id = "Sign_in")
-   private WebElement signInLink;
+   @FindBy(id = "main_content")
+   private WebElement mainContent;
+   private final List<WebElement> h1;
 
-   @FindBy(id = "Projects")
-   private WebElement projectsLink;
-
-   public HomePage(final WebDriver driver)
+   public ProjectPage(final WebDriver driver)
    {
       super(driver);
+      h1 = mainContent.findElements(By.tagName("h1"));
+      Preconditions.checkState(h1.size() >= 2, "should have at least 2 <h1> under main content");
    }
 
-   public SignInPage clickSignInLink()
+   public String getProjectId()
    {
-      signInLink.click();
-      return PageFactory.initElements(getDriver(), SignInPage.class);
+      return h1.get(0).getText();
    }
 
-   public ProjectsPage goToProjects()
+   public String getProjectName()
    {
-      projectsLink.click();
-      return PageFactory.initElements(getDriver(), ProjectsPage.class);
+      return h1.get(1).getText();
    }
 }

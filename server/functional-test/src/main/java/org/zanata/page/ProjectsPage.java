@@ -20,28 +20,19 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class HomePage extends AbstractPage
+public class ProjectsPage extends AbstractPage
 {
-   @FindBy(id = "Sign_in")
-   private WebElement signInLink;
+   @FindBy(linkText = "Create project")
+   private WebElement createProjectActionLink;
 
-   @FindBy(id = "Projects")
-   private WebElement projectsLink;
-
-   public HomePage(final WebDriver driver)
+   public ProjectsPage(final WebDriver driver)
    {
       super(driver);
    }
 
-   public SignInPage clickSignInLink()
+   public CreateProjectPage clickOnCreateProjectLink()
    {
-      signInLink.click();
-      return PageFactory.initElements(getDriver(), SignInPage.class);
-   }
-
-   public ProjectsPage goToProjects()
-   {
-      projectsLink.click();
-      return PageFactory.initElements(getDriver(), ProjectsPage.class);
+      createProjectActionLink.click();
+      return PageFactory.initElements(getDriver(), CreateProjectPage.class);
    }
 }

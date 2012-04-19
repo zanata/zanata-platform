@@ -13,23 +13,19 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.zanata.feature;
+package org.zanata.action;
 
-import org.hamcrest.Matchers;
-import org.testng.annotations.Test;
-import org.zanata.action.LoginAction;
-import org.zanata.page.HomePage;
+import org.zanata.page.ProjectPage;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
-//@Test(enabled = false)
-public class LoginTest
+public class CreateProjectAction extends AbstractAction
 {
-   @Test
-   public void canLogIn() {
-      HomePage homePage = new LoginAction().signIn("admin", "admin");
-
-      assertThat(homePage.getTitle(), Matchers.equalTo("Zanata:Home"));
+   public ProjectPage createNewProject(String projectId, String projectName)
+   {
+      return homePage.goToProjects()
+            .clickOnCreateProjectLink()
+            .inputProjectId(projectId)
+            .inputProjectName(projectName)
+            .selectStatus("ACTIVE")
+            .saveProject();
    }
-
 }

@@ -17,19 +17,21 @@ package org.zanata.feature;
 
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
+import org.zanata.action.CreateProjectAction;
 import org.zanata.action.LoginAction;
-import org.zanata.page.HomePage;
+import org.zanata.page.ProjectPage;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.MatcherAssert.*;
 
-//@Test(enabled = false)
-public class LoginTest
+public class CreateProjectTest
 {
+
    @Test
-   public void canLogIn() {
-      HomePage homePage = new LoginAction().signIn("admin", "admin");
+   public void canCreateProject() {
+      new LoginAction().signIn("admin", "admin");
+      ProjectPage projectPage = new CreateProjectAction().createNewProject("plurals", "plural project");
 
-      assertThat(homePage.getTitle(), Matchers.equalTo("Zanata:Home"));
+      assertThat(projectPage.getProjectId(), Matchers.equalTo("Project ID: plurals"));
+      assertThat(projectPage.getProjectName(), Matchers.equalTo("Name: plural project"));
    }
-
 }
