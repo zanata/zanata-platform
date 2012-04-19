@@ -20,6 +20,9 @@
  */
 package org.zanata.rest.service;
 
+import static org.zanata.util.StringUtil.allEmpty;
+import static org.zanata.util.StringUtil.allNonEmpty;
+
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.ArrayList;
@@ -893,15 +896,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
          }
          else
          {
-            if (incomingTarget.getContent().isEmpty() && incomingTarget.getState() != ContentState.New)
-            {
-               return Response.status(Status.BAD_REQUEST).entity("empty TextFlowTarget " + incomingTarget.getResId() + " must have ContentState New").build();
-            }
-            if (incomingTarget.getState() == ContentState.New && !incomingTarget.getContent().isEmpty())
-            {
-               return Response.status(Status.BAD_REQUEST).entity("ContentState New is illegal for non-empty TextFlowTarget " + incomingTarget.getResId()).build();
-            }
-
+            checkTargetState(incomingTarget.getResId(), incomingTarget.getState(), incomingTarget.getContents());
             HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale);
             boolean targetChanged = false;
             if (hTarget == null)
@@ -1008,6 +1003,37 @@ public class TranslationResourcesService implements TranslationResourcesResource
          return Response.ok().tag(etag).build();
       else
          return Response.ok("warning: unknown resIds: " + unknownResIds).tag(etag).build();
+   }
+
+   private void checkTargetState(String resId, ContentState state, List<String> contents)
+   {
+      switch (state)
+      {
+      case NeedReview:
+         if (allEmpty(contents))
+         {
+            String entity = "ContentState NeedsReview is illegal for TextFlowTarget " + resId + " with no contents";
+            throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity(entity).build());
+         }
+         break;
+      case New:
+         if (allNonEmpty(contents))
+         {
+            String entity = "ContentState New is illegal for non-empty TextFlowTarget " + resId;
+            throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity(entity).build());
+         }
+         break;
+      case Approved:
+         // FIXME what if plurals < nplurals ?
+         if (!allNonEmpty(contents))
+         {
+            String entity = "ContentState Approved is illegal for TextFlowTarget " + resId + " with one or more empty strings";
+            throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity(entity).build());
+         }
+         break;
+      default:
+         throw new RuntimeException("unknown ContentState " + state);
+      }
    }
 
    private HProjectIteration retrieveAndCheckIteration(boolean writeOperation)
