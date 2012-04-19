@@ -30,10 +30,8 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
-import org.zanata.model.HDocument;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionGroupService;
@@ -50,8 +48,7 @@ public class VersionGroupAction implements Serializable
    @Logger
    Log log;
 
-   @DataModel
-   List<HIterationGroup> allVersionGroups;
+   private List<HIterationGroup> allVersionGroups;
 
    private HIterationGroup group;
    private String searchTerm;
@@ -142,5 +139,15 @@ public class VersionGroupAction implements Serializable
    public void setGroupNameFilter(String groupNameFilter)
    {
       this.groupNameFilter = groupNameFilter;
+   }
+
+   public List<HIterationGroup> getAllVersionGroups()
+   {
+      return allVersionGroups;
+   }
+
+   public void setAllVersionGroups(List<HIterationGroup> allVersionGroups)
+   {
+      this.allVersionGroups = allVersionGroups;
    }
 }

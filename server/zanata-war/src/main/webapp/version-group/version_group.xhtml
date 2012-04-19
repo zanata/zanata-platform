@@ -24,9 +24,9 @@
         <rich:dataTable id="iterationsDataTable" value="#{versionGroupHome.instance.projectIterations.toArray()}"
                         var="_iteration">
             <rich:column sortBy="#{_iteration.project.slug}">
-                <f:facet name="header">#{messages['jsf.Project']}</f:facet>
-                <s:link view="/iteration/view/#{_iteration.project.slug}" styleClass="table_link">
-                    #{_iteration.project.slug}
+                <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
+                <s:link view="/project/view/#{_iteration.project.slug}" styleClass="table_link">
+                    #{_iteration.project.name}
                 </s:link>
             </rich:column>
             <rich:column sortBy="#{_iteration.slug}">

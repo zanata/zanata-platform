@@ -15,7 +15,7 @@
 
         <rich:dataTable id="searchResults" columnsWidth="200px,200px,80px" value="#{projectSearch.searchResults}" var="project">
                 <rich:column>
-                    <f:facet name="header">Project Name</f:facet>
+                    <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
                     <s:link id="project" value="#{project.name}"  propagation="none"
                     	     styleClass="table_link #{project.status eq 'READONLY' ? 'readonly_link' : (project.status eq 'OBSOLETE' ? 'obsolete_link' : '')}" 
                              view="/project/project.xhtml"> 

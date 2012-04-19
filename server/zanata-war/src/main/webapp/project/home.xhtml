@@ -62,7 +62,7 @@
             rows="#{projectAction.pageSize}"
             value="#{projectAction.projectPagedListDataModel}" var="project">
                 <rich:column width="270px" sortBy="#{project.name}">
-                     <f:facet name="header">Project Name</f:facet>
+                     <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
                            
                         <s:link id="project" styleClass="table_link" value="#{project.name}"  propagation="none"
                              view="/project/project.xhtml" rendered="#{project.status == 'ACTIVE'}"> 

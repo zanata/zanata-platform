@@ -24,16 +24,16 @@
     <ui:define name="center_content">
       <rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
 	  
-	  <s:fragment rendered="#{empty allVersionGroups}">
+	  <s:fragment rendered="#{empty versionGroupAction.allVersionGroups}">
 	   	<h:outputText value="#{messages['jsf.NoGroupExists']}" />
       </s:fragment>
     
-      <rich:panel rendered="#{!empty allVersionGroups}">
+      <rich:panel rendered="#{!empty versionGroupAction.allVersionGroups}">
         <f:facet name="header">#{messages['jsf.Groups']}</f:facet>
 
           <a4j:form>
               <s:token allowMultiplePosts="true" />
-              <rich:dataTable id="threads" value="#{allVersionGroups}"
+              <rich:dataTable id="threads" value="#{versionGroupAction.allVersionGroups}"
                               var="group">
                   <rich:column filterMethod="#{versionGroupAction.filterGroupByName}">
                   	  <f:facet name="header">
