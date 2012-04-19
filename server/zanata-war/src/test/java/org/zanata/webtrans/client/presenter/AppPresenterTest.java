@@ -142,6 +142,8 @@ public class AppPresenterTest
       resetAllMocks();
       resetAllCaptures();
 
+      emptyProjectStats = new TranslationStats();
+
       setupDefaultMockExpectations();
 
       appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockIdentity, mockWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
@@ -659,35 +661,37 @@ public class AppPresenterTest
 
    private void setupDefaultMockExpectations()
    {
-      expect(mockDisplay.getSignOutLink()).andReturn(mockSignoutLink).anyTimes();
-      expect(mockDisplay.getLeaveWorkspaceLink()).andReturn(mockLeaveWorkspaceLink).anyTimes();
-      expect(mockDisplay.getDocumentsLink()).andReturn(mockDocumentsLink).anyTimes();
-      expect(mockDisplay.getSearchLink()).andReturn(mockSearchLink).anyTimes();
-      expect(mockDisplay.getDismiss()).andReturn(mockDismiss).anyTimes();
-      expect(mockDisplay.getDismissVisibility()).andReturn(mockDismissVisibility).anyTimes();
+      expectSubPresenterBindings();
+      expectHandlerRegistrations();
+      expectPresenterSetupActions();
+      setupMockGetterReturnValues();
 
-      mockDismissVisibility.setVisible(false); // starts invisible
-      expectLastCall().once();
-
-      mockDisplay.showInMainView(MainView.Documents);
-      expectLastCall().once(); //starts on document list view
-
-      mockDisplay.setDocumentLabel("", NO_DOCUMENTS_STRING);
-      expectLastCall().once();
-      mockDisplay.setUserLabel(TEST_PERSON_NAME);
+      //misc and capture setup
+      mockHistory.fireCurrentHistoryState();
       expectLastCall().anyTimes();
-      mockDisplay.setWorkspaceNameLabel(TEST_WORKSPACE_NAME, TEST_WORKSPACE_TITLE);
+      mockHistory.newItem(capture(capturedHistoryTokenString));
       expectLastCall().anyTimes();
-      mockDisplay.setReadOnlyVisible(false);
-      expectLastCall().once();
+      mockEventBus.fireEvent(and(capture(capturedDocumentSelectionEvent), isA(DocumentSelectionEvent.class)));
+      expectLastCall().anyTimes();
+   }
 
-      // initially empty project stats
-      emptyProjectStats = new TranslationStats();
-      mockDisplay.setStats(eq(emptyProjectStats));
-      expectLastCall().once();
-
+   /**
+    * Set up expectations to bind child presenters
+    */
+   private void expectSubPresenterBindings()
+   {
       mockDocumentListPresenter.bind();
       expectLastCall().once();
+      mockSearchResultsPresenter.bind();
+      expectLastCall().once();
+      mockTranslationPresenter.bind();
+      expectLastCall().once();
+   }
+
+   @SuppressWarnings("unchecked")
+   private void expectHandlerRegistrations()
+   {
+      expect(mockHistory.addValueChangeHandler(and(capture(capturedHistoryValueChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
 
       expectClickHandlerRegistration(mockDocumentsLink, capturedDocumentLinkClickHandler);
       expectClickHandlerRegistration(mockSearchLink, capturedSearchLinkClickHandler);
@@ -699,42 +703,7 @@ public class AppPresenterTest
       expectEventHandlerRegistration(DocumentStatsUpdatedEvent.getType(), DocumentStatsUpdatedEventHandler.class, capturedDocumentStatsUpdatedEventHandler);
       expectEventHandlerRegistration(ProjectStatsUpdatedEvent.getType(), ProjectStatsUpdatedEventHandler.class, capturedProjectStatsUpdatedEventHandler);
       expectEventHandlerRegistration(WorkspaceContextUpdateEvent.getType(), WorkspaceContextUpdateEventHandler.class, capturedWorkspaceContextUpdatedEventHandler);
-
-      mockEventBus.fireEvent(and(capture(capturedDocumentSelectionEvent), isA(DocumentSelectionEvent.class)));
-      expectLastCall().anyTimes();
-
-      setupMockHistory();
-
-      expect(mockIdentity.getPerson()).andReturn(mockPerson).anyTimes();
-
-
-      expect(mockMessages.windowTitle(TEST_WORKSPACE_NAME, TEST_LOCALE_NAME)).andReturn(TEST_WINDOW_TITLE).anyTimes();
-      expect(mockMessages.noDocumentSelected()).andReturn(NO_DOCUMENTS_STRING).anyTimes();
-
-      expect(mockPerson.getName()).andReturn(TEST_PERSON_NAME).anyTimes();
-
-
-      mockSearchResultsPresenter.bind();
-      expectLastCall().once();
-
-      mockTranslationPresenter.bind();
-      expectLastCall().once();
-
-      mockWindow.setTitle(TEST_WINDOW_TITLE);
-      expectLastCall().once();
-
-      expect(mockWindowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY)).andReturn(TEST_WORKSPACE_TITLE).anyTimes();
-
-      expect(mockWorkspaceContext.getWorkspaceName()).andReturn(TEST_WORKSPACE_NAME).anyTimes();
-      expect(mockWorkspaceContext.getLocaleName()).andReturn(TEST_LOCALE_NAME).anyTimes();
-      expect(mockWorkspaceContext.isReadOnly()).andReturn(false).anyTimes();
    }
-
-   private <H extends EventHandler> void expectEventHandlerRegistration(Type<H> expectedType, Class<H> expectedClass, Capture<H> handlerCapture)
-   {
-      expect(mockEventBus.addHandler(eq(expectedType), and(capture(handlerCapture), isA(expectedClass)))).andReturn(createMock(HandlerRegistration.class)).once();
-   }
-
 
    /**
     * Expect a single handler registration on a mock object, and capture the
@@ -748,15 +717,55 @@ public class AppPresenterTest
       expect(mockObjectToClick.addClickHandler(and(capture(captureForHandler), isA(ClickHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
    }
 
-   @SuppressWarnings("unchecked")
-   private void setupMockHistory()
+   private <H extends EventHandler> void expectEventHandlerRegistration(Type<H> expectedType, Class<H> expectedClass, Capture<H> handlerCapture)
    {
-      expect(mockHistory.addValueChangeHandler(and(capture(capturedHistoryValueChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
-      mockHistory.fireCurrentHistoryState();
-      expectLastCall().anyTimes();
+      expect(mockEventBus.addHandler(eq(expectedType), and(capture(handlerCapture), isA(expectedClass)))).andReturn(createMock(HandlerRegistration.class)).once();
+   }
 
-      mockHistory.newItem(capture(capturedHistoryTokenString));
+   private void expectPresenterSetupActions()
+   {
+      mockWindow.setTitle(TEST_WINDOW_TITLE);
+      expectLastCall().once();
+      mockDisplay.setUserLabel(TEST_PERSON_NAME);
       expectLastCall().anyTimes();
+      mockDisplay.setWorkspaceNameLabel(TEST_WORKSPACE_NAME, TEST_WORKSPACE_TITLE);
+      expectLastCall().anyTimes();
+      mockDisplay.setReadOnlyVisible(false);
+      expectLastCall().once();
+      // initially empty project stats
+      mockDisplay.setStats(eq(emptyProjectStats));
+      expectLastCall().once();
+
+      mockDisplay.setDocumentLabel("", NO_DOCUMENTS_STRING);
+      expectLastCall().once();
+
+      mockDisplay.showInMainView(MainView.Documents);
+      expectLastCall().once(); //starts on document list view
+
+      mockDismissVisibility.setVisible(false); // starts invisible
+      expectLastCall().once();
+   }
+
+   private void setupMockGetterReturnValues()
+   {
+      expect(mockDisplay.getSignOutLink()).andReturn(mockSignoutLink).anyTimes();
+      expect(mockDisplay.getLeaveWorkspaceLink()).andReturn(mockLeaveWorkspaceLink).anyTimes();
+      expect(mockDisplay.getDocumentsLink()).andReturn(mockDocumentsLink).anyTimes();
+      expect(mockDisplay.getSearchLink()).andReturn(mockSearchLink).anyTimes();
+      expect(mockDisplay.getDismiss()).andReturn(mockDismiss).anyTimes();
+      expect(mockDisplay.getDismissVisibility()).andReturn(mockDismissVisibility).anyTimes();
+
+      expect(mockIdentity.getPerson()).andReturn(mockPerson).anyTimes();
+      expect(mockPerson.getName()).andReturn(TEST_PERSON_NAME).anyTimes();
+
+      expect(mockWindowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY)).andReturn(TEST_WORKSPACE_TITLE).anyTimes();
+
+      expect(mockMessages.windowTitle(TEST_WORKSPACE_NAME, TEST_LOCALE_NAME)).andReturn(TEST_WINDOW_TITLE).anyTimes();
+      expect(mockMessages.noDocumentSelected()).andReturn(NO_DOCUMENTS_STRING).anyTimes();
+
+      expect(mockWorkspaceContext.getWorkspaceName()).andReturn(TEST_WORKSPACE_NAME).anyTimes();
+      expect(mockWorkspaceContext.getLocaleName()).andReturn(TEST_LOCALE_NAME).anyTimes();
+      expect(mockWorkspaceContext.isReadOnly()).andReturn(false).anyTimes();
    }
 
    private void resetAllMocks()
