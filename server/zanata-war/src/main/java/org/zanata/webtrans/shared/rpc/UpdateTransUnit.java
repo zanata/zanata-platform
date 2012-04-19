@@ -37,7 +37,7 @@ public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResu
    }
 
    @SuppressWarnings("unused")
-   private UpdateTransUnit()
+   protected UpdateTransUnit()
    {
    }
 

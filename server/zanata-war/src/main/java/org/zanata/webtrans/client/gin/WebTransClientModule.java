@@ -50,6 +50,7 @@ import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.GlossaryDetailsPresenter;
 import org.zanata.webtrans.client.presenter.GlossaryPresenter;
 import org.zanata.webtrans.client.presenter.OptionsPanelPresenter;
+import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.TransMemoryDetailsPresenter;
 import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
@@ -71,6 +72,7 @@ import org.zanata.webtrans.client.view.AppView;
 import org.zanata.webtrans.client.view.DocumentListView;
 import org.zanata.webtrans.client.view.GlossaryDetailsView;
 import org.zanata.webtrans.client.view.GlossaryView;
+import org.zanata.webtrans.client.view.SearchResultsView;
 import org.zanata.webtrans.client.view.TransMemoryDetailsView;
 import org.zanata.webtrans.client.view.TransMemoryView;
 import org.zanata.webtrans.client.view.TransUnitNavigationView;
@@ -102,6 +104,7 @@ public class WebTransClientModule extends AbstractPresenterModule
 
       bindPresenter(AppPresenter.class, AppPresenter.Display.class, AppView.class);
       bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
+      bindPresenter(SearchResultsPresenter.class, SearchResultsPresenter.Display.class, SearchResultsView.class);
       bindPresenter(TranslationPresenter.class, TranslationPresenter.Display.class, TranslationView.class);
       bindPresenter(TransFilterPresenter.class, TransFilterPresenter.Display.class, TransFilterView.class);
       bindPresenter(TableEditorPresenter.class, TableEditorPresenter.Display.class, TableEditorView.class);

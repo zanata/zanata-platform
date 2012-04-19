@@ -421,6 +421,14 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target div.TableEditorCell-Target
 	border-right: 3px solid #099b09;
 }
 
+tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
+	{
+	border-left: 3px solid #099b09;
+	border-right: 3px solid #099b09;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
 .TableEditorContent-Empty {
 	font-size: 12px;
 	font-family: sans-serif;
@@ -429,6 +437,41 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target div.TableEditorCell-Target
 	margin: 2px;
 	opacity: 0.5;
 	width: 99%;
+}
+
+/* Search-replace page
+ * TODO arrange for these to share styles with editor table
+ */
+
+.SearchResultsDocumentTitle
+{
+	cursor:pointer;
+	font-size:1.2em;
+	color:#0000AA;
+}
+
+td.FuzzyStateDecoration div div div
+{
+	border-left: 3px solid #ffc000;
+	border-right: 3px solid #ffc000;
+	padding: 5px;
+}
+
+td.ApprovedStateDecoration div div div
+{
+	border-left: 3px solid #099b09;
+	border-right: 3px solid #099b09;
+	padding: 5px;
+}
+
+td.FuzzyStateDecoration div div pre, td.ApprovedStateDecoration div div pre
+{
+	font-size: 14px;
+	font-family: sans-serif;
+	white-space: pre-wrap;
+	word-wrap: normal;
+	padding: 0px;
+	margin: 0px;
 }
 
 .HasValidationError {

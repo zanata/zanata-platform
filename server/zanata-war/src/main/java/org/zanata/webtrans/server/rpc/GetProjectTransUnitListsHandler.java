@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  * 
@@ -22,6 +22,7 @@ package org.zanata.webtrans.server.rpc;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -37,46 +38,67 @@ import org.zanata.common.ContentState;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
-import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.service.ResourceUtils;
+import org.zanata.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.rpc.GetTransUnitList;
-import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
-import org.zanata.webtrans.shared.util.TextFlowFilter;
-import org.zanata.webtrans.shared.util.TextFlowFilterImpl;
+import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
+import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
 
-@Name("webtrans.gwt.GetTransUnitListHandler")
+/**
+ * @see GetProjectTransUnitLists
+ * @author David Mason, damason@redhat.com
+ */
+@Name("webtrans.gwt.GetProjectTransUnitListsHandler")
 @Scope(ScopeType.STATELESS)
-@ActionHandlerFor(GetTransUnitList.class)
-public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitList, GetTransUnitListResult>
+@ActionHandlerFor(GetProjectTransUnitLists.class)
+public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetProjectTransUnitLists, GetProjectTransUnitListsResult>
 {
 
    @Logger
    Log log;
 
    @In
-   private ResourceUtils resourceUtils;
+   TextFlowDAO textFlowDAO;
 
    @In
-   private TextFlowDAO textFlowDAO;
-
-   @In
-   private DocumentDAO documentDAO;
+   DocumentDAO documentDAO;
 
    @In
    private LocaleService localeServiceImpl;
 
+   @In
+   private TextFlowSearchService textFlowSearchServiceImpl;
+
+   @In
+   private ResourceUtils resourceUtils;
+
    @Override
-   public GetTransUnitListResult execute(GetTransUnitList action, ExecutionContext context) throws ActionException
+   public GetProjectTransUnitListsResult execute(GetProjectTransUnitLists action, ExecutionContext context) throws ActionException
    {
       ZanataIdentity.instance().checkLoggedIn();
-      log.info("Fetching Transunits for document {0}", action.getDocumentId());
+      log.info("Searching all targets for workspace {0}", action.getWorkspaceId().toString());
+
+      HashMap<Long, List<TransUnit>> matchingTUs = new HashMap<Long, List<TransUnit>>();
+      HashMap<Long, String> docPaths = new HashMap<Long, String>();
+      if ((action.getSearchString() == null || action.getSearchString().isEmpty()))
+      {
+         // TODO empty searches shouldn't be requested, consider replacing this
+         // with an error, or making behaviour return all targets for the
+         // project (consider performance).
+         return new GetProjectTransUnitListsResult(docPaths, matchingTUs);
+      }
+
+      // TODO handle exception thrown by search service
+      List<HTextFlowTarget> matchingFlows = textFlowSearchServiceImpl.findTextFlowTargets(action.getWorkspaceId(), FilterConstraints.filterBy(action.getSearchString()).ignoreSource().excludeNew().caseSensitive(action.isCaseSensitive()));
+      log.info("Returned {0} results for search", matchingFlows.size());
 
       HLocale hLocale;
       try
@@ -88,65 +110,37 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          throw new ActionException(e.getMessage());
       }
 
-      int gotoRow = -1, size = 0;
-
-      List<HTextFlow> textFlows;
-      TextFlowFilter filter;
-
-      if ((action.getPhrase() != null && !action.getPhrase().isEmpty()) || (action.isFilterTranslated() || action.isFilterNeedReview() || action.isFilterUntranslated()))
+      for (HTextFlowTarget htft : matchingFlows)
       {
-         log.info("Fetch TransUnits:" + action.getPhrase());
-         filter = new TextFlowFilterImpl(action.getPhrase(), action.isFilterTranslated(), action.isFilterNeedReview(), action.isFilterUntranslated());
-         textFlows = textFlowDAO.getTransUnitList(action.getDocumentId().getValue());
-      }
-      else
-      {
-         log.info("Fetch TransUnits:*");
-         filter = new TextFlowFilterImpl();
-         textFlows = textFlowDAO.getTransUnitList(action.getDocumentId().getValue());
-         // result =
-         // textFlowDAO.getTransUnitList(action.getDocumentId().getValue(),
-         // action.getOffset(), action.getCount());
-         // size =
-         // textFlowDAO.getCountByDocument(action.getDocumentId().getValue());
-      }
-
-      HDocument document = documentDAO.getById(action.getDocumentId().getId());
-      int nPlurals = resourceUtils.getNumPlurals(document, hLocale);
-
-      ArrayList<TransUnit> units = new ArrayList<TransUnit>();
-      for (HTextFlow textFlow : textFlows)
-      {
-         if (!filter.isFilterOut(textFlow, hLocale))
+         HTextFlow htf = htft.getTextFlow();
+         List<TransUnit> listForDoc = matchingTUs.get(htf.getDocument().getId());
+         if (listForDoc == null)
          {
-            TransUnit tu = initTransUnit(textFlow, hLocale, nPlurals);
-            if (action.getTargetTransUnitId() != null && tu.getId().equals(action.getTargetTransUnitId()))
-            {
-               gotoRow = units.size();
-            }
-            units.add(tu);
+            listForDoc = new ArrayList<TransUnit>();
          }
-      }
-      size = units.size();
+         // FIXME add a check for leading and trailing whitespace to compensate
+         // for NGramAnalyzer trimming strings before tokenization. This should
+         // be removed when updating to a lucene version with the whitespace
+         // issue resolved
 
-      if ((action.getOffset() + action.getCount()) < units.size())
-      {
-         units.subList(action.getOffset() + action.getCount(), units.size()).clear();
-         units.subList(0, action.getOffset()).clear();
-      }
-      else if (action.getOffset() < units.size())
-      {
-         units.subList(0, action.getOffset()).clear();
+         // TODO cache this rather than looking up repeatedly
+         int nPlurals = resourceUtils.getNumPlurals(htf.getDocument(), hLocale);
+         listForDoc.add(initTransUnit(htf, hLocale, nPlurals));
+         matchingTUs.put(htf.getDocument().getId(), listForDoc);
+         docPaths.put(htf.getDocument().getId(), htf.getDocument().getDocId());
       }
 
-      return new GetTransUnitListResult(action.getDocumentId(), units, size, gotoRow);
+      return new GetProjectTransUnitListsResult(docPaths, matchingTUs);
    }
 
    @Override
-   public void rollback(GetTransUnitList action, GetTransUnitListResult result, ExecutionContext context) throws ActionException
+   public void rollback(GetProjectTransUnitLists action, GetProjectTransUnitListsResult result, ExecutionContext context) throws ActionException
    {
    }
 
+   private SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+
+   // TODO move to shared location with other search code
    private TransUnit initTransUnit(HTextFlow textFlow, HLocale hLocale, int nPlurals)
    {
       String msgContext = null;
@@ -181,7 +175,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          {
             builder.setLastModifiedBy(target.getLastModifiedBy().getName());
          }
-         builder.setLastModifiedTime(new SimpleDateFormat().format(target.getLastChanged()));
+         builder.setLastModifiedTime(simpleDateFormat.format(target.getLastChanged()));
       }
       return builder.build();
    }

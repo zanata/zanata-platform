@@ -28,6 +28,7 @@ import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
 
 @Name("reindexAsync")
 @Scope(ScopeType.APPLICATION)
@@ -67,6 +68,7 @@ public class ReindexAsyncBean
       indexables.add(HAccount.class);
       indexables.add(HTextFlow.class);
       indexables.add(HProjectIteration.class);
+      indexables.add(HTextFlowTarget.class);
       indexables.add(HGlossaryTerm.class);
       indexables.add(HGlossaryEntry.class);
    }

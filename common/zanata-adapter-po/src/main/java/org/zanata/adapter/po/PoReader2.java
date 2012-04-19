@@ -3,7 +3,6 @@ package org.zanata.adapter.po;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,6 +24,7 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.HashUtil;
 import org.zanata.util.ShortString;
+import org.zanata.util.StringUtil;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -284,34 +284,35 @@ public class PoReader2
       return messageParser;
    }
 
-   private static boolean allNonEmpty(Collection<?> coll)
+   private static boolean allNonEmpty(Message message)
    {
-      if (coll == null)
-         return false;
-      for (Object o : coll)
+      if (message.isPlural())
       {
-         if (o == null)
-            return false;
+         return !message.getMsgstrPlural().isEmpty() && StringUtil.allNonEmpty(message.getMsgstrPlural());
       }
-      return true;
+      else
+      {
+         return message.getMsgstr() != null && !message.getMsgstr().isEmpty();
+      }
    }
 
-   private static boolean allEmpty(List<String> strings)
+   private static boolean allEmpty(Message message)
    {
-      if (strings == null)
-         return true;
-      for (String s : strings)
+      if (message.isPlural())
       {
-         if (s != null && !s.isEmpty())
-            return false;
+         return StringUtil.allEmpty(message.getMsgstrPlural());
       }
-      return true;
+      else
+      {
+         return message.getMsgstr() == null || message.getMsgstr().isEmpty();
+      }
    }
 
    static ContentState getContentState(Message message)
    {
       boolean fuzzy = message.isFuzzy();
-      if (message.isPlural() && allEmpty(message.getMsgstrPlural()))
+
+      if (allEmpty(message))
       {
          fuzzy = false;
       }
@@ -319,11 +320,14 @@ public class PoReader2
       {
          return ContentState.NeedReview;
       }
-      if ((message.getMsgstr() != null && !message.getMsgstr().isEmpty()) || allNonEmpty(message.getMsgstrPlural()))
+      if (allNonEmpty(message))
       {
          return ContentState.Approved;
       }
-      return ContentState.New;
+      else
+      {
+         return ContentState.New;
+      }
    }
 
    static String createId(Message message)
