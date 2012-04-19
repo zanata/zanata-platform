@@ -40,14 +40,23 @@ import com.google.gwt.cell.client.ActionCell.Delegate;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -162,17 +171,22 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
-   public HasData<TransUnit> addTUTable(Delegate<TransUnit> replaceDelegate, SelectionModel<TransUnit> selectionModel)
+   public HasData<TransUnit> addTUTable(Delegate<TransUnit> replaceDelegate,
+                             SelectionModel<TransUnit> selectionModel,
+                             ValueChangeHandler<Boolean> selectAllHandler)
    {
-      CellTable<TransUnit> table = buildTable(replaceDelegate, selectionModel);
+      CellTable<TransUnit> table = buildTable(replaceDelegate, selectionModel, selectAllHandler);
       searchResultsPanel.add(table);
       return table;
    }
 
-   private CellTable<TransUnit> buildTable(Delegate<TransUnit> replaceDelegate, SelectionModel<TransUnit> selectionModel)
+   private CellTable<TransUnit> buildTable(Delegate<TransUnit> replaceDelegate, SelectionModel<TransUnit> selectionModel,
+         ValueChangeHandler<Boolean> selectAllHandler)
    {
       // create columns
       CheckColumn checkboxColumn = new CheckColumn(selectionModel);
+      CheckboxHeader checkboxColumnHeader = new CheckboxHeader();
+      checkboxColumnHeader.addValueChangeHandler(selectAllHandler);
 
       TextColumn<TransUnit> rowIndexColumn = new TextColumn<TransUnit>()
       {
@@ -252,7 +266,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       table.setWidth("100%", true);
 
       // TODO use localisable headings (should already exist somewhere)
-      table.addColumn(checkboxColumn, "Select");
+      table.addColumn(checkboxColumn, checkboxColumnHeader);
       table.addColumn(rowIndexColumn, "Index");
       table.addColumn(sourceColumn, "Source");
       table.addColumn(targetColumn, "Target");
@@ -304,6 +318,75 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
          return selectionModel.isSelected(tu);
       }
 
+   }
+
+   private class CheckboxHeader extends Header<Boolean> implements HasValue<Boolean> {
+
+      private boolean checked;
+      private HandlerManager handlerManager;
+
+      public CheckboxHeader()
+      {
+         //TODO consider custom cell with text
+         super(new CheckboxCell());
+         checked = false;
+      }
+
+      // This method is invoked to pass the value to the CheckboxCell's render method
+      @Override
+      public Boolean getValue()
+      {
+         return checked;
+      }
+
+      @Override
+      public void onBrowserEvent(Context context, Element elem, NativeEvent nativeEvent)
+      {
+         int eventType = Event.as(nativeEvent).getTypeInt();
+         if (eventType == Event.ONCHANGE)
+         {
+            nativeEvent.preventDefault();
+            //use value setter to easily fire change event to handlers
+            setValue(!checked, true);
+         }
+      }
+
+      @Override
+      public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Boolean> handler)
+      {
+         return ensureHandlerManager().addHandler(ValueChangeEvent.getType(), handler);
+      }
+
+      @Override
+      public void fireEvent(GwtEvent<?> event)
+      {
+         ensureHandlerManager().fireEvent(event);
+      }
+
+      @Override
+      public void setValue(Boolean value)
+      {
+         checked = value;
+      }
+
+      @Override
+      public void setValue(Boolean value, boolean fireEvents)
+      {
+         checked = value;
+         if (fireEvents)
+         {
+            ValueChangeEvent.fire(this, value);
+         }
+      }
+
+      private HandlerManager ensureHandlerManager()
+      {
+         if (handlerManager == null)
+         {
+            handlerManager = new HandlerManager(this);
+         }
+         return handlerManager;
+      }
    }
 
    private class ReplaceColumn extends Column<TransUnit, TransUnit>
