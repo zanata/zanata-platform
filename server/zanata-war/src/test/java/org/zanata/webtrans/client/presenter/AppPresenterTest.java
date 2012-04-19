@@ -206,18 +206,20 @@ public class AppPresenterTest
 
    public void testUpdateProjectStatsFromEditorView()
    {
+      TranslationStats newProjectStats = new TranslationStats(new TransUnitCount(9, 9, 9), new TransUnitWords(9, 9, 9));
+
       expectLoadDocAndViewEditor();
+      expectReturnToDocListView(newProjectStats);
 
       replayAllMocks();
+
       appPresenter.bind();
-
       HistoryToken token = simulateLoadDocAndViewEditor();
+      // set stats to allow differentiation from doc stats
+      capturedProjectStatsUpdatedEventHandler.getValue().onProjectStatsRetrieved(new ProjectStatsUpdatedEvent(newProjectStats));
+      simulateReturnToDocListView(token);
 
-      TranslationStats updatedStats = new TranslationStats(new TransUnitCount(9, 9, 9), new TransUnitWords(9, 9, 9));
-      capturedProjectStatsUpdatedEventHandler.getValue().onProjectStatsRetrieved(new ProjectStatsUpdatedEvent(updatedStats));
       verifyAllMocks();
-
-      returnToDoclistView(token, updatedStats);
    }
 
    public void testHistoryTriggersDocumentSelectionEvent()
@@ -270,10 +272,7 @@ public class AppPresenterTest
 
       replay(mockDisplay, mockDocumentListPresenter);
 
-      HistoryToken docInEditorToken = new HistoryToken();
-      // requires valid selected document to change to editor view
-      docInEditorToken.setDocumentPath(TEST_DOCUMENT_PATH + TEST_DOCUMENT_NAME);
-      docInEditorToken.setView(MainView.Editor);
+      HistoryToken docInEditorToken = buildDocInEditorToken();
       capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(docInEditorToken.toTokenString())
       {
       });
@@ -341,12 +340,14 @@ public class AppPresenterTest
    public void testStatsAndNameChangeWithView()
    {
       expectLoadDocAndViewEditor();
+      expectReturnToDocListView(emptyProjectStats);
       replayAllMocks();
       appPresenter.bind();
 
       HistoryToken token = simulateLoadDocAndViewEditor();
+      simulateReturnToDocListView(token);
       verifyAllMocks();
-      token = returnToDoclistView(token, emptyProjectStats);
+
       returnToEditorView(token, testDocStats);
    }
 
@@ -395,11 +396,12 @@ public class AppPresenterTest
    public void testUpdateDocumentStatsFromDoclistView()
    {
       expectLoadDocAndViewEditor();
+      expectReturnToDocListView(emptyProjectStats);
       replayAllMocks();
       appPresenter.bind();
       HistoryToken token = simulateLoadDocAndViewEditor();
+      simulateReturnToDocListView(token);
       verifyAllMocks();
-      token = returnToDoclistView(token, emptyProjectStats);
 
       reset(mockDisplay);
       // not expecting stats change yet
@@ -435,65 +437,76 @@ public class AppPresenterTest
    public void testDocumentsLinkGeneratesHistoryToken()
    {
       ClickEvent docLinkClickEvent = createMock(ClickEvent.class);
+
+      // 1 - click doc link from default state
+      expect(mockHistory.getToken()).andReturn("").once();
+
+      // 2 - load a document in the editor
       expectLoadDocAndViewEditor();
+
+      // 3 - click doc link to return to doclist
+      HistoryToken expectedDocInEditorToken = buildDocInEditorToken();
+      expect(mockHistory.getToken()).andReturn(expectedDocInEditorToken.toTokenString()).once();
+      expectReturnToDocListView(emptyProjectStats);
+
+      // 4 - click doc link to return to editor
+      HistoryToken expectedDocListWithLoadedDocToken = new HistoryToken();
+      expectedDocListWithLoadedDocToken.setDocumentPath(TEST_DOCUMENT_PATH + TEST_DOCUMENT_NAME);
+      expect(mockHistory.getToken()).andReturn(expectedDocListWithLoadedDocToken.toTokenString()).once();
+
+      // NOTE not expecting return to editor view as this test does not simulate
+      // the event for the new history item
+
       replayAllMocks();
+
+
       appPresenter.bind();
-      // replay(docLinkClickEvent);
+      //discard captured tokens from bind to allow easy check for new token
+      capturedHistoryTokenString.reset();
 
-      // don't generate MainView.Editor token if a document isn't loaded
+      // 1 - no doc loaded, don't generate MainView.Editor token
       capturedDocumentLinkClickHandler.getValue().onClick(docLinkClickEvent);
-
       assertThat(capturedHistoryTokenString.hasCaptured(), is(false));
 
+      // 2 - load doc in editor
       HistoryToken token = simulateLoadDocAndViewEditor();
-      verifyAllMocks();
 
-      // make mock history return correct state
-      reset(mockHistory);
-      expect(mockHistory.getToken()).andReturn(token.toTokenString()).anyTimes();
-      mockHistory.newItem(capture(capturedHistoryTokenString));
-      expectLastCall().anyTimes();
-      replay(mockHistory);
-
+      // 3 - doc loaded in editor, return to doclist
       capturedDocumentLinkClickHandler.getValue().onClick(docLinkClickEvent);
+      HistoryToken returnToDoclistToken = HistoryToken.fromTokenString(capturedHistoryTokenString.getValue());
+      assertThat("clicking documents link should always show doclist when editor is visible", returnToDoclistToken.getView(), is(MainView.Documents));
+      assertThat("document path should be maintained when clicking documents link", returnToDoclistToken.getDocumentPath(), is(token.getDocumentPath()));
 
-      // should have token with doclist view
-      HistoryToken capturedToken = HistoryToken.fromTokenString(capturedHistoryTokenString.getValue());
+      // simulate history token event for new token
+      capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(returnToDoclistToken.toTokenString())
+      {
+      });
 
-      assertThat("clicking documents link should always show doclist when editor is visible", capturedToken.getView(), is(MainView.Documents));
-      assertThat("document path should be maintained when clicking documents link", capturedToken.getDocumentPath(), is(token.getDocumentPath()));
+      // 4 - doc loaded, return to editor
+      capturedDocumentLinkClickHandler.getValue().onClick(docLinkClickEvent);
+      HistoryToken returnToEditorToken = HistoryToken.fromTokenString(capturedHistoryTokenString.getValue());
+      assertThat("clicking documents link should show editor when doclist is visible and a valid document is selected", returnToEditorToken.getView(), is(MainView.Editor));
+      assertThat("document path should be maintained when clicking documents link", returnToEditorToken.getDocumentPath(), is(token.getDocumentPath()));
+
+      // NOTE not simulating history change event for newest history token
+
       // TODO could check that filter parameters haven't changed as well
 
-      token = returnToDoclistView(token, emptyProjectStats);
-      // make mock history return correct state
-      reset(mockHistory);
-      expect(mockHistory.getToken()).andReturn(token.toTokenString()).anyTimes();
-      mockHistory.newItem(capture(capturedHistoryTokenString));
-      expectLastCall().anyTimes();
-      replay(mockHistory);
-
-      capturedDocumentLinkClickHandler.getValue().onClick(docLinkClickEvent);
-
-      // should have token with editor view
-      capturedToken = HistoryToken.fromTokenString(capturedHistoryTokenString.getValue());
-
-      assertThat("clicking documents link should show editor when doclist is visible and a valid document is selected", capturedToken.getView(), is(MainView.Editor));
-      assertThat("document path should be maintained when clicking documents link", capturedToken.getDocumentPath(), is(token.getDocumentPath()));
+      verifyAllMocks();
    }
 
    public void testSearchLinkGeneratesHistoryToken()
    {
+      expect(mockHistory.getToken()).andReturn("").once();
       replayAllMocks();
       appPresenter.bind();
-      verifyAllMocks();
-
       //simulate click
       ClickEvent searchLinkClickEvent = createMock(ClickEvent.class);
       capturedSearchLinkClickHandler.getValue().onClick(searchLinkClickEvent);
-
       HistoryToken capturedToken = HistoryToken.fromTokenString(capturedHistoryTokenString.getValue());
       assertThat("clicking search link should set view in history token to search", capturedToken.getView(), is(MainView.Search));
       //TODO could check that nothing else has changed in token
+      verifyAllMocks();
    }
 
    public void testShowsHidesReadonlyLabel()
@@ -536,6 +549,9 @@ public class AppPresenterTest
       testDocInfo = new DocumentInfo(testDocId, TEST_DOCUMENT_NAME, TEST_DOCUMENT_PATH, LocaleId.EN_US, testDocStats);
    }
 
+   /**
+    * @see #simulateLoadDocAndViewEditor()
+    */
    private void expectLoadDocAndViewEditor()
    {
       buildTestDocumentInfo();
@@ -552,43 +568,65 @@ public class AppPresenterTest
       expectLastCall().once();
    }
 
+   /**
+    * @see #expectLoadDocAndViewEditor()
+    * @return history token representing the editor view and loaded document
+    */
    private HistoryToken simulateLoadDocAndViewEditor()
    {
-      HistoryToken docInEditorToken = new HistoryToken();
-      docInEditorToken.setDocumentPath(TEST_DOCUMENT_PATH + TEST_DOCUMENT_NAME);
-      docInEditorToken.setView(MainView.Editor);
+      HistoryToken docInEditorToken = buildDocInEditorToken();
       capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(docInEditorToken.toTokenString())
       {
       });
-      verify(mockDisplay, mockDocumentListPresenter);
       return docInEditorToken;
    }
 
    /**
-    * @param previousToken a token representing the state of the application
-    *           before returning to document list view
+    * Generate a token representing the default test document being viewed in
+    * the editor
     * 
-    * @return a {@link HistoryToken} representing the current application state
+    * @return the newly generated token
     */
-   private HistoryToken returnToDoclistView(HistoryToken previousToken, TranslationStats currentProjectStats)
+   private HistoryToken buildDocInEditorToken()
    {
-      // return to doc list
-      reset(mockDisplay, mockTranslationPresenter);
+      HistoryToken docInEditorToken = new HistoryToken();
+      docInEditorToken.setDocumentPath(TEST_DOCUMENT_PATH + TEST_DOCUMENT_NAME);
+      docInEditorToken.setView(MainView.Editor);
+      return docInEditorToken;
+   }
+
+
+   /**
+    * Sets expectations to show the documents view, update the document label,
+    * show the given project stats, and save pending editor changes
+    * 
+    * @see #simulateUpdateProjectStatsThenReturnToDocListView(TranslationStats, HistoryToken)
+    * @param projectStats the current project stats that should be displayed
+    */
+   private void expectReturnToDocListView(TranslationStats projectStats)
+   {
+      //expect return to document view
       mockDisplay.showInMainView(MainView.Documents);
       expectLastCall().once();
       mockDisplay.setDocumentLabel("", NO_DOCUMENTS_STRING);
       expectLastCall().once();
-      // project stats are empty in default test setup
-      mockDisplay.setStats(eq(currentProjectStats));
+      mockDisplay.setStats(eq(projectStats));
       expectLastCall().once();
       mockTranslationPresenter.saveEditorPendingChange();
       expectLastCall().once();
-      replay(mockDisplay, mockTranslationPresenter);
+   }
+
+
+   /**
+    * @see {@link #expectUpdateProjectStatsThenReturnToDocListView(TranslationStats)}
+    */
+   private void simulateReturnToDocListView(HistoryToken previousToken)
+   {
       previousToken.setView(MainView.Documents);
+      //simulate return to document list view
       capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(previousToken.toTokenString())
       {
       });
-      return previousToken; // updated
    }
 
    /**
@@ -599,6 +637,7 @@ public class AppPresenterTest
     */
    private void returnToEditorView(HistoryToken previousToken, TranslationStats expectedStats)
    {
+      //FIXME split into expectations and simulation
       // return to editor
       reset(mockDisplay);
       mockDisplay.showInMainView(MainView.Editor);
@@ -627,7 +666,8 @@ public class AppPresenterTest
       expectLastCall().once();
 
       mockDisplay.showInMainView(MainView.Documents);
-      expectLastCall().anyTimes();
+      expectLastCall().once(); //starts on document list view
+
       mockDisplay.setDocumentLabel("", NO_DOCUMENTS_STRING);
       expectLastCall().once();
       mockDisplay.setUserLabel(TEST_PERSON_NAME);
@@ -660,7 +700,7 @@ public class AppPresenterTest
       mockEventBus.fireEvent(and(capture(capturedDocumentSelectionEvent), isA(DocumentSelectionEvent.class)));
       expectLastCall().anyTimes();
 
-      setupMockHistory("");
+      setupMockHistory();
 
       expect(mockIdentity.getPerson()).andReturn(mockPerson).anyTimes();
 
@@ -700,10 +740,9 @@ public class AppPresenterTest
    }
 
    @SuppressWarnings("unchecked")
-   private void setupMockHistory(String tokenToReturn)
+   private void setupMockHistory()
    {
-      expect(mockHistory.addValueChangeHandler(and(capture(capturedHistoryValueChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).anyTimes();
-      expect(mockHistory.getToken()).andReturn(tokenToReturn).anyTimes();
+      expect(mockHistory.addValueChangeHandler(and(capture(capturedHistoryValueChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
       mockHistory.fireCurrentHistoryState();
       expectLastCall().anyTimes();
 
