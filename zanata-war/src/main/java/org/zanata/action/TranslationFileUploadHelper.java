@@ -27,6 +27,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.service.ResourceUtils;
 import org.zanata.service.TranslationFileService;
 
 import java.io.InputStream;
@@ -36,19 +37,26 @@ import static org.jboss.seam.ScopeType.PAGE;
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("translationFileUploadAction")
-@Scope(PAGE)
-public class TranslationFileUploadAction
+public class TranslationFileUploadHelper
 {
+   private String projectSlug;
+
+   private String iterationSlug;
+
    private String docId;
 
    private InputStream fileContents;
 
    private String fileName;
 
-   @In
-   private TranslationFileService translationFileServiceImpl;
+   private boolean mergeTranslations;
 
+
+   public TranslationFileUploadHelper(String projectSlug, String iterationSlug)
+   {
+      this.projectSlug = projectSlug;
+      this.iterationSlug = iterationSlug;
+   }
 
    public String getDocId()
    {
@@ -80,19 +88,33 @@ public class TranslationFileUploadAction
       this.fileName = fileName;
    }
 
-   public void uploadFile()
+   public boolean getMergeTranslations()
    {
-      TranslationsResource transRes = null;
-      try
-      {
-         transRes = this.translationFileServiceImpl.parseTranslationFile(this.fileContents, this.fileName);
-      }
-      catch (ZanataServiceException zex)
-      {
-         FacesMessages.instance().add("Invalid file type");
-         return;
-      }
+      return mergeTranslations;
+   }
 
+   public void setMergeTranslations(boolean mergeTranslations)
+   {
+      this.mergeTranslations = mergeTranslations;
+   }
 
+   public String getProjectSlug()
+   {
+      return projectSlug;
+   }
+
+   public void setProjectSlug(String projectSlug)
+   {
+      this.projectSlug = projectSlug;
+   }
+
+   public String getIterationSlug()
+   {
+      return iterationSlug;
+   }
+
+   public void setIterationSlug(String iterationSlug)
+   {
+      this.iterationSlug = iterationSlug;
    }
 }

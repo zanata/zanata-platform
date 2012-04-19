@@ -20,19 +20,25 @@
  */
 package org.zanata.action;
 
-import java.util.List;
-
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.faces.FacesMessages;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
+import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.service.TranslationFileService;
+
+import java.util.List;
+
+import static org.jboss.seam.international.StatusMessage.Severity;
 
 @Name("projectIterationFilesAction")
 @Scope(ScopeType.PAGE)
@@ -51,14 +57,20 @@ public class ProjectIterationFilesAction
    @In
    private LocaleDAO localeDAO;
 
+   @In
+   private TranslationFileService translationFileServiceImpl;
+
    private List<HDocument> iterationDocuments;
    
    private String documentNameFilter;
+
+   private TranslationFileUploadHelper fileUploadHelper;
    
    
    public void initialize()
    {
       this.iterationDocuments = this.documentDAO.getAllByProjectIteration(this.projectSlug, this.iterationSlug);
+      this.fileUploadHelper = new TranslationFileUploadHelper(this.projectSlug, this.iterationSlug);
    }
    
    public HLocale getLocale()
@@ -84,6 +96,23 @@ public class ProjectIterationFilesAction
    {
       TranslationStats documentStats = this.documentDAO.getStatistics(doc.getId(), new LocaleId(this.localeId));
       return documentStats.getWordCount();
+   }
+
+   public void uploadFile()
+   {
+      TranslationsResource transRes = null;
+      try
+      {
+         transRes = this.translationFileServiceImpl.parseTranslationFile(this.fileUploadHelper.getFileContents(),
+               this.fileUploadHelper.getFileName());
+      }
+      catch (ZanataServiceException zex)
+      {
+         FacesMessages.instance().add(Severity.ERROR, "Invalid file type: {0}", this.fileUploadHelper.getFileName());
+         return;
+      }
+
+      FacesMessages.instance().add(Severity.INFO, "File {0} uploaded", this.fileUploadHelper.getFileName());
    }
 
    public List<HDocument> getIterationDocuments()
@@ -135,5 +164,9 @@ public class ProjectIterationFilesAction
    {
       this.documentNameFilter = documentNameFilter;
    }
-   
+
+   public TranslationFileUploadHelper getFileUploadHelper()
+   {
+      return fileUploadHelper;
+   }
 }

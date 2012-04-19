@@ -117,7 +117,7 @@
                             Upload
                         </f:facet>
                         <a4j:commandLink value="Upload">
-                            <a4j:actionparam name="docId" value="#{doc.docId}" assignTo="#{translationFileUploadAction.docId}"/>
+                            <a4j:actionparam name="docId" value="#{doc.docId}" assignTo="#{projectIterationFilesAction.fileUploadHelper.docId}"/>
                             <rich:componentControl for="uploadPanel" operation="show" event="onclick"/>
                         </a4j:commandLink>
                     </rich:column>
@@ -180,10 +180,11 @@
             </f:facet>
             <h:form enctype="multipart/form-data">
                 <s:fileUpload accept="*"
-                              data="#{translationFileUploadAction.fileContents}"
-                              fileName="#{translationFileUploadAction.fileName}"/>
+                              data="#{projectIterationFilesAction.fileUploadHelper.fileContents}"
+                              fileName="#{projectIterationFilesAction.fileUploadHelper.fileName}"/>
+                <h:selectBooleanCheckbox value="#{projectIterationFilesAction.fileUploadHelper.mergeTranslations}" label="Merge" title="When checked, updated translations will be written, leaving all others unchaged."/>
                 <div align="right">
-                    <h:commandButton value="Upload" action="#{translationFileUploadAction.uploadFile}"/>
+                    <h:commandButton value="Upload" action="#{projectIterationFilesAction.uploadFile}"/>
                     <h:commandButton value="Cancel" onclick="return hideUploadPanel();"/>
                 </div>
             </h:form>
