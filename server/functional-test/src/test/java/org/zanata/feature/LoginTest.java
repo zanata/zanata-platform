@@ -22,12 +22,13 @@ import org.zanata.page.HomePage;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@Test(enabled = false)
+//@Test(enabled = false)
 public class LoginTest
 {
+   @Test
    public void canLogIn() {
       LoginAction loginAction = new LoginAction();
-      HomePage homePage = loginAction.signIn("http://localhost:8080/zanata", "admin", "admin");
+      HomePage homePage = loginAction.signIn("admin", "admin");
 
       assertThat(homePage, Matchers.notNullValue());
    }

@@ -19,6 +19,33 @@
         <webdriver.version>0.9.7376</webdriver.version>
         <selenium.version>2.20.0</selenium.version>
         <hamcrest.version>1.2.1</hamcrest.version>
+
+        <!--Cargo Settings -->
+        <cargo.wait>false</cargo.wait>
+        <cargo.host>localhost</cargo.host>
+        <cargo.container>jboss5x</cargo.container>
+        <!--<cargo.servlet.port>9898</cargo.servlet.port>-->
+        <!--<cargo.home>${project.build.directory}/${cargo.container}</cargo.home>-->
+        <cargo.home>${java.io.tmpdir}/cargo/installs/jboss-ewp-5.1.2/jboss-ewp-5.1/jboss-as-web</cargo.home>
+        <cargo.installation>file:///NotBackedUp/downloads/jboss-ewp-5.1.2.zip</cargo.installation>
+        <context.path>zanata</context.path>
+
+        <!--data source-->
+        <jdbc.groupId>com.h2database</jdbc.groupId>
+        <jdbc.artifactId>h2</jdbc.artifactId>
+        <jdbc.version>1.2.144</jdbc.version>
+        <ds.jndi.name>zanataTestDatasource</ds.jndi.name>
+        <!--<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>-->
+        <ds.driver.class>org.h2.Driver</ds.driver.class>
+        <ds.connection.url>jdbc:h2:mem:zanata;DB_CLOSE_DELAY=-1</ds.connection.url>
+        <ds.user.name>sa</ds.user.name>
+        <ds.password/>
+
+        <!--target zanata instance-->
+        <zanata.target.version>${project.version}</zanata.target.version>
+        <zanata.instance.url>http://${cargo.host}:8080/${context.path}</zanata.instance.url>
+        <zanata.client.version>${project.version}</zanata.client.version>
+        <functional-tests.skip>false</functional-tests.skip>
     </properties>
 
     <dependencies>
@@ -56,6 +83,18 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.testng</groupId>
@@ -72,16 +111,189 @@
             <artifactId>hamcrest-library</artifactId>
             <version>${hamcrest.version}</version>
         </dependency>
+
+        <!--cargo needs these-->
+        <!--<dependency>-->
+            <!--<groupId>${project.groupId}</groupId>-->
+            <!--<artifactId>zanata-war</artifactId>-->
+            <!--<version>${zanata.target.version}</version>-->
+            <!--<type>war</type>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>${jdbc.groupId}</groupId>
+            <artifactId>${jdbc.artifactId}</artifactId>
+            <version>1.2.144</version>
+        </dependency>
+
     </dependencies>
 
     <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/zanata.xml</include>
+                    <include>**/pom.xml</include>
+                    <include>**/*.properties</include>
+                    <include>**/log4j.xml</include>
+                    <include>**/zanata-ds.xml</include>
+                </includes>
+            </testResource>
+        </testResources>
         <plugins>
-            <!--at the moment we can't run test without manually boot up a local server-->
+            <!--we want to run tests in integration phase-->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <skip>true</skip>
                     <failIfNoTests>false</failIfNoTests>
                 </configuration>
+            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-resources-plugin</artifactId>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>copy-ds-context</id>-->
+                        <!--<goals>-->
+                            <!--<goal>copy-resources</goal>-->
+                        <!--</goals>-->
+                        <!--<phase>package</phase>-->
+                        <!--<configuration>-->
+                            <!--<outputDirectory>${as.deploy}</outputDirectory>-->
+                            <!--<resources>-->
+                                <!--<resource>-->
+                                    <!--<directory>${basedir}/src/test/resources</directory>-->
+                                    <!--<filtering>true</filtering>-->
+                                    <!--<includes>-->
+                                        <!--<include>zanata-ds.xml</include>-->
+                                    <!--</includes>-->
+                                <!--</resource>-->
+                            <!--</resources>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+            <plugin>
+                <groupId>org.codehaus.cargo</groupId>
+                <artifactId>cargo-maven2-plugin</artifactId>
+                <version>1.1.0</version>
+                <configuration>
+                    <wait>${cargo.wait}</wait>
+                    <container>
+                        <timeout>180000</timeout>
+                        <containerId>${cargo.container}</containerId>
+
+                        <zipUrlInstaller>
+                            <url>${cargo.installation}</url>
+                        </zipUrlInstaller>
+
+                        <home>${cargo.home}</home>
+                        <dependencies>
+                            <dependency>
+                                <groupId>${jdbc.groupId}</groupId>
+                                <artifactId>${jdbc.artifactId}</artifactId>
+                            </dependency>
+                            <dependency>
+                                <groupId>javax.servlet</groupId>
+                                <artifactId>servlet-api</artifactId>
+                            </dependency>
+                            <dependency>
+                                <location>src/test/resources/zanata-ds.xml</location>
+                            </dependency>
+
+                        </dependencies>
+                        <output>${project.build.directory}/container.log</output>
+                        <append>false</append>
+                        <log>${project.build.directory}/cargo.log</log>
+                        <systemProperties>
+                            <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
+                        </systemProperties>
+                    </container>
+                    <configuration>
+                        <type>existing</type>
+                        <home>${cargo.home}/server/default</home>
+                        <deployables>
+                            <deployable>
+                                <type>file</type>
+                                <location>${project.build.directory}/test-classes/datasource</location>
+                            </deployable>
+                            <deployable>
+                                <!--<groupId>${project.groupId}</groupId>-->
+                                <!--<artifactId>zanata-war</artifactId>-->
+                                <type>war</type>
+                                <location>../zanata-war/target/zanata-${zanata.target.version}-autotest.war</location>
+                                <pingURL>http://${cargo.host}:8080/${context.path}/</pingURL>
+                                <properties>
+                                    <context>${context.path}</context>
+                                </properties>
+                            </deployable>
+
+                        </deployables>
+                        <properties>
+                            <cargo.jboss.configuration>default</cargo.jboss.configuration>
+                            <cargo.hostname>${cargo.host}</cargo.hostname>
+                            <!--<cargo.servlet.port>${cargo.servlet.port}</cargo.servlet.port>-->
+                            <!--<cargo.rmi.port>${cargo.rmi.port}</cargo.rmi.port>-->
+
+                            <!--<cargo.datasource.datasource>-->
+                                <!--cargo.datasource.url=${ds.connection.url}|-->
+                                <!--cargo.datasource.driver=${ds.driver.class}|-->
+                                <!--cargo.datasource.username=${ds.user.name}|-->
+                                <!--cargo.datasource.password=${ds.password}|-->
+                                <!--cargo.datasource.type=javax.sql.DataSource|-->
+                                <!--cargo.datasource.jndi=${ds.jndi.name}-->
+                            <!--</cargo.datasource.datasource>-->
+
+                            <!--<cargo.jvmargs>${cargo.debug.args}</cargo.jvmargs> -->
+                            <!--<cargo.jvmargs>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005</cargo.jvmargs> -->
+                        </properties>
+                    </configuration>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>cargo-start</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>cargo-stop</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*Test*.java</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>Web Driver Tests</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <phase>integration-test</phase>
+                        <configuration>
+                            <skip>${functional-tests.skip}</skip>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

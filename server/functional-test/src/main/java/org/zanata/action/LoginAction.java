@@ -16,6 +16,8 @@
 package org.zanata.action;
 
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.page.HomePage;
 import org.zanata.page.SignInPage;
 import org.zanata.page.WebDriverFactory;
@@ -25,24 +27,25 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class LoginAction
 {
+   private static final Logger LOGGER = LoggerFactory.getLogger(LoginAction.class);
    private final WebDriver driver;
+   private final String hostUrl;
 
    public LoginAction()
    {
       driver = WebDriverFactory.INSTANCE.getDriver();
+      hostUrl = WebDriverFactory.INSTANCE.getHostUrl();
    }
 
-   public HomePage signIn(String homeUrl, String username, String password)
+   public HomePage signIn(String username, String password)
    {
 //      System.getProperties().put("webdriver.firefox.useExisting", "true");
-      driver.get(homeUrl);
+      LOGGER.info("accessing zanata at: {}", hostUrl);
+      driver.get(hostUrl);
 
       SignInPage signInPage = new HomePage(driver).clickSignInLink();
-      assertThat(signInPage.getTitle(), equalTo("Zanata:Log in"));
 
-      HomePage homePage = signInPage.signInAndGoToPage(username, password, HomePage.class);
-      assertThat(homePage.getTitle(), equalTo("Zanata:Home"));
-      return homePage;
+      return signInPage.signInAndGoToPage(username, password, HomePage.class);
    }
 
 }

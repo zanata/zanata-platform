@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config xmlns="http://zanata.org/namespace/config/">
+  <url>${zanata.instance.url}</url>
+  <project>plurals</project>
+  <project-version>master</project-version>
+  <project-type>podir</project-type>
+
+  <locales>
+    <locale>pl</locale>
+  </locales>
+
+</config>

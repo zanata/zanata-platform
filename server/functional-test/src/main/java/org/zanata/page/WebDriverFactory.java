@@ -16,6 +16,9 @@
 package org.zanata.page;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -23,13 +26,18 @@ import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.google.common.base.Strings;
 
 public enum WebDriverFactory
 {
    INSTANCE;
 
+   private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverFactory.class);
+
    private WebDriver driver;
+   private Properties properties;
 
    public WebDriver getDriver()
    {
@@ -39,11 +47,50 @@ public enum WebDriverFactory
          {
             if (driver == null)
             {
-               driver = configureHtmlDriver();
+               loadProperties();
+               driver = createDriver();
             }
          }
       }
       return driver;
+   }
+
+   private void loadProperties()
+   {
+      InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("setup.properties");
+      properties = new Properties();
+      try
+      {
+         properties.load(inputStream);
+      } catch (IOException e)
+      {
+         LOGGER.error("can't load setup.properties");
+         throw new IllegalStateException("can't load setup.properties");
+      }
+   }
+
+   public String getHostUrl()
+   {
+      if (properties == null || driver == null)
+      {
+         getDriver();
+      }
+      return properties.getProperty("zanata.instance.url");
+   }
+
+   private WebDriver createDriver()
+   {
+      String driverType = properties.getProperty("webdriver.type", "htmlUnit");
+      if (driverType.equalsIgnoreCase("chrome"))
+      {
+         return configureChromeDriver();
+      } else if (driverType.equalsIgnoreCase("fireFox"))
+      {
+         return configureFirefoxDriver();
+      } else
+      {
+         return configureHtmlDriver();
+      }
    }
 
    private WebDriver configureHtmlDriver()
@@ -67,7 +114,7 @@ public enum WebDriverFactory
 //         firefoxBinary = new FirefoxBinary(new File(pathToFirefox));
 //      } else
 //      {
-         firefoxBinary = new FirefoxBinary();
+      firefoxBinary = new FirefoxBinary();
 //      }
 
 //      return new FirefoxDriver(firefoxBinary, makeFirefoxProfile());
