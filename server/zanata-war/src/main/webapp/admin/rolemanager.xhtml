@@ -40,7 +40,7 @@
 	            cellspacing="0"
 	            headerClass="columnHeader"
 	            rowClasses="odd,even"
-	            columnClasses=",,enabled"
+	            columnClasses="centered,centered,centered"
 	            styleClass="fullwidth">
 	
 	          <h:column width="auto">
@@ -54,9 +54,9 @@
 	          <h:column width="auto">
 	            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>          
 	            <s:fragment rendered="#{s:hasPermission('seam.role', 'update')}">
-	              <h:commandLink value="#{messages['jsf.Edit']}" action="#{roleAction.editRole(roleSearch.selectedRole)}"/><span> | </span>
+	              <h:commandButton value="#{messages['jsf.Edit']}" action="#{roleAction.editRole(roleSearch.selectedRole)}"/>
 	            </s:fragment>
-	            <h:commandLink value="#{messages['jsf.Delete']}" action="#{identityManager.deleteRole(roleSearch.selectedRole)}"
+	            <h:commandButton value="#{messages['jsf.Delete']}" action="#{identityManager.deleteRole(roleSearch.selectedRole)}"
 	                    rendered="#{s:hasPermission('seam.role', 'delete')}"
 	                    onclick="return confirmDelete()"/>
 	          </h:column>
