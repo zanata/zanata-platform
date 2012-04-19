@@ -197,6 +197,17 @@ public class PoReader2Test
       assertThat(actual1, is(ContentState.New));
    }
 
+   // FIXME test where plurals < nplurals
+   //   public void testContentStateNewPluralTooFew()
+   //   {
+   //      // TODO set nplurals=2
+   //      Message m = new Message();
+   //      m.setMsgidPlural("plural");
+   //      m.addMsgstrPlural("s0", 0);
+   //      ContentState actual1 = PoReader2.getContentState(m);
+   //      assertThat(actual1, is(ContentState.New));
+   //   }
+
    public void testContentStateNeedReviewSingle()
    {
       Message m = new Message();
