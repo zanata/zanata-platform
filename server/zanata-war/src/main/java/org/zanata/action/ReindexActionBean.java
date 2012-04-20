@@ -7,11 +7,11 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.security.Restrict;
 
-@Name("adminAction")
+@Name("reindexAction")
 @Scope(ScopeType.APPLICATION)
 @Startup
 @Restrict("#{s:hasRole('admin')}")
-public class AdminActionBean
+public class ReindexActionBean
 {
 
    @In
