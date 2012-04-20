@@ -48,9 +48,10 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
+
+import com.ibm.icu.lang.UCharacter;
 
 /**
  * @see GetProjectTransUnitLists
@@ -110,18 +111,49 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          throw new ActionException(e.getMessage());
       }
 
+      //FIXME remove when analyzer handles leading & trailing whitespace
+      boolean needsWhitespaceCheck = !action.getSearchString().equals(action.getSearchString().trim());
+      String searchString = action.getSearchString();
+      if (!action.isCaseSensitive())
+      {
+         searchString = foldCase(searchString);
+      }
+
+
       for (HTextFlowTarget htft : matchingFlows)
       {
+         // FIXME temporary check for leading and trailing whitespace to compensate
+         // for NGramAnalyzer trimming strings before tokenization. This should
+         // be removed when updating to a lucene version with the whitespace
+         // issue resolved.
+         if (needsWhitespaceCheck)
+         {
+            boolean whitespaceMatch = false;
+            for (String content : htft.getContents())
+            {
+               String contentStr = content;
+               if (!action.isCaseSensitive())
+               {
+                  contentStr = foldCase(contentStr);
+               }
+               if (contentStr.contains(searchString))
+               {
+                  whitespaceMatch = true;
+                  break;
+               }
+            }
+            if (!whitespaceMatch)
+            {
+               continue;
+            }
+         }
+
          HTextFlow htf = htft.getTextFlow();
          List<TransUnit> listForDoc = matchingTUs.get(htf.getDocument().getId());
          if (listForDoc == null)
          {
             listForDoc = new ArrayList<TransUnit>();
          }
-         // FIXME add a check for leading and trailing whitespace to compensate
-         // for NGramAnalyzer trimming strings before tokenization. This should
-         // be removed when updating to a lucene version with the whitespace
-         // issue resolved
 
          // TODO cache this rather than looking up repeatedly
          int nPlurals = resourceUtils.getNumPlurals(htf.getDocument(), hLocale);
@@ -178,6 +210,16 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          builder.setLastModifiedTime(simpleDateFormat.format(target.getLastChanged()));
       }
       return builder.build();
+   }
+
+   private String foldCase(String original)
+   {
+      char[] buffer = original.toCharArray();
+      for (int i=0; i<buffer.length; i++)
+      {
+         buffer[i] = (char) UCharacter.foldCase(buffer[i], true);
+      }
+      return new String(buffer);
    }
 
 }
