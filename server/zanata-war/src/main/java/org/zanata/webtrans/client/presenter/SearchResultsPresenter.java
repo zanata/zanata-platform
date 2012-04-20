@@ -91,7 +91,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
       HasClickHandlers addDocumentLabel(String docName);
 
-      HasData<TransUnit> addTUTable(Delegate<TransUnit> replaceDelegate, SelectionModel<TransUnit> selectionModel);
+      HasData<TransUnit> addTUTable(Delegate<TransUnit> replaceDelegate, SelectionModel<TransUnit> selectionModel, ValueChangeHandler<Boolean> selectAllHandler);
    }
 
    private final CachingDispatchAsync dispatcher;
@@ -303,10 +303,30 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
                });
 
-               MultiSelectionModel<TransUnit> selectionModel = new MultiSelectionModel<TransUnit>();
+               final MultiSelectionModel<TransUnit> selectionModel = new MultiSelectionModel<TransUnit>();
+               final ListDataProvider<TransUnit> dataProvider = new ListDataProvider<TransUnit>();
 
-               HasData<TransUnit> table = display.addTUTable(replaceButtonDelegate, selectionModel);
-               ListDataProvider<TransUnit> dataProvider = new ListDataProvider<TransUnit>();
+               // TODO set selected value for header based on selection of rows?
+               HasData<TransUnit> table = display.addTUTable(replaceButtonDelegate, selectionModel, new ValueChangeHandler<Boolean>()
+               {
+
+                  @Override
+                  public void onValueChange(ValueChangeEvent<Boolean> event)
+                  {
+                     if (event.getValue())
+                     {
+                        for (TransUnit tu : dataProvider.getList())
+                        {
+                           selectionModel.setSelected(tu, true);
+                        }
+                     }
+                     else
+                     {
+                        selectionModel.clear();
+                     }
+
+                  }
+               });
                dataProvider.addDataDisplay(table);
 
                List<TransUnit> data = dataProvider.getList();

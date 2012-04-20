@@ -1139,6 +1139,8 @@ public class ResourceUtils
    {
       to.setContents(from.getContents());
       to.setRevision(from.getRevision());
+      to.setPlural(from.isPlural());
+
       // TODO HTextFlow should have a lang
       // to.setLang(from.get)
    }

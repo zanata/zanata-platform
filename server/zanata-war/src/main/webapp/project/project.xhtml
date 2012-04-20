@@ -39,25 +39,27 @@
     
     <s:fragment rendered="#{projectHome.activeIterations.size > 0}">
     	<div class="iterations">
-    		 <rich:dataGrid id="activeIterations" columns="5"
-                     value="#{projectHome.activeIterations}"
-                     var="_iteration"
-                     columnClasses="iteration_grid_col"
-                     styleClass="noBorderTable">
-                <f:facet name="header">
-                	<h:outputText value="#{messages['jsf.ActiveVersions']}"/>
-                </f:facet>
-        		<a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}" class="version_link">
-    				<div class="version_link_div">
-    					<div class="version_title">
-	    					<h:outputText value="#{_iteration.slug}"/>
-    					</div>
-    					<div class="version_info">
-    						Documents: #{_iteration.documents.size()}
-    					</div>
-    				</div>
-    			</a>
-     	 	</rich:dataGrid>
+            <rich:tabPanel switchType="client">
+                <rich:tab label="#{messages['jsf.ActiveVersions']}" styleClass="version_header">
+                    <rich:dataGrid id="activeIterations" columns="5"
+                                   value="#{projectHome.activeIterations}"
+                                   var="_iteration"
+                                   columnClasses="iteration_grid_col"
+                                   styleClass="noBorderTable">
+                        <a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}" class="version_link">
+                            <div class="version_link_div">
+                                <div class="version_title">
+                                    <h:outputText value="#{_iteration.slug}"/>
+                                </div>
+                                <div class="version_info">
+                                    Documents: #{_iteration.documents.size()}
+                                </div>
+                            </div>
+                        </a>
+                    </rich:dataGrid>
+                </rich:tab>
+            </rich:tabPanel>
+
     	</div>
     </s:fragment>
     
@@ -65,25 +67,26 @@
 
     <s:fragment rendered="#{projectHome.readOnlyIterations.size > 0}">
     	<div class="iterations">
-    		 <rich:dataGrid id="readOnlyIterations" columns="5"
-                     value="#{projectHome.readOnlyIterations}"
-                     var="_iteration"
-                     columnClasses="iteration_grid_col"
-                     styleClass="noBorderTable">
-                <f:facet name="header">
-                	<h:outputText value="#{messages['jsf.ReadOnlyVersions']}"/>
-                </f:facet>
-        		<a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}" class="version_link">
-    				<div class="version_link_div">
-    					<div class="version_title">
-	    					<h:outputText value="#{_iteration.slug}"/>
-    					</div>
-    					<div class="version_info">
-    						Documents: #{_iteration.documents.size()}
-    					</div>
-    				</div>
-    			</a>
-     	 	</rich:dataGrid>
+            <rich:tabPanel switchType="client">
+                <rich:tab label="#{messages['jsf.ReadOnlyVersions']}" styleClass="version_header">
+                    <rich:dataGrid id="readOnlyIterations" columns="5"
+                             value="#{projectHome.readOnlyIterations}"
+                             var="_iteration"
+                             columnClasses="iteration_grid_col"
+                             styleClass="noBorderTable">
+                        <a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}" class="version_link">
+                            <div class="version_link_div">
+                                <div class="version_title">
+                                    <h:outputText value="#{_iteration.slug}"/>
+                                </div>
+                                <div class="version_info">
+                                    Documents: #{_iteration.documents.size()}
+                                </div>
+                            </div>
+                        </a>
+                    </rich:dataGrid>
+                </rich:tab>
+            </rich:tabPanel>
     	</div>
     </s:fragment>
     
@@ -91,25 +94,26 @@
     
     <s:fragment rendered="#{projectHome.obsoleteIterations.size > 0 and s:hasPermission('HProjectIteration','view-obsolete')}">
     	<div class="iterations">
-    		 <rich:dataGrid id="obsoleteIterations" columns="5"
-                     value="#{projectHome.obsoleteIterations}"
-                     var="_iteration"
-                     columnClasses="iteration_grid_col"
-                     styleClass="noBorderTable">
-                <f:facet name="header">
-                	<h:outputText value="#{messages['jsf.ObsoleteVersions']}"/>
-                </f:facet>
-        		<a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}" class="version_link">
-    				<div class="version_link_div">
-    					<div class="version_title">
-	    					<h:outputText value="#{_iteration.slug}"/>
-    					</div>
-    					<div class="version_info">
-    						Documents: #{_iteration.documents.size()}
-    					</div>
-    				</div>
-    			</a>
-     	 	</rich:dataGrid>
+            <rich:tabPanel switchType="client">
+                <rich:tab label="#{messages['jsf.ObsoleteVersions']}" styleClass="version_header">
+                    <rich:dataGrid id="obsoleteIterations" columns="5"
+                             value="#{projectHome.obsoleteIterations}"
+                             var="_iteration"
+                             columnClasses="iteration_grid_col"
+                             styleClass="noBorderTable">
+                        <a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}" class="version_link">
+                            <div class="version_link_div">
+                                <div class="version_title">
+                                    <h:outputText value="#{_iteration.slug}"/>
+                                </div>
+                                <div class="version_info">
+                                    Documents: #{_iteration.documents.size()}
+                                </div>
+                            </div>
+                        </a>
+                    </rich:dataGrid>
+                </rich:tab>
+            </rich:tabPanel>
     	</div>
     </s:fragment>
     

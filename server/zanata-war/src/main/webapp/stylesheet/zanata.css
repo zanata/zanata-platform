@@ -420,6 +420,10 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	margin: 0px;
 }
 
+.rich-tabpanel-content{
+    background:white;
+}
+
 .noBorderTable .rich-table {
 	border-width: 0px;
 }
@@ -636,6 +640,13 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 .iteration_grid_col {
 	border: none;
 	min-width: 100px;
+}
+
+.version_header {
+    padding:10px;
+    font-weight:bold;
+    background-image:none;
+    width:200px;
 }
 
 .version_link_div {
