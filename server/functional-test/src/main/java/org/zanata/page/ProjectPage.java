@@ -15,6 +15,8 @@
  */
 package org.zanata.page;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -22,7 +24,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.pagefactory.ByChained;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 public class ProjectPage extends AbstractPage
 {
@@ -32,6 +39,9 @@ public class ProjectPage extends AbstractPage
 
    @FindBy(linkText = "Create Version")
    private WebElement createVersionLink;
+
+   @FindBy(className = "version_link", tagName = "a")
+   private List<WebElement> versionLinks;
 
    public ProjectPage(final WebDriver driver)
    {
@@ -53,6 +63,22 @@ public class ProjectPage extends AbstractPage
    public CreateVersionPage clickCreateVersionLink()
    {
       createVersionLink.click();
-      return PageFactory.initElements(getDriver(), CreateVersionPage.class);
+      return new CreateVersionPage(getDriver());
+   }
+
+   public ProjectVersionPage goToActiveVersion(final String versionId)
+   {
+      Preconditions.checkState(versionLinks != null && !versionLinks.isEmpty(), "no version links available");
+      Collection<WebElement> found = Collections2.filter(versionLinks, new Predicate<WebElement>()
+      {
+         @Override
+         public boolean apply(WebElement input)
+         {
+            return input.getText().equals(versionId);
+         }
+      });
+      Preconditions.checkState(found.size() != 1, versionId + " not found");
+      found.iterator().next().click();
+      return new ProjectVersionPage(getDriver());
    }
 }

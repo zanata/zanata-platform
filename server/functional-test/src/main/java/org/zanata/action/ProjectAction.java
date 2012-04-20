@@ -15,17 +15,25 @@
  */
 package org.zanata.action;
 
+import org.zanata.page.HomePage;
 import org.zanata.page.ProjectPage;
+import org.zanata.page.ProjectVersionPage;
 
-public class CreateProjectAction extends AbstractAction
+public class ProjectAction extends AbstractAction
 {
-   public ProjectPage createNewProject(String projectId, String projectName)
+   public ProjectPage createNewProject(HomePage homePage, String projectId, String projectName)
    {
       return homePage.goToProjects()
             .clickOnCreateProjectLink()
             .inputProjectId(projectId)
             .inputProjectName(projectName)
-            .selectStatus("ACTIVE")
             .saveProject();
+   }
+
+   public ProjectVersionPage createNewProjectVersion(ProjectPage projectPage, String projectVersion)
+   {
+      return projectPage.clickCreateVersionLink()
+            .inputVersionId(projectVersion)
+            .saveVersion();
    }
 }

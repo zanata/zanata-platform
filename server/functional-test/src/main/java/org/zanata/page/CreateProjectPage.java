@@ -60,13 +60,13 @@ public class CreateProjectPage extends AbstractPage
 
    public CreateProjectPage selectStatus(String status)
    {
-      new Select(statusSelection).selectByValue(status);
+      new Select(statusSelection).selectByVisibleText(status);
       return this;
    }
 
    public ProjectPage saveProject()
    {
       saveButton.click();
-      return PageFactory.initElements(getDriver(), ProjectPage.class);
+      return new ProjectPage(getDriver());
    }
 }

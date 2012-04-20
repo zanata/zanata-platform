@@ -16,21 +16,41 @@
 package org.zanata.action;
 
 import org.openqa.selenium.WebDriver;
-import org.zanata.page.HomePage;
 import org.zanata.page.WebDriverFactory;
 
 public class AbstractAction
 {
    protected final WebDriver driver;
    protected final String hostUrl;
-   protected final HomePage homePage;
 
    public AbstractAction()
    {
-      hostUrl = WebDriverFactory.INSTANCE.getHostUrl();
+      String baseUrl = WebDriverFactory.INSTANCE.getHostUrl();
+      hostUrl = appendTrailingSlash(baseUrl);
       driver = WebDriverFactory.INSTANCE.getDriver();
       driver.get(hostUrl);
+   }
 
-      homePage = new HomePage(driver);
+   private static String appendTrailingSlash(String baseUrl)
+   {
+      if (baseUrl.endsWith("/"))
+      {
+         return baseUrl;
+      }
+      return baseUrl + "/";
+   }
+
+   public String toUrl(String relativeUrl)
+   {
+      return hostUrl + removeLeadingSlash(relativeUrl);
+   }
+
+   private static String removeLeadingSlash(String relativeUrl)
+   {
+      if (relativeUrl.startsWith("/"))
+      {
+         return relativeUrl.substring(1, relativeUrl.length());
+      }
+      return relativeUrl;
    }
 }

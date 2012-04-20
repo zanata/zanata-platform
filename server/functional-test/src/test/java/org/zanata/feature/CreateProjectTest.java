@@ -17,9 +17,11 @@ package org.zanata.feature;
 
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
-import org.zanata.action.CreateProjectAction;
+import org.zanata.action.ProjectAction;
 import org.zanata.action.LoginAction;
+import org.zanata.page.HomePage;
 import org.zanata.page.ProjectPage;
+import org.zanata.page.ProjectVersionPage;
 
 import static org.hamcrest.MatcherAssert.*;
 
@@ -27,11 +29,20 @@ public class CreateProjectTest
 {
 
    @Test
-   public void canCreateProject() {
-      new LoginAction().signIn("admin", "admin");
-      ProjectPage projectPage = new CreateProjectAction().createNewProject("plurals", "plural project");
+   public void canCreateProjectAndVersion() {
+      HomePage homePage = new LoginAction().signIn("admin", "admin");
+      ProjectAction projectAction = new ProjectAction();
+      ProjectPage projectPage = projectAction.createNewProject(homePage, "plurals", "plural project");
 
       assertThat(projectPage.getProjectId(), Matchers.equalTo("Project ID: plurals"));
       assertThat(projectPage.getProjectName(), Matchers.equalTo("Name: plural project"));
+
+      ProjectVersionPage projectVersionPage = projectAction.createNewProjectVersion(projectPage, "master");
+
+      //can go to project version page
+
+      String url = projectAction.toUrl("project/view/plurals/master");
+
+      projectVersionPage = homePage.goToUrl(url, projectVersionPage);
    }
 }

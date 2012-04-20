@@ -53,7 +53,7 @@ public class HomePage extends AbstractPage
           firstLink.click();
       }
       //else already signed in, no op
-      return PageFactory.initElements(getDriver(), SignInPage.class);
+      return new SignInPage(getDriver());
    }
 
    public boolean hasLoggedIn()
@@ -71,6 +71,6 @@ public class HomePage extends AbstractPage
    public ProjectsPage goToProjects()
    {
       projectsLink.click();
-      return PageFactory.initElements(getDriver(), ProjectsPage.class);
+      return new ProjectsPage(getDriver());
    }
 }

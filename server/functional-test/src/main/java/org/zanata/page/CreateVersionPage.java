@@ -37,7 +37,7 @@ public class CreateVersionPage extends AbstractPage
       super(driver);
    }
 
-   public CreateVersionPage setVersionId(String versionId)
+   public CreateVersionPage inputVersionId(String versionId)
    {
       versionIdField.sendKeys(versionId);
       return this;
@@ -49,9 +49,9 @@ public class CreateVersionPage extends AbstractPage
       return this;
    }
 
-   public ProjectVersionPage save()
+   public ProjectVersionPage saveVersion()
    {
       saveButton.click();
-      return PageFactory.initElements(getDriver(), ProjectVersionPage.class);
+      return new ProjectVersionPage(getDriver());
    }
 }

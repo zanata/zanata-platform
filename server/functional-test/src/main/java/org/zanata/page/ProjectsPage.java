@@ -33,6 +33,6 @@ public class ProjectsPage extends AbstractPage
    public CreateProjectPage clickOnCreateProjectLink()
    {
       createProjectActionLink.click();
-      return PageFactory.initElements(getDriver(), CreateProjectPage.class);
+      return new CreateProjectPage(getDriver());
    }
 }
