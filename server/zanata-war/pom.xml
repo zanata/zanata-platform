@@ -90,9 +90,9 @@
 							<filtering>true</filtering>
 						</resource>
 						<resource>
-                            <directory>src/main/resources/org/zanata/webtrans/images</directory>
+                            <directory>src/main/resources</directory>
                             <includes>
-                                <include>public-img/**</include>
+                                <include>images/**</include>
                             </includes>
                         </resource>
                         <!-- Include the GWT generated resources -->

@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config xmlns="http://zanata.org/namespace/config/">
-	<url>http://localhost:8080/zanata/</url> 
-	
-        <locales>
-                <locale map-from="test">fr</locale>
-        </locales>
+	<url>http://zanata-fearless.lab.eng.bne.redhat.com:8080/</url> 
+        
 </config>

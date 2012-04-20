@@ -33,18 +33,18 @@ public interface TableResources extends ClientBundle
     * An {@link ClientBundle} that provides images for
     * {@link InlineTargetCellEditor}.
     */
-   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/3floppy_unmount.png")
+   @Source("images/crystal_project/_16x16/actions/3floppy_unmount.png")
    ImageResource cellEditorAccept();
 
-   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/button_cancel.png")
+   @Source("images/crystal_project/_16x16/actions/button_cancel.png")
    ImageResource cellEditorCancel();
 
-   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/flag.png")
+   @Source("images/crystal_project/_16x16/actions/flag.png")
    ImageResource cellEditorFuzzy();
 
-   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/2rightarrow.png")
+   @Source("images/crystal_project/_16x16/actions/2rightarrow.png")
    ImageResource copySrcButton();
 
-   @Source("org/zanata/webtrans/images/validate.png")
+   @Source("images/validate.png")
    ImageResource cellEditorValidate();
 }

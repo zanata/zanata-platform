@@ -33,63 +33,63 @@ public interface Resources extends ClientBundle
    @Source("org/zanata/webtrans/WebTransStyles.css")
    WebTransStyles style();
 
-   @Source("org/zanata/webtrans/images/banner_bg.png")
+   @Source("images/banner_bg.png")
    DataResource bannerBackground();
    
-   @Source("org/zanata/webtrans/images/z-logo-16px.png")
+   @Source("images/z-logo-16px.png")
    ImageResource logo();
 
-   @Source("org/zanata/webtrans/images/x.png")
+   @Source("images/x.png")
    ImageResource xButton();
 
-   @Source("org/zanata/webtrans/images/crystal_project/_16x16/filesystems/file_doc.png")
+   @Source("images/crystal_project/_16x16/filesystems/file_doc.png")
    ImageResource documentImage();
 
-   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/info.png")
+   @Source("images/crystal_project/_16x16/actions/info.png")
    ImageResource informationImage();
 
-   @Source("org/zanata/webtrans/images/next_entry.png")
+   @Source("images/next_entry.png")
    ImageResource nextEntry();
 
-   @Source("org/zanata/webtrans/images/prev_entry.png")
+   @Source("images/prev_entry.png")
    ImageResource prevEntry();
 
-   @Source("org/zanata/webtrans/images/next_mode.png")
+   @Source("images/next_mode.png")
    ImageResource nextState();
 
-   @Source("org/zanata/webtrans/images/prev_mode.png")
+   @Source("images/prev_mode.png")
    ImageResource prevState();
 
-   @Source("org/zanata/webtrans/images/first_entry.png")
+   @Source("images/first_entry.png")
    ImageResource firstEntry();
 
-   @Source("org/zanata/webtrans/images/last_entry.png")
+   @Source("images/last_entry.png")
    ImageResource lastEntry();
 
-   @Source("org/zanata/webtrans/images/first_page.png")
+   @Source("images/first_page.png")
    ImageResource firstPageImage();
 
-   @Source("org/zanata/webtrans/images/prev_page.png")
+   @Source("images/prev_page.png")
    ImageResource prevPageImage();
 
-   @Source("org/zanata/webtrans/images/next_page.png")
+   @Source("images/next_page.png")
    ImageResource nextPageImage();
 
-   @Source("org/zanata/webtrans/images/last_page.png")
+   @Source("images/last_page.png")
    ImageResource lastPageImage();
 
-   @Source("org/zanata/webtrans/images/undo.png")
+   @Source("images/undo.png")
    ImageResource undo();
 
-   @Source("org/zanata/webtrans/images/redo.png")
+   @Source("images/redo.png")
    ImageResource redo();
 
-   @Source("org/zanata/webtrans/images/undo_disabled.png")
+   @Source("images/undo_disabled.png")
    ImageResource undoDisabled();
 
-   @Source("org/zanata/webtrans/images/redo_disabled.png")
+   @Source("images/redo_disabled.png")
    ImageResource redoDisabled();
    
-   @Source("org/zanata/webtrans/images/loader.gif")
+   @Source("images/loader.gif")
    ImageResource loader();
 }

@@ -42,7 +42,7 @@
 }
 
 .search_icon {
-	background-image: url(../public-img/crystal_project/_16x16/actions/search.png);
+	background-image: url(../images/crystal_project/_16x16/actions/search.png);
 }
 
 .input_help {
@@ -79,17 +79,17 @@
 }
 
 .message li.infomsg {
-	background-image: url(../public-img/msginfo.png);
+	background-image: url(../images/msginfo.png);
 	background-color: #fafafe;
 }
 
 .message li.errormsg {
-	background-image: url(../public-img/msgerror.png);
+	background-image: url(../images/msgerror.png);
 	background-color: #fefafa;
 }
 
 .message li.warnmsg {
-	background-image: url(../public-img/msgwarn.png);
+	background-image: url(../images/msgwarn.png);
 	background-color: #fefefa;
 }
 
@@ -158,7 +158,7 @@ div.info {
 
 /* Styles from the security-stuff in seamspace*/
 div.checkmark {
-	background: url(../public-img/crystal_project/_16x16/actions/button_ok.png) top left no-repeat;
+	background: url(../images/crystal_project/_16x16/actions/button_ok.png) top left no-repeat;
 	width: 16px;
 	height: 16px;
 	margin-left: auto;
@@ -166,7 +166,7 @@ div.checkmark {
 }
 
 div.cross {
-	background: url(../public-img/crystal_project/_16x16/actions/button_cancel.png) top left no-repeat;
+	background: url(../images/crystal_project/_16x16/actions/button_cancel.png) top left no-repeat;
 	width: 16px;
 	height: 16px;
 	margin-left: auto;
@@ -321,7 +321,7 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 
 /* -----------------------  Footer CSS  -------------------------*/
 #ft {
-	background: url('../public-img/footer_background.png') 0 0 repeat-x;
+	background: url('../images/footer_background.png') 0 0 repeat-x;
 	-moz-border-radius-bottomright: 5px;
 	-moz-border-radius-bottomleft: 5px;
 	border-bottom-right-radius: 5px;
@@ -455,7 +455,7 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 }
 
 #tabs-menu {
-	background: url('../public-img/bar_background.png') 0 0 repeat-x;
+	background: url('../images/bar_background.png') 0 0 repeat-x;
 	border: 1px solid #EAEAEA;
 	border-bottom-color: #CACACA;
 	border-radius: 3px;
@@ -544,7 +544,7 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 
 .ui-tabs-loading em {
 	padding: 0 0 0 20px;
-	background: url(../public-img/loading.gif) no-repeat 0 50%;
+	background: url(../images/loading.gif) no-repeat 0 50%;
 }
 
 .ui-tabs-nav-issues ul li a:hover {
