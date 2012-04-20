@@ -197,7 +197,7 @@ a.action_link {
 	display: block;
 	font-size: 14px;
 	font-weight: bold;
-	background-color: #EDF0FF;
+	background-color: #FFFFFF;
 	border: 1px solid #A2C4F5;
 	padding: 4px;
 	-moz-border-radius: 5px;
@@ -208,7 +208,7 @@ a.action_link {
 }
 
 a.action_link:hover {
-	background-color: #EDF0FF;
+	background-color: #FFFFFF;
 	border:1px solid #990000;
 	color:#990000;
 }
@@ -468,6 +468,8 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 #tabs .ui-tabs-nav {
 	margin: 0 10px;
 	padding:0;
+	position:relative;
+	z-index:1;
 }
 
 #tabs .ui-tabs-nav li {
@@ -552,7 +554,7 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 }
 
 .ui-tabs-nav-issues ul li {
-	width: 250px;
+	width: 180px;
 }
 /* -----------------------  End Top menu CSS  -------------------------*/
 
@@ -633,6 +635,7 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 /* -----------------------  End Customised Language list CSS  -------------------------*/
 
 /* -----------------------  Project iteration CSS  -------------------------*/
+
 .iterations table {
 	border: none;
 }
