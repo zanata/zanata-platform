@@ -13,32 +13,53 @@
     <ui:define name="center_content">
       <rich:jQuery selector="#tab_admin" query="addClass('ui-tabs-selected')" />
       <rich:panel>
-      <h1>#{messages['jsf.Search']}</h1>
+        <h1>#{messages['jsf.Search']}</h1>
                  
         <!-- TODO reformat indentation, change button label id to match progress message id -->
         <a4j:form>
           <s:token allowMultiplePosts="true" />
           <a4j:region>
             <a4j:outputPanel id="reindexPanel">
-              <h:outputText rendered="#{adminAction.reindexError}" escape="false">
+              <h:outputText rendered="#{reindexAction.reindexError}" escape="false">
                 <p>#{messages['jsf.search.reindex.ErrorMessage']}</p>
               </h:outputText>
-              <h:outputText rendered="#{adminAction.reindexError}" escape="false">
+              <h:outputText rendered="#{reindexAction.reindexError}" escape="false">
                 <p>#{messages['jsf.search.reindex.PleaseReindex']}</p>
               </h:outputText>
+
+              <rich:dataTable id="classList" rows="#{reindexAction.classes.size}"
+                              value="#{reindexAction.classes.toArray()}" var="clazz">
+                <rich:column width="270px" sortBy="#{clazz.className}">
+                  <f:facet name="header">Class</f:facet>
+                  <h:outputText value="#{clazz.className}" />
+                </rich:column>
+                <rich:column width="auto" styleClass="centered">
+                  <f:facet name="header">Purge index</f:facet>
+                  <h:selectBooleanCheckbox value="#{clazz.purge}" />
+                </rich:column>
+                <rich:column width="auto" styleClass="centered">
+                  <f:facet name="header">Reindex</f:facet>
+                  <h:selectBooleanCheckbox value="#{clazz.reindex}" />
+                </rich:column>
+                <rich:column width="auto" styleClass="centered">
+                  <f:facet name="header">Optimize</f:facet>
+                  <h:selectBooleanCheckbox value="#{clazz.optimize}" />
+                </rich:column>
+              </rich:dataTable>
+
               <a4j:commandButton id="reindex"
                   value="#{messages['jsf.ReindexFullTextSearchDatabase']}"
-                  action="#{adminAction.reindexDatabase}"
-                  rendered="#{!adminAction.reindexing}"
+                  action="#{reindexAction.reindexDatabase}"
+                  rendered="#{!reindexAction.reindexing}"
                   reRender="reindexPanel"/>
               <!-- minValue is -1 because of a bug when 0 is used -->
               <rich:progressBar id="reindexProgressBar"
-                    value="#{adminAction.reindexProgress}"
+                    value="#{reindexAction.reindexProgress}"
                     interval="1000"
                     label="#{messages['jsf.search.reindex.ProgressMessage']}"
                     minValue="-1"
-                    maxValue="#{adminAction.reindexCount - 1}"
-                    enabled="#{adminAction.reindexing}"
+                    maxValue="#{reindexAction.reindexCount - 1}"
+                    enabled="#{reindexAction.reindexing}"
                     reRenderAfterComplete="reindexPanel">
               </rich:progressBar>
             </a4j:outputPanel>

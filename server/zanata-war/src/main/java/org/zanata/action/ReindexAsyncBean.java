@@ -1,5 +1,7 @@
 package org.zanata.action;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,6 +48,7 @@ public class ReindexAsyncBean
    private FullTextSession session;
 
    private Set<Class<?>> indexables = new HashSet<Class<?>>();
+   private HashMap<Class<?>, ReindexClassOptions> indexingOptions = new HashMap<Class<?>, ReindexClassOptions>();
 
    private boolean reindexing;
 
@@ -71,6 +74,16 @@ public class ReindexAsyncBean
       indexables.add(HTextFlowTarget.class);
       indexables.add(HGlossaryTerm.class);
       indexables.add(HGlossaryEntry.class);
+
+      for (Class<?> clazz : indexables)
+      {
+         indexingOptions.put(clazz, new ReindexClassOptions(clazz));
+      }
+   }
+
+   public Collection<ReindexClassOptions> getReindexOptions()
+   {
+      return indexingOptions.values();
    }
 
    /**
@@ -94,7 +107,10 @@ public class ReindexAsyncBean
       objectCount = 0;
       for (Class<?> clazz : indexables)
       {
-         objectCount += (Integer) session.createCriteria(clazz).setProjection(Projections.rowCount()).list().get(0);
+         if (indexingOptions.get(clazz).isReindex())
+         {
+            objectCount += (Integer) session.createCriteria(clazz).setProjection(Projections.rowCount()).list().get(0);
+         }
       }
       objectProgress = 0;
    }
@@ -111,10 +127,31 @@ public class ReindexAsyncBean
          throw new RuntimeException("startReindex() must not be called before prepareReindex()");
       }
 
-      // reindex all @Indexed entities
       for (Class<?> clazz : indexables)
       {
-         reindex(clazz);
+         if (indexingOptions.get(clazz).isPurge())
+         {
+            log.info("purging index for {0}", clazz);
+            session.purgeAll(clazz);
+         }
+      }
+
+      for (Class<?> clazz : indexables)
+      {
+         if (indexingOptions.get(clazz).isReindex())
+         {
+            log.info("reindexing {0}", clazz);
+            reindex(clazz);
+         }
+      }
+
+      for (Class<?> clazz : indexables)
+      {
+         if (indexingOptions.get(clazz).isOptimize())
+         {
+            log.info("optimizing {0}", clazz);
+            session.getSearchFactory().optimize(clazz);
+         }
       }
 
       if (objectCount != objectProgress)
@@ -137,11 +174,9 @@ public class ReindexAsyncBean
       ScrollableResults results = null;
       try
       {
-         session.purgeAll(clazz);
-
          // TODO try this, see how it affects reindexing time:
          //session.flushToIndexes();
-         //session.getSearchFactory().optimize(clazz);
+//         session.getSearchFactory().optimize(clazz);
 
          session.setFlushMode(FlushMode.MANUAL);
          session.setCacheMode(CacheMode.IGNORE);
@@ -161,8 +196,6 @@ public class ReindexAsyncBean
             }
          }
          session.flushToIndexes(); // apply changes to indexes
-         // TODO try this too, see how it affects reindexing time:
-         //session.getSearchFactory().optimize(clazz);
          session.clear(); // clear since the queue is processed
       }
       catch (Exception e)
