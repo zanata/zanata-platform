@@ -340,12 +340,18 @@
 
             <addUniqueConstraint tableName="HIterationGroup" columnNames="slug" constraintName="UKslug" />
         </changeSet>
-
+        
         <changeSet author="aeng@redhat.com" id="22">
+        	<validCheckSum>3:b6b41ac0d5d2e3c845648820ee8c0d3c</validCheckSum>
+        	<validCheckSum>3:3d37d4f1aa7834724d24b14dcf83b980</validCheckSum>
             <comment>Add table to store many-many HIterationGroup to HPerson</comment>
             <createTable tableName="HIterationGroup_Maintainer">
-                <column name="iterationGroupId" type="bigint"/>
-                <column name="personId" type="bigint"/>
+                <column name="iterationGroupId" type="bigint">
+                	<constraints nullable="false" />
+                </column>
+                <column name="personId" type="bigint">
+                	<constraints nullable="false" />
+                </column>
             </createTable>
             <addPrimaryKey tableName="HIterationGroup_Maintainer" columnNames="iterationGroupId, personId" />
             <addForeignKeyConstraint baseTableName="HIterationGroup_Maintainer"
@@ -358,10 +364,16 @@
         </changeSet>
 
         <changeSet author="aeng@redhat.com" id="23">
+        	<validCheckSum>3:48c0417c4fb3a5d5c9286c0abf33fcd0</validCheckSum>
+        	<validCheckSum>3:68c32a3f8874d1779f8d6fef0f5bb4b6</validCheckSum>
             <comment>Add table to store many-many HIterationGroup to HProjectIteration</comment>
             <createTable tableName="HIterationGroup_ProjectIteration">
-                <column name="iterationGroupId" type="bigint"/>
-                <column name="projectIterationId" type="bigint"/>
+                <column name="iterationGroupId" type="bigint">
+                	<constraints nullable="false" />
+                </column>
+                <column name="projectIterationId" type="bigint">
+                	<constraints nullable="false" />
+                </column>
             </createTable>
             <addPrimaryKey tableName="HIterationGroup_ProjectIteration" columnNames="iterationGroupId, projectIterationId" />
             <addForeignKeyConstraint baseTableName="HIterationGroup_ProjectIteration"
@@ -372,5 +384,6 @@
                                      baseColumnNames="projectIterationId" constraintName="FKiterationGroup_ProjectIteration_projectIterationId"
                                      referencedTableName="HProjectIteration" referencedColumnNames="id" />
         </changeSet>
+        
 
 </databaseChangeLog>
