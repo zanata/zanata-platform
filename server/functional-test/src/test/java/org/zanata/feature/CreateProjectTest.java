@@ -30,19 +30,21 @@ public class CreateProjectTest
 
    @Test
    public void canCreateProjectAndVersion() {
+      final String projectId = "plurals";
+      final String projectVersion = "master";
+      final String projectName = "plural project";
+
       HomePage homePage = new LoginAction().signIn("admin", "admin");
       ProjectAction projectAction = new ProjectAction();
-      ProjectPage projectPage = projectAction.createNewProject(homePage, "plurals", "plural project");
+      ProjectPage projectPage = projectAction.createNewProject(homePage, projectId, projectName);
 
-      assertThat(projectPage.getProjectId(), Matchers.equalTo("Project ID: plurals"));
+      assertThat(projectPage.getProjectId(), Matchers.equalTo("Project ID: " + projectId));
       assertThat(projectPage.getProjectName(), Matchers.equalTo("Name: plural project"));
 
-      ProjectVersionPage projectVersionPage = projectAction.createNewProjectVersion(projectPage, "master");
+      ProjectVersionPage projectVersionPage = projectAction.createNewProjectVersion(projectPage, projectVersion);
 
       //can go to project version page
-
-      String url = projectAction.toUrl("project/view/plurals/master");
-
-      projectVersionPage = homePage.goToUrl(url, projectVersionPage);
+      projectPage = projectAction.goToProjectByName(projectVersionPage, projectName);
+      projectVersionPage = projectPage.goToActiveVersion(projectVersion);
    }
 }

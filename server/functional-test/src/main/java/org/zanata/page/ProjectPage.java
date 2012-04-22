@@ -27,12 +27,16 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.ByChained;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
 public class ProjectPage extends AbstractPage
 {
+   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectPage.class);
+
    @FindBy(id = "main_content")
    private WebElement mainContent;
    private final List<WebElement> h1;
@@ -40,8 +44,8 @@ public class ProjectPage extends AbstractPage
    @FindBy(linkText = "Create Version")
    private WebElement createVersionLink;
 
-   @FindBy(className = "version_link", tagName = "a")
-   private List<WebElement> versionLinks;
+   @FindBy(id = "main_content:activeIterations")
+   private WebElement activeVersions;
 
    public ProjectPage(final WebDriver driver)
    {
@@ -68,16 +72,21 @@ public class ProjectPage extends AbstractPage
 
    public ProjectVersionPage goToActiveVersion(final String versionId)
    {
-      Preconditions.checkState(versionLinks != null && !versionLinks.isEmpty(), "no version links available");
+      List<WebElement> versionLinks = activeVersions.findElements(By.tagName("a"));
+      LOGGER.info("found {} active versions", versionLinks.size());
+
+      Preconditions.checkState(!versionLinks.isEmpty(), "no version links available");
       Collection<WebElement> found = Collections2.filter(versionLinks, new Predicate<WebElement>()
       {
          @Override
          public boolean apply(WebElement input)
          {
-            return input.getText().equals(versionId);
+            //the link text has line break in it
+            String linkText = input.getText().replaceAll("\\n", " ");
+            return linkText.matches(versionId + "\\s+Documents:.+");
          }
       });
-      Preconditions.checkState(found.size() != 1, versionId + " not found");
+      Preconditions.checkState(found.size() == 1, versionId + " not found");
       found.iterator().next().click();
       return new ProjectVersionPage(getDriver());
    }

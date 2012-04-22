@@ -19,17 +19,21 @@ import java.util.Collection;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class AbstractPage
 {
@@ -90,5 +94,13 @@ public class AbstractPage
       driver.get(url);
       PageFactory.initElements(new AjaxElementLocatorFactory(driver, 30), page);
       return page;
+   }
+
+   protected FluentWait<WebDriver> ajaxWait()
+   {
+      return new FluentWait<WebDriver>(getDriver())
+            .withTimeout(10, SECONDS)
+            .pollingEvery(1, SECONDS)
+            .ignoring(NoSuchElementException.class);
    }
 }

@@ -16,6 +16,7 @@
 package org.zanata.action;
 
 import org.openqa.selenium.WebDriver;
+import org.zanata.page.HomePage;
 import org.zanata.page.WebDriverFactory;
 
 public class AbstractAction
@@ -29,6 +30,12 @@ public class AbstractAction
       hostUrl = appendTrailingSlash(baseUrl);
       driver = WebDriverFactory.INSTANCE.getDriver();
       driver.get(hostUrl);
+   }
+
+   public HomePage goToHome()
+   {
+      driver.get(hostUrl);
+      return new HomePage(driver);
    }
 
    private static String appendTrailingSlash(String baseUrl)

@@ -15,9 +15,11 @@
  */
 package org.zanata.action;
 
+import org.zanata.page.AbstractPage;
 import org.zanata.page.HomePage;
 import org.zanata.page.ProjectPage;
 import org.zanata.page.ProjectVersionPage;
+import org.zanata.page.ProjectsPage;
 
 public class ProjectAction extends AbstractAction
 {
@@ -35,5 +37,11 @@ public class ProjectAction extends AbstractAction
       return projectPage.clickCreateVersionLink()
             .inputVersionId(projectVersion)
             .saveVersion();
+   }
+
+   public <P extends AbstractPage> ProjectPage goToProjectByName(P page, String projectName)
+   {
+      ProjectsPage projects = page.goToPage("Projects", ProjectsPage.class);
+      return projects.goToProject(projectName);
    }
 }

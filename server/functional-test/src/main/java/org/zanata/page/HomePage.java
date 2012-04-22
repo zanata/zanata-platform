@@ -73,4 +73,11 @@ public class HomePage extends AbstractPage
       projectsLink.click();
       return new ProjectsPage(getDriver());
    }
+
+   public AdministrationPage goToAdministration()
+   {
+      WebElement adminLink = getDriver().findElement(By.id("Administration"));
+      adminLink.click();
+      return new AdministrationPage(getDriver());
+   }
 }

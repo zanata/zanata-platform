@@ -15,33 +15,23 @@
  */
 package org.zanata.page;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import com.google.common.base.Preconditions;
 
-public class ProjectsPage extends AbstractPage
+public class AdministrationPage extends AbstractPage
 {
-   @FindBy(linkText = "Create project")
-   private WebElement createProjectActionLink;
+   @FindBy(id = "Admin_Manage_languages_a_home")
+   private WebElement manageLanguagesLink;
 
-   public ProjectsPage(final WebDriver driver)
+   public AdministrationPage(WebDriver driver)
    {
       super(driver);
    }
 
-   public CreateProjectPage clickOnCreateProjectLink()
+   public ManageLanguagePage goToManageLanguagePage()
    {
-      createProjectActionLink.click();
-      return new CreateProjectPage(getDriver());
-   }
-
-   public ProjectPage goToProject(String projectName)
-   {
-      WebElement link = getDriver().findElement(By.linkText(projectName));
-      link.click();
-      return new ProjectPage(getDriver());
+      manageLanguagesLink.click();
+      return new ManageLanguagePage(getDriver());
    }
 }
