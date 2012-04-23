@@ -26,7 +26,7 @@ public class CreateVersionPage extends AbstractPage
    @FindBy(id = "iterationForm:slugField:slug")
    private WebElement versionIdField;
 
-   @FindBy(name = "iterationForm:statusField:j_id98")
+   @FindBy(tagName = "select")
    private WebElement statusSelection;
 
    @FindBy(id = "iterationForm:save")

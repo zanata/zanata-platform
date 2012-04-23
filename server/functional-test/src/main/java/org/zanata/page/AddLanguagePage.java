@@ -22,10 +22,10 @@ import org.openqa.selenium.support.ui.Select;
 
 public class AddLanguagePage extends AbstractPage
 {
-   @FindBy(id = "j_id76:localeField:selectLocale")
+   @FindBy(tagName = "select")
    private WebElement languageSelection;
 
-   @FindBy(name = "j_id76:j_id121")
+   @FindBy(xpath = "//input[@value='Save']")
    private WebElement saveButton;
 
    public AddLanguagePage(final WebDriver driver)

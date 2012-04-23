@@ -21,13 +21,18 @@ public class LanguageAction extends AbstractAction
 {
    public ManageLanguagePage addLanguageAndJoin(String localeId)
    {
-      ManageLanguagePage manageLanguagePage = goToHome()
+      ManageLanguagePage manageLanguagePage = addLanguage(localeId);
+      manageLanguagePage = manageLanguagePage.manageTeamMembersFor(localeId);
+      return manageLanguagePage.joinLanguageTeam();
+   }
+
+   public ManageLanguagePage addLanguage(String localeId)
+   {
+      return goToHome()
             .goToAdministration()
             .goToManageLanguagePage()
             .addNewLanguage()
             .selectLanguage(localeId)
             .saveLanguage();
-      manageLanguagePage = manageLanguagePage.manageTeamMembersFor(localeId);
-      return manageLanguagePage.joinLanguageTeam();
    }
 }

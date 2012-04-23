@@ -44,12 +44,22 @@ public class AbstractPage
 
    private WebDriver driver;
    private final List<WebElement> navMenuItems;
+   private FluentWait<WebDriver> ajaxWaitForTenSec;
 
    public AbstractPage(final WebDriver driver)
    {
       PageFactory.initElements(new AjaxElementLocatorFactory(driver, 30), this);
       this.driver = driver;
+      ajaxWaitForTenSec = createWaitForAjax(driver, 10);
       navMenuItems = navMenu.findElements(By.tagName("a"));
+   }
+
+   public static FluentWait<WebDriver> createWaitForAjax(WebDriver webDriver, int durationInSec)
+   {
+      return new FluentWait<WebDriver>(webDriver)
+            .withTimeout(durationInSec, SECONDS)
+            .pollingEvery(1, SECONDS)
+            .ignoring(NoSuchElementException.class);
    }
 
    public WebDriver getDriver()
@@ -96,11 +106,8 @@ public class AbstractPage
       return page;
    }
 
-   protected FluentWait<WebDriver> ajaxWait()
+   public FluentWait<WebDriver> waitForTenSec()
    {
-      return new FluentWait<WebDriver>(getDriver())
-            .withTimeout(10, SECONDS)
-            .pollingEvery(1, SECONDS)
-            .ignoring(NoSuchElementException.class);
+      return ajaxWaitForTenSec;
    }
 }

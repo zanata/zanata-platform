@@ -35,7 +35,7 @@ public class CreateProjectPage extends AbstractPage
    @FindBy(id = "projectForm:homeContentField:homeContentTextArea")
    private WebElement homeContentTextArea;
 
-   @FindBy(name = "projectForm:statusField:j_id130")
+   @FindBy(tagName = "select")
    private WebElement statusSelection;
 
    @FindBy(id = "projectForm:save")

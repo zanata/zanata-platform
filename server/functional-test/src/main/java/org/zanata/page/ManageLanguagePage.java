@@ -20,10 +20,13 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.google.common.base.Function;
 
 public class ManageLanguagePage extends AbstractPage
 {
+   private static final Logger LOGGER = LoggerFactory.getLogger(ManageLanguagePage.class);
 
    public ManageLanguagePage(WebDriver driver)
    {
@@ -38,15 +41,16 @@ public class ManageLanguagePage extends AbstractPage
 
    public ManageLanguagePage manageTeamMembersFor(String localeId)
    {
-      //FIXME this part is not working
       List<WebElement> languageTableRows = getDriver().findElements(By.className("rich-table-row"));
-      for (WebElement row : languageTableRows)
+      for (int i = 0, languageTableRowsSize = languageTableRows.size(); i < languageTableRowsSize; i++)
       {
-         List<WebElement> tableCells = row.findElements(By.tagName("td"));
-         if (tableCells.get(0).getText().contains(localeId))
+         WebElement row = languageTableRows.get(i);
+         LOGGER.info("tabel row is: {}", row.getText());
+         if (row.getText().contains(localeId))
          {
-            WebElement teamMembersButton = tableCells.get(3).findElement(By.xpath("//input[@value='Team Members']"));
-            teamMembersButton.click();
+            LOGGER.info("about to click team members button #{}", i);
+            List<WebElement> teamMembersButtons = row.findElements(By.xpath("//input[@value='Team Members']"));
+            teamMembersButtons.get(i).click();
             return this;
          }
       }
@@ -55,9 +59,9 @@ public class ManageLanguagePage extends AbstractPage
 
    public ManageLanguagePage joinLanguageTeam()
    {
-      // Waiting 30 seconds for an element to be present on the page, checking
+      // Waiting 10 seconds for an element to be present on the page, checking
       // for its presence once every 1 second.
-      WebElement joinLanguageTeamLink = ajaxWait().until(new Function<WebDriver, WebElement>()
+      WebElement joinLanguageTeamLink = waitForTenSec().until(new Function<WebDriver, WebElement>()
       {
          public WebElement apply(WebDriver driver)
          {

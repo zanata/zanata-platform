@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-parent</artifactId>
-        <version>1.6-SNAPSHOT</version>
+        <version>1.6.0-alpha-2-SNAPSHOT</version>
         <relativePath>../../zanata-parent/pom.xml</relativePath>
     </parent>
     <groupId>org.zanata</groupId>
@@ -43,7 +43,7 @@
         <ds.password/>
 
         <!--target zanata instance-->
-        <zanata.target.version>${project.version}</zanata.target.version>
+        <zanata.target.version>${parent.version}</zanata.target.version>
         <zanata.instance.url>http://${cargo.host}:8080/${context.path}</zanata.instance.url>
         <zanata.client.version>${project.version}</zanata.client.version>
         <functional-tests.skip>false</functional-tests.skip>

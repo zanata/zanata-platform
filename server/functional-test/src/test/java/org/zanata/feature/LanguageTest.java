@@ -26,8 +26,8 @@ public class LanguageTest
    {
       new LoginAction().signIn("admin", "admin");
       LanguageAction languageAction = new LanguageAction();
-//      languageAction.addLanguageAndJoin("en-US");
-//      languageAction.addLanguageAndJoin("pl");
+      languageAction.addLanguageAndJoin("en-US");
+      languageAction.addLanguageAndJoin("pl");
       languageAction.addLanguageAndJoin("zh");
    }
 }
