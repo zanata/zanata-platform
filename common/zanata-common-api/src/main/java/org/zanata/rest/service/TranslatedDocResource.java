@@ -41,55 +41,14 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
+import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
+
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface TranslationResourcesResource
+public interface TranslatedDocResource
 {
-   public static final String RESOURCE_SLUG_TEMPLATE = "/{id:[a-zA-Z0-9]+([a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?}";
-
-
-   @HEAD
-   public Response head();
-
-   /**
-    * Retrieve the List of Resources
-    * 
-    * @return Response.ok with ResourcesList or Response(404) if not found
-    */
-   @GET
-   @Wrapped(element = "resources", namespace = Namespaces.ZANATA_API)
-   public Response get(@QueryParam("ext") Set<String> extensions);
-
-   @POST
-   public Response post(Resource resource, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
-
-   @GET
-   @Path(RESOURCE_SLUG_TEMPLATE)
-   // /r/{id}
-   public Response getResource(@PathParam("id") String idNoSlash, @QueryParam("ext") Set<String> extensions);
-
-   @PUT
-   @Path(RESOURCE_SLUG_TEMPLATE)
-   // /r/{id}
-   public Response putResource(@PathParam("id") String idNoSlash, Resource resource, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
-
-   @DELETE
-   @Path(RESOURCE_SLUG_TEMPLATE)
-   // /r/{id}
-   public Response deleteResource(@PathParam("id") String idNoSlash);
-
-   @GET
-   @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
-   // /r/{id}/meta
-   public Response getResourceMeta(@PathParam("id") String idNoSlash, @QueryParam("ext") Set<String> extensions);
-
-   @PUT
-   @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
-   // /r/{id}/meta
-   public Response putResourceMeta(@PathParam("id") String idNoSlash, ResourceMeta messageBody, @QueryParam("ext") Set<String> extensions);
-
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}

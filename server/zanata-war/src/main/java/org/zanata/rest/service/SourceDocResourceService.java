@@ -20,25 +20,42 @@
  */
 package org.zanata.rest.service;
 
-import static org.zanata.service.impl.TranslationServiceImpl.validateExtensions;
-import static org.zanata.util.StringUtil.allEmpty;
-import static org.zanata.util.StringUtil.allNonEmpty;
-
-import java.lang.reflect.Type;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import org.codehaus.enunciate.jaxrs.TypeHint;
+import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
+import org.jboss.resteasy.util.GenericType;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.log.Log;
+import org.jboss.seam.log.Logging;
+import org.zanata.ApplicationConfiguration;
+import org.zanata.common.EntityStatus;
+import org.zanata.common.LocaleId;
+import org.zanata.common.Namespaces;
+import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.exception.ZanataServiceException;
+import org.zanata.model.HDocument;
+import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlow;
+import org.zanata.rest.NoSuchEntityException;
+import org.zanata.rest.ReadOnlyEntityException;
+import org.zanata.rest.dto.resource.Resource;
+import org.zanata.rest.dto.resource.ResourceMeta;
+import org.zanata.rest.dto.resource.TextFlow;
+import org.zanata.service.CopyTransService;
+import org.zanata.service.LocaleService;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -49,80 +66,40 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.enunciate.jaxrs.TypeHint;
-import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
-import org.jboss.resteasy.util.GenericType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
-import org.jboss.seam.security.Identity;
-import org.zanata.ApplicationConfiguration;
-import org.zanata.common.ContentState;
-import org.zanata.common.EntityStatus;
-import org.zanata.common.LocaleId;
-import org.zanata.common.MergeType;
-import org.zanata.common.Namespaces;
-import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.PersonDAO;
-import org.zanata.dao.ProjectDAO;
-import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.dao.TextFlowDAO;
-import org.zanata.dao.TextFlowTargetDAO;
-import org.zanata.dao.TextFlowTargetHistoryDAO;
-import org.zanata.exception.ZanataServiceException;
-import org.zanata.model.HDocument;
-import org.zanata.model.HLocale;
-import org.zanata.model.HPerson;
-import org.zanata.model.HProject;
-import org.zanata.model.HProjectIteration;
-import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
-import org.zanata.rest.NoSuchEntityException;
-import org.zanata.rest.ReadOnlyEntityException;
-import org.zanata.rest.dto.extensions.gettext.PoHeader;
-import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
-import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.ResourceMeta;
-import org.zanata.rest.dto.resource.TextFlow;
-import org.zanata.rest.dto.resource.TextFlowTarget;
-import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.service.CopyTransService;
-import org.zanata.service.LocaleService;
+import static org.zanata.service.impl.TranslationServiceImpl.validateExtensions;
 
-import com.google.common.collect.Sets;
-import org.zanata.service.TranslationService;
-
-@Name("translationResourcesService")
-@Path(TranslationResourcesService.SERVICE_PATH)
+/**
+ * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ */
+@Name("sourceDocResourceService")
+@Path(SourceDocResourceService.SERVICE_PATH)
 @Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Consumes( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Transactional
-/**
- * This service allows clients to push and pull both source documents and translations.
- */
-public class TranslationResourcesService implements TranslationResourcesResource
+public class SourceDocResourceService implements SourceDocResource
 {
-
-   // security actions
-   private static final String ACTION_IMPORT_TEMPLATE = "import-template";
-   private static final String ACTION_IMPORT_TRANSLATION = "import-translation";
-
    public static final String SERVICE_PATH = ProjectIterationService.SERVICE_PATH + "/r";
 
-   public static final String EVENT_COPY_TRANS = "org.zanata.rest.service.copyTrans";
-   
+   @Logger
+   private Log log;
+
+   @Context
+   private Request request;
+
+   @Context
+   private UriInfo uri;
+
    /** Project Identifier. */
    @PathParam("projectSlug")
    private String projectSlug;
@@ -131,94 +108,65 @@ public class TranslationResourcesService implements TranslationResourcesResource
    @PathParam("iterationSlug")
    private String iterationSlug;
 
-   /** (This parameter is optional and is currently not used) */
-   @HeaderParam("Content-Type")
-   @Context
-   private MediaType requestContentType;
-
-   @Context
-   private HttpHeaders headers;
-
-   @Context
-   private Request request;
-
-   @Context
-   private UriInfo uri;
-
    @In
-   private ApplicationConfiguration applicationConfiguration;
+   private ProjectDAO projectDAO;
 
    @In
    private ProjectIterationDAO projectIterationDAO;
 
    @In
-   private ProjectDAO projectDAO;
-
-   @In
    private DocumentDAO documentDAO;
 
    @In
-   private TextFlowTargetDAO textFlowTargetDAO;
+   private LocaleService localeServiceImpl;
+
+   @In
+   private CopyTransService copyTransServiceImpl;
+
+   @In
+   private ApplicationConfiguration applicationConfiguration;
 
    @In
    private ResourceUtils resourceUtils;
 
    @In
    private ETagUtils eTagUtils;
-   
-   @In
-   private CopyTransService copyTransServiceImpl;
-
-   @In
-   private TranslationService translationServiceImpl;
-
-   private final Log log = Logging.getLog(TranslationResourcesService.class);
-
-   @In
-   private LocaleService localeServiceImpl;
 
 
-   public TranslationResourcesService()
+   public SourceDocResourceService()
    {
    }
 
-   // TODO break up this class (too many responsibilities)
-
-// @formatter:off
-   public TranslationResourcesService(
-      ApplicationConfiguration applicationConfiguration,
-      ProjectIterationDAO projectIterationDAO,
-      ProjectDAO projectDAO,
-      DocumentDAO documentDAO,
-      TextFlowTargetDAO textFlowTargetDAO,
-      ResourceUtils resourceUtils,
-      Identity identity,
-      ETagUtils eTagUtils,
-      LocaleService localeService,
-      CopyTransService copyTransService,
-      TranslationService translationService
-   )
-// @formatter:on
+   // @formatter:off
+   public SourceDocResourceService(ProjectDAO projectDAO,
+                                   ProjectIterationDAO projectIterationDAO,
+                                   DocumentDAO documentDAO,
+                                   LocaleService localeService,
+                                   CopyTransService copyTransService,
+                                   ApplicationConfiguration applicationConfiguration,
+                                   ResourceUtils resourceUtils,
+                                   ETagUtils eTagUtils
+                                   )
    {
-      this.applicationConfiguration = applicationConfiguration;
-      this.projectIterationDAO = projectIterationDAO;
       this.projectDAO = projectDAO;
+      this.projectIterationDAO = projectIterationDAO;
       this.documentDAO = documentDAO;
-      this.textFlowTargetDAO = textFlowTargetDAO;
-      this.resourceUtils = resourceUtils;
-      this.eTagUtils = eTagUtils;
       this.localeServiceImpl = localeService;
       this.copyTransServiceImpl = copyTransService;
-      this.translationServiceImpl = translationService;
+      this.applicationConfiguration = applicationConfiguration;
+      this.resourceUtils = resourceUtils;
+      this.eTagUtils = eTagUtils;
+      this.log = Logging.getLog(SourceDocResourceService.class);
    }
+   // @formatter:on
 
    /**
     * Returns header information for a Project's iteration translations.
-    * 
+    *
     * @return The following response status codes will be returned from this operation:<br>
     * OK(200) - Response containing an "Etag" header for the requested project iteration translations.<br>
     * NOT FOUND(404) - If a project iteration could not be found for the given parameters.<br>
-    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.  
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
     */
    @Override
    @HEAD
@@ -226,7 +174,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    {
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
       EntityTag etag = projectIterationDAO.getResourcesETag(hProjectIteration);
-      ResponseBuilder response = request.evaluatePreconditions(etag);
+      Response.ResponseBuilder response = request.evaluatePreconditions(etag);
       if (response != null)
       {
          return response.build();
@@ -236,7 +184,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
    /**
     * Retrieve the List of Documents (Resources) belonging to a Project iteration.
-    * 
+    *
     * @param extensions The document extensions to fetch along with the documents (e.g. "gettext", "comment"). This parameter
     * allows multiple values e.g. "ext=gettext&ext=comment".
     * @return  The following response status codes will be returned from this operation:<br>
@@ -254,7 +202,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
       EntityTag etag = projectIterationDAO.getResourcesETag(hProjectIteration);
 
-      ResponseBuilder response = request.evaluatePreconditions(etag);
+      Response.ResponseBuilder response = request.evaluatePreconditions(etag);
       if (response != null)
       {
          return response.build();
@@ -283,11 +231,11 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
    /**
     * Creates a new Document.
-    * 
+    *
     * @param resource The document information.
     * @param extensions The document extensions to save with the new document (e.g. "gettext", "comment"). This parameter
     * allows multiple values e.g. "ext=gettext&ext=comment".
-    * @param copytrans Boolean value that indicates whether reasonably close translations from other projects should be 
+    * @param copytrans Boolean value that indicates whether reasonably close translations from other projects should be
     * found to initially populate this document's translations.
     * @return The following response status codes will be returned from this operation:<br>
     * CREATED (201) - If the document was successfully created.<br>
@@ -312,7 +260,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
          if (!document.isObsolete())
          {
             // updates must happen through PUT on the actual resource
-            return Response.status(Status.CONFLICT).entity("A document with name " + resource.getName() + " already exists.").build();
+            return Response.status(Response.Status.CONFLICT).entity("A document with name " + resource.getName() + " already exists.").build();
          }
          // a deleted document is being created again
          nextDocRev = document.getRevision() + 1;
@@ -325,17 +273,17 @@ public class TranslationResourcesService implements TranslationResourcesResource
          document.setProjectIteration(hProjectIteration);
       }
       hProjectIteration.getDocuments().put(resource.getName(), document);
-      
+
       resourceUtils.transferFromResource(resource, document, extensions, hLocale, nextDocRev);
 
       document = documentDAO.makePersistent(document);
       documentDAO.flush();
-      
+
       if (copytrans && nextDocRev == 1)
       {
          copyClosestEquivalentTranslation(document);
       }
-           
+
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, document.getDocId(), extensions);
 
       return Response.created(URI.create("r/" + resourceUtils.encodeDocId(document.getDocId()))).tag(etag).build();
@@ -343,14 +291,14 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
    /**
     * Retrieves information for a Document.
-    * 
+    *
     * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
-    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/' 
+    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/'
     * characters replaced with commas (',').
     * @param extensions The document extensions to fetch along with the document (e.g. "gettext", "comment"). This parameter
     * allows multiple values e.g. "ext=gettext&ext=comment".
     * @return The following response status codes will be returned from this operation:<br>
-    * OK(200) - Response with the document's information.<br> 
+    * OK(200) - Response with the document's information.<br>
     * NOT FOUND(404) - If a document could not be found with the given parameters.<br>
     * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
     */
@@ -370,7 +318,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
       final Set<String> extSet = new HashSet<String>(extensions);
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extSet);
 
-      ResponseBuilder response = request.evaluatePreconditions(etag);
+      Response.ResponseBuilder response = request.evaluatePreconditions(etag);
       if (response != null)
       {
          return response.build();
@@ -380,7 +328,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
       if (doc == null || doc.isObsolete())
       {
-         return Response.status(Status.NOT_FOUND).entity("document not found").build();
+         return Response.status(Response.Status.NOT_FOUND).entity("document not found").build();
       }
 
       Resource entity = new Resource(doc.getDocId());
@@ -401,42 +349,16 @@ public class TranslationResourcesService implements TranslationResourcesResource
       return Response.ok().entity(entity).tag(etag).lastModified(doc.getLastChanged()).build();
    }
 
-   private HLocale validateTargetLocale(LocaleId locale, String projectSlug, String iterationSlug)
-   {
-      HLocale hLocale;
-      try
-      {
-         hLocale = localeServiceImpl.validateLocaleByProjectIteration(locale, projectSlug, iterationSlug);
-         return hLocale;
-      }
-      catch (ZanataServiceException e)
-      {
-         throw new WebApplicationException(Response.status(Status.FORBIDDEN).entity(e.getMessage()).build());
-      }
-   }
-
-   private HLocale validateSourceLocale(LocaleId locale)
-   {
-      try
-      {
-         return localeServiceImpl.validateSourceLocale(locale);
-      }
-      catch (ZanataServiceException e)
-      {
-         throw new WebApplicationException(Response.status(Status.FORBIDDEN).entity(e.getMessage()).build());
-      }
-   }
-   
    /**
     * Creates or modifies a Document.
-    * 
+    *
     * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
-    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/' 
+    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/'
     * characters replaced with commas (',').
     * @param resource The document information.
     * @param extensions The document extensions to save with the document (e.g. "gettext", "comment"). This parameter
     * allows multiple values e.g. "ext=gettext&ext=comment".
-    * @param copytrans Boolean value that indicates whether reasonably close translations from other projects should be 
+    * @param copytrans Boolean value that indicates whether reasonably close translations from other projects should be
     * found to initially populate this document's translations.
     * @return The following response status codes will be returned from this operation:<br>
     * CREATED(201) - If a new document was successfully created.<br>
@@ -456,7 +378,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    {
       log.debug("start put resource");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      ResponseBuilder response;
+      Response.ResponseBuilder response;
       EntityTag etag = null;
       boolean changed = false;
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
@@ -464,7 +386,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
       validateExtensions(extensions);
 
       log.debug("resource details: {0}", resource);
-      
+
       HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, id);
       HLocale hLocale = validateSourceLocale(resource.getLang());
       int nextDocRev;
@@ -523,16 +445,16 @@ public class TranslationResourcesService implements TranslationResourcesResource
       {
          copyClosestEquivalentTranslation(document);
       }
-      
+
       log.debug("put resource successfully");
       return response.tag(etag).build();
    }
 
    /**
     * Delete a Document. The system keeps the history of this document however.
-    * 
+    *
     * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
-    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/' 
+    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/'
     * characters replaced with commas (',').
     * @return The following response status codes will be returned from this operation:<br>
     * OK(200) - If The document was successfully deleted.<br>
@@ -554,7 +476,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, new HashSet<String>());
 
-      ResponseBuilder response = request.evaluatePreconditions(etag);
+      Response.ResponseBuilder response = request.evaluatePreconditions(etag);
       if (response != null)
       {
          return response.build();
@@ -568,11 +490,11 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
    /**
     * Retrieves meta-data information for a Document.
-    * 
+    *
     * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
-    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/' 
+    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/'
     * characters replaced with commas (',').
-    * @param extensions The document extensions to retrieve with the document's meta-data (e.g. "gettext", "comment"). 
+    * @param extensions The document extensions to retrieve with the document's meta-data (e.g. "gettext", "comment").
     * This parameter allows multiple values e.g. "ext=gettext&ext=comment".
     * @return The following response status codes will be returned from this operation:<br>
     * OK(200) - If the Document's meta-data was found. The data will be contained in the response.<br>
@@ -592,7 +514,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 
-      ResponseBuilder response = request.evaluatePreconditions(etag);
+      Response.ResponseBuilder response = request.evaluatePreconditions(etag);
       if (response != null)
       {
          return response.build();
@@ -602,7 +524,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
       if (doc == null)
       {
-         return Response.status(Status.NOT_FOUND).entity("document not found").build();
+         return Response.status(Response.Status.NOT_FOUND).entity("document not found").build();
       }
 
       ResourceMeta entity = new ResourceMeta(doc.getDocId());
@@ -617,9 +539,9 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
    /**
     * Modifies an existing document's meta-data.
-    * 
+    *
     * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
-    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/' 
+    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/'
     * characters replaced with commas (',').
     * @param messageBody The document's meta-data.
     * @param extensions The document extensions to save with the document (e.g. "gettext", "comment"). This parameter
@@ -643,7 +565,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 
-      ResponseBuilder response = request.evaluatePreconditions(etag);
+      Response.ResponseBuilder response = request.evaluatePreconditions(etag);
       if (response != null)
       {
          return response.build();
@@ -655,11 +577,11 @@ public class TranslationResourcesService implements TranslationResourcesResource
       HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, id);
       if (document == null)
       {
-         return Response.status(Status.NOT_FOUND).build();
+         return Response.status(Response.Status.NOT_FOUND).build();
       }
       if (document.isObsolete())
       {
-         return Response.status(Status.NOT_FOUND).build();
+         return Response.status(Response.Status.NOT_FOUND).build();
       }
       HLocale hLocale = validateTargetLocale(messageBody.getLang(), projectSlug, iterationSlug);
       boolean changed = resourceUtils.transferFromResourceMetadata(messageBody, document, extensions, hLocale, document.getRevision() + 1);
@@ -673,189 +595,6 @@ public class TranslationResourcesService implements TranslationResourcesResource
       log.debug("put resource meta successfully");
       return Response.ok().tag(etag).lastModified(document.getLastChanged()).build();
 
-   }
-
-   /**
-    * Retrieves a set of translations for a given locale.
-    * 
-    * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
-    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/' 
-    * characters replaced with commas (',').
-    * @param locale The locale for which to get translations.
-    * @param extensions The translation extensions to retrieve (e.g. "comment"). This parameter
-    * allows multiple values.
-    * @return The following response status codes will be returned from this operation:<br>
-    * OK(200) - Successfully retrieved translations. The data will be contained in the response.<br>
-    * NOT FOUND(404) - If a project, project iteration or document could not be found with the given parameters.<br>
-    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
-    */
-   @Override
-   @GET
-   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   @TypeHint(TranslationsResource.class)
-   // /r/{id}/translations/{locale}
-   public Response getTranslations(
-         @PathParam("id") String idNoSlash,
-         @PathParam("locale") LocaleId locale,
-         @QueryParam("ext") Set<String> extensions,
-         @QueryParam("skeletons") @DefaultValue("false") boolean skeletons
-         )
-   {
-      log.debug("start to get translation");
-      String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
-
-      validateExtensions(extensions);
-
-      // TODO create valid etag
-      EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
-
-      ResponseBuilder response = request.evaluatePreconditions(etag);
-      if (response != null)
-      {
-         return response.build();
-      }
-
-      HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, id);
-      if (document.isObsolete())
-      {
-         return Response.status(Status.NOT_FOUND).build();
-      }
-
-      HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
-      TranslationsResource translationResource = new TranslationsResource();
-      boolean foundData = resourceUtils.transferToTranslationsResource(
-            translationResource, document, hLocale, extensions, 
-            textFlowTargetDAO.findTranslations(document, hLocale));
-
-      if (!foundData && !skeletons)
-      {
-         return Response.status(Status.NOT_FOUND).build();
-      }
-
-      // TODO lastChanged
-      return Response.ok().entity(translationResource).tag(etag).build();
-   }
-
-   /**
-    * Deletes a set of translations for a given locale. Also deletes any extensions recorded for the translations in
-    * question. The system will keep history of the translations.
-    * 
-    * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
-    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/' 
-    * characters replaced with commas (',').
-    * @param locale The locale for which to get translations.
-    * @return The following response status codes will be returned from this operation:<br>
-    * OK(200) - Successfully deleted the translations.<br>
-    * NOT FOUND(404) - If a project, project iteration or document could not be found with the given parameters.
-    * UNAUTHORIZED(401) - If the user does not have the proper permissions to perform this operation.<br>
-    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
-    */
-   @Override
-   @DELETE
-   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   @Restrict("#{s:hasPermission(translationResourcesService.securedIteration, 'import-translation')}")
-   // /r/{id}/translations/{locale}
-   public Response deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
-   {
-      String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
-
-      // TODO find correct etag
-      EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, new HashSet<String>());
-
-      ResponseBuilder response = request.evaluatePreconditions(etag);
-      if (response != null)
-      {
-         return response.build();
-      }
-
-      HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, id);
-      if (document.isObsolete())
-      {
-         return Response.status(Status.NOT_FOUND).build();
-      }
-      List<HTextFlowTarget> targets = textFlowTargetDAO.findAllTranslations(document, locale);
-
-      for (HTextFlowTarget target : targets)
-      {
-         target.clear();
-      }
-
-      // we also need to delete the extensions here
-      document.getPoTargetHeaders().remove(locale);
-      textFlowTargetDAO.flush();
-
-      return Response.ok().build();
-
-   }
-
-   /**
-    * Updates the translations for a document and a locale.
-    * 
-    * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
-    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/' 
-    * characters replaced with commas (',').
-    * @param locale The locale for which to get translations.
-    * @param messageBody The translations to modify.
-    * @param extensions The translation extension types to modify (e.g. "comment"). This parameter
-    * allows multiple values.
-    * @param merge Indicates how to deal with existing translations (valid options: 'auto', 'import'). Import will 
-    * overwrite all current values with the values being pushed (even empty ones), while Auto will check the history 
-    * of your translations and will not overwrite any translations for which it detects a previous value is being pushed.
-    * @return The following response status codes will be returned from this operation:<br>
-    * OK(200) - Translations were successfully updated.<br>
-    * NOT FOUND(404) - If a project, project iteration or document could not be found with the given parameters.<br>
-    * UNAUTHORIZED(401) - If the user does not have the proper permissions to perform this operation.<br>
-    * BAD REQUEST(400) - If there are problems with the parameters passed. i.e. Merge type is not one of the accepted 
-    * types. This response should have a content message indicating a reason.<br>
-    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
-    */
-   @Override
-   @PUT
-   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   @Restrict("#{s:hasPermission(translationResourcesService.securedIteration, 'import-translation')}")
-   // /r/{id}/translations/{locale}
-   public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") Set<String> extensions, @QueryParam("merge") @DefaultValue("auto") String merge)
-   {
-      log.debug("start put translations");
-      MergeType mergeType;
-      try
-      {
-         mergeType = MergeType.valueOf(merge.toUpperCase());
-      }
-      catch (Exception e)
-      {
-         return Response.status(Status.BAD_REQUEST).entity("bad merge type "+merge).build();
-      }
-      String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-
-      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-
-      // TODO create valid etag
-      EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, new HashSet<String>(0));
-
-      ResponseBuilder response = request.evaluatePreconditions(etag);
-      if (response != null)
-      {
-         return response.build();
-      }
-
-      // Translate
-      Collection<String> unknownResIds =
-         this.translationServiceImpl.translateAll(projectSlug, iterationSlug, id, locale, messageBody, extensions, mergeType);
-
-
-      // Regenerate etag in case it has changed
-      // TODO create valid etag
-      etag = eTagUtils.generateETagForDocument(hProjectIteration, id, new HashSet<String>(0));
-
-      log.debug("successful put translation");
-      // TODO lastChanged
-      if (unknownResIds.isEmpty())
-         return Response.ok().tag(etag).build();
-      else
-         return Response.ok("warning: unknown resIds: " + unknownResIds).tag(etag).build();
    }
 
    private HProjectIteration retrieveAndCheckIteration(boolean writeOperation)
@@ -888,17 +627,38 @@ public class TranslationResourcesService implements TranslationResourcesResource
       }
    }
 
+   private HLocale validateSourceLocale(LocaleId locale)
+   {
+      try
+      {
+         return localeServiceImpl.validateSourceLocale(locale);
+      }
+      catch (ZanataServiceException e)
+      {
+         throw new WebApplicationException(Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build());
+      }
+   }
+
+   private HLocale validateTargetLocale(LocaleId locale, String projectSlug, String iterationSlug)
+   {
+      HLocale hLocale;
+      try
+      {
+         hLocale = localeServiceImpl.validateLocaleByProjectIteration(locale, projectSlug, iterationSlug);
+         return hLocale;
+      }
+      catch (ZanataServiceException e)
+      {
+         throw new WebApplicationException(Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build());
+      }
+   }
+
    public void copyClosestEquivalentTranslation(HDocument document)
    {
       if (applicationConfiguration.getEnableCopyTrans())
       {
          copyTransServiceImpl.copyTransForDocument(document);
       }
-   }
-   
-   public HProjectIteration getSecuredIteration()
-   {
-      return retrieveAndCheckIteration(false);
    }
 
 }
