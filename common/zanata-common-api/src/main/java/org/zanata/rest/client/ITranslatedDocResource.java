@@ -20,14 +20,11 @@
  */
 package org.zanata.rest.client;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -37,56 +34,16 @@ import javax.ws.rs.core.MediaType;
 
 import org.jboss.resteasy.client.ClientResponse;
 import org.zanata.common.LocaleId;
-import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.rest.service.TranslationResourcesResource;
+import org.zanata.rest.service.TranslatedDocResource;
 
 /**
  * Client Interface for the Translation Resources service. 
  */
 @Produces({ MediaType.APPLICATION_XML })
 @Consumes({ MediaType.APPLICATION_XML })
-public interface ITranslationResources extends TranslationResourcesResource
+public interface ITranslatedDocResource extends TranslatedDocResource
 {
-
-   @Override
-   @GET
-   public ClientResponse<List<ResourceMeta>> get(@QueryParam("ext") Set<String> extensions);
-
-   @Override
-   @POST
-   public ClientResponse<String> post(Resource messageBody, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
-
-   @Override
-   @GET
-   @Path("{id}")
-   public ClientResponse<Resource> getResource(@PathParam("id") String idNoSlash, @QueryParam("ext") Set<String> extensions);
-
-   @Override
-   @PUT
-   @Path("{id}")
-   public ClientResponse<String> putResource(@PathParam("id") String idNoSlash, Resource resource, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
-   
-   @PUT
-   @Path("{id}")
-   public ClientResponse<String> putResource(@PathParam("id") String idNoSlash, Resource resource, @QueryParam("ext") Set<String> extensions);
-
-   @Override
-   @DELETE
-   @Path("{id}")
-   public ClientResponse<String> deleteResource(@PathParam("id") String idNoSlash);
-
-   @Override
-   @GET
-   @Path("{id}/meta")
-   public ClientResponse<ResourceMeta> getResourceMeta(@PathParam("id") String idNoSlash, @QueryParam("ext") Set<String> extensions);
-
-   @Override
-   @PUT
-   @Path("{id}/meta")
-   public ClientResponse<String> putResourceMeta(@PathParam("id") String idNoSlash, ResourceMeta messageBody, @QueryParam("ext") Set<String> extensions);
-
    @GET
    @Path("{id}/translations/{locale}")
    public ClientResponse<TranslationsResource> getTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, @QueryParam("ext") Set<String> extensions);

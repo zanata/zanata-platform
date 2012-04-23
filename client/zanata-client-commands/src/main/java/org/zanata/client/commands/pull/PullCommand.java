@@ -19,7 +19,8 @@ import org.zanata.client.exceptions.ConfigException;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.RestUtil;
 import org.zanata.rest.client.ClientUtility;
-import org.zanata.rest.client.ITranslationResources;
+import org.zanata.rest.client.ISourceDocResource;
+import org.zanata.rest.client.ITranslatedDocResource;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -48,9 +49,9 @@ public class PullCommand extends PushPullCommand<PullOptions>
       super(opts);
    }
 
-   public PullCommand(PullOptions opts, ZanataProxyFactory factory, ITranslationResources translationResources, URI uri)
+   public PullCommand(PullOptions opts, ZanataProxyFactory factory, ISourceDocResource sourceDocResource, ITranslatedDocResource translationResources, URI uri)
    {
-      super(opts, factory, translationResources, uri);
+      super(opts, factory, sourceDocResource, translationResources, uri);
    }
 
    private PullStrategy getStrategy(String strategyType)
@@ -143,7 +144,7 @@ public class PullCommand extends PushPullCommand<PullOptions>
          boolean createSkeletons = getOpts().getCreateSkeletons();
          if (strat.needsDocToWriteTrans() || pullSrc || createSkeletons)
          {
-            ClientResponse<Resource> resourceResponse = translationResources.getResource(docUri, strat.getExtensions());
+            ClientResponse<Resource> resourceResponse = sourceDocResource.getResource(docUri, strat.getExtensions());
             ClientUtility.checkResult(resourceResponse, uri);
             doc = resourceResponse.getEntity();
             doc.setName(localDocName);

@@ -1,29 +1,5 @@
 package org.zanata.rest.service;
 
-import static java.util.Arrays.asList;
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isOneOf;
-import static org.hamcrest.Matchers.notNullValue;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-
 import com.google.common.collect.Lists;
 import org.apache.commons.httpclient.URIException;
 import org.dbunit.operation.DatabaseOperation;
@@ -45,6 +21,7 @@ import org.zanata.ZanataRestTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
+import org.zanata.common.MergeType;
 import org.zanata.common.ResourceType;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.DocumentDAO;
@@ -61,10 +38,10 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;
-import org.zanata.rest.client.ITranslationResources;
+import org.zanata.rest.client.ISourceDocResource;
+import org.zanata.rest.client.ITranslatedDocResource;
 import org.zanata.rest.dto.Person;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
@@ -78,6 +55,7 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.CopyTransService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
@@ -93,6 +71,28 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
+
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isOneOf;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class TranslationResourceRestTest extends ZanataRestTest
 {
@@ -113,6 +113,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
 
    IMocksControl mockControl = EasyMock.createControl();
    ZanataIdentity mockIdentity = mockControl.createMock(ZanataIdentity.class);
+   TranslationWorkspaceManager transWorspaceManager = mockControl.createMock(TranslationWorkspaceManager.class);
 
    ApplicationConfiguration applicationConfiguration;
    ProjectIterationDAO projectIterationDAO;
@@ -127,11 +128,13 @@ public class TranslationResourceRestTest extends ZanataRestTest
    TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
    ProjectDAO projectDAO;
    LocaleServiceImpl localeService;
+   TranslationService translationService;
+   CopyTransService copyTransService;
    Events events;
 
-   ITranslationResources transResource;
+   ISourceDocResource sourceDocResource;
+   ITranslatedDocResource transResource;
    
-   UpdateTransUnitHandler transUnitHandler;
    private LocaleId de_de;
 
 
@@ -184,32 +187,58 @@ public class TranslationResourceRestTest extends ZanataRestTest
       this.localeService = new LocaleServiceImpl(localeDAO, projectDAO, projectIterationDAO, personDAO);
       localeService.setLocaleDAO(localeDAO);
       
-      CopyTransServiceImpl copyTransService = new CopyTransServiceImpl(localeService, textFlowTargetDAO, documentDAO);
+      copyTransService = new CopyTransServiceImpl(localeService, textFlowTargetDAO, documentDAO);
+      translationService = new TranslationServiceImpl(
+            getSession(),
+            projectDAO,
+            transWorspaceManager,
+            localeService,
+            this.accountDAO.getByUsername("admin"),
+            projectIterationDAO,
+            documentDAO,
+            personDAO,
+            textFlowDAO,
+            textFlowTargetDAO,
+            textFlowTargetHistoryDAO,
+            resourceUtils
+      );
 
       // @formatter:off
-      TranslationResourcesService obj = new TranslationResourcesService(
+      SourceDocResourceService sourceDocResourceService = new SourceDocResourceService(
+            projectDAO,
+            projectIterationDAO,
+            documentDAO,
+            localeService,
+            copyTransService,
+            applicationConfiguration,
+            resourceUtils,
+            eTagUtils
+      );
+
+      TranslatedDocService translatedDocService = new TranslatedDocService(
             applicationConfiguration,
             projectIterationDAO,
             projectDAO,
             documentDAO,
-            textFlowDAO,
             textFlowTargetDAO,
             resourceUtils,
             identity,
             eTagUtils,
-            personDAO,
-            textFlowTargetHistoryDAO,
             localeService,
-            copyTransService);
+            copyTransService,
+            translationService
+            );
       // @formatter:on
 
-      resources.add(obj);
+      resources.add(sourceDocResourceService);
+      resources.add(translatedDocService);
    }
 
    @BeforeMethod(dependsOnMethods = "prepareRestEasyFramework")
    public void createClient()
    {
-      this.transResource = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
+      this.sourceDocResource = getClientRequestFactory().createProxy(ISourceDocResource.class, createBaseURI(RESOURCE_PATH));
+      this.transResource = getClientRequestFactory().createProxy(ITranslatedDocResource.class, createBaseURI(RESOURCE_PATH));
    }
 
    @Test
@@ -223,7 +252,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    {
       Resource sr = createSourceResource("my.txt");
 
-      ClientResponse<String> response = transResource.post(sr, null, true);
+      ClientResponse<String> response = sourceDocResource.post(sr, null, true);
       assertThat(response.getResponseStatus(), is(Status.CREATED));
       List<String> locationHeader = response.getHeaders().get("Location");
       assertThat(locationHeader.size(), is(1));
@@ -239,11 +268,11 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TextFlow stf = new TextFlow("tf1", LocaleId.EN, "tf1");
       sr.getTextFlows().add(stf);
 
-      ClientResponse<String> postResponse = transResource.post(sr, null, true);
+      ClientResponse<String> postResponse = sourceDocResource.post(sr, null, true);
       assertThat(postResponse.getResponseStatus(), is(Status.CREATED));
-      postResponse = transResource.post(sr, null, true);
+      postResponse = sourceDocResource.post(sr, null, true);
 
-      ClientResponse<Resource> resourceGetResponse = transResource.getResource("my.txt", null);
+      ClientResponse<Resource> resourceGetResponse = sourceDocResource.getResource("my.txt", null);
       assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
       Resource gotSr = resourceGetResponse.getEntity();
       assertThat(gotSr.getTextFlows().size(), is(1));
@@ -259,11 +288,11 @@ public class TranslationResourceRestTest extends ZanataRestTest
       TextFlow stf = new TextFlow("tf1", LocaleId.EN, "tf1");
       sr.getTextFlows().add(stf);
 
-      ClientResponse<String> response = transResource.putResource("my.txt", sr, null);
+      ClientResponse<String> response = sourceDocResource.putResource("my.txt", sr, null);
       assertThat(response.getResponseStatus(), is(Status.CREATED));
       assertThat(response.getLocation().getHref(), endsWith("/r/my.txt"));
 
-      ClientResponse<Resource> resourceGetResponse = transResource.getResource("my.txt", null);
+      ClientResponse<Resource> resourceGetResponse = sourceDocResource.getResource("my.txt", null);
       assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
       Resource gotSr = resourceGetResponse.getEntity();
       assertThat(gotSr.getTextFlows().size(), is(1));
@@ -291,12 +320,12 @@ public class TranslationResourceRestTest extends ZanataRestTest
       */
       // @formatter:on
 
-      ClientResponse<String> postResponse = transResource.post(sr, null, true); // new
+      ClientResponse<String> postResponse = sourceDocResource.post(sr, null, true); // new
                                                                    // StringSet(PoHeader.ID));
       assertThat(postResponse.getResponseStatus(), is(Status.CREATED));
       doGetandAssertThatResourceListContainsNItems(1);
 
-      ClientResponse<Resource> resourceGetResponse = transResource.getResource(docUri, null);// new
+      ClientResponse<Resource> resourceGetResponse = sourceDocResource.getResource(docUri, null);// new
                                                                                         // StringSet(PoHeader.ID));
       assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
       Resource gotSr = resourceGetResponse.getEntity();
@@ -353,7 +382,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    @Test
    public void getDocumentThatDoesntExist()
    {
-      ClientResponse<Resource> clientResponse = transResource.getResource("my,doc,does,not,exist.txt", null);
+      ClientResponse<Resource> clientResponse = sourceDocResource.getResource("my,doc,does,not,exist.txt", null);
       assertThat(clientResponse.getResponseStatus(), is(Status.NOT_FOUND));
    }
 
@@ -363,9 +392,9 @@ public class TranslationResourceRestTest extends ZanataRestTest
       String docName = "my/path/document.txt";
       String docUri = RestUtil.convertToDocumentURIId(docName);
       Resource resource = createSourceDoc(docName, false);
-      transResource.putResource(docUri, resource, null);
+      sourceDocResource.putResource(docUri, resource, null);
 
-      ClientResponse<ResourceMeta> response = transResource.getResourceMeta(docUri, null);
+      ClientResponse<ResourceMeta> response = sourceDocResource.getResourceMeta(docUri, null);
       assertThat(response.getResponseStatus(), is(Status.OK));
       ResourceMeta doc = response.getEntity();
       assertThat(doc.getName(), is(docName));
@@ -391,12 +420,12 @@ public class TranslationResourceRestTest extends ZanataRestTest
       String docName = "my/path/document.txt";
       String docUri = RestUtil.convertToDocumentURIId(docName);
       Resource resource = createSourceDoc(docName, true);
-      transResource.putResource(docUri, resource, null);
+      sourceDocResource.putResource(docUri, resource, null);
       TranslationsResource trans = createTargetDoc();
       transResource.putTranslations(docUri, nbLocale, trans, null);
 
       {
-         ClientResponse<Resource> response = transResource.getResource(docUri, null);
+         ClientResponse<Resource> response = sourceDocResource.getResource(docUri, null);
          assertThat(response.getResponseStatus(), is(Status.OK));
 
          Resource doc = response.getEntity();
@@ -423,12 +452,12 @@ public class TranslationResourceRestTest extends ZanataRestTest
       String docName = "my/fancy/document.txt";
       String docUrl = RestUtil.convertToDocumentURIId(docName);
       Resource doc = createSourceDoc(docName, false);
-      Response response = transResource.putResource(docUrl, doc, null);
+      Response response = sourceDocResource.putResource(docUrl, doc, null);
 
       assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
       assertThat(response.getMetadata().getFirst("Location").toString(), endsWith(RESOURCE_PATH + docUrl));
 
-      ClientResponse<Resource> documentResponse = transResource.getResource(docUrl, null);
+      ClientResponse<Resource> documentResponse = sourceDocResource.getResource(docUrl, null);
 
       assertThat(documentResponse.getResponseStatus(), is(Status.OK));
 
@@ -460,7 +489,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
          textFlow.setContents("hello world!");
          textFlows.add(textFlow);
       }
-      ClientResponse<?> response = transResource.putResource(docUrl, doc, null);
+      ClientResponse<?> response = sourceDocResource.putResource(docUrl, doc, null);
       assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
       String message = (String) response.getEntity();
       assertThat(message, containsString("tf1"));
@@ -490,12 +519,12 @@ public class TranslationResourceRestTest extends ZanataRestTest
       m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
       m.marshal(doc, System.out);
 
-      Response response = transResource.putResource(docUrl, doc, null);
+      Response response = sourceDocResource.putResource(docUrl, doc, null);
 
       assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
       assertThat(response.getMetadata().getFirst("Location").toString(), endsWith(RESOURCE_PATH + docUrl));
 
-      ClientResponse<Resource> documentResponse = transResource.getResource(docUrl, null);
+      ClientResponse<Resource> documentResponse = sourceDocResource.getResource(docUrl, null);
 
       assertThat(documentResponse.getResponseStatus(), is(Status.OK));
 
@@ -511,12 +540,12 @@ public class TranslationResourceRestTest extends ZanataRestTest
       textFlow = doc.getTextFlows().get(0);
       textFlow.setId("tf2");
 
-      response = transResource.putResource(docUrl, doc, null);
+      response = sourceDocResource.putResource(docUrl, doc, null);
 
       // this WAS testing for status 205
       assertThat(response.getStatus(), is(200));
 
-      documentResponse = transResource.getResource(docUrl, null);
+      documentResponse = sourceDocResource.getResource(docUrl, null);
       assertThat(documentResponse.getResponseStatus(), is(Status.OK));
       doc = documentResponse.getEntity();
 
@@ -978,8 +1007,8 @@ public class TranslationResourceRestTest extends ZanataRestTest
    @Test
    public void getBadProject() throws Exception
    {
-      ITranslationResources badTransResource = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(BAD_RESOURCE_PATH));
-      ClientResponse<List<ResourceMeta>> response = badTransResource.get(null);
+      ISourceDocResource badSourceResource = getClientRequestFactory().createProxy(ISourceDocResource.class, createBaseURI(BAD_RESOURCE_PATH));
+      ClientResponse<List<ResourceMeta>> response = badSourceResource.get(null);
       assertThat(response.getStatus(), is(404));
    }
    
@@ -1024,10 +1053,23 @@ public class TranslationResourceRestTest extends ZanataRestTest
       expectLastCall();
       mockControl.replay();
 
-      TranslationServiceImpl translationService = new TranslationServiceImpl(getSession(), projectDAO, transWorkerManager, localeService, translator);
+      translationService = new TranslationServiceImpl(
+            getSession(),
+            projectDAO,
+            transWorspaceManager,
+            localeService,
+            translator,
+            projectIterationDAO,
+            documentDAO,
+            personDAO,
+            textFlowDAO,
+            textFlowTargetDAO,
+            textFlowTargetHistoryDAO,
+            resourceUtils
+      );
 
-      // @formatter:off      
-      transUnitHandler = new UpdateTransUnitHandler(
+      // @formatter:off
+      UpdateTransUnitHandler transUnitHandler = new UpdateTransUnitHandler(
             mockIdentity,
             projectDAO,
             textFlowTargetHistoryDAO,
@@ -1067,7 +1109,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
 
    private void expectResourceMetas(boolean checkRevs, AbstractResourceMeta... docs)
    {
-      ClientResponse<List<ResourceMeta>> response = transResource.get(null);
+      ClientResponse<List<ResourceMeta>> response = sourceDocResource.get(null);
 
       assertThat(response.getStatus(), is(200));
       List<ResourceMeta> actualDocs = response.getEntity();
@@ -1096,7 +1138,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       {
          if (!checkRevs)
             ResourceTestUtil.clearRevs(expectedDoc);
-         ClientResponse<Resource> response = transResource.getResource(expectedDoc.getName(), extGettextComment);
+         ClientResponse<Resource> response = sourceDocResource.getResource(expectedDoc.getName(), extGettextComment);
          assertThat(response.getStatus(), is(200));
          Resource actualDoc = response.getEntity();
          if (!checkRevs)
@@ -1192,7 +1234,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
 
    private void doGetandAssertThatResourceListContainsNItems(int n)
    {
-      ClientResponse<List<ResourceMeta>> resources = transResource.get(null);
+      ClientResponse<List<ResourceMeta>> resources = sourceDocResource.get(null);
       assertThat(resources.getResponseStatus(), is(Status.OK));
 
       assertThat(resources.getEntity().size(), is(n));
@@ -1264,7 +1306,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       doc.getExtensions(true).add(poHeader);
 
       log.debug("{}", doc);
-      Response response = transResource.putResource(id, doc, extGettextComment);
+      Response response = sourceDocResource.putResource(id, doc, extGettextComment);
       assertThat(response.getStatus(), isOneOf(200, 201));
       return doc;
    }
@@ -1291,7 +1333,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    {
       String id = DOC1_NAME;
       Resource doc = newDoc(id, newTextFlow("FOOD", "Slime Mould", "slime mould comment"));
-      Response response = transResource.putResource(id, doc, extComment);
+      Response response = sourceDocResource.putResource(id, doc, extComment);
       assertThat(response.getStatus(), isOneOf(200, 201));
 
       if (putTarget)
@@ -1326,7 +1368,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    {
       String id = DOC1_NAME;
       Resource doc = newDoc(id, newTextFlow("HELLO", "Hello World", null));
-      Response response = transResource.putResource(id, doc, extComment);
+      Response response = sourceDocResource.putResource(id, doc, extComment);
       assertThat(response.getStatus(), isOneOf(200, 201));
 
       if (putTarget)
@@ -1369,7 +1411,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
 
    protected void deleteDoc(String id)
    {
-      Response response = transResource.deleteResource(id);
+      Response response = sourceDocResource.deleteResource(id);
       assertThat(response.getStatus(), is(200));
    }
 
@@ -1377,7 +1419,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    {
       String id = DOC2_NAME;
       Resource doc = newDoc(id, newTextFlow("HELLO", "Hello World", "hello comment"));
-      Response response = transResource.post(doc, extComment, true);
+      Response response = sourceDocResource.post(doc, extComment, true);
       assertThat(response.getStatus(), is(201));
 
       if (putTarget)

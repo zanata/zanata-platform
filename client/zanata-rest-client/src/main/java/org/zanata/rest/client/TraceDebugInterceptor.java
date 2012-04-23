@@ -48,7 +48,12 @@ public class TraceDebugInterceptor implements ClientExecutionInterceptor
    private static final Logger log = LoggerFactory.getLogger(TraceDebugInterceptor.class);
    
    private boolean logHttp;
-   
+
+   public TraceDebugInterceptor()
+   {
+      this(true);
+   }
+
    public TraceDebugInterceptor(boolean logHttp)
    {
       this.logHttp = logHttp;
@@ -87,7 +92,7 @@ public class TraceDebugInterceptor implements ClientExecutionInterceptor
       {
          log.info("<< Header: " + key + " = " + result.getHeaders().get(key) );
       }
-      
+
       return result;
    }
    

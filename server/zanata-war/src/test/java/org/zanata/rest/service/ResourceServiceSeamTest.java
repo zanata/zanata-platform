@@ -23,8 +23,8 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
    public void testPutGetResourceWithExtension(Resource sr)
    {
       log.debug("put resource:" + sr.toString());
-      translationResource.putResource(sr.getName(), sr, new StringSet("gettext;comment"));
-      Resource get = translationResource.getResource(sr.getName(), new StringSet("gettext;comment")).getEntity();
+      sourceDocResource.putResource(sr.getName(), sr, new StringSet("gettext;comment"));
+      Resource get = sourceDocResource.getResource(sr.getName(), new StringSet("gettext;comment")).getEntity();
       ResourceTestUtil.clearRevs(sr);
       ResourceTestUtil.clearRevs(get);
       assertThat(get.toString(), is(sr.toString()));
@@ -34,8 +34,8 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
    public void testPutGetNoExtensionResource(Resource sr)
    {
       log.debug("put resource:" + sr.toString());
-      translationResource.putResource(sr.getName(), sr, null);
-      Resource get = translationResource.getResource(sr.getName(), new StringSet("gettext;comment")).getEntity();
+      sourceDocResource.putResource(sr.getName(), sr, null);
+      Resource get = sourceDocResource.getResource(sr.getName(), new StringSet("gettext;comment")).getEntity();
       Resource base = resourceTestFactory.getTextFlowTest();
       ResourceTestUtil.clearRevs(base);
       ResourceTestUtil.clearRevs(get);
@@ -48,8 +48,8 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
    public void testPutNoExtensionGetResource(Resource sr)
    {
       log.debug("put resource:" + sr.toString());
-      translationResource.putResource(sr.getName(), sr, new StringSet("gettext;comment"));
-      Resource get = translationResource.getResource(sr.getName(), null).getEntity();
+      sourceDocResource.putResource(sr.getName(), sr, new StringSet("gettext;comment"));
+      Resource get = sourceDocResource.getResource(sr.getName(), null).getEntity();
       Resource base = resourceTestFactory.getTextFlowTest();
       ResourceTestUtil.clearRevs(base);
       ResourceTestUtil.clearRevs(get);
@@ -61,9 +61,9 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
    @Test(dataProvider = "ResourceTestData")
    public void testPutGetResource(Resource sr)
    {
-      translationResource.putResource(sr.getName(), sr, null);
+      sourceDocResource.putResource(sr.getName(), sr, null);
       Resource base = resourceTestFactory.getTextFlowTest();
-      Resource get = translationResource.getResource(sr.getName(), null).getEntity();
+      Resource get = sourceDocResource.getResource(sr.getName(), null).getEntity();
       ResourceTestUtil.clearRevs(base);
       ResourceTestUtil.clearRevs(get);
       assertThat(get.toString(), is(base.toString()));
@@ -72,9 +72,9 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
    @Test(dataProvider = "ResourceTestData")
    public void testPostGetResource(Resource sr)
    {
-      translationResource.post(sr, null, true);
+      sourceDocResource.post(sr, null, true);
       Resource base = resourceTestFactory.getTextFlowTest();
-      Resource get = translationResource.getResource(sr.getName(), null).getEntity();
+      Resource get = sourceDocResource.getResource(sr.getName(), null).getEntity();
       ResourceTestUtil.clearRevs(base);
       ResourceTestUtil.clearRevs(get);
       assertThat(get.toString(), is(base.toString()));
@@ -83,8 +83,8 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
     @Test(dataProvider = "ResourceTestData")
    public void testPostGetResourceWithExtension(Resource sr)
    {
-      translationResource.post(sr, new StringSet("gettext;comment"), true);
-      Resource get = translationResource.getResource(sr.getName(), new StringSet("gettext;comment")).getEntity();
+      sourceDocResource.post(sr, new StringSet("gettext;comment"), true);
+      Resource get = sourceDocResource.getResource(sr.getName(), new StringSet("gettext;comment")).getEntity();
       ResourceTestUtil.clearRevs(sr);
       ResourceTestUtil.clearRevs(get);
       log.debug("expect:" + sr.toString());
@@ -96,8 +96,8 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
    public void testPostNoExtensionGetResource(Resource sr)
    {
       log.debug("post resource:" + sr.toString());
-      translationResource.post(sr, null, true);
-      Resource get = translationResource.getResource(sr.getName(), new StringSet("gettext;comment")).getEntity();
+      sourceDocResource.post(sr, null, true);
+      Resource get = sourceDocResource.getResource(sr.getName(), new StringSet("gettext;comment")).getEntity();
       Resource base = resourceTestFactory.getTextFlowTest();
       ResourceTestUtil.clearRevs(base);
       ResourceTestUtil.clearRevs(get);
@@ -110,8 +110,8 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
    public void testPostGetNoExtensionResource(Resource sr)
    {
       log.debug("post resource:" + sr.toString());
-      translationResource.post(sr, new StringSet("gettext;comment"), true);
-      Resource get = translationResource.getResource(sr.getName(), null).getEntity();
+      sourceDocResource.post(sr, new StringSet("gettext;comment"), true);
+      Resource get = sourceDocResource.getResource(sr.getName(), null).getEntity();
       Resource base = resourceTestFactory.getTextFlowTest();
       ResourceTestUtil.clearRevs(base);
       ResourceTestUtil.clearRevs(get);
@@ -135,11 +135,11 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
    {
       log.debug("test put get resource meta service");
       Resource res = resourceTestFactory.getTextFlowTest();
-      translationResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
+      sourceDocResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
       ResourceMeta sr = resourceTestFactory.getPoHeaderResourceMeta();
-      translationResource.putResourceMeta(sr.getName(), sr, new StringSet("gettext;comment"));
+      sourceDocResource.putResourceMeta(sr.getName(), sr, new StringSet("gettext;comment"));
       log.debug("get resource meta");
-      ClientResponse<ResourceMeta> resourceGetResponse = translationResource.getResourceMeta(sr.getName(), new StringSet("gettext;comment"));
+      ClientResponse<ResourceMeta> resourceGetResponse = sourceDocResource.getResourceMeta(sr.getName(), new StringSet("gettext;comment"));
       ResourceMeta get = resourceGetResponse.getEntity();
       ResourceTestUtil.clearRevs(sr);
       ResourceTestUtil.clearRevs(get);
@@ -150,12 +150,12 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
    {
       log.debug("test put get resource meta service");
       Resource res = resourceTestFactory.getTextFlowTest();
-      translationResource.putResource(res.getName(), res, null);
+      sourceDocResource.putResource(res.getName(), res, null);
       ResourceMeta sr = resourceTestFactory.getPoHeaderResourceMeta();
       ResourceMeta base = resourceTestFactory.getResourceMeta();
-      translationResource.putResourceMeta(sr.getName(), sr, null);
+      sourceDocResource.putResourceMeta(sr.getName(), sr, null);
       log.debug("get resource meta");
-      ClientResponse<ResourceMeta> resourceGetResponse = translationResource.getResourceMeta(sr.getName(), new StringSet("gettext;comment"));
+      ClientResponse<ResourceMeta> resourceGetResponse = sourceDocResource.getResourceMeta(sr.getName(), new StringSet("gettext;comment"));
       ResourceMeta get = resourceGetResponse.getEntity();
       ResourceTestUtil.clearRevs(base);
       ResourceTestUtil.clearRevs(get);
@@ -166,12 +166,12 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
    {
       log.debug("test put get resource meta service");
       Resource res = resourceTestFactory.getTextFlowTest();
-      translationResource.putResource(res.getName(), res, null);
+      sourceDocResource.putResource(res.getName(), res, null);
       ResourceMeta sr = resourceTestFactory.getPoHeaderResourceMeta();
       ResourceMeta base = resourceTestFactory.getResourceMeta();
-      translationResource.putResourceMeta(sr.getName(), sr, new StringSet("gettext;comment"));
+      sourceDocResource.putResourceMeta(sr.getName(), sr, new StringSet("gettext;comment"));
       log.debug("get resource meta");
-      ClientResponse<ResourceMeta> resourceGetResponse = translationResource.getResourceMeta(sr.getName(), null);
+      ClientResponse<ResourceMeta> resourceGetResponse = sourceDocResource.getResourceMeta(sr.getName(), null);
       ResourceMeta get = resourceGetResponse.getEntity();
       ResourceTestUtil.clearRevs(base);
       ResourceTestUtil.clearRevs(get);
@@ -181,12 +181,12 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
    public void testDeleteResource()
    {
       Resource rs1 = resourceTestFactory.getTextFlowTest2();
-      translationResource.post(rs1, null, true);
-      ClientResponse<String> resourceGetResponse = translationResource.deleteResource(rs1.getName());
+      sourceDocResource.post(rs1, null, true);
+      ClientResponse<String> resourceGetResponse = sourceDocResource.deleteResource(rs1.getName());
       assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
 
       Resource rs2 = resourceTestFactory.getTextFlowTest();
-      ClientResponse<String> resourceGetResponse2 = translationResource.deleteResource(rs2.getName());
+      ClientResponse<String> resourceGetResponse2 = sourceDocResource.deleteResource(rs2.getName());
       assertThat(resourceGetResponse2.getResponseStatus(), is(Status.NOT_FOUND));
    }
 }

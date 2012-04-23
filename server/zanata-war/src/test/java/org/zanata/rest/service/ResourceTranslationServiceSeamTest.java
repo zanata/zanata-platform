@@ -10,7 +10,8 @@ import org.jboss.resteasy.spi.interception.ClientExecutionInterceptor;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDBUnitSeamTest;
-import org.zanata.rest.client.ITranslationResources;
+import org.zanata.rest.client.ISourceDocResource;
+import org.zanata.rest.client.ITranslatedDocResource;
 import org.zanata.rest.client.TestProxyFactory;
 
 @Test(groups = { "seam-tests" })
@@ -21,7 +22,8 @@ public abstract class ResourceTranslationServiceSeamTest extends ZanataDBUnitSea
    private static final String PROJECTS_DATA_DBUNIT_XML = "org/zanata/test/model/ProjectsData.dbunit.xml";
    private static final String ACCOUNT_DATA_DBUNIT_XML = "org/zanata/test/model/AccountData.dbunit.xml";
 
-   protected ITranslationResources translationResource;
+   protected ISourceDocResource sourceDocResource;
+   protected ITranslatedDocResource translationResource;
    private String projectSlug = "sample-project";
    private String iter = "1.1";
 
@@ -46,7 +48,8 @@ public abstract class ResourceTranslationServiceSeamTest extends ZanataDBUnitSea
    {
       TestProxyFactory clientRequestFactory = new TestProxyFactory(new SeamMockClientExecutor(this));
       clientRequestFactory.registerPrefixInterceptor(new MetaTypeAccept());
-      translationResource = clientRequestFactory.getTranslationResources(projectSlug, iter);
+      sourceDocResource = clientRequestFactory.getSourceDocResource(projectSlug, iter);
+      translationResource = clientRequestFactory.getTranslatedDocResource(projectSlug, iter);
    }
 
    @Override
