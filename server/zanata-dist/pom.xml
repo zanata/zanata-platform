@@ -4,7 +4,7 @@
     <artifactId>server</artifactId>
     <groupId>org.zanata</groupId>
     <version>1.5-SNAPSHOT</version>
-    <relativePath>..</relativePath>
+
   </parent>
   <artifactId>zanata-dist</artifactId>
   <description>Packages all server artifacts for distribution.</description>
