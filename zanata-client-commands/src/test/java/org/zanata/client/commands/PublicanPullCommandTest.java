@@ -16,7 +16,8 @@ import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;
-import org.zanata.rest.client.ITranslationResources;
+import org.zanata.rest.client.ISourceDocResource;
+import org.zanata.rest.client.ITranslatedDocResource;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
@@ -26,7 +27,8 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 public class PublicanPullCommandTest
 {
    IMocksControl control = EasyMock.createControl();
-   ITranslationResources mockTranslationResources = createMock("mockTranslationResources", ITranslationResources.class);
+   ISourceDocResource mockSourceDocResource = createMock("mockSourceDocResource", ISourceDocResource.class);
+   ITranslatedDocResource mockTranslationResources = createMock("mockTranslationResources", ITranslatedDocResource.class);
 
    public PublicanPullCommandTest() throws Exception
    {
@@ -82,7 +84,7 @@ public class PublicanPullCommandTest
       List<ResourceMeta> resourceMetaList = new ArrayList<ResourceMeta>();
       resourceMetaList.add(new ResourceMeta("RPM"));
       resourceMetaList.add(new ResourceMeta("sub/RPM"));
-      EasyMock.expect(mockTranslationResources.get(null)).andReturn(new DummyResponse<List<ResourceMeta>>(Status.OK, resourceMetaList));
+      EasyMock.expect(mockSourceDocResource.get(null)).andReturn(new DummyResponse<List<ResourceMeta>>(Status.OK, resourceMetaList));
 
       Resource rpmResource = new Resource("RPM");
       mockExpectGetResourceAndReturnResponse(rpmResource);
@@ -101,7 +103,7 @@ public class PublicanPullCommandTest
       ZanataProxyFactory mockRequestFactory = EasyMock.createNiceMock(ZanataProxyFactory.class);
 
       control.replay();
-      ZanataCommand cmd = new PublicanPullCommand(opts, mockRequestFactory, mockTranslationResources, new URI("http://example.com/"));
+      ZanataCommand cmd = new PublicanPullCommand(opts, mockRequestFactory, mockSourceDocResource, mockTranslationResources, new URI("http://example.com/"));
       cmd.run();
       control.verify();
    }
@@ -111,7 +113,7 @@ public class PublicanPullCommandTest
       String id = entity.getName();
       String docUri = RestUtil.convertToDocumentURIId(id);
       StringSet ext = new StringSet("comment;gettext");
-      EasyMock.expect(mockTranslationResources.getResource(docUri, ext)).andReturn(new DummyResponse<Resource>(Status.OK, entity));
+      EasyMock.expect(mockSourceDocResource.getResource(docUri, ext)).andReturn(new DummyResponse<Resource>(Status.OK, entity));
    }
 
    private void mockExpectGetTranslationsAndReturnResponse(String id, LocaleId locale, TranslationsResource entity)

@@ -27,7 +27,8 @@ import org.zanata.rest.JaxbUtil;
 import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.client.ClientUtility;
-import org.zanata.rest.client.ITranslationResources;
+import org.zanata.rest.client.ISourceDocResource;
+import org.zanata.rest.client.ITranslatedDocResource;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
@@ -44,19 +45,24 @@ public class PublicanPushCommand extends ConfigurableProjectCommand<PublicanPush
 {
    private static final Logger log = LoggerFactory.getLogger(PublicanPushCommand.class);
 
-   private final ITranslationResources translationResources;
+   private final ISourceDocResource sourceDocResource;
+   private final ITranslatedDocResource translationResources;
    private final URI uri;
 
-   public PublicanPushCommand(PublicanPushOptions opts, ZanataProxyFactory factory, ITranslationResources translationResources, URI uri)
+   public PublicanPushCommand(PublicanPushOptions opts, ZanataProxyFactory factory, ISourceDocResource sourceDocResource, ITranslatedDocResource translationResources, URI uri)
    {
       super(opts, factory);
+      this.sourceDocResource = sourceDocResource;
       this.translationResources = translationResources;
       this.uri = uri;
    }
 
    private PublicanPushCommand(PublicanPushOptions opts, ZanataProxyFactory factory)
    {
-      this(opts, factory, factory.getTranslationResources(opts.getProj(), opts.getProjectVersion()), factory.getTranslationResourcesURI(opts.getProj(), opts.getProjectVersion()));
+      this(opts, factory,
+            factory.getSourceDocResource(opts.getProj(), opts.getProjectVersion()),
+            factory.getTranslatedDocResource(opts.getProj(), opts.getProjectVersion()),
+            factory.getResourceURI(opts.getProj(), opts.getProjectVersion()));
    }
 
    public PublicanPushCommand(PublicanPushOptions opts)
@@ -148,7 +154,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand<PublicanPush
          localDocNames.add(docName);
       }
 
-      ClientResponse<List<ResourceMeta>> getResponse = translationResources.get(null);
+      ClientResponse<List<ResourceMeta>> getResponse = sourceDocResource.get(null);
       ClientUtility.checkResult(getResponse, uri);
       List<ResourceMeta> remoteDocList = getResponse.getEntity();
       for (ResourceMeta doc : remoteDocList)
@@ -159,7 +165,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand<PublicanPush
          if (!localDocNames.contains(docName))
          {
             log.info("deleting resource {} from server", docName);
-            ClientResponse<String> deleteResponse = translationResources.deleteResource(docUri);
+            ClientResponse<String> deleteResponse = sourceDocResource.deleteResource(docUri);
             ClientUtility.checkResult(deleteResponse, uri);
          }
       }
@@ -219,7 +225,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand<PublicanPush
          StringSet extensions = new StringSet("comment;gettext");
          log.info("pushing source document [name={}] to server", srcDoc.getName());
          boolean copyTrans = getOpts().getCopyTrans();
-         ClientResponse<String> putResponse = translationResources.putResource(docUri, srcDoc, extensions, copyTrans );
+         ClientResponse<String> putResponse = sourceDocResource.putResource(docUri, srcDoc, extensions, copyTrans );
          ClientUtility.checkResult(putResponse, uri);
 
          if (getOpts().getImportPo())
