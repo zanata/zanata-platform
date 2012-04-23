@@ -215,7 +215,7 @@ public class TranslationServiceImpl implements TranslationService
       HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, docId);
       if (document.isObsolete())
       {
-         throw new ZanataServiceException.EntityNotFoundException("A document was not found.");
+         throw new ZanataServiceException("A document was not found.", 404);
       }
 
 
@@ -404,17 +404,17 @@ public class TranslationServiceImpl implements TranslationService
 
       if (hProjectIteration == null)
       {
-         throw new ZanataServiceException.EntityNotFoundException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
+         throw new ZanataServiceException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.", 404);
       }
       else if (hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE) || hProject.getStatus().equals(EntityStatus.OBSOLETE))
       {
-         throw new ZanataServiceException.EntityNotFoundException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
+         throw new ZanataServiceException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.", 404);
       }
       else if (writeOperation)
       {
          if (hProjectIteration.getStatus().equals(EntityStatus.READONLY) || hProject.getStatus().equals(EntityStatus.READONLY))
          {
-            throw new ZanataServiceException.EntityNotFoundException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' is read-only.");
+            throw new ZanataServiceException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' is read-only.", 404);
          }
          else
          {
@@ -435,14 +435,14 @@ public class TranslationServiceImpl implements TranslationService
             if (allEmpty(contents))
             {
                String message = "ContentState NeedsReview is illegal for TextFlowTarget " + resId + " with no contents";
-               throw new ZanataServiceException.InvalidParameterException(message);
+               throw new ZanataServiceException(message, 400);
             }
             break;
          case New:
             if (allNonEmpty(contents))
             {
                String message = "ContentState New is illegal for non-empty TextFlowTarget " + resId;
-               throw new ZanataServiceException.InvalidParameterException(message);
+               throw new ZanataServiceException(message, 400);
             }
             break;
          case Approved:
@@ -450,7 +450,7 @@ public class TranslationServiceImpl implements TranslationService
             if (!allNonEmpty(contents))
             {
                String message = "ContentState Approved is illegal for TextFlowTarget " + resId + " with one or more empty strings";
-               throw new ZanataServiceException.InvalidParameterException(message);
+               throw new ZanataServiceException(message, 400);
             }
             break;
          default:
@@ -473,7 +473,7 @@ public class TranslationServiceImpl implements TranslationService
       if(!CollectionUtils.isSubCollection(requestedExt, validExtensions))
       {
          Collection<String> invalidExtensions = CollectionUtils.subtract(requestedExt, validExtensions);
-         throw new ZanataServiceException.InvalidParameterException("Unsupported Extensions within this context: " + StringUtils.join(invalidExtensions, ","));
+         throw new ZanataServiceException("Unsupported Extensions within this context: " + StringUtils.join(invalidExtensions, ","), 400);
       }
    }
 

@@ -207,13 +207,10 @@ public class TranslationResourceRestTest extends ZanataRestTest
             projectIterationDAO,
             projectDAO,
             documentDAO,
-            textFlowDAO,
             textFlowTargetDAO,
             resourceUtils,
             identity,
             eTagUtils,
-            personDAO,
-            textFlowTargetHistoryDAO,
             localeService,
             copyTransService,
             translationService

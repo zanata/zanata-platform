@@ -7,6 +7,8 @@ public class ZanataServiceException extends ZanataException
     */
    private static final long serialVersionUID = 1L;
 
+   private int httpStatus = 500; // Internal server error by default
+
 
    public ZanataServiceException(String message, Throwable e)
    {
@@ -18,55 +20,24 @@ public class ZanataServiceException extends ZanataException
       super(message);
    }
 
-   /**
-    * Service exception that indicates an expected entity was not found by the service.
-    * Roughly maps to a Not Found http response code.
-    */
-   public static class EntityNotFoundException extends ZanataException
+   public ZanataServiceException(String message, int httpStatus, Throwable e)
    {
-      public EntityNotFoundException(String message, Throwable e)
-      {
-         super(message, e);
-      }
+      super(message, e);
+      this.httpStatus = httpStatus;
+   }
 
-      public EntityNotFoundException(String message)
-      {
-         super(message);
-      }
+   public ZanataServiceException(String message, int httpStatus)
+   {
+      super(message);
+      this.httpStatus = httpStatus;
    }
 
    /**
-    * Service exception that indicates a problem with the parameters passed to a service.
-    * Roughly maps to a Bad Request http response code.
+    * @return The http status that is suggested be used to inform about this service exception.
     */
-   public static class InvalidParameterException extends ZanataException
+   public int getHttpStatus()
    {
-      public InvalidParameterException(String message, Throwable e)
-      {
-         super(message, e);
-      }
-
-      public InvalidParameterException(String message)
-      {
-         super(message);
-      }
-   }
-
-   /**
-    * Service exception that indicates that the user does not have access to a specific entity or resource.
-    * Roughly maps to a Forbidden http response code.
-    */
-   public static class AccessDeniedException extends ZanataException
-   {
-      public AccessDeniedException(String message, Throwable e)
-      {
-         super(message, e);
-      }
-
-      public AccessDeniedException(String message)
-      {
-         super(message);
-      }
+      return this.httpStatus;
    }
 
 }

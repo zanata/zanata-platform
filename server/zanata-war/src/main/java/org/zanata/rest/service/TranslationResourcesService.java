@@ -158,9 +158,6 @@ public class TranslationResourcesService implements TranslationResourcesResource
    private DocumentDAO documentDAO;
 
    @In
-   private TextFlowDAO textFlowDAO;
-
-   @In
    private TextFlowTargetDAO textFlowTargetDAO;
 
    @In
@@ -168,12 +165,6 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
    @In
    private ETagUtils eTagUtils;
-
-   @In
-   private PersonDAO personDAO;
-
-   @In
-   private TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
    
    @In
    private CopyTransService copyTransServiceImpl;
@@ -199,13 +190,10 @@ public class TranslationResourcesService implements TranslationResourcesResource
       ProjectIterationDAO projectIterationDAO,
       ProjectDAO projectDAO,
       DocumentDAO documentDAO,
-      TextFlowDAO textFlowDAO,
       TextFlowTargetDAO textFlowTargetDAO,
       ResourceUtils resourceUtils,
       Identity identity,
       ETagUtils eTagUtils,
-      PersonDAO personDAO,
-      TextFlowTargetHistoryDAO textFlowTargetHistoryDAO,
       LocaleService localeService,
       CopyTransService copyTransService,
       TranslationService translationService
@@ -216,12 +204,9 @@ public class TranslationResourcesService implements TranslationResourcesResource
       this.projectIterationDAO = projectIterationDAO;
       this.projectDAO = projectDAO;
       this.documentDAO = documentDAO;
-      this.textFlowDAO = textFlowDAO;
       this.textFlowTargetDAO = textFlowTargetDAO;
       this.resourceUtils = resourceUtils;
       this.eTagUtils = eTagUtils;
-      this.personDAO = personDAO;
-      this.textFlowTargetHistoryDAO = textFlowTargetHistoryDAO;
       this.localeServiceImpl = localeService;
       this.copyTransServiceImpl = copyTransService;
       this.translationServiceImpl = translationService;
@@ -871,37 +856,6 @@ public class TranslationResourcesService implements TranslationResourcesResource
          return Response.ok().tag(etag).build();
       else
          return Response.ok("warning: unknown resIds: " + unknownResIds).tag(etag).build();
-   }
-
-   private void checkTargetState(String resId, ContentState state, List<String> contents)
-   {
-      switch (state)
-      {
-      case NeedReview:
-         if (allEmpty(contents))
-         {
-            String entity = "ContentState NeedsReview is illegal for TextFlowTarget " + resId + " with no contents";
-            throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity(entity).build());
-         }
-         break;
-      case New:
-         if (allNonEmpty(contents))
-         {
-            String entity = "ContentState New is illegal for non-empty TextFlowTarget " + resId;
-            throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity(entity).build());
-         }
-         break;
-      case Approved:
-         // FIXME what if plurals < nplurals ?
-         if (!allNonEmpty(contents))
-         {
-            String entity = "ContentState Approved is illegal for TextFlowTarget " + resId + " with one or more empty strings";
-            throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity(entity).build());
-         }
-         break;
-      default:
-         throw new RuntimeException("unknown ContentState " + state);
-      }
    }
 
    private HProjectIteration retrieveAndCheckIteration(boolean writeOperation)

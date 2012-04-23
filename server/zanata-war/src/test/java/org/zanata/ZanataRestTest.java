@@ -20,6 +20,7 @@ import org.zanata.rest.HibernateValidationInterceptor;
 import org.zanata.rest.InvalidStateExceptionMapper;
 import org.zanata.rest.NoSuchEntityExceptionMapper;
 import org.zanata.rest.NotLoggedInExceptionMapper;
+import org.zanata.rest.ZanataServiceExceptionMapper;
 
 public abstract class ZanataRestTest extends ZanataDbunitJpaTest
 {
@@ -90,6 +91,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest
       exceptionMappers.add(InvalidStateExceptionMapper.class);
       exceptionMappers.add(NoSuchEntityExceptionMapper.class);
       exceptionMappers.add(NotLoggedInExceptionMapper.class);
+      exceptionMappers.add(ZanataServiceExceptionMapper.class);
    }
    
    /**
