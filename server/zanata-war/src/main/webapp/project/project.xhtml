@@ -32,11 +32,9 @@
         <h1>#{messages['jsf.Name']}: <span class="obsolete">#{projectHome.instance.name}</span></h1>
     </s:fragment>
 
-    <s:formattedText id="project-home-content" value="#{projectHome.instance.homeContent}"></s:formattedText>
-    <h:outputText value="#{projectHome.instance.description}" rendered="#{empty projectHome.instance.homeContent}"/>
+    <s:formattedText id="project-home-content" value="#{projectHome.instance.homeContent}"/>
+    <s:formattedText value="#{projectHome.instance.description}" rendered="#{empty projectHome.instance.homeContent}"/>
 
-    <rich:spacer height="10px" />
-    
     <s:fragment rendered="#{projectHome.activeIterations.size > 0}">
     	<div class="iterations">
             <rich:tabPanel switchType="client">

@@ -16,11 +16,8 @@
     	
     	 <h1>#{messages['jsf.GroupId']}: #{versionGroupHome.instance.slug}</h1>
     	 
-    	 <h:outputText value="#{versionGroupHome.instance.description}" rendered="#{!empty versionGroupHome.instance.description}"/>
+    	 <s:formattedText value="#{versionGroupHome.instance.description}" rendered="#{!empty versionGroupHome.instance.description}"/>
     	 
-    	 <rich:spacer height="10px" />
-
-
         <rich:dataTable id="iterationsDataTable" value="#{versionGroupHome.instance.projectIterations.toArray()}"
                         var="_iteration">
             <rich:column sortBy="#{_iteration.project.slug}">
