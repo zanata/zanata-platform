@@ -32,7 +32,8 @@ public enum Constants
    projectsLink("Projects"),
    webDriverType("webdriver.type"),
    chrome, firefox, htmlUnit,
-   sampleProjects("zanata.sample.projects.basedir");
+   sampleProjects("zanata.sample.projects.basedir"),
+   zanataApiKey("zanata.apikey");
 
    private static final Logger LOGGER = LoggerFactory.getLogger(Constants.class);
    private String value;

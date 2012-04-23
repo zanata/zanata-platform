@@ -17,6 +17,7 @@ package org.zanata.workflow;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -47,12 +48,18 @@ public class ClientPushWorkFlow
 
       File projectDir = new File(baseDir, sampleProject);
       LOGGER.info("about to push project at: {}", projectDir.getAbsolutePath());
+
       Process process = null;
       try
       {
-         //TODO api key may be extracted from ~/zanata.ini to make it more robust
-         List<String> command = ImmutableList.<String>builder().add("mvn").add("zanata:push").add("-B")
-               .add("-Dzanata.username=admin").add("-Dzanata.key=b6d7044e9ee3b2447c28fb7c50d86d98").build();
+         String userConfig = getUserConfigPath();
+
+         List<String> command = ImmutableList.<String>builder()
+               .add("mvn").add("zanata:push").add("-B").add("-q")
+               .add("-Dzanata.userConfig=" + userConfig)
+               .add("-Dzanata.username=admin")
+               .add("-Dzanata.key=" + properties.getProperty(Constants.zanataApiKey.value()))
+               .build();
          LOGGER.info("execute command: {}", command);
 
          process = invokeMaven(projectDir, command);
@@ -69,16 +76,16 @@ public class ClientPushWorkFlow
       }
    }
 
-   private static void printOutput(Process process) throws IOException
+   private static String getUserConfigPath()
    {
-      List<String> lines = IOUtils.readLines(process.getInputStream());
-      for (String line : lines)
-      {
-         LOGGER.info(line);
-      }
+      URL resource = Thread.currentThread().getContextClassLoader().getResource("zanata-autotest.ini");
+      Preconditions.checkNotNull(resource, "userConfig can not be found.");
+      String userConfig = resource.getPath();
+      LOGGER.info("zanata.userConfig is: {}", userConfig);
+      return userConfig;
    }
 
-   private synchronized Process invokeMaven(File projectDir, List<String> command) throws IOException
+   private synchronized static Process invokeMaven(File projectDir, List<String> command) throws IOException
    {
       ProcessBuilder processBuilder = new ProcessBuilder(command).redirectErrorStream(true);
       Map<String, String> env = processBuilder.environment();
@@ -86,5 +93,14 @@ public class ClientPushWorkFlow
       LOGGER.debug("env: {}", env);
       processBuilder.directory(projectDir);
       return processBuilder.start();
+   }
+
+   private static void printOutput(Process process) throws IOException
+   {
+      List<String> lines = IOUtils.readLines(process.getInputStream());
+      for (String line : lines)
+      {
+         LOGGER.info(line);
+      }
    }
 }

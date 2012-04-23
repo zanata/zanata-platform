@@ -46,6 +46,7 @@
         <!--target zanata instance-->
         <zanata.target.version>${parent.version}</zanata.target.version>
         <zanata.instance.url>http://${cargo.host}:8080/${context.path}</zanata.instance.url>
+        <zanata.apikey>b6d7044e9ee3b2447c28fb7c50d86d98</zanata.apikey>
         <zanata.client.version>${project.version}</zanata.client.version>
         <zanata.sample.projects.basedir>${project.build.testOutputDirectory}/sample-projects</zanata.sample.projects.basedir>
         <functional-tests.skip>false</functional-tests.skip>
@@ -155,6 +156,7 @@
                     <include>**/*.properties</include>
                     <include>**/log4j.xml</include>
                     <include>**/zanata-ds.xml</include>
+                    <include>**/zanata-autotest.ini</include>
                 </includes>
             </testResource>
             <testResource>
