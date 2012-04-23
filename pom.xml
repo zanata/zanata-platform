@@ -8,21 +8,15 @@
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
     <version>1.6.0-alpha-2-SNAPSHOT</version>
-
   </parent>
 
-	<!-- Should be the same as zanata-parent/pom.xml -->
 	<scm>
-		<connection>scm:git:git://github.com/zanata/zanata.git</connection>
-		<developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
-		<url>https://github.com/zanata/zanata</url>
+		<connection>scm:git:git://github.com/zanata/zanata-api.git</connection>
+		<developerConnection>scm:git:git@github.com:zanata/zanata-api.git</developerConnection>
+		<url>https://github.com/zanata/zanata-api</url>
 	</scm>
 
   <modules>
     <module>zanata-common-api</module>
-    <module>zanata-common-util</module>
-    <module>zanata-adapter-po</module>
-    <module>zanata-adapter-properties</module>
-    <module>zanata-adapter-xliff</module>
   </modules>
 </project>
