@@ -20,6 +20,7 @@
  */
 package org.zanata.rest.service;
 
+import static org.zanata.service.impl.TranslationServiceImpl.validateExtensions;
 import static org.zanata.util.StringUtil.allEmpty;
 import static org.zanata.util.StringUtil.allNonEmpty;
 
@@ -71,6 +72,7 @@ import org.zanata.ApplicationConfiguration;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
+import org.zanata.common.MergeType;
 import org.zanata.common.Namespaces;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
@@ -100,6 +102,7 @@ import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 
 import com.google.common.collect.Sets;
+import org.zanata.service.TranslationService;
 
 @Name("translationResourcesService")
 @Path(TranslationResourcesService.SERVICE_PATH)
@@ -175,6 +178,9 @@ public class TranslationResourcesService implements TranslationResourcesResource
    @In
    private CopyTransService copyTransServiceImpl;
 
+   @In
+   private TranslationService translationServiceImpl;
+
    private final Log log = Logging.getLog(TranslationResourcesService.class);
 
    @In
@@ -201,7 +207,8 @@ public class TranslationResourcesService implements TranslationResourcesResource
       PersonDAO personDAO,
       TextFlowTargetHistoryDAO textFlowTargetHistoryDAO,
       LocaleService localeService,
-      CopyTransService copyTransService
+      CopyTransService copyTransService,
+      TranslationService translationService
    )
 // @formatter:on
    {
@@ -217,6 +224,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
       this.textFlowTargetHistoryDAO = textFlowTargetHistoryDAO;
       this.localeServiceImpl = localeService;
       this.copyTransServiceImpl = copyTransService;
+      this.translationServiceImpl = translationService;
    }
 
    /**
@@ -232,7 +240,6 @@ public class TranslationResourcesService implements TranslationResourcesResource
    public Response head()
    {
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
-      validateExtensions();
       EntityTag etag = projectIterationDAO.getResourcesETag(hProjectIteration);
       ResponseBuilder response = request.evaluatePreconditions(etag);
       if (response != null)
@@ -310,7 +317,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    {
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
 
-      validateExtensions(PoHeader.ID, PotEntryHeader.ID);
+      validateExtensions(extensions); //gettext, comment
 
       HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, resource.getName());
       HLocale hLocale = validateSourceLocale(resource.getLang());
@@ -373,7 +380,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
 
-      validateExtensions(PoHeader.ID, PotEntryHeader.ID);
+      validateExtensions(extensions);
 
       final Set<String> extSet = new HashSet<String>(extensions);
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extSet);
@@ -469,7 +476,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
       boolean changed = false;
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
 
-      validateExtensions();
+      validateExtensions(extensions);
 
       log.debug("resource details: {0}", resource);
       
@@ -713,7 +720,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
 
-      validateExtensions();
+      validateExtensions(extensions);
 
       // TODO create valid etag
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
@@ -837,12 +844,11 @@ public class TranslationResourcesService implements TranslationResourcesResource
          return Response.status(Status.BAD_REQUEST).entity("bad merge type "+merge).build();
       }
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
 
-      validateExtensions();
+      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 
       // TODO create valid etag
-      EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, new HashSet<String>());
+      EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, new HashSet<String>(0));
 
       ResponseBuilder response = request.evaluatePreconditions(etag);
       if (response != null)
@@ -850,153 +856,15 @@ public class TranslationResourcesService implements TranslationResourcesResource
          return response.build();
       }
 
-      log.debug("pass evaluate");
-      HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, id);
-      if (document.isObsolete())
-      {
-         return Response.status(Status.NOT_FOUND).build();
-      }
+      // Translate
+      Collection<String> unknownResIds =
+         this.translationServiceImpl.translateAll(projectSlug, iterationSlug, id, locale, messageBody, extensions, mergeType);
 
 
-      log.debug("start put translations entity:{0}" , messageBody);
+      // Regenerate etag in case it has changed
+      // TODO create valid etag
+      etag = eTagUtils.generateETagForDocument(hProjectIteration, id, new HashSet<String>(0));
 
-      boolean changed = false;
-
-      HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
-      // handle extensions
-      changed |= resourceUtils.transferFromTranslationsResourceExtensions(messageBody.getExtensions(true), document, extensions, hLocale, mergeType);
-
-      List<HPerson> newPeople = new ArrayList<HPerson>();
-      // NB: removedTargets only applies for MergeType.IMPORT
-      Collection<HTextFlowTarget> removedTargets = new HashSet<HTextFlowTarget>();
-      Collection<String> unknownResIds = new LinkedHashSet<String>();
-
-      if (mergeType == MergeType.IMPORT)
-      {
-         for (HTextFlow textFlow : document.getTextFlows())
-         {
-            HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale);
-            if (hTarget != null)
-            {
-               removedTargets.add(hTarget);
-            }
-         }
-      }
-
-      for (TextFlowTarget incomingTarget : messageBody.getTextFlowTargets())
-      {
-         String resId = incomingTarget.getResId();
-         HTextFlow textFlow = textFlowDAO.getById(document, resId);
-         if (textFlow == null)
-         {
-            // return warning for unknown resId to REST client
-            unknownResIds.add(resId);
-            log.warn("skipping TextFlowTarget with unknown resId: {0}", resId);
-            continue;
-         }
-         else
-         {
-            checkTargetState(incomingTarget.getResId(), incomingTarget.getState(), incomingTarget.getContents());
-            HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale);
-            boolean targetChanged = false;
-            if (hTarget == null)
-            {
-               targetChanged = true;
-               log.debug("locale: {0}", locale);
-               hTarget = new HTextFlowTarget(textFlow, hLocale);
-               hTarget.setVersionNum(0); // incremented when content is set
-               textFlow.getTargets().put(hLocale, hTarget);
-               targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
-               targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
-            }
-            else
-            {
-               switch (mergeType)
-               {
-               case AUTO:
-                  if (incomingTarget.getState() != ContentState.New)
-                  {
-                     if (hTarget.getState() == ContentState.New)
-                     {
-                        targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
-                        targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
-                     }
-                     else if (incomingTarget.getState() == ContentState.Approved)
-                     {
-                        List<String> incomingContents = incomingTarget.getContents();
-                        boolean oldContent = textFlowTargetHistoryDAO.findContentInHistory(hTarget, incomingContents);
-                        if (!oldContent)
-                        {
-                           targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
-                           targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
-                        }
-                     }
-                     else
-                     {
-                        // incomingTarget state = NeedReview
-                        // hTarget state != New
-
-                        // we don't overwrite the server's NeedReview or Approved value (business rule)
-                     }
-                  }
-                  break;
-
-               case IMPORT:
-                  removedTargets.remove(hTarget);
-                  targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
-                  targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
-                  break;
-
-               default:
-                  return Response.status(Status.INTERNAL_SERVER_ERROR).entity("unhandled merge type " + mergeType).build();
-               }
-            }
-
-            // update translation information if applicable
-            if (targetChanged)
-            {
-               changed = true;
-               if (incomingTarget.getTranslator() != null)
-               {
-                  String email = incomingTarget.getTranslator().getEmail();
-                  HPerson hPerson = personDAO.findByEmail(email);
-                  if (hPerson == null)
-                  {
-                     hPerson = new HPerson();
-                     hPerson.setEmail(email);
-                     hPerson.setName(incomingTarget.getTranslator().getName());
-                     newPeople.add(hPerson);
-                  }
-                  hTarget.setLastModifiedBy(hPerson);
-               }
-               else
-               {
-                  hTarget.setLastModifiedBy(null);
-               }
-               textFlowTargetDAO.makePersistent(hTarget);
-            }
-            incomingTarget = null;
-         }
-      }
-      if (changed || !removedTargets.isEmpty())
-      {
-         for (HPerson person : newPeople)
-         {
-            personDAO.makePersistent(person);
-         }
-         personDAO.flush();
-
-         for (HTextFlowTarget target : removedTargets)
-         {
-            target.clear();
-         }
-         textFlowTargetDAO.flush();
-
-         documentDAO.flush();
-
-         // TODO create valid etag
-         etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
-      }
       log.debug("successful put translation");
       // TODO lastChanged
       if (unknownResIds.isEmpty())
@@ -1065,36 +933,6 @@ public class TranslationResourcesService implements TranslationResourcesResource
          return hProjectIteration;
       }
    }
-
-   /**
-    * Ensures that any extensions sent with the current query are valid for this
-    * context.
-    * 
-    * @param validExt any number of extension ids that are valid for the context
-    * @throws WebApplicationException if any unsupported extensions are present
-    */
-   private void validateExtensions(String... validExt) throws WebApplicationException
-   {
-      Set<String> validExtensions = Sets.newHashSet(validExt);
-      Set<String> invalidExtensions = null;
-      for (String ext : validExt)
-      {
-         if (!validExtensions.contains(ext))
-         {
-            if (invalidExtensions == null)
-            {
-               invalidExtensions = new HashSet<String>();
-            }
-            invalidExtensions.add(ext);
-         }
-      }
-
-      if (invalidExtensions != null)
-      {
-         throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("Unsupported Extensions within this context: " + StringUtils.join(invalidExtensions, ",")).build());
-      }
-   }
-   
 
    public void copyClosestEquivalentTranslation(HDocument document)
    {

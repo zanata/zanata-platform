@@ -1,29 +1,5 @@
 package org.zanata.rest.service;
 
-import static java.util.Arrays.asList;
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isOneOf;
-import static org.hamcrest.Matchers.notNullValue;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-
 import com.google.common.collect.Lists;
 import org.apache.commons.httpclient.URIException;
 import org.dbunit.operation.DatabaseOperation;
@@ -45,6 +21,7 @@ import org.zanata.ZanataRestTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
+import org.zanata.common.MergeType;
 import org.zanata.common.ResourceType;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.DocumentDAO;
@@ -61,7 +38,6 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.client.ITranslationResources;
@@ -78,6 +54,7 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.CopyTransService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
@@ -93,6 +70,28 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
+
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isOneOf;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class TranslationResourceRestTest extends ZanataRestTest
 {
@@ -113,6 +112,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
 
    IMocksControl mockControl = EasyMock.createControl();
    ZanataIdentity mockIdentity = mockControl.createMock(ZanataIdentity.class);
+   TranslationWorkspaceManager transWorspaceManager = mockControl.createMock(TranslationWorkspaceManager.class);
 
    ApplicationConfiguration applicationConfiguration;
    ProjectIterationDAO projectIterationDAO;
@@ -127,11 +127,12 @@ public class TranslationResourceRestTest extends ZanataRestTest
    TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
    ProjectDAO projectDAO;
    LocaleServiceImpl localeService;
+   TranslationService translationService;
+   CopyTransService copyTransService;
    Events events;
 
    ITranslationResources transResource;
    
-   UpdateTransUnitHandler transUnitHandler;
    private LocaleId de_de;
 
 
@@ -184,7 +185,21 @@ public class TranslationResourceRestTest extends ZanataRestTest
       this.localeService = new LocaleServiceImpl(localeDAO, projectDAO, projectIterationDAO, personDAO);
       localeService.setLocaleDAO(localeDAO);
       
-      CopyTransServiceImpl copyTransService = new CopyTransServiceImpl(localeService, textFlowTargetDAO, documentDAO);
+      copyTransService = new CopyTransServiceImpl(localeService, textFlowTargetDAO, documentDAO);
+      translationService = new TranslationServiceImpl(
+            getSession(),
+            projectDAO,
+            transWorspaceManager,
+            localeService,
+            this.accountDAO.getByUsername("admin"),
+            projectIterationDAO,
+            documentDAO,
+            personDAO,
+            textFlowDAO,
+            textFlowTargetDAO,
+            textFlowTargetHistoryDAO,
+            resourceUtils
+      );
 
       // @formatter:off
       TranslationResourcesService obj = new TranslationResourcesService(
@@ -200,7 +215,9 @@ public class TranslationResourceRestTest extends ZanataRestTest
             personDAO,
             textFlowTargetHistoryDAO,
             localeService,
-            copyTransService);
+            copyTransService,
+            translationService
+            );
       // @formatter:on
 
       resources.add(obj);
@@ -1024,10 +1041,23 @@ public class TranslationResourceRestTest extends ZanataRestTest
       expectLastCall();
       mockControl.replay();
 
-      TranslationServiceImpl translationService = new TranslationServiceImpl(getSession(), projectDAO, transWorkerManager, localeService, translator);
+      translationService = new TranslationServiceImpl(
+            getSession(),
+            projectDAO,
+            transWorspaceManager,
+            localeService,
+            translator,
+            projectIterationDAO,
+            documentDAO,
+            personDAO,
+            textFlowDAO,
+            textFlowTargetDAO,
+            textFlowTargetHistoryDAO,
+            resourceUtils
+      );
 
-      // @formatter:off      
-      transUnitHandler = new UpdateTransUnitHandler(
+      // @formatter:off
+      UpdateTransUnitHandler transUnitHandler = new UpdateTransUnitHandler(
             mockIdentity,
             projectDAO,
             textFlowTargetHistoryDAO,

@@ -40,6 +40,7 @@ import org.jboss.seam.log.Logging;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
+import org.zanata.common.MergeType;
 import org.zanata.common.ResourceType;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
