@@ -20,6 +20,7 @@ import org.zanata.page.HomePage;
 import org.zanata.page.ProjectPage;
 import org.zanata.page.ProjectVersionPage;
 import org.zanata.page.ProjectsPage;
+import org.zanata.util.Constants;
 
 public class ProjectWorkFlow extends AbstractWebWorkFlow
 {
@@ -41,7 +42,7 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow
 
    public <P extends AbstractPage> ProjectPage goToProjectByName(P page, String projectName)
    {
-      ProjectsPage projects = page.goToPage("Projects", ProjectsPage.class);
+      ProjectsPage projects = page.goToPage(Constants.projectsLink.value(), ProjectsPage.class);
       return projects.goToProject(projectName);
    }
 }

@@ -15,9 +15,6 @@
  */
 package org.zanata.page;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 import org.openqa.selenium.WebDriver;
@@ -28,7 +25,10 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.util.Constants;
 import com.google.common.base.Strings;
+
+import static org.zanata.util.Constants.*;
 
 public enum WebDriverFactory
 {
@@ -47,26 +47,12 @@ public enum WebDriverFactory
          {
             if (driver == null)
             {
-               loadProperties();
+               properties = loadProperties();
                driver = createDriver();
             }
          }
       }
       return driver;
-   }
-
-   private void loadProperties()
-   {
-      InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("setup.properties");
-      properties = new Properties();
-      try
-      {
-         properties.load(inputStream);
-      } catch (IOException e)
-      {
-         LOGGER.error("can't load setup.properties");
-         throw new IllegalStateException("can't load setup.properties");
-      }
    }
 
    public String getHostUrl()
@@ -80,11 +66,11 @@ public enum WebDriverFactory
 
    private WebDriver createDriver()
    {
-      String driverType = properties.getProperty("webdriver.type", "htmlUnit");
-      if (driverType.equalsIgnoreCase("chrome"))
+      String driverType = properties.getProperty(webDriverType.value(), "htmlUnit");
+      if (driverType.equalsIgnoreCase(chrome.value()))
       {
          return configureChromeDriver();
-      } else if (driverType.equalsIgnoreCase("fireFox"))
+      } else if (driverType.equalsIgnoreCase(firefox.value()))
       {
          return configureFirefoxDriver();
       } else
@@ -134,10 +120,5 @@ public enum WebDriverFactory
       firefoxProfile.setAlwaysLoadNoFocusLib(true);
       firefoxProfile.setEnableNativeEvents(true);
       return firefoxProfile;
-   }
-
-   static enum BrowserType
-   {
-      Chrome, FireFox, HtmlUnit
    }
 }

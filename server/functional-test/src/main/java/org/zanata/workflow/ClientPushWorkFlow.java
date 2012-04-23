@@ -17,5 +17,8 @@ package org.zanata.workflow;
 
 public class ClientPushWorkFlow
 {
+    public void mvnPush(String sampleProject)
+    {
 
+    }
 }
