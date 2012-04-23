@@ -25,6 +25,7 @@ import org.zanata.page.ProjectVersionPage;
 
 import static org.hamcrest.MatcherAssert.*;
 
+@Test(groups = {"web-setup"})
 public class CreateProjectTest
 {
 

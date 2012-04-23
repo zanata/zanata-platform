@@ -19,6 +19,7 @@ import org.testng.annotations.Test;
 import org.zanata.workflow.LanguageWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
+@Test(groups = {"web-setup"})
 public class LanguageTest
 {
    @Test

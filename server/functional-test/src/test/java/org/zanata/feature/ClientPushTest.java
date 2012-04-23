@@ -23,6 +23,7 @@ import org.zanata.workflow.ClientPushWorkFlow;
 
 import static org.hamcrest.MatcherAssert.*;
 
+@Test(dependsOnGroups = {"web-setup"})
 public class ClientPushTest
 {
    @Test

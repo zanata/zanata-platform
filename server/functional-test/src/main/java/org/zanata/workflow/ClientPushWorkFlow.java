@@ -83,7 +83,7 @@ public class ClientPushWorkFlow
       ProcessBuilder processBuilder = new ProcessBuilder(command).redirectErrorStream(true);
       Map<String, String> env = processBuilder.environment();
       // mvn and java home
-      LOGGER.info("env: {}", env);
+      LOGGER.debug("env: {}", env);
       processBuilder.directory(projectDir);
       return processBuilder.start();
    }
