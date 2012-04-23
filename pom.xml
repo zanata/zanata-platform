@@ -22,5 +22,7 @@
     <module>zanata-common-api</module>
     <module>zanata-common-util</module>
     <module>zanata-adapter-po</module>
+    <module>zanata-adapter-properties</module>
+    <module>zanata-adapter-xliff</module>
   </modules>
 </project>
