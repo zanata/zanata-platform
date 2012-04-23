@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.zanata.action;
+package org.zanata.workflow;
 
 import org.zanata.page.AbstractPage;
 import org.zanata.page.HomePage;
@@ -21,7 +21,7 @@ import org.zanata.page.ProjectPage;
 import org.zanata.page.ProjectVersionPage;
 import org.zanata.page.ProjectsPage;
 
-public class ProjectAction extends AbstractAction
+public class ProjectWorkFlow extends AbstractWebWorkFlow
 {
    public ProjectPage createNewProject(HomePage homePage, String projectId, String projectName)
    {

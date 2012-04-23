@@ -13,21 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.zanata.feature;
+package org.zanata.workflow;
 
-import org.testng.annotations.Test;
-import org.zanata.workflow.LanguageWorkFlow;
-import org.zanata.workflow.LoginWorkFlow;
-
-public class LanguageTest
+public class ClientPushWorkFlow
 {
-   @Test
-   public void canAddLanguage()
-   {
-      new LoginWorkFlow().signIn("admin", "admin");
-      LanguageWorkFlow languageAction = new LanguageWorkFlow();
-      languageAction.addLanguageAndJoin("en-US");
-      languageAction.addLanguageAndJoin("pl");
-      languageAction.addLanguageAndJoin("zh");
-   }
+
 }

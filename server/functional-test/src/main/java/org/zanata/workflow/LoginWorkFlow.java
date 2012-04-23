@@ -13,16 +13,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.zanata.action;
+package org.zanata.workflow;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.page.HomePage;
 import org.zanata.page.SignInPage;
 
-public class LoginAction extends AbstractAction
+public class LoginWorkFlow extends AbstractWebWorkFlow
 {
-   private static final Logger LOGGER = LoggerFactory.getLogger(LoginAction.class);
+   private static final Logger LOGGER = LoggerFactory.getLogger(LoginWorkFlow.class);
 
    public HomePage signIn(String username, String password)
    {

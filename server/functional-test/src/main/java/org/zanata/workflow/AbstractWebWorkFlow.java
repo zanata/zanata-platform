@@ -13,18 +13,18 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.zanata.action;
+package org.zanata.workflow;
 
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.HomePage;
 import org.zanata.page.WebDriverFactory;
 
-public class AbstractAction
+public class AbstractWebWorkFlow
 {
    protected final WebDriver driver;
    protected final String hostUrl;
 
-   public AbstractAction()
+   public AbstractWebWorkFlow()
    {
       String baseUrl = WebDriverFactory.INSTANCE.getHostUrl();
       hostUrl = appendTrailingSlash(baseUrl);

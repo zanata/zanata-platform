@@ -17,7 +17,7 @@ package org.zanata.feature;
 
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
-import org.zanata.action.LoginAction;
+import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.page.HomePage;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,7 +26,7 @@ public class LoginTest
 {
    @Test
    public void canLogIn() {
-      LoginAction loginAction = new LoginAction();
+      LoginWorkFlow loginAction = new LoginWorkFlow();
       HomePage homePage = loginAction.signIn("admin", "admin");
 
       assertThat(homePage.getTitle(), Matchers.equalTo("Zanata:Home"));

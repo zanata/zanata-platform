@@ -13,11 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.zanata.action;
+package org.zanata.workflow;
 
 import org.zanata.page.ManageLanguagePage;
 
-public class LanguageAction extends AbstractAction
+public class LanguageWorkFlow extends AbstractWebWorkFlow
 {
    public ManageLanguagePage addLanguageAndJoin(String localeId)
    {

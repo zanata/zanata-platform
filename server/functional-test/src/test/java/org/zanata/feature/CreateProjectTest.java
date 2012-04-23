@@ -17,8 +17,8 @@ package org.zanata.feature;
 
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
-import org.zanata.action.ProjectAction;
-import org.zanata.action.LoginAction;
+import org.zanata.workflow.LoginWorkFlow;
+import org.zanata.workflow.ProjectWorkFlow;
 import org.zanata.page.HomePage;
 import org.zanata.page.ProjectPage;
 import org.zanata.page.ProjectVersionPage;
@@ -34,8 +34,8 @@ public class CreateProjectTest
       final String projectVersion = "master";
       final String projectName = "plural project";
 
-      HomePage homePage = new LoginAction().signIn("admin", "admin");
-      ProjectAction projectAction = new ProjectAction();
+      HomePage homePage = new LoginWorkFlow().signIn("admin", "admin");
+      ProjectWorkFlow projectAction = new ProjectWorkFlow();
       ProjectPage projectPage = projectAction.createNewProject(homePage, projectId, projectName);
 
       assertThat(projectPage.getProjectId(), Matchers.equalTo("Project ID: " + projectId));
