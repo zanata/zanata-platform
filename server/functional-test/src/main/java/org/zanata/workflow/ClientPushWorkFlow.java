@@ -52,14 +52,7 @@ public class ClientPushWorkFlow
       Process process = null;
       try
       {
-         String userConfig = getUserConfigPath();
-
-         List<String> command = ImmutableList.<String>builder()
-               .add("mvn").add("zanata:push").add("-B").add("-q")
-               .add("-Dzanata.userConfig=" + userConfig)
-               .add("-Dzanata.username=admin")
-               .add("-Dzanata.key=" + properties.getProperty(Constants.zanataApiKey.value()))
-               .build();
+         List<String> command = zanataMavenPushCommand();
          LOGGER.info("execute command: {}", command);
 
          process = invokeMaven(projectDir, command);
@@ -76,13 +69,21 @@ public class ClientPushWorkFlow
       }
    }
 
+   private static List<String> zanataMavenPushCommand()
+   {
+      String userConfig = getUserConfigPath();
+      return ImmutableList.<String>builder()
+                  .add("mvn").add("--batch-mode").add("--quiet").add("zanata:push")
+                  .add("-Dzanata.userConfig=" + userConfig).add("-Dzanata.username=admin")
+                  .add("-Dzanata.key=" + properties.getProperty(Constants.zanataApiKey.value()))
+                  .build();
+   }
+
    private static String getUserConfigPath()
    {
       URL resource = Thread.currentThread().getContextClassLoader().getResource("zanata-autotest.ini");
       Preconditions.checkNotNull(resource, "userConfig can not be found.");
-      String userConfig = resource.getPath();
-      LOGGER.info("zanata.userConfig is: {}", userConfig);
-      return userConfig;
+      return resource.getPath();
    }
 
    private synchronized static Process invokeMaven(File projectDir, List<String> command) throws IOException
