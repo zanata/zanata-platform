@@ -32,6 +32,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
+import org.zanata.common.EntityStatus;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionGroupService;
@@ -49,15 +50,19 @@ public class VersionGroupAction implements Serializable
    Log log;
 
    private List<HIterationGroup> allVersionGroups;
-
-   private HIterationGroup group;
-   private String searchTerm;
-   private String groupNameFilter;
    private List<HProjectIteration> searchResults;
 
-   public void loadAllActiveGroups()
+   private HIterationGroup group;
+
+   private String searchTerm;
+   private String groupNameFilter;
+
+   private boolean showActiveGroups = true;
+   private boolean showObsoleteGroups = false;
+
+   public void loadAllActiveGroupsOrIsMaintainer()
    {
-      allVersionGroups = versionGroupServiceImpl.getAllActiveVersionGroups();
+      allVersionGroups = versionGroupServiceImpl.getAllActiveVersionGroupsOrIsMaintainer();
    }
 
    public void init(String slug)
@@ -117,20 +122,39 @@ public class VersionGroupAction implements Serializable
       }
    }
 
-   public boolean filterGroupByName( Object groupObject )
+   public boolean filterGroupByName(Object groupObject)
    {
-      final HIterationGroup group = (HIterationGroup)groupObject;
-      
-      if( this.groupNameFilter != null && this.groupNameFilter.length() > 0 )
+      final HIterationGroup group = (HIterationGroup) groupObject;
+
+      if (this.groupNameFilter != null && this.groupNameFilter.length() > 0)
       {
-         return group.getName().toLowerCase().contains( this.groupNameFilter.toLowerCase() );
+         return group.getName().toLowerCase().contains(this.groupNameFilter.toLowerCase());
       }
       else
       {
          return true;
       }
    }
-   
+
+   public boolean filterGroupByStatus(Object groupObject)
+   {
+      final HIterationGroup group = (HIterationGroup) groupObject;
+      if (isShowActiveGroups() && isShowObsoleteGroups())
+      {
+         return true;
+      }
+
+      if (group.getStatus() == EntityStatus.OBSOLETE)
+      {
+         return isShowObsoleteGroups();
+      }
+      else if (group.getStatus() == EntityStatus.ACTIVE)
+      {
+         return isShowActiveGroups();
+      }
+      return false;
+   }
+
    public String getGroupNameFilter()
    {
       return groupNameFilter;
@@ -149,5 +173,25 @@ public class VersionGroupAction implements Serializable
    public void setAllVersionGroups(List<HIterationGroup> allVersionGroups)
    {
       this.allVersionGroups = allVersionGroups;
+   }
+
+   public boolean isShowActiveGroups()
+   {
+      return showActiveGroups;
+   }
+
+   public void setShowActiveGroups(boolean showActiveGroups)
+   {
+      this.showActiveGroups = showActiveGroups;
+   }
+
+   public boolean isShowObsoleteGroups()
+   {
+      return showObsoleteGroups;
+   }
+
+   public void setShowObsoleteGroups(boolean showObsoleteGroups)
+   {
+      this.showObsoleteGroups = showObsoleteGroups;
    }
 }

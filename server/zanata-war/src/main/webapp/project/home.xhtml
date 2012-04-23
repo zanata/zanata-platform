@@ -78,18 +78,18 @@
                         </s:link>
                     </rich:column>
                 <rich:column width="270px">
-                        <f:facet name="header">Description</f:facet>
+                        <f:facet name="header">#{messages['jsf.Description']}</f:facet>
                         <h:outputText value="#{project.description}" />
                     </rich:column>
                 <rich:column sortBy="#{project.creationDate}" width="auto">
-                        <f:facet name="header">Creation Date</f:facet>
+                        <f:facet name="header">#{messages['jsf.CreationDate']}</f:facet>
                         <h:outputText value="#{project.creationDate}">
                            <f:convertDateTime type="date" dateStyle="default"/>
                         </h:outputText>                     
                     </rich:column>
                     
                     <rich:column styleClass="centered" width="60px" sortBy="#{project.status}">
-                        <f:facet name="header">Status</f:facet>
+                        <f:facet name="header">#{messages['jsf.Status']}</f:facet>
                         <h:outputText value="#{messages[project.status.messageKey]}"/>
                     </rich:column>
         </rich:dataTable>

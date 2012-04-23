@@ -243,16 +243,15 @@ public class HPerson extends ModelEntityBase implements Serializable
    @Transient
    public boolean isMaintainer(HIterationGroup grp)
    {
-      for (HIterationGroup group: getMaintainerVersionGroups())
-      {
-         if (group.getId().equals( grp.getId() ))
-         {
-            return true;
-         }
-      }
-      return false;
+      return getMaintainerVersionGroups().contains(grp);
    }
    
+   @Transient
+   public boolean isMaintainerOfVersionGroups()
+   {
+      return !getMaintainerVersionGroups().isEmpty();
+   }
+
    @Transient
    public boolean isCoordinator(HLocale locale)
    {

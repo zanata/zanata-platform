@@ -32,7 +32,7 @@ import org.zanata.model.HProjectIteration;
  */
 public interface VersionGroupService
 {
-   List<HIterationGroup> getAllActiveVersionGroups();
+   List<HIterationGroup> getAllActiveVersionGroupsOrIsMaintainer();
 
    HIterationGroup getBySlug(String slug);
 

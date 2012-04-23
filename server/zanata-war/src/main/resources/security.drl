@@ -387,16 +387,42 @@ end
   Version Group rules
 
 ******************************************************************************************/
-rule UpdateVersionGroup
+rule UpdateAndInsertVersionGroup
   no-loop
   activation-group "permissions"
 when
-  check: PermissionCheck(action == "update" || action == "insert", granted == false)
+  check: PermissionCheck(action == "update" || action == "insert" || action == "mark-obsolete", granted == false)
   authenticatedPerson: HPerson()
   eval(authenticatedPerson != null)
   $group: HIterationGroup(
     eval(authenticatedPerson.isMaintainer($group))
   )
+then
+  check.grant();
+end
+
+rule MarkObsoleteVersionGroup
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(action == "mark-obsolete", granted == false)
+  authenticatedPerson: HPerson()
+  eval(authenticatedPerson != null)
+  $group: HIterationGroup(
+    eval(authenticatedPerson.isMaintainer($group))
+  )
+then
+  check.grant();
+end
+
+rule ViewObsoleteVersionGroup
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(target == "HIterationGroup", action == "view-obsolete", granted == false)
+  authenticatedPerson: HPerson()
+  eval(authenticatedPerson != null)
+  eval(authenticatedPerson.isMaintainerOfVersionGroups())
 then
   check.grant();
 end

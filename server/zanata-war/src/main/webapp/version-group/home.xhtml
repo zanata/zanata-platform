@@ -33,6 +33,25 @@
 
           <a4j:form>
               <s:token allowMultiplePosts="true" />
+              
+              
+              <s:div styleClass="filter-options">
+		            <h:selectBooleanCheckbox title="Show active group" value="#{versionGroupAction.showActiveGroups}">
+		                <a4j:support event="onchange" reRender="threads" />
+		            </h:selectBooleanCheckbox>
+		            <h:outputText value="#{messages['jsf.Active']}"/>
+		            
+		            <rich:spacer width="5" />
+		            <s:fragment rendered="#{s:hasPermission('HIterationGroup','view-obsolete')}">
+			            <h:selectBooleanCheckbox title="Show obsolete groups" value="#{versionGroupAction.showObsoleteGroups}">
+			                <a4j:support event="onchange" reRender="threads" />
+			            </h:selectBooleanCheckbox>
+		                <h:outputText value="#{messages['jsf.Obsolete']}"/>
+		            </s:fragment>
+	          </s:div>
+        
+        
+        
               <rich:dataTable id="threads" value="#{versionGroupAction.allVersionGroups}"
                               var="group">
                   <rich:column filterMethod="#{versionGroupAction.filterGroupByName}">
@@ -41,17 +60,21 @@
                   	  	<h:panelGroup>
 							<h:outputText value="#{messages['jsf.Name']}" />
 							<br />
-							<h:inputText value="#{versionGroupAction.groupNameFilter}"
-								id="name_filter_input">
+							<h:inputText value="#{versionGroupAction.groupNameFilter}" id="name_filter_input">
 								<a4j:support event="onkeyup" reRender="threads"
 									ignoreDupResponses="true" requestDelay="700" focus="name_filter_input" />
 							</h:inputText>
 						</h:panelGroup>
                   	  </f:facet>
                       <s:link id="versionGroup" styleClass="table_link" value="#{group.name}" propagation="none"
-                             view="/version-group/version_group.xhtml"> 
+                             view="/version-group/version_group.xhtml" rendered="#{group.status == 'ACTIVE'}"> 
                             <f:param name="slug" value="#{group.slug}"/>
                       </s:link>
+                      <s:link id="versionGroup_obsolete" styleClass="table_link obsolete_link" value="#{group.name}" propagation="none"
+                             view="/version-group/version_group.xhtml" rendered="#{group.status == 'OBSOLETE'}"> 
+                            <f:param name="slug" value="#{group.slug}"/>
+                      </s:link>
+                      
                   </rich:column>
                   <rich:column>
                       <f:facet name="header">#{messages['jsf.Description']}</f:facet>
@@ -63,6 +86,12 @@
                           <f:convertDateTime type="date" dateStyle="default"/>
                       </h:outputText>
                   </rich:column>
+                  
+                   <rich:column styleClass="centered" width="60px" sortBy="#{group.status}" filterMethod="#{versionGroupAction.filterGroupByStatus}">
+                        <f:facet name="header">#{messages['jsf.Status']}</f:facet>
+                        <h:outputText value="#{messages[group.status.messageKey]}"/>
+                    </rich:column>
+                    
               </rich:dataTable>
           </a4j:form>
       </rich:panel>

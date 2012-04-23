@@ -20,7 +20,10 @@
  */
 package org.zanata.action;
 
+import java.util.List;
+
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
 import javax.persistence.NoResultException;
 
 import org.hibernate.Session;
@@ -41,13 +44,13 @@ import org.zanata.model.HIterationGroup;
 @Name("versionGroupHome")
 public class VersionGroupHome extends SlugHome<HIterationGroup>
 {
-   private String slug;
+   private static final long serialVersionUID = 1L;
 
-   private EntityStatus status = EntityStatus.ACTIVE;
+   private String slug;
 
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
-   
+
    @Override
    protected HIterationGroup loadInstance()
    {
@@ -125,13 +128,12 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
    {
       if (!validateSlug(getInstance().getSlug(), "slug"))
          return null;
-      getInstance().setStatus(status);
 
       if (authenticatedAccount != null)
       {
          getInstance().addMaintainer(authenticatedAccount.getPerson());
       }
-      
+
       return super.persist();
    }
 
@@ -145,5 +147,21 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
    public String cancel()
    {
       return "cancel";
+   }
+
+   @Override
+   public List<SelectItem> getStatusList()
+   {
+      List<SelectItem> statusList = super.getStatusList();
+
+      for (SelectItem option : statusList)
+      {
+         if (option.getValue().equals(EntityStatus.READONLY))
+         {
+            statusList.remove(option);
+            break;
+         }
+      }
+      return statusList;
    }
 }
