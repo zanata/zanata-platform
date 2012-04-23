@@ -25,5 +25,6 @@
     <module>zanata-client-ant-po</module>
     <module>zanata-client-ant-properties</module>
     <module>zanata-maven-plugin</module>
+    <module>zanata-rest-client</module>
   </modules>
 </project>
