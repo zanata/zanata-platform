@@ -6,10 +6,6 @@ import java.net.URISyntaxException;
 import org.jboss.resteasy.client.ClientExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.rest.client.IProjectIterationResource;
-import org.zanata.rest.client.ITranslationResources;
-import org.zanata.rest.client.IVersionResource;
-import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.VersionInfo;
 
 
@@ -35,12 +31,12 @@ public class TestProxyFactory extends ZanataProxyFactory
    }
 
    @Override
-   public ITranslationResources getTranslationResources(String projectSlug, String versionSlug)
+   public ITranslatedDocResource getTranslatedDocResource(String projectSlug, String versionSlug)
    {
       try
       {
-         log.debug("create proxy for ITranslationResources");
-         return createProxy(ITranslationResources.class, new URI("/restv1/projects/p/" + projectSlug + "/iterations/i/" + versionSlug + "/r"));
+         log.debug("create proxy for ITranslatedDocResource");
+         return createProxy(ITranslatedDocResource.class, new URI("/restv1/projects/p/" + projectSlug + "/iterations/i/" + versionSlug + "/r"));
       }
       catch (URISyntaxException e)
       {
@@ -50,9 +46,18 @@ public class TestProxyFactory extends ZanataProxyFactory
    }
 
    @Override
-   public void registerPrefixInterceptor(Object interceptor)
+   public ISourceDocResource getSourceDocResource(String projectSlug, String versionSlug)
    {
-      super.registerPrefixInterceptor(interceptor);
+      try
+      {
+         log.debug("create proxy for ISourceDocResource");
+         return createProxy(ISourceDocResource.class, new URI("/restv1/projects/p/" + projectSlug + "/iterations/i/" + versionSlug + "/r"));
+      }
+      catch (URISyntaxException e)
+      {
+         log.debug("exception:" + e.getMessage());
+         throw new RuntimeException(e);
+      }
    }
 
    @Override
