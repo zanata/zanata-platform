@@ -16,19 +16,15 @@
 package org.zanata.page;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.pagefactory.ByChained;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -81,7 +77,7 @@ public class ProjectPage extends AbstractPage
          @Override
          public boolean apply(WebElement input)
          {
-            //the link text has line break in it
+            // the link text has line break in it
             String linkText = input.getText().replaceAll("\\n", " ");
             return linkText.matches(versionId + "\\s+Documents:.+");
          }

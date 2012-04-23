@@ -15,6 +15,8 @@
  */
 package org.zanata.page;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -28,12 +30,11 @@ import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class AbstractPage
 {
@@ -56,10 +57,7 @@ public class AbstractPage
 
    public static FluentWait<WebDriver> createWaitForAjax(WebDriver webDriver, int durationInSec)
    {
-      return new FluentWait<WebDriver>(webDriver)
-            .withTimeout(durationInSec, SECONDS)
-            .pollingEvery(1, SECONDS)
-            .ignoring(NoSuchElementException.class);
+      return new FluentWait<WebDriver>(webDriver).withTimeout(durationInSec, SECONDS).pollingEvery(1, SECONDS).ignoring(NoSuchElementException.class);
    }
 
    public WebDriver getDriver()
@@ -97,7 +95,7 @@ public class AbstractPage
       return PageFactory.initElements(driver, pageClass);
    }
 
-   //TODO this doesn't seem useful
+   // TODO this doesn't seem useful
    public <P> P goToUrl(String url, P page)
    {
       LOGGER.info("go to url: {}", url);

@@ -36,7 +36,8 @@ public class SignInPage extends AbstractPage
       super(driver);
    }
 
-   public <P extends AbstractPage> P signInAndGoToPage(String username, String password, Class<P> pageClass) {
+   public <P extends AbstractPage> P signInAndGoToPage(String username, String password, Class<P> pageClass)
+   {
       usernameField.sendKeys(username);
       passwordField.sendKeys(password);
       signInButton.click();

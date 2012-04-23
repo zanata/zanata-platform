@@ -21,16 +21,18 @@ import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Objects;
 
 public enum Constants
 {
-   //constants used by page and workflow objects
+   // constants used by page and workflow objects
    propFile("setup.properties"),
+   zanataInstance("zanata.instance.url"),
    projectsLink("Projects"),
    webDriverType("webdriver.type"),
-   chrome, firefox, htmlUnit
-   ;
+   chrome, firefox, htmlUnit,
+   sampleProjects("zanata.sample.projects.basedir");
 
    private static final Logger LOGGER = LoggerFactory.getLogger(Constants.class);
    private String value;
@@ -49,10 +51,7 @@ public enum Constants
    @Override
    public String toString()
    {
-      return Objects.toStringHelper(this).
-            add("name", name()).
-            add("value", value).
-            toString();
+      return Objects.toStringHelper(this).add("name", name()).add("value", value).toString();
    }
 
    public static Properties loadProperties()
@@ -63,7 +62,8 @@ public enum Constants
       {
          properties.load(inputStream);
          return properties;
-      } catch (IOException e)
+      }
+      catch (IOException e)
       {
          LOGGER.error("can't load {}", propFile);
          throw new IllegalStateException("can't load setup.properties");

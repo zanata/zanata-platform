@@ -15,19 +15,22 @@
  */
 package org.zanata.feature;
 
-import org.testng.annotations.Test;
-import org.zanata.workflow.LanguageWorkFlow;
-import org.zanata.workflow.LoginWorkFlow;
+import java.io.IOException;
 
-public class LanguageTest
+import org.hamcrest.Matchers;
+import org.testng.annotations.Test;
+import org.zanata.workflow.ClientPushWorkFlow;
+
+import static org.hamcrest.MatcherAssert.*;
+
+public class ClientPushTest
 {
    @Test
-   public void canAddLanguage()
+   public void canPush() throws IOException
    {
-      new LoginWorkFlow().signIn("admin", "admin");
-      LanguageWorkFlow workFlow = new LanguageWorkFlow();
-      workFlow.addLanguageAndJoin("en-US");
-      workFlow.addLanguageAndJoin("pl");
-      workFlow.addLanguageAndJoin("zh");
+      ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
+      int exitCode = clientPushWorkFlow.mvnPush("plural");
+
+      assertThat(exitCode, Matchers.equalTo(0));
    }
 }

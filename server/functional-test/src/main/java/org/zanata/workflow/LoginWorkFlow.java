@@ -26,7 +26,7 @@ public class LoginWorkFlow extends AbstractWebWorkFlow
 
    public HomePage signIn(String username, String password)
    {
-//      System.getProperties().put("webdriver.firefox.useExisting", "true");
+      // System.getProperties().put("webdriver.firefox.useExisting", "true");
       LOGGER.info("accessing zanata at: {}", hostUrl);
 
       HomePage homePage = new HomePage(driver);
@@ -34,7 +34,8 @@ public class LoginWorkFlow extends AbstractWebWorkFlow
       {
          LOGGER.info("already logged in as {}", username);
          return homePage;
-      } else
+      }
+      else
       {
          SignInPage signInPage = homePage.clickSignInLink();
          return signInPage.signInAndGoToPage(username, password, HomePage.class);

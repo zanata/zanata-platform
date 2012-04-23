@@ -26,18 +26,12 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow
 {
    public ProjectPage createNewProject(HomePage homePage, String projectId, String projectName)
    {
-      return homePage.goToProjects()
-            .clickOnCreateProjectLink()
-            .inputProjectId(projectId)
-            .inputProjectName(projectName)
-            .saveProject();
+      return homePage.goToProjects().clickOnCreateProjectLink().inputProjectId(projectId).inputProjectName(projectName).saveProject();
    }
 
    public ProjectVersionPage createNewProjectVersion(ProjectPage projectPage, String projectVersion)
    {
-      return projectPage.clickCreateVersionLink()
-            .inputVersionId(projectVersion)
-            .saveVersion();
+      return projectPage.clickCreateVersionLink().inputVersionId(projectVersion).saveVersion();
    }
 
    public <P extends AbstractPage> ProjectPage goToProjectByName(P page, String projectName)

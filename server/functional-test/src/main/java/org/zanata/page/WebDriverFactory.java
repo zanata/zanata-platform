@@ -15,6 +15,12 @@
  */
 package org.zanata.page;
 
+import static org.zanata.util.Constants.chrome;
+import static org.zanata.util.Constants.firefox;
+import static org.zanata.util.Constants.loadProperties;
+import static org.zanata.util.Constants.webDriverType;
+import static org.zanata.util.Constants.zanataInstance;
+
 import java.util.Properties;
 
 import org.openqa.selenium.WebDriver;
@@ -25,10 +31,8 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.util.Constants;
-import com.google.common.base.Strings;
 
-import static org.zanata.util.Constants.*;
+import com.google.common.base.Strings;
 
 public enum WebDriverFactory
 {
@@ -61,7 +65,7 @@ public enum WebDriverFactory
       {
          getDriver();
       }
-      return properties.getProperty("zanata.instance.url");
+      return properties.getProperty(zanataInstance.value());
    }
 
    private WebDriver createDriver()
@@ -70,10 +74,12 @@ public enum WebDriverFactory
       if (driverType.equalsIgnoreCase(chrome.value()))
       {
          return configureChromeDriver();
-      } else if (driverType.equalsIgnoreCase(firefox.value()))
+      }
+      else if (driverType.equalsIgnoreCase(firefox.value()))
       {
          return configureFirefoxDriver();
-      } else
+      }
+      else
       {
          return configureHtmlDriver();
       }
@@ -92,21 +98,21 @@ public enum WebDriverFactory
 
    private WebDriver configureFirefoxDriver()
    {
-//      final String pathToFirefox = Strings.emptyToNull(props.getProperty("functionaltest.browser.path"));
+      // final String pathToFirefox =
+      // Strings.emptyToNull(props.getProperty("functionaltest.browser.path"));
 
       FirefoxBinary firefoxBinary = null;
-//      if (pathToFirefox != null)
-//      {
-//         firefoxBinary = new FirefoxBinary(new File(pathToFirefox));
-//      } else
-//      {
+      // if (pathToFirefox != null)
+      // {
+      // firefoxBinary = new FirefoxBinary(new File(pathToFirefox));
+      // } else
+      // {
       firefoxBinary = new FirefoxBinary();
-//      }
+      // }
 
-//      return new FirefoxDriver(firefoxBinary, makeFirefoxProfile());
+      // return new FirefoxDriver(firefoxBinary, makeFirefoxProfile());
       return new FirefoxDriver();
    }
-
 
    private FirefoxProfile makeFirefoxProfile()
    {
@@ -116,7 +122,8 @@ public enum WebDriverFactory
          // TODO - look at FirefoxDriver.getProfile().
       }
       final FirefoxProfile firefoxProfile = new FirefoxProfile();
-//        firefoxProfile.setPreference("browser.safebrowsing.malware.enabled", false); // disables connection to sb-ssl.google.com
+      // firefoxProfile.setPreference("browser.safebrowsing.malware.enabled",
+      // false); // disables connection to sb-ssl.google.com
       firefoxProfile.setAlwaysLoadNoFocusLib(true);
       firefoxProfile.setEnableNativeEvents(true);
       return firefoxProfile;
