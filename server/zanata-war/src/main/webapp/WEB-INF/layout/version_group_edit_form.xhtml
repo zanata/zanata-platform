@@ -37,6 +37,13 @@
             <h:inputText id="description" required="false"
                          value="#{versionGroupHome.instance.description}" style="width:400px;"/>
         </s:decorate>
+        
+        <s:decorate id="statusField" template="edit.xhtml">
+	        <ui:define name="label">#{messages['jsf.Status']}</ui:define>
+	        <h:selectOneMenu value="#{versionGroupHome.instance.status}">
+	            <f:selectItems value="#{versionGroupHome.statusList}"/>
+	        </h:selectOneMenu>
+	    </s:decorate>
 
         <div style="clear:both"></div>
 

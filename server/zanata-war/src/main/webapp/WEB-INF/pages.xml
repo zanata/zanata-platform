@@ -180,7 +180,7 @@
     <!-- Version Group -->
 
     <page view-id="/version-group/home.xhtml" >
-        <action execute="#{versionGroupAction.loadAllActiveGroups}" />
+        <action execute="#{versionGroupAction.loadAllActiveGroupsOrIsMaintainer}" />
     </page>
 
     <page view-id="/version-group/create_version_group.xhtml">

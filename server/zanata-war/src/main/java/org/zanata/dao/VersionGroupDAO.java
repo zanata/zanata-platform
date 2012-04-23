@@ -52,10 +52,19 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long>
       super(HIterationGroup.class, session);
    }
 
+   @SuppressWarnings("unchecked")
    public List<HIterationGroup> getAllActiveVersionGroups()
    {
       Query query = getSession().createQuery("from HIterationGroup g where g.status = :status");
       query.setParameter("status", EntityStatus.ACTIVE);
+      return query.list();
+   }
+
+   @SuppressWarnings("unchecked")
+   public List<HIterationGroup> getAllObsoleteVersionGroups()
+   {
+      Query query = getSession().createQuery("from HIterationGroup g where g.status = :status");
+      query.setParameter("status", EntityStatus.OBSOLETE);
       return query.list();
    }
 

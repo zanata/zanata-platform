@@ -22,7 +22,6 @@ package org.zanata.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.lucene.queryParser.ParseException;
 import org.jboss.seam.ScopeType;
@@ -30,11 +29,13 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.security.Identity;
+import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.VersionGroupDAO;
+import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HPerson;
-import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionGroupService;
 
@@ -52,10 +53,30 @@ public class VersionGroupServiceImpl implements VersionGroupService
    @In
    private ProjectIterationDAO projectIterationDAO;
 
+   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+   private HAccount authenticatedAccount;
+
    @Override
-   public List<HIterationGroup> getAllActiveVersionGroups()
+   public List<HIterationGroup> getAllActiveVersionGroupsOrIsMaintainer()
    {
-      return versionGroupDAO.getAllActiveVersionGroups();
+      List<HIterationGroup> activeVersions = versionGroupDAO.getAllActiveVersionGroups();
+      List<HIterationGroup> obsoleteVersions = versionGroupDAO.getAllObsoleteVersionGroups();
+
+      List<HIterationGroup> filteredList = new ArrayList<HIterationGroup>();
+      for (HIterationGroup obsoleteGroup : obsoleteVersions)
+      {
+         if (authenticatedAccount != null)
+         {
+            if (authenticatedAccount.getPerson().isMaintainer(obsoleteGroup))
+            {
+               filteredList.add(obsoleteGroup);
+            }
+         }
+      }
+
+      activeVersions.addAll(filteredList);
+
+      return activeVersions;
    }
 
    @Override
