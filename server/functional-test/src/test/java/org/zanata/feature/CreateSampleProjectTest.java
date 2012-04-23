@@ -15,11 +15,12 @@
  */
 package org.zanata.feature;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.io.IOException;
 
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
-import org.zanata.page.HomePage;
 import org.zanata.page.ProjectPage;
 import org.zanata.page.ProjectVersionPage;
 import org.zanata.workflow.ClientPushWorkFlow;
@@ -27,30 +28,30 @@ import org.zanata.workflow.LanguageWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
 public class CreateSampleProjectTest
 {
    @Test
-   public void canCreateProjectAndVersion() {
+   public void canCreateProjectAndVersion()
+   {
       final String projectId = "plurals";
       final String projectVersion = "master";
       final String projectName = "plural project";
 
-      HomePage homePage = new LoginWorkFlow().signIn("admin", "admin");
+      new LoginWorkFlow().signIn("admin", "admin");
       ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
-      ProjectPage projectPage = projectWorkFlow.createNewProject(homePage, projectId, projectName);
+      ProjectPage projectPage = projectWorkFlow.createNewProject(projectId, projectName);
 
       assertThat(projectPage.getProjectId(), Matchers.equalTo("Project ID: " + projectId));
       assertThat(projectPage.getProjectName(), Matchers.equalTo("Name: plural project"));
 
       ProjectVersionPage projectVersionPage = projectWorkFlow.createNewProjectVersion(projectPage, projectVersion);
 
-      //can go to project version page
-      projectPage = projectWorkFlow.goToProjectByName(projectVersionPage, projectName);
+      // can go to project version page
+      projectPage = projectWorkFlow.goToProjectByName(projectName);
       projectVersionPage = projectPage.goToActiveVersion(projectVersion);
+
    }
-   
+
    @Test
    public void canAddLanguage()
    {
@@ -61,12 +62,16 @@ public class CreateSampleProjectTest
       workFlow.addLanguageAndJoin("zh");
    }
 
-   @Test(dependsOnMethods = {"canCreateProjectAndVersion", "canAddLanguage"})
+   @Test(dependsOnMethods = { "canCreateProjectAndVersion", "canAddLanguage" })
    public void canPush() throws IOException
    {
       ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
       int exitCode = clientPushWorkFlow.mvnPush("plural");
 
       assertThat(exitCode, Matchers.equalTo(0));
+
+      ProjectVersionPage projectVersionPage = new ProjectWorkFlow().goToProjectByName("plural project").goToActiveVersion("master");
+      assertThat(projectVersionPage.getTranslations(), Matchers.hasSize(3));
    }
+
 }

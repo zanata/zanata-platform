@@ -19,12 +19,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 
 public class ProjectsPage extends AbstractPage
 {
-   @FindBy(linkText = "Create project")
-   private WebElement createProjectActionLink;
-
    public ProjectsPage(final WebDriver driver)
    {
       super(driver);
@@ -32,12 +31,21 @@ public class ProjectsPage extends AbstractPage
 
    public CreateProjectPage clickOnCreateProjectLink()
    {
+      WebElement createProjectActionLink = waitForTenSec().until(new Function<WebDriver, WebElement>()
+      {
+         @Override
+         public WebElement apply(WebDriver driver)
+         {
+            return driver.findElement(By.linkText("Create project"));
+         }
+      });
       createProjectActionLink.click();
       return new CreateProjectPage(getDriver());
    }
 
    public ProjectPage goToProject(String projectName)
    {
+      //TODO this can't handle project on different page
       WebElement link = getDriver().findElement(By.linkText(projectName));
       link.click();
       return new ProjectPage(getDriver());

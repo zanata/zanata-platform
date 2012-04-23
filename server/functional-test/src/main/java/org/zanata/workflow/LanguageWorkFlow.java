@@ -15,15 +15,27 @@
  */
 package org.zanata.workflow;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.page.ManageLanguagePage;
 
 public class LanguageWorkFlow extends AbstractWebWorkFlow
 {
+   private static final Logger LOGGER = LoggerFactory.getLogger(LanguageWorkFlow.class);
+
    public ManageLanguagePage addLanguageAndJoin(String localeId)
    {
       ManageLanguagePage manageLanguagePage = addLanguage(localeId);
       manageLanguagePage = manageLanguagePage.manageTeamMembersFor(localeId);
-      return manageLanguagePage.joinLanguageTeam();
+      if (!manageLanguagePage.getMemberUsernames().contains("admin"))
+      {
+         return manageLanguagePage.joinLanguageTeam();
+      }
+      else
+      {
+         LOGGER.warn("admin has already joined the language [{}]", localeId);
+         return manageLanguagePage;
+      }
    }
 
    public ManageLanguagePage addLanguage(String localeId)

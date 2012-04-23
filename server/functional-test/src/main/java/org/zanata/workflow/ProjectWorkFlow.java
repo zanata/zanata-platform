@@ -24,9 +24,9 @@ import org.zanata.util.Constants;
 
 public class ProjectWorkFlow extends AbstractWebWorkFlow
 {
-   public ProjectPage createNewProject(HomePage homePage, String projectId, String projectName)
+   public ProjectPage createNewProject(String projectId, String projectName)
    {
-      return homePage.goToProjects().clickOnCreateProjectLink().inputProjectId(projectId).inputProjectName(projectName).saveProject();
+      return goToHome().goToProjects().clickOnCreateProjectLink().inputProjectId(projectId).inputProjectName(projectName).saveProject();
    }
 
    public ProjectVersionPage createNewProjectVersion(ProjectPage projectPage, String projectVersion)
@@ -34,9 +34,9 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow
       return projectPage.clickCreateVersionLink().inputVersionId(projectVersion).saveVersion();
    }
 
-   public <P extends AbstractPage> ProjectPage goToProjectByName(P page, String projectName)
+   public <P extends AbstractPage> ProjectPage goToProjectByName(String projectName)
    {
-      ProjectsPage projects = page.goToPage(Constants.projectsLink.value(), ProjectsPage.class);
+      ProjectsPage projects = goToHome().goToPage(Constants.projectsLink.value(), ProjectsPage.class);
       return projects.goToProject(projectName);
    }
 }

@@ -15,6 +15,8 @@
  */
 package org.zanata.page;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -24,6 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
 
 public class ManageLanguagePage extends AbstractPage
 {
@@ -71,6 +75,21 @@ public class ManageLanguagePage extends AbstractPage
       });
       joinLanguageTeamLink.click();
       return this;
+   }
+
+   public List<String> getMemberUsernames()
+   {
+      List<WebElement> elements = getDriver().findElements(By.className("rich-table-row"));
+      Collection<String> rows = Collections2.transform(elements, new Function<WebElement, String>()
+      {
+         @Override
+         public String apply(WebElement from)
+         {
+            String text = from.getText();
+            return text.split("\\s")[0];
+         }
+      });
+      return ImmutableList.copyOf(rows);
    }
 
 }
