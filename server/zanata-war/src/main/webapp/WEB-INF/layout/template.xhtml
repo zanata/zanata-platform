@@ -53,9 +53,12 @@
 					
 					
 				</div>
-				
-				<h:graphicImage value="#{userSessionAction.getUserImageUrl(35)}" height="35" rendered="#{identity.loggedIn}"
-					styleClass="user_img"/>
+
+				<a href="http://gravatar.com/emails/" target="_blank" id="UserImgLink">
+					<h:graphicImage value="#{userSessionAction.getUserImageUrl(35)}" height="35" rendered="#{identity.loggedIn}"
+						styleClass="user_img"/>
+				</a>
+				<rich:toolTip value="#{messages['jsf.ChangeYourGravatar']}" for="UserImgLink" direction="bottom-left"/>
 				
 				<div id="loading_top_right">
 					<a:status>
