@@ -38,7 +38,7 @@ public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTe
    public void testDeleteTranslation()
    {
       Resource res = resourceTestFactory.getTextFlowTest();
-      translationResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
+      sourceDocResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
       TranslationsResource sr = transTestFactory.getTestObject();
       translationResource.putTranslations(res.getName(), DE, sr, new StringSet("gettext;comment"));
       ClientResponse<String> resourceGetResponse = translationResource.deleteTranslations(res.getName(), DE);
@@ -52,7 +52,7 @@ public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTe
    public void testPutGetTranslation(TranslationsResource sr)
    {
       Resource res = resourceTestFactory.getTextFlowTest();
-      translationResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
+      sourceDocResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
       log.debug("successful put resource:" + res.getName());
       translationResource.putTranslations(res.getName(), DE, sr, new StringSet("gettext;comment"));
       TranslationsResource get = translationResource.getTranslations(res.getName(), DE, new StringSet("gettext;comment")).getEntity();
@@ -68,7 +68,7 @@ public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTe
    public void testPutGetTranslationNoExtension(TranslationsResource sr)
    {
       Resource res = resourceTestFactory.getTextFlowTest();
-      translationResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
+      sourceDocResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
       log.debug("successful put resource:" + res.getName());
       translationResource.putTranslations(res.getName(), DE, sr, null);
       TranslationsResource get = translationResource.getTranslations(res.getName(), DE, null).getEntity();
@@ -85,7 +85,7 @@ public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTe
    public void testPutNoExtensionGetTranslation(TranslationsResource sr)
    {
       Resource res = resourceTestFactory.getTextFlowTest();
-      translationResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
+      sourceDocResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
       log.debug("successful put resource:" + res.getName());
       translationResource.putTranslations(res.getName(), DE, sr, null);
       TranslationsResource get = translationResource.getTranslations(res.getName(), DE, new StringSet("gettext;comment")).getEntity();
@@ -102,7 +102,7 @@ public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTe
    public void testPutGetNoExtensionTranslation(TranslationsResource sr)
    {
       Resource res = resourceTestFactory.getTextFlowTest();
-      translationResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
+      sourceDocResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
       log.debug("successful put resource:" + res.getName());
       translationResource.putTranslations(res.getName(), DE, sr, new StringSet("gettext;comment"));
       TranslationsResource get = translationResource.getTranslations(res.getName(), DE, null).getEntity();

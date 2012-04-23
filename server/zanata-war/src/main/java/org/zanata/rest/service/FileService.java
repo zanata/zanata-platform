@@ -62,7 +62,7 @@ public class FileService implements FileResource
    private DocumentDAO documentDAO;
    
    @In(create=true)
-   private TranslationResourcesService translationResourcesService;
+   private TranslatedDocService translationResourcesService;
    
    @In
    private FileSystemService fileSystemServiceImpl;
@@ -76,7 +76,7 @@ public class FileService implements FileResource
    
    /* @formatter: off */
    public FileService(DocumentDAO documentDAO, 
-                      TranslationResourcesService translationResourcesService, 
+                      TranslatedDocService translationResourcesService,
                       FileSystemService fileSystemServiceImpl, 
                       ResourceUtils resourceUtils)
    {

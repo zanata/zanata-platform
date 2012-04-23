@@ -24,7 +24,8 @@ import org.zanata.common.LocaleId;
 import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.client.ClientUtility;
-import org.zanata.rest.client.ITranslationResources;
+import org.zanata.rest.client.ISourceDocResource;
+import org.zanata.rest.client.ITranslatedDocResource;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
@@ -60,9 +61,9 @@ public class PushCommand extends PushPullCommand<PushOptions>
       super(opts);
    }
 
-   public PushCommand(PushOptions opts, ZanataProxyFactory factory, ITranslationResources translationResources, URI uri)
+   public PushCommand(PushOptions opts, ZanataProxyFactory factory, ISourceDocResource sourceDocResource, ITranslatedDocResource translationResources, URI uri)
    {
-      super(opts, factory, translationResources, uri);
+      super(opts, factory, sourceDocResource, translationResources, uri);
    }
 
    private AbstractPushStrategy getStrategy(String strategyType)
@@ -313,7 +314,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       {
          log.info("pushing source doc [name={} size={}] to server", srcDoc.getName(), srcDoc.getTextFlows().size());
          boolean copyTrans = getOpts().getCopyTrans();
-         ClientResponse<String> putResponse = translationResources.putResource(docUri, srcDoc, extensions, copyTrans);
+         ClientResponse<String> putResponse = sourceDocResource.putResource(docUri, srcDoc, extensions, copyTrans);
          ClientUtility.checkResult(putResponse, uri);
       }
       else
@@ -347,7 +348,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       {
          log.info("deleting resource {} from server", qualifiedDocName);
          String docUri = RestUtil.convertToDocumentURIId(qualifiedDocName);
-         ClientResponse<String> deleteResponse = translationResources.deleteResource(docUri);
+         ClientResponse<String> deleteResponse = sourceDocResource.deleteResource(docUri);
          ClientUtility.checkResult(deleteResponse, uri);
       }
       else

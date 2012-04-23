@@ -5,7 +5,7 @@
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
     <version>1.6.0-alpha-2-SNAPSHOT</version>
-    <relativePath>../../zanata-parent/pom.xml</relativePath>
+
   </parent>
   <artifactId>zanata-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>

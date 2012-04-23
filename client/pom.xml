@@ -8,7 +8,7 @@
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
     <version>1.6.0-alpha-2-SNAPSHOT</version>
-    <relativePath>../zanata-parent/pom.xml</relativePath>
+
   </parent>
 
 	<!-- Should be the same as zanata-parent/pom.xml -->
@@ -19,11 +19,10 @@
 	</scm>
 
   <modules>
-    <module>zanata-adapter-properties</module>
-    <module>zanata-adapter-xliff</module>
     <module>zanata-client-commands</module>
     <module>zanata-client-ant-po</module>
     <module>zanata-client-ant-properties</module>
     <module>zanata-maven-plugin</module>
+    <module>zanata-rest-client</module>
   </modules>
 </project>

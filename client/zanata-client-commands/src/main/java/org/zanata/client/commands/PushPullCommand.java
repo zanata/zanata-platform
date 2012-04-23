@@ -36,7 +36,8 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.rest.client.ClientUtility;
-import org.zanata.rest.client.ITranslationResources;
+import org.zanata.rest.client.ISourceDocResource;
+import org.zanata.rest.client.ITranslatedDocResource;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
@@ -50,14 +51,16 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends Configu
 {
    private static final Logger log = LoggerFactory.getLogger(PushPullCommand.class);
 
-   protected final ITranslationResources translationResources;
+   protected final ISourceDocResource sourceDocResource;
+   protected final ITranslatedDocResource translationResources;
    protected URI uri;
    private Marshaller marshaller;
    private String modulePrefix;
 
-   public PushPullCommand(O opts, ZanataProxyFactory factory, ITranslationResources translationResources, URI uri)
+   public PushPullCommand(O opts, ZanataProxyFactory factory, ISourceDocResource sourceDocResource, ITranslatedDocResource translationResources, URI uri)
    {
       super(opts, factory);
+      this.sourceDocResource = sourceDocResource;
       this.translationResources = translationResources;
       this.uri = uri;
       this.modulePrefix = opts.getEnableModules() ? getOpts().getCurrentModule() + opts.getModuleSuffix() : "";
@@ -65,7 +68,10 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends Configu
 
    private PushPullCommand(O opts, ZanataProxyFactory factory)
    {
-      this(opts, factory, factory.getTranslationResources(opts.getProj(), opts.getProjectVersion()), factory.getTranslationResourcesURI(opts.getProj(), opts.getProjectVersion()));
+      this(opts, factory,
+            factory.getSourceDocResource(opts.getProj(), opts.getProjectVersion()),
+            factory.getTranslatedDocResource(opts.getProj(), opts.getProjectVersion()),
+            factory.getResourceURI(opts.getProj(), opts.getProjectVersion()));
    }
 
    public PushPullCommand(O opts)
@@ -173,7 +179,7 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends Configu
    // TODO use a cache which will be accessible to all invocations
    protected List<ResourceMeta> getDocListForProjectIterationFromServer()
    {
-      ClientResponse<List<ResourceMeta>> getResponse = translationResources.get(null);
+      ClientResponse<List<ResourceMeta>> getResponse = sourceDocResource.get(null);
       ClientUtility.checkResult(getResponse, uri);
       List<ResourceMeta> remoteDocList = getResponse.getEntity();
       return remoteDocList;

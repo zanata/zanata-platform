@@ -12,10 +12,8 @@
 		<groupId>org.zanata</groupId>
 		<artifactId>zanata-parent</artifactId>
 		<version>1.6.0-alpha-2-SNAPSHOT</version>
-		<relativePath>zanata-parent/pom.xml</relativePath>
 	</parent>
 
-	<!-- Should be the same as zanata-parent/pom.xml -->
 	<scm>
 		<connection>scm:git:git://github.com/zanata/zanata.git</connection>
 		<developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
@@ -23,8 +21,6 @@
 	</scm>
 
 	<modules>
-		<module>zanata-parent</module>
-		<module>common</module>
 		<module>client</module>
 		<module>server</module>
 	</modules>
