@@ -16,7 +16,8 @@ import org.zanata.common.LocaleId;
 import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.client.ClientUtility;
-import org.zanata.rest.client.ITranslationResources;
+import org.zanata.rest.client.ISourceDocResource;
+import org.zanata.rest.client.ITranslatedDocResource;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
@@ -33,19 +34,24 @@ public class PublicanPullCommand extends ConfigurableProjectCommand<PublicanPull
 {
    private static final Logger log = LoggerFactory.getLogger(PublicanPullCommand.class);
 
-   private final ITranslationResources translationResources;
+   private final ISourceDocResource sourceDocResource;
+   private final ITranslatedDocResource translationResources;
    private final URI uri;
 
-   public PublicanPullCommand(PublicanPullOptions opts, ZanataProxyFactory factory, ITranslationResources translationResources, URI uri)
+   public PublicanPullCommand(PublicanPullOptions opts, ZanataProxyFactory factory, ISourceDocResource sourceDocResource, ITranslatedDocResource translationResources, URI uri)
    {
       super(opts, factory);
+      this.sourceDocResource = sourceDocResource;
       this.translationResources = translationResources;
       this.uri = uri;
    }
 
    private PublicanPullCommand(PublicanPullOptions opts, ZanataProxyFactory factory)
    {
-      this(opts, factory, factory.getTranslationResources(opts.getProj(), opts.getProjectVersion()), factory.getTranslationResourcesURI(opts.getProj(), opts.getProjectVersion()));
+      this(opts, factory,
+            factory.getSourceDocResource(opts.getProj(), opts.getProjectVersion()),
+            factory.getTranslatedDocResource(opts.getProj(), opts.getProjectVersion()),
+            factory.getResourceURI(opts.getProj(), opts.getProjectVersion()));
    }
 
    public PublicanPullCommand(PublicanPullOptions opts)
@@ -83,7 +89,7 @@ public class PublicanPullCommand extends ConfigurableProjectCommand<PublicanPull
       PoWriter2 poWriter = new PoWriter2();
       StringSet extensions = new StringSet("gettext;comment");
 
-      ClientResponse<List<ResourceMeta>> listResponse = translationResources.get(null);
+      ClientResponse<List<ResourceMeta>> listResponse = sourceDocResource.get(null);
       ClientUtility.checkResult(listResponse, uri);
       List<ResourceMeta> resourceMetaList = listResponse.getEntity();
       for (ResourceMeta resourceMeta : resourceMetaList)
@@ -91,7 +97,7 @@ public class PublicanPullCommand extends ConfigurableProjectCommand<PublicanPull
          String docName = resourceMeta.getName();
          // TODO follow a Link
          String docUri = RestUtil.convertToDocumentURIId(docName);
-         ClientResponse<Resource> resourceResponse = translationResources.getResource(docUri, extensions);
+         ClientResponse<Resource> resourceResponse = sourceDocResource.getResource(docUri, extensions);
          ClientUtility.checkResult(resourceResponse, uri);
          Resource doc = resourceResponse.getEntity();
          if (getOpts().getExportPot())

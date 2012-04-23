@@ -18,6 +18,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
+import org.zanata.common.MergeType;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;

@@ -20,14 +20,14 @@
  */
 package org.zanata.client.commands;
 
-import java.util.List;
-
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.rest.client.ClientUtility;
-import org.zanata.rest.client.ITranslationResources;
+import org.zanata.rest.client.ISourceDocResource;
 import org.zanata.rest.dto.resource.ResourceMeta;
+
+import java.util.List;
 
 /**
  * @author Sean Flanigan <sflaniga@redhat.com>
@@ -48,9 +48,9 @@ public class ListRemoteCommand extends ConfigurableProjectCommand<ConfigurablePr
       log.info("Server: " + getOpts().getUrl());
       log.info("Project: " + getOpts().getProj());
       log.info("Version: " + getOpts().getProjectVersion());
-      ITranslationResources translationResources = getRequestFactory().getTranslationResources(getOpts().getProj(), getOpts().getProjectVersion());
-      ClientResponse<List<ResourceMeta>> response = translationResources.get(null);
-      ClientUtility.checkResult(response, getRequestFactory().getTranslationResourcesURI(getOpts().getProj(), getOpts().getProjectVersion()));
+      ISourceDocResource sourceDocResource = getRequestFactory().getSourceDocResource(getOpts().getProj(), getOpts().getProjectVersion());
+      ClientResponse<List<ResourceMeta>> response = sourceDocResource.get(null);
+      ClientUtility.checkResult(response, getRequestFactory().getResourceURI(getOpts().getProj(), getOpts().getProjectVersion()));
       List<ResourceMeta> list = response.getEntity();
       for (ResourceMeta doc : list)
       {

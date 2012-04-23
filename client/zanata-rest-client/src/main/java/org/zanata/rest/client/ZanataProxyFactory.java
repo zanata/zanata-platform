@@ -192,14 +192,19 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
    }
 
    @Override
-   public ITranslationResources getTranslationResources(String projectSlug, String versionSlug)
+   public ITranslatedDocResource getTranslatedDocResource(String projectSlug, String versionSlug)
    {
-      return createProxy(ITranslationResources.class, getTranslationResourcesURI(projectSlug, versionSlug));
+      return createProxy(ITranslatedDocResource.class, getResourceURI(projectSlug, versionSlug));
+   }
+
+   public ISourceDocResource getSourceDocResource(String projectSlug, String versionSlug)
+   {
+      return createProxy(ISourceDocResource.class, getResourceURI(projectSlug, versionSlug));
    }
 
 
    @Override
-   public URI getTranslationResourcesURI(String projectSlug, String versionSlug)
+   public URI getResourceURI(String projectSlug, String versionSlug)
    {
       String spec = RESOURCE_PREFIX + "/projects/p/" + projectSlug + "/iterations/i/" + versionSlug + "/r";
       try
