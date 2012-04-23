@@ -19,8 +19,6 @@
 	</scm>
 
   <modules>
-    <module>zanata-adapter-properties</module>
-    <module>zanata-adapter-xliff</module>
     <module>zanata-client-commands</module>
     <module>zanata-client-ant-po</module>
     <module>zanata-client-ant-properties</module>
