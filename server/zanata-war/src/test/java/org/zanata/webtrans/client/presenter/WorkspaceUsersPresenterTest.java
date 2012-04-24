@@ -53,9 +53,9 @@ public class WorkspaceUsersPresenterTest
       expectLastCall().once();
       mockDisplay.addUser("John Smith", "john@zanata.org");
       expectLastCall().once();
-      mockDisplay.addUser("Smith John", "Smith@zanata.org");
+      mockDisplay.addUser("Smith John", "smith@zanata.org");
       expectLastCall().once();
-      mockDisplay.addUser("Smohn Jith", "Smohn@zanata.org");
+      mockDisplay.addUser("Smohn Jith", "smohn@zanata.org");
       expectLastCall().once();
 
       replay(mockDisplay, mockEventBus);
