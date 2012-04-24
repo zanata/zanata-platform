@@ -9,7 +9,6 @@
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
     <version>3-SNAPSHOT</version>
-    <!-- Tell Maven to resolve parent from the repo -->
     <relativePath>../parent</relativePath>
   </parent>
 
