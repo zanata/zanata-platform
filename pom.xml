@@ -13,9 +13,9 @@
 	  them), so we have to specify these URLs again in each POM.
 	 -->
 	<scm>
-		<connection>scm:git:git://github.com/zanata/zanata.git</connection>
-		<developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
-		<url>https://github.com/zanata/zanata</url>
+		<connection>scm:git:git://github.com/zanata/zanata-parent.git</connection>
+		<developerConnection>scm:git:git@github.com:zanata/zanata-parent.git</developerConnection>
+		<url>https://github.com/zanata/zanata-parent</url>
 	</scm>
 
 	<licenses>
