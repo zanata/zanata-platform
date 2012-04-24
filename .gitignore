@@ -27,7 +27,6 @@ temp-testng-customsuite.xml
 bin/
 /target/
 /*/target/
-/*/*/target/
 *.orig
 .pages.xml.spdia
 # eclipse scrapbook page:
@@ -44,8 +43,8 @@ bin/
 #gwt related
 .gwt-log
 *.gwt-tmp
-/server/zanata-war/src/main/webapp/WEB-INF/deploy/
-/server/zanata-war/src/main/webapp/webtrans/
+/zanata-war/src/main/webapp/WEB-INF/deploy/
+/zanata-war/src/main/webapp/webtrans/
 
 # vim
 *.swp
