@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<dataset> 
+    <HAccount/>
+    <HAccountActivationKey/>
+    <HAccountMembership/>
+    <HAccountResetPasswordKey/>
+    <HAccountRole/>
+    <HAccountRoleGroup/>
+    <HApplicationConfiguration/>
+    <HDocument/>
+    <HDocumentHistory/>
+    <HGlossaryEntry/>
+    <HGlossaryTerm/>
+    <HLocale/>
+    <HLocale_Member/>
+    <HPerson/>
+    <HPoHeader/>
+    <HPoTargetHeader/>
+    <HPotEntryData/>
+    <HProject/>
+    <HProjectIteration/>
+    <HProject_Maintainer/>
+    <HSimpleComment/>
+    <HTermComment/>
+    <HTextFlow/>
+    <HTextFlowContent/>
+    <HTextFlowContentHistory/>
+    <HTextFlowHistory/>
+    <HTextFlowTarget/>
+    <HTextFlowTargetContent/>
+    <HTextFlowTargetContentHistory/>
+    <HTextFlowTargetHistory/>
+</dataset>

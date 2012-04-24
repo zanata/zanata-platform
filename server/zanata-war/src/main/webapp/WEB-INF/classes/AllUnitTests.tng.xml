@@ -1,0 +1,22 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Unit Tests" verbose="1">
+
+	<listeners>
+		<!-- 
+			   This ensures that ungrouped tests are treated as unit-tests: 
+		-->
+		<listener class-name="org.zanata.testing.UnitTestTransformer"/>
+	</listeners>
+
+	<test name="Unit Tests">
+ 		<groups>
+ 			<run>
+ 				<include name="unit-tests"/>
+ 			</run>
+ 		</groups>
+ 		<packages>
+ 			<package name="org.zanata.*"/>
+ 		</packages>
+	</test>
+
+</suite>

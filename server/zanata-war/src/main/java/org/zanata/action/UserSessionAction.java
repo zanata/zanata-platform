@@ -42,13 +42,26 @@ public class UserSessionAction
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
    
+   private static String GRAVATAR_URL = "http://www.gravatar.com/avatar/";
    
    public String getUserImageUrl(int size)
    {
-      StringBuilder url = new StringBuilder("http://www.gravatar.com/avatar/");
+      StringBuilder url = new StringBuilder(GRAVATAR_URL);
       if( authenticatedAccount != null )
       {
          url.append( HashUtil.md5Hex( this.authenticatedAccount.getPerson().getEmail().toLowerCase().trim() ) );
+         url.append("?d=mm&s=");
+         url.append(size);
+      }
+      return url.toString();
+   }
+
+   public String getUserImageUrl(int size, String email)
+   {
+      StringBuilder url = new StringBuilder(GRAVATAR_URL);
+      if (authenticatedAccount != null)
+      {
+         url.append(HashUtil.md5Hex(email.toLowerCase().trim()));
          url.append("?d=mm&s=");
          url.append(size);
       }

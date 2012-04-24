@@ -6,6 +6,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -41,9 +43,14 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    }
 
    @Override
-   public void addUser(String name)
+   public void addUser(String name, String userImgUrl)
    {
-      Label item = new Label(name);
-      userListPanel.add(item);
+      HorizontalPanel userPanel = new HorizontalPanel();
+      Image userImage = new Image(userImgUrl);
+      userPanel.add(userImage);
+      userPanel.setCellWidth(userImage, "16px");
+      userPanel.add(new Label(name));
+      
+      userListPanel.add(userPanel);
    }
 }

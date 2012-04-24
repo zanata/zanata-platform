@@ -25,7 +25,7 @@ public class DummyGetTranslatorListCommand implements Command
    public void execute()
    {
       Log.info("ENTER DummyGetTranslatorListCommand.execute()");
-      callback.onSuccess(new GetTranslatorListResult(new ArrayList<Person>(Arrays.asList(new Person(new PersonId("personID"), "Some Person with an Incredibly Long Name")))));
+      callback.onSuccess(new GetTranslatorListResult(new ArrayList<Person>(Arrays.asList(new Person(new PersonId("personID"), "Some Person with an Incredibly Long Name", "longname@zanata.org")))));
       Log.info("EXIT DummyGetTranslatorListCommand.execute()");
    }
 

@@ -336,8 +336,8 @@ public class TranslationPresenterTest
 
       // expect lookup translator list
       ArrayList<Person> participants = new ArrayList<Person>();
-      participants.add(new Person(new PersonId("bob"), "Bob Smith"));
-      participants.add(new Person(new PersonId("smith"), "Smith Bob"));
+      participants.add(new Person(new PersonId("bob"), "Bob Smith", "bob@zanata.org"));
+      participants.add(new Person(new PersonId("smith"), "Smith Bob", "smith@zanata.org"));
       setupUserListRequestResponse(participants);
 
       replay(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter);
@@ -358,9 +358,9 @@ public class TranslationPresenterTest
 
       // expect lookup translator list
       ArrayList<Person> participants = new ArrayList<Person>();
-      participants.add(new Person(new PersonId("john"), "John Jones"));
-      participants.add(new Person(new PersonId("jones"), "Jones John"));
-      participants.add(new Person(new PersonId("jim"), "Jim Jones"));
+      participants.add(new Person(new PersonId("john"), "John Jones", "john@zanata.org"));
+      participants.add(new Person(new PersonId("jones"), "Jones John", "jones@zanata.org"));
+      participants.add(new Person(new PersonId("jim"), "Jim Jones", "jim@zanata.org"));
       setupUserListRequestResponse(participants);
 
       replay(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter);
@@ -445,7 +445,7 @@ public class TranslationPresenterTest
    private void setupDefaultMockExpectations()
    {
       ArrayList<Person> people = new ArrayList<Person>();
-      people.add(new Person(new PersonId("jones"), "Joey Jones"));
+      people.add(new Person(new PersonId("jones"), "Joey Jones", "joey@zanata.org"));
 
       setupDefaultMockExpectations(people);
    }

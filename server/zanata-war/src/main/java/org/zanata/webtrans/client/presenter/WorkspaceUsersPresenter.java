@@ -17,7 +17,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
    {
       void clearUserList();
 
-      void addUser(String name);
+      void addUser(String name, String userImgUrl);
    }
 
    @Inject
@@ -46,7 +46,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
       display.clearUserList();
       for (Person p : users)
       {
-         display.addUser(p.getName());
+         display.addUser(p.getName(), p.getAvatarUrl());
       }
    }
 

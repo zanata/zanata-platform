@@ -4,11 +4,11 @@ import java.io.Serializable;
 
 public class Person implements HasIdentifier<PersonId>, Serializable
 {
-
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 510785473431813586L;
 
    private PersonId id;
    private String name;
+   private String avatarUrl;
 
    // for GWT
    @SuppressWarnings("unused")
@@ -16,7 +16,7 @@ public class Person implements HasIdentifier<PersonId>, Serializable
    {
    }
 
-   public Person(PersonId id, String name)
+   public Person(PersonId id, String name, String avatarUrl)
    {
       if (id == null || name == null)
       {
@@ -24,6 +24,7 @@ public class Person implements HasIdentifier<PersonId>, Serializable
       }
       this.id = id;
       this.name = name;
+      this.avatarUrl = avatarUrl;
    }
 
    public PersonId getId()
@@ -36,4 +37,8 @@ public class Person implements HasIdentifier<PersonId>, Serializable
       return name;
    }
 
+   public String getAvatarUrl()
+   {
+      return avatarUrl == null ? "" : avatarUrl;
+   }
 }

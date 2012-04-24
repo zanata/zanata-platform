@@ -51,11 +51,11 @@ public class WorkspaceUsersPresenterTest
    {
       mockDisplay.clearUserList();
       expectLastCall().once();
-      mockDisplay.addUser("John Smith");
+      mockDisplay.addUser("John Smith", "john@zanata.org");
       expectLastCall().once();
-      mockDisplay.addUser("Smith John");
+      mockDisplay.addUser("Smith John", "Smith@zanata.org");
       expectLastCall().once();
-      mockDisplay.addUser("Smohn Jith");
+      mockDisplay.addUser("Smohn Jith", "Smohn@zanata.org");
       expectLastCall().once();
 
       replay(mockDisplay, mockEventBus);
@@ -63,9 +63,9 @@ public class WorkspaceUsersPresenterTest
       workspaceUsersPresenter.bind();
 
       ArrayList<Person> people = new ArrayList<Person>();
-      people.add(new Person(new PersonId("person1"), "John Smith"));
-      people.add(new Person(new PersonId("person2"), "Smith John"));
-      people.add(new Person(new PersonId("person3"), "Smohn Jith"));
+      people.add(new Person(new PersonId("person1"), "John Smith", "john@zanata.org"));
+      people.add(new Person(new PersonId("person2"), "Smith John", "smith@zanata.org"));
+      people.add(new Person(new PersonId("person3"), "Smohn Jith", "smohn@zanata.org"));
       workspaceUsersPresenter.setUserList(people);
 
       verify(mockDisplay, mockEventBus);

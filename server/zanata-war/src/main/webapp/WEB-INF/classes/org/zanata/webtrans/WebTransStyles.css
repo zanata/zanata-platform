@@ -1,0 +1,8 @@
+
+@url bannerBackgroundUrl bannerBackground;
+
+.banner {
+  background: bannerBackgroundUrl repeat-x;
+  display: table-cell;
+  vertical-align: middle;
+}

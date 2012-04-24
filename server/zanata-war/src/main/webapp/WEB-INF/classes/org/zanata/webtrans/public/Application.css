@@ -1,0 +1,630 @@
+/** Add css rules here for your application. */
+body {
+	background-color: #f8f9fa;
+}
+
+/*
+Styling for errors when webtrans fails to load
+*/
+.AppLoadError {
+	margin-top: 20px;
+	margin-left: 30px;
+}
+
+div.AppLoadError {
+	font-weight: bold;
+	font-size: 1.5em;
+	color: #ff2222;
+	margin-bottom: 15px;
+}
+
+a.AppLoadError {
+	display: block;
+	font-size: 1.3em;
+	font-weight: bold;
+	margin-left: 60px;
+	margin-bottom: 15px;
+}
+
+/*
+Removes some of the styling on the page-level splitters
+*/
+.PageSplitLayoutPanel>div>div.gwt-SplitLayoutPanel-HDragger {
+	background: none;
+}
+
+.PageSplitLayoutPanel>div>div.gwt-SplitLayoutPanel-VDragger {
+	background: none;
+}
+
+.CenterDiv {
+	margin-right: auto;
+	margin-left: auto;
+	width: auto;
+}
+
+#DocumentListView,#TransFilterView,#WorkspaceUsersView {
+	padding-bottom: 5px;
+	width: 100%;
+}
+
+.DocumentListViewMainPanel { //
+	width: 100%;
+	width: 205px;
+}
+
+#WestNavigationView {
+	padding-left: 3px;
+	padding-right: 3px;
+	height: 100%;
+	width: 220px;
+	overflow: hidden;
+}
+
+.LeftContentNavBar {
+	
+}
+
+.LeftContentNavBar .gwt-CaptionPanel {
+	margin-bottom: 3px;
+}
+
+.gwt-Button {
+	outline:none;
+}
+
+.gwt-CollapsiblePanel { //
+	width: 220px;
+}
+
+.gwt-HeadingPanel .topLeftInner,.gwt-HeadingPanel .topRightInner {
+	height: 40px;
+	width: 5px;
+	background-color: d0e4f6;
+}
+
+.gwt-HeadingPanel .topCenterInner {
+	height: 40px;
+	background-color: d0e4f6;
+}
+
+.gwt-HeadingPanelTitle {
+	font-size: 15px;
+	color: grey;
+}
+
+.FilterTree {
+	width: 100%;
+}
+
+.gwt-FilterBox {
+	font-size: 12px;
+	width: 100%;
+}
+
+.gwt-FilterBox-Vacant {
+	font-style: italic;
+	color: grey;
+}
+
+.gwt-FilterBox-Occupied {
+	font-style: plain;
+	color: black;
+}
+
+.gwt-CaptionPanel-Heading {
+	font-weight: bold;
+	width: 100%;
+	background-color: d0e4f6;
+	padding-bottom: 5px;
+}
+
+.gwt-TreeItem-selected .gwt-Label {
+	background-color: #C3D9FF;;
+}
+
+.gwt-TreeItem-selected {
+	background-color: #C3D9FF;;
+}
+
+.gwt-CaptionPanel-Collapse {
+	background-color: #d5e9fa;
+	border: 1px solid #c8dbec;
+	padding: 1px;
+	margin: 0px;
+	font-family: monospace;
+}
+
+.gwt-CaptionPanel tr.middle td.middleCenter {
+	width: 100%;
+}
+
+.gwt-ProgressBar-shell {
+	border: 2px solid #faf9f7;
+	background-color: #AAAAAA;
+	height: 14pt;
+	width: 100%;
+}
+
+.gwt-ProgressBar-shell .gwt-ProgressBar-bar {
+	background-color: #67A7E3;
+}
+
+.gwt-ProgressBar-shell .gwt-ProgressBar-text {
+	padding: 0px;
+	margin: 0px;
+	color: white;
+}
+
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
+	cursor: pointer;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	background: #4a75b5;
+	color: #FFFFFF;
+}
+
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected {
+	cursor: default;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	background: #183c66;
+	color: #FFFFFF;
+}
+
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
+	border: 2px solid #e0e8ee;
+	background: #FFFFFF;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+
+.WebTransEditor-Outer tr.middle td.middleCenter {
+	height: 100%;
+	width: 100%;
+}
+
+.WebTransEditor-Outer tr.middle td.middleCenter div.middleCenterInner {
+	height: 100%;
+	width: 100%;
+}
+
+.WebTransEditor {
+	height: 100%;
+	width: 100%;
+}
+
+.WebTransEditorMenu {
+	background-color: #D0E4F6;
+	width: 100%;
+	height: 25px;
+}
+
+.WebTransEditorMenu-left {
+	left: 0px;
+	display: inline;
+}
+
+.float-right-div {
+	float: right;
+}
+
+.FilterView {
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+.WebTransEditorMenu-right {
+	right: 0px;
+	display: inline;
+}
+
+.TableEditor tr td {
+	vertical-align: top;
+}
+
+.TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Source {
+	border-right: none;
+	border-left: 3px solid #cccccc;
+}
+
+.TableEditor tr.NewStateDecoration td.TableEditorCell-Source {
+	border-right: none;
+	border-left: 3px solid #cccccc;
+}
+
+.TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Source {
+	border-right: none;
+	border-left: 3px solid #cccccc;
+}
+
+.TableEditor tr.ErrorStateDecoration td.TableEditorCell-Source {
+	border-right: none;
+	border-left: 3px solid #cccccc;
+}
+
+.TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Target {
+	font-style: italic;
+	border-right: 3px solid #cccccc;
+}
+
+.TableEditor tr.NewStateDecoration td.TableEditorCell-Target {
+	border-right: 3px solid #cccccc;
+	border-left: none;
+}
+
+.TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Target {
+	border-right: 3px solid #cccccc;
+	border-left: none;
+}
+
+.TableEditor tr.ErrorStateDecoration td.TableEditorCell-Target {
+	border-right: 3px solid #cccccc;
+	border-left: none;
+}
+
+td.TableEditorCell {
+	border-top: 1px solid #e0e0e0;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+td.TableEditorCell-Source {
+	vertical-align: top;
+	word-break: break-all;
+}
+
+td.TableEditorCell-Middle {
+	
+}
+
+td.TableEditorCell-Target {
+	vertical-align: top;
+	word-break: break-all;
+}
+
+/*@-moz-document {
+{}
+	table.TableEditorCell-Source-Table { 
+		overflow-x:auto;
+		display: block;
+		width: 100%;
+	}
+	table.TableEditorCell-Target-Table {
+		overflow-x: auto;
+		display: block;
+	}
+	div.TransUnitDetail-Wrapper {
+		width: 450px;
+	}
+}*/
+
+.TableEditorCell-Source-Table {
+	width: 100%;
+}
+
+.TableEditorCell-Target-Table {
+}
+
+.TransUnitDetail-Wrapper {
+	width: 90%;
+}
+
+tr.TableEditorRow.highlighted td.TableEditorCell {
+	/* This appears behind the background image, and looks like
+	a variable-sized grey square (ugly). Should not be enabled if
+	there is a background gradient image for editor cells.
+	
+	background-color: #f1f2f6; */
+	border-color: #AAA;
+	border-bottom: 1px solid #AAA;
+}
+
+tr.TableEditorRow.highlighted td.TableEditorCell-Source {
+	
+}
+
+tr.TableEditorRow.highlighted td.TableEditorCell-Middle {
+	
+}
+
+tr.TableEditorRow.highlighted .gwt-Button-display-onhover {
+	display: inline;
+	cursor: pointer;
+}
+
+tr.TableEditorRow .gwt-Button-display-onhover {
+	display: none;
+}
+
+tr.TableEditorRow.highlighted td.TableEditorCell-Target {
+	cursor: hand;
+}
+
+tr.TableEditorRow.content-filter {
+	
+}
+
+tr.TableEditorRow.content-filter-match {
+	
+}
+
+tr.TableEditorRow.content-filter-nomatch {
+	filter: alpha(opacity =     25);
+	-moz-opacity: 0.25;
+	opacity: 0.25;
+}
+
+tr.TableEditorRow.selected {
+	
+}
+
+tr.TableEditorRow.selected td.TableEditorCell {
+	border-top: 3px solid #666666;
+	border-bottom: 3px solid #666666;
+}
+
+tr.TableEditorRow.selected td.TableEditorCell-Source {
+	border-left: 3px solid #666666;
+}
+
+tr.TableEditorRow.selected td.TableEditorCell-Target {
+	border-right: 3px solid #666666;
+}
+
+.TableEditorContent,.TableEditorContent-Edit,.TableEditorContent-Empty {
+	font-size: 14px;
+	font-family: sans-serif;
+	padding: 0px;
+	margin: 0px;
+}
+
+.TableEditorContent pre,.TableEditorContent-Empty pre {
+	padding: 0px;
+	margin: 0px;
+}
+
+.TableEditorContent font {
+	background-color: #ffa;
+	color: blue !important;
+}
+
+.TableEditorContent font span {
+	background-color: #ffa;
+	color: blue !important;
+}
+
+.TableEditorContent-Edit {
+	border-top: 1px solid #BFBFBF;
+	border-bottom: 1px solid #BFBFBF;
+	width: 98%;
+}
+
+tr.FuzzyStateDecoration td.TableEditorCell-Target .TableEditorContent {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+tr.FuzzyStateDecoration td.TableEditorCell-Target div.TableEditorCell-Target {
+	border-left: 3px solid #ffc000;
+	border-right: 3px solid #ffc000;
+}
+
+tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+tr.ApprovedStateDecoration td.TableEditorCell-Target div.TableEditorCell-Target
+{
+	border-left: 3px solid #099b09;
+	border-right: 3px solid #099b09;
+}
+
+tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
+	{
+	border-left: 3px solid #099b09;
+	border-right: 3px solid #099b09;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.TableEditorContent-Empty {
+	font-size: 12px;
+	font-family: sans-serif;
+	font-style: italic;
+	padding: 3px;
+	margin: 2px;
+	opacity: 0.5;
+	width: 99%;
+}
+
+/* Search-replace page
+ * TODO arrange for these to share styles with editor table
+ */
+
+.SearchResultsDocumentTitle
+{
+	cursor:pointer;
+	font-size:1.2em;
+	color:#0000AA;
+}
+
+td.FuzzyStateDecoration div div div
+{
+	border-left: 3px solid #ffc000;
+	border-right: 3px solid #ffc000;
+	padding: 5px;
+}
+
+td.ApprovedStateDecoration div div div
+{
+	border-left: 3px solid #099b09;
+	border-right: 3px solid #099b09;
+	padding: 5px;
+}
+
+td.FuzzyStateDecoration div div pre, td.ApprovedStateDecoration div div pre
+{
+	font-size: 14px;
+	font-family: sans-serif;
+	white-space: pre-wrap;
+	word-wrap: normal;
+	padding: 0px;
+	margin: 0px;
+}
+
+.HasValidationError {
+	border-left:3px solid red;
+	border-right:3px solid red;
+}
+
+.Severity-Error {
+	background-color: #ffcccc;
+}
+
+.Severity-Info {
+	background-color: #eeeeff;
+}
+
+.Severity-Warning {
+	background-color: #ffffcc;
+}
+
+/* when match highlighting is enabled: */
+/*
+.TransMemoryHighlightMatches .diff-equal {
+	background:#FF0;
+}
+
+.TransMemoryHighlightMatches .diff-insert {
+	background:#e6ffe6;
+	text-decoration: none;
+}
+
+.TransMemoryHighlightMatches .diff-delete {
+	display: none;
+}
+*/
+
+/* when colour diff is enabled: */
+.diff-equal {
+	
+}
+
+.diff-insert {
+	background: #99ccff;
+	text-decoration: underline;
+}
+
+.diff-delete {
+	background: #ff9999;
+	text-decoration: line-through;
+}
+
+.DocumentListTable {
+	width: 100%;
+	font-size: 16px;
+}
+
+.DocumentListTable td {
+	font-size: 16px;
+	cursor: pointer;
+}
+
+.DocumentListTable_folderCol {
+	width: 25%;
+}
+
+.DocumentListTable_docCol {
+	width: 25%;
+}
+
+.transUnitCountTooltip {
+	background-color: #F7F488;
+	color: #2A2A04;
+	text-align: center;
+	border: 1px outset #999966;
+	height: 65px;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+}
+
+.transUnitCountTooltipTable {
+	text-align: center;
+	font-size: 12px
+}
+
+.transUnitCountTooltipTable TD {
+	border: 1px solid #999966;
+	width: 75px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+}
+
+.pointer {
+	cursor: pointer;
+}
+
+.translationContainer pre {
+	font-size: 14px;
+	font-family: sans-serif;
+	word-wrap: break-word;
+	white-space: pre-wrap;
+}
+
+.translationContainer .tmTable pre {
+   border: 1px solid #E0E8EE;
+   margin-top: 2px;
+   padding: 2px;
+   margin-bottom: 2px;
+}
+
+.tmTable{
+	width: 100%;
+}
+
+.glossaryTable {
+	width: 100%;
+}
+
+.southTable td img {
+	cursor: pointer;
+}
+
+.southTable td {
+	font-family: sans-serif;
+	font-size: small;
+	padding: 0 10px 0 0;
+}
+
+.southTable th {
+	border-bottom: 0px;
+	color: blue;
+	font-style: normal;
+	font-weight: bold
+}
+
+.loadingPanel {
+	background: #000000;
+	padding: 20px 40px 20px 40px;
+	color: #FFFFFF;
+	opacity: 0.60;
+	border-radius: 20px;
+	-moz-border-radius: 20px;
+	font-weight: bold;
+}
+
+.filterConfirmationPanel {
+	background: #4C4C4C;
+	padding: 5px 20px 0px 20px;
+	color: #FFFFFF;
+	border-radius: 20px;
+	-moz-border-radius: 20px;
+	font-weight: bold;
+}
+.sourceTable {
+	border-spacing:5px;
+	width:100%;
+	height:100%;	
+}

@@ -30,6 +30,7 @@ import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
+import org.zanata.webtrans.shared.auth.Identity;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
@@ -43,6 +44,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasVisibility;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -79,6 +81,9 @@ public class AppView extends Composite implements AppPresenter.Display
    @UiField
    LayoutPanel container, topPanel;
 
+   @UiField
+   Image userImg;
+
    @UiField(provided = true)
    final Resources resources;
 
@@ -92,7 +97,7 @@ public class AppView extends Composite implements AppPresenter.Display
    private Widget searchResultsView;
 
    @Inject
-   public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView)
+   public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, final Identity identity)
    {
       this.resources = resources;
 
@@ -105,6 +110,8 @@ public class AppView extends Composite implements AppPresenter.Display
                                              // display
 
       initWidget(uiBinder.createAndBindUi(this));
+
+      userImg.setUrl(identity.getPerson().getAvatarUrl());
 
       helpLink.setHref(messages.hrefHelpLink());
       helpLink.setTarget("_BLANK");

@@ -33,6 +33,7 @@ import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.web.ServletContexts;
+import org.zanata.action.UserSessionAction;
 import org.zanata.model.HAccount;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
@@ -60,6 +61,9 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
    @In
    TranslationWorkspaceManager translationWorkspaceManager;
 
+   @In
+   UserSessionAction userSessionAction;
+
 
    @Override
    public ActivateWorkspaceResult execute(ActivateWorkspaceAction action, ExecutionContext context) throws ActionException
@@ -68,7 +72,7 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
 
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
 
-      workspace.registerTranslator(ActivateWorkspaceHandler.retrieveSessionId(), ActivateWorkspaceHandler.retrievePersonId());
+      workspace.registerTranslator(retrieveSessionId(), retrievePersonId());
 
       // Send EnterWorkspace event to clients
       EnterWorkspace event = new EnterWorkspace(new PersonId(ZanataIdentity.instance().getPrincipal().getName()));
@@ -83,21 +87,21 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
    {
    }
 
-   public static SessionId retrieveSessionId()
+   private SessionId retrieveSessionId()
    {
       return new SessionId(ServletContexts.instance().getRequest().getSession().getId());
    }
 
-   public static PersonId retrievePersonId()
+   private PersonId retrievePersonId()
    {
       HAccount authenticatedAccount = (HAccount) Contexts.getSessionContext().get(JpaIdentityStore.AUTHENTICATED_USER);
       return new PersonId(authenticatedAccount.getUsername());
    }
 
-   public static Person retrievePerson()
+   private Person retrievePerson()
    {
       HAccount authenticatedAccount = (HAccount) Contexts.getSessionContext().get(JpaIdentityStore.AUTHENTICATED_USER);
-      return new Person(new PersonId(authenticatedAccount.getUsername()), authenticatedAccount.getPerson().getName());
+      return new Person(new PersonId(authenticatedAccount.getUsername()), authenticatedAccount.getPerson().getName(), userSessionAction.getUserImageUrl(16, authenticatedAccount.getPerson().getEmail()));
    }
 
 }

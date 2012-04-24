@@ -30,7 +30,7 @@ public class DummyActivateWorkspaceCommand implements Command
       Log.info("ENTER DummyActivateWorkspaceCommand.execute()");
       WorkspaceContext context = new WorkspaceContext(action.getWorkspaceId(), "Dummy Workspace", "Mock Sweedish", false);
 
-      Identity identity = new Identity(new SessionId("123456"), new Person(new PersonId("bob"), "Bob The Builder"));
+      Identity identity = new Identity(new SessionId("123456"), new Person(new PersonId("bob"), "Bob The Builder", "bob@zanata.org"));
       callback.onSuccess(new ActivateWorkspaceResult(context, identity));
       Log.info("EXIT DummyActivateWorkspaceCommand.execute()");
    }

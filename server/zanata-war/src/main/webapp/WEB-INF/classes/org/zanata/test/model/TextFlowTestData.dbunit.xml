@@ -1,0 +1,270 @@
+<?xml version="1.0"?>
+<dataset>
+  <HDocument
+    id="1"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
+    contentType="text/plain"
+    docId="/my/path/document.txt"
+    locale="4"
+    name="document.txt"
+    path="/my/path"
+    project_iteration_id="1"
+    revision="1"
+    obsolete="0"
+  />
+  <HTextFlow 
+  	id="1"
+  	document_id="1"
+  	resId="tf1"
+  	revision="1"
+  	pos="0"
+    obsolete="0"
+    plural="false"
+  	wordCount="11"
+  	contentHash="MD5('hello world')"
+  />
+  <HTextFlowContent
+    pos="0"
+    content="hello world"
+    text_flow_id="1"
+  />
+  <HTextFlowTarget 
+  	id="1"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
+  	locale="1"
+  	state="2"
+  	tf_id="1"
+  	tf_revision="1"
+  />
+  <HTextFlowTargetContent
+    pos="0"
+    content="hei verden"
+    text_flow_target_id="1"
+  />
+  <HTextFlowTarget 
+  	id="2"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
+  	locale="3"
+  	state="2"
+  	tf_id="1"
+  	tf_revision="1"
+  />
+  <HTextFlowTargetContent
+    pos="0"
+    content="hello welt"
+    text_flow_target_id="2"
+  />
+  <HTextFlowTarget 
+  	id="3"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
+  	locale="5"
+  	state="1"
+  	tf_id="1"
+  	tf_revision="1"
+  />
+  <HTextFlowTargetContent
+    pos="0"
+    content="fuzzy hello"
+    text_flow_target_id="3"
+  />
+  <HTextFlowTarget 
+  	id="4"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
+  	locale="6"
+  	state="0"
+  	tf_id="1"
+  	tf_revision="1"
+  />
+  
+  <!-- File API Testing Documents -->
+  
+  <HDocument
+    id="2"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
+    contentType="text/plain"
+    docId="my/path/document-2.txt"
+    locale="4"
+    name="document-2.txt"
+    path="my/path"
+    project_iteration_id="1"
+    revision="1"
+    obsolete="0"
+  />
+  
+   <HTextFlow 
+  	id="2"
+  	document_id="2"
+  	resId="tf2"
+  	revision="1"
+  	pos="0"
+    obsolete="0"
+    plural="false"
+  	wordCount="1"
+  	contentHash="MD5('mssgId1')"
+  />
+  <HTextFlowContent
+    pos="0"
+    content="mssgId1"
+    text_flow_id="2"
+  />
+  <HTextFlow 
+  	id="3"
+  	document_id="2"
+  	resId="tf3"
+  	revision="1"
+  	pos="1"
+    obsolete="0"
+    plural="false"
+  	wordCount="1"
+  	contentHash="MD5('mssgId2')"
+  />
+  <HTextFlowContent
+    pos="0"
+    content="mssgId2"
+    text_flow_id="3"
+  />
+  <HTextFlow 
+  	id="4"
+  	document_id="2"
+  	resId="tf4"
+  	revision="1"
+  	pos="2"
+    obsolete="0"
+    plural="false"
+  	wordCount="1"
+  	contentHash="MD5('mssgId3')"
+  />
+  <HTextFlowContent
+    pos="0"
+    content="mssgId3"
+    text_flow_id="4"
+  />
+  
+  <!-- Text Flow Target comments -->
+  <HSimpleComment 
+  	id="1"
+  	comment="Text Flow Target Comment 1"
+  />
+  <HSimpleComment 
+  	id="2"
+  	comment="Text Flow Target Comment 2"
+  />
+  <HSimpleComment 
+  	id="3"
+  	comment="Text Flow Target Comment 3"
+  />
+  
+  <HTextFlowTarget 
+  	id="5"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
+  	locale="4"
+  	state="1"
+  	tf_id="2"
+  	tf_revision="1"
+  	last_modified_by_id="2"
+  	comment_id="1"
+  />
+  <HTextFlowTargetContent
+    pos="0"
+    content="mssgTrans1"
+    text_flow_target_id="5"
+  />
+  <HTextFlowTarget 
+  	id="6"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
+  	locale="4"
+  	state="1"
+  	tf_id="3"
+  	tf_revision="1"
+  	last_modified_by_id="2"
+  	comment_id="2"
+  />
+  <HTextFlowTargetContent
+    pos="0"
+    content="mssgTrans2"
+    text_flow_target_id="6"
+  />
+  <HTextFlowTarget 
+  	id="7"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
+  	locale="4"
+  	state="1"
+  	tf_id="4"
+  	tf_revision="1"
+  	last_modified_by_id="2"
+  	comment_id="3"
+  />
+  <HTextFlowTargetContent
+    pos="0"
+    content="mssgTrans3"
+    text_flow_target_id="7"
+  />
+  
+  <!-- HDocument 
+  	   Single Text Flow and Translation -->
+  	   
+  <HDocument
+    id="3"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
+    contentType="text/plain"
+    docId="my/path/document-3.txt"
+    locale="4"
+    name="document-3.txt"
+    path="my/path"
+    project_iteration_id="1"
+    revision="1"
+    obsolete="0"
+  />
+  <HTextFlow 
+  	id="5"
+  	document_id="3"
+  	resId="tf1"
+  	revision="1"
+  	pos="0"
+    obsolete="0"
+    plural="false"
+  	wordCount="1"
+  />
+  <HTextFlowContent
+    pos="0"
+    content="mssgId4"
+    text_flow_id="5"
+  />
+  <HTextFlowTarget 
+  	id="8"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
+  	locale="4"
+  	state="1"
+  	tf_id="5"
+  	tf_revision="1"
+  	last_modified_by_id="2"
+  />
+  <HTextFlowTargetContent
+    pos="0"
+    content="mssgTrans4"
+    text_flow_target_id="8"
+  />
+  
+</dataset>

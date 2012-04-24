@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<dataset>
+        <HGlossaryEntry id="1"
+                       versionNum="1"
+                       creationDate="2009-09-01 20:31:32"
+                       lastChanged="2009-09-01 20:31:32"
+                       sourceRef="source reference"
+                       srcLocaleId="4"
+                       />
+                       
+        <!-- en-US -->
+        <HGlossaryTerm id="1"
+                       versionNum="1"
+                       creationDate="2009-09-01 20:31:32"
+                       lastChanged="2009-09-01 20:31:32"
+                       content="test data content 1 (source lang)"
+                       localeId="4"
+                       glossaryEntryId="1"
+                       />       
+                       
+        <!-- de -->              
+        <HGlossaryTerm id="2"
+                       versionNum="1"
+                       creationDate="2009-09-01 21:31:32"
+                       lastChanged="2009-09-01 21:31:32"
+                       content="test data content 2"
+                       localeId="3"
+                       glossaryEntryId="1"
+                       /> 
+        
+         <!-- es -->              
+        <HGlossaryTerm id="3"
+                       versionNum="1"
+                       creationDate="2009-09-01 21:31:32"
+                       lastChanged="2009-09-01 21:31:32"
+                       content="test data content 3"
+                       localeId="5"
+                       glossaryEntryId="1"
+                       />    
+                       
+        <HTermComment id="1"
+                      comment="test data comment 1"
+                      pos="0"
+                      glossaryTermId="1"/>
+                      
+                      
+        <HTermComment id="2"
+                      comment="test data comment 2"
+                      pos="0"
+                      glossaryTermId="2"/>
+                      
+        <HTermComment id="3"
+                      comment="test data comment 3"
+                      pos="0"
+                      glossaryTermId="3"/>              
+                      
+</dataset>

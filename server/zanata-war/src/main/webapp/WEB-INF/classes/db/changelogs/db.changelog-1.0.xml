@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog 
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+						http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="flies" id="mysql_baseline" dbms="mysql">
+    	<preConditions onFail="MARK_RAN">
+    	    <not><tableExists tableName="HAccount"/></not>
+    	</preConditions>
+    	<comment>mysql baseline schema</comment>
+    	<sqlFile path="db/mysql/mysql_baseline.sql" stripComments="true" />
+    </changeSet>
+    <changeSet author="flies" id="h2_baseline" dbms="h2">
+    	<preConditions onFail="MARK_RAN">
+    	    <not><tableExists tableName="HAccount"/></not>
+    	</preConditions>
+    	<comment>h2 baseline schema</comment>
+    	<sqlFile path="db/h2/h2_baseline.sql" stripComments="true" />
+    </changeSet>
+    
+    <changeSet id="1" author="camunoz@redhat.com" dbms="mysql" failOnError="false" runAlways="true">
+    	<comment>Set session's default storage engine to INNODB (mysql ver &gt; 5.5)</comment>
+    	<sql>SET storage_engine=InnoDB</sql>
+    </changeSet>
+    <changeSet id="2" author="camunoz@redhat.com" dbms="mysql" failOnError="false" runAlways="true">
+    	<comment>Set session's default storage engine to INNODB (mysql ver &lt; 5.5)</comment>
+    	<sql>SET default_storage_engine=InnoDB</sql>
+    </changeSet>
+</databaseChangeLog>
