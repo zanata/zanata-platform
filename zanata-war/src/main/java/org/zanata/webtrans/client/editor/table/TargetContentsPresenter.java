@@ -190,6 +190,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void saveAsApprovedAndMoveNext()
    {
+      moveNext(true);
+   }
+
+   private void moveNext(boolean forceSave)
+   {
       if (currentEditorIndex + 1 < currentEditors.size())
       {
          currentDisplay.focusEditor(currentEditorIndex + 1);
@@ -198,6 +203,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       else
       {
          currentEditorIndex = 0;
+         if (forceSave)
+         {
+            cellEditor.acceptEdit();
+         }
          cellEditor.saveAndMoveRow(NavTransUnitEvent.NavigationType.NextEntry);
       }
    }
@@ -374,7 +383,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else if (checkKey.isNextEntryKey())
       {
-         saveAsApprovedAndMoveNext();
+         moveNext(false);
       }
       else if (checkKey.isPreviousEntryKey())
       {
