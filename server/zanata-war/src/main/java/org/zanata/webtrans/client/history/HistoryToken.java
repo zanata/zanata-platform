@@ -23,9 +23,11 @@ public class HistoryToken
 
    public static final String KEY_SEARCH_DOC_TEXT = "search";
    public static final String KEY_SEARCH_PROJECT_TEXT = "projectsearch";
+   public static final String KEY_SEARCH_PROJECT_REPLACEMENT = "projectsearchreplace";
 
    public static final String KEY_SEARCH_PROJECT_CASE = "projectsearchcase";
    public static final String VALUE_SEARCH_PROJECT_CASE_SENSITIVE = "sensitive";
+
 
    public static final String KEY_DOC_FILTER_TEXT = "filter";
 
@@ -38,6 +40,7 @@ public class HistoryToken
    private String docFilterText;
    private String searchText;
    private String projectSearchText;
+   private String projectSearchReplace;
    private boolean projectSearchCaseSensitive;
 
    // defaults
@@ -47,6 +50,7 @@ public class HistoryToken
    private static final boolean DEFAULT_DOC_FILTER_EXACT = false;
    private static final String DEFAULT_SEARCH_TEXT = "";
    private static final String DEFAULT_PROJECT_SEARCH_TEXT = "";
+   private static final String DEFAULT_PROJECT_SEARCH_REPLACE = "";
    private static final boolean DEFAULT_PROJECT_SEARCH_CASE_SENSITIVE = false;
 
    public HistoryToken()
@@ -57,6 +61,7 @@ public class HistoryToken
       docFilterExact = DEFAULT_DOC_FILTER_EXACT;
       searchText = DEFAULT_SEARCH_TEXT;
       projectSearchText = DEFAULT_PROJECT_SEARCH_TEXT;
+      projectSearchReplace = DEFAULT_PROJECT_SEARCH_REPLACE;
       projectSearchCaseSensitive = DEFAULT_PROJECT_SEARCH_CASE_SENSITIVE;
    }
 
@@ -129,6 +134,10 @@ public class HistoryToken
          {
             historyToken.setProjectSearchText(value);
          }
+         else if (key.equals(KEY_SEARCH_PROJECT_REPLACEMENT))
+         {
+            historyToken.setProjectSearchReplacement(value);
+         }
          else if (key.equals(KEY_SEARCH_PROJECT_CASE))
          {
             Log.info("found project search case key");
@@ -173,6 +182,23 @@ public class HistoryToken
          this.projectSearchText = DEFAULT_PROJECT_SEARCH_TEXT;
       else
          this.projectSearchText = value;
+   }
+
+   public String getProjectSearchReplacement()
+   {
+      return projectSearchReplace;
+   }
+
+   public void setProjectSearchReplacement(String value)
+   {
+      if (value == null || value.length() == 0)
+      {
+         projectSearchReplace = DEFAULT_PROJECT_SEARCH_REPLACE;
+      }
+      else
+      {
+         projectSearchReplace = value;
+      }
    }
 
    public boolean getProjectSearchCaseSensitive()
@@ -296,6 +322,15 @@ public class HistoryToken
          else
             token += PAIR_SEPARATOR;
          token += KEY_SEARCH_PROJECT_TEXT + DELIMITER_K_V + projectSearchText;
+      }
+
+      if(!projectSearchReplace.equals(DEFAULT_PROJECT_SEARCH_REPLACE))
+      {
+         if (first)
+            first = false;
+         else
+            token += PAIR_SEPARATOR;
+         token += KEY_SEARCH_PROJECT_REPLACEMENT + DELIMITER_K_V + projectSearchReplace;
       }
 
       if (projectSearchCaseSensitive != DEFAULT_PROJECT_SEARCH_CASE_SENSITIVE)
