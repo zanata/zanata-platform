@@ -20,9 +20,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.io.IOException;
 
 import org.hamcrest.Matchers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 import org.zanata.page.ProjectPage;
 import org.zanata.page.ProjectVersionPage;
+import org.zanata.page.WebTranPage;
 import org.zanata.workflow.ClientPushWorkFlow;
 import org.zanata.workflow.LanguageWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
@@ -30,6 +33,7 @@ import org.zanata.workflow.ProjectWorkFlow;
 
 public class CreateSampleProjectTest
 {
+   private static final Logger LOGGER = LoggerFactory.getLogger(CreateSampleProjectTest.class);
    @Test
    public void canCreateProjectAndVersion()
    {
@@ -71,7 +75,16 @@ public class CreateSampleProjectTest
       assertThat(exitCode, Matchers.equalTo(0));
 
       ProjectVersionPage projectVersionPage = new ProjectWorkFlow().goToProjectByName("plural project").goToActiveVersion("master");
-      assertThat(projectVersionPage.getTranslations(), Matchers.hasSize(3));
+      assertThat(projectVersionPage.getTranslatableLocales(), Matchers.hasItems("en-US", "pl", "zh"));
+   }
+
+   @Test(enabled = false)
+   public void canSeeDocumentList() {
+      new LoginWorkFlow().signIn("admin", "admin");
+      ProjectVersionPage projectVersionPage = new ProjectWorkFlow().goToProjectByName("plural project").goToActiveVersion("master");
+      WebTranPage webTranPage = projectVersionPage.translate("pl");
+
+      LOGGER.info("document list table: {}", webTranPage.getDocumentListTableContent());
    }
 
 }

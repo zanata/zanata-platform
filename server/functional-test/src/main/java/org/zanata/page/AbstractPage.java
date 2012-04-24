@@ -18,6 +18,7 @@ package org.zanata.page;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -38,21 +39,31 @@ import com.google.common.collect.ImmutableList;
 
 public class AbstractPage
 {
+   public enum PageContext
+   {
+      jsf, webTran
+   }
    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPage.class);
 
-   @FindBy(id = "tabs-menu")
-   private WebElement navMenu;
-
-   private WebDriver driver;
-   private final List<WebElement> navMenuItems;
-   private FluentWait<WebDriver> ajaxWaitForTenSec;
+   private final WebDriver driver;
+   private final FluentWait<WebDriver> ajaxWaitForTenSec;
+   private List<WebElement> navMenuItems = Collections.emptyList();
 
    public AbstractPage(final WebDriver driver)
+   {
+      this(driver, PageContext.jsf);
+   }
+
+   public AbstractPage(final  WebDriver driver, PageContext pageContext)
    {
       PageFactory.initElements(new AjaxElementLocatorFactory(driver, 30), this);
       this.driver = driver;
       ajaxWaitForTenSec = createWaitForAjax(driver, 10);
-      navMenuItems = navMenu.findElements(By.tagName("a"));
+      if (pageContext == PageContext.jsf)
+      {
+         //webTran and jsp don't share same page layout
+         navMenuItems = driver.findElement(By.id("tabs-menu")).findElements(By.tagName("a"));
+      }
    }
 
    public static FluentWait<WebDriver> createWaitForAjax(WebDriver webDriver, int durationInSec)

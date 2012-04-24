@@ -187,31 +187,7 @@
                     <failIfNoTests>false</failIfNoTests>
                 </configuration>
             </plugin>
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-resources-plugin</artifactId>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>copy-ds-context</id>-->
-                        <!--<goals>-->
-                            <!--<goal>copy-resources</goal>-->
-                        <!--</goals>-->
-                        <!--<phase>package</phase>-->
-                        <!--<configuration>-->
-                            <!--<outputDirectory>${as.deploy}</outputDirectory>-->
-                            <!--<resources>-->
-                                <!--<resource>-->
-                                    <!--<directory>${basedir}/src/test/resources</directory>-->
-                                    <!--<filtering>true</filtering>-->
-                                    <!--<includes>-->
-                                        <!--<include>zanata-ds.xml</include>-->
-                                    <!--</includes>-->
-                                <!--</resource>-->
-                            <!--</resources>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
+
             <plugin>
                 <groupId>org.codehaus.cargo</groupId>
                 <artifactId>cargo-maven2-plugin</artifactId>
@@ -219,6 +195,7 @@
                 <configuration>
                     <wait>${cargo.wait}</wait>
                     <container>
+                        <timeout>180000</timeout>
                         <containerId>${cargo.container}</containerId>
 
                         <zipUrlInstaller>
@@ -267,17 +244,6 @@
                         <properties>
                             <cargo.jboss.configuration>default</cargo.jboss.configuration>
                             <cargo.hostname>${cargo.host}</cargo.hostname>
-                            <!--<cargo.servlet.port>${cargo.servlet.port}</cargo.servlet.port>-->
-                            <!--<cargo.rmi.port>${cargo.rmi.port}</cargo.rmi.port>-->
-
-                            <!--<cargo.datasource.datasource>-->
-                                <!--cargo.datasource.url=${ds.connection.url}|-->
-                                <!--cargo.datasource.driver=${ds.driver.class}|-->
-                                <!--cargo.datasource.username=${ds.user.name}|-->
-                                <!--cargo.datasource.password=${ds.password}|-->
-                                <!--cargo.datasource.type=javax.sql.DataSource|-->
-                                <!--cargo.datasource.jndi=${ds.jndi.name}-->
-                            <!--</cargo.datasource.datasource>-->
 
                             <!--<cargo.jvmargs>${cargo.debug.args}</cargo.jvmargs> -->
                             <!--<cargo.jvmargs>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005</cargo.jvmargs> -->
