@@ -193,6 +193,11 @@ table.fullwidth {
 	width: 100%
 }
 
+td.wrapped {
+    word-break: break-word;
+    word-wrap: break-word;
+}
+
 a.action_link {
 	display: block;
 	font-size: 14px;
