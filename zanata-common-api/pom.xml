@@ -4,8 +4,8 @@
 	<artifactId>zanata-common-api</artifactId>
 	<name>Zanata Common API</name>
 	<parent>
-		<artifactId>zanata-parent</artifactId>
 		<groupId>org.zanata</groupId>
+		<artifactId>api</artifactId>
 		<version>1.6.0-alpha-2-SNAPSHOT</version>
 	</parent>
 	<packaging>jar</packaging>
