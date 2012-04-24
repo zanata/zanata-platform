@@ -197,11 +197,13 @@
                         <timeout>180000</timeout>
                         <containerId>${cargo.container}</containerId>
 
-                        <zipUrlInstaller>
-                            <url>${cargo.installation}</url>
-                        </zipUrlInstaller>
+                        <!--if install from url-->
+                        <!--<zipUrlInstaller>-->
+                            <!--<url>${cargo.installation}</url>-->
+                        <!--</zipUrlInstaller>-->
+                        <!--<home>${cargo.home}</home>-->
 
-                        <home>${cargo.home}</home>
+                        <home>${jboss.home}</home>
                         <dependencies>
                             <dependency>
                                 <groupId>${jdbc.groupId}</groupId>
