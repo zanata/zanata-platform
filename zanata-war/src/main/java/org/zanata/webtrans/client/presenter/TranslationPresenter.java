@@ -120,6 +120,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
    }
 
+
    private void loadTranslatorList()
    {
       dispatcher.execute(new GetTranslatorList(), new AsyncCallback<GetTranslatorListResult>()
@@ -151,7 +152,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onExitWorkspace(ExitWorkspaceEvent event)
          {
-            loadTranslatorList();
+            workspaceUsersPresenter.removeTranslator(event.getPerson());
+            display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()));
          }
       }));
 
@@ -160,7 +162,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onEnterWorkspace(EnterWorkspaceEvent event)
          {
-            loadTranslatorList();
+            workspaceUsersPresenter.addTranslator(event.getPerson());
+            display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()));
          }
       }));
 

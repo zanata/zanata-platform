@@ -336,8 +336,8 @@ public class TranslationPresenterTest
 
       // expect lookup translator list
       ArrayList<Person> participants = new ArrayList<Person>();
-      participants.add(new Person(new PersonId("bob"), "Bob Smith", "bob@zanata.org"));
-      participants.add(new Person(new PersonId("smith"), "Smith Bob", "smith@zanata.org"));
+      participants.add(new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"));
+      participants.add(new Person(new PersonId("smith"), "Smith Bob", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16"));
       setupUserListRequestResponse(participants);
 
       replay(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter);
@@ -358,9 +358,9 @@ public class TranslationPresenterTest
 
       // expect lookup translator list
       ArrayList<Person> participants = new ArrayList<Person>();
-      participants.add(new Person(new PersonId("john"), "John Jones", "john@zanata.org"));
-      participants.add(new Person(new PersonId("jones"), "Jones John", "jones@zanata.org"));
-      participants.add(new Person(new PersonId("jim"), "Jim Jones", "jim@zanata.org"));
+      participants.add(new Person(new PersonId("john"), "John Jones", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
+      participants.add(new Person(new PersonId("jones"), "Jones John", "http://www.gravatar.com/avatar/jones@zanata.org?d=mm&s=16"));
+      participants.add(new Person(new PersonId("jim"), "Jim Jones", "http://www.gravatar.com/avatar/jim@zanata.org?d=mm&s=16"));
       setupUserListRequestResponse(participants);
 
       replay(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter);
@@ -445,7 +445,7 @@ public class TranslationPresenterTest
    private void setupDefaultMockExpectations()
    {
       ArrayList<Person> people = new ArrayList<Person>();
-      people.add(new Person(new PersonId("jones"), "Joey Jones", "joey@zanata.org"));
+      people.add(new Person(new PersonId("jones"), "Joey Jones", "http://www.gravatar.com/avatar/joey@zanata.org?d=mm&s=16"));
 
       setupDefaultMockExpectations(people);
    }

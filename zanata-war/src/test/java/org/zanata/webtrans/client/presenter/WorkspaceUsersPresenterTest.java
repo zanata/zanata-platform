@@ -51,11 +51,11 @@ public class WorkspaceUsersPresenterTest
    {
       mockDisplay.clearUserList();
       expectLastCall().once();
-      mockDisplay.addUser("John Smith", "john@zanata.org");
+      mockDisplay.addUser(new Person(new PersonId("person1"), "John Smith", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
       expectLastCall().once();
-      mockDisplay.addUser("Smith John", "smith@zanata.org");
+      mockDisplay.addUser(new Person(new PersonId("Smith John"), "Smith John", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16"));
       expectLastCall().once();
-      mockDisplay.addUser("Smohn Jith", "smohn@zanata.org");
+      mockDisplay.addUser(new Person(new PersonId("Smohn Jith"), "Smohn Jith", "http://www.gravatar.com/avatar/smohn@zanata.org?d=mm&s=16"));
       expectLastCall().once();
 
       replay(mockDisplay, mockEventBus);
@@ -63,9 +63,9 @@ public class WorkspaceUsersPresenterTest
       workspaceUsersPresenter.bind();
 
       ArrayList<Person> people = new ArrayList<Person>();
-      people.add(new Person(new PersonId("person1"), "John Smith", "john@zanata.org"));
-      people.add(new Person(new PersonId("person2"), "Smith John", "smith@zanata.org"));
-      people.add(new Person(new PersonId("person3"), "Smohn Jith", "smohn@zanata.org"));
+      people.add(new Person(new PersonId("person1"), "John Smith", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
+      people.add(new Person(new PersonId("person2"), "Smith John", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16"));
+      people.add(new Person(new PersonId("person3"), "Smohn Jith", "http://www.gravatar.com/avatar/smohn@zanata.org?d=mm&s=16"));
       workspaceUsersPresenter.setUserList(people);
 
       verify(mockDisplay, mockEventBus);

@@ -42,14 +42,14 @@ public class ExitWorkspaceHandler extends AbstractActionHandler<ExitWorkspaceAct
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
 
       // Send ExitWorkspace event to client
-      if (workspace.removeTranslator(action.getPersonId()))
+      if (workspace.removeTranslator(action.getPerson().getId()))
       {
          // Send GWT Event to client to update the userlist
-         ExitWorkspace event = new ExitWorkspace(action.getPersonId());
+         ExitWorkspace event = new ExitWorkspace(action.getPerson());
          workspace.publish(event);
       }
 
-      return new ExitWorkspaceResult(action.getPersonId().toString());
+      return new ExitWorkspaceResult(action.getPerson().getId().toString());
    }
 
    @Override

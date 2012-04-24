@@ -1,13 +1,13 @@
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.shared.model.PersonId;
+import org.zanata.webtrans.shared.model.Person;
 
 //@ExposeEntity 
 public class ExitWorkspace implements SessionEventData, HasExitWorkspaceData
 {
    private static final long serialVersionUID = 1L;
 
-   private PersonId personId;
+   private Person person;
 
    // for ExposeEntity
    public ExitWorkspace()
@@ -15,19 +15,14 @@ public class ExitWorkspace implements SessionEventData, HasExitWorkspaceData
       // TODO Auto-generated constructor stub
    }
 
-   public ExitWorkspace(PersonId personId)
+   public ExitWorkspace(Person person)
    {
+      this.person = person;
    }
 
    @Override
-   public PersonId getPersonId()
+   public Person getPerson()
    {
-      return personId;
+      return person;
    }
-
-   public void setPersonId(PersonId personId)
-   {
-      this.personId = personId;
-   }
-
 }

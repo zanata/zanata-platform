@@ -12,10 +12,10 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
-import org.zanata.action.UserSessionAction;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HPerson;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.GravatarService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
@@ -45,7 +45,7 @@ public class GetTranslatorListHandler extends AbstractActionHandler<GetTranslato
    AccountDAO accountDAO;
 
    @In
-   UserSessionAction userSessionAction;
+   GravatarService gravatarServiceImpl;
 
    @Override
    public GetTranslatorListResult execute(GetTranslatorList action, ExecutionContext context) throws ActionException
@@ -64,7 +64,7 @@ public class GetTranslatorListHandler extends AbstractActionHandler<GetTranslato
 
          HPerson person = accountDAO.getByUsername(personId.toString()).getPerson();
 
-         Person translator = new Person(personId, person.getName(), userSessionAction.getUserImageUrl(16, person.getEmail()));
+         Person translator = new Person(personId, person.getName(), gravatarServiceImpl.getUserImageUrl(16, person.getEmail()));
          translators.add(translator);
       }
 

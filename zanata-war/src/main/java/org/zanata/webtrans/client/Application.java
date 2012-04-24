@@ -100,7 +100,7 @@ public class Application implements EntryPoint
          @Override
          public void onWindowClosing(ClosingEvent event)
          {
-            injector.getDispatcher().execute(new ExitWorkspaceAction(identity.getPerson().getId()), new AsyncCallback<ExitWorkspaceResult>()
+            injector.getDispatcher().execute(new ExitWorkspaceAction(identity.getPerson()), new AsyncCallback<ExitWorkspaceResult>()
             {
                @Override
                public void onFailure(Throwable caught)

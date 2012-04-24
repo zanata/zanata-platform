@@ -13,11 +13,13 @@ import com.google.inject.Inject;
 public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPresenter.Display>
 {
 
+   private ArrayList<Person> translatorList = new ArrayList<Person>();
+
    public interface Display extends WidgetDisplay
    {
       void clearUserList();
 
-      void addUser(String name, String userImgUrl);
+      void addUser(Person person);
    }
 
    @Inject
@@ -41,13 +43,36 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
    {
    }
 
-   public void setUserList(ArrayList<Person> users)
+   private void updateUserList()
    {
       display.clearUserList();
-      for (Person p : users)
+      for (Person p : translatorList)
       {
-         display.addUser(p.getName(), p.getAvatarUrl());
+         display.addUser(p);
       }
+   }
+
+   public void setUserList(ArrayList<Person> users)
+   {
+      translatorList = users;
+      updateUserList();
+   }
+
+   public void removeTranslator(Person person)
+   {
+      translatorList.remove(person);
+      updateUserList();
+   }
+
+   public void addTranslator(Person person)
+   {
+      translatorList.add(person);
+      updateUserList();
+   }
+
+   public int getTranslatorsSize()
+   {
+      return translatorList.size();
    }
 
 }

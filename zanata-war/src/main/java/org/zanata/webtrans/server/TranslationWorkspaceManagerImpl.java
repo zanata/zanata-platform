@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
@@ -18,12 +19,16 @@ import org.zanata.action.ProjectHome;
 import org.zanata.action.ProjectIterationHome;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.AccountDAO;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
+import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.GravatarService;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
+import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
@@ -42,6 +47,12 @@ import com.ibm.icu.util.ULocale;
 @Synchronized
 public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceManager
 {
+
+   @In
+   private AccountDAO accountDAO;
+
+   @In
+   GravatarService gravatarServiceImpl;
 
    public static final String EVENT_WORKSPACE_CREATED = "webtrans.WorkspaceCreated";
 
@@ -67,6 +78,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    public void exitWorkspace(String username)
    {
       log.info("User logout: Removing {0} from all workspaces", username);
+      HPerson person = accountDAO.getByUsername(username).getPerson();
       ImmutableSet<TranslationWorkspace> workspaceSet = ImmutableSet.copyOf(workspaceMap.values());
       for (TranslationWorkspace workspace : workspaceSet)
       {
@@ -74,7 +86,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
          {
             log.info("Removing user {0} from workspace {1}", username, workspace.getWorkspaceContext());
             // Send GWT Event to client to update the userlist
-            ExitWorkspace event = new ExitWorkspace(new PersonId(username));
+            ExitWorkspace event = new ExitWorkspace(new Person(new PersonId(username), person.getName(), gravatarServiceImpl.getUserImageUrl(16, person.getEmail())));
             workspace.publish(event);
          }
       }
@@ -117,15 +129,16 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    {
       return projectStatus.equals(EntityStatus.ACTIVE) && iterStatus.equals(EntityStatus.ACTIVE);
    }
-   
+
    private boolean checkPermission(HProject project, HLocale locale)
    {
       return ZanataIdentity.instance().hasPermission("modify-translation", project, locale);
    }
-   
+
    private boolean isReadOnly(HProject project, EntityStatus iterStatus, HLocale locale)
    {
-      // There must be permissions and the project iteration must be in the correct state
+      // There must be permissions and the project iteration must be in the
+      // correct state
       return !this.checkPermission(project, locale) || !this.isProjectIterationActive(project.getStatus(), iterStatus);
    }
 
@@ -176,7 +189,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       }
 
       EntityStatus projectIterationStatus = (EntityStatus) session.createQuery("select it.status from HProjectIteration it where it.slug = :slug and it.project.slug = :pslug").setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug()).setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug()).uniqueResult();
-      if (projectIterationStatus == EntityStatus.OBSOLETE )
+      if (projectIterationStatus == EntityStatus.OBSOLETE)
       {
          throw new NoSuchWorkspaceException("Project Iteration is obsolete");
       }
@@ -186,13 +199,13 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       {
          throw new NoSuchWorkspaceException("Invalid workspace Id");
       }
-      
-      HLocale locale = (HLocale) session.createQuery("select l from HLocale l where localeId = :localeId").setParameter("localeId", workspaceId.getLocaleId()).uniqueResult(); 
+
+      HLocale locale = (HLocale) session.createQuery("select l from HLocale l where localeId = :localeId").setParameter("localeId", workspaceId.getLocaleId()).uniqueResult();
       if (locale == null)
       {
          throw new NoSuchWorkspaceException("Invalid Workspace Locale");
       }
-      
+
       boolean readOnly = isReadOnly(project, projectIterationStatus, locale);
       String localeDisplayName = ULocale.getDisplayName(workspaceId.getLocaleId().toJavaName(), ULocale.ENGLISH);
       return new WorkspaceContext(workspaceId, workspaceName, localeDisplayName, readOnly);

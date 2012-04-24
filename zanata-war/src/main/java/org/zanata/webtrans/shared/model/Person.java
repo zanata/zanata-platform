@@ -41,4 +41,11 @@ public class Person implements HasIdentifier<PersonId>, Serializable
    {
       return avatarUrl == null ? "" : avatarUrl;
    }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      Person other = (Person) obj;
+      return (id.equals(other.getId())) && (avatarUrl.equals(other.getAvatarUrl()));
+   }
 }
