@@ -1,5 +1,0 @@
-[brew]
-name=Brew Buildsystem for Red Hat Enterprise Linux $releasever - $basearch
-baseurl=http://download.devel.redhat.com/rel-eng/brew/rhel/$releasever/
-enabled=1
-gpgcheck=0
