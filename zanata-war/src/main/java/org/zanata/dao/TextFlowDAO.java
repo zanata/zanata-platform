@@ -45,7 +45,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.zanata.common.LocaleId;
-import org.zanata.hibernate.search.DefaultNgramAnalyzer;
+import org.zanata.hibernate.search.CaseInsensitiveNgramAnalyzer;
 import org.zanata.model.HDocument;
 import org.zanata.model.HTextFlow;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
@@ -170,7 +170,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       }
 
       org.apache.lucene.search.Query textQuery;
-      DefaultNgramAnalyzer analyzer = new DefaultNgramAnalyzer();
+      CaseInsensitiveNgramAnalyzer analyzer = new CaseInsensitiveNgramAnalyzer();
       if (query.getSearchType() == SearchType.FUZZY_PLURAL)
       {
          int queriesSize = multiQueryText.length;

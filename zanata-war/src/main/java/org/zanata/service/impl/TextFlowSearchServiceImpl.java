@@ -46,7 +46,7 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.hibernate.search.CaseSensitiveNgramAnalyzer;
-import org.zanata.hibernate.search.DefaultNgramAnalyzer;
+import org.zanata.hibernate.search.CaseInsensitiveNgramAnalyzer;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
@@ -117,7 +117,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       else
       {
          searchFieldPrefix = IndexFieldLabels.CONTENT_CASE_FOLDED;
-         ngramAnalyzer = new DefaultNgramAnalyzer();
+         ngramAnalyzer = new CaseInsensitiveNgramAnalyzer();
       }
 
       String[] searchFields = new String[6];
