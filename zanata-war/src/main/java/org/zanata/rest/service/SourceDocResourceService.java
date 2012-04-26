@@ -245,7 +245,7 @@ public class SourceDocResourceService implements SourceDocResource
     */
    @Override
    @POST
-   @Restrict("#{s:hasPermission(translationResourcesService.securedIteration, 'import-template')}")
+   @Restrict("#{s:hasPermission(sourceDocResourceService.securedIteration, 'import-template')}")
    public Response post(Resource resource, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans)
    {
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
@@ -372,7 +372,7 @@ public class SourceDocResourceService implements SourceDocResource
    @Override
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE)
-   @Restrict("#{s:hasPermission(translationResourcesService.securedIteration, 'import-template')}")
+   @Restrict("#{s:hasPermission(sourceDocResourceService.securedIteration, 'import-template')}")
    // /r/{id}
    public Response putResource(@PathParam("id") String idNoSlash, Resource resource, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans)
    {
@@ -467,7 +467,7 @@ public class SourceDocResourceService implements SourceDocResource
    @Override
    @DELETE
    @Path(RESOURCE_SLUG_TEMPLATE)
-   @Restrict("#{s:hasPermission(translationResourcesService.securedIteration, 'import-template')}")
+   @Restrict("#{s:hasPermission(sourceDocResourceService.securedIteration, 'import-template')}")
    // /r/{id}
    public Response deleteResource(@PathParam("id") String idNoSlash)
    {
@@ -555,7 +555,7 @@ public class SourceDocResourceService implements SourceDocResource
    @Override
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
-   @Restrict("#{s:hasPermission(translationResourcesService.securedIteration, 'import-template')}")
+   @Restrict("#{s:hasPermission(sourceDocResourceService.securedIteration, 'import-template')}")
    // /r/{id}/meta
    public Response putResourceMeta(@PathParam("id") String idNoSlash, ResourceMeta messageBody, @QueryParam("ext") Set<String> extensions)
    {
@@ -659,6 +659,11 @@ public class SourceDocResourceService implements SourceDocResource
       {
          copyTransServiceImpl.copyTransForDocument(document);
       }
+   }
+
+   public HProjectIteration getSecuredIteration()
+   {
+      return retrieveAndCheckIteration(false);
    }
 
 }

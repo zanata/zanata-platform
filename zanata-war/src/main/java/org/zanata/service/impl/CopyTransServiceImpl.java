@@ -42,7 +42,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.rest.service.TranslatedDocService;
+import org.zanata.rest.service.TranslatedDocResourceService;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 
@@ -81,7 +81,7 @@ public class CopyTransServiceImpl implements CopyTransService
    }
    // @formatter:off
 
-   @Observer(TranslatedDocService.EVENT_COPY_TRANS)
+   @Observer(TranslatedDocResourceService.EVENT_COPY_TRANS)
    public void execute(Long docId, String project, String iterationSlug)
    {
       HDocument document = documentDAO.findById(docId, true);

@@ -82,14 +82,14 @@ import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
 import static org.zanata.service.impl.TranslationServiceImpl.validateExtensions;
 
 @Name("translationResourcesService")
-@Path(TranslatedDocService.SERVICE_PATH)
+@Path(TranslatedDocResourceService.SERVICE_PATH)
 @Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Consumes( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Transactional
 /**
  * This service allows clients to push and pull both source documents and translations.
  */
-public class TranslatedDocService implements TranslatedDocResource
+public class TranslatedDocResourceService implements TranslatedDocResource
 {
 
    // security actions
@@ -149,20 +149,20 @@ public class TranslatedDocService implements TranslatedDocResource
    @In
    private TranslationService translationServiceImpl;
 
-   private final Log log = Logging.getLog(TranslatedDocService.class);
+   private final Log log = Logging.getLog(TranslatedDocResourceService.class);
 
    @In
    private LocaleService localeServiceImpl;
 
 
-   public TranslatedDocService()
+   public TranslatedDocResourceService()
    {
    }
 
    // TODO break up this class (too many responsibilities)
 
 // @formatter:off
-   public TranslatedDocService(
+   public TranslatedDocResourceService(
          ApplicationConfiguration applicationConfiguration,
          ProjectIterationDAO projectIterationDAO,
          ProjectDAO projectDAO,
@@ -298,7 +298,7 @@ public class TranslatedDocService implements TranslatedDocResource
    @Override
    @DELETE
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   @Restrict("#{s:hasPermission(translationResourcesService.securedIteration, 'import-translation')}")
+   @Restrict("#{s:hasPermission(translatedDocResourceService.securedIteration, 'modify-translation')}")
    // /r/{id}/translations/{locale}
    public Response deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
    {
@@ -358,7 +358,7 @@ public class TranslatedDocService implements TranslatedDocResource
    @Override
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   @Restrict("#{s:hasPermission(translationResourcesService.securedIteration, 'import-translation')}")
+   @Restrict("#{s:hasPermission(translatedDocResourceService.securedIteration.project, 'modify-translation')}")
    // /r/{id}/translations/{locale}
    public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") Set<String> extensions, @QueryParam("merge") @DefaultValue("auto") String merge)
    {

@@ -24,6 +24,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -36,10 +37,12 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProjectIteration;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.extensions.ExtensionType;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 
@@ -58,7 +61,10 @@ public class ProjectIterationFilesAction
    private String iterationSlug;
 
    private String localeId;
-   
+
+   @In
+   private ZanataIdentity identity;
+
    @In
    private DocumentDAO documentDAO;
    
@@ -112,6 +118,7 @@ public class ProjectIterationFilesAction
       return documentStats.getWordCount();
    }
 
+   @Restrict("#{projectIterationFilesAction.fileUploadAllowed}")
    public void uploadFile()
    {
       TranslationsResource transRes = null;
@@ -147,7 +154,11 @@ public class ProjectIterationFilesAction
 
    public boolean isFileUploadAllowed()
    {
-      return this.projectIterationDAO.getBySlug(projectSlug, iterationSlug).getStatus() == EntityStatus.ACTIVE;
+      HProjectIteration projectIteration = this.projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      HLocale hLocale = this.localeDAO.findByLocaleId( new LocaleId(localeId) );
+
+      return projectIteration.getStatus() == EntityStatus.ACTIVE
+            && identity != null && identity.hasPermission("modify-translation", projectIteration, hLocale);
    }
 
    public List<HDocument> getIterationDocuments()

@@ -215,7 +215,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
             eTagUtils
       );
 
-      TranslatedDocService translatedDocService = new TranslatedDocService(
+      TranslatedDocResourceService translatedDocResourceService = new TranslatedDocResourceService(
             applicationConfiguration,
             projectIterationDAO,
             projectDAO,
@@ -231,7 +231,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       // @formatter:on
 
       resources.add(sourceDocResourceService);
-      resources.add(translatedDocService);
+      resources.add(translatedDocResourceService);
    }
 
    @BeforeMethod(dependsOnMethods = "prepareRestEasyFramework")
