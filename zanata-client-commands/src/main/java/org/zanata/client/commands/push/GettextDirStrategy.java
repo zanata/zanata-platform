@@ -131,7 +131,7 @@ class GettextDirStrategy extends AbstractPushStrategy
             {
                InputSource inputSource = new InputSource(bis);
                inputSource.setEncoding("utf8");
-               TranslationsResource targetDoc = poReader.extractTarget(inputSource, srcDoc);
+               TranslationsResource targetDoc = poReader.extractTarget(inputSource);
                callback.visit(locale, targetDoc);
             }
             finally

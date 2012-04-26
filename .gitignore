@@ -1,5 +1,5 @@
-/target/
-/*/target/
-*~
-/.settings
-/.project
+target/**
+**/target/**
+*.iml
+**/*.class
+
