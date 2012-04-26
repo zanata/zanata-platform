@@ -4,19 +4,18 @@
 	<artifactId>zanata-common-api</artifactId>
 	<name>Zanata Common API</name>
 	<parent>
-		<artifactId>zanata-parent</artifactId>
 		<groupId>org.zanata</groupId>
+		<artifactId>api</artifactId>
 		<version>1.6.0-alpha-2-SNAPSHOT</version>
-
 	</parent>
 	<packaging>jar</packaging>
 
-	<!-- Should be the same as zanata-parent/pom.xml -->
-	<scm>
-		<connection>scm:git:git://github.com/zanata/zanata.git</connection>
-		<developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
-		<url>https://github.com/zanata/zanata</url>
-	</scm>
+   <!-- Should be the same as zanata-api/pom.xml -->
+   <scm>
+      <connection>scm:git:git://github.com/zanata/zanata-api.git</connection>
+      <developerConnection>scm:git:git@github.com:zanata/zanata-api.git</developerConnection>
+      <url>https://github.com/zanata/zanata-api</url>
+   </scm>
 
 	<build>
 		<resources>
