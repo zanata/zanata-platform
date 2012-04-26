@@ -7,15 +7,14 @@
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
     <version>1.6.0-alpha-2-SNAPSHOT</version>
-
   </parent>
   <packaging>jar</packaging>
 
-	<!-- Should be the same as zanata-parent/pom.xml -->
+	<!-- Should be the same as zanata-common/pom.xml -->
 	<scm>
-		<connection>scm:git:git://github.com/zanata/zanata.git</connection>
-		<developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
-		<url>https://github.com/zanata/zanata</url>
+		<connection>scm:git:git://github.com/zanata/zanata-common.git</connection>
+		<developerConnection>scm:git:git@github.com:zanata/zanata-common.git</developerConnection>
+		<url>https://github.com/zanata/zanata-common</url>
 	</scm>
 
   <dependencies>
