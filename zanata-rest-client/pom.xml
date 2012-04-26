@@ -4,8 +4,8 @@
 	<artifactId>zanata-rest-client</artifactId>
 	<name>Zanata Rest client</name>
 	<parent>
-		<artifactId>zanata-parent</artifactId>
 		<groupId>org.zanata</groupId>
+      <artifactId>client</artifactId>
 		<version>1.6.0-alpha-2-SNAPSHOT</version>
 	</parent>
 	<packaging>jar</packaging>

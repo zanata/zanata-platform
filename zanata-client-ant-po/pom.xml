@@ -5,7 +5,7 @@
     <name>Zanata / REST Ant Task for Gettext PO / Publican</name>
     <parent>
         <groupId>org.zanata</groupId>
-        <artifactId>zanata-parent</artifactId>
+        <artifactId>client</artifactId>
         <version>1.6.0-alpha-2-SNAPSHOT</version>
     </parent>
 

@@ -8,6 +8,7 @@
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
     <version>1.6.0-alpha-2-SNAPSHOT</version>
+    <relativePath>../parent</relativePath>
   </parent>
 
 	<!-- Should be the same as zanata-parent/pom.xml -->
