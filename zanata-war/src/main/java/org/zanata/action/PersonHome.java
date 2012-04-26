@@ -103,15 +103,4 @@ public class PersonHome extends EntityHome<HPerson>
       return serverName.replace(".", "_");
    }
 
-   public String getHost()
-   {
-      /*
-       * eg. requestURL = http://localhost:8080/zanata/profile/view.seam
-       * servletPath = /profile/view.seam
-       */
-      String requestURL = request.getRequestURL().toString();
-      String servletPath = request.getServletPath().substring(1);
-
-      return requestURL.replace(servletPath, "");
-   }
 }
