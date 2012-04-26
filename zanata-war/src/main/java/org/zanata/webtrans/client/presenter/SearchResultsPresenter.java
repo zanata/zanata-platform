@@ -40,7 +40,6 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
 import org.zanata.webtrans.shared.rpc.ReplaceText;
-import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -147,6 +146,21 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
+      registerHandler(display.getReplacementTextBox().addValueChangeHandler(new ValueChangeHandler<String>()
+      {
+
+         @Override
+         public void onValueChange(ValueChangeEvent<String> event)
+         {
+            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+            if (!event.getValue().equals(token.getProjectSearchReplacement()))
+            {
+               token.setProjectSearchReplacement(event.getValue());
+               history.newItem(token.toTokenString());
+            }
+         }
+      }));
+
       registerHandler(display.getCaseSensitiveChk().addValueChangeHandler(new ValueChangeHandler<Boolean>()
       {
 
@@ -208,6 +222,11 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                   //TODO show loading indicator
                   dispatcher.execute(new GetProjectTransUnitLists(token.getProjectSearchText(), token.getProjectSearchCaseSensitive()), projectSearchCallback);
                }
+            }
+
+            if (!token.getProjectSearchReplacement().equals(currentHistoryState.getProjectSearchReplacement()))
+            {
+               display.getReplacementTextBox().setValue(token.getProjectSearchReplacement(), true);
             }
 
             currentHistoryState = token;
