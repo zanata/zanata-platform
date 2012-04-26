@@ -215,30 +215,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       targetContentsPresenter.setToViewMode();
    }
 
-   private void determineStatus(ArrayList<String> newTargets, ContentState stateToSet)
-   {
-      Collection<String> emptyTargets = Collections2.filter(newTargets, new Predicate<String>()
-      {
-         @Override
-         public boolean apply(@Nullable String input)
-         {
-            return Strings.isNullOrEmpty(input);
-         }
-      });
-      if (emptyTargets.isEmpty() && stateToSet == ContentState.Approved)
-      {
-         cellValue.setStatus(ContentState.Approved);
-      }
-      else if (emptyTargets.size() > 0 && stateToSet == ContentState.NeedReview)
-      {
-         cellValue.setStatus(ContentState.NeedReview);
-      }
-      else
-      {
-         cellValue.setStatus(ContentState.New);
-      }
-   }
-
    @Override
    public void saveAndMoveRow(NavigationType nav)
    {
@@ -249,7 +225,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
    /**
     * Accept the contents of the cell editor as the new cell value.
     */
-   private void acceptEdit()
+   @Override
+   public void acceptEdit()
    {
       // Check if we are ready to accept
       if (!onAccept())
@@ -279,6 +256,30 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       cellValue.setTargets(newTargets);
       determineStatus(newTargets, ContentState.NeedReview);
       curCallback.onComplete(curCellEditInfo, cellValue);
+   }
+
+   private void determineStatus(ArrayList<String> newTargets, ContentState stateToSet)
+   {
+      Collection<String> emptyTargets = Collections2.filter(newTargets, new Predicate<String>()
+      {
+         @Override
+         public boolean apply(@Nullable String input)
+         {
+            return Strings.isNullOrEmpty(input);
+         }
+      });
+      if (emptyTargets.isEmpty() && stateToSet == ContentState.Approved)
+      {
+         cellValue.setStatus(ContentState.Approved);
+      }
+      else if (emptyTargets.size() > 0 && stateToSet == ContentState.NeedReview)
+      {
+         cellValue.setStatus(ContentState.NeedReview);
+      }
+      else
+      {
+         cellValue.setStatus(ContentState.New);
+      }
    }
 
    /**
