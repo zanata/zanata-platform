@@ -81,7 +81,7 @@ import java.util.Set;
 import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
 import static org.zanata.service.impl.TranslationServiceImpl.validateExtensions;
 
-@Name("translationResourcesService")
+@Name("translatedDocResourceService")
 @Path(TranslatedDocResourceService.SERVICE_PATH)
 @Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Consumes( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -298,7 +298,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    @Override
    @DELETE
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   @Restrict("#{s:hasPermission(translatedDocResourceService.securedIteration, 'modify-translation')}")
+   @Restrict("#{s:hasPermission(translatedDocResourceService.securedIteration.project, 'modify-translation')}")
    // /r/{id}/translations/{locale}
    public Response deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
    {
