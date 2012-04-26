@@ -66,8 +66,7 @@ public class CreateSampleProjectTest
       workFlow.addLanguageAndJoin("zh");
    }
 
-//   @Test(dependsOnMethods = { "canCreateProjectAndVersion", "canAddLanguage" }, invocationTimeOut = 50000)
-   @Test(invocationTimeOut = 50000)
+   @Test(dependsOnMethods = { "canCreateProjectAndVersion", "canAddLanguage" }, invocationTimeOut = 50000)
    public void canPush() throws IOException
    {
       ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
