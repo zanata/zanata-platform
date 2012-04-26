@@ -277,6 +277,7 @@
 							<SCM-Changeset>${buildNumber}</SCM-Changeset>
 						</manifestEntries>
 					</archive>
+                <skipIfEmpty>true</skipIfEmpty>
 				</configuration>
             <executions>
               <execution>
@@ -305,7 +306,7 @@
 			<plugins>
 				<plugin>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.3.1</version>
+					<version>2.4</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
