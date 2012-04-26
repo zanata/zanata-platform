@@ -4,8 +4,8 @@
 	<artifactId>zanata-common-util</artifactId>
 	<name>Zanata Common Utility Code</name>
 	<parent>
-		<artifactId>zanata-parent</artifactId>
 		<groupId>org.zanata</groupId>
+      <artifactId>common</artifactId>
 		<version>1.6.0-alpha-2-SNAPSHOT</version>
 	</parent>
 	<packaging>jar</packaging>
