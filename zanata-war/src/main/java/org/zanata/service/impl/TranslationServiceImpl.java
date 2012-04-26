@@ -204,8 +204,9 @@ public class TranslationServiceImpl implements TranslationService
    }
 
 
-   public Collection<String> translateAll(String projectSlug, String iterationSlug, String docId, LocaleId locale, TranslationsResource translations, Set<String> extensions,
-                               MergeType mergeType)
+   @Override
+   public Collection<TextFlowTarget> translateAll(String projectSlug, String iterationSlug, String docId, LocaleId locale,
+                                                  TranslationsResource translations, Set<String> extensions, MergeType mergeType)
    {
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(projectSlug, iterationSlug, true);
 
@@ -230,7 +231,7 @@ public class TranslationServiceImpl implements TranslationService
       List<HPerson> newPeople = new ArrayList<HPerson>();
       // NB: removedTargets only applies for MergeType.IMPORT
       Collection<HTextFlowTarget> removedTargets = new HashSet<HTextFlowTarget>();
-      Collection<String> unknownResIds = new LinkedHashSet<String>();
+      Collection<TextFlowTarget> unknownResIds = new LinkedHashSet<TextFlowTarget>();
 
       if (mergeType == MergeType.IMPORT)
       {
@@ -250,8 +251,8 @@ public class TranslationServiceImpl implements TranslationService
          HTextFlow textFlow = textFlowDAO.getById(document, resId);
          if (textFlow == null)
          {
-            // return warning for unknown resId to REST client
-            unknownResIds.add(resId);
+            // return warning for unknown resId to caller
+            unknownResIds.add(incomingTarget);
             log.warn("skipping TextFlowTarget with unknown resId: {0}", resId);
             continue;
          }

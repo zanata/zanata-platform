@@ -20,6 +20,7 @@
  */
 package org.zanata.rest.service;
 
+import com.google.common.base.Function;
 import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -44,11 +45,14 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
+import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
+import org.zanata.util.StringUtil;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -382,7 +386,7 @@ public class TranslatedDocService implements TranslatedDocResource
       }
 
       // Translate
-      Collection<String> unknownResIds =
+      Collection<TextFlowTarget> unknownResIds =
          this.translationServiceImpl.translateAll(projectSlug, iterationSlug, id, locale, messageBody, extensions, mergeType);
 
 
@@ -393,9 +397,23 @@ public class TranslatedDocService implements TranslatedDocResource
       log.debug("successful put translation");
       // TODO lastChanged
       if (unknownResIds.isEmpty())
+      {
          return Response.ok().tag(etag).build();
+      }
       else
+      {
+         String resIdStr = StringUtil.concat(unknownResIds, ',',
+            new Function<TextFlowTarget, String>()
+            {
+               @Override
+               public String apply(@Nullable TextFlowTarget from)
+               {
+                  return from.getResId();
+               }
+            }
+         );
          return Response.ok("warning: unknown resIds: " + unknownResIds).tag(etag).build();
+      }
    }
 
    private HProjectIteration retrieveAndCheckIteration(boolean writeOperation)

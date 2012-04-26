@@ -25,17 +25,25 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
+import org.zanata.common.MergeType;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.rest.StringSet;
+import org.zanata.rest.dto.extensions.ExtensionType;
+import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.service.TranslationFileService;
+import org.zanata.service.TranslationService;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.jboss.seam.international.StatusMessage.Severity;
@@ -58,7 +66,13 @@ public class ProjectIterationFilesAction
    private LocaleDAO localeDAO;
 
    @In
+   private ProjectIterationDAO projectIterationDAO;
+
+   @In
    private TranslationFileService translationFileServiceImpl;
+
+   @In
+   private TranslationService translationServiceImpl;
 
    private List<HDocument> iterationDocuments;
    
@@ -70,7 +84,7 @@ public class ProjectIterationFilesAction
    public void initialize()
    {
       this.iterationDocuments = this.documentDAO.getAllByProjectIteration(this.projectSlug, this.iterationSlug);
-      this.fileUploadHelper = new TranslationFileUploadHelper(this.projectSlug, this.iterationSlug);
+      this.fileUploadHelper = new TranslationFileUploadHelper();
    }
    
    public HLocale getLocale()
@@ -103,16 +117,37 @@ public class ProjectIterationFilesAction
       TranslationsResource transRes = null;
       try
       {
+         // process the file
          transRes = this.translationFileServiceImpl.parseTranslationFile(this.fileUploadHelper.getFileContents(),
                this.fileUploadHelper.getFileName());
+
+         // translate it
+         Collection<TextFlowTarget> resourcesNotFound =
+            this.translationServiceImpl.translateAll(this.projectSlug, this.iterationSlug, this.fileUploadHelper.getDocId(),
+               new LocaleId(this.localeId), transRes, new StringSet(ExtensionType.GetText.toString()),
+               this.fileUploadHelper.getMergeTranslations() ? MergeType.AUTO : MergeType.IMPORT);
+
+         StringBuilder facesInfoMssg = new StringBuilder("File {0} uploaded.");
+         if( resourcesNotFound.size() > 0 )
+         {
+            facesInfoMssg.append(" There were some warnings, see below.");
+         }
+
+         FacesMessages.instance().add(Severity.INFO, facesInfoMssg.toString(), this.fileUploadHelper.getFileName());
+         for( TextFlowTarget nf : resourcesNotFound )
+         {
+            FacesMessages.instance().add(Severity.WARN, "Could not find text flow for message: {0}", nf.getContents());
+         }
       }
       catch (ZanataServiceException zex)
       {
          FacesMessages.instance().add(Severity.ERROR, "Invalid file type: {0}", this.fileUploadHelper.getFileName());
-         return;
       }
+   }
 
-      FacesMessages.instance().add(Severity.INFO, "File {0} uploaded", this.fileUploadHelper.getFileName());
+   public boolean isFileUploadAllowed()
+   {
+      return this.projectIterationDAO.getBySlug(projectSlug, iterationSlug).getStatus() == EntityStatus.ACTIVE;
    }
 
    public List<HDocument> getIterationDocuments()
