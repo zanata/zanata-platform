@@ -1,5 +1,8 @@
 package org.zanata.util;
 
+import com.google.common.base.Function;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -9,6 +12,17 @@ public class StringUtil
 {
    private StringUtil()
    {
+   }
+
+   public static <T> String concat(Iterable<T> objects, char delim, Function<T, String> toString)
+   {
+      List<String> strings = new ArrayList<String>();
+      for(T obj : objects)
+      {
+         strings.add( toString.apply(obj) );
+      }
+
+      return concat(strings, delim);
    }
 
    public static String concat(Iterable<String> strings, char delim)

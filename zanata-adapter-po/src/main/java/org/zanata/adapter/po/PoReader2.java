@@ -46,10 +46,9 @@ public class PoReader2
     * NB: If the file contains the gettext header Content-Type, it must be
     * set to ASCII, CHARSET, UTF8 or UTF-8, or an exception will occur.
     * @param inputSource PO file to be extracted
-    * @param srcDoc source language document
     * @return converted PO file as TranslationsResource
     */
-   public TranslationsResource extractTarget(InputSource inputSource, Resource srcDoc)
+   public TranslationsResource extractTarget(InputSource inputSource)
    {
       TranslationsResource document = new TranslationsResource();
       MessageStreamParser messageParser = createParser(inputSource);
