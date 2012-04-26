@@ -17,6 +17,7 @@ package org.zanata.workflow;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +74,7 @@ public class ClientPushWorkFlow
    {
       String userConfig = getUserConfigPath();
       return ImmutableList.<String>builder()
-                  .add("mvn").add("--batch-mode").add("--quiet").add("zanata:push")
+                  .add("mvn").add("--batch-mode").add("zanata:push")
                   .add("-Dzanata.userConfig=" + userConfig).add("-Dzanata.username=admin")
                   .add("-Dzanata.key=" + properties.getProperty(Constants.zanataApiKey.value()))
                   .build();
@@ -91,6 +92,8 @@ public class ClientPushWorkFlow
       ProcessBuilder processBuilder = new ProcessBuilder(command).redirectErrorStream(true);
       Map<String, String> env = processBuilder.environment();
       // mvn and java home
+      LOGGER.info("M2: {}", env.get("M2"));
+      LOGGER.info("JAVA_HOME: {}", env.get("JAVA_HOME"));
       LOGGER.debug("env: {}", env);
       processBuilder.directory(projectDir);
       return processBuilder.start();
@@ -98,10 +101,12 @@ public class ClientPushWorkFlow
 
    private static void printOutput(Process process) throws IOException
    {
-      List<String> lines = IOUtils.readLines(process.getInputStream());
+      InputStream inputStream = process.getInputStream();
+      List<String> lines = IOUtils.readLines(inputStream);
       for (String line : lines)
       {
          LOGGER.info(line);
       }
+      IOUtils.closeQuietly(inputStream);
    }
 }
