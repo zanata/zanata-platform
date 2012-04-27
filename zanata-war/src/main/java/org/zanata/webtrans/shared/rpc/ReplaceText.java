@@ -19,6 +19,8 @@ import org.zanata.webtrans.shared.model.TransUnit;
 
 public class ReplaceText extends UpdateTransUnit
 {
+   private static final long serialVersionUID = 1L;
+
    private String searchText;
    private String replaceText;
    private boolean caseSensitive;
