@@ -42,11 +42,11 @@
 
         <!--target zanata instance-->
         <zanata.target.version>${parent.version}</zanata.target.version>
+        <zanata.target.war>${basedir}/../zanata-war/target/zanata-${zanata.target.version}-autotest.war</zanata.target.war>
         <zanata.instance.url>http://${cargo.host}:8080/${context.path}</zanata.instance.url>
         <zanata.apikey>b6d7044e9ee3b2447c28fb7c50d86d98</zanata.apikey>
         <zanata.client.version>${project.version}</zanata.client.version>
         <zanata.sample.projects.basedir>${project.build.testOutputDirectory}/sample-projects</zanata.sample.projects.basedir>
-        <functional-tests.skip>false</functional-tests.skip>
     </properties>
 
     <dependencies>
@@ -144,6 +144,129 @@
 
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>run-functional-test</id>
+            <activation>
+                <file>
+                    <exists>${zanata.target.war}</exists>
+                </file>
+                <property>
+                    <name>functional-test</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven2-plugin</artifactId>
+                        <version>1.1.0</version>
+                        <configuration>
+                            <wait>${cargo.wait}</wait>
+                            <container>
+                                <containerId>${cargo.container}</containerId>
+
+                                <!--if install from url-->
+                                <zipUrlInstaller>
+                                    <url>${cargo.installation}</url>
+                                    <downloadDir>${user.home}/Downloads</downloadDir>
+                                    <extractDir>${project.build.directory}/cargo/installs</extractDir>
+                                </zipUrlInstaller>
+
+                                <!--<home>${jboss.home}</home>-->
+                                <timeout>300000</timeout>
+
+                                <dependencies>
+                                    <dependency>
+                                        <groupId>${jdbc.groupId}</groupId>
+                                        <artifactId>${jdbc.artifactId}</artifactId>
+                                    </dependency>
+                                    <dependency>
+                                        <groupId>javax.servlet</groupId>
+                                        <artifactId>servlet-api</artifactId>
+                                    </dependency>
+
+                                </dependencies>
+                                <output>${project.build.directory}/container.log</output>
+                                <append>false</append>
+                                <log>${project.build.directory}/cargo.log</log>
+                                <systemProperties>
+                                    <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
+                                    <jboss.server.log.threshold>INFO</jboss.server.log.threshold>
+                                </systemProperties>
+                            </container>
+                            <configuration>
+                                <!--<type>existing</type>-->
+                                <type>standalone</type>
+                                <home>${cargo.home}/server/default</home>
+                                <deployables>
+                                    <deployable>
+                                        <type>file</type>
+                                        <location>${project.build.testOutputDirectory}/datasource</location>
+                                    </deployable>
+                                    <deployable>
+                                        <!--<groupId>${project.groupId}</groupId>-->
+                                        <!--<artifactId>zanata-war</artifactId>-->
+                                        <type>war</type>
+                                        <location>${zanata.target.war}</location>
+                                        <pingURL>http://${cargo.host}:8080/${context.path}/</pingURL>
+                                        <properties>
+                                            <context>${context.path}</context>
+                                        </properties>
+                                    </deployable>
+
+                                </deployables>
+                                <properties>
+                                    <cargo.jboss.configuration>default</cargo.jboss.configuration>
+                                    <cargo.hostname>${cargo.host}</cargo.hostname>
+
+                                    <!--<cargo.jvmargs>${cargo.debug.args}</cargo.jvmargs> -->
+                                    <cargo.jvmargs>-XX:PermSize=512m -XX:MaxPermSize=1024 -XX:+UseConcMarkSweepGC -XX:+CMSPermGenSweepingEnabled -XX:+CMSClassUnloadingEnabled</cargo.jvmargs>
+                                    <!--<cargo.jvmargs>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005</cargo.jvmargs> -->
+                                </properties>
+                            </configuration>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>cargo-start</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>cargo-stop</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*Test*.java</include>
+                            </includes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>Web Driver Tests</id>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <phase>integration-test</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <testResources>
             <testResource>
@@ -176,6 +299,31 @@
             </testResource>
         </testResources>
         <plugins>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <echo>===== Properties that can be set for functional test =====</echo>
+                                <echo>-Dfunctional-test : to activate functional test run</echo>
+                                <echo>-Dcargo.wait : to ask cargo to start up then wait so that tests can be run manually</echo>
+                                <echo>-Dzanata.target.version=version of zanata to deploy. Default is: ${parent.version}</echo>
+                                <echo>-Dzanata.target.war=location of the war. Default is: ${basedir}/../zanata-war/target/zanata-${zanata.target.version}-autotest.war</echo>
+                                <echo>-Dzanata.instance.url=http://${cargo.host}:8080/${context.path}</echo>
+                                <echo>-Dzanata.apikey=b6d7044e9ee3b2447c28fb7c50d86d98</echo>
+                                <echo>-Dzanata.client.version=maven client version to use. Default is: ${project.version}</echo>
+                                <echo>-Dzanata.sample.projects.basedir=${project.build.testOutputDirectory}/sample-projects</echo>
+                                <echo>==========================================================</echo>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!--we want to run tests in integration phase-->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -183,115 +331,6 @@
                     <skip>true</skip>
                     <failIfNoTests>false</failIfNoTests>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.cargo</groupId>
-                <artifactId>cargo-maven2-plugin</artifactId>
-                <version>1.1.0</version>
-                <configuration>
-                    <wait>${cargo.wait}</wait>
-                    <container>
-                        <containerId>${cargo.container}</containerId>
-
-                        <!--if install from url-->
-                        <zipUrlInstaller>
-                            <url>${cargo.installation}</url>
-                            <downloadDir>${user.home}/Downloads</downloadDir>
-                            <extractDir>${project.build.directory}/cargo/installs</extractDir>
-                        </zipUrlInstaller>
-
-                        <!--<home>${jboss.home}</home>-->
-                        <timeout>300000</timeout>
-
-                        <dependencies>
-                            <dependency>
-                                <groupId>${jdbc.groupId}</groupId>
-                                <artifactId>${jdbc.artifactId}</artifactId>
-                            </dependency>
-                            <dependency>
-                                <groupId>javax.servlet</groupId>
-                                <artifactId>servlet-api</artifactId>
-                            </dependency>
-
-                        </dependencies>
-                        <output>${project.build.directory}/container.log</output>
-                        <append>false</append>
-                        <log>${project.build.directory}/cargo.log</log>
-                        <systemProperties>
-                            <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
-                            <jboss.server.log.threshold>INFO</jboss.server.log.threshold>
-                        </systemProperties>
-                    </container>
-                    <configuration>
-                        <!--<type>existing</type>-->
-                        <type>standalone</type>
-                        <home>${cargo.home}/server/default</home>
-                        <deployables>
-                            <deployable>
-                                <type>file</type>
-                                <location>${project.build.testOutputDirectory}/datasource</location>
-                            </deployable>
-                            <deployable>
-                                <!--<groupId>${project.groupId}</groupId>-->
-                                <!--<artifactId>zanata-war</artifactId>-->
-                                <type>war</type>
-                                <location>../zanata-war/target/zanata-${zanata.target.version}-autotest.war</location>
-                                <pingURL>http://${cargo.host}:8080/${context.path}/</pingURL>
-                                <properties>
-                                    <context>${context.path}</context>
-                                </properties>
-                            </deployable>
-
-                        </deployables>
-                        <properties>
-                            <cargo.jboss.configuration>default</cargo.jboss.configuration>
-                            <cargo.hostname>${cargo.host}</cargo.hostname>
-
-                            <!--<cargo.jvmargs>${cargo.debug.args}</cargo.jvmargs> -->
-                            <cargo.jvmargs>-XX:PermSize=512m -XX:MaxPermSize=1024 -XX:+UseConcMarkSweepGC -XX:+CMSPermGenSweepingEnabled -XX:+CMSClassUnloadingEnabled</cargo.jvmargs>
-                            <!--<cargo.jvmargs>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005</cargo.jvmargs> -->
-                        </properties>
-                    </configuration>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>cargo-start</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>cargo-stop</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/*Test*.java</include>
-                    </includes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>Web Driver Tests</id>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <phase>integration-test</phase>
-                        <configuration>
-                            <skip>${functional-tests.skip}</skip>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

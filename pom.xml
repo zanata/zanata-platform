@@ -21,6 +21,7 @@
   <modules>
     <module>zanata-model</module>
     <module>zanata-war</module>
+    <module>functional-test</module>
 	<!-- <module>zanata-dist</module> -->
   </modules>
 </project>
