@@ -75,24 +75,13 @@ public class StringListBridge implements FieldBridge, ParameterizedBridge
    @Override
    public void set(String name, Object value, Document luceneDocument, LuceneOptions luceneOptions)
    {
-      if (caseSensitive)
+      if (multiNgrams)
       {
-         if (multiNgrams)
-         {
-            analyzer = new CaseSensitiveNgramAnalyzer(1, 3);
-         }
-         else
-         {
-            analyzer = new CaseSensitiveNgramAnalyzer();
-         }
-      }
-      else if (multiNgrams)
-      {
-         analyzer = new CaseInsensitiveNgramAnalyzer(1, 3);
+         analyzer = new ConfigurableNgramAnalyzer(1, 3, !caseSensitive);
       }
       else
       {
-         analyzer = new CaseInsensitiveNgramAnalyzer();
+         analyzer = new ConfigurableNgramAnalyzer(3, !caseSensitive);
       }
 
       if (!(value instanceof List<?>))
