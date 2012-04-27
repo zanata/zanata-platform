@@ -68,7 +68,8 @@ public class HistoryToken
    /**
     * Generate a history token from the given token string
     * 
-    * @param token A GWT history token in the form key1:value1,key2:value2,...
+    * @param token A GWT history token in the form key1:value1;key2:value2;...
+    * @see #toTokenString()
     */
    public static HistoryToken fromTokenString(String token)
    {
@@ -80,8 +81,7 @@ public class HistoryToken
       }
 
       // decode characters that may still be url-encoded
-      //TODO need to encode/decode separators in filter and search strings in to/fromTokenString
-      token = token.replaceAll("%3A", ":").replaceAll("%3B", ";").replaceAll("%2F", "/");
+      token = token.replace("%3A", ":").replace("%3B", ";").replace("%2F", "/");
 
       for (String pairString : token.split(PAIR_SEPARATOR))
       {
@@ -97,6 +97,7 @@ public class HistoryToken
          {
             continue;
          }
+         value = decode(value);
 
          if (key.equals(HistoryToken.KEY_DOCUMENT))
          {
@@ -263,95 +264,144 @@ public class HistoryToken
    /**
     * @return a token string for use with
     *         {@link com.google.gwt.user.client.History}
+    * @see HistoryToken#fromTokenString(String)
     */
    public String toTokenString()
    {
       String token = "";
-      boolean first = true;
 
       if (view != DEFAULT_VIEW)
       {
-         if (first)
-            first = false;
-         else
-            token += PAIR_SEPARATOR;
-         token += KEY_VIEW + DELIMITER_K_V;
          if (view == MainView.Search)
          {
-            token += VALUE_SEARCH_RESULTS_VIEW;
+            token = addTokenToTokenString(token, KEY_VIEW, VALUE_SEARCH_RESULTS_VIEW);
          }
          else
          {
             // must be editor
-            token += VALUE_EDITOR_VIEW;
+            token = addTokenToTokenString(token, KEY_VIEW, VALUE_EDITOR_VIEW);
          }
       }
 
       if (!fullDocPath.equals(DEFAULT_DOCUMENT_PATH))
       {
-         if (first)
-            first = false;
-         else
-            token += PAIR_SEPARATOR;
-         token += KEY_DOCUMENT + DELIMITER_K_V + fullDocPath;
+         token = addTokenToTokenString(token, KEY_DOCUMENT, fullDocPath);
       }
 
       if (docFilterExact != DEFAULT_DOC_FILTER_EXACT)
       {
-         if (first)
-            first = false;
-         else
-            token += PAIR_SEPARATOR;
          // exact is the only non-default filter value
-         token += KEY_DOC_FILTER_OPTION + DELIMITER_K_V + VALUE_DOC_FILTER_EXACT;
+         token = addTokenToTokenString(token, KEY_DOC_FILTER_OPTION, VALUE_DOC_FILTER_EXACT);
       }
 
       if (!docFilterText.equals(DEFAULT_DOC_FILTER_TEXT))
       {
-         if (first)
-            first = false;
-         else
-            token += PAIR_SEPARATOR;
-         token += KEY_DOC_FILTER_TEXT + DELIMITER_K_V + docFilterText;
+         token = addTokenToTokenString(token, KEY_DOC_FILTER_TEXT, docFilterText);
       }
 
       if (!projectSearchText.equals(DEFAULT_PROJECT_SEARCH_TEXT))
       {
-         if (first)
-            first = false;
-         else
-            token += PAIR_SEPARATOR;
-         token += KEY_SEARCH_PROJECT_TEXT + DELIMITER_K_V + projectSearchText;
+         token = addTokenToTokenString(token, KEY_SEARCH_PROJECT_TEXT, projectSearchText);
       }
 
       if(!projectSearchReplace.equals(DEFAULT_PROJECT_SEARCH_REPLACE))
       {
-         if (first)
-            first = false;
-         else
-            token += PAIR_SEPARATOR;
-         token += KEY_SEARCH_PROJECT_REPLACEMENT + DELIMITER_K_V + projectSearchReplace;
+         token = addTokenToTokenString(token, KEY_SEARCH_PROJECT_REPLACEMENT, projectSearchReplace);
       }
 
       if (projectSearchCaseSensitive != DEFAULT_PROJECT_SEARCH_CASE_SENSITIVE)
       {
-         if (first)
-            first = false;
-         else
-            token += PAIR_SEPARATOR;
          // sensitive is the only non-default filter value
-         token += KEY_SEARCH_PROJECT_CASE + DELIMITER_K_V + VALUE_SEARCH_PROJECT_CASE_SENSITIVE;
+         token = addTokenToTokenString(token, KEY_SEARCH_PROJECT_CASE, VALUE_SEARCH_PROJECT_CASE_SENSITIVE);
       }
 
       if (!searchText.equals(DEFAULT_SEARCH_TEXT))
       {
-         if (first)
-            first = false;
-         else
-            token += PAIR_SEPARATOR;
-         token += KEY_SEARCH_DOC_TEXT + DELIMITER_K_V + searchText;
+         token = addTokenToTokenString(token, KEY_SEARCH_DOC_TEXT, searchText);
       }
 
       return token;
    }
+
+   private static String addTokenToTokenString(String tokenString, String key, String value)
+   {
+      String separator = (tokenString.isEmpty() ? "" : PAIR_SEPARATOR);
+      return tokenString + separator + key + DELIMITER_K_V + encode(value);
+   }
+
+   /**
+    * 
+    * @see #decode(String)
+    * @param toEncode
+    * @return the given string with all token delimiters encoded
+    */
+   private static String encode(String toEncode)
+   {
+      StringBuilder sb = new StringBuilder();
+      for (int i=0; i< toEncode.length(); i++)
+      {
+         char nextChar = toEncode.charAt(i);
+         switch (nextChar)
+         {
+         case ':':
+            sb.append("!c");
+            break;
+         case ';':
+            sb.append("!s");
+            break;
+         case '!':
+            sb.append('!');
+         default:
+            sb.append(nextChar);
+         }
+      }
+      Log.info("Encoded: \"" + toEncode + "\" to \"" + sb + "\"");
+      return sb.toString();
+   }
+
+   /**
+    * @see #encode(String)
+    * @param toDecode
+    * @return the given string with any encoded token delimiters decoded
+    */
+   private static String decode(String toDecode)
+   {
+      StringBuilder sb = new StringBuilder();
+      boolean escaped = false;
+      for (int i=0; i< toDecode.length(); i++)
+      {
+         char nextChar = toDecode.charAt(i);
+         if (escaped)
+         {
+            escaped = false;
+            switch (nextChar)
+            {
+            case '!':
+               sb.append('!');
+               break;
+            case 'c':
+               sb.append(':');
+               break;
+            case 's':
+               sb.append(';');
+               break;
+            default:
+               Log.info("Unrecognised escaped character, appending: " + nextChar);
+               sb.append(nextChar);
+            }
+         }
+         else if (nextChar == '!')
+         {
+            escaped = true;
+            continue;
+         }
+         else
+         {
+            sb.append(nextChar);
+         }
+      }
+      Log.info("Decoded: \"" + toDecode + "\" to \"" + sb + "\"");
+      return sb.toString();
+   }
+
 }
