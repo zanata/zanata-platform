@@ -46,7 +46,6 @@ import com.google.inject.Provider;
 public class SourceContentsPresenter
 {
    private HasSelectableSource selectedSource;
-   private HasSelectableSource previousSource;
 
    private final EventBus eventBus;
    private Provider<SourceContentsDisplay> displayProvider;
@@ -64,7 +63,7 @@ public class SourceContentsPresenter
       @Override
       public void onClick(ClickEvent event)
       {
-         previousSource = selectedSource;
+         HasSelectableSource previousSource = selectedSource;
          selectedSource = (HasSelectableSource) event.getSource();
 
          if (previousSource != null)
@@ -74,15 +73,15 @@ public class SourceContentsPresenter
 
          selectedSource.setSelected(true);
 
-         Log.debug("Selected source: " + selectedSource.getSource());
+         Log.info("Selected source: " + selectedSource.getSource());
          eventBus.fireEvent(new RequestValidationEvent());
 
       }
    };
 
    /**
-    * Select first source in the list when row is selected
-    * 
+    * Select first source in the list when row is selected or reselect previous selected one
+    *
     * @param row
     */
    public void setSelectedSource(int row)
@@ -90,8 +89,26 @@ public class SourceContentsPresenter
       SourceContentsDisplay sourceContentsView = displayList.get(row);
       if (sourceContentsView != null)
       {
-         ClickEvent.fireNativeEvent(Document.get().createClickEvent(0, 0, 0, 0, 0, false, false, false, false), sourceContentsView.getSourcePanelList().get(0));
+         // after save as fuzzy re-render(will call
+         // SourceContentsView.setValue(TransUnit) which cause re-creation of
+         // SourcePanel list), we want to re-select the radio button
+         List<HasSelectableSource> sourcePanelList = sourceContentsView.getSourcePanelList();
+         for (HasSelectableSource sourcePanel : sourcePanelList)
+         {
+            if (selectedSource != null && selectedSource.getSource().equals(sourcePanel.getSource()))
+            {
+               fireClickEventToSelectSource(sourcePanel);
+               return;
+            }
+         }
+         //else by default it will select the first one
+         fireClickEventToSelectSource(sourceContentsView.getSourcePanelList().get(0));
       }
+   }
+
+   private static void fireClickEventToSelectSource(HasSelectableSource sourcePanel)
+   {
+      ClickEvent.fireNativeEvent(Document.get().createClickEvent(0, 0, 0, 0, 0, false, false, false, false), sourcePanel);
    }
 
    public String getSelectedSource()
@@ -105,7 +122,7 @@ public class SourceContentsPresenter
 
       sourceContentsView.setValue(value);
 
-      List<HasClickHandlers> sourcePanelList = sourceContentsView.getSourcePanelList();
+      List<HasSelectableSource> sourcePanelList = sourceContentsView.getSourcePanelList();
 
       for (HasClickHandlers sourcePanel : sourcePanelList)
       {
