@@ -24,7 +24,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.service.TranslationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.rpc.ReplaceText;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
@@ -55,7 +54,7 @@ public class ReplaceTextHandler extends AbstractActionHandler<ReplaceText, Updat
       }
 
       int flags = action.isCaseSensitive() ? Pattern.UNICODE_CASE : Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
-      Pattern pattern = Pattern.compile(action.getSearchText(), flags);
+      Pattern pattern = Pattern.compile(Pattern.quote(action.getSearchText()), flags);
 
       LOGGER.debug("transUnit {} before replace [{}]", action.getTransUnitId(), action.getContents());
       for (int i = 0, contentsSize = action.getContents().size(); i < contentsSize; i++)
