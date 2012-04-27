@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.zanata</groupId>
       <artifactId>client</artifactId>
-		<version>1.6.0-alpha-2-SNAPSHOT</version>
+		<version>1.6.0-alpha-2</version>
 	</parent>
 	<artifactId>zanata-client-commands</artifactId>
 	<name>Zanata client commands</name>
@@ -20,17 +20,17 @@
 		<dependency>
 			<groupId>org.zanata</groupId>
 			<artifactId>zanata-adapter-properties</artifactId>
-			<version>${project.version}</version>
+			<version>1.6.0-alpha-2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.zanata</groupId>
 			<artifactId>zanata-adapter-po</artifactId>
-			<version>${project.version}</version>
+			<version>1.6.0-alpha-2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.zanata</groupId>
 			<artifactId>zanata-adapter-xliff</artifactId>
-			<version>${project.version}</version>
+			<version>1.6.0-alpha-2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.zanata</groupId>

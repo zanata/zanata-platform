@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.zanata</groupId>
         <artifactId>client</artifactId>
-        <version>1.6.0-alpha-2-SNAPSHOT</version>
+        <version>1.6.0-alpha-2</version>
     </parent>
 
    <!-- Should be the same as zanata-client/pom.xml -->
@@ -20,7 +20,7 @@
         <dependency>
             <groupId>org.zanata</groupId>
             <artifactId>zanata-adapter-po</artifactId>
-            <version>${project.version}</version>
+            <version>1.6.0-alpha-2</version>
         </dependency>
         <dependency>
             <groupId>org.zanata</groupId>
