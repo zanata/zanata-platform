@@ -167,6 +167,8 @@ public class TargetContentsPresenterTest
    @Test
    public void canValidate()
    {
+      givenCurrentEditorsAs(editor);
+      when(editor.getIndex()).thenReturn(0);
       when(sourceContentPresenter.getSelectedSource()).thenReturn("source");
       when(editor.getText()).thenReturn("target");
 
@@ -177,6 +179,17 @@ public class TargetContentsPresenterTest
       assertThat(event.getSource(), equalTo("source"));
       assertThat(event.getTarget(), equalTo("target"));
       assertThat(event.isFireNotification(), equalTo(false));
+   }
+
+   @Test
+   public void willNotValidateIfEditorIsNotCurrent()
+   {
+      when(editor.getIndex()).thenReturn(99); //current editor is not the focused one
+
+      presenter.validate(editor);
+
+      verify(editor).getIndex();
+      verifyNoMoreInteractions(editor);
    }
 
    @Test
@@ -273,11 +286,12 @@ public class TargetContentsPresenterTest
    {
       //given current display is row 1 and current editor has target content
       givenCurrentEditorsAs(editor);
+      when(editor.getIndex()).thenReturn(0);
       when(editor.getText()).thenReturn("target");
 
       presenter.onRequestValidation(new RequestValidationEvent());
 
-      verify(eventBus, times(2)).fireEvent(runValidationEventCaptor.capture());
+      verify(eventBus).fireEvent(runValidationEventCaptor.capture());
       MatcherAssert.assertThat(runValidationEventCaptor.getValue().getTarget(), Matchers.equalTo("target"));
    }
 
@@ -333,13 +347,14 @@ public class TargetContentsPresenterTest
    public void testOnInsertString()
    {
       when(tableEditorMessages.notifyCopied()).thenReturn("copied");
+      when(editor.getIndex()).thenReturn(0);
       givenCurrentEditorsAs(editor);
 
       presenter.onInsertString(new InsertStringInEditorEvent("", "suggestion"));
 
       verify(editor).insertTextInCursorPosition("suggestion");
       ArgumentCaptor<GwtEvent> eventArgumentCaptor = ArgumentCaptor.forClass(GwtEvent.class);
-      verify(eventBus, times(3)).fireEvent(eventArgumentCaptor.capture());
+      verify(eventBus, times(2)).fireEvent(eventArgumentCaptor.capture());
       NotificationEvent notificationEvent = findEvent(eventArgumentCaptor, NotificationEvent.class);
       MatcherAssert.assertThat(notificationEvent.getMessage(), Matchers.equalTo("copied"));
       RunValidationEvent runValidationEvent = findEvent(eventArgumentCaptor, RunValidationEvent.class);
