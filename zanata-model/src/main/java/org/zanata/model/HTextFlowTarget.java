@@ -254,11 +254,13 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       @Field(name=IndexFieldLabels.CONTENT_CASE_FOLDED,
              index = Index.TOKENIZED,
              bridge = @FieldBridge(impl = StringListBridge.class,
-                                   params = {@Parameter(name="case", value="fold")})),
+                                   params = {@Parameter(name="case", value="fold"),
+                                             @Parameter(name="ngrams", value="multisize")})),
       @Field(name = IndexFieldLabels.CONTENT_CASE_PRESERVED,
              index = Index.TOKENIZED,
              bridge = @FieldBridge(impl = StringListBridge.class,
-                                   params = {@Parameter(name="case", value="preserve")}))
+                                   params = {@Parameter(name="case", value="preserve"),
+                                             @Parameter(name="ngrams", value="multisize")}))
    })
 
    public List<String> getContents()

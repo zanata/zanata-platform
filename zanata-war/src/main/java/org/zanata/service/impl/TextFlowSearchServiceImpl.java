@@ -45,8 +45,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
-import org.zanata.hibernate.search.CaseSensitiveNgramAnalyzer;
-import org.zanata.hibernate.search.CaseInsensitiveNgramAnalyzer;
+import org.zanata.hibernate.search.ConfigurableNgramAnalyzer;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
@@ -66,7 +65,6 @@ import org.zanata.webtrans.shared.util.TextFlowFilter;
 public class TextFlowSearchServiceImpl implements TextFlowSearchService
 {
 
-
    @Logger
    Log log;
 
@@ -85,7 +83,6 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
    @In
    private FullTextEntityManager entityManager;
 
-
    @Override
    public List<HTextFlowTarget> findTextFlowTargets(WorkspaceId workspace, FilterConstraints constraints)
    {
@@ -97,7 +94,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       // May want to fork to use a different method to retrieve all targets if
       // empty targets are required.
 
-      //check that locale is valid for the workspace
+      // check that locale is valid for the workspace
       try
       {
          localeServiceImpl.validateLocaleByProjectIteration(localeId, projectSlug, iterationSlug);
@@ -107,18 +104,9 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          throw new ZanataServiceException("Failed to validate locale", e);
       }
 
-      String searchFieldPrefix;
-      Analyzer ngramAnalyzer;
-      if (constraints.isCaseSensitive())
-      {
-         searchFieldPrefix = IndexFieldLabels.CONTENT_CASE_PRESERVED;
-         ngramAnalyzer = new CaseSensitiveNgramAnalyzer();
-      }
-      else
-      {
-         searchFieldPrefix = IndexFieldLabels.CONTENT_CASE_FOLDED;
-         ngramAnalyzer = new CaseInsensitiveNgramAnalyzer();
-      }
+      String searchFieldPrefix = (constraints.isCaseSensitive() ? IndexFieldLabels.CONTENT_CASE_PRESERVED : IndexFieldLabels.CONTENT_CASE_FOLDED);
+      int searchLength = Math.min(3, constraints.getSearchString().length());
+      Analyzer ngramAnalyzer = new ConfigurableNgramAnalyzer(searchLength, !constraints.isCaseSensitive());
 
       String[] searchFields = new String[6];
       for (int i = 0; i < 6; i++)
@@ -152,9 +140,8 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       @SuppressWarnings("unchecked")
       List<HTextFlowTarget> matches = (List<HTextFlowTarget>) ftQuery.getResultList();
 
-      return  matches;
+      return matches;
    }
-
 
    @Override
    public List<HTextFlow> findTextFlows(WorkspaceId workspace, DocumentId doc, FilterConstraints constraints)

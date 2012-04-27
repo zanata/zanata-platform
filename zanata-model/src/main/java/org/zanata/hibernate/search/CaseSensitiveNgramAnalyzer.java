@@ -39,4 +39,8 @@ public class CaseSensitiveNgramAnalyzer extends ConfigurableNgramAnalyzer
       super(ngramLength, false);
    }
 
+   public CaseSensitiveNgramAnalyzer(int minLength, int maxLength)
+   {
+      super(minLength, maxLength, false);
+   }
 }

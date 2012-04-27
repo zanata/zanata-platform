@@ -36,7 +36,8 @@ import org.apache.lucene.analysis.ngram.NGramTokenizer;
 public class ConfigurableNgramAnalyzer extends Analyzer
 {
 
-   private int ngramLength;
+   private int ngramMinLength;
+   private int ngramMaxLength;
    private boolean foldCase;
 
    /**
@@ -46,7 +47,22 @@ public class ConfigurableNgramAnalyzer extends Analyzer
     */
    public ConfigurableNgramAnalyzer(int ngramLength, boolean foldCase)
    {
-      this.ngramLength = ngramLength;
+      this(ngramLength, ngramLength, foldCase);
+   }
+
+   /**
+    * Create analyzer that will tokenize repeatedly to make ngrams of all sizes
+    * from ngramMinLength to ngramMaxLength, inclusive.
+    * 
+    * @param ngramMinLength length of the shortest ngrams to generate
+    * @param ngramMaxLength length of the longest ngrams to generate
+    * @param foldCase true to convert all characters to lowercase, allowing
+    *           case-insensitive indexing and searching
+    */
+   public ConfigurableNgramAnalyzer(int ngramMinLength, int ngramMaxLength, boolean foldCase)
+   {
+      this.ngramMinLength = ngramMinLength;
+      this.ngramMaxLength = ngramMaxLength;
       this.foldCase = foldCase;
    }
 
@@ -54,7 +70,7 @@ public class ConfigurableNgramAnalyzer extends Analyzer
    public TokenStream tokenStream(String fieldName, Reader reader)
    {
       TokenStream tokenStream;
-      NGramTokenizer ngramTokenizer = new NGramTokenizer(reader, ngramLength, ngramLength);
+      NGramTokenizer ngramTokenizer = new NGramTokenizer(reader, ngramMinLength, ngramMaxLength);
       if (foldCase)
       {
          tokenStream = new ULowerCaseFilter(ngramTokenizer);

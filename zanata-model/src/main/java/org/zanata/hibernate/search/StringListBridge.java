@@ -34,6 +34,8 @@ public class StringListBridge implements FieldBridge, ParameterizedBridge
    Log log;
 
    private ConfigurableNgramAnalyzer analyzer;
+   private boolean caseSensitive = false;
+   private boolean multiNgrams = false;
 
    @Override
    public void setParameterValues(@SuppressWarnings("rawtypes") Map parameters)
@@ -43,16 +45,29 @@ public class StringListBridge implements FieldBridge, ParameterizedBridge
          String caseBehaviour = (String) parameters.get("case");
          if ("fold".equals(caseBehaviour))
          {
-            analyzer = new CaseInsensitiveNgramAnalyzer();
+            caseSensitive = false;
          }
          else if ("preserve".equals(caseBehaviour))
          {
-            analyzer = new CaseSensitiveNgramAnalyzer();
+            caseSensitive = true;
          }
          else
          {
             log.warn("invalid value for parameter \"case\": \"{0}\", default will be used", caseBehaviour);
-            analyzer = new CaseInsensitiveNgramAnalyzer();
+            caseSensitive = false;
+         }
+      }
+      if (parameters.containsKey("ngrams"))
+      {
+         String ngrams = (String) parameters.get("ngrams");
+         if ("multisize".equals(ngrams))
+         {
+            multiNgrams = true;
+         }
+         else
+         {
+            log.warn("invalid value for parameter \"ngrams\": \"{0}\", default will be used", ngrams);
+            multiNgrams = false;
          }
       }
    }
@@ -60,9 +75,13 @@ public class StringListBridge implements FieldBridge, ParameterizedBridge
    @Override
    public void set(String name, Object value, Document luceneDocument, LuceneOptions luceneOptions)
    {
-      if (analyzer == null)
+      if (multiNgrams)
       {
-         analyzer = new CaseInsensitiveNgramAnalyzer();
+         analyzer = new ConfigurableNgramAnalyzer(1, 3, !caseSensitive);
+      }
+      else
+      {
+         analyzer = new ConfigurableNgramAnalyzer(3, !caseSensitive);
       }
 
       if (!(value instanceof List<?>))
