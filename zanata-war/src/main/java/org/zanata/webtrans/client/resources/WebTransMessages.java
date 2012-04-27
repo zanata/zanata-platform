@@ -121,4 +121,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("No document selected")
    String noDocumentSelected();
+
+   @DefaultMessage("Project-wide Search and Replace")
+   String projectWideSearchAndReplace();
 }

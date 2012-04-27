@@ -59,6 +59,7 @@ public class AppPresenterTest
    private static final String TEST_DOCUMENT_NAME = "test_document_name";
    private static final String TEST_DOCUMENT_PATH = "test/document/path/";
    private static final String TEST_WORKSPACE_TITLE = "test workspace title";
+   private static final String SEARCH_PAGE_LABEL = "Project-wide Search and Replace";
 
 
    private AppPresenter appPresenter;
@@ -201,7 +202,7 @@ public class AppPresenterTest
       TranslationStats newProjectStats = new TranslationStats(new TransUnitCount(9, 9, 9), new TransUnitWords(9, 9, 9));
 
       expectLoadDocAndViewEditor();
-      expectReturnToDocListView(newProjectStats);
+      expectViewTransitionFromEditorToDoclist(newProjectStats);
 
       replayAllMocks();
 
@@ -209,7 +210,7 @@ public class AppPresenterTest
       HistoryToken token = simulateLoadDocAndViewEditor();
       // set stats to allow differentiation from doc stats
       capturedProjectStatsUpdatedEventHandler.getValue().onProjectStatsRetrieved(new ProjectStatsUpdatedEvent(newProjectStats));
-      simulateReturnToDocListView(token);
+      simulatePageChangeFromEditor(token, MainView.Documents);
 
       verifyAllMocks();
    }
@@ -302,18 +303,30 @@ public class AppPresenterTest
    public void testStatsAndNameChangeWithView()
    {
       expectLoadDocAndViewEditor();
-      expectReturnToDocListView(emptyProjectStats);
+      expectViewTransitionFromEditorToDoclist(emptyProjectStats);
       expectReturnToEditorView(testDocStats);
 
       replayAllMocks();
       appPresenter.bind();
       HistoryToken token = simulateLoadDocAndViewEditor();
-      simulateReturnToDocListView(token);
+      simulatePageChangeFromEditor(token, MainView.Documents);
       simulateReturnToEditorView(token);
 
       verifyAllMocks();
    }
 
+   public void testStatsAndNameChangeForSearchPageView()
+   {
+      expectLoadDocAndViewEditor();
+      expectViewTransitionFromEditor(MainView.Search, emptyProjectStats, SEARCH_PAGE_LABEL);
+      expectReturnToEditorView(testDocStats);
+
+      replayAllMocks();
+      appPresenter.bind();
+      HistoryToken token = simulateLoadDocAndViewEditor();
+      simulatePageChangeFromEditor(token, MainView.Search);
+      simulateReturnToEditorView(token);
+   }
 
    public void testShowsUpdatedDocumentStats()
    {
@@ -352,13 +365,13 @@ public class AppPresenterTest
       TranslationStats updatedStats = new TranslationStats(new TransUnitCount(9, 9, 9), new TransUnitWords(9, 9, 9));
 
       expectLoadDocAndViewEditor();
-      expectReturnToDocListView(emptyProjectStats);
+      expectViewTransitionFromEditorToDoclist(emptyProjectStats);
       expectReturnToEditorView(updatedStats);
       replayAllMocks();
 
       appPresenter.bind();
       HistoryToken token = simulateLoadDocAndViewEditor();
-      simulateReturnToDocListView(token);
+      simulatePageChangeFromEditor(token, MainView.Documents);
       //update document stats
       capturedDocumentStatsUpdatedEventHandler.getValue().onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(testDocId, updatedStats));
       simulateReturnToEditorView(token);
@@ -400,7 +413,7 @@ public class AppPresenterTest
       // 3 - click doc link to return to doclist
       HistoryToken expectedDocInEditorToken = buildDocInEditorToken();
       expect(mockHistory.getToken()).andReturn(expectedDocInEditorToken.toTokenString()).once();
-      expectReturnToDocListView(emptyProjectStats);
+      expectViewTransitionFromEditorToDoclist(emptyProjectStats);
 
       // 4 - click doc link to return to editor
       HistoryToken expectedDocListWithLoadedDocToken = new HistoryToken();
@@ -548,31 +561,42 @@ public class AppPresenterTest
     * Sets expectations to show the documents view, update the document label,
     * show the given project stats, and save pending editor changes
     * 
-    * @see #simulateUpdateProjectStatsThenReturnToDocListView(TranslationStats, HistoryToken)
     * @param projectStats the current project stats that should be displayed
     */
-   private void expectReturnToDocListView(TranslationStats projectStats)
+   private void expectViewTransitionFromEditorToDoclist(TranslationStats projectStats)
    {
-      //expect return to document view
-      mockDisplay.showInMainView(MainView.Documents);
+      expectViewTransitionFromEditor(MainView.Documents, projectStats, NO_DOCUMENTS_STRING);
+   }
+
+   /**
+    * Sets expectations to show the given view, update the document label,
+    * show the given stats, and save pending editor changes.
+    * 
+    * @param toView the view to show
+    * @param expectedStats the stats that should be displayed
+    * @param expectedDocLabel the text that the document label is expected to show
+    */
+   private void expectViewTransitionFromEditor(MainView toView, TranslationStats expectedStats, String expectedDocLabel)
+   {
+      //expect return to given view
+      mockDisplay.showInMainView(toView);
       expectLastCall().once();
-      mockDisplay.setDocumentLabel("", NO_DOCUMENTS_STRING);
+      mockDisplay.setDocumentLabel("", expectedDocLabel);
       expectLastCall().once();
-      mockDisplay.setStats(eq(projectStats));
+      mockDisplay.setStats(eq(expectedStats));
       expectLastCall().once();
       mockTranslationPresenter.saveEditorPendingChange();
       expectLastCall().once();
    }
 
-
    /**
     * @see {@link #expectUpdateProjectStatsThenReturnToDocListView(TranslationStats)}
     */
-   private void simulateReturnToDocListView(HistoryToken previousToken)
+   private void simulatePageChangeFromEditor(HistoryToken fromHistoryState, MainView toView)
    {
-      previousToken.setView(MainView.Documents);
-      //simulate return to document list view
-      capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(previousToken.toTokenString())
+      fromHistoryState.setView(toView);
+      //simulate page transition
+      capturedHistoryValueChangeHandler.getValue().onValueChange(new ValueChangeEvent<String>(fromHistoryState.toTokenString())
       {
       });
    }
@@ -709,6 +733,7 @@ public class AppPresenterTest
 
       expect(mockMessages.windowTitle(TEST_WORKSPACE_NAME, TEST_LOCALE_NAME)).andReturn(TEST_WINDOW_TITLE).anyTimes();
       expect(mockMessages.noDocumentSelected()).andReturn(NO_DOCUMENTS_STRING).anyTimes();
+      expect(mockMessages.projectWideSearchAndReplace()).andReturn(SEARCH_PAGE_LABEL).anyTimes();
 
       expect(mockWorkspaceContext.getWorkspaceName()).andReturn(TEST_WORKSPACE_NAME).anyTimes();
       expect(mockWorkspaceContext.getLocaleName()).andReturn(TEST_LOCALE_NAME).anyTimes();
