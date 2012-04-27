@@ -20,19 +20,36 @@
  */
 package org.zanata.action;
 
-import java.util.List;
-
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.faces.FacesMessages;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
+import org.zanata.common.MergeType;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
+import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProjectIteration;
+import org.zanata.rest.StringSet;
+import org.zanata.rest.dto.extensions.ExtensionType;
+import org.zanata.rest.dto.resource.TextFlowTarget;
+import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.service.TranslationFileService;
+import org.zanata.service.TranslationService;
+
+import java.util.Collection;
+import java.util.List;
+
+import static org.jboss.seam.international.StatusMessage.Severity;
 
 @Name("projectIterationFilesAction")
 @Scope(ScopeType.PAGE)
@@ -44,21 +61,36 @@ public class ProjectIterationFilesAction
    private String iterationSlug;
 
    private String localeId;
-   
+
+   @In
+   private ZanataIdentity identity;
+
    @In
    private DocumentDAO documentDAO;
    
    @In
    private LocaleDAO localeDAO;
 
+   @In
+   private ProjectIterationDAO projectIterationDAO;
+
+   @In
+   private TranslationFileService translationFileServiceImpl;
+
+   @In
+   private TranslationService translationServiceImpl;
+
    private List<HDocument> iterationDocuments;
    
    private String documentNameFilter;
+
+   private TranslationFileUploadHelper fileUploadHelper;
    
    
    public void initialize()
    {
       this.iterationDocuments = this.documentDAO.getAllByProjectIteration(this.projectSlug, this.iterationSlug);
+      this.fileUploadHelper = new TranslationFileUploadHelper();
    }
    
    public HLocale getLocale()
@@ -84,6 +116,49 @@ public class ProjectIterationFilesAction
    {
       TranslationStats documentStats = this.documentDAO.getStatistics(doc.getId(), new LocaleId(this.localeId));
       return documentStats.getWordCount();
+   }
+
+   @Restrict("#{projectIterationFilesAction.fileUploadAllowed}")
+   public void uploadFile()
+   {
+      TranslationsResource transRes = null;
+      try
+      {
+         // process the file
+         transRes = this.translationFileServiceImpl.parseTranslationFile(this.fileUploadHelper.getFileContents(),
+               this.fileUploadHelper.getFileName());
+
+         // translate it
+         Collection<TextFlowTarget> resourcesNotFound =
+            this.translationServiceImpl.translateAll(this.projectSlug, this.iterationSlug, this.fileUploadHelper.getDocId(),
+               new LocaleId(this.localeId), transRes, new StringSet(ExtensionType.GetText.toString()),
+               this.fileUploadHelper.getMergeTranslations() ? MergeType.AUTO : MergeType.IMPORT);
+
+         StringBuilder facesInfoMssg = new StringBuilder("File {0} uploaded.");
+         if( resourcesNotFound.size() > 0 )
+         {
+            facesInfoMssg.append(" There were some warnings, see below.");
+         }
+
+         FacesMessages.instance().add(Severity.INFO, facesInfoMssg.toString(), this.fileUploadHelper.getFileName());
+         for( TextFlowTarget nf : resourcesNotFound )
+         {
+            FacesMessages.instance().add(Severity.WARN, "Could not find text flow for message: {0}", nf.getContents());
+         }
+      }
+      catch (ZanataServiceException zex)
+      {
+         FacesMessages.instance().add(Severity.ERROR, "Invalid file type: {0}", this.fileUploadHelper.getFileName());
+      }
+   }
+
+   public boolean isFileUploadAllowed()
+   {
+      HProjectIteration projectIteration = this.projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      HLocale hLocale = this.localeDAO.findByLocaleId( new LocaleId(localeId) );
+
+      return projectIteration.getStatus() == EntityStatus.ACTIVE
+            && identity != null && identity.hasPermission("modify-translation", projectIteration, hLocale);
    }
 
    public List<HDocument> getIterationDocuments()
@@ -135,5 +210,9 @@ public class ProjectIterationFilesAction
    {
       this.documentNameFilter = documentNameFilter;
    }
-   
+
+   public TranslationFileUploadHelper getFileUploadHelper()
+   {
+      return fileUploadHelper;
+   }
 }

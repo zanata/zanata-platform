@@ -23,12 +23,10 @@
         <!--Cargo Settings -->
         <cargo.wait>false</cargo.wait>
         <cargo.host>localhost</cargo.host>
-        <cargo.container>jboss5x</cargo.container>
+        <cargo.container>jboss51x</cargo.container>
         <!--<cargo.servlet.port>9898</cargo.servlet.port>-->
-        <!--<cargo.home>${project.build.directory}/${cargo.container}</cargo.home>-->
+        <cargo.installation>http://downloads.sourceforge.net/jboss/jboss-5.1.0.GA.zip?big_mirror=1</cargo.installation>
         <cargo.home>${java.io.tmpdir}/cargo/installs/jboss-ewp-5.1.2/jboss-ewp-5.1/jboss-as-web</cargo.home>
-        <!--TODO this is still pointing to a local file. Need either download from somewhere(too big) or having the jboss always ready-->
-        <cargo.installation>file:///NotBackedUp/downloads/jboss-ewp-5.1.2.zip</cargo.installation>
         <context.path>zanata</context.path>
 
         <!--data source-->
@@ -194,16 +192,18 @@
                 <configuration>
                     <wait>${cargo.wait}</wait>
                     <container>
-                        <timeout>180000</timeout>
                         <containerId>${cargo.container}</containerId>
 
                         <!--if install from url-->
-                        <!--<zipUrlInstaller>-->
-                            <!--<url>${cargo.installation}</url>-->
-                        <!--</zipUrlInstaller>-->
-                        <!--<home>${cargo.home}</home>-->
+                        <zipUrlInstaller>
+                            <url>${cargo.installation}</url>
+                            <downloadDir>${user.home}/Downloads</downloadDir>
+                            <extractDir>${project.build.directory}/cargo/installs</extractDir>
+                        </zipUrlInstaller>
 
-                        <home>${jboss.home}</home>
+                        <!--<home>${jboss.home}</home>-->
+                        <timeout>300000</timeout>
+
                         <dependencies>
                             <dependency>
                                 <groupId>${jdbc.groupId}</groupId>
@@ -220,10 +220,12 @@
                         <log>${project.build.directory}/cargo.log</log>
                         <systemProperties>
                             <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
+                            <jboss.server.log.threshold>INFO</jboss.server.log.threshold>
                         </systemProperties>
                     </container>
                     <configuration>
-                        <type>existing</type>
+                        <!--<type>existing</type>-->
+                        <type>standalone</type>
                         <home>${cargo.home}/server/default</home>
                         <deployables>
                             <deployable>
@@ -247,6 +249,7 @@
                             <cargo.hostname>${cargo.host}</cargo.hostname>
 
                             <!--<cargo.jvmargs>${cargo.debug.args}</cargo.jvmargs> -->
+                            <cargo.jvmargs>-XX:PermSize=512m -XX:MaxPermSize=1024 -XX:+UseConcMarkSweepGC -XX:+CMSPermGenSweepingEnabled -XX:+CMSClassUnloadingEnabled</cargo.jvmargs>
                             <!--<cargo.jvmargs>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005</cargo.jvmargs> -->
                         </properties>
                     </configuration>

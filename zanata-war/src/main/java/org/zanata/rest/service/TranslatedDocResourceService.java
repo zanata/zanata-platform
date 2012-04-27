@@ -20,6 +20,7 @@
  */
 package org.zanata.rest.service;
 
+import com.google.common.base.Function;
 import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -44,11 +45,14 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
+import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
+import org.zanata.util.StringUtil;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -77,15 +81,15 @@ import java.util.Set;
 import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
 import static org.zanata.service.impl.TranslationServiceImpl.validateExtensions;
 
-@Name("translationResourcesService")
-@Path(TranslatedDocService.SERVICE_PATH)
+@Name("translatedDocResourceService")
+@Path(TranslatedDocResourceService.SERVICE_PATH)
 @Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Consumes( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Transactional
 /**
  * This service allows clients to push and pull both source documents and translations.
  */
-public class TranslatedDocService implements TranslatedDocResource
+public class TranslatedDocResourceService implements TranslatedDocResource
 {
 
    // security actions
@@ -145,20 +149,20 @@ public class TranslatedDocService implements TranslatedDocResource
    @In
    private TranslationService translationServiceImpl;
 
-   private final Log log = Logging.getLog(TranslatedDocService.class);
+   private final Log log = Logging.getLog(TranslatedDocResourceService.class);
 
    @In
    private LocaleService localeServiceImpl;
 
 
-   public TranslatedDocService()
+   public TranslatedDocResourceService()
    {
    }
 
    // TODO break up this class (too many responsibilities)
 
 // @formatter:off
-   public TranslatedDocService(
+   public TranslatedDocResourceService(
          ApplicationConfiguration applicationConfiguration,
          ProjectIterationDAO projectIterationDAO,
          ProjectDAO projectDAO,
@@ -294,7 +298,7 @@ public class TranslatedDocService implements TranslatedDocResource
    @Override
    @DELETE
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   @Restrict("#{s:hasPermission(translationResourcesService.securedIteration, 'import-translation')}")
+   @Restrict("#{s:hasPermission(translatedDocResourceService.securedIteration.project, 'modify-translation')}")
    // /r/{id}/translations/{locale}
    public Response deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
    {
@@ -354,7 +358,7 @@ public class TranslatedDocService implements TranslatedDocResource
    @Override
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   @Restrict("#{s:hasPermission(translationResourcesService.securedIteration, 'import-translation')}")
+   @Restrict("#{s:hasPermission(translatedDocResourceService.securedIteration.project, 'modify-translation')}")
    // /r/{id}/translations/{locale}
    public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") Set<String> extensions, @QueryParam("merge") @DefaultValue("auto") String merge)
    {
@@ -382,7 +386,7 @@ public class TranslatedDocService implements TranslatedDocResource
       }
 
       // Translate
-      Collection<String> unknownResIds =
+      Collection<TextFlowTarget> unknownResIds =
          this.translationServiceImpl.translateAll(projectSlug, iterationSlug, id, locale, messageBody, extensions, mergeType);
 
 
@@ -393,9 +397,23 @@ public class TranslatedDocService implements TranslatedDocResource
       log.debug("successful put translation");
       // TODO lastChanged
       if (unknownResIds.isEmpty())
+      {
          return Response.ok().tag(etag).build();
+      }
       else
+      {
+         String resIdStr = StringUtil.concat(unknownResIds, ',',
+            new Function<TextFlowTarget, String>()
+            {
+               @Override
+               public String apply(@Nullable TextFlowTarget from)
+               {
+                  return from.getResId();
+               }
+            }
+         );
          return Response.ok("warning: unknown resIds: " + unknownResIds).tag(etag).build();
+      }
    }
 
    private HProjectIteration retrieveAndCheckIteration(boolean writeOperation)

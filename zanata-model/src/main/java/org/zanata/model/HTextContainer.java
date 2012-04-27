@@ -32,7 +32,7 @@ import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.zanata.common.HasContents;
-import org.zanata.hibernate.search.DefaultNgramAnalyzer;
+import org.zanata.hibernate.search.CaseInsensitiveNgramAnalyzer;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -44,7 +44,7 @@ abstract class HTextContainer implements HasContents, Serializable
 
 
    @Type(type = "text")
-   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
+   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = CaseInsensitiveNgramAnalyzer.class))
    @SuppressWarnings("unused")
    private String getContent0()
    {
@@ -52,7 +52,7 @@ abstract class HTextContainer implements HasContents, Serializable
    }
 
    @Type(type = "text")
-   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
+   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = CaseInsensitiveNgramAnalyzer.class))
    @SuppressWarnings("unused")
    private String getContent1()
    {
@@ -60,7 +60,7 @@ abstract class HTextContainer implements HasContents, Serializable
    }
 
    @Type(type = "text")
-   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
+   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = CaseInsensitiveNgramAnalyzer.class))
    @SuppressWarnings("unused")
    private String getContent2()
    {
@@ -68,7 +68,7 @@ abstract class HTextContainer implements HasContents, Serializable
    }
 
    @Type(type = "text")
-   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
+   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = CaseInsensitiveNgramAnalyzer.class))
    @SuppressWarnings("unused")
    private String getContent3()
    {
@@ -76,7 +76,7 @@ abstract class HTextContainer implements HasContents, Serializable
    }
 
    @Type(type = "text")
-   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
+   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = CaseInsensitiveNgramAnalyzer.class))
    @SuppressWarnings("unused")
    private String getContent4()
    {
@@ -84,7 +84,7 @@ abstract class HTextContainer implements HasContents, Serializable
    }
 
    @Type(type = "text")
-   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
+   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = CaseInsensitiveNgramAnalyzer.class))
    @SuppressWarnings("unused")
    private String getContent5()
    {

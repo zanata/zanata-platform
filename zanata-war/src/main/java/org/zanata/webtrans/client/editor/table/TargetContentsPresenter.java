@@ -135,14 +135,13 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       {
          currentEditorIndex = editorIndex;
       }
+      else if (currentEditorIndex == LAST_INDEX)
+      {
+         currentEditorIndex = currentEditors.size() - 1;
+      }
       else
       {
          currentEditorIndex = 0;
-      }
-
-      if (currentEditorIndex == LAST_INDEX)
-      {
-         currentEditorIndex = currentEditors.size() - 1;
       }
 
       if (currentEditorIndex != NO_OPEN_EDITOR && currentEditorIndex < currentEditors.size())
@@ -180,6 +179,13 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void validate(ToggleEditor editor)
    {
+      if (editor.getIndex() != currentEditorIndex)
+      {
+         // the timer may kickoff validation event when user press ctrl + enter
+         // etc to move editor around. We don't want to reset currentEditorIndex
+         // for such event.
+         return;
+      }
       currentEditorIndex = editor.getIndex();
       RunValidationEvent event = new RunValidationEvent(sourceContentsPresenter.getSelectedSource(), editor.getText(), false);
       event.addWidget(validationMessagePanel);
@@ -375,6 +381,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void onEditorKeyDown(KeyDownEvent event, ToggleEditor editor)
    {
+      Log.info("pressed: " + event.toDebugString());
       checkKey.init(event.getNativeEvent());
 
       if (checkKey.isCopyFromSourceKey())
@@ -383,6 +390,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else if (checkKey.isNextEntryKey())
       {
+         Log.info("go next");
          moveNext(false);
       }
       else if (checkKey.isPreviousEntryKey())
@@ -405,6 +413,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else if (checkKey.isSaveAsApprovedKey(configHolder.isButtonEnter()))
       {
+         Log.info("ctrl + enter");
          event.stopPropagation();
          event.preventDefault();
          saveAsApprovedAndMoveNext();

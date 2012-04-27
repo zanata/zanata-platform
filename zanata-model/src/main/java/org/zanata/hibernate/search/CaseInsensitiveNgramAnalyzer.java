@@ -20,22 +20,21 @@
  */
 package org.zanata.hibernate.search;
 
-//FIXME rename to CaseInsensitiveNgramAnalyzer when merged into master
 
 /**
  * Analyzer that tokenizes into lower-case trigrams.
  * 
  * @author David Mason, damason@redhat.com
  */
-public class DefaultNgramAnalyzer extends ConfigurableNgramAnalyzer
+public class CaseInsensitiveNgramAnalyzer extends ConfigurableNgramAnalyzer
 {
 
-   public DefaultNgramAnalyzer()
+   public CaseInsensitiveNgramAnalyzer()
    {
       super(3, true);
    }
 
-   public DefaultNgramAnalyzer(int ngramLength)
+   public CaseInsensitiveNgramAnalyzer(int ngramLength)
    {
       super(ngramLength, true);
    }

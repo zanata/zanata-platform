@@ -43,7 +43,7 @@ public class StringListBridge implements FieldBridge, ParameterizedBridge
          String caseBehaviour = (String) parameters.get("case");
          if ("fold".equals(caseBehaviour))
          {
-            analyzer = new DefaultNgramAnalyzer();
+            analyzer = new CaseInsensitiveNgramAnalyzer();
          }
          else if ("preserve".equals(caseBehaviour))
          {
@@ -52,7 +52,7 @@ public class StringListBridge implements FieldBridge, ParameterizedBridge
          else
          {
             log.warn("invalid value for parameter \"case\": \"{0}\", default will be used", caseBehaviour);
-            analyzer = new DefaultNgramAnalyzer();
+            analyzer = new CaseInsensitiveNgramAnalyzer();
          }
       }
    }
@@ -62,7 +62,7 @@ public class StringListBridge implements FieldBridge, ParameterizedBridge
    {
       if (analyzer == null)
       {
-         analyzer = new DefaultNgramAnalyzer();
+         analyzer = new CaseInsensitiveNgramAnalyzer();
       }
 
       if (!(value instanceof List<?>))

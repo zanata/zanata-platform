@@ -316,6 +316,11 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    {
       if (currentView != viewToShow)
       {
+         if (currentView == MainView.Editor)
+         {
+            translationPresenter.saveEditorPendingChange();
+         }
+
          switch (viewToShow)
          {
          case Editor:
@@ -325,12 +330,12 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             }
             currentDisplayStats = selectedDocumentStats;
             break;
-         //Documents or Search
+         case Search:
+            display.setDocumentLabel("", messages.projectWideSearchAndReplace());
+            currentDisplayStats = projectStats;
+            break;
+         case Documents:
          default:
-            if (currentView == MainView.Editor)
-            {
-               translationPresenter.saveEditorPendingChange();
-            }
             display.setDocumentLabel("", messages.noDocumentSelected());
             currentDisplayStats = projectStats;
             break;
