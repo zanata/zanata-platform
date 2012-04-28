@@ -386,7 +386,7 @@ public class HistoryToken
                sb.append(';');
                break;
             default:
-               Log.info("Unrecognised escaped character, appending: " + nextChar);
+               Log.warn("Unrecognised escaped character, appending: " + nextChar);
                sb.append(nextChar);
             }
          }
