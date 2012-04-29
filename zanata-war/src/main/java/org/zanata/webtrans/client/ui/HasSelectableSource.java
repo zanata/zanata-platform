@@ -1,6 +1,8 @@
 package org.zanata.webtrans.client.ui;
 
-public interface HasSelectableSource
+import com.google.gwt.event.dom.client.HasClickHandlers;
+
+public interface HasSelectableSource extends HasClickHandlers
 {
    String getSource();
 

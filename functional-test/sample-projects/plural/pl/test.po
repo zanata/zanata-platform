@@ -1,0 +1,53 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Pathauto 6.x-1.1\n"
+"POT-Creation-Date: 2008-11-28 05:17-0600\n"
+"PO-Revision-Date: 2008-11-30 11:39+0100\n"
+"Last-Translator: Tomasz Kulig <tomasz.kulig _a_ kuling.pl>\n"
+"Language-Team: Polski / Polish <tomasz.kulig _a_ kuling.pl>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=((n==1)?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
+
+#, c-format
+msgid "One file removed"
+msgid_plural "%d files removed"
+msgstr[0] "1 aoeuaouaou"
+msgstr[1] "%d aoeuaouao"
+
+#, c-format
+msgid "One other file removed"
+msgid_plural "%d files removed"
+msgstr[0] ""
+msgstr[1] "%d aoeuaouao"
+
+#, c-format
+msgid "One file removed_"
+msgid_plural "%d more files removed"
+msgstr[0] "1 tnhdaoeuaoue"
+msgstr[1] ""
+
+#, c-format
+msgid "File removed"
+msgid_plural "%d files removed"
+msgstr[0] "1 tnhdnthdntioei"
+
+#, c-format, fuzzy
+msgid "Yet Another File removed"
+msgid_plural "%d files removed"
+msgstr[0] "%d aoenuthaosneuh"
+
+#, c-format, fuzzy
+msgid "2 Another File removed"
+msgid_plural "%d files removed"
+msgstr[0] ""
+
+# not legal because it has multiple msgstr but no msgid_plural:
+#, c-format
+#msgid "File removed."
+#msgstr[0] ""
+#msgstr[1] ""
+
+msgid "pl msgid"
+msgstr "pl msgstr"

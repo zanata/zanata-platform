@@ -23,4 +23,6 @@ public interface TransUnitsEditModel
    void savePendingChange(boolean cancelIfUnchanged);
 
    void saveAndMoveRow(NavTransUnitEvent.NavigationType nav);
+
+   void acceptEdit();
 }

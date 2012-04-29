@@ -243,7 +243,22 @@ public class HistoryTokenTests
       assertFalse(token.getProjectSearchCaseSensitive());
    }
 
-   @Test
+   public void encodesColon()
+   {
+      token = new HistoryToken();
+      token.setProjectSearchText("test:test");
+      assertEquals("Colons should be replaced with \"!c\" in the token string",
+            "projectsearch:test!ctest", token.toTokenString());
+   }
+
+   public void encodesSemicolon()
+   {
+      token = new HistoryToken();
+      token.setProjectSearchText("test;test");
+      assertEquals("Semicolons should be replaced with \"!s\" in the token string",
+            "projectsearch:test!stest", token.toTokenString());
+   }
+
    public void toTokenStringHasNoDefaults()
    {
       token = new HistoryToken();
@@ -281,7 +296,6 @@ public class HistoryTokenTests
    @Test
    public void tokenStringRoundTrip()
    {
-      // TODO update with search and project-wide search fields
       token = new HistoryToken();
       token.setView(MainView.Editor);
       token.setDocumentPath("some/document");
@@ -307,4 +321,29 @@ public class HistoryTokenTests
       assertTrue("project-wide search case sensitivity should survive a round-trip to and from token string", token.getProjectSearchCaseSensitive());
    }
 
+   public void tokenStringRoundTripWithEncodedCharacters()
+   {
+      token = new HistoryToken();
+      token.setDocumentPath("some:document;with!encodedchars");
+      token.setDocFilterText("my!fil:ter;");
+      token.setSearchText(":search!text;");
+      token.setProjectSearchText("project:search;text!");
+      token.setProjectSearchReplacement("re!place;ment:text");
+
+      String tokenString = token.toTokenString();
+
+      token = null;
+      token = HistoryToken.fromTokenString(tokenString);
+
+      assertEquals("encodable characters in document path should survive a round-trip to and from token string",
+            "some:document;with!encodedchars", token.getDocumentPath());
+      assertEquals("encodable characters in document filter text should survive a round-trip to and from token string",
+            "my!fil:ter;", token.getDocFilterText());
+      assertEquals("encodable characters in search text should survive a round-trip to and from token string",
+            ":search!text;", token.getSearchText());
+      assertEquals("encodable characters in project-wide search text should survive a round-trip to and from token string",
+            "project:search;text!", token.getProjectSearchText());
+      assertEquals("encodable characters in project-wide search replacement text should survive a round-trip to and from token string",
+            "re!place;ment:text", token.getProjectSearchReplacement());
+   }
 }

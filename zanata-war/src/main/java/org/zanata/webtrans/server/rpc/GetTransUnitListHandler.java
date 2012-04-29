@@ -20,12 +20,8 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -33,15 +29,10 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
-import org.zanata.common.ContentState;
-import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
-import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
-import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.ActionHandlerFor;
@@ -50,6 +41,9 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.util.TextFlowFilter;
 import org.zanata.webtrans.shared.util.TextFlowFilterImpl;
+
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
 
 @Name("webtrans.gwt.GetTransUnitListHandler")
 @Scope(ScopeType.STATELESS)
@@ -61,13 +55,10 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
    Log log;
 
    @In
-   private ResourceUtils resourceUtils;
+   private TransUnitTransformer transUnitTransformer;
 
    @In
    private TextFlowDAO textFlowDAO;
-
-   @In
-   private DocumentDAO documentDAO;
 
    @In
    private LocaleService localeServiceImpl;
@@ -111,15 +102,12 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          // textFlowDAO.getCountByDocument(action.getDocumentId().getValue());
       }
 
-      HDocument document = documentDAO.getById(action.getDocumentId().getId());
-      int nPlurals = resourceUtils.getNumPlurals(document, hLocale);
-
       ArrayList<TransUnit> units = new ArrayList<TransUnit>();
       for (HTextFlow textFlow : textFlows)
       {
          if (!filter.isFilterOut(textFlow, hLocale))
          {
-            TransUnit tu = initTransUnit(textFlow, hLocale, nPlurals);
+            TransUnit tu = transUnitTransformer.transform(textFlow, hLocale);
             if (action.getTargetTransUnitId() != null && tu.getId().equals(action.getTargetTransUnitId()))
             {
                gotoRow = units.size();
@@ -145,45 +133,6 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
    @Override
    public void rollback(GetTransUnitList action, GetTransUnitListResult result, ExecutionContext context) throws ActionException
    {
-   }
-
-   private TransUnit initTransUnit(HTextFlow textFlow, HLocale hLocale, int nPlurals)
-   {
-      String msgContext = null;
-      if (textFlow.getPotEntryData() != null)
-      {
-         msgContext = textFlow.getPotEntryData().getContext();
-      }
-      HTextFlowTarget target = textFlow.getTargets().get(hLocale);
-
-      ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(textFlow);
-      ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(textFlow, target, nPlurals);
-
-      TransUnit.Builder builder = TransUnit.Builder.newTransUnitBuilder()
-            .setId(textFlow.getId())
-            .setResId(textFlow.getResId())
-            .setLocaleId(hLocale.getLocaleId())
-            .setPlural(textFlow.isPlural())
-            .setSources(sourceContents)
-            .setSourceComment(CommentsUtil.toString(textFlow.getComment()))
-            .setTargets(targetContents)
-            .setMsgContext(msgContext)
-            .setRowIndex(textFlow.getPos());
-
-      if (target == null)
-      {
-         builder.setStatus(ContentState.New);
-      }
-      else
-      {
-         builder.setStatus(target.getState());
-         if (target.getLastModifiedBy() != null)
-         {
-            builder.setLastModifiedBy(target.getLastModifiedBy().getName());
-         }
-         builder.setLastModifiedTime(new SimpleDateFormat().format(target.getLastChanged()));
-      }
-      return builder.build();
    }
 
 }

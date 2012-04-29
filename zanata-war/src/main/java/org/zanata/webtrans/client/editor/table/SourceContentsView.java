@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.editor.table;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.zanata.webtrans.client.ui.HasSelectableSource;
 import org.zanata.webtrans.client.ui.SourcePanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
@@ -39,11 +40,11 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    public static final int DEFAULT_ROWS = 1;
    private final Grid sourcePanelContainer;
    private TransUnit value;
-   private List<HasClickHandlers> sourcePanelList;
+   private List<HasSelectableSource> sourcePanelList;
 
    public SourceContentsView()
    {
-      sourcePanelList = new ArrayList<HasClickHandlers>();
+      sourcePanelList = new ArrayList<HasSelectableSource>();
       FlowPanel container = new FlowPanel();
       container.setSize("100%", "100%");
 
@@ -56,7 +57,7 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    }
 
    @Override
-   public List<HasClickHandlers> getSourcePanelList()
+   public List<HasSelectableSource> getSourcePanelList()
    {
       return sourcePanelList;
    }

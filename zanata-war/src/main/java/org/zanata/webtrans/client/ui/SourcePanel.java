@@ -25,7 +25,6 @@ import org.zanata.webtrans.client.resources.NavigationMessages;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -36,7 +35,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 
-public class SourcePanel extends Composite implements HasClickHandlers, HasSelectableSource
+public class SourcePanel extends Composite implements HasSelectableSource
 {
    private static SourcePanelUiBinder uiBinder = GWT.create(SourcePanelUiBinder.class);
 

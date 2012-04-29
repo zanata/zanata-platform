@@ -3,15 +3,14 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.zanata</groupId>
-    <artifactId>zanata-parent</artifactId>
-    <version>1.6.0-alpha-2-SNAPSHOT</version>
-
+    <artifactId>server</artifactId>
+    <version>1.6.0-alpha-3-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-model</artifactId>
   <name>Zanata model</name>
   <packaging>jar</packaging>
 
-	<!-- Should be the same as zanata-parent/pom.xml -->
+	<!-- Should be the same as zanata-server/pom.xml -->
 	<scm>
 		<connection>scm:git:git://github.com/zanata/zanata.git</connection>
 		<developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
@@ -58,13 +57,11 @@
 		<dependency>
 			<groupId>org.zanata</groupId>
 			<artifactId>zanata-common-api</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.zanata</groupId>
 			<artifactId>zanata-common-util</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>

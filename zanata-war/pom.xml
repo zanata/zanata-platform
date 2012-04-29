@@ -3,15 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.zanata</groupId>
-		<artifactId>zanata-parent</artifactId>
-		<version>1.6.0-alpha-2-SNAPSHOT</version>
-
+		<artifactId>server</artifactId>
+		<version>1.6.0-alpha-3-SNAPSHOT</version>
 	</parent>
 	<artifactId>zanata-war</artifactId>
 	<packaging>war</packaging>
 	<name>Zanata web application</name>
 
-	<!-- Should be the same as zanata-parent/pom.xml -->
+	<!-- Should be the same as zanata-server/pom.xml -->
 	<scm>
 		<connection>scm:git:git://github.com/zanata/zanata.git</connection>
 		<developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
@@ -805,35 +804,35 @@
 		<dependency>
 			<groupId>org.zanata</groupId>
 			<artifactId>zanata-common-api</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.zanata</groupId>
 			<artifactId>zanata-common-util</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.zanata</groupId>
 			<artifactId>zanata-model</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
             <groupId>org.zanata</groupId>
             <artifactId>zanata-adapter-po</artifactId>
-            <version>${project.version}</version>
         </dependency>
-        
-		<dependency>
-			<groupId>org.zanata</groupId>
-			<artifactId>zanata-rest-client</artifactId>
-			<version>${version}</version>
-	        <type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
 		
+      <dependency>
+         <groupId>org.zanata</groupId>
+         <artifactId>zanata-rest-client</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.zanata</groupId>
+         <artifactId>zanata-rest-client</artifactId>
+         <type>test-jar</type>
+         <scope>test</scope>
+      </dependency>
+
 		<!-- Compatibility Dependencies -->
 		
 		<dependency>
@@ -857,33 +856,28 @@
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam</artifactId>
-			<version>${seam.version}</version>
 			<type>ejb</type>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam-ui</artifactId>
-			<version>${seam.version}</version>
 		</dependency>
 
 		<dependency>
 			<!-- TODO this should be excluded in production -->
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam-debug</artifactId>
-			<version>${seam.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam-mail</artifactId>
-			<version>${seam.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam-remoting</artifactId>
-			<version>${seam.version}</version>
 		</dependency>
 
 		<!-- RestEasy dependencies -->
@@ -1257,13 +1251,6 @@
 		</dependency> -->
 
 		<!-- Testing dependencies -->
-
-		<dependency>
-			<groupId>org.zanata</groupId>
-			<artifactId>zanata-rest-client</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.embedded</groupId>

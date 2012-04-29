@@ -62,7 +62,7 @@ public class FileService implements FileResource
    private DocumentDAO documentDAO;
    
    @In(create=true)
-   private TranslatedDocService translationResourcesService;
+   private TranslatedDocResourceService translatedDocResourceService;
    
    @In
    private FileSystemService fileSystemServiceImpl;
@@ -76,13 +76,13 @@ public class FileService implements FileResource
    
    /* @formatter: off */
    public FileService(DocumentDAO documentDAO, 
-                      TranslatedDocService translationResourcesService,
+                      TranslatedDocResourceService translatedDocResourceService,
                       FileSystemService fileSystemServiceImpl, 
                       ResourceUtils resourceUtils)
    {
       super();
       this.documentDAO = documentDAO;
-      this.translationResourcesService = translationResourcesService;
+      this.translatedDocResourceService = translatedDocResourceService;
       this.fileSystemServiceImpl = fileSystemServiceImpl;
       this.resourceUtils = resourceUtils;
    }
@@ -128,7 +128,7 @@ public class FileService implements FileResource
          
          // Perform translation of Hibernate DTOs to JAXB DTOs
          TranslationsResource transRes = 
-               (TranslationsResource) this.translationResourcesService.getTranslations(docId, new LocaleId(locale), extensions, true).getEntity();
+               (TranslationsResource) this.translatedDocResourceService.getTranslations(docId, new LocaleId(locale), extensions, true).getEntity();
          Resource res = this.resourceUtils.buildResource(document);
                
          StreamingOutput output = new POStreamingOutput(res, transRes);

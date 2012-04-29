@@ -24,6 +24,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 public interface TranslationService
@@ -41,9 +42,9 @@ public interface TranslationService
     * @param extensions The extensions to use while translating
     * @param mergeType Indicates how to handle the translations. AUTO will merge the new translations with the provided
     *                  ones. IMPORT will overwrite all existing translations with the new ones.
-    * @return A list of unknown resIds that were not found in the document being translated.
+    * @return A list of text flow targets that could not be matched to any text flows in the source document.
     */
-   Collection<String> translateAll(String projectSlug, String iterationSlug, String docId, LocaleId locale, TranslationsResource translations, Set<String> extensions,
+   Collection<TextFlowTarget> translateAll(String projectSlug, String iterationSlug, String docId, LocaleId locale, TranslationsResource translations, Set<String> extensions,
                                           MergeType mergeType);
 
    public interface TranslationResult

@@ -1126,6 +1126,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
             display.setTransUnitDetails(transUnit);
 
+            sourceContentsPresenter.setSelectedSource(display.getSelectedRowNumber());
             if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
             {
                selectedTransUnit = transUnit;
@@ -1134,7 +1135,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                clearCacheList();
 
                eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
-               sourceContentsPresenter.setSelectedSource(display.getSelectedRowNumber());
                display.getTargetCellEditor().savePendingChange(true);
 
                display.gotoRow(display.getSelectedRowNumber(), true);
