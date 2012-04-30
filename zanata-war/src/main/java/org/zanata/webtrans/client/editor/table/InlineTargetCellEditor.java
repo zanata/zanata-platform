@@ -198,11 +198,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
    {
       if (isEditing())
       {
-         ArrayList<String> newTargets = targetContentsPresenter.getNewTargets();
          // if something has changed, save as approved
-         if (!cellValue.getTargets().equals(newTargets))
+         if (hasTargetContentsChanged())
          {
-            Log.info("saving " + curRow + " with " + newTargets);
             Log.debug("savePendingChange - acceptEdit");
             acceptEdit();
          }
@@ -213,6 +211,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
          cancelEdit();
       }
       targetContentsPresenter.setToViewMode();
+   }
+
+   public boolean hasTargetContentsChanged()
+   {
+      return !cellValue.getTargets().equals(targetContentsPresenter.getNewTargets());
    }
 
    @Override

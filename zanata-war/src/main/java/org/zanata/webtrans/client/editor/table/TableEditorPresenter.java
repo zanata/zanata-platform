@@ -352,26 +352,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onFilterView(FilterViewEvent event)
          {
-            if (!event.isCancelFilter())
-            {
-               filterTranslated = event.isFilterTranslated();
-               filterNeedReview = event.isFilterNeedReview();
-               filterUntranslated = event.isFilterUntranslated();
-
-               if (display.getTargetCellEditor().isOpened() && display.getTargetCellEditor().isEditing())
-               {
-                  filterViewConfirmationPanel.center();
-               }
-               else
-               {
-                  filterViewConfirmationPanel.updateFilter(filterTranslated, filterNeedReview, filterUntranslated);
-                  if (selectedTransUnit != null)
-                  {
-                     targetTransUnitId = selectedTransUnit.getId();
-                  }
-                  initialiseTransUnitList();
-               }
-            }
+            filterTransUnitsView(event);
          }
       }));
 
@@ -577,6 +558,31 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       display.gotoFirstPage();
 
       History.fireCurrentHistoryState();
+   }
+
+   private void filterTransUnitsView(FilterViewEvent event)
+   {
+      if (!event.isCancelFilter())
+      {
+         filterTranslated = event.isFilterTranslated();
+         filterNeedReview = event.isFilterNeedReview();
+         filterUntranslated = event.isFilterUntranslated();
+
+         if (shouldPopUpConfirmation())
+         {
+            filterViewConfirmationPanel.center();
+         }
+         else
+         {
+            hideConfirmationPanelAndDoFiltering();
+         }
+      }
+   }
+
+   private boolean shouldPopUpConfirmation()
+   {
+      InlineTargetCellEditor targetCellEditor = display.getTargetCellEditor();
+      return targetCellEditor.isOpened() && targetCellEditor.isEditing() && targetCellEditor.hasTargetContentsChanged();
    }
 
    private void saveChangesAndFilter()
