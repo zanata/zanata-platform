@@ -109,17 +109,22 @@ public class PushCommand extends PushPullCommand<PushOptions>
       log.info("Exclude patterns: {}", StringUtils.join(getOpts().getExcludes(), " "));
       log.info("Default excludes: {}", getOpts().getDefaultExcludes());
 
-      if (getOpts().getPushTrans())
+      if (getOpts().getPushType() == PushType.Trans)
+      {
+         log.info("Pushing target documents only");
+         log.info("Locales to push: {}", getOpts().getLocales());
+      }
+      else if(getOpts().getPushType() == PushType.Source)
+      {
+         log.info("Pushing source documents only");
+      }
+      else
       {
          log.info("Pushing source and target documents");
          log.info("Locales to push: {}", getOpts().getLocales());
       }
-      else
-      {
-         log.info("Pushing source documents only");
-      }
       log.info("Source directory (originals): {}", getOpts().getSrcDir());
-      if (getOpts().getPushTrans())
+      if (getOpts().getPushType() == PushType.Both || getOpts().getPushType() == PushType.Trans)
       {
          log.info("Target base directory (translations): {}", getOpts().getTransDir());
       }
@@ -239,12 +244,20 @@ public class PushCommand extends PushPullCommand<PushOptions>
          log.info("Obsolete docs: {}", obsoleteDocs);
       }
 
-      if (getOpts().getPushTrans())
+      if (getOpts().getPushType() == PushType.Trans || getOpts().getPushType() == PushType.Both )
       {
          if (getOpts().getLocales() == null)
-            throw new ConfigException("pushTrans option set, but zanata.xml contains no <locales>");
-         log.warn("pushTrans option is set: existing translations on server may be overwritten/deleted");
-         confirmWithUser("This will overwrite existing documents AND TRANSLATIONS on the server, and delete obsolete documents.\n");
+            throw new ConfigException("pushType set to '" + getOpts().getPushType() + "', but zanata.xml contains no <locales>");
+         log.warn("pushType set to '" + getOpts().getPushType() + "': existing translations on server may be overwritten/deleted");
+
+         if( getOpts().getPushType() == PushType.Both )
+         {
+            confirmWithUser("This will overwrite existing documents AND TRANSLATIONS on the server, and delete obsolete documents.\n");
+         }
+         else if( getOpts().getPushType() == PushType.Trans )
+         {
+            confirmWithUser("This will overwrite existing TRANSLATIONS on the server.\n");
+         }
       }
       else
       {
@@ -259,9 +272,11 @@ public class PushCommand extends PushPullCommand<PushOptions>
          srcDoc.setName(qualifiedDocName);
          debug(srcDoc);
 
-         pushSrcDocToServer(docUri, srcDoc, extensions);
-
-         if (getOpts().getPushTrans())
+         if( getOpts().getPushType() == PushType.Source || getOpts().getPushType() == PushType.Both )
+         {
+            pushSrcDocToServer(docUri, srcDoc, extensions);
+         }
+         if (getOpts().getPushType() == PushType.Trans || getOpts().getPushType() == PushType.Both)
          {
             strat.visitTranslationResources(localDocName, srcDoc, new TranslationResourcesVisitor()
             {
