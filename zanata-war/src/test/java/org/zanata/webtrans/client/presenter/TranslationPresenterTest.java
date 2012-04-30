@@ -12,6 +12,8 @@ import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.presenter.client.EventBus;
@@ -30,6 +32,7 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.presenter.TranslationPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -335,9 +338,9 @@ public class TranslationPresenterTest
       reset(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter);
 
       // expect lookup translator list
-      ArrayList<Person> participants = new ArrayList<Person>();
-      participants.add(new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"));
-      participants.add(new Person(new PersonId("smith"), "Smith Bob", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16"));
+      Map<SessionId, Person> participants = new HashMap<SessionId, Person>();
+      participants.put(new SessionId("sessionId1"), new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"));
+      participants.put(new SessionId("sessionId2"), new Person(new PersonId("smith"), "Smith Bob", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16"));
       setupUserListRequestResponse(participants);
 
       replay(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter);
@@ -357,10 +360,10 @@ public class TranslationPresenterTest
       reset(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter);
 
       // expect lookup translator list
-      ArrayList<Person> participants = new ArrayList<Person>();
-      participants.add(new Person(new PersonId("john"), "John Jones", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
-      participants.add(new Person(new PersonId("jones"), "Jones John", "http://www.gravatar.com/avatar/jones@zanata.org?d=mm&s=16"));
-      participants.add(new Person(new PersonId("jim"), "Jim Jones", "http://www.gravatar.com/avatar/jim@zanata.org?d=mm&s=16"));
+      Map<SessionId, Person> participants = new HashMap<SessionId, Person>();
+      participants.put(new SessionId("sessionId1"), new Person(new PersonId("john"), "John Jones", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
+      participants.put(new SessionId("sessionId2"), new Person(new PersonId("jones"), "Jones John", "http://www.gravatar.com/avatar/jones@zanata.org?d=mm&s=16"));
+      participants.put(new SessionId("sessionId2"), new Person(new PersonId("jim"), "Jim Jones", "http://www.gravatar.com/avatar/jim@zanata.org?d=mm&s=16"));
       setupUserListRequestResponse(participants);
 
       replay(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter);
@@ -444,14 +447,14 @@ public class TranslationPresenterTest
 
    private void setupDefaultMockExpectations()
    {
-      ArrayList<Person> people = new ArrayList<Person>();
-      people.add(new Person(new PersonId("jones"), "Joey Jones", "http://www.gravatar.com/avatar/joey@zanata.org?d=mm&s=16"));
+      Map<SessionId, Person> people = new HashMap<SessionId, Person>();
+      people.put(new SessionId("sessionId"), new Person(new PersonId("jones"), "Joey Jones", "http://www.gravatar.com/avatar/joey@zanata.org?d=mm&s=16"));
 
       setupDefaultMockExpectations(people);
    }
 
    @SuppressWarnings("unchecked")
-   private void setupDefaultMockExpectations(ArrayList<Person> initialParticipants)
+   private void setupDefaultMockExpectations(Map<SessionId, Person> initialParticipants)
    {
       mockTransMemoryPresenter.bind();
       expectLastCall().once();
@@ -495,14 +498,14 @@ public class TranslationPresenterTest
     * @param participants
     */
    @SuppressWarnings("unchecked")
-   private void setupUserListRequestResponse(ArrayList<Person> participants)
+   private void setupUserListRequestResponse(Map<SessionId, Person> participants)
    {
       capturedTranslatorListRequest = new Capture<GetTranslatorList>();
       capturedTranslatorListRequestCallback = new Capture<AsyncCallback<GetTranslatorListResult>>();
       mockDispatcher.execute(and(capture(capturedTranslatorListRequest), isA(Action.class)), and(capture(capturedTranslatorListRequestCallback), isA(AsyncCallback.class)));
       expectLastCall().andAnswer(new TranslatorListSuccessAnswer(participants)).once();
 
-      mockWorkspaceUsersPresenter.setUserList(participants);
+      mockWorkspaceUsersPresenter.initUserList(participants);
       expectLastCall().once(); // once for now
 
       expect(mockMessages.nUsersOnline(participants.size())).andReturn(TEST_USERS_ONLINE_MESSAGE).anyTimes();
@@ -539,9 +542,9 @@ public class TranslationPresenterTest
 
    private class TranslatorListSuccessAnswer implements IAnswer<GetTranslatorListResult>
    {
-      private ArrayList<Person> translatorsToReturn;
+      private Map<SessionId, Person> translatorsToReturn;
 
-      public TranslatorListSuccessAnswer(ArrayList<Person> translatorsToReturn)
+      public TranslatorListSuccessAnswer(Map<SessionId, Person> translatorsToReturn)
       {
          this.translatorsToReturn = translatorsToReturn;
       }
@@ -549,7 +552,7 @@ public class TranslationPresenterTest
       @Override
       public GetTranslatorListResult answer() throws Throwable
       {
-         GetTranslatorListResult result = new GetTranslatorListResult(translatorsToReturn);
+         GetTranslatorListResult result = new GetTranslatorListResult(translatorsToReturn, translatorsToReturn.size());
          capturedTranslatorListRequestCallback.getValue().onSuccess(result);
          return null;
       }

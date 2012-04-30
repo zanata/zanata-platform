@@ -10,10 +10,12 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.web.ServletContexts;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
+import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.ExitWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ExitWorkspaceResult;
@@ -45,7 +47,7 @@ public class ExitWorkspaceHandler extends AbstractActionHandler<ExitWorkspaceAct
       if (workspace.removeTranslator(action.getPerson().getId()))
       {
          // Send GWT Event to client to update the userlist
-         ExitWorkspace event = new ExitWorkspace(action.getPerson());
+         ExitWorkspace event = new ExitWorkspace(retrieveSessionId(), action.getPerson());
          workspace.publish(event);
       }
 
@@ -55,5 +57,10 @@ public class ExitWorkspaceHandler extends AbstractActionHandler<ExitWorkspaceAct
    @Override
    public void rollback(ExitWorkspaceAction action, ExitWorkspaceResult result, ExecutionContext context) throws ActionException
    {
+   }
+
+   private SessionId retrieveSessionId()
+   {
+      return new SessionId(ServletContexts.instance().getRequest().getSession().getId());
    }
 }

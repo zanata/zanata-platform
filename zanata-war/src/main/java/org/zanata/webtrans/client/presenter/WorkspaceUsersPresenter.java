@@ -1,11 +1,13 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 
 import com.google.inject.Inject;
@@ -13,13 +15,13 @@ import com.google.inject.Inject;
 public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPresenter.Display>
 {
 
-   private ArrayList<Person> translatorList = new ArrayList<Person>();
-
    public interface Display extends WidgetDisplay
    {
-      void clearUserList();
+      void addUser(SessionId sessionId, Person person);
 
-      void addUser(Person person);
+      void removeUser(Person person);
+
+      int getUserSize();
    }
 
    @Inject
@@ -43,36 +45,27 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
    {
    }
 
-   private void updateUserList()
+   public void initUserList(Map<SessionId, Person> users)
    {
-      display.clearUserList();
-      for (Person p : translatorList)
+      for (SessionId sessionId : users.keySet())
       {
-         display.addUser(p);
+         display.addUser(sessionId, users.get(sessionId));
       }
    }
 
-   public void setUserList(ArrayList<Person> users)
+   public void removeTranslator(SessionId sessionId, Person person)
    {
-      translatorList = users;
-      updateUserList();
+      display.removeUser(person);
    }
 
-   public void removeTranslator(Person person)
+   public void addTranslator(SessionId sessionId, Person person)
    {
-      translatorList.remove(person);
-      updateUserList();
-   }
-
-   public void addTranslator(Person person)
-   {
-      translatorList.add(person);
-      updateUserList();
+      display.addUser(sessionId, person);
    }
 
    public int getTranslatorsSize()
    {
-      return translatorList.size();
+      return display.getUserSize();
    }
 
 }

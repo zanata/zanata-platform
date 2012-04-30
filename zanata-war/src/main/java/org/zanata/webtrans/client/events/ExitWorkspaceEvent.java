@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.events;
 
+import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.rpc.HasExitWorkspaceData;
 
@@ -9,6 +10,7 @@ public class ExitWorkspaceEvent extends GwtEvent<ExitWorkspaceEventHandler> impl
 {
 
    private final Person person;
+   private final SessionId sessionId;
 
    /**
     * Handler type.
@@ -32,6 +34,7 @@ public class ExitWorkspaceEvent extends GwtEvent<ExitWorkspaceEventHandler> impl
    public ExitWorkspaceEvent(HasExitWorkspaceData data)
    {
       this.person = data.getPerson();
+      this.sessionId = data.getSessionId();
    }
 
    @Override
@@ -50,5 +53,11 @@ public class ExitWorkspaceEvent extends GwtEvent<ExitWorkspaceEventHandler> impl
    public Person getPerson()
    {
       return person;
+   }
+
+   @Override
+   public SessionId getSessionId()
+   {
+      return sessionId;
    }
 }

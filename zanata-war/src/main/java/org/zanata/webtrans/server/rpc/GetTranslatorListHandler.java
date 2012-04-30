@@ -1,6 +1,7 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
@@ -19,6 +20,7 @@ import org.zanata.service.GravatarService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
+import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
@@ -50,25 +52,24 @@ public class GetTranslatorListHandler extends AbstractActionHandler<GetTranslato
    @Override
    public GetTranslatorListResult execute(GetTranslatorList action, ExecutionContext context) throws ActionException
    {
-
       ZanataIdentity.instance().checkLoggedIn();
 
       TranslationWorkspace translationWorkspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
 
-      ImmutableSet<PersonId> personIdlist = translationWorkspace.getUsers();
+      Map<SessionId, PersonId> result = translationWorkspace.getUsers();
 
       // Use AccountDAO to convert the PersonId to Person
-      ArrayList<Person> translators = new ArrayList<Person>();
-      for (PersonId personId : personIdlist)
+      Map<SessionId, Person> translators = new HashMap<SessionId, Person>();
+      for (SessionId sessionId : result.keySet())
       {
+         PersonId personId = result.get(sessionId);
 
          HPerson person = accountDAO.getByUsername(personId.toString()).getPerson();
 
          Person translator = new Person(personId, person.getName(), gravatarServiceImpl.getUserImageUrl(16, person.getEmail()));
-         translators.add(translator);
+         translators.put(sessionId, translator);
       }
-
-      return new GetTranslatorListResult(translators);
+      return new GetTranslatorListResult(translators, ImmutableSet.copyOf(result.values()).size());
    }
 
    @Override

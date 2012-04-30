@@ -1,7 +1,10 @@
 package org.zanata.webtrans.client.view;
 
+import java.util.HashMap;
+
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.ui.UserPanel;
+import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 
 import com.google.gwt.core.client.GWT;
@@ -24,9 +27,12 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    @UiField
    VerticalPanel userListPanel;
 
+   private final HashMap<Person, UserPanel> userPanelMap;
+
    public WorkspaceUsersView()
    {
       initWidget(uiBinder.createAndBindUi(this));
+      userPanelMap = new HashMap<Person, UserPanel>();
    }
 
    @Override
@@ -36,15 +42,48 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    }
 
    @Override
-   public void clearUserList()
+   public void addUser(SessionId sessionId, Person person)
    {
-      userListPanel.clear();
+      if (!userPanelMap.containsKey(person))
+      {
+         userPanelMap.put(person, new UserPanel(person.getId().getId(), person.getName(), person.getAvatarUrl()));
+      }
+      else
+      {
+         userPanelMap.get(person).addSession();
+      }
+      updateView();
    }
 
    @Override
-   public void addUser(Person person)
+   public void removeUser(Person person)
    {
-      UserPanel userPanel = new UserPanel(person.getId().getId(), person.getName(), person.getAvatarUrl());
-      userListPanel.add(userPanel);
+      if (userPanelMap.containsKey(person))
+      {
+         if (userPanelMap.get(person).isSingleSession())
+         {
+            userPanelMap.remove(person);
+         }
+         else
+         {
+            userPanelMap.get(person).removeSession();
+         }
+      }
+      updateView();
+   }
+
+   private void updateView()
+   {
+      userListPanel.clear();
+      for (UserPanel userPanel : userPanelMap.values())
+      {
+         userListPanel.add(userPanel);
+      }
+   }
+
+   @Override
+   public int getUserSize()
+   {
+      return userPanelMap.size();
    }
 }

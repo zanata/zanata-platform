@@ -75,7 +75,7 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
       workspace.registerTranslator(retrieveSessionId(), retrievePersonId());
 
       // Send EnterWorkspace event to clients
-      EnterWorkspace event = new EnterWorkspace(retrievePerson());
+      EnterWorkspace event = new EnterWorkspace(retrieveSessionId(), retrievePerson());
       workspace.publish(event);
 
       Identity identity = new Identity(retrieveSessionId(), retrievePerson());

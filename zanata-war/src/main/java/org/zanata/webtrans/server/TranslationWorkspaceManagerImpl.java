@@ -14,6 +14,7 @@ import org.jboss.seam.annotations.Synchronized;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
+import org.jboss.seam.web.ServletContexts;
 import org.zanata.ZanataInit;
 import org.zanata.action.ProjectHome;
 import org.zanata.action.ProjectIterationHome;
@@ -28,6 +29,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
+import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -86,10 +88,15 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
          {
             log.info("Removing user {0} from workspace {1}", username, workspace.getWorkspaceContext());
             // Send GWT Event to client to update the userlist
-            ExitWorkspace event = new ExitWorkspace(new Person(new PersonId(username), person.getName(), gravatarServiceImpl.getUserImageUrl(16, person.getEmail())));
+            ExitWorkspace event = new ExitWorkspace(retrieveSessionId(), new Person(new PersonId(username), person.getName(), gravatarServiceImpl.getUserImageUrl(16, person.getEmail())));
             workspace.publish(event);
          }
       }
+   }
+
+   private SessionId retrieveSessionId()
+   {
+      return new SessionId(ServletContexts.instance().getRequest().getSession().getId());
    }
 
    @Observer(ProjectHome.PROJECT_UPDATE)
