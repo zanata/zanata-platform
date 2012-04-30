@@ -8,6 +8,9 @@ import org.apache.commons.lang.StringUtils;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptions;
 import org.zanata.client.commands.push.PushType;
+import org.zanata.client.config.LocaleList;
+import org.zanata.client.config.LocaleMapping;
+import org.zanata.client.exceptions.ConfigException;
 
 /**
  * Pushes source text to a Zanata project version so that it can be translated, and optionally push translated text as well.
@@ -111,6 +114,18 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
     */
    private boolean deleteObsoleteModules;
 
+   /**
+    * Locales to push to the server.
+    * By default all locales in zanata.xml will be pushed.
+    * Usage: -Dzanata.locales=locale1,locale2,locale3
+    *
+    * @parameter expression="${zanata.locales}"
+    */
+   private String[] locales;
+
+   // Cached copy of the effective locales to avoid calculating it more than once
+   private LocaleList effectiveLocales;
+
 
    @Override
    public String getSourceLang()
@@ -180,4 +195,49 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
       return defaultExcludes;
    }
 
+   /**
+    * Override the default {@link org.zanata.maven.ConfigurableProjectMojo#getLocaleMapList()} method as the push
+    * command can have locales specified via command line.
+    *
+    * @return The locale map list taking into account the global locales in zanata.xml as well as the command line
+    * argument ones.
+    */
+   @Override
+   public LocaleList getLocaleMapList()
+   {
+      if( effectiveLocales == null )
+      {
+         if(locales != null && locales.length > 0)
+         {
+            // filter the locales that are specified in both the global config and the parameter list
+            effectiveLocales = new LocaleList();
+
+            for( String locale : locales )
+            {
+               boolean foundLocale = false;
+               for(LocaleMapping lm : super.getLocaleMapList())
+               {
+                  if( lm.getLocale().equals(locale) ||
+                        (lm.getMapFrom() != null && lm.getMapFrom().equals( locale )) )
+                  {
+                     effectiveLocales.add(lm);
+                     foundLocale = true;
+                     break;
+                  }
+               }
+
+               if(!foundLocale)
+               {
+                  throw new ConfigException("Specified locale '" + locale + "' was not found in zanata.xml!" );
+               }
+            }
+         }
+         else
+         {
+            effectiveLocales = super.getLocaleMapList();
+         }
+      }
+
+      return effectiveLocales;
+   }
 }

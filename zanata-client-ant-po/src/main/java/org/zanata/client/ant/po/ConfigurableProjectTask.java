@@ -61,12 +61,12 @@ public abstract class ConfigurableProjectTask extends ConfigurableTask implement
       return projectConfig;
    }
 
-   public LocaleList getLocales()
+   public LocaleList getLocaleMapList()
    {
       return locales;
    }
 
-   public void setLocales(LocaleList locales)
+   public void setLocaleMapList(LocaleList locales)
    {
       this.locales = locales;
    }

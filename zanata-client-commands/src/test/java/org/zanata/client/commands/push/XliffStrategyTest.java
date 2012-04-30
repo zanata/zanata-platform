@@ -60,7 +60,7 @@ public class XliffStrategyTest
       include.add("**/**StringResource_en_US*");
 
       // EasyMock.expect(mockPushOption.getIncludes()).andReturn(include);
-      EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
+      EasyMock.expect(mockPushOption.getLocaleMapList()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
       EasyMock.expect(mockPushOption.getDefaultExcludes()).andReturn(true).anyTimes();
 
@@ -87,7 +87,7 @@ public class XliffStrategyTest
 
       // EasyMock.expect(mockPushOption.getIncludes()).andReturn(include);
       EasyMock.expect(mockPushOption.getTransDir()).andReturn(sourceDir).anyTimes();
-      EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
+      EasyMock.expect(mockPushOption.getLocaleMapList()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
       EasyMock.expect(mockPushOption.getDefaultExcludes()).andReturn(true).anyTimes();
 
@@ -134,7 +134,7 @@ public class XliffStrategyTest
 
       // EasyMock.expect(mockPushOption.getIncludes()).andReturn(include);
       EasyMock.expect(mockPushOption.getTransDir()).andReturn(sourceDir).anyTimes();
-      EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
+      EasyMock.expect(mockPushOption.getLocaleMapList()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
       EasyMock.expect(mockPushOption.getDefaultExcludes()).andReturn(true).anyTimes();
 
@@ -185,7 +185,7 @@ public class XliffStrategyTest
 
       // EasyMock.expect(mockPushOption.getIncludes()).andReturn(include);
       EasyMock.expect(mockPushOption.getTransDir()).andReturn(sourceDir).anyTimes();
-      EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
+      EasyMock.expect(mockPushOption.getLocaleMapList()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
       EasyMock.expect(mockPushOption.getDefaultExcludes()).andReturn(true).anyTimes();
 

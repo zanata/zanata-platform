@@ -83,7 +83,7 @@ public class PublicanPullCommand extends ConfigurableProjectCommand<PublicanPull
       }
       log.info("PO base directory (translations): {}", getOpts().getDstDir());
 
-      LocaleList locales = getOpts().getLocales();
+      LocaleList locales = getOpts().getLocaleMapList();
       if (locales == null)
          throw new ConfigException("no locales specified");
       PoWriter2 poWriter = new PoWriter2();
