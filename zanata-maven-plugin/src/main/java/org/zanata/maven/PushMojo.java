@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptions;
+import org.zanata.client.commands.push.PushType;
 
 /**
  * Pushes source text to a Zanata project version so that it can be translated, and optionally push translated text as well.
@@ -41,11 +42,22 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
 
    /**
     * Push translations from local files to the server (merge or import: see
-    * mergeType)
-    * 
+    * mergeType). This option is deprecated, replaced by pushType.
+    *
     * @parameter expression="${zanata.pushTrans}"
     */
-   private boolean pushTrans;
+   @Deprecated
+   // Using string instead of boolean to know when pushTrans has been explicitly used.
+   private String pushTrans;
+
+   /**
+    * Type of push to perform on the server: "source" pushes source documents only.
+    * "trans" pushes translation documents only.
+    * "both" pushes both source and translation documents.
+    *
+    * @parameter expression="${zanata.pushType}" default-value="source"
+    */
+   private String pushType;
 
    /**
     * Whether the server should copy latest translations from equivalent
@@ -99,6 +111,7 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
     */
    private boolean deleteObsoleteModules;
 
+
    @Override
    public String getSourceLang()
    {
@@ -106,9 +119,17 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    }
 
    @Override
-   public boolean getPushTrans()
+   public PushType getPushType()
    {
-      return pushTrans;
+      // if the deprecated 'pushTrans' option has been used
+      if( pushTrans != null )
+      {
+         return Boolean.parseBoolean(pushTrans) ? PushType.Both : PushType.Source;
+      }
+      else
+      {
+         return PushType.fromString(pushType);
+      }
    }
 
    @Override
