@@ -217,7 +217,10 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
       }
       catch (URISyntaxException e)
       {
-         throw new RuntimeException(e);
+         String msg = "URI Syntax error. Please make sure your project (project ID) and version are correct.";
+         log.error(msg);
+         log.error("part of your url: {}", spec);
+         throw new RuntimeException(msg);
       }
    }
 
