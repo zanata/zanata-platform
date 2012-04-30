@@ -18,6 +18,20 @@
 		<url>https://github.com/zanata/zanata-common</url>
 	</scm>
 
+  <properties>
+      <zanata.api.version>1.6.0-alpha-2</zanata.api.version>
+  </properties>
+  
+   <dependencyManagement>
+      <dependencies>
+       <dependency>
+          <groupId>org.zanata</groupId>
+          <artifactId>zanata-common-util</artifactId>
+          <version>${project.version}</version>
+       </dependency>
+      </dependencies>
+   </dependencyManagement>
+
   <modules>
     <module>zanata-common-util</module>
     <module>zanata-adapter-po</module>
