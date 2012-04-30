@@ -57,12 +57,10 @@
     <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-client-commands</artifactId>
-        <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>zanata-rest-client</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <!-- needed by the ant taskdefs.xml -->
     <dependency>
