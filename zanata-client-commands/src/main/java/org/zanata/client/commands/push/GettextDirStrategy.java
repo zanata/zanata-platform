@@ -93,9 +93,9 @@ class GettextDirStrategy extends AbstractPushStrategy
          return locales;
       if (getOpts().getPushType() == PushType.Both || getOpts().getPushType() == PushType.Trans)
       {
-         if (getOpts().getLocales() != null)
+         if (getOpts().getLocaleMapList() != null)
          {
-            locales = PublicanUtil.findLocales(getOpts().getTransDir(), getOpts().getLocales());
+            locales = PublicanUtil.findLocales(getOpts().getTransDir(), getOpts().getLocaleMapList());
             if (locales.size() == 0)
             {
                log.warn("'pushType' is set to '" + getOpts().getPushType() + "', but none of the configured locale " +

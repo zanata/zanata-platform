@@ -18,6 +18,7 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.PushPullCommand;
+import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.common.LocaleId;
@@ -112,7 +113,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       if (getOpts().getPushType() == PushType.Trans)
       {
          log.info("Pushing target documents only");
-         log.info("Locales to push: {}", getOpts().getLocales());
+         log.info("Locales to push: {}", getOpts().getLocaleMapList());
       }
       else if(getOpts().getPushType() == PushType.Source)
       {
@@ -121,7 +122,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       else
       {
          log.info("Pushing source and target documents");
-         log.info("Locales to push: {}", getOpts().getLocales());
+         log.info("Locales to push: {}", getOpts().getLocaleMapList());
       }
       log.info("Source directory (originals): {}", getOpts().getSrcDir());
       if (getOpts().getPushType() == PushType.Both || getOpts().getPushType() == PushType.Trans)
@@ -246,7 +247,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
 
       if (getOpts().getPushType() == PushType.Trans || getOpts().getPushType() == PushType.Both )
       {
-         if (getOpts().getLocales() == null)
+         if (getOpts().getLocaleMapList() == null)
             throw new ConfigException("pushType set to '" + getOpts().getPushType() + "', but zanata.xml contains no <locales>");
          log.warn("pushType set to '" + getOpts().getPushType() + "': existing translations on server may be overwritten/deleted");
 

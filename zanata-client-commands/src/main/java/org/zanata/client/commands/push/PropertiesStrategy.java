@@ -113,7 +113,7 @@ class PropertiesStrategy extends AbstractPushStrategy
    @Override
    public void visitTranslationResources(String docName, Resource srcDoc, TranslationResourcesVisitor callback) throws IOException
    {
-      for (LocaleMapping locale : getOpts().getLocales())
+      for (LocaleMapping locale : getOpts().getLocaleMapList())
       {
          String filename = docNameToFilename(docName, locale);
          File transFile = new File(getOpts().getTransDir(), filename);

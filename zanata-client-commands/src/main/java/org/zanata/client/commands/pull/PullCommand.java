@@ -85,7 +85,7 @@ public class PullCommand extends PushPullCommand<PullOptions>
             }
          }
       }
-      log.info("Locales to pull: {}", getOpts().getLocales());
+      log.info("Locales to pull: {}", getOpts().getLocaleMapList());
       if (getOpts().getPullSrc())
       {
          log.info("Pulling source and target (translation) documents");
@@ -109,7 +109,7 @@ public class PullCommand extends PushPullCommand<PullOptions>
    {
       logOptions();
 
-      LocaleList locales = getOpts().getLocales();
+      LocaleList locales = getOpts().getLocaleMapList();
       if (locales == null)
          throw new ConfigException("no locales specified");
       PullStrategy strat = getStrategy(getOpts().getProjectType());
