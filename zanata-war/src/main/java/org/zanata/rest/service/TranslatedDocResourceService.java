@@ -173,7 +173,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
          DocumentDAO documentDAO,
          TextFlowTargetDAO textFlowTargetDAO,
          ResourceUtils resourceUtils,
-         Identity identity,
+         ZanataIdentity identity,
          ETagUtils eTagUtils,
          LocaleService localeService,
          CopyTransService copyTransService,
@@ -187,6 +187,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       this.documentDAO = documentDAO;
       this.textFlowTargetDAO = textFlowTargetDAO;
       this.resourceUtils = resourceUtils;
+      this.identity = identity;
       this.eTagUtils = eTagUtils;
       this.localeServiceImpl = localeService;
       this.copyTransServiceImpl = copyTransService;

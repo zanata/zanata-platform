@@ -234,6 +234,7 @@
 			<!-- Configure Failsafe to run in integration-test phase -->
 			<plugin>
 				<artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.11</version>
 				<executions>
 					<execution>
 						<id>integration-test</id>
