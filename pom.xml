@@ -19,6 +19,26 @@
 		<url>https://github.com/zanata/zanata-client</url>
 	</scm>
 
+    <properties>
+      <zanata.api.version>1.6.0-alpha-2</zanata.api.version>
+      <zanata.common.version>1.6.0-alpha-2</zanata.common.version>
+    </properties>
+
+   <dependencyManagement>
+      <dependencies>
+        <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-client-commands</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.zanata</groupId>
+          <artifactId>zanata-rest-client</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+      </dependencies>
+   </dependencyManagement>
+
   <modules>
     <module>zanata-client-commands</module>
     <module>zanata-client-ant-po</module>

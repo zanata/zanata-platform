@@ -35,7 +35,6 @@
 		<dependency>
 			<groupId>org.zanata</groupId>
 			<artifactId>zanata-rest-client</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>
