@@ -42,6 +42,7 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
    String mergeType;
    boolean copyTrans;
    boolean pushTrans;
+   String pushType;
    File transDir;
    File srcDir;
    String sourceLang;
@@ -83,12 +84,6 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
    }
 
    @Override
-   public boolean getPushTrans()
-   {
-      return pushTrans;
-   }
-
-   @Override
    public boolean getCopyTrans()
    {
       return copyTrans;
@@ -98,6 +93,12 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
    public String getMergeType()
    {
       return mergeType;
+   }
+
+   @Override
+   public PushType getPushType()
+   {
+      return PushType.fromString( pushType );
    }
 
    @Override
@@ -126,12 +127,11 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
       this.srcDir = file;
    }
 
-   /**
-    * @param pushTrans the pushTrans to set
-    */
+   @Deprecated
    public void setPushTrans(boolean pushTrans)
    {
       this.pushTrans = pushTrans;
+      this.pushType = pushTrans ? PushType.Both.toString() : PushType.Source.toString();
    }
 
    @Override

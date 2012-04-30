@@ -31,8 +31,6 @@ import org.junit.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-import org.zanata.client.commands.glossary.push.GlossaryCSVReader;
-import org.zanata.client.commands.glossary.push.GlossaryPushOptions;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.rest.dto.Glossary;
@@ -82,7 +80,7 @@ public class GlossaryCSVReaderTest
       mockPushOption = createMock("mockPushGlossaryOption", GlossaryPushOptions.class);
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
       EasyMock.expect(mockPushOption.getTransLang()).andReturn("hi").anyTimes();
-      EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
+      EasyMock.expect(mockPushOption.getLocaleMapList()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getTreatSourceCommentsAsTarget()).andReturn(false).anyTimes();
       EasyMock.expect(mockPushOption.getCommentCols()).andReturn(commentHeaders).anyTimes();
 
@@ -113,7 +111,7 @@ public class GlossaryCSVReaderTest
       mockPushOption = createMock("mockPushGlossaryOption", GlossaryPushOptions.class);
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
       EasyMock.expect(mockPushOption.getTransLang()).andReturn("hi").anyTimes();
-      EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
+      EasyMock.expect(mockPushOption.getLocaleMapList()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getTreatSourceCommentsAsTarget()).andReturn(false).anyTimes();
       EasyMock.expect(mockPushOption.getCommentCols()).andReturn(commentHeaders).anyTimes();
 

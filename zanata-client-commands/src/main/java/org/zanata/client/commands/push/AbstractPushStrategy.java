@@ -83,7 +83,7 @@ public abstract class AbstractPushStrategy
 
    private void excludeLocaleFileName(List<String> excludes)
    {
-      for (LocaleMapping locMap : opts.getLocales())
+      for (LocaleMapping locMap : opts.getLocaleMapList())
       {
          String loc = locMap.getJavaLocale().toLowerCase();
          excludes.add("**/*_" + loc + fileExtension);

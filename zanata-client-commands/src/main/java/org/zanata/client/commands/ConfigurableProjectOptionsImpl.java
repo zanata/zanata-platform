@@ -102,13 +102,13 @@ public abstract class ConfigurableProjectOptionsImpl extends ConfigurableOptions
    }
 
    @Override
-   public LocaleList getLocales()
+   public LocaleList getLocaleMapList()
    {
       return locales;
    }
 
    @Override
-   public void setLocales(LocaleList locales)
+   public void setLocaleMapList(LocaleList locales)
    {
       this.locales = locales;
    }

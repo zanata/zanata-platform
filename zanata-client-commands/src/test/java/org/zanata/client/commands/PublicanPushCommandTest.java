@@ -83,7 +83,7 @@ public class PublicanPushCommandTest
       {
          LocaleList locales = new LocaleList();
          locales.add(new LocaleMapping("ja", "ja-JP"));
-         opts.setLocales(locales);
+         opts.setLocaleMapList(locales);
       }
 
       List<ResourceMeta> resourceMetaList = new ArrayList<ResourceMeta>();

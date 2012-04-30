@@ -97,7 +97,7 @@ public class XmlStrategy extends AbstractPushStrategy
    {
       try
       {
-         for (LocaleMapping locale : getOpts().getLocales())
+         for (LocaleMapping locale : getOpts().getLocaleMapList())
          {
             String filename = docNameToFilename(docName, locale);
             File transFile = new File(getOpts().getTransDir(), filename);

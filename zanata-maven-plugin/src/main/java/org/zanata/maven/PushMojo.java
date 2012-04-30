@@ -7,6 +7,10 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptions;
+import org.zanata.client.commands.push.PushType;
+import org.zanata.client.config.LocaleList;
+import org.zanata.client.config.LocaleMapping;
+import org.zanata.client.exceptions.ConfigException;
 
 /**
  * Pushes source text to a Zanata project version so that it can be translated, and optionally push translated text as well.
@@ -41,11 +45,22 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
 
    /**
     * Push translations from local files to the server (merge or import: see
-    * mergeType)
-    * 
+    * mergeType). This option is deprecated, replaced by pushType.
+    *
     * @parameter expression="${zanata.pushTrans}"
     */
-   private boolean pushTrans;
+   @Deprecated
+   // Using string instead of boolean to know when pushTrans has been explicitly used.
+   private String pushTrans;
+
+   /**
+    * Type of push to perform on the server: "source" pushes source documents only.
+    * "trans" pushes translation documents only.
+    * "both" pushes both source and translation documents.
+    *
+    * @parameter expression="${zanata.pushType}" default-value="source"
+    */
+   private String pushType;
 
    /**
     * Whether the server should copy latest translations from equivalent
@@ -99,6 +114,19 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
     */
    private boolean deleteObsoleteModules;
 
+   /**
+    * Locales to push to the server.
+    * By default all locales in zanata.xml will be pushed.
+    * Usage: -Dzanata.locales=locale1,locale2,locale3
+    *
+    * @parameter expression="${zanata.locales}"
+    */
+   private String[] locales;
+
+   // Cached copy of the effective locales to avoid calculating it more than once
+   private LocaleList effectiveLocales;
+
+
    @Override
    public String getSourceLang()
    {
@@ -106,9 +134,17 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    }
 
    @Override
-   public boolean getPushTrans()
+   public PushType getPushType()
    {
-      return pushTrans;
+      // if the deprecated 'pushTrans' option has been used
+      if( pushTrans != null )
+      {
+         return Boolean.parseBoolean(pushTrans) ? PushType.Both : PushType.Source;
+      }
+      else
+      {
+         return PushType.fromString(pushType);
+      }
    }
 
    @Override
@@ -159,4 +195,49 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
       return defaultExcludes;
    }
 
+   /**
+    * Override the default {@link org.zanata.maven.ConfigurableProjectMojo#getLocaleMapList()} method as the push
+    * command can have locales specified via command line.
+    *
+    * @return The locale map list taking into account the global locales in zanata.xml as well as the command line
+    * argument ones.
+    */
+   @Override
+   public LocaleList getLocaleMapList()
+   {
+      if( effectiveLocales == null )
+      {
+         if(locales != null && locales.length > 0)
+         {
+            // filter the locales that are specified in both the global config and the parameter list
+            effectiveLocales = new LocaleList();
+
+            for( String locale : locales )
+            {
+               boolean foundLocale = false;
+               for(LocaleMapping lm : super.getLocaleMapList())
+               {
+                  if( lm.getLocale().equals(locale) ||
+                        (lm.getMapFrom() != null && lm.getMapFrom().equals( locale )) )
+                  {
+                     effectiveLocales.add(lm);
+                     foundLocale = true;
+                     break;
+                  }
+               }
+
+               if(!foundLocale)
+               {
+                  throw new ConfigException("Specified locale '" + locale + "' was not found in zanata.xml!" );
+               }
+            }
+         }
+         else
+         {
+            effectiveLocales = super.getLocaleMapList();
+         }
+      }
+
+      return effectiveLocales;
+   }
 }
