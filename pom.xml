@@ -294,7 +294,6 @@
 				<configuration>
 					<allowTimestampedSnapshots>false</allowTimestampedSnapshots>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
-					<tagNameFormat>zanata-@{project.version}</tagNameFormat>
 					<localCheckout>true</localCheckout>
 					<pushChanges>true</pushChanges>
 				</configuration>
@@ -912,88 +911,6 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
-	<repositories>
-		<repository>
-			<id>zanata-cloudbees-release</id>
-			<name>zanata-cloudbees-release</name>
-			<url>http://repository-zanata.forge.cloudbees.com/release/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>zanata-cloudbees-snapshot</id>
-			<name>zanata-cloudbees-snapshot</name>
-			<url>http://repository-zanata.forge.cloudbees.com/snapshot/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>jboss-releases</id>
-			<name>jboss-releases</name>
-			<url>http://repository.jboss.org/nexus/content/repositories/releases/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>jboss-thirdparty-releases</id>
-			<name>jboss-thirdparty-releases</name>
-			<url>http://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>jboss-snapshots</id>
-			<name>jboss-snapshots</name>
-			<url>http://repository.jboss.org/nexus/content/repositories/snapshots/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>zanata-cloudbees-release</id>
-			<name>zanata-cloudbees-release</name>
-			<url>http://repository-zanata.forge.cloudbees.com/release/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>zanata-cloudbees-snapshot</id>
-			<name>zanata-cloudbees-snapshot</name>
-			<url>http://repository-zanata.forge.cloudbees.com/snapshot/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<reporting>
 		<plugins>
