@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -36,6 +37,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class FilterViewConfirmationPanel extends DecoratedPopupPanel
 {
    private Button saveChanges = new Button("Save Changes");
+   private Button saveFuzzy = new Button("Save as Fuzzy");
    private Button discardChanges = new Button("Discard Changes");
    private Button cancelFilter = new Button("Cancel filter");
 
@@ -53,6 +55,7 @@ public class FilterViewConfirmationPanel extends DecoratedPopupPanel
       buttonPanel.setSpacing(5);
       buttonPanel.setSize("100%", "100%");
       buttonPanel.add(saveChanges);
+      buttonPanel.add(saveFuzzy);
       buttonPanel.add(discardChanges);
       buttonPanel.add(cancelFilter);
       setStyleName("filterConfirmationPanel");
@@ -63,10 +66,15 @@ public class FilterViewConfirmationPanel extends DecoratedPopupPanel
 
       hide();
    }
-   
+
    public HasClickHandlers getSaveChangesAndFilterButton()
    {
       return saveChanges;
+   }
+
+   public HasClickHandlers getSaveFuzzyAndFilterButton()
+   {
+      return saveFuzzy;
    }
 
    public HasClickHandlers getDiscardChangesAndFilterButton()

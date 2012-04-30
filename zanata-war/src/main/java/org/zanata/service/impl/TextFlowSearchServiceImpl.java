@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -105,7 +106,12 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       }
 
       String searchFieldPrefix = (constraints.isCaseSensitive() ? IndexFieldLabels.CONTENT_CASE_PRESERVED : IndexFieldLabels.CONTENT_CASE_FOLDED);
-      int searchLength = Math.min(3, constraints.getSearchString().length());
+      // FIXME remove .trim() and zero-length check when ngram analyzer is updated to respect leading and trailing whitespace
+      int searchLength = Math.min(3, constraints.getSearchString().trim().length());
+      if (searchLength == 0)
+      {
+         return new ArrayList<HTextFlowTarget>();
+      }
       Analyzer ngramAnalyzer = new ConfigurableNgramAnalyzer(searchLength, !constraints.isCaseSensitive());
 
       String[] searchFields = new String[6];
