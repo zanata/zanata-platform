@@ -35,7 +35,8 @@ import org.zanata.webtrans.shared.rpc.SessionEventData;
 public interface TranslationWorkspace
 {
    public Map<SessionId, PersonId> getUsers();
-   public boolean removeTranslator(PersonId personId);
+
+   public SessionId removeTranslator(PersonId personId);
    public void registerTranslator(SessionId sessionId, PersonId personId);
    public <T extends SessionEventData> void publish(T eventData);
    public WorkspaceContext getWorkspaceContext();

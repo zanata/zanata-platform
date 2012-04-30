@@ -1,61 +1,102 @@
 package org.zanata.webtrans.client.ui;
 
+import java.util.ArrayList;
+
+import com.google.common.base.Strings;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 
-public class UserPanel extends HorizontalPanel
+public class UserPanel extends HorizontalPanel implements HasManageUserSession
 {
-   private final String id;
-   private int sessionCount = 1;
-
    private Image userImage;
    private Label label;
    private String name;
+   private ArrayList<String> sessionIdList;
 
-   public UserPanel(String id, String name, String imgUrl)
+   public UserPanel(String sessionId, String name, String imgUrl)
    {
       super();
-      this.id = id;
       this.name = name;
 
       userImage = new Image(imgUrl);
       label = new Label(name);
 
+      sessionIdList = new ArrayList<String>();
+      sessionIdList.add(sessionId);
       this.add(userImage);
       this.add(label);
 
       this.setCellWidth(userImage, "16px");
+
+      updateTitle();
    }
 
-   public String getId()
+   @Override
+   public void addSession(String sessionId)
    {
-      return id;
+      sessionIdList.add(sessionId);
+      label.setText(name + "(" + sessionIdList.size() + ")");
+      updateTitle();
    }
 
-   public boolean isSingleSession()
+   private void updateTitle()
    {
-      return sessionCount == 1;
+      String title = "";
+      for (String sessionId : sessionIdList)
+      {
+         title = Strings.isNullOrEmpty(title) ? sessionId : title + " : " + sessionId;
+      }
+      label.setTitle(title);
    }
 
-   public void addSession()
+   @Override
+   public void removeSession(String sessionId)
    {
-      sessionCount++;
-      label.setText(name + "(" + sessionCount + ")");
-   }
+      sessionIdList.remove(sessionId);
 
-   public void removeSession()
-   {
-      sessionCount--;
-      sessionCount = sessionCount < 1 ? 1 : sessionCount;
-
-      if (sessionCount == 1)
+      if (sessionIdList.size() == 1)
       {
          label.setText(name);
       }
       else
       {
-         label.setText(name + "(" + sessionCount + ")");
+         label.setText(name + "(" + sessionIdList.size() + ")");
       }
+
+      updateTitle();
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+         return true;
+      if (obj == null)
+         return false;
+      if (getClass() != obj.getClass())
+         return false;
+      UserPanel other = (UserPanel) obj;
+      if (name == null)
+      {
+         if (other.name != null)
+            return false;
+      }
+      else if (!name.equals(other.name))
+         return false;
+      if (userImage == null)
+      {
+         if (other.userImage != null)
+            return false;
+      }
+      else if (!userImage.equals(other.userImage))
+         return false;
+      return true;
+   }
+
+   @Override
+   public boolean isEmptySession()
+   {
+      return sessionIdList.size() <= 0;
    }
 }

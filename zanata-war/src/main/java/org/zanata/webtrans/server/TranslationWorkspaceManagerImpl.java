@@ -84,19 +84,15 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       ImmutableSet<TranslationWorkspace> workspaceSet = ImmutableSet.copyOf(workspaceMap.values());
       for (TranslationWorkspace workspace : workspaceSet)
       {
-         if (workspace.removeTranslator(new PersonId(username)))
+         SessionId sessionId = workspace.removeTranslator(new PersonId(username));
+         if (sessionId != null)
          {
             log.info("Removing user {0} from workspace {1}", username, workspace.getWorkspaceContext());
             // Send GWT Event to client to update the userlist
-            ExitWorkspace event = new ExitWorkspace(retrieveSessionId(), new Person(new PersonId(username), person.getName(), gravatarServiceImpl.getUserImageUrl(16, person.getEmail())));
+            ExitWorkspace event = new ExitWorkspace(sessionId, new Person(new PersonId(username), person.getName(), gravatarServiceImpl.getUserImageUrl(16, person.getEmail())));
             workspace.publish(event);
          }
       }
-   }
-
-   private SessionId retrieveSessionId()
-   {
-      return new SessionId(ServletContexts.instance().getRequest().getSession().getId());
    }
 
    @Observer(ProjectHome.PROJECT_UPDATE)

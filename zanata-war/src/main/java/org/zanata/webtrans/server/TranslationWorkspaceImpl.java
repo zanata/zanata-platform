@@ -129,7 +129,7 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
       }
    }
 
-   public boolean removeTranslator(PersonId personId)
+   public SessionId removeTranslator(PersonId personId)
    {
       ImmutableSet<SessionId> sessionIdSet = getSessions();
       for (SessionId sessionId : sessionIdSet)
@@ -142,10 +142,10 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
             {
                log.info("Removed user '{0}' in session '{1}' from workspace {2}", personId.getId(), sessionId, workspaceContext);
             }
-            return removed;
+            return sessionId;
          }
       }
-      return false;
+      return null;
    }
 
    @Override

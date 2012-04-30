@@ -1,8 +1,10 @@
 package org.zanata.webtrans.client.view;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
+import org.zanata.webtrans.client.ui.HasManageUserSession;
 import org.zanata.webtrans.client.ui.UserPanel;
 import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
@@ -27,12 +29,9 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    @UiField
    VerticalPanel userListPanel;
 
-   private final HashMap<Person, UserPanel> userPanelMap;
-
    public WorkspaceUsersView()
    {
       initWidget(uiBinder.createAndBindUi(this));
-      userPanelMap = new HashMap<Person, UserPanel>();
    }
 
    @Override
@@ -42,48 +41,29 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    }
 
    @Override
-   public void addUser(SessionId sessionId, Person person)
+   public HasManageUserSession addUser(SessionId sessionId, Person person)
    {
-      if (!userPanelMap.containsKey(person))
-      {
-         userPanelMap.put(person, new UserPanel(person.getId().getId(), person.getName(), person.getAvatarUrl()));
-      }
-      else
-      {
-         userPanelMap.get(person).addSession();
-      }
-      updateView();
+      UserPanel userPanel = new UserPanel(sessionId.toString(), person.getName(), person.getAvatarUrl());
+      userListPanel.add(userPanel);
+      return userPanel;
    }
 
    @Override
-   public void removeUser(Person person)
+   public void removeUser(HasManageUserSession userPanel)
    {
-      if (userPanelMap.containsKey(person))
+      for (int i = 0; i < userListPanel.getWidgetCount(); i++)
       {
-         if (userPanelMap.get(person).isSingleSession())
+         if (userPanel.equals(userListPanel.getWidget(i)))
          {
-            userPanelMap.remove(person);
+            userListPanel.remove(i);
+            break;
          }
-         else
-         {
-            userPanelMap.get(person).removeSession();
-         }
-      }
-      updateView();
-   }
-
-   private void updateView()
-   {
-      userListPanel.clear();
-      for (UserPanel userPanel : userPanelMap.values())
-      {
-         userListPanel.add(userPanel);
       }
    }
 
    @Override
    public int getUserSize()
    {
-      return userPanelMap.size();
+      return userListPanel.getWidgetCount();
    }
 }
