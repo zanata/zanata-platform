@@ -65,7 +65,7 @@ import org.zanata.common.ContentState;
                        "and contents[0] = ? and contents[1] = ? and contents[2] = ? and contents[3] = ? and contents[4] = ?"),
    @NamedQuery(name = "HTextFlowTargetHistory.findContentInHistory[6]",
                query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = ? and size(t.contents) = ? " +
-                       "and contents[0] = ? and contents[1] = ? and contents[2] = ? and contents[3] = ? and contents[4] = ? and contents[5] = ?"),
+                       "and contents[0] = ? and contents[1] = ? and contents[2] = ? and contents[3] = ? and contents[4] = ? and contents[5] = ?")
 })
 public class HTextFlowTargetHistory extends HTextContainer implements Serializable, ITextFlowTargetHistory
 {
