@@ -37,10 +37,10 @@
                         <g:layer top="0px" height="20px" left="400px" width="250px">
                             <fui:ClearableTextBox ui:field='replacementTextBox'/>
                         </g:layer>
-                        <g:layer top="0px" height="26px" left="675px" width="150px">
+                        <g:layer top="0px" height="26px" left="675px" width="200px">
                             <g:Button ui:field='replaceAllButton'><ui:msg>Replace All Selected</ui:msg></g:Button>
                         </g:layer>
-                        <g:layer top="0px" height="26px" left="850px" right="0px">
+                        <g:layer top="0px" height="26px" left="900px" right="0px">
                             <g:Label ui:field="testLabel"></g:Label>
                         </g:layer>
                     </g:LayoutPanel>
