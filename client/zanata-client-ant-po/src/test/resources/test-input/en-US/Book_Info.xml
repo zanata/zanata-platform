@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE bookinfo PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
+<bookinfo>
+  <title>Deployment Guide</title>
+  <subtitle>Deployment, configuration and administration of Fedora 12 (Draft)</subtitle>
+  <productname>Fedora Documentation</productname>
+  <productnumber>12</productnumber>
+  <edition>0</edition>
+  <pubsnumber>0</pubsnumber>
+  <abstract>
+    <para>The Deployment Guide documents relevant information regarding the deployment, configuration and administration of Fedora 12.</para>
+  </abstract>
+  <corpauthor>
+    <inlinemediaobject>
+      <imageobject>
+        <imagedata
+          fileref="Common_Content/images/title_logo.svg"
+          format="SVG"></imagedata>
+      </imageobject>
+    </inlinemediaobject>
+  </corpauthor>
+  <xi:include
+    href="Common_Content/Legal_Notice.xml"
+    xmlns:xi="http://www.w3.org/2001/XInclude"></xi:include>
+  <xi:include
+    href="Author_Group.xml"
+    xmlns:xi="http://www.w3.org/2001/XInclude"></xi:include>
+</bookinfo>

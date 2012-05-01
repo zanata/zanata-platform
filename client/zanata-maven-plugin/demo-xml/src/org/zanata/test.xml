@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:resource xmlns:ns2="http://zanata.org/namespace/api/" xmlns:ns3="http://zanata.org/namespace/api/gettext/" xmlns:ns4="http://zanata.org/namespace/api/comment/" type="FILE" revision="2" xml:lang="en-US" content-type="text/plain">
+    <name>org/zanata/test</name>
+    <extensions/>
+    <text-flows>
+        <ns2:text-flow revision="1" xml:lang="en-US" id="GREETING">
+            <content>Hello</content>
+            <extensions>
+                <extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns4:simpleCommentExtension" xml:space="preserve">
+                    <value></value>
+                </extension>
+            </extensions>
+        </ns2:text-flow>
+        <ns2:text-flow revision="2" xml:lang="en-US" id="FAREWELL">
+            <content>Goodbye</content>
+            <extensions>
+                <extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns4:simpleCommentExtension" xml:space="preserve">
+                    <value></value>
+                </extension>
+            </extensions>
+        </ns2:text-flow>
+    </text-flows>
+</ns2:resource>
