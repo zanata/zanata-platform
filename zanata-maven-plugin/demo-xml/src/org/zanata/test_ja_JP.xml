@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:translations xmlns:ns2="http://zanata.org/namespace/api/" xmlns:ns3="http://zanata.org/namespace/api/gettext/" xmlns:ns4="http://zanata.org/namespace/api/comment/">
+    <extensions/>
+    <targets>
+        <ns2:text-flow-target resourceRevision="1" state="Approved" res-id="GREETING">
+            <content>こんにちは</content>
+            <extensions>
+                <extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns4:simpleCommentExtension" xml:space="preserve">
+                    <value></value>
+                </extension>
+            </extensions>
+        </ns2:text-flow-target>
+        <ns2:text-flow-target resourceRevision="2" state="Approved" res-id="FAREWELL">
+            <content>さようなら</content>
+            <extensions>
+                <extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns4:simpleCommentExtension" xml:space="preserve">
+                    <value>note that the original (en) has GREETING *before* FAREWELL</value>
+                </extension>
+            </extensions>
+        </ns2:text-flow-target>
+    </targets>
+</ns2:translations>
