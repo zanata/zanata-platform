@@ -19,8 +19,8 @@ public class VersionManager
 
    public boolean checkVersion(String client, String server)
    {
-      log.debug("start version check client verson:" + client + " server version:" + server);
-      // TODO: compatiable server and client
+      log.debug("start version check client version:" + client + " server version:" + server);
+      // TODO: compatible server and client
       return true;
    }
 

@@ -144,9 +144,9 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       FullTextQuery ftQuery = entityManager.createFullTextQuery(mustMatchAllQuery, HTextFlowTarget.class);
 
       @SuppressWarnings("unchecked")
-      List<HTextFlowTarget> matches = (List<HTextFlowTarget>) ftQuery.getResultList();
+      List<HTextFlowTarget> resultList = (List<HTextFlowTarget>) ftQuery.getResultList();
 
-      return matches;
+      return resultList;
    }
 
    @Override
