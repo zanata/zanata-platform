@@ -169,6 +169,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       this.textFlowDAO = new TextFlowDAO(getSession());
       this.textFlowTargetDAO = new TextFlowTargetDAO(getSession());
       this.resourceUtils = new ResourceUtils();
+      resourceUtils.create();
       this.identity = new Identity()
       {
          @Override
