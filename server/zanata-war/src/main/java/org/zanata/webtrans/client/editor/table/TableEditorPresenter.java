@@ -233,7 +233,12 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          inProcessing = action;
          final UpdateTransUnit updateTransUnit = action.getAction();
          updateTransUnit.setRedo(true);
-         updateTransUnit.setVerNum(action.getResult().getCurrentVersionNum());
+         // FIXME sort out verNum so it is practical. Manually setting to a
+         // previous version number for a redo does not seem sensible, rather
+         // the action should store the current version, and possibly have a
+         // new version added (in addition to the old one) when available as
+         // a point from which to apply an undo/redo action.
+         // updateTransUnit.setVerNum(action.getResult().getCurrentVersionNum());
          eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifySaving()));
          dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
          {
@@ -428,7 +433,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
                   if (inProcessing != null)
                   {
-                     if (inProcessing.getAction().getTransUnitId().equals(event.getTransUnit().getId()))
+                     if (inProcessing.getAction().getSingleTransUnitId().equals(event.getTransUnit().getId()))
                      {
                         tableModelHandler.gotoRow(rowIndex, true);
                         eventBus.fireEvent(new UndoRedoFinishEvent(inProcessing));
@@ -442,7 +447,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                   {
                      display.getTableModel().clearCache();
                      display.getTargetCellEditor().cancelEdit();
-                     if (inProcessing.getAction().getTransUnitId().equals(event.getTransUnit().getId()))
+                     if (inProcessing.getAction().getSingleTransUnitId().equals(event.getTransUnit().getId()))
                      {
                         int pageNum = inProcessing.getCurrentPage();
                         int rowNum = inProcessing.getRowNum();
@@ -722,7 +727,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       @Override
       public boolean onSetRowValue(int row, TransUnit rowValue)
       {
-         final UpdateTransUnit updateTransUnit = new UpdateTransUnit(rowValue.getId(), rowValue.getTargets(), rowValue.getStatus());
+         final UpdateTransUnit updateTransUnit = new UpdateTransUnit(rowValue.getId(), rowValue.getTargets(), rowValue.getStatus(), rowValue.getVerNum());
          eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifySaving()));
          dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
          {
@@ -1199,6 +1204,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    {
       return curRowIndex;
    }
+
    /**
     * Load a document into the editor
     * 

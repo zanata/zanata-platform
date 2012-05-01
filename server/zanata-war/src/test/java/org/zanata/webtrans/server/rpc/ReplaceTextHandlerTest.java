@@ -63,7 +63,7 @@ public class ReplaceTextHandlerTest
 
       ArgumentCaptor<UpdateTransUnit> captor = ArgumentCaptor.forClass(UpdateTransUnit.class);
       verify(mockUpdateTransUnitHandler).execute(captor.capture(), eq(context));
-      MatcherAssert.assertThat(captor.getValue().getContents(), Matchers.equalTo(Lists.newArrayList("123", "123", "123")));
+      MatcherAssert.assertThat(captor.getValue().getSingleContents(), Matchers.equalTo(Lists.newArrayList("123", "123", "123")));
    }
 
    @Test
@@ -76,7 +76,7 @@ public class ReplaceTextHandlerTest
 
       ArgumentCaptor<UpdateTransUnit> captor = ArgumentCaptor.forClass(UpdateTransUnit.class);
       verify(mockUpdateTransUnitHandler).execute(captor.capture(), eq(context));
-      MatcherAssert.assertThat(captor.getValue().getContents(), Matchers.equalTo(Lists.newArrayList("123", "AbC", "ABC")));
+      MatcherAssert.assertThat(captor.getValue().getSingleContents(), Matchers.equalTo(Lists.newArrayList("123", "AbC", "ABC")));
    }
 
    @Test(expectedExceptions = {ActionException.class})

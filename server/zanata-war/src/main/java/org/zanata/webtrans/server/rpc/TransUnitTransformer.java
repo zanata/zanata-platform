@@ -59,7 +59,8 @@ public class TransUnitTransformer
             .setSourceComment(CommentsUtil.toString(hTextFlow.getComment()))
             .setTargets(targetContents)
             .setMsgContext(msgContext)
-            .setRowIndex(hTextFlow.getPos());
+            .setRowIndex(hTextFlow.getPos())
+            .setVerNum(target.getVersionNum());
 
       if (target != null)
       {

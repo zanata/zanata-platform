@@ -33,7 +33,7 @@ public class ReplaceText extends UpdateTransUnit
 
    public ReplaceText(TransUnit transUnit, String searchText, String replaceText, boolean isCaseSensitive)
    {
-      super(transUnit.getId(), transUnit.getTargets(), transUnit.getStatus());
+      super(transUnit.getId(), transUnit.getTargets(), transUnit.getStatus(), transUnit.getVerNum());
       caseSensitive = isCaseSensitive;
       this.searchText = searchText;
       this.replaceText = replaceText;

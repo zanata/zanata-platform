@@ -33,6 +33,7 @@ public class TransUnit implements IsSerializable, Serializable
    private String lastModifiedBy;
    private String lastModifiedTime;
    private int rowIndex;
+   private int verNum;
 
    private static Comparator<TransUnit> rowIndexComparator;
 
@@ -43,7 +44,7 @@ public class TransUnit implements IsSerializable, Serializable
    }
 
    //TODO make it truly an immutable class. TableEditorTableDefinition and InlineTargetCellEditor still uses some of the setter methods
-   private TransUnit(TransUnitId id, String resId, LocaleId localeId, boolean plural, ArrayList<String> sources, String sourceComment, ArrayList<String> targets, ContentState status, String lastModifiedBy, String lastModifiedTime, String msgContext, int rowIndex)
+   private TransUnit(TransUnitId id, String resId, LocaleId localeId, boolean plural, ArrayList<String> sources, String sourceComment, ArrayList<String> targets, ContentState status, String lastModifiedBy, String lastModifiedTime, String msgContext, int rowIndex, int verNum)
    {
       this.id = id;
       this.resId = resId;
@@ -57,6 +58,7 @@ public class TransUnit implements IsSerializable, Serializable
       this.lastModifiedTime = lastModifiedTime;
       this.msgContext = msgContext;
       this.rowIndex = rowIndex;
+      this.verNum = verNum;
    }
    
    public TransUnitId getId()
@@ -170,6 +172,16 @@ public class TransUnit implements IsSerializable, Serializable
       this.lastModifiedTime = lastModifiedTime;
    }
 
+   public Integer getVerNum()
+   {
+      return verNum;
+   }
+
+   void setVerNum(Integer verNum)
+   {
+      this.verNum = verNum;
+   }
+
    public static Comparator<TransUnit> getRowIndexComparator()
    {
       if (rowIndexComparator == null)
@@ -209,6 +221,7 @@ public class TransUnit implements IsSerializable, Serializable
       private String lastModifiedBy;
       private String lastModifiedTime;
       private int rowIndex;
+      private int verNum = -1; // to fail check if not set before build
 
       private Builder(TransUnit transUnit)
       {
@@ -224,6 +237,7 @@ public class TransUnit implements IsSerializable, Serializable
          this.lastModifiedBy = transUnit.lastModifiedBy;
          this.lastModifiedTime = transUnit.lastModifiedTime;
          this.rowIndex = transUnit.rowIndex;
+         this.verNum = transUnit.verNum;
       }
 
       private Builder()
@@ -237,12 +251,13 @@ public class TransUnit implements IsSerializable, Serializable
          Preconditions.checkNotNull(localeId, "localeId can not be null");
          Preconditions.checkState(sources != null && !sources.isEmpty());
          Preconditions.checkState(rowIndex >= 0);
+         Preconditions.checkState(verNum >= 0);
 
          lastModifiedBy = Strings.nullToEmpty(lastModifiedBy);
          lastModifiedTime = Strings.nullToEmpty(lastModifiedTime);
          status = Objects.firstNonNull(status, ContentState.New);
 
-         return new TransUnit(id, resId, localeId, plural, sources, sourceComment, targets, status, lastModifiedBy, lastModifiedTime, msgContext, rowIndex);
+         return new TransUnit(id, resId, localeId, plural, sources, sourceComment, targets, status, lastModifiedBy, lastModifiedTime, msgContext, rowIndex, verNum);
       }
 
       public static Builder newTransUnitBuilder()
@@ -353,6 +368,12 @@ public class TransUnit implements IsSerializable, Serializable
       public Builder setRowIndex(int rowIndex)
       {
          this.rowIndex = rowIndex;
+         return this;
+      }
+
+      public Builder setVerNum(int verNum)
+      {
+         this.verNum = verNum;
          return this;
       }
    }

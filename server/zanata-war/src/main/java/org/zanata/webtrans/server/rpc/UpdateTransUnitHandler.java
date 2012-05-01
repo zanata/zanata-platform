@@ -131,13 +131,13 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException
    {
       LocaleId localeId = action.getWorkspaceId().getLocaleId();
-      log.debug("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), localeId, action.getContentState(), action.getContents());
+      log.debug("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getSingleTransUnitId(), localeId, action.getSingleContentState(), action.getSingleContents());
       TranslationWorkspace workspace = checkSecurityAndGetWorkspace(action);
 
       TranslationService.TranslationResult translationResult;
       try
       {
-         translationResult = translationServiceImpl.translate(action.getTransUnitId().getValue(), localeId, action.getContentState(), action.getContents());
+         translationResult = translationServiceImpl.translate(action.getSingleTransUnitId().getValue(), localeId, action.getSingleContentState(), action.getSingleContents());
       }
       catch (Exception e)
       {
@@ -150,7 +150,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
       manageRedo(action, prevTarget);
 
-      UpdateTransUnit previous = new UpdateTransUnit(action.getTransUnitId(), newArrayList(prevTarget.getContents()), prevTarget.getState());
+      UpdateTransUnit previous = new UpdateTransUnit(action.getSingleTransUnitId(), newArrayList(prevTarget.getContents()), prevTarget.getState(), prevTarget.getVersionNum());
 
       int wordCount = hTextFlow.getWordCount().intValue();
 
@@ -162,18 +162,19 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
       ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);
       TransUnit tu = TransUnit.Builder.newTransUnitBuilder()
-            .setId(action.getTransUnitId())
+            .setId(action.getSingleTransUnitId())
             .setResId(hTextFlow.getResId())
             .setLocaleId(localeId)
             .setPlural(hTextFlow.isPlural())
             .setSources(sourceContents)
             .setSourceComment(CommentsUtil.toString(hTextFlow.getComment()))
-            .setTargets(action.getContents())
+            .setTargets(action.getSingleContents())
             .setStatus(newTarget.getState())
             .setLastModifiedBy(authenticatedAccount.getPerson().getName())
             .setLastModifiedTime(new SimpleDateFormat().format(new Date()))
             .setMsgContext(msgContext)
             .setRowIndex(hTextFlow.getPos())
+            .setVerNum(newTarget.getVersionNum())
             .build();
 
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, newTarget.getState(), tu, identity.getCredentials().getUsername());
@@ -211,9 +212,9 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          {
             throw new ActionException("Redo Failure due to empty string.");
          }
-         if (!prevTarget.getVersionNum().equals(action.getVerNum()))
+         if (!prevTarget.getVersionNum().equals(action.getSingleVerNum()))
          {
-            if (!prevTarget.getLastModifiedBy().getAccount().getUsername().equals(authenticatedAccount.getUsername()) || textFlowTargetHistoryDAO.findConflictInHistory(prevTarget, action.getVerNum(), authenticatedAccount.getUsername()))
+            if (!prevTarget.getLastModifiedBy().getAccount().getUsername().equals(authenticatedAccount.getUsername()) || textFlowTargetHistoryDAO.findConflictInHistory(prevTarget, action.getSingleVerNum(), authenticatedAccount.getUsername()))
             {
                throw new ActionException("Find conflict, Redo Failure.");
             }
@@ -225,7 +226,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    public void rollback(UpdateTransUnit action, UpdateTransUnitResult result, ExecutionContext context) throws ActionException
    {
       LocaleId localeId = action.getWorkspaceId().getLocaleId();
-      log.debug("revert TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), localeId, action.getContentState(), action.getContents());
+      log.debug("revert TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getSingleTransUnitId(), localeId, action.getSingleContentState(), action.getSingleContents());
       TranslationWorkspace workspace = checkSecurityAndGetWorkspace(action);
 
       HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
@@ -246,7 +247,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 //         }
 //      }
 
-      TranslationService.TranslationResult translationResult = translationServiceImpl.translate(action.getTransUnitId().getValue(), localeId, result.getPrevious().getContentState(), result.getPrevious().getContents());
+      TranslationService.TranslationResult translationResult = translationServiceImpl.translate(action.getSingleTransUnitId().getValue(), localeId, result.getPrevious().getSingleContentState(), result.getPrevious().getSingleContents());
       HTextFlow hTextFlow = translationResult.getTextFlow();
       HTextFlowTarget prevTarget = translationResult.getPreviousTextFlowTarget();
 
@@ -269,20 +270,21 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       }
 
       TransUnit tu = TransUnit.Builder.newTransUnitBuilder()
-            .setId(action.getTransUnitId())
+            .setId(action.getSingleTransUnitId())
             .setResId(hTextFlow.getResId())
             .setLocaleId(localeId)
             .setPlural(hTextFlow.isPlural())
             .setSources(sourceContents)
             .setSourceComment(CommentsUtil.toString(hTextFlow.getComment()))
             .setTargets(targetContents)
-            .setStatus(result.getPrevious().getContentState())
+            .setStatus(result.getPrevious().getSingleContentState())
             .setLastModifiedBy(modifiedBy)
             .setLastModifiedTime(lastChanged)
             .setMsgContext(msgContext)
             .setRowIndex(hTextFlow.getPos())
+            .setVerNum(hTextFlow.getTargets().get(hLocale).getVersionNum())
             .build();
-      TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, result.getPrevious().getContentState(), tu, identity.getCredentials().getUsername());
+      TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, result.getPrevious().getSingleContentState(), tu, identity.getCredentials().getUsername());
       workspace.publish(event);
    }
 
