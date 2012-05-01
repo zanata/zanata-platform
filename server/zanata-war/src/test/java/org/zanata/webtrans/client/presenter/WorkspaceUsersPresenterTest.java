@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.presenter;
 
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
@@ -14,6 +15,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter.Display;
+import org.zanata.webtrans.client.ui.HasManageUserSession;
 import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
@@ -38,8 +40,6 @@ public class WorkspaceUsersPresenterTest
 
    public void setEmptyUserList()
    {
-      expectLastCall().once();
-
       replay(mockDisplay, mockEventBus);
 
       workspaceUsersPresenter.bind();
@@ -50,13 +50,11 @@ public class WorkspaceUsersPresenterTest
 
    public void setNonEmptyUserList()
    {
-      expectLastCall().once();
-      mockDisplay.addUser(new SessionId("sessionId1"), new Person(new PersonId("person1"), "John Smith", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
-      expectLastCall().once();
-      mockDisplay.addUser(new SessionId("sessionId1"), new Person(new PersonId("Smith John"), "Smith John", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16"));
-      expectLastCall().once();
-      mockDisplay.addUser(new SessionId("sessionId1"), new Person(new PersonId("Smohn Jith"), "Smohn Jith", "http://www.gravatar.com/avatar/smohn@zanata.org?d=mm&s=16"));
-      expectLastCall().once();
+      HasManageUserSession mockHasManageUserSession = createMock(HasManageUserSession.class);
+
+      expect(mockDisplay.addUser(new SessionId("sessionId1"), new Person(new PersonId("person1"), "John Smith", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"))).andReturn(mockHasManageUserSession);
+      expect(mockDisplay.addUser(new SessionId("sessionId2"), new Person(new PersonId("person2"), "Smith John", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16"))).andReturn(mockHasManageUserSession);
+      expect(mockDisplay.addUser(new SessionId("sessionId3"), new Person(new PersonId("person3"), "Smohn Jith", "http://www.gravatar.com/avatar/smohn@zanata.org?d=mm&s=16"))).andReturn(mockHasManageUserSession);
 
       replay(mockDisplay, mockEventBus);
 
