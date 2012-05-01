@@ -116,7 +116,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
    public void showEditors(int rowIndex, int editorIndex)
    {
-      Log.info("enter show editor with editor index:" + editorIndex + " current editor index:" + currentEditorIndex);
+      Log.debug("enter show editor with editor index:" + editorIndex + " current editor index:" + currentEditorIndex);
       currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
 
@@ -148,7 +148,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       {
          validationMessagePanel.clear();
          currentDisplay.focusEditor(currentEditorIndex);
-         Log.info("show editors at row:" + rowIndex + " current editor:" + currentEditorIndex);
+         Log.debug("show editors at row:" + rowIndex + " current editor:" + currentEditorIndex);
       }
    }
 
@@ -264,7 +264,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void copySource(ToggleEditor editor)
    {
-      Log.info("copy source");
+      Log.debug("copy source");
       currentEditorIndex = editor.getIndex();
       currentDisplay.showButtons(true);
       editor.setTextAndValidate(sourceContentsPresenter.getSelectedSource());
@@ -285,7 +285,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          public void execute()
          {
             currentEditorIndex = editor.getIndex();
-            Log.info("toggle view current editor index:" + currentEditorIndex);
+            Log.debug("toggle view current editor index:" + currentEditorIndex);
             if (currentDisplay != null)
             {
                currentDisplay.focusEditor(currentEditorIndex);
@@ -381,7 +381,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void onEditorKeyDown(KeyDownEvent event, ToggleEditor editor)
    {
-      Log.info("pressed: " + event.toDebugString());
       checkKey.init(event.getNativeEvent());
 
       if (checkKey.isCopyFromSourceKey())
@@ -390,7 +389,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else if (checkKey.isNextEntryKey())
       {
-         Log.info("go next");
          moveNext(false);
       }
       else if (checkKey.isPreviousEntryKey())
@@ -413,7 +411,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else if (checkKey.isSaveAsApprovedKey(configHolder.isButtonEnter()))
       {
-         Log.info("ctrl + enter");
          event.stopPropagation();
          event.preventDefault();
          saveAsApprovedAndMoveNext();
