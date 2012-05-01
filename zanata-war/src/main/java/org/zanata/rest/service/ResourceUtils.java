@@ -103,14 +103,18 @@ public class ResourceUtils
 
    //   private static int MAX_TARGET_CONTENTS = 6;
 
-   private Properties pluralForms = new Properties();
+   private static Properties pluralForms;
 
    @PostConstruct
    public void create()
    {
       try
       {
-         pluralForms.load(this.getClass().getClassLoader().getResourceAsStream("pluralforms.properties"));
+         if (pluralForms == null)
+         {
+            pluralForms = new Properties();
+            pluralForms.load(this.getClass().getClassLoader().getResourceAsStream("pluralforms.properties"));
+         }
       }
       catch (IOException e)
       {
