@@ -95,11 +95,6 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          log.info("Fetch TransUnits:*");
          filter = new TextFlowFilterImpl();
          textFlows = textFlowDAO.getTransUnitList(action.getDocumentId().getValue());
-         // result =
-         // textFlowDAO.getTransUnitList(action.getDocumentId().getValue(),
-         // action.getOffset(), action.getCount());
-         // size =
-         // textFlowDAO.getCountByDocument(action.getDocumentId().getValue());
       }
 
       ArrayList<TransUnit> units = new ArrayList<TransUnit>();
@@ -126,7 +121,6 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       {
          units.subList(0, action.getOffset()).clear();
       }
-
       return new GetTransUnitListResult(action.getDocumentId(), units, size, gotoRow);
    }
 
