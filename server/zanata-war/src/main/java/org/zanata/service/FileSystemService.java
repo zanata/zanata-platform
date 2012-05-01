@@ -31,7 +31,7 @@ public interface FileSystemService
    {
       DownloadFileName,
       PhysicalFileName,
-      OriginatingUserId;
+      OriginatingUserId
    }
    
    /**
@@ -50,9 +50,8 @@ public interface FileSystemService
     * 
     * @param downloadId The download identifier.
     * @return True, if the file was successfully removed.
-    * @throws IOException
     */
-   boolean deleteDownloadDescriptorFile(String downloadId) throws IOException;
+   boolean deleteDownloadDescriptorFile(String downloadId);
    
    /**
     * Returns a writable file where a generated download can be built/staged while it's being

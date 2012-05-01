@@ -116,7 +116,7 @@ public class CopyTransServiceImpl implements CopyTransService
       return "translation auto-copied from project " + projectname + ", version " + version + ", document " + documentid + author;
    }
 
-   // TODO unit testing for this method
+   // TODO unit testing for this method. Reduce complexity(pass cyclomatic complexity analysis)
    @Override
    public void copyTransForLocale(HDocument document, HLocale locale)
    {
@@ -180,14 +180,14 @@ public class CopyTransServiceImpl implements CopyTransService
       }
       catch (Exception e)
       {
-         log.warn(e, e);
+         log.warn("exception during copy trans", e);
          try
          {
             Transaction.instance().rollback();
          }
          catch (Exception i)
          {
-            log.warn(i, i);
+            log.warn("exception during transaction rollback", i);
          }
       }
       finally
@@ -203,11 +203,11 @@ public class CopyTransServiceImpl implements CopyTransService
    public void copyTransForDocument(HDocument document)
    {
       log.info("copyTrans start: document \"{0}\"", document.getDocId());
-      List<HLocale> localelist = 
+      List<HLocale> localeList =
             localeServiceImpl.getSupportedLangugeByProjectIteration(document.getProjectIteration().getProject().getSlug(),
                   document.getProjectIteration().getSlug());
 
-      for (HLocale locale : localelist)
+      for (HLocale locale : localeList)
       {
          copyTransForLocale(document, locale);
       }

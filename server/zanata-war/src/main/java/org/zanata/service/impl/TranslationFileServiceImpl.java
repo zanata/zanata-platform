@@ -61,7 +61,6 @@ public class TranslationFileServiceImpl implements TranslationFileService
    private TranslationsResource parsePoFile( InputStream fileContents )
    {
       PoReader2 poReader = new PoReader2();
-      TranslationsResource transRes = poReader.extractTarget(new InputSource(fileContents) );
-      return transRes;
+      return poReader.extractTarget(new InputSource(fileContents) );
    }
 }
