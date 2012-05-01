@@ -141,7 +141,6 @@
             <artifactId>${jdbc.artifactId}</artifactId>
             <version>1.2.144</version>
         </dependency>
-
     </dependencies>
 
     <profiles>
