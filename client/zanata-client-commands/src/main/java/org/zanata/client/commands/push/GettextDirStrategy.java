@@ -91,14 +91,15 @@ class GettextDirStrategy extends AbstractPushStrategy
    {
       if (locales != null)
          return locales;
-      if (getOpts().getPushTrans())
+      if (getOpts().getPushType() == PushType.Both || getOpts().getPushType() == PushType.Trans)
       {
-         if (getOpts().getLocales() != null)
+         if (getOpts().getLocaleMapList() != null)
          {
-            locales = PublicanUtil.findLocales(getOpts().getTransDir(), getOpts().getLocales());
+            locales = PublicanUtil.findLocales(getOpts().getTransDir(), getOpts().getLocaleMapList());
             if (locales.size() == 0)
             {
-               log.warn("option 'pushTrans' is set, but none of the configured locale directories was found (check zanata.xml)");
+               log.warn("'pushType' is set to '" + getOpts().getPushType() + "', but none of the configured locale " +
+                     "directories was found (check zanata.xml)");
             }
          }
          else
@@ -106,11 +107,12 @@ class GettextDirStrategy extends AbstractPushStrategy
             locales = PublicanUtil.findLocales(getOpts().getTransDir());
             if (locales.size() == 0)
             {
-               log.warn("option 'pushTrans' is set, but no locale directories were found");
+               log.warn("'pushType' is set to '\" + getOpts().getPushType() + \"', but no locale directories were found");
             }
             else
             {
-               log.info("option 'pushTrans' is set, but no locales specified in configuration: importing " + locales.size() + " directories");
+               log.info("'pushType' is set to '\" + getOpts().getPushType() + \"', but no locales specified in configuration: " +
+                     "importing " + locales.size() + " directories");
             }
          }
       }
@@ -131,7 +133,7 @@ class GettextDirStrategy extends AbstractPushStrategy
             {
                InputSource inputSource = new InputSource(bis);
                inputSource.setEncoding("utf8");
-               TranslationsResource targetDoc = poReader.extractTarget(inputSource, srcDoc);
+               TranslationsResource targetDoc = poReader.extractTarget(inputSource);
                callback.visit(locale, targetDoc);
             }
             finally

@@ -36,8 +36,8 @@ public interface ConfigurableProjectOptions extends ConfigurableOptions
 
    public File getProjectConfig();
 
-   public LocaleList getLocales();
+   public LocaleList getLocaleMapList();
 
-   public void setLocales(LocaleList locales);
+   public void setLocaleMapList(LocaleList locales);
 
 }

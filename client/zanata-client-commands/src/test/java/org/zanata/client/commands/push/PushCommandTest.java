@@ -97,7 +97,7 @@ public class PushCommandTest
       {
          locales.add(new LocaleMapping("ja-JP"));
       }
-      opts.setLocales(locales);
+      opts.setLocaleMapList(locales);
 
       List<ResourceMeta> resourceMetaList = new ArrayList<ResourceMeta>();
       resourceMetaList.add(new ResourceMeta("obsolete"));

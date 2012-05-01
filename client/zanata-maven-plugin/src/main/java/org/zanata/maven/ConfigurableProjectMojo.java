@@ -54,7 +54,7 @@ public abstract class ConfigurableProjectMojo<O extends ConfigurableOptions> ext
     */
    private String projectType;
 
-   private LocaleList locales;
+   private LocaleList localeMapList;
 
    public ConfigurableProjectMojo()
    {
@@ -110,15 +110,15 @@ public abstract class ConfigurableProjectMojo<O extends ConfigurableOptions> ext
    }
 
    @Override
-   public LocaleList getLocales()
+   public LocaleList getLocaleMapList()
    {
-      return locales;
+      return localeMapList;
    }
 
    @Override
-   public void setLocales(LocaleList locales)
+   public void setLocaleMapList(LocaleList localeMapList)
    {
-      this.locales = locales;
+      this.localeMapList = localeMapList;
    }
 
 }

@@ -172,9 +172,9 @@ public class PublicanPushCommand extends ConfigurableProjectCommand<PublicanPush
       List<LocaleMapping> locales = null;
       if (getOpts().getImportPo())
       {
-         if (getOpts().getLocales() != null)
+         if (getOpts().getLocaleMapList() != null)
          {
-            locales = PublicanUtil.findLocales(getOpts().getSrcDir(), getOpts().getLocales());
+            locales = PublicanUtil.findLocales(getOpts().getSrcDir(), getOpts().getLocaleMapList());
             if (locales.size() == 0)
             {
                log.warn("option 'importPo' is set, but none of the configured locale directories was found (check zanata.xml)");
@@ -242,7 +242,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand<PublicanPush
                   {
                      InputSource inputSource = new InputSource(bis2);
                      inputSource.setEncoding("utf8");
-                     targetDoc = poReader.extractTarget(inputSource, srcDoc);
+                     targetDoc = poReader.extractTarget(inputSource);
                   }
                   finally
                   {

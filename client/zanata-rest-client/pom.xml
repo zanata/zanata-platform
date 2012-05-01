@@ -4,26 +4,25 @@
 	<artifactId>zanata-rest-client</artifactId>
 	<name>Zanata Rest client</name>
 	<parent>
-		<artifactId>zanata-parent</artifactId>
 		<groupId>org.zanata</groupId>
-		<version>1.6.0-alpha-2-SNAPSHOT</version>
-
+      <artifactId>client</artifactId>
+		<version>1.6.0-alpha-3-SNAPSHOT</version>
 	</parent>
 	<packaging>jar</packaging>
 
-	<!-- Should be the same as zanata-parent/pom.xml -->
-	<scm>
-		<connection>scm:git:git://github.com/zanata/zanata.git</connection>
-		<developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
-		<url>https://github.com/zanata/zanata</url>
-	</scm>
+   <!-- Should be the same as zanata-client/pom.xml -->
+   <scm>
+      <connection>scm:git:git://github.com/zanata/zanata-client.git</connection>
+      <developerConnection>scm:git:git@github.com:zanata/zanata-client.git</developerConnection>
+      <url>https://github.com/zanata/zanata-client</url>
+   </scm>
 
 	<dependencies>
 
 		<dependency>
 			<groupId>org.zanata</groupId>
 			<artifactId>zanata-common-api</artifactId>
-			<version>${project.version}</version>
+			<version>1.6.0-alpha-2</version>
 		</dependency>
 
 		<dependency>

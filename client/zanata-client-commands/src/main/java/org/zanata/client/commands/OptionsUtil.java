@@ -93,7 +93,7 @@ public class OptionsUtil
          opts.setProjectType(config.getProjectType());
       }
       LocaleList locales = config.getLocales();
-      opts.setLocales(locales);
+      opts.setLocaleMapList(locales);
    }
 
    /**

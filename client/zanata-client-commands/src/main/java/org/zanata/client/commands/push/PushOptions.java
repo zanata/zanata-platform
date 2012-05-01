@@ -7,7 +7,7 @@ import org.zanata.client.commands.PushPullOptions;
 public interface PushOptions extends PushPullOptions
 {
    public String getSourceLang();
-   public boolean getPushTrans();
+   public PushType getPushType();
    public boolean getCopyTrans();
    public String getMergeType();
    public List<String> getIncludes();
