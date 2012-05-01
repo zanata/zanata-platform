@@ -1,27 +1,27 @@
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.shared.model.PersonId;
+import org.zanata.webtrans.shared.model.Person;
 
 public class ExitWorkspaceAction extends AbstractWorkspaceAction<ExitWorkspaceResult>
 {
 
    private static final long serialVersionUID = 1L;
 
-   private PersonId personId;
+   private Person person;
 
    @SuppressWarnings("unused")
    private ExitWorkspaceAction()
    {
    }
 
-   public ExitWorkspaceAction(PersonId personId)
+   public ExitWorkspaceAction(Person person)
    {
-      this.personId = personId;
+      this.person = person;
    }
 
-   public PersonId getPersonId()
+   public Person getPerson()
    {
-      return personId;
+      return person;
    }
 
 }

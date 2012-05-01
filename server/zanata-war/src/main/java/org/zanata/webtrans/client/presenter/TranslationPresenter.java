@@ -120,6 +120,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
    }
 
+
    private void loadTranslatorList()
    {
       dispatcher.execute(new GetTranslatorList(), new AsyncCallback<GetTranslatorListResult>()
@@ -133,8 +134,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onSuccess(GetTranslatorListResult result)
          {
-            workspaceUsersPresenter.setUserList(result.getTranslatorList());
-            display.setParticipantsTitle(messages.nUsersOnline(result.getTranslatorList().size()));
+            workspaceUsersPresenter.initUserList(result.getTranslatorList());
+            display.setParticipantsTitle(messages.nUsersOnline(result.getSize()));
          }
       });
    }
@@ -151,7 +152,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onExitWorkspace(ExitWorkspaceEvent event)
          {
-            loadTranslatorList();
+            workspaceUsersPresenter.removeTranslator(event.getSessionId(), event.getPerson());
+            display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()));
          }
       }));
 
@@ -160,7 +162,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onEnterWorkspace(EnterWorkspaceEvent event)
          {
-            loadTranslatorList();
+            workspaceUsersPresenter.addTranslator(event.getSessionId(), event.getPerson());
+            display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()));
          }
       }));
 

@@ -23,7 +23,6 @@ package org.zanata.webtrans.server.rpc;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -33,9 +32,9 @@ import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.web.ServletContexts;
-import org.zanata.action.UserSessionAction;
 import org.zanata.model.HAccount;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.GravatarService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
@@ -56,13 +55,10 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
    Log log;
 
    @In
-   Session session;
-
-   @In
    TranslationWorkspaceManager translationWorkspaceManager;
 
    @In
-   UserSessionAction userSessionAction;
+   GravatarService gravatarServiceImpl;
 
 
    @Override
@@ -75,7 +71,7 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
       workspace.registerTranslator(retrieveSessionId(), retrievePersonId());
 
       // Send EnterWorkspace event to clients
-      EnterWorkspace event = new EnterWorkspace(new PersonId(ZanataIdentity.instance().getPrincipal().getName()));
+      EnterWorkspace event = new EnterWorkspace(retrieveSessionId(), retrievePerson());
       workspace.publish(event);
 
       Identity identity = new Identity(retrieveSessionId(), retrievePerson());
@@ -101,7 +97,7 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
    private Person retrievePerson()
    {
       HAccount authenticatedAccount = (HAccount) Contexts.getSessionContext().get(JpaIdentityStore.AUTHENTICATED_USER);
-      return new Person(new PersonId(authenticatedAccount.getUsername()), authenticatedAccount.getPerson().getName(), userSessionAction.getUserImageUrl(16, authenticatedAccount.getPerson().getEmail()));
+      return new Person(new PersonId(authenticatedAccount.getUsername()), authenticatedAccount.getPerson().getName(), gravatarServiceImpl.getUserImageUrl(16, authenticatedAccount.getPerson().getEmail()));
    }
 
 }

@@ -1,8 +1,11 @@
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.shared.model.PersonId;
+import org.zanata.webtrans.shared.auth.SessionId;
+import org.zanata.webtrans.shared.model.Person;
 
 public interface HasExitWorkspaceData
 {
-   PersonId getPersonId();
+   Person getPerson();
+
+   SessionId getSessionId();
 }

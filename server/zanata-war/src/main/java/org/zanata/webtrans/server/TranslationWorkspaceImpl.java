@@ -1,8 +1,9 @@
 package org.zanata.webtrans.server;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.zanata.webtrans.shared.auth.SessionId;
@@ -25,9 +26,6 @@ import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 
 public class TranslationWorkspaceImpl implements TranslationWorkspace
 {
-
-   private static final String EVENT_TRANSLATOR_ENTER_WORKSPACE = "webtrans.TranslatorEnterWorkspace";
-
    private static final Log log = Logging.getLog(TranslationWorkspaceImpl.class);
    private final WorkspaceContext workspaceContext;
    private final Domain domain;
@@ -59,11 +57,6 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    public WorkspaceContext getWorkspaceContext()
    {
       return workspaceContext;
-   }
-
-   public ImmutableSet<SessionId> getSessions()
-   {
-      return ImmutableSet.copyOf(sessions.keySet());
    }
 
    public String getTransUnitStatus(TransUnitId unitId)
@@ -101,15 +94,15 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
       return ImmutableSet.copyOf(editstatus.values());
    }
 
-   public int getUserCount()
-   {
-      return sessions.size();
-   }
-
    @Override
-   public ImmutableSet<PersonId> getUsers()
+   public Map<SessionId, PersonId> getUsers()
    {
-      return ImmutableSet.copyOf(sessions.values());
+      Map<SessionId, PersonId> list = new HashMap<SessionId, PersonId>();
+      for (SessionId sessionId : sessions.keySet())
+      {
+         list.put(sessionId, sessions.get(sessionId));
+      }
+      return list;
    }
 
    public void removeTransUnit(TransUnitId transUnitId, String sessionId)
@@ -131,20 +124,19 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
       }
    }
 
-   public boolean removeTranslator(PersonId personId)
+   @Override
+   public boolean removeTranslator(SessionId sessionId, PersonId personId)
    {
-      ImmutableSet<SessionId> sessionIdSet = getSessions();
-      for (SessionId sessionId : sessionIdSet)
+      if (sessions.containsKey(sessionId))
       {
-         PersonId temp = sessions.get(sessionId);
-         if (temp.equals(personId))
+         final boolean removed = sessions.remove(sessionId, personId);
+         if (removed)
          {
-            final boolean removed = sessions.remove(sessionId, personId);
-            if (removed)
-               log.info("Removed user '{0}' in session '{1}' from workspace {2}", personId.getId(), sessionId, workspaceContext);
-            return removed;
+            log.info("Removed user '{0}' in session '{1}' from workspace {2}", personId.getId(), sessionId, workspaceContext);
          }
+         return removed;
       }
+
       return false;
    }
 
@@ -152,9 +144,7 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    public void registerTranslator(SessionId sessionId, PersonId personId)
    {
       log.info("Added user '{0}' in session '{1}' to workspace {2}", personId.getId(), sessionId.getValue(), workspaceContext);
-      PersonId pId = sessions.putIfAbsent(sessionId, personId);
-      if (pId == null && Events.exists())
-         Events.instance().raiseEvent(EVENT_TRANSLATOR_ENTER_WORKSPACE, workspaceContext.getWorkspaceId(), personId);
+      sessions.putIfAbsent(sessionId, personId);
    }
 
    @Override

@@ -21,12 +21,12 @@
 
 package org.zanata.webtrans.server;
 
+import java.util.Map;
+
 import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
-
-import com.google.common.collect.ImmutableSet;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -34,8 +34,9 @@ import com.google.common.collect.ImmutableSet;
  */
 public interface TranslationWorkspace
 {
-   public ImmutableSet<PersonId> getUsers();
-   public boolean removeTranslator(PersonId personId);
+   public Map<SessionId, PersonId> getUsers();
+
+   public boolean removeTranslator(SessionId sessionId, PersonId personId);
    public void registerTranslator(SessionId sessionId, PersonId personId);
    public <T extends SessionEventData> void publish(T eventData);
    public WorkspaceContext getWorkspaceContext();

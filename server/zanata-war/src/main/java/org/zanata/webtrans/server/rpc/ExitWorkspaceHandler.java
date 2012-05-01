@@ -3,7 +3,6 @@ package org.zanata.webtrans.server.rpc;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -28,9 +27,6 @@ public class ExitWorkspaceHandler extends AbstractActionHandler<ExitWorkspaceAct
    Log log;
 
    @In
-   Session session;
-
-   @In
    TranslationWorkspaceManager translationWorkspaceManager;
 
    @Override
@@ -42,14 +38,15 @@ public class ExitWorkspaceHandler extends AbstractActionHandler<ExitWorkspaceAct
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
 
       // Send ExitWorkspace event to client
-      if (workspace.removeTranslator(action.getPersonId()))
+      boolean isRemoved = workspace.removeTranslator(action.getSessionId(), action.getPerson().getId());
+      if (isRemoved)
       {
          // Send GWT Event to client to update the userlist
-         ExitWorkspace event = new ExitWorkspace(action.getPersonId());
+         ExitWorkspace event = new ExitWorkspace(action.getSessionId(), action.getPerson());
          workspace.publish(event);
       }
 
-      return new ExitWorkspaceResult(action.getPersonId().toString());
+      return new ExitWorkspaceResult(action.getPerson().getId().toString());
    }
 
    @Override

@@ -1,14 +1,15 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
+import org.zanata.webtrans.client.ui.HasManageUserSession;
+import org.zanata.webtrans.client.ui.UserPanel;
+import org.zanata.webtrans.shared.auth.SessionId;
+import org.zanata.webtrans.shared.model.Person;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -37,20 +38,29 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    }
 
    @Override
-   public void clearUserList()
+   public HasManageUserSession addUser(SessionId sessionId, Person person)
    {
-      userListPanel.clear();
+      UserPanel userPanel = new UserPanel(sessionId.toString(), person.getName(), person.getAvatarUrl());
+      userListPanel.add(userPanel);
+      return userPanel;
    }
 
    @Override
-   public void addUser(String name, String userImgUrl)
+   public void removeUser(HasManageUserSession userPanel)
    {
-      HorizontalPanel userPanel = new HorizontalPanel();
-      Image userImage = new Image(userImgUrl);
-      userPanel.add(userImage);
-      userPanel.setCellWidth(userImage, "16px");
-      userPanel.add(new Label(name));
-      
-      userListPanel.add(userPanel);
+      for (int i = 0; i < userListPanel.getWidgetCount(); i++)
+      {
+         if (userPanel.equals(userListPanel.getWidget(i)))
+         {
+            userListPanel.remove(i);
+            break;
+         }
+      }
+   }
+
+   @Override
+   public int getUserSize()
+   {
+      return userListPanel.getWidgetCount();
    }
 }

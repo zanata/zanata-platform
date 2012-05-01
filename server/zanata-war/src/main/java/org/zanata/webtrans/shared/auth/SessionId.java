@@ -33,7 +33,7 @@ public final class SessionId implements Identifier<String>, Serializable
          return false;
       if (obj instanceof SessionId)
       {
-         return ((SessionId) obj).id == id;
+         return ((SessionId) obj).id.equals(id);
       }
       return super.equals(obj);
    }
