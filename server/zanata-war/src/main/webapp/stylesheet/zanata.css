@@ -1,0 +1,759 @@
+#container {
+	width: 900px;
+	margin: 0 auto;
+	background-color: #ffffff;
+}
+
+#localeSelector {
+	float: left;
+	width: 100px;
+}
+
+#yui-main {
+	float: left;
+	width: 680px !important;
+}
+
+.bold-larger {
+	font-weight: bold;
+	font-size: larger;
+}
+
+.filter-options {
+	float: right;
+}
+
+#search_panel {
+	float: right;
+	padding-bottom: 5px;
+	color: #999999;
+}
+
+#bd {
+	min-height: 400px;
+	width: 100%;
+	padding: 10px 0;
+	float: left;
+	text-align: left;
+}
+
+.code {
+	color: grey;
+}
+
+.search_icon {
+	background-image: url(../images/crystal_project/_16x16/actions/search.png);
+}
+
+.input_help {
+	vertical-align: middle;
+	padding-left: 2px;
+	/* error img takes up 16px */
+	padding-right: 2px;
+}
+
+.columnHeader:hover {
+	color: #FF6600;
+}
+
+.message {
+	padding: 5px;
+	list-style: none;
+	color: #000000;
+	margin: 5px 0 8px 0;
+}
+
+.message li {
+	list-style-type: none;
+	list-style-position: outside;
+	list-style-image: none;
+	background: no-repeat left center;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 20px;
+	margin-left: 3px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+
+.message li.infomsg {
+	background-image: url(../images/msginfo.png);
+	background-color: #fafafe;
+}
+
+.message li.errormsg {
+	background-image: url(../images/msgerror.png);
+	background-color: #fefafa;
+}
+
+.message li.warnmsg {
+	background-image: url(../images/msgwarn.png);
+	background-color: #fefefa;
+}
+
+.name {
+	vertical-align: top;
+	font-weight: bold;
+	width: 130px;
+	float: left;
+	padding: 5px;
+	margin-top: 3px;
+	clear: left;
+}
+
+.prop {
+	vertical-align: middle;
+}
+
+.value {
+	float: left;
+	padding: 5px;
+}
+
+.error {
+	float: left;
+	padding: 5px;
+}
+
+.errors {
+	color: #F00000;
+	vertical-align: middle;
+}
+
+img.errors {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.errors input,.errors textarea {
+	border: 1px solid #F00000 !important;
+	background-color: #FFFAFA;
+}
+
+.required {
+	color: #F00000;
+	padding-left: 2px;
+}
+
+.rich-panel input[type=submit],.rich-panel input[type=button],.rich-tabpanel input[type=submit],.rich-tabpanel input[type=button]
+	{
+	margin-bottom: 0;
+}
+
+.actionButtons {
+	padding-top: 10px;
+	padding-right: 10px;
+	text-align: left;
+}
+
+.actionButtons select {
+	margin: 5px 5px 5px 0;
+	vertical-align: bottom;
+}
+
+div.info {
+}
+
+/* Styles from the security-stuff in seamspace*/
+div.checkmark {
+	background: url(../images/crystal_project/_16x16/actions/button_ok.png) top left no-repeat;
+	width: 16px;
+	height: 16px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+div.cross {
+	background: url(../images/crystal_project/_16x16/actions/button_cancel.png) top left no-repeat;
+	width: 16px;
+	height: 16px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+tr.odd {
+	background-color: #ffffff;
+}
+
+tr.even {
+	background-color: #fafaff;
+}
+
+tr.hover-row { 
+	cursor: pointer;
+}
+
+td.enabled {
+	text-align: center;
+}
+
+table.fullwidth {
+	width: 100%
+}
+
+td.wrapped {
+    word-break: break-word;
+    word-wrap: break-word;
+}
+
+a.action_link {
+	display: block;
+	font-size: 14px;
+	font-weight: bold;
+	background-color: #FFFFFF;
+	border: 1px solid #A2C4F5;
+	padding: 4px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	color: #7092C3;
+	margin-top: 4px;
+	text-align: center;
+}
+
+a.action_link:hover {
+	background-color: #FFFFFF;
+	border:1px solid #990000;
+	color:#990000;
+}
+
+a.table_link {
+	font-size: 14px;
+	font-weight: bold;
+	padding: 4px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	color: #7092C3;
+	text-decoration: none;
+	margin: 1px;
+	text-align: right;
+}
+
+a.table_link:hover {
+	color: #990000;
+}
+
+
+a.iteration_link {
+	font-weight: bold;
+	color: #7092C3;
+}
+
+a.iteration_link:hover {
+	color: #990000;
+}
+
+
+.obsolete {
+	font-style: italic;
+	text-decoration: line-through;
+}
+
+a.obsolete_link,a.obsolete_link:visited,a.obsolete_link:link {
+	font-style: italic;
+	color: #ACC2E1;
+	text-decoration: line-through;
+}
+
+.readonly {
+	font-style: italic;
+}
+
+a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
+	font-style: italic;
+	color: #ACC2E1;
+}
+
+
+/* -----------------------   Left/right container CSS  -------------------------*/
+.yui-b {
+	padding: 5px;
+	width: 200px;
+	float:right;
+}
+
+#yui-main .yui-b {
+	position: static;
+	width:auto;
+	float:none;
+}
+/* -----------------------  End Left/right container CSS  -------------------------*/
+
+/* -----------------------  Header CSS  -------------------------*/
+#headerlogo {
+	padding-top: 6px;
+	float: left;
+}
+
+#banner {
+	float: left;
+	width: 900px;
+	background: #ffffff;
+	padding-bottom: 10px;
+}
+
+#header_top_right {
+	box-shadow: 0 0 2px #aaa;
+	-moz-box-shadow:0 0 2px #aaa;
+	border: 1px solid #CCC;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	margin-top: 5px;
+	float: right;
+	padding: 10px 20px;
+}
+
+.user_img {
+	box-shadow: 0 0 2px #aaa;
+	-moz-box-shadow:0 0 2px #aaa;
+	border: 1px solid #CCC;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	margin-top: 5px;
+	margin-right: 5px;
+	float: right;
+}
+
+#loading_top_right {
+	position: fixed;
+	right: 2px;
+	top: 2px;
+}
+
+
+/* ----------------------- End Header CSS  -------------------------*/
+
+/* -----------------------  Footer CSS  -------------------------*/
+#ft {
+	background: url('../images/footer_background.png') 0 0 repeat-x;
+	-moz-border-radius-bottomright: 5px;
+	-moz-border-radius-bottomleft: 5px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+	float: left;
+}
+
+#footer {
+	width: 100%;
+	line-height: 20px;
+	text-align: center;
+	padding-top: 10px;
+}
+
+#footer-text {
+	float: left;
+	margin-left: 100px;
+	width: 700px;
+}
+/* -----------------------  End Footer CSS  -------------------------*/
+
+/* -----------------------  Loading Frame CSS (loading.xhtml)  -------------------------*/
+
+/* Use this class for parent containers that
+ * wish to use the loading.xhtml component 
+ */
+.loading_parent {
+	position: relative;
+}
+
+.loading_frame {
+	background: #333; 
+	width: 50px; 
+	height:50px; 
+	position: absolute; 
+	top:50px; 
+	left:50%; 
+	display:block; 
+	-webkit-border-radius:10px; 
+	border-radius:10px; 
+	opacity:0.6; 
+	text-align: center;
+}
+
+.loading_frame .loading_image {
+	margin-top:9px;
+}
+
+/* -----------------------  End Loading Frame CSS (loading.xhtml)  -------------------------*/
+
+/* -----------------------  JSF components CSS  -------------------------*/
+.rich-panel-header, .rich-table-headercell {
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	text-align: center;
+}
+
+.rich-panel {
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	margin-bottom:10px;
+}
+
+.rich-panel-body {
+	border: 1px solid;
+	border-color: #f4f4f4;
+}
+
+.rich-stglpanel-header {
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+
+/* the specificity here is necessary to override the defaults */
+.rich-panel .rich-panel-header,.rich-stglpanel .rich-stglpanel-header, .rich-table .rich-table-header {
+	background-image: none;
+	padding: 2px 3px;
+}
+
+.rich-stglpanel {
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.rich-stglpanel-body {
+	overflow: auto;
+}
+
+.rich-table {
+	width: 100%;
+}
+
+.inline_cell_item {
+	width: 100%;
+	float: left;
+	margin: 0px;
+}
+
+.rich-tabpanel-content{
+    background:white;
+}
+
+.noBorderTable .rich-table {
+	border-width: 0px;
+}
+
+.noBorderTable .rich-table-headercell {
+	border-width: 0px;
+}
+
+.noBorderTable .rich-table-cell {
+	border-width: 0px;
+}
+
+/* -----------------------  End JSF components CSS  -------------------------*/
+
+/* -----------------------  Top menu CSS  -------------------------*/
+/* Caution! Ensure accessibility in print and other media types... */
+@media projection , screen {
+	/* Use class for showing/hiding tab content, so that visibility can be better controlled in different media types... */
+	.ui-tabs-hide {
+		display: none;
+	}
+}
+
+/* Hide useless elements in print layouts... */
+@media print {
+	.ui-tabs-nav {
+		display: none;
+	}
+}
+
+#tabs-menu {
+	background: url('../images/bar_background.png') 0 0 repeat-x;
+	border: 1px solid #EAEAEA;
+	border-bottom-color: #CACACA;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	float: left;
+	width: 900px;
+	height: 40px;
+}
+
+#tabs .ui-tabs-nav {
+	margin: 0 10px;
+	padding:0;
+	position:relative;
+	z-index:1;
+}
+
+#tabs .ui-tabs-nav li {
+	line-height: 40px;
+	list-style: none;
+	float: left;
+	min-width: 84px; /* be nice to Opera */
+}
+
+#tabs .ui-tabs-nav li a {
+	color: #000000;
+	white-space: nowrap; /* required in IE 6 */
+	height:40px;
+	font-weight:bold;
+	padding: 0 20px;
+}
+
+#tabs .ui-tabs-nav li.ui-tabs-selected {
+	border-top: 1px solid #C1BFBF;
+	border-left: 1px solid #C1BFBF;
+}
+
+#tabs .ui-tabs-nav li.ui-tabs-selected a {
+	background-color: #d3d3d3;
+	color: black;
+	margin-top: 0;
+	height:40px;
+	display:block;
+}
+
+#tabs img {
+	margin-right: 5px;
+	vertical-align: middle;
+}
+
+#tabs .ui-tabs-nav a,.ui-tabs-nav a span {
+	display: block;
+	width:auto;
+	cursor:pointer;
+	outline: 0 none;
+}
+
+.ui-tabs-nav-issues {
+	position: relative;
+}
+
+.ui-tabs-nav-issues ul {
+	border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 3px;
+	-moz-border-radius-bottomright: 3px;
+	-moz-border-radius-bottomleft: 3px;
+	display: none;
+	border: 1px solid #ddd;
+	margin:0;
+	padding-left:0px;
+}
+
+.ui-tabs-nav-issues:hover ul {
+	display: block;
+	position: absolute;
+}
+
+.ui-tabs-nav-issues ul li a {
+	background: #eeeeee !important;
+	padding: 0 !important;
+	text-align: left !important;
+	border-bottom: 1px solid #ddd;
+	height: 12px !important;
+	font-weight: normal !important;
+	padding: 8px 10px !important;
+	line-height: 1.2em;
+	margin:0px;
+}
+
+.ui-tabs-loading em {
+	padding: 0 0 0 20px;
+	background: url(../images/loading.gif) no-repeat 0 50%;
+}
+
+.ui-tabs-nav-issues ul li a:hover {
+	background-color: #dddddd !important;
+}
+
+.ui-tabs-nav-issues ul li {
+	width: 180px;
+}
+/* -----------------------  End Top menu CSS  -------------------------*/
+
+/* -----------------------  Login form CSS  -------------------------*/
+.loginForm_input {
+	height: 22px;
+	width: 200px;
+	font-size: 14px;
+	font-weight: normal;
+}
+
+.loginForm_label {
+	font-size: 14px;
+}
+/* -----------------------  End Login form CSS  -------------------------*/
+
+/* -----------------------  Stats bar CSS  -------------------------*/
+.translationStatusDiv {
+	float: left;
+	display: block;
+	padding: 3px;
+	padding-right: 6px;
+	margin-right: 5px;
+	width: 144px;
+	height: 14px;
+}
+
+.statusBar_percentage {
+	font-size: 12px;
+	font-weight: bold;
+	padding-left: 2px;
+}
+
+.statusBar_noContent {
+	font-size: 12px;
+	text-align: center;
+	width: 142px;
+	padding: 3px;
+	padding-right: 6px;
+	margin-right: 5px;
+}
+
+.translationStatusBar {
+	float: left;
+	display: block;
+	height: 14px;
+	margin: 0;
+	padding: 0;
+}
+
+.statusBar_approved {
+	background-color: #099b09;
+}
+
+.statusBar_needReview {
+	background-color: #ffc000;
+}
+
+.statusBar_untranslated {
+	background-color: #e5e5e5;
+}
+/* -----------------------  End Stats bar CSS  -------------------------*/
+
+/* -----------------------  Customised Language list CSS  -------------------------*/
+.language_list {
+	font-size: 12px;
+	height: 200px;
+	width: 300px;
+}
+
+.language_action_buttons {
+	
+}
+
+.language_action_button {
+	width: 70px;
+}
+/* -----------------------  End Customised Language list CSS  -------------------------*/
+
+/* -----------------------  Project iteration CSS  -------------------------*/
+
+.iterations table {
+	border: none;
+}
+
+.iteration_grid_col {
+	border: none;
+	min-width: 100px;
+}
+
+.version_header {
+    padding:8px;
+    font-weight:bold;
+    background-image:none;
+    width:200px;
+}
+
+.version_link_div {
+	border:1px solid #7092C3;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	padding:5px;
+	margin-bottom:3px;
+	min-width: 100px; 
+	min-height: 100px;
+}
+
+.version_link_div:hover {
+	border:1px solid #990000;
+	background-color: #F3F2F2;
+}
+
+.version_link_div .version_title {
+	word-break: break-word; 
+	word-wrap: break-word; 
+	width: 100px;
+}
+
+.version_link_div .version_info {
+	margin-top:20px; 
+	font-size: 10px; 
+	font-style: normal;
+}
+
+a.version_link {
+	font-size: 14px;
+	font-weight: bold;
+	color: #7092C3;
+	text-decoration: none;
+}
+
+a.version_link:hover {
+	color: #990000;
+}
+
+.iterationHeader_active {
+	background-image: none;
+	border-width: medium;
+	background-color: #ffffff;
+	color: #000000;
+	border-color: #ffffff;
+}
+
+.iterationHeader_readOnly,.iterationHeader_obsolete {
+	background-image: none;
+	border-width: medium;
+	background-color: #e5e5e5;
+	color: #000000;
+	border-color: #e5e5e5;
+}
+
+.list_view_header {
+	width: 100%;
+	padding-bottom: 3px;
+}
+
+.list_view_header h2 {
+	display: inline;
+	margin-top: 0px;
+	margin-bottom: 3px;
+}
+
+.list_view_header h2>a {
+	text-decoration: none;
+	float: left;
+}
+
+.list_view_header .series_name {
+	font-style: italic;
+	font-size: 80%;
+	color: gray;
+}
+
+.menu_items {
+	float: right;
+	display: inline;
+	text-align: right;
+	margin-bottom: 6px;
+}
+
+.highlighted_datatable_row {
+	background-color: lightYellow;
+}
+/* -----------------------  End Inline project iteration CSS  -------------------------*/
+
+/* ------------------------ Profile Page CSS ------------------------------------------*/
+.inactive_tab {
+    background-color: #ffffff;
+}
+/* ------------------------ End Profile Page CSS --------------------------------------*/
+
+.iteration_inline_tribes {
+	
+}
+
+.footer {
+}

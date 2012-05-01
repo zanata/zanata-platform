@@ -1,0 +1,7 @@
+target/**
+**/target/**
+/.settings
+/.project
+*.iml
+*/bin/
+

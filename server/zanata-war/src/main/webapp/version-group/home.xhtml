@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"    
+    xmlns:rich="http://richfaces.org/rich" 
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    template="../WEB-INF/layout/template.xhtml">
+
+   
+    <ui:define name="page_title">#{messages['jsf.Groups']}</ui:define>
+    
+    <ui:define name="left_content">
+    	<rich:panel rendered="#{identity.loggedIn}">
+            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+            <s:link styleClass="action_link" 
+            		view="/version-group/create_version_group.xhtml"
+            		rendered="#{s:hasPermission(versionGroupHome.instance, 'insert')}"
+                    value="#{messages['jsf.CreateNewGroup']}" />
+    	</rich:panel>
+    </ui:define>
+   
+    <ui:define name="center_content">
+      <rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
+	  
+	  <s:fragment rendered="#{empty versionGroupAction.allVersionGroups}">
+	   	<h:outputText value="#{messages['jsf.NoGroupExists']}" />
+      </s:fragment>
+    
+      <rich:panel rendered="#{!empty versionGroupAction.allVersionGroups}">
+        <f:facet name="header">#{messages['jsf.Groups']}</f:facet>
+
+          <a4j:form>
+              <s:token allowMultiplePosts="true" />
+              
+              <rich:spacer height="15" />
+              
+              <s:div styleClass="filter-options">
+		            <h:selectBooleanCheckbox title="Show active group" value="#{versionGroupAction.showActiveGroups}">
+		                <a4j:support event="onchange" reRender="threads" />
+		            </h:selectBooleanCheckbox>
+		            <h:outputText value="#{messages['jsf.Active']}"/>
+		            
+		            <rich:spacer width="5" />
+		            <s:fragment rendered="#{s:hasPermission('HIterationGroup','view-obsolete')}">
+			            <h:selectBooleanCheckbox title="Show obsolete groups" value="#{versionGroupAction.showObsoleteGroups}">
+			                <a4j:support event="onchange" reRender="threads" />
+			            </h:selectBooleanCheckbox>
+		                <h:outputText value="#{messages['jsf.Obsolete']}"/>
+		            </s:fragment>
+	          </s:div>
+        
+        
+        
+              <rich:dataTable id="threads" value="#{versionGroupAction.allVersionGroups}"
+                              var="group">
+                  <rich:column filterMethod="#{versionGroupAction.filterGroupByName}">
+                  	  <f:facet name="header">
+                  	  	#{messages['jsf.Name']}
+                  	  	<h:panelGroup>
+							<h:outputText value="#{messages['jsf.Name']}" />
+							<br />
+							<h:inputText value="#{versionGroupAction.groupNameFilter}" id="name_filter_input">
+								<a4j:support event="onkeyup" reRender="threads"
+									ignoreDupResponses="true" requestDelay="700" focus="name_filter_input" />
+							</h:inputText>
+						</h:panelGroup>
+                  	  </f:facet>
+                      <s:link id="versionGroup" styleClass="table_link" value="#{group.name}" propagation="none"
+                             view="/version-group/version_group.xhtml" rendered="#{group.status == 'ACTIVE'}"> 
+                            <f:param name="slug" value="#{group.slug}"/>
+                      </s:link>
+                      <s:link id="versionGroup_obsolete" styleClass="table_link obsolete_link" value="#{group.name}" propagation="none"
+                             view="/version-group/version_group.xhtml" rendered="#{group.status == 'OBSOLETE'}"> 
+                            <f:param name="slug" value="#{group.slug}"/>
+                      </s:link>
+                      
+                  </rich:column>
+                  <rich:column>
+                      <f:facet name="header">#{messages['jsf.Description']}</f:facet>
+                      #{group.description}
+                  </rich:column>
+                  <rich:column sortBy="#{group.creationDate}">
+                      <f:facet name="header">#{messages['jsf.CreationDate']}</f:facet>
+                      <h:outputText value="#{group.creationDate}">
+                          <f:convertDateTime type="date" dateStyle="default"/>
+                      </h:outputText>
+                  </rich:column>
+                  
+                   <rich:column styleClass="centered" width="60px" sortBy="#{group.status}" filterMethod="#{versionGroupAction.filterGroupByStatus}">
+                        <f:facet name="header">#{messages['jsf.Status']}</f:facet>
+                        <h:outputText value="#{messages[group.status.messageKey]}"/>
+                    </rich:column>
+                    
+              </rich:dataTable>
+          </a4j:form>
+      </rich:panel>
+    </ui:define>
+    
+  </ui:composition>
