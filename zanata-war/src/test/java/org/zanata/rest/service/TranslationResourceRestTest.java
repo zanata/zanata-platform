@@ -222,7 +222,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
             documentDAO,
             textFlowTargetDAO,
             resourceUtils,
-            identity,
+            mockIdentity,
             eTagUtils,
             localeService,
             copyTransService,

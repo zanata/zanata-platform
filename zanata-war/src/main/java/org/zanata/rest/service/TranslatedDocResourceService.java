@@ -47,6 +47,7 @@ import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
@@ -123,6 +124,9 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    private UriInfo uri;
 
    @In
+   private ZanataIdentity identity;
+
+   @In
    private ApplicationConfiguration applicationConfiguration;
 
    @In
@@ -169,7 +173,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
          DocumentDAO documentDAO,
          TextFlowTargetDAO textFlowTargetDAO,
          ResourceUtils resourceUtils,
-         Identity identity,
+         ZanataIdentity identity,
          ETagUtils eTagUtils,
          LocaleService localeService,
          CopyTransService copyTransService,
@@ -183,6 +187,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       this.documentDAO = documentDAO;
       this.textFlowTargetDAO = textFlowTargetDAO;
       this.resourceUtils = resourceUtils;
+      this.identity = identity;
       this.eTagUtils = eTagUtils;
       this.localeServiceImpl = localeService;
       this.copyTransServiceImpl = copyTransService;
@@ -358,10 +363,13 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    @Override
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   @Restrict("#{s:hasPermission(translatedDocResourceService.securedIteration.project, 'modify-translation')}")
    // /r/{id}/translations/{locale}
    public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") Set<String> extensions, @QueryParam("merge") @DefaultValue("auto") String merge)
    {
+      // check security (cannot be on @Restrict as it refers to method parameters)
+      identity.checkPermission("modify-translation", this.localeServiceImpl.getByLocaleId(locale),
+            this.getSecuredIteration().getProject());
+
       log.debug("start put translations");
       MergeType mergeType;
       try

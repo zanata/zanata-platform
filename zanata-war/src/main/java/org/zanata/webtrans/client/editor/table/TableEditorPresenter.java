@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
@@ -83,8 +85,6 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -316,16 +316,16 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onClick(ClickEvent event)
          {
-            Log.info("Save changes and filter");
-            filterViewConfirmationPanel.updateFilter(filterTranslated, filterNeedReview, filterUntranslated);
-            filterViewConfirmationPanel.hide();
+            saveChangesAndFilter();
+         }
+      }));
 
-            display.getTargetCellEditor().savePendingChange(true);
-            if (selectedTransUnit != null)
-            {
-               targetTransUnitId = selectedTransUnit.getId();
-            }
-            initialiseTransUnitList();
+      registerHandler(filterViewConfirmationPanel.getSaveFuzzyAndFilterButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            saveFuzzyAndFilter();
          }
       }));
 
@@ -334,16 +334,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onClick(ClickEvent event)
          {
-            Log.info("Discard changes and filter");
-            filterViewConfirmationPanel.updateFilter(filterTranslated, filterNeedReview, filterUntranslated);
-            filterViewConfirmationPanel.hide();
-
-            display.getTargetCellEditor().cancelEdit();
-            if (selectedTransUnit != null)
-            {
-               targetTransUnitId = selectedTransUnit.getId();
-            }
-            initialiseTransUnitList();
+            discardChangesAndFilter();
          }
       }));
 
@@ -352,9 +343,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onClick(ClickEvent event)
          {
-            Log.info("Cancel filter");
-            eventBus.fireEvent(new FilterViewEvent(filterViewConfirmationPanel.isFilterTranslated(), filterViewConfirmationPanel.isFilterNeedReview(), filterViewConfirmationPanel.isFilterUntranslated(), true));
-            filterViewConfirmationPanel.hide();
+            cancelFilter();
          }
       }));
 
@@ -363,26 +352,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onFilterView(FilterViewEvent event)
          {
-            if (!event.isCancelFilter())
-            {
-               filterTranslated = event.isFilterTranslated();
-               filterNeedReview = event.isFilterNeedReview();
-               filterUntranslated = event.isFilterUntranslated();
-
-               if (display.getTargetCellEditor().isOpened() && display.getTargetCellEditor().isEditing())
-               {
-                  filterViewConfirmationPanel.center();
-               }
-               else
-               {
-                  filterViewConfirmationPanel.updateFilter(filterTranslated, filterNeedReview, filterUntranslated);
-                  if (selectedTransUnit != null)
-                  {
-                     targetTransUnitId = selectedTransUnit.getId();
-                  }
-                  initialiseTransUnitList();
-               }
-            }
+            filterTransUnitsView(event);
          }
       }));
 
@@ -588,6 +558,71 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       display.gotoFirstPage();
 
       History.fireCurrentHistoryState();
+   }
+
+   private void filterTransUnitsView(FilterViewEvent event)
+   {
+      if (!event.isCancelFilter())
+      {
+         filterTranslated = event.isFilterTranslated();
+         filterNeedReview = event.isFilterNeedReview();
+         filterUntranslated = event.isFilterUntranslated();
+
+         if (shouldPopUpConfirmation())
+         {
+            filterViewConfirmationPanel.center();
+         }
+         else
+         {
+            hideConfirmationPanelAndDoFiltering();
+         }
+      }
+   }
+
+   private boolean shouldPopUpConfirmation()
+   {
+      InlineTargetCellEditor targetCellEditor = display.getTargetCellEditor();
+      return targetCellEditor.isOpened() && targetCellEditor.isEditing() && targetCellEditor.hasTargetContentsChanged();
+   }
+
+   private void saveChangesAndFilter()
+   {
+      Log.info("Save changes and filter");
+      display.getTargetCellEditor().savePendingChange(true);
+      hideConfirmationPanelAndDoFiltering();
+   }
+
+   private void saveFuzzyAndFilter()
+   {
+      Log.info("Save changes as fuzzy and filter");
+      display.getTargetCellEditor().acceptFuzzyEdit();
+      hideConfirmationPanelAndDoFiltering();
+   }
+
+   private void discardChangesAndFilter()
+   {
+      Log.info("Discard changes and filter");
+      display.getTargetCellEditor().cancelEdit();
+      hideConfirmationPanelAndDoFiltering();
+   }
+
+   private void hideConfirmationPanelAndDoFiltering()
+   {
+      filterViewConfirmationPanel.updateFilter(filterTranslated, filterNeedReview, filterUntranslated);
+      filterViewConfirmationPanel.hide();
+
+      if (selectedTransUnit != null)
+      {
+         targetTransUnitId = selectedTransUnit.getId();
+      }
+      initialiseTransUnitList();
+   }
+
+   private void cancelFilter()
+   {
+      Log.info("Cancel filter");
+      eventBus.fireEvent(new FilterViewEvent(filterViewConfirmationPanel.isFilterTranslated(), filterViewConfirmationPanel.isFilterNeedReview(), filterViewConfirmationPanel.isFilterUntranslated(), true));
+      filterViewConfirmationPanel.hide();
    }
 
    public boolean isFiltering()

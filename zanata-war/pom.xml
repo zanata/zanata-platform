@@ -48,7 +48,6 @@
 		<plugins>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.6</version>
                 <executions>
                  <execution>
                     <phase>prepare-package</phase>
@@ -65,7 +64,6 @@
             </plugin>
 			<plugin>
 			    <artifactId>maven-clean-plugin</artifactId>
-			    <version>2.4.1</version>
 			    <configuration>
 			      <!-- Remove extra directories created by GWT DevMode -->
 			      <filesets>
@@ -236,7 +234,7 @@
 			<!-- Configure Failsafe to run in integration-test phase -->
 			<plugin>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.7.2</version>
+                <version>2.11</version>
 				<executions>
 					<execution>
 						<id>integration-test</id>
@@ -761,6 +759,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-eclipse-plugin</artifactId>
+                  <version>2.9</version>
 						<configuration>
 							<wtpversion>2.0</wtpversion>
 
@@ -947,11 +946,6 @@
 		</dependency>
 
 		<!-- Hibernate / JPA -->
-
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-search</artifactId>
-		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -1192,13 +1186,6 @@
 			<artifactId>commons-httpclient</artifactId>
 		</dependency>
 
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
 		<!-- <dependency>
 			<groupId>javax.persistence</groupId>
 			<artifactId>persistence-api</artifactId>
@@ -1349,7 +1336,6 @@
 			<!-- needed for GWT compilation of JAXB annotated classes -->
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
-			<version>2.2</version>
 			<classifier>sources</classifier>
 			<scope>provided</scope>
 		</dependency>
