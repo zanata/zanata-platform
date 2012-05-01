@@ -2,6 +2,7 @@ package org.zanata.webtrans.client.ui;
 
 import java.util.ArrayList;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -12,7 +13,7 @@ public class UserPanel extends HorizontalPanel implements HasManageUserSession
    private Image userImage;
    private Label label;
    private String name;
-   private ArrayList<String> sessionIdList;
+   private final ArrayList<String> sessionIdList;
 
    public UserPanel(String sessionId, String name, String imgUrl)
    {
@@ -54,7 +55,6 @@ public class UserPanel extends HorizontalPanel implements HasManageUserSession
    public void removeSession(String sessionId)
    {
       sessionIdList.remove(sessionId);
-
       if (sessionIdList.size() == 1)
       {
          label.setText(name);

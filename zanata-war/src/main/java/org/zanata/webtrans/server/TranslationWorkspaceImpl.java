@@ -59,11 +59,6 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
       return workspaceContext;
    }
 
-   public ImmutableSet<SessionId> getSessions()
-   {
-      return ImmutableSet.copyOf(sessions.keySet());
-   }
-
    public String getTransUnitStatus(TransUnitId unitId)
    {
       return editstatus.get(unitId);
@@ -129,23 +124,20 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
       }
    }
 
-   public SessionId removeTranslator(PersonId personId)
+   @Override
+   public boolean removeTranslator(SessionId sessionId, PersonId personId)
    {
-      ImmutableSet<SessionId> sessionIdSet = getSessions();
-      for (SessionId sessionId : sessionIdSet)
+      if (sessions.containsKey(sessionId))
       {
-         PersonId temp = sessions.get(sessionId);
-         if (temp.equals(personId))
+         final boolean removed = sessions.remove(sessionId, personId);
+         if (removed)
          {
-            final boolean removed = sessions.remove(sessionId, personId);
-            if (removed)
-            {
-               log.info("Removed user '{0}' in session '{1}' from workspace {2}", personId.getId(), sessionId, workspaceContext);
-            }
-            return sessionId;
+            log.info("Removed user '{0}' in session '{1}' from workspace {2}", personId.getId(), sessionId, workspaceContext);
          }
+         return removed;
       }
-      return null;
+
+      return false;
    }
 
    @Override

@@ -36,7 +36,7 @@ public interface TranslationWorkspace
 {
    public Map<SessionId, PersonId> getUsers();
 
-   public SessionId removeTranslator(PersonId personId);
+   public boolean removeTranslator(SessionId sessionId, PersonId personId);
    public void registerTranslator(SessionId sessionId, PersonId personId);
    public <T extends SessionEventData> void publish(T eventData);
    public WorkspaceContext getWorkspaceContext();

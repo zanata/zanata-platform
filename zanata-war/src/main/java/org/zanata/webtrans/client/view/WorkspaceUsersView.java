@@ -1,8 +1,5 @@
 package org.zanata.webtrans.client.view;
 
-import java.util.HashMap;
-import java.util.List;
-
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.ui.HasManageUserSession;
 import org.zanata.webtrans.client.ui.UserPanel;

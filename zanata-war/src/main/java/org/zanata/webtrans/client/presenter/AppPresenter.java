@@ -214,6 +214,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             // Application.closeWindow();
 
             // use when opening workspace in same window
+            Application.exitWorkspace();
             Application.redirectToZanataProjectHome(workspaceContext.getWorkspaceId());
          }
       }));

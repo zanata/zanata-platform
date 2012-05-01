@@ -3,20 +3,16 @@ package org.zanata.webtrans.server.rpc;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.web.ServletContexts;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
-import org.zanata.webtrans.shared.auth.SessionId;
-import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.ExitWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ExitWorkspaceResult;
@@ -31,9 +27,6 @@ public class ExitWorkspaceHandler extends AbstractActionHandler<ExitWorkspaceAct
    Log log;
 
    @In
-   Session session;
-
-   @In
    TranslationWorkspaceManager translationWorkspaceManager;
 
    @Override
@@ -45,11 +38,11 @@ public class ExitWorkspaceHandler extends AbstractActionHandler<ExitWorkspaceAct
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
 
       // Send ExitWorkspace event to client
-      SessionId sessionId = workspace.removeTranslator(action.getPerson().getId());
-      if (sessionId != null)
+      boolean isRemoved = workspace.removeTranslator(action.getSessionId(), action.getPerson().getId());
+      if (isRemoved)
       {
          // Send GWT Event to client to update the userlist
-         ExitWorkspace event = new ExitWorkspace(sessionId, action.getPerson());
+         ExitWorkspace event = new ExitWorkspace(action.getSessionId(), action.getPerson());
          workspace.publish(event);
       }
 

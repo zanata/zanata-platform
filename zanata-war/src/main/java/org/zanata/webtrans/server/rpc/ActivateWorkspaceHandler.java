@@ -23,7 +23,6 @@ package org.zanata.webtrans.server.rpc;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -54,9 +53,6 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
 {
    @Logger
    Log log;
-
-   @In
-   Session session;
 
    @In
    TranslationWorkspaceManager translationWorkspaceManager;

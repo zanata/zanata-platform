@@ -44,11 +44,10 @@ public class Application implements EntryPoint
 
    private static String APP_LOAD_ERROR_CSS_CLASS = "AppLoadError";
 
-   private final WebTransGinjector injector = GWT.create(WebTransGinjector.class);
+   private final static WebTransGinjector injector = GWT.create(WebTransGinjector.class);
 
    public void onModuleLoad()
    {
-
       injector.getDispatcher().execute(new ActivateWorkspaceAction(getWorkspaceId()), new AsyncCallback<ActivateWorkspaceResult>()
       {
 
@@ -92,6 +91,25 @@ public class Application implements EntryPoint
       });
    }
 
+   public static void exitWorkspace()
+   {
+      injector.getDispatcher().execute(new ExitWorkspaceAction(identity.getPerson()), new AsyncCallback<ExitWorkspaceResult>()
+      {
+         @Override
+         public void onFailure(Throwable caught)
+         {
+
+         }
+
+         @Override
+         public void onSuccess(ExitWorkspaceResult result)
+         {
+
+         }
+
+      });
+   }
+
    private void startApp()
    {
       // When user close the workspace, send ExitWorkSpaceAction
@@ -100,22 +118,7 @@ public class Application implements EntryPoint
          @Override
          public void onWindowClosing(ClosingEvent event)
          {
-            injector.getDispatcher().execute(new ExitWorkspaceAction(identity.getPerson()), new AsyncCallback<ExitWorkspaceResult>()
-            {
-               @Override
-               public void onFailure(Throwable caught)
-               {
-
-               }
-
-               @Override
-               public void onSuccess(ExitWorkspaceResult result)
-               {
-
-               }
-
-            });
-
+            exitWorkspace();
          }
       });
 

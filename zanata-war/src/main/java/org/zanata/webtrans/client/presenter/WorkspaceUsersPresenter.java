@@ -1,7 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
