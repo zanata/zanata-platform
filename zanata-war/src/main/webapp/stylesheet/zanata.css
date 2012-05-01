@@ -745,6 +745,12 @@ a.version_link:hover {
 }
 /* -----------------------  End Inline project iteration CSS  -------------------------*/
 
+/* ------------------------ Profile Page CSS ------------------------------------------*/
+.inactive_tab {
+    background-color: #ffffff;
+}
+/* ------------------------ End Profile Page CSS --------------------------------------*/
+
 .iteration_inline_tribes {
 	
 }
