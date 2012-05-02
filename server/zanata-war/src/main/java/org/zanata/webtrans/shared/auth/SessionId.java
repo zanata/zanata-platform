@@ -55,4 +55,9 @@ public final class SessionId implements Identifier<String>, Serializable
    {
       return id;
    }
+
+   public static SessionId of(String id)
+   {
+      return new SessionId(id);
+   }
 }

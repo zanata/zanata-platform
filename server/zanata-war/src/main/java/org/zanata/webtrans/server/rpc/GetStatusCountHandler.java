@@ -25,9 +25,6 @@ import org.zanata.webtrans.shared.rpc.GetStatusCountResult;
 public class GetStatusCountHandler extends AbstractActionHandler<GetStatusCount, GetStatusCountResult>
 {
 
-   @Logger
-   Log log;
-
    @In
    Session session;
 

@@ -58,4 +58,9 @@ public class ProjectIterationId implements Serializable
       }
       return false;
    }
+
+   public static ProjectIterationId of(String projectSlug, String iterationSlug)
+   {
+      return new ProjectIterationId(projectSlug, iterationSlug);
+   }
 }

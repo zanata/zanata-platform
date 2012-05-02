@@ -51,8 +51,6 @@ import org.zanata.webtrans.shared.rpc.EnterWorkspace;
 @ActionHandlerFor(ActivateWorkspaceAction.class)
 public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWorkspaceAction, ActivateWorkspaceResult>
 {
-   @Logger
-   Log log;
 
    @In
    TranslationWorkspaceManager translationWorkspaceManager;

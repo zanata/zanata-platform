@@ -7,7 +7,7 @@ import net.customware.gwt.dispatch.shared.Result;
 import org.zanata.webtrans.server.ActionHandlerFor;
 
 
-public abstract class AbstractActionHandler<A extends Action<R>, R extends Result> implements ActionHandler<A, R>
+abstract class AbstractActionHandler<A extends Action<R>, R extends Result> implements ActionHandler<A, R>
 {
 
    @SuppressWarnings("unchecked")
