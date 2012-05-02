@@ -1,8 +1,12 @@
 package org.zanata.webtrans.client.presenter;
 
+import static org.easymock.EasyMock.and;
+import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
@@ -14,11 +18,16 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
+import org.zanata.webtrans.client.events.TranslatorStatusUpdateEvent;
+import org.zanata.webtrans.client.events.TranslatorStatusUpdateEventHandler;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter.Display;
 import org.zanata.webtrans.client.ui.HasManageUserSession;
 import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
+import com.google.gwt.event.shared.HandlerRegistration;
 
 
 @Test(groups = { "unit-tests" })
@@ -40,6 +49,7 @@ public class WorkspaceUsersPresenterTest
 
    public void setEmptyUserList()
    {
+      expect(mockEventBus.addHandler(eq(TranslatorStatusUpdateEvent.getType()), isA(TranslatorStatusUpdateEventHandler.class)) ).andReturn(createMock(HandlerRegistration.class));
       replay(mockDisplay, mockEventBus);
 
       workspaceUsersPresenter.bind();
@@ -56,6 +66,7 @@ public class WorkspaceUsersPresenterTest
       expect(mockDisplay.addUser(new Person(new PersonId("person2"), "Smith John", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16"))).andReturn(mockHasManageUserSession);
       expect(mockDisplay.addUser(new Person(new PersonId("person3"), "Smohn Jith", "http://www.gravatar.com/avatar/smohn@zanata.org?d=mm&s=16"))).andReturn(mockHasManageUserSession);
 
+      expect(mockEventBus.addHandler(eq(TranslatorStatusUpdateEvent.getType()), isA(TranslatorStatusUpdateEventHandler.class)) ).andReturn(createMock(HandlerRegistration.class));
       replay(mockDisplay, mockEventBus);
 
       workspaceUsersPresenter.bind();
