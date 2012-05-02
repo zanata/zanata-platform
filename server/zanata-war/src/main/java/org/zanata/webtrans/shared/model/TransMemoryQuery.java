@@ -22,6 +22,7 @@
 package org.zanata.webtrans.shared.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
@@ -34,7 +35,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class TransMemoryQuery implements IsSerializable
 {
    private SearchType searchType;
-   private ArrayList<String> queries;
+   private List<String> queries;
 
    @SuppressWarnings("unused")
    private TransMemoryQuery()
@@ -52,7 +53,7 @@ public class TransMemoryQuery implements IsSerializable
       }
    }
 
-   public TransMemoryQuery(ArrayList<String> queries, SearchType searchType)
+   public TransMemoryQuery(List<String> queries, SearchType searchType)
    {
       this.searchType = searchType;
       this.queries = queries;
@@ -62,7 +63,7 @@ public class TransMemoryQuery implements IsSerializable
       }
    }
 
-   public ArrayList<String> getQueries()
+   public List<String> getQueries()
    {
       return queries;
    }

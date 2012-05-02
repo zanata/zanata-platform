@@ -16,6 +16,7 @@
 package org.zanata.webtrans.client.editor.table;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.ToggleEditor;
@@ -89,7 +90,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    }
 
    @Override
-   public void setTargets(ArrayList<String> targets)
+   public void setTargets(List<String> targets)
    {
       editors.clear();
       if (targets == null || targets.size() <= 0)

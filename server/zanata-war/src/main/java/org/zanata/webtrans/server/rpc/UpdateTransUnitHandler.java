@@ -52,6 +52,7 @@ import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
@@ -131,7 +132,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException
    {
       LocaleId localeId = action.getWorkspaceId().getLocaleId();
-      log.debug("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getSingleTransUnitId(), localeId, action.getSingleContentState(), action.getSingleContents());
+      log.debug("Updating {0} TransUnits for loacle {1}", action.getUpdateRequests().size(), localeId);
       TranslationWorkspace workspace = checkSecurityAndGetWorkspace(action);
 
       TranslationService.TranslationResult translationResult;
@@ -150,7 +151,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
       manageRedo(action, prevTarget);
 
-      UpdateTransUnit previous = new UpdateTransUnit(action.getSingleTransUnitId(), newArrayList(prevTarget.getContents()), prevTarget.getState(), prevTarget.getVersionNum());
+      UpdateTransUnit previous = new UpdateTransUnit(new TransUnitUpdateRequest(action.getSingleTransUnitId(), newArrayList(prevTarget.getContents()), prevTarget.getState(), prevTarget.getVersionNum()));
 
       int wordCount = hTextFlow.getWordCount().intValue();
 

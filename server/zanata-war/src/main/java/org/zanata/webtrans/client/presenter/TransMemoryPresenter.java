@@ -1,6 +1,5 @@
 package org.zanata.webtrans.client.presenter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -232,7 +231,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
    private void displayTMResult(GetTranslationMemoryResult result)
    {
-      ArrayList<String> queries = submittedRequest.getQuery().getQueries();
+      List<String> queries = submittedRequest.getQuery().getQueries();
       display.setQueries(queries);
       dataProvider.getList().clear();
       for (final TransMemoryResultItem memory : result.getMemories())

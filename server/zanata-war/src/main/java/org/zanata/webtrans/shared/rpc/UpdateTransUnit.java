@@ -2,6 +2,7 @@ package org.zanata.webtrans.shared.rpc;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +12,7 @@ public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResu
 {
    private static final long serialVersionUID = 1L;
 
-   private List<TransUnitId> transUnitId;
-   private List<ArrayList<String>> contents;
-   private List<ContentState> contentState;
-   private List<Integer> verNum;
+   private List<TransUnitUpdateRequest> updateRequests;
 
    private boolean isRedo = false;
 
@@ -30,90 +28,53 @@ public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResu
 
    protected UpdateTransUnit()
    {
-      transUnitId = new ArrayList<TransUnitId>();
-      contents = new ArrayList<ArrayList<String>>();
-      contentState = new ArrayList<ContentState>();
-      verNum = new ArrayList<Integer>();
+      updateRequests = new ArrayList<TransUnitUpdateRequest>();
    }
 
-   public UpdateTransUnit(TransUnitId transUnitId, ArrayList<String> contents, ContentState contentState, int verNum)
+   public UpdateTransUnit(TransUnitUpdateRequest updateRequest)
    {
       this();
-      addTransUnit(transUnitId, contents, contentState, verNum);
+      updateRequests.add(updateRequest);
    }
 
    public void addTransUnit(TransUnitId transUnitId, ArrayList<String> contents, ContentState contentState, int verNum)
    {
-      this.transUnitId.add(transUnitId);
-      this.contents.add(contents);
-      this.contentState.add(contentState);
-      this.verNum.add(verNum);
+      this.updateRequests.add(new TransUnitUpdateRequest(transUnitId, contents, contentState, verNum));
    }
 
-   public List<TransUnitId> getTransUnitIds()
+   public List<TransUnitUpdateRequest> getUpdateRequests()
    {
-      return transUnitId;
+      return updateRequests;
    }
 
+   // FIXME replace all these getters with an update request getter
    public TransUnitId getSingleTransUnitId()
    {
-      if (transUnitId.size() == 1)
-      {
-         return transUnitId.get(0);
-      }
-      else
-      {
-         throw new IllegalStateException("this method can only be used when updating a single TransUnit");
-      }
+      checkForSingleUpdateRequest();
+      return updateRequests.get(0).getTransUnitId();
    }
 
-   public List<ArrayList<String>> getAllContents()
+   public List<String> getSingleContents()
    {
-      return contents;
-   }
-
-   // FIXME replace with List<String>, requires updating TransUnit and builder.
-   public ArrayList<String> getSingleContents()
-   {
-      if (contents.size() == 1)
-      {
-      return contents.get(0);
-      }
-      else
-      {
-         throw new IllegalStateException("this method can only be used when updating a single TransUnit");
-      }
-   }
-
-   public List<ContentState> getContentStates()
-   {
-      return contentState;
+      checkForSingleUpdateRequest();
+      return updateRequests.get(0).getNewContents();
    }
 
    public ContentState getSingleContentState()
    {
-      if (contentState.size() == 1)
-      {
-         return contentState.get(0);
-      }
-      else
-      {
-         throw new IllegalStateException("this method can only be used when updating a single TransUnit");
-      }
-   }
-
-   public List<Integer> getVerNum()
-   {
-      return verNum;
+      checkForSingleUpdateRequest();
+      return updateRequests.get(0).getNewContentState();
    }
 
    public Integer getSingleVerNum()
    {
-      if (verNum.size() == 1)
-      {
-         return verNum.get(0);
-      }
-      else
+      checkForSingleUpdateRequest();
+      return updateRequests.get(0).getBaseTranslationVersion();
+   }
+
+   private void checkForSingleUpdateRequest()
+   {
+      if (updateRequests.size() != 1)
       {
          throw new IllegalStateException("this method can only be used when updating a single TransUnit");
       }

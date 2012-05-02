@@ -66,6 +66,7 @@ import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.server.rpc.UpdateTransUnitHandler;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
@@ -1094,7 +1095,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       int versionNum = 1; //hTextFlow.getTargets().get(hLocale);
 
       // Translate using webtrans
-      UpdateTransUnit action = new UpdateTransUnit(new TransUnitId(textFlowId), Lists.newArrayList(translation), translationState, versionNum);
+      UpdateTransUnit action = new UpdateTransUnit(new TransUnitUpdateRequest(new TransUnitId(textFlowId), Lists.newArrayList(translation), translationState, versionNum));
       action.setWorkspaceId( workspaceId );
       
       UpdateTransUnitResult result = transUnitHandler.execute(action, null);
