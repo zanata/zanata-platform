@@ -113,7 +113,7 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    private void onTimeout(final String sessionId)
    {
       // remove user session from workspace
-      PersonId personId = sessions.remove(sessionId);
+      PersonId personId = sessions.remove(new SessionId(sessionId));
       if (personId != null)
       {
          log.info("Timeout: Removed user '{0}' in session '{1}' from workspace {2}", personId.getId(), sessionId, workspaceContext);

@@ -77,7 +77,6 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
 
       HTextFlow tf = textFlowDAO.findById(action.getId(), false);
       ArrayList<Long> results = new ArrayList<Long>();
-      List<HTextFlow> textFlows = new ArrayList<HTextFlow>();
       if (action.getPhrase() != null && !action.getPhrase().isEmpty())
       {
          log.info("find message:" + action.getPhrase());
@@ -109,7 +108,7 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
       }
       else
       {
-         textFlows = textFlowDAO.getNavigationByDocumentId(tf.getDocument().getId(), tf.getPos(), action.isReverse());
+         List<HTextFlow> textFlows = textFlowDAO.getNavigationByDocumentId(tf.getDocument().getId(), tf.getPos(), action.isReverse());
          int count = 0;
          Long step = 0L;
          for (HTextFlow textFlow : textFlows)

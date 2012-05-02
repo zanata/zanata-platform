@@ -32,9 +32,6 @@ import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentList, GetDocumentListResult>
 {
 
-   @Logger
-   Log log;
-
    @In
    ProjectIterationDAO projectIterationDAO;
 

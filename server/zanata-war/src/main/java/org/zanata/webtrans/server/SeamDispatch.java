@@ -71,7 +71,7 @@ public class SeamDispatch implements Dispatch
    private void register(Class<?> clazz)
    {
       log.info("Registering WebTrans Action Handler {0}", clazz.getName());
-      ActionHandlerFor ahf = (ActionHandlerFor) clazz.getAnnotation(ActionHandlerFor.class);
+      ActionHandlerFor ahf = clazz.getAnnotation(ActionHandlerFor.class);
       handlers.put(ahf.value(), (Class<? extends ActionHandler<?, ?>>) clazz);
    }
 
@@ -114,7 +114,7 @@ public class SeamDispatch implements Dispatch
          dispatch.doRollback(actionResult.getAction(), actionResult.getResult(), this);
       }
 
-   };
+   }
 
    @SuppressWarnings("unchecked")
    @Override

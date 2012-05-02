@@ -103,7 +103,7 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
             HGlossaryTerm targetTerm = null;
             for (HGlossaryEntry entry : entries)
             {
-               if (entry.getId() == glossaryTerm.getGlossaryEntry().getId())
+               if (entry.getId().equals(glossaryTerm.getGlossaryEntry().getId()))
                {
                   targetTerm = entry.getGlossaryTerms().get(hLocale);
                }
@@ -229,12 +229,10 @@ public class GetGlossaryHandler extends AbstractActionHandler<GetGlossary, GetGl
       @Override
       public int hashCode()
       {
-         int result = 1;
-         result = 37 * result + srcTermContent != null ? srcTermContent.hashCode() : 0;
-         result = 37 * result + targetTermContent != null ? targetTermContent.hashCode() : 0;
+         int result = srcTermContent != null ? srcTermContent.hashCode() : 0;
+         result = 31 * result + (targetTermContent != null ? targetTermContent.hashCode() : 0);
          return result;
       }
-
    }
 
 }

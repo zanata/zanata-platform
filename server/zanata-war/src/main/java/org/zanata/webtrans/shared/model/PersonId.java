@@ -4,9 +4,7 @@ import java.io.Serializable;
 
 public final class PersonId implements Serializable
 {
-
-   private static final long serialVersionUID = 1L;
-
+   private static final long serialVersionUID = 1638402657283430793L;
    private String id;
 
    // for GWT
@@ -56,5 +54,10 @@ public final class PersonId implements Serializable
    public void setId(String id)
    {
       this.id = id;
+   }
+
+   public static PersonId of(String id)
+   {
+      return new PersonId(id);
    }
 }
