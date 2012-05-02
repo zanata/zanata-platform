@@ -29,7 +29,7 @@ final class DummyUpdateTransUnitCommand implements Command
       // TransUnitUpdated updated = new TransUnitUpdated(documentId, wordCount,
       // previousStatus, tu);
 
-      UpdateTransUnitResult result = new UpdateTransUnitResult(true);
+      UpdateTransUnitResult result = new UpdateTransUnitResult(true, 1);
       callback.onSuccess(result);
       Log.info("EXIT DummyUpdateTransUnitCommand.execute()");
    }

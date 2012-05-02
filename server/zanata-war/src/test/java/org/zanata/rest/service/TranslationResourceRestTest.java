@@ -1091,14 +1091,15 @@ public class TranslationResourceRestTest extends ZanataRestTest
             .setString(3, projectSlug)
             .uniqueResult();
       Long textFlowId = hTextFlow.getId();
+      int versionNum = 1; //hTextFlow.getTargets().get(hLocale);
 
       // Translate using webtrans
-      UpdateTransUnit action = new UpdateTransUnit(new TransUnitId(textFlowId), Lists.newArrayList(translation), translationState);
+      UpdateTransUnit action = new UpdateTransUnit(new TransUnitId(textFlowId), Lists.newArrayList(translation), translationState, versionNum);
       action.setWorkspaceId( workspaceId );
       
       UpdateTransUnitResult result = transUnitHandler.execute(action, null);
       
-      assertThat( result.isSuccess(), is(true) );
+      assertThat( result.isSingleSuccess(), is(true) );
       mockControl.verify();
    }
    

@@ -284,6 +284,7 @@ public class DocumentListPresenterTest
             .setSources(sources).setSourceComment("this is the source comment")
             .setTargets(targets).setStatus(ContentState.Approved).setLastModifiedBy("lastModifiedBy")
             .setLastModifiedTime("lastModifiedTime").setMsgContext("msgContext").setRowIndex(1)
+            .setVerNum(1)
             .build();
       expect(mockEvent.getTransUnit()).andReturn(newTransUnit).anyTimes();
       replay(mockEvent);
@@ -335,6 +336,7 @@ public class DocumentListPresenterTest
             .setSources(sources).setSourceComment("this is the source comment")
             .setTargets(targets).setStatus(ContentState.Approved).setLastModifiedBy("lastModifiedBy")
             .setLastModifiedTime("lastModifiedTime").setMsgContext("msgContext").setRowIndex(1)
+            .setVerNum(1)
             .build();
       expect(mockEvent.getTransUnit()).andReturn(newTransUnit).anyTimes();
       replay(mockEvent);
