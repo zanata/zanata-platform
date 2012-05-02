@@ -21,6 +21,7 @@
 
 package org.zanata.webtrans.shared.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +33,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class TransMemoryQuery implements IsSerializable
+public class TransMemoryQuery implements IsSerializable, Serializable
 {
+   private static final long serialVersionUID = -1539766619272601490L;
    private SearchType searchType;
    private List<String> queries;
 
@@ -117,11 +119,7 @@ public class TransMemoryQuery implements IsSerializable
       {
          return false;
       }
-      if (searchType != other.searchType)
-      {
-         return false;
-      }
-      return true;
+      return searchType == other.searchType;
    }
 
 }

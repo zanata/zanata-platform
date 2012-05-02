@@ -23,7 +23,6 @@ package org.zanata.security;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
@@ -32,14 +31,14 @@ import javax.faces.event.PhaseListener;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jboss.seam.Component;
-import org.jboss.seam.log.LogProvider;
-import org.jboss.seam.log.Logging;
 import org.jboss.seam.navigation.Pages;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FedoraOpenIdPhaseListener implements PhaseListener
 {
+   private static final Logger LOGGER = LoggerFactory.getLogger(FedoraOpenIdPhaseListener.class);
    private static final long serialVersionUID = 1L;
-   private transient LogProvider log = Logging.getLogProvider(FedoraOpenIdPhaseListener.class);
 
    public void beforePhase(PhaseEvent event)
    {
@@ -59,7 +58,7 @@ public class FedoraOpenIdPhaseListener implements PhaseListener
          }
          catch (IOException e)
          {
-            log.warn(e, e);
+            LOGGER.warn("exception", e);
          }
          return;
       }

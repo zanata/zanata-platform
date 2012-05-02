@@ -20,11 +20,7 @@
  */
 package org.zanata.security;
 
-import static org.jboss.seam.ScopeType.SESSION;
-import static org.jboss.seam.annotations.Install.APPLICATION;
-
 import java.util.List;
-
 import javax.faces.context.ExternalContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -38,8 +34,6 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesManager;
 import org.jboss.seam.faces.Redirect;
-import org.jboss.seam.log.LogProvider;
-import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.openid.OpenIdPrincipal;
 import org.openid4java.OpenIDException;
@@ -51,7 +45,12 @@ import org.openid4java.discovery.Identifier;
 import org.openid4java.message.AuthRequest;
 import org.openid4java.message.ParameterList;
 import org.openid4java.message.ax.FetchRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.ApplicationConfiguration;
+
+import static org.jboss.seam.ScopeType.SESSION;
+import static org.jboss.seam.annotations.Install.APPLICATION;
 
 
 @Name("org.jboss.seam.security.fedoraOpenId")
@@ -63,9 +62,9 @@ import org.zanata.ApplicationConfiguration;
  */
 public class FedoraOpenId
 {
-   private static final long serialVersionUID = 1L;
-   private static String FEDORA_HOST = ".id.fedoraproject.org/";
-   private static final LogProvider log = Logging.getLogProvider(FedoraOpenId.class);
+   private static final String FEDORA_HOST = ".id.fedoraproject.org/";
+   private static final Logger LOGGER = LoggerFactory.getLogger(FedoraOpenId.class);
+
    private ZanataIdentity identity;
    private ApplicationConfiguration applicationConfiguration;
 
@@ -133,7 +132,7 @@ public class FedoraOpenId
       }
       catch (OpenIDException e)
       {
-         log.warn(e, e);
+         LOGGER.warn("exception", e);
       }
 
       return null;
@@ -177,10 +176,12 @@ public class FedoraOpenId
          // (which comes in as a HTTP request from the OpenID provider)
          ParameterList response = new ParameterList(httpReq.getParameterMap());
 
-         StringBuffer receivingURL = new StringBuffer(returnToUrl());
+         StringBuilder receivingURL = new StringBuilder(returnToUrl());
          String queryString = httpReq.getQueryString();
          if (queryString != null && queryString.length() > 0)
+         {
             receivingURL.append("?").append(httpReq.getQueryString());
+         }
 
          // verify the response; ConsumerManager needs to be the same
          // (static) instance used to place the authentication request
@@ -190,29 +191,18 @@ public class FedoraOpenId
          Identifier verified = verification.getVerifiedId();
          if (verified != null)
          {
-            // AuthSuccess authSuccess =
-            // (AuthSuccess) verification.getAuthResponse();
-
-            // if (authSuccess.hasExtension(AxMessage.OPENID_NS_AX)) {
-            // FetchResponse fetchResp = (FetchResponse) authSuccess
-            // .getExtension(AxMessage.OPENID_NS_AX);
-            //
-            // List emails = fetchResp.getAttributeValues("email");
-            // String email = (String) emails.get(0);
-            // }
-
             return verified.getIdentifier();
          }
       }
       catch (OpenIDException e)
       {
-         log.warn(e, e);
+         LOGGER.warn("exception", e);
       }
 
       return null;
    }
 
-   public void logout() throws ConsumerException
+   public void logout()
    {
       init();
    }
@@ -240,9 +230,13 @@ public class FedoraOpenId
       if (loginImmediately())
       {
          if (Events.exists())
+         {
             Events.instance().raiseEvent(Identity.EVENT_POST_AUTHENTICATE, identity);
+         }
          if (Events.exists())
+         {
             Events.instance().raiseEvent(Identity.EVENT_LOGIN_SUCCESSFUL);
+         }
       }
    }
 
@@ -252,7 +246,7 @@ public class FedoraOpenId
       {
          String var = "http://" + username + FEDORA_HOST;
          setId(var);
-         log.info("openid:" + getId());
+         LOGGER.info("openid: {}", getId());
          login();
       }
       catch (Exception e)

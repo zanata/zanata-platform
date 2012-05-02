@@ -63,7 +63,7 @@ public class JavaVariablesValidation extends ValidationAction
          {
             missing.add("{" + sourceVar.getKey() + "}");
          }
-         else if (sourceVar.getValue() != targetCount)
+         else if (!sourceVar.getValue().equals(targetCount))
          {
             different.add("{" + sourceVar.getKey() + "}");
          }

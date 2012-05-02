@@ -3,9 +3,7 @@ package org.zanata.webtrans.client.view;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.ui.HasManageUserSession;
 import org.zanata.webtrans.client.ui.UserPanel;
-import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -38,9 +36,9 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    }
 
    @Override
-   public HasManageUserSession addUser(SessionId sessionId, Person person)
+   public HasManageUserSession addUser(Person person)
    {
-      UserPanel userPanel = new UserPanel(sessionId.toString(), person.getName(), person.getAvatarUrl());
+      UserPanel userPanel = new UserPanel(person.getName(), person.getAvatarUrl());
       userListPanel.add(userPanel);
       return userPanel;
    }

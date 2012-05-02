@@ -20,8 +20,6 @@
  */
 package org.zanata.security;
 
-import static org.jboss.seam.ScopeType.APPLICATION;
-
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
@@ -34,6 +32,8 @@ import org.jboss.seam.security.management.IdentityManagementException;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.util.AnnotatedBeanProperty;
 import org.zanata.model.type.UserApiKey;
+
+import static org.jboss.seam.ScopeType.APPLICATION;
 
 @Name("org.jboss.seam.security.identityStore")
 @Install(precedence = Install.DEPLOYMENT, value = true)

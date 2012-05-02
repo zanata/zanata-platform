@@ -1,9 +1,5 @@
 package org.zanata.webtrans.client.ui;
 
-import java.util.ArrayList;
-
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.base.Strings;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -11,60 +7,51 @@ import com.google.gwt.user.client.ui.Label;
 public class UserPanel extends HorizontalPanel implements HasManageUserSession
 {
    private Image userImage;
-   private Label label;
-   private String name;
-   private final ArrayList<String> sessionIdList;
+   private Label personNameLabel;
+   private Label sessionLabel;
+   private Label statusLabel;
+   private String personName;
 
-   public UserPanel(String sessionId, String name, String imgUrl)
+   public UserPanel(String personName, String imgUrl)
    {
       super();
-      this.name = name;
+      this.personName = personName;
 
       userImage = new Image(imgUrl);
-      label = new Label(name);
+      personNameLabel = new Label(personName);
+      sessionLabel = new Label();
+      statusLabel = new Label();
 
-      sessionIdList = new ArrayList<String>();
-      sessionIdList.add(sessionId);
       this.add(userImage);
-      this.add(label);
+      this.add(personNameLabel);
+      this.add(sessionLabel);
+      this.add(statusLabel);
 
       this.setCellWidth(userImage, "16px");
-
-      updateTitle();
    }
 
    @Override
-   public void addSession(String sessionId)
+   public void updateTitle(String title)
    {
-      sessionIdList.add(sessionId);
-      label.setText(name + "(" + sessionIdList.size() + ")");
-      updateTitle();
-   }
-
-   private void updateTitle()
-   {
-      String title = "";
-      for (String sessionId : sessionIdList)
-      {
-         title = Strings.isNullOrEmpty(title) ? sessionId : title + " : " + sessionId;
-      }
-      label.setTitle(title);
+      personNameLabel.setTitle(title);
    }
 
    @Override
-   public void removeSession(String sessionId)
+   public void updateSessionLabel(String session)
    {
-      sessionIdList.remove(sessionId);
-      if (sessionIdList.size() == 1)
-      {
-         label.setText(name);
-      }
-      else
-      {
-         label.setText(name + "(" + sessionIdList.size() + ")");
-      }
+      sessionLabel.setText(session);
+   }
 
-      updateTitle();
+   @Override
+   public void updateStatusLabel(String status)
+   {
+      statusLabel.setText(status);
+   }
+
+   @Override
+   public void updateStatusTitle(String title)
+   {
+      statusLabel.setTitle(title);
    }
 
    @Override
@@ -77,12 +64,12 @@ public class UserPanel extends HorizontalPanel implements HasManageUserSession
       if (getClass() != obj.getClass())
          return false;
       UserPanel other = (UserPanel) obj;
-      if (name == null)
+      if (personName == null)
       {
-         if (other.name != null)
+         if (other.personName != null)
             return false;
       }
-      else if (!name.equals(other.name))
+      else if (!personName.equals(other.personName))
          return false;
       if (userImage == null)
       {
@@ -92,11 +79,5 @@ public class UserPanel extends HorizontalPanel implements HasManageUserSession
       else if (!userImage.equals(other.userImage))
          return false;
       return true;
-   }
-
-   @Override
-   public boolean isEmptySession()
-   {
-      return sessionIdList.size() <= 0;
    }
 }
