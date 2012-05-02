@@ -6,6 +6,7 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
+import org.zanata.webtrans.client.events.TranslatorStatusUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
@@ -15,9 +16,11 @@ import org.zanata.webtrans.shared.rpc.EnterWorkspace;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.HasEnterWorkspaceData;
 import org.zanata.webtrans.shared.rpc.HasExitWorkspaceData;
+import org.zanata.webtrans.shared.rpc.HasTranslatorStatusUpdateData;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
 import org.zanata.webtrans.shared.rpc.HasTransUnitEditData;
 import org.zanata.webtrans.shared.rpc.HasTransUnitUpdatedData;
+import org.zanata.webtrans.shared.rpc.TranslatorStatusUpdate;
 import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
 import org.zanata.webtrans.shared.rpc.TransUnitEditing;
@@ -102,6 +105,17 @@ public class EventProcessor implements RemoteEventListener
                return new WorkspaceContextUpdateEvent((HasWorkspaceContextUpdateData) event);
             }
          });
+
+         factories.put(TranslatorStatusUpdate.class, new EventFactory<TranslatorStatusUpdateEvent>()
+         {
+            @Override
+            public TranslatorStatusUpdateEvent create(SessionEventData event)
+            {
+               return new TranslatorStatusUpdateEvent((HasTranslatorStatusUpdateData) event);
+            }
+         });
+
+
       }
 
       public GwtEvent<?> getEvent(SessionEventData sessionEventData)

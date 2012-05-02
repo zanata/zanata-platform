@@ -52,9 +52,9 @@ public class WorkspaceUsersPresenterTest
    {
       HasManageUserSession mockHasManageUserSession = createMock(HasManageUserSession.class);
 
-      expect(mockDisplay.addUser(new SessionId("sessionId1"), new Person(new PersonId("person1"), "John Smith", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"))).andReturn(mockHasManageUserSession);
-      expect(mockDisplay.addUser(new SessionId("sessionId2"), new Person(new PersonId("person2"), "Smith John", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16"))).andReturn(mockHasManageUserSession);
-      expect(mockDisplay.addUser(new SessionId("sessionId3"), new Person(new PersonId("person3"), "Smohn Jith", "http://www.gravatar.com/avatar/smohn@zanata.org?d=mm&s=16"))).andReturn(mockHasManageUserSession);
+      expect(mockDisplay.addUser(new Person(new PersonId("person1"), "John Smith", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"))).andReturn(mockHasManageUserSession);
+      expect(mockDisplay.addUser(new Person(new PersonId("person2"), "Smith John", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16"))).andReturn(mockHasManageUserSession);
+      expect(mockDisplay.addUser(new Person(new PersonId("person3"), "Smohn Jith", "http://www.gravatar.com/avatar/smohn@zanata.org?d=mm&s=16"))).andReturn(mockHasManageUserSession);
 
       replay(mockDisplay, mockEventBus);
 

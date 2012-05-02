@@ -990,7 +990,7 @@ public class ResourceUtils
    /**
     * Retrieves the language PO file header for a given locale.
     * 
-    * @param translations
+    * @param locale
     */
    private String getLanguage(final HLocale locale)
    {
