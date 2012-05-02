@@ -29,6 +29,7 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
+import org.slf4j.LoggerFactory;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
@@ -50,9 +51,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 @ActionHandlerFor(GetTransUnitList.class)
 public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitList, GetTransUnitListResult>
 {
-
-   @Logger
-   Log log;
+   private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(GetTransUnitListHandler.class);
 
    @In
    private TransUnitTransformer transUnitTransformer;
@@ -67,7 +66,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
    public GetTransUnitListResult execute(GetTransUnitList action, ExecutionContext context) throws ActionException
    {
       ZanataIdentity.instance().checkLoggedIn();
-      log.info("Fetching Transunits for document {0}", action.getDocumentId());
+      LOGGER.info("Fetching TransUnits for document {}", action.getDocumentId());
 
       HLocale hLocale;
       try
@@ -79,20 +78,20 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          throw new ActionException(e.getMessage());
       }
 
-      int gotoRow = -1, size = 0;
+      int gotoRow = -1;
 
       List<HTextFlow> textFlows;
       TextFlowFilter filter;
 
       if ((action.getPhrase() != null && !action.getPhrase().isEmpty()) || (action.isFilterTranslated() || action.isFilterNeedReview() || action.isFilterUntranslated()))
       {
-         log.info("Fetch TransUnits:" + action.getPhrase());
+         LOGGER.info("Fetch TransUnits: {}", action.getPhrase());
          filter = new TextFlowFilterImpl(action.getPhrase(), action.isFilterTranslated(), action.isFilterNeedReview(), action.isFilterUntranslated());
          textFlows = textFlowDAO.getTransUnitList(action.getDocumentId().getValue());
       }
       else
       {
-         log.info("Fetch TransUnits:*");
+         LOGGER.info("Fetch TransUnits:*");
          filter = new TextFlowFilterImpl();
          textFlows = textFlowDAO.getTransUnitList(action.getDocumentId().getValue());
       }
@@ -110,7 +109,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
             units.add(tu);
          }
       }
-      size = units.size();
+      int size = units.size();
 
       if ((action.getOffset() + action.getCount()) < units.size())
       {

@@ -15,12 +15,14 @@
  */
 package org.zanata.page;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.zanata.util.Constants.chrome;
 import static org.zanata.util.Constants.firefox;
 import static org.zanata.util.Constants.loadProperties;
 import static org.zanata.util.Constants.webDriverType;
 import static org.zanata.util.Constants.zanataInstance;
 
+import java.io.File;
 import java.util.Properties;
 
 import org.openqa.selenium.WebDriver;
@@ -98,20 +100,22 @@ public enum WebDriverFactory
 
    private WebDriver configureFirefoxDriver()
    {
-      // final String pathToFirefox =
-      // Strings.emptyToNull(props.getProperty("functionaltest.browser.path"));
+      final String pathToFirefox = Strings.emptyToNull(properties.getProperty("firefox.path"));
 
       FirefoxBinary firefoxBinary = null;
-      // if (pathToFirefox != null)
-      // {
-      // firefoxBinary = new FirefoxBinary(new File(pathToFirefox));
-      // } else
-      // {
-      firefoxBinary = new FirefoxBinary();
-      // }
+      if (pathToFirefox != null)
+      {
+         firefoxBinary = new FirefoxBinary(new File(pathToFirefox));
+      }
+      else
+      {
+         firefoxBinary = new FirefoxBinary();
+      }
+      //we timeout the connection in 10 seconds
+//      firefoxBinary.setTimeout(SECONDS.toMillis(10));
 
-      // return new FirefoxDriver(firefoxBinary, makeFirefoxProfile());
-      return new FirefoxDriver();
+      return new FirefoxDriver(firefoxBinary, makeFirefoxProfile());
+//      return new FirefoxDriver();
    }
 
    private FirefoxProfile makeFirefoxProfile()
@@ -126,6 +130,7 @@ public enum WebDriverFactory
       // false); // disables connection to sb-ssl.google.com
       firefoxProfile.setAlwaysLoadNoFocusLib(true);
       firefoxProfile.setEnableNativeEvents(true);
+      firefoxProfile.setPort(8000);
       return firefoxProfile;
    }
 }

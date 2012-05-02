@@ -849,6 +849,14 @@
 			<scope>test</scope>
 			<classifier>v1.3</classifier>
 		</dependency>
+
+        <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-api-compat</artifactId>
+            <version>1.2-SNAPSHOT</version>
+            <scope>test</scope>
+            <classifier>v1.5.0</classifier>
+        </dependency>
         
 		<!-- Seam Dependencies -->
 

@@ -73,24 +73,16 @@ public class FileSystemServiceImpl implements FileSystemService
       descriptorProps.storeToXML(new FileOutputStream( descriptorFile ), "Zanata Download Descriptor");
       
       // Generate the download Id based on the File name
-      String downloadId = descriptorFileName;
-      
-      return downloadId;
+
+      return descriptorFileName;
    }
    
    @Override
-	public boolean deleteDownloadDescriptorFile(String downloadId) throws IOException 
+	public boolean deleteDownloadDescriptorFile(String downloadId)
 	{
 		File descriptorFile = new File(STAGING_DIR, downloadId + DOWNLOAD_FILE_DESCRIPTOR_SUFFIX);
-		
-		if( descriptorFile.exists() )
-		{
-		   return descriptorFile.delete();
-		}
-		else
-		{
-		   return false;
-		}
+
+      return descriptorFile.exists() && descriptorFile.delete();
 	}
    
    /**
@@ -111,26 +103,17 @@ public class FileSystemServiceImpl implements FileSystemService
       // All files generated more than one day ago will be removed
       final Calendar removalThreshold = Calendar.getInstance();
       removalThreshold.add(Calendar.DATE, -1);
-      
-      File[] toRemove = STAGING_DIR.listFiles( new FileFilter()
+
+      return STAGING_DIR.listFiles( new FileFilter()
          {
             @Override
             public boolean accept(File f)
             {
-               if( f.getName().startsWith(DOWNLOAD_FILE_PREFIX)
-                   && f.lastModified() < removalThreshold.getTimeInMillis() )
-               {
-                  return true;
-               }
-               else 
-               {
-                  return false;
-               }
+               return f.getName().startsWith(DOWNLOAD_FILE_PREFIX)
+                     && f.lastModified() < removalThreshold.getTimeInMillis();
             }
-         } 
+         }
       );
-      
-      return toRemove;
    }
    
    

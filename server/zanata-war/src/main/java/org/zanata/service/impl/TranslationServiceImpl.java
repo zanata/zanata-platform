@@ -254,7 +254,7 @@ public class TranslationServiceImpl implements TranslationService
             // return warning for unknown resId to caller
             unknownResIds.add(incomingTarget);
             log.warn("skipping TextFlowTarget with unknown resId: {0}", resId);
-            continue;
+//            continue;
          }
          else
          {
@@ -337,7 +337,6 @@ public class TranslationServiceImpl implements TranslationService
                }
                textFlowTargetDAO.makePersistent(hTarget);
             }
-            incomingTarget = null;
          }
       }
       if (changed || !removedTargets.isEmpty())
@@ -360,9 +359,8 @@ public class TranslationServiceImpl implements TranslationService
       return unknownResIds;
    }
 
-   private boolean determineContentState(Long textFlowId, ContentState stateToSet, List<String> contentToSave, HTextFlowTarget target)
+   private void determineContentState(Long textFlowId, ContentState stateToSet, List<String> contentToSave, HTextFlowTarget target)
    {
-      boolean targetChanged = false;
       Collection<String> emptyContents = getEmptyContents(contentToSave);
 
       if (stateToSet == ContentState.New && emptyContents.isEmpty())
@@ -377,13 +375,8 @@ public class TranslationServiceImpl implements TranslationService
       }
       else
       {
-         if (target.getState() != stateToSet)
-         {
-            targetChanged = true;
-         }
          target.setState(stateToSet);
       }
-      return targetChanged;
    }
 
    private static Collection<String> getEmptyContents(List<String> targetContents)
@@ -473,6 +466,7 @@ public class TranslationServiceImpl implements TranslationService
 
       if(!CollectionUtils.isSubCollection(requestedExt, validExtensions))
       {
+         @SuppressWarnings("unchecked")
          Collection<String> invalidExtensions = CollectionUtils.subtract(requestedExt, validExtensions);
          throw new ZanataServiceException("Unsupported Extensions within this context: " + StringUtils.join(invalidExtensions, ","), 400);
       }

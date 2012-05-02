@@ -24,7 +24,7 @@
         <cargo.wait>false</cargo.wait>
         <cargo.host>localhost</cargo.host>
         <cargo.container>jboss51x</cargo.container>
-        <!--<cargo.servlet.port>9898</cargo.servlet.port>-->
+        <cargo.servlet.port>9898</cargo.servlet.port>
         <cargo.installation>http://downloads.sourceforge.net/jboss/jboss-5.1.0.GA.zip?big_mirror=1</cargo.installation>
         <cargo.home>${java.io.tmpdir}/cargo/installs/jboss-ewp-5.1.2/jboss-ewp-5.1/jboss-as-web</cargo.home>
         <context.path>zanata</context.path>
@@ -43,7 +43,7 @@
         <!--target zanata instance-->
         <zanata.target.version>${project.parent.version}</zanata.target.version>
         <zanata.target.war>${basedir}/../zanata-war/target/zanata-${zanata.target.version}-autotest.war</zanata.target.war>
-        <zanata.instance.url>http://${cargo.host}:8080/${context.path}</zanata.instance.url>
+        <zanata.instance.url>http://${cargo.host}:${cargo.servlet.port}/${context.path}</zanata.instance.url>
         <zanata.apikey>b6d7044e9ee3b2447c28fb7c50d86d98</zanata.apikey>
         <zanata.client.version>1.6.0-alpha-2</zanata.client.version>
         <zanata.sample.projects.basedir>${project.build.testOutputDirectory}/sample-projects</zanata.sample.projects.basedir>
@@ -141,7 +141,6 @@
             <artifactId>${jdbc.artifactId}</artifactId>
             <version>1.2.144</version>
         </dependency>
-
     </dependencies>
 
     <profiles>
@@ -209,7 +208,7 @@
                                         <!--<artifactId>zanata-war</artifactId>-->
                                         <type>war</type>
                                         <location>${zanata.target.war}</location>
-                                        <pingURL>http://${cargo.host}:8080/${context.path}/</pingURL>
+                                        <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</pingURL>
                                         <properties>
                                             <context>${context.path}</context>
                                         </properties>
@@ -219,6 +218,7 @@
                                 <properties>
                                     <cargo.jboss.configuration>default</cargo.jboss.configuration>
                                     <cargo.hostname>${cargo.host}</cargo.hostname>
+                                    <cargo.servlet.port>9898</cargo.servlet.port>
 
                                     <!--<cargo.jvmargs>${cargo.debug.args}</cargo.jvmargs> -->
                                     <cargo.jvmargs>-XX:PermSize=512m -XX:MaxPermSize=1024 -XX:+UseConcMarkSweepGC -XX:+CMSPermGenSweepingEnabled -XX:+CMSClassUnloadingEnabled</cargo.jvmargs>

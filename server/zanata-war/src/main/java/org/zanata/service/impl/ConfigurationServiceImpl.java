@@ -38,7 +38,7 @@ import org.zanata.service.LocaleService;
 @Scope(ScopeType.STATELESS)
 public class ConfigurationServiceImpl implements ConfigurationService
 {
-   private static String FILE_NAME = "zanata.xml";
+   private static final String FILE_NAME = "zanata.xml";
    
    @In
    private LocaleService localeServiceImpl;
@@ -52,12 +52,12 @@ public class ConfigurationServiceImpl implements ConfigurationService
       StringBuilder var = new StringBuilder(
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<config xmlns=\"" + Namespaces.ZANATA_CONFIG + "\">\n");
-      var.append("  <url>" + applicationConfiguration.getServerPath() + "/</url>\n");
-      var.append("  <project>" + projectSlug + "</project>\n");
-      var.append("  <project-version>" + iterationSlug + "</project-version>\n");
+      var.append("  <url>").append(applicationConfiguration.getServerPath()).append("/</url>\n");
+      var.append("  <project>").append(projectSlug).append("</project>\n");
+      var.append("  <project-version>").append(iterationSlug).append("</project-version>\n");
       if (projectType != null)
       {
-         var.append("  <project-type>" + projectType + "</project-type>\n");
+         var.append("  <project-type>").append(projectType).append("</project-type>\n");
       }
       else
       {
@@ -79,7 +79,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
                {
                   var.append("  <locales>\n");
                }
-               var.append("    <locale>" + op.getLocaleId().getId() + "</locale>\n");
+               var.append("    <locale>").append(op.getLocaleId().getId()).append("</locale>\n");
                first = false;
             }
          }

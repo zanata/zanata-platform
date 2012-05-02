@@ -34,9 +34,6 @@ import com.google.common.collect.ImmutableSet;
 public class GetTranslatorListHandler extends AbstractActionHandler<GetTranslatorList, GetTranslatorListResult>
 {
 
-   @Logger
-   Log log;
-
    @In
    Session session;
 
@@ -60,14 +57,14 @@ public class GetTranslatorListHandler extends AbstractActionHandler<GetTranslato
 
       // Use AccountDAO to convert the PersonId to Person
       Map<SessionId, Person> translators = new HashMap<SessionId, Person>();
-      for (SessionId sessionId : result.keySet())
+      for (Map.Entry<SessionId, PersonId> entry : result.entrySet())
       {
-         PersonId personId = result.get(sessionId);
+         PersonId personId = entry.getValue();
 
          HPerson person = accountDAO.getByUsername(personId.toString()).getPerson();
 
          Person translator = new Person(personId, person.getName(), gravatarServiceImpl.getUserImageUrl(16, person.getEmail()));
-         translators.put(sessionId, translator);
+         translators.put(entry.getKey(), translator);
       }
       return new GetTranslatorListResult(translators, ImmutableSet.copyOf(result.values()).size());
    }

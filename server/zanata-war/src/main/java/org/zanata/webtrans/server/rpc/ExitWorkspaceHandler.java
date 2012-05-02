@@ -23,9 +23,6 @@ import org.zanata.webtrans.shared.rpc.ExitWorkspaceResult;
 public class ExitWorkspaceHandler extends AbstractActionHandler<ExitWorkspaceAction, ExitWorkspaceResult>
 {
 
-   @Logger
-   Log log;
-
    @In
    TranslationWorkspaceManager translationWorkspaceManager;
 
