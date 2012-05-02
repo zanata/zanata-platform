@@ -37,6 +37,7 @@ public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResu
       updateRequests.add(updateRequest);
    }
 
+   // FIXME pass a TransUnitUpdateRequest instead of multiple arguments
    public void addTransUnit(TransUnitId transUnitId, ArrayList<String> contents, ContentState contentState, int verNum)
    {
       this.updateRequests.add(new TransUnitUpdateRequest(transUnitId, contents, contentState, verNum));
@@ -50,33 +51,30 @@ public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResu
    // FIXME replace all these getters with an update request getter
    public TransUnitId getSingleTransUnitId()
    {
-      checkForSingleUpdateRequest();
-      return updateRequests.get(0).getTransUnitId();
+      return getSingleUpdateRequest().getTransUnitId();
    }
 
    public List<String> getSingleContents()
    {
-      checkForSingleUpdateRequest();
-      return updateRequests.get(0).getNewContents();
+      return getSingleUpdateRequest().getNewContents();
    }
 
    public ContentState getSingleContentState()
    {
-      checkForSingleUpdateRequest();
-      return updateRequests.get(0).getNewContentState();
+      return getSingleUpdateRequest().getNewContentState();
    }
 
    public Integer getSingleVerNum()
    {
-      checkForSingleUpdateRequest();
-      return updateRequests.get(0).getBaseTranslationVersion();
+      return getSingleUpdateRequest().getBaseTranslationVersion();
    }
 
-   private void checkForSingleUpdateRequest()
+   public TransUnitUpdateRequest getSingleUpdateRequest()
    {
       if (updateRequests.size() != 1)
       {
          throw new IllegalStateException("this method can only be used when updating a single TransUnit");
       }
+      return updateRequests.get(0);
    }
 }
