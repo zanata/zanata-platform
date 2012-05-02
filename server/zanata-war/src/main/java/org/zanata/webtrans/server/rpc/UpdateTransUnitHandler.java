@@ -181,9 +181,8 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
       workspace.publish(event);
 
-      UpdateTransUnitResult result = new UpdateTransUnitResult(true);
+      UpdateTransUnitResult result = new UpdateTransUnitResult(true, newTarget.getVersionNum());
       result.setPrevious(previous);
-      result.setCurrentVersionNum(newTarget.getVersionNum());
 
       return result;
    }

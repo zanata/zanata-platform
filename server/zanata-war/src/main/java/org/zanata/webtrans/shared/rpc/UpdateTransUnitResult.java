@@ -1,5 +1,8 @@
 package org.zanata.webtrans.shared.rpc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.customware.gwt.dispatch.shared.Result;
 
 public class UpdateTransUnitResult implements Result
@@ -7,21 +10,29 @@ public class UpdateTransUnitResult implements Result
 
    private static final long serialVersionUID = 1L;
 
-   private boolean success;
-
-   private Integer currentVersionNum;
-
-   public Integer getCurrentVersionNum()
-   {
-      return currentVersionNum;
-   }
-
-   public void setCurrentVersionNum(Integer currentVersionNum)
-   {
-      this.currentVersionNum = currentVersionNum;
-   }
-
+   private List<Boolean> success;
+   private List<Integer> currentVersionNum;
    private UpdateTransUnit previous;
+
+
+   private UpdateTransUnitResult()
+   {
+      success = new ArrayList<Boolean>();
+      currentVersionNum = new ArrayList<Integer>();
+   }
+
+   // FIXME this should not be needed after UpdateTransUnitHandler is updated for multiple TUs
+   public UpdateTransUnitResult(boolean success, int currentVersionNum)
+   {
+      this();
+      addUpdateResult(success, currentVersionNum);
+   }
+
+   public void addUpdateResult(boolean success, int currentVersionNum)
+   {
+      this.success.add(success);
+      this.currentVersionNum.add(currentVersionNum);
+   }
 
    public UpdateTransUnit getPrevious()
    {
@@ -33,19 +44,38 @@ public class UpdateTransUnitResult implements Result
       this.previous = previous;
    }
 
-   @SuppressWarnings("unused")
-   private UpdateTransUnitResult()
+   public List<Integer> getVersionNums()
    {
+      return currentVersionNum;
    }
 
-   public UpdateTransUnitResult(boolean success)
+   public Integer getSingleVersionNum()
    {
-      this.success = success;
+      if (currentVersionNum.size() == 1)
+      {
+         return currentVersionNum.get(0);
+      }
+      else
+      {
+         throw new IllegalStateException("this method can only be used when checking results for a single TransUnit update");
+      }
    }
 
-   public boolean isSuccess()
+   public List<Boolean> getSuccess()
    {
       return success;
+   }
+
+   public boolean isSingleSuccess()
+   {
+      if (success.size() == 1)
+      {
+         return success.get(0);
+      }
+      else
+      {
+         throw new IllegalStateException("this method can only be used when checking results for a single TransUnit update");
+      }
    }
 
 }
