@@ -2,9 +2,11 @@ package org.zanata.webtrans.client.ui;
 
 public interface HasManageUserSession
 {
-   void addSession(String sessionId);
+   void updateTitle(String title);
 
-   void removeSession(String sessionId);
+   void updateSessionLabel(String session);
 
-   boolean isEmptySession();
+   void updateStatusLabel(String status);
+
+   void updateStatusTitle(String s);
 }
