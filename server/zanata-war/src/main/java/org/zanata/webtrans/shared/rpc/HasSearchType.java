@@ -24,7 +24,7 @@ public interface HasSearchType
       /**
        * Fuzzy search for TextFlows which have similar strings for corresponding plural forms
        */
-      FUZZY_PLURAL;
+      FUZZY_PLURAL
    }
 
    SearchType getSearchType();

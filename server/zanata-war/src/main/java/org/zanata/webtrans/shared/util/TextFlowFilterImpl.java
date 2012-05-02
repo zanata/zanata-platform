@@ -40,7 +40,9 @@ import org.zanata.search.FilterConstraints;
 @Scope(ScopeType.EVENT)
 public class TextFlowFilterImpl implements TextFlowFilter
 {
-   private boolean includeTranslated, includeNeedReview, includeUntranslated;
+   private boolean includeTranslated;
+   private boolean includeNeedReview;
+   private boolean includeUntranslated;
    private String phrase;
 
    public TextFlowFilterImpl(FilterConstraints constraints)
@@ -89,7 +91,7 @@ public class TextFlowFilterImpl implements TextFlowFilter
       HTextFlowTarget target = textFlow.getTargets().get(locale);
       if (isMatchSearch(textFlow, target))
       {
-         if ((includeTranslated == includeNeedReview) && (includeNeedReview == includeUntranslated) && (includeUntranslated == includeTranslated))
+         if ((includeTranslated == includeNeedReview) && (includeNeedReview == includeUntranslated))
          {
             return false;
          }
@@ -155,7 +157,7 @@ public class TextFlowFilterImpl implements TextFlowFilter
       return phraseInSource || phraseInTarget;
    }
 
-   public boolean isAcceptAll()
+   private boolean isAcceptAll()
    {
       return phrase.isEmpty() && includeUntranslated && includeNeedReview && includeTranslated;
    }

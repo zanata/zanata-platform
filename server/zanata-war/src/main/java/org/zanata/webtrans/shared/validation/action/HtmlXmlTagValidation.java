@@ -76,7 +76,7 @@ public class HtmlXmlTagValidation extends ValidationAction
    private void orderValidation(ArrayList<String> srcTags, ArrayList<String> trgTags)
    {
       ArrayList<String> longestRun = null;
-      ArrayList<String> currentRun = new ArrayList<String>();
+      ArrayList<String> currentRun;
 
       String[] src = srcTags.toArray(new String[srcTags.size()]);
       String[] trg = trgTags.toArray(new String[trgTags.size()]);
@@ -122,11 +122,11 @@ public class HtmlXmlTagValidation extends ValidationAction
       {
          ArrayList<String> outOfOrder = new ArrayList<String>();
 
-         for (int i = 0; i < src.length; i++)
+         for (String aSrc : src)
          {
-            if (!longestRun.contains(src[i]))
+            if (!longestRun.contains(aSrc))
             {
-               outOfOrder.add(src[i]);
+               outOfOrder.add(aSrc);
             }
          }
 

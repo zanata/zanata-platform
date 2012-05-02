@@ -186,7 +186,7 @@ public class TransUnit implements IsSerializable, Serializable
                }
                if (o1 != null)
                {
-                  return (o2 != null ? new Integer(o1.getRowIndex()).compareTo(o2.getRowIndex()) : 1);
+                  return (o2 != null ? Integer.valueOf(o1.getRowIndex()).compareTo(o2.getRowIndex()) : 1);
                }
                return -1;
             }
