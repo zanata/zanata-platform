@@ -22,8 +22,10 @@ import java.util.Set;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
+import org.zanata.model.HDocument;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
@@ -46,6 +48,21 @@ public interface TranslationService
     */
    Collection<TextFlowTarget> translateAll(String projectSlug, String iterationSlug, String docId, LocaleId locale, TranslationsResource translations, Set<String> extensions,
                                           MergeType mergeType);
+
+   /**
+    * Creates or Updates a document.
+    *
+    * @param projectSlug The document's project id.
+    * @param iterationSlug The document's project iteration id.
+    * @param docId The document id.
+    * @param sourceDoc The document contents.
+    * @param extensions Document extensions to save.
+    * @param copyTrans Whether to copy translations from other projects or not. A true value does not guarantee that
+    *                  this will happen, it is only a suggestion.
+    * @return The created / updated document
+    */
+   public HDocument saveDocument( String projectSlug, String iterationSlug, String docId, Resource sourceDoc,
+                                  Set<String> extensions, boolean copyTrans );
 
    public interface TranslationResult
    {

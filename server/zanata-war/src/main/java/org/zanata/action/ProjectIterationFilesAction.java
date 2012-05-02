@@ -40,12 +40,14 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.extensions.ExtensionType;
+import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 
@@ -84,13 +86,16 @@ public class ProjectIterationFilesAction
    
    private String documentNameFilter;
 
-   private TranslationFileUploadHelper fileUploadHelper;
+   private TranslationFileUploadHelper translationFileUpload;
+
+   private DocumentFileUploadHelper documentFileUpload;
    
    
    public void initialize()
    {
       this.iterationDocuments = this.documentDAO.getAllByProjectIteration(this.projectSlug, this.iterationSlug);
-      this.fileUploadHelper = new TranslationFileUploadHelper();
+      this.translationFileUpload = new TranslationFileUploadHelper();
+      this.documentFileUpload = new DocumentFileUploadHelper();
    }
    
    public HLocale getLocale()
@@ -119,20 +124,20 @@ public class ProjectIterationFilesAction
    }
 
    @Restrict("#{projectIterationFilesAction.fileUploadAllowed}")
-   public void uploadFile()
+   public void uploadTranslationFile()
    {
       TranslationsResource transRes = null;
       try
       {
          // process the file
-         transRes = this.translationFileServiceImpl.parseTranslationFile(this.fileUploadHelper.getFileContents(),
-               this.fileUploadHelper.getFileName());
+         transRes = this.translationFileServiceImpl.parseTranslationFile(this.translationFileUpload.getFileContents(),
+               this.translationFileUpload.getFileName());
 
          // translate it
          Collection<TextFlowTarget> resourcesNotFound =
-            this.translationServiceImpl.translateAll(this.projectSlug, this.iterationSlug, this.fileUploadHelper.getDocId(),
+            this.translationServiceImpl.translateAll(this.projectSlug, this.iterationSlug, this.translationFileUpload.getDocId(),
                new LocaleId(this.localeId), transRes, new StringSet(ExtensionType.GetText.toString()),
-               this.fileUploadHelper.getMergeTranslations() ? MergeType.AUTO : MergeType.IMPORT);
+               this.translationFileUpload.getMergeTranslations() ? MergeType.AUTO : MergeType.IMPORT);
 
          StringBuilder facesInfoMssg = new StringBuilder("File {0} uploaded.");
          if( resourcesNotFound.size() > 0 )
@@ -140,7 +145,7 @@ public class ProjectIterationFilesAction
             facesInfoMssg.append(" There were some warnings, see below.");
          }
 
-         FacesMessages.instance().add(Severity.INFO, facesInfoMssg.toString(), this.fileUploadHelper.getFileName());
+         FacesMessages.instance().add(Severity.INFO, facesInfoMssg.toString(), this.translationFileUpload.getFileName());
          for( TextFlowTarget nf : resourcesNotFound )
          {
             FacesMessages.instance().add(Severity.WARN, "Could not find text flow for message: {0}", nf.getContents());
@@ -148,7 +153,29 @@ public class ProjectIterationFilesAction
       }
       catch (ZanataServiceException zex)
       {
-         FacesMessages.instance().add(Severity.ERROR, "Invalid file type: {0}", this.fileUploadHelper.getFileName());
+         FacesMessages.instance().add(Severity.ERROR, zex.getMessage(), this.translationFileUpload.getFileName());
+      }
+   }
+
+   @Restrict("#{projectIterationFilesAction.documentUploadAllowed}")
+   public void uploadDocumentFile()
+   {
+      try
+      {
+         Resource doc = this.translationFileServiceImpl.parseDocumentFile(this.documentFileUpload.getFileContents(),
+              this.documentFileUpload.getDocumentPath(), this.documentFileUpload.getFileName());
+
+         // TODO Copy Trans values
+         // Extensions are hard-coded to GetText, since it is the only supported format at the time
+         this.translationServiceImpl.saveDocument(this.projectSlug, this.iterationSlug,
+               this.documentFileUpload.getDocumentPath() + doc.getName(), doc, new StringSet(ExtensionType.GetText.toString()),
+               false);
+
+         FacesMessages.instance().add(Severity.INFO, "Document file {0} uploaded.", this.documentFileUpload.getFileName());
+      }
+      catch (ZanataServiceException zex)
+      {
+         FacesMessages.instance().add(Severity.ERROR, zex.getMessage(), this.documentFileUpload.getFileName());
       }
    }
 
@@ -159,6 +186,13 @@ public class ProjectIterationFilesAction
 
       return projectIteration.getStatus() == EntityStatus.ACTIVE
             && identity != null && identity.hasPermission("modify-translation", projectIteration, hLocale);
+   }
+
+   public boolean isDocumentUploadAllowed()
+   {
+      HProjectIteration projectIteration = this.projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      return projectIteration.getStatus() == EntityStatus.ACTIVE
+            && identity != null && identity.hasPermission("import-template", projectIteration);
    }
 
    public List<HDocument> getIterationDocuments()
@@ -211,8 +245,110 @@ public class ProjectIterationFilesAction
       this.documentNameFilter = documentNameFilter;
    }
 
-   public TranslationFileUploadHelper getFileUploadHelper()
+   public TranslationFileUploadHelper getTranslationFileUpload()
    {
-      return fileUploadHelper;
+      return translationFileUpload;
+   }
+
+   public DocumentFileUploadHelper getDocumentFileUpload()
+   {
+      return documentFileUpload;
+   }
+
+   /**
+    * Helper class to upload translation files.
+    */
+   public static class TranslationFileUploadHelper
+   {
+      private String docId;
+
+      private InputStream fileContents;
+
+      private String fileName;
+
+      private boolean mergeTranslations = true; // Merge by default
+
+
+      public String getDocId()
+      {
+         return docId;
+      }
+
+      public void setDocId(String docId)
+      {
+         this.docId = docId;
+      }
+
+      public InputStream getFileContents()
+      {
+         return fileContents;
+      }
+
+      public void setFileContents(InputStream fileContents)
+      {
+         this.fileContents = fileContents;
+      }
+
+      public String getFileName()
+      {
+         return fileName;
+      }
+
+      public void setFileName(String fileName)
+      {
+         this.fileName = fileName;
+      }
+
+      public boolean getMergeTranslations()
+      {
+         return mergeTranslations;
+      }
+
+      public void setMergeTranslations(boolean mergeTranslations)
+      {
+         this.mergeTranslations = mergeTranslations;
+      }
+   }
+
+   /**
+    * Helper class to upload documents.
+    */
+   public static class DocumentFileUploadHelper
+   {
+      private InputStream fileContents;
+
+      private String fileName;
+
+      private String documentPath;
+
+      public InputStream getFileContents()
+      {
+         return fileContents;
+      }
+
+      public void setFileContents(InputStream fileContents)
+      {
+         this.fileContents = fileContents;
+      }
+
+      public String getFileName()
+      {
+         return fileName;
+      }
+
+      public void setFileName(String fileName)
+      {
+         this.fileName = fileName;
+      }
+
+      public String getDocumentPath()
+      {
+         return documentPath;
+      }
+
+      public void setDocumentPath(String documentPath)
+      {
+         this.documentPath = documentPath;
+      }
    }
 }
