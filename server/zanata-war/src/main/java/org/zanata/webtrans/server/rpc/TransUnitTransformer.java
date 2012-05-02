@@ -60,7 +60,7 @@ public class TransUnitTransformer
             .setTargets(targetContents)
             .setMsgContext(msgContext)
             .setRowIndex(hTextFlow.getPos())
-            .setVerNum(target.getVersionNum());
+            .setVerNum(target == null ? 1 : target.getVersionNum());
 
       if (target != null)
       {
