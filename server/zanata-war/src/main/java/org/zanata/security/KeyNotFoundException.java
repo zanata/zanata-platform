@@ -2,25 +2,16 @@ package org.zanata.security;
 
 public class KeyNotFoundException extends RuntimeException
 {
+   private static final long serialVersionUID = -792069428655695057L;
 
    public KeyNotFoundException()
    {
       super();
    }
 
-   public KeyNotFoundException(String message, Throwable cause)
-   {
-      super(message, cause);
-   }
-
    public KeyNotFoundException(String message)
    {
       super(message);
-   }
-
-   public KeyNotFoundException(Throwable cause)
-   {
-      super(cause);
    }
 
 }

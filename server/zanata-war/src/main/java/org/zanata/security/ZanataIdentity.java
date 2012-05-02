@@ -20,12 +20,8 @@
  */
 package org.zanata.security;
 
-import static org.jboss.seam.ScopeType.SESSION;
-import static org.jboss.seam.annotations.Install.APPLICATION;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
@@ -40,12 +36,16 @@ import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Events;
-import org.jboss.seam.log.LogProvider;
-import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Configuration;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.NotLoggedInException;
 import org.jboss.seam.security.permission.RuleBasedPermissionResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.google.common.collect.Lists;
+
+import static org.jboss.seam.ScopeType.SESSION;
+import static org.jboss.seam.annotations.Install.APPLICATION;
 
 @Name("org.jboss.seam.security.identity")
 @Scope(SESSION)
@@ -54,16 +54,13 @@ import org.jboss.seam.security.permission.RuleBasedPermissionResolver;
 @Startup
 public class ZanataIdentity extends Identity
 {
+   private static final Logger LOGGER = LoggerFactory.getLogger(ZanataIdentity.class);
 
-   /**
-    * 
-    */
-   private static final long serialVersionUID = 1L;
    public static final String USER_LOGOUT_EVENT = "user.logout";
    public static final String USER_ENTER_WORKSPACE = "user.enter";
    public static final String JAAS_DEFAULT = "default";
 
-   private static final LogProvider log = Logging.getLogProvider(ZanataIdentity.class);
+   private static final long serialVersionUID = -5488977241602567930L;
 
    private String apiKey;
 
@@ -105,35 +102,35 @@ public class ZanataIdentity extends Identity
    public void checkLoggedIn()
    {
       if (!isLoggedIn())
+      {
          throw new NotLoggedInException();
+      }
    }
 
    public void logout()
    {
       if (Events.exists() && getPrincipal() != null)
+      {
          Events.instance().raiseEvent(USER_LOGOUT_EVENT, getPrincipal().getName());
+      }
       super.logout();
    }
 
    @Override
    public boolean hasPermission(Object target, String action)
    {
-      if (log.isDebugEnabled())
-         log.debug("ENTER hasPermission(" + target + "," + action + ")");
+      LOGGER.debug("ENTER hasPermission({}, {})", target, action);
       boolean result = super.hasPermission(target, action);
-      if (log.isDebugEnabled())
-         log.debug("EXIT hasPermission(): " + result);
+      LOGGER.debug("EXIT hasPermission(): {}", result);
       return result;
    }
 
    @Override
    public boolean hasPermission(String name, String action, Object... arg)
    {
-      if (log.isDebugEnabled())
-         log.debug("ENTER hasPermission(" + name + "," + action + "," + arg + ")");
+      LOGGER.debug("ENTER hasPermission({})", Lists.newArrayList(name, action, arg));
       boolean result = super.hasPermission(name, action, arg);
-      if (log.isDebugEnabled())
-         log.debug("EXIT hasPermission(): " + result);
+      LOGGER.debug("EXIT hasPermission(): {}", result);
       return result;
    }
    

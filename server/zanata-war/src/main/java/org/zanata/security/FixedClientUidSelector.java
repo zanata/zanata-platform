@@ -26,7 +26,8 @@ public class FixedClientUidSelector extends ClientUidSelector
    {
       String requestContextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
       // workaround for https://issues.jboss.org/browse/JBSEAM-4701
-      if (requestContextPath.isEmpty()) {
+      if (requestContextPath.isEmpty())
+      {
          requestContextPath = "/";
       }
       setCookiePath(requestContextPath);
