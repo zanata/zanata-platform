@@ -1,32 +1,6 @@
 package org.zanata.rest.service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.annotation.PostConstruct;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.jboss.seam.Component;
@@ -53,6 +27,7 @@ import org.zanata.model.po.HPoHeader;
 import org.zanata.model.po.HPoTargetHeader;
 import org.zanata.model.po.HPotEntryData;
 import org.zanata.rest.dto.Person;
+import org.zanata.rest.dto.extensions.ExtensionType;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.AbstractResourceMetaExtension;
 import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
@@ -69,6 +44,33 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.StringUtil;
+
+import javax.annotation.PostConstruct;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Name("resourceUtils")
 @Scope(ScopeType.STATELESS)
@@ -989,8 +991,6 @@ public class ResourceUtils
 
    /**
     * Retrieves the language PO file header for a given locale.
-    * 
-    * @param translations
     */
    private String getLanguage(final HLocale locale)
    {
@@ -1363,6 +1363,24 @@ public class ResourceUtils
          transRes.getTextFlowTargets().add(target);
       }
       return found;
+   }
+
+   /**
+    * Ensures that any extensions sent with the current query are valid for this
+    * context.
+    *
+    * @param requestedExt Extensions to be validated
+    */
+   public static void validateExtensions(Set<String> requestedExt)
+   {
+      Set<String> validExtensions = ExtensionType.asStringSet();
+
+      if(!CollectionUtils.isSubCollection(requestedExt, validExtensions))
+      {
+         @SuppressWarnings("unchecked")
+         Collection<String> invalidExtensions = CollectionUtils.subtract(requestedExt, validExtensions);
+         throw new RuntimeException("Unsupported Extensions within this context: " + StringUtils.join(invalidExtensions, ","));
+      }
    }
 
 }

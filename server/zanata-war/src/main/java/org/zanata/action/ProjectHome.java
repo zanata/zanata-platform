@@ -47,6 +47,7 @@ import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.LocaleService;
+import org.zanata.service.SlugEntityService;
 
 @Name("projectHome")
 public class ProjectHome extends SlugHome<HIterationProject>
@@ -74,6 +75,9 @@ public class ProjectHome extends SlugHome<HIterationProject>
 
    @In
    LocaleService localeServiceImpl;
+
+   @In
+   SlugEntityService slugEntityServiceImpl;
 
    @In(create = true)
    ProjectDAO projectDAO;
@@ -116,16 +120,7 @@ public class ProjectHome extends SlugHome<HIterationProject>
 
    public boolean isSlugAvailable(String slug)
    {
-      try
-      {
-         getEntityManager().createQuery("from HProject p where p.slug = :slug").setParameter("slug", slug).getSingleResult();
-         return false;
-      }
-      catch (NoResultException e)
-      {
-         // pass
-      }
-      return true;
+      return slugEntityServiceImpl.isSlugAvailable(slug, HIterationProject.class);
    }
 
    @Override

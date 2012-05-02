@@ -40,6 +40,7 @@ import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.LocaleService;
+import org.zanata.service.SlugEntityService;
 
 @Name("projectIterationHome")
 public class ProjectIterationHome extends SlugHome<HProjectIteration>
@@ -51,12 +52,18 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
 
    private String slug;
    private String projectSlug;
+
    @In(required = false)
    Map<String, String> iterationCustomizedItems;
+
    @In(required = false)
    private Boolean iterationOverrideLocales;
+
    @In
    LocaleService localeServiceImpl;
+
+   @In
+   SlugEntityService slugEntityServiceImpl;
 
    @Logger
    Log log;
@@ -125,16 +132,7 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
 
    public boolean isSlugAvailable(String slug)
    {
-      try
-      {
-         getEntityManager().createQuery("from HProjectIteration t where t.slug = :slug and t.project.slug = :projectSlug").setParameter("slug", slug).setParameter("projectSlug", projectSlug).getSingleResult();
-         return false;
-      }
-      catch (NoResultException e)
-      {
-         // pass
-      }
-      return true;
+      return slugEntityServiceImpl.isSlugAvailable(slug, HProjectIteration.class);
    }
 
    @Override

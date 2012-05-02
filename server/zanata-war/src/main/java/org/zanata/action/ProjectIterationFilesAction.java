@@ -44,6 +44,7 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 
@@ -81,6 +82,9 @@ public class ProjectIterationFilesAction
 
    @In
    private TranslationService translationServiceImpl;
+
+   @In
+   private DocumentService documentServiceImpl;
 
    private List<HDocument> iterationDocuments;
    
@@ -167,7 +171,7 @@ public class ProjectIterationFilesAction
 
          // TODO Copy Trans values
          // Extensions are hard-coded to GetText, since it is the only supported format at the time
-         this.translationServiceImpl.saveDocument(this.projectSlug, this.iterationSlug,
+         this.documentServiceImpl.saveDocument(this.projectSlug, this.iterationSlug,
                this.documentFileUpload.getDocumentPath() + doc.getName(), doc, new StringSet(ExtensionType.GetText.toString()),
                false);
 

@@ -56,8 +56,10 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
+import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.impl.CopyTransServiceImpl;
+import org.zanata.service.impl.DocumentServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.service.impl.TranslationServiceImpl;
 import org.zanata.util.HashUtil;
@@ -130,6 +132,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    LocaleServiceImpl localeService;
    TranslationService translationService;
    CopyTransService copyTransService;
+   DocumentService documentService;
    Events events;
 
    ISourceDocResource sourceDocResource;
@@ -204,13 +207,22 @@ public class TranslationResourceRestTest extends ZanataRestTest
             resourceUtils
       );
 
-      // @formatter:off
-      SourceDocResourceService sourceDocResourceService = new SourceDocResourceService(
-            projectDAO,
+      documentService = new DocumentServiceImpl(
             projectIterationDAO,
             documentDAO,
             localeService,
             copyTransService,
+            resourceUtils,
+            applicationConfiguration
+      );
+
+      // @formatter:off
+      SourceDocResourceService sourceDocResourceService = new SourceDocResourceService(
+            projectIterationDAO,
+            documentDAO,
+            localeService,
+            copyTransService,
+            documentService,
             applicationConfiguration,
             resourceUtils,
             eTagUtils
