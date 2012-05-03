@@ -375,6 +375,7 @@ public class Editor extends Composite implements ToggleEditor
    @Override
    public void addTranslator(String name)
    {
+      boolean isExist = false;
       for (int i = 0; i < translatorList.getWidgetCount(); i++)
       {
          if (((Label) translatorList.getWidget(i)).getText().equals(name))

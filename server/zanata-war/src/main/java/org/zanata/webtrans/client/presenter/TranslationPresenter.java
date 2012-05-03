@@ -22,6 +22,7 @@ package org.zanata.webtrans.client.presenter;
 
 import org.zanata.webtrans.client.editor.CheckKey;
 import org.zanata.webtrans.client.editor.CheckKeyImpl;
+import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
 import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
@@ -89,7 +90,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private final TransMemoryPresenter transMemoryPresenter;
    private final GlossaryPresenter glossaryPresenter;
    private final WorkspaceUsersPresenter workspaceUsersPresenter;
-
+   private final TargetContentsPresenter targetContentsPresenter;
    private WorkspaceContext workspaceContext;
 
    private final WebTransMessages messages;
@@ -99,7 +100,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private boolean southPanelExpanded = true;
 
    @Inject
-   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final OptionsPanelPresenter optionsPanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final NativeEvent nativeEvent, final WorkspaceContext workspaceContext)
+   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TargetContentsPresenter targetContentsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final OptionsPanelPresenter optionsPanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final NativeEvent nativeEvent, final WorkspaceContext workspaceContext)
    {
       super(display, eventBus);
       this.messages = messages;
@@ -108,6 +109,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       this.transMemoryPresenter = transMemoryPresenter;
       this.optionsPanelPresenter = optionsPanelPresenter;
       this.glossaryPresenter = glossaryPresenter;
+      this.targetContentsPresenter = targetContentsPresenter;
       this.dispatcher = dispatcher;
 
       this.nativeEvent = nativeEvent;
@@ -152,6 +154,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          public void onExitWorkspace(ExitWorkspaceEvent event)
          {
             workspaceUsersPresenter.removeTranslator(event.getSessionId(), event.getPerson());
+            targetContentsPresenter.updateTranslators();
             display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()));
          }
       }));

@@ -54,9 +54,12 @@ import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
+import org.zanata.webtrans.client.events.TranslatorStatusUpdateEvent;
+import org.zanata.webtrans.client.events.TranslatorStatusUpdateEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.ui.ToggleEditor;
@@ -78,6 +81,8 @@ public class TargetContentsPresenterTest
    @Mock private EventBus eventBus;
    @Mock private TableEditorMessages tableEditorMessages;
    @Mock private SourceContentsPresenter sourceContentPresenter;
+   @Mock
+   private WorkspaceUsersPresenter workspaceUsersPresenter;
    @Mock private NavigationMessages navMessages;
    @Mock private WorkspaceContext workspaceContext;
    @Mock private Scheduler scheduler;
@@ -97,12 +102,13 @@ public class TargetContentsPresenterTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TargetContentsPresenter(displayProvider, eventBus, tableEditorMessages, sourceContentPresenter, configHolder, workspaceContext, scheduler, validationPanel);
+      presenter = new TargetContentsPresenter(displayProvider, eventBus, tableEditorMessages, sourceContentPresenter, workspaceUsersPresenter, configHolder, workspaceContext, scheduler, validationPanel);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.getType(), presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
       verify(eventBus).addHandler(InsertStringInEditorEvent.getType(), presenter);
       verify(eventBus).addHandler(CopyDataToEditorEvent.getType(), presenter);
+      verify(eventBus).addHandler(TranslatorStatusUpdateEvent.getType(), presenter);
 
       presenter.setCellEditor(cellEditor);
 

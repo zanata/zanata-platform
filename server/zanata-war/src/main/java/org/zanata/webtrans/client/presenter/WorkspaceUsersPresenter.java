@@ -15,40 +15,14 @@ import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonSessionDetails;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPresenter.Display>
 {
-
-   public class UserPanelSessionItem
-   {
-      private HasManageUserSession panel;
-      private ArrayList<String> sessionList;
-
-      public UserPanelSessionItem(HasManageUserSession panel, ArrayList<String> sessionList)
-      {
-         this.panel = panel;
-         this.sessionList = sessionList;
-      }
-
-      public HasManageUserSession getPanel()
-      {
-         return panel;
-      }
-
-      public ArrayList<String> getSessionList()
-      {
-         if (sessionList == null)
-         {
-            sessionList = new ArrayList<String>();
-         }
-         return sessionList;
-      }
-   }
-
-   private final HashMap<Person, UserPanelSessionItem> userPanelMap;
+   private final HashMap<Person, UserPanelSessionItem> userSessionMap;
 
    public interface Display extends WidgetDisplay
    {
@@ -63,7 +37,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
    public WorkspaceUsersPresenter(final Display display, final EventBus eventBus)
    {
       super(display, eventBus);
-      userPanelMap = new HashMap<Person, UserPanelSessionItem>();
+      userSessionMap = new HashMap<Person, UserPanelSessionItem>();
    }
 
    @Override
@@ -79,6 +53,10 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
       }));
    }
 
+   public Map<Person, UserPanelSessionItem> getUserSessionMap()
+   {
+      return userSessionMap;
+   }
    @Override
    protected void onUnbind()
    {
@@ -99,9 +77,10 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
    public void updateTranslatorStatus(SessionId sessionId, Person person, TransUnit selectedTransUnit)
    {
-      if (userPanelMap.containsKey(person) && selectedTransUnit != null)
+      if (userSessionMap.containsKey(person) && selectedTransUnit != null)
       {
-         UserPanelSessionItem item = userPanelMap.get(person);
+         UserPanelSessionItem item = userSessionMap.get(person);
+         item.setSelectedTransUnit(selectedTransUnit);
          item.getPanel().updateStatusLabel(selectedTransUnit.getSources().toString());
          item.getPanel().updateStatusTitle("Resource ID: " + selectedTransUnit.getResId());
       }
@@ -109,9 +88,9 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
    public void removeTranslator(SessionId sessionId, Person person)
    {
-      if (userPanelMap.containsKey(person))
+      if (userSessionMap.containsKey(person))
       {
-         UserPanelSessionItem item = userPanelMap.get(person);
+         UserPanelSessionItem item = userSessionMap.get(person);
          item.getSessionList().remove(sessionId.toString());
 
          if (item.getSessionList().size() == 1)
@@ -121,7 +100,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
          }
          else if (item.getSessionList().isEmpty())
          {
-            userPanelMap.remove(person);
+            userSessionMap.remove(person);
             display.removeUser(item.getPanel());
          }
          else
@@ -140,15 +119,16 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
    public void addTranslator(SessionId sessionId, Person person, TransUnit selectedTransUnit)
    {
-      UserPanelSessionItem item = userPanelMap.get(person);
+      UserPanelSessionItem item = userSessionMap.get(person);
 
       if (item == null)
       {
          HasManageUserSession panel = display.addUser(person);
          item = new UserPanelSessionItem(panel, new ArrayList<String>());
-         userPanelMap.put(person, item);
+         userSessionMap.put(person, item);
       }
 
+      item.setSelectedTransUnit(selectedTransUnit);
       item.getSessionList().add(sessionId.toString());
 
       String sessionTitle = "";
