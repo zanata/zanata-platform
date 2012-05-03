@@ -20,12 +20,8 @@ R * Copyright 2010, Red Hat, Inc. and individual contributors
  */
 package org.zanata.security;
 
-import static org.jboss.seam.ScopeType.SESSION;
-import static org.jboss.seam.annotations.Install.APPLICATION;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
-
 import javax.faces.context.FacesContext;
 
 import org.jboss.seam.Component;
@@ -39,6 +35,11 @@ import org.jboss.seam.log.LogProvider;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
 import org.jboss.security.SecurityAssociation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.jboss.seam.ScopeType.SESSION;
+import static org.jboss.seam.annotations.Install.APPLICATION;
 
 @Name("org.jboss.seam.security.spNegoIdentity")
 @Scope(SESSION)
@@ -46,13 +47,10 @@ import org.jboss.security.SecurityAssociation;
 @BypassInterceptors
 public class SpNegoIdentity implements Serializable
 {
-   /**
-    * 
-    */
-   private static final long serialVersionUID = 1L;
+   private static final Logger LOGGER = LoggerFactory.getLogger(SpNegoIdentity.class);
+   private static final long serialVersionUID = 5341594999046279309L;
    private static final String SUBJECT = "subject";
    private static final String PRINCIPAL = "principal";
-   private static final LogProvider log = Logging.getLogProvider(SpNegoIdentity.class);
 
    public void setCredential()
    {
@@ -62,12 +60,14 @@ public class SpNegoIdentity implements Serializable
          if (identity.isLoggedIn())
          {
             if (Events.exists())
+            {
                Events.instance().raiseEvent(Identity.EVENT_ALREADY_LOGGED_IN);
+            }
             return;
          }
 
          String username = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
-         log.debug("remote username: " + username);
+         LOGGER.debug("remote username: {}", username);
 
          identity.getCredentials().setUsername(username);
          identity.getCredentials().setPassword("");
@@ -82,12 +82,14 @@ public class SpNegoIdentity implements Serializable
          field.set(identity, SecurityAssociation.getSubject());
 
          if (Events.exists())
+         {
             Events.instance().raiseEvent(Identity.EVENT_LOGIN_SUCCESSFUL);
+         }
 
       }
       catch (Exception e)
       {
-         log.warn(e, e);
+         LOGGER.warn("exception", e);
       }
    }
 }

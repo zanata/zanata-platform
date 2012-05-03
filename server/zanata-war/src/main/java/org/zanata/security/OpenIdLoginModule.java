@@ -23,7 +23,6 @@ package org.zanata.security;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -39,8 +38,6 @@ import org.jboss.seam.log.Logging;
 
 public class OpenIdLoginModule implements LoginModule
 {
-   private static final LogProvider log = Logging.getLogProvider(OpenIdLoginModule.class);
-
    protected Set<String> roles = new HashSet<String>();
 
    protected Subject subject;
@@ -81,7 +78,6 @@ public class OpenIdLoginModule implements LoginModule
       }
       catch (Exception ex)
       {
-         log.error("Error logging in " + ex.getMessage());
          LoginException le = new LoginException(ex.getMessage());
          le.initCause(ex);
          throw le;

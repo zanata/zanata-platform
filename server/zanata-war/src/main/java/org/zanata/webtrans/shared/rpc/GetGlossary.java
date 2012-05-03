@@ -106,11 +106,7 @@ public class GetGlossary implements Action<GetGlossaryResult>, HasSearchType
       {
          return false;
       }
-      if (searchType != other.searchType)
-      {
-         return false;
-      }
-      return true;
+      return searchType == other.searchType;
    }
 
 }

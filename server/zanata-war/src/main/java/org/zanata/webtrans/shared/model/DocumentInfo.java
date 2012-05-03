@@ -7,7 +7,7 @@ import org.zanata.common.TranslationStats;
 
 public class DocumentInfo implements HasIdentifier<DocumentId>, Serializable
 {
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2559654736449082598L;
    private DocumentId id;
    private String name;
    private String path;
@@ -71,4 +71,9 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, Serializable
       return (id.equals(other.getId()));
    }
 
+   @Override
+   public int hashCode()
+   {
+      return id.hashCode();
+   }
 }

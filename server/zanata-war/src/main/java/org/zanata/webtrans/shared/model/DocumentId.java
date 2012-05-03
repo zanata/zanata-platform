@@ -43,22 +43,17 @@ public class DocumentId implements Identifier<Long>, Serializable
       return id;
    }
 
-   public void setId(long id)
-   {
-      this.id = id;
-   }
-
    @Override
    public boolean equals(Object obj)
    {
       if (obj == this)
-         return true;
-      if (obj == null)
-         return false;
-      if (obj instanceof DocumentId)
       {
-         return ((DocumentId) obj).id == id;
+         return true;
       }
-      return false;
+      if (obj == null)
+      {
+         return false;
+      }
+      return obj instanceof DocumentId && ((DocumentId) obj).id == id;
    }
 }

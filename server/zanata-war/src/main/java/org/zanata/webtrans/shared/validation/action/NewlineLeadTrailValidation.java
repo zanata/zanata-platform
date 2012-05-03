@@ -46,17 +46,37 @@ public class NewlineLeadTrailValidation extends ValidationAction
    @Override
    public void doValidate(String source, String target)
    {
-      if (!shareLeading(source, target))
+      if (notShareLeading(source, target))
+      {
          addError(getMessages().leadingNewlineMissing());
+      }
 
-      if (!shareLeading(target, source))
+      if (notShareLeading(target, source))
+      {
          addError(getMessages().leadingNewlineAdded());
+      }
 
-      if (!shareTrailing(source, target))
+      if (notShareTrailing(source, target))
+      {
+
          addError(getMessages().trailingNewlineMissing());
+      }
 
-      if (!shareTrailing(target, source))
+      if (notShareTrailing(target, source))
+      {
+
          addError(getMessages().trailingNewlineAdded());
+      }
+   }
+
+   private boolean notShareTrailing(String source, String target)
+   {
+      return !shareTrailing(source, target);
+   }
+
+   private boolean notShareLeading(String source, String target)
+   {
+      return !shareLeading(source, target);
    }
 
    /**

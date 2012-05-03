@@ -21,8 +21,6 @@
 package org.zanata.security;
 
 
-import static org.jboss.seam.ScopeType.SESSION;
-
 import javax.faces.context.FacesContext;
 
 import org.jboss.seam.annotations.Install;
@@ -30,6 +28,8 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.security.RememberMe;
+
+import static org.jboss.seam.ScopeType.SESSION;
 
 @Name("org.jboss.seam.security.rememberMe")
 @Scope(SESSION)
@@ -44,7 +44,9 @@ public class FixedRememberMe extends RememberMe
    {
       FacesContext ctx = FacesContext.getCurrentInstance();
       if (ctx == null)
+      {
          return null;
+      }
       String requestContextPath = ctx.getExternalContext().getRequestContextPath();
       // workaround for https://issues.jboss.org/browse/SEAMSECURITY-9
       if (requestContextPath.isEmpty())

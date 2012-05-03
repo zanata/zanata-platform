@@ -21,8 +21,6 @@
 package org.zanata.security;
 
 
-import static org.jboss.seam.annotations.Install.APPLICATION;
-
 import java.io.Serializable;
 
 import org.jboss.seam.Component;
@@ -37,6 +35,8 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.Identity;
 import org.zanata.ApplicationConfiguration;
+
+import static org.jboss.seam.annotations.Install.APPLICATION;
 
 @Name("zanataExternalLoginBean")
 @Scope(ScopeType.SESSION)
