@@ -21,6 +21,7 @@ import org.easymock.Capture;
 import org.easymock.IAnswer;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
 import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
@@ -71,6 +72,7 @@ public class TranslationPresenterTest
    private TransMemoryPresenter mockTransMemoryPresenter;
    private WorkspaceContext mockWorkspaceContext;
    private WorkspaceUsersPresenter mockWorkspaceUsersPresenter;
+   private TargetContentsPresenter mockTargetContentsPresenter;
 
    // mock view components
    private HasValue<Boolean> mockOptionsToggle;
@@ -102,6 +104,7 @@ public class TranslationPresenterTest
       mockTransMemoryPresenter = createMock(TransMemoryPresenter.class);
       mockWorkspaceContext = createMock(WorkspaceContext.class);
       mockWorkspaceUsersPresenter = createMock(WorkspaceUsersPresenter.class);
+      mockTargetContentsPresenter = createMock(TargetContentsPresenter.class);
 
       mockOptionsToggle = createMock(HasValue.class);
       mockSouthPanelToggle = createMock(HasValue.class);
@@ -109,7 +112,7 @@ public class TranslationPresenterTest
 
    private TranslationPresenter newTranslationPresenter()
    {
-      return new TranslationPresenter(mockDisplay, mockEventBus, mockDispatcher, mockWorkspaceUsersPresenter, mockTranslationEditorPresenter, mockSidePanelPresenter, mockTransMemoryPresenter, mockGlossaryPresenter, mockMessages, mockNativeEvent, mockWorkspaceContext);
+      return new TranslationPresenter(mockDisplay, mockEventBus, mockDispatcher, mockTargetContentsPresenter, mockWorkspaceUsersPresenter, mockTranslationEditorPresenter, mockSidePanelPresenter, mockTransMemoryPresenter, mockGlossaryPresenter, mockMessages, mockNativeEvent, mockWorkspaceContext);
    }
 
 

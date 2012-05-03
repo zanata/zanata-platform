@@ -52,6 +52,7 @@ import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
+import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -89,8 +90,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private ArrayList<ToggleEditor> currentEditors;
    private TransUnitsEditModel cellEditor;
 
+   private final Identity identity;
+
    @Inject
-   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, UserConfigHolder configHolder, WorkspaceContext workspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel)
+   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, UserConfigHolder configHolder, WorkspaceContext workspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel)
    {
       this.displayProvider = displayProvider;
       this.eventBus = eventBus;
@@ -101,6 +104,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       this.scheduler = scheduler;
       this.validationMessagePanel = validationMessagePanel;
       this.workspaceUsersPresenter = workspaceUsersPresenter;
+      this.identity = identity;
 
       checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       eventBus.addHandler(UserConfigChangeEvent.getType(), this);
@@ -172,23 +176,23 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void onTranslatorStatusUpdate(final TranslatorStatusUpdateEvent event)
    {
-      updateEditorTranslatorList(event.getSelectedTransUnit().getId(), event.getPerson().getName());
+      updateEditorTranslatorList(event.getSelectedTransUnit().getId(), event.getPerson());
    }
 
-   private void updateEditorTranslatorList(TransUnitId selectedTransUnitId, String personName)
+   private void updateEditorTranslatorList(TransUnitId selectedTransUnitId, Person person)
    {
-      if (cellEditor.getTargetCell().getId().equals(selectedTransUnitId))
+      if (cellEditor.getTargetCell().getId().equals(selectedTransUnitId) && !person.equals(identity.getPerson()))
       {
          for (ToggleEditor editor : currentEditors)
          {
-            editor.addTranslator(personName);
+            editor.addTranslator(person.getName());
          }
       }
       else
       {
          for (ToggleEditor editor : currentEditors)
          {
-            editor.removeTranslator(personName);
+            editor.removeTranslator(person.getName());
          }
       }
    }
@@ -208,7 +212,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          {
             if (entry.getValue().getSelectedTransUnit() != null)
             {
-               updateEditorTranslatorList(entry.getValue().getSelectedTransUnit().getId(), entry.getKey().getName());
+               updateEditorTranslatorList(entry.getValue().getSelectedTransUnit().getId(), entry.getKey());
             }
          }
       }

@@ -17,6 +17,7 @@ import org.zanata.webtrans.shared.model.PersonSessionDetails;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
@@ -29,8 +30,6 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
       HasManageUserSession addUser(Person person);
 
       void removeUser(HasManageUserSession userPanel);
-
-      int getUserSize();
    }
 
    @Inject
@@ -151,7 +150,9 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
    public int getTranslatorsSize()
    {
-      return display.getUserSize();
+      Log.info("==========return getUserSize()" + userSessionMap.size() + "");
+
+      return userSessionMap.size();
    }
 
 }
