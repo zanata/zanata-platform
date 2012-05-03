@@ -1039,13 +1039,13 @@ public class TranslationResourceRestTest extends ZanataRestTest
       WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId(projectSlug, iterationSlug), localeId);
       WorkspaceContext workspaceContext = new WorkspaceContext(workspaceId, "sample-workspace", localeId.getId(), false);
       
-      Credentials mockCredentials = new Credentials();
-      mockCredentials.setInitialized(true);
-      mockCredentials.setUsername( translator.getUsername() );
+//      Credentials mockCredentials = new Credentials();
+//      mockCredentials.setInitialized(true);
+//      mockCredentials.setUsername( translator.getUsername() );
       
       // Set mock expectations
       expect( transWorkerManager.getOrRegisterWorkspace( anyObject(WorkspaceId.class) ) ).andReturn( transWorkspace ).anyTimes();
-      expect( mockIdentity.getCredentials() ).andReturn( mockCredentials );
+//      expect( mockIdentity.getCredentials() ).andReturn( mockCredentials ).anyTimes();
       expect( transWorkspace.getWorkspaceContext() ).andReturn( workspaceContext );
       mockIdentity.checkLoggedIn();
       expectLastCall();      
@@ -1074,7 +1074,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       UpdateTransUnitHandler transUnitHandler = new UpdateTransUnitHandler(
             mockIdentity,
             projectDAO,
-            textFlowTargetHistoryDAO,
+//            textFlowTargetHistoryDAO,
             transWorkerManager,
             localeService,
             translator,
@@ -1092,7 +1092,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
             .setString(3, projectSlug)
             .uniqueResult();
       Long textFlowId = hTextFlow.getId();
-      int versionNum = 1; //hTextFlow.getTargets().get(hLocale);
+      int versionNum = 0; // no previous translation
 
       // Translate using webtrans
       UpdateTransUnit action = new UpdateTransUnit(new TransUnitUpdateRequest(new TransUnitId(textFlowId), Lists.newArrayList(translation), translationState, versionNum));

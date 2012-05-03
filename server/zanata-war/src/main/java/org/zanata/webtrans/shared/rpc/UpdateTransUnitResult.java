@@ -10,9 +10,9 @@ public class UpdateTransUnitResult implements Result
 
    private static final long serialVersionUID = 1L;
 
+   // FIXME replace these with list of result object
    private List<Boolean> success;
    private List<Integer> currentVersionNum;
-   private UpdateTransUnit previous;
 
 
    private UpdateTransUnitResult()
@@ -32,16 +32,6 @@ public class UpdateTransUnitResult implements Result
    {
       this.success.add(success);
       this.currentVersionNum.add(currentVersionNum);
-   }
-
-   public UpdateTransUnit getPrevious()
-   {
-      return previous;
-   }
-
-   public void setPrevious(UpdateTransUnit previous)
-   {
-      this.previous = previous;
    }
 
    public List<Integer> getVersionNums()

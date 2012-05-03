@@ -20,9 +20,7 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.common.ContentState;
-import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 
 
 
@@ -31,12 +29,7 @@ public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedDa
 {
 
    private static final long serialVersionUID = 1L;
-
-   private DocumentId documentId;
-   private int wordCount;
-   private ContentState previousStatus;
-   private TransUnit tu;
-   private String username;
+   private TransUnitUpdateInfo tuUpdateInfo;
 
 
    // for ExposeEntity
@@ -44,53 +37,14 @@ public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedDa
    {
    }
 
-   public TransUnitUpdated(DocumentId documentId, int wordCount, ContentState previousStatus, TransUnit tu, String username)
+   public TransUnitUpdated(TransUnitUpdateInfo tuUpdateInfo)
    {
-      this.documentId = documentId;
-      this.wordCount = wordCount;
-      this.previousStatus = previousStatus;
-      this.tu = tu;
-      this.username = username;
+      this.tuUpdateInfo = tuUpdateInfo;
    }
 
    @Override
-   public DocumentId getDocumentId()
+   public TransUnitUpdateInfo getUpdateInfo()
    {
-      return documentId;
-   }
-
-   public void setDocumentId(DocumentId documentId)
-   {
-      this.documentId = documentId;
-   }
-
-
-   @Override
-   public ContentState getPreviousStatus()
-   {
-      return previousStatus;
-   }
-
-   public void setPreviousStatus(ContentState previousStatus)
-   {
-      this.previousStatus = previousStatus;
-   }
-
-
-   public int getWordCount()
-   {
-      return wordCount;
-   }
-
-   @Override
-   public TransUnit getTransUnit()
-   {
-      return tu;
-   }
-
-   @Override
-   public String getUsername()
-   {
-      return username;
+      return tuUpdateInfo;
    }
 }

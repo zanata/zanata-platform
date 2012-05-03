@@ -1,22 +1,12 @@
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.common.ContentState;
-import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 
 
 
 public interface HasTransUnitUpdatedData
 {
 
-   DocumentId getDocumentId();
-
-   ContentState getPreviousStatus();
-
-   int getWordCount();
-
-   TransUnit getTransUnit();
-   
-   String getUsername();
+   TransUnitUpdateInfo getUpdateInfo();
 
 }

@@ -37,27 +37,25 @@ import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectDAO;
-import org.zanata.dao.TextFlowTargetHistoryDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
+import org.zanata.service.TranslationService.TranslationResult;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
-import static com.google.common.collect.Lists.*;
 
 @Name("webtrans.gwt.UpdateTransUnitHandler")
 @Scope(ScopeType.STATELESS)
@@ -79,9 +77,6 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    TranslationService translationServiceImpl;
 
    @In
-   private ResourceUtils resourceUtils;
-
-   @In
    ZanataIdentity identity;
    
    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
@@ -89,9 +84,6 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
    @In
    ProjectDAO projectDAO;
-
-   @In
-   private TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
 
    @In
    TranslationWorkspaceManager translationWorkspaceManager;
@@ -112,7 +104,6 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    public UpdateTransUnitHandler(
          ZanataIdentity identity,
          ProjectDAO projectDAO,
-         TextFlowTargetHistoryDAO textFlowTargetHistoryDAO,
          TranslationWorkspaceManager translationWorkspaceManager,
          LocaleService localeServiceImpl,
          HAccount authenticatedAccount,
@@ -122,7 +113,6 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       this.log = Logging.getLog(UpdateTransUnitHandler.class);
       this.identity = identity;
       this.projectDAO = projectDAO;
-      this.textFlowTargetHistoryDAO = textFlowTargetHistoryDAO;
       this.translationWorkspaceManager = translationWorkspaceManager;
       this.localeServiceImpl = localeServiceImpl;
       this.authenticatedAccount = authenticatedAccount;
@@ -135,24 +125,18 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       log.debug("Updating {0} TransUnits for loacle {1}", action.getUpdateRequests().size(), localeId);
       TranslationWorkspace workspace = checkSecurityAndGetWorkspace(action);
 
-      TranslationService.TranslationResult translationResult;
+      TranslationResult translationResult;
       try
       {
-         translationResult = translationServiceImpl.translate(action.getSingleTransUnitId().getValue(), localeId, action.getSingleContentState(), action.getSingleContents());
+         translationResult = translationServiceImpl.translate(localeId, action.getSingleUpdateRequest());
       }
       catch (Exception e)
       {
          throw new ActionException(e.getMessage());
       }
+      HTextFlowTarget newTarget = translationResult.getTranslatedTextFlowTarget();
 
-      HTextFlow hTextFlow = translationResult.getTextFlow();
-      HTextFlowTarget newTarget = translationResult.getNewTextFlowTarget();
-      HTextFlowTarget prevTarget = translationResult.getPreviousTextFlowTarget();
-
-      manageRedo(action, prevTarget);
-
-      UpdateTransUnit previous = new UpdateTransUnit(new TransUnitUpdateRequest(action.getSingleTransUnitId(), newArrayList(prevTarget.getContents()), prevTarget.getState(), prevTarget.getVersionNum()));
-
+      HTextFlow hTextFlow = newTarget.getTextFlow();
       int wordCount = hTextFlow.getWordCount().intValue();
 
       String msgContext = null;
@@ -178,12 +162,12 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
             .setVerNum(newTarget.getVersionNum())
             .build();
 
-      TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, newTarget.getState(), tu, identity.getCredentials().getUsername());
+      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(translationResult.isTranslationSuccessful(), new DocumentId(hTextFlow.getDocument().getId()), tu, wordCount, translationResult.getBaseVersionNum(), translationResult.getBaseContentState());
+      TransUnitUpdated event = new TransUnitUpdated(updateInfo);
 
       workspace.publish(event);
 
       UpdateTransUnitResult result = new UpdateTransUnitResult(true, newTarget.getVersionNum());
-      result.setPrevious(previous);
 
       return result;
    }
@@ -204,88 +188,13 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       return workspace;
    }
 
-   private void manageRedo(UpdateTransUnit action, HTextFlowTarget prevTarget) throws ActionException
-   {
-      if (action.isRedo())
-      {
-         if (prevTarget == null)
-         {
-            throw new ActionException("Redo Failure due to empty string.");
-         }
-         if (!prevTarget.getVersionNum().equals(action.getSingleVerNum()))
-         {
-            if (!prevTarget.getLastModifiedBy().getAccount().getUsername().equals(authenticatedAccount.getUsername()) || textFlowTargetHistoryDAO.findConflictInHistory(prevTarget, action.getSingleVerNum(), authenticatedAccount.getUsername()))
-            {
-               throw new ActionException("Find conflict, Redo Failure.");
-            }
-         }
-      }
-   }
-
    @Override
    public void rollback(UpdateTransUnit action, UpdateTransUnitResult result, ExecutionContext context) throws ActionException
    {
-      LocaleId localeId = action.getWorkspaceId().getLocaleId();
-      log.debug("revert TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getSingleTransUnitId(), localeId, action.getSingleContentState(), action.getSingleContents());
-      TranslationWorkspace workspace = checkSecurityAndGetWorkspace(action);
-
-      HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
-      //TODO This part of the code is related to undo/redo and it's not functioning so will be commented out. IN fact the whole method seems not being used at the moment(except undo calls it).
-//      HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
-//      HTextFlowTarget target = hTextFlow.getTargets().get(hLocale);
-//
-//      if (target == null)
-//      {
-//         throw new ActionException("Undo Failure due to empty string.");
-//      }
-//
-//      if (!target.getVersionNum().equals(result.getCurrentVersionNum()))
-//      {
-//         if (!target.getLastModifiedBy().getAccount().getUsername().equals(authenticatedAccount.getUsername()) || textFlowTargetHistoryDAO.findConflictInHistory(target, result.getCurrentVersionNum(), authenticatedAccount.getUsername()))
-//         {
-//            throw new ActionException("Find conflict, Undo Failure.");
-//         }
-//      }
-
-      TranslationService.TranslationResult translationResult = translationServiceImpl.translate(action.getSingleTransUnitId().getValue(), localeId, result.getPrevious().getSingleContentState(), result.getPrevious().getSingleContents());
-      HTextFlow hTextFlow = translationResult.getTextFlow();
-      HTextFlowTarget prevTarget = translationResult.getPreviousTextFlowTarget();
-
-      int wordCount = hTextFlow.getWordCount().intValue();
-      String msgContext = null;
-      if (hTextFlow.getPotEntryData() != null)
-      {
-         msgContext = hTextFlow.getPotEntryData().getContext();
-      }
-
-      int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale);
-      ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);
-      ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(hTextFlow, prevTarget, nPlurals);
-      String modifiedBy = "";
-      String lastChanged = "";
-      if (prevTarget != null && prevTarget.getLastModifiedBy() != null && prevTarget.getLastChanged() != null)
-      {
-         modifiedBy = prevTarget.getLastModifiedBy().getName();
-         lastChanged = new SimpleDateFormat().format(prevTarget.getLastChanged());
-      }
-
-      TransUnit tu = TransUnit.Builder.newTransUnitBuilder()
-            .setId(action.getSingleTransUnitId())
-            .setResId(hTextFlow.getResId())
-            .setLocaleId(localeId)
-            .setPlural(hTextFlow.isPlural())
-            .setSources(sourceContents)
-            .setSourceComment(CommentsUtil.toString(hTextFlow.getComment()))
-            .setTargets(targetContents)
-            .setStatus(result.getPrevious().getSingleContentState())
-            .setLastModifiedBy(modifiedBy)
-            .setLastModifiedTime(lastChanged)
-            .setMsgContext(msgContext)
-            .setRowIndex(hTextFlow.getPos())
-            .setVerNum(hTextFlow.getTargets().get(hLocale).getVersionNum())
-            .build();
-      TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, result.getPrevious().getSingleContentState(), tu, identity.getCredentials().getUsername());
-      workspace.publish(event);
+      // TODO implement rollback by checking result for success
+      // if success, looking up base revision from action and set values back to that
+      // only if concurrent change conditions are satisfied
+      // conditions: no new translations after this one
    }
 
 }

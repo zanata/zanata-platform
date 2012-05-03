@@ -27,14 +27,26 @@ import java.util.Set;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
-import org.zanata.model.HTextFlow;
+import org.zanata.exception.ConcurrentTranslationException;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 
 public interface TranslationService
 {
-   TranslationResult translate(Long textFlowId, LocaleId localeId, ContentState contentState, List<String> targetContents);
+   /**
+    * Updates a single translation for a single document.
+    * 
+    * @param localeId
+    * @param translationRequest
+    * @return the current translation for the given locale
+    * @throws ConcurrentTranslationException if there has been another
+    *            translation based on the same translation version
+    */
+   TranslationResult translate(LocaleId localeId, TransUnitUpdateRequest translationRequest) throws ConcurrentTranslationException;
+
+   List<TranslationResult> translate(LocaleId localeId, List<TransUnitUpdateRequest> translationRequests);
 
    /**
     * Translates all text flows in a document.
@@ -54,8 +66,9 @@ public interface TranslationService
 
    public interface TranslationResult
    {
-      HTextFlow getTextFlow();
-      HTextFlowTarget getPreviousTextFlowTarget();
-      HTextFlowTarget getNewTextFlowTarget();
+      boolean isTranslationSuccessful();
+      HTextFlowTarget getTranslatedTextFlowTarget();
+      int getBaseVersionNum();
+      ContentState getBaseContentState();
    }
 }

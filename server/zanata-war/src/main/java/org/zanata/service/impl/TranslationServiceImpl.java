@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -50,10 +51,10 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
+import org.zanata.exception.ConcurrentTranslationException;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
-import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
@@ -68,6 +69,8 @@ import org.zanata.rest.service.ResourceUtils;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
@@ -112,9 +115,6 @@ public class TranslationServiceImpl implements TranslationService
    private ResourceUtils resourceUtils;
 
    @In
-   private TranslationWorkspaceManager translationWorkspaceManager;
-
-   @In
    private LocaleService localeServiceImpl;
 
    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
@@ -140,7 +140,6 @@ public class TranslationServiceImpl implements TranslationService
    {
       this.session = session;
       this.projectDAO = projectDAO;
-      this.translationWorkspaceManager = translationWorkspaceManager;
       this.localeServiceImpl = localeService;
       this.authenticatedAccount = authenticatedAccount;
       this.projectIterationDAO = projectIterationDAO;
@@ -154,60 +153,119 @@ public class TranslationServiceImpl implements TranslationService
    }
 
    @Override
-   public TranslationResult translate(Long textFlowId, LocaleId localeId, ContentState stateToSet, List<String> contentsToSave)
+   public TranslationService.TranslationResult translate(LocaleId localeId, TransUnitUpdateRequest translateRequest) throws ConcurrentTranslationException
    {
       TranslationResultImpl result = new TranslationResultImpl();
-
-      HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, textFlowId);
-      result.textFlow = hTextFlow;
+      HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, translateRequest.getTransUnitId().getValue());
 
       HProjectIteration projectIteration = hTextFlow.getDocument().getProjectIteration();
-      HIterationProject project = projectIteration.getProject();
-      HLocale hLocale = localeServiceImpl.validateLocaleByProjectIteration(localeId, project.getSlug(), projectIteration.getSlug());
+      String projectSlug = projectIteration.getProject().getSlug();
+      HLocale hLocale = localeServiceImpl.validateLocaleByProjectIteration(localeId, projectSlug, projectIteration.getSlug());
 
+      HTextFlowTarget hTextFlowTarget = getOrCreateTarget(hTextFlow, hLocale);
+
+      if (translateRequest.getBaseTranslationVersion() != hTextFlowTarget.getVersionNum())
+      {
+         throw new ConcurrentTranslationException(MessageFormat.format("base translation version num {0} does not match current version num {1}, aborting", translateRequest.getBaseTranslationVersion(), hTextFlowTarget.getVersionNum()));
+      }
+
+      result.baseVersion = hTextFlowTarget.getVersionNum();
+      result.baseContentState = hTextFlowTarget.getState();
+
+      translate(hTextFlowTarget, translateRequest.getNewContentState(), translateRequest.getNewContents());
+
+      result.translatedTextFlowTarget = hTextFlowTarget;
+      result.isSuccess = true;
+      return result;
+   }
+
+   @Override
+   public List<TranslationResult> translate(LocaleId localeId, List<TransUnitUpdateRequest> translationRequests)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   /**
+    * Look up the {@link HTextFlowTarget} for the given hLocale in hTextFlow,
+    * creating a new one if none is present.
+    */
+   private HTextFlowTarget getOrCreateTarget(HTextFlow hTextFlow, HLocale hLocale)
+   {
       HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale);
-
-      boolean targetChanged = false;
 
       if (hTextFlowTarget == null)
       {
          hTextFlowTarget = new HTextFlowTarget(hTextFlow, hLocale);
          hTextFlowTarget.setVersionNum(0); // this will be incremented when content is set (below)
          hTextFlow.getTargets().put(hLocale, hTextFlowTarget);
-         targetChanged = true;
       }
-      result.prevTextFlowTarget = hTextFlowTarget;
+      return hTextFlowTarget;
+   }
 
-      //work on content state
-      ContentState previousState = hTextFlowTarget.getState();
-      determineContentState(textFlowId, stateToSet, contentsToSave, hTextFlowTarget);
-      if (previousState != hTextFlowTarget.getState())
-      {
-         targetChanged = true;
-      }
+   private HTextFlowTarget translate(HTextFlowTarget hTextFlowTarget, ContentState requestedState, List<String> contentsToSave)
+   {
+      boolean targetChanged = false;
+      targetChanged |= setContentStateIfChanged(requestedState, contentsToSave, hTextFlowTarget);
+      targetChanged |= setContentIfChanged(hTextFlowTarget, contentsToSave);
 
-      if (!contentsToSave.equals(hTextFlowTarget.getContents()))
-      {
-         hTextFlowTarget.setContents(contentsToSave);
-         targetChanged = true;
-      }
-
-      if (targetChanged)
+      if (targetChanged || hTextFlowTarget.getVersionNum() == 0)
       {
          hTextFlowTarget.setVersionNum(hTextFlowTarget.getVersionNum() + 1);
-         hTextFlowTarget.setTextFlowRevision(hTextFlow.getRevision());
-         log.debug("last modified by :" + authenticatedAccount.getPerson().getName());
+         hTextFlowTarget.setTextFlowRevision(hTextFlowTarget.getTextFlow().getRevision());
          hTextFlowTarget.setLastModifiedBy(authenticatedAccount.getPerson());
+         log.debug("last modified by :" + authenticatedAccount.getPerson().getName());
       }
 
       //save the target
       session.flush();
 
-      //return text flow and new text flow target
-      result.newTextFlowTarget = hTextFlowTarget;
-      return result;
+      return hTextFlowTarget;
    }
 
+   /**
+    * @return true if the content was changed, false otherwise
+    */
+   private boolean setContentIfChanged(HTextFlowTarget hTextFlowTarget, List<String> contentsToSave)
+   {
+      if (!contentsToSave.equals(hTextFlowTarget.getContents()))
+      {
+         hTextFlowTarget.setContents(contentsToSave);
+         return true;
+      }
+      else
+      {
+         return false;
+      }
+   }
+
+   /**
+    * Check that requestedState is valid for the given content, adjust if
+    * necessary and set the new state if it has changed.
+    * 
+    * @return true if the content state was updated, false otherwise
+    */
+   private boolean setContentStateIfChanged(ContentState requestedState, List<String> newContent, HTextFlowTarget target)
+   {
+      ContentState previousState = target.getState();
+      Collection<String> emptyContents = getEmptyContents(newContent);
+
+      if (requestedState == ContentState.New && emptyContents.isEmpty())
+      {
+         log.warn("invalid ContentState New for Target with content '{}', assuming NeedReview", newContent);
+         target.setState(ContentState.NeedReview);
+      }
+      else if (requestedState == ContentState.Approved && emptyContents.size() > 0)
+      {
+         log.warn("invalid ContentState Approved for empty TransUnit, assuming New");
+         target.setState(ContentState.New);
+      }
+      else
+      {
+         target.setState(requestedState);
+      }
+      return target.getState() != previousState;
+   }
 
    @Override
    public Collection<TextFlowTarget> translateAll(String projectSlug, String iterationSlug, String docId, LocaleId locale,
@@ -364,25 +422,6 @@ public class TranslationServiceImpl implements TranslationService
       return unknownResIds;
    }
 
-   private void determineContentState(Long textFlowId, ContentState stateToSet, List<String> contentToSave, HTextFlowTarget target)
-   {
-      Collection<String> emptyContents = getEmptyContents(contentToSave);
-
-      if (stateToSet == ContentState.New && emptyContents.isEmpty())
-      {
-         log.warn("invalid ContentState New for TransUnit {} with content '{}', assuming NeedReview", textFlowId, contentToSave);
-         target.setState(ContentState.NeedReview);
-      }
-      else if (stateToSet == ContentState.Approved && emptyContents.size() > 0)
-      {
-         log.warn("invalid ContentState {} for empty TransUnit {}, assuming New", stateToSet, textFlowId);
-         target.setState(ContentState.New);
-      }
-      else
-      {
-         target.setState(stateToSet);
-      }
-   }
 
    private static Collection<String> getEmptyContents(List<String> targetContents)
    {
@@ -479,26 +518,33 @@ public class TranslationServiceImpl implements TranslationService
 
    public static class TranslationResultImpl implements TranslationResult
    {
-      private HTextFlow textFlow;
-      private HTextFlowTarget prevTextFlowTarget;
-      private HTextFlowTarget newTextFlowTarget;
+      private HTextFlowTarget translatedTextFlowTarget;
+      private boolean isSuccess;
+      private int baseVersion;
+      private ContentState baseContentState;
 
       @Override
-      public HTextFlow getTextFlow()
+      public boolean isTranslationSuccessful()
       {
-         return textFlow;
+         return isSuccess;
+      }
+      @Override
+      public HTextFlowTarget getTranslatedTextFlowTarget()
+      {
+         return translatedTextFlowTarget;
+      }
+      @Override
+      public int getBaseVersionNum()
+      {
+         return baseVersion;
+      }
+      @Override
+      public ContentState getBaseContentState()
+      {
+         return baseContentState;
       }
 
-      @Override
-      public HTextFlowTarget getPreviousTextFlowTarget()
-      {
-         return prevTextFlowTarget;
-      }
 
-      @Override
-      public HTextFlowTarget getNewTextFlowTarget()
-      {
-         return newTextFlowTarget;
-      }
    }
+
 }

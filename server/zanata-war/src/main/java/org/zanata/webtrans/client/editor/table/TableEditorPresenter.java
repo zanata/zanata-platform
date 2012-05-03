@@ -333,30 +333,31 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onTransUnitUpdated(TransUnitUpdatedEvent event)
          {
-            if (documentId != null && documentId.equals(event.getDocumentId()))
+            //assume update was successful
+            if (documentId != null && documentId.equals(event.getUpdateInfo().getDocumentId()))
             {
                // Clear the cache
                clearCacheList();
-               if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
+               if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getUpdateInfo().getTransUnit().getId()))
                {
                   Log.info("selected TU updated; clear selection");
                   display.getTargetCellEditor().cancelEdit();
                   eventBus.fireEvent(new RequestValidationEvent());
                }
 
-               Integer rowIndex = getRowIndex(event.getTransUnit());
+               Integer rowIndex = getRowIndex(event.getUpdateInfo().getTransUnit());
                // - add TU index to model
                if (rowIndex != null)
                {
                   Log.info("onTransUnitUpdated - update row:" + rowIndex);
-                  display.getTableModel().setRowValueOverride(rowIndex, event.getTransUnit());
+                  display.getTableModel().setRowValueOverride(rowIndex, event.getUpdateInfo().getTransUnit());
                }
                // FIXME this causes interference between different tabs
                // e.g. editor opens in tab B when a save is made in tab A
-               if (!display.isProcessing() && event.getUsername().equals(identity.getPerson().getId().toString()) && selectedTransUnit != null)
-               {
-                  tableModelHandler.gotoRow(curRowIndex, true);
-               }
+//               if (!display.isProcessing() && event.getUsername().equals(identity.getPerson().getId().toString()) && selectedTransUnit != null)
+//               {
+//                  tableModelHandler.gotoRow(curRowIndex, true);
+//               }
             }
          }
       }));

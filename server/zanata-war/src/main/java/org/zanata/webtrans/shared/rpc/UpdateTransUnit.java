@@ -14,17 +14,17 @@ public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResu
 
    private List<TransUnitUpdateRequest> updateRequests;
 
-   private boolean isRedo = false;
-
-   public boolean isRedo()
-   {
-      return isRedo;
-   }
-
-   public void setRedo(boolean isRedo)
-   {
-      this.isRedo = isRedo;
-   }
+//   private boolean isRedo = false;
+//
+//   public boolean isRedo()
+//   {
+//      return isRedo;
+//   }
+//
+//   public void setRedo(boolean isRedo)
+//   {
+//      this.isRedo = isRedo;
+//   }
 
    protected UpdateTransUnit()
    {
