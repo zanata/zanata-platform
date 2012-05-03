@@ -35,6 +35,8 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEventHandler;
 import org.zanata.webtrans.client.events.RunValidationEvent;
+import org.zanata.webtrans.client.events.TranslatorStatusUpdateEvent;
+import org.zanata.webtrans.client.events.TranslatorStatusUpdateEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
@@ -55,7 +57,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class TargetContentsPresenter implements TargetContentsDisplay.Listener, UserConfigChangeHandler, RequestValidationEventHandler, InsertStringInEditorHandler, CopyDataToEditorHandler
+public class TargetContentsPresenter implements TargetContentsDisplay.Listener, TranslatorStatusUpdateEventHandler, UserConfigChangeHandler, RequestValidationEventHandler, InsertStringInEditorHandler, CopyDataToEditorHandler
 {
    public static final int NO_OPEN_EDITOR = -1;
    private static final int LAST_INDEX = -2;
@@ -93,6 +95,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       eventBus.addHandler(RequestValidationEvent.getType(), this);
       eventBus.addHandler(InsertStringInEditorEvent.getType(), this);
       eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
+      eventBus.addHandler(TranslatorStatusUpdateEvent.getType(), this);
    }
 
    private ToggleEditor getCurrentEditor()
@@ -123,6 +126,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       for (ToggleEditor editor : currentDisplay.getEditors())
       {
          editor.setViewMode(ToggleEditor.ViewMode.EDIT);
+         editor.clearTranslatorList();
          validate(editor);
       }
 
@@ -352,6 +356,25 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    public void onTransMemoryCopy(final CopyDataToEditorEvent event)
    {
       copyTextWhenIsEditing(event.getTargetResult(), false);
+   }
+
+   @Override
+   public void onTranslatorStatusUpdate(final TranslatorStatusUpdateEvent event)
+   {
+      if (cellEditor.getTargetCell().getId().equals(event.getSelectedTransUnit().getId()))
+      {
+         for (ToggleEditor editor : currentEditors)
+         {
+            editor.addTranslator(event.getPerson().getName());
+         }
+      }
+      else
+      {
+         for (ToggleEditor editor : currentEditors)
+         {
+            editor.removeTranslator(event.getPerson().getName());
+         }
+      }
    }
 
    private void copyTextWhenIsEditing(List<String> contents, boolean isInsertText)

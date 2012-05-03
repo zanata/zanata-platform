@@ -6,6 +6,7 @@ import org.zanata.webtrans.client.editor.table.EditorTextArea;
 import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.resources.NavigationMessages;
+import org.zanata.webtrans.client.ui.ClearableTextBox.Styles;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
@@ -15,6 +16,7 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -24,6 +26,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -34,6 +37,11 @@ public class Editor extends Composite implements ToggleEditor
 
    interface EditorUiBinder extends UiBinder<Widget, Editor>
    {
+   }
+
+   interface Styles extends CssResource
+   {
+      String userLabel();
    }
 
    private static EditorUiBinder uiBinder = GWT.create(EditorUiBinder.class);
@@ -47,6 +55,9 @@ public class Editor extends Composite implements ToggleEditor
    private final int index;
 
    @UiField
+   Styles style;
+
+   @UiField
    FocusPanel rootContainer;
 
    @UiField
@@ -57,6 +68,9 @@ public class Editor extends Composite implements ToggleEditor
 
    @UiField
    FlowPanel validationMessagePanelContainer;
+
+   @UiField
+   HorizontalPanel translatorList;
 
    @UiField
    TableResources images;
@@ -115,6 +129,7 @@ public class Editor extends Composite implements ToggleEditor
 
       label.setTitle(messages.clickHere());
       textArea.setVisible(false);
+      translatorList.setVisible(false);
    }
 
    private void setLabelText(String displayString)
@@ -213,6 +228,7 @@ public class Editor extends Composite implements ToggleEditor
    {
       label.setVisible(viewMode == ViewMode.VIEW);
       textArea.setVisible(viewMode == ViewMode.EDIT);
+      translatorList.setVisible(viewMode == ViewMode.EDIT);
    }
 
    @Override
@@ -353,6 +369,41 @@ public class Editor extends Composite implements ToggleEditor
       else
       {
          textArea.removeStyleName("HasValidationError");
+      }
+   }
+
+   @Override
+   public void addTranslator(String name)
+   {
+      for (int i = 0; i < translatorList.getWidgetCount(); i++)
+      {
+         if (((Label) translatorList.getWidget(i)).getText().equals(name))
+         {
+            return;
+         }
+      }
+
+      Label nameLabel = new Label(name);
+      nameLabel.setStyleName(style.userLabel());
+      translatorList.add(nameLabel);
+   }
+
+   @Override
+   public void clearTranslatorList()
+   {
+      translatorList.clear();
+   }
+
+   @Override
+   public void removeTranslator(String name)
+   {
+      for (int i = 0; i < translatorList.getWidgetCount(); i++)
+      {
+         if (((Label) translatorList.getWidget(i)).getText().equals(name))
+         {
+            translatorList.remove(i);
+            break;
+         }
       }
    }
 }

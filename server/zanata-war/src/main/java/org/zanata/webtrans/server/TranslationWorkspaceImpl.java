@@ -7,7 +7,10 @@ import java.util.concurrent.ConcurrentMap;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.zanata.webtrans.shared.auth.SessionId;
+import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
+import org.zanata.webtrans.shared.model.PersonSessionDetails;
+import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
@@ -29,7 +32,7 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    private static final Log log = Logging.getLog(TranslationWorkspaceImpl.class);
    private final WorkspaceContext workspaceContext;
    private final Domain domain;
-   private final ConcurrentMap<SessionId, PersonId> sessions = new MapMaker().makeMap();
+   private final ConcurrentMap<SessionId, PersonSessionDetails> sessions = new MapMaker().makeMap();
    private final ConcurrentMap<TransUnitId, String> editstatus = new MapMaker().makeMap();
 
    private final EventExecutorService eventExecutorService;
@@ -95,9 +98,9 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    }
 
    @Override
-   public Map<SessionId, PersonId> getUsers()
+   public Map<SessionId, PersonSessionDetails> getUsers()
    {
-      Map<SessionId, PersonId> list = new HashMap<SessionId, PersonId>();
+      Map<SessionId, PersonSessionDetails> list = new HashMap<SessionId, PersonSessionDetails>();
       for (SessionId sessionId : sessions.keySet())
       {
          list.put(sessionId, sessions.get(sessionId));
@@ -113,10 +116,10 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    private void onTimeout(final String sessionId)
    {
       // remove user session from workspace
-      PersonId personId = sessions.remove(new SessionId(sessionId));
-      if (personId != null)
+      PersonSessionDetails personSessionDetails = sessions.remove(new SessionId(sessionId));
+      if (personSessionDetails != null)
       {
-         log.info("Timeout: Removed user '{0}' in session '{1}' from workspace {2}", personId.getId(), sessionId, workspaceContext);
+         log.info("Timeout: Removed user '{0}' in session '{1}' from workspace {2}", personSessionDetails.getPerson().getId(), sessionId, workspaceContext);
       }
       else
       {
@@ -129,12 +132,12 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    {
       if (sessions.containsKey(sessionId))
       {
-         final boolean removed = sessions.remove(sessionId, personId);
-         if (removed)
+         PersonSessionDetails personSessionDetails = sessions.remove(sessionId);
+         if (personSessionDetails != null)
          {
             log.info("Removed user '{0}' in session '{1}' from workspace {2}", personId.getId(), sessionId, workspaceContext);
+            return true;
          }
-         return removed;
       }
 
       return false;
@@ -144,7 +147,7 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    public void registerTranslator(SessionId sessionId, PersonId personId)
    {
       log.info("Added user '{0}' in session '{1}' to workspace {2}", personId.getId(), sessionId.getValue(), workspaceContext);
-      sessions.putIfAbsent(sessionId, personId);
+      sessions.putIfAbsent(sessionId, new PersonSessionDetails(new Person(personId, "", ""), null));
    }
 
    @Override
@@ -170,6 +173,15 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
       int hash = 1;
       hash = hash * 31 + workspaceContext.getWorkspaceId().hashCode();
       return hash;
+   }
+
+   @Override
+   public void updateUserSelection(SessionId sessionId, TransUnit selectedTransUnit)
+   {
+      if (sessions.containsKey(sessionId))
+      {
+         sessions.get(sessionId).setSelectedTransUnit(selectedTransUnit);
+      }
    }
 
 }

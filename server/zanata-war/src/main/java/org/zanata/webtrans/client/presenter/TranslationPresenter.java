@@ -161,7 +161,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onEnterWorkspace(EnterWorkspaceEvent event)
          {
-            workspaceUsersPresenter.addTranslator(event.getSessionId(), event.getPerson());
+            workspaceUsersPresenter.addTranslator(event.getSessionId(), event.getPerson(), null);
             display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()));
          }
       }));

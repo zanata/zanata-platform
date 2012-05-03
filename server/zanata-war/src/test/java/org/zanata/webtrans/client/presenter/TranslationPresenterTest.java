@@ -34,6 +34,7 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
+import org.zanata.webtrans.shared.model.PersonSessionDetails;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
@@ -348,7 +349,7 @@ public class TranslationPresenterTest
       mockDisplay.setParticipantsTitle(TEST_USERS_ONLINE_MESSAGE);
       expectLastCall().once(); // once for now
 
-      mockWorkspaceUsersPresenter.addTranslator(new SessionId("sessionId1"), new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"));
+      mockWorkspaceUsersPresenter.addTranslator(new SessionId("sessionId1"), new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"), null);
       expectLastCall();
 
       // simulate enter workspace event
@@ -476,14 +477,14 @@ public class TranslationPresenterTest
 
    private void setupDefaultMockExpectations()
    {
-      Map<SessionId, Person> people = new HashMap<SessionId, Person>();
-      people.put(new SessionId("sessionId"), new Person(new PersonId("jones"), "Joey Jones", "http://www.gravatar.com/avatar/joey@zanata.org?d=mm&s=16"));
+      Map<SessionId, PersonSessionDetails> people = new HashMap<SessionId, PersonSessionDetails>();
+      people.put(new SessionId("sessionId"), new PersonSessionDetails(new Person(new PersonId("jones"), "Joey Jones", "http://www.gravatar.com/avatar/joey@zanata.org?d=mm&s=16"), null));
 
       setupDefaultMockExpectations(people);
    }
 
    @SuppressWarnings("unchecked")
-   private void setupDefaultMockExpectations(Map<SessionId, Person> initialParticipants)
+   private void setupDefaultMockExpectations(Map<SessionId, PersonSessionDetails> initialParticipants)
    {
       mockTransMemoryPresenter.bind();
       expectLastCall().once();
@@ -527,7 +528,7 @@ public class TranslationPresenterTest
     * @param participants
     */
    @SuppressWarnings("unchecked")
-   private void setupUserListRequestResponse(Map<SessionId, Person> participants)
+   private void setupUserListRequestResponse(Map<SessionId, PersonSessionDetails> participants)
    {
       capturedTranslatorListRequest = new Capture<GetTranslatorList>();
       capturedTranslatorListRequestCallback = new Capture<AsyncCallback<GetTranslatorListResult>>();
@@ -571,9 +572,9 @@ public class TranslationPresenterTest
 
    private class TranslatorListSuccessAnswer implements IAnswer<GetTranslatorListResult>
    {
-      private Map<SessionId, Person> translatorsToReturn;
+      private Map<SessionId, PersonSessionDetails> translatorsToReturn;
 
-      public TranslatorListSuccessAnswer(Map<SessionId, Person> translatorsToReturn)
+      public TranslatorListSuccessAnswer(Map<SessionId, PersonSessionDetails> translatorsToReturn)
       {
          this.translatorsToReturn = translatorsToReturn;
       }

@@ -4,34 +4,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
 import org.zanata.webtrans.client.events.TranslatorStatusUpdateEvent;
 import org.zanata.webtrans.client.events.TranslatorStatusUpdateEventHandler;
 import org.zanata.webtrans.client.ui.HasManageUserSession;
 import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
+import org.zanata.webtrans.shared.model.PersonSessionDetails;
 import org.zanata.webtrans.shared.model.TransUnit;
+
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPresenter.Display>
 {
 
-   private final HashMap<Person, UserPanelSessionItem> userPanelMap;
-
-   public interface Display extends WidgetDisplay
-   {
-      HasManageUserSession addUser(Person person);
-
-      void removeUser(HasManageUserSession userPanel);
-
-      int getUserSize();
-   }
-
-   public static class UserPanelSessionItem
+   public class UserPanelSessionItem
    {
       private HasManageUserSession panel;
       private ArrayList<String> sessionList;
@@ -49,7 +40,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
       public ArrayList<String> getSessionList()
       {
-         if(sessionList == null)
+         if (sessionList == null)
          {
             sessionList = new ArrayList<String>();
          }
@@ -57,7 +48,16 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
       }
    }
 
+   private final HashMap<Person, UserPanelSessionItem> userPanelMap;
 
+   public interface Display extends WidgetDisplay
+   {
+      HasManageUserSession addUser(Person person);
+
+      void removeUser(HasManageUserSession userPanel);
+
+      int getUserSize();
+   }
 
    @Inject
    public WorkspaceUsersPresenter(final Display display, final EventBus eventBus)
@@ -89,17 +89,17 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
    {
    }
 
-   public void initUserList(Map<SessionId, Person> users)
+   public void initUserList(Map<SessionId, PersonSessionDetails> users)
    {
       for (SessionId sessionId : users.keySet())
       {
-         addTranslator(sessionId, users.get(sessionId));
+         addTranslator(sessionId, users.get(sessionId).getPerson(), users.get(sessionId).getSelectedTransUnit());
       }
    }
 
    public void updateTranslatorStatus(SessionId sessionId, Person person, TransUnit selectedTransUnit)
    {
-      if (userPanelMap.containsKey(person))
+      if (userPanelMap.containsKey(person) && selectedTransUnit != null)
       {
          UserPanelSessionItem item = userPanelMap.get(person);
          item.getPanel().updateStatusLabel(selectedTransUnit.getSources().toString());
@@ -114,7 +114,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
          UserPanelSessionItem item = userPanelMap.get(person);
          item.getSessionList().remove(sessionId.toString());
 
-         if(item.getSessionList().size() == 1)
+         if (item.getSessionList().size() == 1)
          {
             item.getPanel().updateTitle(sessionId.toString());
             item.getPanel().updateSessionLabel("");
@@ -138,32 +138,35 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
       }
    }
 
-   public void addTranslator(SessionId sessionId, Person person)
+   public void addTranslator(SessionId sessionId, Person person, TransUnit selectedTransUnit)
    {
-      if (!userPanelMap.containsKey(person))
+      UserPanelSessionItem item = userPanelMap.get(person);
+
+      if (item == null)
       {
          HasManageUserSession panel = display.addUser(person);
-
-         UserPanelSessionItem item = new UserPanelSessionItem(panel, new ArrayList<String>());
-         item.getSessionList().add(sessionId.toString());
-         panel.updateTitle(sessionId.toString());
-         panel.updateSessionLabel("");
+         item = new UserPanelSessionItem(panel, new ArrayList<String>());
          userPanelMap.put(person, item);
+      }
+
+      item.getSessionList().add(sessionId.toString());
+
+      String sessionTitle = "";
+      for (String session : item.getSessionList())
+      {
+         sessionTitle = Strings.isNullOrEmpty(sessionTitle) ? session : sessionTitle + " : " + session;
+      }
+
+      item.getPanel().updateTitle(sessionTitle);
+      if (item.getSessionList().size() > 1)
+      {
+         item.getPanel().updateSessionLabel("(" + item.getSessionList().size() + ")");
       }
       else
       {
-         UserPanelSessionItem item = userPanelMap.get(person);
-         item.getSessionList().add(sessionId.toString());
-
-         String title = "";
-         for (String session : item.getSessionList())
-         {
-            title = Strings.isNullOrEmpty(title) ? session : title + " : " + session;
-         }
-
-         item.getPanel().updateTitle(title);
-         item.getPanel().updateSessionLabel("(" + item.getSessionList().size() + ")");
+         item.getPanel().updateSessionLabel("");
       }
+      updateTranslatorStatus(sessionId, person, selectedTransUnit);
    }
 
    public int getTranslatorsSize()
