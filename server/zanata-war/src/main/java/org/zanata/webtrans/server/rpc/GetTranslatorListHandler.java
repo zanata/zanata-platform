@@ -66,6 +66,7 @@ public class GetTranslatorListHandler extends AbstractActionHandler<GetTranslato
          entry.getValue().setPerson(translator);
          translators.put(entry.getKey(), entry.getValue());
       }
+
       return new GetTranslatorListResult(translators, ImmutableSet.copyOf(result.values()).size());
    }
 

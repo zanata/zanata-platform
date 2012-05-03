@@ -40,4 +40,34 @@ public class PersonSessionDetails implements Serializable
    {
       this.person = person;
    }
+
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((person == null) ? 0 : person.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+         return true;
+      if (obj == null)
+         return false;
+      if (getClass() != obj.getClass())
+         return false;
+      PersonSessionDetails other = (PersonSessionDetails) obj;
+      if (person == null)
+      {
+         if (other.person != null)
+            return false;
+      }
+      else if (!person.equals(other.person))
+         return false;
+      return true;
+   }
+
 }

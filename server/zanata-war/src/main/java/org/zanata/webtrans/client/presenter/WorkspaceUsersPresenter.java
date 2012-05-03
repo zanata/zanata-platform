@@ -150,8 +150,6 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
    public int getTranslatorsSize()
    {
-      Log.info("==========return getUserSize()" + userSessionMap.size() + "");
-
       return userSessionMap.size();
    }
 
