@@ -78,7 +78,7 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import org.zanata.webtrans.shared.rpc.TranslatorStatusUpdateAction;
-import org.zanata.webtrans.shared.rpc.TranslatorUpdateStatusResult;
+import org.zanata.webtrans.shared.rpc.TranslatorStatusUpdateResult;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
@@ -1173,7 +1173,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
                display.getTargetCellEditor().savePendingChange(true);
 
-               dispatcher.execute(new TranslatorStatusUpdateAction(identity.getPerson(), selectedTransUnit), new AsyncCallback<TranslatorUpdateStatusResult>()
+               dispatcher.execute(new TranslatorStatusUpdateAction(identity.getPerson(), selectedTransUnit), new AsyncCallback<TranslatorStatusUpdateResult>()
                {
                   @Override
                   public void onFailure(Throwable caught)
@@ -1181,7 +1181,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                   }
 
                   @Override
-                  public void onSuccess(TranslatorUpdateStatusResult result)
+                  public void onSuccess(TranslatorStatusUpdateResult result)
                   {
                   }
                });

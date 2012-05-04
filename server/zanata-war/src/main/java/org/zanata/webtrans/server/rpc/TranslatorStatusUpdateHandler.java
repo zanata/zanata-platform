@@ -34,18 +34,18 @@ import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.rpc.TranslatorStatusUpdate;
 import org.zanata.webtrans.shared.rpc.TranslatorStatusUpdateAction;
-import org.zanata.webtrans.shared.rpc.TranslatorUpdateStatusResult;
+import org.zanata.webtrans.shared.rpc.TranslatorStatusUpdateResult;
 
 @Name("webtrans.gwt.TranslatorStatusUpdateHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(TranslatorStatusUpdateAction.class)
-public class TranslatorStatusUpdateHandler extends AbstractActionHandler<TranslatorStatusUpdateAction, TranslatorUpdateStatusResult>
+public class TranslatorStatusUpdateHandler extends AbstractActionHandler<TranslatorStatusUpdateAction, TranslatorStatusUpdateResult>
 {
    @In
    private TranslationWorkspaceManager translationWorkspaceManager;
 
    @Override
-   public TranslatorUpdateStatusResult execute(TranslatorStatusUpdateAction action, ExecutionContext context) throws ActionException
+   public TranslatorStatusUpdateResult execute(TranslatorStatusUpdateAction action, ExecutionContext context) throws ActionException
    {
       ZanataIdentity.instance().checkLoggedIn();
 
@@ -55,11 +55,11 @@ public class TranslatorStatusUpdateHandler extends AbstractActionHandler<Transla
       TranslatorStatusUpdate event = new TranslatorStatusUpdate(action.getSessionId(), action.getPerson(), action.getSelectedTransUnit());
       workspace.publish(event);
 
-      return new TranslatorUpdateStatusResult();
+      return new TranslatorStatusUpdateResult();
    }
 
    @Override
-   public void rollback(TranslatorStatusUpdateAction action, TranslatorUpdateStatusResult result, ExecutionContext context) throws ActionException
+   public void rollback(TranslatorStatusUpdateAction action, TranslatorStatusUpdateResult result, ExecutionContext context) throws ActionException
    {
    }
 
