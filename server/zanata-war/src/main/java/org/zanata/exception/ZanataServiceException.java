@@ -15,6 +15,11 @@ public class ZanataServiceException extends ZanataException
       super(message, e);
    }
 
+   public ZanataServiceException(Throwable e)
+   {
+      super(e.getMessage(), e);
+   }
+
    public ZanataServiceException(String message)
    {
       super(message);

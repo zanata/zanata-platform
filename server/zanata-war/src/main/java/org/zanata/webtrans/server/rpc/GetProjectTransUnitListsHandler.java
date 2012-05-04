@@ -96,7 +96,7 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
       }
       catch (ZanataServiceException e)
       {
-         throw new ActionException(e.getMessage());
+         throw new ActionException(e);
       }
 
       //FIXME remove when analyzer handles leading & trailing whitespace

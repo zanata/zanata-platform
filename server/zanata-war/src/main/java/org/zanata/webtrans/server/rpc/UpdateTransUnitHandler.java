@@ -141,7 +141,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       }
       catch (Exception e)
       {
-         throw new ActionException(e.getMessage());
+         throw new ActionException(e);
       }
 
       HTextFlow hTextFlow = translationResult.getTextFlow();

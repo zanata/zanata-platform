@@ -143,18 +143,18 @@ public class SeamDispatch implements Dispatch
       catch (NotLoggedInException e)
       {
          ctx.rollback();
-         throw new AuthenticationError(e.getMessage());
+         throw new AuthenticationError(e);
       }
       catch (AuthorizationException e)
       {
          ctx.rollback();
-         throw new AuthorizationError(e.getMessage());
+         throw new AuthorizationError(e);
       }
       catch (Throwable e)
       {
          ctx.rollback();
          log.error("Error dispatching action: " + e, e);
-         throw new ActionException(e.getMessage());
+         throw new ActionException(e);
       }
    }
 
@@ -209,18 +209,18 @@ public class SeamDispatch implements Dispatch
       catch (NotLoggedInException e)
       {
          ctx.rollback();
-         throw new AuthenticationError(e.getMessage());
+         throw new AuthenticationError(e);
       }
       catch (AuthorizationException e)
       {
          ctx.rollback();
-         throw new AuthorizationError(e.getMessage());
+         throw new AuthorizationError(e);
       }
       catch (Throwable e)
       {
          ctx.rollback();
          log.error("Error dispatching action: " + e, e);
-         throw new ActionException(e.getMessage());
+         throw new ActionException(e);
       }
    }
 

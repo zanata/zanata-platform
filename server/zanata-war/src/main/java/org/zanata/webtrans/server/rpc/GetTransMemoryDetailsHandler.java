@@ -52,7 +52,7 @@ public class GetTransMemoryDetailsHandler extends AbstractActionHandler<GetTrans
       }
       catch (ZanataServiceException e)
       {
-         throw new ActionException(e.getMessage());
+         throw new ActionException(e);
       }
 
       ArrayList<Long> textFlowIds = action.getTransUnitIdList();

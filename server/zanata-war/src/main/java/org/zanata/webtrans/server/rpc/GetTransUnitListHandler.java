@@ -25,10 +25,8 @@ import java.util.List;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.slf4j.LoggerFactory;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -75,7 +73,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       }
       catch (ZanataServiceException e)
       {
-         throw new ActionException(e.getMessage());
+         throw new ActionException(e);
       }
 
       int gotoRow = -1;

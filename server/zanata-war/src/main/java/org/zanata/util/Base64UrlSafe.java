@@ -39,7 +39,7 @@ public class Base64UrlSafe
       }
       catch (Exception e)
       {
-         throw new ZanataServiceException(e.getMessage());
+         throw new ZanataServiceException(e);
       }
    }
 
@@ -54,7 +54,7 @@ public class Base64UrlSafe
       }
       catch (Exception e)
       {
-         throw new ZanataServiceException(e.getMessage());
+         throw new ZanataServiceException(e);
       }
 
    }
