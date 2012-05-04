@@ -28,6 +28,8 @@ import org.testng.annotations.ObjectFactory;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.dao.ProjectDAO;
+import org.zanata.service.CopyTransService;
+import org.zanata.service.impl.CopyTransServiceImpl;
 
 /**
  * Tests for the {@link SeamAutowire} component.
@@ -65,6 +67,15 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest
 
       int t = dao.getTotalProjectCount();
       System.out.println("Total Projects: " + t);
+   }
+
+   @Test
+   public void interfaceImplementations()
+   {
+      SeamAutowire.instance().ignoreNonResolvable().autowire(CopyTransServiceImpl.class);
+
+      CopyTransService copyTrans = SeamAutowire.instance().autowire(CopyTransService.class);
+      MatcherAssert.assertThat(copyTrans, Matchers.notNullValue());
    }
 
    @Test

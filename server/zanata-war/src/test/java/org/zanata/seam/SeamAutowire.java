@@ -26,16 +26,18 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import org.apache.commons.lang.ArrayUtils;
-import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.log.Logging;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Helps with Auto-wiring of Seam components for integrated tests without the need for a full Seam
@@ -53,9 +55,13 @@ import java.util.Map;
  */
 public class SeamAutowire
 {
+   private static final org.slf4j.Logger log = LoggerFactory.getLogger(SeamAutowire.class);
+
    private static SeamAutowire instance;
 
    private Map<String, Object> namedComponents = new HashMap<String, Object>();
+
+   private Map<Class<?>, Class<?>> componentImpls = new HashMap<Class<?>, Class<?>>();
 
    //private Map<Class, Object> classComponents = new HashMap<Class, Object>();
 
@@ -66,16 +72,24 @@ public class SeamAutowire
    {
    }
 
+   /**
+    * Initializes and returns the SeamAutowire instance.
+    *
+    * @return The Singleton instance of the SeamAutowire class.
+    */
    public static final SeamAutowire instance()
    {
       if(instance == null)
       {
          instance = new SeamAutowire();
-         instance.rewireSeamComponents();
+         instance.rewireSeamComponentClass();
       }
       return instance;
    }
 
+   /**
+    * Clears out any components and returns to it's initial value.
+    */
    public SeamAutowire reset()
    {
       this.ignoreNonResolvable = false;
@@ -83,18 +97,53 @@ public class SeamAutowire
       return this;
    }
 
+   /**
+    * Indicates a specific instance of a component to use.
+    *
+    * @param name The name of the component. When another component injects using <code>@In(value = "name")</code> or
+    *             <code>@In varName</code>, the provided component will be used.
+    * @param component The component instance to use under the provided name.
+    */
    public SeamAutowire use(String name, Object component)
    {
       this.addComponentInstance(name, component);
       return this;
    }
 
+   /**
+    * Registers an implementation to use for components. This method is provided just in case some components are
+    * inject via interfaces.
+    *
+    * @param cls The class to register.
+    */
+   public SeamAutowire useImpl(Class<?> cls)
+   {
+      if( cls.isInterface() )
+      {
+         throw new RuntimeException("Class " + cls.getName() + " is an interface.");
+      }
+      this.registerInterfaces(cls);
+
+      return this;
+   }
+
+   /**
+    * Indicates that a warning should be logged if for some reason a component cannot be resolved. Otherwise, an
+    * exception will be thrown.
+    */
    public SeamAutowire ignoreNonResolvable()
    {
       this.ignoreNonResolvable = true;
       return this;
    }
 
+   /**
+    * Returns a component by name.
+    *
+    * @param name Component's name.
+    * @return The component registered under the provided name, or null if such a component has not been auto wired
+    * or cannot be resolved otherwise.
+    */
    public Object getComponent(String name)
    {
       if( this.namedComponents.containsKey(name) )
@@ -104,10 +153,23 @@ public class SeamAutowire
       return null;
    }
 
+   /**
+    * Autowires and returns the component instance for the provided class.
+    *
+    * @param componentClass The component class to autowire.
+    * @return The autowired component.
+    */
    public <T> T autowire(Class<T> componentClass)
    {
       // Create a new component instance (must have a no-arg constructor per Seam spec)
       T component;
+
+      // If the component type is an interface, try to find a declared implementation
+      if( componentClass.isInterface() && this.componentImpls.containsKey(componentClass) )
+      {
+         componentClass = (Class<T>)this.componentImpls.get(componentClass);
+      }
+
       try
       {
          component = componentClass.newInstance();
@@ -124,9 +186,20 @@ public class SeamAutowire
       return this.autowire(component);
    }
 
+   /**
+    * Autowires a component instance. The provided instance of the component will be autowired instead of creating a
+    * new one.
+    *
+    * @param component The component instance to autowire.
+    * @param <T>
+    * @return Returns component.
+    */
    public <T> T autowire(T component)
    {
       Class<T> componentClass = (Class<T>)component.getClass();
+
+      // Register all interfaces for this class
+      this.registerInterfaces(componentClass);
 
       for( Field compField : getAllComponentFields(component) )
       {
@@ -137,20 +210,21 @@ public class SeamAutowire
          {
             Object fieldVal = null;
             String compName = getComponentName(compField);
+            Class<?> compType = compField.getType();
 
             // autowire the component if not done yet
             if( !namedComponents.containsKey(compName) )
             {
                try
                {
-                  Object newComponent = autowire(compField.getType());
+                  Object newComponent = autowire(compType);
                   this.addComponentInstance(compName, newComponent);
                }
                catch (RuntimeException e)
                {
                   if( ignoreNonResolvable )
                   {
-                     // TODO warn
+                     log.warn("Could not resolve component of type: " + compType);
                   }
                   else
                   {
@@ -196,20 +270,21 @@ public class SeamAutowire
          {
             Object fieldVal = null;
             String compName = getComponentName(compMethod);
+            Class<?> compType = compMethod.getParameterTypes()[0];
 
             // autowire the component if not done yet
             if( !namedComponents.containsKey(compName) )
             {
                try
                {
-                  Object newComponent = autowire(compMethod.getParameterTypes()[0]);
+                  Object newComponent = autowire(compType);
                   this.addComponentInstance(compName, newComponent);
                }
                catch (RuntimeException e)
                {
                   if( ignoreNonResolvable )
                   {
-                     // TODO warn
+                     log.warn("Could not resolve component of type: " + compType);
                   }
                   else
                   {
@@ -255,16 +330,18 @@ public class SeamAutowire
          }
       }
 
+      // call post constructor
+      invokePostConstructMethod(component);
+
       return component;
    }
 
    private void addComponentInstance(String name, Object compInst)
    {
       this.namedComponents.put(name, compInst);
-      //this.classComponents.put(compInst.getClass(), compInst);
    }
 
-   private void rewireSeamComponents()
+   private void rewireSeamComponentClass()
    {
       try
       {
@@ -370,4 +447,56 @@ public class SeamAutowire
       }
       return null;
    }
+
+   private void registerInterfaces(Class<?> cls)
+   {
+      if( !cls.isInterface() )
+      {
+         // register all interfaces registered by this component
+         for (Class<?> iface : getAllInterfaces(cls))
+         {
+            this.componentImpls.put(iface, cls);
+         }
+      }
+   }
+
+   private static Set<Class<?>> getAllInterfaces(Class<?> cls)
+   {
+      Set<Class<?>> interfaces = new HashSet<Class<?>>();
+
+      for( Class<?> superClass : cls.getInterfaces() )
+      {
+         interfaces.add(superClass);
+         interfaces.addAll( getAllInterfaces(superClass) );
+      }
+
+      return interfaces;
+   }
+
+   private static void invokePostConstructMethod(Object component)
+   {
+      Class<?> compClass = component.getClass();
+
+      for( Method m : compClass.getDeclaredMethods() )
+      {
+         // Call the first Post Constructor found. Per the spec, there should be only one
+         if( m.getAnnotation(javax.annotation.PostConstruct.class) != null
+             || m.getAnnotation(org.jboss.seam.annotations.intercept.PostConstruct.class) != null )
+         {
+            try
+            {
+               m.invoke(component, null); // there should be no params
+            }
+            catch (IllegalAccessException e)
+            {
+               throw new RuntimeException("Error invoking Post construct method in component of class: " + compClass.getName(), e);
+            }
+            catch (InvocationTargetException e)
+            {
+               throw new RuntimeException("Error invoking Post construct method in component of class: " + compClass.getName(), e);
+            }
+         }
+      }
+   }
+
 }
