@@ -25,6 +25,8 @@ import java.util.Map;
 
 import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.PersonId;
+import org.zanata.webtrans.shared.model.PersonSessionDetails;
+import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
 
@@ -34,10 +36,15 @@ import org.zanata.webtrans.shared.rpc.SessionEventData;
  */
 public interface TranslationWorkspace
 {
-   public Map<SessionId, PersonId> getUsers();
+   public Map<SessionId, PersonSessionDetails> getUsers();
 
-   public boolean removeTranslator(SessionId sessionId, PersonId personId);
-   public void registerTranslator(SessionId sessionId, PersonId personId);
-   public <T extends SessionEventData> void publish(T eventData);
-   public WorkspaceContext getWorkspaceContext();
+   boolean removeTranslator(SessionId sessionId, PersonId personId);
+
+   void registerTranslator(SessionId sessionId, PersonId personId);
+
+   <T extends SessionEventData> void publish(T eventData);
+
+   WorkspaceContext getWorkspaceContext();
+
+   void updateUserSelection(SessionId sessionId, TransUnit selectedTransUnit);
 }

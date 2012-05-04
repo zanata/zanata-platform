@@ -25,6 +25,10 @@ import static org.zanata.webtrans.client.editor.table.TableConstants.MAX_PAGE_RO
 import java.util.ArrayList;
 import java.util.List;
 
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
 import org.zanata.common.EditState;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
@@ -72,6 +76,7 @@ import org.zanata.webtrans.shared.rpc.TranslatorStatusUpdateAction;
 import org.zanata.webtrans.shared.rpc.TranslatorUpdateStatusResult;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -91,10 +96,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.Display> implements HasPageNavigation
 {
@@ -1066,11 +1067,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                Log.info("SelectedTransUnit: " + selectedTransUnit.getId());
                // Clean the cache when we click the new entry
                clearCacheList();
-
                eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
                display.getTargetCellEditor().savePendingChange(true);
-
-               display.gotoRow(display.getSelectedRowNumber(), true);
 
                dispatcher.execute(new TranslatorStatusUpdateAction(identity.getPerson(), selectedTransUnit), new AsyncCallback<TranslatorUpdateStatusResult>()
                {
@@ -1084,6 +1082,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                   {
                   }
                });
+
+               display.gotoRow(display.getSelectedRowNumber(), true);
             }
          }
       });

@@ -7,7 +7,7 @@
 	
 	<ui:with field="images" type="org.zanata.webtrans.client.editor.table.TableResources" />
 	
-	<ui:style>
+	<ui:style type="org.zanata.webtrans.client.ui.Editor.Styles">
 		.rootContainer {
 			outline:none;
 		}
@@ -19,14 +19,29 @@
 		.textArea {
 			width:98%;
 			margin-left:3px;
+			margin-top:0px;
 		}
+		
+		.userLabel{
+			font-size:10px;
+			border:1px solid;
+			text-align:center;
+			padding-left:1px;
+			padding-right:1px;
+		}
+		
+		.translatorList {
+			float:right;
+			margin-right:7px;
+		}
+	
 	</ui:style>
 	
 	<g:FocusPanel ui:field="rootContainer" styleName="{style.rootContainer}">
 	<g:VerticalPanel width="100%" spacing="3">
 		<g:cell horizontalAlignment="ALIGN_LEFT">
 			<g:HorizontalPanel ui:field="topContainer" width="100%" height="100%">
-				<g:cell width="20px">
+				<g:cell width="20px" verticalAlignment="middle">
 	                <g:PushButton ui:field="copySourceButton" styleName="gwt-Button">
 	                    <g:upFace image="{images.copySrcButton}" />
 	                </g:PushButton>
@@ -34,6 +49,7 @@
                 <g:cell>
                 	<g:FlowPanel styleName="TableEditorCell-Target">
 		                <fui:HighlightingLabel ui:field="label" />
+		                <g:HorizontalPanel ui:field="translatorList" styleName="{style.translatorList}" spacing="1"/>
 		                <tui:EditorTextArea ui:field="textArea" styleName="{style.textArea}"/>
 	                </g:FlowPanel>
                 </g:cell>

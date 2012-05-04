@@ -27,6 +27,10 @@ public interface ToggleEditor extends IsWidget, HasText, HasUpdateValidationWarn
    void growSize();
 
    void setFocus();
+   
+   void addTranslator(String name);
+
+   void clearTranslatorList();
 
    static enum ViewMode
    {
@@ -35,4 +39,6 @@ public interface ToggleEditor extends IsWidget, HasText, HasUpdateValidationWarn
    }
 
    void setTextAndValidate(String text);
+
+   void removeTranslator(String name);
 }

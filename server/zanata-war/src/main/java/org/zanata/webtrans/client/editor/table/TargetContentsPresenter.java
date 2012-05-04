@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.editor.table;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Provider;
 
@@ -40,15 +41,22 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEventHandler;
 import org.zanata.webtrans.client.events.RunValidationEvent;
+import org.zanata.webtrans.client.events.TranslatorStatusUpdateEvent;
+import org.zanata.webtrans.client.events.TranslatorStatusUpdateEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
+import org.zanata.webtrans.shared.auth.Identity;
+import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -60,13 +68,14 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class TargetContentsPresenter implements TargetContentsDisplay.Listener, UserConfigChangeHandler, RequestValidationEventHandler, InsertStringInEditorHandler, CopyDataToEditorHandler
+public class TargetContentsPresenter implements TargetContentsDisplay.Listener, TranslatorStatusUpdateEventHandler, UserConfigChangeHandler, RequestValidationEventHandler, InsertStringInEditorHandler, CopyDataToEditorHandler
 {
    public static final int NO_OPEN_EDITOR = -1;
    private static final int LAST_INDEX = -2;
    private final EventBus eventBus;
    private final TableEditorMessages messages;
    private final SourceContentsPresenter sourceContentsPresenter;
+   private final WorkspaceUsersPresenter workspaceUsersPresenter;
    private final UserConfigHolder configHolder;
 
    private final CheckKey checkKey;
@@ -81,8 +90,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private ArrayList<ToggleEditor> currentEditors;
    private TransUnitsEditModel cellEditor;
 
+   private final Identity identity;
+
    @Inject
-   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, UserConfigHolder configHolder, WorkspaceContext workspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel)
+   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, UserConfigHolder configHolder, WorkspaceContext workspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel)
    {
       this.displayProvider = displayProvider;
       this.eventBus = eventBus;
@@ -92,12 +103,15 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       this.workspaceContext = workspaceContext;
       this.scheduler = scheduler;
       this.validationMessagePanel = validationMessagePanel;
+      this.workspaceUsersPresenter = workspaceUsersPresenter;
+      this.identity = identity;
 
       checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
       eventBus.addHandler(UserConfigChangeEvent.getType(), this);
       eventBus.addHandler(RequestValidationEvent.getType(), this);
       eventBus.addHandler(InsertStringInEditorEvent.getType(), this);
       eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
+      eventBus.addHandler(TranslatorStatusUpdateEvent.getType(), this);
    }
 
    private ToggleEditor getCurrentEditor()
@@ -128,6 +142,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       for (ToggleEditor editor : currentDisplay.getEditors())
       {
          editor.setViewMode(ToggleEditor.ViewMode.EDIT);
+         editor.clearTranslatorList();
          validate(editor);
       }
 
@@ -154,6 +169,52 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          validationMessagePanel.clear();
          currentDisplay.focusEditor(currentEditorIndex);
          Log.debug("show editors at row:" + rowIndex + " current editor:" + currentEditorIndex);
+         updateTranslators();
+      }
+   }
+
+   @Override
+   public void onTranslatorStatusUpdate(final TranslatorStatusUpdateEvent event)
+   {
+      updateEditorTranslatorList(event.getSelectedTransUnit().getId(), event.getPerson());
+   }
+
+   private void updateEditorTranslatorList(TransUnitId selectedTransUnitId, Person person)
+   {
+      if (cellEditor.getTargetCell().getId().equals(selectedTransUnitId) && !person.equals(identity.getPerson()))
+      {
+         for (ToggleEditor editor : currentEditors)
+         {
+            editor.addTranslator(person.getName());
+         }
+      }
+      else
+      {
+         for (ToggleEditor editor : currentEditors)
+         {
+            editor.removeTranslator(person.getName());
+         }
+      }
+   }
+
+   public void updateTranslators()
+   {
+      if (isEditing())
+      {
+         Map<Person, UserPanelSessionItem> userSessionMap = workspaceUsersPresenter.getUserSessionMap();
+
+         for (ToggleEditor editor : currentEditors)
+         {
+            editor.clearTranslatorList();
+         }
+
+         for (Map.Entry<Person, UserPanelSessionItem> entry : userSessionMap.entrySet())
+         {
+            if (entry.getValue().getSelectedTransUnit() != null)
+            {
+               updateEditorTranslatorList(entry.getValue().getSelectedTransUnit().getId(), entry.getKey());
+            }
+         }
       }
    }
 
