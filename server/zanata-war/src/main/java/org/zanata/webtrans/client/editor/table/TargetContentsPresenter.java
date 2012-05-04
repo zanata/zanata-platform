@@ -176,12 +176,15 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void onTranslatorStatusUpdate(final TranslatorStatusUpdateEvent event)
    {
-      updateEditorTranslatorList(event.getSelectedTransUnit().getId(), event.getPerson());
+      if (event.getSelectedTransUnit() != null)
+      {
+         updateEditorTranslatorList(event.getSelectedTransUnit().getId(), event.getPerson());
+      }
    }
 
    private void updateEditorTranslatorList(TransUnitId selectedTransUnitId, Person person)
    {
-      if (cellEditor.getTargetCell().getId().equals(selectedTransUnitId) && !person.equals(identity.getPerson()))
+      if (cellEditor.getTargetCell() != null && cellEditor.getTargetCell().getId().equals(selectedTransUnitId) && !person.equals(identity.getPerson()))
       {
          for (ToggleEditor editor : currentEditors)
          {
