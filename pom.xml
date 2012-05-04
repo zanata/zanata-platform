@@ -912,6 +912,14 @@
 		</dependencies>
 	</dependencyManagement>
 
+   <dependencies>
+      <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>0.11.0</version>
+      </dependency>
+   </dependencies>
+
 	<reporting>
 		<plugins>
 			<plugin>
