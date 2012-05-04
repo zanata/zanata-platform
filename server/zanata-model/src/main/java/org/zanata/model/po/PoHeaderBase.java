@@ -30,24 +30,26 @@ import org.hibernate.annotations.Type;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.ModelEntityBase;
 
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * 
  * @author sflaniga@redhat.com
- * @see org.zanata.rest.dto.po.PoHeader
  * @see org.zanata.rest.dto.extensions.gettext.PoHeader
  * @see org.zanata.rest.dto.extensions.gettext.PoTargetHeader
  */
 @MappedSuperclass
+@Setter
+@ToString
 public abstract class PoHeaderBase extends ModelEntityBase
 {
 
+   private static final long serialVersionUID = 4675225923343857779L;
    private HSimpleComment comment;
+   // stored in the format used by java.util.Properties.store(Writer)
+   // see PoUtility.headerEntriesToString
    private String entries;
-
-   public void setComment(HSimpleComment comment)
-   {
-      this.comment = comment;
-   }
 
    // TODO use orphanRemoval=true: requires JPA 2.0
    @OneToOne(optional = true, cascade = CascadeType.ALL)
@@ -58,26 +60,10 @@ public abstract class PoHeaderBase extends ModelEntityBase
       return comment;
    }
 
-   // stored in the format used by java.util.Properties.store(Writer)
-   // see PoUtility.headerEntriesToString
-   public void setEntries(String entries)
-   {
-      this.entries = entries;
-   }
-
    // see PoUtility.stringToHeaderEntries
    @Type(type = "text")
    public String getEntries()
    {
       return entries;
-   }
-
-   /**
-    * Used for debugging
-    */
-   @Override
-   public String toString()
-   {
-      return "comment:" + getComment() + "entries:" + getEntries() + "";
    }
 }

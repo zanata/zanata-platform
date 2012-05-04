@@ -22,15 +22,11 @@ package org.zanata.model;
 
 import org.zanata.common.ContentState;
 
+import lombok.Data;
+
+@Data
 public class StatusCount
 {
    public final ContentState status;
    public final Long count;
-
-   public StatusCount(ContentState status, Long count)
-   {
-      this.status = status;
-      this.count = count;
-   }
-
 }

@@ -29,14 +29,16 @@ import org.apache.lucene.search.Filter;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Parent class for Filters which cache docid sets for a time
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
+@Slf4j
 public abstract class TimeCachedFilter extends Filter
 {
-   private static final Log log = Logging.getLog(TimeCachedFilter.class);
    private static final long serialVersionUID = 1L;
 
    /**
@@ -72,15 +74,13 @@ public abstract class TimeCachedFilter extends Filter
    {
       if (!stillFresh())
       {
-         if (log.isDebugEnabled())
-            log.debug("cache entry too old in " + this);
+         log.debug("cache entry too old in {}", this);
          docIdSet = fetchDocIdSet(reader);
          updateExpiry();
       }
       else
       {
-         if (log.isDebugEnabled())
-            log.debug("cache hit in " + this);
+         log.debug("cache hit in {}", this);
       }
       return docIdSet;
    }

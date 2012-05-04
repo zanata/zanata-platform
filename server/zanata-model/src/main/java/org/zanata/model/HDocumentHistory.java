@@ -37,9 +37,14 @@ import org.hibernate.validator.NotNull;
 import org.zanata.common.ContentType;
 import org.zanata.model.type.ContentTypeType;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
 @TypeDef(name = "contentType", typeClass = ContentTypeType.class)
 @org.hibernate.annotations.Entity(mutable = false)
+@Setter
+@Getter
 public class HDocumentHistory implements IDocumentHistory
 {
 
@@ -76,21 +81,11 @@ public class HDocumentHistory implements IDocumentHistory
       return document;
    }
 
-   public void setDocument(HDocument document)
-   {
-      this.document = document;
-   }
-
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    public Integer getRevision()
    {
       return revision;
-   }
-
-   public void setRevision(Integer revision)
-   {
-      this.revision = revision;
    }
 
    @Length(max = 255)
@@ -100,41 +95,11 @@ public class HDocumentHistory implements IDocumentHistory
       return docId;
    }
 
-   public void setDocId(String docId)
-   {
-      this.docId = docId;
-   }
-
-   public String getName()
-   {
-      return name;
-   }
-
-   public void setName(String name)
-   {
-      this.name = name;
-   }
-
-   public String getPath()
-   {
-      return path;
-   }
-
-   public void setPath(String path)
-   {
-      this.path = path;
-   }
-
    @ManyToOne
    @JoinColumn(name = "locale", nullable = false)
    public HLocale getLocale()
    {
       return locale;
-   }
-
-   public void setLocale(HLocale locale)
-   {
-      this.locale = locale;
    }
 
    @ManyToOne
@@ -145,41 +110,11 @@ public class HDocumentHistory implements IDocumentHistory
       return lastModifiedBy;
    }
 
-   public void setLastModifiedBy(HPerson lastModifiedBy)
-   {
-      this.lastModifiedBy = lastModifiedBy;
-   }
-
-   public Date getLastChanged()
-   {
-      return lastChanged;
-   }
-
-   public void setLastChanged(Date lastChanged)
-   {
-      this.lastChanged = lastChanged;
-   }
-
    @Type(type = "contentType")
    @NotNull
    public ContentType getContentType()
    {
       return contentType;
-   }
-
-   public void setContentType(ContentType contentType)
-   {
-      this.contentType = contentType;
-   }
-
-   public boolean isObsolete()
-   {
-      return obsolete;
-   }
-
-   public void setObsolete(boolean obsolete)
-   {
-      this.obsolete = obsolete;
    }
 
 }

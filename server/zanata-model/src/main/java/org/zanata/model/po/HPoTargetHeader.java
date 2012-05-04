@@ -30,26 +30,24 @@ import org.hibernate.annotations.NaturalId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * 
  * @author sflaniga@redhat.com
- * @see org.zanata.rest.dto.po.PoTargetHeader
  * @see org.zanata.rest.dto.extensions.gettext.PoTargetHeader
  */
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Setter
+@ToString(callSuper = true, of = "targetLanguage")
 public class HPoTargetHeader extends PoHeaderBase
 {
-
    private static final long serialVersionUID = 1L;
 
    private HLocale targetLanguage;
    private HDocument document;
-
-   public void setTargetLanguage(HLocale targetLanguage)
-   {
-      this.targetLanguage = targetLanguage;
-   }
 
    @NaturalId
    @ManyToOne
@@ -59,11 +57,6 @@ public class HPoTargetHeader extends PoHeaderBase
       return targetLanguage;
    }
 
-   public void setDocument(HDocument document)
-   {
-      this.document = document;
-   }
-
    @NaturalId
    @ManyToOne
    @JoinColumn(name = "document_id")
@@ -71,14 +64,4 @@ public class HPoTargetHeader extends PoHeaderBase
    {
       return document;
    }
-
-   /**
-    * Used for debugging
-    */
-   @Override
-   public String toString()
-   {
-      return "HPoTargetHeader(" + super.toString() + "lang:" + getTargetLanguage() + ")";
-   }
-
 }

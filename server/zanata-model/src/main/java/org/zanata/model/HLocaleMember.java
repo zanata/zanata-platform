@@ -35,32 +35,33 @@ import javax.persistence.Transient;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * @author camunoz@redhat.com
  *
  */
 @Entity
 @Table(name="HLocale_Member")
+@Setter
+@NoArgsConstructor
 public class HLocaleMember implements Serializable
 {
    private static final long serialVersionUID = 1L;
    
-   private HLocaleMemberPk id;
+   private HLocaleMemberPk id = new HLocaleMemberPk();
    
    private boolean isCoordinator;
    
-   
-   public HLocaleMember()
-   {
-      this.id = new HLocaleMemberPk();
-   }
-   
    public HLocaleMember( HPerson person, HLocale supportedLanguage, boolean isCoordinator )
    {
-      this();
-      this.id.setPerson(person);
-      this.id.setSupportedLanguage(supportedLanguage);
-      this.setCoordinator(isCoordinator);
+      id.setPerson(person);
+      id.setSupportedLanguage(supportedLanguage);
+      setCoordinator(isCoordinator);
    }
    
    @EmbeddedId
@@ -80,20 +81,10 @@ public class HLocaleMember implements Serializable
       return isCoordinator;
    }
 
-   public void setCoordinator(boolean isCoordinator)
-   {
-      this.isCoordinator = isCoordinator;
-   }
-   
    @Transient
    public HPerson getPerson()
    {
       return id.getPerson();
-   }
-
-   public void setPerson(HPerson person)
-   {
-      id.setPerson(person);
    }
 
    @Transient
@@ -102,40 +93,22 @@ public class HLocaleMember implements Serializable
       return id.getSupportedLanguage();
    }
 
-   public void setSupportedLanguage(HLocale supportedLanguage)
-   {
-      id.setSupportedLanguage(supportedLanguage);
-   }
-   
    @Embeddable
+   @Setter
+   @AllArgsConstructor
+   @NoArgsConstructor
    public static class HLocaleMemberPk implements Serializable
    {
       private static final long serialVersionUID = 1L;
 
       private HPerson person;
-      
       private HLocale supportedLanguage;
-
-      public HLocaleMemberPk()
-      {
-      }
-      
-      public HLocaleMemberPk(final HPerson person, final HLocale supportedLanguage)
-      {
-         this.person = person;
-         this.supportedLanguage = supportedLanguage;
-      }
 
       @ManyToOne(fetch=FetchType.EAGER, optional=false)
       @JoinColumn(name="personId", nullable=false)
       public HPerson getPerson()
       {
          return person;
-      }
-
-      public void setPerson(HPerson person)
-      {
-         this.person = person;
       }
 
       @ManyToOne(fetch=FetchType.EAGER, optional=false)
@@ -145,39 +118,5 @@ public class HLocaleMember implements Serializable
          return supportedLanguage;
       }
 
-      public void setSupportedLanguage(HLocale supportedLanguage)
-      {
-         this.supportedLanguage = supportedLanguage;
-      }
-      
-      @Override
-      public boolean equals(Object obj)
-      {
-         if(obj == null)
-         {
-            return false;
-         }
-         else if( !(obj instanceof HLocaleMemberPk) )
-         {
-            return false;
-         }
-         else 
-         {
-            final HLocaleMemberPk other = (HLocaleMemberPk)obj;
-            return new EqualsBuilder()
-                  .append(this.person.getId(), other.getPerson().getId())
-                  .append(this.supportedLanguage.getId(), other.getSupportedLanguage().getId())
-                  .isEquals();
-         }
-      }
-      
-      @Override
-      public int hashCode()
-      {
-         return new HashCodeBuilder()
-               .append(this.person.getId())
-               .append(this.supportedLanguage.getId())
-               .toHashCode();
-      }
-   }   
+   }
 }

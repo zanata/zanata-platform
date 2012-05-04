@@ -29,10 +29,12 @@ import javax.persistence.OneToOne;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 
+import lombok.Setter;
+
 @MappedSuperclass
+@Setter
 public class AccountKeyBase
 {
-
    private String keyHash;
    private HAccount account;
 
@@ -44,21 +46,10 @@ public class AccountKeyBase
       return keyHash;
    }
 
-   public void setKeyHash(String keyHash)
-   {
-      this.keyHash = keyHash;
-   }
-
    @OneToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "accountId")
    public HAccount getAccount()
    {
       return account;
    }
-
-   public void setAccount(HAccount account)
-   {
-      this.account = account;
-   }
-
 }

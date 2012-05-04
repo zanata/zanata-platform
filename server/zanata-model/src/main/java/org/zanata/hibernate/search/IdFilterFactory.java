@@ -34,8 +34,7 @@ public class IdFilterFactory
    @Factory
    public Filter getFilter()
    {
-      IdFilter filter = new IdFilter(this.ids);
-      return filter;
+      return new IdFilter(this.ids);
    }
 
    private List<Long> ids;

@@ -29,7 +29,15 @@ import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class HApplicationConfiguration extends ModelEntityBase
 {
 
@@ -41,19 +49,10 @@ public class HApplicationConfiguration extends ModelEntityBase
    public static String KEY_HOME_CONTENT     = "flies.home.content";
    public static String KEY_HELP_CONTENT     = "flies.help.content";
    public static String KEY_LOGINCONFIG_URL  = "zanata.login-config.url";
+   private static final long serialVersionUID = 8652817113098817448L;
 
    private String key;
    private String value;
-
-   public HApplicationConfiguration()
-   {
-   }
-
-   public HApplicationConfiguration(String key, String value)
-   {
-      this.key = key;
-      this.value = value;
-   }
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
@@ -65,21 +64,11 @@ public class HApplicationConfiguration extends ModelEntityBase
       return key;
    }
 
-   public void setKey(String key)
-   {
-      this.key = key;
-   }
-
    @NotNull
    @Type(type = "text")
    @Column(name = "config_value", nullable = false)
    public String getValue()
    {
       return value;
-   }
-
-   public void setValue(String value)
-   {
-      this.value = value;
    }
 }

@@ -25,26 +25,17 @@ import javax.persistence.Entity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import lombok.ToString;
+
 /**
  * 
  * @author sflaniga@redhat.com
- * @see org.zanata.rest.dto.po.PoHeader
  * @see org.zanata.rest.dto.extensions.gettext.PoHeader
  */
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@ToString(callSuper = true)
 public class HPoHeader extends PoHeaderBase
 {
-
    private static final long serialVersionUID = 1L;
-
-   /**
-    * Used for debugging
-    */
-   @Override
-   public String toString()
-   {
-      return "HPoHeader(" + super.toString() + ")";
-   }
-
 }

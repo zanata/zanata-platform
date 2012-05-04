@@ -30,17 +30,26 @@ import org.hibernate.validator.NotNull;
 import org.zanata.common.EntityStatus;
 import org.zanata.model.validator.Slug;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 @MappedSuperclass
+@ToString(callSuper = true)
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class SlugEntityBase extends ModelEntityBase
 {
+
+   private static final long serialVersionUID = -1911540675412928681L;
    private String slug;
 
-   private EntityStatus status;
-   
-   public SlugEntityBase()
-   {
-      status = EntityStatus.ACTIVE; // Active by default
-   }
+   private EntityStatus status = EntityStatus.ACTIVE;
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
@@ -53,26 +62,10 @@ public class SlugEntityBase extends ModelEntityBase
       return slug;
    }
 
-   public void setSlug(String slug)
-   {
-      this.slug = slug;
-   }
-
    @Type(type = "entityStatus")
    @NotNull
    public EntityStatus getStatus()
    {
       return status;
-   }
-
-   public void setStatus(EntityStatus status)
-   {
-      this.status = status;
-   }
-
-   @Override
-   public String toString()
-   {
-      return super.toString() + "[slug=" + slug + "]";
    }
 }

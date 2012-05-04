@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -70,6 +69,10 @@ import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.LocaleIdBridge;
 import org.zanata.hibernate.search.StringListBridge;
 
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * Represents a flow of translated text that should be processed as a
  * stand-alone structural unit.
@@ -95,6 +98,8 @@ import org.zanata.hibernate.search.StringListBridge;
 })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
+@Setter
+@NoArgsConstructor
 public class HTextFlowTarget extends ModelEntityBase implements HasContents, HasSimpleComment, ITextFlowTargetHistory, Serializable
 {
 
@@ -120,10 +125,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
 
    // Only for internal use (persistence transient)
    private boolean lazyRelationsCopied = false;
-
-   public HTextFlowTarget()
-   {
-   }
 
    public HTextFlowTarget(HTextFlow textFlow, HLocale locale)
    {
@@ -155,11 +156,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       return locale;
    }
 
-   public void setLocale(HLocale locale)
-   {
-      this.locale = locale;
-   }
-
    @NotNull
    @Field(index = Index.UN_TOKENIZED)
    @FieldBridge(impl = ContentStateBridge.class)
@@ -167,11 +163,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    public ContentState getState()
    {
       return state;
-   }
-
-   public void setState(ContentState state)
-   {
-      this.state = state;
    }
 
    @NotNull
@@ -182,22 +173,12 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       return textFlowRevision;
    }
 
-   public void setTextFlowRevision(Integer textFlowRevision)
-   {
-      this.textFlowRevision = textFlowRevision;
-   }
-
    @ManyToOne(cascade = { CascadeType.MERGE })
    @JoinColumn(name = "last_modified_by_id", nullable = true)
    @Override
    public HPerson getLastModifiedBy()
    {
       return lastModifiedBy;
-   }
-
-   public void setLastModifiedBy(HPerson lastModifiedBy)
-   {
-      this.lastModifiedBy = lastModifiedBy;
    }
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
@@ -209,12 +190,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    public HTextFlow getTextFlow()
    {
       return textFlow;
-   }
-
-   public void setTextFlow(HTextFlow textFlow)
-   {
-      this.textFlow = textFlow;
-      // setResourceRevision(textFlow.getRevision());
    }
 
    /**
@@ -299,11 +274,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       return comment;
    }
 
-   public void setComment(HSimpleComment comment)
-   {
-      this.comment = comment;
-   }
-
    @OneToMany(cascade = { CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST }, mappedBy = "textFlowTarget")
    @MapKey(name = "versionNum")
    public Map<Integer, HTextFlowTargetHistory> getHistory()
@@ -313,11 +283,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
          this.history = new HashMap<Integer, HTextFlowTargetHistory>();
       }
       return history;
-   }
-
-   public void setHistory(Map<Integer, HTextFlowTargetHistory> history)
-   {
-      this.history = history;
    }
 
    @PreUpdate
@@ -358,7 +323,13 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    @Override
    public String toString()
    {
-      return "HTextFlowTarget(" + "contents:" + getContents() + " locale:" + getLocale() + " state:" + getState() + " comment:" + getComment() + " textflow:" + getTextFlow().getContents() + ")";
+      return new StringBuilder().append("HTextFlowTarget(")
+            .append("contents:").append(getContents())
+            .append(" locale:").append(getLocale())
+            .append(" state:").append(getState())
+            .append(" comment:").append(getComment())
+            .append(" textflow:").append(getTextFlow().getContents())
+            .append(")").toString();
    }
 
    @Transient

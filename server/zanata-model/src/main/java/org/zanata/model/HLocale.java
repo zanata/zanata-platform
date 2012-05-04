@@ -42,9 +42,18 @@ import org.zanata.model.type.LocaleIdType;
 
 import com.ibm.icu.util.ULocale;
 
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @TypeDef(name = "localeId", typeClass = LocaleIdType.class)
+@Setter
+@NoArgsConstructor
+@ToString(callSuper = true, of = {"localeId"})
+@EqualsAndHashCode(callSuper = true, of = {"active", "localeId"})
 public class HLocale extends ModelEntityBase implements Serializable
 {
    private static final long serialVersionUID = 1L;
@@ -53,7 +62,11 @@ public class HLocale extends ModelEntityBase implements Serializable
    private Set<HProject> supportedProjects;
    private Set<HProjectIteration> supportedIterations;
    private Set<HLocaleMember> members;
-   
+
+   public HLocale(LocaleId localeId)
+   {
+      this.localeId = localeId;
+   }
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
@@ -64,31 +77,11 @@ public class HLocale extends ModelEntityBase implements Serializable
       return localeId;
    }
 
-   public void setLocaleId(LocaleId localeId)
-   {
-      this.localeId = localeId;
-   }
-
    public boolean isActive()
    {
       return active;
    }
 
-   public void setActive(boolean active)
-   {
-      this.active = active;
-   }
-
-   public HLocale()
-   {
-
-   }
-
-   public HLocale(LocaleId localeId)
-   {
-      this.localeId = localeId;
-   }
-   
    @OneToMany(cascade=CascadeType.ALL)
    @JoinColumn(name = "supportedLanguageId")
    //   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE) // caching affects permission checks in security.drl
@@ -100,11 +93,6 @@ public class HLocale extends ModelEntityBase implements Serializable
       }
       return this.members;
    }
-   
-   public void setMembers(Set<HLocaleMember> members)
-   {
-      this.members = members;
-   }
 
    @ManyToMany
    @JoinTable(name = "HProject_Locale", joinColumns = @JoinColumn(name = "localeId"), inverseJoinColumns = @JoinColumn(name = "projectId"))
@@ -115,11 +103,6 @@ public class HLocale extends ModelEntityBase implements Serializable
       return supportedProjects;
    }
 
-   public void setSupportedProjects(Set<HProject> projects)
-   {
-      this.supportedProjects = projects;
-   }
-
    @ManyToMany
    @JoinTable(name = "HProjectIteration_Locale", joinColumns = @JoinColumn(name = "localeId"), inverseJoinColumns = @JoinColumn(name = "projectIterationId"))
    public Set<HProjectIteration> getSupportedIterations()
@@ -127,11 +110,6 @@ public class HLocale extends ModelEntityBase implements Serializable
       if (supportedIterations == null)
          supportedIterations = new HashSet<HProjectIteration>();
       return supportedIterations;
-   }
-
-   public void setSupportedIterations(Set<HProjectIteration> supportedIterations)
-   {
-      this.supportedIterations = supportedIterations;
    }
 
    public String retrieveNativeName()
@@ -149,42 +127,4 @@ public class HLocale extends ModelEntityBase implements Serializable
       return new ULocale(this.localeId.getId());
    }
    
-   @Override
-   public String toString()
-   {
-      return "HLocale(id="+id+" "+localeId.getId()+")";
-   }
-
-   @Override
-   public int hashCode()
-   {
-      final int prime = 31;
-      int result = super.hashCode();
-      result = prime * result + (active ? 1231 : 1237);
-      result = prime * result + ((localeId == null) ? 0 : localeId.hashCode());
-      return result;
-   }
-
-    @Override
-   public boolean equals(Object obj)
-   {
-      if (this == obj)
-         return true;
-      if (!super.equals(obj))
-         return false;
-      if (getClass() != obj.getClass())
-         return false;
-      HLocale other = (HLocale) obj;
-      if (active != other.active)
-         return false;
-      if (localeId == null)
-      {
-         if (other.localeId != null)
-            return false;
-      }
-      else if (!localeId.equals(other.localeId))
-         return false;
-      return true;
-   }
-
 }

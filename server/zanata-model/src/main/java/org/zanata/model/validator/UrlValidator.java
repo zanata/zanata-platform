@@ -37,21 +37,31 @@ public class UrlValidator<U extends Annotation> implements Validator<U>, Seriali
    public void initialize(U u)
    {
       if (u instanceof Url || u instanceof UrlNoSlash)
+      {
          this.canEndInSlash = u instanceof Url;
+      }
       else
+      {
          throw new RuntimeException("UrlValidator: unknown annotation " + u);
+      }
    }
 
    @Override
    public boolean isValid(Object value)
    {
       if (value == null)
+      {
          return true;
+      }
       if (!(value instanceof String))
+      {
          return false;
+      }
       String string = (String) value;
       if (!canEndInSlash && string.endsWith("/"))
+      {
          return false;
+      }
 
       try
       {
