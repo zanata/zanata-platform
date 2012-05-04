@@ -72,7 +72,7 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
       }
       catch (ZanataServiceException e)
       {
-         throw new ActionException(e.getMessage());
+         throw new ActionException(e);
       }
 
       HTextFlow tf = textFlowDAO.findById(action.getId(), false);

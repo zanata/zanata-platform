@@ -32,10 +32,12 @@ import org.apache.lucene.util.OpenBitSet;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class IdFilter extends Filter
 {
    private static final long serialVersionUID = 1L;
-   private static final Log log = Logging.getLog(IdFilter.class);
    private List<Long> ids;
 
    public IdFilter(List<Long> ids)
@@ -47,14 +49,15 @@ public class IdFilter extends Filter
    public DocIdSet getDocIdSet(IndexReader reader) throws IOException
    {
       OpenBitSet bitSet = new OpenBitSet(reader.maxDoc());
-      if (log.isDebugEnabled())
-         log.debug("getDocIdSet for {0} ids", ids.size());
+      log.debug("getDocIdSet for {} ids", ids.size());
       for (Long id : ids)
       {
          Term term = new Term("id", id.toString());
          TermDocs termDocs = reader.termDocs(term);
          while (termDocs.next())
+         {
             bitSet.set(termDocs.doc());
+         }
       }
       return bitSet;
    }

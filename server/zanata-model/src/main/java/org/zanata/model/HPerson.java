@@ -40,12 +40,19 @@ import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.zanata.rest.dto.Person;
 
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * @see Person
  * 
  */
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Setter
+@EqualsAndHashCode(callSuper = true, of = {"account", "email", "maintainerProjects", "name"})
+@ToString(callSuper = true, of = "name")
 public class HPerson extends ModelEntityBase implements Serializable
 {
    private static final long serialVersionUID = 1L;
@@ -68,11 +75,6 @@ public class HPerson extends ModelEntityBase implements Serializable
       return name;
    }
 
-   public void setName(String name)
-   {
-      this.name = name;
-   }
-
    @OneToOne(optional = true, fetch = FetchType.EAGER)
    @JoinColumn(name = "accountId")
    public HAccount getAccount()
@@ -80,20 +82,10 @@ public class HPerson extends ModelEntityBase implements Serializable
       return account;
    }
 
-   public void setAccount(HAccount account)
-   {
-      this.account = account;
-   }
-
    @Transient
    public boolean hasAccount()
    {
       return account != null;
-   }
-
-   public void setEmail(String email)
-   {
-      this.email = email;
    }
 
    @Email
@@ -112,26 +104,20 @@ public class HPerson extends ModelEntityBase implements Serializable
    public Set<HProject> getMaintainerProjects()
    {
       if (maintainerProjects == null)
+      {
          maintainerProjects = new HashSet<HProject>();
+      }
       return maintainerProjects;
-   }
-
-   public void setMaintainerProjects(Set<HProject> maintainerProjects)
-   {
-      this.maintainerProjects = maintainerProjects;
    }
 
    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "maintainers")
    public Set<HIterationGroup> getMaintainerVersionGroups()
    {
       if (maintainerVersionGroups == null)
+      {
          maintainerVersionGroups = new HashSet<HIterationGroup>();
+      }
       return maintainerVersionGroups;
-   }
-
-   public void setMaintainerVersionGroups(Set<HIterationGroup> maintainerVersionGroups)
-   {
-      this.maintainerVersionGroups = maintainerVersionGroups;
    }
 
    @Transient
@@ -145,11 +131,6 @@ public class HPerson extends ModelEntityBase implements Serializable
       return memberships;
    }
 
-   public void setLanguageMemberships(Set<HLocale> tribeMemberships)
-   {
-      
-   }
-   
    @OneToMany
    @JoinColumn(name = "personId")
    protected Set<HLocaleMember> getLanguageTeamMemberships()
@@ -159,70 +140,6 @@ public class HPerson extends ModelEntityBase implements Serializable
          this.languageTeamMemberships = new HashSet<HLocaleMember>();
       }
       return languageTeamMemberships;
-   }
-
-   protected void setLanguageTeamMemberships(Set<HLocaleMember> languageTeamMemberships)
-   {
-      this.languageTeamMemberships = languageTeamMemberships;
-   }
-
-   @Override
-   public int hashCode()
-   {
-      final int prime = 31;
-      int result = super.hashCode();
-      result = prime * result + ((account == null) ? 0 : account.hashCode());
-      result = prime * result + ((email == null) ? 0 : email.hashCode());
-      result = prime * result + ((maintainerProjects == null) ? 0 : maintainerProjects.hashCode());
-      result = prime * result + ((name == null) ? 0 : name.hashCode());
-      return result;
-   }
-
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (this == obj)
-         return true;
-      if (!super.equals(obj))
-         return false;
-      if (getClass() != obj.getClass())
-         return false;
-      HPerson other = (HPerson) obj;
-      if (account == null)
-      {
-         if (other.account != null)
-            return false;
-      }
-      else if (!account.equals(other.account))
-         return false;
-      if (email == null)
-      {
-         if (other.email != null)
-            return false;
-      }
-      else if (!email.equals(other.email))
-         return false;
-      if (maintainerProjects == null)
-      {
-         if (other.maintainerProjects != null)
-            return false;
-      }
-      else if (!maintainerProjects.equals(other.maintainerProjects))
-         return false;
-      if (name == null)
-      {
-         if (other.name != null)
-            return false;
-      }
-      else if (!name.equals(other.name))
-         return false;
-      return true;
-   }
-
-   @Override
-   public String toString()
-   {
-      return super.toString() + "[name=" + name + "]";
    }
 
    @Transient
@@ -260,7 +177,9 @@ public class HPerson extends ModelEntityBase implements Serializable
       {
          if (membership.getPerson().getId().equals( this.getId() ) 
                && membership.isCoordinator())
+         {
             return true;
+         }
       }
       return false;
    }

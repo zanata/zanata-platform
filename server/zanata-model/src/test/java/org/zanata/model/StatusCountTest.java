@@ -18,45 +18,31 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.util;
+package org.zanata.model;
 
-import java.net.URLDecoder;
-import java.net.URLEncoder;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.testng.annotations.Test;
+import org.zanata.common.ContentState;
 
-import org.apache.commons.codec.binary.Base64;
-import org.zanata.exception.ZanataServiceException;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
-public class Base64UrlSafe
+/**
+ * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
+public class StatusCountTest
 {
-   public static String encode(String var) throws ZanataServiceException
-   {
-      try
-      {
-         Base64 en = new Base64();
-         String enVar = new String(en.encode(var.getBytes()), "UTF-8");
-         String result = URLEncoder.encode(enVar, "UTF-8");
-         return result;
-      }
-      catch (Exception e)
-      {
-         throw new ZanataServiceException(e);
-      }
+   @Test
+   public void lombokWorks() {
+      StatusCount statusCount = new StatusCount(ContentState.New, 1L);
+
+      StatusCount other = new StatusCount(ContentState.New, 1L);
+
+      assertThat(statusCount.canEqual(other), equalTo(true));
+      assertThat(statusCount.equals(other), equalTo(true));
+      assertThat(statusCount.hashCode(), equalTo(other.hashCode()));
+      System.out.println(statusCount.hashCode());
+      assertThat(statusCount.toString(), equalTo("StatusCount(status=New, count=1)"));
    }
-
-   public static String decode(String var) throws ZanataServiceException
-   {
-      try
-      {
-         String deVar = URLDecoder.decode(var, "UTF-8");
-         Base64 en = new Base64();
-         String result = new String(en.decode(deVar.getBytes()), "UTF-8");
-         return result;
-      }
-      catch (Exception e)
-      {
-         throw new ZanataServiceException(e);
-      }
-
-   }
-
 }

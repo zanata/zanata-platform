@@ -18,38 +18,24 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.model;
+package org.zanata.service;
 
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToOne;
+import org.zanata.model.SlugEntityBase;
 
-import org.hibernate.validator.Length;
-import org.hibernate.validator.NotEmpty;
-
-import lombok.Setter;
-
-@MappedSuperclass
-@Setter
-public class AccountKeyBase
+/**
+ * Provides common services related to the slug based entities ({@link org.zanata.model.SlugEntityBase}).
+ *
+ * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ */
+public interface SlugEntityService
 {
-   private String keyHash;
-   private HAccount account;
+   /**
+    * Determines if a given slug is available in a class.
+    *
+    * @param slug The slug to check
+    * @param cls The class to verify the slug against.
+    * @return True if the slug is not in use by any other elements of cls. False, otherwise.
+    */
+   boolean isSlugAvailable(String slug, Class<? extends SlugEntityBase> cls);
 
-   @NotEmpty
-   @Length(min = 32, max = 32)
-   @Id
-   public String getKeyHash()
-   {
-      return keyHash;
-   }
-
-   @OneToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "accountId")
-   public HAccount getAccount()
-   {
-      return account;
-   }
 }

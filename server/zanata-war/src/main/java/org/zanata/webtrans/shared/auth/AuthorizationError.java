@@ -16,4 +16,9 @@ public class AuthorizationError extends ActionException
       super(message);
    }
 
+   public AuthorizationError(Throwable e)
+   {
+      super(e);
+   }
+
 }

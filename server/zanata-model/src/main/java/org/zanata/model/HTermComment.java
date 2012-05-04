@@ -32,6 +32,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.NotNull;
 
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -39,6 +44,9 @@ import org.hibernate.validator.NotNull;
  **/
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Setter
+@NoArgsConstructor
+@ToString(of = "comment")
 public class HTermComment
 {
    private Long id;
@@ -48,10 +56,6 @@ public class HTermComment
    private Integer pos;
 
    private HGlossaryTerm glossaryTerm;
-
-   public HTermComment()
-   {
-   }
 
    public HTermComment(String comment)
    {
@@ -77,20 +81,10 @@ public class HTermComment
       return comment;
    }
 
-   public void setComment(String comment)
-   {
-      this.comment = comment;
-   }
-
    @Column(insertable = false, updatable = false, nullable = false)
    public Integer getPos()
    {
       return pos;
-   }
-
-   public void setPos(Integer pos)
-   {
-      this.pos = pos;
    }
 
    @ManyToOne
@@ -101,15 +95,6 @@ public class HTermComment
       return glossaryTerm;
    }
 
-   public void setGlossaryTerm(HGlossaryTerm glossaryTerm)
-   {
-      this.glossaryTerm = glossaryTerm;
-   }
-
-   public String toString()
-   {
-      return comment != null ? "HTermComment(" + getComment() + ")" : null;
-   }
 }
 
 

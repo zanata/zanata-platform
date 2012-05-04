@@ -40,6 +40,11 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.zanata.hibernate.search.LocaleIdBridge;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -48,12 +53,15 @@ import org.zanata.hibernate.search.LocaleIdBridge;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
+@Setter
+@EqualsAndHashCode(callSuper = true)
+@ToString(of = {"sourceRef", "srcLocale"})
 public class HGlossaryEntry extends ModelEntityBase
 {
+   private static final long serialVersionUID = -4200183325180630061L;
+
    private Map<HLocale, HGlossaryTerm> glossaryTerms;
-
    private String sourceRef;
-
    private HLocale srcLocale;
 
    @OneToMany(cascade = CascadeType.ALL, mappedBy = "glossaryEntry")
@@ -66,20 +74,10 @@ public class HGlossaryEntry extends ModelEntityBase
       return glossaryTerms;
    }
 
-   public void setGlossaryTerms(Map<HLocale, HGlossaryTerm> glossaryTerms)
-   {
-      this.glossaryTerms = glossaryTerms;
-   }
-
    @Type(type = "text")
    public String getSourceRef()
    {
       return sourceRef;
-   }
-
-   public void setSourceRef(String sourceRef)
-   {
-      this.sourceRef = sourceRef;
    }
 
    @OneToOne
@@ -90,64 +88,6 @@ public class HGlossaryEntry extends ModelEntityBase
    {
       return srcLocale;
    }
-
-   public void setSrcLocale(HLocale srcLocale)
-   {
-      this.srcLocale = srcLocale;
-   }
-
-
-   @Override
-   public String toString()
-   {
-      return "HGlossaryEntry [sourceRef=" + sourceRef + ", srcLocale=" + srcLocale + "]";
-   }
-
-   @Override
-   public int hashCode()
-   {
-      final int prime = 31;
-      int result = super.hashCode();
-      result = prime * result + ((glossaryTerms == null) ? 0 : glossaryTerms.hashCode());
-      result = prime * result + ((sourceRef == null) ? 0 : sourceRef.hashCode());
-      result = prime * result + ((srcLocale == null) ? 0 : srcLocale.hashCode());
-      return result;
-   }
-
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (this == obj)
-         return true;
-      if (!super.equals(obj))
-         return false;
-      if (getClass() != obj.getClass())
-         return false;
-      HGlossaryEntry other = (HGlossaryEntry) obj;
-      if (glossaryTerms == null)
-      {
-         if (other.glossaryTerms != null)
-            return false;
-      }
-      else if (!glossaryTerms.equals(other.glossaryTerms))
-         return false;
-      if (sourceRef == null)
-      {
-         if (other.sourceRef != null)
-            return false;
-      }
-      else if (!sourceRef.equals(other.sourceRef))
-         return false;
-      if (srcLocale == null)
-      {
-         if (other.srcLocale != null)
-            return false;
-      }
-      else if (!srcLocale.equals(other.srcLocale))
-         return false;
-      return true;
-   }
-
 
 }
 

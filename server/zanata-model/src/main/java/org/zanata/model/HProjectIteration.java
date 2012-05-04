@@ -42,13 +42,16 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.Where;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.NotNull;
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.hibernate.search.GroupSearchBridge;
 import org.zanata.model.type.EntityStatusType;
 import org.zanata.rest.dto.ProjectIteration;
+
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 
@@ -60,9 +63,13 @@ import org.zanata.rest.dto.ProjectIteration;
 @TypeDef(name = "entityStatus", typeClass = EntityStatusType.class)
 @Restrict
 @Indexed
+@Setter
+@NoArgsConstructor
+@ToString(callSuper = true, of = {"project"})
 public class HProjectIteration extends SlugEntityBase
 {
 
+   private static final long serialVersionUID = 182037127575991478L;
    private HIterationProject project;
 
    private HProjectIteration parent;
@@ -73,11 +80,6 @@ public class HProjectIteration extends SlugEntityBase
 
    private boolean overrideLocales = false;
    private Set<HLocale> customizedLocales;
-
-   public void setOverrideLocales(boolean var)
-   {
-      this.overrideLocales = var;
-   }
 
    public boolean getOverrideLocales()
    {
@@ -95,11 +97,6 @@ public class HProjectIteration extends SlugEntityBase
       return project;
    }
 
-   public void setProject(HIterationProject project)
-   {
-      this.project = project;
-   }
-
    @ManyToMany
    @JoinTable(name = "HProjectIteration_Locale", joinColumns = @JoinColumn(name = "projectIterationId"), inverseJoinColumns = @JoinColumn(name = "localeId"))
    public Set<HLocale> getCustomizedLocales()
@@ -109,20 +106,10 @@ public class HProjectIteration extends SlugEntityBase
       return customizedLocales;
    }
 
-   public void setCustomizedLocales(Set<HLocale> locales)
-   {
-      this.customizedLocales = locales;
-   }
-
    @OneToMany(mappedBy = "parent")
    public List<HProjectIteration> getChildren()
    {
       return children;
-   }
-
-   public void setChildren(List<HProjectIteration> children)
-   {
-      this.children = children;
    }
 
    @ManyToOne
@@ -130,11 +117,6 @@ public class HProjectIteration extends SlugEntityBase
    public HProjectIteration getParent()
    {
       return parent;
-   }
-
-   public void setParent(HProjectIteration parent)
-   {
-      this.parent = parent;
    }
 
    @OneToMany(mappedBy = "projectIteration", cascade = CascadeType.ALL)
@@ -157,21 +139,5 @@ public class HProjectIteration extends SlugEntityBase
       if (allDocuments == null)
          allDocuments = new HashMap<String, HDocument>();
       return allDocuments;
-   }
-
-   public void setAllDocuments(Map<String, HDocument> allDocuments)
-   {
-      this.allDocuments = allDocuments;
-   }
-
-   public void setDocuments(Map<String, HDocument> documents)
-   {
-      this.documents = documents;
-   }
-
-   @Override
-   public String toString()
-   {
-      return super.toString() + "project=" + project + "]";
    }
 }

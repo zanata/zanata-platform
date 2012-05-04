@@ -32,10 +32,12 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.zanata.common.LocaleId;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class LocaleFilter extends Filter
 {
    private static final long serialVersionUID = 1L;
-   private static final Log log = Logging.getLog(LocaleFilter.class);
    private LocaleId locale;
 
    public LocaleFilter(LocaleId locale)
@@ -47,12 +49,13 @@ public class LocaleFilter extends Filter
    public DocIdSet getDocIdSet(IndexReader reader) throws IOException
    {
       OpenBitSet bitSet = new OpenBitSet(reader.maxDoc());
-      if (log.isDebugEnabled())
-         log.debug("getDocIdSet for {0}", locale.toString());
+      log.debug("getDocIdSet for {}", locale);
       Term term = new Term("locale", locale.toString());
       TermDocs termDocs = reader.termDocs(term);
       while (termDocs.next())
+      {
          bitSet.set(termDocs.doc());
+      }
       return bitSet;
    }
 }

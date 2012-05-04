@@ -38,6 +38,8 @@ import org.hibernate.annotations.Type;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 
+import lombok.Setter;
+
 /**
  * 
  * @author sflaniga@redhat.com
@@ -47,6 +49,7 @@ import org.zanata.model.HTextFlow;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @BatchSize(size = 20)
+@Setter
 public class HPotEntryData implements Serializable
 {
 
@@ -60,10 +63,6 @@ public class HPotEntryData implements Serializable
    private String flags;
    private String references;
 
-   public HPotEntryData()
-   {
-   }
-
    @Id
    @GeneratedValue
    public Long getId()
@@ -76,22 +75,12 @@ public class HPotEntryData implements Serializable
       this.id = id;
    }
 
-   public void setTextFlow(HTextFlow textFlow)
-   {
-      this.textFlow = textFlow;
-   }
-
    @OneToOne
    @JoinColumn(name = "tf_id", /* nullable=false, */unique = true)
    @NaturalId
    public HTextFlow getTextFlow()
    {
       return textFlow;
-   }
-
-   public void setContext(String context)
-   {
-      this.context = context;
    }
 
    public String getContext()

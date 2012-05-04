@@ -20,8 +20,6 @@
  */
 package org.zanata.model;
 
-import static org.zanata.util.ZanataUtil.equal;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,14 +60,19 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.IdFilterFactory;
 import org.zanata.model.po.HPotEntryData;
 import org.zanata.util.HashUtil;
 import org.zanata.util.OkapiUtil;
 import org.zanata.util.StringUtil;
+
+import com.google.common.base.Objects;
+
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Represents a flow of source text that should be processed as a stand-alone
@@ -94,10 +97,12 @@ import org.zanata.util.StringUtil;
             "AND tft.textFlow.document.projectIteration.status<>org.zanata.common.EntityStatus.OBSOLETE " +
             "AND tft.textFlow.document.projectIteration.project.status<>org.zanata.common.EntityStatus.OBSOLETE"
 ))
+@Setter
+@NoArgsConstructor
+@ToString(of = {"resId", "revision", "contents", "comment", "obsolete"})
+@Slf4j
 public class HTextFlow extends HTextContainer implements Serializable, ITextFlowHistory, HasSimpleComment
 {
-   private static final Logger log = LoggerFactory.getLogger(HTextFlow.class);
-
    private static final long serialVersionUID = 3023080107971905435L;
 
    private Long id;
@@ -137,16 +142,11 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    // Only for internal use (persistence transient) 
    private boolean lazyRelationsCopied = false;
 
-   public HTextFlow()
-   {
-
-   }
-
    public HTextFlow(HDocument document, String resId, String content)
    {
       setDocument(document);
       setResId(resId);
-      setContent(content);
+      setContents(content);
    }
 
 
@@ -172,11 +172,6 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
       return pos;
    }
 
-   public void setPos(Integer pos)
-   {
-      this.pos = pos;
-   }
-
    // TODO make this case sensitive
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
@@ -187,11 +182,6 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
       return resId;
    }
 
-   public void setResId(String resId)
-   {
-      this.resId = resId;
-   }
-   
    /**
     * @return whether this message supports plurals
     */
@@ -200,24 +190,11 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
       return plural;
    }
 
-   /**
-    * @param pluralSupported the pluralSupported to set
-    */
-   public void setPlural(boolean pluralSupported)
-   {
-      this.plural = pluralSupported;
-   }
-
    @NotNull
    @Override
    public Integer getRevision()
    {
       return revision;
-   }
-
-   public void setRevision(Integer revision)
-   {
-      this.revision = revision;
    }
 
    @Override
@@ -249,7 +226,7 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
 
    public void setDocument(HDocument document)
    {
-      if (!equal(this.document, document))
+      if (!Objects.equal(this.document, document))
       {
          this.document = document;
          updateWordCount();
@@ -265,11 +242,6 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
       return comment;
    }
 
-   public void setComment(HSimpleComment comment)
-   {
-      this.comment = comment;
-   }
-   
    @Override
    @NotEmpty
    @Type(type = "text")
@@ -298,8 +270,8 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
       // Copy lazily loaded relations to the history object as this cannot be done
       // in the entity callbacks
       copyLazyLoadedRelationsToHistory();
-      
-      if (!equal(this.contents, contents))
+
+      if (!Objects.equal(this.contents, contents))
       {
          this.contents = new ArrayList<String>(contents);
          updateWordCount();
@@ -318,11 +290,6 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
       return history;
    }
 
-   public void setHistory(Map<Integer, HTextFlowHistory> history)
-   {
-      this.history = history;
-   }
-
    @OneToMany(cascade = CascadeType.ALL, mappedBy = "textFlow")
    @MapKey(name = "locale")
    @BatchSize(size = 10)
@@ -332,16 +299,6 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
       if (targets == null)
          targets = new HashMap<HLocale, HTextFlowTarget>();
       return targets;
-   }
-
-   public void setTargets(Map<HLocale, HTextFlowTarget> targets)
-   {
-      this.targets = targets;
-   }
-
-   public void setPotEntryData(HPotEntryData potEntryData)
-   {
-      this.potEntryData = potEntryData;
    }
 
    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
@@ -445,15 +402,6 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
          this.initialState.setContents( this.contents );
          this.lazyRelationsCopied = true;
       }
-   }
-
-   /**
-    * Used for debugging
-    */
-   @Override
-   public String toString()
-   {
-      return "HTextFlow(" + "resId:" + getResId() + " contents:" + getContents() + " revision:" + getRevision() + " comment:" + getComment() + " obsolete:" + isObsolete() + ")";
    }
 
 }

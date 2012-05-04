@@ -20,6 +20,7 @@
  */
 package org.zanata.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -37,10 +38,13 @@ import javax.persistence.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import lombok.ToString;
+
 @MappedSuperclass
-public class ModelEntityBase
+public class ModelEntityBase implements Serializable
 {
 
+   private static final long serialVersionUID = -6139220551322868743L;
    protected Long id;
    protected Date creationDate;
    protected Date lastChanged;

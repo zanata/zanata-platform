@@ -33,8 +33,7 @@ public class LocaleFilterFactory
    @Factory
    public Filter getFilter()
    {
-      LocaleFilter filter = new LocaleFilter(this.locale);
-      return filter;
+      return new LocaleFilter(this.locale);
    }
 
    private LocaleId locale;

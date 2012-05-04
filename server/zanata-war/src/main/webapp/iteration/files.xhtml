@@ -22,12 +22,18 @@
             }
 
             function openUploadPanel(docId) {
+                #{rich:element('uploadPanelHeader')}.innerHTML = '#{messages['jsf.iteration.files.UploadFile']}: ' + docId;
                 #{rich:element('uploadDocId')}.value = docId;
                 #{rich:component('uploadPanel')}.show();
             }
 
             function hideUploadPanel() {
                 #{rich:component('uploadPanel')}.hide();
+                return false;
+            }
+
+            function hideDocUploadPanel() {
+                #{rich:component('uploadDocPanel')}.hide();
                 return false;
             }
         </script>
@@ -179,19 +185,19 @@
                          resizeable="#{false}"
                          autosized="#{true}">
             <f:facet name="header">
-                <h:outputText value="#{messages['jsf.iteration.files.UploadFile']}"/>
+                <h:outputText id="uploadPanelHeader"/>
             </f:facet>
             <h:form id="uploadForm" enctype="multipart/form-data">
                 <s:fileUpload accept="*"
-                              data="#{projectIterationFilesAction.fileUploadHelper.fileContents}"
-                              fileName="#{projectIterationFilesAction.fileUploadHelper.fileName}"/>
+                              data="#{projectIterationFilesAction.translationFileUpload.fileContents}"
+                              fileName="#{projectIterationFilesAction.translationFileUpload.fileName}"/>
                 <h:outputText value="#{messages['jsf.iteration.files.Merge']}?"/>
-                <h:inputHidden id="uploadDocId" value="#{projectIterationFilesAction.fileUploadHelper.docId}"/>
-                <h:selectBooleanCheckbox value="#{projectIterationFilesAction.fileUploadHelper.mergeTranslations}"
+                <h:inputHidden id="uploadDocId" value="#{projectIterationFilesAction.translationFileUpload.docId}"/>
+                <h:selectBooleanCheckbox value="#{projectIterationFilesAction.translationFileUpload.mergeTranslations}"
                                          title="#{messages['jsf.iteration.files.MergeCheckbox.Title']}"/>
                 <div align="right">
                     <h:commandButton value="#{messages['jsf.iteration.files.Upload']}"
-                                     action="#{projectIterationFilesAction.uploadFile}"/>
+                                     action="#{projectIterationFilesAction.uploadTranslationFile}"/>
                     <h:commandButton value="#{messages['jsf.Cancel']}"
                                      onclick="return hideUploadPanel();"/>
                 </div>
@@ -210,8 +216,44 @@
                                  action="#{projectIterationZipFileAction.prepareIterationZipFile}"
                                  onclick="if(!downloadAllFilesClick()){ return false; }"
                                  reRender="downloadProgressBar"/>
+                <h:outputLink value="#"
+                              id="uploadDocLink"
+                              styleClass="action_link"
+                              title="Supported types: .pot"
+                              rendered="#{projectIterationFilesAction.documentUploadAllowed}">
+                    #{messages['jsf.iteration.files.Upload']} Document
+                    <rich:componentControl for="uploadDocPanel"
+                                           operation="show"
+                                           event="onclick"
+                                           disableDefault="true"/>
+                </h:outputLink>
             </a4j:form>
         </rich:panel>
+
+        <rich:modalPanel id="uploadDocPanel"
+                         moveable="#{false}"
+                         resizeable="#{false}"
+                         autosized="#{true}"
+                         rendered="#{projectIterationFilesAction.documentUploadAllowed}">
+            <f:facet name="header">
+                <h:outputText value="#{messages['jsf.iteration.files.UploadDocument']}"/>
+            </f:facet>
+            <h:form id="uploadDocForm" enctype="multipart/form-data">
+                <s:fileUpload accept="*"
+                              data="#{projectIterationFilesAction.documentFileUpload.fileContents}"
+                              fileName="#{projectIterationFilesAction.documentFileUpload.fileName}"/>
+                <h:inputText id="docPath"
+                             value="#{projectIterationFilesAction.documentFileUpload.documentPath}">
+                    <h:outputLabel for="docPath" value="#{messages['jsf.iteration.files.DocumentPath']}"/>
+                </h:inputText>
+                <div align="right">
+                    <h:commandButton value="#{messages['jsf.iteration.files.Upload']}"
+                                     action="#{projectIterationFilesAction.uploadDocumentFile}"/>
+                    <h:commandButton value="#{messages['jsf.Cancel']}"
+                                     onclick="return hideDocUploadPanel();"/>
+                </div>
+            </h:form>
+        </rich:modalPanel>
 
     </ui:define>
 

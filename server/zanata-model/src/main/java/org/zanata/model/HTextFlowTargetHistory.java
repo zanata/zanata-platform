@@ -20,8 +20,6 @@
  */
 package org.zanata.model;
 
-import static org.zanata.util.ZanataUtil.equal;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,6 +42,7 @@ import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.zanata.common.ContentState;
+import com.google.common.base.Objects;
 
 @Entity
 @org.hibernate.annotations.Entity(mutable = false)
@@ -219,13 +218,13 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
     */
    public boolean hasChanged(HTextFlowTarget current)
    {
-      return    !equal(current.getContents(), this.contents)
-             || !equal(current.getLastChanged(), this.lastChanged)
-             || !equal(current.getLastModifiedBy(), this.lastModifiedBy)
-             || !equal(current.getState(), this.state)
-             || !equal(current.getTextFlowRevision(), this.textFlowRevision)
-             || !equal(current.getLastChanged(), this.lastChanged)
-             || !equal(current.getTextFlow().getId(), this.textFlowTarget.getId())
-             || !equal(current.getVersionNum(), this.versionNum);
+      return    !Objects.equal(current.getContents(), this.contents)
+             || !Objects.equal(current.getLastChanged(), this.lastChanged)
+             || !Objects.equal(current.getLastModifiedBy(), this.lastModifiedBy)
+             || !Objects.equal(current.getState(), this.state)
+             || !Objects.equal(current.getTextFlowRevision(), this.textFlowRevision)
+             || !Objects.equal(current.getLastChanged(), this.lastChanged)
+             || !Objects.equal(current.getTextFlow().getId(), this.textFlowTarget.getId())
+             || !Objects.equal(current.getVersionNum(), this.versionNum);
    }
 }

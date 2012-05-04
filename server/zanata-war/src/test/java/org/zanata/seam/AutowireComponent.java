@@ -18,43 +18,40 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.hibernate.search;
+package org.zanata.seam;
 
-import java.util.List;
+import org.jboss.seam.ScopeType;
 
-import org.apache.lucene.search.Filter;
-import org.hibernate.search.annotations.Factory;
-import org.hibernate.search.annotations.Key;
-import org.hibernate.search.filter.FilterKey;
-import org.hibernate.search.filter.StandardFilterKey;
-
-public class IdFilterFactory
+/**
+ * Replacement class for Seam's {@link org.jboss.seam.Component}.
+ * Tests that use the {@link SeamAutowire} class will use this class instead of
+ * Seam's one to request components.
+ *
+ * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ */
+public class AutowireComponent
 {
+   private static SeamAutowire instance;
 
-   @Factory
-   public Filter getFilter()
+   public static void setInstance(SeamAutowire instance)
    {
-      return new IdFilter(this.ids);
+      AutowireComponent.instance = instance;
    }
 
-   private List<Long> ids;
-
-   public List<Long> getIds()
+   public static Object getInstance(String name, boolean create, boolean allowAutocreation)
    {
-      return ids;
+      return SeamAutowire.instance().getComponent(name);
    }
 
-   public void setIds(List<Long> ids)
+   public static Object getInstance(String name, ScopeType scope, boolean create, boolean allowAutocreation)
    {
-      this.ids = ids;
+      return SeamAutowire.instance().getComponent(name);
    }
 
-   @Key
-   public FilterKey getKey()
+   public static Object getInstance(String name, boolean create, boolean allowAutoCreation, Object result)
    {
-      StandardFilterKey key = new StandardFilterKey();
-      key.addParameter(ids);
-      return key;
+      return SeamAutowire.instance().getComponent(name);
    }
+
 
 }

@@ -7,7 +7,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import net.customware.gwt.dispatch.shared.Result;
 
 
-public class TranslatorStatusUpdateAction extends AbstractWorkspaceAction<TranslatorUpdateStatusResult>
+public class TranslatorStatusUpdateAction extends AbstractWorkspaceAction<TranslatorStatusUpdateResult>
 {
    private static final long serialVersionUID = -9165857458963498055L;
 

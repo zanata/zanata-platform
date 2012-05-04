@@ -20,6 +20,7 @@
  */
 package org.zanata.service;
 
+import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 import java.io.InputStream;
@@ -32,4 +33,6 @@ import java.io.InputStream;
 public interface TranslationFileService
 {
    TranslationsResource parseTranslationFile(InputStream fileContents, String fileName);
+
+   Resource parseDocumentFile(InputStream fileContents, String path, String fileName);
 }

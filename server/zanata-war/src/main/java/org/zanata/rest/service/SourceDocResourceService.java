@@ -49,6 +49,7 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.service.CopyTransService;
+import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
 
 import javax.ws.rs.Consumes;
@@ -76,8 +77,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static org.zanata.service.impl.TranslationServiceImpl.validateExtensions;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -109,9 +108,6 @@ public class SourceDocResourceService implements SourceDocResource
    private String iterationSlug;
 
    @In
-   private ProjectDAO projectDAO;
-
-   @In
    private ProjectIterationDAO projectIterationDAO;
 
    @In
@@ -122,6 +118,9 @@ public class SourceDocResourceService implements SourceDocResource
 
    @In
    private CopyTransService copyTransServiceImpl;
+
+   @In
+   private DocumentService documentServiceImpl;
 
    @In
    private ApplicationConfiguration applicationConfiguration;
@@ -138,21 +137,21 @@ public class SourceDocResourceService implements SourceDocResource
    }
 
    // @formatter:off
-   public SourceDocResourceService(ProjectDAO projectDAO,
-                                   ProjectIterationDAO projectIterationDAO,
+   public SourceDocResourceService(ProjectIterationDAO projectIterationDAO,
                                    DocumentDAO documentDAO,
                                    LocaleService localeService,
                                    CopyTransService copyTransService,
+                                   DocumentService documentService,
                                    ApplicationConfiguration applicationConfiguration,
                                    ResourceUtils resourceUtils,
                                    ETagUtils eTagUtils
                                    )
    {
-      this.projectDAO = projectDAO;
       this.projectIterationDAO = projectIterationDAO;
       this.documentDAO = documentDAO;
       this.localeServiceImpl = localeService;
       this.copyTransServiceImpl = copyTransService;
+      this.documentServiceImpl = documentService;
       this.applicationConfiguration = applicationConfiguration;
       this.resourceUtils = resourceUtils;
       this.eTagUtils = eTagUtils;
@@ -250,11 +249,11 @@ public class SourceDocResourceService implements SourceDocResource
    {
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
 
-      validateExtensions(extensions); //gettext, comment
+      resourceUtils.validateExtensions(extensions); //gettext, comment
 
       HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, resource.getName());
-      HLocale hLocale = validateSourceLocale(resource.getLang());
-      int nextDocRev;
+
+      // already existing non-obsolete document.
       if (document != null)
       {
          if (!document.isObsolete())
@@ -262,27 +261,12 @@ public class SourceDocResourceService implements SourceDocResource
             // updates must happen through PUT on the actual resource
             return Response.status(Response.Status.CONFLICT).entity("A document with name " + resource.getName() + " already exists.").build();
          }
-         // a deleted document is being created again
-         nextDocRev = document.getRevision() + 1;
-         document.setObsolete(false);
       }
-      else
-      {
-         nextDocRev = 1;
-         document = new HDocument(resource.getName(), resource.getContentType(), hLocale);
-         document.setProjectIteration(hProjectIteration);
-      }
-      hProjectIteration.getDocuments().put(resource.getName(), document);
 
-      resourceUtils.transferFromResource(resource, document, extensions, hLocale, nextDocRev);
-
-      document = documentDAO.makePersistent(document);
-      documentDAO.flush();
-
-      if (copytrans && nextDocRev == 1)
-      {
-         copyClosestEquivalentTranslation(document);
-      }
+      // TODO No need for docId param since it's resource.getName()
+      document =
+            this.documentServiceImpl.saveDocument(
+                  this.projectSlug, this.iterationSlug, resource.getName(), resource, extensions, copytrans);
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, document.getDocId(), extensions);
 
@@ -313,7 +297,7 @@ public class SourceDocResourceService implements SourceDocResource
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
 
-      validateExtensions(extensions);
+      resourceUtils.validateExtensions(extensions);
 
       final Set<String> extSet = new HashSet<String>(extensions);
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extSet);
@@ -379,72 +363,23 @@ public class SourceDocResourceService implements SourceDocResource
       log.debug("start put resource");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       Response.ResponseBuilder response;
-      EntityTag etag = null;
-      boolean changed = false;
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
 
-      validateExtensions(extensions);
+      resourceUtils.validateExtensions(extensions);
 
-      log.debug("resource details: {0}", resource);
-
-      HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, id);
-      HLocale hLocale = validateSourceLocale(resource.getLang());
-      int nextDocRev;
-      if (document == null)
-      { // must be a create operation
-         nextDocRev = 1;
-         response = request.evaluatePreconditions();
-         if (response != null)
-         {
-            return response.build();
-         }
-         changed = true;
-         // TODO check that entity name matches id parameter
-         document = new HDocument(resource.getName(), resource.getContentType(), hLocale);
-         document.setProjectIteration(hProjectIteration);
-         hProjectIteration.getDocuments().put(id, document);
-         response = Response.created(uri.getAbsolutePath());
-      }
-      else if (document.isObsolete())
-      { // must also be a create operation
-         nextDocRev = document.getRevision() + 1;
-         response = request.evaluatePreconditions();
-         if (response != null)
-         {
-            return response.build();
-         }
-         changed = true;
-         document.setObsolete(false);
-         // not sure if this is needed
-         hProjectIteration.getDocuments().put(id, document);
+      HDocument document = this.documentDAO.getByDocIdAndIteration(hProjectIteration, id);
+      if( document == null || document.isObsolete() )
+      {
          response = Response.created(uri.getAbsolutePath());
       }
       else
-      { // must be an update operation
-         nextDocRev = document.getRevision() + 1;
-         etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
-         response = request.evaluatePreconditions(etag);
-         if (response != null)
-         {
-            return response.build();
-         }
-
+      {
          response = Response.ok();
       }
 
-      changed |= resourceUtils.transferFromResource(resource, document, extensions, hLocale, nextDocRev);
+      document = this.documentServiceImpl.saveDocument(projectSlug, iterationSlug, id, resource, extensions, copytrans);
 
-      if (changed)
-      {
-         document = documentDAO.makePersistent(document);
-         documentDAO.flush();
-         etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
-      }
-
-      if (copytrans && nextDocRev == 1)
-      {
-         copyClosestEquivalentTranslation(document);
-      }
+      EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, document.getDocId(), extensions);
 
       log.debug("put resource successfully");
       return response.tag(etag).build();
@@ -600,7 +535,7 @@ public class SourceDocResourceService implements SourceDocResource
    private HProjectIteration retrieveAndCheckIteration(boolean writeOperation)
    {
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      HProject hProject = projectDAO.getBySlug(projectSlug);
+      HProject hProject = hProjectIteration == null ? null : hProjectIteration.getProject();
 
       if (hProjectIteration == null)
       {

@@ -16,4 +16,9 @@ public class AuthenticationError extends ActionException
       super(message);
    }
 
+   public AuthenticationError(Throwable e)
+   {
+      super(e);
+   }
+
 }

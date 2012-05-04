@@ -20,8 +20,6 @@
  */
 package org.zanata.model;
 
-import static org.zanata.util.ZanataUtil.equal;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +39,7 @@ import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.NotEmpty;
+import com.google.common.base.Objects;
 
 @Entity
 @org.hibernate.annotations.Entity(mutable = false)
@@ -162,7 +161,7 @@ public class HTextFlowHistory extends HTextContainer implements Serializable, IT
     */
    public boolean hasChanged(HTextFlow current)
    {
-      return !equal(current.getRevision(), this.getRevision());
+      return !Objects.equal(current.getRevision(), this.getRevision());
    }
 
 }

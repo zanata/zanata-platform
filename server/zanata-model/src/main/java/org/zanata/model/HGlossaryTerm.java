@@ -48,6 +48,11 @@ import org.hibernate.validator.NotNull;
 import org.zanata.hibernate.search.LocaleFilterFactory;
 import org.zanata.hibernate.search.LocaleIdBridge;
 
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -57,17 +62,17 @@ import org.zanata.hibernate.search.LocaleIdBridge;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
 @FullTextFilterDef(name = "glossaryLocaleFilter", impl = LocaleFilterFactory.class, cache = FilterCacheModeType.INSTANCE_ONLY)
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@ToString
 public class HGlossaryTerm extends ModelEntityBase
 {
+   private static final long serialVersionUID = 1854278563597070432L;
    private String content;
    private List<HTermComment> comments;
    private HGlossaryEntry glossaryEntry;
    private HLocale locale;
-
-   public HGlossaryTerm()
-   {
-
-   }
 
    public HGlossaryTerm(String content)
    {
@@ -80,11 +85,6 @@ public class HGlossaryTerm extends ModelEntityBase
    public String getContent()
    {
       return content;
-   }
-
-   public void setContent(String content)
-   {
-      this.content = content;
    }
 
    @OneToMany(cascade = CascadeType.ALL)
@@ -100,11 +100,6 @@ public class HGlossaryTerm extends ModelEntityBase
       return comments;
    }
 
-   public void setComments(List<HTermComment> comments)
-   {
-      this.comments = comments;
-   }
-
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @ManyToOne
@@ -112,11 +107,6 @@ public class HGlossaryTerm extends ModelEntityBase
    public HGlossaryEntry getGlossaryEntry()
    {
       return glossaryEntry;
-   }
-
-   public void setGlossaryEntry(HGlossaryEntry glossaryEntry)
-   {
-      this.glossaryEntry = glossaryEntry;
    }
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
@@ -128,69 +118,5 @@ public class HGlossaryTerm extends ModelEntityBase
    public HLocale getLocale()
    {
       return locale;
-   }
-
-   public void setLocale(HLocale locale)
-   {
-      this.locale = locale;
-   }
-
-   @Override
-   public String toString()
-   {
-      return "HGlossaryTerm [content=" + content + ", comments=" + comments + ", glossaryEntry=" + glossaryEntry + ", locale=" + locale + "]";
-   }
-
-   @Override
-   public int hashCode()
-   {
-      final int prime = 31;
-      int result = super.hashCode();
-      result = prime * result + ((comments == null) ? 0 : comments.hashCode());
-      result = prime * result + ((content == null) ? 0 : content.hashCode());
-      result = prime * result + ((glossaryEntry == null) ? 0 : glossaryEntry.hashCode());
-      result = prime * result + ((locale == null) ? 0 : locale.hashCode());
-      return result;
-   }
-
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (this == obj)
-         return true;
-      if (!super.equals(obj))
-         return false;
-      if (getClass() != obj.getClass())
-         return false;
-      HGlossaryTerm other = (HGlossaryTerm) obj;
-      if (comments == null)
-      {
-         if (other.comments != null)
-            return false;
-      }
-      else if (!comments.equals(other.comments))
-         return false;
-      if (content == null)
-      {
-         if (other.content != null)
-            return false;
-      }
-      else if (!content.equals(other.content))
-         return false;
-      if (glossaryEntry == null)
-      {
-         if (other.glossaryEntry != null)
-            return false;
-      }
-      else if (!glossaryEntry.equals(other.glossaryEntry))
-         return false;
-      if (locale == null)
-      {
-         if (other.locale != null)
-            return false;
-      }
-      else if (!locale.equals(other.locale))
-         return false;
-      return true;
    }
 }

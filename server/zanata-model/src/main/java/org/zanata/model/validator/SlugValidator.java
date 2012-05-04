@@ -27,9 +27,6 @@ import org.hibernate.validator.Validator;
 public class SlugValidator implements Validator<Slug>, Serializable
 {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = 1L;
    public static final String PATTERN = "[a-zA-Z0-9]+([a-zA-Z0-9_\\-{.}]*[a-zA-Z0-9]+)?";
 
@@ -40,13 +37,15 @@ public class SlugValidator implements Validator<Slug>, Serializable
    public boolean isValid(Object value)
    {
       if (value == null)
+      {
          return true;
+      }
       if (!(value instanceof String))
+      {
          return false;
+      }
       String string = (String) value;
-      if (string.isEmpty())
-         return true;
-      return string.matches(PATTERN);
+      return string.isEmpty() || string.matches(PATTERN);
    }
 
 }

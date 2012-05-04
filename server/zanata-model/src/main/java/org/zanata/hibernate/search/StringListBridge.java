@@ -13,6 +13,8 @@ import org.hibernate.search.bridge.ParameterizedBridge;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.log.Log;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Index a list of strings in multiple fields, appending the string index to the
  * field name to produce unique fields.
@@ -27,11 +29,9 @@ import org.jboss.seam.log.Log;
  * @author David Mason, damason@redhat.com
  * 
  */
+@Slf4j
 public class StringListBridge implements FieldBridge, ParameterizedBridge
 {
-
-   @Logger
-   Log log;
 
    private ConfigurableNgramAnalyzer analyzer;
    private boolean caseSensitive = false;
@@ -88,6 +88,7 @@ public class StringListBridge implements FieldBridge, ParameterizedBridge
       {
          throw new IllegalArgumentException("this bridge must be applied to a List");
       }
+      @SuppressWarnings("unchecked")
       List<String> strings = (List<String>) value;
       for (int i = 0; i < strings.size(); i++)
       {
@@ -108,7 +109,8 @@ public class StringListBridge implements FieldBridge, ParameterizedBridge
       }
       catch (IOException e)
       {
-         log.error("Failed to get token stream from analyzer for field \"{0}\" with content \"{1}\"", e, fieldName, fieldValue);
+         log.error("Failed to get token stream from analyzer for field [{}] with [content {}]", fieldName, fieldValue);
+         log.error("exception", e);
       }
       luceneDocument.add(field);
    }

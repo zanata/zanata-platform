@@ -41,6 +41,8 @@ import org.zanata.common.EntityStatus;
 public class EntityStatusType extends ImmutableType implements LiteralType, DiscriminatorType
 {
 
+   private static final long serialVersionUID = 9055584208831741141L;
+
    @Override
    public String toString(Object value) throws HibernateException
    {
@@ -88,7 +90,9 @@ public class EntityStatusType extends ImmutableType implements LiteralType, Disc
    public Object stringToObject(String xml) throws Exception
    {
       if (xml.length() != 1)
+      {
          throw new MappingException("multiple or zero characters found parsing string");
+      }
       return EntityStatus.valueOf(xml.charAt(0));
    }
 

@@ -29,9 +29,12 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.search.annotations.Indexed;
 
+import lombok.Setter;
+
 @Entity
 @DiscriminatorValue("iteration")
 @Indexed
+@Setter
 public class HIterationProject extends HProject
 {
 
@@ -45,11 +48,6 @@ public class HIterationProject extends HProject
    public List<HProjectIteration> getProjectIterations()
    {
       return projectIterations;
-   }
-
-   public void setProjectIterations(List<HProjectIteration> projectIterations)
-   {
-      this.projectIterations = projectIterations;
    }
 
 }

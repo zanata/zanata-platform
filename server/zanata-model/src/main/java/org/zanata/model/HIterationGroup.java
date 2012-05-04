@@ -33,12 +33,18 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
+
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Entity
+@Setter
+@EqualsAndHashCode(callSuper = true)
 public class HIterationGroup extends SlugEntityBase
 {
+   private static final long serialVersionUID = 5682522115222479842L;
    private String name;
 
    private String description;
@@ -55,21 +61,11 @@ public class HIterationGroup extends SlugEntityBase
       return name;
    }
 
-   public void setName(String name)
-   {
-      this.name = name;
-   }
-
    @Length(max = 100)
    @Field(index = Index.TOKENIZED)
    public String getDescription()
    {
       return description;
-   }
-
-   public void setDescription(String description)
-   {
-      this.description = description;
    }
 
    @ManyToMany
@@ -81,14 +77,6 @@ public class HIterationGroup extends SlugEntityBase
          maintainers = new HashSet<HPerson>();
       }
       return maintainers;
-   }
-
-   /**
-    * @see {@link #addMaintainer(HPerson)}
-    */
-   public void setMaintainers(Set<HPerson> maintainers)
-   {
-      this.maintainers = maintainers;
    }
 
    public void addMaintainer(HPerson maintainer)
@@ -108,25 +96,9 @@ public class HIterationGroup extends SlugEntityBase
       return projectIterations;
    }
 
-   public void setProjectIterations(Set<HProjectIteration> projectIterations)
-   {
-      this.projectIterations = projectIterations;
-   }
-
    public void addProjectIteration(HProjectIteration iteration)
    {
       this.getProjectIterations().add(iteration);
    }
 
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (this == obj)
-         return true;
-      if (!super.equals(obj))
-         return false;
-      if (getClass() != obj.getClass())
-         return false;
-      return true;
-   }
 }

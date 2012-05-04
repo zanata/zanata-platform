@@ -95,7 +95,7 @@ public class ContentTypeType extends ImmutableType implements LiteralType
    @Override
    public String objectToSQLString(Object value, Dialect dialect) throws Exception
    {
-      return ((LiteralType) new StringType()).objectToSQLString(value.toString(), dialect);
+      return new StringType().objectToSQLString(value.toString(), dialect);
    }
 
 }

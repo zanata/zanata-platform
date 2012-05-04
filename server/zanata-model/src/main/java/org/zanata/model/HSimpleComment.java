@@ -20,6 +20,7 @@
  */
 package org.zanata.model;
 
+import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -30,6 +31,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.NotNull;
 
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * @see org.zanata.rest.dto.extensions.comment.SimpleComment
  * 
@@ -37,16 +42,14 @@ import org.hibernate.validator.NotNull;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @BatchSize(size = 20)
-public class HSimpleComment
+@Setter
+@NoArgsConstructor
+public class HSimpleComment implements Serializable
 {
-
+   private static final long serialVersionUID = 5684831285769022524L;
    private Long id;
 
    private String comment;
-
-   public HSimpleComment()
-   {
-   }
 
    public HSimpleComment(String comment)
    {
@@ -71,12 +74,6 @@ public class HSimpleComment
    {
       return comment;
    }
-
-   public void setComment(String comment)
-   {
-      this.comment = comment;
-   }
-
 
    public static String toString(HSimpleComment comment)
    {

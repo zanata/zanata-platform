@@ -20,6 +20,7 @@
  */
 package org.zanata.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,6 +61,10 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * @see AbstractResourceMeta
  * @see Resource
@@ -70,9 +75,13 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @TypeDef(name = "contentType", typeClass = ContentTypeType.class)
-public class HDocument extends ModelEntityBase implements IDocumentHistory
+@Setter
+@NoArgsConstructor
+@ToString(of = {"name", "path", "docId", "locale", "revision"})
+public class HDocument extends ModelEntityBase implements IDocumentHistory, Serializable
 {
 
+   private static final long serialVersionUID = 5129552589912687504L;
    private String docId;
    private String name;
    private String path;
@@ -84,6 +93,11 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory
    private HProjectIteration projectIteration;
 
    private Map<String, HTextFlow> allTextFlows;
+   /**
+    * NB: Any elements which are removed from this list must have obsolete set
+    * to true, and any elements which are added to this list must have obsolete
+    * set to false.
+    */
    private List<HTextFlow> textFlows;
    private boolean obsolete = false;
    private HPoHeader poHeader;
@@ -98,23 +112,12 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory
 
    public HDocument(String docId, String name, String path, ContentType contentType, HLocale locale)
    {
-      this(docId, name, path, contentType, locale, 1);
-   }
-
-
-   public HDocument(String docId, String name, String path, ContentType contentType, HLocale locale, int revision)
-   {
       this.docId = docId;
       this.name = name;
       this.path = path;
       this.contentType = contentType;
       this.locale = locale;
    }
-
-   public HDocument()
-   {
-   }
-
 
    public void setFullPath(String fullPath)
    {
@@ -146,43 +149,16 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory
       return docId;
    }
 
-   /**
-    * Use setFullPath to ensure consistent parsing of the document id/path
-    */
-   @Deprecated
-   public void setDocId(String docId)
-   {
-      this.docId = docId;
-   }
-
    @NotEmpty
    public String getName()
    {
       return name;
    }
 
-   /**
-    * Use setFullPath to ensure consistent parsing of the document id/path
-    */
-   @Deprecated
-   public void setName(String name)
-   {
-      this.name = name;
-   }
-
    @NotNull
    public String getPath()
    {
       return path;
-   }
-
-   /**
-    * Use setFullPath to ensure consistent parsing of the document id/path
-    */
-   @Deprecated
-   public void setPath(String path)
-   {
-      this.path = path;
    }
 
    @ManyToOne
@@ -192,11 +168,6 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory
       return this.locale;
    }
 
-   public void setLocale(HLocale locale)
-   {
-      this.locale = locale;
-   }
-
    @ManyToOne(cascade = CascadeType.PERSIST)
    @JoinColumn(name = "project_iteration_id", nullable = false)
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
@@ -204,11 +175,6 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory
    public HProjectIteration getProjectIteration()
    {
       return projectIteration;
-   }
-
-   public void setProjectIteration(HProjectIteration projectIteration)
-   {
-      this.projectIteration = projectIteration;
    }
 
    @ManyToOne
@@ -230,11 +196,6 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory
       return revision;
    }
 
-   public void setRevision(Integer revision)
-   {
-      this.revision = revision;
-   }
-
    @Transient
    public void incrementRevision()
    {
@@ -246,11 +207,6 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory
    public ContentType getContentType()
    {
       return contentType;
-   }
-
-   public void setContentType(ContentType contentType)
-   {
-      this.contentType = contentType;
    }
 
    @OneToMany
@@ -296,30 +252,9 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory
       // return ImmutableList.copyOf(textFlows);
    }
 
-   /**
-    * NB: Any elements which are removed from this list must have obsolete set
-    * to true, and any elements which are added to this list must have obsolete
-    * set to false.
-    */
-   public void setTextFlows(List<HTextFlow> textFlows)
-   {
-      this.textFlows = textFlows;
-   }
-
    public boolean isObsolete()
    {
       return obsolete;
-   }
-
-   public void setObsolete(boolean obsolete)
-   {
-      this.obsolete = obsolete;
-   }
-
-
-   public void setPoHeader(HPoHeader poHeader)
-   {
-      this.poHeader = poHeader;
    }
 
    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
@@ -346,14 +281,6 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory
       return poTargetHeaders;
    }
 
-
-   /**
-    * Used for debugging
-    */
-   public String toString()
-   {
-      return String.format("HDocument(name:%s path:%s docID:%s locale:%s rev:%d)", getName(), getPath(), getDocId(), getLocale(), getRevision());
-   }
 
    @PreUpdate
    public void onUpdate()

@@ -45,6 +45,9 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.model.type.EntityStatusType;
 import org.zanata.rest.dto.Project;
 
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * @see Project
  * 
@@ -55,6 +58,8 @@ import org.zanata.rest.dto.Project;
 @DiscriminatorColumn(name = "projecttype", discriminatorType = DiscriminatorType.STRING)
 @TypeDef(name = "entityStatus", typeClass = EntityStatusType.class)
 @Restrict
+@Setter
+@ToString(callSuper = true, of = "name")
 public abstract class HProject extends SlugEntityBase implements Serializable
 {
    private static final long serialVersionUID = 1L;
@@ -74,16 +79,6 @@ public abstract class HProject extends SlugEntityBase implements Serializable
       return name;
    }
 
-   public void setName(String name)
-   {
-      this.name = name;
-   }
-
-   public void setOverrideLocales(boolean var)
-   {
-      this.overrideLocales = var;
-   }
-
    public boolean getOverrideLocales()
    {
       return this.overrideLocales;
@@ -96,20 +91,10 @@ public abstract class HProject extends SlugEntityBase implements Serializable
       return description;
    }
 
-   public void setDescription(String description)
-   {
-      this.description = description;
-   }
-
    @Type(type = "text")
    public String getHomeContent()
    {
       return homeContent;
-   }
-
-   public void setHomeContent(String homeContent)
-   {
-      this.homeContent = homeContent;
    }
 
    /**
@@ -121,16 +106,10 @@ public abstract class HProject extends SlugEntityBase implements Serializable
    public Set<HPerson> getMaintainers()
    {
       if (maintainers == null)
+      {
          maintainers = new HashSet<HPerson>();
+      }
       return maintainers;
-   }
-
-   /**
-    * @see {@link #addMaintainer(HPerson)}
-    */
-   public void setMaintainers(Set<HPerson> maintainers)
-   {
-      this.maintainers = maintainers;
    }
    
    public void addMaintainer( HPerson maintainer )
@@ -144,19 +123,10 @@ public abstract class HProject extends SlugEntityBase implements Serializable
    public Set<HLocale> getCustomizedLocales()
    {
       if (customizedLocales == null)
+      {
          customizedLocales = new HashSet<HLocale>();
+      }
       return customizedLocales;
-   }
-
-   public void setCustomizedLocales(Set<HLocale> locales)
-   {
-      this.customizedLocales = locales;
-   }
-
-   @Override
-   public String toString()
-   {
-      return super.toString() + "[name=" + name + "]";
    }
 
 }

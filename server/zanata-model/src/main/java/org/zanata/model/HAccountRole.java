@@ -34,7 +34,10 @@ import org.jboss.seam.annotations.security.management.RoleConditional;
 import org.jboss.seam.annotations.security.management.RoleGroups;
 import org.jboss.seam.annotations.security.management.RoleName;
 
+import lombok.Setter;
+
 @Entity
+@Setter
 public class HAccountRole implements Serializable
 {
    private static final long serialVersionUID = 9177366120789064801L;
@@ -52,21 +55,11 @@ public class HAccountRole implements Serializable
       return id;
    }
 
-   public void setId(Integer id)
-   {
-      this.id = id;
-   }
-
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @RoleName
    public String getName()
    {
       return name;
-   }
-
-   public void setName(String name)
-   {
-      this.name = name;
    }
 
    @RoleGroups
@@ -77,19 +70,10 @@ public class HAccountRole implements Serializable
       return groups;
    }
 
-   public void setGroups(Set<HAccountRole> groups)
-   {
-      this.groups = groups;
-   }
-
    @RoleConditional
    public boolean isConditional()
    {
       return conditional;
    }
 
-   public void setConditional(boolean conditional)
-   {
-      this.conditional = conditional;
-   }
 }

@@ -28,6 +28,7 @@ import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -175,7 +176,14 @@ public class EventProcessor implements RemoteEventListener
          if (gwtEvent != null)
          {
             Log.info("received event " + event + ", GWT event " + gwtEvent.getClass().getName());
-            eventBus.fireEvent(gwtEvent);
+            try
+            {
+               eventBus.fireEvent(gwtEvent);
+            }
+            catch (UmbrellaException e)
+            {
+               Log.error("Event failed", e);
+            }
          }
          else
          {

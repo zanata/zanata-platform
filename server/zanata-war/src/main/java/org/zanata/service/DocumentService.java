@@ -18,38 +18,30 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.model;
+package org.zanata.service;
 
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToOne;
+import org.zanata.model.HDocument;
+import org.zanata.rest.dto.resource.Resource;
 
-import org.hibernate.validator.Length;
-import org.hibernate.validator.NotEmpty;
+import java.util.Set;
 
-import lombok.Setter;
-
-@MappedSuperclass
-@Setter
-public class AccountKeyBase
+/**
+ * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ */
+public interface DocumentService
 {
-   private String keyHash;
-   private HAccount account;
-
-   @NotEmpty
-   @Length(min = 32, max = 32)
-   @Id
-   public String getKeyHash()
-   {
-      return keyHash;
-   }
-
-   @OneToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "accountId")
-   public HAccount getAccount()
-   {
-      return account;
-   }
+   /**
+    * Creates or Updates a document.
+    *
+    * @param projectSlug The document's project id.
+    * @param iterationSlug The document's project iteration id.
+    * @param docId The document id.
+    * @param sourceDoc The document contents.
+    * @param extensions Document extensions to save.
+    * @param copyTrans Whether to copy translations from other projects or not. A true value does not guarantee that
+    *                  this will happen, it is only a suggestion.
+    * @return The created / updated document
+    */
+   public HDocument saveDocument( String projectSlug, String iterationSlug, String docId, Resource sourceDoc,
+                                  Set<String> extensions, boolean copyTrans );
 }

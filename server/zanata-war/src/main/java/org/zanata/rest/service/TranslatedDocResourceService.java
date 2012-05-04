@@ -28,7 +28,6 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
-import org.jboss.seam.security.Identity;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -80,7 +79,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
-import static org.zanata.service.impl.TranslationServiceImpl.validateExtensions;
 
 @Name("translatedDocResourceService")
 @Path(TranslatedDocResourceService.SERVICE_PATH)
@@ -254,7 +252,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
 
-      validateExtensions(extensions);
+      resourceUtils.validateExtensions(extensions);
 
       // TODO create valid etag
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
@@ -427,7 +425,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    private HProjectIteration retrieveAndCheckIteration(boolean writeOperation)
    {
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      HProject hProject = projectDAO.getBySlug(projectSlug);
+      HProject hProject = hProjectIteration == null ? null : hProjectIteration.getProject();
 
       if (hProjectIteration == null)
       {

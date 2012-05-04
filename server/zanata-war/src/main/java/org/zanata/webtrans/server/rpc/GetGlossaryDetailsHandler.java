@@ -52,7 +52,7 @@ public class GetGlossaryDetailsHandler extends AbstractActionHandler<GetGlossary
       }
       catch (ZanataServiceException e)
       {
-         throw new ActionException(e.getMessage());
+         throw new ActionException(e);
       }
       ArrayList<Long> sourceIds = action.getSourceIdList();
       
