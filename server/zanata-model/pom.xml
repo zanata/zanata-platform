@@ -134,14 +134,6 @@
             <groupId>com.ibm.icu</groupId>
             <artifactId>icu4j</artifactId>
         </dependency>
-
-        <!--TODO move to parent pom and manage there-->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>0.11.0</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
     <profiles>
