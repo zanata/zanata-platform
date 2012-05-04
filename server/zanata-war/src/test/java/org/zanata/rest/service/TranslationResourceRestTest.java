@@ -11,6 +11,7 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
+import org.jboss.seam.security.management.JpaIdentityStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
@@ -54,10 +55,14 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
+import org.zanata.service.DocumentService;
+import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.impl.CopyTransServiceImpl;
+import org.zanata.service.impl.DocumentServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.service.impl.TranslationServiceImpl;
 import org.zanata.util.HashUtil;
@@ -108,6 +113,8 @@ public class TranslationResourceRestTest extends ZanataRestTest
    private static final String DOC2_NAME = "test.properties";
    private static final String DOC1_NAME = "foo.properties";
 
+   private final SeamAutowire seam = SeamAutowire.instance();
+
    StringSet extGettextComment = new StringSet("gettext;comment");
    StringSet extComment = new StringSet("comment");
 
@@ -115,22 +122,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
    ZanataIdentity mockIdentity = mockControl.createMock(ZanataIdentity.class);
    TranslationWorkspaceManager transWorspaceManager = mockControl.createMock(TranslationWorkspaceManager.class);
 
-   ApplicationConfiguration applicationConfiguration;
-   ProjectIterationDAO projectIterationDAO;
-   DocumentDAO documentDAO;
-   TextFlowDAO textFlowDAO;
-   TextFlowTargetDAO textFlowTargetDAO;
-   ResourceUtils resourceUtils;
-   Identity identity;
-   ETagUtils eTagUtils;
-   PersonDAO personDAO;
-   AccountDAO accountDAO;
-   TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
-   ProjectDAO projectDAO;
-   LocaleServiceImpl localeService;
    TranslationService translationService;
-   CopyTransService copyTransService;
-   Events events;
 
    ISourceDocResource sourceDocResource;
    ITranslatedDocResource transResource;
@@ -162,74 +154,20 @@ public class TranslationResourceRestTest extends ZanataRestTest
    @Override
    protected void prepareResources()
    {
-      this.applicationConfiguration = new ApplicationConfiguration(true);
-      this.projectIterationDAO = new ProjectIterationDAO(getSession());
-      this.projectDAO = new ProjectDAO(getSession());
-      this.documentDAO = new DocumentDAO(getSession());
-      this.textFlowDAO = new TextFlowDAO(getSession());
-      this.textFlowTargetDAO = new TextFlowTargetDAO(getSession());
-      this.resourceUtils = new ResourceUtils();
-      resourceUtils.create();
-      this.identity = new Identity()
-      {
-         @Override
-         public boolean tryLogin()
-         {
-            return true;
-         }
-      };
-      this.eTagUtils = new ETagUtils(getSession(), documentDAO);
-      this.personDAO = new PersonDAO(getSession());
-      this.accountDAO = new AccountDAO(getSession());
-      this.textFlowTargetHistoryDAO = new TextFlowTargetHistoryDAO(getSession());
+      seam.reset();
+      seam.ignoreNonResolvable()
+          .use("session", getSession())
+          .use("applicationConfiguration", new ApplicationConfiguration(true))
+          .use("identity", mockIdentity)
+          .use("translationWorkspaceManager", transWorspaceManager)
+          .useImpl(CopyTransServiceImpl.class)
+          .useImpl(TranslationServiceImpl.class)
+          .useImpl(LocaleServiceImpl.class)
+          .useImpl(DocumentServiceImpl.class)
+          .useImpl(ResourceUtils.class);
 
-      LocaleDAO localeDAO = new LocaleDAO(getSession());
-      projectDAO = new ProjectDAO(getSession());
-      this.localeService = new LocaleServiceImpl(localeDAO, projectDAO, projectIterationDAO, personDAO);
-      localeService.setLocaleDAO(localeDAO);
-      
-      copyTransService = new CopyTransServiceImpl(localeService, textFlowTargetDAO, documentDAO);
-      translationService = new TranslationServiceImpl(
-            getSession(),
-            projectDAO,
-            transWorspaceManager,
-            localeService,
-            this.accountDAO.getByUsername("admin"),
-            projectIterationDAO,
-            documentDAO,
-            personDAO,
-            textFlowDAO,
-            textFlowTargetDAO,
-            textFlowTargetHistoryDAO,
-            resourceUtils
-      );
-
-      // @formatter:off
-      SourceDocResourceService sourceDocResourceService = new SourceDocResourceService(
-            projectDAO,
-            projectIterationDAO,
-            documentDAO,
-            localeService,
-            copyTransService,
-            applicationConfiguration,
-            resourceUtils,
-            eTagUtils
-      );
-
-      TranslatedDocResourceService translatedDocResourceService = new TranslatedDocResourceService(
-            applicationConfiguration,
-            projectIterationDAO,
-            projectDAO,
-            documentDAO,
-            textFlowTargetDAO,
-            resourceUtils,
-            mockIdentity,
-            eTagUtils,
-            localeService,
-            copyTransService,
-            translationService
-            );
-      // @formatter:on
+      TranslatedDocResourceService translatedDocResourceService = seam.autowire(TranslatedDocResourceService.class);
+      SourceDocResourceService sourceDocResourceService = seam.autowire(SourceDocResourceService.class);
 
       resources.add(sourceDocResourceService);
       resources.add(translatedDocResourceService);
@@ -972,6 +910,8 @@ public class TranslationResourceRestTest extends ZanataRestTest
       
       super.newSession();
       
+      AccountDAO accountDAO = seam.autowire(AccountDAO.class);
+
       // Translator
       HAccount translator = accountDAO.getByUsername("demo");
       
@@ -1041,43 +981,34 @@ public class TranslationResourceRestTest extends ZanataRestTest
       Credentials mockCredentials = new Credentials();
       mockCredentials.setInitialized(true);
       mockCredentials.setUsername( translator.getUsername() );
-      
+
+
       // Set mock expectations
-      expect( transWorkerManager.getOrRegisterWorkspace( anyObject(WorkspaceId.class) ) ).andReturn( transWorkspace ).anyTimes();
+      expect(transWorkerManager.getOrRegisterWorkspace(anyObject(WorkspaceId.class))).andReturn( transWorkspace ).anyTimes();
       expect( mockIdentity.getCredentials() ).andReturn( mockCredentials );
       expect( transWorkspace.getWorkspaceContext() ).andReturn( workspaceContext );
       mockIdentity.checkLoggedIn();
-      expectLastCall();      
+      expectLastCall();
       mockIdentity.checkPermission(anyObject(String.class), anyObject(HLocale.class), anyObject(HProject.class));
       expectLastCall();
       transWorkspace.publish(anyObject(SessionEventData.class));
       expectLastCall();
       mockControl.replay();
 
-      translationService = new TranslationServiceImpl(
-            getSession(),
-            projectDAO,
-            transWorspaceManager,
-            localeService,
-            translator,
-            projectIterationDAO,
-            documentDAO,
-            personDAO,
-            textFlowDAO,
-            textFlowTargetDAO,
-            textFlowTargetHistoryDAO,
-            resourceUtils
-      );
+      this.prepareResources(); // Reset Seam to simulate separate translation
+      seam.use(JpaIdentityStore.AUTHENTICATED_USER, translator); // use a given authenticated account
+
+      translationService = seam.autowire(TranslationServiceImpl.class);
 
       // @formatter:off
       UpdateTransUnitHandler transUnitHandler = new UpdateTransUnitHandler(
             mockIdentity,
-            projectDAO,
-            textFlowTargetHistoryDAO,
+            seam.autowire(ProjectDAO.class),
+            seam.autowire(TextFlowTargetHistoryDAO.class),
             transWorkerManager,
-            localeService,
+            seam.autowire(LocaleServiceImpl.class),
             translator,
-            translationService);
+            seam.autowire(TranslationServiceImpl.class));
       // @formatter:on
 
       // Translation unit id to update
@@ -1453,6 +1384,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
 
    private void verifyObsoleteDocument(final String docID) throws Exception
    {
+      ProjectIterationDAO projectIterationDAO = seam.autowire(ProjectIterationDAO.class);
       HProjectIteration iteration = projectIterationDAO.getBySlug(projectSlug, iter);
       Map<String, HDocument> allDocuments = iteration.getAllDocuments();
       HDocument hDocument = allDocuments.get(docID);
@@ -1463,6 +1395,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
 
    private void verifyObsoleteResource(final String docID, final String resourceID) throws Exception
    {
+      ProjectIterationDAO projectIterationDAO = seam.autowire(ProjectIterationDAO.class);
       HProjectIteration iteration = projectIterationDAO.getBySlug(projectSlug, iter);
       Map<String, HDocument> allDocuments = iteration.getAllDocuments();
       HDocument hDocument = allDocuments.get(docID);

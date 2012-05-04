@@ -20,16 +20,9 @@
  */
 package org.zanata.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import javax.annotation.Nullable;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
+import com.google.common.collect.Collections2;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -43,6 +36,7 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
+import org.zanata.common.MergeType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
@@ -60,17 +54,20 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.rest.dto.extensions.ExtensionType;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.common.MergeType;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
-import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
-import com.google.common.collect.Collections2;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.zanata.util.StringUtil.allEmpty;
 import static org.zanata.util.StringUtil.allNonEmpty;
@@ -213,9 +210,13 @@ public class TranslationServiceImpl implements TranslationService
    public Collection<TextFlowTarget> translateAll(String projectSlug, String iterationSlug, String docId, LocaleId locale,
                                                   TranslationsResource translations, Set<String> extensions, MergeType mergeType)
    {
-      HProjectIteration hProjectIteration = retrieveAndCheckIteration(projectSlug, iterationSlug, true);
+      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      if( hProjectIteration == null )
+      {
+         throw new ZanataServiceException("Version '" + iterationSlug + "' for project '" + projectSlug + "' ");
+      }
 
-      validateExtensions(extensions);
+      resourceUtils.validateExtensions(extensions);
 
       log.debug("pass evaluate");
       HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, docId);
@@ -396,36 +397,6 @@ public class TranslationServiceImpl implements TranslationService
       });
    }
 
-   private HProjectIteration retrieveAndCheckIteration(String projectSlug, String iterationSlug, boolean writeOperation)
-   {
-      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      HProject hProject = projectDAO.getBySlug(projectSlug);
-
-      if (hProjectIteration == null)
-      {
-         throw new ZanataServiceException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.", 404);
-      }
-      else if (hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE) || hProject.getStatus().equals(EntityStatus.OBSOLETE))
-      {
-         throw new ZanataServiceException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.", 404);
-      }
-      else if (writeOperation)
-      {
-         if (hProjectIteration.getStatus().equals(EntityStatus.READONLY) || hProject.getStatus().equals(EntityStatus.READONLY))
-         {
-            throw new ZanataServiceException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' is read-only.", 404);
-         }
-         else
-         {
-            return hProjectIteration;
-         }
-      }
-      else
-      {
-         return hProjectIteration;
-      }
-   }
-
    private void checkTargetState(String resId, ContentState state, List<String> contents)
    {
       switch (state)
@@ -454,26 +425,6 @@ public class TranslationServiceImpl implements TranslationService
             break;
          default:
             throw new ZanataServiceException("unknown ContentState " + state);
-      }
-   }
-
-
-   /**
-    * Ensures that any extensions sent with the current query are valid for this
-    * context.
-    *
-    * @param requestedExt Extensions to be validated
-    * @throws ZanataServiceException if any unsupported extensions are present
-    */
-   public static void validateExtensions(Set<String> requestedExt)
-   {
-      Set<String> validExtensions = ExtensionType.asStringSet();
-
-      if(!CollectionUtils.isSubCollection(requestedExt, validExtensions))
-      {
-         @SuppressWarnings("unchecked")
-         Collection<String> invalidExtensions = CollectionUtils.subtract(requestedExt, validExtensions);
-         throw new ZanataServiceException("Unsupported Extensions within this context: " + StringUtils.join(invalidExtensions, ","), 400);
       }
    }
 

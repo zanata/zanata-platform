@@ -18,61 +18,34 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.action;
+package org.zanata.service.impl;
 
-import java.io.InputStream;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
+import org.zanata.model.SlugEntityBase;
+import org.zanata.service.SlugEntityService;
 
 /**
+ * Default implementation of the {@link org.zanata.service.SlugEntityService} interface.
+ *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class TranslationFileUploadHelper
+@Name("slugEntityServiceImpl")
+@AutoCreate
+@Scope(ScopeType.STATELESS)
+public class SlugEntityServiceImpl implements SlugEntityService
 {
-   private String docId;
+   @In
+   private Session session;
 
-   private InputStream fileContents;
-
-   private String fileName;
-
-   private boolean mergeTranslations = true; // Merge by default
-
-
-   public String getDocId()
+   @Override
+   public boolean isSlugAvailable(String slug, Class<? extends SlugEntityBase> cls)
    {
-      return docId;
-   }
-
-   public void setDocId(String docId)
-   {
-      this.docId = docId;
-   }
-
-   public InputStream getFileContents()
-   {
-      return fileContents;
-   }
-
-   public void setFileContents(InputStream fileContents)
-   {
-      this.fileContents = fileContents;
-   }
-
-   public String getFileName()
-   {
-      return fileName;
-   }
-
-   public void setFileName(String fileName)
-   {
-      this.fileName = fileName;
-   }
-
-   public boolean getMergeTranslations()
-   {
-      return mergeTranslations;
-   }
-
-   public void setMergeTranslations(boolean mergeTranslations)
-   {
-      this.mergeTranslations = mergeTranslations;
+      return session.createCriteria(cls).add(Restrictions.eq("slug", slug)).list().size() == 0;
    }
 }
