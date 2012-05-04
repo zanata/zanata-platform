@@ -20,12 +20,6 @@
  */
 package org.zanata.dao;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.ws.rs.core.EntityTag;
-
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
@@ -51,6 +45,11 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.StatusCount;
 import org.zanata.util.HashUtil;
+
+import javax.ws.rs.core.EntityTag;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Name("projectIterationDAO")
 @AutoCreate

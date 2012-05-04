@@ -20,19 +20,28 @@
  */
 package org.zanata.service;
 
+import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.TranslationsResource;
 
-import java.io.InputStream;
+import java.util.Set;
 
 /**
- * Provides basic services to transform and process translation files.
- *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface TranslationFileService
+public interface DocumentService
 {
-   TranslationsResource parseTranslationFile(InputStream fileContents, String fileName);
-
-   Resource parseDocumentFile(InputStream fileContents, String path, String fileName);
+   /**
+    * Creates or Updates a document.
+    *
+    * @param projectSlug The document's project id.
+    * @param iterationSlug The document's project iteration id.
+    * @param docId The document id.
+    * @param sourceDoc The document contents.
+    * @param extensions Document extensions to save.
+    * @param copyTrans Whether to copy translations from other projects or not. A true value does not guarantee that
+    *                  this will happen, it is only a suggestion.
+    * @return The created / updated document
+    */
+   public HDocument saveDocument( String projectSlug, String iterationSlug, String docId, Resource sourceDoc,
+                                  Set<String> extensions, boolean copyTrans );
 }

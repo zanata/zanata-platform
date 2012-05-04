@@ -28,6 +28,7 @@ import org.zanata.model.HIterationProject;
 import org.zanata.rest.client.IProjectResource;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectType;
+import org.zanata.seam.SeamAutowire;
 
 public class ProjectRestTest extends ZanataRestTest
 {
@@ -35,6 +36,7 @@ public class ProjectRestTest extends ZanataRestTest
    private final String RESOURCE_PATH = "/projects/p/";
    IMocksControl mockControl = EasyMock.createControl();
    Identity mockIdentity = mockControl.createMock(Identity.class);
+   SeamAutowire seam = SeamAutowire.instance();
 
    @BeforeClass
    void beforeClass()
@@ -58,12 +60,12 @@ public class ProjectRestTest extends ZanataRestTest
    @Override
    protected void prepareResources()
    {
-      ProjectDAO projectDAO = new ProjectDAO(getSession());
-      AccountDAO accountDAO = new AccountDAO(getSession());
-      DocumentDAO documentDAO = new DocumentDAO(getSession());
-      ETagUtils eTagUtils = new ETagUtils(getSession(), documentDAO);
+      seam.reset();
+      seam.ignoreNonResolvable()
+          .use("session", getSession())
+          .use("identity", mockIdentity);
 
-      ProjectService projectService = new ProjectService(projectDAO, accountDAO, mockIdentity, eTagUtils);
+      ProjectService projectService = seam.autowire(ProjectService.class);
 
       resources.add(projectService);
    }
