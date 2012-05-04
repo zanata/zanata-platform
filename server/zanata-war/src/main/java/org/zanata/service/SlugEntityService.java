@@ -20,19 +20,22 @@
  */
 package org.zanata.service;
 
-import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.TranslationsResource;
-
-import java.io.InputStream;
+import org.zanata.model.SlugEntityBase;
 
 /**
- * Provides basic services to transform and process translation files.
+ * Provides common services related to the slug based entities ({@link org.zanata.model.SlugEntityBase}).
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface TranslationFileService
+public interface SlugEntityService
 {
-   TranslationsResource parseTranslationFile(InputStream fileContents, String fileName);
+   /**
+    * Determines if a given slug is available in a class.
+    *
+    * @param slug The slug to check
+    * @param cls The class to verify the slug against.
+    * @return True if the slug is not in use by any other elements of cls. False, otherwise.
+    */
+   boolean isSlugAvailable(String slug, Class<? extends SlugEntityBase> cls);
 
-   Resource parseDocumentFile(InputStream fileContents, String path, String fileName);
 }

@@ -20,8 +20,6 @@
  */
 package org.zanata.model;
 
-import static org.zanata.util.ZanataUtil.equal;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,14 +60,14 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.IdFilterFactory;
 import org.zanata.model.po.HPotEntryData;
 import org.zanata.util.HashUtil;
 import org.zanata.util.OkapiUtil;
 import org.zanata.util.StringUtil;
+
+import com.google.common.base.Objects;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -228,7 +226,7 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
 
    public void setDocument(HDocument document)
    {
-      if (!equal(this.document, document))
+      if (!Objects.equal(this.document, document))
       {
          this.document = document;
          updateWordCount();
@@ -272,8 +270,8 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
       // Copy lazily loaded relations to the history object as this cannot be done
       // in the entity callbacks
       copyLazyLoadedRelationsToHistory();
-      
-      if (!equal(this.contents, contents))
+
+      if (!Objects.equal(this.contents, contents))
       {
          this.contents = new ArrayList<String>(contents);
          updateWordCount();

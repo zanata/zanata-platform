@@ -43,7 +43,7 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
-import org.zanata.util.ZanataUtil;
+import com.google.common.base.Objects;
 
 @Name("projectService")
 @Path(ProjectService.SERVICE_PATH)
@@ -189,12 +189,12 @@ public class ProjectService implements ProjectResource
          response = Response.created(uri.getAbsolutePath());
       }
       // Project is Obsolete
-      else if( ZanataUtil.in(hProject.getStatus(), OBSOLETE) )
+      else if(Objects.equal(hProject.getStatus(), OBSOLETE))
       {
          return Response.status(Status.FORBIDDEN).entity("Project '" + projectSlug + "' is obsolete.").build();
       }
       // Project is ReadOnly
-      else if( ZanataUtil.in(hProject.getStatus(), READONLY) )
+      else if(Objects.equal(hProject.getStatus(), READONLY))
       {
          return Response.status(Status.FORBIDDEN).entity("Project '" + projectSlug + "' is read-only.").build();
       }

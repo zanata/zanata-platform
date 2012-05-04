@@ -26,6 +26,7 @@ import org.zanata.rest.client.IGlossaryResource;
 import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
+import org.zanata.seam.SeamAutowire;
 import org.zanata.service.impl.LocaleServiceImpl;
 
 public class GlossaryRestTest extends ZanataRestTest
@@ -35,6 +36,7 @@ public class GlossaryRestTest extends ZanataRestTest
    IMocksControl mockControl = EasyMock.createControl();
    Identity mockIdentity = mockControl.createMock(Identity.class);
    IGlossaryResource glossaryService;
+   SeamAutowire seam = SeamAutowire.instance();
 
    @BeforeClass
    void beforeClass()
@@ -65,13 +67,13 @@ public class GlossaryRestTest extends ZanataRestTest
    @Override
    protected void prepareResources()
    {
-      GlossaryDAO glossaryDAO = new GlossaryDAO(getSession());
+      seam.reset();
+      seam.ignoreNonResolvable()
+            .use("session", getSession())
+            .use("identity", mockIdentity)
+            .useImpl(LocaleServiceImpl.class);
 
-      LocaleServiceImpl localeService = new LocaleServiceImpl();
-      LocaleDAO localeDAO = new LocaleDAO(getSession());
-      localeService.setLocaleDAO(localeDAO);
-
-      GlossaryService glossaryService = new GlossaryService(glossaryDAO, mockIdentity, localeService);
+      GlossaryService glossaryService = seam.autowire(GlossaryService.class);
 
       resources.add(glossaryService);
    }

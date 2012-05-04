@@ -26,8 +26,10 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
+import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.exception.ZanataServiceException;
+import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.service.TranslationFileService;
 
@@ -50,7 +52,14 @@ public class TranslationFileServiceImpl implements TranslationFileService
    {
       if( fileName.endsWith(".po") )
       {
-         return this.parsePoFile(fileContents);
+         try
+         {
+            return this.parsePoFile(fileContents);
+         }
+         catch (Exception e)
+         {
+            throw new ZanataServiceException("Invalid PO file contents on file: " + fileName);
+         }
       }
       else
       {
@@ -58,9 +67,51 @@ public class TranslationFileServiceImpl implements TranslationFileService
       }
    }
 
+   public Resource parseDocumentFile(InputStream fileContents, String path, String fileName)
+   {
+      if( fileName.endsWith(".pot") )
+      {
+         // remove the .pot extension
+         fileName = fileName.substring(0, fileName.lastIndexOf('.'));
+
+         try
+         {
+            return this.parsePotFile(fileContents, path, fileName);
+         }
+         catch (Exception e)
+         {
+            throw new ZanataServiceException("Invalid POT file contents on file: " + fileName);
+         }
+      }
+      else
+      {
+         throw new ZanataServiceException("Unsupported Document file: " + fileName);
+      }
+   }
+
    private TranslationsResource parsePoFile( InputStream fileContents )
    {
       PoReader2 poReader = new PoReader2();
       return poReader.extractTarget(new InputSource(fileContents) );
+   }
+
+   private Resource parsePotFile( InputStream fileContents, String docPath, String fileName )
+   {
+      PoReader2 poReader = new PoReader2();
+      // assume english as source locale
+      Resource res = poReader.extractTemplate(new InputSource(fileContents), new LocaleId("en"), fileName);
+      // get rid of leading slashes ("/")
+      if( docPath.startsWith("/") )
+      {
+         docPath = docPath.substring(1);
+      }
+      // Add a trailing slash ("/") if there isn't one
+      if( !docPath.endsWith("/") )
+      {
+         docPath = docPath.concat("/");
+      }
+
+      res.setName( docPath + fileName );
+      return res;
    }
 }
