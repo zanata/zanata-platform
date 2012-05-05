@@ -1,26 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.zanata</groupId>
-	<artifactId>zanata</artifactId>
-	<version>1.6.0-alpha-2-SNAPSHOT</version>
-	<name>Zanata Root POM</name>
-	<url>http://zanata.org/</url>
-	<packaging>pom</packaging>
-
-	<parent>
-		<groupId>org.zanata</groupId>
-		<artifactId>zanata-parent</artifactId>
-		<version>1.6.0-alpha-2-SNAPSHOT</version>
-	</parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>server</artifactId>
+  <version>1.6.0-alpha-3-SNAPSHOT</version>
+  <name>Zanata server modules</name>
+  <packaging>pom</packaging>
+  <parent>
+    <groupId>org.zanata</groupId>
+    <artifactId>zanata-parent</artifactId>
+    <version>3-SNAPSHOT</version>
+    <relativePath>../parent</relativePath>
+  </parent>
 
 	<scm>
 		<connection>scm:git:git://github.com/zanata/zanata.git</connection>
 		<developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
 		<url>https://github.com/zanata/zanata</url>
 	</scm>
+    
+    <properties>
+      <zanata.api.version>1.6.0-alpha-2</zanata.api.version>
+      <zanata.client.version>1.6.0-alpha-2</zanata.client.version>
+      <zanata.common.version>1.6.0-alpha-2</zanata.common.version>
+    </properties>
 
-	<modules>
-		<module>server</module>
-	</modules>
+   <dependencyManagement>
+      <dependencies>
+          <!-- zanata api -->
+          <dependency>
+             <groupId>org.zanata</groupId>
+             <artifactId>zanata-common-api</artifactId>
+             <version>${zanata.api.version}</version>
+          </dependency>
+    
+          <!-- zanata common -->
+          <dependency>
+             <groupId>org.zanata</groupId>
+             <artifactId>zanata-common-util</artifactId>
+             <version>${zanata.common.version}</version>
+          </dependency>
+          <dependency>
+                <groupId>org.zanata</groupId>
+                <artifactId>zanata-adapter-po</artifactId>
+                <version>${zanata.common.version}</version>
+          </dependency>
+    
+          <!-- zanata client -->
+          <dependency>
+             <groupId>org.zanata</groupId>
+             <artifactId>zanata-rest-client</artifactId>
+             <version>${zanata.client.version}</version>
+             <scope>test</scope>
+          </dependency>
+          <dependency>
+             <groupId>org.zanata</groupId>
+             <artifactId>zanata-rest-client</artifactId>
+             <version>${zanata.client.version}</version>
+             <type>test-jar</type>
+             <scope>test</scope>
+          </dependency>
+
+          <!-- zanata server -->
+          <dependency>
+             <groupId>org.zanata</groupId>
+             <artifactId>zanata-model</artifactId>
+             <version>${project.version}</version>
+          </dependency>
+            
+      </dependencies>
+   </dependencyManagement>    
+   <build>
+      <pluginManagement>
+         <plugins>
+            <plugin>
+               <artifactId>maven-failsafe-plugin</artifactId>
+               <version>2.12</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-war-plugin</artifactId>
+               <version>2.1.1</version>
+            </plugin>
+         </plugins>
+      </pluginManagement>
+   </build>
+
+  <modules>
+    <module>zanata-model</module>
+    <module>zanata-war</module>
+    <module>functional-test</module>
+	<!-- <module>zanata-dist</module> -->
+  </modules>
 </project>
