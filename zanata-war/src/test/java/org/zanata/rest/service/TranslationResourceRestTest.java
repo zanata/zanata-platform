@@ -57,6 +57,7 @@ import org.zanata.service.impl.TranslationServiceImpl;
 import org.zanata.util.HashUtil;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
+import org.zanata.webtrans.server.rpc.TransUnitTransformer;
 import org.zanata.webtrans.server.rpc.UpdateTransUnitHandler;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -993,11 +994,11 @@ public class TranslationResourceRestTest extends ZanataRestTest
       UpdateTransUnitHandler transUnitHandler = new UpdateTransUnitHandler(
             mockIdentity,
             seam.autowire(ProjectDAO.class),
-//            seam.autowire(TextFlowTargetHistoryDAO.class),
             transWorkerManager,
             seam.autowire(LocaleServiceImpl.class),
             translator,
-            seam.autowire(TranslationServiceImpl.class));
+            seam.autowire(TranslationServiceImpl.class),
+            seam.autowire(TransUnitTransformer.class));
       // @formatter:on
 
       // Translation unit id to update

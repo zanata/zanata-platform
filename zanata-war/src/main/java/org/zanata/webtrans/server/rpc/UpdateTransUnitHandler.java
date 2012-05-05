@@ -72,7 +72,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    Log log;
 
    @In
-   private TransUnitTransformer transUnitTransformer;
+   TransUnitTransformer transUnitTransformer;
 
    @In
    TranslationService translationServiceImpl;
@@ -108,8 +108,10 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          TranslationWorkspaceManager translationWorkspaceManager,
          LocaleService localeServiceImpl,
          HAccount authenticatedAccount,
-         TranslationService translationService)
+         TranslationService translationService,
+         TransUnitTransformer transUnitTransformer)
    {
+      this.transUnitTransformer = transUnitTransformer;
       this.translationServiceImpl = translationService;
       this.log = Logging.getLog(UpdateTransUnitHandler.class);
       this.identity = identity;
