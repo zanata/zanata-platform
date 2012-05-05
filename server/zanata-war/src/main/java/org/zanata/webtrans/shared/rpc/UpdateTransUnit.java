@@ -2,64 +2,79 @@ package org.zanata.webtrans.shared.rpc;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResult>
 {
    private static final long serialVersionUID = 1L;
 
-   private TransUnitId transUnitId;
-   private ArrayList<String> contents;
-   private ContentState contentState;
-   private boolean isRedo = false;
-   private Integer verNum;
+   private List<TransUnitUpdateRequest> updateRequests;
 
-   public Integer getVerNum()
-   {
-      return verNum;
-   }
+//   private boolean isRedo = false;
+//
+//   public boolean isRedo()
+//   {
+//      return isRedo;
+//   }
+//
+//   public void setRedo(boolean isRedo)
+//   {
+//      this.isRedo = isRedo;
+//   }
 
-   public void setVerNum(Integer verNum)
-   {
-      this.verNum = verNum;
-   }
-
-   public boolean isRedo()
-   {
-      return isRedo;
-   }
-
-   public void setRedo(boolean isRedo)
-   {
-      this.isRedo = isRedo;
-   }
-
-   @SuppressWarnings("unused")
    protected UpdateTransUnit()
    {
+      updateRequests = new ArrayList<TransUnitUpdateRequest>();
    }
 
-   public UpdateTransUnit(TransUnitId transUnitId, ArrayList<String> contents, ContentState contentState)
+   public UpdateTransUnit(TransUnitUpdateRequest updateRequest)
    {
-      this.transUnitId = transUnitId;
-      this.contents = contents;
-      this.contentState = contentState;
+      this();
+      updateRequests.add(updateRequest);
    }
 
-   public ArrayList<String> getContents()
+   // FIXME pass a TransUnitUpdateRequest instead of multiple arguments
+   public void addTransUnit(TransUnitId transUnitId, ArrayList<String> contents, ContentState contentState, int verNum)
    {
-      return contents;
+      this.updateRequests.add(new TransUnitUpdateRequest(transUnitId, contents, contentState, verNum));
    }
 
-   public TransUnitId getTransUnitId()
+   public List<TransUnitUpdateRequest> getUpdateRequests()
    {
-      return transUnitId;
+      return updateRequests;
    }
 
-   public ContentState getContentState()
+   // FIXME replace all these getters with an update request getter
+   public TransUnitId getSingleTransUnitId()
    {
-      return contentState;
+      return getSingleUpdateRequest().getTransUnitId();
+   }
+
+   public List<String> getSingleContents()
+   {
+      return getSingleUpdateRequest().getNewContents();
+   }
+
+   public ContentState getSingleContentState()
+   {
+      return getSingleUpdateRequest().getNewContentState();
+   }
+
+   public Integer getSingleVerNum()
+   {
+      return getSingleUpdateRequest().getBaseTranslationVersion();
+   }
+
+   public TransUnitUpdateRequest getSingleUpdateRequest()
+   {
+      if (updateRequests.size() != 1)
+      {
+         throw new IllegalStateException("this method can only be used when updating a single TransUnit");
+      }
+      return updateRequests.get(0);
    }
 }

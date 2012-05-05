@@ -393,7 +393,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
 
       // Translate
       Collection<TextFlowTarget> unknownResIds =
-         this.translationServiceImpl.translateAll(projectSlug, iterationSlug, id, locale, messageBody, extensions, mergeType);
+         this.translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug, id, locale, messageBody, extensions, mergeType);
 
 
       // Regenerate etag in case it has changed

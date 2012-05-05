@@ -20,21 +20,14 @@
  */
 package org.zanata.webtrans.client.events;
 
-import org.zanata.common.ContentState;
-import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.auth.SessionId;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.rpc.HasTransUnitUpdatedData;
 
 import com.google.gwt.event.shared.GwtEvent;
 
 public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler> implements HasTransUnitUpdatedData
 {
-
-   private final DocumentId documentId;
-   private final ContentState previousStatus;
-   private int wordCount;
-   private TransUnit tu;
-   private String username;
 
 
    /**
@@ -56,13 +49,13 @@ public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler
       return TYPE;
    }
 
+   private TransUnitUpdateInfo tuUpdateInfo;
+   private SessionId sessionId;
+
    public TransUnitUpdatedEvent(HasTransUnitUpdatedData data)
    {
-      this.documentId = data.getDocumentId();
-      this.previousStatus = data.getPreviousStatus();
-      this.wordCount = data.getWordCount();
-      this.tu = data.getTransUnit();
-      this.username = data.getUsername();
+      this.tuUpdateInfo = data.getUpdateInfo();
+      this.sessionId = data.getSessionId();
    }
 
    @Override
@@ -78,33 +71,15 @@ public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler
    }
 
    @Override
-   public DocumentId getDocumentId()
+   public TransUnitUpdateInfo getUpdateInfo()
    {
-      return documentId;
+      return tuUpdateInfo;
    }
 
    @Override
-   public ContentState getPreviousStatus()
+   public SessionId getSessionId()
    {
-      return previousStatus;
-   }
-
-   @Override
-   public int getWordCount()
-   {
-      return wordCount;
-   }
-
-   @Override
-   public TransUnit getTransUnit()
-   {
-      return this.tu;
-   }
-
-   @Override
-   public String getUsername()
-   {
-      return username;
+      return sessionId;
    }
 
 }

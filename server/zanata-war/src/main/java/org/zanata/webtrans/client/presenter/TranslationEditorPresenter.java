@@ -53,25 +53,21 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
 
       HasPager getPageNavigation();
 
-      // void setUndoRedo(Widget undoRedoWidget);
-
       boolean isPagerFocused();
 
    }
 
    private final TransUnitNavigationPresenter transUnitNavigationPresenter;
    private final TableEditorPresenter tableEditorPresenter;
-   // private final UndoRedoPresenter undoRedoPresenter;
    private final TransFilterPresenter transFilterPresenter;
 
 
    @Inject
-   public TranslationEditorPresenter(Display display, EventBus eventBus, final CachingDispatchAsync dispatcher, final TableEditorPresenter tableEditorPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter, final UndoRedoPresenter undoRedoPresenter, final TransFilterPresenter transFilterPresenter)
+   public TranslationEditorPresenter(Display display, EventBus eventBus, final CachingDispatchAsync dispatcher, final TableEditorPresenter tableEditorPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter, final TransFilterPresenter transFilterPresenter)
    {
       super(display, eventBus);
       this.tableEditorPresenter = tableEditorPresenter;
       this.transUnitNavigationPresenter = transUnitNavigationPresenter;
-      // this.undoRedoPresenter = undoRedoPresenter;
       this.transFilterPresenter = transFilterPresenter;
    }
 

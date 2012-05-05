@@ -8,8 +8,6 @@ import org.easymock.IMocksControl;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.fest.assertions.Assertions;
 import org.jboss.resteasy.client.ClientResponse;
-import org.jboss.seam.core.Events;
-import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.slf4j.Logger;
@@ -25,14 +23,8 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.common.ResourceType;
 import org.zanata.dao.AccountDAO;
-import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.LocaleDAO;
-import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.dao.TextFlowDAO;
-import org.zanata.dao.TextFlowTargetDAO;
-import org.zanata.dao.TextFlowTargetHistoryDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -57,9 +49,6 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.service.CopyTransService;
-import org.zanata.service.DocumentService;
-import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.DocumentServiceImpl;
@@ -71,6 +60,7 @@ import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.server.rpc.UpdateTransUnitHandler;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
@@ -978,14 +968,13 @@ public class TranslationResourceRestTest extends ZanataRestTest
       WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId(projectSlug, iterationSlug), localeId);
       WorkspaceContext workspaceContext = new WorkspaceContext(workspaceId, "sample-workspace", localeId.getId(), false);
       
-      Credentials mockCredentials = new Credentials();
-      mockCredentials.setInitialized(true);
-      mockCredentials.setUsername( translator.getUsername() );
-
+//      Credentials mockCredentials = new Credentials();
+//      mockCredentials.setInitialized(true);
+//      mockCredentials.setUsername( translator.getUsername() );
 
       // Set mock expectations
       expect(transWorkerManager.getOrRegisterWorkspace(anyObject(WorkspaceId.class))).andReturn( transWorkspace ).anyTimes();
-      expect( mockIdentity.getCredentials() ).andReturn( mockCredentials );
+//      expect( mockIdentity.getCredentials() ).andReturn( mockCredentials );
       expect( transWorkspace.getWorkspaceContext() ).andReturn( workspaceContext );
       mockIdentity.checkLoggedIn();
       expectLastCall();
@@ -1004,7 +993,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       UpdateTransUnitHandler transUnitHandler = new UpdateTransUnitHandler(
             mockIdentity,
             seam.autowire(ProjectDAO.class),
-            seam.autowire(TextFlowTargetHistoryDAO.class),
+//            seam.autowire(TextFlowTargetHistoryDAO.class),
             transWorkerManager,
             seam.autowire(LocaleServiceImpl.class),
             translator,
@@ -1022,14 +1011,15 @@ public class TranslationResourceRestTest extends ZanataRestTest
             .setString(3, projectSlug)
             .uniqueResult();
       Long textFlowId = hTextFlow.getId();
+      int versionNum = 0; // no previous translation
 
       // Translate using webtrans
-      UpdateTransUnit action = new UpdateTransUnit(new TransUnitId(textFlowId), Lists.newArrayList(translation), translationState);
+      UpdateTransUnit action = new UpdateTransUnit(new TransUnitUpdateRequest(new TransUnitId(textFlowId), Lists.newArrayList(translation), translationState, versionNum));
       action.setWorkspaceId( workspaceId );
       
       UpdateTransUnitResult result = transUnitHandler.execute(action, null);
       
-      assertThat( result.isSuccess(), is(true) );
+      assertThat( result.isSingleSuccess(), is(true) );
       mockControl.verify();
    }
    

@@ -37,6 +37,7 @@ import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
 import org.zanata.webtrans.shared.rpc.ReplaceText;
@@ -238,9 +239,11 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void onTransUnitUpdated(final TransUnitUpdatedEvent event)
          {
-            ListDataProvider<TransUnit> dataProvider = documentDataProviders.get(event.getDocumentId().getId());
+            TransUnitUpdateInfo updateInfo = event.getUpdateInfo();
+            ListDataProvider<TransUnit> dataProvider = documentDataProviders.get(updateInfo.getDocumentId().getId());
             if (dataProvider == null)
             {
+               Log.debug("document '" + updateInfo.getDocumentId().getId() + "' not found for TU update, id: " + updateInfo.getTransUnit().getId().getId());
                return;
             }
 
@@ -248,20 +251,30 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             //TransUnit does not appear to have .equals(o), so list items are manually compared
             for (int i = 0; i < transUnits.size(); i++)
             {
-               if (transUnits.get(i).getId().getId() == event.getTransUnit().getId().getId())
+               if (transUnits.get(i).getId().getId() == updateInfo.getTransUnit().getId().getId())
                {
+                  Log.debug("found matching TU for TU update, id: " + updateInfo.getTransUnit().getId().getId());
                   // must de-select before setting to prevent this TU being
                   // 'stuck' selected for the life of the selection model
-                  MultiSelectionModel<TransUnit> selectionModel = documentSelectionModels.get(event.getDocumentId().getId());
+                  // Leaving de-selected as this is currently the desired behaviour
+                  MultiSelectionModel<TransUnit> selectionModel = documentSelectionModels.get(updateInfo.getDocumentId().getId());
 //                  boolean isSelected = selectionModel.isSelected(transUnits.get(i)); //get selected state
-                  selectionModel.setSelected(transUnits.get(i), false);
+                  if (selectionModel == null)
+                  {
+                     Log.error("missing selection model for document, id: " + updateInfo.getDocumentId().getId());
+                  }
+                  else
+                  {
+                     selectionModel.setSelected(transUnits.get(i), false);
+                  }
 
-                  transUnits.set(i, event.getTransUnit());
+                  transUnits.set(i, updateInfo.getTransUnit());
 //                  selectionModel.setSelected(transUnits.get(i), isSelected); //return to previous selection state
 
                   return;
                }
             }
+            Log.debug("no matching TU in document for TU update, id: " + updateInfo.getTransUnit().getId().getId());
          }
 
       }));

@@ -30,8 +30,6 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.EditState;
-import org.zanata.webtrans.client.action.UndoableTransUnitUpdateAction;
-import org.zanata.webtrans.client.action.UndoableTransUnitUpdateHandler;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
@@ -46,16 +44,12 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.OpenEditorEvent;
 import org.zanata.webtrans.client.events.OpenEditorEventHandler;
-import org.zanata.webtrans.client.events.RedoFailureEvent;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
-import org.zanata.webtrans.client.events.UndoAddEvent;
-import org.zanata.webtrans.client.events.UndoFailureEvent;
-import org.zanata.webtrans.client.events.UndoRedoFinishEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
@@ -70,6 +64,7 @@ import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.EditingTranslationAction;
 import org.zanata.webtrans.shared.rpc.EditingTranslationResult;
@@ -178,8 +173,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
    private final TableEditorMessages messages;
 
-   private UndoableTransUnitUpdateAction inProcessing;
-
    private final FilterViewConfirmationPanel filterViewConfirmationPanel = new FilterViewConfirmationPanel();
 
    private final WorkspaceContext workspaceContext;
@@ -190,75 +183,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    private Scheduler scheduler;
 
    private boolean filterTranslated, filterNeedReview, filterUntranslated;
-
-   private final UndoableTransUnitUpdateHandler undoableTransUnitUpdateHandler = new UndoableTransUnitUpdateHandler()
-   {
-      @Override
-      public void undo(final UndoableTransUnitUpdateAction action)
-      {
-         action.setUndo(true);
-         action.setRedo(false);
-         inProcessing = action;
-         if (selectedTransUnit != null)
-         {
-            Log.info("cancel edit");
-            display.getTargetCellEditor().cancelEdit();
-         }
-         eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifySaving()));
-         dispatcher.rollback(action.getAction(), action.getResult(), new AsyncCallback<Void>()
-         {
-            @Override
-            public void onFailure(Throwable e)
-            {
-               Log.error("UpdateTransUnit failure " + e, e);
-               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUpdateFailed(e.getLocalizedMessage())));
-               inProcessing = null;
-               // put back the old cell value
-               display.getTableModel().clearCache();
-               display.reloadPage();
-               eventBus.fireEvent(new UndoFailureEvent(action));
-            }
-
-            @Override
-            public void onSuccess(Void result)
-            {
-               eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyUpdateSaved()));
-            }
-         });
-      }
-
-      @Override
-      public void redo(final UndoableTransUnitUpdateAction action)
-      {
-         action.setRedo(true);
-         action.setUndo(false);
-         inProcessing = action;
-         final UpdateTransUnit updateTransUnit = action.getAction();
-         updateTransUnit.setRedo(true);
-         updateTransUnit.setVerNum(action.getResult().getCurrentVersionNum());
-         eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifySaving()));
-         dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
-         {
-            @Override
-            public void onFailure(Throwable e)
-            {
-               Log.error("redo failure " + e, e);
-               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUpdateFailed(e.getLocalizedMessage())));
-               inProcessing = null;
-               // put back the old cell value
-               display.getTableModel().clearCache();
-               display.reloadPage();
-               eventBus.fireEvent(new RedoFailureEvent(action));
-            }
-
-            @Override
-            public void onSuccess(UpdateTransUnitResult result)
-            {
-               eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyUpdateSaved()));
-            }
-         });
-      }
-   };
 
    @Inject
    public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourceContentsPresenter sourceContentsPresenter, TargetContentsPresenter targetContentsPresenter, UserConfigHolder configHolder, Scheduler scheduler)
@@ -410,52 +334,27 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onTransUnitUpdated(TransUnitUpdatedEvent event)
          {
-            if (documentId != null && documentId.equals(event.getDocumentId()))
+            //assume update was successful
+            if (documentId != null && documentId.equals(event.getUpdateInfo().getDocumentId()))
             {
                // Clear the cache
                clearCacheList();
-               if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
+               if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getUpdateInfo().getTransUnit().getId()))
                {
                   Log.info("selected TU updated; clear selection");
                   display.getTargetCellEditor().cancelEdit();
                   eventBus.fireEvent(new RequestValidationEvent());
                }
 
-               Integer rowIndex = getRowIndex(event.getTransUnit());
+               Integer rowIndex = getRowIndex(event.getUpdateInfo().getTransUnit());
                // - add TU index to model
                if (rowIndex != null)
                {
                   Log.info("onTransUnitUpdated - update row:" + rowIndex);
-                  display.getTableModel().setRowValueOverride(rowIndex, event.getTransUnit());
-
-                  if (inProcessing != null)
-                  {
-                     if (inProcessing.getAction().getTransUnitId().equals(event.getTransUnit().getId()))
-                     {
-                        tableModelHandler.gotoRow(rowIndex, true);
-                        eventBus.fireEvent(new UndoRedoFinishEvent(inProcessing));
-                        inProcessing = null;
-                     }
-                  }
+                  display.getTableModel().setRowValueOverride(rowIndex, event.getUpdateInfo().getTransUnit());
                }
-               else
-               {
-                  if (inProcessing != null)
-                  {
-                     display.getTableModel().clearCache();
-                     display.getTargetCellEditor().cancelEdit();
-                     if (inProcessing.getAction().getTransUnitId().equals(event.getTransUnit().getId()))
-                     {
-                        int pageNum = inProcessing.getCurrentPage();
-                        int rowNum = inProcessing.getRowNum();
-                        rowIndex = pageNum * display.getPageSize() + rowNum;
-                        tableModelHandler.gotoRow(rowIndex, true);
-                        eventBus.fireEvent(new UndoRedoFinishEvent(inProcessing));
-                        inProcessing = null;
-                     }
-                  }
-               }
-               if (!display.isProcessing() && event.getUsername().equals(identity.getPerson().getId().toString()) && selectedTransUnit != null)
+               // FIXME still intermittently causes interactions between different tabs
+               if (selectedTransUnit != null && !display.isProcessing() && event.getSessionId().equals(identity.getSessionId()))
                {
                   tableModelHandler.gotoRow(curRowIndex, true);
                }
@@ -724,7 +623,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       @Override
       public boolean onSetRowValue(int row, TransUnit rowValue)
       {
-         final UpdateTransUnit updateTransUnit = new UpdateTransUnit(rowValue.getId(), rowValue.getTargets(), rowValue.getStatus());
+         final UpdateTransUnit updateTransUnit = new UpdateTransUnit(new TransUnitUpdateRequest(rowValue.getId(), rowValue.getTargets(), rowValue.getStatus(), rowValue.getVerNum()));
          eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifySaving()));
          dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
          {
@@ -742,9 +641,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             public void onSuccess(UpdateTransUnitResult result)
             {
                eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyUpdateSaved()));
-               UndoableTransUnitUpdateAction undoAction = new UndoableTransUnitUpdateAction(updateTransUnit, result, curRowIndex, curPage);
-               undoAction.setHandler(undoableTransUnitUpdateHandler);
-               eventBus.fireEvent(new UndoAddEvent(undoAction));
             }
          });
          stopEditing(rowValue);
@@ -1212,6 +1108,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    {
       return curRowIndex;
    }
+
    /**
     * Load a document into the editor
     * 

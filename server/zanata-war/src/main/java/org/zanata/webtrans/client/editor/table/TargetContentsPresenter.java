@@ -317,7 +317,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void onCancel()
    {
-      ArrayList<String> targets = cellEditor.getTargetCell().getTargets();
+      List<String> targets = cellEditor.getTargetCell().getTargets();
       for (ToggleEditor editor : currentEditors)
       {
          String content = null;

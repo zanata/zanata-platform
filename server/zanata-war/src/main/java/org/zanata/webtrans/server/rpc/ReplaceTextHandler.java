@@ -61,16 +61,16 @@ public class ReplaceTextHandler extends AbstractActionHandler<ReplaceText, Updat
       int flags = action.isCaseSensitive() ? Pattern.UNICODE_CASE : Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
       Pattern pattern = Pattern.compile(Pattern.quote(action.getSearchText()), flags);
 
-      LOGGER.debug("transUnit {} before replace [{}]", action.getTransUnitId(), action.getContents());
-      for (int i = 0, contentsSize = action.getContents().size(); i < contentsSize; i++)
+      LOGGER.debug("transUnit {} before replace [{}]", action.getSingleTransUnitId(), action.getSingleContents());
+      for (int i = 0, contentsSize = action.getSingleContents().size(); i < contentsSize; i++)
       {
-         String content = action.getContents().get(i);
+         String content = action.getSingleContents().get(i);
          Matcher matcher = pattern.matcher(content);
          String newContent = matcher.replaceAll(replaceText);
-         action.getContents().set(i, newContent);
+         action.getSingleContents().set(i, newContent);
       }
 
-      LOGGER.debug("transUnit {} after replace [{}]", action.getTransUnitId(), action.getContents());
+      LOGGER.debug("transUnit {} after replace [{}]", action.getSingleTransUnitId(), action.getSingleContents());
 
       return updateTransUnitHandler.execute(action, context);
    }

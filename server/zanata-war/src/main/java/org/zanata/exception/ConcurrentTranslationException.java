@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors
+ * Copyright 2012, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,12 +18,38 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.action;
+package org.zanata.exception;
 
-
-public interface UndoableTransUnitUpdateHandler
+/**
+ * Thrown to indicate that a translation cannot be saved as it is not based on
+ * the current translation.
+ * 
+ * @author David Mason, damason@redhat.com
+ * 
+ */
+public class ConcurrentTranslationException extends Exception
 {
-   void undo(UndoableTransUnitUpdateAction undoableTransUnitUpdateAction);
 
-   void redo(UndoableTransUnitUpdateAction undoableTransUnitUpdateAction);
+   private static final long serialVersionUID = 1L;
+
+   public ConcurrentTranslationException()
+   {
+      super();
+   }
+
+   public ConcurrentTranslationException(String message)
+   {
+      super(message);
+   }
+
+   public ConcurrentTranslationException(String message, Throwable cause)
+   {
+      super(message, cause);
+   }
+
+   public ConcurrentTranslationException(Throwable cause)
+   {
+      super(cause);
+   }
+
 }

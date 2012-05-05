@@ -1,5 +1,10 @@
 package org.zanata.webtrans.shared.rpc;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
+
 import net.customware.gwt.dispatch.shared.Result;
 
 public class UpdateTransUnitResult implements Result
@@ -7,45 +12,49 @@ public class UpdateTransUnitResult implements Result
 
    private static final long serialVersionUID = 1L;
 
-   private boolean success;
+   private List<TransUnitUpdateInfo> tuUpdateInfo;
 
-   private Integer currentVersionNum;
 
-   public Integer getCurrentVersionNum()
+   public UpdateTransUnitResult()
    {
-      return currentVersionNum;
+      tuUpdateInfo = new ArrayList<TransUnitUpdateInfo>();
    }
 
-   public void setCurrentVersionNum(Integer currentVersionNum)
+   public UpdateTransUnitResult(TransUnitUpdateInfo updateInfo)
    {
-      this.currentVersionNum = currentVersionNum;
+      this();
+      addUpdateResult(updateInfo);
    }
 
-   private UpdateTransUnit previous;
-
-   public UpdateTransUnit getPrevious()
+   public void addUpdateResult(TransUnitUpdateInfo updateInfo)
    {
-      return previous;
+      tuUpdateInfo.add(updateInfo);
    }
 
-   public void setPrevious(UpdateTransUnit previous)
+   public List<TransUnitUpdateInfo> getUpdateInfoList()
    {
-      this.previous = previous;
+      return tuUpdateInfo;
    }
 
-   @SuppressWarnings("unused")
-   private UpdateTransUnitResult()
+   public Integer getSingleVersionNum()
    {
+      return getSingleUpdateInfo().getTransUnit().getVerNum();
    }
 
-   public UpdateTransUnitResult(boolean success)
+   public boolean isSingleSuccess()
    {
-      this.success = success;
+      return getSingleUpdateInfo().isSuccess();
    }
 
-   public boolean isSuccess()
+   private TransUnitUpdateInfo getSingleUpdateInfo()
    {
-      return success;
+      if (tuUpdateInfo.size() == 1)
+      {
+         return tuUpdateInfo.get(0);
+      }
+      else
+      {
+         throw new IllegalStateException("this method can only be used when checking results for a single TransUnit update");
+      }
    }
-
 }

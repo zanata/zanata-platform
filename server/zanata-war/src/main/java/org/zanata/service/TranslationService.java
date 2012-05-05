@@ -27,16 +27,33 @@ import java.util.Set;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
-import org.zanata.model.HDocument;
-import org.zanata.model.HTextFlow;
+import org.zanata.exception.ConcurrentTranslationException;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 
 public interface TranslationService
 {
-   TranslationResult translate(Long textFlowId, LocaleId localeId, ContentState contentState, List<String> targetContents);
+   /**
+    * Updates a single translation for a single text flow.
+    * 
+    * @param localeId
+    * @param translationRequest
+    * @return information about the translation change
+    * @throws ConcurrentTranslationException if there has been another
+    *            translation based on the same translation version
+    */
+   TranslationResult translate(LocaleId localeId, TransUnitUpdateRequest translationRequest) throws ConcurrentTranslationException;
+
+   /**
+    * Updates multiple text flows within a project-iteration.
+    * 
+    * @param localeId
+    * @param translationRequests
+    * @return information about each translation change
+    */
+   List<TranslationResult> translate(LocaleId localeId, List<TransUnitUpdateRequest> translationRequests);
 
    /**
     * Translates all text flows in a document.
@@ -51,13 +68,14 @@ public interface TranslationService
     *                  ones. IMPORT will overwrite all existing translations with the new ones.
     * @return A list of text flow targets that could not be matched to any text flows in the source document.
     */
-   Collection<TextFlowTarget> translateAll(String projectSlug, String iterationSlug, String docId, LocaleId locale, TranslationsResource translations, Set<String> extensions,
+   Collection<TextFlowTarget> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale, TranslationsResource translations, Set<String> extensions,
                                           MergeType mergeType);
 
    public interface TranslationResult
    {
-      HTextFlow getTextFlow();
-      HTextFlowTarget getPreviousTextFlowTarget();
-      HTextFlowTarget getNewTextFlowTarget();
+      boolean isTranslationSuccessful();
+      HTextFlowTarget getTranslatedTextFlowTarget();
+      int getBaseVersionNum();
+      ContentState getBaseContentState();
    }
 }

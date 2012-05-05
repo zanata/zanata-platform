@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.editor.table;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
@@ -57,7 +58,7 @@ public interface TargetContentsDisplay extends WidgetDisplay
       void onEditorKeyDown(KeyDownEvent event, ToggleEditor editor);
    }
 
-   void setTargets(ArrayList<String> targets);
+   void setTargets(List<String> targets);
 
    void setFindMessage(String findMessage);
 

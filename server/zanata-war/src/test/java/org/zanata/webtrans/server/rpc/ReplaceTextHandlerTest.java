@@ -21,6 +21,8 @@
 package org.zanata.webtrans.server.rpc;
 
 
+import java.util.List;
+
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
@@ -55,7 +57,7 @@ public class ReplaceTextHandlerTest
       handler = new ReplaceTextHandler();
       handler.updateTransUnitHandler = mockUpdateTransUnitHandler;
       transUnitBuilder = TransUnit.Builder.newTransUnitBuilder()
-            .setId(1).setResId("").setLocaleId("en-US").addSource("abc");
+            .setId(1).setResId("").setLocaleId("en-US").setVerNum(1).addSource("abc");
    }
 
    @Test
@@ -68,7 +70,8 @@ public class ReplaceTextHandlerTest
 
       ArgumentCaptor<UpdateTransUnit> captor = ArgumentCaptor.forClass(UpdateTransUnit.class);
       verify(mockUpdateTransUnitHandler).execute(captor.capture(), eq(context));
-      MatcherAssert.assertThat(captor.getValue().getContents(), Matchers.equalTo(Lists.newArrayList("123", "123", "123")));
+      List<String> expectedList = Lists.newArrayList("123", "123", "123");
+      MatcherAssert.assertThat(captor.getValue().getSingleContents(), Matchers.equalTo(expectedList));
    }
 
    @Test
@@ -81,7 +84,8 @@ public class ReplaceTextHandlerTest
 
       ArgumentCaptor<UpdateTransUnit> captor = ArgumentCaptor.forClass(UpdateTransUnit.class);
       verify(mockUpdateTransUnitHandler).execute(captor.capture(), eq(context));
-      MatcherAssert.assertThat(captor.getValue().getContents(), Matchers.equalTo(Lists.newArrayList("123", "AbC", "ABC")));
+      List<String> expectedList = Lists.newArrayList("123", "AbC", "ABC");
+      MatcherAssert.assertThat(captor.getValue().getSingleContents(), Matchers.equalTo(expectedList));
    }
 
    @Test(expectedExceptions = {ActionException.class})

@@ -272,18 +272,16 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
          }
       });
 
+      // TODO check that this is consistent with server-side checks
       ContentState stateToSet = requestedState;
-
       if (requestedState == ContentState.New && emptyTargets.isEmpty())
       {
          stateToSet = ContentState.NeedReview;
       }
-
       if (requestedState == ContentState.Approved && !emptyTargets.isEmpty())
       {
          stateToSet = ContentState.New;
       }
-
       cellValue.setStatus(stateToSet);
    }
 

@@ -49,6 +49,7 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
@@ -251,31 +252,32 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          @Override
          public void onTransUnitUpdated(TransUnitUpdatedEvent event)
          {
+            TransUnitUpdateInfo updateInfo = event.getUpdateInfo();
             // update stats for containing document
-            DocumentInfo updatedDoc = getDocumentInfo(event.getDocumentId());
-            adjustStats(updatedDoc.getStats(), event);
+            DocumentInfo updatedDoc = getDocumentInfo(updateInfo.getDocumentId());
+            adjustStats(updatedDoc.getStats(), updateInfo);
             eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), updatedDoc.getStats()));
 
             // refresh document list table
             dataProvider.refresh();
 
             // update project stats, forward to AppPresenter
-            adjustStats(projectStats, event);
+            adjustStats(projectStats, updateInfo);
             eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
          }
 
          /**
           * @param stats the stats object to update
-          * @param event event describing the change in translations
+          * @param updateInfo info describing the change in translations
           */
-         private void adjustStats(TranslationStats stats, TransUnitUpdatedEvent event)
+         private void adjustStats(TranslationStats stats, TransUnitUpdateInfo updateInfo)
          {
             TransUnitCount unitCount = stats.getUnitCount();
             TransUnitWords wordCount = stats.getWordCount();
-            unitCount.decrement(event.getPreviousStatus());
-            unitCount.increment(event.getTransUnit().getStatus());
-            wordCount.decrement(event.getPreviousStatus(), event.getWordCount());
-            wordCount.increment(event.getTransUnit().getStatus(), event.getWordCount());
+            unitCount.decrement(updateInfo.getPreviousState());
+            unitCount.increment(updateInfo.getTransUnit().getStatus());
+            wordCount.decrement(updateInfo.getPreviousState(), updateInfo.getSourceWordCount());
+            wordCount.increment(updateInfo.getTransUnit().getStatus(), updateInfo.getSourceWordCount());
          }
       }));
 

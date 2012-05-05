@@ -54,7 +54,7 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
@@ -268,9 +268,6 @@ public class DocumentListPresenterTest
 
       // simulate TU updated in second document
       TransUnitUpdatedEvent mockEvent = createMock(TransUnitUpdatedEvent.class);
-      expect(mockEvent.getDocumentId()).andReturn(new DocumentId(2222L)).anyTimes();
-      expect(mockEvent.getPreviousStatus()).andReturn(ContentState.NeedReview).anyTimes();
-      expect(mockEvent.getWordCount()).andReturn(3).anyTimes();
 
       ArrayList<String> sources = new ArrayList<String>();
       sources.add("this is the source");
@@ -284,8 +281,11 @@ public class DocumentListPresenterTest
             .setSources(sources).setSourceComment("this is the source comment")
             .setTargets(targets).setStatus(ContentState.Approved).setLastModifiedBy("lastModifiedBy")
             .setLastModifiedTime("lastModifiedTime").setMsgContext("msgContext").setRowIndex(1)
+            .setVerNum(1)
             .build();
-      expect(mockEvent.getTransUnit()).andReturn(newTransUnit).anyTimes();
+      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, new DocumentId(2222L), newTransUnit, 3, 0, ContentState.NeedReview);
+      expect(mockEvent.getUpdateInfo()).andReturn(updateInfo).anyTimes();
+
       replay(mockEvent);
       capturedTransUnitUpdatedEventHandler.getValue().onTransUnitUpdated(mockEvent);
 
@@ -320,9 +320,6 @@ public class DocumentListPresenterTest
 
       // simulate TU updated in second document
       TransUnitUpdatedEvent mockEvent = createMock(TransUnitUpdatedEvent.class);
-      expect(mockEvent.getDocumentId()).andReturn(new DocumentId(2222L)).anyTimes();
-      expect(mockEvent.getPreviousStatus()).andReturn(ContentState.NeedReview).anyTimes();
-      expect(mockEvent.getWordCount()).andReturn(3).anyTimes();
       ArrayList<String> sources = new ArrayList<String>();
       sources.add("this is the source");
       boolean plural = false;
@@ -335,8 +332,10 @@ public class DocumentListPresenterTest
             .setSources(sources).setSourceComment("this is the source comment")
             .setTargets(targets).setStatus(ContentState.Approved).setLastModifiedBy("lastModifiedBy")
             .setLastModifiedTime("lastModifiedTime").setMsgContext("msgContext").setRowIndex(1)
+            .setVerNum(1)
             .build();
-      expect(mockEvent.getTransUnit()).andReturn(newTransUnit).anyTimes();
+      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, new DocumentId(2222L), newTransUnit, 3, 0, ContentState.NeedReview);
+      expect(mockEvent.getUpdateInfo()).andReturn(updateInfo).anyTimes();
       replay(mockEvent);
       capturedTransUnitUpdatedEventHandler.getValue().onTransUnitUpdated(mockEvent);
 
