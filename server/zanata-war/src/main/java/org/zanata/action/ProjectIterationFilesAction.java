@@ -139,7 +139,7 @@ public class ProjectIterationFilesAction
 
          // translate it
          Collection<TextFlowTarget> resourcesNotFound =
-            this.translationServiceImpl.translateAll(this.projectSlug, this.iterationSlug, this.translationFileUpload.getDocId(),
+            this.translationServiceImpl.translateAllInDoc(this.projectSlug, this.iterationSlug, this.translationFileUpload.getDocId(),
                new LocaleId(this.localeId), transRes, new StringSet(ExtensionType.GetText.toString()),
                this.translationFileUpload.getMergeTranslations() ? MergeType.AUTO : MergeType.IMPORT);
 

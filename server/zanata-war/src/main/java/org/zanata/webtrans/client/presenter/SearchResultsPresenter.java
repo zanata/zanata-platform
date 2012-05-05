@@ -243,6 +243,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             ListDataProvider<TransUnit> dataProvider = documentDataProviders.get(updateInfo.getDocumentId().getId());
             if (dataProvider == null)
             {
+               Log.debug("document '" + updateInfo.getDocumentId().getId() + "' not found for TU update, id: " + updateInfo.getTransUnit().getId().getId());
                return;
             }
 
@@ -252,11 +253,20 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             {
                if (transUnits.get(i).getId().getId() == updateInfo.getTransUnit().getId().getId())
                {
+                  Log.debug("found matching TU for TU update, id: " + updateInfo.getTransUnit().getId().getId());
                   // must de-select before setting to prevent this TU being
                   // 'stuck' selected for the life of the selection model
+                  // Leaving de-selected as this is currently the desired behaviour
                   MultiSelectionModel<TransUnit> selectionModel = documentSelectionModels.get(updateInfo.getDocumentId().getId());
 //                  boolean isSelected = selectionModel.isSelected(transUnits.get(i)); //get selected state
-                  selectionModel.setSelected(transUnits.get(i), false);
+                  if (selectionModel == null)
+                  {
+                     Log.error("missing selection model for document, id: " + updateInfo.getDocumentId().getId());
+                  }
+                  else
+                  {
+                     selectionModel.setSelected(transUnits.get(i), false);
+                  }
 
                   transUnits.set(i, updateInfo.getTransUnit());
 //                  selectionModel.setSelected(transUnits.get(i), isSelected); //return to previous selection state
@@ -264,6 +274,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                   return;
                }
             }
+            Log.debug("no matching TU in document for TU update, id: " + updateInfo.getTransUnit().getId().getId());
          }
 
       }));

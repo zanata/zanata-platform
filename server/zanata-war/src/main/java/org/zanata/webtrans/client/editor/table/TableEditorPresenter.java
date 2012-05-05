@@ -353,12 +353,11 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                   Log.info("onTransUnitUpdated - update row:" + rowIndex);
                   display.getTableModel().setRowValueOverride(rowIndex, event.getUpdateInfo().getTransUnit());
                }
-               // FIXME this causes interference between different tabs
-               // e.g. editor opens in tab B when a save is made in tab A
-//               if (!display.isProcessing() && event.getUsername().equals(identity.getPerson().getId().toString()) && selectedTransUnit != null)
-//               {
-//                  tableModelHandler.gotoRow(curRowIndex, true);
-//               }
+               // FIXME still intermittently causes interactions between different tabs
+               if (selectedTransUnit != null && !display.isProcessing() && event.getSessionId().equals(identity.getSessionId()))
+               {
+                  tableModelHandler.gotoRow(curRowIndex, true);
+               }
             }
          }
       }));

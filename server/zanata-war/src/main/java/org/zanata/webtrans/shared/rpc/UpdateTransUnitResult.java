@@ -3,6 +3,8 @@ package org.zanata.webtrans.shared.rpc;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
+
 import net.customware.gwt.dispatch.shared.Result;
 
 public class UpdateTransUnitResult implements Result
@@ -10,62 +12,49 @@ public class UpdateTransUnitResult implements Result
 
    private static final long serialVersionUID = 1L;
 
-   // FIXME replace these with list of result object
-   private List<Boolean> success;
-   private List<Integer> currentVersionNum;
+   private List<TransUnitUpdateInfo> tuUpdateInfo;
 
 
-   private UpdateTransUnitResult()
+   public UpdateTransUnitResult()
    {
-      success = new ArrayList<Boolean>();
-      currentVersionNum = new ArrayList<Integer>();
+      tuUpdateInfo = new ArrayList<TransUnitUpdateInfo>();
    }
 
-   // FIXME this should not be needed after UpdateTransUnitHandler is updated for multiple TUs
-   public UpdateTransUnitResult(boolean success, int currentVersionNum)
+   public UpdateTransUnitResult(TransUnitUpdateInfo updateInfo)
    {
       this();
-      addUpdateResult(success, currentVersionNum);
+      addUpdateResult(updateInfo);
    }
 
-   public void addUpdateResult(boolean success, int currentVersionNum)
+   public void addUpdateResult(TransUnitUpdateInfo updateInfo)
    {
-      this.success.add(success);
-      this.currentVersionNum.add(currentVersionNum);
+      tuUpdateInfo.add(updateInfo);
    }
 
-   public List<Integer> getVersionNums()
+   public List<TransUnitUpdateInfo> getUpdateInfoList()
    {
-      return currentVersionNum;
+      return tuUpdateInfo;
    }
 
    public Integer getSingleVersionNum()
    {
-      if (currentVersionNum.size() == 1)
-      {
-         return currentVersionNum.get(0);
-      }
-      else
-      {
-         throw new IllegalStateException("this method can only be used when checking results for a single TransUnit update");
-      }
-   }
-
-   public List<Boolean> getSuccess()
-   {
-      return success;
+      return getSingleUpdateInfo().getTransUnit().getVerNum();
    }
 
    public boolean isSingleSuccess()
    {
-      if (success.size() == 1)
+      return getSingleUpdateInfo().isSuccess();
+   }
+
+   private TransUnitUpdateInfo getSingleUpdateInfo()
+   {
+      if (tuUpdateInfo.size() == 1)
       {
-         return success.get(0);
+         return tuUpdateInfo.get(0);
       }
       else
       {
          throw new IllegalStateException("this method can only be used when checking results for a single TransUnit update");
       }
    }
-
 }

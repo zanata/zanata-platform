@@ -39,6 +39,8 @@ import org.zanata.webtrans.shared.model.TransUnit;
 @AutoCreate
 public class TransUnitTransformer
 {
+   private static final int NULL_TARGET_VERSION_NUM = 0;
+
    @In
    private ResourceUtils resourceUtils;
 
@@ -65,7 +67,7 @@ public class TransUnitTransformer
             .setTargets(targetContents)
             .setMsgContext(msgContext)
             .setRowIndex(hTextFlow.getPos())
-            .setVerNum(target == null ? 1 : target.getVersionNum());
+            .setVerNum(target == null ? NULL_TARGET_VERSION_NUM : target.getVersionNum());
 
       if (target != null)
       {

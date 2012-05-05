@@ -36,16 +36,23 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 public interface TranslationService
 {
    /**
-    * Updates a single translation for a single document.
+    * Updates a single translation for a single text flow.
     * 
     * @param localeId
     * @param translationRequest
-    * @return the current translation for the given locale
+    * @return information about the translation change
     * @throws ConcurrentTranslationException if there has been another
     *            translation based on the same translation version
     */
    TranslationResult translate(LocaleId localeId, TransUnitUpdateRequest translationRequest) throws ConcurrentTranslationException;
 
+   /**
+    * Updates multiple text flows within a project-iteration.
+    * 
+    * @param localeId
+    * @param translationRequests
+    * @return information about each translation change
+    */
    List<TranslationResult> translate(LocaleId localeId, List<TransUnitUpdateRequest> translationRequests);
 
    /**
@@ -61,7 +68,7 @@ public interface TranslationService
     *                  ones. IMPORT will overwrite all existing translations with the new ones.
     * @return A list of text flow targets that could not be matched to any text flows in the source document.
     */
-   Collection<TextFlowTarget> translateAll(String projectSlug, String iterationSlug, String docId, LocaleId locale, TranslationsResource translations, Set<String> extensions,
+   Collection<TextFlowTarget> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale, TranslationsResource translations, Set<String> extensions,
                                           MergeType mergeType);
 
    public interface TranslationResult

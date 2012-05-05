@@ -32,6 +32,7 @@ import javax.annotation.Nullable;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -148,26 +149,23 @@ public class TranslationServiceImpl implements TranslationService
    }
 
    @Override
-   public TranslationService.TranslationResult translate(LocaleId localeId, TransUnitUpdateRequest translateRequest) throws ConcurrentTranslationException
+   public TranslationResult translate(LocaleId localeId, TransUnitUpdateRequest translateRequest) throws ConcurrentTranslationException
    {
-      TranslationResultImpl result = new TranslationResultImpl();
       HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, translateRequest.getTransUnitId().getValue());
-
-      HProjectIteration projectIteration = hTextFlow.getDocument().getProjectIteration();
-      String projectSlug = projectIteration.getProject().getSlug();
-      HLocale hLocale = localeServiceImpl.validateLocaleByProjectIteration(localeId, projectSlug, projectIteration.getSlug());
-
+      HLocale hLocale = validateLocale(localeId, hTextFlow);
       HTextFlowTarget hTextFlowTarget = getOrCreateTarget(hTextFlow, hLocale);
 
       if (translateRequest.getBaseTranslationVersion() != hTextFlowTarget.getVersionNum())
       {
+         log.warn("translation failed for textflow {0}: base versionNum {1} does not match current versionNum {2}", hTextFlow.getId() , translateRequest.getBaseTranslationVersion(), hTextFlowTarget.getVersionNum());
          throw new ConcurrentTranslationException(MessageFormat.format("base translation version num {0} does not match current version num {1}, aborting", translateRequest.getBaseTranslationVersion(), hTextFlowTarget.getVersionNum()));
       }
 
+      TranslationResultImpl result = new TranslationResultImpl();
       result.baseVersion = hTextFlowTarget.getVersionNum();
       result.baseContentState = hTextFlowTarget.getState();
 
-      translate(hTextFlowTarget, translateRequest.getNewContentState(), translateRequest.getNewContents());
+      translate(hTextFlowTarget, translateRequest.getNewContents(), translateRequest.getNewContentState());
 
       result.translatedTextFlowTarget = hTextFlowTarget;
       result.isSuccess = true;
@@ -177,8 +175,65 @@ public class TranslationServiceImpl implements TranslationService
    @Override
    public List<TranslationResult> translate(LocaleId localeId, List<TransUnitUpdateRequest> translationRequests)
    {
-      // TODO Auto-generated method stub
-      return null;
+      List<TranslationResult> results = new ArrayList<TranslationResult>();
+
+      //avoid locale check if there is nothing to translate
+      if (translationRequests.isEmpty())
+      {
+         return results;
+      }
+
+      //single locale check - assumes update requests are all from the same project-iteration
+      HTextFlow sampleHTextFlow = (HTextFlow) session.get(HTextFlow.class, translationRequests.get(0).getTransUnitId().getValue());
+      HLocale hLocale = validateLocale(localeId, sampleHTextFlow);
+
+      for (TransUnitUpdateRequest request : translationRequests)
+      {
+         HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, request.getTransUnitId().getValue());
+         HTextFlowTarget hTextFlowTarget = getOrCreateTarget(hTextFlow, hLocale);
+
+         TranslationResultImpl result = new TranslationResultImpl();
+         result.baseVersion = hTextFlowTarget.getVersionNum();
+         result.baseContentState = hTextFlowTarget.getState();
+
+         if (request.getBaseTranslationVersion() == hTextFlowTarget.getVersionNum())
+         {
+            try
+            {
+               translate(hTextFlowTarget, request.getNewContents(), request.getNewContentState());
+               result.isSuccess = true;
+            }
+            catch (HibernateException e)
+            {
+               result.isSuccess = false;
+            }
+         }
+         else
+         {
+            // concurrent edits not allowed
+            log.warn("translation failed for textflow {0}: base versionNum {1} does not match current versionNum {2}", hTextFlow.getId() , request.getBaseTranslationVersion(), hTextFlowTarget.getVersionNum());
+            result.isSuccess = false;
+         }
+         result.translatedTextFlowTarget = hTextFlowTarget;
+         results.add(result);
+      }
+
+      return results;
+   }
+
+   /**
+    * Generate a {@link HLocale} for the given localeId and check that translations for this locale are permitted.
+    * 
+    * @param localeId
+    * @param sampleHTextFlow used to determine the project-iteration
+    * @return the valid hLocale
+    * @throws ZanataServiceException if the locale is not enabled for the project-iteration or server
+    */
+   private HLocale validateLocale(LocaleId localeId, HTextFlow sampleHTextFlow) throws ZanataServiceException
+   {
+      HProjectIteration projectIteration = sampleHTextFlow.getDocument().getProjectIteration();
+      String projectSlug = projectIteration.getProject().getSlug();
+      return localeServiceImpl.validateLocaleByProjectIteration(localeId, projectSlug, projectIteration.getSlug());
    }
 
    /**
@@ -198,7 +253,7 @@ public class TranslationServiceImpl implements TranslationService
       return hTextFlowTarget;
    }
 
-   private HTextFlowTarget translate(HTextFlowTarget hTextFlowTarget, ContentState requestedState, List<String> contentsToSave)
+   private HTextFlowTarget translate(HTextFlowTarget hTextFlowTarget, List<String> contentsToSave, ContentState requestedState)
    {
       boolean targetChanged = false;
       targetChanged |= setContentStateIfChanged(requestedState, contentsToSave, hTextFlowTarget);
@@ -263,7 +318,7 @@ public class TranslationServiceImpl implements TranslationService
    }
 
    @Override
-   public Collection<TextFlowTarget> translateAll(String projectSlug, String iterationSlug, String docId, LocaleId locale,
+   public Collection<TextFlowTarget> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale,
                                                   TranslationsResource translations, Set<String> extensions, MergeType mergeType)
    {
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);

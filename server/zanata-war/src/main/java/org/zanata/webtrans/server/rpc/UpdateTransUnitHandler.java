@@ -23,6 +23,7 @@ package org.zanata.webtrans.server.rpc;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
@@ -72,13 +73,13 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
    @Logger
    Log log;
-   
+
    @In
    TranslationService translationServiceImpl;
 
    @In
    ZanataIdentity identity;
-   
+
    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
    HAccount authenticatedAccount;
 
@@ -121,53 +122,48 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    @Override
    public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException
    {
+      UpdateTransUnitResult result = new UpdateTransUnitResult();
       LocaleId localeId = action.getWorkspaceId().getLocaleId();
       log.debug("Updating {0} TransUnits for loacle {1}", action.getUpdateRequests().size(), localeId);
       TranslationWorkspace workspace = checkSecurityAndGetWorkspace(action);
 
-      TranslationResult translationResult;
-      try
+      List<TranslationResult> translationResults = translationServiceImpl.translate(localeId, action.getUpdateRequests());
+
+      for (TranslationResult translationResult : translationResults)
       {
-         translationResult = translationServiceImpl.translate(localeId, action.getSingleUpdateRequest());
+         HTextFlowTarget newTarget = translationResult.getTranslatedTextFlowTarget();
+         HTextFlow hTextFlow = newTarget.getTextFlow();
+         int wordCount = hTextFlow.getWordCount().intValue();
+
+         String msgContext = null;
+         if(hTextFlow.getPotEntryData() != null)
+         {
+            msgContext = hTextFlow.getPotEntryData().getContext();
+         }
+
+         ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);
+         TransUnit tu = TransUnit.Builder.newTransUnitBuilder()
+               .setId(action.getSingleTransUnitId())
+               .setResId(hTextFlow.getResId())
+               .setLocaleId(localeId)
+               .setPlural(hTextFlow.isPlural())
+               .setSources(sourceContents)
+               .setSourceComment(CommentsUtil.toString(hTextFlow.getComment()))
+               .setTargets(action.getSingleContents())
+               .setStatus(newTarget.getState())
+               .setLastModifiedBy(authenticatedAccount.getPerson().getName())
+               .setLastModifiedTime(new SimpleDateFormat().format(new Date()))
+               .setMsgContext(msgContext)
+               .setRowIndex(hTextFlow.getPos())
+               .setVerNum(newTarget.getVersionNum())
+               .build();
+
+         TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(translationResult.isTranslationSuccessful(), new DocumentId(hTextFlow.getDocument().getId()), tu, wordCount, translationResult.getBaseVersionNum(), translationResult.getBaseContentState());
+         TransUnitUpdated event = new TransUnitUpdated(updateInfo, action.getSessionId());
+         workspace.publish(event);
+
+         result.addUpdateResult(updateInfo);
       }
-      catch (Exception e)
-      {
-         throw new ActionException(e);
-      }
-      HTextFlowTarget newTarget = translationResult.getTranslatedTextFlowTarget();
-
-      HTextFlow hTextFlow = newTarget.getTextFlow();
-      int wordCount = hTextFlow.getWordCount().intValue();
-
-      String msgContext = null;
-      if(hTextFlow.getPotEntryData() != null) 
-      {
-         msgContext = hTextFlow.getPotEntryData().getContext();
-      }
-
-      ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);
-      TransUnit tu = TransUnit.Builder.newTransUnitBuilder()
-            .setId(action.getSingleTransUnitId())
-            .setResId(hTextFlow.getResId())
-            .setLocaleId(localeId)
-            .setPlural(hTextFlow.isPlural())
-            .setSources(sourceContents)
-            .setSourceComment(CommentsUtil.toString(hTextFlow.getComment()))
-            .setTargets(action.getSingleContents())
-            .setStatus(newTarget.getState())
-            .setLastModifiedBy(authenticatedAccount.getPerson().getName())
-            .setLastModifiedTime(new SimpleDateFormat().format(new Date()))
-            .setMsgContext(msgContext)
-            .setRowIndex(hTextFlow.getPos())
-            .setVerNum(newTarget.getVersionNum())
-            .build();
-
-      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(translationResult.isTranslationSuccessful(), new DocumentId(hTextFlow.getDocument().getId()), tu, wordCount, translationResult.getBaseVersionNum(), translationResult.getBaseContentState());
-      TransUnitUpdated event = new TransUnitUpdated(updateInfo);
-
-      workspace.publish(event);
-
-      UpdateTransUnitResult result = new UpdateTransUnitResult(true, newTarget.getVersionNum());
 
       return result;
    }
@@ -195,6 +191,9 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       // if success, looking up base revision from action and set values back to that
       // only if concurrent change conditions are satisfied
       // conditions: no new translations after this one
+
+      // this should just use calls to a service to replace with previous version
+      // by version num (fail if previousVersion != latestVersion-1)
    }
 
 }

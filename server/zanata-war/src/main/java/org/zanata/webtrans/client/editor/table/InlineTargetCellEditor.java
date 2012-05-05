@@ -261,7 +261,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       curCallback.onComplete(curCellEditInfo, cellValue);
    }
 
-   private void determineStatus(ArrayList<String> newTargets, ContentState stateToSet)
+   private void determineStatus(ArrayList<String> newTargets, ContentState requestedState)
    {
       Collection<String> emptyTargets = Collections2.filter(newTargets, new Predicate<String>()
       {
@@ -271,18 +271,18 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
             return Strings.isNullOrEmpty(input);
          }
       });
-      if (emptyTargets.isEmpty() && stateToSet == ContentState.Approved)
+
+      // TODO check that this is consistent with server-side checks
+      ContentState stateToSet = requestedState;
+      if (requestedState == ContentState.New && !emptyTargets.isEmpty())
       {
-         cellValue.setStatus(ContentState.Approved);
+         stateToSet = ContentState.NeedReview;
       }
-      else if (emptyTargets.size() > 0 && stateToSet == ContentState.NeedReview)
+      if (requestedState == ContentState.Approved && !emptyTargets.isEmpty())
       {
-         cellValue.setStatus(ContentState.NeedReview);
+         stateToSet = ContentState.New;
       }
-      else
-      {
-         cellValue.setStatus(ContentState.New);
-      }
+      cellValue.setStatus(stateToSet);
    }
 
    /**
