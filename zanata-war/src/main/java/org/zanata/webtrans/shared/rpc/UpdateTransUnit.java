@@ -37,10 +37,9 @@ public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResu
       updateRequests.add(updateRequest);
    }
 
-   // FIXME pass a TransUnitUpdateRequest instead of multiple arguments
-   public void addTransUnit(TransUnitId transUnitId, ArrayList<String> contents, ContentState contentState, int verNum)
+   public void addTransUnit(TransUnitUpdateRequest updateRequest)
    {
-      this.updateRequests.add(new TransUnitUpdateRequest(transUnitId, contents, contentState, verNum));
+      this.updateRequests.add(updateRequest);
    }
 
    public List<TransUnitUpdateRequest> getUpdateRequests()

@@ -20,6 +20,9 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 
@@ -39,10 +42,18 @@ public class ReplaceText extends UpdateTransUnit
 
    public ReplaceText(TransUnit transUnit, String searchText, String replaceText, boolean isCaseSensitive)
    {
-      super(new TransUnitUpdateRequest(transUnit.getId(), transUnit.getTargets(), transUnit.getStatus(), transUnit.getVerNum()));
+      this(Collections.singletonList(transUnit), searchText, replaceText, isCaseSensitive);
+   }
+
+   public ReplaceText(List<TransUnit> transUnits, String searchText, String replaceText, boolean isCaseSensitive)
+   {
       caseSensitive = isCaseSensitive;
       this.searchText = searchText;
       this.replaceText = replaceText;
+      for (TransUnit tu : transUnits)
+      {
+         addTransUnit(new TransUnitUpdateRequest(tu.getId(), tu.getTargets(), tu.getStatus(), tu.getVerNum()));
+      }
    }
 
    public String getSearchText()

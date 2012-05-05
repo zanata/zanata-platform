@@ -20,9 +20,6 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -73,6 +70,9 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
    @Logger
    Log log;
+
+   @In
+   private TransUnitTransformer transUnitTransformer;
 
    @In
    TranslationService translationServiceImpl;
@@ -134,33 +134,9 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          HTextFlowTarget newTarget = translationResult.getTranslatedTextFlowTarget();
          HTextFlow hTextFlow = newTarget.getTextFlow();
          int wordCount = hTextFlow.getWordCount().intValue();
-
-         String msgContext = null;
-         if(hTextFlow.getPotEntryData() != null)
-         {
-            msgContext = hTextFlow.getPotEntryData().getContext();
-         }
-
-         ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);
-         TransUnit tu = TransUnit.Builder.newTransUnitBuilder()
-               .setId(action.getSingleTransUnitId())
-               .setResId(hTextFlow.getResId())
-               .setLocaleId(localeId)
-               .setPlural(hTextFlow.isPlural())
-               .setSources(sourceContents)
-               .setSourceComment(CommentsUtil.toString(hTextFlow.getComment()))
-               .setTargets(action.getSingleContents())
-               .setStatus(newTarget.getState())
-               .setLastModifiedBy(authenticatedAccount.getPerson().getName())
-               .setLastModifiedTime(new SimpleDateFormat().format(new Date()))
-               .setMsgContext(msgContext)
-               .setRowIndex(hTextFlow.getPos())
-               .setVerNum(newTarget.getVersionNum())
-               .build();
-
+         TransUnit tu = transUnitTransformer.transform(hTextFlow, newTarget.getLocale());
          TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(translationResult.isTranslationSuccessful(), new DocumentId(hTextFlow.getDocument().getId()), tu, wordCount, translationResult.getBaseVersionNum(), translationResult.getBaseContentState());
-         TransUnitUpdated event = new TransUnitUpdated(updateInfo, action.getSessionId());
-         workspace.publish(event);
+         workspace.publish(new TransUnitUpdated(updateInfo, action.getSessionId()));
 
          result.addUpdateResult(updateInfo);
       }

@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.server.rpc;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +31,7 @@ import org.jboss.seam.annotations.Scope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.webtrans.server.ActionHandlerFor;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.ReplaceText;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 import com.google.common.base.Strings;
@@ -61,16 +63,19 @@ public class ReplaceTextHandler extends AbstractActionHandler<ReplaceText, Updat
       int flags = action.isCaseSensitive() ? Pattern.UNICODE_CASE : Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
       Pattern pattern = Pattern.compile(Pattern.quote(action.getSearchText()), flags);
 
-      LOGGER.debug("transUnit {} before replace [{}]", action.getSingleTransUnitId(), action.getSingleContents());
-      for (int i = 0, contentsSize = action.getSingleContents().size(); i < contentsSize; i++)
+      for (TransUnitUpdateRequest request : action.getUpdateRequests())
       {
-         String content = action.getSingleContents().get(i);
-         Matcher matcher = pattern.matcher(content);
-         String newContent = matcher.replaceAll(replaceText);
-         action.getSingleContents().set(i, newContent);
+         List<String> contents = request.getNewContents();
+         LOGGER.debug("transUnit {} before replace [{}]", request.getTransUnitId(), contents);
+         for (int i = 0; i < contents.size(); i++)
+         {
+            String content = contents.get(i);
+            Matcher matcher = pattern.matcher(content);
+            String newContent = matcher.replaceAll(replaceText);
+            contents.set(i, newContent);
+         }
+         LOGGER.debug("transUnit {} after replace [{}]", request.getTransUnitId(), contents);
       }
-
-      LOGGER.debug("transUnit {} after replace [{}]", action.getSingleTransUnitId(), action.getSingleContents());
 
       return updateTransUnitHandler.execute(action, context);
    }

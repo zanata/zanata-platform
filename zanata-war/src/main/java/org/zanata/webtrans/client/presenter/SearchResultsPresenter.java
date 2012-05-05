@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -183,14 +184,19 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void onClick(ClickEvent event)
          {
-            // FIXME inefficient. Replace this implementation with single event
-
+            List<TransUnit> selected = new ArrayList<TransUnit>();
             for (MultiSelectionModel<TransUnit> sm : documentSelectionModels.values())
             {
-               for (TransUnit tu : sm.getSelectedSet())
-               {
-                  replaceButtonDelegate.execute(tu);
-               }
+               selected.addAll(sm.getSelectedSet());
+            }
+
+            if (selected.isEmpty())
+            {
+               eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Nothing selected"));
+            }
+            else
+            {
+               fireReplaceTextEvent(selected);
             }
          }
       }));
@@ -379,27 +385,38 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void execute(TransUnit tu)
          {
-            ReplaceText action = new ReplaceText(tu, currentHistoryState.getProjectSearchText(), display.getReplacementTextBox().getValue(), display.getCaseSensitiveChk().getValue());
-            dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>()
-            {
-               @Override
-               public void onFailure(Throwable e)
-               {
-                  Log.error("[SearchResultsPresenter] Replace text failure " + e, e);
-                  // TODO use localised string
-                  eventBus.fireEvent(new NotificationEvent(Severity.Error, "Replace text failed"));
-               }
-
-               @Override
-               public void onSuccess(UpdateTransUnitResult result)
-               {
-                  eventBus.fireEvent(new NotificationEvent(Severity.Info, "Successfully replaced text"));
-                  // not sure if any undoable TU action is
-                  // required here
-               }
-            });
+            fireReplaceTextEvent(Collections.singletonList(tu));
          }
       };
+   }
+
+   /**
+    * @param toReplace list of TransUnits to replace
+    */
+   private void fireReplaceTextEvent(List<TransUnit> toReplace)
+   {
+      String searchText = currentHistoryState.getProjectSearchText();
+      String replacement = currentHistoryState.getProjectSearchReplacement();
+      boolean caseSensitive = currentHistoryState.getProjectSearchCaseSensitive();
+      ReplaceText action = new ReplaceText(toReplace, searchText, replacement, caseSensitive);
+      dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>()
+      {
+
+         @Override
+         public void onFailure(Throwable e)
+         {
+            Log.error("[SearchResultsPresenter] Replace text failure " + e, e);
+            // TODO use localised string
+            eventBus.fireEvent(new NotificationEvent(Severity.Error, "Replace text failed"));
+         }
+
+         @Override
+         public void onSuccess(UpdateTransUnitResult result)
+         {
+            // TODO use localised string
+            eventBus.fireEvent(new NotificationEvent(Severity.Info, "Successfully replaced text"));
+         }
+      });
    }
 
 }
