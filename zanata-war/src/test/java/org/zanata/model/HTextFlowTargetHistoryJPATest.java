@@ -40,8 +40,7 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
-   //FIXME workaround (disabled history)
-   @Test(enabled = false)
+   @Test(enabled = true)
    public void ensureHistoryIsRecorded()
    {
       Session session = getSession();
@@ -68,8 +67,8 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest
       historyElems = getHistory(target);
 
       assertThat("Incorrect History size on first update", historyElems.size(), is(1));
-      
-      target.setContent("hola mundo!");
+
+      target.setContents("hola mundo!");
       session.flush();
 
       historyElems = getHistory(target);
@@ -81,8 +80,7 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest
    }
 
 
-   //FIXME workaround (disabled history)
-   @Test(enabled = false)
+   @Test(enabled = true)
    public void ensureHistoryIsRecordedPlural()
    {
       Session session = getSession();
