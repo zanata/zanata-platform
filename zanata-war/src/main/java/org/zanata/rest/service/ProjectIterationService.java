@@ -105,17 +105,6 @@ public class ProjectIterationService implements ProjectIterationResource
    @In
    Identity identity;
 
-   public ProjectIterationService()
-   {
-   }
-
-   public ProjectIterationService(ProjectDAO projectDAO, ProjectIterationDAO projectIterationDAO, Identity identity, ETagUtils eTagUtils)
-   {
-      this.projectDAO = projectDAO;
-      this.projectIterationDAO = projectIterationDAO;
-      this.identity = identity;
-      this.eTagUtils = eTagUtils;
-   }
 
    /**
     * Returns header information for a project iteration.

@@ -38,20 +38,6 @@ public class ETagUtils
 
    Log log = Logging.getLog(ETagUtils.class);
 
-   public ETagUtils()
-   {
-   }
-
-   public ETagUtils(Session session, DocumentDAO documentDAO)
-   {
-      this.session = session;
-      this.documentDAO = documentDAO;
-   }
-
-   public ETagUtils(Session session)
-   {
-      this.session = session;
-   }
 
    /**
     * Retrieves the ETag for the Project
