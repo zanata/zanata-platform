@@ -34,6 +34,8 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -62,8 +64,6 @@ public class SeamAutowire
    private Map<String, Object> namedComponents = new HashMap<String, Object>();
 
    private Map<Class<?>, Class<?>> componentImpls = new HashMap<Class<?>, Class<?>>();
-
-   //private Map<Class, Object> classComponents = new HashMap<Class, Object>();
 
    private boolean ignoreNonResolvable;
 
@@ -201,16 +201,15 @@ public class SeamAutowire
       // Register all interfaces for this class
       this.registerInterfaces(componentClass);
 
-      for( Field compField : getAllComponentFields(component) )
+      // Resolve injected Components
+      for( ComponentAccessor accessor : getAllComponentAccessors(component) )
       {
-         compField.setAccessible(true);
-
-         // Other annotated component
-         if( compField.getAnnotation(In.class) != null )
+         // Another annotated component
+         if( accessor.getAnnotation(In.class) != null )
          {
             Object fieldVal = null;
-            String compName = getComponentName(compField);
-            Class<?> compType = compField.getType();
+            String compName = accessor.getComponentName();
+            Class<?> compType = accessor.getComponentType();
 
             // autowire the component if not done yet
             if( !namedComponents.containsKey(compName) )
@@ -234,99 +233,12 @@ public class SeamAutowire
             }
 
             fieldVal = namedComponents.get( compName );
-
-            try
-            {
-               compField.set( component, fieldVal);
-            }
-            catch (IllegalAccessException e)
-            {
-               throw new RuntimeException("Could not auto-wire field " + compField.getName() +
-                     " in component of type " + componentClass.getName(), e);
-            }
+            accessor.setValue(component, fieldVal);
          }
          // Logs
-         else if( compField.getAnnotation(Logger.class) != null )
+         else if( accessor.getAnnotation(Logger.class) != null )
          {
-            try
-            {
-               compField.set( component, Logging.getLog(compField.getType()));
-            }
-            catch (IllegalAccessException e)
-            {
-               throw new RuntimeException("Could not auto-wire field " + compField.getName() +
-                     " in component of type " + componentClass.getName(), e);
-            }
-         }
-      }
-
-      // Resolve injected components using methods
-      for( Method compMethod : getAllComponentMethods(component) )
-      {
-         compMethod.setAccessible(true);
-
-         // Other annotated component
-         if( compMethod.getAnnotation(In.class) != null )
-         {
-            Object fieldVal = null;
-            String compName = getComponentName(compMethod);
-            Class<?> compType = compMethod.getParameterTypes()[0];
-
-            // autowire the component if not done yet
-            if( !namedComponents.containsKey(compName) )
-            {
-               try
-               {
-                  Object newComponent = autowire(compType);
-                  this.addComponentInstance(compName, newComponent);
-               }
-               catch (RuntimeException e)
-               {
-                  if( ignoreNonResolvable )
-                  {
-                     log.warn("Could not resolve component of type: " + compType);
-                  }
-                  else
-                  {
-                     throw e;
-                  }
-               }
-            }
-
-            fieldVal = namedComponents.get(compName);
-
-            try
-            {
-               compMethod.invoke(component, fieldVal);
-            }
-            catch (InvocationTargetException e)
-            {
-               throw new RuntimeException("Could not auto-wire field " + compMethod.getName() +
-                     " in component of type " + componentClass.getName(), e);
-            }
-            catch (IllegalAccessException e)
-            {
-               throw new RuntimeException("Could not auto-wire field " + compMethod.getName() +
-                     " in component of type " + componentClass.getName(), e);
-            }
-         }
-         // Logs
-         else if( compMethod.getAnnotation(Logger.class) != null )
-         {
-            try
-            {
-               compMethod.invoke( component, Logging.getLog(compMethod.getParameterTypes()[0]));
-            }
-            catch(InvocationTargetException e)
-            {
-               throw new RuntimeException("Could not auto-wire field " + compMethod.getName() +
-                     " in component of type " + componentClass.getName(), e);
-            }
-            catch (IllegalAccessException e)
-            {
-               throw new RuntimeException("Could not auto-wire field " + compMethod.getName() +
-                     " in component of type " + componentClass.getName(), e);
-            }
+            accessor.setValue( component, Logging.getLog(accessor.getComponentType()) );
          }
       }
 
@@ -383,6 +295,28 @@ public class SeamAutowire
 
    }
 
+   private static ComponentAccessor[] getAllComponentAccessors( Object component )
+   {
+      Collection<ComponentAccessor> props = new ArrayList<ComponentAccessor>();
+
+      for( Field f : getAllComponentFields(component) )
+      {
+         if( f.getAnnotation(In.class) != null || f.getAnnotation(Logger.class) != null )
+         {
+            props.add( ComponentAccessor.newInstance(f) );
+         }
+      }
+      for( Method m : getAllComponentMethods(component) )
+      {
+         if( m.getAnnotation(In.class) != null || m.getAnnotation(Logger.class) != null )
+         {
+            props.add( ComponentAccessor.newInstance(m) );
+         }
+      }
+
+      return props.toArray( new ComponentAccessor[ props.size() ] );
+   }
+
    private static Field[] getAllComponentFields(Object component)
    {
       Field[] fields = component.getClass().getDeclaredFields();
@@ -409,43 +343,6 @@ public class SeamAutowire
       }
 
       return methods;
-   }
-
-   private static String getComponentName( Field field )
-   {
-      In inAnnot = field.getAnnotation(In.class);
-      if( inAnnot != null )
-      {
-         if( inAnnot.value().trim().isEmpty() )
-         {
-            return field.getName();
-         }
-         else
-         {
-            return inAnnot.value();
-         }
-      }
-      return null;
-   }
-
-   private static String getComponentName( Method method )
-   {
-      In inAnnot = method.getAnnotation(In.class);
-      if( inAnnot != null )
-      {
-         if( inAnnot.value().trim().isEmpty() )
-         {
-            // assume it's a setter
-            String name = method.getName().substring(3);
-            name = name.substring(0,1).toLowerCase() + name.substring(1);
-            return name;
-         }
-         else
-         {
-            return inAnnot.value();
-         }
-      }
-      return null;
    }
 
    private void registerInterfaces(Class<?> cls)
