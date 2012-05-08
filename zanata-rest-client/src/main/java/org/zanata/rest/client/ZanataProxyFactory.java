@@ -7,12 +7,15 @@ import java.net.URL;
 
 import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ClientRequestFactory;
+import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.rest.RestConstant;
 import org.zanata.rest.dto.VersionInfo;
+
+import javax.ws.rs.core.Response;
 
 public class ZanataProxyFactory implements ITranslationResourcesFactory
 {
@@ -51,7 +54,17 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
       String clientVer = clientApiVersion.getVersionNo();
       String clientTimestamp = clientApiVersion.getBuildTimeStamp();
       IVersionResource iversion = createIVersionResource();
-      VersionInfo serverVersionInfo = iversion.get().getEntity();
+      ClientResponse<VersionInfo> versionResp = iversion.get();
+      VersionInfo serverVersionInfo = null;
+      if( versionResp.getResponseStatus() == Response.Status.OK )
+      {
+         serverVersionInfo = versionResp.getEntity();
+      }
+      // unauthorized
+      else if( versionResp.getResponseStatus() == Response.Status.UNAUTHORIZED )
+      {
+         throw new RuntimeException("Incorrect username/password");
+      }
       String serverVer = serverVersionInfo.getVersionNo();
       String serverTimestamp = serverVersionInfo.getBuildTimeStamp();
 
