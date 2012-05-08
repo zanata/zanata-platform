@@ -5,7 +5,6 @@ import org.zanata.webtrans.client.ui.HasManageUserSession;
 import org.zanata.webtrans.client.ui.UserPanel;
 import org.zanata.webtrans.shared.model.Person;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;

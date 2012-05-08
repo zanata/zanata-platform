@@ -6,7 +6,6 @@ import org.zanata.webtrans.client.editor.table.EditorTextArea;
 import org.zanata.webtrans.client.editor.table.TableResources;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.resources.NavigationMessages;
-import org.zanata.webtrans.client.ui.ClearableTextBox.Styles;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
@@ -373,17 +372,10 @@ public class Editor extends Composite implements ToggleEditor
    }
 
    @Override
-   public void addTranslator(String name)
+   public void addTranslator(String name, String sessionId)
    {
-      for (int i = 0; i < translatorList.getWidgetCount(); i++)
-      {
-         if (((Label) translatorList.getWidget(i)).getText().equals(name))
-         {
-            return;
-         }
-      }
-
       Label nameLabel = new Label(name);
+      nameLabel.setTitle(sessionId);
       nameLabel.setStyleName(style.userLabel());
       translatorList.add(nameLabel);
    }
@@ -395,14 +387,15 @@ public class Editor extends Composite implements ToggleEditor
    }
 
    @Override
-   public void removeTranslator(String name)
+   public void removeTranslator(String name, String sessionId)
    {
       for (int i = 0; i < translatorList.getWidgetCount(); i++)
       {
-         if (((Label) translatorList.getWidget(i)).getText().equals(name))
+         Label translatorLabel = (Label) translatorList.getWidget(i);
+
+         if (translatorLabel.getText().equals(name) && translatorLabel.getTitle().equals(sessionId))
          {
             translatorList.remove(i);
-            break;
          }
       }
    }

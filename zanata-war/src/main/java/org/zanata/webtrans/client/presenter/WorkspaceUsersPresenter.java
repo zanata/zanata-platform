@@ -17,7 +17,6 @@ import org.zanata.webtrans.shared.model.PersonSessionDetails;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
@@ -80,8 +79,6 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
       {
          UserPanelSessionItem item = userSessionMap.get(person);
          item.setSelectedTransUnit(selectedTransUnit);
-         item.getPanel().updateStatusLabel(selectedTransUnit.getSources().toString());
-         item.getPanel().updateStatusTitle("Resource ID: " + selectedTransUnit.getResId());
       }
    }
 
