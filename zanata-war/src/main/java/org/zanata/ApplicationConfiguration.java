@@ -50,7 +50,7 @@ public class ApplicationConfiguration implements Serializable
 
    public static final String EVENT_CONFIGURATION_CHANGED = "zanata.configuration.changed";
 
-   private static Log log = Logging.getLog(ApplicationConfiguration.class);
+   private static final Log log = Logging.getLog(ApplicationConfiguration.class);
    private static final long serialVersionUID = -4970657841198107092L;
 
    private Map<String, String> configValues = new HashMap<String, String>();
