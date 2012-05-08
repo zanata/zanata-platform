@@ -201,6 +201,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
       FullTextQuery query=  entityManager.createFullTextQuery(luceneQuery, HProject.class);
       query.setMaxResults(maxResult).setFirstResult(firstResult).getResultList();
 
-      return query.getResultList();
+      @SuppressWarnings("unchecked")
+      List<HProject> resultList = query.getResultList();
+      return resultList;
    }
 }

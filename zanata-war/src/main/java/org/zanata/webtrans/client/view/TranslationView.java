@@ -88,7 +88,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
 
 
       userPanel = new LayoutPanel();
-      tmGlossaryPanel = new SplitLayoutPanel(5);
+      tmGlossaryPanel = new SplitLayoutPanel(3);
       
       optionsToggleButton = new ToggleButton(messages.hideEditorOptionsLabel(), messages.showEditorOptionsLabel());
       optionsToggleButton.setTitle(messages.hideEditorOptions());

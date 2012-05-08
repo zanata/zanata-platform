@@ -17,7 +17,7 @@
 	<g:LayoutPanel styleName="translationContainer">
 	
 		<g:layer top="0px" bottom="0px">
-			<g:SplitLayoutPanel styleName="PageSplitLayoutPanel" ui:field="mainSplitPanel">
+			<g:SplitLayoutPanel ui:field="mainSplitPanel">
 				<g:south size="150" min-size="45">
 				    <g:LayoutPanel ui:field="southPanelContainer">
 				        <g:layer top="0" bottom="5px">

@@ -9,7 +9,6 @@ public class UserPanel extends HorizontalPanel implements HasManageUserSession
    private Image userImage;
    private Label personNameLabel;
    private Label sessionLabel;
-   private Label statusLabel;
    private String personName;
 
    public UserPanel(String personName, String imgUrl)
@@ -20,12 +19,10 @@ public class UserPanel extends HorizontalPanel implements HasManageUserSession
       userImage = new Image(imgUrl);
       personNameLabel = new Label(personName);
       sessionLabel = new Label();
-      statusLabel = new Label();
 
       this.add(userImage);
       this.add(personNameLabel);
       this.add(sessionLabel);
-      this.add(statusLabel);
 
       this.setCellWidth(userImage, "16px");
    }
@@ -40,18 +37,6 @@ public class UserPanel extends HorizontalPanel implements HasManageUserSession
    public void updateSessionLabel(String session)
    {
       sessionLabel.setText(session);
-   }
-
-   @Override
-   public void updateStatusLabel(String status)
-   {
-      statusLabel.setText(status);
-   }
-
-   @Override
-   public void updateStatusTitle(String title)
-   {
-      statusLabel.setTitle(title);
    }
 
    @Override
