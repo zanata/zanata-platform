@@ -36,6 +36,7 @@ import com.google.common.collect.Collections2;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 
 public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnitsEditModel
 {
@@ -190,7 +191,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
 
       isOpened = true;
 
-      DOM.scrollIntoView(table.getCellFormatter().getElement(curRow, curCol));
+      Element element = table.getCellFormatter().getElement(curRow, curCol);
+      TableEditorView.scrollIntoView(element);
    }
 
    @Override
