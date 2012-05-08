@@ -69,14 +69,6 @@ public class AccountService implements AccountResource
    @In
    private Session session;
 
-   public AccountService()
-   {
-   }
-
-   public AccountService(AccountDAO accountDAO)
-   {
-      this.accountDAO = accountDAO;
-   }
 
    /**
     * Retrieves a user account.

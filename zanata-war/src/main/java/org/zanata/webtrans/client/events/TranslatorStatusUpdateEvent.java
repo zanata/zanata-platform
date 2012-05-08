@@ -3,8 +3,8 @@ package org.zanata.webtrans.client.events;
 import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.rpc.HasExitWorkspaceData;
 import org.zanata.webtrans.shared.rpc.HasTranslatorStatusUpdateData;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 public class TranslatorStatusUpdateEvent extends GwtEvent<TranslatorStatusUpdateEventHandler> implements HasTranslatorStatusUpdateData

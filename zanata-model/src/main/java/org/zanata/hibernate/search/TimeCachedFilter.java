@@ -26,8 +26,6 @@ import java.io.IOException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
 
 import lombok.extern.slf4j.Slf4j;
 

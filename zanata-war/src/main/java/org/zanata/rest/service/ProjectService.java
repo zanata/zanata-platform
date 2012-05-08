@@ -90,17 +90,6 @@ public class ProjectService implements ProjectResource
    @In
    ETagUtils eTagUtils;
 
-   public ProjectService()
-   {
-   }
-
-   public ProjectService(ProjectDAO projectDAO, AccountDAO accountDAO, Identity identity, ETagUtils eTagUtils)
-   {
-      this.projectDAO = projectDAO;
-      this.accountDAO = accountDAO;
-      this.eTagUtils = eTagUtils;
-      this.identity = identity;
-   }
 
    /**
     * Returns header information for a project.

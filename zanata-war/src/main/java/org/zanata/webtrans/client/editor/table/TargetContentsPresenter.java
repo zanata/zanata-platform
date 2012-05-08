@@ -178,24 +178,27 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       if (event.getSelectedTransUnit() != null)
       {
-         updateEditorTranslatorList(event.getSelectedTransUnit().getId(), event.getPerson());
+         updateEditorTranslatorList(event.getSelectedTransUnit().getId(), event.getPerson(), event.getSessionId().toString());
       }
    }
 
-   private void updateEditorTranslatorList(TransUnitId selectedTransUnitId, Person person)
+   private void updateEditorTranslatorList(TransUnitId selectedTransUnitId, Person person, String sessionId)
    {
-      if (cellEditor.getTargetCell() != null && cellEditor.getTargetCell().getId().equals(selectedTransUnitId) && !person.equals(identity.getPerson()))
+      if (cellEditor.getTargetCell() != null && cellEditor.getTargetCell().getId().equals(selectedTransUnitId))
       {
-         for (ToggleEditor editor : currentEditors)
+         if (!sessionId.equals(identity.getSessionId().toString()))
          {
-            editor.addTranslator(person.getName());
+            for (ToggleEditor editor : currentEditors)
+            {
+               editor.addTranslator(person.getName(), sessionId);
+            }
          }
-      }
-      else
-      {
-         for (ToggleEditor editor : currentEditors)
+         else
          {
-            editor.removeTranslator(person.getName());
+            for (ToggleEditor editor : currentEditors)
+            {
+               editor.removeTranslator(person.getName(), sessionId);
+            }
          }
       }
    }
@@ -204,18 +207,19 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       if (isEditing())
       {
-         Map<Person, UserPanelSessionItem> userSessionMap = workspaceUsersPresenter.getUserSessionMap();
-
          for (ToggleEditor editor : currentEditors)
          {
             editor.clearTranslatorList();
          }
 
-         for (Map.Entry<Person, UserPanelSessionItem> entry : userSessionMap.entrySet())
+         for (Map.Entry<Person, UserPanelSessionItem> entry : workspaceUsersPresenter.getUserSessionMap().entrySet())
          {
             if (entry.getValue().getSelectedTransUnit() != null)
             {
-               updateEditorTranslatorList(entry.getValue().getSelectedTransUnit().getId(), entry.getKey());
+               for (String sessionId : entry.getValue().getSessionList())
+               {
+                  updateEditorTranslatorList(entry.getValue().getSelectedTransUnit().getId(), entry.getKey(), sessionId);
+               }
             }
          }
       }

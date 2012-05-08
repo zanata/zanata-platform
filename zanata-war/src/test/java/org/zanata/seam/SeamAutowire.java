@@ -476,6 +476,7 @@ public class SeamAutowire
    private static void invokePostConstructMethod(Object component)
    {
       Class<?> compClass = component.getClass();
+      boolean postConstructAlreadyFound = false;
 
       for( Method m : compClass.getDeclaredMethods() )
       {
@@ -483,9 +484,17 @@ public class SeamAutowire
          if( m.getAnnotation(javax.annotation.PostConstruct.class) != null
              || m.getAnnotation(org.jboss.seam.annotations.intercept.PostConstruct.class) != null )
          {
+            if(postConstructAlreadyFound)
+            {
+               log.warn("More than one PostConstruct method found for class " + compClass.getName()
+                     + ", only one will be invoked");
+               break;
+            }
+
             try
             {
                m.invoke(component, null); // there should be no params
+               postConstructAlreadyFound = true;
             }
             catch (IllegalAccessException e)
             {
