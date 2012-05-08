@@ -28,8 +28,6 @@ import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.util.OpenBitSet;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
 import org.zanata.common.LocaleId;
 
 import lombok.extern.slf4j.Slf4j;

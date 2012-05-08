@@ -80,6 +80,8 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long>
    {
       Query q = getSession().createQuery("select g.maintainers from HIterationGroup as g where g.slug = :slug");
       q.setParameter("slug", slug);
-      return q.list();
+      @SuppressWarnings("unchecked")
+      List<HPerson> results = q.list();
+      return results;
    }
 }

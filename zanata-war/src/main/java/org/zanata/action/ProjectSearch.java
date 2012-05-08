@@ -74,7 +74,6 @@ public class ProjectSearch
          this.currentPage = page;
    }
 
-   @SuppressWarnings("unchecked")
    @Begin(join=true)
    public void search()
    {
