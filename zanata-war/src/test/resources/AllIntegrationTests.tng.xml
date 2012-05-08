@@ -40,7 +40,6 @@
      			<class name="org.zanata.rest.service.ResourceServiceSeamTest"/>
      			<class name="org.zanata.rest.service.TranslationServiceSeamTest"/>
      			<class name="org.zanata.rest.service.VersionSeamTest"/>
-                <class name="org.zanata.rest.service.GlossaryServiceSeamTest"/>
      		</classes>
      	</test>
      	<test name="Raw Rest Tests">

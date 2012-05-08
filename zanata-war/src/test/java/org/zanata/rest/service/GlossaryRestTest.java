@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response.Status;
 import org.dbunit.operation.DatabaseOperation;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
+import org.hamcrest.CoreMatchers;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.seam.security.Identity;
 import org.junit.Assert;
@@ -193,5 +194,29 @@ public class GlossaryRestTest extends ZanataRestTest
       List<GlossaryEntry> glossaryEntries = response1.getEntity().getGlossaryEntries();
 
       assertThat(glossaryEntries.get(0).getGlossaryTerms().size(), is(2));
+   }
+
+   @Test
+   public void testPutGlossaries()
+   {
+      Glossary glossary = new Glossary();
+      GlossaryEntry glossaryEntry1 = new GlossaryEntry();
+      glossaryEntry1.setSrcLang(LocaleId.EN_US);
+      glossaryEntry1.setSourcereference("TEST SOURCE REF DATA");
+
+      GlossaryTerm glossaryTerm1 = new GlossaryTerm();
+      glossaryTerm1.setLocale(LocaleId.EN_US);
+      glossaryTerm1.setContent("test data content 1 (source lang)");
+      glossaryTerm1.getComments().add("COMMENT 1");
+
+      glossaryEntry1.getGlossaryTerms().add(glossaryTerm1);
+
+      glossary.getGlossaryEntries().add(glossaryEntry1);
+
+      ClientResponse<String> response = glossaryService.put(glossary);
+
+      ClientResponse<Glossary> response1 = glossaryService.getEntries();
+      assertThat(response1.getEntity().getGlossaryEntries().size(), CoreMatchers.is(1));
+
    }
 }
