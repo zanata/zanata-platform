@@ -1,11 +1,9 @@
 package org.zanata.rest.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
-import javax.ws.rs.core.Response.Status;
-
+import org.easymock.EasyMock;
+import org.easymock.IMocksControl;
 import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.seam.security.Identity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.DataProvider;
@@ -14,15 +12,28 @@ import org.zanata.common.LocaleId;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.seam.SeamAutowire;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.service.impl.CopyTransServiceImpl;
+import org.zanata.service.impl.DocumentServiceImpl;
+import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.service.impl.TranslationServiceImpl;
 
-@Test(groups = { "seam-tests" })
-public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTest
+import javax.ws.rs.core.Response.Status;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+public class TranslationServiceRestTest extends ResourceTranslationServiceRestTest
 {
    private static final LocaleId FR = new LocaleId("fr");
    private static final LocaleId DE = new LocaleId("de");
-   private final Logger log = LoggerFactory.getLogger(TranslationServiceSeamTest.class);
+   private final Logger log = LoggerFactory.getLogger(TranslationServiceRestTest.class);
    private TranslationsResourceTestObjectFactory transTestFactory = new TranslationsResourceTestObjectFactory();
    private ResourceTestObjectFactory resourceTestFactory = new ResourceTestObjectFactory();
+   private IMocksControl mockControl = EasyMock.createControl();
+   private Identity mockIdentity = mockControl.createMock(ZanataIdentity.class);
+   private SeamAutowire seam = SeamAutowire.instance();
 
    @DataProvider(name = "TranslationTestData")
    public Object[][] getTestData()
@@ -32,6 +43,25 @@ public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTe
       new Object[] { transTestFactory.getAllExtension() }
 
       };
+   }
+
+   @Override
+   protected void prepareResources()
+   {
+      seam.reset();
+      seam.ignoreNonResolvable()
+            .use("session", getSession())
+            .use("identity", mockIdentity)
+            .useImpl(LocaleServiceImpl.class)
+            .useImpl(CopyTransServiceImpl.class)
+            .useImpl(DocumentServiceImpl.class)
+            .useImpl(TranslationServiceImpl.class);
+
+      SourceDocResourceService sourceDocResourceService = seam.autowire(SourceDocResourceService.class);
+      TranslatedDocResourceService translatedDocResourceService = seam.autowire(TranslatedDocResourceService.class);
+
+      resources.add(sourceDocResourceService);
+      resources.add(translatedDocResourceService);
    }
 
    @Test

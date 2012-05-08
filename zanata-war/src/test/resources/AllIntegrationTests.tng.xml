@@ -35,11 +35,6 @@
             <class name="org.zanata.server.rpc.ActivateWorkspaceActionSeamTest"/>
             <class name="org.zanata.dao.LocaleMemberDAOTest"/>
  -->
-
-     			<class name="org.zanata.rest.service.ProjectsServiceSeamTest"/>
-     			<class name="org.zanata.rest.service.ResourceServiceSeamTest"/>
-     			<class name="org.zanata.rest.service.TranslationServiceSeamTest"/>
-     			<class name="org.zanata.rest.service.VersionSeamTest"/>
      		</classes>
      	</test>
      	<test name="Raw Rest Tests">

@@ -10,12 +10,12 @@ import org.jboss.resteasy.spi.interception.ClientExecutionInterceptor;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDBUnitSeamTest;
+import org.zanata.ZanataRestTest;
 import org.zanata.rest.client.ISourceDocResource;
 import org.zanata.rest.client.ITranslatedDocResource;
 import org.zanata.rest.client.TestProxyFactory;
 
-@Test(groups = { "seam-tests" })
-public abstract class ResourceTranslationServiceSeamTest extends ZanataDBUnitSeamTest
+public abstract class ResourceTranslationServiceRestTest extends ZanataRestTest
 {
    private static final String DOCUMENTS_DATA_DBUNIT_XML = "org/zanata/test/model/DocumentsData.dbunit.xml";
    private static final String LOCALE_DATA_DBUNIT_XML = "org/zanata/test/model/LocalesData.dbunit.xml";
@@ -43,13 +43,11 @@ public abstract class ResourceTranslationServiceSeamTest extends ZanataDBUnitSea
 
    }
 
-   @BeforeMethod
+   @BeforeMethod(dependsOnMethods = "prepareRestEasyFramework")
    public void setup() throws Exception
    {
-      TestProxyFactory clientRequestFactory = new TestProxyFactory(new SeamMockClientExecutor(this));
-      clientRequestFactory.registerPrefixInterceptor(new MetaTypeAccept());
-      sourceDocResource = clientRequestFactory.getSourceDocResource(projectSlug, iter);
-      translationResource = clientRequestFactory.getTranslatedDocResource(projectSlug, iter);
+      sourceDocResource = getClientRequestFactory().createProxy(ISourceDocResource.class, createBaseURI("/projects/p/" + projectSlug + "/iterations/i/" + iter + "/r"));
+      translationResource = getClientRequestFactory().createProxy(ITranslatedDocResource.class, createBaseURI("/projects/p/" + projectSlug + "/iterations/i/" + iter + "/r"));
    }
 
    @Override
