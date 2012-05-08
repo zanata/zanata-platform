@@ -96,7 +96,6 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
    public TransUnitCount getStatisticsForContainer(Long iterationId, LocaleId localeId)
    {
 
-      @SuppressWarnings("unchecked")
       // @formatter:off
       Query q = getSession().createQuery("select new org.zanata.model.StatusCount(tft.state, count(tft)) " +
          "from HTextFlowTarget tft " + 
@@ -109,6 +108,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       q.setParameter("id", iterationId)
             .setParameter("locale", localeId);
       q.setCacheable(true).setComment("ProjectIterationDAO.getStatisticsForContainer");
+      @SuppressWarnings("unchecked")
       List<StatusCount> stats = q.list();
 
       TransUnitCount stat = new TransUnitCount();
@@ -134,7 +134,6 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
    public TransUnitWords getWordStatsForContainer(Long iterationId, LocaleId localeId)
    {
 
-      @SuppressWarnings("unchecked")
       // @formatter:off
       Query q = getSession().createQuery("select new org.zanata.model.StatusCount(tft.state, sum(tft.textFlow.wordCount)) " +
          "from HTextFlowTarget tft " + 
@@ -147,6 +146,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       q.setParameter("id", iterationId)
             .setParameter("locale", localeId);
       q.setCacheable(true).setComment("ProjectIterationDAO.getWordStatsForContainer");
+      @SuppressWarnings("unchecked")
       List<StatusCount> stats = q.list();
 
 
@@ -166,7 +166,6 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
 
    public EntityTag getResourcesETag(HProjectIteration projectIteration)
    {
-      @SuppressWarnings("unchecked")
       // @formatter:off
       Query q = getSession().createQuery(
          "select d.revision from HDocument d " +
@@ -175,6 +174,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
             .setParameter("iteration", projectIteration);
       // @formatter:on
       q.setCacheable(true).setComment("ProjectIterationDAO.getResourcesETag");
+      @SuppressWarnings("unchecked")
       List<Integer> revisions = q.list();
 
       int hashCode = 1;
@@ -306,6 +306,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       org.apache.lucene.search.Query textQuery = parser.parse(searchTerm);
 
       org.hibernate.search.jpa.FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HProjectIteration.class);
+      @SuppressWarnings("unchecked")
       List<HProjectIteration> matches = (List<HProjectIteration>) ftQuery.getResultList();
       return matches;
    }

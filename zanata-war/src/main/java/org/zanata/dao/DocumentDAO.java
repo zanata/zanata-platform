@@ -56,13 +56,13 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
 
    public Set<LocaleId> getTargetLocales(HDocument hDoc)
    {
-      @SuppressWarnings("unchecked")
       // @formatter:off
       // TODO should this use UNIQUE?
       Query q = getSession().createQuery(
             "select tft.locale from HTextFlowTarget tft " +
             "where tft.textFlow.document = :document");
       q.setParameter("document", hDoc);
+      @SuppressWarnings("unchecked")
       List<LocaleId> locales = q.list();
       // @formatter:on
       return new HashSet<LocaleId>(locales);
