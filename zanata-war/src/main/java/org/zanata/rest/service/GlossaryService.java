@@ -71,16 +71,6 @@ public class GlossaryService implements GlossaryResource
    private final static String GLOSSARY_ACTION_DELETE = "glossary-delete";
    private final static String GLOSSARY_ACTION_UPDATE = "glossary-update";
 
-   public GlossaryService()
-   {
-   }
-
-   public GlossaryService(GlossaryDAO glossaryDAO, Identity identity, LocaleService localeService)
-   {
-      this.glossaryDAO = glossaryDAO;
-      this.identity = identity;
-      this.localeServiceImpl = localeService;
-   }
 
    /**
     * Returns all Glossary entries.

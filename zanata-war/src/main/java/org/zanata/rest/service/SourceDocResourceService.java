@@ -132,33 +132,6 @@ public class SourceDocResourceService implements SourceDocResource
    private ETagUtils eTagUtils;
 
 
-   public SourceDocResourceService()
-   {
-   }
-
-   // @formatter:off
-   public SourceDocResourceService(ProjectIterationDAO projectIterationDAO,
-                                   DocumentDAO documentDAO,
-                                   LocaleService localeService,
-                                   CopyTransService copyTransService,
-                                   DocumentService documentService,
-                                   ApplicationConfiguration applicationConfiguration,
-                                   ResourceUtils resourceUtils,
-                                   ETagUtils eTagUtils
-                                   )
-   {
-      this.projectIterationDAO = projectIterationDAO;
-      this.documentDAO = documentDAO;
-      this.localeServiceImpl = localeService;
-      this.copyTransServiceImpl = copyTransService;
-      this.documentServiceImpl = documentService;
-      this.applicationConfiguration = applicationConfiguration;
-      this.resourceUtils = resourceUtils;
-      this.eTagUtils = eTagUtils;
-      this.log = Logging.getLog(SourceDocResourceService.class);
-   }
-   // @formatter:on
-
    /**
     * Returns header information for a Project's iteration translations.
     *

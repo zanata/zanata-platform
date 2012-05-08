@@ -157,43 +157,6 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    private LocaleService localeServiceImpl;
 
 
-   public TranslatedDocResourceService()
-   {
-   }
-
-   // TODO break up this class (too many responsibilities)
-
-// @formatter:off
-   public TranslatedDocResourceService(
-         ApplicationConfiguration applicationConfiguration,
-         ProjectIterationDAO projectIterationDAO,
-         ProjectDAO projectDAO,
-         DocumentDAO documentDAO,
-         TextFlowTargetDAO textFlowTargetDAO,
-         ResourceUtils resourceUtils,
-         ZanataIdentity identity,
-         ETagUtils eTagUtils,
-         LocaleService localeService,
-         CopyTransService copyTransService,
-         TranslationService translationService
-   )
-// @formatter:on
-   {
-      this.applicationConfiguration = applicationConfiguration;
-      this.projectIterationDAO = projectIterationDAO;
-      this.projectDAO = projectDAO;
-      this.documentDAO = documentDAO;
-      this.textFlowTargetDAO = textFlowTargetDAO;
-      this.resourceUtils = resourceUtils;
-      this.identity = identity;
-      this.eTagUtils = eTagUtils;
-      this.localeServiceImpl = localeService;
-      this.copyTransServiceImpl = copyTransService;
-      this.translationServiceImpl = translationService;
-   }
-
-
-
    private HLocale validateTargetLocale(LocaleId locale, String projectSlug, String iterationSlug)
    {
       HLocale hLocale;

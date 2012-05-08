@@ -69,24 +69,6 @@ public class FileService implements FileResource
    
    @In
    private ResourceUtils resourceUtils;
-   
-   public FileService()
-   {
-   }
-   
-   /* @formatter: off */
-   public FileService(DocumentDAO documentDAO, 
-                      TranslatedDocResourceService translatedDocResourceService,
-                      FileSystemService fileSystemServiceImpl, 
-                      ResourceUtils resourceUtils)
-   {
-      super();
-      this.documentDAO = documentDAO;
-      this.translatedDocResourceService = translatedDocResourceService;
-      this.fileSystemServiceImpl = fileSystemServiceImpl;
-      this.resourceUtils = resourceUtils;
-   }
-   /* @formatter: on */
 
 
    /**
