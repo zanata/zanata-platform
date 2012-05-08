@@ -56,14 +56,14 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
       IVersionResource iversion = createIVersionResource();
       ClientResponse<VersionInfo> versionResp = iversion.get();
       VersionInfo serverVersionInfo = null;
-      if( versionResp.getResponseStatus() == Response.Status.OK )
-      {
-         serverVersionInfo = versionResp.getEntity();
-      }
       // unauthorized
-      else if( versionResp.getResponseStatus() == Response.Status.UNAUTHORIZED )
+      if( versionResp.getResponseStatus() == Response.Status.UNAUTHORIZED )
       {
          throw new RuntimeException("Incorrect username/password");
+      }
+      else
+      {
+         serverVersionInfo = versionResp.getEntity();
       }
       String serverVer = serverVersionInfo.getVersionNo();
       String serverTimestamp = serverVersionInfo.getBuildTimeStamp();
