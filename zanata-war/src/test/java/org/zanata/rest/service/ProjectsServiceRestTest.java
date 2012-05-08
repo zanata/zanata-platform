@@ -13,31 +13,39 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDBUnitSeamTest;
+import org.zanata.ZanataRestTest;
 import org.zanata.common.EntityStatus;
 import org.zanata.rest.client.ApiKeyHeaderDecorator;
 import org.zanata.rest.client.IProjectsResource;
 import org.zanata.rest.dto.Project;
+import org.zanata.seam.SeamAutowire;
 
-@Test(groups = { "seam-tests" })
-public class ProjectsServiceSeamTest extends ZanataDBUnitSeamTest
+public class ProjectsServiceRestTest extends ZanataRestTest
 {
 
    ClientRequestFactory clientRequestFactory;
    IProjectsResource projectService;
+   SeamAutowire seam = SeamAutowire.instance();
 
-   @BeforeClass
-   public void prepareRestEasyClientFramework() throws Exception
+   @Override
+   protected void prepareResources()
    {
-      ResteasyProviderFactory instance = ResteasyProviderFactory.getInstance();
-      RegisterBuiltin.register(instance);
+      seam.reset()
+          .ignoreNonResolvable()
+          .use("session", getSession());
 
-      clientRequestFactory = new ClientRequestFactory(new SeamMockClientExecutor(this), new URI("/restv1/"));
-      clientRequestFactory.getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator("admin", "b6d7044e9ee3b2447c28fb7c50d86d98", "1.0SNAPSHOT"));
-      
-      projectService = clientRequestFactory.createProxy(IProjectsResource.class);
+      ProjectsService projectsService = seam.autowire(ProjectsService.class);
 
+      resources.add(projectsService);
+   }
+
+   @BeforeMethod(dependsOnMethods = "prepareRestEasyFramework")
+   public void prepareClient() throws Exception
+   {
+      projectService = getClientRequestFactory().createProxy(IProjectsResource.class);
    }
 
    @Override
