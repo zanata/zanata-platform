@@ -74,7 +74,10 @@ final class DummyGetTransUnitCommand implements Command
                .setId(tuid).setResId(tuid.toString())
                .setLocaleId(localeId).setPlural(plural).setSources(sources).setSourceComment(sourceComment)
                .setTargets(targets).setStatus(state).setLastModifiedBy("peter")
-               .setMsgContext("msgContext").setRowIndex(i);
+               .setMsgContext("msgContext")
+               .setRowIndex(i)
+               .setVerNum(1);
+
          units.add(builder.build());
       }
       return units;
