@@ -21,7 +21,7 @@
 		<jboss.embedded.version>beta3.SP12</jboss.embedded.version>
 		<war.config.dir>${basedir}/src/etc</war.config.dir>
 		<containerId>jboss5x</containerId>
-      <allow.deploy.skip>true</allow.deploy.skip>
+        <allow.deploy.skip>true</allow.deploy.skip>
 		
 		<!-- application properties -->
 		<env.debug>false</env.debug>
@@ -33,6 +33,9 @@
 		<!-- Default MySql login -->
 		<mysql.user>root</mysql.user>
 		<mysql.password />
+
+        <!--this will get set by maven dependency:properties goal and be used in gwt-maven-plugin-->
+        <lombok.lib>${org.projectlombok:lombok:jar}</lombok.lib>
 	</properties>
 
 	<build>
@@ -47,19 +50,83 @@
 
 		<plugins>
             <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-maven-plugin</artifactId>
+                <version>0.10.6.0</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>delombok</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.build.sourceDirectory}/org/zanata/webtrans/shared/model</sourceDirectory>
+                            <verbose>true</verbose>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>sun.jdk</groupId>
+                        <artifactId>tools</artifactId>
+                        <version>1.6</version>
+                        <scope>system</scope>
+                        <systemPath>${java.home}/../lib/tools.jar</systemPath>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
-                 <execution>
-                    <phase>prepare-package</phase>
-                    <configuration>
-                        <tasks>
-                            <mkdir dir="${project.build.directory}/zanata" />
-                        </tasks>
-                    </configuration>
-                    <goals>
-                        <goal>run</goal>
-                    </goals>
-                 </execution>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <tasks>
+                                <mkdir dir="${project.build.directory}/zanata"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>print lombok location</id>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <target>
+                                <echo>add following in IDE to enable gwt debug with lombok</echo>
+                                <echo>-javaagent:${lombok.lib}=ECJ</echo>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <!--<execution>-->
+                        <!--<id>delombok gwt client code</id>-->
+                        <!--<phase>process-sources</phase>-->
+                        <!--<configuration>-->
+                            <!--<target>-->
+                                <!--<taskdef classname="lombok.delombok.ant.DelombokTask" classpath="${lombok.lib}" name="delombok" />-->
+                                <!--<mkdir dir="${project.build.directory}/gwt-gen/org/zanata/webtrans/shared" />-->
+                                <!--<delombok verbose="true" encoding="UTF-8" to="build/src-delomboked" from="${project.build.sourceDirectory}/org/zanata/webtrans/shared" />-->
+                            <!--</target>-->
+                        <!--</configuration>-->
+                        <!--<goals>-->
+                            <!--<goal>run</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
                 </executions>
             </plugin>
 			<plugin>
@@ -188,6 +255,7 @@
                 <configuration>
                     <runTarget>zanata/webtrans/Application.html</runTarget>
                     <noServer>true</noServer>
+                    <extraJvmArgs>-javaagent:${lombok.lib}=ECJ</extraJvmArgs>
                 </configuration>
 			</plugin>
 
