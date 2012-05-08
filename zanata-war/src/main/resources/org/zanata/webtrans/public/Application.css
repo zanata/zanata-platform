@@ -29,12 +29,12 @@ a.AppLoadError {
 /*
 Removes some of the styling on the page-level splitters
 */
-.PageSplitLayoutPanel>div>div.gwt-SplitLayoutPanel-HDragger {
-	background: none;
+.gwt-SplitLayoutPanel-HDragger {
+	cursor: col-resize;
 }
 
-.PageSplitLayoutPanel>div>div.gwt-SplitLayoutPanel-VDragger {
-	background: none;
+.gwt-SplitLayoutPanel-VDragger {
+	cursor: row-resize;
 }
 
 .CenterDiv {
