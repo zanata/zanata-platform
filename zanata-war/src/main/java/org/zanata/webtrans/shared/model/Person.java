@@ -2,6 +2,10 @@ package org.zanata.webtrans.shared.model;
 
 import java.io.Serializable;
 
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+
 public class Person implements HasIdentifier<PersonId>, Serializable
 {
    private static final long serialVersionUID = 510785473431813586L;
@@ -18,10 +22,8 @@ public class Person implements HasIdentifier<PersonId>, Serializable
 
    public Person(PersonId id, String name, String avatarUrl)
    {
-      if (id == null || name == null)
-      {
-         throw new IllegalStateException("id/name cannot be null");
-      }
+      Preconditions.checkNotNull(id, "id cannot be null");
+      Preconditions.checkNotNull(name, "name cannot be null");
       this.id = id;
       this.name = name;
       this.avatarUrl = avatarUrl;
@@ -39,7 +41,7 @@ public class Person implements HasIdentifier<PersonId>, Serializable
 
    public String getAvatarUrl()
    {
-      return avatarUrl == null ? "" : avatarUrl;
+      return Strings.nullToEmpty(avatarUrl);
    }
 
    @Override
@@ -56,26 +58,15 @@ public class Person implements HasIdentifier<PersonId>, Serializable
    public boolean equals(Object obj)
    {
       if (this == obj)
+      {
          return true;
-      if (obj == null)
+      }
+      if (obj == null || getClass() != obj.getClass())
+      {
          return false;
-      if (getClass() != obj.getClass())
-         return false;
+      }
+
       Person other = (Person) obj;
-      if (avatarUrl == null)
-      {
-         if (other.avatarUrl != null)
-            return false;
-      }
-      else if (!avatarUrl.equals(other.avatarUrl))
-         return false;
-      if (id == null)
-      {
-         if (other.id != null)
-            return false;
-      }
-      else if (!id.equals(other.id))
-         return false;
-      return true;
+      return Objects.equal(avatarUrl, other.avatarUrl) && Objects.equal(id, other.id);
    }
 }

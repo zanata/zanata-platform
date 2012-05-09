@@ -21,7 +21,7 @@
 		<jboss.embedded.version>beta3.SP12</jboss.embedded.version>
 		<war.config.dir>${basedir}/src/etc</war.config.dir>
 		<containerId>jboss5x</containerId>
-      <allow.deploy.skip>true</allow.deploy.skip>
+        <allow.deploy.skip>true</allow.deploy.skip>
 		
 		<!-- application properties -->
 		<env.debug>false</env.debug>
@@ -33,6 +33,11 @@
 		<!-- Default MySql login -->
 		<mysql.user>root</mysql.user>
 		<mysql.password />
+
+        <!--this will get set by maven dependency:properties goal and be used in gwt-maven-plugin-->
+        <lombok.lib>${org.projectlombok:lombok:jar}</lombok.lib>
+        <lombok.source.dir>${project.build.sourceDirectory}/org/zanata/webtrans/shared/model</lombok.source.dir>
+        <delombok.dir>${project.build.directory}/delombok/org/zanata/webtrans/shared/model</delombok.dir>
 	</properties>
 
 	<build>
@@ -47,19 +52,43 @@
 
 		<plugins>
             <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
-                 <execution>
-                    <phase>prepare-package</phase>
-                    <configuration>
-                        <tasks>
-                            <mkdir dir="${project.build.directory}/zanata" />
-                        </tasks>
-                    </configuration>
-                    <goals>
-                        <goal>run</goal>
-                    </goals>
-                 </execution>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <tasks>
+                                <mkdir dir="${project.build.directory}/zanata"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>print lombok location</id>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <target>
+                                <echo>lombok VM arguments for GWT compilation:</echo>
+                                <echo>-javaagent:${lombok.lib}=ECJ</echo>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
 			<plugin>
@@ -188,6 +217,8 @@
                 <configuration>
                     <runTarget>zanata/webtrans/Application.html</runTarget>
                     <noServer>true</noServer>
+                    <!--below is needed if you want to use lombok on gwt code-->
+                    <!--<extraJvmArgs>-javaagent:${lombok.lib}=ECJ</extraJvmArgs>-->
                 </configuration>
 			</plugin>
 
@@ -793,6 +824,64 @@
 
 			</build>
 		</profile>
+
+        <profile>
+            <!--this is used to run GWT in dev mode. Adjust your IDE to include the delombok -->
+            <id>delombok</id>
+            <properties>
+                <zanata.gwt.module>org.zanata.webtrans.ApplicationSafari</zanata.gwt.module>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <configuration>
+                                    <target>
+                                        <echo>include following as source in your IDE </echo>
+                                        <echo>${delombok.dir}</echo>
+                                        <echo>exclude following as source in your IDE</echo>
+                                        <echo>${lombok.source.dir}</echo>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok-maven-plugin</artifactId>
+                        <version>0.11.0.0</version>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>delombok</goal>
+                                </goals>
+                                <configuration>
+                                    <sourceDirectory>${lombok.source.dir}</sourceDirectory>
+                                    <outputDirectory>${delombok.dir}</outputDirectory>
+                                    <verbose>true</verbose>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>sun.jdk</groupId>
+                                <artifactId>tools</artifactId>
+                                <version>1.6</version>
+                                <scope>system</scope>
+                                <systemPath>${java.home}/../lib/tools.jar</systemPath>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
 	</profiles>
 
