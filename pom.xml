@@ -168,7 +168,6 @@
 		<hibernate.validator.version>3.1.0.GA</hibernate.validator.version>
 		<hibernate.annotations.version>3.4.0.GA</hibernate.annotations.version>
 		<hibernate.entitymanager.version>3.4.0.GA</hibernate.entitymanager.version>
-        <lombok.version>0.11.0</lombok.version>
 		<lucene.version>2.9.2</lucene.version>
 		<resteasy.version>2.1.0.GA</resteasy.version>
 		<richfaces.version>3.3.3.Final</richfaces.version>
@@ -921,7 +920,7 @@
       <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
+            <version>0.11.0</version>
             <scope>provided</scope>
       </dependency>
    </dependencies>
