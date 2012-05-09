@@ -85,8 +85,17 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          return new GetProjectTransUnitListsResult(docPaths, matchingTUs);
       }
 
+      FilterConstraints filterConstraints = FilterConstraints.filterBy(action.getSearchString()).excludeNew().caseSensitive(action.isCaseSensitive());
+      if (!action.isSearchInSource())
+      {
+         filterConstraints.ignoreSource();
+      }
+      if (!action.isSearchInTarget())
+      {
+         filterConstraints.ignoreTarget();
+      }
       // TODO handle exception thrown by search service
-      List<HTextFlowTarget> matchingFlows = textFlowSearchServiceImpl.findTextFlowTargets(action.getWorkspaceId(), FilterConstraints.filterBy(action.getSearchString()).ignoreSource().excludeNew().caseSensitive(action.isCaseSensitive()));
+      List<HTextFlowTarget> matchingFlows = textFlowSearchServiceImpl.findTextFlowTargets(action.getWorkspaceId(), filterConstraints);
       log.info("Returned {0} results for search", matchingFlows.size());
 
       HLocale hLocale;
@@ -117,17 +126,36 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          if (needsWhitespaceCheck)
          {
             boolean whitespaceMatch = false;
-            for (String content : htft.getContents())
+            if (action.isSearchInTarget())
             {
-               String contentStr = content;
-               if (!action.isCaseSensitive())
+               for (String content : htft.getContents())
                {
-                  contentStr = foldCase(contentStr);
+                  String contentStr = content;
+                  if (!action.isCaseSensitive())
+                  {
+                     contentStr = foldCase(contentStr);
+                  }
+                  if (contentStr.contains(searchString))
+                  {
+                     whitespaceMatch = true;
+                     break;
+                  }
                }
-               if (contentStr.contains(searchString))
+            }
+            if (!whitespaceMatch && action.isSearchInSource())
+            {
+               for (String content : htft.getTextFlow().getContents())
                {
-                  whitespaceMatch = true;
-                  break;
+                  String contentStr = content;
+                  if (!action.isCaseSensitive())
+                  {
+                     contentStr = foldCase(contentStr);
+                  }
+                  if (contentStr.contains(searchString))
+                  {
+                     whitespaceMatch = true;
+                     break;
+                  }
                }
             }
             if (!whitespaceMatch)

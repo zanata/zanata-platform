@@ -33,21 +33,35 @@ public class GetProjectTransUnitLists extends AbstractWorkspaceAction<GetProject
    private static final long serialVersionUID = 1L;
    private String searchString;
    private boolean caseSensitive;
+   private boolean searchInSource;
+   private boolean searchInTarget;
 
    @SuppressWarnings("unused")
    private GetProjectTransUnitLists()
    {
    }
 
-   public GetProjectTransUnitLists(String searchString, boolean caseSensitive)
+   public GetProjectTransUnitLists(String searchString, boolean searchInSource, boolean searchInTarget, boolean caseSensitive)
    {
       this.searchString = searchString;
+      this.searchInSource = searchInSource;
+      this.searchInTarget = searchInTarget;
       this.caseSensitive = caseSensitive;
    }
 
    public String getSearchString()
    {
       return this.searchString;
+   }
+
+   public boolean isSearchInSource()
+   {
+      return searchInSource;
+   }
+
+   public boolean isSearchInTarget()
+   {
+      return searchInTarget;
    }
 
    public boolean isCaseSensitive()

@@ -54,13 +54,17 @@ import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.FilterCacheModeType;
 import org.hibernate.search.annotations.FullTextFilterDef;
+import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.zanata.common.LocaleId;
+import org.zanata.hibernate.search.ContainingWorkspaceBridge;
 import org.zanata.hibernate.search.IdFilterFactory;
 import org.zanata.model.po.HPotEntryData;
 import org.zanata.util.HashUtil;
@@ -219,6 +223,8 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @AccessType("field")
+   @Field(index = Index.UN_TOKENIZED)
+   @FieldBridge(impl = ContainingWorkspaceBridge.class)
    public HDocument getDocument()
    {
       return document;

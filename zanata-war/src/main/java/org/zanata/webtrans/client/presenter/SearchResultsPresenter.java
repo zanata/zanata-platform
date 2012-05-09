@@ -214,7 +214,9 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
             boolean caseSensitivityChanged = token.getProjectSearchCaseSensitive() != currentHistoryState.getProjectSearchCaseSensitive();
             boolean searchTextChanged = !token.getProjectSearchText().equals(currentHistoryState.getProjectSearchText());
-            if (caseSensitivityChanged ||  searchTextChanged)
+            boolean searchFieldsChanged = token.isProjectSearchInSource() != currentHistoryState.isProjectSearchInSource();
+            searchFieldsChanged |= token.isProjectSearchInTarget() != currentHistoryState.isProjectSearchInTarget();
+            if (caseSensitivityChanged ||  searchTextChanged || searchFieldsChanged)
             {
                display.setHighlightString(token.getProjectSearchText());
                display.getFilterTextBox().setValue(token.getProjectSearchText(), true);
@@ -227,7 +229,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                if (!token.getProjectSearchText().isEmpty())
                {
                   //TODO show loading indicator
-                  dispatcher.execute(new GetProjectTransUnitLists(token.getProjectSearchText(), token.getProjectSearchCaseSensitive()), projectSearchCallback);
+                  dispatcher.execute(new GetProjectTransUnitLists(token.getProjectSearchText(), token.isProjectSearchInSource(), token.isProjectSearchInTarget(), token.getProjectSearchCaseSensitive()), projectSearchCallback);
                }
             }
 
