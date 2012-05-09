@@ -21,8 +21,26 @@ public interface History
    public void forward();
    /** @see com.google.gwt.user.client.History#getToken() */
    public String getToken();
+
+   /**
+    * Equivalent of HistoryToken.fromTokenString(getToken())
+    * @see #getToken() {@link HistoryToken#fromTokenString(String)}
+    */
+   public HistoryToken getHistoryToken();
    /** @see com.google.gwt.user.client.History#newItem(String) */
    public void newItem(String historyToken);
+
+   /**
+    * Equivalent of newItem(historyToken.toTokenString())
+    * @see #newItem(String)
+    */
+   public void newItem(HistoryToken historyToken);
    /** @see com.google.gwt.user.client.History#newItem(String, boolean) */
    public void newItem(String historyToken, boolean issueEvent);
+
+   /**
+    * Equivalent of newItem(historyToken.toTokenString(), issueEvent)
+    * @see #newItem(String)
+    */
+   public void newItem(HistoryToken historyToken, boolean issueEvent);
 }
