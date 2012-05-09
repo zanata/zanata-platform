@@ -36,6 +36,8 @@
 
         <!--this will get set by maven dependency:properties goal and be used in gwt-maven-plugin-->
         <lombok.lib>${org.projectlombok:lombok:jar}</lombok.lib>
+        <lombok.source.dir>${project.build.sourceDirectory}/org/zanata/webtrans/shared/model</lombok.source.dir>
+        <delombok.dir>${project.build.directory}/generated-sources/org/zanata/webtrans/shared/model</delombok.dir>
 	</properties>
 
 	<build>
@@ -71,7 +73,8 @@
                             <goal>delombok</goal>
                         </goals>
                         <configuration>
-                            <sourceDirectory>${project.build.sourceDirectory}/org/zanata/webtrans/shared/model</sourceDirectory>
+                            <sourceDirectory>${lombok.source.dir}</sourceDirectory>
+                            <outputDirectory>${delombok.dir}</outputDirectory>
                             <verbose>true</verbose>
                         </configuration>
                     </execution>
@@ -85,6 +88,39 @@
                         <systemPath>${java.home}/../lib/tools.jar</systemPath>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerVersion>1.6</compilerVersion>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <!--<excludes>-->
+                        <!--<exclude>${lombok.source.dir}/**/*.*</exclude>-->
+                    <!--</excludes>-->
+                    <!--<includes>-->
+                        <!--<include>${delombok.dir}/**/*.*</include>-->
+                        <!--<include>${project.build.sourceDirectory}/**/*.*</include>-->
+                    <!--</includes>-->
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <!--<includes>-->
+                                <!--<include>${delombok.dir}/**/*.java</include>-->
+                                <!--<include>${project.build.sourceDirectory}/**/*.java</include>-->
+                            <!--</includes>-->
+                            <excludes>
+                                <exclude>${lombok.source.dir}/**/*.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -105,7 +141,7 @@
                         <phase>process-resources</phase>
                         <configuration>
                             <target>
-                                <echo>add following in IDE to enable gwt debug with lombok</echo>
+                                <echo>lombok VM arguments for GWT compilation:</echo>
                                 <echo>-javaagent:${lombok.lib}=ECJ</echo>
                             </target>
                         </configuration>
@@ -113,20 +149,6 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
-                    <!--<execution>-->
-                        <!--<id>delombok gwt client code</id>-->
-                        <!--<phase>process-sources</phase>-->
-                        <!--<configuration>-->
-                            <!--<target>-->
-                                <!--<taskdef classname="lombok.delombok.ant.DelombokTask" classpath="${lombok.lib}" name="delombok" />-->
-                                <!--<mkdir dir="${project.build.directory}/gwt-gen/org/zanata/webtrans/shared" />-->
-                                <!--<delombok verbose="true" encoding="UTF-8" to="build/src-delomboked" from="${project.build.sourceDirectory}/org/zanata/webtrans/shared" />-->
-                            <!--</target>-->
-                        <!--</configuration>-->
-                        <!--<goals>-->
-                            <!--<goal>run</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
                 </executions>
             </plugin>
 			<plugin>
