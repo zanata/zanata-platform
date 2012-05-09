@@ -58,13 +58,6 @@ import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 {
    private static final Version LUCENE_VERSION = Version.LUCENE_29;
-   private static final String CONTENT_FIELDS[] = new String[6];
-   {
-      for (int i = 0; i < 6; i++)
-      {
-         CONTENT_FIELDS[i] = IndexFieldLabels.CONTENT_CASE_FOLDED + i;
-      }
-   }
 
    @In
    private FullTextEntityManager entityManager;
@@ -181,19 +174,19 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       if (query.getSearchType() == SearchType.FUZZY_PLURAL)
       {
          int queriesSize = multiQueryText.length;
-         if (queriesSize > CONTENT_FIELDS.length)
+         if (queriesSize > IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED.length)
          {
-            log.warn("query contains {0} fields, but we only index {1}", queriesSize, CONTENT_FIELDS.length);
+            log.warn("query contains {0} fields, but we only index {1}", queriesSize, IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED.length);
          }
          String[] searchFields = new String[queriesSize];
-         System.arraycopy(CONTENT_FIELDS, 0, searchFields, 0, queriesSize);
+         System.arraycopy(IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED, 0, searchFields, 0, queriesSize);
 
          textQuery = MultiFieldQueryParser.parse(LUCENE_VERSION, multiQueryText, searchFields, analyzer);
       }
       else
       {
          MultiFieldQueryParser parser = new MultiFieldQueryParser(
-               LUCENE_VERSION, CONTENT_FIELDS, analyzer);
+               LUCENE_VERSION, IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED, analyzer);
          textQuery = parser.parse(queryText);
       }
       FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
