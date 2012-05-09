@@ -12,7 +12,7 @@ import org.jboss.seam.log.Logging;
 public class H2DocumentHistoryTrigger extends TriggerAdapter
 {
 
-   private static Log log = Logging.getLog(H2DocumentHistoryTrigger.class);
+   private static final Log log = Logging.getLog(H2DocumentHistoryTrigger.class);
 
    @Override
    public void fire(Connection conn, ResultSet oldRow, ResultSet newRow) throws SQLException

@@ -33,7 +33,6 @@ import org.hibernate.validator.NotNull;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  * @see org.zanata.rest.dto.extensions.comment.SimpleComment

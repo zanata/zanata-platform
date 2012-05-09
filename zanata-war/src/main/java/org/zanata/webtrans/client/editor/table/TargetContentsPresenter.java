@@ -286,12 +286,24 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          {
             cellEditor.acceptEdit();
          }
-         cellEditor.saveAndMoveRow(NavTransUnitEvent.NavigationType.NextEntry);
+         scheduler.scheduleDeferred(new Scheduler.ScheduledCommand()
+         {
+            @Override
+            public void execute()
+            {
+               cellEditor.saveAndMoveRow(NavTransUnitEvent.NavigationType.NextEntry);
+            }
+         });
       }
    }
 
    @Override
    public void saveAsApprovedAndMovePrevious()
+   {
+      movePrevious(true);
+   }
+
+   private void movePrevious(boolean forceSave)
    {
       if (currentEditorIndex - 1 >= 0)
       {
@@ -301,7 +313,18 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       else
       {
          currentEditorIndex = LAST_INDEX;
-         cellEditor.saveAndMoveRow(NavTransUnitEvent.NavigationType.PrevEntry);
+         if (forceSave)
+         {
+            cellEditor.acceptEdit();
+         }
+         scheduler.scheduleDeferred(new Scheduler.ScheduledCommand()
+         {
+            @Override
+            public void execute()
+            {
+               cellEditor.saveAndMoveRow(NavTransUnitEvent.NavigationType.PrevEntry);
+            }
+         });
       }
    }
 
@@ -466,15 +489,15 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else if (checkKey.isPreviousEntryKey())
       {
-         saveAsApprovedAndMovePrevious();
+         movePrevious(false);
       }
       else if (checkKey.isNextStateEntryKey())
       {
-         saveAsApprovedAndMoveNext();
+         moveNext(false);
       }
       else if (checkKey.isPreviousStateEntryKey())
       {
-         saveAsApprovedAndMovePrevious();
+         movePrevious(false);
       }
       else if (checkKey.isSaveAsFuzzyKey())
       {

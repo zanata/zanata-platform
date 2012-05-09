@@ -46,6 +46,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.CaseInsensitiveNgramAnalyzer;
+import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.model.HDocument;
 import org.zanata.model.HTextFlow;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
@@ -57,7 +58,13 @@ import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 {
    private static final Version LUCENE_VERSION = Version.LUCENE_29;
-   private static final String CONTENT_FIELDS[] = { "content0", "content1", "content2", "content3", "content4", "content5" };
+   private static final String CONTENT_FIELDS[] = new String[6];
+   {
+      for (int i = 0; i < 6; i++)
+      {
+         CONTENT_FIELDS[i] = IndexFieldLabels.CONTENT_CASE_FOLDED + i;
+      }
+   }
 
    @In
    private FullTextEntityManager entityManager;

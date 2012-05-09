@@ -38,8 +38,6 @@ import javax.persistence.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import lombok.ToString;
-
 @MappedSuperclass
 public class ModelEntityBase implements Serializable
 {
