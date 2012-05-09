@@ -16,6 +16,7 @@ import org.zanata.webtrans.shared.rpc.ExitWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ExitWorkspaceResult;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
@@ -35,14 +36,13 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 public class Application implements EntryPoint
 {
 
-   private static boolean IS_DEBUG = false;
+   private static final String APP_LOAD_ERROR_CSS_CLASS = "AppLoadError";
 
-   private static String zanataUrl = null;
+   private static boolean IS_DEBUG = false;
    private static WorkspaceId workspaceId;
    private static WorkspaceContext workspaceContext;
-   private static Identity identity;
 
-   private static String APP_LOAD_ERROR_CSS_CLASS = "AppLoadError";
+   private static Identity identity;
 
    private final static WebTransGinjector injector = GWT.create(WebTransGinjector.class);
 
@@ -234,7 +234,7 @@ public class Application implements EntryPoint
       FlowPanel layoutPanel = new FlowPanel();
       layoutPanel.add(messageLabel);
 
-      if (linkText != null && linkText != "" && linkUrl != null && linkUrl != "")
+      if (Strings.isNullOrEmpty(linkText) && Strings.isNullOrEmpty(linkUrl))
       {
          Anchor a = new Anchor(linkText, linkUrl);
          a.getElement().addClassName(APP_LOAD_ERROR_CSS_CLASS);
