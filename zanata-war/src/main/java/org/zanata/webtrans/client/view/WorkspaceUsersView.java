@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -33,7 +34,7 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    @UiField
    VerticalPanel userListPanel;
 
-   @UiField
+   @UiField(provided = true)
    SplitLayoutPanel mainPanel;
 
    @UiField
@@ -45,9 +46,13 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    @UiField
    PushButton sendButton;
 
+   @UiField
+   ScrollPanel chatRoomScrollPanel;
+
    @Inject
    public WorkspaceUsersView(final UiMessages uiMessages)
    {
+      mainPanel = new SplitLayoutPanel(3);
       initWidget(uiBinder.createAndBindUi(this));
       sendButton.setText(uiMessages.sendLabel());
    }
@@ -101,5 +106,7 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
       {
          chatRoom.add(new HTML("[" + timestamp + "]   " + user + ":  " + msg));
       }
+
+      chatRoomScrollPanel.scrollToBottom();
    }
 }

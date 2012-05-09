@@ -177,6 +177,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
          @Override
          public void onSuccess(PublishWorkspaceChatResult result)
          {
+            // display.appendChat("timestamp", "dummy user", "dummy msg");
          }
       });
    }

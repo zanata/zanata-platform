@@ -24,6 +24,8 @@ import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
+import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
+import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatResult;
 import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
@@ -121,6 +123,13 @@ public class DummyDispatchAsync extends SeamDispatchAsync
          final GetGlossaryDetailsAction _action = (GetGlossaryDetailsAction) action;
          AsyncCallback<GetGlossaryDetailsResult> _callback = (AsyncCallback<GetGlossaryDetailsResult>) callback;
          Scheduler.get().scheduleDeferred(new DummyGetGlossaryDetailsCommand(_action, _callback));
+      }
+
+      else if (action instanceof PublishWorkspaceChatAction)
+      {
+         final PublishWorkspaceChatAction _action = (PublishWorkspaceChatAction) action;
+         AsyncCallback<PublishWorkspaceChatResult> _callback = (AsyncCallback<PublishWorkspaceChatResult>) callback;
+         Scheduler.get().scheduleDeferred(new DummyPublishWorkspaceChatCommand(_action, _callback));
       }
       else
       {

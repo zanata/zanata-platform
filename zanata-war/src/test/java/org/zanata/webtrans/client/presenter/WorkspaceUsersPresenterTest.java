@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
+import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
@@ -13,8 +14,11 @@ import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.easymock.Capture;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
+import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
 import org.zanata.webtrans.client.events.TranslatorStatusUpdateEvent;
 import org.zanata.webtrans.client.events.TranslatorStatusUpdateEventHandler;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter.Display;
@@ -27,6 +31,8 @@ import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.PersonSessionDetails;
 
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 
@@ -42,19 +48,25 @@ public class WorkspaceUsersPresenterTest
    
    Identity mockIdentity = createMock(Identity.class);
    CachingDispatchAsync mockDispatcher = createMock(CachingDispatchAsync.class);
-   
+   HasClickHandlers mockSendButton = createMock(HasClickHandlers.class);
    WebTransMessages mockMessages = createMock(WebTransMessages.class);
+
+   Capture<ClickHandler> capturedSendButtonClickHandler = new Capture<ClickHandler>();
 
    @BeforeMethod
    public void resetMocks()
    {
-      reset(mockDisplay, mockEventBus);
+      reset(mockDisplay, mockEventBus, mockSendButton);
       workspaceUsersPresenter = new WorkspaceUsersPresenter(mockDisplay, mockEventBus, mockIdentity, mockDispatcher, mockMessages);
    }
 
    public void setEmptyUserList()
    {
+      expect(mockDisplay.getSendButton()).andReturn(mockSendButton);
+      expect(mockSendButton.addClickHandler(capture(capturedSendButtonClickHandler))).andReturn(createMock(HandlerRegistration.class));
+
       expect(mockEventBus.addHandler(eq(TranslatorStatusUpdateEvent.getType()), isA(TranslatorStatusUpdateEventHandler.class)) ).andReturn(createMock(HandlerRegistration.class));
+      expect(mockEventBus.addHandler(eq(PublishWorkspaceChatEvent.getType()), isA(PublishWorkspaceChatEventHandler.class))).andReturn(createMock(HandlerRegistration.class));
       replay(mockDisplay, mockEventBus);
 
       workspaceUsersPresenter.bind();
@@ -67,12 +79,16 @@ public class WorkspaceUsersPresenterTest
    {
       HasManageUserSession mockHasManageUserSession = createMock(HasManageUserSession.class);
 
+      expect(mockDisplay.getSendButton()).andReturn(mockSendButton);
+      expect(mockSendButton.addClickHandler(capture(capturedSendButtonClickHandler))).andReturn(createMock(HandlerRegistration.class));
+
       expect(mockDisplay.addUser(new Person(new PersonId("person1"), "John Smith", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"))).andReturn(mockHasManageUserSession);
       expect(mockDisplay.addUser(new Person(new PersonId("person2"), "Smith John", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16"))).andReturn(mockHasManageUserSession);
       expect(mockDisplay.addUser(new Person(new PersonId("person3"), "Smohn Jith", "http://www.gravatar.com/avatar/smohn@zanata.org?d=mm&s=16"))).andReturn(mockHasManageUserSession);
 
       expect(mockEventBus.addHandler(eq(TranslatorStatusUpdateEvent.getType()), isA(TranslatorStatusUpdateEventHandler.class)) ).andReturn(createMock(HandlerRegistration.class));
-      replay(mockDisplay, mockEventBus);
+      expect(mockEventBus.addHandler(eq(PublishWorkspaceChatEvent.getType()), isA(PublishWorkspaceChatEventHandler.class))).andReturn(createMock(HandlerRegistration.class));
+      replay(mockDisplay, mockEventBus, mockSendButton);
 
       workspaceUsersPresenter.bind();
 
@@ -82,6 +98,6 @@ public class WorkspaceUsersPresenterTest
       people.put(new SessionId("sessionId3"), new PersonSessionDetails(new Person(new PersonId("person3"), "Smohn Jith", "http://www.gravatar.com/avatar/smohn@zanata.org?d=mm&s=16"), null));
       workspaceUsersPresenter.initUserList(people);
 
-      verify(mockDisplay, mockEventBus);
+      verify(mockDisplay, mockEventBus, mockSendButton);
    }
 }
