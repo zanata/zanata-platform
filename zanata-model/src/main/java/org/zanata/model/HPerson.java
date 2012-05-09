@@ -160,7 +160,16 @@ public class HPerson extends ModelEntityBase implements Serializable
    @Transient
    public boolean isMaintainer(HIterationGroup grp)
    {
-      return getMaintainerVersionGroups().contains(grp);
+      // TODO consider implementing business key equality and using
+      // getMaintainerVersionGroups().contains(grp)
+      for (HIterationGroup group : getMaintainerVersionGroups())
+      {
+         if (group.getId().equals(grp.getId()))
+         {
+            return true;
+         }
+      }
+      return false;
    }
    
    @Transient
