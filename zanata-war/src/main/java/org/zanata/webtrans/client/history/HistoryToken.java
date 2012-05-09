@@ -187,12 +187,12 @@ public class HistoryToken
    }
 
 
-   private void setProjectSearchInSource(boolean searchInSource)
+   public void setProjectSearchInSource(boolean searchInSource)
    {
       projectSearchInSource = searchInSource;
    }
 
-   private void setProjectSearchInTarget(boolean searchInTarget)
+   public void setProjectSearchInTarget(boolean searchInTarget)
    {
       projectSearchInTarget = searchInTarget;
    }

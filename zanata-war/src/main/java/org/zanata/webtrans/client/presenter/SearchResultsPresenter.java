@@ -46,8 +46,11 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.ActionCell.Delegate;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -85,6 +88,10 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       HasValue<String> getReplacementTextBox();
 
       HasValue<Boolean> getCaseSensitiveChk();
+
+      HasChangeHandlers getSearchFieldSelector();
+
+      String getSelectedSearchField();
 
       HasClickHandlers getReplaceAllButton();
 
@@ -175,6 +182,22 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                token.setProjectSearchCaseSensitive(event.getValue());
                history.newItem(token.toTokenString());
             }
+         }
+      }));
+
+      registerHandler(display.getSearchFieldSelector().addChangeHandler(new ChangeHandler()
+      {
+
+         @Override
+         public void onChange(ChangeEvent event)
+         {
+            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+            String selected = display.getSelectedSearchField();
+            boolean searchSource = selected.equals("source") || selected.equals("both");
+            boolean searchTarget = selected.equals("target") || selected.equals("both");
+            token.setProjectSearchInSource(searchSource);
+            token.setProjectSearchInTarget(searchTarget);
+            history.newItem(token.toTokenString());
          }
       }));
 

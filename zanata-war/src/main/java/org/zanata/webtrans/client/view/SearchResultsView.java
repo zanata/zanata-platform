@@ -43,6 +43,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -65,6 +66,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
@@ -100,6 +102,9 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
 
    @UiField
    Button replaceAllButton;
+
+   @UiField
+   ListBox searchFieldsSelect;
 
    private String highlightString;
 
@@ -402,6 +407,18 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       {
          return tu;
       }
+   }
+
+   @Override
+   public HasChangeHandlers getSearchFieldSelector()
+   {
+      return searchFieldsSelect;
+   }
+
+   @Override
+   public String getSelectedSearchField()
+   {
+      return searchFieldsSelect.getValue(searchFieldsSelect.getSelectedIndex());
    }
 
 }

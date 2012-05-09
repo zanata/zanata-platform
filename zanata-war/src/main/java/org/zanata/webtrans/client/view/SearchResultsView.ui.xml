@@ -34,13 +34,20 @@
                         <g:layer top="0px" height="26px" left="250px" width="150px">
                             <g:CheckBox ui:field="caseSensitiveChk"><ui:msg>Case sensitive</ui:msg></g:CheckBox>
                         </g:layer>
-                        <g:layer top="0px" height="20px" left="400px" width="250px">
+                        <g:layer top="0px" height="26px" left="400px" width="125px">
+                            <g:ListBox ui:field="searchFieldsSelect" selectedIndex="0">
+                                <g:item value="target"><ui:msg>search target</ui:msg></g:item>
+                                <g:item value="source"><ui:msg>search source</ui:msg></g:item>
+                                <g:item value="both"><ui:msg>search both</ui:msg></g:item>
+                            </g:ListBox>
+                        </g:layer>
+                        <g:layer top="0px" height="20px" left="550px" width="250px">
                             <fui:ClearableTextBox ui:field='replacementTextBox'/>
                         </g:layer>
-                        <g:layer top="0px" height="26px" left="675px" width="200px">
+                        <g:layer top="0px" height="26px" left="825px" width="200px">
                             <g:Button ui:field='replaceAllButton'><ui:msg>Replace All Selected</ui:msg></g:Button>
                         </g:layer>
-                        <g:layer top="0px" height="26px" left="900px" right="0px">
+                        <g:layer top="0px" height="26px" left="1050px" right="0px">
                             <g:Label ui:field="testLabel"></g:Label>
                         </g:layer>
                     </g:LayoutPanel>
