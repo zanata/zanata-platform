@@ -232,10 +232,10 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    {
       display.setTableModelHandler(tableModelHandler);
       display.setPageSize(TableConstants.PAGE_SIZE);
-//      if (workspaceContext.isReadOnly())
-//      {
-//         display.getTargetCellEditor().setShowOperationButtons(false);
-//      }
+      // if (workspaceContext.isReadOnly())
+      // {
+      // display.getTargetCellEditor().setShowOperationButtons(false);
+      // }
 
       registerHandler(filterViewConfirmationPanel.getSaveChangesAndFilterButton().addClickHandler(new ClickHandler()
       {
@@ -290,7 +290,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             if (event.getSelectedItem() != null)
             {
                display.getTargetCellEditor().savePendingChange(true);
-               selectTransUnit(event.getSelectedItem());
+               selectTransUnit(event.getSelectedItem(), true);
             }
          }
       }));
@@ -334,7 +334,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onTransUnitUpdated(TransUnitUpdatedEvent event)
          {
-            //assume update was successful
+            // assume update was successful
             if (documentId != null && documentId.equals(event.getUpdateInfo().getDocumentId()))
             {
                // Clear the cache
@@ -353,7 +353,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                   Log.info("onTransUnitUpdated - update row:" + rowIndex);
                   display.getTableModel().setRowValueOverride(rowIndex, event.getUpdateInfo().getTransUnit());
                }
-               // FIXME still intermittently causes interactions between different tabs
+               // FIXME still intermittently causes interactions between
+               // different tabs
                if (selectedTransUnit != null && !display.isProcessing() && event.getSessionId().equals(identity.getSessionId()))
                {
                   tableModelHandler.gotoRow(curRowIndex, true);
@@ -756,7 +757,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             display.gotoPage(pageNum, false);
          }
          display.gotoRow(rowNum, andEdit);
-         selectTransUnit(display.getTransUnitValue(rowNum));
+         selectTransUnit(display.getTransUnitValue(rowNum), andEdit);
 
          if (pageNum != prevPage)
          {
@@ -768,7 +769,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       public void gotoRowInCurrentPage(int rowNum, boolean andEdit)
       {
          display.gotoRow(rowNum, andEdit);
-         selectTransUnit(display.getTransUnitValue(rowNum));
+         selectTransUnit(display.getTransUnitValue(rowNum), andEdit);
       }
    };
 
@@ -1047,9 +1048,9 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
     * 
     * @param transUnit the new TO to select
     */
-   public void selectTransUnit(final TransUnit transUnit)
+   public void selectTransUnit(final TransUnit transUnit, final boolean andEdit)
    {
-      //we want to make sure select transunit always happen first
+      // we want to make sure select transunit always happen first
       scheduler.scheduleEntry(new Command()
       {
          @Override
@@ -1081,9 +1082,9 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                   {
                   }
                });
-
-               display.gotoRow(display.getSelectedRowNumber(), true);
             }
+            display.gotoRow(display.getSelectedRowNumber(), andEdit);
+
          }
       });
    }
