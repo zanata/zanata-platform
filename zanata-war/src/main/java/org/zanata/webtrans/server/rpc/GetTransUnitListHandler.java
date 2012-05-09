@@ -79,6 +79,8 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       int gotoRow = -1;
 
       List<HTextFlow> textFlows;
+
+      // FIXME use hibernate search instead of string comparison here
       TextFlowFilter filter;
 
       if ((action.getPhrase() != null && !action.getPhrase().isEmpty()) || (action.isFilterTranslated() || action.isFilterNeedReview() || action.isFilterUntranslated()))

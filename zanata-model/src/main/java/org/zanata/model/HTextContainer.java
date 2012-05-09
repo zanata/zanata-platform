@@ -24,15 +24,18 @@ package org.zanata.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Type;
-import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Parameter;
 import org.zanata.common.HasContents;
-import org.zanata.hibernate.search.CaseInsensitiveNgramAnalyzer;
+import org.zanata.hibernate.search.IndexFieldLabels;
+import org.zanata.hibernate.search.StringListBridge;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -42,58 +45,22 @@ abstract class HTextContainer implements HasContents, Serializable
 {
    private static final long serialVersionUID = 1L;
 
-
-   @Type(type = "text")
-   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = CaseInsensitiveNgramAnalyzer.class))
    @SuppressWarnings("unused")
-   private String getContent0()
+   @Fields({
+      @Field(name=IndexFieldLabels.CONTENT_CASE_FOLDED,
+             index = Index.TOKENIZED,
+             bridge = @FieldBridge(impl = StringListBridge.class,
+                                   params = {@Parameter(name="case", value="fold"),
+                                             @Parameter(name="ngrams", value="multisize")})),
+      @Field(name = IndexFieldLabels.CONTENT_CASE_PRESERVED,
+             index = Index.TOKENIZED,
+             bridge = @FieldBridge(impl = StringListBridge.class,
+                                   params = {@Parameter(name="case", value="preserve"),
+                                             @Parameter(name="ngrams", value="multisize")}))
+   })
+   private List<String> getContentsToIndex()
    {
-      return getContentAtIndex(0);
-   }
-
-   @Type(type = "text")
-   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = CaseInsensitiveNgramAnalyzer.class))
-   @SuppressWarnings("unused")
-   private String getContent1()
-   {
-      return getContentAtIndex(1);
-   }
-
-   @Type(type = "text")
-   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = CaseInsensitiveNgramAnalyzer.class))
-   @SuppressWarnings("unused")
-   private String getContent2()
-   {
-      return getContentAtIndex(2);
-   }
-
-   @Type(type = "text")
-   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = CaseInsensitiveNgramAnalyzer.class))
-   @SuppressWarnings("unused")
-   private String getContent3()
-   {
-      return getContentAtIndex(3);
-   }
-
-   @Type(type = "text")
-   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = CaseInsensitiveNgramAnalyzer.class))
-   @SuppressWarnings("unused")
-   private String getContent4()
-   {
-      return getContentAtIndex(4);
-   }
-
-   @Type(type = "text")
-   @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = CaseInsensitiveNgramAnalyzer.class))
-   @SuppressWarnings("unused")
-   private String getContent5()
-   {
-      return getContentAtIndex(5);
-   }
-   
-   private String getContentAtIndex(int idx)
-   {
-      return getContents() != null && getContents().size() > idx ? getContents().get(idx) : null;
+      return getContents();
    }
 
    /**
@@ -105,7 +72,7 @@ abstract class HTextContainer implements HasContents, Serializable
    @Transient
    public String getContent()
    {
-      return getContentAtIndex(0);
+      return getContents() != null && getContents().size() > 0 ? getContents().get(0) : null;
    }
 
    /**

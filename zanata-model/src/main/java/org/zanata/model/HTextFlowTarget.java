@@ -71,7 +71,6 @@ import org.zanata.hibernate.search.StringListBridge;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  * Represents a flow of translated text that should be processed as a
@@ -225,6 +224,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    )
    @IndexColumn(name = "pos", nullable = false)
    @Column(name = "content", nullable = false)
+   // TODO extend HTextContainer and remove this
    @Fields({
       @Field(name=IndexFieldLabels.CONTENT_CASE_FOLDED,
              index = Index.TOKENIZED,
