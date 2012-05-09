@@ -373,7 +373,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnitId()))
                {
                   // handle change in current selection
-                  if (!event.getSessionId().equals(identity.getSessionId()))
+                  if (!event.getSessionId().equals(identity.getSessionId().toString()))
                      eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.notifyInEdit()));
                }
             }

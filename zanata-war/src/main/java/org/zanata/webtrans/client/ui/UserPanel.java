@@ -40,6 +40,16 @@ public class UserPanel extends HorizontalPanel implements HasManageUserSession
    }
 
    @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((personName == null) ? 0 : personName.hashCode());
+      result = prime * result + ((userImage == null) ? 0 : userImage.hashCode());
+      return result;
+   }
+
+   @Override
    public boolean equals(Object obj)
    {
       if (this == obj)

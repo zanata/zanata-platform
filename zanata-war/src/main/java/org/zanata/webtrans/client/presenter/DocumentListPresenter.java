@@ -182,7 +182,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          public void onValueChange(ValueChangeEvent<String> event)
          {
             HistoryToken token = HistoryToken.fromTokenString(history.getToken());
-            if (event.getValue() != token.getDocFilterText())
+            if (!event.getValue().equals(token.getDocFilterText()))
             {
                token.setDocFilterText(event.getValue());
                history.newItem(token.toTokenString());
