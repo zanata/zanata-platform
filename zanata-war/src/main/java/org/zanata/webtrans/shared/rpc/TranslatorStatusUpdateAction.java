@@ -1,10 +1,7 @@
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnit;
-
-import net.customware.gwt.dispatch.shared.Result;
 
 
 public class TranslatorStatusUpdateAction extends AbstractWorkspaceAction<TranslatorStatusUpdateResult>

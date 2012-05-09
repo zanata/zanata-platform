@@ -18,7 +18,10 @@ import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.TranslatorStatusUpdateEvent;
 import org.zanata.webtrans.client.events.TranslatorStatusUpdateEventHandler;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter.Display;
+import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasManageUserSession;
+import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
@@ -36,12 +39,17 @@ public class WorkspaceUsersPresenterTest
    //injected mocks
    Display mockDisplay = createMock(Display.class);
    EventBus mockEventBus = createMock(EventBus.class);
+   
+   Identity mockIdentity = createMock(Identity.class);
+   CachingDispatchAsync mockDispatcher = createMock(CachingDispatchAsync.class);
+   
+   WebTransMessages mockMessages = createMock(WebTransMessages.class);
 
    @BeforeMethod
    public void resetMocks()
    {
       reset(mockDisplay, mockEventBus);
-      workspaceUsersPresenter = new WorkspaceUsersPresenter(mockDisplay, mockEventBus);
+      workspaceUsersPresenter = new WorkspaceUsersPresenter(mockDisplay, mockEventBus, mockIdentity, mockDispatcher, mockMessages);
    }
 
    public void setEmptyUserList()

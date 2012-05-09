@@ -6,6 +6,7 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
+import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.TranslatorStatusUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
@@ -17,9 +18,11 @@ import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.HasEnterWorkspaceData;
 import org.zanata.webtrans.shared.rpc.HasExitWorkspaceData;
 import org.zanata.webtrans.shared.rpc.HasTranslatorStatusUpdateData;
+import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
 import org.zanata.webtrans.shared.rpc.HasTransUnitEditData;
 import org.zanata.webtrans.shared.rpc.HasTransUnitUpdatedData;
+import org.zanata.webtrans.shared.rpc.PublishWorkspaceChat;
 import org.zanata.webtrans.shared.rpc.TranslatorStatusUpdate;
 import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
@@ -113,6 +116,15 @@ public class EventProcessor implements RemoteEventListener
             public TranslatorStatusUpdateEvent create(SessionEventData event)
             {
                return new TranslatorStatusUpdateEvent((HasTranslatorStatusUpdateData) event);
+            }
+         });
+
+         factories.put(PublishWorkspaceChat.class, new EventFactory<PublishWorkspaceChatEvent>()
+         {
+            @Override
+            public PublishWorkspaceChatEvent create(SessionEventData event)
+            {
+               return new PublishWorkspaceChatEvent((HasWorkspaceChatData) event);
             }
          });
 

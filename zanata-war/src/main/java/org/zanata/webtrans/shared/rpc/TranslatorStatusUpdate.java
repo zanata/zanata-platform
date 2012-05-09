@@ -1,16 +1,12 @@
 package org.zanata.webtrans.shared.rpc;
 
-import java.util.List;
-
 import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.rpc.SessionEventData;
-import com.google.gwt.event.shared.GwtEvent;
 
 public class TranslatorStatusUpdate implements SessionEventData, HasTranslatorStatusUpdateData
 {
-
+   private static final long serialVersionUID = 5332535583909340461L;
    private Person person;
    private TransUnit selectedTransUnit;
    private SessionId sessionId;

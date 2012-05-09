@@ -1,0 +1,69 @@
+package org.zanata.webtrans.client.events;
+
+import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData;
+
+import com.google.gwt.event.shared.GwtEvent;
+
+public class PublishWorkspaceChatEvent extends GwtEvent<PublishWorkspaceChatEventHandler> implements HasWorkspaceChatData
+{
+
+   private final String personId;
+   private final String timestamp;
+   private final String msg;
+
+   public PublishWorkspaceChatEvent(HasWorkspaceChatData data)
+   {
+      personId = data.getPersonId();
+      timestamp = data.getTimestamp();
+      msg = data.getMsg();
+   }
+
+   /**
+    * Handler type.
+    */
+   private static Type<PublishWorkspaceChatEventHandler> TYPE;
+
+   /**
+    * Gets the type associated with this event.
+    * 
+    * @return returns the handler type
+    */
+   public static Type<PublishWorkspaceChatEventHandler> getType()
+   {
+      if (TYPE == null)
+      {
+         TYPE = new Type<PublishWorkspaceChatEventHandler>();
+      }
+      return TYPE;
+   }
+
+   @Override
+   public Type<PublishWorkspaceChatEventHandler> getAssociatedType()
+   {
+      return getType();
+   }
+
+   @Override
+   protected void dispatch(PublishWorkspaceChatEventHandler handler)
+   {
+      handler.onPublishWorkspaceChat(this);
+   }
+
+   @Override
+   public String getPersonId()
+   {
+      return personId;
+   }
+
+   @Override
+   public String getTimestamp()
+   {
+      return timestamp;
+   }
+
+   @Override
+   public String getMsg()
+   {
+      return msg;
+   }
+}

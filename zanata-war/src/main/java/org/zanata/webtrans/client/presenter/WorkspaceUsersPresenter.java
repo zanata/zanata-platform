@@ -8,45 +8,95 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
+import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
 import org.zanata.webtrans.client.events.TranslatorStatusUpdateEvent;
 import org.zanata.webtrans.client.events.TranslatorStatusUpdateEventHandler;
+import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasManageUserSession;
+import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonSessionDetails;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
+import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
+import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatResult;
 
 import com.google.common.base.Strings;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.inject.Inject;
 
 public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPresenter.Display>
 {
    private final HashMap<Person, UserPanelSessionItem> userSessionMap;
 
+   private final Identity identity;
+
+   private final CachingDispatchAsync dispatcher;
+
+   private final WebTransMessages messages;
+
    public interface Display extends WidgetDisplay
    {
       HasManageUserSession addUser(Person person);
+
+      HasClickHandlers getSendButton();
+
+      HasText getInputText();
+
+      void appendChat(String user, String timestamp, String msg);
 
       void removeUser(HasManageUserSession userPanel);
    }
 
    @Inject
-   public WorkspaceUsersPresenter(final Display display, final EventBus eventBus)
+   public WorkspaceUsersPresenter(final Display display, final EventBus eventBus, final Identity identity, final CachingDispatchAsync dispatcher, final WebTransMessages messages)
    {
       super(display, eventBus);
+      this.identity = identity;
+      this.dispatcher = dispatcher;
+      this.messages = messages;
       userSessionMap = new HashMap<Person, UserPanelSessionItem>();
+
    }
 
    @Override
    protected void onBind()
    {
+      display.getSendButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            if (!Strings.isNullOrEmpty(display.getInputText().getText()))
+            {
+               dispatchChatAction(identity.getPerson().getId().toString(), display.getInputText().getText());
+               display.getInputText().setText("");
+            }
+         }
+      });
+
       registerHandler(eventBus.addHandler(TranslatorStatusUpdateEvent.getType(), new TranslatorStatusUpdateEventHandler()
       {
          @Override
          public void onTranslatorStatusUpdate(TranslatorStatusUpdateEvent event)
          {
             updateTranslatorStatus(event.getSessionId(), event.getPerson(), event.getSelectedTransUnit());
+         }
+      }));
+
+      registerHandler(eventBus.addHandler(PublishWorkspaceChatEvent.getType(), new PublishWorkspaceChatEventHandler()
+      {
+         @Override
+         public void onPublishWorkspaceChat(PublishWorkspaceChatEvent event)
+         {
+            display.appendChat(event.getPersonId(), event.getTimestamp(), event.getMsg());
          }
       }));
    }
@@ -110,7 +160,25 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
             item.getPanel().updateTitle(title);
             item.getPanel().updateSessionLabel("(" + item.getSessionList().size() + ")");
          }
+
+         dispatchChatAction(person.getId().toString(), messages.hasQuitWorkspace());
       }
+   }
+
+   public void dispatchChatAction(String person, String msg)
+   {
+      dispatcher.execute(new PublishWorkspaceChatAction(person, msg), new AsyncCallback<PublishWorkspaceChatResult>()
+      {
+         @Override
+         public void onFailure(Throwable caught)
+         {
+         }
+
+         @Override
+         public void onSuccess(PublishWorkspaceChatResult result)
+         {
+         }
+      });
    }
 
    public void addTranslator(SessionId sessionId, Person person, TransUnit selectedTransUnit)

@@ -124,4 +124,11 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Project-wide Search and Replace")
    String projectWideSearchAndReplace();
+
+   @DefaultMessage("has quit workspace")
+   String hasQuitWorkspace();
+
+   @DefaultMessage("has joined workspace")
+   String hasJoinedWorkspace();
+
 }
