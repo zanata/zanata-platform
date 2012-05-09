@@ -37,7 +37,7 @@
         <!--this will get set by maven dependency:properties goal and be used in gwt-maven-plugin-->
         <lombok.lib>${org.projectlombok:lombok:jar}</lombok.lib>
         <lombok.source.dir>${project.build.sourceDirectory}/org/zanata/webtrans/shared/model</lombok.source.dir>
-        <delombok.dir>${project.build.directory}/generated-sources/org/zanata/webtrans/shared/model</delombok.dir>
+        <delombok.dir>${project.build.directory}/delombok/org/zanata/webtrans/shared/model</delombok.dir>
 	</properties>
 
 	<build>
@@ -59,66 +59,6 @@
                         <goals>
                             <goal>properties</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok-maven-plugin</artifactId>
-                <version>0.10.6.0</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>delombok</goal>
-                        </goals>
-                        <configuration>
-                            <sourceDirectory>${lombok.source.dir}</sourceDirectory>
-                            <outputDirectory>${delombok.dir}</outputDirectory>
-                            <verbose>true</verbose>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>sun.jdk</groupId>
-                        <artifactId>tools</artifactId>
-                        <version>1.6</version>
-                        <scope>system</scope>
-                        <systemPath>${java.home}/../lib/tools.jar</systemPath>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <compilerVersion>1.6</compilerVersion>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <!--<excludes>-->
-                        <!--<exclude>${lombok.source.dir}/**/*.*</exclude>-->
-                    <!--</excludes>-->
-                    <!--<includes>-->
-                        <!--<include>${delombok.dir}/**/*.*</include>-->
-                        <!--<include>${project.build.sourceDirectory}/**/*.*</include>-->
-                    <!--</includes>-->
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <!--<includes>-->
-                                <!--<include>${delombok.dir}/**/*.java</include>-->
-                                <!--<include>${project.build.sourceDirectory}/**/*.java</include>-->
-                            <!--</includes>-->
-                            <excludes>
-                                <exclude>${lombok.source.dir}/**/*.java</exclude>
-                            </excludes>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -277,7 +217,8 @@
                 <configuration>
                     <runTarget>zanata/webtrans/Application.html</runTarget>
                     <noServer>true</noServer>
-                    <extraJvmArgs>-javaagent:${lombok.lib}=ECJ</extraJvmArgs>
+                    <!--below is needed if you want to use lombok on gwt code-->
+                    <!--<extraJvmArgs>-javaagent:${lombok.lib}=ECJ</extraJvmArgs>-->
                 </configuration>
 			</plugin>
 
@@ -883,6 +824,64 @@
 
 			</build>
 		</profile>
+
+        <profile>
+            <!--this is used to run GWT in dev mode. Adjust your IDE to include the delombok -->
+            <id>delombok</id>
+            <properties>
+                <zanata.gwt.module>org.zanata.webtrans.ApplicationSafari</zanata.gwt.module>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <configuration>
+                                    <target>
+                                        <echo>include following as source in your IDE </echo>
+                                        <echo>${delombok.dir}</echo>
+                                        <echo>exclude following as source in your IDE</echo>
+                                        <echo>${lombok.source.dir}</echo>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok-maven-plugin</artifactId>
+                        <version>0.11.0.0</version>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>delombok</goal>
+                                </goals>
+                                <configuration>
+                                    <sourceDirectory>${lombok.source.dir}</sourceDirectory>
+                                    <outputDirectory>${delombok.dir}</outputDirectory>
+                                    <verbose>true</verbose>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>sun.jdk</groupId>
+                                <artifactId>tools</artifactId>
+                                <version>1.6</version>
+                                <scope>system</scope>
+                                <systemPath>${java.home}/../lib/tools.jar</systemPath>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
 	</profiles>
 
