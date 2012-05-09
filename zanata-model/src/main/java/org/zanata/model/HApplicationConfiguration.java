@@ -30,7 +30,6 @@ import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 

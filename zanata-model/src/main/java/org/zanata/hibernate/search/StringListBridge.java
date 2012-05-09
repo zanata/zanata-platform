@@ -10,8 +10,6 @@ import org.apache.lucene.document.Field;
 import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
 import org.hibernate.search.bridge.ParameterizedBridge;
-import org.jboss.seam.annotations.Logger;
-import org.jboss.seam.log.Log;
 
 import lombok.extern.slf4j.Slf4j;
 

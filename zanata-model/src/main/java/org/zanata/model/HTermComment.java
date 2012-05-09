@@ -33,7 +33,6 @@ import org.hibernate.annotations.Type;
 import org.hibernate.validator.NotNull;
 
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
