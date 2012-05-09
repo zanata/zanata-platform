@@ -1,10 +1,5 @@
 package org.zanata.rest.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
-import javax.ws.rs.core.Response.Status;
-
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,11 +8,38 @@ import org.testng.annotations.Test;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
+import org.zanata.seam.SeamAutowire;
+import org.zanata.service.impl.CopyTransServiceImpl;
+import org.zanata.service.impl.DocumentServiceImpl;
+import org.zanata.service.impl.LocaleServiceImpl;
 
-public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
+import javax.ws.rs.core.Response.Status;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+public class ResourceServiceRestTest extends ResourceTranslationServiceRestTest
 {
-   private final Logger log = LoggerFactory.getLogger(ResourceServiceSeamTest.class);
+   private final Logger log = LoggerFactory.getLogger(ResourceServiceRestTest.class);
    private ResourceTestObjectFactory resourceTestFactory = new ResourceTestObjectFactory();
+   private SeamAutowire seam = SeamAutowire.instance();
+
+   @Override
+   protected void prepareResources()
+   {
+      seam.reset();
+      seam.ignoreNonResolvable()
+          .use("session", getSession())
+          .useImpl(LocaleServiceImpl.class)
+          .useImpl(CopyTransServiceImpl.class)
+          .useImpl(DocumentServiceImpl.class);
+
+      SourceDocResourceService sourceDocResourceService = seam.autowire(SourceDocResourceService.class);
+      TranslatedDocResourceService translatedDocResourceService = seam.autowire(TranslatedDocResourceService.class);
+
+      resources.add(sourceDocResourceService);
+      resources.add(translatedDocResourceService);
+   }
 
    @Test(dataProvider = "ResourceTestData")
    public void testPutGetResourceWithExtension(Resource sr)

@@ -263,7 +263,7 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
     * Overrides DOM.scrollIntoView() - focus on element's bottom right corner
     * This implementation focus on element's top left corner
     */
-   public native void scrollIntoView(Element elem) /*-{
+   public static native void scrollIntoView(Element elem) /*-{
 		var left = elem.offsetLeft, top = elem.offsetTop;
 		var width = elem.offsetWidth, height = elem.offsetHeight;
 
