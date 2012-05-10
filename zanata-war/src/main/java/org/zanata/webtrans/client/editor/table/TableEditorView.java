@@ -33,6 +33,7 @@ import org.zanata.webtrans.client.ui.LoadingPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -69,6 +70,7 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    {
        this(messages, new RedirectingTableModel<TransUnit>(), eventBus, workspaceContext, sourceContentsPresenter, targetContentsPresenter);
        loadingPanel = new LoadingPanel(resources);
+      loadingPanel.hide();
    }
 
    private TableEditorView(NavigationMessages messages, RedirectingTableModel<TransUnit> tableModel, EventBus eventBus, WorkspaceContext workspaceContext, final SourceContentsPresenter sourceContentsPresenter, TargetContentsPresenter targetContentsPresenter)
@@ -140,6 +142,14 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
       return this;
    }
 
+   private int ignoreStopProcessingCount = 0;
+
+   @Override
+   public void ignoreStopProcessing()
+   {
+      ignoreStopProcessingCount++;
+   }
+
    @Override
    public void startProcessing()
    {
@@ -150,8 +160,15 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    @Override
    public void stopProcessing()
    {
-      setVisible(true);
-      loadingPanel.hide();
+      if (ignoreStopProcessingCount == 0)
+      {
+         setVisible(true);
+         loadingPanel.hide();
+      }
+      else
+      {
+         ignoreStopProcessingCount--;
+      }
    }
 
    @Override	

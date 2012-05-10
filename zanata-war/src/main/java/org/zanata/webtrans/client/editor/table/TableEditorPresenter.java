@@ -146,6 +146,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       void setTransUnitDetails(TransUnit selectedTransUnit);
 
       boolean isProcessing();
+
+      void ignoreStopProcessing();
    }
 
    private DocumentId documentId;
@@ -317,7 +319,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                Log.info("cancelling selection");
                display.getTargetCellEditor().clearSelection();
             }
-            display.startProcessing();
             findMessage = event.getMessage();
             display.setFindMessage(findMessage);
             if (selectedTransUnit != null)
@@ -563,19 +564,25 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       {
          int numRows = request.getNumRows();
          int startRow = request.getStartRow();
-         Log.info("Table requesting " + numRows + " starting from " + startRow);
 
          if (documentId == null)
          {
             callback.onFailure(new RuntimeException("No DocumentId"));
             return;
          }
+         Log.info("Table requesting " + numRows + " starting from " + startRow);
 
-         display.startProcessing();
+         if (display.isProcessing())
+         {
+            display.ignoreStopProcessing();
+         }
+         else
+         {
+            display.startProcessing();
+         }
 
          dispatcher.execute(new GetTransUnitList(documentId, startRow, numRows, findMessage, filterViewConfirmationPanel.isFilterTranslated(), filterViewConfirmationPanel.isFilterNeedReview(), filterViewConfirmationPanel.isFilterUntranslated(), targetTransUnitId), new AsyncCallback<GetTransUnitListResult>()
          {
-
             @Override
             public void onSuccess(GetTransUnitListResult result)
             {
@@ -585,7 +592,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                Log.info("Got " + result.getUnits().size() + " rows back of " + result.getTotalCount() + " available");
                callback.onRowsReady(request, response);
                display.getTableModel().setRowCount(result.getTotalCount());
-               display.stopProcessing();
 
                int gotoRow = curRowIndex;
 
@@ -597,6 +603,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                   }
                   tableModelHandler.gotoRow(gotoRow, false);
                }
+               display.stopProcessing();
             }
 
             @Override
@@ -1119,7 +1126,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    {
       if (!selectDocId.equals(documentId))
       {
-         display.startProcessing();
+         // display.startProcessing();
          documentId = selectDocId;
          initialiseTransUnitList();
       }
