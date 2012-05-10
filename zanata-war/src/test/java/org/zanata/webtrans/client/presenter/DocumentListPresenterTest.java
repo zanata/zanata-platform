@@ -33,6 +33,7 @@ import org.easymock.Capture;
 import org.easymock.CaptureType;
 import org.easymock.IAnswer;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -86,6 +87,7 @@ public class DocumentListPresenterTest
    private DocumentListPresenter dlp;
 
    // mocks for interacting classes
+   private HasValue mockCaseSensitiveCheckbox; // Boolean
    private ListDataProvider mockDataProvider;
    private CachingDispatchAsync mockDispatcher;
    private DocumentListPresenter.Display mockDisplay;
@@ -106,6 +108,7 @@ public class DocumentListPresenterTest
    private Capture<ValueChangeHandler<String>> capturedHistoryValueChangeHandler;
    private Capture<ValueChangeHandler<String>> capturedTextboxChangeHandler;
    private Capture<ValueChangeHandler<Boolean>> capturedCheckboxChangeHandler;
+   private Capture<ValueChangeHandler<Boolean>> capturedCaseSensitiveCheckboxChangeHandler;
    private Capture<SelectionHandler<DocumentInfo>> capturedDocumentSelectionHandler;
    private Capture<GetDocumentList> capturedDocListRequest;
    private Capture<AsyncCallback<GetDocumentListResult>> capturedDocListRequestCallback;
@@ -118,6 +121,7 @@ public class DocumentListPresenterTest
    @BeforeClass
    public void createMocks()
    {
+      mockCaseSensitiveCheckbox = createMock(HasValue.class);
       mockDataProvider = createMock(ListDataProvider.class);
       mockDispatcher = createMock(CachingDispatchAsync.class);
       mockDisplay = createMock(DocumentListPresenter.Display.class);
@@ -130,6 +134,14 @@ public class DocumentListPresenterTest
       mockMessages = createMock(WebTransMessages.class);
       mockWindowLocation = createMock(Window.Location.class);
       mockWorkspaceContext = createMock(WorkspaceContext.class);
+
+      capturedCaseSensitiveCheckboxChangeHandler = new Capture<ValueChangeHandler<Boolean>>();
+   }
+
+   @BeforeMethod
+   public void resetMocks()
+   {
+      capturedCaseSensitiveCheckboxChangeHandler.reset();
    }
 
    private DocumentListPresenter newDocListPresenter()
@@ -449,6 +461,7 @@ public class DocumentListPresenterTest
       String filterText = "match/exact/filter";
       expect(mockFilterTextbox.getValue()).andReturn(filterText).anyTimes();
       expect(mockExactSearchCheckbox.getValue()).andReturn(false).anyTimes();
+      expect(mockCaseSensitiveCheckbox.getValue()).andReturn(false).anyTimes();
 
       replayAllMocks();
       dlp = newDocListPresenter();
@@ -484,6 +497,7 @@ public class DocumentListPresenterTest
       String filterText = "match/exact/filter";
       expect(mockFilterTextbox.getValue()).andReturn(filterText).anyTimes();
       expect(mockExactSearchCheckbox.getValue()).andReturn(true).anyTimes();
+      expect(mockCaseSensitiveCheckbox.getValue()).andReturn(false).anyTimes();
 
       replayAllMocks();
       dlp = newDocListPresenter();
@@ -523,6 +537,7 @@ public class DocumentListPresenterTest
       String filterText = " does/not, not/match ,no/filter ";
       expect(mockFilterTextbox.getValue()).andReturn(filterText).anyTimes();
       expect(mockExactSearchCheckbox.getValue()).andReturn(false).anyTimes();
+      expect(mockCaseSensitiveCheckbox.getValue()).andReturn(false).anyTimes();
 
       replayAllMocks();
       dlp = newDocListPresenter();
@@ -564,6 +579,8 @@ public class DocumentListPresenterTest
       // value should only be set if current value is different from history
       expect(mockFilterTextbox.getValue()).andReturn("different text").anyTimes();
       expect(mockExactSearchCheckbox.getValue()).andReturn(false).anyTimes();
+      expect(mockCaseSensitiveCheckbox.getValue()).andReturn(false).anyTimes();
+
       replayAllMocks();
       dlp = newDocListPresenter();
       dlp.bind();
@@ -588,6 +605,8 @@ public class DocumentListPresenterTest
       expect(mockFilterTextbox.getValue()).andReturn("").anyTimes();
       // value should only be set if current value is different from history
       expect(mockExactSearchCheckbox.getValue()).andReturn(false).anyTimes();
+      expect(mockCaseSensitiveCheckbox.getValue()).andReturn(false).anyTimes();
+
       replayAllMocks();
       dlp = newDocListPresenter();
       dlp.bind();
@@ -679,6 +698,7 @@ public class DocumentListPresenterTest
       capturedCheckboxChangeHandler = new Capture<ValueChangeHandler<Boolean>>();
       expect(mockExactSearchCheckbox.addValueChangeHandler(and(capture(capturedCheckboxChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
       capturedTextboxChangeHandler = new Capture<ValueChangeHandler<String>>();
+      expect(mockCaseSensitiveCheckbox.addValueChangeHandler(and(capture(capturedCaseSensitiveCheckboxChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
       expect(mockFilterTextbox.addValueChangeHandler(and(capture(capturedTextboxChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
       setupMockHistory("");
       expect(mockWorkspaceContext.getWorkspaceId()).andReturn(new WorkspaceId(new ProjectIterationId(testProjectSlug, testIterationSlug), new LocaleId(testLocaleId))).anyTimes();
@@ -741,12 +761,14 @@ public class DocumentListPresenterTest
       expect(mockDisplay.getDataProvider()).andReturn(mockDataProvider).anyTimes();
       expect(mockDisplay.getDocumentList()).andReturn(mockDocList).anyTimes();
       expect(mockDisplay.getFilterTextBox()).andReturn(mockFilterTextbox).anyTimes();
+      expect(mockDisplay.getCaseSensitiveCheckbox()).andReturn(mockCaseSensitiveCheckbox).anyTimes();
       expect(mockDisplay.getExactSearchCheckbox()).andReturn(mockExactSearchCheckbox).anyTimes();
       expect(mockDisplay.getDocumentListTable()).andReturn(mockDocListTable).anyTimes();
    }
 
    private void resetAllMocks()
    {
+      reset(mockCaseSensitiveCheckbox);
       reset(mockDataProvider);
       reset(mockDispatcher);
       reset(mockDisplay);
@@ -763,6 +785,7 @@ public class DocumentListPresenterTest
 
    private void replayAllMocks()
    {
+      replay(mockCaseSensitiveCheckbox);
       replay(mockDataProvider);
       replay(mockDispatcher);
       replay(mockDisplay);
@@ -779,6 +802,7 @@ public class DocumentListPresenterTest
 
    private void verifyAllMocks()
    {
+      verify(mockCaseSensitiveCheckbox);
       verify(mockDataProvider);
       verify(mockDispatcher);
       verify(mockDisplay);

@@ -38,9 +38,13 @@ public class HistoryToken
    public static final String KEY_DOC_FILTER_OPTION = "filtertype";
    public static final String VALUE_DOC_FILTER_EXACT = "exact";
 
+   public static final String KEY_DOC_FILTER_CASE = "filtercase";
+   public static final String VALUE_DOC_FILTER_CASE_SENSITIVE = "sensitive";
+
    private MainView view;
    private String fullDocPath;
    private boolean docFilterExact;
+   private boolean docFilterCaseSensitive;
    private String docFilterText;
    private String searchText;
    private String projectSearchText;
@@ -54,6 +58,7 @@ public class HistoryToken
    private static final String DEFAULT_DOCUMENT_PATH = "";
    private static final String DEFAULT_DOC_FILTER_TEXT = "";
    private static final boolean DEFAULT_DOC_FILTER_EXACT = false;
+   private static final boolean DEFAULT_DOC_FILTER_CASE_SENSITIVE = false;
    private static final String DEFAULT_SEARCH_TEXT = "";
    private static final String DEFAULT_PROJECT_SEARCH_TEXT = "";
    private static final String DEFAULT_PROJECT_SEARCH_REPLACE = "";
@@ -67,6 +72,7 @@ public class HistoryToken
       fullDocPath = DEFAULT_DOCUMENT_PATH;
       docFilterText = DEFAULT_DOC_FILTER_TEXT;
       docFilterExact = DEFAULT_DOC_FILTER_EXACT;
+      docFilterCaseSensitive = DEFAULT_DOC_FILTER_CASE_SENSITIVE;
       searchText = DEFAULT_SEARCH_TEXT;
       projectSearchText = DEFAULT_PROJECT_SEARCH_TEXT;
       projectSearchReplace = DEFAULT_PROJECT_SEARCH_REPLACE;
@@ -136,6 +142,14 @@ public class HistoryToken
          else if (key.equals(KEY_DOC_FILTER_TEXT))
          {
             historyToken.setDocFilterText(value);
+         }
+         else if (key.equals(KEY_DOC_FILTER_CASE))
+         {
+            if (value.equals(VALUE_DOC_FILTER_CASE_SENSITIVE))
+            {
+               historyToken.setDocFilterCaseSensitive(true);
+            }
+            //else default used
          }
          else if (key.equals(KEY_SEARCH_DOC_TEXT))
          {
@@ -299,6 +313,16 @@ public class HistoryToken
          this.docFilterText = value;
    }
 
+   public void setDocFilterCaseSensitive(boolean caseSensitive)
+   {
+      docFilterCaseSensitive = caseSensitive;
+   }
+
+   public boolean isDocFilterCaseSensitive()
+   {
+      return docFilterCaseSensitive;
+   }
+
    /**
     * @return a token string for use with
     *         {@link com.google.gwt.user.client.History}
@@ -335,6 +359,11 @@ public class HistoryToken
       if (!docFilterText.equals(DEFAULT_DOC_FILTER_TEXT))
       {
          token = addTokenToTokenString(token, KEY_DOC_FILTER_TEXT, docFilterText);
+      }
+
+      if (docFilterCaseSensitive != DEFAULT_DOC_FILTER_CASE_SENSITIVE)
+      {
+         token = addTokenToTokenString(token, KEY_DOC_FILTER_CASE, VALUE_DOC_FILTER_CASE_SENSITIVE);
       }
 
       if (!projectSearchText.equals(DEFAULT_PROJECT_SEARCH_TEXT))

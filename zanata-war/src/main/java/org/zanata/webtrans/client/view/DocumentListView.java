@@ -66,7 +66,7 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    ClearableTextBox filterTextBox;
 
    @UiField
-   CheckBox exactSearchCheckBox;
+   CheckBox exactSearchCheckBox, caseSensitiveCheckBox;
 
    CellTable<DocumentNode> documentListTable;
 
@@ -136,7 +136,13 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    {
       return exactSearchCheckBox;
    }
-   
+
+   @Override
+   public HasValue<Boolean> getCaseSensitiveCheckbox()
+   {
+      return caseSensitiveCheckBox;
+   }
+
    @Override
    public void renderTable()
    {
