@@ -435,6 +435,8 @@ public class DocumentListPresenterTest
       assertThat("unchecking the 'exact search' checkbox should be reflected in a new history token", capturedHistoryTokenString.getValue(), is(inexactSearchToken.toTokenString()));
    }
 
+   // TODO tests for check and uncheck case sensitive check
+
    @Test
    public void documentSelectUpdatesHistoryToken()
    {
@@ -524,6 +526,8 @@ public class DocumentListPresenterTest
       assertThat("the data provider should have all documents that exactly match the filter", actualDocInfos, hasItems(expectedDocs.get(0)));
       assertThat("the data provider list should contain exactly the number of documents matching the filter", dataProviderList.size(), is(1));
    }
+
+   // TODO test case sensitivity option
 
    @Test
    public void commaSeparatedFilter()
@@ -618,6 +622,8 @@ public class DocumentListPresenterTest
       });
       verifyAllMocks();
    }
+
+   // TODO test case sensitive check updated from history
 
    // TODO test: update selected document when different from doc selection
    // event, as in DocumentListPresenter.setSelection()
