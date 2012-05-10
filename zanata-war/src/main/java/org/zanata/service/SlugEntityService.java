@@ -38,4 +38,13 @@ public interface SlugEntityService
     */
    boolean isSlugAvailable(String slug, Class<? extends SlugEntityBase> cls);
 
+
+   /**
+    * Determines if a given slug is available for a project iteration.
+    *
+    * @param slug The slug to check
+    * @param projectSlug The project slug.
+    * @return True if the slug is not in use by any other project iteration in the given project. False, otherwise.
+    */
+   boolean isProjectIterationSlugAvailable(String slug, String projectSlug);
 }
