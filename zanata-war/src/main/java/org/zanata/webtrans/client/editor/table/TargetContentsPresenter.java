@@ -493,11 +493,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else if (checkKey.isNextStateEntryKey())
       {
-         moveNext(false);
+         moveToNextState(NavTransUnitEvent.NavigationType.NextEntry);
       }
       else if (checkKey.isPreviousStateEntryKey())
       {
-         movePrevious(false);
+         moveToNextState(NavTransUnitEvent.NavigationType.PrevEntry);
       }
       else if (checkKey.isSaveAsFuzzyKey())
       {
@@ -525,9 +525,21 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
    }
 
-   public void moveToNextState(NavTransUnitEvent.NavigationType nav)
+   public void moveToNextState(final NavTransUnitEvent.NavigationType nav)
    {
       cellEditor.savePendingChange(true);
+      scheduler.scheduleDeferred(new Scheduler.ScheduledCommand()
+      {
+         @Override
+         public void execute()
+         {
+            goToRowWithState(nav);
+         }
+      });
+   }
+
+   private void goToRowWithState(NavTransUnitEvent.NavigationType nav)
+   {
       if (configHolder.isFuzzyAndUntranslated())
       {
          cellEditor.gotoFuzzyAndNewRow(nav);
