@@ -27,6 +27,7 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.SlugEntityBase;
 import org.zanata.service.SlugEntityService;
 
@@ -47,5 +48,13 @@ public class SlugEntityServiceImpl implements SlugEntityService
    public boolean isSlugAvailable(String slug, Class<? extends SlugEntityBase> cls)
    {
       return session.createCriteria(cls).add(Restrictions.eq("slug", slug)).list().size() == 0;
+   }
+
+   @Override
+   public boolean isProjectIterationSlugAvailable(String slug, String projectSlug)
+   {
+      return session.createCriteria(HProjectIteration.class).add(Restrictions.eq("slug", slug))
+            .createCriteria("project")
+            .add(Restrictions.eq("slug", projectSlug)).list().size() == 0;
    }
 }

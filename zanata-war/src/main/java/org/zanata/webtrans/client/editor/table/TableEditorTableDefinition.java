@@ -259,9 +259,9 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
    public void setTransUnitDetails(TransUnit selectedTransUnit)
    {
-      VerticalPanel sourcePanel = sourcePanelMap.get(selectedTransUnit.getId());
-      if (sourcePanel != null)
+      if (selectedTransUnit != null && sourcePanelMap.get(selectedTransUnit.getId()) != null)
       {
+         VerticalPanel sourcePanel = sourcePanelMap.get(selectedTransUnit.getId());
          FlowPanel wrapper = new FlowPanel();
          wrapper.addStyleName("TransUnitDetail-Wrapper");
 

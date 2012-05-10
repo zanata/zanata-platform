@@ -132,7 +132,7 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
 
    public boolean isSlugAvailable(String slug)
    {
-      return slugEntityServiceImpl.isSlugAvailable(slug, HProjectIteration.class);
+      return slugEntityServiceImpl.isProjectIterationSlugAvailable(slug, projectSlug);
    }
 
    @Override
