@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -36,6 +37,7 @@ import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.util.WebElementUtil;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
@@ -44,6 +46,12 @@ import com.google.common.collect.ImmutableList;
 
 public class AbstractPage
 {
+   protected List<String> getErrors()
+   {
+      List<WebElement> errorSpans = getDriver().findElements(By.xpath("//span[@class='errors']"));
+      return WebElementUtil.elementsToText(errorSpans);
+   }
+
    public enum PageContext
    {
       jsf, webTran
@@ -123,5 +131,15 @@ public class AbstractPage
    public FluentWait<WebDriver> waitForTenSec()
    {
       return ajaxWaitForTenSec;
+   }
+   
+   protected void clickSaveAndCheckErrors(WebElement saveButton)
+   {
+      saveButton.click();
+      List<String> errors = getErrors();
+      if (!errors.isEmpty())
+      {
+         throw new RuntimeException(StringUtils.join(errors, ";"));
+      }
    }
 }

@@ -55,7 +55,7 @@ public class CreateVersionPage extends AbstractPage
 
    public ProjectVersionPage saveVersion()
    {
-      saveButton.click();
+      clickSaveAndCheckErrors(saveButton);
       return new ProjectVersionPage(getDriver());
    }
 }
