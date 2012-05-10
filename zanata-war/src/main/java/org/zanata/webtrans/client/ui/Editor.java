@@ -177,6 +177,7 @@ public class Editor extends Composite implements ToggleEditor
    {
       listener.setValidationMessagePanel(this);
       fireValidationEvent();
+       event.stopPropagation();
    }
 
    @UiHandler("textArea")
