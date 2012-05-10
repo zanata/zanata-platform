@@ -25,11 +25,11 @@ import java.util.List;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
+import org.zanata.webtrans.client.presenter.SearchResultsPresenter.TransUnitReplaceInfo;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.ClearableTextBox;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
-import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
@@ -39,6 +39,7 @@ import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.ActionCell.Delegate;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.CheckboxCell;
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -50,7 +51,9 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -176,16 +179,17 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
-   public HasData<TransUnit> addTUTable(Delegate<TransUnit> replaceDelegate,
-                             SelectionModel<TransUnit> selectionModel,
+   public HasData<TransUnitReplaceInfo> addTUTable(Delegate<TransUnitReplaceInfo> replaceDelegate,
+                             Delegate<TransUnitReplaceInfo> undoDelegate,
+                             SelectionModel<TransUnitReplaceInfo> selectionModel,
                              ValueChangeHandler<Boolean> selectAllHandler)
    {
-      CellTable<TransUnit> table = buildTable(replaceDelegate, selectionModel, selectAllHandler);
+      CellTable<TransUnitReplaceInfo> table = buildTable(replaceDelegate, undoDelegate, selectionModel, selectAllHandler);
       searchResultsPanel.add(table);
       return table;
    }
 
-   private CellTable<TransUnit> buildTable(Delegate<TransUnit> replaceDelegate, SelectionModel<TransUnit> selectionModel,
+   private CellTable<TransUnitReplaceInfo> buildTable(Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate, SelectionModel<TransUnitReplaceInfo> selectionModel,
          ValueChangeHandler<Boolean> selectAllHandler)
    {
       // create columns
@@ -193,16 +197,16 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       CheckboxHeader checkboxColumnHeader = new CheckboxHeader();
       checkboxColumnHeader.addValueChangeHandler(selectAllHandler);
 
-      TextColumn<TransUnit> rowIndexColumn = new TextColumn<TransUnit>()
+      TextColumn<TransUnitReplaceInfo> rowIndexColumn = new TextColumn<TransUnitReplaceInfo>()
       {
          @Override
-         public String getValue(TransUnit tu)
+         public String getValue(TransUnitReplaceInfo tu)
          {
-            return Integer.toString(tu.getRowIndex());
+            return Integer.toString(tu.getTransUnit().getRowIndex());
          }
       };
 
-      Column<TransUnit, List<String>> sourceColumn = new Column<TransUnit, List<String>>(new AbstractCell<List<String>>()
+      Column<TransUnitReplaceInfo, List<String>> sourceColumn = new Column<TransUnitReplaceInfo, List<String>>(new AbstractCell<List<String>>()
       {
          @Override
          public void render(Context context, List<String> contents, SafeHtmlBuilder sb)
@@ -217,13 +221,13 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       })
       {
          @Override
-         public List<String> getValue(TransUnit transUnit)
+         public List<String> getValue(TransUnitReplaceInfo info)
          {
-            return transUnit.getSources();
+            return info.getTransUnit().getSources();
          }
       };
 
-      Column<TransUnit, List<String>> targetColumn = new Column<TransUnit, List<String>>(new AbstractCell<List<String>>()
+      Column<TransUnitReplaceInfo, List<String>> targetColumn = new Column<TransUnitReplaceInfo, List<String>>(new AbstractCell<List<String>>()
       {
          @Override
          public void render(Context context, List<String> contents, SafeHtmlBuilder sb)
@@ -243,20 +247,20 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       {
 
          @Override
-         public List<String> getValue(TransUnit tu)
+         public List<String> getValue(TransUnitReplaceInfo info)
          {
-            return tu.getTargets();
+            return info.getTransUnit().getTargets();
          }
 
          @Override
-         public String getCellStyleNames(Context context, TransUnit tu)
+         public String getCellStyleNames(Context context, TransUnitReplaceInfo info)
          {
-            String styleNames = Strings.nullToEmpty(super.getCellStyleNames(context, tu));
-            if (tu.getStatus() == ContentState.Approved)
+            String styleNames = Strings.nullToEmpty(super.getCellStyleNames(context, info));
+            if (info.getTransUnit().getStatus() == ContentState.Approved)
             {
                styleNames += " ApprovedStateDecoration";
             }
-            else if (tu.getStatus() == ContentState.NeedReview)
+            else if (info.getTransUnit().getStatus() == ContentState.NeedReview)
             {
                styleNames += " FuzzyStateDecoration";
             }
@@ -264,10 +268,10 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
          }
       };
 
-      ReplaceColumn replaceButtonColumn = new ReplaceColumn(replaceDelegate);
+      ReplaceColumn replaceButtonColumn = new ReplaceColumn(replaceDelegate, undoDelegate);
 
-      CellTable<TransUnit> table = new CellTable<TransUnit>();
-      table.setSelectionModel(selectionModel, DefaultSelectionEventManager.<TransUnit> createCheckboxManager());
+      CellTable<TransUnitReplaceInfo> table = new CellTable<TransUnitReplaceInfo>();
+      table.setSelectionModel(selectionModel, DefaultSelectionEventManager.<TransUnitReplaceInfo> createCheckboxManager());
       table.setWidth("100%", true);
 
       // TODO use localisable headings (should already exist somewhere)
@@ -306,21 +310,21 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       });
    }
 
-   private class CheckColumn extends Column<TransUnit, Boolean>
+   private class CheckColumn extends Column<TransUnitReplaceInfo, Boolean>
    {
 
-      private SelectionModel<TransUnit> selectionModel;
+      private SelectionModel<TransUnitReplaceInfo> selectionModel;
 
-      public CheckColumn(SelectionModel<TransUnit> selectionModel)
+      public CheckColumn(SelectionModel<TransUnitReplaceInfo> selectionModel)
       {
          super(new CheckboxCell(true, false));
          this.selectionModel = selectionModel;
       }
 
       @Override
-      public Boolean getValue(TransUnit tu)
+      public Boolean getValue(TransUnitReplaceInfo info)
       {
-         return selectionModel.isSelected(tu);
+         return selectionModel.isSelected(info);
       }
 
    }
@@ -394,20 +398,77 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       }
    }
 
-   private class ReplaceColumn extends Column<TransUnit, TransUnit>
+   private class ReplaceColumn extends Column<TransUnitReplaceInfo, TransUnitReplaceInfo>
    {
 
-      public ReplaceColumn(Delegate<TransUnit> replaceDelegate)
+      public ReplaceColumn(Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate)
       {
-         super(new ActionCell<TransUnit>("Replace", replaceDelegate));
+         super(new UndoableTransUnitActionCell("Replace", replaceDelegate, "Undo", undoDelegate));
       }
 
       @Override
-      public TransUnit getValue(TransUnit tu)
+      public TransUnitReplaceInfo getValue(TransUnitReplaceInfo info)
       {
-         return tu;
+         return info;
       }
    }
+
+   private class UndoableTransUnitActionCell extends ActionCell<TransUnitReplaceInfo>
+   {
+      private Delegate<TransUnitReplaceInfo> undoDelegate;
+      private final SafeHtml undoHtml;
+
+      public UndoableTransUnitActionCell(SafeHtml actionLabel, Delegate<TransUnitReplaceInfo> actionDelegate, SafeHtml undoLabel, Delegate<TransUnitReplaceInfo> undoDelegate) {
+         super(actionLabel, actionDelegate);
+         this.undoDelegate = undoDelegate;
+         // TODO make this a 'replaced' message with undo button or link
+         this.undoHtml = new SafeHtmlBuilder().appendHtmlConstant(
+             "<button type=\"button\" tabindex=\"-1\">").append(undoLabel).appendHtmlConstant(
+             "</button>").toSafeHtml();
+      }
+
+      public UndoableTransUnitActionCell(String actionLabel, Delegate<TransUnitReplaceInfo> actionDelegate, String undoLabel, Delegate<TransUnitReplaceInfo> undoDelegate)
+      {
+         this(SafeHtmlUtils.fromString(actionLabel), actionDelegate, SafeHtmlUtils.fromString(undoLabel), undoDelegate);
+      }
+
+      @Override
+      public void render(com.google.gwt.cell.client.Cell.Context context, TransUnitReplaceInfo value, SafeHtmlBuilder sb)
+      {
+
+         if (value.isReplaceable())
+         {
+            // render default button
+            super.render(context, value, sb);
+         }
+         else if (value.isUndoable())
+         {
+            // render undo button
+            sb.append(undoHtml);
+         }
+         else
+         {
+            //assume processing
+            // TODO set to show "replacing..." or "processing..."
+         }
+
+      }
+
+      @Override
+      protected void onEnterKeyDown(Context context, Element parent, TransUnitReplaceInfo value, NativeEvent event, ValueUpdater<TransUnitReplaceInfo> valueUpdater) {
+         // FIXME see above
+         if (value.isReplaceable())
+         {
+            super.onEnterKeyDown(context, parent, value, event, valueUpdater);
+         }
+         else if (value.isUndoable())
+         {
+            undoDelegate.execute(value);
+         }
+         // else ignore (is processing)
+      };
+   }
+
 
    @Override
    public HasChangeHandlers getSearchFieldSelector()
