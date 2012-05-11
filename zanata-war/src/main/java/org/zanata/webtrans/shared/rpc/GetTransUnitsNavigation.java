@@ -27,56 +27,28 @@ public class GetTransUnitsNavigation extends AbstractWorkspaceAction<GetTransUni
 
    private static final long serialVersionUID = 1L;
 
-   private int count;
    private Long id;
-   private boolean reverse;
    private String phrase;
-   private boolean isFuzzyState, isNewState;
+   private boolean isFuzzyState, isNewState, isApprovedState;
 
    @SuppressWarnings("unused")
    private GetTransUnitsNavigation()
    {
    }
 
-   public GetTransUnitsNavigation(Long id, int count, boolean reverse, String phrase, boolean isNewState, boolean isFuzzyState)
+   public GetTransUnitsNavigation(Long id, String phrase, boolean isNewState, boolean isFuzzyState, boolean isApprovedState)
    {
       this.id = id;
-      this.count = count;
-      this.setReverse(reverse);
       this.phrase = phrase;
       this.isNewState = isNewState;
       this.isFuzzyState = isFuzzyState;
+      this.isApprovedState = isApprovedState;
    }
 
-
-   public int getCount()
-   {
-      return count;
-   }
-
-   public void setCount(int count)
-   {
-      this.count = count;
-   }
 
    public Long getId()
    {
       return id;
-   }
-
-   public void setId(Long id)
-   {
-      this.id = id;
-   }
-
-   public void setReverse(boolean reverse)
-   {
-      this.reverse = reverse;
-   }
-
-   public boolean isReverse()
-   {
-      return reverse;
    }
 
    public String getPhrase()
@@ -92,5 +64,10 @@ public class GetTransUnitsNavigation extends AbstractWorkspaceAction<GetTransUni
    public boolean isNewState()
    {
       return isNewState;
+   }
+
+   public boolean isApprovedState()
+   {
+      return isApprovedState;
    }
 }
