@@ -811,15 +811,17 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onSuccess(GetTransUnitsNavigationResult result)
          {
-            isReqComplete = true;
             if (!result.getUnits().isEmpty())
             {
                for (Long offset : result.getUnits())
                {
                   cacheList.add(offset + curRowIndex);
                }
+               isReqComplete = true;
+               Log.info("cachelist:" + cacheList);
                callBack.next(isNewState, isFuzzyState);
             }
+
          }
 
          @Override

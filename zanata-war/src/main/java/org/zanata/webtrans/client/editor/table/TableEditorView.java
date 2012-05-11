@@ -259,7 +259,9 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    @Override
    public TransUnit getTransUnitValue(int row)
    {
-      return getRowValue(row);
+      TransUnit rowValue = getRowValue(row);
+      Log.info("getting transunit [" + (rowValue != null) + "] on row:" + row);
+      return rowValue;
    }
 
    @Override

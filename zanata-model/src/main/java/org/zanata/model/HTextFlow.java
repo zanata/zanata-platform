@@ -303,7 +303,9 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    public Map<HLocale, HTextFlowTarget> getTargets()
    {
       if (targets == null)
+      {
          targets = new HashMap<HLocale, HTextFlowTarget>();
+      }
       return targets;
    }
 

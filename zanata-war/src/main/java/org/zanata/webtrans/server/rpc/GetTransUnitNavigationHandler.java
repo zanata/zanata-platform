@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -49,11 +50,10 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 @Name("webtrans.gwt.GetTransUnitNavigationHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetTransUnitsNavigation.class)
+@Slf4j
 public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTransUnitsNavigation, GetTransUnitsNavigationResult>
 {
 
-   @Logger
-   Log log;
    @In
    private TextFlowDAO textFlowDAO;
 
@@ -79,9 +79,9 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
       ArrayList<Long> results = new ArrayList<Long>();
       if (action.getPhrase() != null && !action.getPhrase().isEmpty())
       {
-         log.info("find message:" + action.getPhrase());
+         log.info("find message: {}", action.getPhrase());
          Set<Object[]> idSet = textFlowDAO.getNavigationBy(tf.getDocument().getId(), action.getPhrase().toLowerCase(), tf.getPos(), action.getWorkspaceId().getLocaleId(), action.isReverse());
-         log.info("size: " + idSet.size());
+         log.info("size: {}", idSet.size());
          Long step = 0L;
          int count = 0;
 
@@ -96,7 +96,7 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
                if (checkStateAndValidate(action.isNewState(), action.isFuzzyState(), textFlowTarget))
                {
                   results.add(step);
-                  log.info("add navigation step: " + step);
+                  log.info("add navigation step: {}", step);
                   count++;
                }
             }
@@ -108,6 +108,7 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
       }
       else
       {
+         log.info("get navigation by textFlow pos: {}, reverse: {}", tf.getPos(), action.isReverse());
          List<HTextFlow> textFlows = textFlowDAO.getNavigationByDocumentId(tf.getDocument().getId(), tf.getPos(), action.isReverse());
          int count = 0;
          Long step = 0L;
@@ -121,7 +122,7 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
                if (checkStateAndValidate(action.isNewState(), action.isFuzzyState(), textFlowTarget))
                {
                   results.add(step);
-                  log.info("add navigation step: " + step);
+                  log.info("add navigation step: {}", step);
                   count++;
                }
             }
