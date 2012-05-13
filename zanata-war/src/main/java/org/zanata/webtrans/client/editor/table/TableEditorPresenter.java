@@ -811,13 +811,13 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onSuccess(GetTransUnitsNavigationResult result)
          {
+            isReqComplete = true;
             if (!result.getUnits().isEmpty())
             {
                for (Long offset : result.getUnits())
                {
                   cacheList.add(offset + curRowIndex);
                }
-               isReqComplete = true;
                Log.info("cachelist:" + cacheList);
                callBack.next(isNewState, isFuzzyState);
             }
@@ -847,6 +847,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                {
                   cacheList.add(curRowIndex - offset);
                }
+               Log.info("cachelist:" + cacheList);
                callBack.prev(isNewState, isFuzzyState);
             }
          }
@@ -932,7 +933,9 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       if (transIdPrevCache.isEmpty())
       {
          if (isReqComplete)
+         {
             cachePrevState(cacheCallback, transIdPrevCache, isNewState, isFuzzyState);
+         }
       }
       else
       {
@@ -940,9 +943,9 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          int offset = transIdPrevCache.get(size - 1).intValue();
          if (curRowIndex > offset)
          {
-            for (int i = 0; i < size; i++)
+            for (Long aTransIdPrevCache : transIdPrevCache)
             {
-               int newRowIndex = transIdPrevCache.get(i).intValue();
+               int newRowIndex = aTransIdPrevCache.intValue();
                if (curRowIndex > newRowIndex)
                {
                   display.getTargetCellEditor().cancelEdit();
@@ -965,7 +968,9 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       if (transIdNextCache.isEmpty())
       {
          if (isReqComplete)
+         {
             cacheNextState(cacheCallback, transIdNextCache, isNewState, isFuzzyState);
+         }
       }
       else
       {
@@ -973,9 +978,9 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          int offset = transIdNextCache.get(size - 1).intValue();
          if (curRowIndex < offset)
          {
-            for (int i = 0; i < size; i++)
+            for (Long aTransIdNextCache : transIdNextCache)
             {
-               int newRowIndex = transIdNextCache.get(i).intValue();
+               int newRowIndex = aTransIdNextCache.intValue();
                if (curRowIndex < newRowIndex)
                {
                   display.getTargetCellEditor().cancelEdit();
