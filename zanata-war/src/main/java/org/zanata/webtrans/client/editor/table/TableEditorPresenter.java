@@ -22,14 +22,12 @@ package org.zanata.webtrans.client.editor.table;
 
 import static org.zanata.webtrans.client.editor.table.TableConstants.MAX_PAGE_ROW;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.common.EditState;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
@@ -66,8 +64,6 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
-import org.zanata.webtrans.shared.rpc.EditingTranslationAction;
-import org.zanata.webtrans.shared.rpc.EditingTranslationResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
@@ -328,7 +324,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                   if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getUpdateInfo().getTransUnit().getId()))
                   {
                      Log.info("selected TU updated; clear selection");
-                     // display.getTargetCellEditor().cancelEdit();
                      eventBus.fireEvent(new RequestValidationEvent());
                   }
 
@@ -776,28 +771,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          selectTransUnit(display.getTransUnitValue(rowNum), andEdit);
       }
    };
-
-   private void stopEditing(TransUnit rowValue)
-   {
-      dispatcher.execute(new EditingTranslationAction(rowValue.getId(), EditState.StopEditing), new AsyncCallback<EditingTranslationResult>()
-      {
-         @Override
-         public void onSuccess(EditingTranslationResult result)
-         {
-            // eventBus.fireEvent(new
-            // NotificationEvent(Severity.Warning,
-            // "TransUnit Editing is finished"));
-         }
-
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            Log.error("EditingTranslationAction failure " + caught, caught);
-            eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyStopFailed()));
-         }
-
-      });
-   }
 
    NavigationCacheCallback cacheCallback = new NavigationCacheCallback()
    {

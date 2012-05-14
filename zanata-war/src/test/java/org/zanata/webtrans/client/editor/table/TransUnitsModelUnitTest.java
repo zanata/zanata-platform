@@ -21,20 +21,16 @@
 
 package org.zanata.webtrans.client.editor.table;
 
-import com.google.common.collect.Lists;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.TestFixture;
-import org.zanata.webtrans.shared.model.TransUnit;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 
 @Test
 public class TransUnitsModelUnitTest
