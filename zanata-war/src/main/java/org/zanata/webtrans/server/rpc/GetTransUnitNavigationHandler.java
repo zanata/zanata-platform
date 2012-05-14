@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -50,11 +51,10 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 @Name("webtrans.gwt.GetTransUnitNavigationHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetTransUnitsNavigation.class)
+@Slf4j
 public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTransUnitsNavigation, GetTransUnitsNavigationResult>
 {
 
-   @Logger
-   Log log;
    @In
    private TextFlowDAO textFlowDAO;
 
@@ -111,6 +111,7 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
             idIndexList.add(textFlow.getId());
          }
       }
+
 
       return new GetTransUnitsNavigationResult(new DocumentId(action.getId()), idIndexList, transIdStateList);
    }

@@ -33,6 +33,7 @@ import org.apache.lucene.util.Version;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -123,6 +124,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    {
       Criteria c = getSession().createCriteria(HTextFlow.class);
       c.add(Restrictions.eq("document.id", documentId)).add(Restrictions.eq("obsolete", false));
+      c.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
       c.setCacheable(true).setComment("TextFlowDAO.getNavigationByDocumentId");
 
       c.addOrder(Order.asc("pos"));

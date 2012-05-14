@@ -23,8 +23,6 @@ package org.zanata.webtrans.client.editor.table;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.customware.gwt.presenter.client.EventBus;
-
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
@@ -53,7 +51,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    private TargetContentsPresenter targetContentsPresenter;
 
    private String findMessage;
-   private EventBus eventBus;
 
    private TransUnitDetailsPanel transUnitDetailsContent;
 
@@ -116,7 +113,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             sourceContentsView.highlightSearch(findMessage);
          }
          panel.add(sourceContentsView);
-         //FIXME Plural support potentially this map could contain all panels with all id
+         // FIXME Plural support potentially this map could contain all panels
+         // with all id
          sourcePanelMap.put(rowValue.getId(), panel);
 
          view.setWidget(panel);
@@ -164,10 +162,9 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       this.findMessage = findMessage;
    }
 
-   public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final EventBus eventBus, final SourceContentsPresenter sourceContentsPresenter, boolean isReadOnly, TargetContentsPresenter targetContentsPresenter)
+   public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final SourceContentsPresenter sourceContentsPresenter, boolean isReadOnly, TargetContentsPresenter targetContentsPresenter)
    {
       this.isReadOnly = isReadOnly;
-      this.eventBus = eventBus;
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.targetContentsPresenter = targetContentsPresenter;
       setRowRenderer(rowRenderer);
@@ -239,9 +236,20 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          }
 
          @Override
+         public void gotoCurrentRow(boolean andEdit)
+         {
+            tableModel.gotoCurrentRow(andEdit);
+         }
+
+         @Override
          public void gotoPrevNewRow()
          {
             tableModel.gotoPrevNew();
+         }
+
+         public void setRowValueOverride(int row, TransUnit targetCell)
+         {
+            tableModel.setRowValueOverride(row, targetCell);
          }
       };
       this.targetCellEditor = new InlineTargetCellEditor(cancelCallBack, transValueCallBack, isReadOnly, targetContentsPresenter);

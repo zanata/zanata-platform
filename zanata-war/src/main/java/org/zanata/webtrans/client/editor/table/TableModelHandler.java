@@ -46,4 +46,6 @@ public abstract class TableModelHandler<RowType>
    abstract void updatePageAndRowIndex();
 
    abstract void gotoRowInCurrentPage(int rowNum, boolean andEdit);
+
+   abstract void gotoCurrentRow(boolean andEdit);
 }

@@ -285,6 +285,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          if (forceSave)
          {
             cellEditor.acceptEdit();
+            cellEditor.setRowValueOverride(cellEditor.getCurrentRow(), cellEditor.getTargetCell());
          }
          scheduler.scheduleDeferred(new Scheduler.ScheduledCommand()
          {
@@ -316,6 +317,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          if (forceSave)
          {
             cellEditor.acceptEdit();
+            cellEditor.setRowValueOverride(cellEditor.getCurrentRow(), cellEditor.getTargetCell());
          }
          scheduler.scheduleDeferred(new Scheduler.ScheduledCommand()
          {
@@ -333,6 +335,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       Preconditions.checkState(cellEditor != null, "InlineTargetCellEditor must be set for triggering table save event");
       cellEditor.acceptFuzzyEdit();
+      cellEditor.setRowValueOverride(cellEditor.getCurrentRow(), cellEditor.getTargetCell());
+      cellEditor.gotoCurrentRow(true);
    }
 
    @Override

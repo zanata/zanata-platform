@@ -109,7 +109,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
       RedirectingCachedTableModel<TransUnit> getTableModel();
 
-      void setTableModelHandler(TableModelHandler<TransUnit> hadler);
+      void setTableModelHandler(TableModelHandler<TransUnit> handler);
 
       void reloadPage();
 
@@ -148,6 +148,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       boolean isProcessing();
 
       void ignoreStopProcessing();
+
+      TransUnit getRowValue(int row);
    }
 
    private DocumentId documentId;
@@ -320,27 +322,32 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             // assume update was successful
             if (documentId != null && documentId.equals(event.getUpdateInfo().getDocumentId()))
             {
-               // Clear the cache
-               if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getUpdateInfo().getTransUnit().getId()))
+               // if its different user,
+               if (!event.getSessionId().equals(identity.getSessionId()))
                {
-                  Log.info("selected TU updated; clear selection");
-                  display.getTargetCellEditor().cancelEdit();
-                  eventBus.fireEvent(new RequestValidationEvent());
-               }
+                  if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getUpdateInfo().getTransUnit().getId()))
+                  {
+                     Log.info("selected TU updated; clear selection");
+                     // display.getTargetCellEditor().cancelEdit();
+                     eventBus.fireEvent(new RequestValidationEvent());
+                  }
 
-               Integer rowIndex = getRowIndex(event.getUpdateInfo().getTransUnit());
-               // - add TU index to model
-               if (rowIndex != null)
-               {
-                  Log.info("onTransUnitUpdated - update row:" + rowIndex);
-                  display.getTableModel().setRowValueOverride(rowIndex, event.getUpdateInfo().getTransUnit());
-                  // alex - update transUnitModel list
+                  // - add TU index to model
+                  Integer rowIndex = getRowIndex(event.getUpdateInfo().getTransUnit());
+                  if (rowIndex != null)
+                  {
+                     Log.info("onTransUnitUpdated - update row:" + rowIndex);
+                     display.getTableModel().setRowValueOverride(rowIndex, event.getUpdateInfo().getTransUnit());
+                  }
                }
-               // FIXME still intermittently causes interactions between
-               // different tabs
-               if (selectedTransUnit != null && !display.isProcessing() && event.getSessionId().equals(identity.getSessionId()))
+               else
                {
-                  tableModelHandler.gotoRow(curRowIndex, true);
+                  Integer rowIndex = getRowIndex(event.getUpdateInfo().getTransUnit());
+                  if (rowIndex != null)
+                  {
+                     display.getRowValue(rowIndex).OverrideWith(event.getUpdateInfo().getTransUnit());
+                     display.getTableModel().clearCache();
+                  }
                }
             }
          }
@@ -371,7 +378,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             if (selectedTransUnit != null)
             {
                // int step = event.getStep();
-               // Send message to server to stop editing current selection
+               // Send message to server to stop editing current
+               // selection
                // stopEditing(selectedTransUnit);
 
                // If goto Next or Prev Fuzzy/New Trans Unit
@@ -633,7 +641,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyUpdateSaved()));
             }
          });
-         stopEditing(rowValue);
+         // stopEditing(rowValue);
          return true;
       }
 
@@ -684,6 +692,13 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       {
          updatePageAndRowIndex();
          gotoRow(display.getTableModel().getRowCount() - 1, true);
+      }
+
+      @Override
+      public void gotoCurrentRow(boolean andEdit)
+      {
+         updatePageAndRowIndex();
+         gotoRow(curRowIndex, andEdit);
       }
 
       @Override
@@ -769,7 +784,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onSuccess(EditingTranslationResult result)
          {
-            // eventBus.fireEvent(new NotificationEvent(Severity.Warning,
+            // eventBus.fireEvent(new
+            // NotificationEvent(Severity.Warning,
             // "TransUnit Editing is finished"));
          }
 
@@ -843,6 +859,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          // obsolete
          display.getTargetCellEditor().cancelEdit();
       }
+   
    }
 
    public TransUnit getSelectedTransUnit()
