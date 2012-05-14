@@ -980,7 +980,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    {
       if (!selectDocId.equals(documentId))
       {
-         // display.startProcessing();
          documentId = selectDocId;
          initialiseTransUnitList();
 
