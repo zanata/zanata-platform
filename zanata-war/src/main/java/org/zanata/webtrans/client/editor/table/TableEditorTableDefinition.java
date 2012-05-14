@@ -23,8 +23,6 @@ package org.zanata.webtrans.client.editor.table;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.customware.gwt.presenter.client.EventBus;
-
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
@@ -53,7 +51,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    private TargetContentsPresenter targetContentsPresenter;
 
    private String findMessage;
-   private EventBus eventBus;
 
    private TransUnitDetailsPanel transUnitDetailsContent;
 
@@ -165,10 +162,9 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       this.findMessage = findMessage;
    }
 
-   public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final EventBus eventBus, final SourceContentsPresenter sourceContentsPresenter, boolean isReadOnly, TargetContentsPresenter targetContentsPresenter)
+   public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final SourceContentsPresenter sourceContentsPresenter, boolean isReadOnly, TargetContentsPresenter targetContentsPresenter)
    {
       this.isReadOnly = isReadOnly;
-      this.eventBus = eventBus;
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.targetContentsPresenter = targetContentsPresenter;
       setRowRenderer(rowRenderer);

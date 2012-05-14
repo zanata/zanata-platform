@@ -35,7 +35,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 
 public class InlineTargetCellEditor implements CellEditor<TransUnit>,
