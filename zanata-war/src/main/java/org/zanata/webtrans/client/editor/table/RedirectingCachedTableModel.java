@@ -89,7 +89,7 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
    public void setRowValueOverride(int row, RowType rowValue)
    {
       // TODO ideally, we would just replace the affected row in the cache
-      clearCache();
+//      clearCache();
       quiet = true;
       try
       {
@@ -115,4 +115,9 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
       super.setRowCount(rowCount);
    }
 
+    public void gotoCurrentRow(boolean andEdit) {
+        if (tableModel != null)   {
+            tableModel.gotoCurrentRow(andEdit);
+        }
+    }
 }

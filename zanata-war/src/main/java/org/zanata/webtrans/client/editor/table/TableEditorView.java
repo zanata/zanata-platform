@@ -33,7 +33,6 @@ import org.zanata.webtrans.client.ui.LoadingPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -60,7 +59,7 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    private int cachedPages = 2;
    private LoadingPanel loadingPanel;
 
-    public void setFindMessage(String findMessage)
+   public void setFindMessage(String findMessage)
    {
       this.tableDefinition.setFindMessage(findMessage);
    }
@@ -68,8 +67,8 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    @Inject
    public TableEditorView(NavigationMessages messages, EventBus eventBus, WorkspaceContext workspaceContext, final Resources resources, final SourceContentsPresenter sourceContentsPresenter, TargetContentsPresenter targetContentsPresenter)
    {
-       this(messages, new RedirectingTableModel<TransUnit>(), eventBus, workspaceContext, sourceContentsPresenter, targetContentsPresenter);
-       loadingPanel = new LoadingPanel(resources);
+      this(messages, new RedirectingTableModel<TransUnit>(), eventBus, workspaceContext, sourceContentsPresenter, targetContentsPresenter);
+      loadingPanel = new LoadingPanel(resources);
       loadingPanel.hide();
    }
 
@@ -171,7 +170,7 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
       }
    }
 
-   @Override	
+   @Override
    public boolean isProcessing()
    {
       return loadingPanel.isShowing();
@@ -283,38 +282,38 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
     * This implementation focus on element's top left corner
     */
    public static native void scrollIntoView(Element elem) /*-{
-		var left = elem.offsetLeft, top = elem.offsetTop;
-		var width = elem.offsetWidth, height = elem.offsetHeight;
+                                                          var left = elem.offsetLeft, top = elem.offsetTop;
+                                                          var width = elem.offsetWidth, height = elem.offsetHeight;
 
-		if (elem.parentNode != elem.offsetParent) {
-			left -= elem.parentNode.offsetLeft;
-			top -= elem.parentNode.offsetTop;
-		}
+                                                          if (elem.parentNode != elem.offsetParent) {
+                                                          left -= elem.parentNode.offsetLeft;
+                                                          top -= elem.parentNode.offsetTop;
+                                                          }
 
-		var cur = elem.parentNode;
-		while (cur && (cur.nodeType == 1)) {
-			if (left + width > cur.scrollLeft + cur.clientWidth) {
-				cur.scrollLeft = (left + width) - cur.clientWidth;
-			}
-			if (left < cur.scrollLeft) {
-				cur.scrollLeft = left;
-			}
-			if (top + height > cur.scrollTop + cur.clientHeight) {
-				cur.scrollTop = (top + height) - cur.clientHeight;
-			}
-			if (top < cur.scrollTop) {
-				cur.scrollTop = top;
-			}
+                                                          var cur = elem.parentNode;
+                                                          while (cur && (cur.nodeType == 1)) {
+                                                          if (left + width > cur.scrollLeft + cur.clientWidth) {
+                                                          cur.scrollLeft = (left + width) - cur.clientWidth;
+                                                          }
+                                                          if (left < cur.scrollLeft) {
+                                                          cur.scrollLeft = left;
+                                                          }
+                                                          if (top + height > cur.scrollTop + cur.clientHeight) {
+                                                          cur.scrollTop = (top + height) - cur.clientHeight;
+                                                          }
+                                                          if (top < cur.scrollTop) {
+                                                          cur.scrollTop = top;
+                                                          }
 
-			var offsetLeft = cur.offsetLeft, offsetTop = cur.offsetTop;
-			if (cur.parentNode != cur.offsetParent) {
-				offsetLeft -= cur.parentNode.offsetLeft;
-				offsetTop -= cur.parentNode.offsetTop;
-			}
+                                                          var offsetLeft = cur.offsetLeft, offsetTop = cur.offsetTop;
+                                                          if (cur.parentNode != cur.offsetParent) {
+                                                          offsetLeft -= cur.parentNode.offsetLeft;
+                                                          offsetTop -= cur.parentNode.offsetTop;
+                                                          }
 
-			left += offsetLeft - cur.scrollLeft;
-			top += offsetTop - cur.scrollTop;
-			cur = cur.parentNode;
-		}
-   }-*/;
+                                                          left += offsetLeft - cur.scrollLeft;
+                                                          top += offsetTop - cur.scrollTop;
+                                                          cur = cur.parentNode;
+                                                          }
+                                                          }-*/;
 }

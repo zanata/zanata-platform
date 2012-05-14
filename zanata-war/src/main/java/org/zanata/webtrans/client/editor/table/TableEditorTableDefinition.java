@@ -116,7 +116,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             sourceContentsView.highlightSearch(findMessage);
          }
          panel.add(sourceContentsView);
-         //FIXME Plural support potentially this map could contain all panels with all id
+         // FIXME Plural support potentially this map could contain all panels
+         // with all id
          sourcePanelMap.put(rowValue.getId(), panel);
 
          view.setWidget(panel);
@@ -239,9 +240,20 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          }
 
          @Override
+         public void gotoCurrentRow(boolean andEdit)
+         {
+            tableModel.gotoCurrentRow(andEdit);
+         }
+
+         @Override
          public void gotoPrevNewRow()
          {
             tableModel.gotoPrevNew();
+         }
+
+         public void setRowValueOverride(int row, TransUnit targetCell)
+         {
+            tableModel.setRowValueOverride(row, targetCell);
          }
       };
       this.targetCellEditor = new InlineTargetCellEditor(cancelCallBack, transValueCallBack, isReadOnly, targetContentsPresenter);
