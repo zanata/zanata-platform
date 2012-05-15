@@ -361,11 +361,6 @@ public class OptionsPanelPresenterTest
       expect(event.isFilterUntranslated()).andReturn(filterUntranslated).anyTimes();
       expect(event.isCancelFilter()).andReturn(cancelFilter).anyTimes();
 
-      // TODO this should be removed when modal navigation is updated to work
-      // with filtered results.
-      mockDisplay.setNavOptionVisible(expectShowNavOptions);
-      expectLastCall().once();
-
       if (cancelFilter)
       {
          //should run value setters without events when cancelFilter is true
