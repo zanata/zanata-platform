@@ -52,8 +52,8 @@ import lombok.ToString;
 @TypeDef(name = "localeId", typeClass = LocaleIdType.class)
 @Setter
 @NoArgsConstructor
-@ToString(callSuper = true, of = {"localeId"})
-@EqualsAndHashCode(callSuper = true, of = {"active", "localeId"})
+@ToString(of = {"localeId"}, doNotUseGetters = true)
+@EqualsAndHashCode(callSuper = true, of = {"active", "localeId"}, doNotUseGetters = true)
 public class HLocale extends ModelEntityBase implements Serializable
 {
    private static final long serialVersionUID = 1L;

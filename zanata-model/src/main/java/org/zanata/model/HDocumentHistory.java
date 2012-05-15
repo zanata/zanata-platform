@@ -44,19 +44,22 @@ import lombok.Setter;
 @TypeDef(name = "contentType", typeClass = ContentTypeType.class)
 @org.hibernate.annotations.Entity(mutable = false)
 @Setter
-@Getter
 public class HDocumentHistory implements IDocumentHistory
 {
 
    private String docId;
+   @Getter
    private String name;
+   @Getter
    private String path;
    private ContentType contentType;
    private Integer revision;
    private HLocale locale;
    private HPerson lastModifiedBy;
    protected Long id;
+   @Getter
    protected Date lastChanged;
+   @Getter
    private boolean obsolete;
    private HDocument document;
 

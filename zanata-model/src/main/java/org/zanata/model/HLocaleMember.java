@@ -32,6 +32,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -113,5 +116,34 @@ public class HLocaleMember implements Serializable
          return supportedLanguage;
       }
 
+      @Override
+      public boolean equals(Object obj)
+      {
+         if(obj == null)
+         {
+            return false;
+         }
+         else if( !(obj instanceof HLocaleMemberPk) )
+         {
+            return false;
+         }
+         else
+         {
+            final HLocaleMemberPk other = (HLocaleMemberPk)obj;
+            return new EqualsBuilder()
+                  .append(this.person.getId(), other.getPerson().getId())
+                  .append(this.supportedLanguage.getId(), other.getSupportedLanguage().getId())
+                  .isEquals();
+         }
+      }
+
+      @Override
+      public int hashCode()
+      {
+         return new HashCodeBuilder()
+               .append(this.person.getId())
+               .append(this.supportedLanguage.getId())
+               .toHashCode();
+      }
    }
 }

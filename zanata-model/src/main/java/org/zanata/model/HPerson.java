@@ -51,7 +51,7 @@ import lombok.ToString;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Setter
-@EqualsAndHashCode(callSuper = true, of = {"account", "email", "maintainerProjects", "name"})
+@EqualsAndHashCode(callSuper = true, of = {"account", "email", "maintainerProjects", "name"}, doNotUseGetters = true)
 @ToString(callSuper = true, of = "name")
 public class HPerson extends ModelEntityBase implements Serializable
 {
