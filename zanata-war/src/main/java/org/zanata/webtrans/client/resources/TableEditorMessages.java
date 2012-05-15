@@ -2,7 +2,6 @@ package org.zanata.webtrans.client.resources;
 
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
-import com.google.gwt.i18n.client.Messages.DefaultMessage;
 import com.google.gwt.i18n.client.Messages;
 
 @DefaultLocale
@@ -12,9 +11,6 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Source comment: ")
    String sourceCommentLabel();
-
-   @DefaultMessage("Warning: This Translation Unit is being edited by someone else.")
-   String notifyInEdit();
 
    @DefaultMessage("Message has been copied to the target.")
    String notifyCopied();

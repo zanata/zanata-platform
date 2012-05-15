@@ -19,8 +19,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
-import org.zanata.webtrans.client.events.TranslatorStatusUpdateEvent;
-import org.zanata.webtrans.client.events.TranslatorStatusUpdateEventHandler;
+import org.zanata.webtrans.client.events.TransUnitEditEvent;
+import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -65,7 +65,7 @@ public class WorkspaceUsersPresenterTest
       expect(mockDisplay.getSendButton()).andReturn(mockSendButton);
       expect(mockSendButton.addClickHandler(capture(capturedSendButtonClickHandler))).andReturn(createMock(HandlerRegistration.class));
 
-      expect(mockEventBus.addHandler(eq(TranslatorStatusUpdateEvent.getType()), isA(TranslatorStatusUpdateEventHandler.class)) ).andReturn(createMock(HandlerRegistration.class));
+      expect(mockEventBus.addHandler(eq(TransUnitEditEvent.getType()), isA(TransUnitEditEventHandler.class)) ).andReturn(createMock(HandlerRegistration.class));
       expect(mockEventBus.addHandler(eq(PublishWorkspaceChatEvent.getType()), isA(PublishWorkspaceChatEventHandler.class))).andReturn(createMock(HandlerRegistration.class));
       replay(mockDisplay, mockEventBus);
 
@@ -86,7 +86,7 @@ public class WorkspaceUsersPresenterTest
       expect(mockDisplay.addUser(new Person(new PersonId("person2"), "Smith John", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16"))).andReturn(mockHasManageUserSession);
       expect(mockDisplay.addUser(new Person(new PersonId("person3"), "Smohn Jith", "http://www.gravatar.com/avatar/smohn@zanata.org?d=mm&s=16"))).andReturn(mockHasManageUserSession);
 
-      expect(mockEventBus.addHandler(eq(TranslatorStatusUpdateEvent.getType()), isA(TranslatorStatusUpdateEventHandler.class)) ).andReturn(createMock(HandlerRegistration.class));
+      expect(mockEventBus.addHandler(eq(TransUnitEditEvent.getType()), isA(TransUnitEditEventHandler.class)) ).andReturn(createMock(HandlerRegistration.class));
       expect(mockEventBus.addHandler(eq(PublishWorkspaceChatEvent.getType()), isA(PublishWorkspaceChatEventHandler.class))).andReturn(createMock(HandlerRegistration.class));
       replay(mockDisplay, mockEventBus, mockSendButton);
 

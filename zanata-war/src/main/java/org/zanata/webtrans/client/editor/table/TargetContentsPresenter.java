@@ -41,14 +41,15 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEventHandler;
 import org.zanata.webtrans.client.events.RunValidationEvent;
-import org.zanata.webtrans.client.events.TranslatorStatusUpdateEvent;
-import org.zanata.webtrans.client.events.TranslatorStatusUpdateEventHandler;
+import org.zanata.webtrans.client.events.TransUnitEditEvent;
+import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
@@ -58,17 +59,20 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
+import org.zanata.webtrans.shared.rpc.TransUnitEditResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class TargetContentsPresenter implements TargetContentsDisplay.Listener, TranslatorStatusUpdateEventHandler, UserConfigChangeHandler, RequestValidationEventHandler, InsertStringInEditorHandler, CopyDataToEditorHandler
+public class TargetContentsPresenter implements TargetContentsDisplay.Listener, TransUnitEditEventHandler, UserConfigChangeHandler, RequestValidationEventHandler, InsertStringInEditorHandler, CopyDataToEditorHandler
 {
    public static final int NO_OPEN_EDITOR = -1;
    private static final int LAST_INDEX = -2;
@@ -89,6 +93,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private int currentEditorIndex = NO_OPEN_EDITOR;
    private ArrayList<ToggleEditor> currentEditors;
    private TransUnitsEditModel cellEditor;
+
 
    private final Identity identity;
 
@@ -111,7 +116,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       eventBus.addHandler(RequestValidationEvent.getType(), this);
       eventBus.addHandler(InsertStringInEditorEvent.getType(), this);
       eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
-      eventBus.addHandler(TranslatorStatusUpdateEvent.getType(), this);
+      eventBus.addHandler(TransUnitEditEvent.getType(), this);
    }
 
    private ToggleEditor getCurrentEditor()
@@ -145,7 +150,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          editor.clearTranslatorList();
          validate(editor);
       }
-
       if (configHolder.isDisplayButtons())
       {
          currentDisplay.showButtons(true);
@@ -174,7 +178,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    }
 
    @Override
-   public void onTranslatorStatusUpdate(final TranslatorStatusUpdateEvent event)
+   public void onTransUnitEdit(final TransUnitEditEvent event)
    {
       if (event.getSelectedTransUnit() != null)
       {
@@ -184,9 +188,9 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
    private void updateEditorTranslatorList(TransUnitId selectedTransUnitId, Person person, String sessionId)
    {
-      if (cellEditor.getTargetCell() != null && cellEditor.getTargetCell().getId().equals(selectedTransUnitId))
+      if (cellEditor.getTargetCell() != null)
       {
-         if (!sessionId.equals(identity.getSessionId().toString()))
+         if (!sessionId.equals(identity.getSessionId().toString()) && cellEditor.getTargetCell().getId().equals(selectedTransUnitId))
          {
             for (ToggleEditor editor : currentEditors)
             {

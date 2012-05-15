@@ -20,6 +20,17 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
+import org.zanata.webtrans.client.events.FilterViewEvent;
+import org.zanata.webtrans.client.events.FilterViewEventHandler;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -28,15 +39,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-import org.zanata.webtrans.client.events.FilterViewEvent;
-import org.zanata.webtrans.client.events.FilterViewEventHandler;
-import org.zanata.webtrans.client.events.UserConfigChangeEvent;
-import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
-import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
 
 public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter.Display>
 {
@@ -119,19 +121,6 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
                display.getTranslatedChk().setValue(event.isFilterTranslated(), false);
                display.getNeedReviewChk().setValue(event.isFilterNeedReview(), false);
                display.getUntranslatedChk().setValue(event.isFilterUntranslated(), false);
-            }
-
-            // if filter view, hide modal navigation
-            // TODO remove this when modal navigation is updated to work with a
-            // filtered list
-            boolean showingFullList = (event.isFilterTranslated() == event.isFilterNeedReview()) && (event.isFilterTranslated() == event.isFilterUntranslated());
-            if (showingFullList)
-            {
-               display.setNavOptionVisible(true);
-            }
-            else
-            {
-               display.setNavOptionVisible(false);
             }
          }
       }));
