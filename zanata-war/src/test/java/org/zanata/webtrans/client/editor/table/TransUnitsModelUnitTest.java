@@ -21,7 +21,10 @@
 
 package org.zanata.webtrans.client.editor.table;
 
-import com.google.common.collect.Lists;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.List;
+
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -29,9 +32,7 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.TestFixture;
 import org.zanata.webtrans.shared.model.TransUnit;
 
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
+import com.google.common.collect.Lists;
 
 @Test
 public class TransUnitsModelUnitTest {

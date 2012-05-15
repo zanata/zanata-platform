@@ -24,7 +24,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.validation.ValidationService;
+import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.shared.validation.ValidationObject;
 
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;

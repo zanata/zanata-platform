@@ -45,11 +45,11 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 
-@Name("webtrans.gwt.GetTransUnitNavigationHandler")
+@Name("webtrans.gwt.GetTransUnitsNavigationHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetTransUnitsNavigation.class)
 @Slf4j
-public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTransUnitsNavigation, GetTransUnitsNavigationResult>
+public class GetTransUnitsNavigationHandler extends AbstractActionHandler<GetTransUnitsNavigation, GetTransUnitsNavigationResult>
 {
 
    @In
@@ -93,8 +93,7 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
       for (HTextFlow textFlow : textFlows)
       {
          HTextFlowTarget textFlowTarget = textFlow.getTargets().get(hLocale);
-
-         if (checkStateAndValidate(!action.isNewState(), !action.isFuzzyState(), !action.isApprovedState(), textFlowTarget))
+         if (checkStateAndValidate(action.isNewState(), action.isFuzzyState(), action.isApprovedState(), textFlowTarget))
          {
             if (textFlowTarget == null)
             {
@@ -107,7 +106,7 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
             idIndexList.add(textFlow.getId());
          }
       }
-      log.info("size: " + idIndexList.size());
+      log.info("returned size: " + idIndexList.size());
 
       return new GetTransUnitsNavigationResult(new DocumentId(action.getId()), idIndexList, transIdStateList);
    }
@@ -119,7 +118,7 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
 
    private boolean checkStateAndValidate(boolean isNewState, boolean isFuzzyState, boolean isApprovedState, HTextFlowTarget textFlowTarget)
    {
-      if (isNewState && isFuzzyState && isApprovedState)
+      if ((isNewState && isFuzzyState && isApprovedState) || (!isNewState && !isFuzzyState && !isApprovedState))
       {
          return true;
       }

@@ -75,7 +75,6 @@ public class TransUnit implements IsSerializable, Serializable
       this.msgContext = obj.getMsgContext();
       this.rowIndex = obj.getRowIndex();
       this.verNum = obj.getVerNum();
-      
    }
    
    public TransUnitId getId()

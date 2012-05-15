@@ -1,7 +1,8 @@
 package org.zanata.webtrans.client.events;
 
-import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.auth.SessionId;
+import org.zanata.webtrans.shared.model.Person;
+import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.HasTransUnitEditData;
 
 import com.google.gwt.event.shared.GwtEvent;
@@ -9,9 +10,16 @@ import com.google.gwt.event.shared.GwtEvent;
 public class TransUnitEditEvent extends GwtEvent<TransUnitEditEventHandler> implements HasTransUnitEditData
 {
 
-   private final TransUnitId transUnitId;
-   private final DocumentId documentId;
-   private final String sessionId;
+   private final SessionId sessionId;
+   private final Person person;
+   private final TransUnit selectedTransUnit;
+
+   public TransUnitEditEvent(HasTransUnitEditData data)
+   {
+      sessionId = data.getSessionId();
+      person = data.getPerson();
+      selectedTransUnit = data.getSelectedTransUnit();
+   }
 
    /**
     * Handler type.
@@ -20,7 +28,7 @@ public class TransUnitEditEvent extends GwtEvent<TransUnitEditEventHandler> impl
 
    /**
     * Gets the type associated with this event.
-    * 
+    *
     * @return returns the handler type
     */
    public static Type<TransUnitEditEventHandler> getType()
@@ -32,11 +40,10 @@ public class TransUnitEditEvent extends GwtEvent<TransUnitEditEventHandler> impl
       return TYPE;
    }
 
-   public TransUnitEditEvent(HasTransUnitEditData data)
+   @Override
+   public Type<TransUnitEditEventHandler> getAssociatedType()
    {
-      this.documentId = data.getDocumentId();
-      this.transUnitId = data.getTransUnitId();
-      this.sessionId = data.getSessionId();
+      return getType();
    }
 
    @Override
@@ -46,27 +53,20 @@ public class TransUnitEditEvent extends GwtEvent<TransUnitEditEventHandler> impl
    }
 
    @Override
-   public Type<TransUnitEditEventHandler> getAssociatedType()
-   {
-      return getType();
-   }
-
-   @Override
-   public DocumentId getDocumentId()
-   {
-      return documentId;
-   }
-
-   @Override
-   public TransUnitId getTransUnitId()
-   {
-      return transUnitId;
-   }
-
-   @Override
-   public String getSessionId()
+   public SessionId getSessionId()
    {
       return sessionId;
    }
 
+   @Override
+   public Person getPerson()
+   {
+      return person;
+   }
+
+   @Override
+   public TransUnit getSelectedTransUnit()
+   {
+      return selectedTransUnit;
+   }
 }

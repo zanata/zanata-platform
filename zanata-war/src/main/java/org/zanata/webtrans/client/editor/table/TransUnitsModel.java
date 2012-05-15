@@ -110,11 +110,6 @@ public class TransUnitsModel implements EditRowCallback {
     }
 
     @Override
-    public void gotoCurrentRow(boolean andEdit) {
-        moveToIndex(currentIndex);
-    }
-
-    @Override
     public void gotoPrevNewRow() {
         moveBackwardAndFind(NEW_PREDICATE);
     }
@@ -169,8 +164,17 @@ public class TransUnitsModel implements EditRowCallback {
         return moved;
     }
 
-	@Override
-	public void setRowValueOverride(int row, TransUnit targetCell) {
-		
-	}
+   @Override
+   public void gotoCurrentRow(boolean andEdit)
+   {
+      // TODO Auto-generated method stub
+
+   }
+
+   @Override
+   public void setRowValueOverride(int row, TransUnit targetCell)
+   {
+      // TODO Auto-generated method stub
+
+   }
 }

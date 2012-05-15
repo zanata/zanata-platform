@@ -22,14 +22,13 @@ package org.zanata.webtrans.client.editor.table;
 
 import static org.zanata.webtrans.client.editor.table.TableConstants.MAX_PAGE_ROW;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.common.EditState;
+import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
@@ -45,8 +44,6 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.OpenEditorEvent;
 import org.zanata.webtrans.client.events.OpenEditorEventHandler;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
-import org.zanata.webtrans.client.events.TransUnitEditEvent;
-import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
@@ -57,6 +54,7 @@ import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.TransUnitNavigationService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationPanel;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
@@ -66,18 +64,17 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
-import org.zanata.webtrans.shared.rpc.EditingTranslationAction;
-import org.zanata.webtrans.shared.rpc.EditingTranslationResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
-import org.zanata.webtrans.shared.rpc.TranslatorStatusUpdateAction;
-import org.zanata.webtrans.shared.rpc.TranslatorStatusUpdateResult;
+import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
+import org.zanata.webtrans.shared.rpc.TransUnitEditResult;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Predicate;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -154,24 +151,10 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
    private DocumentId documentId;
 
-   // private TransFilterPresenter.Display transFilterDisplay;
-
    private final CachingDispatchAsync dispatcher;
    private final Identity identity;
    private TransUnit selectedTransUnit;
    private TransUnitId targetTransUnitId;
-   // private int lastRowNum;
-   private List<Long> transIdNextNewFuzzyCache = new ArrayList<Long>();
-   private List<Long> transIdPrevNewFuzzyCache = new ArrayList<Long>();
-
-   private List<Long> transIdNextFuzzyCache = new ArrayList<Long>();
-   private List<Long> transIdPrevFuzzyCache = new ArrayList<Long>();
-
-   private List<Long> transIdNextNewCache = new ArrayList<Long>();
-   private List<Long> transIdPrevNewCache = new ArrayList<Long>();
-
-   private int curRowIndex;
-   private int curPage;
 
    private String findMessage;
 
@@ -188,8 +171,10 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
    private boolean filterTranslated, filterNeedReview, filterUntranslated;
 
+   private final TransUnitNavigationService navigationService;
+
    @Inject
-   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourceContentsPresenter sourceContentsPresenter, TargetContentsPresenter targetContentsPresenter, UserConfigHolder configHolder, Scheduler scheduler)
+   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourceContentsPresenter sourceContentsPresenter, TargetContentsPresenter targetContentsPresenter, UserConfigHolder configHolder, Scheduler scheduler, TransUnitNavigationService navigationService)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
@@ -200,24 +185,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       this.targetContentsPresenter = targetContentsPresenter;
       this.configHolder = configHolder;
       this.scheduler = scheduler;
-   }
-
-   private void clearCacheList()
-   {
-      if (!transIdNextNewFuzzyCache.isEmpty())
-         transIdNextNewFuzzyCache.clear();
-      if (!transIdPrevNewFuzzyCache.isEmpty())
-         transIdPrevNewFuzzyCache.clear();
-
-      if (!transIdNextNewCache.isEmpty())
-         transIdNextNewCache.clear();
-      if (!transIdPrevNewCache.isEmpty())
-         transIdPrevNewCache.clear();
-
-      if (!transIdNextFuzzyCache.isEmpty())
-         transIdNextFuzzyCache.clear();
-      if (!transIdPrevFuzzyCache.isEmpty())
-         transIdPrevFuzzyCache.clear();
+      this.navigationService = navigationService;
    }
 
    /**
@@ -229,6 +197,25 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       display.getTableModel().clearCache();
       display.getTableModel().setRowCount(TableModel.UNKNOWN_ROW_COUNT);
       display.gotoPage(0, true);
+      initialiseTransUnitsNavigation();
+   }
+
+   private void initialiseTransUnitsNavigation()
+   {
+      dispatcher.execute(new GetTransUnitsNavigation(documentId.getValue(), findMessage, filterViewConfirmationPanel.isFilterUntranslated(), filterViewConfirmationPanel.isFilterNeedReview(), filterViewConfirmationPanel.isFilterTranslated()), new AsyncCallback<GetTransUnitsNavigationResult>()
+      {
+         @Override
+         public void onSuccess(GetTransUnitsNavigationResult result)
+         {
+            navigationService.init(result.getTransIdStateList(), result.getIdIndexList(), display.getPageSize());
+         }
+
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            Log.error("GetTransUnitsNavigation failure " + caught, caught);
+         }
+      });
    }
 
    @Override
@@ -236,10 +223,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    {
       display.setTableModelHandler(tableModelHandler);
       display.setPageSize(TableConstants.PAGE_SIZE);
-      // if (workspaceContext.isReadOnly())
-      // {
-      // display.getTargetCellEditor().setShowOperationButtons(false);
-      // }
 
       registerHandler(filterViewConfirmationPanel.getSaveChangesAndFilterButton().addClickHandler(new ClickHandler()
       {
@@ -337,23 +320,21 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onTransUnitUpdated(TransUnitUpdatedEvent event)
          {
+            navigationService.updateMap(event.getUpdateInfo().getTransUnit().getId().getId(), event.getUpdateInfo().getTransUnit().getStatus());
             // assume update was successful
             if (documentId != null && documentId.equals(event.getUpdateInfo().getDocumentId()))
             {
-               // Clear the cache
-               clearCacheList();
                // if its different user,
                if (!event.getSessionId().equals(identity.getSessionId()))
                {
                   if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getUpdateInfo().getTransUnit().getId()))
                   {
                      Log.info("selected TU updated; clear selection");
-                     // display.getTargetCellEditor().cancelEdit();
                      eventBus.fireEvent(new RequestValidationEvent());
                   }
 
                   // - add TU index to model
-                  Integer rowIndex = getRowIndex(event.getUpdateInfo().getTransUnit());
+                  Integer rowIndex = navigationService.getRowIndex(event.getUpdateInfo().getTransUnit(), isFiltering(), display.getRowValues());
                   if (rowIndex != null)
                   {
                      Log.info("onTransUnitUpdated - update row:" + rowIndex);
@@ -362,29 +343,12 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                }
                else
                {
-                  Integer rowIndex = getRowIndex(event.getUpdateInfo().getTransUnit());
+                  Integer rowIndex = navigationService.getRowIndex(event.getUpdateInfo().getTransUnit(), isFiltering(), display.getRowValues());
                   if (rowIndex != null)
                   {
                      display.getRowValue(rowIndex).OverrideWith(event.getUpdateInfo().getTransUnit());
                      display.getTableModel().clearCache();
                   }
-               }
-            }
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(TransUnitEditEvent.getType(), new TransUnitEditEventHandler()
-      {
-         @Override
-         public void onTransUnitEdit(TransUnitEditEvent event)
-         {
-            if (documentId != null && documentId.equals(event.getDocumentId()))
-            {
-               if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnitId()))
-               {
-                  // handle change in current selection
-                  if (!event.getSessionId().equals(identity.getSessionId().toString()))
-                     eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.notifyInEdit()));
                }
             }
          }
@@ -543,29 +507,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       return (findMessage != null && !findMessage.isEmpty()) || (filterViewConfirmationPanel.isFilterTranslated() || filterViewConfirmationPanel.isFilterNeedReview() || filterViewConfirmationPanel.isFilterUntranslated());
    }
 
-   public Integer getRowIndex(TransUnit tu)
-   {
-      if (!isFiltering())
-      {
-         return tu.getRowIndex();
-      }
-      else
-      {
-         TransUnitId transUnitId = tu.getId();
-         int n = 0;
-         for (TransUnit transUnit : display.getRowValues())
-         {
-            if (transUnitId.equals(transUnit.getId()))
-            {
-               int row = n + (curPage * display.getPageSize());
-               return row;
-            }
-            n++;
-         }
-      }
-      return null;
-   }
-
    private final TableModelHandler<TransUnit> tableModelHandler = new TableModelHandler<TransUnit>()
    {
 
@@ -603,7 +544,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                callback.onRowsReady(request, response);
                display.getTableModel().setRowCount(result.getTotalCount());
 
-               int gotoRow = curRowIndex;
+               int gotoRow = navigationService.getCurrentRowIndex();
 
                if (result.getUnits().size() > 0)
                {
@@ -661,28 +602,18 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyUpdateSaved()));
             }
          });
-         // stopEditing(rowValue);
          return true;
       }
 
       public void onCancel(TransUnit rowValue)
       {
-         // stopEditing(rowValue);
-      }
-
-      @Override
-      public void updatePageAndRowIndex()
-      {
-         curPage = display.getCurrentPage();
-         curRowIndex = curPage * display.getPageSize() + display.getSelectedRowNumber();
-         Log.info("Current Row Index:" + curRowIndex + " Current page:" + curPage);
       }
 
       @Override
       public void gotoNextRow(boolean andEdit)
       {
-         updatePageAndRowIndex();
-         int newRowIndex = curRowIndex + 1;
+         navigationService.updateCurrentPageAndRowIndex(display.getCurrentPage(), display.getSelectedRowNumber());
+         int newRowIndex = navigationService.getNextRowIndex();
          if (newRowIndex < display.getTableModel().getRowCount())
          {
             gotoRow(newRowIndex, andEdit);
@@ -692,8 +623,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       @Override
       public void gotoPrevRow(boolean andEdit)
       {
-         updatePageAndRowIndex();
-         int newRowIndex = curRowIndex - 1;
+         navigationService.updateCurrentPageAndRowIndex(display.getCurrentPage(), display.getSelectedRowNumber());
+         int newRowIndex = navigationService.getPrevRowIndex();
          if (newRowIndex >= 0)
          {
             gotoRow(newRowIndex, andEdit);
@@ -703,77 +634,89 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       @Override
       public void gotoFirstRow()
       {
-         updatePageAndRowIndex();
+         navigationService.updateCurrentPageAndRowIndex(display.getCurrentPage(), display.getSelectedRowNumber());
          gotoRow(0, true);
       }
 
       @Override
       public void gotoLastRow()
       {
-         updatePageAndRowIndex();
+         navigationService.updateCurrentPageAndRowIndex(display.getCurrentPage(), display.getSelectedRowNumber());
          gotoRow(display.getTableModel().getRowCount() - 1, true);
       }
 
       @Override
       public void gotoCurrentRow(boolean andEdit)
       {
-         updatePageAndRowIndex();
-         gotoRow(curRowIndex, andEdit);
+         navigationService.updateCurrentPageAndRowIndex(display.getCurrentPage(), display.getSelectedRowNumber());
+         gotoRow(navigationService.getCurrentRowIndex(), andEdit);
       }
 
       @Override
       public void nextFuzzyNewIndex()
       {
-         updatePageAndRowIndex();
-         if (curRowIndex < display.getTableModel().getRowCount())
-            gotoNextState(true, true);
+         navigationService.updateCurrentPageAndRowIndex(display.getCurrentPage(), display.getSelectedRowNumber());
+         if (navigationService.getCurrentRowIndex() < display.getTableModel().getRowCount())
+         {
+            gotoNextState(TransUnitNavigationService.FUZZY_OR_NEW_PREDICATE);
+         }
       }
 
       @Override
       public void prevFuzzyNewIndex()
       {
-         updatePageAndRowIndex();
-         if (curRowIndex > 0)
-            gotoPrevState(true, true);
+         navigationService.updateCurrentPageAndRowIndex(display.getCurrentPage(), display.getSelectedRowNumber());
+         if (navigationService.getCurrentRowIndex() > 0)
+         {
+            gotoPrevState(TransUnitNavigationService.FUZZY_OR_NEW_PREDICATE);
+         }
       }
 
       @Override
       public void nextFuzzyIndex()
       {
-         updatePageAndRowIndex();
-         if (curRowIndex < display.getTableModel().getRowCount())
-            gotoNextState(false, true);
+         navigationService.updateCurrentPageAndRowIndex(display.getCurrentPage(), display.getSelectedRowNumber());
+         if (navigationService.getCurrentRowIndex() < display.getTableModel().getRowCount())
+         {
+            gotoNextState(TransUnitNavigationService.FUZZY_PREDICATE);
+         }
       }
 
       @Override
       public void prevFuzzyIndex()
       {
-         updatePageAndRowIndex();
-         if (curRowIndex > 0)
-            gotoPrevState(false, true);
+         navigationService.updateCurrentPageAndRowIndex(display.getCurrentPage(), display.getSelectedRowNumber());
+         if (navigationService.getCurrentRowIndex() > 0)
+         {
+            gotoPrevState(TransUnitNavigationService.FUZZY_PREDICATE);
+         }
       }
 
       @Override
       public void nextNewIndex()
       {
-         updatePageAndRowIndex();
-         if (curRowIndex < display.getTableModel().getRowCount())
-            gotoNextState(true, false);
+         navigationService.updateCurrentPageAndRowIndex(display.getCurrentPage(), display.getSelectedRowNumber());
+         if (navigationService.getCurrentRowIndex() < display.getTableModel().getRowCount())
+         {
+            gotoNextState(TransUnitNavigationService.NEW_PREDICATE);
+         }
       }
 
       @Override
       public void prevNewIndex()
       {
-         updatePageAndRowIndex();
-         if (curRowIndex > 0)
-            gotoPrevState(true, false);
+         navigationService.updateCurrentPageAndRowIndex(display.getCurrentPage(), display.getSelectedRowNumber());
+         if (navigationService.getCurrentRowIndex() > 0)
+         {
+            gotoPrevState(TransUnitNavigationService.NEW_PREDICATE);
+         }
       }
 
       @Override
       public void gotoRow(int rowIndex, boolean andEdit)
       {
-         curPage = display.getCurrentPage();
-         int prevPage = curPage;
+         navigationService.updateCurrentPageAndRowIndex(display.getCurrentPage(), display.getSelectedRowNumber());
+         int prevPage = navigationService.getCurrentPage();
          int pageNum = rowIndex / (MAX_PAGE_ROW + 1);
          int rowNum = rowIndex % (MAX_PAGE_ROW + 1);
          if (pageNum != prevPage)
@@ -797,222 +740,20 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       }
    };
 
-   private void stopEditing(TransUnit rowValue)
+   private void gotoNextState(Predicate<ContentState> condition)
    {
-      dispatcher.execute(new EditingTranslationAction(rowValue.getId(), EditState.StopEditing), new AsyncCallback<EditingTranslationResult>()
-      {
-         @Override
-         public void onSuccess(EditingTranslationResult result)
-         {
-            // eventBus.fireEvent(new
-            // NotificationEvent(Severity.Warning,
-            // "TransUnit Editing is finished"));
-         }
-
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            Log.error("EditingTranslationAction failure " + caught, caught);
-            eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyStopFailed()));
-         }
-
-      });
+      display.getTargetCellEditor().cancelEdit();
+      int nextRowIndex = navigationService.getNextStateRowIndex(condition);
+      Log.info("go to Next State:" + nextRowIndex);
+      tableModelHandler.gotoRow(nextRowIndex, true);
    }
 
-   boolean isReqComplete = true;
-
-   private void cacheNextState(final NavigationCacheCallback callBack, final List<Long> cacheList, final boolean isNewState, final boolean isFuzzyState)
+   private void gotoPrevState(Predicate<ContentState> condition)
    {
-      isReqComplete = false;
-      dispatcher.execute(new GetTransUnitsNavigation(selectedTransUnit.getId().getId(), 3, false, findMessage, isNewState, isFuzzyState), new AsyncCallback<GetTransUnitsNavigationResult>()
-      {
-         @Override
-         public void onSuccess(GetTransUnitsNavigationResult result)
-         {
-            isReqComplete = true;
-            if (!result.getUnits().isEmpty())
-            {
-               for (Long offset : result.getUnits())
-               {
-                  cacheList.add(offset + curRowIndex);
-               }
-               Log.info("cachelist:" + cacheList);
-               callBack.next(isNewState, isFuzzyState);
-            }
-
-         }
-
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            Log.error("GetTransUnitsStates failure " + caught, caught);
-         }
-      });
-   }
-
-   private void cachePrevState(final NavigationCacheCallback callBack, final List<Long> cacheList, final boolean isNewState, final boolean isFuzzyState)
-   {
-      isReqComplete = false;
-      dispatcher.execute(new GetTransUnitsNavigation(selectedTransUnit.getId().getId(), 3, true, findMessage, isNewState, isFuzzyState), new AsyncCallback<GetTransUnitsNavigationResult>()
-      {
-         @Override
-         public void onSuccess(GetTransUnitsNavigationResult result)
-         {
-            isReqComplete = true;
-            if (!result.getUnits().isEmpty())
-            {
-               for (Long offset : result.getUnits())
-               {
-                  cacheList.add(curRowIndex - offset);
-               }
-               Log.info("cachelist:" + cacheList);
-               callBack.prev(isNewState, isFuzzyState);
-            }
-         }
-
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            Log.error("GetTransUnitsStates failure " + caught, caught);
-         }
-      });
-   }
-
-   NavigationCacheCallback cacheCallback = new NavigationCacheCallback()
-   {
-      @Override
-      public void next(boolean isNewState, boolean isFuzzyState)
-      {
-         gotoNextState(isNewState, isFuzzyState);
-      }
-
-      @Override
-      public void prev(boolean isNewState, boolean isFuzzyState)
-      {
-         gotoPrevState(isNewState, isFuzzyState);
-      }
-
-   };
-
-   private void gotoNextState(boolean isNewState, boolean isFuzzyState)
-   {
-      if (isNewState && isFuzzyState)
-      {
-         Log.info("go to Next Fuzzy Or Untranslated State");
-         transIdPrevNewFuzzyCache.clear();
-         gotoNextState(transIdNextNewFuzzyCache, true, true);
-      }
-      else if (isNewState)
-      {
-         Log.info("go to Next Untranslated State");
-         transIdPrevNewCache.clear();
-         gotoNextState(transIdNextNewCache, true, false);
-      }
-      else if (isFuzzyState)
-      {
-         Log.info("go to Next Fuzzy State");
-         transIdPrevFuzzyCache.clear();
-         gotoNextState(transIdNextFuzzyCache, false, true);
-      }
-   }
-
-   private void gotoPrevState(boolean isNewState, boolean isFuzzyState)
-   {
-      if (isNewState && isFuzzyState)
-      {
-         Log.info("go to Prev Fuzzy Or Untranslated State");
-         // Clean the cache for Next Fuzzy to avoid issues about cache is
-         // obsolete
-         transIdNextNewFuzzyCache.clear();
-         gotoPrevState(transIdPrevNewFuzzyCache, true, true);
-      }
-      else if (isNewState)
-      {
-         Log.info("go to Prev Untranslated State");
-         // Clean the cache for Next Fuzzy to avoid issues about cache is
-         // obsolete
-         transIdNextNewCache.clear();
-         gotoPrevState(transIdPrevNewCache, true, false);
-      }
-      else if (isFuzzyState)
-      {
-         Log.info("go to Prev Fuzzy State");
-         // Clean the cache for Next Fuzzy to avoid issues about cache is
-         // obsolete
-         transIdNextFuzzyCache.clear();
-         gotoPrevState(transIdPrevFuzzyCache, false, true);
-      }
-   }
-
-   private void gotoPrevState(List<Long> transIdPrevCache, boolean isNewState, boolean isFuzzyState)
-   {
-      // If the catch of row is empty and request is complete, generate
-      // one
-      if (transIdPrevCache.isEmpty())
-      {
-         if (isReqComplete)
-         {
-            cachePrevState(cacheCallback, transIdPrevCache, isNewState, isFuzzyState);
-         }
-      }
-      else
-      {
-         int size = transIdPrevCache.size();
-         int offset = transIdPrevCache.get(size - 1).intValue();
-         if (curRowIndex > offset)
-         {
-            for (Long aTransIdPrevCache : transIdPrevCache)
-            {
-               int newRowIndex = aTransIdPrevCache.intValue();
-               if (curRowIndex > newRowIndex)
-               {
-                  display.getTargetCellEditor().cancelEdit();
-                  tableModelHandler.gotoRow(newRowIndex, true);
-                  break;
-               }
-            }
-         }
-         else
-         {
-            transIdPrevCache.clear();
-            cachePrevState(cacheCallback, transIdPrevCache, isNewState, isFuzzyState);
-         }
-      }
-   }
-
-   private void gotoNextState(List<Long> transIdNextCache, boolean isNewState, boolean isFuzzyState)
-   {
-      // If the cache of next is empty, generate one
-      if (transIdNextCache.isEmpty())
-      {
-         if (isReqComplete)
-         {
-            cacheNextState(cacheCallback, transIdNextCache, isNewState, isFuzzyState);
-         }
-      }
-      else
-      {
-         int size = transIdNextCache.size();
-         int offset = transIdNextCache.get(size - 1).intValue();
-         if (curRowIndex < offset)
-         {
-            for (Long aTransIdNextCache : transIdNextCache)
-            {
-               int newRowIndex = aTransIdNextCache.intValue();
-               if (curRowIndex < newRowIndex)
-               {
-                  display.getTargetCellEditor().cancelEdit();
-                  tableModelHandler.gotoRow(newRowIndex, true);
-                  break;
-               }
-            }
-         }
-         else
-         {
-            transIdNextCache.clear();
-            cacheNextState(cacheCallback, transIdNextCache, isNewState, isFuzzyState);
-         }
-      }
+      display.getTargetCellEditor().cancelEdit();
+      int prevRowIndex = navigationService.getPreviousStateRowIndex(condition);
+      Log.info("go to Prev State:" + prevRowIndex);
+      tableModelHandler.gotoRow(prevRowIndex, true);
    }
 
    public TransUnit getSelectedTransUnit()
@@ -1088,7 +829,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void execute()
          {
-            tableModelHandler.updatePageAndRowIndex();
+            navigationService.updateCurrentPageAndRowIndex(display.getCurrentPage(), display.getSelectedRowNumber());
 
             display.setTransUnitDetails(transUnit);
 
@@ -1098,11 +839,10 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                selectedTransUnit = transUnit;
                Log.info("SelectedTransUnit: " + selectedTransUnit.getId());
                // Clean the cache when we click the new entry
-               clearCacheList();
                eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
                display.getTargetCellEditor().savePendingChange(true);
 
-               dispatcher.execute(new TranslatorStatusUpdateAction(identity.getPerson(), selectedTransUnit), new AsyncCallback<TranslatorStatusUpdateResult>()
+               dispatcher.execute(new TransUnitEditAction(identity.getPerson(), selectedTransUnit), new AsyncCallback<TransUnitEditResult>()
                {
                   @Override
                   public void onFailure(Throwable caught)
@@ -1110,7 +850,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                   }
 
                   @Override
-                  public void onSuccess(TranslatorStatusUpdateResult result)
+                  public void onSuccess(TransUnitEditResult result)
                   {
                   }
                });
@@ -1123,7 +863,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
    public void gotoCurrentRow()
    {
-      tableModelHandler.gotoRow(curRowIndex, true);
+      tableModelHandler.gotoRow(navigationService.getCurrentRowIndex(), true);
    }
 
    public void gotoPrevRow(boolean andEdit)
@@ -1139,7 +879,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
    public int getSelectedRowIndex()
    {
-      return curRowIndex;
+      return navigationService.getCurrentRowIndex();
    }
 
    /**
@@ -1151,7 +891,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    {
       if (!selectDocId.equals(documentId))
       {
-         // display.startProcessing();
          documentId = selectDocId;
          initialiseTransUnitList();
       }

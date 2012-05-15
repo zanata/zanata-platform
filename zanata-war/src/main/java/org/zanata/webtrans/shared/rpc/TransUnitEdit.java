@@ -4,14 +4,14 @@ import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnit;
 
-public class TranslatorStatusUpdate implements SessionEventData, HasTranslatorStatusUpdateData
+public class TransUnitEdit implements SessionEventData, HasTransUnitEditData
 {
    private static final long serialVersionUID = 5332535583909340461L;
    private Person person;
    private TransUnit selectedTransUnit;
    private SessionId sessionId;
 
-   public TranslatorStatusUpdate(SessionId sessionId, Person person, TransUnit selectedTransUnit)
+   public TransUnitEdit(SessionId sessionId, Person person, TransUnit selectedTransUnit)
    {
       this.sessionId = sessionId;
       this.person = person;
@@ -19,7 +19,7 @@ public class TranslatorStatusUpdate implements SessionEventData, HasTranslatorSt
    }
 
    // for ExposeEntity
-   public TranslatorStatusUpdate()
+   public TransUnitEdit()
    {
    }
 
