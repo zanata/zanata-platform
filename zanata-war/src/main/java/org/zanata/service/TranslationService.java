@@ -31,6 +31,7 @@ import org.zanata.exception.ConcurrentTranslationException;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 
 public interface TranslationService
@@ -54,6 +55,26 @@ public interface TranslationService
     * @return information about each translation change
     */
    List<TranslationResult> translate(LocaleId localeId, List<TransUnitUpdateRequest> translationRequests);
+
+
+   /**
+    * Attempts to revert a list of updates by adding a new translation that is
+    * identical to the previous one.
+    * 
+    * The versionNum of the translation is advanced and new history is created,
+    * so the update and the undo will be visible in history.
+    * 
+    * If any additional translations have been added after an update described
+    * in translationsToRevert, that update will not be reverted and its
+    * {@link TranslationResult} will report false for isTranslationSuccessful().
+    * This will not prevent other updates in translationsToRevert being
+    * reverted.
+    * 
+    * @param localeId
+    * @param translationsToRevert describe each of the updates to be reverted
+    * @return a list of results describing the outcome of each revert
+    */
+   List<TranslationResult> revertTranslations(LocaleId localeId, List<TransUnitUpdateInfo> translationsToRevert);
 
    /**
     * Translates all text flows in a document.
