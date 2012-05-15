@@ -82,7 +82,6 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
       {
          log.info("find message:" + action.getPhrase());
          List<Long> idList = textFlowDAO.getNavigationBy(action.getId(), action.getPhrase().toLowerCase(), action.getWorkspaceId().getLocaleId());
-         log.info("size: " + idList.size());
 
          textFlows = textFlowDAO.findByIdList(idList);
       }
@@ -108,7 +107,7 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
             idIndexList.add(textFlow.getId());
          }
       }
-
+      log.info("size: " + idIndexList.size());
 
       return new GetTransUnitsNavigationResult(new DocumentId(action.getId()), idIndexList, transIdStateList);
    }

@@ -52,7 +52,7 @@ import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
-import org.zanata.webtrans.client.events.TranslatorStatusUpdateEvent;
+import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
@@ -108,7 +108,7 @@ public class TargetContentsPresenterTest
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
       verify(eventBus).addHandler(InsertStringInEditorEvent.getType(), presenter);
       verify(eventBus).addHandler(CopyDataToEditorEvent.getType(), presenter);
-      verify(eventBus).addHandler(TranslatorStatusUpdateEvent.getType(), presenter);
+      verify(eventBus).addHandler(TransUnitEditEvent.getType(), presenter);
 
       presenter.setCellEditor(cellEditor);
 

@@ -43,8 +43,6 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.OpenEditorEvent;
 import org.zanata.webtrans.client.events.OpenEditorEventHandler;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
-import org.zanata.webtrans.client.events.TransUnitEditEvent;
-import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
@@ -68,8 +66,8 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
-import org.zanata.webtrans.shared.rpc.TranslatorStatusUpdateAction;
-import org.zanata.webtrans.shared.rpc.TranslatorStatusUpdateResult;
+import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
+import org.zanata.webtrans.shared.rpc.TransUnitEditResult;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
@@ -343,23 +341,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                      display.getRowValue(rowIndex).OverrideWith(event.getUpdateInfo().getTransUnit());
                      display.getTableModel().clearCache();
                   }
-               }
-            }
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(TransUnitEditEvent.getType(), new TransUnitEditEventHandler()
-      {
-         @Override
-         public void onTransUnitEdit(TransUnitEditEvent event)
-         {
-            if (documentId != null && documentId.equals(event.getDocumentId()))
-            {
-               if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnitId()))
-               {
-                  // handle change in current selection
-                  if (!event.getSessionId().equals(identity.getSessionId().toString()))
-                     eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.notifyInEdit()));
                }
             }
          }
@@ -921,7 +902,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
                display.getTargetCellEditor().savePendingChange(true);
 
-               dispatcher.execute(new TranslatorStatusUpdateAction(identity.getPerson(), selectedTransUnit), new AsyncCallback<TranslatorStatusUpdateResult>()
+               dispatcher.execute(new TransUnitEditAction(identity.getPerson(), selectedTransUnit), new AsyncCallback<TransUnitEditResult>()
                {
                   @Override
                   public void onFailure(Throwable caught)
@@ -929,7 +910,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                   }
 
                   @Override
-                  public void onSuccess(TranslatorStatusUpdateResult result)
+                  public void onSuccess(TransUnitEditResult result)
                   {
                   }
                });

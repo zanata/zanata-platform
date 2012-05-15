@@ -10,8 +10,8 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
-import org.zanata.webtrans.client.events.TranslatorStatusUpdateEvent;
-import org.zanata.webtrans.client.events.TranslatorStatusUpdateEventHandler;
+import org.zanata.webtrans.client.events.TransUnitEditEvent;
+import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasManageUserSession;
@@ -82,10 +82,10 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
          }
       });
 
-      registerHandler(eventBus.addHandler(TranslatorStatusUpdateEvent.getType(), new TranslatorStatusUpdateEventHandler()
+      registerHandler(eventBus.addHandler(TransUnitEditEvent.getType(), new TransUnitEditEventHandler()
       {
          @Override
-         public void onTranslatorStatusUpdate(TranslatorStatusUpdateEvent event)
+         public void onTransUnitEdit(TransUnitEditEvent event)
          {
             updateTranslatorStatus(event.getSessionId(), event.getPerson(), event.getSelectedTransUnit());
          }

@@ -41,8 +41,8 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEventHandler;
 import org.zanata.webtrans.client.events.RunValidationEvent;
-import org.zanata.webtrans.client.events.TranslatorStatusUpdateEvent;
-import org.zanata.webtrans.client.events.TranslatorStatusUpdateEventHandler;
+import org.zanata.webtrans.client.events.TransUnitEditEvent;
+import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
@@ -68,7 +68,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class TargetContentsPresenter implements TargetContentsDisplay.Listener, TranslatorStatusUpdateEventHandler, UserConfigChangeHandler, RequestValidationEventHandler, InsertStringInEditorHandler, CopyDataToEditorHandler
+public class TargetContentsPresenter implements TargetContentsDisplay.Listener, TransUnitEditEventHandler, UserConfigChangeHandler, RequestValidationEventHandler, InsertStringInEditorHandler, CopyDataToEditorHandler
 {
    public static final int NO_OPEN_EDITOR = -1;
    private static final int LAST_INDEX = -2;
@@ -111,7 +111,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       eventBus.addHandler(RequestValidationEvent.getType(), this);
       eventBus.addHandler(InsertStringInEditorEvent.getType(), this);
       eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
-      eventBus.addHandler(TranslatorStatusUpdateEvent.getType(), this);
+      eventBus.addHandler(TransUnitEditEvent.getType(), this);
    }
 
    private ToggleEditor getCurrentEditor()
@@ -174,7 +174,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    }
 
    @Override
-   public void onTranslatorStatusUpdate(final TranslatorStatusUpdateEvent event)
+   public void onTransUnitEdit(final TransUnitEditEvent event)
    {
       if (event.getSelectedTransUnit() != null)
       {
