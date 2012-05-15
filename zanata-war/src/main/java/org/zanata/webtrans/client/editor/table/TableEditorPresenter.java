@@ -22,12 +22,15 @@ package org.zanata.webtrans.client.editor.table;
 
 import static org.zanata.webtrans.client.editor.table.TableConstants.MAX_PAGE_ROW;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
@@ -148,22 +151,13 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
    private DocumentId documentId;
 
-   // private TransFilterPresenter.Display transFilterDisplay;
-
    private final CachingDispatchAsync dispatcher;
    private final Identity identity;
    private TransUnit selectedTransUnit;
    private TransUnitId targetTransUnitId;
-   // private int lastRowNum;
 
-   // private List<Long> transIdNextNewFuzzyCache = new ArrayList<Long>();
-   // private List<Long> transIdPrevNewFuzzyCache = new ArrayList<Long>();
-   //
-   // private List<Long> transIdNextFuzzyCache = new ArrayList<Long>();
-   // private List<Long> transIdPrevFuzzyCache = new ArrayList<Long>();
-   //
-   // private List<Long> transIdNextNewCache = new ArrayList<Long>();
-   // private List<Long> transIdPrevNewCache = new ArrayList<Long>();
+   private Map<Long, ContentState> transIdStateList;
+   private ArrayList<Long> idIndexList;
 
    private int curRowIndex;
    private int curPage;
@@ -209,6 +203,27 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       display.getTableModel().clearCache();
       display.getTableModel().setRowCount(TableModel.UNKNOWN_ROW_COUNT);
       display.gotoPage(0, true);
+      initialiseTransUnitsNavigation();
+   }
+
+   private void initialiseTransUnitsNavigation()
+   {
+      dispatcher.execute(new GetTransUnitsNavigation(documentId.getValue(), findMessage, filterViewConfirmationPanel.isFilterUntranslated(), filterViewConfirmationPanel.isFilterNeedReview(), filterViewConfirmationPanel.isFilterTranslated()), new AsyncCallback<GetTransUnitsNavigationResult>()
+      {
+         @Override
+         public void onSuccess(GetTransUnitsNavigationResult result)
+         {
+            transUnitModel.init(result.getTransIdStateList(), result.getIdIndexList());
+            transIdStateList = result.getTransIdStateList();
+            idIndexList = result.getIdIndexList();
+         }
+
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            Log.error("GetTransUnitsNavigation failure " + caught, caught);
+         }
+      });
    }
 
    @Override
@@ -313,6 +328,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onTransUnitUpdated(TransUnitUpdatedEvent event)
          {
+            transIdStateList.put(event.getUpdateInfo().getTransUnit().getId().getId(), event.getUpdateInfo().getTransUnit().getStatus());
             // assume update was successful
             if (documentId != null && documentId.equals(event.getUpdateInfo().getDocumentId()))
             {
@@ -617,13 +633,11 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyUpdateSaved()));
             }
          });
-         // stopEditing(rowValue);
          return true;
       }
 
       public void onCancel(TransUnit rowValue)
       {
-         // stopEditing(rowValue);
       }
 
       @Override
@@ -769,51 +783,83 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
    };
 
-   private void gotoNextState(boolean isNewState, boolean isFuzzyState)
+   private boolean checkCondition(ContentState contentState, boolean isNewState, boolean isFuzzyState)
    {
       if (isNewState && isFuzzyState)
       {
-         Log.info("go to Next Fuzzy Or Untranslated State");
-
-         display.getTargetCellEditor().cancelEdit();
-         // tableModelHandler.gotoRow(newRowIndex, true);
+         return contentState == ContentState.New || contentState == ContentState.NeedReview;
+      }
+      else if (!isNewState && !isFuzzyState)
+      {
+         return contentState != ContentState.New && contentState != ContentState.NeedReview;
       }
       else if (isNewState)
       {
-         Log.info("go to Next Untranslated State");
-         display.getTargetCellEditor().cancelEdit();
+         return contentState == ContentState.New;
       }
       else if (isFuzzyState)
       {
-         Log.info("go to Next Fuzzy State");
-         display.getTargetCellEditor().cancelEdit();
+         return contentState == ContentState.NeedReview;
       }
+      return false;
+   }
+
+   private int getNextStateRowIndex(boolean isNewState, boolean isFuzzyState)
+   {
+      if (curRowIndex >= idIndexList.size() - 1)
+      {
+         return curRowIndex;
+      }
+
+      for (int i = curRowIndex + 1; i <= idIndexList.size() - 1; i++)
+      {
+         ContentState contentState = transIdStateList.get(idIndexList.get(i));
+         if (checkCondition(contentState, isNewState, isFuzzyState))
+         {
+            return i;
+         }
+      }
+      return curRowIndex;
+   }
+
+   private int getPreviousStateRowIndex(boolean isNewState, boolean isFuzzyState)
+   {
+      if (curRowIndex == 0)
+      {
+         return curRowIndex;
+      }
+
+      for (int i = curRowIndex - 1; i >= 0; i--)
+      {
+         ContentState contentState = transIdStateList.get(idIndexList.get(i));
+         if (checkCondition(contentState, isNewState, isFuzzyState))
+         {
+            return i;
+         }
+      }
+      return curRowIndex;
+   }
+
+   private void gotoNextState(boolean isNewState, boolean isFuzzyState)
+   {
+      Log.info("==========gotoNextState: New-" + isNewState + " Fuzzy-" + isFuzzyState);
+
+      display.getTargetCellEditor().cancelEdit();
+
+      int nextRowIndex = getNextStateRowIndex(isNewState, isFuzzyState);
+      Log.info("go to Next State:" + nextRowIndex);
+      tableModelHandler.gotoRow(nextRowIndex, true);
    }
 
    private void gotoPrevState(boolean isNewState, boolean isFuzzyState)
    {
-      if (isNewState && isFuzzyState)
-      {
-         Log.info("go to Prev Fuzzy Or Untranslated State");
-         // Clean the cache for Next Fuzzy to avoid issues about cache is
-         // obsolete
-         display.getTargetCellEditor().cancelEdit();
-      }
-      else if (isNewState)
-      {
-         Log.info("go to Prev Untranslated State");
-         // Clean the cache for Next Fuzzy to avoid issues about cache is
-         // obsolete
-         display.getTargetCellEditor().cancelEdit();
-      }
-      else if (isFuzzyState)
-      {
-         Log.info("go to Prev Fuzzy State");
-         // Clean the cache for Next Fuzzy to avoid issues about cache is
-         // obsolete
-         display.getTargetCellEditor().cancelEdit();
-      }
-   
+      Log.info("=============gotoPrevState: New-" + isNewState + " Fuzzy-" + isFuzzyState);
+
+      display.getTargetCellEditor().cancelEdit();
+
+      int prevRowIndex = getPreviousStateRowIndex(isNewState, isFuzzyState);
+      Log.info("go to Prev State:" + prevRowIndex);
+      tableModelHandler.gotoRow(prevRowIndex, true);
    }
 
    public TransUnit getSelectedTransUnit()
@@ -953,21 +999,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       {
          documentId = selectDocId;
          initialiseTransUnitList();
-
-         dispatcher.execute(new GetTransUnitsNavigation(documentId.getValue(), findMessage, filterViewConfirmationPanel.isFilterUntranslated(), filterViewConfirmationPanel.isFilterNeedReview(), filterViewConfirmationPanel.isFilterTranslated()), new AsyncCallback<GetTransUnitsNavigationResult>()
-         {
-            @Override
-            public void onSuccess(GetTransUnitsNavigationResult result)
-            {
-               transUnitModel.init(result.getTransIdStateList(), result.getIdIndexList());
-            }
-
-            @Override
-            public void onFailure(Throwable caught)
-            {
-               Log.error("GetTransUnitsStates failure " + caught, caught);
-            }
-         });
       }
    }
 }
