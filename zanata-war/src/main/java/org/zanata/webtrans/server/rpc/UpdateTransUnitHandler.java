@@ -50,6 +50,7 @@ import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
+import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
@@ -146,7 +147,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       return result;
    }
 
-   private TranslationWorkspace checkSecurityAndGetWorkspace(UpdateTransUnit action) throws ActionException
+   private TranslationWorkspace checkSecurityAndGetWorkspace(AbstractWorkspaceAction<?> action) throws ActionException
    {
       identity.checkLoggedIn();
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());

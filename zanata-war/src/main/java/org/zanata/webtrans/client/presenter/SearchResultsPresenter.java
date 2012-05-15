@@ -45,6 +45,7 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
 import org.zanata.webtrans.shared.rpc.ReplaceText;
+import org.zanata.webtrans.shared.rpc.RevertTransUnitUpdates;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -305,7 +306,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
             if (replaceInfo.isUndoable() && replaceInfo.getTransUnit().getVerNum() != updateInfo.getTransUnit().getVerNum())
             {
-               // can't undo after new update
+               // can't undo after additional update
                replaceInfo.setUndoable(false);
                replaceInfo.setReplaceable(true);
                replaceInfo.setReplacing(false);
@@ -437,9 +438,25 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void execute(TransUnitReplaceInfo info)
          {
-            eventBus.fireEvent(new NotificationEvent(Severity.Error, "Undo not implemented"));
-            // FIXME fire this when it exists
-//            fireUndoUpdateEvent(Collections.singletonList(tu));
+            eventBus.fireEvent(new NotificationEvent(Severity.Info, "Undoing..."));
+            // TODO extract this into a separate method to re-use for bulk revert
+            RevertTransUnitUpdates action = new RevertTransUnitUpdates(info.getReplaceInfo());
+            dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>()
+            {
+
+               @Override
+               public void onFailure(Throwable caught)
+               {
+                  eventBus.fireEvent(new NotificationEvent(Severity.Error, "Undo replacement failed"));
+               }
+
+               @Override
+               public void onSuccess(UpdateTransUnitResult result)
+               {
+                  eventBus.fireEvent(new NotificationEvent(Severity.Info, "Undo successful"));
+                  // TODO update model with new values
+               }
+            });
          }
       };
    }

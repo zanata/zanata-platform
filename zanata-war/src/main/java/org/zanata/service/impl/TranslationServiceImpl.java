@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import javax.annotation.Nullable;
 
@@ -48,7 +49,6 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
-import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
@@ -62,12 +62,15 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
+import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 
 
@@ -85,9 +88,6 @@ public class TranslationServiceImpl implements TranslationService
 
    @In
    private Session session;
-
-   @In
-   private ProjectDAO projectDAO;
 
    @In
    private ProjectIterationDAO projectIterationDAO;
@@ -122,7 +122,6 @@ public class TranslationServiceImpl implements TranslationService
 
    // for tests
    public TranslationServiceImpl(Session session,
-                                 ProjectDAO projectDAO,
                                  TranslationWorkspaceManager translationWorkspaceManager,
                                  LocaleService localeService,
                                  HAccount authenticatedAccount,
@@ -135,7 +134,6 @@ public class TranslationServiceImpl implements TranslationService
                                  ResourceUtils resourceUtils)
    {
       this.session = session;
-      this.projectDAO = projectDAO;
       this.localeServiceImpl = localeService;
       this.authenticatedAccount = authenticatedAccount;
       this.projectIterationDAO = projectIterationDAO;
@@ -206,6 +204,7 @@ public class TranslationServiceImpl implements TranslationService
             catch (HibernateException e)
             {
                result.isSuccess = false;
+               log.warn("HibernateException while translating");
             }
          }
          else
@@ -255,6 +254,7 @@ public class TranslationServiceImpl implements TranslationService
 
    private HTextFlowTarget translate(HTextFlowTarget hTextFlowTarget, List<String> contentsToSave, ContentState requestedState)
    {
+      hTextFlowTarget = (HTextFlowTarget) session.get(HTextFlowTarget.class, hTextFlowTarget.getId());
       boolean targetChanged = false;
       targetChanged |= setContentStateIfChanged(requestedState, contentsToSave, hTextFlowTarget);
       targetChanged |= setContentIfChanged(hTextFlowTarget, contentsToSave);
@@ -267,7 +267,19 @@ public class TranslationServiceImpl implements TranslationService
          log.debug("last modified by :" + authenticatedAccount.getPerson().getName());
       }
 
+      session.saveOrUpdate(hTextFlowTarget);
+
       //save the target
+      session.flush();
+
+      // TODO this will not be required when history cascading is working properly
+      for (Entry<Integer, HTextFlowTargetHistory> his : hTextFlowTarget.getHistory().entrySet())
+      {
+         System.out.println("persisting history");
+         session.saveOrUpdate(his.getValue());
+      }
+
+      //save the target histories
       session.flush();
 
       return hTextFlowTarget;
@@ -327,7 +339,7 @@ public class TranslationServiceImpl implements TranslationService
          throw new ZanataServiceException("Version '" + iterationSlug + "' for project '" + projectSlug + "' ");
       }
 
-      resourceUtils.validateExtensions(extensions);
+      ResourceUtils.validateExtensions(extensions);
 
       log.debug("pass evaluate");
       HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, docId);
@@ -549,6 +561,70 @@ public class TranslationServiceImpl implements TranslationService
       }
 
 
+   }
+
+   @Override
+   public List<TranslationResult> revertTranslations(LocaleId localeId, List<TransUnitUpdateInfo> translationsToRevert)
+   {
+      List<TranslationResult> results = new ArrayList<TranslationResult>();
+      List<TransUnitUpdateRequest> updateRequests = new ArrayList<TransUnitUpdateRequest>();
+      if (!translationsToRevert.isEmpty())
+      {
+
+         HTextFlow sampleHTextFlow = (HTextFlow) session.get(HTextFlow.class, translationsToRevert.get(0).getTransUnit().getId().getValue());
+         HLocale hLocale = validateLocale(localeId, sampleHTextFlow);
+         for (TransUnitUpdateInfo info : translationsToRevert)
+         {
+            TransUnitId tuId = info.getTransUnit().getId();
+            HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, tuId.getValue());
+            HTextFlowTarget hTextFlowTarget = getOrCreateTarget(hTextFlow, hLocale);
+
+            //check that version has not advanced
+            // TODO probably also want to check that source has not been updated
+            Integer versionNum = hTextFlowTarget.getVersionNum();
+            log.info("hTextFlowTarget version {0}, TransUnit version {1}", versionNum, info.getTransUnit().getVerNum());
+            if (versionNum.equals(info.getTransUnit().getVerNum()))
+            {
+               //look up replaced version
+               HTextFlowTargetHistory oldTarget = hTextFlowTarget.getHistory().get(Integer.valueOf(info.getPreviousVersionNum()));
+               if (oldTarget != null)
+               {
+                  //generate request
+                  List<String> oldContents = oldTarget.getContents();
+                  ContentState oldState = oldTarget.getState();
+                  TransUnitUpdateRequest request = new TransUnitUpdateRequest(tuId, oldContents, oldState, versionNum);
+                  //add to list
+                  updateRequests.add(request);
+               }
+               else
+               {
+                  log.warn("got null previous target for tu with id {0}, version {1}. Cannot revert with no previous state.", hTextFlow.getId(), info.getPreviousVersionNum());
+                  results.add(buildFailResult(hTextFlowTarget));
+               }
+            }
+            else
+            {
+               log.info("attempt to revert target version {0} for tu with id {1}, but current version is {2}. Not reverting.");
+               results.add(buildFailResult(hTextFlowTarget));
+            }
+         }
+      }
+      results.addAll(translate(localeId, updateRequests));
+      return results;
+   }
+
+   /**
+    * @param hTextFlowTarget
+    * @return
+    */
+   private TranslationResultImpl buildFailResult(HTextFlowTarget hTextFlowTarget)
+   {
+      TranslationResultImpl result = new TranslationResultImpl();
+      result.baseVersion = hTextFlowTarget.getVersionNum();
+      result.baseContentState = hTextFlowTarget.getState();
+      result.isSuccess = false;
+      result.translatedTextFlowTarget = hTextFlowTarget;
+      return result;
    }
 
 }
