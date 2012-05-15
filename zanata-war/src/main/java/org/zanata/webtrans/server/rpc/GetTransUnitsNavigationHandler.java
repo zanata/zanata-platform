@@ -106,7 +106,7 @@ public class GetTransUnitsNavigationHandler extends AbstractActionHandler<GetTra
             idIndexList.add(textFlow.getId());
          }
       }
-      log.info("size: " + idIndexList.size());
+      log.info("returned size: " + idIndexList.size());
 
       return new GetTransUnitsNavigationResult(new DocumentId(action.getId()), idIndexList, transIdStateList);
    }
