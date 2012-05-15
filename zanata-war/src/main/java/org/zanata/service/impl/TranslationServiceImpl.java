@@ -254,7 +254,6 @@ public class TranslationServiceImpl implements TranslationService
 
    private HTextFlowTarget translate(HTextFlowTarget hTextFlowTarget, List<String> contentsToSave, ContentState requestedState)
    {
-      hTextFlowTarget = (HTextFlowTarget) session.get(HTextFlowTarget.class, hTextFlowTarget.getId());
       boolean targetChanged = false;
       targetChanged |= setContentStateIfChanged(requestedState, contentsToSave, hTextFlowTarget);
       targetChanged |= setContentIfChanged(hTextFlowTarget, contentsToSave);
