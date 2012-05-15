@@ -207,7 +207,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onSuccess(GetTransUnitsNavigationResult result)
          {
-            navigationService.init(result.getTransIdStateList(), result.getIdIndexList());
+            navigationService.init(result.getTransIdStateList(), result.getIdIndexList(), display.getPageSize());
          }
 
          @Override
@@ -223,7 +223,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    {
       display.setTableModelHandler(tableModelHandler);
       display.setPageSize(TableConstants.PAGE_SIZE);
-      navigationService.setPageSize(display.getPageSize());
 
       registerHandler(filterViewConfirmationPanel.getSaveChangesAndFilterButton().addClickHandler(new ClickHandler()
       {

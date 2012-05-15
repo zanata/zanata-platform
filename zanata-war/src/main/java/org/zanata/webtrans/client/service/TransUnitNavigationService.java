@@ -70,13 +70,14 @@ public class TransUnitNavigationService
    private ArrayList<Long> idIndexList;
 
    private int pageSize;
-   private int curRowIndex;
-   private int curPage;
+   private int curRowIndex = 0;
+   private int curPage = 0;
 
-   public void init(Map<Long, ContentState> transIdStateList, ArrayList<Long> idIndexList)
+   public void init(Map<Long, ContentState> transIdStateList, ArrayList<Long> idIndexList, int pageSize)
    {
       this.transIdStateList = transIdStateList;
       this.idIndexList = idIndexList;
+      this.pageSize = pageSize;
    }
 
    public void updateMap(Long id, ContentState newState)
@@ -167,10 +168,5 @@ public class TransUnitNavigationService
    public int getPrevRowIndex()
    {
       return curRowIndex - 1;
-   }
-
-   public void setPageSize(int pageSize)
-   {
-      this.pageSize = pageSize;
    }
 }
