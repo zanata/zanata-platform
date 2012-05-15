@@ -59,6 +59,7 @@ import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
 import org.zanata.webtrans.shared.auth.Identity;
@@ -94,9 +95,11 @@ public class TargetContentsPresenterTest
    @Mock private TransUnit transUnit;
    @Mock private UserConfigHolder configHolder;
    @Mock private TransUnitsEditModel cellEditor;
+
    private final ArrayList<String> targetContents = Lists.newArrayList("", "");
    @Captor private ArgumentCaptor<RunValidationEvent> runValidationEventCaptor;
    @Captor private ArgumentCaptor<NotificationEvent> notificationEventCaptor;
+
 
    @BeforeMethod
    public void beforeMethod()
