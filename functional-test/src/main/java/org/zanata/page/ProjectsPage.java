@@ -20,6 +20,7 @@
  */
 package org.zanata.page;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -32,6 +33,9 @@ import com.google.common.base.Predicate;
 
 public class ProjectsPage extends AbstractPage
 {
+   @FindBy(id = "main_content")
+   private WebElement mainContentDiv;
+
    public ProjectsPage(final WebDriver driver)
    {
       super(driver);
@@ -61,6 +65,10 @@ public class ProjectsPage extends AbstractPage
 
    public List<String> getProjectNamesOnCurrentPage()
    {
+      if (mainContentDiv.getText().contains("No project exists"))
+      {
+         return Collections.emptyList();
+      }
       WebElement table = getDriver().findElement(By.className("rich-table"));
       List<WebElement> rows = table.findElements(By.xpath(".//tbody/tr/td[1]"));
       return WebElementUtil.elementsToText(rows);
