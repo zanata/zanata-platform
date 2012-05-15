@@ -61,6 +61,10 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
       void setDataProvider(ListDataProvider<TransMemoryResultItem> dataProvider);
 
       void setQueries(List<String> queries);
+
+      HasClickHandlers getPrefillButton();
+
+      void showPrefillConfirmationPopup();
    }
 
    private final WorkspaceContext workspaceContext;
@@ -154,6 +158,15 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          public void update(int index, TransMemoryResultItem object, String value)
          {
             eventBus.fireEvent(new CopyDataToEditorEvent(object.getTargetContents()));
+         }
+      });
+
+      display.getPrefillButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            display.showPrefillConfirmationPopup();
          }
       });
    }

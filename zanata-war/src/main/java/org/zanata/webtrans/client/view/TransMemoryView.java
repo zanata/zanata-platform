@@ -6,6 +6,7 @@ import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.EnumListBox;
+import org.zanata.webtrans.client.ui.PrefillPopupPanelView;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.client.ui.table.column.CopyButtonColumn;
 import org.zanata.webtrans.client.ui.table.column.DetailsColumn;
@@ -17,6 +18,7 @@ import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -68,6 +70,11 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    @UiField
    ScrollPanel scrollPanel;
 
+   @UiField
+   Button prefillButton;
+
+   private PrefillPopupPanelView prefillPopup;
+
    CellTable<TransMemoryResultItem> tmTable;
 
    private boolean isFocused;
@@ -81,7 +88,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    private DetailsColumn<TransMemoryResultItem> detailsColumn;
 
    @Inject
-   public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, final Resources resources)
+   public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, final Resources resources, PrefillPopupPanelView prefillPopup)
    {
       this.messages = messages;
 
@@ -91,11 +98,13 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       detailsColumn = new DetailsColumn<TransMemoryResultItem>(resources);
 
       searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);
+      this.prefillPopup = prefillPopup;
       initWidget(uiBinder.createAndBindUi(this));
 
       headerLabel.setText(messages.translationMemoryHeading());
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
+      prefillButton.setText(messages.prefillButtonLabel());
    }
 
    @Override
@@ -123,6 +132,18 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    public void onTmTextBoxBlur(BlurEvent event)
    {
       isFocused = false;
+   }
+
+   @Override
+   public HasClickHandlers getPrefillButton()
+   {
+      return prefillButton;
+   }
+
+   @Override
+   public void showPrefillConfirmationPopup()
+   {
+      prefillPopup.center();
    }
 
    @Override
