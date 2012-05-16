@@ -123,6 +123,10 @@ public class TransUnitNavigationService
 
    public Integer getRowIndex(TransUnit tu, boolean isFiltering, List<TransUnit> rowValues)
    {
+      if (tu == null)
+      {
+         return null;
+      }
       if (!isFiltering)
       {
          return tu.getRowIndex();

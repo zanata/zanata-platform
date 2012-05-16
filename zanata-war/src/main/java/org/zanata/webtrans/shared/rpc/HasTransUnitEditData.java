@@ -34,4 +34,6 @@ public interface HasTransUnitEditData
    Person getPerson();
 
    TransUnit getSelectedTransUnit();
+   
+   TransUnit getPrevSelectedTransUnit();
 }

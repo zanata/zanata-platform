@@ -9,13 +9,15 @@ public class TransUnitEdit implements SessionEventData, HasTransUnitEditData
    private static final long serialVersionUID = 5332535583909340461L;
    private Person person;
    private TransUnit selectedTransUnit;
+   private TransUnit prevSelectedTransUnit;
    private SessionId sessionId;
 
-   public TransUnitEdit(SessionId sessionId, Person person, TransUnit selectedTransUnit)
+   public TransUnitEdit(SessionId sessionId, Person person, TransUnit selectedTransUnit, TransUnit prevSelectedTransUnit)
    {
       this.sessionId = sessionId;
       this.person = person;
       this.selectedTransUnit = selectedTransUnit;
+      this.prevSelectedTransUnit = prevSelectedTransUnit;
    }
 
    // for ExposeEntity
@@ -36,8 +38,15 @@ public class TransUnitEdit implements SessionEventData, HasTransUnitEditData
    }
 
    @Override
+   public TransUnit getPrevSelectedTransUnit()
+   {
+      return prevSelectedTransUnit;
+   }
+
+   @Override
    public SessionId getSessionId()
    {
       return sessionId;
    }
+
 }

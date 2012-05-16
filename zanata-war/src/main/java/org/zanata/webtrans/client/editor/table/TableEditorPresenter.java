@@ -41,9 +41,13 @@ import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
+import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.OpenEditorEvent;
 import org.zanata.webtrans.client.events.OpenEditorEventHandler;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
+import org.zanata.webtrans.client.events.TransUnitEditEvent;
+import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
@@ -52,9 +56,11 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.TransUnitNavigationService;
+import org.zanata.webtrans.client.service.TranslatorColorService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationPanel;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
@@ -147,6 +153,10 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       void ignoreStopProcessing();
 
       TransUnit getRowValue(int row);
+
+      void updateRowBorder(int row, String color);
+
+      void resetRowBorder(int row);
    }
 
    private DocumentId documentId;
@@ -165,16 +175,20 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    private final WorkspaceContext workspaceContext;
 
    private final SourceContentsPresenter sourceContentsPresenter;
-   private TargetContentsPresenter targetContentsPresenter;
+   private final TargetContentsPresenter targetContentsPresenter;
+
+   private final WorkspaceUsersPresenter workspaceUsersPresenter;
+
    private UserConfigHolder configHolder;
    private Scheduler scheduler;
 
    private boolean filterTranslated, filterNeedReview, filterUntranslated;
 
    private final TransUnitNavigationService navigationService;
+   private final TranslatorColorService translatorColorService;
 
    @Inject
-   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourceContentsPresenter sourceContentsPresenter, TargetContentsPresenter targetContentsPresenter, UserConfigHolder configHolder, Scheduler scheduler, TransUnitNavigationService navigationService)
+   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourceContentsPresenter sourceContentsPresenter, final TargetContentsPresenter targetContentsPresenter, UserConfigHolder configHolder, Scheduler scheduler, TransUnitNavigationService navigationService, TranslatorColorService translatorColorService, final WorkspaceUsersPresenter workspaceUsersPresenter)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
@@ -186,6 +200,9 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       this.configHolder = configHolder;
       this.scheduler = scheduler;
       this.navigationService = navigationService;
+      this.translatorColorService = translatorColorService;
+      this.workspaceUsersPresenter = workspaceUsersPresenter;
+
    }
 
    /**
@@ -407,6 +424,50 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          public void onOpenEditor(OpenEditorEvent event)
          {
             tableModelHandler.gotoRowInCurrentPage(event.getRowNum(), true);
+         }
+      }));
+
+      registerHandler(eventBus.addHandler(TransUnitEditEvent.getType(), new TransUnitEditEventHandler()
+      {
+         @Override
+         public void onTransUnitEdit(TransUnitEditEvent event)
+         {
+            if (!identity.getSessionId().getValue().equals(event.getSessionId().getValue()))
+            {
+               Integer prevRowIndex = navigationService.getRowIndex(event.getPrevSelectedTransUnit(), isFiltering(), display.getRowValues());
+               if (prevRowIndex != null)
+               {
+                  display.resetRowBorder(prevRowIndex);
+               }
+
+               Integer rowIndex = navigationService.getRowIndex(event.getSelectedTransUnit(), isFiltering(), display.getRowValues());
+               if (rowIndex != null)
+               {
+                  display.updateRowBorder(rowIndex, translatorColorService.getColor(event.getSessionId().getValue()));
+               }
+            }
+            else
+            {
+               Integer rowIndex = navigationService.getRowIndex(event.getSelectedTransUnit(), isFiltering(), display.getRowValues());
+               if (rowIndex != null)
+               {
+                  display.resetRowBorder(rowIndex);
+               }
+            }
+         }
+      }));
+
+      registerHandler(eventBus.addHandler(ExitWorkspaceEvent.getType(), new ExitWorkspaceEventHandler()
+      {
+         @Override
+         public void onExitWorkspace(ExitWorkspaceEvent event)
+         {
+            TransUnit tu = workspaceUsersPresenter.getUserSessionMap().get(event.getPerson()).getSelectedTransUnit();
+            Integer rowIndex = navigationService.getRowIndex(tu, isFiltering(), display.getRowValues());
+            if (rowIndex != null)
+            {
+               display.resetRowBorder(rowIndex);
+            }
          }
       }));
 
@@ -836,13 +897,22 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             sourceContentsPresenter.setSelectedSource(display.getSelectedRowNumber());
             if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
             {
+               TransUnitEditAction transUnitEditAction;
+               if (selectedTransUnit != null)
+               {
+                  transUnitEditAction = new TransUnitEditAction(identity.getPerson(), transUnit, TransUnit.Builder.from(selectedTransUnit).build());
+               }
+               else
+               {
+                  transUnitEditAction = new TransUnitEditAction(identity.getPerson(), transUnit, null);
+               }
+
                selectedTransUnit = transUnit;
                Log.info("SelectedTransUnit: " + selectedTransUnit.getId());
                // Clean the cache when we click the new entry
                eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
                display.getTargetCellEditor().savePendingChange(true);
-
-               dispatcher.execute(new TransUnitEditAction(identity.getPerson(), selectedTransUnit), new AsyncCallback<TransUnitEditResult>()
+               dispatcher.execute(transUnitEditAction, new AsyncCallback<TransUnitEditResult>()
                {
                   @Override
                   public void onFailure(Throwable caught)
