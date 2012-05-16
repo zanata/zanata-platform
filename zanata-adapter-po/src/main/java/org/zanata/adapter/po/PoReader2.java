@@ -3,6 +3,8 @@ package org.zanata.adapter.po;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -13,6 +15,7 @@ import org.xml.sax.InputSource;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
+import org.zanata.common.util.ContentStateUtil;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
@@ -24,7 +27,6 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.HashUtil;
 import org.zanata.util.ShortString;
-import org.zanata.util.StringUtil;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -80,16 +82,7 @@ public class PoReader2
             TextFlowTarget tfTarget = new TextFlowTarget();
             tfTarget.setResId(id);
             tfTarget.setDescription(ShortString.shorten(message.getMsgid()));
-
-            if (message.isPlural())
-            {
-               tfTarget.setContents(message.getMsgstrPlural());
-            }
-            else
-            {
-               tfTarget.setContents(message.getMsgstr());
-            }
-
+            tfTarget.setContents(getContents(message));
             tfTarget.setState(getContentState(message));
 
             // add the PO comment
@@ -283,50 +276,35 @@ public class PoReader2
       return messageParser;
    }
 
-   private static boolean allNonEmpty(Message message)
+   /**
+    * Returns the contents of the Message (msgstr for singular, msgstr_plural for plural)
+    * Also ensures at least one entry.
+    * @param message
+    * @return
+    */
+   private static List<String> getContents(Message message)
    {
       if (message.isPlural())
       {
-         return !message.getMsgstrPlural().isEmpty() && StringUtil.allNonEmpty(message.getMsgstrPlural());
+         List<String> plurals = message.getMsgstrPlural();
+         if (plurals.isEmpty())
+         {
+            return Arrays.asList("");
+         }
+         return plurals;
       }
       else
       {
-         return message.getMsgstr() != null && !message.getMsgstr().isEmpty();
+         return Arrays.asList(message.getMsgstr());
       }
    }
 
-   private static boolean allEmpty(Message message)
-   {
-      if (message.isPlural())
-      {
-         return StringUtil.allEmpty(message.getMsgstrPlural());
-      }
-      else
-      {
-         return message.getMsgstr() == null || message.getMsgstr().isEmpty();
-      }
-   }
-
+   // NB: we don't check that the number of msgstr_plurals matches nplurals on the client, only on the server
    static ContentState getContentState(Message message)
    {
-      boolean fuzzy = message.isFuzzy();
-
-      if (allEmpty(message))
-      {
-         fuzzy = false;
-      }
-      if (fuzzy)
-      {
-         return ContentState.NeedReview;
-      }
-      if (allNonEmpty(message))
-      {
-         return ContentState.Approved;
-      }
-      else
-      {
-         return ContentState.New;
-      }
+      ContentState requestedState = message.isFuzzy() ? ContentState.NeedReview : ContentState.Approved;
+      List<String> contents = getContents(message);
+      return ContentStateUtil.determineState(requestedState, contents);
    }
 
    static String createId(Message message)

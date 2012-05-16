@@ -42,8 +42,22 @@ public class StringUtil
       return Arrays.asList(s.split(","));
    }
 
+   /**
+    * NB: Use allNonEmpty(Collection<String> strings, int nPlurals) if nPlurals is known.
+    * @param strings
+    * @return
+    */
    public static boolean allNonEmpty(Collection<String> strings)
    {
+      return allNonEmpty(strings, strings.size());
+   }
+
+   public static boolean allNonEmpty(Collection<String> strings, int nPlurals)
+   {
+      if (strings.size() < nPlurals)
+      {
+         return false;
+      }
       for (String s : strings)
       {
          if (s == null || s.isEmpty())
