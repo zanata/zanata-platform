@@ -45,17 +45,4 @@ public interface HasContents
 
    public void setContents(List<String> contents);
 
-   /**
-    * @deprecated As of release 1.6, replaced by {@link #getContents()}
-    * @return
-    */
-   @Deprecated
-   public String getContent();
-
-   /**
-    * @deprecated As of release 1.6, replaced by {@link #setContents()}
-    * @return
-    */
-   @Deprecated
-   public void setContent(String content);
 }
