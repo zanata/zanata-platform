@@ -117,7 +117,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
 
    private HSimpleComment comment;
 
-   public Map<Integer, HTextFlowTargetHistory> history;
+   private Map<Integer, HTextFlowTargetHistory> history;
 
    // Only for internal use (persistence transient)
    private Integer oldVersionNum;
