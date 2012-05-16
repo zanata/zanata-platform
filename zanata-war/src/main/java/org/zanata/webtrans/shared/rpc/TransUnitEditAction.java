@@ -1,13 +1,10 @@
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnit;
 
-import net.customware.gwt.dispatch.shared.Result;
 
-
-public class TranslatorStatusUpdateAction extends AbstractWorkspaceAction<TranslatorStatusUpdateResult>
+public class TransUnitEditAction extends AbstractWorkspaceAction<TransUnitEditResult>
 {
    private static final long serialVersionUID = -9165857458963498055L;
 
@@ -16,12 +13,12 @@ public class TranslatorStatusUpdateAction extends AbstractWorkspaceAction<Transl
 
 
    @SuppressWarnings("unused")
-   private TranslatorStatusUpdateAction()
+   private TransUnitEditAction()
    {
       this(null, null);
    }
 
-   public TranslatorStatusUpdateAction(Person person, TransUnit selectedTransUnit)
+   public TransUnitEditAction(Person person, TransUnit selectedTransUnit)
    {
       this.person = person;
       this.selectedTransUnit = selectedTransUnit;

@@ -1,6 +1,8 @@
 package org.zanata.webtrans.client.editor.table;
 
 
+import org.zanata.webtrans.shared.model.TransUnit;
+
 public interface EditRowCallback
 {
    void gotoNextRow();
@@ -22,4 +24,8 @@ public interface EditRowCallback
    void gotoNextNewRow();
 
    void gotoPrevNewRow();
+
+   void gotoCurrentRow(boolean andEdit);
+
+   void setRowValueOverride(int row, TransUnit targetCell);
 }

@@ -11,15 +11,95 @@
 	       padding-left: 5px;
         }
         
+        .chatRoomScrollPanel 
+        {
+			height:100%;
+		}
+		
+		.chatRoom
+        {
+			width:99%;
+			border-radius:3px;
+			padding-left:2px;
+		}
+		
+		.userListScrollPanel
+		{
+			border-right:2px solid #E0E8EE;	
+		}
+		
+		.chatSection
+		{
+			border-left:2px solid #E0E8EE;	
+			height:100%;
+			width:100%;
+		}
+		
+		.chatInput
+		{
+			border:1px solid #0000A0;
+			width:100%;
+			border-radius:3px;
+		}
+		
+		.sendButton
+		{
+	       font-size:11px;
+	       border-radius:5px;
+	       outline:none;
+	       width:40px;
+	       text-align:center;
+	       margin-right:5px;
+	       border-radius:3px;
+		}
+		
+	
+        
     </ui:style>
 
-    <g:LayoutPanel>
-        <g:layer top='0px' bottom='0px'>
-            <g:ScrollPanel>
+    <g:SplitLayoutPanel ui:field="mainPanel">
+        <g:west size="150" min-size="20">
+            <g:ScrollPanel styleName="{style.userListScrollPanel}">
                 <g:VerticalPanel ui:field='userListPanel' styleName="{style.userListTable}" width="100%" />
             </g:ScrollPanel>
-        </g:layer>
-    </g:LayoutPanel>
+        </g:west>
+        <g:center>
+        	<g:LayoutPanel height="100%" width="100%">
+        	<g:layer top="0px" bottom="24px">
+				<g:ScrollPanel styleName="{style.chatRoomScrollPanel}" ui:field="chatRoomScrollPanel">
+			    	<g:VerticalPanel ui:field="chatRoom" styleName="{style.chatRoom}"/>
+			    </g:ScrollPanel>
+			</g:layer>
+			<g:layer bottom="2px" height="24px">
+				<g:HorizontalPanel width="100%" spacing="3">
+		        		<g:cell>
+			        		<g:TextBox styleName="{style.chatInput}" ui:field="chatInput"/>
+			        	</g:cell>
+			        	<g:cell width="40px">
+							<g:PushButton addStyleNames="{style.sendButton}" ui:field="sendButton"/>	
+						</g:cell>	        	
+		        	</g:HorizontalPanel>
+			</g:layer>
+        	</g:LayoutPanel>
+<!--         	<g:VerticalPanel styleName="{style.chatSection}"> -->
+<!-- 		        <g:cell verticalAlignment="ALIGN_TOP"> -->
+<!-- 			        <g:ScrollPanel styleName="{style.chatRoomScrollPanel}"> -->
+<!-- 			        	<g:VerticalPanel ui:field="chatRoom" styleName="{style.chatRoom}"/> -->
+<!-- 			        </g:ScrollPanel> -->
+<!-- 		        </g:cell> -->
+<!-- 		        <g:cell verticalAlignment="ALIGN_BOTTOM" height="14px"> -->
+<!-- 		        	<g:HorizontalPanel width="100%" spacing="3"> -->
+<!-- 		        		<g:cell> -->
+<!-- 			        		<g:TextBox styleName="{style.chatInput}" ui:field="chatInput"/> -->
+<!-- 			        	</g:cell> -->
+<!-- 			        	<g:cell width="40px"> -->
+<!-- 							<g:PushButton addStyleNames="{style.sendButton}" ui:field="sendButton"/>	 -->
+<!-- 						</g:cell>	        	 -->
+<!-- 		        	</g:HorizontalPanel> -->
+<!-- 		        </g:cell> -->
+<!-- 	        </g:VerticalPanel> -->
+        </g:center>
+    </g:SplitLayoutPanel>
     
     
 </ui:UiBinder> 

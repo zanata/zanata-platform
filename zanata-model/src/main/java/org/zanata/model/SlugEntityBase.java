@@ -31,7 +31,6 @@ import org.zanata.common.EntityStatus;
 import org.zanata.model.validator.Slug;
 
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -41,7 +40,6 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 public class SlugEntityBase extends ModelEntityBase
 {
 

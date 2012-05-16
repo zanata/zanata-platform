@@ -53,7 +53,7 @@ import lombok.ToString;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
 @Setter
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, doNotUseGetters = true)
 @ToString(of = {"sourceRef", "srcLocale"})
 public class HGlossaryEntry extends ModelEntityBase
 {

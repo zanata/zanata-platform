@@ -28,8 +28,20 @@ public class ContainingWorkspaceBridge implements FieldBridge
    @Override
    public void set(String name, Object value, Document luceneDocument, LuceneOptions luceneOptions)
    {
-      HTextFlow textFlow = (HTextFlow) value;
-      HDocument doc = textFlow.getDocument();
+      HDocument doc;
+      if (value instanceof HTextFlow)
+      {
+         doc = ((HTextFlow) value).getDocument();
+      }
+      else if (value instanceof HDocument)
+      {
+         doc = (HDocument) value;
+      }
+      else
+      {
+         throw new IllegalArgumentException("ContainingWorkspaceBridge used on a non HDocument or HTextFlow type");
+      }
+
       HProjectIteration iteration = doc.getProjectIteration();
       HIterationProject project = iteration.getProject();
 

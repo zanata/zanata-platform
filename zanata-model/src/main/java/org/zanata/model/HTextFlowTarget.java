@@ -73,6 +73,8 @@ import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.LocaleIdBridge;
 import org.zanata.hibernate.search.StringListBridge;
 
+import com.google.common.base.Objects;
+
 /**
  * Represents a flow of translated text that should be processed as a
  * stand-alone structural unit.
@@ -115,7 +117,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
 
    private HSimpleComment comment;
 
-   public Map<Integer, HTextFlowTargetHistory> history;
+   private Map<Integer, HTextFlowTargetHistory> history;
 
    // Only for internal use (persistence transient)
    private Integer oldVersionNum;
@@ -317,21 +319,17 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       }
    }
 
-   /**
-    * Used for debugging
-    */
    @Override
    public String toString()
    {
-      return new StringBuilder().append("HTextFlowTarget(")
-            .append("contents:").append(getContents())
-            .append(" locale:").append(getLocale())
-            .append(" state:").append(getState())
-            .append(" comment:").append(getComment())
-            .append(" textflow:").append(getTextFlow().getContents())
-            .append(")").toString();
+      return Objects.toStringHelper(this).
+            add("contents", getContents()).
+            add("locale", getLocale()).
+            add("state", getState()).
+            add("comment", getComment()).
+            add("textFlow", getTextFlow().getContents()).
+            toString();
    }
-
    @Transient
    public void clear()
    {

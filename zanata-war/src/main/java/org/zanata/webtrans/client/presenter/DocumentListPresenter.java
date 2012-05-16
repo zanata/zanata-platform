@@ -77,6 +77,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
       HasValue<Boolean> getExactSearchCheckbox();
 
+      HasValue<Boolean> getCaseSensitiveCheckbox();
+
       HasSelectionHandlers<DocumentInfo> getDocumentList();
 
       HasData<DocumentNode> getDocumentListTable();
@@ -182,7 +184,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          public void onValueChange(ValueChangeEvent<String> event)
          {
             HistoryToken token = HistoryToken.fromTokenString(history.getToken());
-            if (event.getValue() != token.getDocFilterText())
+            if (!event.getValue().equals(token.getDocFilterText()))
             {
                token.setDocFilterText(event.getValue());
                history.newItem(token.toTokenString());
@@ -200,6 +202,20 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             {
                token.setDocFilterExact(event.getValue());
                history.newItem(token.toTokenString());
+            }
+         }
+      }));
+
+      registerHandler(display.getCaseSensitiveCheckbox().addValueChangeHandler(new ValueChangeHandler<Boolean>()
+      {
+         @Override
+         public void onValueChange(ValueChangeEvent<Boolean> event)
+         {
+            HistoryToken token = history.getHistoryToken();
+            if (event.getValue() != token.isDocFilterCaseSensitive())
+            {
+               token.setDocFilterCaseSensitive(event.getValue());
+               history.newItem(token);
             }
          }
       }));
@@ -228,7 +244,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
                filterChanged = true;
             }
 
-            // update checkbox to match new history state
+            // update exact-match checkbox to match new history state
             if (token.getDocFilterExact() != display.getExactSearchCheckbox().getValue())
             {
                display.getExactSearchCheckbox().setValue(token.getDocFilterExact());
@@ -237,6 +253,17 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             if (token.getDocFilterExact() != currentHistoryState.getDocFilterExact())
             {
                filter.setFullText(token.getDocFilterExact());
+               filterChanged = true;
+            }
+
+            //update case-sensitive checkbox to match new history state
+            if (token.isDocFilterCaseSensitive() != display.getCaseSensitiveCheckbox().getValue())
+            {
+               display.getCaseSensitiveCheckbox().setValue(token.isDocFilterCaseSensitive());
+            }
+            if (token.isDocFilterCaseSensitive() != currentHistoryState.isDocFilterCaseSensitive())
+            {
+               filter.setCaseSensitive(token.isDocFilterCaseSensitive());
                filterChanged = true;
             }
 
@@ -282,6 +309,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       }));
 
       loadDocumentList();
+
+      history.fireCurrentHistoryState();
    }
 
    /**
@@ -299,14 +328,23 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
       private HashSet<String> patterns = new HashSet<String>();
       private boolean isFullText = false;
+      private boolean caseSensitive = false;
 
       public boolean accept(DocumentInfo value)
       {
          if (patterns.isEmpty())
             return true;
          String fullPath = value.getPath() + value.getName();
+         if (!caseSensitive)
+         {
+            fullPath = fullPath.toLowerCase();
+         }
          for (String pattern : patterns)
          {
+            if (!caseSensitive)
+            {
+               pattern = pattern.toLowerCase();
+            }
             if (isFullText)
             {
                if (fullPath.equals(pattern))
@@ -337,6 +375,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       public void setFullText(boolean fullText)
       {
          isFullText = fullText;
+      }
+
+      public void setCaseSensitive(boolean caseSensitive)
+      {
+         this.caseSensitive = caseSensitive;
       }
    }
 

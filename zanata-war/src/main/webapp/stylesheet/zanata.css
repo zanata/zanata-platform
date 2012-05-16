@@ -471,7 +471,7 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 }
 
 #tabs .ui-tabs-nav {
-	margin: 0 10px;
+	margin: 0 0;
 	padding:0;
 	position:relative;
 	z-index:1;
@@ -489,7 +489,7 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	white-space: nowrap; /* required in IE 6 */
 	height:40px;
 	font-weight:bold;
-	padding: 0 20px;
+	padding: 0 15px;
 }
 
 #tabs .ui-tabs-nav li.ui-tabs-selected {

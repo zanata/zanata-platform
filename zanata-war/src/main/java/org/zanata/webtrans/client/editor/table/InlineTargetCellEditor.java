@@ -36,230 +36,203 @@ import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.Element;
 
-public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnitsEditModel
-{
-   /**
-    * Default style name.
-    */
-   public static final String DEFAULT_STYLENAME = "gwt-TargetCellEditor";
+public class InlineTargetCellEditor implements CellEditor<TransUnit>,
+		TransUnitsEditModel {
+	/**
+	 * Default style name.
+	 */
+	public static final String DEFAULT_STYLENAME = "gwt-TargetCellEditor";
 
-   /**
-    * The current {@link CellEditor.Callback}.
-    */
-   private Callback<TransUnit> curCallback = null;
+	/**
+	 * The current {@link CellEditor.Callback}.
+	 */
+	private Callback<TransUnit> curCallback = null;
 
-   private CancelCallback<TransUnit> cancelCallback = null;
+	private CancelCallback<TransUnit> cancelCallback = null;
 
-   private EditRowCallback editRowCallback = null;
+	private EditRowCallback editRowCallback = null;
 
-   /**
-    * The current {@link CellEditor.CellEditInfo}.
-    */
-   private CellEditInfo curCellEditInfo = null;
+	/**
+	 * The current {@link CellEditor.CellEditInfo}.
+	 */
+	private CellEditInfo curCellEditInfo = null;
 
-   private TransUnit cellValue;
+	private TransUnit cellValue;
 
-   private boolean isOpened = false;
-   private boolean isCancelButtonFocused = false;
-   private boolean isReadOnly;
-   private TargetContentsPresenter targetContentsPresenter;
+	private boolean isOpened = false;
+	private boolean isCancelButtonFocused = false;
+	private boolean isReadOnly;
+	private TargetContentsPresenter targetContentsPresenter;
 
-   private int curRow;
-   private int curCol;
-   private HTMLTable table;
+	private int curRow;
+	private int curCol;
+	private HTMLTable table;
 
-   /**
-    * Construct a new {@link InlineTargetCellEditor} with the specified images.
-    */
-   public InlineTargetCellEditor(CancelCallback<TransUnit> callback, EditRowCallback rowCallback, final boolean isReadOnly, TargetContentsPresenter targetContentsPresenter)
-   {
-      this.isReadOnly = isReadOnly;
-      this.targetContentsPresenter = targetContentsPresenter;
-      this.targetContentsPresenter.setCellEditor(this);
+	/**
+	 * Construct a new {@link InlineTargetCellEditor} with the specified images.
+	 */
+	public InlineTargetCellEditor(CancelCallback<TransUnit> callback,
+			EditRowCallback rowCallback, final boolean isReadOnly,
+			TargetContentsPresenter targetContentsPresenter) {
+		this.isReadOnly = isReadOnly;
+		this.targetContentsPresenter = targetContentsPresenter;
+		this.targetContentsPresenter.setCellEditor(this);
 
-      cancelCallback = callback;
-      editRowCallback = rowCallback;
-   }
+		cancelCallback = callback;
+		editRowCallback = rowCallback;
+	}
 
-   private void gotoRow(NavigationType nav)
-   {
-      if (nav == NavigationType.NextEntry)
-      {
-         editRowCallback.gotoNextRow();
-      }
-      else if (nav == NavigationType.PrevEntry)
-      {
-         editRowCallback.gotoPrevRow();
-      }
-      else if (nav == NavigationType.FirstEntry)
-      {
-         editRowCallback.gotoFirstRow();
-      }
-      else if (nav == NavigationType.LastEntry)
-      {
-         editRowCallback.gotoLastRow();
-      }
-   }
+	private void gotoRow(NavigationType nav) {
+		if (nav == NavigationType.NextEntry) {
+			editRowCallback.gotoNextRow();
+		} else if (nav == NavigationType.PrevEntry) {
+			editRowCallback.gotoPrevRow();
+		} else if (nav == NavigationType.FirstEntry) {
+			editRowCallback.gotoFirstRow();
+		} else if (nav == NavigationType.LastEntry) {
+			editRowCallback.gotoLastRow();
+		}
+	}
 
-   @Override
-   public void gotoNewRow(NavigationType nav)
-   {
-      if (nav == NavigationType.NextEntry)
-      {
-         editRowCallback.gotoNextNewRow();
-      }
-      else if (nav == NavigationType.PrevEntry)
-      {
-         editRowCallback.gotoPrevNewRow();
-      }
-   }
+	@Override
+	public void gotoNewRow(NavigationType nav) {
+		if (nav == NavigationType.NextEntry) {
+			editRowCallback.gotoNextNewRow();
+		} else if (nav == NavigationType.PrevEntry) {
+			editRowCallback.gotoPrevNewRow();
+		}
+	}
 
-   @Override
-   public void gotoFuzzyAndNewRow(NavigationType nav)
-   {
-      if (nav == NavigationType.NextEntry)
-      {
-         editRowCallback.gotoNextFuzzyNewRow();
-      }
-      else if (nav == NavigationType.PrevEntry)
-      {
-         editRowCallback.gotoPrevFuzzyNewRow();
-      }
-   }
+	@Override
+	public void gotoCurrentRow(boolean andEdit) {
+		editRowCallback.gotoCurrentRow(andEdit);
+	}
 
-   @Override
-   public void gotoFuzzyRow(NavigationType nav)
-   {
-      if (nav == NavigationType.NextEntry)
-      {
-         editRowCallback.gotoNextFuzzyRow();
-      }
-      else if (nav == NavigationType.PrevEntry)
-      {
-         editRowCallback.gotoPrevFuzzyRow();
-      }
-   }
+	@Override
+	public void gotoFuzzyAndNewRow(NavigationType nav) {
+		if (nav == NavigationType.NextEntry) {
+			editRowCallback.gotoNextFuzzyNewRow();
+		} else if (nav == NavigationType.PrevEntry) {
+			editRowCallback.gotoPrevFuzzyNewRow();
+		}
+	}
 
-   public boolean isEditing()
-   {
-      return cellValue != null && targetContentsPresenter.isEditing();
-   }
+	@Override
+	public void gotoFuzzyRow(NavigationType nav) {
+		if (nav == NavigationType.NextEntry) {
+			editRowCallback.gotoNextFuzzyRow();
+		} else if (nav == NavigationType.PrevEntry) {
+			editRowCallback.gotoPrevFuzzyRow();
+		}
+	}
 
-   public boolean isOpened()
-   {
-      return isOpened;
-   }
+	public boolean isEditing() {
+		return cellValue != null && targetContentsPresenter.isEditing();
+	}
 
-   @Override
-   public void editCell(CellEditInfo cellEditInfo, TransUnit cellValue, Callback<TransUnit> callback)
-   {
-      if (isReadOnly)
-      {
-         return;
-      }
+	public boolean isOpened() {
+		return isOpened;
+	}
 
-      if (isEditing())
-      {
-         if (cellEditInfo.getCellIndex() == curCol && cellEditInfo.getRowIndex() == curRow)
-         {
-            return;
-         }
-      }
+	@Override
+	public void editCell(CellEditInfo cellEditInfo, TransUnit cellValue,
+			Callback<TransUnit> callback) {
+		if (isReadOnly) {
+			return;
+		}
 
-      // save the content in previous cell before start new editing
-      if (curRow != cellEditInfo.getRowIndex())
-      {
-         savePendingChange(false);
-      }
+		if (isEditing()) {
+			if (cellEditInfo.getCellIndex() == curCol
+					&& cellEditInfo.getRowIndex() == curRow) {
+				return;
+			}
+		}
 
-      Log.debug("starting edit");
+		// save the content in previous cell before start new editing
+		if (curRow != cellEditInfo.getRowIndex()) {
+			savePendingChange(false);
+		}
 
-      // Save the current values
-      curCallback = callback;
-      curCellEditInfo = cellEditInfo;
+		Log.debug("starting edit");
 
-      // Get the info about the cell
-      table = curCellEditInfo.getTable();
+		// Save the current values
+		curCallback = callback;
+		curCellEditInfo = cellEditInfo;
 
-      curRow = curCellEditInfo.getRowIndex();
-      curCol = curCellEditInfo.getCellIndex();
+		// Get the info about the cell
+		table = curCellEditInfo.getTable();
 
-      this.cellValue = cellValue;
-      targetContentsPresenter.showEditors(curRow, TargetContentsPresenter.NO_OPEN_EDITOR);
+		curRow = curCellEditInfo.getRowIndex();
+		curCol = curCellEditInfo.getCellIndex();
 
-      isOpened = true;
+		this.cellValue = cellValue;
+		targetContentsPresenter.showEditors(curRow,
+				TargetContentsPresenter.NO_OPEN_EDITOR);
 
-      Element element = table.getCellFormatter().getElement(curRow, curCol);
-      TableEditorView.scrollIntoView(element);
-   }
+		isOpened = true;
 
-   @Override
-   public void savePendingChange(boolean cancelIfUnchanged)
-   {
-      if (isEditing())
-      {
-         // if something has changed, save as approved
-         if (hasTargetContentsChanged())
-         {
-            Log.debug("savePendingChange - acceptEdit");
-            acceptEdit();
-         }
-      }
-      else if (cancelIfUnchanged)
-      {
-         Log.debug("savePendingChange- cancel edit");
-         cancelEdit();
-      }
-      targetContentsPresenter.setToViewMode();
-   }
+		Element element = table.getCellFormatter().getElement(curRow, curCol);
+		TableEditorView.scrollIntoView(element);
+	}
 
-   public boolean hasTargetContentsChanged()
-   {
-      return !cellValue.getTargets().equals(targetContentsPresenter.getNewTargets());
-   }
+	@Override
+	public void savePendingChange(boolean cancelIfUnchanged) {
+		if (isEditing()) {
+			// if something has changed, save as approved
+			if (hasTargetContentsChanged()) {
+				Log.debug("savePendingChange - acceptEdit");
+				acceptEdit();
+			}
+		} else if (cancelIfUnchanged) {
+			Log.debug("savePendingChange- cancel edit");
+			cancelEdit();
+		}
+		targetContentsPresenter.setToViewMode();
+	}
 
-   @Override
-   public void saveAndMoveRow(NavigationType nav)
-   {
-      savePendingChange(true);
-      gotoRow(nav);
-   }
+	public boolean hasTargetContentsChanged() {
+		return !cellValue.getTargets().equals(
+				targetContentsPresenter.getNewTargets());
+	}
 
-   /**
-    * Accept the contents of the cell editor as the new cell value.
-    */
-   @Override
-   public void acceptEdit()
-   {
-      // Check if we are ready to accept
-      if (!onAccept())
-      {
-         return;
-      }
-      ArrayList<String> newTargets = targetContentsPresenter.getNewTargets();
-      cellValue.setTargets(newTargets);
-      determineStatus(newTargets, ContentState.Approved);
+	@Override
+	public void saveAndMoveRow(NavigationType nav) {
+		savePendingChange(true);
+		gotoRow(nav);
+	}
 
-      targetContentsPresenter.setToViewMode();
-      isOpened = false;
+	/**
+	 * Accept the contents of the cell editor as the new cell value.
+	 */
+	@Override
+	public void acceptEdit() {
+		// Check if we are ready to accept
+		if (!onAccept()) {
+			return;
+		}
+		ArrayList<String> newTargets = targetContentsPresenter.getNewTargets();
+		cellValue.setTargets(newTargets);
+		determineStatus(newTargets, ContentState.Approved);
 
-      // Send the new cell value to the callback
-      curCallback.onComplete(curCellEditInfo, cellValue);
-      clearSelection();
-   }
+		targetContentsPresenter.setToViewMode();
+		isOpened = false;
 
-   /**
-    * Save the contents of the cell and set status to fuzzy.
-    */
-   @Override
-   public void acceptFuzzyEdit()
-   {
-      // String text = textArea.getText();
-      ArrayList<String> newTargets = targetContentsPresenter.getNewTargets();
-      cellValue.setTargets(newTargets);
-      determineStatus(newTargets, ContentState.NeedReview);
-      curCallback.onComplete(curCellEditInfo, cellValue);
-   }
+		// Send the new cell value to the callback
+		curCallback.onComplete(curCellEditInfo, cellValue);
+		clearSelection();
+	}
+
+	/**
+	 * Save the contents of the cell and set status to fuzzy.
+	 */
+	@Override
+	public void acceptFuzzyEdit() {
+		// String text = textArea.getText();
+		ArrayList<String> newTargets = targetContentsPresenter.getNewTargets();
+		cellValue.setTargets(newTargets);
+		determineStatus(newTargets, ContentState.NeedReview);
+		curCallback.onComplete(curCellEditInfo, cellValue);
+	}
 
    /**
     * 
@@ -282,101 +255,101 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       // ContentState stateToSet = ContentStateUtil.determineState(requestedState, newContents);
 
       // NB until then, make sure this stays consistent
-      ContentState stateToSet = requestedState;
+		ContentState stateToSet = requestedState;
       if (requestedState == ContentState.New && emptyCount == 0)
       {
-         stateToSet = ContentState.NeedReview;
-      }
+			stateToSet = ContentState.NeedReview;
+		}
       else if (requestedState == ContentState.Approved && emptyCount != 0)
       {
          stateToSet = ContentState.New;
       }
       else if (requestedState == ContentState.NeedReview && emptyCount == newContents.size())
       {
-         stateToSet = ContentState.New;
-      }
-      cellValue.setStatus(stateToSet);
-   }
+			stateToSet = ContentState.New;
+		}
+		cellValue.setStatus(stateToSet);
+	}
 
-   /**
-    * Cancel the cell edit.
-    */
-   public void cancelEdit()
-   {
-      // Fire the event
-      if (!onCancel())
-      {
-         return;
-      }
+	/**
+	 * Cancel the cell edit.
+	 */
+	public void cancelEdit() {
+		// Fire the event
+		if (!onCancel()) {
+			return;
+		}
 
-      targetContentsPresenter.setToViewMode();
-      isOpened = false;
+		targetContentsPresenter.setToViewMode();
+		isOpened = false;
 
-      // Call the callback
-      if (curCallback != null)
-      {
-         // curCallback.onCancel(curCellEditInfo);
-         cancelCallback.onCancel(cellValue);
-      }
+		// Call the callback
+		if (curCallback != null) {
+			// curCallback.onCancel(curCellEditInfo);
+			cancelCallback.onCancel(cellValue);
+		}
 
-      clearSelection();
-   }
+		clearSelection();
+	}
 
-   public void clearSelection()
-   {
-      curCallback = null;
-      curCellEditInfo = null;
-      /*
-       * The main grid used for layout.
-       */
-      cellValue = null;
-   }
+	public void clearSelection() {
+		curCallback = null;
+		curCellEditInfo = null;
+		/*
+		 * The main grid used for layout.
+		 */
+		cellValue = null;
+	}
 
-   /**
-    * Called before an accept takes place.
-    * 
-    * @return true to allow the accept, false to prevent it
-    */
-   protected boolean onAccept()
-   {
-      return true;
-   }
+	/**
+	 * Called before an accept takes place.
+	 * 
+	 * @return true to allow the accept, false to prevent it
+	 */
+	protected boolean onAccept() {
+		return true;
+	}
 
-   /**
-    * Called before a cancel takes place.
-    * 
-    * @return true to allow the cancel, false to prevent it
-    */
-   protected boolean onCancel()
-   {
-      return true;
-   }
+	/**
+	 * Called before a cancel takes place.
+	 * 
+	 * @return true to allow the cancel, false to prevent it
+	 */
+	protected boolean onCancel() {
+		return true;
+	}
 
-   public boolean isCancelButtonFocused()
-   {
-      return isCancelButtonFocused;
-   }
+	public boolean isCancelButtonFocused() {
+		return isCancelButtonFocused;
+	}
 
-   public void setCancelButtonFocused(boolean isCancelButtonFocused)
-   {
-      this.isCancelButtonFocused = isCancelButtonFocused;
-   }
+	public void setCancelButtonFocused(boolean isCancelButtonFocused) {
+		this.isCancelButtonFocused = isCancelButtonFocused;
+	}
 
-   @Override
-   public TransUnit getTargetCell()
-   {
-      return cellValue;
-   }
+	@Override
+	public TransUnit getTargetCell() {
+		return cellValue;
+	}
 
-   public void setReadOnly(boolean isReadOnly)
-   {
-      this.isReadOnly = isReadOnly;
-      // cancelEdit();
-   }
+	public void setReadOnly(boolean isReadOnly) {
+		this.isReadOnly = isReadOnly;
+		// cancelEdit();
+	}
 
-   public void showEditors(int rowIndex, int editorIndex)
-   {
-      targetContentsPresenter.showEditors(rowIndex, editorIndex);
+	public void showEditors(int rowIndex, int editorIndex) {
+		targetContentsPresenter.showEditors(rowIndex, editorIndex);
 
-   }
+	}
+
+	@Override
+	public int getCurrentRow() {
+
+		return curRow;
+	}
+
+	@Override
+	public void setRowValueOverride(int row, TransUnit targetCell) {
+		editRowCallback.setRowValueOverride(row, targetCell);
+	}
 }

@@ -41,15 +41,33 @@ public class HistoryImpl implements History
    }
 
    @Override
+   public HistoryToken getHistoryToken()
+   {
+      return HistoryToken.fromTokenString(getToken());
+   }
+
+   @Override
    public void newItem(String historyToken)
    {
       com.google.gwt.user.client.History.newItem(historyToken);
    }
 
    @Override
+   public void newItem(HistoryToken historyToken)
+   {
+      newItem(historyToken.toTokenString());
+   }
+
+   @Override
    public void newItem(String historyToken, boolean issueEvent)
    {
       com.google.gwt.user.client.History.newItem(historyToken, issueEvent);
+   }
+
+   @Override
+   public void newItem(HistoryToken historyToken, boolean issueEvent)
+   {
+      newItem(historyToken.toTokenString(), issueEvent);
    }
 
 }

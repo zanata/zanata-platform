@@ -2,7 +2,7 @@ body {
 	margin: 0px;
 	padding: 0px;
 	background-color: #ffffff;
-	font: 12px Tahoma, Geneva, sans-serif;
+	font: 12px helvetica, arial, Tahoma, Geneva, sans-serif;
 }
 
 select,input,button,textarea,button {

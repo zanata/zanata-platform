@@ -76,4 +76,7 @@ public interface UiMessages extends Messages
    @DefaultMessage("Target Term [{0}]:")
    String glossaryTargetTermLabel(String locale);
 
+   @DefaultMessage("Send")
+   String sendLabel();
+
 }

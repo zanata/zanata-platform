@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
+  ~ @author tags. See the copyright.txt file in the distribution for a full
+  ~ listing of individual contributors.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it under the
+  ~ terms of the GNU Lesser General Public License as published by the Free
+  ~ Software Foundation; either version 2.1 of the License, or (at your option)
+  ~ any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  ~ FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+  ~ details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this software; if not, write to the Free Software Foundation,
+  ~ Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+  ~ site: http://www.fsf.org.
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -21,7 +42,7 @@
 		<jboss.embedded.version>beta3.SP12</jboss.embedded.version>
 		<war.config.dir>${basedir}/src/etc</war.config.dir>
 		<containerId>jboss5x</containerId>
-      <allow.deploy.skip>true</allow.deploy.skip>
+        <allow.deploy.skip>true</allow.deploy.skip>
 		
 		<!-- application properties -->
 		<env.debug>false</env.debug>
@@ -33,6 +54,9 @@
 		<!-- Default MySql login -->
 		<mysql.user>root</mysql.user>
 		<mysql.password />
+
+        <!--this will get set by maven dependency:properties goal and be used in gwt-maven-plugin-->
+        <lombok.lib>${org.projectlombok:lombok:jar}</lombok.lib>
 	</properties>
 
 	<build>
@@ -47,19 +71,43 @@
 
 		<plugins>
             <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
-                 <execution>
-                    <phase>prepare-package</phase>
-                    <configuration>
-                        <tasks>
-                            <mkdir dir="${project.build.directory}/zanata" />
-                        </tasks>
-                    </configuration>
-                    <goals>
-                        <goal>run</goal>
-                    </goals>
-                 </execution>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <tasks>
+                                <mkdir dir="${project.build.directory}/zanata"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>print lombok location</id>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <target>
+                                <echo>lombok VM arguments for GWT compilation:</echo>
+                                <echo>-javaagent:${lombok.lib}=ECJ</echo>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
 			<plugin>
@@ -188,6 +236,8 @@
                 <configuration>
                     <runTarget>zanata/webtrans/Application.html</runTarget>
                     <noServer>true</noServer>
+                    <!--below is needed if you want to use lombok on gwt code-->
+                    <!--<extraJvmArgs>-javaagent:${lombok.lib}=ECJ</extraJvmArgs>-->
                 </configuration>
 			</plugin>
 
@@ -422,6 +472,44 @@
 								    </pluginExecutionFilter>
 								    <action>
 								        <ignore />
+								    </action>
+								</pluginExecution>
+								<pluginExecution>
+								    <pluginExecutionFilter>
+								        <groupId>
+								            org.apache.maven.plugins
+								        </groupId>
+								        <artifactId>
+								            maven-antrun-plugin
+								        </artifactId>
+								        <versionRange>
+								            [1.7,)
+								        </versionRange>
+								        <goals>
+								            <goal>run</goal>
+								        </goals>
+								    </pluginExecutionFilter>
+								    <action>
+								        <ignore></ignore>
+								    </action>
+								</pluginExecution>
+								<pluginExecution>
+								    <pluginExecutionFilter>
+								        <groupId>
+								            org.apache.maven.plugins
+								        </groupId>
+								        <artifactId>
+								            maven-dependency-plugin
+								        </artifactId>
+								        <versionRange>
+								            [2.4,)
+								        </versionRange>
+								        <goals>
+								            <goal>properties</goal>
+								        </goals>
+								    </pluginExecutionFilter>
+								    <action>
+								        <ignore></ignore>
 								    </action>
 								</pluginExecution>
 							</pluginExecutions>

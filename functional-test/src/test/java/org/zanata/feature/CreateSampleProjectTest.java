@@ -23,6 +23,7 @@ package org.zanata.feature;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.slf4j.Logger;
@@ -38,7 +39,7 @@ import org.zanata.workflow.ProjectWorkFlow;
 
 public class CreateSampleProjectTest
 {
-   private static final Logger LOGGER = LoggerFactory.getLogger(CreateSampleProjectTest.class);
+   private static final Logger log = LoggerFactory.getLogger(CreateSampleProjectTest.class);
    @Test
    public void canCreateProjectAndVersion()
    {
@@ -48,6 +49,17 @@ public class CreateSampleProjectTest
 
       new LoginWorkFlow().signIn("admin", "admin");
       ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
+      List<String> projects = projectWorkFlow.goToHome().goToProjects().getProjectNamesOnCurrentPage();
+      log.info("current projects: {}", projects);
+
+      if (projects.contains(projectName))
+      {
+         log.warn("{} has already been created, presumably you are running this test manually and more than once.", projectId);
+         //since we can't create same project multiple times,
+         //if we run this test more than once manually, we don't want it to fail
+         return;
+      }
+
       ProjectPage projectPage = projectWorkFlow.createNewProject(projectId, projectName);
 
       assertThat(projectPage.getProjectId(), Matchers.equalTo("Project ID: " + projectId));
@@ -59,6 +71,32 @@ public class CreateSampleProjectTest
       projectPage = projectWorkFlow.goToProjectByName(projectName);
       projectVersionPage = projectPage.goToActiveVersion(projectVersion);
 
+   }
+
+   @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = "This slug is not available")
+   public void cannotCreateProjectWithSameProjectId() {
+      new LoginWorkFlow().signIn("admin", "admin");
+      ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
+      ProjectPage projectPage = projectWorkFlow.createNewProject("project-a", "project a");
+      assertThat(projectPage.getTitle(), Matchers.containsString("Zanata:project a"));
+
+      //second time
+      projectWorkFlow.createNewProject("project-a", "project with same slug/project id");
+   }
+
+   @Test
+   public void canCreateSameVersionIdOnDifferentProjects() {
+      new LoginWorkFlow().signIn("admin", "admin");
+      ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
+      projectWorkFlow.createNewProject("project-b", "project b")
+            .clickCreateVersionLink().inputVersionId("master").saveVersion();
+
+      //second time
+      ProjectVersionPage projectVersionPage = projectWorkFlow
+            .createNewProject("project-c", "project with same version slug/version id")
+            .clickCreateVersionLink().inputVersionId("master").saveVersion();
+
+      assertThat(projectVersionPage.getTitle(), Matchers.equalTo("Zanata:project-c:master"));
    }
 
    @Test
@@ -89,7 +127,7 @@ public class CreateSampleProjectTest
       ProjectVersionPage projectVersionPage = new ProjectWorkFlow().goToProjectByName("plural project").goToActiveVersion("master");
       WebTranPage webTranPage = projectVersionPage.translate("pl");
 
-      LOGGER.info("document list table: {}", webTranPage.getDocumentListTableContent());
+      log.info("document list table: {}", webTranPage.getDocumentListTableContent());
    }
 
 }

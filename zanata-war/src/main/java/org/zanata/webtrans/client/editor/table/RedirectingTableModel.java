@@ -126,4 +126,10 @@ public class RedirectingTableModel<RowType> extends MutableTableModel<RowType>
       if (tableModelHandler != null)
          tableModelHandler.prevNewIndex();
    }
+
+    public void gotoCurrentRow(boolean andEdit) {
+        if (tableModelHandler != null)  {
+            tableModelHandler.gotoCurrentRow(andEdit);
+        }
+    }
 }

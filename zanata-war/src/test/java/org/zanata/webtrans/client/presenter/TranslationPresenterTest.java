@@ -54,6 +54,7 @@ public class TranslationPresenterTest
 {
 
    private static final String TEST_USERS_ONLINE_MESSAGE = "some users online";
+   private static final String TEST_HAS_JONINED_WORKSPACE_MESSAGE = "has joined workspace";
    private static final String TEST_SHOW_OPTIONS_TOOLTIP = "tooltip to show options";
    private static final String TEST_HIDE_OPTIONS_TOOLTIP = "tooltip to hide options";
 
@@ -349,9 +350,15 @@ public class TranslationPresenterTest
 
 
       expect(mockMessages.nUsersOnline(participants.size())).andReturn(TEST_USERS_ONLINE_MESSAGE).anyTimes();
+      expect(mockMessages.hasJoinedWorkspace()).andReturn(TEST_HAS_JONINED_WORKSPACE_MESSAGE).once();
       mockDisplay.setParticipantsTitle(TEST_USERS_ONLINE_MESSAGE);
       expectLastCall().once(); // once for now
 
+      expect(mockWorkspaceUsersPresenter.getTranslatorsSize()).andReturn(2);
+
+      mockWorkspaceUsersPresenter.dispatchChatAction("bob", TEST_HAS_JONINED_WORKSPACE_MESSAGE);
+      expectLastCall();
+      
       mockWorkspaceUsersPresenter.addTranslator(new SessionId("sessionId1"), new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"), null);
       expectLastCall();
 
@@ -359,8 +366,7 @@ public class TranslationPresenterTest
       EnterWorkspaceEvent event = createMock(EnterWorkspaceEvent.class);
 
       expect(event.getSessionId()).andReturn(new SessionId("sessionId1"));
-      expect(event.getPerson()).andReturn(new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"));
-      expect(mockWorkspaceUsersPresenter.getTranslatorsSize()).andReturn(2);
+      expect(event.getPerson()).andReturn(new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16")).times(2);
 
       replay(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter, event);
 

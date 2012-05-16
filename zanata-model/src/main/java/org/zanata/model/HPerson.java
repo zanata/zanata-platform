@@ -51,7 +51,7 @@ import lombok.ToString;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Setter
-@EqualsAndHashCode(callSuper = true, of = {"account", "email", "maintainerProjects", "name"})
+@EqualsAndHashCode(callSuper = true, of = {"account", "email", "maintainerProjects", "name"}, doNotUseGetters = true)
 @ToString(callSuper = true, of = "name")
 public class HPerson extends ModelEntityBase implements Serializable
 {
@@ -160,7 +160,16 @@ public class HPerson extends ModelEntityBase implements Serializable
    @Transient
    public boolean isMaintainer(HIterationGroup grp)
    {
-      return getMaintainerVersionGroups().contains(grp);
+      // TODO consider implementing business key equality and using
+      // getMaintainerVersionGroups().contains(grp)
+      for (HIterationGroup group : getMaintainerVersionGroups())
+      {
+         if (group.getId().equals(grp.getId()))
+         {
+            return true;
+         }
+      }
+      return false;
    }
    
    @Transient

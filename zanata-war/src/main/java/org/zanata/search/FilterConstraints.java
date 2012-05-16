@@ -80,79 +80,146 @@ public class FilterConstraints
 
 
    //chainable setters
+   // TODO use builder instead
 
+   /**
+    * Specify that search string does not require the same case as content to be considered a match
+    * 
+    * @return this object for chaining
+    */
    public FilterConstraints ignoreCase()
    {
       isCaseSensitive = false;
       return this;
    }
 
+   /**
+    * Specify that search string must have the same case as content to be considered a match
+    * 
+    * @return this object for chaining
+    */
    public FilterConstraints matchCase()
    {
       isCaseSensitive = true;
       return this;
    }
 
+   /**
+    * Specify search case-sensitivity
+    * 
+    * @param caseSensitive true if the search string must have the same case as content to be considered a match
+    * @return this object for chaining
+    */
    public FilterConstraints caseSensitive(boolean caseSensitive)
    {
       this.isCaseSensitive = caseSensitive;
       return this;
    }
 
+   /**
+    * Return text flows that match the search string in their target content
+    * 
+    * @return this object for chaining
+    */
    public FilterConstraints filterTarget()
    {
       searchInTarget = true;
       return this;
    }
 
+   /**
+    * Do not search for the search string in the target
+    * 
+    * @return this object for chaining
+    */
    public FilterConstraints ignoreTarget()
    {
       searchInTarget = false;
       return this;
    }
 
+   /**
+    * Return text flows that match the search string in their source content
+    * 
+    * @return this object for chaining
+    */
    public FilterConstraints filterSource()
    {
       searchInSource = true;
       return this;
    }
 
+   /**
+    * Do not search for the search string in the source
+    * 
+    * @return this object for chaining
+    */
    public FilterConstraints ignoreSource()
    {
       searchInSource = false;
       return this;
    }
 
+   /**
+    * Allow return of matching text flows with New targets
+    * 
+    * @return this object for chaining
+    */
    public FilterConstraints includeNew()
    {
       includeNew = true;
       return this;
    }
 
+   /**
+    * Do not return any text flows with New targets
+    * 
+    * @return this object for chaining
+    */
    public FilterConstraints excludeNew()
    {
       includeNew = false;
       return this;
    }
 
+   /**
+    * Allow return of matching text flows with Fuzzy targets
+    * 
+    * @return this object for chaining
+    */
    public FilterConstraints includeFuzzy()
    {
       includeFuzzy = true;
       return this;
    }
 
+   /**
+    * Do not return any text flows with Fuzzy targets
+    * 
+    * @return this object for chaining
+    */
    public FilterConstraints excludeFuzzy()
    {
       includeFuzzy = false;
       return this;
    }
 
+   /**
+    * Allow return of matching text flows with Approved targets
+    * 
+    * @return this object for chaining
+    */
    public FilterConstraints includeApproved()
    {
       includeApproved = true;
       return this;
    }
 
+   /**
+    * Do not return any text flows with Approved targets
+    * 
+    * @return this object for chaining
+    */
    public FilterConstraints excludeApproved()
    {
       includeApproved = false;

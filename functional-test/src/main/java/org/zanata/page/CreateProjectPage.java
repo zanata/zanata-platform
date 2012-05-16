@@ -70,7 +70,7 @@ public class CreateProjectPage extends AbstractPage
 
    public ProjectPage saveProject()
    {
-      saveButton.click();
+      clickSaveAndCheckErrors(saveButton);
       return new ProjectPage(getDriver());
    }
 }

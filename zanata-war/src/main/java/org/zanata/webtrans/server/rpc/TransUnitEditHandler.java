@@ -32,34 +32,34 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
-import org.zanata.webtrans.shared.rpc.TranslatorStatusUpdate;
-import org.zanata.webtrans.shared.rpc.TranslatorStatusUpdateAction;
-import org.zanata.webtrans.shared.rpc.TranslatorStatusUpdateResult;
+import org.zanata.webtrans.shared.rpc.TransUnitEdit;
+import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
+import org.zanata.webtrans.shared.rpc.TransUnitEditResult;
 
-@Name("webtrans.gwt.TranslatorStatusUpdateHandler")
+@Name("webtrans.gwt.TransUnitEditHandler")
 @Scope(ScopeType.STATELESS)
-@ActionHandlerFor(TranslatorStatusUpdateAction.class)
-public class TranslatorStatusUpdateHandler extends AbstractActionHandler<TranslatorStatusUpdateAction, TranslatorStatusUpdateResult>
+@ActionHandlerFor(TransUnitEditAction.class)
+public class TransUnitEditHandler extends AbstractActionHandler<TransUnitEditAction, TransUnitEditResult>
 {
    @In
    private TranslationWorkspaceManager translationWorkspaceManager;
 
    @Override
-   public TranslatorStatusUpdateResult execute(TranslatorStatusUpdateAction action, ExecutionContext context) throws ActionException
+   public TransUnitEditResult execute(TransUnitEditAction action, ExecutionContext context) throws ActionException
    {
       ZanataIdentity.instance().checkLoggedIn();
 
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
       workspace.updateUserSelection(action.getSessionId(), action.getSelectedTransUnit());
       // Send TranslatorStatusUpdate event to client
-      TranslatorStatusUpdate event = new TranslatorStatusUpdate(action.getSessionId(), action.getPerson(), action.getSelectedTransUnit());
+      TransUnitEdit event = new TransUnitEdit(action.getSessionId(), action.getPerson(), action.getSelectedTransUnit());
       workspace.publish(event);
 
-      return new TranslatorStatusUpdateResult();
+      return new TransUnitEditResult();
    }
 
    @Override
-   public void rollback(TranslatorStatusUpdateAction action, TranslatorStatusUpdateResult result, ExecutionContext context) throws ActionException
+   public void rollback(TransUnitEditAction action, TransUnitEditResult result, ExecutionContext context) throws ActionException
    {
    }
 

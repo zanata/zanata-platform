@@ -33,6 +33,7 @@ import org.apache.lucene.util.Version;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -126,30 +127,23 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<HTextFlow> getNavigationByDocumentId(Long documentId, int offset, boolean reverse)
+   public List<HTextFlow> getNavigationByDocumentId(Long documentId)
    {
       Criteria c = getSession().createCriteria(HTextFlow.class);
       c.add(Restrictions.eq("document.id", documentId)).add(Restrictions.eq("obsolete", false));
+      c.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
       c.setCacheable(true).setComment("TextFlowDAO.getNavigationByDocumentId");
 
-      if (reverse)
-      {
-         c.add(Restrictions.lt("pos", offset)).addOrder(Order.desc("pos"));
-      }
-      else
-      {
-         c.add(Restrictions.gt("pos", offset)).addOrder(Order.asc("pos"));
-      }
+      c.addOrder(Order.asc("pos"));
 
       return c.list();
-
    }
 
    public List<Object[]> getSearchResult(TransMemoryQuery query, List<Long> translatedIds, final int maxResult) throws ParseException
    {
       String queryText = null;
       String[] multiQueryText = null;
-      
+
       switch (query.getSearchType())
       {
       case RAW:
@@ -166,10 +160,10 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
          break;
 
       case FUZZY_PLURAL:
-         multiQueryText = new String[ query.getQueries().size() ];
-         for(int i=0; i<query.getQueries().size(); i++)
+         multiQueryText = new String[query.getQueries().size()];
+         for (int i = 0; i < query.getQueries().size(); i++)
          {
-            multiQueryText[i] = QueryParser.escape( query.getQueries().get(i) );
+            multiQueryText[i] = QueryParser.escape(query.getQueries().get(i));
          }
          break;
       default:
@@ -181,19 +175,18 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       if (query.getSearchType() == SearchType.FUZZY_PLURAL)
       {
          int queriesSize = multiQueryText.length;
-         if (queriesSize > CONTENT_FIELDS.length)
+         if (queriesSize > IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED.length)
          {
-            log.warn("query contains {0} fields, but we only index {1}", queriesSize, CONTENT_FIELDS.length);
+            log.warn("query contains {0} fields, but we only index {1}", queriesSize, IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED.length);
          }
          String[] searchFields = new String[queriesSize];
-         System.arraycopy(CONTENT_FIELDS, 0, searchFields, 0, queriesSize);
+         System.arraycopy(IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED, 0, searchFields, 0, queriesSize);
 
          textQuery = MultiFieldQueryParser.parse(LUCENE_VERSION, multiQueryText, searchFields, analyzer);
       }
       else
       {
-         MultiFieldQueryParser parser = new MultiFieldQueryParser(
-               LUCENE_VERSION, CONTENT_FIELDS, analyzer);
+         MultiFieldQueryParser parser = new MultiFieldQueryParser(LUCENE_VERSION, IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED, analyzer);
          textQuery = parser.parse(queryText);
       }
       FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
@@ -277,60 +270,36 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 
    // TODO: use hibernate search
    @SuppressWarnings("unchecked")
-   public Set<Object[]> getNavigationBy(Long documentId, String search, int offset, LocaleId localeId, boolean reverse)
+   public List<Long> getNavigationBy(Long documentId, String search, LocaleId localeId)
    {
       Query textFlowQuery;
       Query textFlowTargetQuery;
-      Set<Object[]> idSet;
-      // TODO look at using Hibernate Search, because this is *expensive*
-      if (reverse)
-      {
-         textFlowQuery = getSession().createQuery("select tf.id, tf.pos from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id and lower(tf.content) like :content and tf.pos < :offset  order by tf.pos desc");
-         textFlowQuery.setParameter("id", documentId);
-         textFlowQuery.setParameter("content", "%" + search + "%");
-         textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getNavigationByTF-fwd");
-         textFlowTargetQuery = getSession().createQuery("select tft.textFlow.id, tft.textFlow.pos from HTextFlowTarget tft where tft.textFlow.obsolete=0 and tft.textFlow.document.id = :id and lower(tft.content) like :content and tft.locale.localeId = :localeId and tft.textFlow.pos < :offset order by tft.textFlow.pos desc");
-         textFlowTargetQuery.setParameter("id", documentId);
-         textFlowTargetQuery.setParameter("content", "%" + search + "%");
-         textFlowTargetQuery.setParameter("localeId", localeId);
-         textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getNavigationByTFT-fwd");
-         idSet = new TreeSet<Object[]>(new Comparator<Object[]>()
-         {
-            @Override
-            public int compare(Object[] arg0, Object[] arg1)
-            {
-               return ((Integer) arg1[1]).compareTo((Integer) arg0[1]);
-            }
-         });
-      }
-      else
-      {
-         textFlowQuery = getSession().createQuery("select tf.id, tf.pos from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id and lower(tf.content) like :content and tf.pos > :offset  order by tf.pos");
-         textFlowQuery.setParameter("id", documentId);
-         textFlowQuery.setParameter("content", "%" + search + "%");
-         textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getNavigationByTF-rev");
-         textFlowTargetQuery = getSession().createQuery("select tft.textFlow.id, tft.textFlow.pos from HTextFlowTarget tft where tft.textFlow.obsolete=0 and tft.textFlow.document.id = :id and lower(tft.content) like :content and tft.locale.localeId = :localeId and tft.textFlow.pos > :offset order by tft.textFlow.pos");
-         textFlowTargetQuery.setParameter("id", documentId);
-         textFlowTargetQuery.setParameter("content", "%" + search + "%");
-         textFlowTargetQuery.setParameter("localeId", localeId);
-         textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getNavigationByTFT-rev");
-         idSet = new TreeSet<Object[]>(new Comparator<Object[]>()
-         {
-            @Override
-            public int compare(Object[] arg0, Object[] arg1)
-            {
-               return ((Integer) arg0[1]).compareTo((Integer) arg1[1]);
-            }
-         });
-      }
-      textFlowQuery.setParameter("offset", offset);
-      textFlowTargetQuery.setParameter("offset", offset);
+      Set<Long> idSet;
 
-      List<Object[]> ids1 = textFlowQuery.list();
-      List<Object[]> ids2 = textFlowTargetQuery.list();
+      textFlowQuery = getSession().createQuery("select tf.id from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id and lower(tf.content) like :content order by tf.pos");
+      textFlowQuery.setParameter("id", documentId);
+      textFlowQuery.setParameter("content", "%" + search + "%");
+      textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getNavigationByTF-rev");
+      textFlowTargetQuery = getSession().createQuery("select tft.textFlow.id from HTextFlowTarget tft where tft.textFlow.obsolete=0 and tft.textFlow.document.id = :id and lower(tft.content) like :content and tft.locale.localeId = :localeId order by tft.textFlow.pos");
+      textFlowTargetQuery.setParameter("id", documentId);
+      textFlowTargetQuery.setParameter("content", "%" + search + "%");
+      textFlowTargetQuery.setParameter("localeId", localeId);
+      textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getNavigationByTFT-rev");
+      idSet = new TreeSet<Long>(new Comparator<Long>()
+      {
+         @Override
+         public int compare(Long arg0, Long arg1)
+         {
+            return ((Long) arg0).compareTo((Long) arg1);
+         }
+      });
+
+      List<Long> ids1 = textFlowQuery.list();
+      List<Long> ids2 = textFlowTargetQuery.list();
       idSet.addAll(ids1);
       idSet.addAll(ids2);
-      return idSet;
+
+      return new ArrayList<Long>(idSet);
    }
 
 }

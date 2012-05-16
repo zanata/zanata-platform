@@ -21,18 +21,17 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
+import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -49,11 +48,10 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 @Name("webtrans.gwt.GetTransUnitNavigationHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetTransUnitsNavigation.class)
+@Slf4j
 public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTransUnitsNavigation, GetTransUnitsNavigationResult>
 {
 
-   @Logger
-   Log log;
    @In
    private TextFlowDAO textFlowDAO;
 
@@ -75,64 +73,43 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
          throw new ActionException(e);
       }
 
-      HTextFlow tf = textFlowDAO.findById(action.getId(), false);
-      ArrayList<Long> results = new ArrayList<Long>();
+      ArrayList<Long> idIndexList = new ArrayList<Long>();
+      HashMap<Long, ContentState> transIdStateList = new HashMap<Long, ContentState>();
+
+      List<HTextFlow> textFlows;
+
       if (action.getPhrase() != null && !action.getPhrase().isEmpty())
       {
          log.info("find message:" + action.getPhrase());
-         Set<Object[]> idSet = textFlowDAO.getNavigationBy(tf.getDocument().getId(), action.getPhrase().toLowerCase(), tf.getPos(), action.getWorkspaceId().getLocaleId(), action.isReverse());
-         log.info("size: " + idSet.size());
-         Long step = 0L;
-         int count = 0;
+         List<Long> idList = textFlowDAO.getNavigationBy(action.getId(), action.getPhrase().toLowerCase(), action.getWorkspaceId().getLocaleId());
 
-         for (Object[] id : idSet)
-         {
-            if (count < action.getCount())
-            {
-               Long textFlowId = (Long) id[0];
-               step++;
-               HTextFlow textFlow = textFlowDAO.findById(textFlowId, false);
-               HTextFlowTarget textFlowTarget = textFlow.getTargets().get(hLocale);
-               if (checkStateAndValidate(action.isNewState(), action.isFuzzyState(), textFlowTarget))
-               {
-                  results.add(step);
-                  log.info("add navigation step: " + step);
-                  count++;
-               }
-            }
-            else
-            {
-               break;
-            }
-         }
+         textFlows = textFlowDAO.findByIdList(idList);
       }
       else
       {
-         List<HTextFlow> textFlows = textFlowDAO.getNavigationByDocumentId(tf.getDocument().getId(), tf.getPos(), action.isReverse());
-         int count = 0;
-         Long step = 0L;
-         for (HTextFlow textFlow : textFlows)
+         textFlows = textFlowDAO.getNavigationByDocumentId(action.getId());
+      }
+
+      for (HTextFlow textFlow : textFlows)
+      {
+         HTextFlowTarget textFlowTarget = textFlow.getTargets().get(hLocale);
+
+         if (checkStateAndValidate(!action.isNewState(), !action.isFuzzyState(), !action.isApprovedState(), textFlowTarget))
          {
-            if (count < action.getCount())
+            if (textFlowTarget == null)
             {
-               step++;
-               HTextFlowTarget textFlowTarget = textFlow.getTargets().get(hLocale);
-               log.debug(action.isNewState() + ":" + action.isFuzzyState() + ":" + checkStateAndValidate(action.isNewState(), action.isFuzzyState(), textFlowTarget));
-               if (checkStateAndValidate(action.isNewState(), action.isFuzzyState(), textFlowTarget))
-               {
-                  results.add(step);
-                  log.info("add navigation step: " + step);
-                  count++;
-               }
+               transIdStateList.put(textFlow.getId(), ContentState.New);
             }
             else
             {
-               break;
+               transIdStateList.put(textFlow.getId(), textFlowTarget.getState());
             }
+            idIndexList.add(textFlow.getId());
          }
       }
+      log.info("size: " + idIndexList.size());
 
-      return new GetTransUnitsNavigationResult(new DocumentId(tf.getDocument().getId()), results);
+      return new GetTransUnitsNavigationResult(new DocumentId(action.getId()), idIndexList, transIdStateList);
    }
 
    @Override
@@ -140,11 +117,24 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
    {
    }
 
-   private boolean checkStateAndValidate(boolean isNewState, boolean isFuzzyState, HTextFlowTarget textFlowTarget)
+   private boolean checkStateAndValidate(boolean isNewState, boolean isFuzzyState, boolean isApprovedState, HTextFlowTarget textFlowTarget)
    {
+      if (isNewState && isFuzzyState && isApprovedState)
+      {
+         return true;
+      }
+
       if (isNewState && isFuzzyState)
       {
-         return isNewFuzzyState(textFlowTarget);
+         return isNewState(textFlowTarget) || isFuzzyState(textFlowTarget);
+      }
+      else if (isNewState && isApprovedState)
+      {
+         return isNewState(textFlowTarget) || isApprovedState(textFlowTarget);
+      }
+      else if (isFuzzyState && isApprovedState)
+      {
+         return isFuzzyState(textFlowTarget) || isApprovedState(textFlowTarget);
       }
       else if (isFuzzyState)
       {
@@ -154,12 +144,11 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
       {
          return isNewState(textFlowTarget);
       }
+      else if (isApprovedState)
+      {
+         return isApprovedState(textFlowTarget);
+      }
       return false;
-   }
-
-   private boolean isNewFuzzyState(HTextFlowTarget textFlowTarget)
-   {
-      return textFlowTarget == null || textFlowTarget.getState() == ContentState.New || textFlowTarget.getState() == ContentState.NeedReview;
    }
 
    private boolean isFuzzyState(HTextFlowTarget textFlowTarget)
@@ -170,6 +159,11 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
    private boolean isNewState(HTextFlowTarget textFlowTarget)
    {
       return textFlowTarget == null || textFlowTarget.getState() == ContentState.New;
+   }
+
+   private boolean isApprovedState(HTextFlowTarget textFlowTarget)
+   {
+      return textFlowTarget != null && textFlowTarget.getState() == ContentState.Approved;
    }
 
 }

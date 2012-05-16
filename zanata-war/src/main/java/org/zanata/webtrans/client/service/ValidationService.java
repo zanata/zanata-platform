@@ -18,7 +18,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.validation;
+package org.zanata.webtrans.client.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +46,6 @@ import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
 import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
 import org.zanata.webtrans.shared.validation.action.ValidationAction;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.inject.Inject;
 
 /**

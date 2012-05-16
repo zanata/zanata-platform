@@ -6,25 +6,25 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
-import org.zanata.webtrans.client.events.TranslatorStatusUpdateEvent;
-import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
-import org.zanata.webtrans.client.events.TransUnitEditEvent;
+import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
+import org.zanata.webtrans.client.events.TransUnitEditEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.EnterWorkspace;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.HasEnterWorkspaceData;
 import org.zanata.webtrans.shared.rpc.HasExitWorkspaceData;
-import org.zanata.webtrans.shared.rpc.HasTranslatorStatusUpdateData;
-import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
-import org.zanata.webtrans.shared.rpc.HasTransUnitEditData;
 import org.zanata.webtrans.shared.rpc.HasTransUnitUpdatedData;
-import org.zanata.webtrans.shared.rpc.TranslatorStatusUpdate;
-import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
+import org.zanata.webtrans.shared.rpc.HasTransUnitEditData;
+import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData;
+import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
+import org.zanata.webtrans.shared.rpc.PublishWorkspaceChat;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
-import org.zanata.webtrans.shared.rpc.TransUnitEditing;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
+import org.zanata.webtrans.shared.rpc.TransUnitEdit;
+import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.GwtEvent;
@@ -71,15 +71,6 @@ public class EventProcessor implements RemoteEventListener
             }
          });
 
-         factories.put(TransUnitEditing.class, new EventFactory<TransUnitEditEvent>()
-         {
-            @Override
-            public TransUnitEditEvent create(SessionEventData event)
-            {
-               return new TransUnitEditEvent((HasTransUnitEditData) event);
-            }
-         });
-
          factories.put(ExitWorkspace.class, new EventFactory<ExitWorkspaceEvent>()
          {
             @Override
@@ -107,12 +98,21 @@ public class EventProcessor implements RemoteEventListener
             }
          });
 
-         factories.put(TranslatorStatusUpdate.class, new EventFactory<TranslatorStatusUpdateEvent>()
+         factories.put(TransUnitEdit.class, new EventFactory<TransUnitEditEvent>()
          {
             @Override
-            public TranslatorStatusUpdateEvent create(SessionEventData event)
+            public TransUnitEditEvent create(SessionEventData event)
             {
-               return new TranslatorStatusUpdateEvent((HasTranslatorStatusUpdateData) event);
+               return new TransUnitEditEvent((HasTransUnitEditData) event);
+            }
+         });
+
+         factories.put(PublishWorkspaceChat.class, new EventFactory<PublishWorkspaceChatEvent>()
+         {
+            @Override
+            public PublishWorkspaceChatEvent create(SessionEventData event)
+            {
+               return new PublishWorkspaceChatEvent((HasWorkspaceChatData) event);
             }
          });
 

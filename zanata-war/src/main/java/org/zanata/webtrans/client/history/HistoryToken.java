@@ -28,30 +28,43 @@ public class HistoryToken
    public static final String KEY_SEARCH_PROJECT_CASE = "projectsearchcase";
    public static final String VALUE_SEARCH_PROJECT_CASE_SENSITIVE = "sensitive";
 
+   public static final String KEY_SEARCH_PROJECT_FIELDS = "projectsearchin";
+   public static final String VALUE_SEARCH_PROJECT_FIELD_SOURCE = "source";
+   public static final String VALUE_SEARCH_PROJECT_FIELD_TARGET = "target";
+   public static final String VALUE_SEARCH_PROJECT_FIELD_BOTH = "both";
 
    public static final String KEY_DOC_FILTER_TEXT = "filter";
 
    public static final String KEY_DOC_FILTER_OPTION = "filtertype";
    public static final String VALUE_DOC_FILTER_EXACT = "exact";
 
+   public static final String KEY_DOC_FILTER_CASE = "filtercase";
+   public static final String VALUE_DOC_FILTER_CASE_SENSITIVE = "sensitive";
+
    private MainView view;
    private String fullDocPath;
    private boolean docFilterExact;
+   private boolean docFilterCaseSensitive;
    private String docFilterText;
    private String searchText;
    private String projectSearchText;
    private String projectSearchReplace;
    private boolean projectSearchCaseSensitive;
+   private boolean projectSearchInSource;
+   private boolean projectSearchInTarget;
 
    // defaults
    private static final MainView DEFAULT_VIEW = MainView.Documents;
    private static final String DEFAULT_DOCUMENT_PATH = "";
    private static final String DEFAULT_DOC_FILTER_TEXT = "";
    private static final boolean DEFAULT_DOC_FILTER_EXACT = false;
+   private static final boolean DEFAULT_DOC_FILTER_CASE_SENSITIVE = false;
    private static final String DEFAULT_SEARCH_TEXT = "";
    private static final String DEFAULT_PROJECT_SEARCH_TEXT = "";
    private static final String DEFAULT_PROJECT_SEARCH_REPLACE = "";
    private static final boolean DEFAULT_PROJECT_SEARCH_CASE_SENSITIVE = false;
+   private static final boolean DEFAULT_PROJECT_SEARCH_IN_SOURCE = false;
+   private static final boolean DEFAULT_PROJECT_SEARCH_IN_TARGET = true;
 
    public HistoryToken()
    {
@@ -59,10 +72,13 @@ public class HistoryToken
       fullDocPath = DEFAULT_DOCUMENT_PATH;
       docFilterText = DEFAULT_DOC_FILTER_TEXT;
       docFilterExact = DEFAULT_DOC_FILTER_EXACT;
+      docFilterCaseSensitive = DEFAULT_DOC_FILTER_CASE_SENSITIVE;
       searchText = DEFAULT_SEARCH_TEXT;
       projectSearchText = DEFAULT_PROJECT_SEARCH_TEXT;
       projectSearchReplace = DEFAULT_PROJECT_SEARCH_REPLACE;
       projectSearchCaseSensitive = DEFAULT_PROJECT_SEARCH_CASE_SENSITIVE;
+      projectSearchInSource = DEFAULT_PROJECT_SEARCH_IN_SOURCE;
+      projectSearchInTarget = DEFAULT_PROJECT_SEARCH_IN_TARGET;
    }
 
    /**
@@ -127,6 +143,14 @@ public class HistoryToken
          {
             historyToken.setDocFilterText(value);
          }
+         else if (key.equals(KEY_DOC_FILTER_CASE))
+         {
+            if (value.equals(VALUE_DOC_FILTER_CASE_SENSITIVE))
+            {
+               historyToken.setDocFilterCaseSensitive(true);
+            }
+            //else default used
+         }
          else if (key.equals(KEY_SEARCH_DOC_TEXT))
          {
             historyToken.setSearchText(value);
@@ -141,11 +165,28 @@ public class HistoryToken
          }
          else if (key.equals(KEY_SEARCH_PROJECT_CASE))
          {
-            Log.info("found project search case key");
             if (value.equals(VALUE_SEARCH_PROJECT_CASE_SENSITIVE))
             {
                historyToken.setProjectSearchCaseSensitive(true);
-               Log.info("found project search case sensitive value");
+            }
+            //else default used
+         }
+         else if (key.equals(KEY_SEARCH_PROJECT_FIELDS))
+         {
+            if (value.equals(VALUE_SEARCH_PROJECT_FIELD_SOURCE))
+            {
+               historyToken.setProjectSearchInSource(true);
+               historyToken.setProjectSearchInTarget(false);
+            }
+            else if (value.equals(VALUE_SEARCH_PROJECT_FIELD_TARGET))
+            {
+               historyToken.setProjectSearchInSource(false);
+               historyToken.setProjectSearchInTarget(true);
+            }
+            else if (value.equals(VALUE_SEARCH_PROJECT_FIELD_BOTH))
+            {
+               historyToken.setProjectSearchInSource(true);
+               historyToken.setProjectSearchInTarget(true);
             }
             //else default used
          }
@@ -157,6 +198,17 @@ public class HistoryToken
       }
 
       return historyToken;
+   }
+
+
+   public void setProjectSearchInSource(boolean searchInSource)
+   {
+      projectSearchInSource = searchInSource;
+   }
+
+   public void setProjectSearchInTarget(boolean searchInTarget)
+   {
+      projectSearchInTarget = searchInTarget;
    }
 
    public String getSearchText()
@@ -261,6 +313,16 @@ public class HistoryToken
          this.docFilterText = value;
    }
 
+   public void setDocFilterCaseSensitive(boolean caseSensitive)
+   {
+      docFilterCaseSensitive = caseSensitive;
+   }
+
+   public boolean isDocFilterCaseSensitive()
+   {
+      return docFilterCaseSensitive;
+   }
+
    /**
     * @return a token string for use with
     *         {@link com.google.gwt.user.client.History}
@@ -299,6 +361,11 @@ public class HistoryToken
          token = addTokenToTokenString(token, KEY_DOC_FILTER_TEXT, docFilterText);
       }
 
+      if (docFilterCaseSensitive != DEFAULT_DOC_FILTER_CASE_SENSITIVE)
+      {
+         token = addTokenToTokenString(token, KEY_DOC_FILTER_CASE, VALUE_DOC_FILTER_CASE_SENSITIVE);
+      }
+
       if (!projectSearchText.equals(DEFAULT_PROJECT_SEARCH_TEXT))
       {
          token = addTokenToTokenString(token, KEY_SEARCH_PROJECT_TEXT, projectSearchText);
@@ -318,6 +385,23 @@ public class HistoryToken
       if (!searchText.equals(DEFAULT_SEARCH_TEXT))
       {
          token = addTokenToTokenString(token, KEY_SEARCH_DOC_TEXT, searchText);
+      }
+
+      if (projectSearchInSource != DEFAULT_PROJECT_SEARCH_IN_SOURCE || projectSearchInTarget != DEFAULT_PROJECT_SEARCH_IN_TARGET)
+      {
+         if (projectSearchInSource && projectSearchInTarget)
+         {
+            token = addTokenToTokenString(token, KEY_SEARCH_PROJECT_FIELDS, VALUE_SEARCH_PROJECT_FIELD_BOTH);
+         }
+         else if (projectSearchInSource && !projectSearchInTarget)
+         {
+            token = addTokenToTokenString(token, KEY_SEARCH_PROJECT_FIELDS, VALUE_SEARCH_PROJECT_FIELD_SOURCE);
+         }
+         else if (!projectSearchInSource && projectSearchInTarget)
+         {
+            token = addTokenToTokenString(token, KEY_SEARCH_PROJECT_FIELDS, VALUE_SEARCH_PROJECT_FIELD_TARGET);
+         }
+         // ignore if neither
       }
 
       return token;
@@ -402,6 +486,16 @@ public class HistoryToken
       }
       Log.info("Decoded: \"" + toDecode + "\" to \"" + sb + "\"");
       return sb.toString();
+   }
+
+   public boolean isProjectSearchInSource()
+   {
+      return projectSearchInSource;
+   }
+
+   public boolean isProjectSearchInTarget()
+   {
+      return projectSearchInTarget;
    }
 
 }

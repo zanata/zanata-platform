@@ -24,8 +24,6 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.events.FilterViewEvent;
-import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
@@ -126,23 +124,6 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
             fireEvent(new NavTransUnitEvent(NavigationType.NextState));
          }
       });
-
-      registerHandler(eventBus.addHandler(FilterViewEvent.getType(), new FilterViewEventHandler()
-      {
-         @Override
-         public void onFilterView(FilterViewEvent event)
-         {
-            boolean showingFullList = (event.isFilterTranslated() == event.isFilterNeedReview()) && (event.isFilterTranslated() == event.isFilterUntranslated());
-            if (showingFullList)
-            {
-               display.setModalNavVisible(true);
-            }
-            else
-            {
-               display.setModalNavVisible(false);
-            }
-         }
-      }));
 
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.getType(), new UserConfigChangeHandler()
       {

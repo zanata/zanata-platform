@@ -24,10 +24,13 @@
             <g:LayoutPanel styleName="{style.mainPanel}">
                 <g:layer top='2px' height='20px' left="2px" right="2px">
                     <g:LayoutPanel>
-                        <g:layer top="0px" height="20px" left="0px" right="210px">
+                        <g:layer top="0px" height="20px" left="0px" right="310px">
                             <fui:ClearableTextBox ui:field='filterTextBox'/>
                         </g:layer>
-                        <g:layer top="0px" height="20px" right="0px" width="200px">
+                        <g:layer top="0px" height="20px" right="150px" width="120px">
+                            <g:CheckBox ui:field="caseSensitiveCheckBox"><ui:msg>Case sensitive</ui:msg></g:CheckBox>
+                        </g:layer>
+                        <g:layer top="0px" height="20px" right="0px" width="140px">
                             <g:CheckBox ui:field="exactSearchCheckBox"><ui:msg>Exact match only</ui:msg></g:CheckBox>
                         </g:layer>
                     </g:LayoutPanel>

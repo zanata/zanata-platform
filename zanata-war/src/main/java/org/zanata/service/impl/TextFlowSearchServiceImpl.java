@@ -42,12 +42,14 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.hibernate.search.ConfigurableNgramAnalyzer;
 import org.zanata.hibernate.search.IndexFieldLabels;
+import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.FilterConstraints;
@@ -105,7 +107,12 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          throw new ZanataServiceException("Failed to validate locale", e);
       }
 
-      String searchFieldPrefix = (constraints.isCaseSensitive() ? IndexFieldLabels.CONTENT_CASE_PRESERVED : IndexFieldLabels.CONTENT_CASE_FOLDED);
+      if (!constraints.isSearchInSource() && !constraints.isSearchInTarget())
+      {
+         //searching nowhere
+         return new ArrayList<HTextFlowTarget>();
+      }
+
       // FIXME remove .trim() and zero-length check when ngram analyzer is updated to respect leading and trailing whitespace
       int searchLength = Math.min(3, constraints.getSearchString().trim().length());
       if (searchLength == 0)
@@ -114,11 +121,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       }
       Analyzer ngramAnalyzer = new ConfigurableNgramAnalyzer(searchLength, !constraints.isCaseSensitive());
 
-      String[] searchFields = new String[6];
-      for (int i = 0; i < 6; i++)
-      {
-         searchFields[i] = searchFieldPrefix + i;
-      }
+      String[] searchFields = (constraints.isCaseSensitive() ? IndexFieldLabels.CONTENT_FIELDS_CASE_PRESERVED : IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED);
 
       Query searchPhraseQuery;
       QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_29, searchFields, ngramAnalyzer);
@@ -135,16 +138,61 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       TermQuery iterationQuery = new TermQuery(new Term(IndexFieldLabels.ITERATION_FIELD, iterationSlug));
       TermQuery localeQuery = new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD, localeId.getId()));
 
-      BooleanQuery mustMatchAllQuery = new BooleanQuery();
-      mustMatchAllQuery.add(projectQuery, Occur.MUST);
-      mustMatchAllQuery.add(iterationQuery, Occur.MUST);
-      mustMatchAllQuery.add(localeQuery, Occur.MUST);
-      mustMatchAllQuery.add(searchPhraseQuery, Occur.MUST);
+      BooleanQuery sourceQuery = new BooleanQuery();
+      sourceQuery.add(projectQuery, Occur.MUST);
+      sourceQuery.add(iterationQuery, Occur.MUST);
+      sourceQuery.add(searchPhraseQuery, Occur.MUST);
 
-      FullTextQuery ftQuery = entityManager.createFullTextQuery(mustMatchAllQuery, HTextFlowTarget.class);
+      List<HTextFlowTarget> resultList = new ArrayList<HTextFlowTarget>();
+      if (constraints.isSearchInTarget())
+      {
+         BooleanQuery targetQuery = (BooleanQuery) sourceQuery.clone();
+         targetQuery.add(localeQuery, Occur.MUST);
+         if (!constraints.isIncludeApproved())
+         {
+            TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.Approved.toString()));
+            targetQuery.add(approvedStateQuery, Occur.MUST_NOT);
+         }
 
-      @SuppressWarnings("unchecked")
-      List<HTextFlowTarget> resultList = (List<HTextFlowTarget>) ftQuery.getResultList();
+         if (!constraints.isIncludeFuzzy())
+         {
+            TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.NeedReview.toString()));
+            targetQuery.add(approvedStateQuery, Occur.MUST_NOT);
+         }
+
+         if (!constraints.isIncludeNew())
+         {
+            TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.New.toString()));
+            targetQuery.add(approvedStateQuery, Occur.MUST_NOT);
+         }
+
+         FullTextQuery ftQuery = entityManager.createFullTextQuery(targetQuery, HTextFlowTarget.class);
+         @SuppressWarnings("unchecked")
+         List<HTextFlowTarget> matchedTargets = (List<HTextFlowTarget>) ftQuery.getResultList();
+         log.info("got {0} HTextFLowTarget results", matchedTargets.size());
+         resultList.addAll(matchedTargets);
+      }
+
+      if (constraints.isSearchInSource())
+      {
+         FullTextQuery ftQuery = entityManager.createFullTextQuery(sourceQuery, HTextFlow.class);
+         @SuppressWarnings("unchecked")
+         List<HTextFlow> matchedSources = (List<HTextFlow>) ftQuery.getResultList();
+         log.info("got {0} HTextFLowTarget results", matchedSources.size());
+         HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
+         for (HTextFlow htf : matchedSources)
+         {
+            HTextFlowTarget htft = htf.getTargets().get(hLocale);
+            if (htft != null && htft.getState() != ContentState.New)
+            {
+               // TODO filter other states?
+               if (!resultList.contains(htft))
+               {
+                  resultList.add(htf.getTargets().get(hLocale));
+               }
+            }
+         }
+      }
 
       return resultList;
    }

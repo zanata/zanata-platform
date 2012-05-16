@@ -61,6 +61,22 @@ public class TransUnit implements IsSerializable, Serializable
       this.verNum = verNum;
    }
    
+   public void OverrideWith(TransUnit obj){
+      this.id = obj.getId();
+      this.resId = obj.getResId();
+      this.localeId = obj.getLocaleId();
+      this.plural = obj.isPlural();
+      this.sources = obj.getSources();
+      this.sourceComment = obj.getSourceComment();
+      this.targets = obj.getTargets();
+      this.status = obj.getStatus();
+      this.lastModifiedBy = obj.getLastModifiedBy();
+      this.lastModifiedTime = obj.getLastModifiedTime();
+      this.msgContext = obj.getMsgContext();
+      this.rowIndex = obj.getRowIndex();
+      this.verNum = obj.getVerNum();
+   }
+   
    public TransUnitId getId()
    {
       return id;
@@ -177,7 +193,7 @@ public class TransUnit implements IsSerializable, Serializable
       return verNum;
    }
 
-   void setVerNum(Integer verNum)
+   public void setVerNum(Integer verNum)
    {
       this.verNum = verNum;
    }

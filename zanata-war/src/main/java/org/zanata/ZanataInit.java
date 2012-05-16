@@ -28,7 +28,6 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
-
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.ObjectName;
 import javax.naming.Context;
@@ -46,14 +45,14 @@ import org.jboss.mx.util.MBeanServerLocator;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.ServletLifecycle;
 import org.jboss.seam.core.Events;
-import org.jboss.seam.log.Log;
 import org.jboss.security.auth.login.XMLLoginConfigMBean;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Doesn't do much useful stuff except printing a log message and firing the
@@ -63,14 +62,12 @@ import org.jboss.security.auth.login.XMLLoginConfigMBean;
  */
 @Name("zanataInit")
 @Scope(ScopeType.APPLICATION)
+@Slf4j
 public class ZanataInit
 {
 
    public static final String EVENT_Zanata_Startup = "Zanata.startup";
    public static final String UNKNOWN_VERSION = "UNKNOWN";
-
-   @Logger
-   static Log log;
 
    private String[] additionalSecurityDomains;
 
@@ -117,8 +114,8 @@ public class ZanataInit
          this.applicationConfiguration.setVersion( version );
          this.applicationConfiguration.setBuildTimestamp( buildTimestamp );
          
-         log.info("Server version: {0}", version);
-         log.info("Server build: {0}", buildTimestamp);
+         log.info("Server version: {}", version);
+         log.info("Server build: {}", buildTimestamp);
       }
       if (this.applicationConfiguration.isDebug())
       {
@@ -145,7 +142,7 @@ public class ZanataInit
       {
          log.info("Using JAAS authentication");
       }
-      log.info("Enable copyTrans: {0}", this.applicationConfiguration.getEnableCopyTrans());
+      log.info("Enable copyTrans: {}", this.applicationConfiguration.getEnableCopyTrans());
 
       if (this.applicationConfiguration.isHibernateStatistics())
       {
@@ -217,18 +214,14 @@ public class ZanataInit
       if( loginConfigUrl != null )
       {
          URL loginConfig = new URL( loginConfigUrl );
-      
-         if( loginConfig != null )
-         {
-            log.info("Using security configuration at: " + loginConfig.getFile());
-            
-            XMLLoginConfigMBean config = (XMLLoginConfigMBean) MBeanProxy.get(XMLLoginConfigMBean.class,
-                  new ObjectName("jboss.security:service=XMLLoginConfig"), 
-                  MBeanServerLocator.locateJBoss());
-            this.additionalSecurityDomains = config.loadConfig(loginConfig);
-            
-            log.info("Loaded the following security domains: " + ArrayUtils.toString(this.additionalSecurityDomains));
-         }
+         log.info("Using security configuration at: " + loginConfig.getFile());
+
+         XMLLoginConfigMBean config = (XMLLoginConfigMBean) MBeanProxy.get(XMLLoginConfigMBean.class,
+               new ObjectName("jboss.security:service=XMLLoginConfig"),
+               MBeanServerLocator.locateJBoss());
+         this.additionalSecurityDomains = config.loadConfig(loginConfig);
+
+         log.info("Loaded the following security domains: {}", ArrayUtils.toString(this.additionalSecurityDomains));
       }
    }
    
@@ -241,7 +234,7 @@ public class ZanataInit
       
       if( this.additionalSecurityDomains != null )
       {
-         log.info("Removing security domains: " +  ArrayUtils.toString(this.additionalSecurityDomains));
+         log.info("Removing security domains: {}", ArrayUtils.toString(this.additionalSecurityDomains));
          
          XMLLoginConfigMBean config = (XMLLoginConfigMBean) MBeanProxy.get(XMLLoginConfigMBean.class,
                new ObjectName("jboss.security:service=XMLLoginConfig"), 
@@ -259,15 +252,17 @@ public class ZanataInit
          Properties props = new Properties();
          Context context = new InitialContext(props); // From jndi.properties
          if (namespace != null)
+         {
             context = (Context) context.lookup(namespace);
-         buffer.append("Namespace: " + namespace + "\n");
+         }
+         buffer.append("Namespace: ").append(namespace).append("\n");
          buffer.append("#####################################\n");
          list(context, " ", buffer, true);
          buffer.append("#####################################\n");
       }
       catch (NamingException e)
       {
-         buffer.append("Failed to get InitialContext, " + e.toString(true));
+         buffer.append("Failed to get InitialContext, ").append(e.toString(true));
       }
       return buffer.toString();
    }
@@ -293,9 +288,13 @@ public class ZanataInit
                c = loader.loadClass(className);
 
                if (Context.class.isAssignableFrom(c))
+               {
                   recursive = true;
+               }
                if (LinkRef.class.isAssignableFrom(c))
+               {
                   isLinkRef = true;
+               }
 
                isProxy = Proxy.isProxyClass(c);
             }
@@ -328,7 +327,7 @@ public class ZanataInit
                }
             }
 
-            buffer.append(indent + " +- " + name);
+            buffer.append(indent).append(" +- ").append(name);
 
             // Display reference targets
             if (isLinkRef)
@@ -352,26 +351,26 @@ public class ZanataInit
             // Display proxy interfaces
             if (isProxy)
             {
-               buffer.append(" (proxy: " + pair.getClassName());
+               buffer.append(" (proxy: ").append(pair.getClassName());
                if (c != null)
                {
                   Class<?>[] ifaces = c.getInterfaces();
                   buffer.append(" implements ");
-                  for (int i = 0; i < ifaces.length; i++)
+                  for (Class<?> iface : ifaces)
                   {
-                     buffer.append(ifaces[i]);
+                     buffer.append(iface);
                      buffer.append(',');
                   }
                   buffer.setCharAt(buffer.length() - 1, ')');
                }
                else
                {
-                  buffer.append(" implements " + className + ")");
+                  buffer.append(" implements ").append(className).append(")");
                }
             }
             else if (verbose)
             {
-               buffer.append(" (class: " + pair.getClassName() + ")");
+               buffer.append(" (class: ").append(pair.getClassName()).append(")");
             }
 
             buffer.append('\n');
@@ -387,13 +386,13 @@ public class ZanataInit
                   }
                   else
                   {
-                     buffer.append(indent + " |   NonContext: " + value);
+                     buffer.append(indent).append(" |   NonContext: ").append(value);
                      buffer.append('\n');
                   }
                }
                catch (Throwable t)
                {
-                  buffer.append("Failed to lookup: " + name + ", errmsg=" + t.getMessage());
+                  buffer.append("Failed to lookup: ").append(name).append(", errmsg=").append(t.getMessage());
                   buffer.append('\n');
                }
             }
@@ -402,7 +401,7 @@ public class ZanataInit
       }
       catch (NamingException ne)
       {
-         buffer.append("error while listing context " + ctx.toString() + ": " + ne.toString(true));
+         buffer.append("error while listing context ").append(ctx.toString()).append(": ").append(ne.toString(true));
       }
    }
 }
