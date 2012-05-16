@@ -24,6 +24,7 @@ import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.TranslatorColorService;
 import org.zanata.webtrans.client.ui.HasManageUserSession;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.auth.SessionId;
@@ -53,11 +54,13 @@ public class WorkspaceUsersPresenterTest
 
    Capture<ClickHandler> capturedSendButtonClickHandler = new Capture<ClickHandler>();
 
+   TranslatorColorService mockTranslatorColorService = createMock(TranslatorColorService.class);;
+
    @BeforeMethod
    public void resetMocks()
    {
       reset(mockDisplay, mockEventBus, mockSendButton);
-      workspaceUsersPresenter = new WorkspaceUsersPresenter(mockDisplay, mockEventBus, mockIdentity, mockDispatcher, mockMessages);
+      workspaceUsersPresenter = new WorkspaceUsersPresenter(mockDisplay, mockEventBus, mockIdentity, mockDispatcher, mockMessages, mockTranslatorColorService);
    }
 
    public void setEmptyUserList()
@@ -79,6 +82,10 @@ public class WorkspaceUsersPresenterTest
    {
       HasManageUserSession mockHasManageUserSession = createMock(HasManageUserSession.class);
 
+      expect(mockTranslatorColorService.getColor("sessionId1")).andReturn("color1");
+      expect(mockTranslatorColorService.getColor("sessionId2")).andReturn("color2");
+      expect(mockTranslatorColorService.getColor("sessionId3")).andReturn("color3");
+
       expect(mockDisplay.getSendButton()).andReturn(mockSendButton);
       expect(mockSendButton.addClickHandler(capture(capturedSendButtonClickHandler))).andReturn(createMock(HandlerRegistration.class));
 
@@ -88,7 +95,7 @@ public class WorkspaceUsersPresenterTest
 
       expect(mockEventBus.addHandler(eq(TransUnitEditEvent.getType()), isA(TransUnitEditEventHandler.class)) ).andReturn(createMock(HandlerRegistration.class));
       expect(mockEventBus.addHandler(eq(PublishWorkspaceChatEvent.getType()), isA(PublishWorkspaceChatEventHandler.class))).andReturn(createMock(HandlerRegistration.class));
-      replay(mockDisplay, mockEventBus, mockSendButton);
+      replay(mockDisplay, mockEventBus, mockSendButton, mockTranslatorColorService);
 
       workspaceUsersPresenter.bind();
 
@@ -98,6 +105,6 @@ public class WorkspaceUsersPresenterTest
       people.put(new SessionId("sessionId3"), new PersonSessionDetails(new Person(new PersonId("person3"), "Smohn Jith", "http://www.gravatar.com/avatar/smohn@zanata.org?d=mm&s=16"), null));
       workspaceUsersPresenter.initUserList(people);
 
-      verify(mockDisplay, mockEventBus, mockSendButton);
+      verify(mockDisplay, mockEventBus, mockSendButton, mockTranslatorColorService);
    }
 }

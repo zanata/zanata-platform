@@ -24,12 +24,10 @@
 		
 		.userLabel{
 			font-size:10px;
-			border:1px solid #4A75B5;
 			text-align:center;
 			padding-left:1px;
 			padding-right:1px;
 			color:#FFFFFF;
-			background:#4A75B5;
 		}
 		
 		.translatorList {

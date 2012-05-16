@@ -28,7 +28,7 @@ public interface ToggleEditor extends IsWidget, HasText, HasUpdateValidationWarn
 
    void setFocus();
    
-   void addTranslator(String name, String sessionId);
+   void addTranslator(String name, String sessionId, String color);
 
    void clearTranslatorList();
 
