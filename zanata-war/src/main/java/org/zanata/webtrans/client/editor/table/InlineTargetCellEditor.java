@@ -21,7 +21,6 @@
 package org.zanata.webtrans.client.editor.table;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import javax.annotation.Nullable;
 
@@ -32,10 +31,9 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
-import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 
 public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnitsEditModel
@@ -263,24 +261,35 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       curCallback.onComplete(curCellEditInfo, cellValue);
    }
 
-   private void determineStatus(ArrayList<String> newTargets, ContentState requestedState)
+   /**
+    * 
+    * @param newContents
+    * @param requestedState
+    * @see org.zanata.service.impl.TranslationServiceImpl#adjustContentState
+    */
+   private void determineStatus(ArrayList<String> newContents, ContentState requestedState)
    {
-      Collection<String> emptyTargets = Collections2.filter(newTargets, new Predicate<String>()
+      int emptyCount = Iterables.size(Iterables.filter(newContents, new Predicate<String>()
       {
          @Override
          public boolean apply(@Nullable String input)
          {
             return Strings.isNullOrEmpty(input);
          }
-      });
+      }));
 
-      // TODO check that this is consistent with server-side checks
+      // TODO use ContentStateUtil.determineState.
+      // NB until then, make sure this stays consistent
       ContentState stateToSet = requestedState;
-      if (requestedState == ContentState.New && emptyTargets.isEmpty())
+      if (requestedState == ContentState.New && emptyCount == 0)
       {
          stateToSet = ContentState.NeedReview;
       }
-      if (requestedState == ContentState.Approved && !emptyTargets.isEmpty())
+      else if (requestedState == ContentState.Approved && emptyCount != 0)
+      {
+         stateToSet = ContentState.New;
+      }
+      else if (requestedState == ContentState.NeedReview && emptyCount == newContents.size())
       {
          stateToSet = ContentState.New;
       }
