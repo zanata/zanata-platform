@@ -279,10 +279,6 @@ public class ResourceUtils
          to.setState(from.getState());
          changed = true;
       }
-      if (changed)
-      {
-         to.setVersionNum(to.getVersionNum() + 1);
-      }
       return changed;
    }
 

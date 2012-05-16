@@ -20,7 +20,33 @@
  */
 package org.zanata.rest.service;
 
-import com.google.common.base.Function;
+import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
+
 import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -44,41 +70,11 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
-import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
-import org.zanata.util.StringUtil;
-
-import javax.annotation.Nullable;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
 
 @Name("translatedDocResourceService")
 @Path(TranslatedDocResourceService.SERVICE_PATH)
@@ -355,9 +351,8 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       }
 
       // Translate
-      Collection<TextFlowTarget> unknownResIds =
+      List<String> warnings =
          this.translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug, id, locale, messageBody, extensions, mergeType);
-
 
       // Regenerate etag in case it has changed
       // TODO create valid etag
@@ -365,24 +360,12 @@ public class TranslatedDocResourceService implements TranslatedDocResource
 
       log.debug("successful put translation");
       // TODO lastChanged
-      if (unknownResIds.isEmpty())
+      StringBuilder sb = new StringBuilder();
+      for (String warning : warnings)
       {
-         return Response.ok().tag(etag).build();
+         sb.append("warning: ").append(warning).append('\n');
       }
-      else
-      {
-         String resIdStr = StringUtil.concat(unknownResIds, ',',
-            new Function<TextFlowTarget, String>()
-            {
-               @Override
-               public String apply(@Nullable TextFlowTarget from)
-               {
-                  return from.getResId();
-               }
-            }
-         );
-         return Response.ok("warning: unknown resIds: " + unknownResIds).tag(etag).build();
-      }
+      return Response.ok(sb.toString()).tag(etag).build();
    }
 
    private HProjectIteration retrieveAndCheckIteration(boolean writeOperation)

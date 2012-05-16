@@ -20,7 +20,6 @@
  */
 package org.zanata.service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -29,7 +28,6 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.exception.ConcurrentTranslationException;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 
@@ -66,9 +64,10 @@ public interface TranslationService
     * @param extensions The extensions to use while translating
     * @param mergeType Indicates how to handle the translations. AUTO will merge the new translations with the provided
     *                  ones. IMPORT will overwrite all existing translations with the new ones.
-    * @return A list of text flow targets that could not be matched to any text flows in the source document.
+    * @return A list of warnings about text flow targets that (a) could not be matched to any text flows in the source document 
+    * or (b) whose states don't match their contents.
     */
-   Collection<TextFlowTarget> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale, TranslationsResource translations, Set<String> extensions,
+   List<String> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale, TranslationsResource translations, Set<String> extensions,
                                           MergeType mergeType);
 
    public interface TranslationResult

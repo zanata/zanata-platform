@@ -279,6 +279,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>, TransUnits
       }));
 
       // TODO use ContentStateUtil.determineState.
+      // ContentState stateToSet = ContentStateUtil.determineState(requestedState, newContents);
+
       // NB until then, make sure this stays consistent
       ContentState stateToSet = requestedState;
       if (requestedState == ContentState.New && emptyCount == 0)
