@@ -5,3 +5,4 @@
 /.project
 *.iml
 bin/
+test-output/
