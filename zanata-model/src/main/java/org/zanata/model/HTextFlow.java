@@ -60,6 +60,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
+import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.IdFilterFactory;
 import org.zanata.model.po.HPotEntryData;
@@ -101,7 +102,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @ToString(of = {"resId", "revision", "contents", "comment", "obsolete"})
 @Slf4j
-public class HTextFlow extends HTextContainer implements Serializable, ITextFlowHistory, HasSimpleComment
+public class HTextFlow extends HTextContainer implements Serializable, ITextFlowHistory, HasSimpleComment, HasContents
 {
    private static final long serialVersionUID = 3023080107971905435L;
 

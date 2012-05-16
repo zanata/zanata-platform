@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,6 +46,9 @@ import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
 import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
+
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.Cache;
@@ -68,9 +72,6 @@ import org.zanata.hibernate.search.ContentStateBridge;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.LocaleIdBridge;
 import org.zanata.hibernate.search.StringListBridge;
-
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Represents a flow of translated text that should be processed as a
@@ -196,7 +197,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
     * 
     * @return
     */
-   @Override
    @Deprecated
    @Transient
    public String getContent()
