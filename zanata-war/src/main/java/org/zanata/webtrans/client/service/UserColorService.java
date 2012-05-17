@@ -22,7 +22,9 @@ package org.zanata.webtrans.client.service;
 
 import java.util.HashMap;
 
+import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.user.client.Random;
+import com.google.gwt.user.client.Window;
 import com.google.inject.Singleton;
 
 /**
@@ -71,9 +73,24 @@ public class UserColorService
       return color;
    }
 
-   private static String getRandomHex() {
+   private static String getRandomHex()
+   {
       int randomNum = Random.nextInt(HEX_LIST.length);
       String sHex = HEX_LIST[randomNum];
       return sHex;
+   }
+
+   public void test()
+   {
+      int rndRedColor = Random.nextInt(255);
+      int rndGreenColor = Random.nextInt(255);
+      int rndBlueColor = Random.nextInt(255);
+
+      CssColor randomColor = CssColor.make(rndRedColor, rndGreenColor, rndBlueColor);
+      Window.alert(convertRGBtoHex(rndRedColor, rndGreenColor, rndBlueColor) + "");
+   }
+
+   private int convertRGBtoHex(int r, int g, int b){
+      return r + 256 * g + 65536 * b;
    }
 }
