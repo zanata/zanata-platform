@@ -32,6 +32,7 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
+import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.FindMessageEvent;
@@ -197,7 +198,18 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       display.getTableModel().clearCache();
       display.getTableModel().setRowCount(TableModel.UNKNOWN_ROW_COUNT);
       display.gotoPage(0, true);
-      initialiseTransUnitsNavigation();
+
+      // modal navigation disabled if there's findMessage
+      if (findMessage == null || findMessage.isEmpty())
+      {
+         initialiseTransUnitsNavigation();
+         eventBus.fireEvent(new EnableModalNavigationEvent(true));
+      }
+      else
+      {
+         eventBus.fireEvent(new EnableModalNavigationEvent(false));
+      }
+
    }
 
    private void initialiseTransUnitsNavigation()
