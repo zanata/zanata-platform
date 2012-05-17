@@ -219,6 +219,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
          for (Map.Entry<Person, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
          {
+            Log.info("alex========" + entry.getKey().getName() + ":" + entry.getValue().getSelectedTransUnit().getSources());
             if (entry.getValue().getSelectedTransUnit() != null)
             {
                for (String sessionId : entry.getValue().getSessionList())

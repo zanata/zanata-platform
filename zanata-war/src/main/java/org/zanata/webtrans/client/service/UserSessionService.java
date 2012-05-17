@@ -33,11 +33,13 @@ import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
+@Singleton
 public class UserSessionService implements TransUnitEditEventHandler
 {
    private final HashMap<Person, UserPanelSessionItem> userSessionMap;
