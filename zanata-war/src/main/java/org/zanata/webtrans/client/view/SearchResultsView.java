@@ -231,14 +231,12 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       selectWholeDocCheckBox.addValueChangeHandler(selectAllHandler);
       docHeading.add(selectWholeDocCheckBox);
 
-      // TODO disabled until source-and-target search in editor responds properly to history
-      // TODO localizable strings
-//      InlineLabel searchDocLabel = new InlineLabel("Search document in editor");
-//      searchDocLabel.setTitle("Show this document in the editor with the current search active");
-//      searchDocLabel.addClickHandler(searchDocClickHandler);
-//      searchDocLabel.addStyleName("linkLabel");
-//      searchDocLabel.addStyleName("projectWideSearchResultsDocumentLink");
-//      docHeading.add(searchDocLabel);
+      InlineLabel searchDocLabel = new InlineLabel(messages.searchDocInEditor());
+      searchDocLabel.setTitle(messages.searchDocInEditorDetailed());
+      searchDocLabel.addClickHandler(searchDocClickHandler);
+      searchDocLabel.addStyleName("linkLabel");
+      searchDocLabel.addStyleName("projectWideSearchResultsDocumentLink");
+      docHeading.add(searchDocLabel);
 
       InlineLabel showDocLabel = new InlineLabel(messages.viewDocInEditor());
       showDocLabel.setTitle(messages.viewDocInEditorDetailed());

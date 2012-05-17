@@ -159,7 +159,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
 
    public boolean isTransFilterFocused()
    {
-      return transFilterPresenter.getDisplay().isFocused();
+      return transFilterPresenter.isFocused();
    }
 
    public void gotoCurrentRow()

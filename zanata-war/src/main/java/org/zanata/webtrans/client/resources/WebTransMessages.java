@@ -151,6 +151,12 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Show this document in editor view")
    String viewDocInEditorDetailed();
 
+   @DefaultMessage("Search document in editor")
+   String searchDocInEditor();
+
+   @DefaultMessage("Show this document in the editor with the current search active")
+   String searchDocInEditorDetailed();
+
    @DefaultMessage("Index")
    String rowIndex();
 
