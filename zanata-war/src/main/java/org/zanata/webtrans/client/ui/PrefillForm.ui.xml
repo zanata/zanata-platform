@@ -1,0 +1,15 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+    <g:VerticalPanel spacing="10">
+        <!--TODO localise-->
+        <g:HorizontalPanel>
+            <g:Label>Approved threshold:</g:Label>
+            <g:ListBox ui:field="approvedPercent">
+                <g:item value='100'>100%</g:item>
+                <g:item value='95'>95%</g:item>
+                <g:item>90%</g:item>
+            </g:ListBox>
+        </g:HorizontalPanel>
+        <g:Button ui:field="confirmButton" text="Proceed to pre-fill" />
+    </g:VerticalPanel>
+</ui:UiBinder>
