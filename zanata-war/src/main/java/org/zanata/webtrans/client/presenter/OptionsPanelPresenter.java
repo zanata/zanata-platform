@@ -24,6 +24,8 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
+import org.zanata.webtrans.client.events.EnableModalNavigationEventHandler;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
@@ -194,6 +196,15 @@ public class OptionsPanelPresenter extends WidgetPresenter<OptionsPanelPresenter
          public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
          {
             setReadOnly(event.isReadOnly());
+         }
+      }));
+      
+      registerHandler(eventBus.addHandler(EnableModalNavigationEvent.getType(), new EnableModalNavigationEventHandler()
+      {
+         @Override
+         public void onEnable(EnableModalNavigationEvent event)
+         {
+            display.setNavOptionVisible(event.isEnable());
          }
       }));
    }

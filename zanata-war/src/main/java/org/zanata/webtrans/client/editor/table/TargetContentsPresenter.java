@@ -33,11 +33,13 @@ import org.zanata.webtrans.client.editor.CheckKey;
 import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
+import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.InsertStringInEditorHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.events.EnableModalNavigationEventHandler;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEventHandler;
 import org.zanata.webtrans.client.events.RunValidationEvent;
@@ -49,7 +51,6 @@ import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
@@ -59,20 +60,17 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
-import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
-import org.zanata.webtrans.shared.rpc.TransUnitEditResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class TargetContentsPresenter implements TargetContentsDisplay.Listener, TransUnitEditEventHandler, UserConfigChangeHandler, RequestValidationEventHandler, InsertStringInEditorHandler, CopyDataToEditorHandler
+public class TargetContentsPresenter implements TargetContentsDisplay.Listener, EnableModalNavigationEventHandler, TransUnitEditEventHandler, UserConfigChangeHandler, RequestValidationEventHandler, InsertStringInEditorHandler, CopyDataToEditorHandler
 {
    public static final int NO_OPEN_EDITOR = -1;
    private static final int LAST_INDEX = -2;
@@ -93,6 +91,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private int currentEditorIndex = NO_OPEN_EDITOR;
    private ArrayList<ToggleEditor> currentEditors;
    private TransUnitsEditModel cellEditor;
+
+   private boolean isModalNavEnabled;
 
 
    private final Identity identity;
@@ -117,6 +117,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       eventBus.addHandler(InsertStringInEditorEvent.getType(), this);
       eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
       eventBus.addHandler(TransUnitEditEvent.getType(), this);
+      eventBus.addHandler(EnableModalNavigationEvent.getType(), this);
    }
 
    private ToggleEditor getCurrentEditor()
@@ -499,11 +500,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       {
          movePrevious(false);
       }
-      else if (checkKey.isNextStateEntryKey())
+      else if (checkKey.isNextStateEntryKey() && isModalNavEnabled)
       {
          moveToNextState(NavTransUnitEvent.NavigationType.NextEntry);
       }
-      else if (checkKey.isPreviousStateEntryKey())
+      else if (checkKey.isPreviousStateEntryKey() && isModalNavEnabled)
       {
          moveToNextState(NavTransUnitEvent.NavigationType.PrevEntry);
       }
@@ -565,5 +566,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    public void saveAndMoveRow(NavTransUnitEvent.NavigationType nav)
    {
       cellEditor.saveAndMoveRow(nav);
+   }
+
+   @Override
+   public void onEnable(EnableModalNavigationEvent event)
+   {
+      isModalNavEnabled = event.isEnable();
    }
 }
