@@ -25,6 +25,8 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.FindMessageEvent;
+import org.zanata.webtrans.client.history.History;
+import org.zanata.webtrans.client.history.HistoryToken;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -40,10 +42,15 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
       boolean isFocused();
    }
 
+   private final History history;
+   private HistoryToken currentState;
+
    @Inject
-   public TransFilterPresenter(final Display display, final EventBus eventBus)
+   public TransFilterPresenter(final Display display, final EventBus eventBus, final History history)
    {
       super(display, eventBus);
+      this.history = history;
+      currentState = new HistoryToken();;
    }
 
    @Override
@@ -55,9 +62,30 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
          @Override
          public void onValueChange(ValueChangeEvent<String> event)
          {
-            eventBus.fireEvent(new FindMessageEvent(event.getValue()));
+            if (event.getValue() != currentState.getSearchText())
+            {
+               HistoryToken newToken = history.getHistoryToken();
+               newToken.setSearchText(event.getValue());
+               history.newItem(newToken);
+            }
          }
       });
+
+      registerHandler(history.addValueChangeHandler(new ValueChangeHandler<String>()
+      {
+
+         @Override
+         public void onValueChange(ValueChangeEvent<String> event)
+         {
+            HistoryToken token = history.getHistoryToken();
+            if (token.getSearchText() != currentState.getSearchText())
+            {
+               eventBus.fireEvent(new FindMessageEvent(token.getSearchText()));
+               display.getFilterText().setValue(token.getSearchText(), false);
+            }
+            currentState = token;
+         }
+      }));
 
    }
 
@@ -73,6 +101,11 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
    {
       // TODO Auto-generated method stub
 
+   }
+
+   public boolean isFocused()
+   {
+      return display.isFocused();
    }
 
 }

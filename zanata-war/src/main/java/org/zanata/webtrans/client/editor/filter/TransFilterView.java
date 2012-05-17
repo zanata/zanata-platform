@@ -22,11 +22,13 @@ package org.zanata.webtrans.client.editor.filter;
 
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
-import org.zanata.webtrans.client.ui.ClearableTextBox;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -41,15 +43,19 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
    {
    }
 
+   // TODO deal with showing greyed-out text
 
-   @UiField(provided = true)
-   ClearableTextBox filterTextBox;
+   @UiField
+   TextBox filterTextBox;
+
+   private String hintMessage;
+
+   private boolean focused = false;
 
    @Inject
    public TransFilterView(final Resources resources, final TransFilterMessages messages, final UiMessages uiMessages)
    {
-      this.filterTextBox = new ClearableTextBox(resources, uiMessages);
-      filterTextBox.setEmptyText(messages.findSourceOrTargetString());
+      hintMessage = messages.findSourceOrTargetString();
       initWidget(uiBinder.createAndBindUi(this));
       getElement().setId("TransFilterView");
    }
@@ -63,13 +69,36 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
    @Override
    public TextBox getFilterText()
    {
-      return filterTextBox.getTextBox();
+      return filterTextBox;
+   }
+
+   @UiHandler("filterTextBox")
+   public void onFilterTextBoxFocus(FocusEvent event)
+   {
+      focused = true;
+      if (filterTextBox.getStyleName().contains("transFilterTextBoxEmpty"))
+      {
+         filterTextBox.setValue("");
+         filterTextBox.removeStyleName("transFilterTextBoxEmpty");
+      }
+   }
+
+   @UiHandler("filterTextBox")
+   public void onFilterTextBoxBlur(BlurEvent event)
+   {
+      focused = false;
+      if (filterTextBox.getText().isEmpty())
+      {
+         filterTextBox.setValue("");
+         filterTextBox.addStyleName("transFilterTextBoxEmpty");
+         filterTextBox.setValue(hintMessage);
+      }
    }
 
    @Override
    public boolean isFocused()
    {
-      return filterTextBox.isFocused();
+      return focused;
    }
 
 }
