@@ -59,6 +59,13 @@ import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 {
    private static final Version LUCENE_VERSION = Version.LUCENE_29;
+   private static final String CONTENT_FIELDS[] = new String[6];
+   {
+      for (int i = 0; i < 6; i++)
+      {
+         CONTENT_FIELDS[i] = IndexFieldLabels.CONTENT_CASE_FOLDED + i;
+      }
+   }
 
    @In
    private FullTextEntityManager entityManager;
