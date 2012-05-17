@@ -2,7 +2,7 @@ package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.UiMessages;
-import org.zanata.webtrans.client.ui.HasManageUserSession;
+import org.zanata.webtrans.client.ui.HasManageUserPanel;
 import org.zanata.webtrans.client.ui.UserPanel;
 import org.zanata.webtrans.shared.model.Person;
 
@@ -64,7 +64,7 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    }
 
    @Override
-   public HasManageUserSession addUser(Person person)
+   public HasManageUserPanel addUser(Person person)
    {
       UserPanel userPanel = new UserPanel(person.getName(), person.getAvatarUrl());
       userListPanel.add(userPanel);
@@ -72,7 +72,7 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    }
 
    @Override
-   public void removeUser(HasManageUserSession userPanel)
+   public void removeUser(HasManageUserPanel userPanel)
    {
       for (int i = 0; i < userListPanel.getWidgetCount(); i++)
       {

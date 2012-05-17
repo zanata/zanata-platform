@@ -47,9 +47,9 @@ import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
-import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.client.service.TranslatorColorService;
+import org.zanata.webtrans.client.service.UserColorService;
+import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
@@ -76,7 +76,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private final EventBus eventBus;
    private final TableEditorMessages messages;
    private final SourceContentsPresenter sourceContentsPresenter;
-   private final WorkspaceUsersPresenter workspaceUsersPresenter;
+   private final UserSessionService sessionService;
    private final UserConfigHolder configHolder;
 
    private final CheckKey checkKey;
@@ -91,11 +91,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private ArrayList<ToggleEditor> currentEditors;
    private TransUnitsEditModel cellEditor;
 
-   private final TranslatorColorService translatorColorService;
+   private final UserColorService translatorColorService;
    private final Identity identity;
 
    @Inject
-   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, UserConfigHolder configHolder, WorkspaceContext workspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel, TranslatorColorService translatorColorService)
+   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final UserSessionService sessionService, UserConfigHolder configHolder, WorkspaceContext workspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel, UserColorService translatorColorService)
    {
       this.displayProvider = displayProvider;
       this.eventBus = eventBus;
@@ -105,7 +105,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       this.workspaceContext = workspaceContext;
       this.scheduler = scheduler;
       this.validationMessagePanel = validationMessagePanel;
-      this.workspaceUsersPresenter = workspaceUsersPresenter;
+      this.sessionService = sessionService;
       this.identity = identity;
       this.translatorColorService = translatorColorService;
 
@@ -217,7 +217,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
             editor.clearTranslatorList();
          }
 
-         for (Map.Entry<Person, UserPanelSessionItem> entry : workspaceUsersPresenter.getUserSessionMap().entrySet())
+         for (Map.Entry<Person, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
          {
             if (entry.getValue().getSelectedTransUnit() != null)
             {

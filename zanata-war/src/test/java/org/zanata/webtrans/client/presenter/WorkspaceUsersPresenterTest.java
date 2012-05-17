@@ -15,6 +15,7 @@ import java.util.Map;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.easymock.Capture;
+import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
@@ -24,8 +25,9 @@ import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.service.TranslatorColorService;
-import org.zanata.webtrans.client.ui.HasManageUserSession;
+import org.zanata.webtrans.client.service.UserColorService;
+import org.zanata.webtrans.client.service.UserSessionService;
+import org.zanata.webtrans.client.ui.HasManageUserPanel;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
@@ -54,13 +56,15 @@ public class WorkspaceUsersPresenterTest
 
    Capture<ClickHandler> capturedSendButtonClickHandler = new Capture<ClickHandler>();
 
-   TranslatorColorService mockTranslatorColorService = createMock(TranslatorColorService.class);;
+   UserColorService mockTranslatorColorService = createMock(UserColorService.class);
+
+   UserSessionService mockSessionService = createMock(UserSessionService.class);
 
    @BeforeMethod
    public void resetMocks()
    {
-      reset(mockDisplay, mockEventBus, mockSendButton);
-      workspaceUsersPresenter = new WorkspaceUsersPresenter(mockDisplay, mockEventBus, mockIdentity, mockDispatcher, mockMessages, mockTranslatorColorService);
+      reset(mockDisplay, mockEventBus, mockSendButton, mockTranslatorColorService, mockSessionService);
+      workspaceUsersPresenter = new WorkspaceUsersPresenter(mockDisplay, mockEventBus, mockIdentity, mockDispatcher, mockMessages, mockTranslatorColorService, mockSessionService);
    }
 
    public void setEmptyUserList()
@@ -80,7 +84,7 @@ public class WorkspaceUsersPresenterTest
 
    public void setNonEmptyUserList()
    {
-      HasManageUserSession mockHasManageUserSession = createMock(HasManageUserSession.class);
+      HasManageUserPanel mockHasManageUserSession = createMock(HasManageUserPanel.class);
 
       expect(mockTranslatorColorService.getColor("sessionId1")).andReturn("color1");
       expect(mockTranslatorColorService.getColor("sessionId2")).andReturn("color2");
@@ -105,6 +109,6 @@ public class WorkspaceUsersPresenterTest
       people.put(new SessionId("sessionId3"), new PersonSessionDetails(new Person(new PersonId("person3"), "Smohn Jith", "http://www.gravatar.com/avatar/smohn@zanata.org?d=mm&s=16"), null));
       workspaceUsersPresenter.initUserList(people);
 
-      verify(mockDisplay, mockEventBus, mockSendButton, mockTranslatorColorService);
+      verify(mockDisplay, mockEventBus, mockSendButton, mockTranslatorColorService, mockSessionService);
    }
 }

@@ -4,7 +4,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 
-public class UserPanel extends HorizontalPanel implements HasManageUserSession
+public class UserPanel extends HorizontalPanel implements HasManageUserPanel
 {
    private static final long serialVersionUID = 1L;
    private Image userImage;

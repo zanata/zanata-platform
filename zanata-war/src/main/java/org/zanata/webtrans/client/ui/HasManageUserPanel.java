@@ -2,7 +2,7 @@ package org.zanata.webtrans.client.ui;
 
 import java.io.Serializable;
 
-public interface HasManageUserSession extends Serializable
+public interface HasManageUserPanel extends Serializable
 {
    void updateTitle(String title);
 

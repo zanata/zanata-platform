@@ -31,7 +31,7 @@ import com.google.inject.Singleton;
  */
 
 @Singleton
-public class TranslatorColorService
+public class UserColorService
 {
    public static final HashMap<String, String> colorList = new HashMap<String, String>();
    

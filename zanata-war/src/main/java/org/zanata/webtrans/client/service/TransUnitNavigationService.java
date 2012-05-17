@@ -148,6 +148,28 @@ public class TransUnitNavigationService
       return null;
    }
 
+   public Integer getRowNumber(TransUnit tu, List<TransUnit> rowValues)
+   {
+      if (tu == null)
+      {
+         return null;
+      }
+      else
+      {
+         TransUnitId transUnitId = tu.getId();
+         int n = 0;
+         for (TransUnit transUnit : rowValues)
+         {
+            if (transUnitId.equals(transUnit.getId()))
+            {
+               return n;
+            }
+            n++;
+         }
+      }
+      return null;
+   }
+
    public void updateCurrentPageAndRowIndex(int curPage, int selectedRow)
    {
       this.curPage = curPage;
