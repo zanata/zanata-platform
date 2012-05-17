@@ -31,6 +31,7 @@ import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.inject.Inject;
 
 /**
@@ -59,6 +60,7 @@ public class UserSessionService implements TransUnitEditEventHandler
    {
       if (userSessionMap.containsKey(person) && selectedTransUnit != null)
       {
+         Log.info("======updateTranslatorStatus:" + person.getName() + ":" + selectedTransUnit.getSources());
          userSessionMap.get(person).setSelectedTransUnit(selectedTransUnit);
       }
    }
