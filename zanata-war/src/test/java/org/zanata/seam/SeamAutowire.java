@@ -223,7 +223,7 @@ public class SeamAutowire
                {
                   if( ignoreNonResolvable )
                   {
-                     log.warn("Could not resolve component of type: " + compType);
+                     log.warn("Could not resolve component of type: " + compType + ". Cause: " + e.getMessage());
                   }
                   else
                   {
@@ -233,7 +233,23 @@ public class SeamAutowire
             }
 
             fieldVal = namedComponents.get( compName );
-            accessor.setValue(component, fieldVal);
+            try
+            {
+               accessor.setValue(component, fieldVal);
+            }
+            catch (RuntimeException e)
+            {
+               if( ignoreNonResolvable )
+               {
+                  log.warn("Could not set autowire field " + accessor.getComponentName() +
+                        " on component of type " + component.getClass().getName() +
+                        " to value of type " + fieldVal.getClass().getName());
+               }
+               else
+               {
+                  throw e;
+               }
+            }
          }
          // Logs
          else if( accessor.getAnnotation(Logger.class) != null )

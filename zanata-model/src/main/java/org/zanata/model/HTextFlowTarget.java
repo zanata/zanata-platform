@@ -314,7 +314,10 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    {
       if (this.initialState != null && this.initialState.getContents() == null && !this.lazyRelationsCopied)
       {
-         this.initialState.setContents(this.contents);
+         if( this.contents != null )
+         {
+            this.initialState.setContents(this.contents);
+         }
          this.lazyRelationsCopied = true;
       }
    }

@@ -151,6 +151,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
           .use("applicationConfiguration", new ApplicationConfiguration(true))
           .use("identity", mockIdentity)
           .use("translationWorkspaceManager", transWorspaceManager)
+          .use("entityManager", super.getEm())
           .useImpl(CopyTransServiceImpl.class)
           .useImpl(TranslationServiceImpl.class)
           .useImpl(LocaleServiceImpl.class)
@@ -900,17 +901,19 @@ public class TranslationResourceRestTest extends ZanataRestTest
       createResourceWithContentUsingPut();
       
       super.newSession();
+      this.prepareResources(); // Reset Seam as part of new transaction simulation
       
       AccountDAO accountDAO = seam.autowire(AccountDAO.class);
 
       // Translator
       HAccount translator = accountDAO.getByUsername("demo");
-      
+
       // Translate using the web editor
       this.simulateWebEditorTranslation("sample-project", "1.0", "my.txt", "tf1", translator, de_de, "Translated", ContentState.Approved);
-      
+
       super.newSession();
-      
+      this.prepareResources(); // Reset Seam as part of new transaction simulation
+
       // Fetch the translations again
       ClientResponse<TranslationsResource> response = transResource.getTranslations("my.txt", de_de, new StringSet("gettext"));
       
@@ -985,7 +988,6 @@ public class TranslationResourceRestTest extends ZanataRestTest
       expectLastCall();
       mockControl.replay();
 
-      this.prepareResources(); // Reset Seam to simulate separate translation
       seam.use(JpaIdentityStore.AUTHENTICATED_USER, translator); // use a given authenticated account
 
       translationService = seam.autowire(TranslationServiceImpl.class);

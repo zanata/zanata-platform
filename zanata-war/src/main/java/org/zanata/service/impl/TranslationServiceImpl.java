@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.persistence.EntityManager;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -39,6 +39,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.management.JpaIdentityStore;
@@ -75,6 +76,7 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 @Name("translationServiceImpl")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
+@Transactional
 public class TranslationServiceImpl implements TranslationService
 {
 
@@ -83,6 +85,9 @@ public class TranslationServiceImpl implements TranslationService
 
    @In
    private Session session;
+
+   @In
+   private EntityManager entityManager;
 
    @In
    private ProjectIterationDAO projectIterationDAO;
@@ -111,35 +116,6 @@ public class TranslationServiceImpl implements TranslationService
    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
    private HAccount authenticatedAccount;
 
-   public TranslationServiceImpl()
-   {
-   }
-
-   // for tests
-   public TranslationServiceImpl(Session session,
-                                 TranslationWorkspaceManager translationWorkspaceManager,
-                                 LocaleService localeService,
-                                 HAccount authenticatedAccount,
-                                 ProjectIterationDAO projectIterationDAO,
-                                 DocumentDAO documentDAO,
-                                 PersonDAO personDAO,
-                                 TextFlowDAO textFlowDAO,
-                                 TextFlowTargetDAO textFlowTargetDAO,
-                                 TextFlowTargetHistoryDAO textFlowTargetHistoryDAO,
-                                 ResourceUtils resourceUtils)
-   {
-      this.session = session;
-      this.localeServiceImpl = localeService;
-      this.authenticatedAccount = authenticatedAccount;
-      this.projectIterationDAO = projectIterationDAO;
-      this.documentDAO = documentDAO;
-      this.personDAO = personDAO;
-      this.textFlowDAO = textFlowDAO;
-      this.textFlowTargetDAO = textFlowTargetDAO;
-      this.textFlowTargetHistoryDAO = textFlowTargetHistoryDAO;
-      this.resourceUtils = resourceUtils;
-      this.log = Logging.getLog(TranslationResultImpl.class);
-   }
 
    // TODO delete this?
    @Override
@@ -245,6 +221,7 @@ public class TranslationServiceImpl implements TranslationService
          hTextFlowTarget = new HTextFlowTarget(hTextFlow, hLocale);
          hTextFlowTarget.setVersionNum(0); // this will be incremented when content is set (below)
          hTextFlow.getTargets().put(hLocale, hTextFlowTarget);
+         entityManager.persist(hTextFlowTarget);
       }
       return hTextFlowTarget;
    }
@@ -263,20 +240,10 @@ public class TranslationServiceImpl implements TranslationService
          log.debug("last modified by :" + authenticatedAccount.getPerson().getName());
       }
 
-      session.saveOrUpdate(hTextFlowTarget);
-
-      //save the target
-      session.flush();
-
-      // TODO this will not be required when history cascading is working properly
-      for (Entry<Integer, HTextFlowTargetHistory> his : hTextFlowTarget.getHistory().entrySet())
-      {
-         System.out.println("persisting history");
-         session.saveOrUpdate(his.getValue());
-      }
+      //hTextFlowTarget = entityManager.merge(hTextFlowTarget);
 
       //save the target histories
-      session.flush();
+      entityManager.flush();
 
       return hTextFlowTarget;
    }
