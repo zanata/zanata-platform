@@ -18,43 +18,13 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.ui;
+package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.client.resources.UiMessages;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import net.customware.gwt.dispatch.shared.Result;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Singleton
-public class PrefillPopupPanelView extends DialogBox implements PrefillPopupPanelDisplay
+public class NoOpResult implements Result
 {
-
-   private final PrefillForm prefillForm;
-
-   @Inject
-   public PrefillPopupPanelView(PrefillForm prefillForm, UiMessages messages)
-   {
-      //auto hide false, modal true
-      super(false, true);
-      getCaption().setText(messages.prefillCaption());
-      setGlassEnabled(true);
-      add(prefillForm);
-      this.prefillForm = prefillForm;
-      hide();
-   }
-
-   @Override
-   public void setListener(Listener listener)
-   {
-      prefillForm.setListener(listener);
-   }
-
-   @Override
-   public int getApprovedThreshold()
-   {
-      return Integer.valueOf(prefillForm.getSelectedApprovedPercent());
-   }
 }

@@ -998,7 +998,6 @@ public class TranslationResourceRestTest extends ZanataRestTest
             seam.autowire(ProjectDAO.class),
             transWorkerManager,
             seam.autowire(LocaleServiceImpl.class),
-            translator,
             seam.autowire(TranslationServiceImpl.class),
             seam.autowire(TransUnitTransformer.class));
       // @formatter:on

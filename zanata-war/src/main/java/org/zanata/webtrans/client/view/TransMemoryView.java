@@ -6,6 +6,7 @@ import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.EnumListBox;
+import org.zanata.webtrans.client.ui.PrefillPopupPanelDisplay;
 import org.zanata.webtrans.client.ui.PrefillPopupPanelView;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.client.ui.table.column.CopyButtonColumn;
@@ -73,7 +74,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    @UiField
    Button prefillButton;
 
-   private PrefillPopupPanelView prefillPopup;
+   private PrefillPopupPanelDisplay prefillPopup;
 
    CellTable<TransMemoryResultItem> tmTable;
 
@@ -88,7 +89,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    private DetailsColumn<TransMemoryResultItem> detailsColumn;
 
    @Inject
-   public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, final Resources resources, PrefillPopupPanelView prefillPopup)
+   public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, final Resources resources, PrefillPopupPanelDisplay prefillPopup)
    {
       this.messages = messages;
 
@@ -141,9 +142,15 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    }
 
    @Override
-   public void showPrefillConfirmationPopup()
+   public void showPrefillPopup()
    {
       prefillPopup.center();
+   }
+
+   @Override
+   public void hidePrefillPopup()
+   {
+      prefillPopup.hide();
    }
 
    @Override

@@ -79,4 +79,9 @@ public interface UiMessages extends Messages
    @DefaultMessage("Send")
    String sendLabel();
 
+   @DefaultMessage("Prefill")
+   String prefillButtonLabel();
+
+   @DefaultMessage("Select TM match percentage to pre-fill translations.")
+   String prefillCaption();
 }

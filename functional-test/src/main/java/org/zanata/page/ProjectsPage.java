@@ -29,7 +29,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 
 public class ProjectsPage extends AbstractPage
 {

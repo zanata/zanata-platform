@@ -12,6 +12,7 @@ import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.ui.PrefillPopupPanelDisplay;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
@@ -35,7 +36,6 @@ import com.google.inject.Inject;
 
 public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.Display>
 {
-
    public interface Display extends WidgetDisplay
    {
       HasClickHandlers getSearchButton();
@@ -64,7 +64,9 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
       HasClickHandlers getPrefillButton();
 
-      void showPrefillConfirmationPopup();
+      void showPrefillPopup();
+
+      void hidePrefillPopup();
    }
 
    private final WorkspaceContext workspaceContext;
@@ -72,15 +74,17 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    private GetTranslationMemory submittedRequest = null;
    private GetTranslationMemory lastRequest = null;
    private TransMemoryDetailsPresenter tmInfoPresenter;
+   private PrefillPresenter prefillPresenter;
    private ListDataProvider<TransMemoryResultItem> dataProvider;
 
    @Inject
-   public TransMemoryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, TransMemoryDetailsPresenter tmInfoPresenter, WorkspaceContext workspaceContext)
+   public TransMemoryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, TransMemoryDetailsPresenter tmInfoPresenter, WorkspaceContext workspaceContext, PrefillPresenter prefillPresenter)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
       this.workspaceContext = workspaceContext;
       this.tmInfoPresenter = tmInfoPresenter;
+      this.prefillPresenter = prefillPresenter;
 
       dataProvider = new ListDataProvider<TransMemoryResultItem>();
       display.setDataProvider(dataProvider);
@@ -166,7 +170,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          @Override
          public void onClick(ClickEvent event)
          {
-            display.showPrefillConfirmationPopup();
+            prefillPresenter.show();
          }
       });
    }

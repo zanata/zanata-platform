@@ -62,7 +62,7 @@ public class TransMemoryPresenterTest
    Capture<TransMemoryShorcutCopyHandler> capturedTransMemoryShortcutCopyEventHandler = new Capture<TransMemoryShorcutCopyHandler>();
 
    HasClickHandlers mockClearButton = createMock(HasClickHandlers.class);
-
+   PrefillPresenter mockPrefillPresenter = createMock(PrefillPresenter.class);
 
 
    @BeforeMethod
@@ -115,7 +115,7 @@ public class TransMemoryPresenterTest
       replay(mockSearchType, mockSearchButton, mockClearButton);
       replay(mockDetailsColumn, mockCopyColumn);
 
-      transMemoryPresenter = new TransMemoryPresenter(mockDisplay, mockEventBus, mockDispatcher, mockTransMemoryDetailsPresenter , mockWorkspaceContext);
+      transMemoryPresenter = new TransMemoryPresenter(mockDisplay, mockEventBus, mockDispatcher, mockTransMemoryDetailsPresenter , mockWorkspaceContext, mockPrefillPresenter);
 
       transMemoryPresenter.bind();
 

@@ -81,9 +81,6 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    @In
    ZanataIdentity identity;
 
-   @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
-   HAccount authenticatedAccount;
-
    @In
    ProjectDAO projectDAO;
 
@@ -108,7 +105,6 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          ProjectDAO projectDAO,
          TranslationWorkspaceManager translationWorkspaceManager,
          LocaleService localeServiceImpl,
-         HAccount authenticatedAccount,
          TranslationService translationService,
          TransUnitTransformer transUnitTransformer)
    {
@@ -119,7 +115,6 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       this.projectDAO = projectDAO;
       this.translationWorkspaceManager = translationWorkspaceManager;
       this.localeServiceImpl = localeServiceImpl;
-      this.authenticatedAccount = authenticatedAccount;
    }
 
    @Override
