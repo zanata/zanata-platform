@@ -18,56 +18,45 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.presenter;
+package org.zanata.service;
 
-import org.zanata.webtrans.client.ui.PrefillPopupPanelDisplay;
-
-import com.google.inject.Inject;
-
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+import org.zanata.common.LocaleId;
+import org.zanata.webtrans.server.TranslationWorkspace;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class PrefillPresenter extends WidgetPresenter<PrefillPopupPanelDisplay> implements PrefillPopupPanelDisplay.Listener
+public interface SecurityService
 {
+   /**
+    * This will check permission for performing an action upon translations with given project and locale
+    *
+    * @param workspace workspace
+    * @param projectSlug project slug
+    * @param localeId localeId
+    * @param action translation action
+    * @throws org.jboss.seam.security.AuthorizationException, org.jboss.seam.security.NotLoggedInException
+    */
+   void checkPermissionForTranslation(TranslationWorkspace workspace, String projectSlug, LocaleId localeId, TranslationAction action);
 
-   private PrefillPopupPanelDisplay display;
-
-   @Inject
-   public PrefillPresenter(PrefillPopupPanelDisplay display, EventBus eventBus)
+   public enum TranslationAction
    {
-      super(display, eventBus);
-      this.display = display;
-      display.setListener(this);
-   }
+      // security actions (to be implemented)
+      ADD("add-translation"),
+      MODIFY("modify-translation"),
+      REMOVE("remove-translation"),
+      APPROVE("approve-translation");
 
-   @Override
-   protected void onBind()
-   {
-   }
+      private final String action;
 
-   @Override
-   protected void onUnbind()
-   {
-   }
+      private TranslationAction(String action)
+      {
+         this.action = action;
+      }
 
-   @Override
-   protected void onRevealDisplay()
-   {
-   }
-
-   @Override
-   public void proceedToPrefill(String approvedPercent)
-   {
-      //TODO implement
-      int threshold = display.getApprovedThreshold();
-      display.hide();
-   }
-
-   public void preparePrefill()
-   {
-      display.center();
+      public String action()
+      {
+         return action;
+      }
    }
 }

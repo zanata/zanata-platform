@@ -22,6 +22,7 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -42,6 +43,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.service.SecurityService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.TranslationService.TranslationResult;
 import org.zanata.webtrans.server.ActionHandlerFor;
@@ -59,19 +61,9 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 @Name("webtrans.gwt.UpdateTransUnitHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(UpdateTransUnit.class)
+@Slf4j
 public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUnit, UpdateTransUnitResult>
 {
-   // security actions (to be implemented)
-   // private static final String ACTION_ADD_TRANSLATION = "add-translation";
-   private static final String ACTION_MODIFY_TRANSLATION = "modify-translation";
-   // private static final String ACTION_REMOVE_TRANSLATION =
-   // "remove-translation";
-   // private static final String ACTION_APPROVE_TRANSLATION =
-   // "approve-translation";
-
-   @Logger
-   Log log;
-
    @In
    TransUnitTransformer transUnitTransformer;
 
@@ -79,51 +71,27 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    TranslationService translationServiceImpl;
 
    @In
-   ZanataIdentity identity;
+   SecurityService securityServiceImpl;
 
    @In
-   ProjectDAO projectDAO;
+   ZanataIdentity identity;
 
    @In
    TranslationWorkspaceManager translationWorkspaceManager;
 
-   @In
-   private LocaleService localeServiceImpl;
-
-   /**
-    * Used by Seam
-    */
-   public UpdateTransUnitHandler()
-   {
-   }
-
-   /**
-    * Used for tests
-    */
-   public UpdateTransUnitHandler(
-         ZanataIdentity identity,
-         ProjectDAO projectDAO,
-         TranslationWorkspaceManager translationWorkspaceManager,
-         LocaleService localeServiceImpl,
-         TranslationService translationService,
-         TransUnitTransformer transUnitTransformer)
-   {
-      this.transUnitTransformer = transUnitTransformer;
-      this.translationServiceImpl = translationService;
-      this.log = Logging.getLog(UpdateTransUnitHandler.class);
-      this.identity = identity;
-      this.projectDAO = projectDAO;
-      this.translationWorkspaceManager = translationWorkspaceManager;
-      this.localeServiceImpl = localeServiceImpl;
-   }
-
    @Override
    public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException
    {
+      identity.checkLoggedIn();
+
       UpdateTransUnitResult result = new UpdateTransUnitResult();
       LocaleId localeId = action.getWorkspaceId().getLocaleId();
-      log.debug("Updating {0} TransUnits for loacle {1}", action.getUpdateRequests().size(), localeId);
-      TranslationWorkspace workspace = checkSecurityAndGetWorkspace(action);
+      log.debug("Updating {} TransUnits for loacle {}", action.getUpdateRequests().size(), localeId);
+
+      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
+      String projectSlug = action.getWorkspaceId().getProjectIterationId().getProjectSlug();
+
+      securityServiceImpl.checkPermissionForTranslation(workspace, projectSlug, localeId, SecurityService.TranslationAction.MODIFY);
 
       List<TranslationResult> translationResults = translationServiceImpl.translate(localeId, action.getUpdateRequests());
 
@@ -140,22 +108,6 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       }
 
       return result;
-   }
-
-   private TranslationWorkspace checkSecurityAndGetWorkspace(AbstractWorkspaceAction<?> action) throws ActionException
-   {
-      identity.checkLoggedIn();
-      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
-      if (workspace.getWorkspaceContext().isReadOnly())
-      {
-         throw new ActionException("Project or version is read-only");
-      }
-
-      HProject hProject = projectDAO.getBySlug( action.getWorkspaceId().getProjectIterationId().getProjectSlug() );
-      HLocale hLocale = localeServiceImpl.getByLocaleId(action.getWorkspaceId().getLocaleId());
-      identity.checkPermission(ACTION_MODIFY_TRANSLATION, hLocale, hProject);
-
-      return workspace;
    }
 
    @Override

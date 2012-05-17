@@ -68,20 +68,19 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
-import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Name("translationServiceImpl")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
 @Transactional
+@Slf4j
 public class TranslationServiceImpl implements TranslationService
 {
-
-   @Logger
-   private Log log;
 
    @In
    private EntityManager entityManager;
@@ -124,7 +123,8 @@ public class TranslationServiceImpl implements TranslationService
 
       if (translateRequest.getBaseTranslationVersion() != hTextFlowTarget.getVersionNum())
       {
-         log.warn("translation failed for textflow {0}: base versionNum {1} does not match current versionNum {2}", hTextFlow.getId() , translateRequest.getBaseTranslationVersion(), hTextFlowTarget.getVersionNum());
+         log.warn("translation failed for textflow {}: base versionNum {} does not match current versionNum {}",
+               new Object[] { hTextFlow.getId(), translateRequest.getBaseTranslationVersion(), hTextFlowTarget.getVersionNum() });
          throw new ConcurrentTranslationException(MessageFormat.format("base translation version num {0} does not match current version num {1}, aborting", translateRequest.getBaseTranslationVersion(), hTextFlowTarget.getVersionNum()));
       }
 
@@ -180,7 +180,8 @@ public class TranslationServiceImpl implements TranslationService
          else
          {
             // concurrent edits not allowed
-            log.warn("translation failed for textflow {0}: base versionNum {1} does not match current versionNum {2}", hTextFlow.getId() , request.getBaseTranslationVersion(), hTextFlowTarget.getVersionNum());
+            log.warn("translation failed for textflow {}: base versionNum {} does not match current versionNum {}",
+                  new Object[] { hTextFlow.getId(), request.getBaseTranslationVersion(), hTextFlowTarget.getVersionNum() });
             result.isSuccess = false;
          }
          result.translatedTextFlowTarget = hTextFlowTarget;
@@ -233,7 +234,7 @@ public class TranslationServiceImpl implements TranslationService
          hTextFlowTarget.setVersionNum(hTextFlowTarget.getVersionNum() + 1);
          hTextFlowTarget.setTextFlowRevision(hTextFlowTarget.getTextFlow().getRevision());
          hTextFlowTarget.setLastModifiedBy(authenticatedAccount.getPerson());
-         log.debug("last modified by :" + authenticatedAccount.getPerson().getName());
+         log.debug("last modified by :{}", authenticatedAccount.getPerson().getName());
       }
 
       //save the target histories
@@ -361,7 +362,7 @@ public class TranslationServiceImpl implements TranslationService
       }
 
 
-      log.debug("start put translations entity:{0}" , translations);
+      log.debug("start put translations entity:{}" , translations);
 
       boolean changed = false;
 
@@ -394,7 +395,7 @@ public class TranslationServiceImpl implements TranslationService
          {
             // return warning for unknown resId to caller
             warnings.add("Could not find text flow for message: " + incomingTarget.getContents());
-            log.warn("skipping TextFlowTarget with unknown resId: {0}", resId);
+            log.warn("skipping TextFlowTarget with unknown resId: {}", resId);
          }
          else
          {
@@ -403,7 +404,7 @@ public class TranslationServiceImpl implements TranslationService
             if (hTarget == null)
             {
                targetChanged = true;
-               log.debug("locale: {0}", locale);
+               log.debug("locale: {}", locale);
                hTarget = new HTextFlowTarget(textFlow, hLocale);
                hTarget.setVersionNum(0); // incremented when content is set
                textFlow.getTargets().put(hLocale, hTarget);
@@ -566,7 +567,7 @@ public class TranslationServiceImpl implements TranslationService
             //check that version has not advanced
             // TODO probably also want to check that source has not been updated
             Integer versionNum = hTextFlowTarget.getVersionNum();
-            log.info("hTextFlowTarget version {0}, TransUnit version {1}", versionNum, info.getTransUnit().getVerNum());
+            log.info("hTextFlowTarget version {}, TransUnit version {}", versionNum, info.getTransUnit().getVerNum());
             if (versionNum.equals(info.getTransUnit().getVerNum()))
             {
                //look up replaced version
@@ -582,13 +583,13 @@ public class TranslationServiceImpl implements TranslationService
                }
                else
                {
-                  log.warn("got null previous target for tu with id {0}, version {1}. Cannot revert with no previous state.", hTextFlow.getId(), info.getPreviousVersionNum());
+                  log.warn("got null previous target for tu with id {}, version {}. Cannot revert with no previous state.", hTextFlow.getId(), info.getPreviousVersionNum());
                   results.add(buildFailResult(hTextFlowTarget));
                }
             }
             else
             {
-               log.info("attempt to revert target version {0} for tu with id {1}, but current version is {2}. Not reverting.");
+               log.info("attempt to revert target version {} for tu with id {}, but current version is {}. Not reverting.");
                results.add(buildFailResult(hTextFlowTarget));
             }
          }

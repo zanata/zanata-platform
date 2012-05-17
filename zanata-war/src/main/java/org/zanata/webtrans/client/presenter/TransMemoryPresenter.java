@@ -12,7 +12,6 @@ import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.ui.PrefillPopupPanelDisplay;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
@@ -64,9 +63,6 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
       HasClickHandlers getPrefillButton();
 
-      void showPrefillPopup();
-
-      void hidePrefillPopup();
    }
 
    private final WorkspaceContext workspaceContext;
@@ -170,7 +166,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          @Override
          public void onClick(ClickEvent event)
          {
-            prefillPresenter.show();
+            prefillPresenter.preparePrefill();
          }
       });
    }

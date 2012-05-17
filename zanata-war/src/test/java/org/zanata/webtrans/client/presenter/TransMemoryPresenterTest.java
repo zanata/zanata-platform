@@ -96,6 +96,8 @@ public class TransMemoryPresenterTest
 
       expect(mockDisplay.getDetailsColumn()).andReturn(mockDetailsColumn).anyTimes();
 
+      expect(mockDisplay.getPrefillButton()).andReturn(createMock(HasClickHandlers.class)).once();
+
       //TODO capture field updaters and data provider to check them?
 
       mockDetailsColumn.setFieldUpdater(isA(FieldUpdater.class));

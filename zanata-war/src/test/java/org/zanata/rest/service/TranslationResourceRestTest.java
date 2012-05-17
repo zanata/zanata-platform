@@ -23,7 +23,6 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.common.ResourceType;
 import org.zanata.dao.AccountDAO;
-import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
@@ -53,6 +52,7 @@ import org.zanata.service.TranslationService;
 import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.DocumentServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.service.impl.SecurityServiceImpl;
 import org.zanata.service.impl.TranslationServiceImpl;
 import org.zanata.util.HashUtil;
 import org.zanata.webtrans.server.TranslationWorkspace;
@@ -156,7 +156,8 @@ public class TranslationResourceRestTest extends ZanataRestTest
           .useImpl(TranslationServiceImpl.class)
           .useImpl(LocaleServiceImpl.class)
           .useImpl(DocumentServiceImpl.class)
-          .useImpl(ResourceUtils.class);
+          .useImpl(ResourceUtils.class)
+          .useImpl(SecurityServiceImpl.class);
 
       TranslatedDocResourceService translatedDocResourceService = seam.autowire(TranslatedDocResourceService.class);
       SourceDocResourceService sourceDocResourceService = seam.autowire(SourceDocResourceService.class);
@@ -966,19 +967,13 @@ public class TranslationResourceRestTest extends ZanataRestTest
    throws Exception
    {
       // Mock certain objects
-      TranslationWorkspaceManager transWorkerManager = mockControl.createMock(TranslationWorkspaceManager.class);
       TranslationWorkspace transWorkspace = mockControl.createMock(TranslationWorkspace.class);
 
       WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId(projectSlug, iterationSlug), localeId);
       WorkspaceContext workspaceContext = new WorkspaceContext(workspaceId, "sample-workspace", localeId.getId(), false);
       
-//      Credentials mockCredentials = new Credentials();
-//      mockCredentials.setInitialized(true);
-//      mockCredentials.setUsername( translator.getUsername() );
-
       // Set mock expectations
-      expect(transWorkerManager.getOrRegisterWorkspace(anyObject(WorkspaceId.class))).andReturn( transWorkspace ).anyTimes();
-//      expect( mockIdentity.getCredentials() ).andReturn( mockCredentials );
+      expect(this.transWorspaceManager.getOrRegisterWorkspace(anyObject(WorkspaceId.class))).andReturn(transWorkspace).anyTimes();
       expect( transWorkspace.getWorkspaceContext() ).andReturn( workspaceContext );
       mockIdentity.checkLoggedIn();
       expectLastCall();
@@ -989,18 +984,9 @@ public class TranslationResourceRestTest extends ZanataRestTest
       mockControl.replay();
 
       seam.use(JpaIdentityStore.AUTHENTICATED_USER, translator); // use a given authenticated account
+      seam.use("translationServiceImpl", seam.autowire(TranslationServiceImpl.class));// TODO because translationService component has already been created in prepareResource and have a wrong HAccount injected
 
-      translationService = seam.autowire(TranslationServiceImpl.class);
-
-      // @formatter:off
-      UpdateTransUnitHandler transUnitHandler = new UpdateTransUnitHandler(
-            mockIdentity,
-            seam.autowire(ProjectDAO.class),
-            transWorkerManager,
-            seam.autowire(LocaleServiceImpl.class),
-            seam.autowire(TranslationServiceImpl.class),
-            seam.autowire(TransUnitTransformer.class));
-      // @formatter:on
+      UpdateTransUnitHandler transUnitHandler = seam.autowire(UpdateTransUnitHandler.class);
 
       // Translation unit id to update
       HTextFlow hTextFlow = (HTextFlow) getSession().createQuery("select tf from HTextFlow tf where tf.contentHash = ? and " +
