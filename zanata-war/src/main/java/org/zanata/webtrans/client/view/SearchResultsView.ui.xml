@@ -5,60 +5,42 @@
     xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
     xmlns:c="urn:import:com.google.gwt.user.cellview.client">
 
-    <ui:style>
-        .unitStatus {
-            float: right;
-            width: 100px;
-            height: 1.2em;
-        }
-        .mainPanel {
-            background-color: #ffffff;
-            border: 3px solid #e0e8ee;
-            -moz-border-radius: 7px;
-            border-radius: 7px;
-        }
-        .searchResultsPanel {
-            padding-left: 30px;
-            padding-right: 30px;
-        }
-
-    </ui:style>
     <g:LayoutPanel>
-        <g:layer top="0px" bottom="8px">
-            <g:LayoutPanel styleName="{style.mainPanel}">
-                <g:layer top='2px' height='26px' left="2px" right="2px">
-                    <g:LayoutPanel>
-                        <g:layer top="0px" height="20px" left="0px" width="250px">
-                            <fui:ClearableTextBox ui:field='filterTextBox'/>
-                        </g:layer>
-                        <g:layer top="0px" height="26px" left="250px" width="150px">
-                            <g:CheckBox ui:field="caseSensitiveChk"><ui:msg>Case sensitive</ui:msg></g:CheckBox>
-                        </g:layer>
-                        <g:layer top="0px" height="26px" left="400px" width="125px">
-                            <g:ListBox ui:field="searchFieldsSelect" selectedIndex="0">
-                                <g:item value="target"><ui:msg>search target</ui:msg></g:item>
-                                <g:item value="source"><ui:msg>search source</ui:msg></g:item>
-                                <g:item value="both"><ui:msg>search both</ui:msg></g:item>
-                            </g:ListBox>
-                        </g:layer>
-                        <g:layer top="0px" height="20px" left="550px" width="250px">
-                            <fui:ClearableTextBox ui:field='replacementTextBox'/>
-                        </g:layer>
-                        <g:layer top="0px" height="26px" left="825px" width="200px">
-                            <g:Button ui:field='replaceAllButton'><ui:msg>Replace All Selected</ui:msg></g:Button>
-                        </g:layer>
-                        <g:layer top="0px" height="26px" left="1050px" right="0px">
-                            <g:Label ui:field="testLabel"></g:Label>
-                        </g:layer>
-                    </g:LayoutPanel>
-                </g:layer>
-                <g:layer top='50px' bottom="2px">
-                    <g:ScrollPanel>
-                        <g:VerticalPanel ui:field='searchResultsPanel' width="100%" styleName="{style.searchResultsPanel}">
-                        </g:VerticalPanel>
-                    </g:ScrollPanel>
-                </g:layer>
-            </g:LayoutPanel>
+        <g:layer top='0px' height='64px' left="0px" right="0px">
+            <g:HorizontalPanel verticalAlignment='ALIGN_MIDDLE' width="100%" height="100%" styleName='projectWideSearchPanel' >
+                <g:InlineLabel styleName='projectWideSearchBoxLabel' ><ui:msg>Search:</ui:msg></g:InlineLabel>
+                <g:TextBox ui:field='filterTextBox' styleName='projectWideSearchBox' />
+                <g:VerticalPanel>
+                    <g:CheckBox ui:field="caseSensitiveChk"><ui:msg>Case sensitive</ui:msg></g:CheckBox>
+                    <g:ListBox ui:field="searchFieldsSelect" selectedIndex="0">
+                        <g:item value="target"><ui:msg>search target</ui:msg></g:item>
+                        <g:item value="source"><ui:msg>search source</ui:msg></g:item>
+                        <g:item value="both"><ui:msg>search both</ui:msg></g:item>
+                    </g:ListBox>
+                </g:VerticalPanel>
+                <g:cell width="100%" >
+                    <g:InlineLabel ui:field="searchResponseLabel" styleName='projectWideSearchReportLabel' ></g:InlineLabel>
+                </g:cell>
+            </g:HorizontalPanel>
+        </g:layer>
+        <g:layer top='64px' bottom="80px">
+            <g:ScrollPanel styleName='projectWideSearchResultsPanel' >
+                <g:VerticalPanel ui:field='searchResultsPanel' width="100%" />
+            </g:ScrollPanel>
+        </g:layer>
+        <g:layer bottom='0px' height='80px' left="0px" right="0px">
+            <g:FlowPanel styleName='projectWideReplacementPanel' >
+                <g:InlineLabel styleName='projectWideReplacementBoxLabel' ><ui:msg>Replace with:</ui:msg></g:InlineLabel>
+                <g:TextBox ui:field='replacementTextBox' styleName='projectWideReplacementBox' />
+                <g:Button ui:field='replaceAllButton' styleName='projectWideReplacementButton' >
+                    <ui:msg>Replace All Selected</ui:msg>
+                </g:Button>
+                <g:InlineLabel ui:field='selectAllLink' styleName='linkLabel' ><ui:msg>select all</ui:msg></g:InlineLabel>
+                <g:InlineLabel ui:field='replaceAllFeedbackLabel' styleName='projectWideReplaceFeedbackLabel' />
+                <g:InlineLabel ui:field='replaceAllUndoLabel' styleName='linkLabel' visible="false">
+                    <ui:msg>undo</ui:msg>
+                </g:InlineLabel>
+            </g:FlowPanel>
         </g:layer>
     </g:LayoutPanel>
 

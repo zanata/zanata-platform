@@ -131,4 +131,47 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("has joined workspace")
    String hasJoinedWorkspace();
 
+   @DefaultMessage("Search found results in {0} documents")
+   @AlternateMessage({ "one", "Search found results in 1 document" })
+   String searchFoundResultsInDocuments(@PluralCount int numDocs);
+
+   @DefaultMessage("Search failed")
+   String searchFailed();
+
+   @DefaultMessage("Replaced \"{0}\" with \"{1}\" in {2} text flows")
+   @AlternateMessage({ "one", "Replaced \"{0}\" with \"{1}\" in 1 text flow" })
+   String replacedTextInMultipleTextFlows(String searchText, String replacement, @PluralCount int numFlows);
+
+   @DefaultMessage("Successfully replaced text")
+   String replacedTextSuccess();
+
+   @DefaultMessage("View in editor")
+   String viewDocInEditor();
+
+   @DefaultMessage("Show this document in editor view")
+   String viewDocInEditorDetailed();
+
+   @DefaultMessage("Index")
+   String rowIndex();
+
+   @DefaultMessage("Source")
+   String source();
+
+   @DefaultMessage("Target")
+   String target();
+
+   @DefaultMessage("Actions")
+   String actions();
+
+   @DefaultMessage("Replace text failed")
+   String replaceTextFailure();
+
+   @DefaultMessage("Undoing...")
+   String undoInProgress();
+
+   @DefaultMessage("Undo replacement failed")
+   String undoReplacementFailure();
+
+   @DefaultMessage("Undo successful")
+   String undoSuccess();
 }

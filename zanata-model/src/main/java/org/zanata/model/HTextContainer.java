@@ -67,7 +67,6 @@ abstract class HTextContainer implements HasContents, Serializable
     * As of release 1.6, replaced by {@link #getContents()}
     * @return
     */
-   @Override
    @Deprecated
    @Transient
    public String getContent()

@@ -98,8 +98,9 @@ public class ResourceUtils
    private static final String CONTENT_TYPE_HDR = HeaderFields.KEY_ContentType;
    private static final String PLURAL_FORMS_HDR = "Plural-Forms";
 
-   private final static Pattern NPLURALS_TAG_PATTERN = Pattern.compile("nplurals=");
-   private final static Pattern NPLURALS_PATTERN = Pattern.compile("nplurals=[0-9]+");
+   private static final Pattern NPLURALS_TAG_PATTERN = Pattern.compile("nplurals=");
+   private static final Pattern NPLURALS_PATTERN = Pattern.compile("nplurals=[0-9]+");
+   private static final String PLURALS_FILE = "pluralforms.properties";
 
    private static final Log log = Logging.getLog(ResourceUtils.class);
 
@@ -115,7 +116,7 @@ public class ResourceUtils
          if (pluralForms == null)
          {
             pluralForms = new Properties();
-            pluralForms.load(this.getClass().getClassLoader().getResourceAsStream("pluralforms.properties"));
+            pluralForms.load(this.getClass().getClassLoader().getResourceAsStream(PLURALS_FILE));
          }
       }
       catch (IOException e)
@@ -277,10 +278,6 @@ public class ResourceUtils
       {
          to.setState(from.getState());
          changed = true;
-      }
-      if (changed)
-      {
-         to.setVersionNum(to.getVersionNum() + 1);
       }
       return changed;
    }
@@ -1074,7 +1071,11 @@ public class ResourceUtils
          {
             pluralForms = getPluralForms(targetLocale);
          }
-
+         if (pluralForms == null)
+         {
+            log.error("No plural forms for locale {0} found in {1}", targetLocale, PLURALS_FILE);
+            throw new RuntimeException("No plural forms found; contact admin. Locale: " + targetLocale);
+         }
          Matcher nPluralsMatcher = NPLURALS_PATTERN.matcher(pluralForms);
          String nPluralsString = "";
          while (nPluralsMatcher.find())
