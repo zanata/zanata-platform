@@ -49,7 +49,6 @@ import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
@@ -59,15 +58,12 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
-import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
-import org.zanata.webtrans.shared.rpc.TransUnitEditResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
