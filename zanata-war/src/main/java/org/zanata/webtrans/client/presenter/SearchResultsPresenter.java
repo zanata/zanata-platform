@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -39,6 +40,7 @@ import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
@@ -58,6 +60,7 @@ import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
@@ -77,7 +80,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    public interface Display extends WidgetDisplay
    {
-      HasText getTestLabel();
+      HasText getSearchResponseLabel();
 
       /**
        * Set the string that will be highlighted in target content.
@@ -99,11 +102,17 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
       HasClickHandlers getReplaceAllButton();
 
+      HasClickHandlers getSelectAllButton();
+
       void clearAll();
 
-      HasClickHandlers addDocumentLabel(String docName);
+      HandlerRegistration setReplacementMessage(String message, ClickHandler undoButtonHandler);
 
-      HasData<TransUnitReplaceInfo> addTUTable(Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate, SelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler);
+      void clearReplacementMessage();
+
+      //      HasClickHandlers addDocumentLabel(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ValueChangeHandler<Boolean> selectAllHandler);
+
+      HasData<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate, SelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler);
    }
 
    private final CachingDispatchAsync dispatcher;
@@ -131,10 +140,13 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     */
    private HistoryToken currentHistoryState = null;
 
+   private final WebTransMessages messages;
+
    @Inject
-   public SearchResultsPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, History history)
+   public SearchResultsPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, History history, final WebTransMessages webTransMessages)
    {
       super(display, eventBus);
+      messages = webTransMessages;
       this.history = history;
       this.dispatcher = dispatcher;
    }
@@ -237,6 +249,26 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
+      registerHandler(display.getSelectAllButton().addClickHandler(new ClickHandler()
+      {
+
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            for (Entry<Long, ListDataProvider<TransUnitReplaceInfo>> en : documentDataProviders.entrySet())
+            {
+               MultiSelectionModel<TransUnitReplaceInfo> selectionModel = documentSelectionModels.get(en.getKey());
+               if (selectionModel != null)
+               {
+                  for (TransUnitReplaceInfo tu : en.getValue().getList())
+                  {
+                     selectionModel.setSelected(tu, true);
+                  }
+               }
+            }
+         }
+      }));
+
       history.addValueChangeHandler(new ValueChangeHandler<String>()
       {
 
@@ -325,11 +357,19 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    }
 
-   private void showDocInEditor(String doc)
+   private void showDocInEditor(String doc, boolean runSearch)
    {
       HistoryToken token = HistoryToken.fromTokenString(history.getToken());
       token.setDocumentPath(doc);
       token.setView(MainView.Editor);
+      if (runSearch)
+      {
+         token.setSearchText(token.getProjectSearchText());
+      }
+      else
+      {
+         token.setSearchText("");
+      }
       history.newItem(token.toTokenString());
    }
 
@@ -345,21 +385,22 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    private AsyncCallback<GetProjectTransUnitListsResult> buildProjectSearchCallback()
    {
-      return new AsyncCallback<GetProjectTransUnitListsResult>() {
+      return new AsyncCallback<GetProjectTransUnitListsResult>()
+      {
 
          @Override
          public void onFailure(Throwable caught)
          {
             Log.error("[SearchResultsPresenter] failed project-wide search request: " + caught.getMessage());
-            eventBus.fireEvent(new NotificationEvent(Severity.Error, "Project-wide search failed"));
+            eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.searchFailed()));
             display.clearAll();
-            display.getTestLabel().setText("Project TU search failed");
+            display.getSearchResponseLabel().setText(messages.searchFailed());
          }
 
          @Override
          public void onSuccess(GetProjectTransUnitListsResult result)
          {
-            display.getTestLabel().setText("Project TU search returned documents: " + result.getDocumentIds().size());
+            display.getSearchResponseLabel().setText(messages.searchFoundResultsInDocuments(result.getDocumentIds().size()));
 
             //TODO extract clearAllData function for these 3 lines
             documentDataProviders.clear();
@@ -368,22 +409,30 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             for (Long docId : result.getDocumentIds())
             {
                final String doc = result.getDocPath(docId);
-               HasClickHandlers docLabel = display.addDocumentLabel(doc);
-               docLabel.addClickHandler(new ClickHandler() {
-
+               ClickHandler showDocClickHandler = new ClickHandler()
+               {
                   @Override
                   public void onClick(ClickEvent event)
                   {
-                     showDocInEditor(doc);
+                     showDocInEditor(doc, false);
                   }
+               };
 
-               });
+               ClickHandler searchDocClickHandler = new ClickHandler()
+               {
+                  @Override
+                  public void onClick(ClickEvent event)
+                  {
+                     showDocInEditor(doc, true);
+                  }
+               };
 
                final MultiSelectionModel<TransUnitReplaceInfo> selectionModel = new MultiSelectionModel<TransUnitReplaceInfo>();
+
                final ListDataProvider<TransUnitReplaceInfo> dataProvider = new ListDataProvider<TransUnitReplaceInfo>();
 
                // TODO set selected value for header based on selection of rows?
-               HasData<TransUnitReplaceInfo> table = display.addTUTable(replaceButtonDelegate, undoButtonDelegate, selectionModel, new ValueChangeHandler<Boolean>()
+               HasData<TransUnitReplaceInfo> table = display.addDocument(doc, showDocClickHandler, searchDocClickHandler, replaceButtonDelegate, undoButtonDelegate, selectionModel, new ValueChangeHandler<Boolean>()
                {
 
                   @Override
@@ -438,7 +487,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void execute(TransUnitReplaceInfo info)
          {
-            eventBus.fireEvent(new NotificationEvent(Severity.Info, "Undoing..."));
+            eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoInProgress()));
             // TODO extract this into a separate method to re-use for bulk revert
             RevertTransUnitUpdates action = new RevertTransUnitUpdates(info.getReplaceInfo());
             dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>()
@@ -447,13 +496,13 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                @Override
                public void onFailure(Throwable caught)
                {
-                  eventBus.fireEvent(new NotificationEvent(Severity.Error, "Undo replacement failed"));
+                  eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.undoReplacementFailure()));
                }
 
                @Override
                public void onSuccess(UpdateTransUnitResult result)
                {
-                  eventBus.fireEvent(new NotificationEvent(Severity.Info, "Undo successful"));
+                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoSuccess()));
                   // TODO update model with new values
                }
             });
@@ -467,30 +516,33 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private void fireReplaceTextEvent(List<TransUnit> toReplace)
    {
       // TODO set info to replacing... before calling this event
-      String searchText = currentHistoryState.getProjectSearchText();
-      String replacement = currentHistoryState.getProjectSearchReplacement();
+      final String searchText = currentHistoryState.getProjectSearchText();
+      final String replacement = currentHistoryState.getProjectSearchReplacement();
       boolean caseSensitive = currentHistoryState.getProjectSearchCaseSensitive();
       ReplaceText action = new ReplaceText(toReplace, searchText, replacement, caseSensitive);
       dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>()
       {
 
+         private HandlerRegistration undoHandler;
+
          @Override
          public void onFailure(Throwable e)
          {
             Log.error("[SearchResultsPresenter] Replace text failure " + e, e);
-            // TODO use localised string
-            eventBus.fireEvent(new NotificationEvent(Severity.Error, "Replace text failed"));
+            eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.replaceTextFailure()));
             // TODO consider whether possible/desired to change TU state from 'replacing'
          }
 
          @Override
-         public void onSuccess(UpdateTransUnitResult result)
+         public void onSuccess(final UpdateTransUnitResult result)
          {
+            int successes = 0;
             Set<Long> updatedDocs = new HashSet<Long>();
             for (TransUnitUpdateInfo updateInfo : result.getUpdateInfoList())
             {
                if (updateInfo.isSuccess())
                {
+                  successes++;
                   TransUnitReplaceInfo replaceInfo = getReplaceInfoForUpdatedTU(updateInfo);
                   if (replaceInfo != null)
                   {
@@ -517,8 +569,41 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                }
             }
 
-            // TODO use localised string
-            eventBus.fireEvent(new NotificationEvent(Severity.Info, "Successfully replaced text"));
+            eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.replacedTextSuccess()));
+
+            String message = messages.replacedTextInMultipleTextFlows(searchText, replacement, successes);
+            undoHandler = display.setReplacementMessage(message, new ClickHandler()
+            {
+
+               @Override
+               public void onClick(ClickEvent event)
+               {
+                  undoHandler.removeHandler();
+                  display.clearReplacementMessage();
+
+                  RevertTransUnitUpdates action = new RevertTransUnitUpdates();
+                  for (TransUnitUpdateInfo info : result.getUpdateInfoList())
+                  {
+                     action.addUpdateToRevert(info);
+                  }
+                  dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>()
+                  {
+
+                     @Override
+                     public void onFailure(Throwable caught)
+                     {
+                        eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.undoReplacementFailure()));
+                     }
+
+                     @Override
+                     public void onSuccess(UpdateTransUnitResult result)
+                     {
+                        eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoSuccess()));
+                        // TODO update model with new values
+                     }
+                  });
+               }
+            });
          }
       });
    }

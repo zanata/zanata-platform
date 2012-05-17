@@ -20,12 +20,16 @@
  */
 package org.zanata.action;
 
+import java.io.InputStream;
+import java.util.List;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.StatusMessage.Severity;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
@@ -41,18 +45,11 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.extensions.ExtensionType;
 import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
-
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.List;
-
-import static org.jboss.seam.international.StatusMessage.Severity;
 
 @Name("projectIterationFilesAction")
 @Scope(ScopeType.PAGE)
@@ -138,21 +135,21 @@ public class ProjectIterationFilesAction
                this.translationFileUpload.getFileName());
 
          // translate it
-         Collection<TextFlowTarget> resourcesNotFound =
+         List<String> warnings =
             this.translationServiceImpl.translateAllInDoc(this.projectSlug, this.iterationSlug, this.translationFileUpload.getDocId(),
                new LocaleId(this.localeId), transRes, new StringSet(ExtensionType.GetText.toString()),
                this.translationFileUpload.getMergeTranslations() ? MergeType.AUTO : MergeType.IMPORT);
 
          StringBuilder facesInfoMssg = new StringBuilder("File {0} uploaded.");
-         if( resourcesNotFound.size() > 0 )
+         if (!warnings.isEmpty())
          {
             facesInfoMssg.append(" There were some warnings, see below.");
          }
 
          FacesMessages.instance().add(Severity.INFO, facesInfoMssg.toString(), this.translationFileUpload.getFileName());
-         for( TextFlowTarget nf : resourcesNotFound )
+         for (String warning : warnings)
          {
-            FacesMessages.instance().add(Severity.WARN, "Could not find text flow for message: {0}", nf.getContents());
+            FacesMessages.instance().add(Severity.WARN, warning);
          }
       }
       catch (ZanataServiceException zex)

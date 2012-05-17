@@ -37,7 +37,7 @@ public class RevertTransUnitUpdates extends AbstractWorkspaceAction<UpdateTransU
 
    private List<TransUnitUpdateInfo> updatesToRevert;
 
-   protected RevertTransUnitUpdates()
+   public RevertTransUnitUpdates()
    {
       updatesToRevert = new ArrayList<TransUnitUpdateInfo>();
    }
