@@ -226,7 +226,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          {
             for (ToggleEditor editor : currentEditors)
             {
-               editor.removeTranslator(person.getName(), sessionId);
+               editor.removeTranslator(person.getName(), sessionService.getColor(sessionId));
             }
          }
       }

@@ -13,6 +13,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.gen2.logging.shared.Log;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -386,16 +387,29 @@ public class Editor extends Composite implements ToggleEditor
    }
 
    @Override
-   public void removeTranslator(String name, String sessionId)
+   public void removeTranslator(String name, String color)
    {
       for (int i = 0; i < translatorList.getWidgetCount(); i++)
       {
          Label translatorLabel = (Label) translatorList.getWidget(i);
 
-         if (translatorLabel.getText().equals(name) && translatorLabel.getTitle().equals(sessionId))
+         if (translatorLabel.getText().equals(name) && removeFormat(translatorLabel.getElement().getStyle().getProperty("backgroundColor")).equals(removeFormat(color)))
          {
             translatorList.remove(i);
          }
       }
+   }
+
+   /**
+    * Color string return from userSessionService rgb(xx,xx,xx), Color string
+    * return from browser is formatted rgb(xx, xx, xx). Method needed to
+    * unformat all color
+    * 
+    * @param color
+    * @return
+    */
+   private String removeFormat(String color)
+   {
+      return color.replace(" ", "");
    }
 }

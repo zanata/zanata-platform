@@ -136,6 +136,6 @@ public class UserSessionService implements TransUnitEditEventHandler
       }
 
       CssColor randomColor = CssColor.make(rndRedColor, rndGreenColor, rndBlueColor);
-      return randomColor.toString();
+      return randomColor.value();
    }
 }
