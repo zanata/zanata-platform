@@ -5,7 +5,7 @@
 
 	<g:LayoutPanel>
 		<g:layer top="0px" height="20px" left="1px" right="3px">
-			<fui:ClearableTextBox ui:field="filterTextBox" />
+			<g:TextBox ui:field="filterTextBox" styleName='transFilterTextBox' />
 		</g:layer>
 	</g:LayoutPanel>
 	

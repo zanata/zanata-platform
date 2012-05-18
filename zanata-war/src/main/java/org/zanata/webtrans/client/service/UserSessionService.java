@@ -62,7 +62,6 @@ public class UserSessionService implements TransUnitEditEventHandler
    {
       if (userSessionMap.containsKey(person) && selectedTransUnit != null)
       {
-         Log.info("======updateTranslatorStatus:" + person.getName() + ":" + selectedTransUnit.getSources());
          userSessionMap.get(person).setSelectedTransUnit(selectedTransUnit);
       }
    }

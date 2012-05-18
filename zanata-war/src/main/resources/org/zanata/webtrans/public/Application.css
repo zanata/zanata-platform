@@ -443,6 +443,22 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	width: 99%;
 }
 
+.transFilterTextBox
+{
+	margin: 0px;
+	font-size: 1.15em;
+	border: 2px solid lightgrey;
+	border-radius: 6px;
+	-moz-border-radius: 6px;
+	padding-right: 4px;
+}
+
+.transFilterTextBoxEmpty
+{
+	color: grey;
+	font-style: italic;
+}
+
 /* Search-replace page
  * TODO arrange for these to share styles with editor table
  */

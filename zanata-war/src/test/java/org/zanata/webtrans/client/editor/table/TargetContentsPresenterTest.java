@@ -47,6 +47,7 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
+import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -116,6 +117,8 @@ public class TargetContentsPresenterTest
       verify(eventBus).addHandler(InsertStringInEditorEvent.getType(), presenter);
       verify(eventBus).addHandler(CopyDataToEditorEvent.getType(), presenter);
       verify(eventBus).addHandler(TransUnitEditEvent.getType(), presenter);
+      verify(eventBus).addHandler(TransUnitEditEvent.getType(), presenter);
+      verify(eventBus).addHandler(EnableModalNavigationEvent.getType(), presenter);
 
       presenter.setCellEditor(cellEditor);
 

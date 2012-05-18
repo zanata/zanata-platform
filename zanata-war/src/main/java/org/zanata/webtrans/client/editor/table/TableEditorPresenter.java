@@ -34,6 +34,7 @@ import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
+import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.FindMessageEvent;
@@ -214,7 +215,18 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       display.getTableModel().clearCache();
       display.getTableModel().setRowCount(TableModel.UNKNOWN_ROW_COUNT);
       display.gotoPage(0, true);
-      initialiseTransUnitsNavigation();
+
+      // modal navigation disabled if there's findMessage
+      if (findMessage == null || findMessage.isEmpty())
+      {
+         initialiseTransUnitsNavigation();
+         eventBus.fireEvent(new EnableModalNavigationEvent(true));
+      }
+      else
+      {
+         eventBus.fireEvent(new EnableModalNavigationEvent(false));
+      }
+
    }
 
    private void initialiseTransUnitsNavigation()
@@ -897,22 +909,12 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             sourceContentsPresenter.setSelectedSource(display.getSelectedRowNumber());
             if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
             {
-               TransUnitEditAction transUnitEditAction;
-               if (selectedTransUnit != null)
-               {
-                  transUnitEditAction = new TransUnitEditAction(identity.getPerson(), transUnit, TransUnit.Builder.from(selectedTransUnit).build());
-               }
-               else
-               {
-                  transUnitEditAction = new TransUnitEditAction(identity.getPerson(), transUnit, null);
-               }
-
                selectedTransUnit = transUnit;
                Log.info("SelectedTransUnit: " + selectedTransUnit.getId());
                // Clean the cache when we click the new entry
                eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
                display.getTargetCellEditor().savePendingChange(true);
-               dispatcher.execute(transUnitEditAction, new AsyncCallback<TransUnitEditResult>()
+               dispatcher.execute(new TransUnitEditAction(identity.getPerson(), selectedTransUnit), new AsyncCallback<TransUnitEditResult>()
                {
                   @Override
                   public void onFailure(Throwable caught)

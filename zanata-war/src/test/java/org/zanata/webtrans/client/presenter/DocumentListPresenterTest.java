@@ -117,6 +117,7 @@ public class DocumentListPresenterTest
 
    private Capture<Integer> capturedPageSize;
    private Capture<String> capturedHistoryTokenString;
+   private Capture<HistoryToken> capturedHistoryToken;
 
    @BeforeClass
    public void createMocks()
@@ -136,12 +137,14 @@ public class DocumentListPresenterTest
       mockWorkspaceContext = createMock(WorkspaceContext.class);
 
       capturedCaseSensitiveCheckboxChangeHandler = new Capture<ValueChangeHandler<Boolean>>();
+      capturedHistoryToken = new Capture<HistoryToken>();
    }
 
    @BeforeMethod
    public void resetMocks()
    {
       capturedCaseSensitiveCheckboxChangeHandler.reset();
+      capturedHistoryToken.reset();
    }
 
    private DocumentListPresenter newDocListPresenter()
@@ -448,7 +451,7 @@ public class DocumentListPresenterTest
       capturedDocumentSelectionHandler.getValue().onSelection(new SelectionEvent<DocumentInfo>(docInfo)
       {
       });
-      HistoryToken newToken = HistoryToken.fromTokenString(capturedHistoryTokenString.getValue());
+      HistoryToken newToken = capturedHistoryToken.getValue();
       assertThat("path of selected document should be set in history token", newToken.getDocumentPath(), is("second/path/doc122"));
       assertThat("view in history token should change to individual document view when a new document is selected", newToken.getView(), is(MainView.Editor));
    }
@@ -717,11 +720,15 @@ public class DocumentListPresenterTest
       capturedHistoryValueChangeHandler = new Capture<ValueChangeHandler<String>>();
       expect(mockHistory.addValueChangeHandler(and(capture(capturedHistoryValueChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).anyTimes();
       expect(mockHistory.getToken()).andReturn(tokenToReturn).anyTimes();
+      expect(mockHistory.getHistoryToken()).andReturn(HistoryToken.fromTokenString(tokenToReturn)).anyTimes();
       mockHistory.fireCurrentHistoryState();
       expectLastCall().anyTimes();
 
       capturedHistoryTokenString = new Capture<String>();
       mockHistory.newItem(capture(capturedHistoryTokenString));
+      expectLastCall().anyTimes();
+
+      mockHistory.newItem(capture(capturedHistoryToken));
       expectLastCall().anyTimes();
    }
 

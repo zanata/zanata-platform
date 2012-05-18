@@ -24,7 +24,6 @@ import java.util.HashMap;
 
 import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.user.client.Random;
-import com.google.gwt.user.client.Window;
 import com.google.inject.Singleton;
 
 /**
@@ -36,9 +35,9 @@ import com.google.inject.Singleton;
 public class UserColorService
 {
    public static final HashMap<String, String> colorList = new HashMap<String, String>();
-   
-   private static final String[] HEX_LIST = new String[] { "0", "1", "2", "3", "4", "5", "6", "7",
-      "8", "9", "A", "B", "C", "D", "E", "F" };
+
+   private static final int DARK_BOUND = 100;
+   private static final int BRIGHT_BOUND = 400;
 
    public String getColor(String sessionId)
    {
@@ -50,7 +49,7 @@ public class UserColorService
 
       String color = null;
 
-      while (colorList.containsValue(color) || color == null || color.equals("#FFFFFF") || color.equals("#000000"))
+      while (colorList.containsValue(color) || color == null || color.equals("rgb(0,0,0)") || color.equals("rgb(255,255,255)"))
       {
          color = generateNewColor();
       }
@@ -62,35 +61,30 @@ public class UserColorService
 
    private String generateNewColor()
    {
-      String hex1 = getRandomHex();
-      String hex2 = getRandomHex();
-      String hex3 = getRandomHex();
-      String hex4 = getRandomHex();
-      String hex5 = getRandomHex();
-      String hex6 = getRandomHex();
-
-      String color = "#" + hex1 + hex2 + hex3 + hex4 + hex5 + hex6;
-      return color;
+      return generateByRGB();
    }
 
-   private static String getRandomHex()
+   private String generateByRGB()
    {
-      int randomNum = Random.nextInt(HEX_LIST.length);
-      String sHex = HEX_LIST[randomNum];
-      return sHex;
-   }
+      int total = 0;
 
-   public void test()
-   {
-      int rndRedColor = Random.nextInt(255);
-      int rndGreenColor = Random.nextInt(255);
-      int rndBlueColor = Random.nextInt(255);
+      int rndRedColor = 0;
+      int rndGreenColor = 0;
+      int rndBlueColor = 0;
+
+      while (total < DARK_BOUND || total > BRIGHT_BOUND)
+      {
+         rndRedColor = Random.nextInt(255);
+         rndGreenColor = Random.nextInt(255);
+         rndBlueColor = Random.nextInt(255);
+         total = rndRedColor + rndGreenColor + rndBlueColor;
+      }
 
       CssColor randomColor = CssColor.make(rndRedColor, rndGreenColor, rndBlueColor);
-      Window.alert(convertRGBtoHex(rndRedColor, rndGreenColor, rndBlueColor) + "");
+      return randomColor.toString();
    }
 
-   private int convertRGBtoHex(int r, int g, int b){
-      return r + 256 * g + 65536 * b;
-   }
+
+
+
 }

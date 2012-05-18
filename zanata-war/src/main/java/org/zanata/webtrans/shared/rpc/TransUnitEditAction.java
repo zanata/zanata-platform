@@ -10,20 +10,17 @@ public class TransUnitEditAction extends AbstractWorkspaceAction<TransUnitEditRe
 
    private Person person;
    private TransUnit selectedTransUnit;
-   private TransUnit prevSelectedTransUnit;
-
 
    @SuppressWarnings("unused")
    private TransUnitEditAction()
    {
-      this(null, null, null);
+      this(null, null);
    }
 
-   public TransUnitEditAction(Person person, TransUnit selectedTransUnit, TransUnit prevSelectedTransUnit)
+   public TransUnitEditAction(Person person, TransUnit selectedTransUnit)
    {
       this.person = person;
       this.selectedTransUnit = selectedTransUnit;
-      this.prevSelectedTransUnit = prevSelectedTransUnit;
    }
 
    public Person getPerson()
@@ -34,10 +31,5 @@ public class TransUnitEditAction extends AbstractWorkspaceAction<TransUnitEditRe
    public TransUnit getSelectedTransUnit()
    {
       return selectedTransUnit;
-   }
-
-   public TransUnit getPrevSelectedTransUnit()
-   {
-      return prevSelectedTransUnit;
    }
 }

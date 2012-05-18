@@ -280,6 +280,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       textFlowQuery.setParameter("id", documentId);
       textFlowQuery.setParameter("content", "%" + search + "%");
       textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getNavigationByTF-rev");
+
       textFlowTargetQuery = getSession().createQuery("select tft.textFlow.id from HTextFlowTarget tft where tft.textFlow.obsolete=0 and tft.textFlow.document.id = :id and lower(tft.content) like :content and tft.locale.localeId = :localeId order by tft.textFlow.pos");
       textFlowTargetQuery.setParameter("id", documentId);
       textFlowTargetQuery.setParameter("content", "%" + search + "%");
