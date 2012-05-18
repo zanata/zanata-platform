@@ -28,6 +28,7 @@ import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter.TransUnitReplaceInfo;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.ui.CellTableResources;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 
 import com.google.common.base.Predicate;
@@ -37,7 +38,6 @@ import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.ActionCell.Delegate;
 import com.google.gwt.cell.client.Cell.Context;
-import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -69,7 +69,10 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
+import com.google.gwt.view.client.DefaultSelectionEventManager.BlacklistEventTranslator;
+import com.google.gwt.view.client.DefaultSelectionEventManager.SelectAction;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.Inject;
@@ -109,6 +112,8 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    private String highlightString;
 
    private final WebTransMessages messages;
+
+   private static CellTableResources cellTableResources;
 
    @Inject
    public SearchResultsView(Resources resources, final WebTransMessages webTransMessages)
@@ -248,12 +253,11 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       searchResultsPanel.add(docHeading);
    }
 
-   private CellTable<TransUnitReplaceInfo> buildTable(Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate, SelectionModel<TransUnitReplaceInfo> selectionModel,
+   // TODO make this table its own class
+   private CellTable<TransUnitReplaceInfo> buildTable(Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate, final SelectionModel<TransUnitReplaceInfo> selectionModel,
          ValueChangeHandler<Boolean> selectAllHandler)
    {
       // create columns
-      CheckColumn checkboxColumn = new CheckColumn(selectionModel);
-
       TextColumn<TransUnitReplaceInfo> rowIndexColumn = new TextColumn<TransUnitReplaceInfo>()
       {
          @Override
@@ -332,11 +336,10 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
 
       ReplaceColumn replaceButtonColumn = new ReplaceColumn(replaceDelegate, undoDelegate);
 
-      CellTable<TransUnitReplaceInfo> table = new CellTable<TransUnitReplaceInfo>();
-      table.setSelectionModel(selectionModel, DefaultSelectionEventManager.<TransUnitReplaceInfo> createCheckboxManager());
+      CellTable<TransUnitReplaceInfo> table = new CellTable<TransUnitReplaceInfo>(15, getCellTableResources());
+
       table.setWidth("100%", true);
 
-      table.addColumn(checkboxColumn, "");
       table.addColumn(rowIndexColumn, messages.rowIndex());
       table.addColumn(sourceColumn, messages.source());
       table.addColumn(targetColumn, messages.target());
@@ -345,14 +348,34 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       sourceColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
       targetColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 
-      table.setColumnWidth(checkboxColumn, 50.0, Unit.PX);
       table.setColumnWidth(rowIndexColumn, 70.0, Unit.PX);
       table.setColumnWidth(sourceColumn, 50.0, Unit.PCT);
       table.setColumnWidth(targetColumn, 50.0, Unit.PCT);
       table.setColumnWidth(replaceButtonColumn, 100.0, Unit.PX);
 
+      BlacklistEventTranslator<TransUnitReplaceInfo> selectionEventTranslator = new BlacklistEventTranslator<TransUnitReplaceInfo>()
+      {
+         @Override
+         public SelectAction translateSelectionEvent(CellPreviewEvent<TransUnitReplaceInfo> event)
+         {
+            return isColumnBlacklisted(event.getColumn()) ? SelectAction.IGNORE : SelectAction.TOGGLE;
+         }
+      };
+      selectionEventTranslator.setColumnBlacklisted(table.getColumnIndex(replaceButtonColumn), true);
+      table.setSelectionModel(selectionModel, DefaultSelectionEventManager.<TransUnitReplaceInfo> createCustomManager(selectionEventTranslator));
+
       table.addStyleName("projectWideSearchResultsDocumentBody");
       return table;
+   }
+
+
+   private static CellTableResources getCellTableResources()
+   {
+      if (cellTableResources == null)
+      {
+         cellTableResources = GWT.create(CellTableResources.class);
+      }
+      return cellTableResources;
    }
 
    private static void appendContent(SafeHtmlBuilder sb, String content)
@@ -370,25 +393,6 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
             return !Strings.isNullOrEmpty(input);
          }
       });
-   }
-
-   private class CheckColumn extends Column<TransUnitReplaceInfo, Boolean>
-   {
-
-      private SelectionModel<TransUnitReplaceInfo> selectionModel;
-
-      public CheckColumn(SelectionModel<TransUnitReplaceInfo> selectionModel)
-      {
-         super(new CheckboxCell(true, false));
-         this.selectionModel = selectionModel;
-      }
-
-      @Override
-      public Boolean getValue(TransUnitReplaceInfo info)
-      {
-         return selectionModel.isSelected(info);
-      }
-
    }
 
    private class ReplaceColumn extends Column<TransUnitReplaceInfo, TransUnitReplaceInfo>
