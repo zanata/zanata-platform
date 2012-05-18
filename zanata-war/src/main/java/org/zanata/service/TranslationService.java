@@ -23,10 +23,15 @@ package org.zanata.service;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.exception.ConcurrentTranslationException;
+import org.zanata.exception.ZanataServiceException;
+import org.zanata.model.HLocale;
+import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
@@ -90,6 +95,19 @@ public interface TranslationService
     */
    List<String> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale, TranslationsResource translations, Set<String> extensions,
                                           MergeType mergeType);
+
+   /**
+    * Translate a single text flow.
+    * It will check whether the text flow can be translated for given locale.
+    * Then it will try to get or create text flow target and save the contents and state to it.
+    *
+    * @param hTextFlow the text flow to be translated
+    * @param hLocale The locale that the translations belong to
+    * @param contentsToSave translations
+    * @param state content state
+    * @return translated text flow target.
+    */
+   HTextFlowTarget translate(@Nonnull HTextFlow hTextFlow, @Nonnull HLocale hLocale, @Nonnull List<String> contentsToSave, ContentState state);
 
    public interface TranslationResult
    {

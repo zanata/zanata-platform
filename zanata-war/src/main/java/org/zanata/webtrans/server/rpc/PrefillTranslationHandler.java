@@ -65,7 +65,7 @@ import static org.zanata.service.SecurityService.TranslationAction.*;
 public class PrefillTranslationHandler extends AbstractActionHandler<PrefillTranslation, NoOpResult>
 {
 
-   @In("webtrans.gwt.GetTransMemoryHandler")
+   @In(value = "webtrans.gwt.GetTransMemoryHandler", create = true)
    private GetTransMemoryHandler getTransMemoryHandler;
    
    @In

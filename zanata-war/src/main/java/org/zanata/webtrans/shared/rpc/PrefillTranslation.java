@@ -31,13 +31,19 @@ import net.customware.gwt.dispatch.shared.AbstractSimpleResult;
  */
 public class PrefillTranslation extends AbstractWorkspaceAction<NoOpResult>
 {
-   private final int approvedThreshold;
+   private static final long serialVersionUID = 1L;
+   private int approvedThreshold;
    private DocumentId docId;
 
    public PrefillTranslation(int approvedThreshold, DocumentId docId)
    {
       this.approvedThreshold = approvedThreshold;
       this.docId = docId;
+   }
+
+   @SuppressWarnings("unused")
+   PrefillTranslation()
+   {
    }
 
    public int getApprovedThreshold()

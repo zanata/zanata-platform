@@ -21,14 +21,11 @@
 package org.zanata.webtrans.client.presenter;
 
 import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.history.History;
-import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.PrefillPopupPanelDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.PrefillTranslation;
-
 import com.google.common.base.Preconditions;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;

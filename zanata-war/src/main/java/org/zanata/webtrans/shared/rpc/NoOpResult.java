@@ -27,4 +27,5 @@ import net.customware.gwt.dispatch.shared.Result;
  */
 public class NoOpResult implements Result
 {
+   private static final long serialVersionUID = 1L;
 }

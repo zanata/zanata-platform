@@ -56,9 +56,12 @@ import org.zanata.model.HTextFlow;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Name("textFlowDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
+@Slf4j
 public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 {
    private static final Version LUCENE_VERSION = Version.LUCENE_29;
@@ -68,9 +71,6 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 
    @In
    LocaleDAO localeDAO;
-
-   @Logger
-   Log log;
 
    public TextFlowDAO()
    {
@@ -173,7 +173,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
          int queriesSize = multiQueryText.length;
          if (queriesSize > IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED.length)
          {
-            log.warn("query contains {0} fields, but we only index {1}", queriesSize, IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED.length);
+            log.warn("query contains {} fields, but we only index {}", queriesSize, IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED.length);
          }
          String[] searchFields = new String[queriesSize];
          System.arraycopy(IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED, 0, searchFields, 0, queriesSize);
@@ -281,7 +281,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 
    public List<HTextFlow> getAllUntranslatedTextFlowByDocId(Long documentId, HLocale hLocale)
    {
-      String query = "from HTextFlow tf where tf.obsolete = 0 and tf.document.id = :docId and not exists elements(tf.targets[:locale])";
+      String query = "from HTextFlow tf where tf.obsolete = 0 and tf.document.id = :docId and :locale not in indices(tf.targets) ";
       Query textFlowQuery = getSession().createQuery(query);
       textFlowQuery.setParameter("docId", documentId);
       textFlowQuery.setParameter("locale", hLocale);

@@ -11,8 +11,13 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
+import org.zanata.model.HLocale;
+import org.zanata.model.HTextFlow;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Test(groups = { "jpa-tests" })
+@Slf4j
 public class TextFlowDAOTest extends ZanataDbunitJpaTest
 {
 
@@ -21,6 +26,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
    @Override
    protected void prepareDBUnitOperations()
    {
+      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/TextFlowTestData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
@@ -46,6 +52,21 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       List<Long> fr = dao.findIdsWithTranslations(new LocaleId("fr"));
       System.out.println(fr);
       assertThat(fr.size(), is(0));
+   }
+
+   @Test
+   public void canGetAllUntranslatedTextFlowForADocument() {
+      HLocale deLocale = getEm().find(HLocale.class, 3L);
+      log.info("locale: {}", deLocale);
+      List<HTextFlow> all = dao.getTransUnitList(1L);
+      log.info("all text flow: {}", all);
+
+      List<HTextFlow> result = dao.getAllUntranslatedTextFlowByDocId(1L, deLocale);
+      assertThat(result.size(), is(0));
+
+      HLocale frLocale = getEm().find(HLocale.class, 6L);
+      result = dao.getAllUntranslatedTextFlowByDocId(1L, frLocale);
+      assertThat(result.size(), is(1));
    }
 
 }
