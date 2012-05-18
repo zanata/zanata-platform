@@ -31,7 +31,8 @@ import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 
-import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.canvas.dom.client.CssColor;
+import com.google.gwt.user.client.Random;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -44,11 +45,18 @@ public class UserSessionService implements TransUnitEditEventHandler
 {
    private final HashMap<Person, UserPanelSessionItem> userSessionMap;
 
+   public final HashMap<String, String> colorListMap;
+
+   private static final int DARK_BOUND = 100;
+   private static final int BRIGHT_BOUND = 400;
+
    @Inject
    public UserSessionService(final EventBus eventBus)
    {
       userSessionMap = new HashMap<Person, UserPanelSessionItem>();
       
+      colorListMap = new HashMap<String, String>();
+
       eventBus.addHandler(TransUnitEditEvent.getType(), this);
    }
 
@@ -89,5 +97,45 @@ public class UserSessionService implements TransUnitEditEventHandler
    public Map<Person, UserPanelSessionItem> getUserSessionMap()
    {
       return userSessionMap;
+   }
+
+   public String getColor(String sessionId)
+   {
+
+      if (colorListMap.containsKey(sessionId))
+      {
+         return colorListMap.get(sessionId);
+      }
+
+      String color = null;
+
+      while (colorListMap.containsValue(color) || color == null || color.equals("rgb(0,0,0)") || color.equals("rgb(255,255,255)"))
+      {
+         color = generateNewColor();
+      }
+
+      colorListMap.put(sessionId, color);
+
+      return color;
+   }
+
+   private String generateNewColor()
+   {
+      int total = 0;
+
+      int rndRedColor = 0;
+      int rndGreenColor = 0;
+      int rndBlueColor = 0;
+
+      while (total < DARK_BOUND || total > BRIGHT_BOUND)
+      {
+         rndRedColor = Random.nextInt(255) / 2;
+         rndGreenColor = Random.nextInt(255);
+         rndBlueColor = Random.nextInt(255);
+         total = rndRedColor + rndGreenColor + rndBlueColor;
+      }
+
+      CssColor randomColor = CssColor.make(rndRedColor, rndGreenColor, rndBlueColor);
+      return randomColor.toString();
    }
 }

@@ -11,7 +11,6 @@ import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.service.UserColorService;
 import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.HasManageUserPanel;
 import org.zanata.webtrans.shared.auth.Identity;
@@ -41,8 +40,6 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
    private final WebTransMessages messages;
 
-   private final UserColorService translatorColorService;
-
    private final UserSessionService sessionService;
 
    public interface Display extends WidgetDisplay
@@ -59,13 +56,12 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
    }
 
    @Inject
-   public WorkspaceUsersPresenter(final Display display, final EventBus eventBus, final Identity identity, final CachingDispatchAsync dispatcher, final WebTransMessages messages, final UserColorService translatorColorService, final UserSessionService sessionService)
+   public WorkspaceUsersPresenter(final Display display, final EventBus eventBus, final Identity identity, final CachingDispatchAsync dispatcher, final WebTransMessages messages, final UserSessionService sessionService)
    {
       super(display, eventBus);
       this.identity = identity;
       this.dispatcher = dispatcher;
       this.messages = messages;
-      this.translatorColorService = translatorColorService;
       this.sessionService = sessionService;
    }
 
@@ -122,12 +118,11 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
          item.getSessionList().remove(sessionId.toString());
          if (item.getSessionList().size() == 1)
          {
-            item.getPanel().updateTitle(sessionId.toString());
             item.getPanel().updateSessionLabel("");
             item.getPanel().clearColorList();
             for (String session : item.getSessionList())
             {
-               item.getPanel().addColor(translatorColorService.getColor(session));
+               item.getPanel().addColor(sessionService.getColor(session));
             }
          }
          else if (item.getSessionList().isEmpty())
@@ -143,12 +138,11 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
                title = Strings.isNullOrEmpty(title) ? session : title + " : " + session;
             }
 
-            item.getPanel().updateTitle(title);
             item.getPanel().updateSessionLabel("(" + item.getSessionList().size() + ")");
             item.getPanel().clearColorList();
             for (String session : item.getSessionList())
             {
-               item.getPanel().addColor(translatorColorService.getColor(session));
+               item.getPanel().addColor(sessionService.getColor(session));
             }
          }
 
@@ -174,7 +168,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
    public void addTranslator(SessionId sessionId, Person person, TransUnit selectedTransUnit)
    {
-      String color = translatorColorService.getColor(sessionId.getValue());
+      String color = sessionService.getColor(sessionId.getValue());
 
       UserPanelSessionItem item = sessionService.getUserPanel(person);
       if (item == null)
@@ -193,7 +187,6 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
          sessionTitle = Strings.isNullOrEmpty(sessionTitle) ? session : sessionTitle + " : " + session;
       }
 
-      item.getPanel().updateTitle(sessionTitle);
       if (item.getSessionList().size() > 1)
       {
          item.getPanel().updateSessionLabel("(" + item.getSessionList().size() + ")");

@@ -366,10 +366,9 @@ public class Editor extends Composite implements ToggleEditor
    }
 
    @Override
-   public void addTranslator(String name, String sessionId, String color)
+   public void addTranslator(String name, String color)
    {
       Label nameLabel = new Label(name);
-      nameLabel.setTitle(sessionId);
       nameLabel.setStyleName(style.userLabel());
 
       nameLabel.getElement().getStyle().setProperty("backgroundColor", color);

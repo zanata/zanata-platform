@@ -186,6 +186,11 @@ public class TransUnitNavigationService
       return curRowIndex;
    }
 
+   public int getCurrentRowNumber()
+   {
+      return curRowIndex - (curPage * pageSize);
+   }
+
    public int getNextRowIndex()
    {
       return curRowIndex + 1;

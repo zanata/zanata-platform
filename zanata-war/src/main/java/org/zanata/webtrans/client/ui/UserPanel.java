@@ -32,11 +32,6 @@ public class UserPanel extends HorizontalPanel implements HasManageUserPanel
       this.setCellWidth(userImage, "16px");
    }
 
-   @Override
-   public void updateTitle(String title)
-   {
-      personNameLabel.setTitle(title);
-   }
 
    @Override
    public void updateSessionLabel(String session)

@@ -59,7 +59,7 @@ import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.client.service.UserColorService;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
@@ -100,17 +100,17 @@ public class TargetContentsPresenterTest
    @Captor private ArgumentCaptor<NotificationEvent> notificationEventCaptor;
 
    @Mock
-   private UserColorService translatorColorService;
-
-   @Mock
    private UserSessionService sessionService;
+   
+   @Mock
+   private CachingDispatchAsync dispatcher;
 
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TargetContentsPresenter(displayProvider, identity, eventBus, tableEditorMessages, sourceContentPresenter, sessionService, configHolder, workspaceContext, scheduler, validationPanel, translatorColorService);
+      presenter = new TargetContentsPresenter(displayProvider, dispatcher, identity, eventBus, tableEditorMessages, sourceContentPresenter, sessionService, configHolder, workspaceContext, scheduler, validationPanel);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.getType(), presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
