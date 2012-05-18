@@ -20,59 +20,33 @@
  */
 package org.zanata.webtrans.client.view;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter.TransUnitReplaceInfo;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.ui.CellTableResources;
-import org.zanata.webtrans.client.ui.HighlightingLabel;
+import org.zanata.webtrans.client.ui.SearchResultsDocumentTable;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
-import com.google.common.collect.Collections2;
-import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.ActionCell.Delegate;
-import com.google.gwt.cell.client.Cell.Context;
-import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.CellPreviewEvent;
-import com.google.gwt.view.client.DefaultSelectionEventManager;
-import com.google.gwt.view.client.DefaultSelectionEventManager.BlacklistEventTranslator;
-import com.google.gwt.view.client.DefaultSelectionEventManager.SelectAction;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.Inject;
@@ -109,16 +83,11 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    @UiField
    ListBox searchFieldsSelect;
 
-   private String highlightString;
-
    private final WebTransMessages messages;
-
-   private static CellTableResources cellTableResources;
 
    @Inject
    public SearchResultsView(Resources resources, final WebTransMessages webTransMessages)
    {
-      highlightString = null;
       messages = webTransMessages;
       initWidget(uiBinder.createAndBindUi(this));
    }
@@ -132,7 +101,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    @Override
    public void setHighlightString(String highlightString)
    {
-      this.highlightString = highlightString;
+      SearchResultsDocumentTable.setHighlightString(highlightString);
    }
 
    @Override
@@ -216,13 +185,13 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
          ValueChangeHandler<Boolean> selectAllHandler)
    {
       addDocumentLabel(docName, viewDocClickHandler, searchDocClickHandler, selectAllHandler);
-      CellTable<TransUnitReplaceInfo> table = buildTable(replaceDelegate, undoDelegate, selectionModel, selectAllHandler);
+      SearchResultsDocumentTable table = new SearchResultsDocumentTable(replaceDelegate, undoDelegate, selectionModel, selectAllHandler, messages);
       searchResultsPanel.add(table);
       table.addStyleName("projectWideSearchResultsDocumentBody");
       return table;
    }
 
-   public void addDocumentLabel(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ValueChangeHandler<Boolean> selectAllHandler)
+   private void addDocumentLabel(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ValueChangeHandler<Boolean> selectAllHandler)
    {
       FlowPanel docHeading = new FlowPanel();
       docHeading.addStyleName("projectWideSearchResultsDocumentHeader");
@@ -251,219 +220,6 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       docHeading.add(showDocLabel);
 
       searchResultsPanel.add(docHeading);
-   }
-
-   // TODO make this table its own class
-   private CellTable<TransUnitReplaceInfo> buildTable(Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate, final SelectionModel<TransUnitReplaceInfo> selectionModel,
-         ValueChangeHandler<Boolean> selectAllHandler)
-   {
-      // create columns
-      TextColumn<TransUnitReplaceInfo> rowIndexColumn = new TextColumn<TransUnitReplaceInfo>()
-      {
-         @Override
-         public String getValue(TransUnitReplaceInfo tu)
-         {
-            return Integer.toString(tu.getTransUnit().getRowIndex() + 1);
-         }
-      };
-
-      Column<TransUnitReplaceInfo, List<String>> sourceColumn = new Column<TransUnitReplaceInfo, List<String>>(new AbstractCell<List<String>>()
-      {
-         @Override
-         public void render(Context context, List<String> contents, SafeHtmlBuilder sb)
-         {
-
-            for (String source : notEmptyContents(contents))
-            {
-               HighlightingLabel label = new HighlightingLabel(source);
-               if (!Strings.isNullOrEmpty(highlightString))
-               {
-                  label.highlightSearch(highlightString);
-               }
-               appendContent(sb, label.getElement().getString());
-            }
-         }
-      })
-      {
-         @Override
-         public List<String> getValue(TransUnitReplaceInfo info)
-         {
-            return info.getTransUnit().getSources();
-         }
-      };
-
-      Column<TransUnitReplaceInfo, List<String>> targetColumn = new Column<TransUnitReplaceInfo, List<String>>(new AbstractCell<List<String>>()
-      {
-         @Override
-         public void render(Context context, List<String> contents, SafeHtmlBuilder sb)
-         {
-
-            for (String target : notEmptyContents(contents))
-            {
-               // TODO switch to diff mode if this is a preview or there has been a replacement
-               HighlightingLabel label = new HighlightingLabel(target);
-               if (!Strings.isNullOrEmpty(highlightString))
-               {
-                  label.highlightSearch(highlightString);
-               }
-               appendContent(sb, label.getElement().getString());
-            }
-         }
-      })
-      {
-
-         @Override
-         public List<String> getValue(TransUnitReplaceInfo info)
-         {
-            return info.getTransUnit().getTargets();
-         }
-
-         @Override
-         public String getCellStyleNames(Context context, TransUnitReplaceInfo info)
-         {
-            String styleNames = Strings.nullToEmpty(super.getCellStyleNames(context, info));
-            if (info.getTransUnit().getStatus() == ContentState.Approved)
-            {
-               styleNames += " ApprovedStateDecoration";
-            }
-            else if (info.getTransUnit().getStatus() == ContentState.NeedReview)
-            {
-               styleNames += " FuzzyStateDecoration";
-            }
-            return styleNames;
-         }
-      };
-
-      ReplaceColumn replaceButtonColumn = new ReplaceColumn(replaceDelegate, undoDelegate);
-
-      CellTable<TransUnitReplaceInfo> table = new CellTable<TransUnitReplaceInfo>(15, getCellTableResources());
-
-      table.setWidth("100%", true);
-
-      table.addColumn(rowIndexColumn, messages.rowIndex());
-      table.addColumn(sourceColumn, messages.source());
-      table.addColumn(targetColumn, messages.target());
-      table.addColumn(replaceButtonColumn, messages.actions());
-
-      sourceColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
-      targetColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
-
-      table.setColumnWidth(rowIndexColumn, 70.0, Unit.PX);
-      table.setColumnWidth(sourceColumn, 50.0, Unit.PCT);
-      table.setColumnWidth(targetColumn, 50.0, Unit.PCT);
-      table.setColumnWidth(replaceButtonColumn, 100.0, Unit.PX);
-
-      BlacklistEventTranslator<TransUnitReplaceInfo> selectionEventTranslator = new BlacklistEventTranslator<TransUnitReplaceInfo>()
-      {
-         @Override
-         public SelectAction translateSelectionEvent(CellPreviewEvent<TransUnitReplaceInfo> event)
-         {
-            return isColumnBlacklisted(event.getColumn()) ? SelectAction.IGNORE : SelectAction.TOGGLE;
-         }
-      };
-      selectionEventTranslator.setColumnBlacklisted(table.getColumnIndex(replaceButtonColumn), true);
-      table.setSelectionModel(selectionModel, DefaultSelectionEventManager.<TransUnitReplaceInfo> createCustomManager(selectionEventTranslator));
-
-      table.addStyleName("projectWideSearchResultsDocumentBody");
-      return table;
-   }
-
-
-   private static CellTableResources getCellTableResources()
-   {
-      if (cellTableResources == null)
-      {
-         cellTableResources = GWT.create(CellTableResources.class);
-      }
-      return cellTableResources;
-   }
-
-   private static void appendContent(SafeHtmlBuilder sb, String content)
-   {
-      sb.appendHtmlConstant("<div class='translationContainer' style='border-bottom: dotted 1px grey;'>").appendHtmlConstant(content).appendHtmlConstant("</div>");
-   }
-
-   private static Collection<String> notEmptyContents(List<String> contents)
-   {
-      return Collections2.filter(contents, new Predicate<String>()
-      {
-         @Override
-         public boolean apply(String input)
-         {
-            return !Strings.isNullOrEmpty(input);
-         }
-      });
-   }
-
-   private class ReplaceColumn extends Column<TransUnitReplaceInfo, TransUnitReplaceInfo>
-   {
-
-      public ReplaceColumn(Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate)
-      {
-         super(new UndoableTransUnitActionCell("Replace", replaceDelegate, "Undo", undoDelegate));
-      }
-
-      @Override
-      public TransUnitReplaceInfo getValue(TransUnitReplaceInfo info)
-      {
-         return info;
-      }
-   }
-
-   private class UndoableTransUnitActionCell extends ActionCell<TransUnitReplaceInfo>
-   {
-      private Delegate<TransUnitReplaceInfo> undoDelegate;
-      private final SafeHtml undoHtml;
-
-      public UndoableTransUnitActionCell(SafeHtml actionLabel, Delegate<TransUnitReplaceInfo> actionDelegate, SafeHtml undoLabel, Delegate<TransUnitReplaceInfo> undoDelegate) {
-         super(actionLabel, actionDelegate);
-         this.undoDelegate = undoDelegate;
-         // TODO make this a 'replaced' message with undo button or link
-         this.undoHtml = new SafeHtmlBuilder().appendHtmlConstant(
-             "<button type=\"button\" tabindex=\"-1\">").append(undoLabel).appendHtmlConstant(
-             "</button>").toSafeHtml();
-      }
-
-      public UndoableTransUnitActionCell(String actionLabel, Delegate<TransUnitReplaceInfo> actionDelegate, String undoLabel, Delegate<TransUnitReplaceInfo> undoDelegate)
-      {
-         this(SafeHtmlUtils.fromString(actionLabel), actionDelegate, SafeHtmlUtils.fromString(undoLabel), undoDelegate);
-      }
-
-      @Override
-      public void render(com.google.gwt.cell.client.Cell.Context context, TransUnitReplaceInfo value, SafeHtmlBuilder sb)
-      {
-
-         if (value.isReplaceable())
-         {
-            // render default button
-            super.render(context, value, sb);
-         }
-         else if (value.isUndoable())
-         {
-            // render undo button
-            sb.append(undoHtml);
-         }
-         else
-         {
-            //assume processing
-            // TODO set to show "replacing..." or "processing..."
-         }
-
-      }
-
-      @Override
-      protected void onEnterKeyDown(Context context, Element parent, TransUnitReplaceInfo value, NativeEvent event, ValueUpdater<TransUnitReplaceInfo> valueUpdater) {
-         // FIXME see above
-         if (value.isReplaceable())
-         {
-            super.onEnterKeyDown(context, parent, value, event, valueUpdater);
-         }
-         else if (value.isUndoable())
-         {
-            undoDelegate.execute(value);
-         }
-         // else ignore (is processing)
-      };
    }
 
 }
