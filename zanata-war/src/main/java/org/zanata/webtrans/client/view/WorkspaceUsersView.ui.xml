@@ -5,12 +5,6 @@
     <ui:with field='resources' type="org.zanata.webtrans.client.resources.Resources"/>
 
     <ui:style>
-        .userListTable td 
-        {
-	       padding-top: 5px;
-	       padding-left: 5px;
-        }
-        
         .chatRoomScrollPanel 
         {
 			height:100%;
@@ -58,9 +52,9 @@
     </ui:style>
 
     <g:SplitLayoutPanel ui:field="mainPanel">
-        <g:west size="150" min-size="20">
+        <g:west size="350" min-size="30">
             <g:ScrollPanel styleName="{style.userListScrollPanel}">
-                <g:VerticalPanel ui:field='userListPanel' styleName="{style.userListTable}" width="100%" />
+                <g:VerticalPanel ui:field='userListPanel' styleName="userListTable" width="100%" />
             </g:ScrollPanel>
         </g:west>
         <g:center>
@@ -81,23 +75,6 @@
 		        	</g:HorizontalPanel>
 			</g:layer>
         	</g:LayoutPanel>
-<!--         	<g:VerticalPanel styleName="{style.chatSection}"> -->
-<!-- 		        <g:cell verticalAlignment="ALIGN_TOP"> -->
-<!-- 			        <g:ScrollPanel styleName="{style.chatRoomScrollPanel}"> -->
-<!-- 			        	<g:VerticalPanel ui:field="chatRoom" styleName="{style.chatRoom}"/> -->
-<!-- 			        </g:ScrollPanel> -->
-<!-- 		        </g:cell> -->
-<!-- 		        <g:cell verticalAlignment="ALIGN_BOTTOM" height="14px"> -->
-<!-- 		        	<g:HorizontalPanel width="100%" spacing="3"> -->
-<!-- 		        		<g:cell> -->
-<!-- 			        		<g:TextBox styleName="{style.chatInput}" ui:field="chatInput"/> -->
-<!-- 			        	</g:cell> -->
-<!-- 			        	<g:cell width="40px"> -->
-<!-- 							<g:PushButton addStyleNames="{style.sendButton}" ui:field="sendButton"/>	 -->
-<!-- 						</g:cell>	        	 -->
-<!-- 		        	</g:HorizontalPanel> -->
-<!-- 		        </g:cell> -->
-<!-- 	        </g:VerticalPanel> -->
         </g:center>
     </g:SplitLayoutPanel>
     

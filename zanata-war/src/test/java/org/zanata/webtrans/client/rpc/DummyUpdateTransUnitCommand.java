@@ -35,6 +35,7 @@ final class DummyUpdateTransUnitCommand implements Command
       TransUnit tu = TransUnit.Builder.newTransUnitBuilder()
             .setId(firstTu.getTransUnitId().getId())
             .setVerNum(firstTu.getBaseTranslationVersion() + 1)
+            .setResId("dummyRestId")
             .build();
       TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, new DocumentId(0), tu, 5, firstTu.getBaseTranslationVersion(), ContentState.NeedReview);
       UpdateTransUnitResult result = new UpdateTransUnitResult(updateInfo);

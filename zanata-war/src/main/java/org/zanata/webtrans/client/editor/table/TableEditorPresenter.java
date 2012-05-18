@@ -33,6 +33,8 @@ import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
+import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
+import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.FindMessageEvent;
@@ -45,6 +47,8 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.OpenEditorEvent;
 import org.zanata.webtrans.client.events.OpenEditorEventHandler;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
+import org.zanata.webtrans.client.events.TransUnitEditEvent;
+import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
@@ -56,6 +60,7 @@ import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.TransUnitNavigationService;
+import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationPanel;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
@@ -69,8 +74,6 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
-import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
-import org.zanata.webtrans.shared.rpc.TransUnitEditResult;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
@@ -148,6 +151,10 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       void ignoreStopProcessing();
 
       TransUnit getRowValue(int row);
+
+      void updateRowBorder(int row, String color);
+
+      void resetRowBorder(int row);
    }
 
    private DocumentId documentId;
@@ -166,7 +173,10 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    private final WorkspaceContext workspaceContext;
 
    private final SourceContentsPresenter sourceContentsPresenter;
-   private TargetContentsPresenter targetContentsPresenter;
+   private final TargetContentsPresenter targetContentsPresenter;
+
+   private final UserSessionService sessionService;
+
    private UserConfigHolder configHolder;
    private Scheduler scheduler;
 
@@ -175,7 +185,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    private final TransUnitNavigationService navigationService;
 
    @Inject
-   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourceContentsPresenter sourceContentsPresenter, TargetContentsPresenter targetContentsPresenter, UserConfigHolder configHolder, Scheduler scheduler, TransUnitNavigationService navigationService)
+   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourceContentsPresenter sourceContentsPresenter, final TargetContentsPresenter targetContentsPresenter, UserConfigHolder configHolder, Scheduler scheduler, TransUnitNavigationService navigationService, final UserSessionService sessionService)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
@@ -187,6 +197,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       this.configHolder = configHolder;
       this.scheduler = scheduler;
       this.navigationService = navigationService;
+      this.sessionService = sessionService;
+
    }
 
    /**
@@ -419,6 +431,66 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          public void onOpenEditor(OpenEditorEvent event)
          {
             tableModelHandler.gotoRowInCurrentPage(event.getRowNum(), true);
+         }
+      }));
+
+      registerHandler(eventBus.addHandler(TransUnitEditEvent.getType(), new TransUnitEditEventHandler()
+      {
+         @Override
+         public void onTransUnitEdit(TransUnitEditEvent event)
+         {
+            if (identity.getSessionId().getValue().equals(event.getSessionId().getValue()))
+            {
+               Integer prevRow = navigationService.getRowNumber(event.getPrevSelectedTransUnit(), display.getRowValues());
+               if (prevRow != null)
+               {
+                  display.resetRowBorder(prevRow);
+               }
+
+               Integer row = navigationService.getRowNumber(event.getSelectedTransUnit(), display.getRowValues());
+               if (row != null)
+               {
+                  display.updateRowBorder(row, sessionService.getColor(event.getSessionId().getValue()));
+               }
+            }
+            else
+            {
+               try
+               {
+               // check if the row is editing/selected by you, if yes, ignore,
+               // else as above
+               Integer prevRow = navigationService.getRowNumber(event.getPrevSelectedTransUnit(), display.getRowValues());
+               if (prevRow != null && navigationService.getCurrentRowNumber() != prevRow)
+               {
+                  display.resetRowBorder(prevRow);
+               }
+
+               Integer row = navigationService.getRowNumber(event.getSelectedTransUnit(), display.getRowValues());
+               if (row != null && navigationService.getCurrentRowNumber() != row)
+               {
+                  display.updateRowBorder(row, sessionService.getColor(event.getSessionId().getValue()));
+               }
+               }
+               catch (Exception e)
+               {
+                  e.printStackTrace();
+               }
+            }
+
+         }
+      }));
+
+      registerHandler(eventBus.addHandler(ExitWorkspaceEvent.getType(), new ExitWorkspaceEventHandler()
+      {
+         @Override
+         public void onExitWorkspace(ExitWorkspaceEvent event)
+         {
+            TransUnit tu = sessionService.getUserPanel(event.getPerson()).getSelectedTransUnit();
+            Integer row = navigationService.getRowNumber(tu, display.getRowValues());
+            if (row != null)
+            {
+               display.resetRowBorder(row);
+            }
          }
       }));
 
@@ -853,19 +925,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                // Clean the cache when we click the new entry
                eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
                display.getTargetCellEditor().savePendingChange(true);
-
-               dispatcher.execute(new TransUnitEditAction(identity.getPerson(), selectedTransUnit), new AsyncCallback<TransUnitEditResult>()
-               {
-                  @Override
-                  public void onFailure(Throwable caught)
-                  {
-                  }
-
-                  @Override
-                  public void onSuccess(TransUnitEditResult result)
-                  {
-                  }
-               });
             }
             display.gotoRow(display.getSelectedRowNumber(), andEdit);
 

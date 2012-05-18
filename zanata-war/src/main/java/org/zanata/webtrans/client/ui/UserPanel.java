@@ -4,12 +4,14 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 
-public class UserPanel extends HorizontalPanel implements HasManageUserSession
+public class UserPanel extends HorizontalPanel implements HasManageUserPanel
 {
+   private static final long serialVersionUID = 1L;
    private Image userImage;
    private Label personNameLabel;
    private Label sessionLabel;
    private String personName;
+   private HorizontalPanel colorContainer;
 
    public UserPanel(String personName, String imgUrl)
    {
@@ -19,24 +21,52 @@ public class UserPanel extends HorizontalPanel implements HasManageUserSession
       userImage = new Image(imgUrl);
       personNameLabel = new Label(personName);
       sessionLabel = new Label();
+      colorContainer = new HorizontalPanel();
+      colorContainer.setStylePrimaryName("colorContainer");
 
       this.add(userImage);
+      this.add(colorContainer);
       this.add(personNameLabel);
       this.add(sessionLabel);
 
       this.setCellWidth(userImage, "16px");
    }
 
-   @Override
-   public void updateTitle(String title)
-   {
-      personNameLabel.setTitle(title);
-   }
 
    @Override
    public void updateSessionLabel(String session)
    {
       sessionLabel.setText(session);
+   }
+
+   @Override
+   public void clearColorList()
+   {
+      colorContainer.clear();
+   }
+
+   private Label getColorLabel(String color)
+   {
+      Label colorLabel = new Label();
+      colorLabel.getElement().getStyle().setProperty("borderColor", color);
+      colorLabel.getElement().getStyle().setProperty("borderWidth", "1px");
+      colorLabel.getElement().getStyle().setProperty("borderStyle", "solid");
+      colorLabel.getElement().getStyle().setProperty("height", "16px");
+
+      return colorLabel;
+   }
+
+   @Override
+   public void addColor(String color)
+   {
+      colorContainer.add(getColorLabel(color));
+   }
+
+   @Override
+   public void setColor(String color)
+   {
+      colorContainer.clear();
+      colorContainer.add(getColorLabel(color));
    }
 
    @Override

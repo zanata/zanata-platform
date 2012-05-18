@@ -50,9 +50,11 @@ public class TransUnitEditHandler extends AbstractActionHandler<TransUnitEditAct
       ZanataIdentity.instance().checkLoggedIn();
 
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
-      workspace.updateUserSelection(action.getSessionId(), action.getSelectedTransUnit());
       // Send TranslatorStatusUpdate event to client
-      TransUnitEdit event = new TransUnitEdit(action.getSessionId(), action.getPerson(), action.getSelectedTransUnit());
+      TransUnitEdit event = new TransUnitEdit(action.getSessionId(), action.getPerson(), action.getSelectedTransUnit(), workspace.getUserSelection(action.getSessionId()));
+
+      workspace.updateUserSelection(action.getSessionId(), action.getSelectedTransUnit());
+
       workspace.publish(event);
 
       return new TransUnitEditResult();

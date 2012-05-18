@@ -123,6 +123,10 @@ public class TransUnitNavigationService
 
    public Integer getRowIndex(TransUnit tu, boolean isFiltering, List<TransUnit> rowValues)
    {
+      if (tu == null)
+      {
+         return null;
+      }
       if (!isFiltering)
       {
          return tu.getRowIndex();
@@ -144,6 +148,28 @@ public class TransUnitNavigationService
       return null;
    }
 
+   public Integer getRowNumber(TransUnit tu, List<TransUnit> rowValues)
+   {
+      if (tu == null)
+      {
+         return null;
+      }
+      else
+      {
+         TransUnitId transUnitId = tu.getId();
+         int n = 0;
+         for (TransUnit transUnit : rowValues)
+         {
+            if (transUnitId.equals(transUnit.getId()))
+            {
+               return n;
+            }
+            n++;
+         }
+      }
+      return null;
+   }
+
    public void updateCurrentPageAndRowIndex(int curPage, int selectedRow)
    {
       this.curPage = curPage;
@@ -158,6 +184,11 @@ public class TransUnitNavigationService
    public int getCurrentRowIndex()
    {
       return curRowIndex;
+   }
+
+   public int getCurrentRowNumber()
+   {
+      return curRowIndex - (curPage * pageSize);
    }
 
    public int getNextRowIndex()

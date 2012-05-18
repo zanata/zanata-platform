@@ -3,23 +3,23 @@ package org.zanata.webtrans.shared.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import org.zanata.webtrans.client.ui.HasManageUserSession;
+import org.zanata.webtrans.client.ui.HasManageUserPanel;
 
 public class UserPanelSessionItem implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
-   private HasManageUserSession panel;
+   private HasManageUserPanel panel;
    private ArrayList<String> sessionList;
    private TransUnit selectedTransUnit;
 
-   public UserPanelSessionItem(HasManageUserSession panel, ArrayList<String> sessionList)
+   public UserPanelSessionItem(HasManageUserPanel panel, ArrayList<String> sessionList)
    {
       this.panel = panel;
       this.sessionList = sessionList;
    }
 
-   public HasManageUserSession getPanel()
+   public HasManageUserPanel getPanel()
    {
       return panel;
    }

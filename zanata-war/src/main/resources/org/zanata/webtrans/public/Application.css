@@ -771,3 +771,13 @@ td.FuzzyStateDecoration div div pre, td.ApprovedStateDecoration div div pre
 	width:100%;
 	height:100%;	
 }
+
+.userListTable td 
+{
+	padding-top: 3px;
+	padding-left: 1px;
+}
+        
+.colorContainer td {
+	padding-top:0;
+}

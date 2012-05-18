@@ -47,4 +47,6 @@ public interface TranslationWorkspace
    WorkspaceContext getWorkspaceContext();
 
    void updateUserSelection(SessionId sessionId, TransUnit selectedTransUnit);
+
+   TransUnit getUserSelection(SessionId sessionId);
 }

@@ -11,7 +11,6 @@ public class TransUnitEditAction extends AbstractWorkspaceAction<TransUnitEditRe
    private Person person;
    private TransUnit selectedTransUnit;
 
-
    @SuppressWarnings("unused")
    private TransUnitEditAction()
    {

@@ -184,4 +184,15 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
       }
    }
 
+   @Override
+   public TransUnit getUserSelection(SessionId sessionId)
+   {
+      if (sessions.containsKey(sessionId))
+      {
+         return sessions.get(sessionId).getSelectedTransUnit();
+      }
+
+      return null;
+   }
+
 }

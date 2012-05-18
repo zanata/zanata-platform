@@ -13,12 +13,14 @@ public class TransUnitEditEvent extends GwtEvent<TransUnitEditEventHandler> impl
    private final SessionId sessionId;
    private final Person person;
    private final TransUnit selectedTransUnit;
+   private final TransUnit prevSelectedTransUnit;
 
    public TransUnitEditEvent(HasTransUnitEditData data)
    {
       sessionId = data.getSessionId();
       person = data.getPerson();
       selectedTransUnit = data.getSelectedTransUnit();
+      prevSelectedTransUnit = data.getPrevSelectedTransUnit();
    }
 
    /**
@@ -68,5 +70,11 @@ public class TransUnitEditEvent extends GwtEvent<TransUnitEditEventHandler> impl
    public TransUnit getSelectedTransUnit()
    {
       return selectedTransUnit;
+   }
+
+   @Override
+   public TransUnit getPrevSelectedTransUnit()
+   {
+      return prevSelectedTransUnit;
    }
 }

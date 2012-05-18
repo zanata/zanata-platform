@@ -57,10 +57,10 @@ import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
-import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
 import org.zanata.webtrans.shared.auth.Identity;
@@ -81,8 +81,6 @@ public class TargetContentsPresenterTest
    @Mock private EventBus eventBus;
    @Mock private TableEditorMessages tableEditorMessages;
    @Mock private SourceContentsPresenter sourceContentPresenter;
-   @Mock
-   private WorkspaceUsersPresenter workspaceUsersPresenter;
    @Mock private NavigationMessages navMessages;
    @Mock private WorkspaceContext workspaceContext;
    @Mock private Scheduler scheduler;
@@ -101,12 +99,18 @@ public class TargetContentsPresenterTest
    @Captor private ArgumentCaptor<RunValidationEvent> runValidationEventCaptor;
    @Captor private ArgumentCaptor<NotificationEvent> notificationEventCaptor;
 
+   @Mock
+   private UserSessionService sessionService;
+   
+   @Mock
+   private CachingDispatchAsync dispatcher;
+
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TargetContentsPresenter(displayProvider, identity, eventBus, tableEditorMessages, sourceContentPresenter, workspaceUsersPresenter, configHolder, workspaceContext, scheduler, validationPanel);
+      presenter = new TargetContentsPresenter(displayProvider, dispatcher, identity, eventBus, tableEditorMessages, sourceContentPresenter, sessionService, configHolder, workspaceContext, scheduler, validationPanel);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.getType(), presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
