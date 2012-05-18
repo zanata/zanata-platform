@@ -1490,6 +1490,12 @@
 			<artifactId>modify-column</artifactId>
 		</dependency>
 
+      <dependency>
+         <groupId>com.mattbertolini</groupId>
+         <artifactId>liquibase-slf4j</artifactId>
+         <version>1.0.0</version>
+      </dependency>
+
 		<!-- openid4java -->
 	    <dependency>
 	       <groupId>org.htmlparser</groupId>
