@@ -26,6 +26,8 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
+import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
+import org.zanata.webtrans.client.events.EnableModalNavigationEventHandler;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
@@ -133,6 +135,16 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
             display.setNavModeTooltip(configHolder.isButtonFuzzy(), configHolder.isButtonUntranslated());
          }
       }));
+
+      registerHandler(eventBus.addHandler(EnableModalNavigationEvent.getType(), new EnableModalNavigationEventHandler()
+      {
+         @Override
+         public void onEnable(EnableModalNavigationEvent event)
+         {
+            display.setModalNavVisible(event.isEnable());
+         }
+      }));
+
    }
 
    @Override

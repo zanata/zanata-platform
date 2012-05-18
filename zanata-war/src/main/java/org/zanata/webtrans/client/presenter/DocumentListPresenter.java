@@ -139,7 +139,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          public void onSelection(SelectionEvent<DocumentInfo> event)
          {
             // generate history token
-            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+            HistoryToken token = history.getHistoryToken();
 
             // prevent feedback loops between history and selection
             boolean isNewSelection;
@@ -158,7 +158,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
                currentDocument = event.getSelectedItem();
                token.setDocumentPath(event.getSelectedItem().getPath() + event.getSelectedItem().getName());
                token.setView(MainView.Editor);
-               history.newItem(token.toTokenString());
+               // don't carry searches over to the next document
+               token.setSearchText("");
+               history.newItem(token);
             }
          }
       }));

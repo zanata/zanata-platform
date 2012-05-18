@@ -27,8 +27,7 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter.TransUnitReplaceInfo;
 import org.zanata.webtrans.client.resources.Resources;
-import org.zanata.webtrans.client.resources.UiMessages;
-import org.zanata.webtrans.client.ui.ClearableTextBox;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 
 import com.google.common.base.Predicate;
@@ -44,12 +43,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -58,18 +55,18 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
@@ -94,11 +91,11 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    @UiField
    VerticalPanel searchResultsPanel;
 
-   @UiField(provided = true)
-   ClearableTextBox filterTextBox, replacementTextBox;
+   @UiField
+   TextBox filterTextBox, replacementTextBox;
 
    @UiField
-   Label testLabel;
+   InlineLabel searchResponseLabel, selectAllLink, replaceAllFeedbackLabel, replaceAllUndoLabel;
 
    @UiField
    CheckBox caseSensitiveChk;
@@ -111,13 +108,13 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
 
    private String highlightString;
 
-   @Inject
-   public SearchResultsView(Resources resources, UiMessages uiMessages)
-   {
-      filterTextBox = new ClearableTextBox(resources, uiMessages);
-      replacementTextBox = new ClearableTextBox(resources, uiMessages);
-      highlightString = null;
+   private final WebTransMessages messages;
 
+   @Inject
+   public SearchResultsView(Resources resources, final WebTransMessages webTransMessages)
+   {
+      highlightString = null;
+      messages = webTransMessages;
       initWidget(uiBinder.createAndBindUi(this));
    }
 
@@ -136,13 +133,13 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    @Override
    public HasValue<String> getFilterTextBox()
    {
-      return filterTextBox.getTextBox();
+      return filterTextBox;
    }
 
    @Override
    public HasValue<String> getReplacementTextBox()
    {
-      return replacementTextBox.getTextBox();
+      return replacementTextBox;
    }
 
    @Override
@@ -158,9 +155,15 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
-   public HasText getTestLabel()
+   public HasClickHandlers getSelectAllButton()
    {
-      return testLabel;
+      return selectAllLink;
+   }
+
+   @Override
+   public HasText getSearchResponseLabel()
+   {
+      return searchResponseLabel;
    }
 
    @Override
@@ -169,24 +172,80 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       searchResultsPanel.clear();
    }
 
-   public HasClickHandlers addDocumentLabel(String docName)
+   @Override
+   public HasChangeHandlers getSearchFieldSelector()
    {
-      Label docLabel = new Label(docName);
-      searchResultsPanel.add(docLabel);
-      docLabel.setTitle("View document in editor");
-      docLabel.addStyleName("SearchResultsDocumentTitle");
-      return docLabel;
+      return searchFieldsSelect;
    }
 
    @Override
-   public HasData<TransUnitReplaceInfo> addTUTable(Delegate<TransUnitReplaceInfo> replaceDelegate,
-                             Delegate<TransUnitReplaceInfo> undoDelegate,
-                             SelectionModel<TransUnitReplaceInfo> selectionModel,
-                             ValueChangeHandler<Boolean> selectAllHandler)
+   public String getSelectedSearchField()
    {
+      return searchFieldsSelect.getValue(searchFieldsSelect.getSelectedIndex());
+   }
+
+   @Override
+   public HandlerRegistration setReplacementMessage(String message, ClickHandler undoButtonHandler)
+   {
+      replaceAllFeedbackLabel.setText(message);
+      replaceAllFeedbackLabel.setVisible(true);
+
+      replaceAllUndoLabel.setVisible(true);
+      return replaceAllUndoLabel.addClickHandler(undoButtonHandler);
+   }
+
+   @Override
+   public void clearReplacementMessage()
+   {
+      replaceAllFeedbackLabel.setVisible(false);
+      replaceAllUndoLabel.setVisible(false);
+   }
+
+   @Override
+   public HasData<TransUnitReplaceInfo> addDocument(String docName,
+         ClickHandler viewDocClickHandler,
+         ClickHandler searchDocClickHandler,
+         Delegate<TransUnitReplaceInfo> replaceDelegate,
+         Delegate<TransUnitReplaceInfo> undoDelegate,
+         SelectionModel<TransUnitReplaceInfo> selectionModel,
+         ValueChangeHandler<Boolean> selectAllHandler)
+   {
+      addDocumentLabel(docName, viewDocClickHandler, searchDocClickHandler, selectAllHandler);
       CellTable<TransUnitReplaceInfo> table = buildTable(replaceDelegate, undoDelegate, selectionModel, selectAllHandler);
       searchResultsPanel.add(table);
+      table.addStyleName("projectWideSearchResultsDocumentBody");
       return table;
+   }
+
+   public void addDocumentLabel(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ValueChangeHandler<Boolean> selectAllHandler)
+   {
+      FlowPanel docHeading = new FlowPanel();
+      docHeading.addStyleName("projectWideSearchResultsDocumentHeader");
+
+      InlineLabel docLabel = new InlineLabel(docName);
+      docLabel.addStyleName("projectWideSearchResultsDocumentTitle");
+      docHeading.add(docLabel);
+
+      CheckBox selectWholeDocCheckBox = new CheckBox("Select entire document");
+      selectWholeDocCheckBox.setTitle("Select or deselect all matching text flows in this document");
+      selectWholeDocCheckBox.addValueChangeHandler(selectAllHandler);
+      docHeading.add(selectWholeDocCheckBox);
+
+      InlineLabel searchDocLabel = new InlineLabel(messages.searchDocInEditor());
+      searchDocLabel.setTitle(messages.searchDocInEditorDetailed());
+      searchDocLabel.addClickHandler(searchDocClickHandler);
+      searchDocLabel.addStyleName("linkLabel");
+      searchDocLabel.addStyleName("projectWideSearchResultsDocumentLink");
+      docHeading.add(searchDocLabel);
+
+      InlineLabel showDocLabel = new InlineLabel(messages.viewDocInEditor());
+      showDocLabel.setTitle(messages.viewDocInEditorDetailed());
+      showDocLabel.addStyleName("linkLabel");
+      showDocLabel.addStyleName("projectWideSearchResultsDocumentLink");
+      showDocLabel.addClickHandler(viewDocClickHandler);
+      docHeading.add(showDocLabel);
+
+      searchResultsPanel.add(docHeading);
    }
 
    private CellTable<TransUnitReplaceInfo> buildTable(Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate, SelectionModel<TransUnitReplaceInfo> selectionModel,
@@ -194,15 +253,13 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    {
       // create columns
       CheckColumn checkboxColumn = new CheckColumn(selectionModel);
-      CheckboxHeader checkboxColumnHeader = new CheckboxHeader();
-      checkboxColumnHeader.addValueChangeHandler(selectAllHandler);
 
       TextColumn<TransUnitReplaceInfo> rowIndexColumn = new TextColumn<TransUnitReplaceInfo>()
       {
          @Override
          public String getValue(TransUnitReplaceInfo tu)
          {
-            return Integer.toString(tu.getTransUnit().getRowIndex());
+            return Integer.toString(tu.getTransUnit().getRowIndex() + 1);
          }
       };
 
@@ -211,10 +268,14 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
          @Override
          public void render(Context context, List<String> contents, SafeHtmlBuilder sb)
          {
+
             for (String source : notEmptyContents(contents))
             {
-               //we use highlighting label here just so source and target contents can line up nicely
                HighlightingLabel label = new HighlightingLabel(source);
+               if (!Strings.isNullOrEmpty(highlightString))
+               {
+                  label.highlightSearch(highlightString);
+               }
                appendContent(sb, label.getElement().getString());
             }
          }
@@ -235,6 +296,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
 
             for (String target : notEmptyContents(contents))
             {
+               // TODO switch to diff mode if this is a preview or there has been a replacement
                HighlightingLabel label = new HighlightingLabel(target);
                if (!Strings.isNullOrEmpty(highlightString))
                {
@@ -274,12 +336,11 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       table.setSelectionModel(selectionModel, DefaultSelectionEventManager.<TransUnitReplaceInfo> createCheckboxManager());
       table.setWidth("100%", true);
 
-      // TODO use localisable headings (should already exist somewhere)
-      table.addColumn(checkboxColumn, checkboxColumnHeader);
-      table.addColumn(rowIndexColumn, "Index");
-      table.addColumn(sourceColumn, "Source");
-      table.addColumn(targetColumn, "Target");
-      table.addColumn(replaceButtonColumn, "Actions");
+      table.addColumn(checkboxColumn, "");
+      table.addColumn(rowIndexColumn, messages.rowIndex());
+      table.addColumn(sourceColumn, messages.source());
+      table.addColumn(targetColumn, messages.target());
+      table.addColumn(replaceButtonColumn, messages.actions());
 
       sourceColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
       targetColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
@@ -290,12 +351,13 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       table.setColumnWidth(targetColumn, 50.0, Unit.PCT);
       table.setColumnWidth(replaceButtonColumn, 100.0, Unit.PX);
 
+      table.addStyleName("projectWideSearchResultsDocumentBody");
       return table;
    }
 
    private static void appendContent(SafeHtmlBuilder sb, String content)
    {
-      sb.appendHtmlConstant("<div style='border-bottom: dotted 1px grey;'>").appendHtmlConstant(content).appendHtmlConstant("</div>");
+      sb.appendHtmlConstant("<div class='translationContainer' style='border-bottom: dotted 1px grey;'>").appendHtmlConstant(content).appendHtmlConstant("</div>");
    }
 
    private static Collection<String> notEmptyContents(List<String> contents)
@@ -327,75 +389,6 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
          return selectionModel.isSelected(info);
       }
 
-   }
-
-   private class CheckboxHeader extends Header<Boolean> implements HasValue<Boolean> {
-
-      private boolean checked;
-      private HandlerManager handlerManager;
-
-      public CheckboxHeader()
-      {
-         //TODO consider custom cell with text
-         super(new CheckboxCell());
-         checked = false;
-      }
-
-      // This method is invoked to pass the value to the CheckboxCell's render method
-      @Override
-      public Boolean getValue()
-      {
-         return checked;
-      }
-
-      @Override
-      public void onBrowserEvent(Context context, Element elem, NativeEvent nativeEvent)
-      {
-         int eventType = Event.as(nativeEvent).getTypeInt();
-         if (eventType == Event.ONCHANGE)
-         {
-            nativeEvent.preventDefault();
-            //use value setter to easily fire change event to handlers
-            setValue(!checked, true);
-         }
-      }
-
-      @Override
-      public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Boolean> handler)
-      {
-         return ensureHandlerManager().addHandler(ValueChangeEvent.getType(), handler);
-      }
-
-      @Override
-      public void fireEvent(GwtEvent<?> event)
-      {
-         ensureHandlerManager().fireEvent(event);
-      }
-
-      @Override
-      public void setValue(Boolean value)
-      {
-         checked = value;
-      }
-
-      @Override
-      public void setValue(Boolean value, boolean fireEvents)
-      {
-         checked = value;
-         if (fireEvents)
-         {
-            ValueChangeEvent.fire(this, value);
-         }
-      }
-
-      private HandlerManager ensureHandlerManager()
-      {
-         if (handlerManager == null)
-         {
-            handlerManager = new HandlerManager(this);
-         }
-         return handlerManager;
-      }
    }
 
    private class ReplaceColumn extends Column<TransUnitReplaceInfo, TransUnitReplaceInfo>
@@ -467,19 +460,6 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
          }
          // else ignore (is processing)
       };
-   }
-
-
-   @Override
-   public HasChangeHandlers getSearchFieldSelector()
-   {
-      return searchFieldsSelect;
-   }
-
-   @Override
-   public String getSelectedSearchField()
-   {
-      return searchFieldsSelect.getValue(searchFieldsSelect.getSelectedIndex());
    }
 
 }

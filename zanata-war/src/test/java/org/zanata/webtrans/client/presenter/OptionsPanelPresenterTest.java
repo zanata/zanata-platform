@@ -17,6 +17,8 @@ import static org.hamcrest.Matchers.is;
 import org.easymock.Capture;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
+import org.zanata.webtrans.client.events.EnableModalNavigationEventHandler;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
@@ -77,6 +79,7 @@ public class OptionsPanelPresenterTest
 
    Capture<FilterViewEventHandler> capturedFilterViewEventHandler = new Capture<FilterViewEventHandler>();
    Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdateEventHandler = new Capture<WorkspaceContextUpdateEventHandler>();
+   Capture<EnableModalNavigationEventHandler> capturedEnableModalNavigationEventHandler = new Capture<EnableModalNavigationEventHandler>();
 
    Capture<FilterViewEvent> capturedFilterViewEvent = new Capture<FilterViewEvent>();
    Capture<UserConfigChangeEvent> capturedUserConfigChangeEvent = new Capture<UserConfigChangeEvent>();
@@ -574,6 +577,7 @@ public class OptionsPanelPresenterTest
    {
       expect(mockEventBus.addHandler(eq(FilterViewEvent.getType()), and(capture(capturedFilterViewEventHandler), isA(FilterViewEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
       expect(mockEventBus.addHandler(eq(WorkspaceContextUpdateEvent.getType()), and(capture(capturedWorkspaceContextUpdateEventHandler), isA(WorkspaceContextUpdateEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
+      expect(mockEventBus.addHandler(eq(EnableModalNavigationEvent.getType()), and(capture(capturedEnableModalNavigationEventHandler), isA(EnableModalNavigationEventHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
    }
 
    private void expectRegisterEditorOptionsChangeHandlers()

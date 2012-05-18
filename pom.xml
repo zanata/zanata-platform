@@ -2,13 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>server</artifactId>
-  <version>1.6.0-alpha-3-SNAPSHOT</version>
+  <version>1.6.0-beta-2-SNAPSHOT</version>
   <name>Zanata server modules</name>
   <packaging>pom</packaging>
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>3-SNAPSHOT</version>
+    <version>4</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -19,9 +19,9 @@
 	</scm>
     
     <properties>
-      <zanata.api.version>1.6.0-alpha-3-SNAPSHOT</zanata.api.version>
-      <zanata.client.version>1.6.0-alpha-2</zanata.client.version>
-      <zanata.common.version>1.6.0-alpha-3-SNAPSHOT</zanata.common.version>
+      <zanata.api.version>1.6.0-alpha-3</zanata.api.version>
+      <zanata.client.version>1.6.0-alpha-3</zanata.client.version>
+      <zanata.common.version>1.6.0-alpha-3</zanata.common.version>
 
         <!--delombok properties-->
         <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
