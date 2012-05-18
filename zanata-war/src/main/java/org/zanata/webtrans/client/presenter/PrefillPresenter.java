@@ -20,12 +20,23 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.history.History;
+import org.zanata.webtrans.client.history.HistoryToken;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.PrefillPopupPanelDisplay;
+import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.rpc.NoOpResult;
+import org.zanata.webtrans.shared.rpc.PrefillTranslation;
 
+import com.google.common.base.Preconditions;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Error;
+import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Info;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -34,12 +45,18 @@ public class PrefillPresenter extends WidgetPresenter<PrefillPopupPanelDisplay> 
 {
 
    private PrefillPopupPanelDisplay display;
+   private final EventBus eventBus;
+   private final CachingDispatchAsync dispatcher;
+   private final DocumentListPresenter docListPresenter;
 
    @Inject
-   public PrefillPresenter(PrefillPopupPanelDisplay display, EventBus eventBus)
+   public PrefillPresenter(PrefillPopupPanelDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, DocumentListPresenter docListPresenter)
    {
       super(display, eventBus);
       this.display = display;
+      this.eventBus = eventBus;
+      this.dispatcher = dispatcher;
+      this.docListPresenter = docListPresenter;
       display.setListener(this);
    }
 
@@ -61,9 +78,26 @@ public class PrefillPresenter extends WidgetPresenter<PrefillPopupPanelDisplay> 
    @Override
    public void proceedToPrefill(String approvedPercent)
    {
-      //TODO implement
       int threshold = display.getApprovedThreshold();
-      display.hide();
+      DocumentId docId = docListPresenter.getCurrentSelectedDocIdOrNull();
+      Preconditions.checkNotNull(docId, "doc id is null!!");
+      //TODO implement
+      dispatcher.execute(new PrefillTranslation(threshold, docId), new AsyncCallback<NoOpResult>()
+      {
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            eventBus.fireEvent(new NotificationEvent(Error, "prefill failed"));
+            display.hide();
+         }
+
+         @Override
+         public void onSuccess(NoOpResult result)
+         {
+            eventBus.fireEvent(new NotificationEvent(Info, "prefill success"));
+            display.hide();
+         }
+      });
    }
 
    public void preparePrefill()

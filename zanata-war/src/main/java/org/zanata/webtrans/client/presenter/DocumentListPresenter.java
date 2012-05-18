@@ -535,9 +535,14 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          display.getDocumentListTable().getSelectionModel().setSelected(node, true);
       }
    }
-   
-   public ListDataProvider<DocumentNode> getDataProvider()
+
+   public DocumentId getCurrentSelectedDocIdOrNull()
    {
-      return dataProvider;
+      if (currentSelection == null)
+      {
+         return null;
+      }
+      return currentSelection.getDocInfo().getId();
    }
+
 }

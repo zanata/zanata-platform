@@ -59,17 +59,17 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.util.TextFlowFilter;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author David Mason, damason@redhat.com
  */
 @Name("textFlowSearchServiceImpl")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
+@Slf4j
 public class TextFlowSearchServiceImpl implements TextFlowSearchService
 {
-
-   @Logger
-   Log log;
 
    @In
    TextFlowDAO textFlowDAO;
@@ -169,7 +169,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          FullTextQuery ftQuery = entityManager.createFullTextQuery(targetQuery, HTextFlowTarget.class);
          @SuppressWarnings("unchecked")
          List<HTextFlowTarget> matchedTargets = (List<HTextFlowTarget>) ftQuery.getResultList();
-         log.info("got {0} HTextFLowTarget results", matchedTargets.size());
+         log.info("got {} HTextFLowTarget results", matchedTargets.size());
          resultList.addAll(matchedTargets);
       }
 
@@ -178,7 +178,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          FullTextQuery ftQuery = entityManager.createFullTextQuery(sourceQuery, HTextFlow.class);
          @SuppressWarnings("unchecked")
          List<HTextFlow> matchedSources = (List<HTextFlow>) ftQuery.getResultList();
-         log.info("got {0} HTextFLowTarget results", matchedSources.size());
+         log.info("got {} HTextFLowTarget results", matchedSources.size());
          HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
          for (HTextFlow htf : matchedSources)
          {

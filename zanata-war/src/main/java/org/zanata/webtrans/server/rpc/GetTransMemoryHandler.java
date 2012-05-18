@@ -76,25 +76,26 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
    {
       ZanataIdentity.instance().checkLoggedIn();
 
-      log.info("Fetching matches for {}", action.getQuery());
+      TransMemoryQuery transMemoryQuery = action.getQuery();
+      log.info("Fetching matches for {}", transMemoryQuery);
 
       LocaleId localeID = action.getLocaleId();
       HLocale hLocale = localeServiceImpl.getByLocaleId(localeID);
 
-      ArrayList<TransMemoryResultItem> results = searchTransMemory(action, localeID, hLocale);
+      ArrayList<TransMemoryResultItem> results = searchTransMemory(hLocale, transMemoryQuery);
 
-      log.info("Returning {} TM matches for {}", results.size(), action.getQuery());
+      log.info("Returning {} TM matches for {}", results.size(), transMemoryQuery);
       return new GetTranslationMemoryResult(action, results);
    }
 
-   private ArrayList<TransMemoryResultItem> searchTransMemory(GetTranslationMemory action, LocaleId localeID, HLocale hLocale)
+   protected ArrayList<TransMemoryResultItem> searchTransMemory(HLocale hLocale, TransMemoryQuery transMemoryQuery)
    {
       ArrayList<TransMemoryResultItem> results = Lists.newArrayList();
       try
       {
          // FIXME this won't scale well(findIdsWithTransliations will scan the entire table each time)
-         List<Long> idsWithTranslations = textFlowDAO.findIdsWithTranslations(localeID);
-         List<Object[]> matches = textFlowDAO.getSearchResult(action.getQuery(), idsWithTranslations, MAX_RESULTS);
+         List<Long> idsWithTranslations = textFlowDAO.findIdsWithTranslations(hLocale.getLocaleId());
+         List<Object[]> matches = textFlowDAO.getSearchResult(transMemoryQuery, idsWithTranslations, MAX_RESULTS);
 
          Map<TMKey, TransMemoryResultItem> matchesMap = new LinkedHashMap<TMKey, TransMemoryResultItem>(matches.size());
          for (Object[] match : matches)
@@ -107,7 +108,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
                continue;
             }
 
-            double percent = calculateSimilarityPercentage(action.getQuery(), textFlow.getContents());
+            double percent = calculateSimilarityPercentage(transMemoryQuery, textFlow.getContents());
 
             ArrayList<String> textFlowContents = new ArrayList<String>(textFlow.getContents());
             ArrayList<String> targetContents = new ArrayList<String>(textFlow.getTargets().get(hLocale).getContents());
@@ -125,15 +126,15 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       }
       catch (ParseException e)
       {
-         if (action.getQuery().getSearchType() == SearchType.RAW)
+         if (transMemoryQuery.getSearchType() == SearchType.RAW)
          {
             // TODO tell the user
-            log.warn("Can't parse raw query {}", action.getQuery());
+            log.warn("Can't parse raw query {}", transMemoryQuery);
          }
          else
          {
             // escaping failed!
-            log.error("Can't parse query " + action.getQuery(), e);
+            log.error("Can't parse query " + transMemoryQuery, e);
          }
       }
 

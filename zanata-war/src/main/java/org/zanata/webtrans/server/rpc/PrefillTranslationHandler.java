@@ -21,39 +21,42 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.lucene.queryParser.ParseException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.ContentState;
-import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
-import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
-import org.zanata.search.LevenshteinUtil;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.service.SecurityService;
+import org.zanata.service.TranslationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
+import org.zanata.webtrans.server.TranslationWorkspace;
+import org.zanata.webtrans.server.TranslationWorkspaceManager;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
-import org.zanata.webtrans.shared.rpc.HasSearchType;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.PrefillTranslation;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
+
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
+import static org.zanata.service.SecurityService.TranslationAction.*;
 
 @Name("webtrans.gwt.PrefillTranslationHandler")
 @Scope(ScopeType.STATELESS)
@@ -62,18 +65,54 @@ import net.customware.gwt.dispatch.shared.ActionException;
 public class PrefillTranslationHandler extends AbstractActionHandler<PrefillTranslation, NoOpResult>
 {
 
-   private static final int MAX_RESULTS = 10;
+   @In("webtrans.gwt.GetTransMemoryHandler")
+   private GetTransMemoryHandler getTransMemoryHandler;
+   
+   @In
+   private SecurityService securityServiceImpl;
+
+   @In
+   private TranslationWorkspaceManager translationWorkspaceManager;
+   
+   @In
+   private TextFlowDAO textFlowDAO;
+
+   @In
+   private TranslationService translationServiceImpl;
 
    @In
    private LocaleService localeServiceImpl;
 
-   @In
-   private TextFlowDAO textFlowDAO;
-
    @Override
    public NoOpResult execute(PrefillTranslation action, ExecutionContext context) throws ActionException
    {
+      ZanataIdentity.instance().checkLoggedIn();
 
+      WorkspaceId workspaceId = action.getWorkspaceId();
+      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
+      LocaleId localeId = workspaceId.getLocaleId();
+      ProjectIterationId projectIterationId = workspaceId.getProjectIterationId();
+      securityServiceImpl.checkPermissionForTranslation(workspace, projectIterationId.getProjectSlug(), localeId, MODIFY);
+
+      HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
+
+      List<HTextFlow> hTextFlows = textFlowDAO.getAllUntranslatedTextFlowByDocId(action.getDocId().getId(), hLocale);
+
+      log.info("about to prefill #{} textflow for action {}", hTextFlows.size(), action);
+
+      TransMemoryAboveThresholdPredicate predicate = new TransMemoryAboveThresholdPredicate(action.getApprovedThreshold());
+      for (HTextFlow hTextFlow : hTextFlows)
+      {
+         ArrayList<TransMemoryResultItem> tmResults = getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(hTextFlow.getContents(), SearchType.FUZZY_PLURAL));
+         Collection<TransMemoryResultItem> aboveThreshold = Collections2.filter(tmResults, predicate);
+         if (aboveThreshold.size() > 0)
+         {
+            TransMemoryResultItem mostSimilarTM = aboveThreshold.iterator().next();
+            log.info("auto translation from translation memory for textFlow id {} with contents {}", hTextFlow.getId(), mostSimilarTM);
+
+         }
+      }
+      //TODO best send out event and let all clients to refresh table if they are editing this document
       return new NoOpResult();
    }
 
@@ -82,4 +121,19 @@ public class PrefillTranslationHandler extends AbstractActionHandler<PrefillTran
    {
    }
 
+   private static class TransMemoryAboveThresholdPredicate implements Predicate<TransMemoryResultItem>
+   {
+      private final int approvedThreshold;
+
+      public TransMemoryAboveThresholdPredicate(int approvedThreshold)
+      {
+         this.approvedThreshold = approvedThreshold;
+      }
+
+      @Override
+      public boolean apply(TransMemoryResultItem tmResult)
+      {
+         return tmResult.getSimilarityPercent() >= approvedThreshold;
+      }
+   }
 }
