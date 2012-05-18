@@ -52,7 +52,7 @@
     </ui:style>
 
     <g:SplitLayoutPanel ui:field="mainPanel">
-        <g:west size="150" min-size="20">
+        <g:west size="350" min-size="30">
             <g:ScrollPanel styleName="{style.userListScrollPanel}">
                 <g:VerticalPanel ui:field='userListPanel' styleName="userListTable" width="100%" />
             </g:ScrollPanel>
