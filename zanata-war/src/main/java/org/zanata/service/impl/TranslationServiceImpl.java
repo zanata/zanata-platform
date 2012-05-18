@@ -84,9 +84,6 @@ public class TranslationServiceImpl implements TranslationService
    private Log log;
 
    @In
-   private Session session;
-
-   @In
    private EntityManager entityManager;
 
    @In
@@ -121,7 +118,7 @@ public class TranslationServiceImpl implements TranslationService
    @Override
    public TranslationResult translate(LocaleId localeId, TransUnitUpdateRequest translateRequest) throws ConcurrentTranslationException
    {
-      HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, translateRequest.getTransUnitId().getValue());
+      HTextFlow hTextFlow = entityManager.find(HTextFlow.class, translateRequest.getTransUnitId().getValue());
       HLocale hLocale = validateLocale(localeId, hTextFlow);
       HTextFlowTarget hTextFlowTarget = getOrCreateTarget(hTextFlow, hLocale);
 
@@ -155,11 +152,11 @@ public class TranslationServiceImpl implements TranslationService
       }
 
       //single locale check - assumes update requests are all from the same project-iteration
-      HTextFlow sampleHTextFlow = (HTextFlow) session.get(HTextFlow.class, translationRequests.get(0).getTransUnitId().getValue());
+      HTextFlow sampleHTextFlow = entityManager.find(HTextFlow.class, translationRequests.get(0).getTransUnitId().getValue());
       HLocale hLocale = validateLocale(localeId, sampleHTextFlow);
       for (TransUnitUpdateRequest request : translationRequests)
       {
-         HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, request.getTransUnitId().getValue());
+         HTextFlow hTextFlow = entityManager.find(HTextFlow.class, request.getTransUnitId().getValue());
          HTextFlowTarget hTextFlowTarget = getOrCreateTarget(hTextFlow, hLocale);
 
          TranslationResultImpl result = new TranslationResultImpl();
@@ -221,7 +218,6 @@ public class TranslationServiceImpl implements TranslationService
          hTextFlowTarget = new HTextFlowTarget(hTextFlow, hLocale);
          hTextFlowTarget.setVersionNum(0); // this will be incremented when content is set (below)
          hTextFlow.getTargets().put(hLocale, hTextFlowTarget);
-         entityManager.persist(hTextFlowTarget);
       }
       return hTextFlowTarget;
    }
@@ -239,8 +235,6 @@ public class TranslationServiceImpl implements TranslationService
          hTextFlowTarget.setLastModifiedBy(authenticatedAccount.getPerson());
          log.debug("last modified by :" + authenticatedAccount.getPerson().getName());
       }
-
-      //hTextFlowTarget = entityManager.merge(hTextFlowTarget);
 
       //save the target histories
       entityManager.flush();
@@ -561,12 +555,12 @@ public class TranslationServiceImpl implements TranslationService
       if (!translationsToRevert.isEmpty())
       {
 
-         HTextFlow sampleHTextFlow = (HTextFlow) session.get(HTextFlow.class, translationsToRevert.get(0).getTransUnit().getId().getValue());
+         HTextFlow sampleHTextFlow = entityManager.find(HTextFlow.class, translationsToRevert.get(0).getTransUnit().getId().getValue());
          HLocale hLocale = validateLocale(localeId, sampleHTextFlow);
          for (TransUnitUpdateInfo info : translationsToRevert)
          {
             TransUnitId tuId = info.getTransUnit().getId();
-            HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, tuId.getValue());
+            HTextFlow hTextFlow = entityManager.find(HTextFlow.class, tuId.getValue());
             HTextFlowTarget hTextFlowTarget = getOrCreateTarget(hTextFlow, hLocale);
 
             //check that version has not advanced
