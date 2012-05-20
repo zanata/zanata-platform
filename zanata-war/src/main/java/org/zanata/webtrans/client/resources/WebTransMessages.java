@@ -98,6 +98,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("{0} (Shortcut: {1})")
    String tooltipsWithShortcut(String text, String shortcut);
 
+   @DefaultMessage("Loading")
+   String loading();
+
    @DefaultMessage("Failed to load document from Server")
    String loadDocFailed();
 
@@ -131,12 +134,27 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("has joined workspace")
    String hasJoinedWorkspace();
 
+   @DefaultMessage("Searching")
+   String searching();
+
    @DefaultMessage("Search found results in {0} documents")
    @AlternateMessage({ "one", "Search found results in 1 document" })
    String searchFoundResultsInDocuments(@PluralCount int numDocs);
 
+   @DefaultMessage("There are no search results to display")
+   String noSearchResults();
+
    @DefaultMessage("Search failed")
    String searchFailed();
+
+   @DefaultMessage("Replace")
+   String replace();
+
+   @DefaultMessage("Replacing")
+   String replacing();
+
+   @DefaultMessage("Replaced")
+   String replaced();
 
    @DefaultMessage("Replaced \"{0}\" with \"{1}\" in {2} text flows")
    @AlternateMessage({ "one", "Replaced \"{0}\" with \"{1}\" in 1 text flow" })
@@ -172,7 +190,10 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Replace text failed")
    String replaceTextFailure();
 
-   @DefaultMessage("Undoing...")
+   @DefaultMessage("Undo")
+   String undo();
+
+   @DefaultMessage("Undoing")
    String undoInProgress();
 
    @DefaultMessage("Undo replacement failed")
@@ -180,4 +201,13 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Undo successful")
    String undoSuccess();
+
+   @DefaultMessage("Select entire document")
+   String selectAllInDocument();
+
+   @DefaultMessage("Select or deselect all matching text flows in this document")
+   String selectAllInDocumentDetailed();
+
+   @DefaultMessage("Nothing selected")
+   String noTextFlowsSelected();
 }

@@ -60,7 +60,6 @@ import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
@@ -100,17 +99,17 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
       String getSelectedSearchField();
 
+      public void setSearching(boolean searching);
+
       HasClickHandlers getReplaceAllButton();
 
       HasClickHandlers getSelectAllButton();
 
       void clearAll();
 
-      HandlerRegistration setReplacementMessage(String message, ClickHandler undoButtonHandler);
+      void setReplacementMessage(String message, ClickHandler undoButtonHandler);
 
       void clearReplacementMessage();
-
-      //      HasClickHandlers addDocumentLabel(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ValueChangeHandler<Boolean> selectAllHandler);
 
       HasData<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate, SelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler);
    }
@@ -121,7 +120,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private Delegate<TransUnitReplaceInfo> replaceButtonDelegate;
    private Delegate<TransUnitReplaceInfo> undoButtonDelegate;
    private Comparator<TransUnitReplaceInfo> tuInfoComparator;
-
 
    /**
     * Model objects for tables in display. Changes to these are reflected in the
@@ -161,7 +159,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       documentSelectionModels = new HashMap<Long, MultiSelectionModel<TransUnitReplaceInfo>>();
       tuInfoComparator = buildTransUnitReplaceInfoComparator();
 
-
+      // TODO use explicit 'search' button and add enter key press event for
+      // text box
       registerHandler(display.getFilterTextBox().addValueChangeHandler(new ValueChangeHandler<String>()
       {
 
@@ -230,21 +229,28 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          public void onClick(ClickEvent event)
          {
             List<TransUnit> selected = new ArrayList<TransUnit>();
-            for (MultiSelectionModel<TransUnitReplaceInfo> sm : documentSelectionModels.values())
+            List<Long> docsToRefresh = new ArrayList<Long>();
+            for (Entry<Long, MultiSelectionModel<TransUnitReplaceInfo>> entry : documentSelectionModels.entrySet())
             {
-               for (TransUnitReplaceInfo info : sm.getSelectedSet())
+               for (TransUnitReplaceInfo info : entry.getValue().getSelectedSet())
                {
                   selected.add(info.getTransUnit());
+                  info.setState(ReplacementState.Replacing);
+                  docsToRefresh.add(entry.getKey());
                }
             }
 
             if (selected.isEmpty())
             {
-               eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Nothing selected"));
+               eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.noTextFlowsSelected()));
             }
             else
             {
                fireReplaceTextEvent(selected);
+               for (Long doc : docsToRefresh)
+               {
+                  documentDataProviders.get(doc).refresh();
+               }
             }
          }
       }));
@@ -289,6 +295,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                display.setHighlightString(token.getProjectSearchText());
                display.getFilterTextBox().setValue(token.getProjectSearchText(), true);
                display.getCaseSensitiveChk().setValue(token.getProjectSearchCaseSensitive(), false);
+               // TODO set selection in source/target selector
 
                documentDataProviders.clear();
                documentSelectionModels.clear();
@@ -296,7 +303,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
                if (!token.getProjectSearchText().isEmpty())
                {
-                  //TODO show loading indicator
+                  display.setSearching(true);
                   dispatcher.execute(new GetProjectTransUnitLists(token.getProjectSearchText(), token.isProjectSearchInSource(), token.isProjectSearchInTarget(), token.getProjectSearchCaseSensitive()), projectSearchCallback);
                }
             }
@@ -336,12 +343,10 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                selectionModel.setSelected(replaceInfo, false);
             }
 
-            if (replaceInfo.isUndoable() && replaceInfo.getTransUnit().getVerNum() != updateInfo.getTransUnit().getVerNum())
+            if (replaceInfo.getState() == ReplacementState.Replaced && replaceInfo.getTransUnit().getVerNum() != updateInfo.getTransUnit().getVerNum())
             {
                // can't undo after additional update
-               replaceInfo.setUndoable(false);
-               replaceInfo.setReplaceable(true);
-               replaceInfo.setReplacing(false);
+               replaceInfo.setState(ReplacementState.Replaceable);
                replaceInfo.setReplaceInfo(null);
             }
             replaceInfo.setTransUnit(updateInfo.getTransUnit());
@@ -400,9 +405,14 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void onSuccess(GetProjectTransUnitListsResult result)
          {
-            display.getSearchResponseLabel().setText(messages.searchFoundResultsInDocuments(result.getDocumentIds().size()));
-
-            //TODO extract clearAllData function for these 3 lines
+            if (result.getDocumentIds().size() == 0)
+            {
+               display.getSearchResponseLabel().setText("");
+            }
+            else
+            {
+               display.getSearchResponseLabel().setText(messages.searchFoundResultsInDocuments(result.getDocumentIds().size()));
+            }
             documentDataProviders.clear();
             documentSelectionModels.clear();
             display.clearAll();
@@ -431,7 +441,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
                final ListDataProvider<TransUnitReplaceInfo> dataProvider = new ListDataProvider<TransUnitReplaceInfo>();
 
-               // TODO set selected value for header based on selection of rows?
+               // TODO "select entire document" checkbox if all rows selected
+               // (and clear for none selected)
                HasData<TransUnitReplaceInfo> table = display.addDocument(doc, showDocClickHandler, searchDocClickHandler, replaceButtonDelegate, undoButtonDelegate, selectionModel, new ValueChangeHandler<Boolean>()
                {
 
@@ -463,6 +474,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                documentDataProviders.put(docId, dataProvider);
                documentSelectionModels.put(docId, selectionModel);
             }
+            display.setSearching(false);
          }
 
       };
@@ -470,25 +482,33 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    private Delegate<TransUnitReplaceInfo> buildReplaceButtonDelegate()
    {
-      return new Delegate<TransUnitReplaceInfo>() {
+      return new Delegate<TransUnitReplaceInfo>()
+      {
 
          @Override
-         public void execute(TransUnitReplaceInfo tu)
+         public void execute(TransUnitReplaceInfo info)
          {
-            fireReplaceTextEvent(Collections.singletonList(tu.getTransUnit()));
+            info.setState(ReplacementState.Replacing);
+            refreshContainingDocument(info);
+            fireReplaceTextEvent(Collections.singletonList(info.getTransUnit()));
          }
+
       };
    }
 
    private Delegate<TransUnitReplaceInfo> buildUndoButtonDelegate()
    {
-      return new Delegate<TransUnitReplaceInfo>() {
+      return new Delegate<TransUnitReplaceInfo>()
+      {
 
          @Override
-         public void execute(TransUnitReplaceInfo info)
+         public void execute(final TransUnitReplaceInfo info)
          {
+            info.setState(ReplacementState.Undoing);
+            refreshContainingDocument(info);
             eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoInProgress()));
-            // TODO extract this into a separate method to re-use for bulk revert
+            // TODO extract this into a separate method to re-use for bulk
+            // revert
             RevertTransUnitUpdates action = new RevertTransUnitUpdates(info.getReplaceInfo());
             dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>()
             {
@@ -504,10 +524,27 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                {
                   eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoSuccess()));
                   // TODO update model with new values
+                  info.setState(ReplacementState.Replaceable);
+                  refreshContainingDocument(info);
                }
             });
          }
       };
+   }
+
+   /**
+    * @param info
+    */
+   private void refreshContainingDocument(TransUnitReplaceInfo info)
+   {
+      for (ListDataProvider<TransUnitReplaceInfo> provider : documentDataProviders.values())
+      {
+         if (provider.getList().contains(info))
+         {
+            provider.refresh();
+            break;
+         }
+      }
    }
 
    /**
@@ -523,21 +560,20 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>()
       {
 
-         private HandlerRegistration undoHandler;
-
          @Override
          public void onFailure(Throwable e)
          {
             Log.error("[SearchResultsPresenter] Replace text failure " + e, e);
             eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.replaceTextFailure()));
-            // TODO consider whether possible/desired to change TU state from 'replacing'
+            // TODO consider whether possible/desired to change TU state from
+            // 'replacing'
          }
 
          @Override
          public void onSuccess(final UpdateTransUnitResult result)
          {
             int successes = 0;
-            Set<Long> updatedDocs = new HashSet<Long>();
+            final Set<Long> updatedDocs = new HashSet<Long>();
             for (TransUnitUpdateInfo updateInfo : result.getUpdateInfoList())
             {
                if (updateInfo.isSuccess())
@@ -547,11 +583,9 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                   if (replaceInfo != null)
                   {
                      replaceInfo.setReplaceInfo(updateInfo);
-                     replaceInfo.setUndoable(true);
-                     replaceInfo.setReplaceable(false);
-                     replaceInfo.setReplacing(false);
-                     //this should be done when the TU update event comes in anyway
-                     //may want to remove this
+                     replaceInfo.setState(ReplacementState.Replaced);
+                     // this should be done when the TU update event comes in anyway
+                     // may want to remove this
                      replaceInfo.setTransUnit(updateInfo.getTransUnit());
                   }
                   updatedDocs.add(updateInfo.getDocumentId().getId());
@@ -560,32 +594,26 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             }
 
             // force table refresh as property changes are not detected
-            for (Long docId : updatedDocs)
-            {
-               ListDataProvider<TransUnitReplaceInfo> dataProvider = documentDataProviders.get(docId);
-               if (dataProvider != null)
-               {
-                  dataProvider.refresh();
-               }
-            }
+            refreshDocumentDisplays(updatedDocs);
 
             eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.replacedTextSuccess()));
 
             String message = messages.replacedTextInMultipleTextFlows(searchText, replacement, successes);
-            undoHandler = display.setReplacementMessage(message, new ClickHandler()
+            display.setReplacementMessage(message, new ClickHandler()
             {
 
                @Override
                public void onClick(ClickEvent event)
                {
-                  undoHandler.removeHandler();
                   display.clearReplacementMessage();
 
                   RevertTransUnitUpdates action = new RevertTransUnitUpdates();
                   for (TransUnitUpdateInfo info : result.getUpdateInfoList())
                   {
                      action.addUpdateToRevert(info);
+                     getReplaceInfoForUpdatedTU(info).setState(ReplacementState.Undoing);
                   }
+                  refreshDocumentDisplays(updatedDocs);
                   dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>()
                   {
 
@@ -599,6 +627,13 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                      public void onSuccess(UpdateTransUnitResult result)
                      {
                         eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoSuccess()));
+                        for (TransUnitUpdateInfo info : result.getUpdateInfoList())
+                        {
+                           TransUnitReplaceInfo replaceInfo = getReplaceInfoForUpdatedTU(info);
+                           replaceInfo.setState(ReplacementState.Replaceable);
+
+                        }
+                        refreshDocumentDisplays(updatedDocs);
                         // TODO update model with new values
                      }
                   });
@@ -608,21 +643,22 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       });
    }
 
+   public enum ReplacementState
+   {
+      NotReplaceable, Replaceable, Replacing, Replaced, Undoing
+   }
+
    public class TransUnitReplaceInfo
    {
       private TransUnit tu;
       private TransUnitUpdateInfo replaceInfo = null;
-      private boolean replaceable;
-      private boolean replacing;
-      private boolean undoable;
+      private ReplacementState state;
 
       public TransUnitReplaceInfo(TransUnit tu)
       {
          this.tu = tu;
+         state = ReplacementState.Replaceable;
          replaceInfo = null;
-         replaceable = true;
-         replacing = false;
-         undoable = false;
       }
 
       public TransUnit getTransUnit()
@@ -645,36 +681,15 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          this.replaceInfo = replaceInfo;
       }
 
-      public boolean isReplaceable()
+      public void setState(ReplacementState state)
       {
-         return replaceable;
+         this.state = state;
       }
 
-      public void setReplaceable(boolean canReplace)
+      public ReplacementState getState()
       {
-         this.replaceable = canReplace;
+         return state;
       }
-
-      public boolean isReplacing()
-      {
-         return replacing;
-      }
-
-      public void setReplacing(boolean isReplacing)
-      {
-         this.replacing = isReplacing;
-      }
-
-      public boolean isUndoable()
-      {
-         return undoable;
-      }
-
-      public void setUndoable(boolean undoable)
-      {
-         this.undoable = undoable;
-      }
-
    }
 
    private Comparator<TransUnitReplaceInfo> buildTransUnitReplaceInfoComparator()
@@ -714,7 +729,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       }
 
       List<TransUnitReplaceInfo> replaceInfoList = dataProvider.getList();
-      //TransUnit does not appear to have .equals(o), so list items are manually compared
+      // TransUnit does not appear to have .equals(o), so list items are
+      // manually compared
       for (TransUnitReplaceInfo info : replaceInfoList)
       {
          if (info.getTransUnit().getId().getId() == updateInfo.getTransUnit().getId().getId())
@@ -723,5 +739,20 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }
       return null;
+   }
+
+   /**
+    * @param docsToRefresh
+    */
+   private void refreshDocumentDisplays(Set<Long> docsToRefresh)
+   {
+      for (Long docId : docsToRefresh)
+      {
+         ListDataProvider<TransUnitReplaceInfo> dataProvider = documentDataProviders.get(docId);
+         if (dataProvider != null)
+         {
+            dataProvider.refresh();
+         }
+      }
    }
 }

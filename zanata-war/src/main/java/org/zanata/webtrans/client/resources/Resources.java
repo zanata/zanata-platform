@@ -92,4 +92,7 @@ public interface Resources extends ClientBundle
    
    @Source("images/loader.gif")
    ImageResource loader();
+
+   @Source("images/loading.gif")
+   ImageResource spinner();
 }

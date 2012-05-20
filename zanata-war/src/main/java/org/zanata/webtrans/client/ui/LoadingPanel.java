@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.resources.Resources;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -35,13 +36,18 @@ import com.google.gwt.user.client.ui.Label;
 public class LoadingPanel extends DecoratedPopupPanel
 {
 
-   public LoadingPanel(final Resources resources)
+   public LoadingPanel(final  WebTransMessages messages, final Resources resources)
+   {
+      this(messages.loading(), resources);
+   }
+
+   public LoadingPanel(String text, final Resources resources)
    {
       super(false, true);
       HorizontalPanel hp = new HorizontalPanel();
       hp.setSpacing(5);
       hp.setSize("100%", "100%");
-      hp.add(new Label("Loading"));
+      hp.add(new Label(text));
       hp.add(new Image(resources.loader()));
       setStyleName("loadingPanel");
       add(hp);

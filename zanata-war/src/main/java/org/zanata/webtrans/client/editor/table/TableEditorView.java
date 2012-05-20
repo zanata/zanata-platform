@@ -27,6 +27,7 @@ import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.Resources;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.LoadingPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
@@ -64,10 +65,10 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    }
 
    @Inject
-   public TableEditorView(NavigationMessages messages, WorkspaceContext workspaceContext, final Resources resources, final SourceContentsPresenter sourceContentsPresenter, TargetContentsPresenter targetContentsPresenter)
+   public TableEditorView(NavigationMessages messages, WorkspaceContext workspaceContext, final WebTransMessages webTransMessages, final Resources resources, final SourceContentsPresenter sourceContentsPresenter, TargetContentsPresenter targetContentsPresenter)
    {
       this(messages, new RedirectingTableModel<TransUnit>(), workspaceContext, sourceContentsPresenter, targetContentsPresenter);
-      loadingPanel = new LoadingPanel(resources);
+      loadingPanel = new LoadingPanel(webTransMessages, resources);
       loadingPanel.hide();
    }
 

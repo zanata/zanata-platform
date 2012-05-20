@@ -26,7 +26,9 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.ImageResourceRenderer;
 import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.SelectionModel;
@@ -38,6 +40,8 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
    private static final int REPLACE_COLUMN_INDEX = 3;
 
    private static CellTableResources cellTableResources;
+   private org.zanata.webtrans.client.resources.Resources resources;
+   private WebTransMessages messages;
 
    private static DefaultSelectionEventManager<TransUnitReplaceInfo> selectionManager = null;
 
@@ -46,7 +50,8 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
    private TextColumn<TransUnitReplaceInfo> rowIndexColumn;
    private Column<TransUnitReplaceInfo, List<String>> sourceColumn;
    private Column<TransUnitReplaceInfo, List<String>> targetColumn;
-   private ReplaceColumn replaceButtonColumn;
+   private ReplaceActionColumn replaceButtonColumn;
+
 
    public static void setHighlightString(String highlightString)
    {
@@ -58,14 +63,18 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
          Delegate<TransUnitReplaceInfo> undoDelegate,
          final SelectionModel<TransUnitReplaceInfo> selectionModel,
          ValueChangeHandler<Boolean> selectAllHandler,
-         final WebTransMessages messages)
+         final WebTransMessages messages,
+         org.zanata.webtrans.client.resources.Resources resources)
    {
       super(15, getCellTableResources());
+
+      this.messages = messages;
+      this.resources = resources;
 
       rowIndexColumn = buildRowIndexColumn();
       sourceColumn = buildSourceColumn();
       targetColumn = buildTargetColumn();
-      replaceButtonColumn = new ReplaceColumn(replaceDelegate, undoDelegate);
+      replaceButtonColumn = new ReplaceActionColumn(replaceDelegate, undoDelegate);
 
       setWidth("100%", true);
 
@@ -185,12 +194,14 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
    }
 
 
-   private class ReplaceColumn extends Column<TransUnitReplaceInfo, TransUnitReplaceInfo>
+   private class ReplaceActionColumn extends Column<TransUnitReplaceInfo, TransUnitReplaceInfo>
    {
 
-      public ReplaceColumn(Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate)
+      public ReplaceActionColumn(Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate)
       {
-         super(new UndoableTransUnitActionCell("Replace", replaceDelegate, "Undo", undoDelegate));
+         super(new ReplaceActionCell(replaceDelegate, undoDelegate));
+         this.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+         this.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
       }
 
       @Override
@@ -200,55 +211,64 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
       }
    }
 
-   private class UndoableTransUnitActionCell extends ActionCell<TransUnitReplaceInfo>
+   private class ReplaceActionCell extends ActionCell<TransUnitReplaceInfo>
    {
       private Delegate<TransUnitReplaceInfo> undoDelegate;
+      private final SafeHtml replacingHtml;
       private final SafeHtml undoHtml;
+      private final SafeHtml undoingHtml;
 
-      public UndoableTransUnitActionCell(SafeHtml actionLabel, Delegate<TransUnitReplaceInfo> actionDelegate, SafeHtml undoLabel, Delegate<TransUnitReplaceInfo> undoDelegate) {
-         super(actionLabel, actionDelegate);
+      public ReplaceActionCell(Delegate<TransUnitReplaceInfo> actionDelegate, Delegate<TransUnitReplaceInfo> undoDelegate) {
+         super(SafeHtmlUtils.fromString(messages.replace()), actionDelegate);
          this.undoDelegate = undoDelegate;
-         // TODO make this a 'replaced' message with undo button or link
-         this.undoHtml = new SafeHtmlBuilder().appendHtmlConstant(
-             "<button type=\"button\" tabindex=\"-1\">").append(undoLabel).appendHtmlConstant(
-             "</button>").toSafeHtml();
-      }
-
-      public UndoableTransUnitActionCell(String actionLabel, Delegate<TransUnitReplaceInfo> actionDelegate, String undoLabel, Delegate<TransUnitReplaceInfo> undoDelegate)
-      {
-         this(SafeHtmlUtils.fromString(actionLabel), actionDelegate, SafeHtmlUtils.fromString(undoLabel), undoDelegate);
+         ImageResourceRenderer renderer = new ImageResourceRenderer();
+         SafeHtml spinner = renderer.render(resources.spinner());
+         replacingHtml = new SafeHtmlBuilder().append(spinner)
+               .appendHtmlConstant("<br/>")
+               .appendHtmlConstant(messages.replacing())
+               .toSafeHtml();
+         this.undoHtml = new SafeHtmlBuilder()
+               .appendHtmlConstant(messages.replaced())
+               .appendHtmlConstant("<button type=\"button\" tabindex=\"-1\">")
+               .appendHtmlConstant(messages.undo())
+               .appendHtmlConstant("</button>")
+               .toSafeHtml();
+         this.undoingHtml = new SafeHtmlBuilder().append(spinner)
+               .appendHtmlConstant("<br/>")
+               .appendHtmlConstant(messages.undoInProgress())
+               .toSafeHtml();
       }
 
       @Override
       public void render(com.google.gwt.cell.client.Cell.Context context, TransUnitReplaceInfo value, SafeHtmlBuilder sb)
       {
-         if (value.isReplaceable())
+         switch (value.getState())
          {
-            // render default button
+         case Replaceable:
             super.render(context, value, sb);
-         }
-         else if (value.isUndoable())
-         {
-            // render undo button
+            break;
+         case Replacing:
+            sb.append(replacingHtml);
+            break;
+         case Replaced:
             sb.append(undoHtml);
-         }
-         else
-         {
-            //assume processing
-            // TODO set to show "replacing..." or "processing..."
+            break;
+         case Undoing:
+            sb.append(undoingHtml);
+            break;
          }
       }
 
       @Override
       protected void onEnterKeyDown(Context context, Element parent, TransUnitReplaceInfo value, NativeEvent event, ValueUpdater<TransUnitReplaceInfo> valueUpdater) {
-         // FIXME see above
-         if (value.isReplaceable())
+         switch (value.getState())
          {
+         case Replaceable:
             super.onEnterKeyDown(context, parent, value, event, valueUpdater);
-         }
-         else if (value.isUndoable())
-         {
+            break;
+         case Replaced:
             undoDelegate.execute(value);
+            break;
          }
          // else ignore (is processing)
       };

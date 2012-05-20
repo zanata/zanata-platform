@@ -23,7 +23,7 @@
                 </g:cell>
             </g:HorizontalPanel>
         </g:layer>
-        <g:layer top='64px' bottom="80px">
+        <g:layer top='64px' bottom='80px'>
             <g:ScrollPanel styleName='projectWideSearchResultsPanel' >
                 <g:VerticalPanel ui:field='searchResultsPanel' width="100%" />
             </g:ScrollPanel>

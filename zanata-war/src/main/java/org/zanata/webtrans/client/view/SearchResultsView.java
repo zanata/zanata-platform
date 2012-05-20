@@ -24,6 +24,7 @@ import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter.TransUnitReplaceInfo;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.ui.LoadingPanel;
 import org.zanata.webtrans.client.ui.SearchResultsDocumentTable;
 
 import com.google.gwt.cell.client.ActionCell.Delegate;
@@ -42,6 +43,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -83,13 +85,27 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    @UiField
    ListBox searchFieldsSelect;
 
+   LoadingPanel searchingIndicator;
+
+   Label noResultsLabel;
+
    private final WebTransMessages messages;
+
+   private Resources resources;
+
+   private HandlerRegistration currentUndoMultipleHandler;
 
    @Inject
    public SearchResultsView(Resources resources, final WebTransMessages webTransMessages)
    {
       messages = webTransMessages;
+      this.resources = resources;
       initWidget(uiBinder.createAndBindUi(this));
+      searchingIndicator = new LoadingPanel(messages.searching(), resources);
+      searchingIndicator.setModal(false);
+      searchingIndicator.hide();
+      noResultsLabel = new Label(messages.noSearchResults());
+      noResultsLabel.addStyleName("projectWideSearchNoResultsLabel");
    }
 
    @Override
@@ -144,6 +160,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    public void clearAll()
    {
       searchResultsPanel.clear();
+      searchResultsPanel.add(noResultsLabel);
    }
 
    @Override
@@ -159,13 +176,17 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
-   public HandlerRegistration setReplacementMessage(String message, ClickHandler undoButtonHandler)
+   public void setReplacementMessage(String message, ClickHandler undoButtonHandler)
    {
       replaceAllFeedbackLabel.setText(message);
       replaceAllFeedbackLabel.setVisible(true);
 
       replaceAllUndoLabel.setVisible(true);
-      return replaceAllUndoLabel.addClickHandler(undoButtonHandler);
+      if (currentUndoMultipleHandler != null)
+      {
+         currentUndoMultipleHandler.removeHandler();
+      }
+      currentUndoMultipleHandler = replaceAllUndoLabel.addClickHandler(undoButtonHandler);
    }
 
    @Override
@@ -184,8 +205,10 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
          SelectionModel<TransUnitReplaceInfo> selectionModel,
          ValueChangeHandler<Boolean> selectAllHandler)
    {
+      // ensure 'no results' message is no longer visible
+      noResultsLabel.removeFromParent();
       addDocumentLabel(docName, viewDocClickHandler, searchDocClickHandler, selectAllHandler);
-      SearchResultsDocumentTable table = new SearchResultsDocumentTable(replaceDelegate, undoDelegate, selectionModel, selectAllHandler, messages);
+      SearchResultsDocumentTable table = new SearchResultsDocumentTable(replaceDelegate, undoDelegate, selectionModel, selectAllHandler, messages, resources);
       searchResultsPanel.add(table);
       table.addStyleName("projectWideSearchResultsDocumentBody");
       return table;
@@ -200,8 +223,8 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       docLabel.addStyleName("projectWideSearchResultsDocumentTitle");
       docHeading.add(docLabel);
 
-      CheckBox selectWholeDocCheckBox = new CheckBox("Select entire document");
-      selectWholeDocCheckBox.setTitle("Select or deselect all matching text flows in this document");
+      CheckBox selectWholeDocCheckBox = new CheckBox(messages.selectAllInDocument());
+      selectWholeDocCheckBox.setTitle(messages.selectAllInDocumentDetailed());
       selectWholeDocCheckBox.addValueChangeHandler(selectAllHandler);
       docHeading.add(selectWholeDocCheckBox);
 
@@ -222,4 +245,16 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       searchResultsPanel.add(docHeading);
    }
 
+   @Override
+   public void setSearching(boolean searching)
+   {
+      if (searching)
+      {
+         searchingIndicator.center();
+      }
+      else
+      {
+         searchingIndicator.hide();
+      }
+   }
 }

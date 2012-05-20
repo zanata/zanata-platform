@@ -549,6 +549,16 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	background-color: #e0e8ee;
 }
 
+.projectWideSearchNoResultsLabel
+{
+	width: 100%;
+	margin-top: 70px;
+	font-style: italic;
+	font-size: 1.3em;
+	color: #666666;
+	text-align: center;
+}
+
 .projectWideSearchResultsDocumentHeader
 {
 	padding: 10px;
