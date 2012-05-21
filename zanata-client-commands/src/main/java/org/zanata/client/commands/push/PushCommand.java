@@ -334,7 +334,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
          log.info("pushing source doc [name={} size={}] to server", srcDoc.getName(), srcDoc.getTextFlows().size());
          boolean copyTrans = getOpts().getCopyTrans();
 
-         ConsoleUtils.startProgressFeedback(); 
+         ConsoleUtils.startProgressFeedback();
          ClientResponse<String> putResponse = sourceDocResource.putResource(docUri, srcDoc, extensions, copyTrans);
          ConsoleUtils.endProgressFeedback();
 

@@ -61,8 +61,11 @@ public class ConsoleUtils
       @Override
       public boolean cancel()
       {
-         System.out.print(" " + formatDuration(start, new Date()));
-         System.out.println();
+         if( start != null )
+         {
+            System.out.print(" " + formatDuration(start, new Date()));
+            System.out.println();
+         }
          return super.cancel();
       }
    }
