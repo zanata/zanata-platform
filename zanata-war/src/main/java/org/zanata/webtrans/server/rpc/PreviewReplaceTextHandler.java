@@ -43,7 +43,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
  * @author David Mason, damason@redhat.com
  * 
  */
-@Name("webtrans.gwt.ReplaceTextHandler")
+@Name("webtrans.gwt.PreviewReplaceTextHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(PreviewReplaceText.class)
 public class PreviewReplaceTextHandler extends AbstractActionHandler<PreviewReplaceText, PreviewReplaceTextResult>
