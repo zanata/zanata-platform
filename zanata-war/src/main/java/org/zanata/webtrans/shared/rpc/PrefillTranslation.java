@@ -51,7 +51,7 @@ public class PrefillTranslation extends AbstractWorkspaceAction<NoOpResult>
       return approvedThreshold;
    }
 
-   public DocumentId getDocId()
+   public DocumentId getDocumentId()
    {
       return docId;
    }

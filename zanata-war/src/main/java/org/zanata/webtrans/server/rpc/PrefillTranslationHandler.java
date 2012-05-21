@@ -28,7 +28,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
@@ -43,7 +42,6 @@ import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
-import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
@@ -51,7 +49,6 @@ import org.zanata.webtrans.shared.rpc.PrefillTranslation;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -96,7 +93,7 @@ public class PrefillTranslationHandler extends AbstractActionHandler<PrefillTran
 
       HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
 
-      List<HTextFlow> hTextFlows = textFlowDAO.getAllUntranslatedTextFlowByDocId(action.getDocId().getId(), hLocale);
+      List<HTextFlow> hTextFlows = textFlowDAO.getAllUntranslatedTextFlowByDocumentId(action.getDocumentId().getId(), hLocale);
 
       log.info("about to prefill #{} textflow for action {}", hTextFlows.size(), action);
 

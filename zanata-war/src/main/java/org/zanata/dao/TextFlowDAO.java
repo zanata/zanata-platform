@@ -47,6 +47,7 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.CaseInsensitiveNgramAnalyzer;
 import org.zanata.hibernate.search.IndexFieldLabels;
@@ -279,16 +280,29 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       return new ArrayList<Long>(idSet);
    }
 
-   public List<HTextFlow> getAllUntranslatedTextFlowByDocId(Long documentId, HLocale hLocale)
+   /**
+    * for a given locale, we first find text flow where has no target (targets map has no key equals the locale),
+    * or the text flow target has zero size contents AND content state is NEW.
+    *
+    * @param documentId document id (NOT the String type docId)
+    * @param hLocale locale
+    * @return a list of HTextFlow that has no translation for given locale.
+    */
+   public List<HTextFlow> getAllUntranslatedTextFlowByDocumentId(Long documentId, HLocale hLocale)
    {
-      String query = "from HTextFlow tf where tf.obsolete = 0 and tf.document.id = :docId and :locale not in indices(tf.targets) ";
+      String query = "select distinct tf from HTextFlow tf left join tf.targets " +
+            "where tf.obsolete = 0 and tf.document.id = :docId and (:locale not in indices(tf.targets) or " +
+            "exists (select tft.id from HTextFlowTarget tft " +
+            "where tft.textFlow.id = tf.id and tft.locale = :locale and size(tft.contents) = 0 and tft.state = :contentState))";
       Query textFlowQuery = getSession().createQuery(query);
       textFlowQuery.setParameter("docId", documentId);
       textFlowQuery.setParameter("locale", hLocale);
+      textFlowQuery.setParameter("contentState", ContentState.New);
       textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getAllUntranslatedTextFlowByDocId");
       @SuppressWarnings("unchecked")
       List<HTextFlow> result = textFlowQuery.list();
-      log.debug("{} untranslated textFlow in doc {}", result.size(), documentId);
+      log.debug("doc {} has {} untranslated textFlow for locale {}",
+            new Object [] { documentId, result.size(), hLocale.getLocaleId()});
       return result;
    }
 }

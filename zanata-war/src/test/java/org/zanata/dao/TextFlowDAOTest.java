@@ -61,11 +61,11 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       List<HTextFlow> all = dao.getTransUnitList(1L);
       log.info("all text flow: {}", all);
 
-      List<HTextFlow> result = dao.getAllUntranslatedTextFlowByDocId(1L, deLocale);
+      List<HTextFlow> result = dao.getAllUntranslatedTextFlowByDocumentId(1L, deLocale);
       assertThat(result.size(), is(0));
 
       HLocale frLocale = getEm().find(HLocale.class, 6L);
-      result = dao.getAllUntranslatedTextFlowByDocId(1L, frLocale);
+      result = dao.getAllUntranslatedTextFlowByDocumentId(1L, frLocale);
       assertThat(result.size(), is(1));
    }
 
