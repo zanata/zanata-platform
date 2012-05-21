@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -37,7 +37,6 @@ public class ReplaceText extends UpdateTransUnit
    @SuppressWarnings("unused")
    private ReplaceText()
    {
-      super();
    }
 
    public ReplaceText(TransUnit transUnit, String searchText, String replaceText, boolean isCaseSensitive)

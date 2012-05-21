@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -44,7 +44,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 @ActionHandlerFor(ReplaceText.class)
 public class ReplaceTextHandler extends AbstractActionHandler<ReplaceText, UpdateTransUnitResult>
 {
-   private static final Logger LOGGER = LoggerFactory.getLogger(ReplaceTextHandler.class);
+   private static final Logger log = LoggerFactory.getLogger(ReplaceTextHandler.class);
 
    @In(value = "webtrans.gwt.UpdateTransUnitHandler", create = true)
    UpdateTransUnitHandler updateTransUnitHandler;
@@ -53,6 +53,21 @@ public class ReplaceTextHandler extends AbstractActionHandler<ReplaceText, Updat
    public UpdateTransUnitResult execute(ReplaceText action, ExecutionContext context) throws ActionException
    {
       //TODO in an optimal world we should do security check before making all the effort. Wait for SecurityService implementation
+      replaceTextInUpdateRequests(action);
+
+      return updateTransUnitHandler.execute(action, context);
+   }
+
+   /**
+    * Replaces occurrences of a search string with a replacement string in all
+    * content strings in action.getUpdateRequests()
+    * 
+    * @param action action containing update requests that will be modified
+    * @throws ActionException if searchText or replaceText in action are null or
+    *            empty
+    */
+   public static void replaceTextInUpdateRequests(ReplaceText action) throws ActionException
+   {
       String searchText = action.getSearchText();
       String replaceText = action.getReplaceText();
       if (Strings.isNullOrEmpty(searchText) || Strings.isNullOrEmpty(replaceText))
@@ -61,12 +76,12 @@ public class ReplaceTextHandler extends AbstractActionHandler<ReplaceText, Updat
       }
 
       int flags = action.isCaseSensitive() ? Pattern.UNICODE_CASE : Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
-      Pattern pattern = Pattern.compile(Pattern.quote(action.getSearchText()), flags);
+      Pattern pattern = Pattern.compile(Pattern.quote(searchText), flags);
 
       for (TransUnitUpdateRequest request : action.getUpdateRequests())
       {
          List<String> contents = request.getNewContents();
-         LOGGER.debug("transUnit {} before replace [{}]", request.getTransUnitId(), contents);
+         log.debug("transUnit {} before replace [{}]", request.getTransUnitId(), contents);
          for (int i = 0; i < contents.size(); i++)
          {
             String content = contents.get(i);
@@ -74,10 +89,8 @@ public class ReplaceTextHandler extends AbstractActionHandler<ReplaceText, Updat
             String newContent = matcher.replaceAll(replaceText);
             contents.set(i, newContent);
          }
-         LOGGER.debug("transUnit {} after replace [{}]", request.getTransUnitId(), contents);
+         log.debug("transUnit {} after replace [{}]", request.getTransUnitId(), contents);
       }
-
-      return updateTransUnitHandler.execute(action, context);
    }
 
    @Override
