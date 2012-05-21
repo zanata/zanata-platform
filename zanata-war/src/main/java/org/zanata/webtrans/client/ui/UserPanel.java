@@ -9,9 +9,8 @@ public class UserPanel extends HorizontalPanel implements HasManageUserPanel
    private static final long serialVersionUID = 1L;
    private Image userImage;
    private Label personNameLabel;
-   private Label sessionLabel;
    private String personName;
-   private HorizontalPanel colorContainer;
+   private Label colorLabel;
 
    public UserPanel(String personName, String imgUrl)
    {
@@ -20,53 +19,22 @@ public class UserPanel extends HorizontalPanel implements HasManageUserPanel
 
       userImage = new Image(imgUrl);
       personNameLabel = new Label(personName);
-      sessionLabel = new Label();
-      colorContainer = new HorizontalPanel();
-      colorContainer.setStylePrimaryName("colorContainer");
+      colorLabel = new Label();
 
       this.add(userImage);
-      this.add(colorContainer);
+      this.add(colorLabel);
       this.add(personNameLabel);
-      this.add(sessionLabel);
 
       this.setCellWidth(userImage, "16px");
-   }
-
-
-   @Override
-   public void updateSessionLabel(String session)
-   {
-      sessionLabel.setText(session);
-   }
-
-   @Override
-   public void clearColorList()
-   {
-      colorContainer.clear();
-   }
-
-   private Label getColorLabel(String color)
-   {
-      Label colorLabel = new Label();
-      colorLabel.getElement().getStyle().setProperty("borderColor", color);
-      colorLabel.getElement().getStyle().setProperty("borderWidth", "1px");
-      colorLabel.getElement().getStyle().setProperty("borderStyle", "solid");
-      colorLabel.getElement().getStyle().setProperty("height", "16px");
-
-      return colorLabel;
-   }
-
-   @Override
-   public void addColor(String color)
-   {
-      colorContainer.add(getColorLabel(color));
    }
 
    @Override
    public void setColor(String color)
    {
-      colorContainer.clear();
-      colorContainer.add(getColorLabel(color));
+      colorLabel.getElement().getStyle().setProperty("borderColor", color);
+      colorLabel.getElement().getStyle().setProperty("borderWidth", "1px");
+      colorLabel.getElement().getStyle().setProperty("borderStyle", "solid");
+      colorLabel.getElement().getStyle().setProperty("height", "16px");
    }
 
    @Override

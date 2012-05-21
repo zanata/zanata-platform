@@ -277,34 +277,43 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
 
    }
 
+   private void setSourceColumnBorder(int row, String color, String borderWidth)
+   {
+      getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderTopColor", color);
+      getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderTopStyle", "solid");
+      getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderTopWidth", borderWidth);
+
+      getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderLeftColor", color);
+      getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderLeftStyle", "solid");
+      getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderLeftWidth", borderWidth);
+
+      getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderBottomColor", color);
+      getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderBottomStyle", "solid");
+      getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderBottomWidth", borderWidth);
+   }
+
+   private void setTargetColumnBorder(int row, String color, String borderWidth)
+   {
+      getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderTopColor", color);
+      getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderTopStyle", "solid");
+      getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderTopWidth", borderWidth);
+
+      getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderRightColor", color);
+      getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderRightStyle", "solid");
+      getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderRightWidth", borderWidth);
+
+      getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderBottomColor", color);
+      getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderBottomStyle", "solid");
+      getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderBottomWidth", borderWidth);
+   }
+
    @Override
    public void updateRowBorder(int row, String color)
    {
       if (row < getDataTable().getRowCount())
       {
-         getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderTopColor", color);
-         getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderTopStyle", "solid");
-         getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderTopWidth", "2px");
-
-         getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderLeftColor", color);
-         getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderLeftStyle", "solid");
-         getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderLeftWidth", "2px");
-
-         getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderBottomColor", color);
-         getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderBottomStyle", "solid");
-         getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderBottomWidth", "2px");
-
-         getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderTopColor", color);
-         getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderTopStyle", "solid");
-         getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderTopWidth", "2px");
-
-         getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderRightColor", color);
-         getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderRightStyle", "solid");
-         getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderRightWidth", "2px");
-
-         getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderBottomColor", color);
-         getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderBottomStyle", "solid");
-         getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderBottomWidth", "2px");
+         setSourceColumnBorder(row, color, "2px");
+         setTargetColumnBorder(row, color, "2px");
       }
    }
 
@@ -313,29 +322,8 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    {
       if (row < getDataTable().getRowCount())
       {
-         getDataTable().getCellFormatter().getElement(row, 0).getStyle().clearProperty("borderTopColor");
-         getDataTable().getCellFormatter().getElement(row, 0).getStyle().clearProperty("borderTopStyle");
-         getDataTable().getCellFormatter().getElement(row, 0).getStyle().clearProperty("borderTopWidth");
-
-         getDataTable().getCellFormatter().getElement(row, 0).getStyle().clearProperty("borderLeftColor");
-         getDataTable().getCellFormatter().getElement(row, 0).getStyle().clearProperty("borderLeftStyle");
-         getDataTable().getCellFormatter().getElement(row, 0).getStyle().clearProperty("borderLeftWidth");
-
-         getDataTable().getCellFormatter().getElement(row, 0).getStyle().clearProperty("borderBottomColor");
-         getDataTable().getCellFormatter().getElement(row, 0).getStyle().clearProperty("borderBottomStyle");
-         getDataTable().getCellFormatter().getElement(row, 0).getStyle().clearProperty("borderBottomWidth");
-
-         getDataTable().getCellFormatter().getElement(row, 1).getStyle().clearProperty("borderTopColor");
-         getDataTable().getCellFormatter().getElement(row, 1).getStyle().clearProperty("borderTopStyle");
-         getDataTable().getCellFormatter().getElement(row, 1).getStyle().clearProperty("borderTopWidth");
-
-         getDataTable().getCellFormatter().getElement(row, 1).getStyle().clearProperty("borderRightColor");
-         getDataTable().getCellFormatter().getElement(row, 1).getStyle().clearProperty("borderRightStyle");
-         getDataTable().getCellFormatter().getElement(row, 1).getStyle().clearProperty("borderRightWidth");
-
-         getDataTable().getCellFormatter().getElement(row, 1).getStyle().clearProperty("borderBottomColor");
-         getDataTable().getCellFormatter().getElement(row, 1).getStyle().clearProperty("borderBottomStyle");
-         getDataTable().getCellFormatter().getElement(row, 1).getStyle().clearProperty("borderBottomWidth");
+         setSourceColumnBorder(row, "", "");
+         setTargetColumnBorder(row, "", "");
       }
    }
 

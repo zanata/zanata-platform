@@ -10,7 +10,6 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,8 +20,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
-import org.zanata.webtrans.client.events.TransUnitEditEvent;
-import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -85,31 +82,34 @@ public class WorkspaceUsersPresenterTest
       Person person1 = new Person(new PersonId("person1"), "John Smith", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16");
       Person person2 = new Person(new PersonId("person2"), "Smith John", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16");
       Person person3 = new Person(new PersonId("person3"), "Smohn Jith", "http://www.gravatar.com/avatar/smohn@zanata.org?d=mm&s=16");
-
       
+      SessionId sessionId1 = new SessionId("sessionId1");
+      SessionId sessionId2 = new SessionId("sessionId2");
+      SessionId sessionId3 = new SessionId("sessionId3");
+
       HasManageUserPanel mockPanel1 = createMock(HasManageUserPanel.class);
       HasManageUserPanel mockPanel2 = createMock(HasManageUserPanel.class);
       HasManageUserPanel mockPanel3 = createMock(HasManageUserPanel.class);
 
-      UserPanelSessionItem mockItem1 = new UserPanelSessionItem(mockPanel1, new ArrayList<String>());
-      UserPanelSessionItem mockItem2 = new UserPanelSessionItem(mockPanel2, new ArrayList<String>());
-      UserPanelSessionItem mockItem3 = new UserPanelSessionItem(mockPanel3, new ArrayList<String>());
+      UserPanelSessionItem mockItem1 = new UserPanelSessionItem(mockPanel1, person1);
+      UserPanelSessionItem mockItem2 = new UserPanelSessionItem(mockPanel2, person2);
+      UserPanelSessionItem mockItem3 = new UserPanelSessionItem(mockPanel3, person3);
 
       expect(mockSessionService.getColor("sessionId1")).andReturn("color1");
       expect(mockSessionService.getColor("sessionId2")).andReturn("color2");
       expect(mockSessionService.getColor("sessionId3")).andReturn("color3");
 
-      expect(mockSessionService.getUserPanel(person1)).andReturn(mockItem1);
-      expect(mockSessionService.getUserPanel(person2)).andReturn(mockItem2);
-      expect(mockSessionService.getUserPanel(person3)).andReturn(mockItem3);
+      expect(mockSessionService.getUserPanel(sessionId1)).andReturn(mockItem1);
+      expect(mockSessionService.getUserPanel(sessionId2)).andReturn(mockItem2);
+      expect(mockSessionService.getUserPanel(sessionId3)).andReturn(mockItem3);
       
-      mockSessionService.updateTranslatorStatus(person1, null);
+      mockSessionService.updateTranslatorStatus(sessionId1, null);
       expectLastCall().once();
 
-      mockSessionService.updateTranslatorStatus(person2, null);
+      mockSessionService.updateTranslatorStatus(sessionId2, null);
       expectLastCall().once();
 
-      mockSessionService.updateTranslatorStatus(person3, null);
+      mockSessionService.updateTranslatorStatus(sessionId3, null);
       expectLastCall().once();
 
       expect(mockDisplay.getSendButton()).andReturn(mockSendButton);

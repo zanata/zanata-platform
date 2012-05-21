@@ -56,6 +56,7 @@ import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
 import org.zanata.webtrans.shared.auth.Identity;
+import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -207,26 +208,26 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       if (event.getSelectedTransUnit() != null)
       {
-         updateEditorTranslatorList(event.getSelectedTransUnit().getId(), event.getPerson(), event.getSessionId().getValue());
+         updateEditorTranslatorList(event.getSelectedTransUnit().getId(), event.getPerson(), event.getSessionId());
       }
    }
 
-   private void updateEditorTranslatorList(TransUnitId selectedTransUnitId, Person person, String sessionId)
+   private void updateEditorTranslatorList(TransUnitId selectedTransUnitId, Person person, SessionId sessionId)
    {
       if (cellEditor.getTargetCell() != null)
       {
-         if (!sessionId.equals(identity.getSessionId().getValue()) && cellEditor.getTargetCell().getId().equals(selectedTransUnitId))
+         if (!sessionId.equals(identity.getSessionId()) && cellEditor.getTargetCell().getId().equals(selectedTransUnitId))
          {
             for (ToggleEditor editor : currentEditors)
             {
-               editor.addTranslator(person.getName(), sessionService.getColor(sessionId));
+               editor.addTranslator(person.getName(), sessionService.getColor(sessionId.getValue()));
             }
          }
          else
          {
             for (ToggleEditor editor : currentEditors)
             {
-               editor.removeTranslator(person.getName(), sessionService.getColor(sessionId));
+               editor.removeTranslator(person.getName(), sessionService.getColor(sessionId.getValue()));
             }
          }
       }
@@ -241,14 +242,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
             editor.clearTranslatorList();
          }
 
-         for (Map.Entry<Person, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
+         for (Map.Entry<SessionId, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
          {
             if (entry.getValue().getSelectedTransUnit() != null)
             {
-               for (String sessionId : entry.getValue().getSessionList())
-               {
-                  updateEditorTranslatorList(entry.getValue().getSelectedTransUnit().getId(), entry.getKey(), sessionId);
-               }
+               updateEditorTranslatorList(entry.getValue().getSelectedTransUnit().getId(), entry.getValue().getPerson(), entry.getKey());
             }
          }
       }

@@ -364,16 +364,16 @@ tr.TableEditorRow.selected {
 }
 
 tr.TableEditorRow.selected td.TableEditorCell {
-	border-top: 3px solid #666666;
-	border-bottom: 3px solid #666666;
+	/* border-top: 3px solid #666666;
+	border-bottom: 3px solid #666666; */
 }
 
 tr.TableEditorRow.selected td.TableEditorCell-Source {
-	border-left: 3px solid #666666;
+	/* border-left: 3px solid #666666; */
 }
 
 tr.TableEditorRow.selected td.TableEditorCell-Target {
-	border-right: 3px solid #666666;
+	/* border-right: 3px solid #666666; */
 }
 
 .TableEditorContent,.TableEditorContent-Edit,.TableEditorContent-Empty {
@@ -786,8 +786,4 @@ td.FuzzyStateDecoration div div pre, td.ApprovedStateDecoration div div pre
 {
 	padding-top: 3px;
 	padding-left: 1px;
-}
-        
-.colorContainer td {
-	padding-top:0;
 }

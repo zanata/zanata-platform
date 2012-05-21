@@ -27,10 +27,11 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
-import org.zanata.webtrans.shared.model.Person;
+import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.user.client.Random;
 import com.google.inject.Inject;
@@ -43,7 +44,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class UserSessionService implements TransUnitEditEventHandler
 {
-   private final HashMap<Person, UserPanelSessionItem> userSessionMap;
+   private final HashMap<SessionId, UserPanelSessionItem> userSessionMap;
 
    public final HashMap<String, String> colorListMap;
 
@@ -53,7 +54,7 @@ public class UserSessionService implements TransUnitEditEventHandler
    @Inject
    public UserSessionService(final EventBus eventBus)
    {
-      userSessionMap = new HashMap<Person, UserPanelSessionItem>();
+      userSessionMap = new HashMap<SessionId, UserPanelSessionItem>();
       
       colorListMap = new HashMap<String, String>();
 
@@ -63,14 +64,14 @@ public class UserSessionService implements TransUnitEditEventHandler
    @Override
    public void onTransUnitEdit(TransUnitEditEvent event)
    {
-      updateTranslatorStatus(event.getPerson(), event.getSelectedTransUnit());
+      updateTranslatorStatus(event.getSessionId(), event.getSelectedTransUnit());
    }
 
-   public void updateTranslatorStatus(Person person, TransUnit selectedTransUnit)
+   public void updateTranslatorStatus(SessionId sessionId, TransUnit selectedTransUnit)
    {
-      if (userSessionMap.containsKey(person) && selectedTransUnit != null)
+      if (userSessionMap.containsKey(sessionId) && selectedTransUnit != null)
       {
-         userSessionMap.get(person).setSelectedTransUnit(selectedTransUnit);
+         userSessionMap.get(sessionId).setSelectedTransUnit(selectedTransUnit);
       }
    }
 
@@ -79,29 +80,28 @@ public class UserSessionService implements TransUnitEditEventHandler
       return userSessionMap.size();
    }
 
-   public UserPanelSessionItem getUserPanel(Person person)
+   public UserPanelSessionItem getUserPanel(SessionId sessionId)
    {
-      return userSessionMap.get(person);
+      return userSessionMap.get(sessionId);
    }
 
-   public void addUser(Person person, UserPanelSessionItem item)
+   public void addUser(SessionId sessionId, UserPanelSessionItem item)
    {
-      userSessionMap.put(person, item);
+      userSessionMap.put(sessionId, item);
    }
 
-   public void removeUser(Person person)
+   public void removeUser(SessionId sessionId)
    {
-      userSessionMap.remove(person);
+      userSessionMap.remove(sessionId);
    }
 
-   public Map<Person, UserPanelSessionItem> getUserSessionMap()
+   public Map<SessionId, UserPanelSessionItem> getUserSessionMap()
    {
       return userSessionMap;
    }
 
    public String getColor(String sessionId)
    {
-
       if (colorListMap.containsKey(sessionId))
       {
          return colorListMap.get(sessionId);
@@ -138,4 +138,5 @@ public class UserSessionService implements TransUnitEditEventHandler
       CssColor randomColor = CssColor.make(rndRedColor, rndGreenColor, rndBlueColor);
       return randomColor.value();
    }
+
 }

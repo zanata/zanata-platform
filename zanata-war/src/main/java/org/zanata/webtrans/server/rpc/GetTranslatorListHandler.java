@@ -25,8 +25,6 @@ import org.zanata.webtrans.shared.model.PersonSessionDetails;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 
-import com.google.common.collect.ImmutableSet;
-
 @Name("webtrans.gwt.GetTranslatorListHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetTranslatorList.class)
@@ -67,7 +65,7 @@ public class GetTranslatorListHandler extends AbstractActionHandler<GetTranslato
          translators.put(entry.getKey(), entry.getValue());
       }
 
-      return new GetTranslatorListResult(translators, ImmutableSet.copyOf(result.values()).size());
+      return new GetTranslatorListResult(translators, result.size());
    }
 
    @Override

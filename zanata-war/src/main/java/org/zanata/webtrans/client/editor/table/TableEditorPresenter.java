@@ -68,7 +68,6 @@ import org.zanata.webtrans.shared.auth.AuthorizationError;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
@@ -482,11 +481,11 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onExitWorkspace(ExitWorkspaceEvent event)
          {
-            TransUnit tu = sessionService.getUserPanel(event.getPerson()).getSelectedTransUnit();
+            TransUnit tu = sessionService.getUserPanel(event.getSessionId()).getSelectedTransUnit();
             Integer row = navigationService.getRowNumber(tu, display.getRowValues());
             if (row != null)
             {
-               display.resetRowBorder(row);
+               resetBorder(row, event.getSessionId());
             }
          }
       }));
@@ -520,21 +519,22 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
    private void resetBorder(int prevRow, SessionId sessionId)
    {
-      display.resetRowBorder(prevRow);
-
       // Check if other users is in that row
-      for (Map.Entry<Person, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
+      for (Map.Entry<SessionId, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
       {
-         if (entry.getValue().getSelectedTransUnit() != null && !sessionId.getValue().equals(entry.getValue().getSessionList().get(0)))
+         if (entry.getValue().getSelectedTransUnit() != null && !sessionId.getValue().equals(entry.getKey()))
          {
             Integer row = navigationService.getRowNumber(entry.getValue().getSelectedTransUnit(), display.getRowValues());
             if (row != null && row == prevRow)
             {
-               display.updateRowBorder(prevRow, sessionService.getColor(entry.getValue().getSessionList().get(0)));
-               break;
+               display.updateRowBorder(prevRow, sessionService.getColor(entry.getKey().getValue()));
+               return;
             }
          }
       }
+
+      display.resetRowBorder(prevRow);
+
    }
 
    private void filterTransUnitsView(FilterViewEvent event)

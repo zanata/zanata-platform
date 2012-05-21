@@ -1,7 +1,6 @@
 package org.zanata.webtrans.shared.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 import org.zanata.webtrans.client.ui.HasManageUserPanel;
 
@@ -10,13 +9,13 @@ public class UserPanelSessionItem implements Serializable
    private static final long serialVersionUID = 1L;
 
    private HasManageUserPanel panel;
-   private ArrayList<String> sessionList;
+   private Person person;
    private TransUnit selectedTransUnit;
 
-   public UserPanelSessionItem(HasManageUserPanel panel, ArrayList<String> sessionList)
+   public UserPanelSessionItem(HasManageUserPanel panel, Person person)
    {
       this.panel = panel;
-      this.sessionList = sessionList;
+      this.person = person;
    }
 
    public HasManageUserPanel getPanel()
@@ -24,13 +23,9 @@ public class UserPanelSessionItem implements Serializable
       return panel;
    }
 
-   public ArrayList<String> getSessionList()
+   public Person getPerson()
    {
-      if (sessionList == null)
-      {
-         sessionList = new ArrayList<String>();
-      }
-      return sessionList;
+      return person;
    }
 
    public TransUnit getSelectedTransUnit()

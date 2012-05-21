@@ -1,6 +1,5 @@
 package org.zanata.webtrans.client.presenter;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -111,43 +110,12 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
    public void removeTranslator(SessionId sessionId, Person person)
    {
-      UserPanelSessionItem item = sessionService.getUserPanel(person);
+      UserPanelSessionItem item = sessionService.getUserPanel(sessionId);
+      sessionService.removeUser(sessionId);
 
-      if (item != null)
-      {
-         item.getSessionList().remove(sessionId.toString());
-         if (item.getSessionList().size() == 1)
-         {
-            item.getPanel().updateSessionLabel("");
-            item.getPanel().clearColorList();
-            for (String session : item.getSessionList())
-            {
-               item.getPanel().addColor(sessionService.getColor(session));
-            }
-         }
-         else if (item.getSessionList().isEmpty())
-         {
-            sessionService.removeUser(person);
-            display.removeUser(item.getPanel());
-         }
-         else
-         {
-            String title = "";
-            for (String session : item.getSessionList())
-            {
-               title = Strings.isNullOrEmpty(title) ? session : title + " : " + session;
-            }
+      display.removeUser(item.getPanel());
 
-            item.getPanel().updateSessionLabel("(" + item.getSessionList().size() + ")");
-            item.getPanel().clearColorList();
-            for (String session : item.getSessionList())
-            {
-               item.getPanel().addColor(sessionService.getColor(session));
-            }
-         }
-
-         dispatchChatAction(person.getId().toString(), messages.hasQuitWorkspace());
-      }
+      dispatchChatAction(person.getId().toString(), messages.hasQuitWorkspace());
    }
 
    public void dispatchChatAction(String person, String msg)
@@ -170,35 +138,19 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
    {
       String color = sessionService.getColor(sessionId.getValue());
 
-      UserPanelSessionItem item = sessionService.getUserPanel(person);
+      UserPanelSessionItem item = sessionService.getUserPanel(sessionId);
       if (item == null)
       {
          HasManageUserPanel panel = display.addUser(person);
-         item = new UserPanelSessionItem(panel, new ArrayList<String>());
-         sessionService.addUser(person, item);
+         item = new UserPanelSessionItem(panel, person);
+         sessionService.addUser(sessionId, item);
       }
 
       item.setSelectedTransUnit(selectedTransUnit);
-      item.getSessionList().add(sessionId.toString());
 
-      String sessionTitle = "";
-      for (String session : item.getSessionList())
-      {
-         sessionTitle = Strings.isNullOrEmpty(sessionTitle) ? session : sessionTitle + " : " + session;
-      }
+      item.getPanel().setColor(color);
 
-      if (item.getSessionList().size() > 1)
-      {
-         item.getPanel().updateSessionLabel("(" + item.getSessionList().size() + ")");
-         item.getPanel().addColor(color);
-      }
-      else
-      {
-         item.getPanel().updateSessionLabel("");
-         item.getPanel().setColor(color);
-      }
-
-      sessionService.updateTranslatorStatus(person, selectedTransUnit);
+      sessionService.updateTranslatorStatus(sessionId, selectedTransUnit);
    }
 
    public int getTranslatorsSize()
