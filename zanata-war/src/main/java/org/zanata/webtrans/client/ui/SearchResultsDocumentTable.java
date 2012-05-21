@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.presenter.SearchResultsPresenter.ReplacementState;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter.TransUnitReplaceInfo;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
@@ -49,7 +50,7 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
 
    private TextColumn<TransUnitReplaceInfo> rowIndexColumn;
    private Column<TransUnitReplaceInfo, List<String>> sourceColumn;
-   private Column<TransUnitReplaceInfo, List<String>> targetColumn;
+   private Column<TransUnitReplaceInfo, TransUnitReplaceInfo> targetColumn;
    private ReplaceActionColumn replaceButtonColumn;
 
 
@@ -59,7 +60,8 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
    }
 
 
-   public SearchResultsDocumentTable(Delegate<TransUnitReplaceInfo> replaceDelegate,
+   public SearchResultsDocumentTable(Delegate<TransUnitReplaceInfo> previewDelegate,
+         Delegate<TransUnitReplaceInfo> replaceDelegate,
          Delegate<TransUnitReplaceInfo> undoDelegate,
          final SelectionModel<TransUnitReplaceInfo> selectionModel,
          ValueChangeHandler<Boolean> selectAllHandler,
@@ -74,7 +76,7 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
       rowIndexColumn = buildRowIndexColumn();
       sourceColumn = buildSourceColumn();
       targetColumn = buildTargetColumn();
-      replaceButtonColumn = new ReplaceActionColumn(replaceDelegate, undoDelegate);
+      replaceButtonColumn = new ReplaceActionColumn(previewDelegate, replaceDelegate, undoDelegate);
 
       setWidth("100%", true);
 
@@ -147,33 +149,46 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
    /**
     * @return a column that displays the target contents for the text flow
     */
-   private static Column<TransUnitReplaceInfo, List<String>> buildTargetColumn()
+   private static Column<TransUnitReplaceInfo, TransUnitReplaceInfo> buildTargetColumn()
    {
-      return new Column<TransUnitReplaceInfo, List<String>>(new AbstractCell<List<String>>()
+      return new Column<TransUnitReplaceInfo, TransUnitReplaceInfo>(new AbstractCell<TransUnitReplaceInfo>()
       {
          @Override
-         public void render(Context context, List<String> contents, SafeHtmlBuilder sb)
+         public void render(Context context, TransUnitReplaceInfo info, SafeHtmlBuilder sb)
          {
-
-            for (String target : notEmptyContents(contents))
+            // TODO for replaced targets, highlight replacement term or show diff
+            List<String> contents = info.getTransUnit().getTargets();
+            if (info.getState() == ReplacementState.PreviewAvailable)
             {
-               // TODO switch to diff mode if this is a preview or there has
-               // been a replacement
-               HighlightingLabel label = new HighlightingLabel(target);
-               if (!Strings.isNullOrEmpty(highlightString))
+               for (int i = 0; i < contents.size(); i++)
                {
-                  label.highlightSearch(highlightString);
+                  DiffMatchPatchLabel label = new DiffMatchPatchLabel();
+                  label.setOriginal(contents.get(i));
+                  label.setText(info.getPreview().getContents().get(i));
+                  appendContent(sb, label.getElement().getString());
                }
-               appendContent(sb, label.getElement().getString());
+            }
+            else
+            {
+
+               for (String target : contents)
+               {
+                  HighlightingLabel label = new HighlightingLabel(target);
+                  if (!Strings.isNullOrEmpty(highlightString))
+                  {
+                     label.highlightSearch(highlightString);
+                  }
+                  appendContent(sb, label.getElement().getString());
+               }
             }
          }
       })
       {
 
          @Override
-         public List<String> getValue(TransUnitReplaceInfo info)
+         public TransUnitReplaceInfo getValue(TransUnitReplaceInfo info)
          {
-            return info.getTransUnit().getTargets();
+            return info;
          }
 
          @Override
@@ -197,9 +212,9 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
    private class ReplaceActionColumn extends Column<TransUnitReplaceInfo, TransUnitReplaceInfo>
    {
 
-      public ReplaceActionColumn(Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate)
+      public ReplaceActionColumn(Delegate<TransUnitReplaceInfo> previewDelegate, Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate)
       {
-         super(new ReplaceActionCell(replaceDelegate, undoDelegate));
+         super(new ReplaceActionCell(previewDelegate, replaceDelegate, undoDelegate));
          this.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
          this.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
       }
@@ -213,29 +228,45 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
 
    private class ReplaceActionCell extends ActionCell<TransUnitReplaceInfo>
    {
+
       private Delegate<TransUnitReplaceInfo> undoDelegate;
+      private Delegate<TransUnitReplaceInfo> previewDelegate;
+
+      private SafeHtml spinner;
+      private final SafeHtml previewHtml;
+      private final SafeHtml fetchingPreviewHtml;
       private final SafeHtml replacingHtml;
       private final SafeHtml undoHtml;
       private final SafeHtml undoingHtml;
 
-      public ReplaceActionCell(Delegate<TransUnitReplaceInfo> actionDelegate, Delegate<TransUnitReplaceInfo> undoDelegate) {
-         super(SafeHtmlUtils.fromString(messages.replace()), actionDelegate);
+      public ReplaceActionCell(Delegate<TransUnitReplaceInfo> previewDelegate, Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate) {
+         super(SafeHtmlUtils.fromString(messages.replace()), replaceDelegate);
+         this.previewDelegate = previewDelegate;
          this.undoDelegate = undoDelegate;
-         ImageResourceRenderer renderer = new ImageResourceRenderer();
-         SafeHtml spinner = renderer.render(resources.spinner());
-         replacingHtml = new SafeHtmlBuilder().append(spinner)
-               .appendHtmlConstant("<br/>")
-               .appendHtmlConstant(messages.replacing())
-               .toSafeHtml();
-         this.undoHtml = new SafeHtmlBuilder()
-               .appendHtmlConstant(messages.replaced())
+         spinner = new ImageResourceRenderer().render(resources.spinner());
+         fetchingPreviewHtml = buildProcessingIndicator(messages.fetchingPreview());
+         replacingHtml = buildProcessingIndicator(messages.replacing());
+         undoingHtml = buildProcessingIndicator(messages.undoInProgress());
+         previewHtml = buildButtonHtml("", messages.fetchPreview());
+         undoHtml = buildButtonHtml(messages.replaced(), messages.undo());
+      }
+
+      public SafeHtml buildButtonHtml(String message, String buttonLabel)
+      {
+         return new SafeHtmlBuilder()
+               .appendHtmlConstant(message)
                .appendHtmlConstant("<button type=\"button\" tabindex=\"-1\">")
-               .appendHtmlConstant(messages.undo())
+               .appendHtmlConstant(buttonLabel)
                .appendHtmlConstant("</button>")
                .toSafeHtml();
-         this.undoingHtml = new SafeHtmlBuilder().append(spinner)
+      }
+
+      public SafeHtml buildProcessingIndicator(String message)
+      {
+         return new SafeHtmlBuilder()
+               .append(spinner)
                .appendHtmlConstant("<br/>")
-               .appendHtmlConstant(messages.undoInProgress())
+               .appendHtmlConstant(message)
                .toSafeHtml();
       }
 
@@ -244,17 +275,24 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
       {
          switch (value.getState())
          {
-         case Replaceable:
-            super.render(context, value, sb);
+         case FetchingPreview:
+            sb.append(fetchingPreviewHtml);
             break;
          case Replacing:
             sb.append(replacingHtml);
             break;
-         case Replaced:
-            sb.append(undoHtml);
-            break;
          case Undoing:
             sb.append(undoingHtml);
+            break;
+         case PreviewAvailable:
+            super.render(context, value, sb);
+            break;
+            // TODO these two cases will depend on quick-replace mode
+         case Replaceable:
+            sb.append(previewHtml);
+            break;
+         case Replaced:
+            sb.append(undoHtml);
             break;
          }
       }
@@ -264,10 +302,13 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
          switch (value.getState())
          {
          case Replaceable:
-            super.onEnterKeyDown(context, parent, value, event, valueUpdater);
+            previewDelegate.execute(value);
             break;
          case Replaced:
             undoDelegate.execute(value);
+            break;
+         case PreviewAvailable:
+            super.onEnterKeyDown(context, parent, value, event, valueUpdater);
             break;
          }
          // else ignore (is processing)

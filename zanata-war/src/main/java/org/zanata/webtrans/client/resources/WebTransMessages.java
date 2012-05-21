@@ -147,6 +147,18 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Search failed")
    String searchFailed();
 
+   @DefaultMessage("Preview")
+   String fetchPreview();
+
+   @DefaultMessage("Previewing")
+   String fetchingPreview();
+
+   @DefaultMessage("Fetched preview")
+   String fetchedPreview();
+
+   @DefaultMessage("Failed to fetch preview")
+   String previewFailed();
+
    @DefaultMessage("Replace")
    String replace();
 

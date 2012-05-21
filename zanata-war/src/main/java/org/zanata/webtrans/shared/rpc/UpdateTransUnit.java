@@ -33,12 +33,4 @@ public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResu
       return updateRequests;
    }
 
-//   public TransUnitUpdateRequest getSingleUpdateRequest()
-//   {
-//      if (updateRequests.size() != 1)
-//      {
-//         throw new IllegalStateException("this method can only be used when updating a single TransUnit");
-//      }
-//      return updateRequests.get(0);
-//   }
 }
