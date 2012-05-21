@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.zanata</groupId>
       <artifactId>client</artifactId>
-		<version>1.6.0-alpha-3-SNAPSHOT</version>
+		<version>1.6.0-alpha-4-SNAPSHOT</version>
 	</parent>
 	<packaging>jar</packaging>
 
@@ -105,11 +105,11 @@
 			<artifactId>resteasy-atom-provider</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+           <groupId>ch.qos.logback</groupId>
+           <artifactId>logback-classic</artifactId>
+           <scope>test</scope>
+        </dependency>
 
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
