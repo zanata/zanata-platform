@@ -146,6 +146,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     */
    private Map<Long, MultiSelectionModel<TransUnitReplaceInfo>> documentSelectionModels;
 
+   private Map<TransUnitId, TransUnitReplaceInfo> allReplaceInfos;
+
    /**
     * most recent history state that was responded to
     */
@@ -171,6 +173,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       undoButtonDelegate = buildUndoButtonDelegate();
       documentDataProviders = new HashMap<Long, ListDataProvider<TransUnitReplaceInfo>>();
       documentSelectionModels = new HashMap<Long, MultiSelectionModel<TransUnitReplaceInfo>>();
+      allReplaceInfos = new HashMap<TransUnitId, TransUnitReplaceInfo>();
       tuInfoComparator = buildTransUnitReplaceInfoComparator();
 
       // TODO use explicit 'search' button and add enter key press event for
@@ -243,14 +246,14 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          public void onClick(ClickEvent event)
          {
             List<TransUnit> selected = new ArrayList<TransUnit>();
-            List<Long> docsToRefresh = new ArrayList<Long>();
+            Set<Long> modifiedDocs = new HashSet<Long>();
             for (Entry<Long, MultiSelectionModel<TransUnitReplaceInfo>> entry : documentSelectionModels.entrySet())
             {
                for (TransUnitReplaceInfo info : entry.getValue().getSelectedSet())
                {
                   selected.add(info.getTransUnit());
                   info.setState(ReplacementState.Replacing);
-                  docsToRefresh.add(entry.getKey());
+                  modifiedDocs.add(entry.getKey());
                }
             }
 
@@ -261,10 +264,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             else
             {
                fireReplaceTextEvent(selected);
-               for (Long doc : docsToRefresh)
-               {
-                  documentDataProviders.get(doc).refresh();
-               }
+               refreshDocumentDisplays(modifiedDocs);
             }
          }
       }));
@@ -313,6 +313,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
                documentDataProviders.clear();
                documentSelectionModels.clear();
+               allReplaceInfos.clear();
                display.clearAll();
 
                if (!token.getProjectSearchText().isEmpty())
@@ -337,7 +338,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          public void onTransUnitUpdated(final TransUnitUpdatedEvent event)
          {
             TransUnitUpdateInfo updateInfo = event.getUpdateInfo();
-            TransUnitReplaceInfo replaceInfo = getReplaceInfoForUpdatedTU(updateInfo);
+            TransUnitReplaceInfo replaceInfo = allReplaceInfos.get(updateInfo.getTransUnit().getId());
             if (replaceInfo == null)
             {
                Log.debug("no matching TU in document for TU update, id: " + updateInfo.getTransUnit().getId().getId());
@@ -366,11 +367,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             replaceInfo.setTransUnit(updateInfo.getTransUnit());
 
             // force table refresh as property changes are not detected
-            ListDataProvider<TransUnitReplaceInfo> dataProvider = documentDataProviders.get(updateInfo.getDocumentId().getId());
-            if (dataProvider != null)
-            {
-               dataProvider.refresh();
-            }
+            refreshDocument(replaceInfo.getDocId());
          }
       }));
 
@@ -429,6 +426,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             }
             documentDataProviders.clear();
             documentSelectionModels.clear();
+            allReplaceInfos.clear();
             display.clearAll();
             for (Long docId : result.getDocumentIds())
             {
@@ -465,7 +463,9 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                List<TransUnitReplaceInfo> data = dataProvider.getList();
                for (TransUnit tu : result.getUnits(docId))
                {
-                  data.add(new TransUnitReplaceInfo(tu));
+                  TransUnitReplaceInfo info = new TransUnitReplaceInfo(docId, tu);
+                  data.add(info);
+                  allReplaceInfos.put(tu.getId(), info);
                }
                Collections.sort(data, tuInfoComparator);
                documentDataProviders.put(docId, dataProvider);
@@ -486,7 +486,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          public void execute(TransUnitReplaceInfo info)
          {
             info.setState(ReplacementState.Replacing);
-            refreshContainingDocument(info);
+            refreshDocument(info.getDocId());
             fireReplaceTextEvent(Collections.singletonList(info.getTransUnit()));
          }
 
@@ -502,7 +502,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          public void execute(final TransUnitReplaceInfo info)
          {
             info.setState(ReplacementState.Undoing);
-            refreshContainingDocument(info);
+            refreshDocument(info.getDocId());
             eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoInProgress()));
             // TODO extract this into a separate method to re-use for bulk
             // revert
@@ -522,7 +522,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                   eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoSuccess()));
                   // TODO update model with new values
                   info.setState(ReplacementState.Replaceable);
-                  refreshContainingDocument(info);
+                  refreshDocument(info.getDocId());
                }
             });
          }
@@ -538,7 +538,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          public void execute(TransUnitReplaceInfo info)
          {
             info.setState(ReplacementState.FetchingPreview);
-            refreshContainingDocument(info);
+            refreshDocument(info.getDocId());
 
             final String searchText = currentHistoryState.getProjectSearchText();
             final String replacement = currentHistoryState.getProjectSearchReplacement();
@@ -562,7 +562,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                   final Set<Long> updatedDocs = new HashSet<Long>();
                   for (TransUnitUpdatePreview preview : result.getPreviews())
                   {
-                     TransUnitReplaceInfo replaceInfo = getReplaceInfoForTransUnit(preview.getId());
+                     TransUnitReplaceInfo replaceInfo = allReplaceInfos.get(preview.getId());
                      if (replaceInfo == null)
                      {
                         Log.error("no replace info found for previewed text flow");
@@ -572,7 +572,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                         Log.debug("setting preview state for preview id: " + preview.getId());
                         replaceInfo.setPreview(preview);
                         replaceInfo.setState(ReplacementState.PreviewAvailable);
-                        updatedDocs.add(getContainingDocumentId(replaceInfo.getTransUnit().getId()));
+                        updatedDocs.add(replaceInfo.getDocId());
                      }
                   }
                   // force table refresh as property changes are not detected
@@ -618,15 +618,12 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    /**
     * @param info
     */
-   private void refreshContainingDocument(TransUnitReplaceInfo info)
+   private void refreshDocument(Long documentId)
    {
-      for (ListDataProvider<TransUnitReplaceInfo> provider : documentDataProviders.values())
+      ListDataProvider<TransUnitReplaceInfo> dataProvider = documentDataProviders.get(documentId);
+      if (dataProvider != null)
       {
-         if (provider.getList().contains(info))
-         {
-            provider.refresh();
-            break;
-         }
+         dataProvider.refresh();
       }
    }
 
@@ -662,7 +659,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                if (updateInfo.isSuccess())
                {
                   successes++;
-                  TransUnitReplaceInfo replaceInfo = getReplaceInfoForUpdatedTU(updateInfo);
+                  TransUnitReplaceInfo replaceInfo = allReplaceInfos.get(updateInfo.getTransUnit().getId());
                   if (replaceInfo != null)
                   {
                      replaceInfo.setReplaceInfo(updateInfo);
@@ -694,7 +691,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                   for (TransUnitUpdateInfo info : result.getUpdateInfoList())
                   {
                      action.addUpdateToRevert(info);
-                     getReplaceInfoForUpdatedTU(info).setState(ReplacementState.Undoing);
+                     allReplaceInfos.get(info.getTransUnit().getId()).setState(ReplacementState.Undoing);
                   }
                   refreshDocumentDisplays(updatedDocs);
                   dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>()
@@ -712,7 +709,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                         eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoSuccess()));
                         for (TransUnitUpdateInfo info : result.getUpdateInfoList())
                         {
-                           TransUnitReplaceInfo replaceInfo = getReplaceInfoForUpdatedTU(info);
+                           TransUnitReplaceInfo replaceInfo = allReplaceInfos.get(info.getTransUnit().getId());
                            replaceInfo.setState(ReplacementState.Replaceable);
 
                         }
@@ -734,12 +731,14 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    public class TransUnitReplaceInfo
    {
       private ReplacementState state;
+      private Long docId;
       private TransUnit tu;
       private TransUnitUpdatePreview preview;
       private TransUnitUpdateInfo replaceInfo;
 
-      public TransUnitReplaceInfo(TransUnit tu)
+      public TransUnitReplaceInfo(Long containingDocId, TransUnit tu)
       {
+         this.docId = containingDocId;
          this.tu = tu;
          preview = null;
          replaceInfo = null;
@@ -785,6 +784,12 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       {
          this.state = state;
       }
+
+      public Long getDocId()
+      {
+         return docId;
+      }
+
    }
 
    private Comparator<TransUnitReplaceInfo> buildTransUnitReplaceInfoComparator()
@@ -806,64 +811,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             return -1;
          }
       };
-   }
-
-   /**
-    * @param updateInfo
-    * @param replaceInfo
-    * @return the replace info for the updated {@link TransUnit}, or null if the
-    *         current search results do not contain the TransUnit
-    */
-   private TransUnitReplaceInfo getReplaceInfoForUpdatedTU(TransUnitUpdateInfo updateInfo)
-   {
-      ListDataProvider<TransUnitReplaceInfo> dataProvider = documentDataProviders.get(updateInfo.getDocumentId().getId());
-      if (dataProvider == null)
-      {
-         Log.debug("document '" + updateInfo.getDocumentId().getId() + "' not found for TU update, id: " + updateInfo.getTransUnit().getId().getId());
-         return null;
-      }
-
-      List<TransUnitReplaceInfo> replaceInfoList = dataProvider.getList();
-      // TransUnit does not appear to have .equals(o), so list items are
-      // manually compared
-      for (TransUnitReplaceInfo info : replaceInfoList)
-      {
-         if (info.getTransUnit().getId().getId() == updateInfo.getTransUnit().getId().getId())
-         {
-            return info;
-         }
-      }
-      return null;
-   }
-
-   private Long getContainingDocumentId(TransUnitId id)
-   {
-      for (Entry<Long, ListDataProvider<TransUnitReplaceInfo>> entry : documentDataProviders.entrySet())
-      {
-         for (TransUnitReplaceInfo info : entry.getValue().getList())
-         {
-            if (info.getTransUnit().getId().equals(id))
-            {
-               return entry.getKey();
-            }
-         }
-      }
-      return null;
-   }
-
-   private TransUnitReplaceInfo getReplaceInfoForTransUnit(TransUnitId id)
-   {
-      for (Entry<Long, ListDataProvider<TransUnitReplaceInfo>> entry : documentDataProviders.entrySet())
-      {
-         for (TransUnitReplaceInfo info : entry.getValue().getList())
-         {
-            if (info.getTransUnit().getId().equals(id))
-            {
-               return info;
-            }
-         }
-      }
-      return null;
    }
 
    /**
