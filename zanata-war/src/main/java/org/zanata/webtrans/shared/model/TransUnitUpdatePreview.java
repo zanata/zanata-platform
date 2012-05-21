@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.shared.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.zanata.common.ContentState;
@@ -30,11 +31,19 @@ import org.zanata.common.ContentState;
  * @author David Mason, damason@redhat.com
  * 
  */
-public class TransUnitUpdatePreview
+public class TransUnitUpdatePreview implements Serializable
 {
+
+   private static final long serialVersionUID = 1L;
+
    private TransUnitId id;
    private List<String> contents;
    private ContentState state;
+
+   @SuppressWarnings("unused")
+   private TransUnitUpdatePreview()
+   {
+   }
 
    public TransUnitUpdatePreview(TransUnitId id, List<String> contents, ContentState state)
    {

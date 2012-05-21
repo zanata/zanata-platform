@@ -33,6 +33,11 @@ public class PreviewReplaceText extends AbstractWorkspaceAction<PreviewReplaceTe
 
    private ReplaceText actionToPreview;
 
+   @SuppressWarnings("unused")
+   private PreviewReplaceText()
+   {
+   }
+
    public PreviewReplaceText(ReplaceText actionToPreview)
    {
       this.actionToPreview = actionToPreview;

@@ -39,6 +39,11 @@ public class PreviewReplaceTextResult implements Result
 
    private List<TransUnitUpdatePreview> previews;
 
+   @SuppressWarnings("unused")
+   private PreviewReplaceTextResult()
+   {
+   }
+
    public PreviewReplaceTextResult(List<TransUnitUpdatePreview> previews)
    {
       this.previews = previews;

@@ -200,6 +200,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    public HasData<TransUnitReplaceInfo> addDocument(String docName,
          ClickHandler viewDocClickHandler,
          ClickHandler searchDocClickHandler,
+         Delegate<TransUnitReplaceInfo> previewDelegate,
          Delegate<TransUnitReplaceInfo> replaceDelegate,
          Delegate<TransUnitReplaceInfo> undoDelegate,
          SelectionModel<TransUnitReplaceInfo> selectionModel,
@@ -208,7 +209,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       // ensure 'no results' message is no longer visible
       noResultsLabel.removeFromParent();
       addDocumentLabel(docName, viewDocClickHandler, searchDocClickHandler, selectAllHandler);
-      SearchResultsDocumentTable table = new SearchResultsDocumentTable(replaceDelegate, undoDelegate, selectionModel, selectAllHandler, messages, resources);
+      SearchResultsDocumentTable table = new SearchResultsDocumentTable(previewDelegate, replaceDelegate, undoDelegate, selectionModel, selectAllHandler, messages, resources);
       searchResultsPanel.add(table);
       table.addStyleName("projectWideSearchResultsDocumentBody");
       return table;

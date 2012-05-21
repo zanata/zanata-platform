@@ -43,9 +43,13 @@ import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
+import org.zanata.webtrans.shared.model.TransUnitUpdatePreview;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
+import org.zanata.webtrans.shared.rpc.PreviewReplaceText;
+import org.zanata.webtrans.shared.rpc.PreviewReplaceTextResult;
 import org.zanata.webtrans.shared.rpc.ReplaceText;
 import org.zanata.webtrans.shared.rpc.RevertTransUnitUpdates;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
@@ -111,12 +115,21 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
       void clearReplacementMessage();
 
-      HasData<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate, SelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler);
+      HasData<TransUnitReplaceInfo> addDocument(
+            String docName,
+            ClickHandler viewDocClickHandler,
+            ClickHandler searchDocClickHandler,
+            Delegate<TransUnitReplaceInfo> previewDelegate,
+            Delegate<TransUnitReplaceInfo> replaceDelegate,
+            Delegate<TransUnitReplaceInfo> undoDelegate,
+            SelectionModel<TransUnitReplaceInfo> selectionModel,
+            ValueChangeHandler<Boolean> selectAllHandler);
    }
 
    private final CachingDispatchAsync dispatcher;
    private final History history;
    private AsyncCallback<GetProjectTransUnitListsResult> projectSearchCallback;
+   private Delegate<TransUnitReplaceInfo> previewButtonDelegate;
    private Delegate<TransUnitReplaceInfo> replaceButtonDelegate;
    private Delegate<TransUnitReplaceInfo> undoButtonDelegate;
    private Comparator<TransUnitReplaceInfo> tuInfoComparator;
@@ -153,6 +166,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    protected void onBind()
    {
       projectSearchCallback = buildProjectSearchCallback();
+      previewButtonDelegate = buildPreviewButtonDelegate();
       replaceButtonDelegate = buildReplaceButtonDelegate();
       undoButtonDelegate = buildUndoButtonDelegate();
       documentDataProviders = new HashMap<Long, ListDataProvider<TransUnitReplaceInfo>>();
@@ -438,31 +452,14 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                };
 
                final MultiSelectionModel<TransUnitReplaceInfo> selectionModel = new MultiSelectionModel<TransUnitReplaceInfo>();
-
                final ListDataProvider<TransUnitReplaceInfo> dataProvider = new ListDataProvider<TransUnitReplaceInfo>();
 
                // TODO "select entire document" checkbox if all rows selected
                // (and clear for none selected)
-               HasData<TransUnitReplaceInfo> table = display.addDocument(doc, showDocClickHandler, searchDocClickHandler, replaceButtonDelegate, undoButtonDelegate, selectionModel, new ValueChangeHandler<Boolean>()
-               {
-
-                  @Override
-                  public void onValueChange(ValueChangeEvent<Boolean> event)
-                  {
-                     if (event.getValue())
-                     {
-                        for (TransUnitReplaceInfo info : dataProvider.getList())
-                        {
-                           selectionModel.setSelected(info, true);
-                        }
-                     }
-                     else
-                     {
-                        selectionModel.clear();
-                     }
-
-                  }
-               });
+               HasData<TransUnitReplaceInfo> table;
+               table = display.addDocument(doc, showDocClickHandler, searchDocClickHandler,
+                     previewButtonDelegate, replaceButtonDelegate, undoButtonDelegate,
+                     selectionModel, buildSelectAllHandler(selectionModel, dataProvider));
                dataProvider.addDataDisplay(table);
 
                List<TransUnitReplaceInfo> data = dataProvider.getList();
@@ -528,6 +525,92 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                   refreshContainingDocument(info);
                }
             });
+         }
+      };
+   }
+
+   private Delegate<TransUnitReplaceInfo> buildPreviewButtonDelegate()
+   {
+      return new Delegate<TransUnitReplaceInfo>()
+      {
+
+         @Override
+         public void execute(TransUnitReplaceInfo info)
+         {
+            info.setState(ReplacementState.FetchingPreview);
+            refreshContainingDocument(info);
+
+            final String searchText = currentHistoryState.getProjectSearchText();
+            final String replacement = currentHistoryState.getProjectSearchReplacement();
+            boolean caseSensitive = currentHistoryState.getProjectSearchCaseSensitive();
+            ReplaceText action = new ReplaceText(Collections.singletonList(info.getTransUnit()), searchText, replacement, caseSensitive);
+            PreviewReplaceText previewAction = new PreviewReplaceText(action);
+            dispatcher.execute(previewAction, new AsyncCallback<PreviewReplaceTextResult>()
+            {
+
+               @Override
+               public void onFailure(Throwable e)
+               {
+                  Log.error("[SearchResultsPresenter] Preview replace text failure " + e, e);
+                  eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.previewFailed()));
+                  // TODO consider whether possible/desired to change TU state from 'previewing'
+               }
+
+               @Override
+               public void onSuccess(final PreviewReplaceTextResult result)
+               {
+                  final Set<Long> updatedDocs = new HashSet<Long>();
+                  for (TransUnitUpdatePreview preview : result.getPreviews())
+                  {
+                     TransUnitReplaceInfo replaceInfo = getReplaceInfoForTransUnit(preview.getId());
+                     if (replaceInfo == null)
+                     {
+                        Log.error("no replace info found for previewed text flow");
+                     }
+                     else
+                     {
+                        Log.debug("setting preview state for preview id: " + preview.getId());
+                        replaceInfo.setPreview(preview);
+                        replaceInfo.setState(ReplacementState.PreviewAvailable);
+                        updatedDocs.add(getContainingDocumentId(replaceInfo.getTransUnit().getId()));
+                     }
+                  }
+                  // force table refresh as property changes are not detected
+                  refreshDocumentDisplays(updatedDocs);
+                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.fetchedPreview()));
+               }
+
+            });
+         }
+
+      };
+   }
+
+   /**
+    * Handler to select and de-select all text flows in a document
+    * 
+    * @param selectionModel
+    * @param dataProvider
+    * @return the new handler
+    */
+   private ValueChangeHandler<Boolean> buildSelectAllHandler(final MultiSelectionModel<TransUnitReplaceInfo> selectionModel, final ListDataProvider<TransUnitReplaceInfo> dataProvider)
+   {
+      return new ValueChangeHandler<Boolean>()
+      {
+         @Override
+         public void onValueChange(ValueChangeEvent<Boolean> event)
+         {
+            if (event.getValue())
+            {
+               for (TransUnitReplaceInfo info : dataProvider.getList())
+               {
+                  selectionModel.setSelected(info, true);
+               }
+            }
+            else
+            {
+               selectionModel.clear();
+            }
          }
       };
    }
@@ -645,20 +728,22 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    public enum ReplacementState
    {
-      NotReplaceable, Replaceable, Replacing, Replaced, Undoing
+      NotReplaceable, Replaceable, FetchingPreview, PreviewAvailable, Replacing, Replaced, Undoing
    }
 
    public class TransUnitReplaceInfo
    {
-      private TransUnit tu;
-      private TransUnitUpdateInfo replaceInfo = null;
       private ReplacementState state;
+      private TransUnit tu;
+      private TransUnitUpdatePreview preview;
+      private TransUnitUpdateInfo replaceInfo;
 
       public TransUnitReplaceInfo(TransUnit tu)
       {
          this.tu = tu;
-         state = ReplacementState.Replaceable;
+         preview = null;
          replaceInfo = null;
+         state = ReplacementState.Replaceable;
       }
 
       public TransUnit getTransUnit()
@@ -671,6 +756,16 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          this.tu = tu;
       }
 
+      public TransUnitUpdatePreview getPreview()
+      {
+         return preview;
+      }
+
+      public void setPreview(TransUnitUpdatePreview preview)
+      {
+         this.preview = preview;
+      }
+
       public TransUnitUpdateInfo getReplaceInfo()
       {
          return replaceInfo;
@@ -681,14 +776,14 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          this.replaceInfo = replaceInfo;
       }
 
-      public void setState(ReplacementState state)
-      {
-         this.state = state;
-      }
-
       public ReplacementState getState()
       {
          return state;
+      }
+
+      public void setState(ReplacementState state)
+      {
+         this.state = state;
       }
    }
 
@@ -736,6 +831,36 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          if (info.getTransUnit().getId().getId() == updateInfo.getTransUnit().getId().getId())
          {
             return info;
+         }
+      }
+      return null;
+   }
+
+   private Long getContainingDocumentId(TransUnitId id)
+   {
+      for (Entry<Long, ListDataProvider<TransUnitReplaceInfo>> entry : documentDataProviders.entrySet())
+      {
+         for (TransUnitReplaceInfo info : entry.getValue().getList())
+         {
+            if (info.getTransUnit().getId().equals(id))
+            {
+               return entry.getKey();
+            }
+         }
+      }
+      return null;
+   }
+
+   private TransUnitReplaceInfo getReplaceInfoForTransUnit(TransUnitId id)
+   {
+      for (Entry<Long, ListDataProvider<TransUnitReplaceInfo>> entry : documentDataProviders.entrySet())
+      {
+         for (TransUnitReplaceInfo info : entry.getValue().getList())
+         {
+            if (info.getTransUnit().getId().equals(id))
+            {
+               return info;
+            }
          }
       }
       return null;
