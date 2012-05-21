@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +23,7 @@ import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
+import org.zanata.client.util.ConsoleUtils;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;
@@ -330,7 +333,11 @@ public class PushCommand extends PushPullCommand<PushOptions>
       {
          log.info("pushing source doc [name={} size={}] to server", srcDoc.getName(), srcDoc.getTextFlows().size());
          boolean copyTrans = getOpts().getCopyTrans();
+
+         ConsoleUtils.startProgressFeedback(); 
          ClientResponse<String> putResponse = sourceDocResource.putResource(docUri, srcDoc, extensions, copyTrans);
+         ConsoleUtils.endProgressFeedback();
+
          ClientUtility.checkResult(putResponse, uri);
       }
       else
@@ -344,7 +351,11 @@ public class PushCommand extends PushPullCommand<PushOptions>
       if (!getOpts().isDryRun())
       {
          log.info("pushing target doc [name={} size={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), targetDoc.getTextFlowTargets().size(), locale.getLocalLocale(), locale.getLocale() });
+
+         ConsoleUtils.startProgressFeedback();
          ClientResponse<String> putTransResponse = translationResources.putTranslations(docUri, new LocaleId(locale.getLocale()), targetDoc, extensions, getOpts().getMergeType());
+         ConsoleUtils.endProgressFeedback();
+
          ClientUtility.checkResult(putTransResponse, uri);
          String entity = putTransResponse.getEntity(String.class);
          if (entity != null && !entity.isEmpty())
