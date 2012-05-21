@@ -10,6 +10,9 @@
                 <g:item>90%</g:item>
             </g:ListBox>
         </g:HorizontalPanel>
-        <g:Button ui:field="confirmButton" text="Proceed to pre-fill" />
+        <g:HorizontalPanel>
+            <g:Button ui:field="confirmButton" text="Proceed to pre-fill" />
+            <g:Button ui:field="cancelButton" text="Cancel" />
+        </g:HorizontalPanel>
     </g:VerticalPanel>
 </ui:UiBinder>

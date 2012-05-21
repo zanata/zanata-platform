@@ -49,6 +49,8 @@ public class PrefillForm extends Composite
    ListBox approvedPercent;
    @UiField
    Button confirmButton;
+   @UiField
+   Button cancelButton;
 
    public PrefillForm()
    {
@@ -68,7 +70,13 @@ public class PrefillForm extends Composite
    @UiHandler("confirmButton")
    public void onConfirmButtonClick(ClickEvent event)
    {
-      Preconditions.checkNotNull(listener, "listener cannot be null");
+      Preconditions.checkNotNull(listener, "Do you forget to call setListener on PrefillForm?");
       listener.proceedToPrefill(getSelectedApprovedPercent());
+   }
+
+   @UiHandler("cancelButton")
+   public void onCancelButtonClick(ClickEvent event)
+   {
+      listener.cancelPrefill();
    }
 }

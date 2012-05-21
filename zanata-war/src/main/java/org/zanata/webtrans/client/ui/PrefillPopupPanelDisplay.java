@@ -21,22 +21,22 @@
 package org.zanata.webtrans.client.ui;
 
 
-import org.zanata.webtrans.client.presenter.PrefillPresenter;
-
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 public interface PrefillPopupPanelDisplay extends WidgetDisplay
 {
    void hide();
 
-   void center();
-
    void setListener(Listener listener);
 
-   int getApprovedThreshold();
+   void showProcessing();
+
+   void showForm();
 
    interface Listener
    {
       void proceedToPrefill(String approvedPercent);
+
+      void cancelPrefill();
    }
 }

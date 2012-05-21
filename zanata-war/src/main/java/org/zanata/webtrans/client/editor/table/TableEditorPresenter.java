@@ -208,7 +208,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
     * Clear all current transUnit list and re-query from server. Force to run
     * requestRows@TableModelHandler
     */
-   private void initialiseTransUnitList()
+   public void initialiseTransUnitList()
    {
       display.getTableModel().clearCache();
       display.getTableModel().setRowCount(TableModel.UNKNOWN_ROW_COUNT);

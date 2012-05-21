@@ -22,6 +22,8 @@ package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.resources.UiMessages;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -33,6 +35,7 @@ public class PrefillPopupPanelView extends DialogBox implements PrefillPopupPane
 {
 
    private final PrefillForm prefillForm;
+   private final Label processingLabel = new Label("processing...");
 
    @Inject
    public PrefillPopupPanelView(PrefillForm prefillForm, UiMessages messages)
@@ -41,8 +44,12 @@ public class PrefillPopupPanelView extends DialogBox implements PrefillPopupPane
       super(false, true);
       getCaption().setText(messages.prefillCaption());
       setGlassEnabled(true);
-      add(prefillForm);
+      VerticalPanel main = new VerticalPanel();
+      main.add(prefillForm);
+      main.add(processingLabel);
+      add(main);
       this.prefillForm = prefillForm;
+      processingLabel.setVisible(false);
       hide();
    }
 
@@ -53,8 +60,17 @@ public class PrefillPopupPanelView extends DialogBox implements PrefillPopupPane
    }
 
    @Override
-   public int getApprovedThreshold()
+   public void showProcessing()
    {
-      return Integer.valueOf(prefillForm.getSelectedApprovedPercent());
+      prefillForm.setVisible(false);
+      processingLabel.setVisible(true);
+   }
+
+   @Override
+   public void showForm()
+   {
+      processingLabel.setVisible(false);
+      prefillForm.setVisible(true);
+      center();
    }
 }

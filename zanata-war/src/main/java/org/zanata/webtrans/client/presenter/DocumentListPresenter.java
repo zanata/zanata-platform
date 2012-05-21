@@ -535,14 +535,4 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          display.getDocumentListTable().getSelectionModel().setSelected(node, true);
       }
    }
-
-   public DocumentId getCurrentSelectedDocIdOrNull()
-   {
-      if (currentSelection == null)
-      {
-         return null;
-      }
-      return currentSelection.getDocInfo().getId();
-   }
-
 }

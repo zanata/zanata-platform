@@ -28,6 +28,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
@@ -94,8 +95,7 @@ public class PrefillTranslationHandler extends AbstractActionHandler<PrefillTran
       HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
 
       List<HTextFlow> hTextFlows = textFlowDAO.getAllUntranslatedTextFlowByDocumentId(action.getDocumentId().getId(), hLocale);
-
-      log.info("about to prefill #{} textflow for action {}", hTextFlows.size(), action);
+      log.info("#{} untranslated text flow in doc id {}", hTextFlows.size(), action.getDocumentId());
 
       TransMemoryAboveThresholdPredicate predicate = new TransMemoryAboveThresholdPredicate(action.getApprovedThreshold());
       for (HTextFlow hTextFlow : hTextFlows)
@@ -105,8 +105,10 @@ public class PrefillTranslationHandler extends AbstractActionHandler<PrefillTran
          if (aboveThreshold.size() > 0)
          {
             TransMemoryResultItem mostSimilarTM = aboveThreshold.iterator().next();
-            log.info("auto translation from translation memory for textFlow id {} with contents {}", hTextFlow.getId(), mostSimilarTM);
+            log.info("auto translation from translation memory for textFlow id {} with contents {}", hTextFlow.getId(), mostSimilarTM.getTargetContents());
 
+            //TODO we may want to wrap it in try/catch block and ignore any exceptions. i.e. we may have concurrent editing conflict and do we give it a damn?
+            translationServiceImpl.translate(hTextFlow, hLocale, mostSimilarTM.getTargetContents(), ContentState.Approved);
          }
       }
       //TODO best send out event and let all clients to refresh table if they are editing this document

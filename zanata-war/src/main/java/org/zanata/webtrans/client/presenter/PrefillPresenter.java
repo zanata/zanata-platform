@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.PrefillPopupPanelDisplay;
@@ -27,6 +28,7 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.PrefillTranslation;
 import com.google.common.base.Preconditions;
+import com.google.gwt.gen2.logging.shared.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -44,16 +46,16 @@ public class PrefillPresenter extends WidgetPresenter<PrefillPopupPanelDisplay> 
    private PrefillPopupPanelDisplay display;
    private final EventBus eventBus;
    private final CachingDispatchAsync dispatcher;
-   private final DocumentListPresenter docListPresenter;
+   private final TableEditorPresenter tableEditorPresenter;
 
    @Inject
-   public PrefillPresenter(PrefillPopupPanelDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, DocumentListPresenter docListPresenter)
+   public PrefillPresenter(PrefillPopupPanelDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, TableEditorPresenter tableEditorPresenter)
    {
       super(display, eventBus);
       this.display = display;
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
-      this.docListPresenter = docListPresenter;
+      this.tableEditorPresenter = tableEditorPresenter;
       display.setListener(this);
    }
 
@@ -75,30 +77,39 @@ public class PrefillPresenter extends WidgetPresenter<PrefillPopupPanelDisplay> 
    @Override
    public void proceedToPrefill(String approvedPercent)
    {
-      int threshold = display.getApprovedThreshold();
-      DocumentId docId = docListPresenter.getCurrentSelectedDocIdOrNull();
-      Preconditions.checkNotNull(docId, "doc id is null!!");
-      //TODO implement
+      display.showProcessing();
+      DocumentId docId = tableEditorPresenter.getDocumentId();
+      Preconditions.checkNotNull(docId, "document id is null");
+
+      Integer threshold = Integer.valueOf(approvedPercent);
       dispatcher.execute(new PrefillTranslation(threshold, docId), new AsyncCallback<NoOpResult>()
       {
          @Override
          public void onFailure(Throwable caught)
          {
-            eventBus.fireEvent(new NotificationEvent(Error, "prefill failed"));
+            Log.warning("failed:" + caught.getMessage());
+            eventBus.fireEvent(new NotificationEvent(Error, "Prefill failed"));
             display.hide();
          }
 
          @Override
          public void onSuccess(NoOpResult result)
          {
-            eventBus.fireEvent(new NotificationEvent(Info, "prefill success"));
+            eventBus.fireEvent(new NotificationEvent(Info, "Prefill success. Document reloaded."));
             display.hide();
+            tableEditorPresenter.initialiseTransUnitList();
          }
       });
    }
 
+   @Override
+   public void cancelPrefill()
+   {
+      display.hide();
+   }
+
    public void preparePrefill()
    {
-      display.center();
+      display.showForm();
    }
 }
