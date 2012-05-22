@@ -102,6 +102,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
       public void setSearching(boolean searching);
 
+      HasClickHandlers getPreviewButton();
+
       HasClickHandlers getReplaceAllButton();
 
       HasClickHandlers getSelectAllButton();
@@ -245,6 +247,28 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
+      registerHandler(display.getPreviewButton().addClickHandler(new ClickHandler()
+      {
+
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            List<TransUnitReplaceInfo> selected = new ArrayList<TransUnitReplaceInfo>();
+            for (MultiSelectionModel<TransUnitReplaceInfo> sel : documentSelectionModels.values())
+            {
+               selected.addAll(sel.getSelectedSet());
+            }
+            if (selected.isEmpty())
+            {
+               eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.noTextFlowsSelected()));
+            }
+            else
+            {
+               firePreviewEvent(selected, true);
+            }
+         }
+      }));
+
       registerHandler(display.getReplaceAllButton().addClickHandler(new ClickHandler()
       {
 
@@ -315,23 +339,23 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             }
             Log.debug("found matching TU for TU update, id: " + updateInfo.getTransUnit().getId().getId());
 
-            MultiSelectionModel<TransUnitReplaceInfo> selectionModel = documentSelectionModels.get(updateInfo.getDocumentId().getId());
-            if (selectionModel == null)
-            {
-               Log.error("missing selection model for document, id: " + updateInfo.getDocumentId().getId());
-            }
-            else
-            {
-               // no need to do this as replaceInfo only has properties changed
-               // safe to remove if desired behaviour is keeping selected
-               selectionModel.setSelected(replaceInfo, false);
-            }
 
             if (replaceInfo.getState() == ReplacementState.Replaced && replaceInfo.getTransUnit().getVerNum() != updateInfo.getTransUnit().getVerNum())
             {
                // can't undo after additional update
                replaceInfo.setState(ReplacementState.Replaceable);
                replaceInfo.setReplaceInfo(null);
+
+               MultiSelectionModel<TransUnitReplaceInfo> selectionModel = documentSelectionModels.get(updateInfo.getDocumentId().getId());
+               if (selectionModel == null)
+               {
+                  Log.error("missing selection model for document, id: " + updateInfo.getDocumentId().getId());
+               }
+               else
+               {
+                  // clear selection to avoid accidental inclusion in batch operations
+                  selectionModel.setSelected(replaceInfo, false);
+               }
             }
             replaceInfo.setTransUnit(updateInfo.getTransUnit());
             refreshInfoDisplay(replaceInfo);

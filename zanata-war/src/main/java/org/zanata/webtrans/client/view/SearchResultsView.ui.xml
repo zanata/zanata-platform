@@ -32,6 +32,9 @@
             <g:FlowPanel styleName='projectWideReplacementPanel' >
                 <g:InlineLabel styleName='projectWideReplacementBoxLabel' ><ui:msg>Replace with:</ui:msg></g:InlineLabel>
                 <g:TextBox ui:field='replacementTextBox' styleName='projectWideReplacementBox' />
+                <g:Button ui:field='previewButton' styleName='projectWideReplacementButton' >
+                    <ui:msg>Preview Selected</ui:msg>
+                </g:Button>
                 <g:Button ui:field='replaceAllButton' styleName='projectWideReplacementButton' >
                     <ui:msg>Replace All Selected</ui:msg>
                 </g:Button>

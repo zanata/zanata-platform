@@ -80,7 +80,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    CheckBox caseSensitiveChk;
 
    @UiField
-   Button replaceAllButton;
+   Button previewButton, replaceAllButton;
 
    @UiField
    ListBox searchFieldsSelect;
@@ -136,6 +136,12 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    public HasValue<Boolean> getCaseSensitiveChk()
    {
       return caseSensitiveChk;
+   }
+
+   @Override
+   public HasClickHandlers getPreviewButton()
+   {
+      return previewButton;
    }
 
    @Override
