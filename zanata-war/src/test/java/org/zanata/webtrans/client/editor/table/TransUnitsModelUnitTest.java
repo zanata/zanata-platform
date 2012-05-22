@@ -35,141 +35,150 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import com.google.common.collect.Lists;
 
 @Test
-public class TransUnitsModelUnitTest {
-    public static final List<TransUnit> TRANS_UNITS = makeTransUnits();
-    private TransUnitsModel model =  new TransUnitsModel();
-    
-    private static List<TransUnit> makeTransUnits() {
-        return Lists.newArrayList(
-                TestFixture.makeTransUnit(0, ContentState.New),
-                TestFixture.makeTransUnit(1, ContentState.New),
-                TestFixture.makeTransUnit(2, ContentState.NeedReview),
-                TestFixture.makeTransUnit(3, ContentState.Approved),
-                TestFixture.makeTransUnit(4, ContentState.NeedReview),
-                TestFixture.makeTransUnit(5, ContentState.New)
-        );
-    }
+public class TransUnitsModelUnitTest
+{
+   public static final List<TransUnit> TRANS_UNITS = makeTransUnits();
+   private TransUnitsModel model = new TransUnitsModel();
 
-    @BeforeMethod
-    public void setUp() {
-        model.setTransUnits(TRANS_UNITS);
-    }
+   private static List<TransUnit> makeTransUnits()
+   {
+      return Lists.newArrayList(TestFixture.makeTransUnit(0, ContentState.New), TestFixture.makeTransUnit(1, ContentState.New), TestFixture.makeTransUnit(2, ContentState.NeedReview), TestFixture.makeTransUnit(3, ContentState.Approved), TestFixture.makeTransUnit(4, ContentState.NeedReview), TestFixture.makeTransUnit(5, ContentState.New));
+   }
 
-    public void canGoToFirstRow() {
-        model.gotoFirstRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(0)));
-    }
+   @BeforeMethod
+   public void setUp()
+   {
+      model.setTransUnits(TRANS_UNITS);
+   }
 
-    public void canGoToLastRow() {
-        model.gotoLastRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(TRANS_UNITS.size() - 1)));
-    }
+   public void canGoToFirstRow()
+   {
+      model.gotoFirstRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(0)));
+   }
 
-    public void canGoToNextRow() {
+   public void canGoToLastRow()
+   {
+      model.gotoLastRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(TRANS_UNITS.size() - 1)));
+   }
 
-        model.gotoNextRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(1)));
-        model.gotoNextRow();//2
-        model.gotoNextRow();//3
-        model.gotoNextRow();//4
-        model.gotoNextRow();//5
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(5)));
-        model.gotoNextRow();//5
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(5)));
-    }
+   public void canGoToNextRow()
+   {
 
-    public void canGoToNextFuzzyNewRow() {
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(0)));
+      model.gotoNextRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(1)));
+      model.gotoNextRow();// 2
+      model.gotoNextRow();// 3
+      model.gotoNextRow();// 4
+      model.gotoNextRow();// 5
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(5)));
+      model.gotoNextRow();// 5
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(5)));
+   }
 
-        model.gotoNextFuzzyNewRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(1)));
+   public void canGoToNextFuzzyNewRow()
+   {
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(0)));
 
-        model.gotoNextFuzzyNewRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(2)));
+      model.gotoNextFuzzyNewRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(1)));
 
-        model.gotoNextFuzzyNewRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(4)));
+      model.gotoNextFuzzyNewRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(2)));
 
-        model.gotoNextFuzzyNewRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(5)));
+      model.gotoNextFuzzyNewRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(4)));
 
-        model.gotoNextFuzzyNewRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(5)));
-    }
+      model.gotoNextFuzzyNewRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(5)));
 
-    public void canGoToPreviousFuzzyNewRow() {
-        model.gotoLastRow();
+      model.gotoNextFuzzyNewRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(5)));
+   }
 
-        model.gotoPrevFuzzyNewRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(4)));
+   public void canGoToPreviousFuzzyNewRow()
+   {
+      model.gotoLastRow();
 
-        model.gotoPrevFuzzyNewRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(2)));
+      model.gotoPrevFuzzyNewRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(4)));
 
-        model.gotoPrevFuzzyNewRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(1)));
+      model.gotoPrevFuzzyNewRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(2)));
 
-        model.gotoPrevFuzzyNewRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(0)));
+      model.gotoPrevFuzzyNewRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(1)));
 
-        model.gotoPrevFuzzyNewRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(0)));
-    }
+      model.gotoPrevFuzzyNewRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(0)));
 
-    public void canGoToNextFuzzyRow() {
-        model.gotoNextFuzzyRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(2)));
+      model.gotoPrevFuzzyNewRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(0)));
+   }
 
-        model.gotoNextFuzzyRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(4)));
-        model.gotoNextFuzzyRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(4)));
-    }
+   public void canGoToNextFuzzyRow()
+   {
+      model.gotoNextFuzzyRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(2)));
 
-    public void canGoToPreviousFuzzyRow() {
-        model.gotoLastRow();
+      model.gotoNextFuzzyRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(4)));
+      model.gotoNextFuzzyRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(4)));
+   }
 
-        model.gotoPrevFuzzyRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(4)));
+   public void canGoToPreviousFuzzyRow()
+   {
+      model.gotoLastRow();
 
-        model.gotoPrevFuzzyRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(2)));
-        model.gotoPrevFuzzyRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(2)));
-    }
+      model.gotoPrevFuzzyRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(4)));
 
-    public void canGoToNextNewRow() {
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(0)));
+      model.gotoPrevFuzzyRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(2)));
+      model.gotoPrevFuzzyRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(2)));
+   }
 
-        model.gotoNextNewRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(1)));
+   public void canGoToNextNewRow()
+   {
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(0)));
 
-        model.gotoNextNewRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(5)));
-        model.gotoNextNewRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(5)));
-    }
+      model.gotoNextNewRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(1)));
 
-    public void canGoToPreviousNewRow() {
-        model.gotoLastRow();
+      model.gotoNextNewRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(5)));
+      model.gotoNextNewRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(5)));
+   }
 
-        model.gotoPrevNewRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(1)));
+   public void canGoToPreviousNewRow()
+   {
+      model.gotoLastRow();
 
-        model.gotoPrevNewRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(0)));
-        model.gotoPrevNewRow();
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(0)));
-    }
+      model.gotoPrevNewRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(1)));
 
-    public void canMoveToArbitraryTransUnit() {
-        boolean moved = model.moveToIndex(5);
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(5)));
-        assertThat(moved, Matchers.equalTo(true));
-        //won't move
-        moved = model.moveToIndex(6);
-        assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(5)));
-        assertThat(moved, Matchers.equalTo(false));
+      model.gotoPrevNewRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(0)));
+      model.gotoPrevNewRow();
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(0)));
+   }
 
-    }
+   public void canMoveToArbitraryTransUnit()
+   {
+      TransUnitSelectionStatus status = model.moveToIndex(5);
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(5)));
+      assertThat(status, Matchers.equalTo(TransUnitSelectionStatus.MOVED));
+      // won't move to invalid selection
+      status = model.moveToIndex(6);
+      assertThat(model.getCurrentTransUnit(), Matchers.equalTo(TRANS_UNITS.get(5)));
+      assertThat(status, Matchers.equalTo(TransUnitSelectionStatus.INVALID_SELECTION));
+
+      // won't move to same selection
+      status = model.moveToIndex(5);
+      assertThat(status, Matchers.equalTo(TransUnitSelectionStatus.SELECTED));
+   }
 }

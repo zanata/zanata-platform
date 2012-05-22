@@ -19,6 +19,8 @@ import com.google.common.collect.Lists;
 public class TransUnitNavigationServiceTest
 {
    private TransUnitNavigationService navigationService;
+
+   // @formatter:off
    private final List<TransUnit> tuList = Lists.newArrayList(
        TestFixture.makeTransUnit(0, ContentState.New),
        TestFixture.makeTransUnit(1, ContentState.New),
@@ -31,15 +33,16 @@ public class TransUnitNavigationServiceTest
        TestFixture.makeTransUnit(8, ContentState.New),
        TestFixture.makeTransUnit(9, ContentState.New),
        TestFixture.makeTransUnit(10, ContentState.NeedReview)
-);
-   
+   );
+   // @formatter:on
+
    @BeforeMethod
    protected void setUp() throws Exception
    {
       navigationService = new TransUnitNavigationService();
       HashMap<Long, ContentState> transIdStateList = new HashMap<Long, ContentState>();
       ArrayList<Long> idIndexList = new ArrayList<Long>();
-      
+
       for (TransUnit tu : tuList)
       {
          transIdStateList.put(tu.getId().getId(), tu.getStatus());
@@ -47,7 +50,7 @@ public class TransUnitNavigationServiceTest
       }
       navigationService.init(transIdStateList, idIndexList, TableConstants.PAGE_SIZE);
    }
-   
+
    @Test
    public void testGetInitialPageSize()
    {
@@ -180,12 +183,12 @@ public class TransUnitNavigationServiceTest
    @Test
    public void testUpdateMapAndNavigate()
    {
-      navigationService.updateMap(new Long(9), ContentState.Approved);
+      navigationService.updateState(new Long(9), ContentState.Approved);
 
       navigationService.updateCurrentPageAndRowIndex(0, 10);
       assertEquals(navigationService.getPreviousStateRowIndex(TransUnitNavigationService.FUZZY_OR_NEW_PREDICATE), 8);
 
-      navigationService.updateMap(new Long(3), ContentState.NeedReview);
+      navigationService.updateState(new Long(3), ContentState.NeedReview);
 
       navigationService.updateCurrentPageAndRowIndex(0, 2);
       assertEquals(navigationService.getNextStateRowIndex(TransUnitNavigationService.FUZZY_OR_NEW_PREDICATE), 3);

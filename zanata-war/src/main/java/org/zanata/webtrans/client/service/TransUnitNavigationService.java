@@ -66,23 +66,23 @@ public class TransUnitNavigationService
       }
    };
 
-   private Map<Long, ContentState> transIdStateList;
+   private Map<Long, ContentState> idAndStateMap;
    private ArrayList<Long> idIndexList;
 
    private int pageSize;
    private int curRowIndex = 0;
    private int curPage = 0;
 
-   public void init(Map<Long, ContentState> transIdStateList, ArrayList<Long> idIndexList, int pageSize)
+   public void init(Map<Long, ContentState> transIdStateMap, ArrayList<Long> idIndexList, int pageSize)
    {
-      this.transIdStateList = transIdStateList;
+      this.idAndStateMap = transIdStateMap;
       this.idIndexList = idIndexList;
       this.pageSize = pageSize;
    }
 
-   public void updateMap(Long id, ContentState newState)
+   public void updateState(Long id, ContentState newState)
    {
-      transIdStateList.put(id, newState);
+      idAndStateMap.put(id, newState);
    }
 
    public int getNextStateRowIndex(Predicate<ContentState> condition)
@@ -94,7 +94,7 @@ public class TransUnitNavigationService
 
       for (int i = curRowIndex + 1; i <= idIndexList.size() - 1; i++)
       {
-         ContentState contentState = transIdStateList.get(idIndexList.get(i));
+         ContentState contentState = idAndStateMap.get(idIndexList.get(i));
          if (condition.apply(contentState))
          {
             return i;
@@ -112,7 +112,7 @@ public class TransUnitNavigationService
 
       for (int i = curRowIndex - 1; i >= 0; i--)
       {
-         ContentState contentState = transIdStateList.get(idIndexList.get(i));
+         ContentState contentState = idAndStateMap.get(idIndexList.get(i));
          if (condition.apply(contentState))
          {
             return i;
