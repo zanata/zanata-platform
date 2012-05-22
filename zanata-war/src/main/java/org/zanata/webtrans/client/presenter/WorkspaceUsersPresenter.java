@@ -21,9 +21,6 @@ import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatResult;
 
-import com.google.common.base.Strings;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
@@ -67,18 +64,16 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
    @Override
    protected void onBind()
    {
-      display.getSendButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            if (!Strings.isNullOrEmpty(display.getInputText().getText()))
-            {
-               dispatchChatAction(identity.getPerson().getId().toString(), display.getInputText().getText());
-               display.getInputText().setText("");
-            }
-         }
-      });
+      /**
+       * <!-- disabled chat room until 1.7 -->
+       * display.getSendButton().addClickHandler(new ClickHandler() {
+       * 
+       * @Override public void onClick(ClickEvent event) { if
+       *           (!Strings.isNullOrEmpty(display.getInputText().getText())) {
+       *           dispatchChatAction(identity.getPerson().getId().toString(),
+       *           display.getInputText().getText());
+       *           display.getInputText().setText(""); } } });
+       **/
 
       registerHandler(eventBus.addHandler(PublishWorkspaceChatEvent.getType(), new PublishWorkspaceChatEventHandler()
       {
@@ -88,6 +83,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
             display.appendChat(event.getPersonId(), event.getTimestamp(), event.getMsg());
          }
       }));
+
    }
 
    @Override
@@ -122,6 +118,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
    {
       dispatcher.execute(new PublishWorkspaceChatAction(person, msg), new AsyncCallback<PublishWorkspaceChatResult>()
       {
+
          @Override
          public void onFailure(Throwable caught)
          {
@@ -132,6 +129,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
          {
          }
       });
+
    }
 
    public void addTranslator(SessionId sessionId, Person person, TransUnit selectedTransUnit)

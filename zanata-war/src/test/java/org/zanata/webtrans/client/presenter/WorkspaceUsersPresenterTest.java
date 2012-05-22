@@ -65,8 +65,8 @@ public class WorkspaceUsersPresenterTest
 
    public void setEmptyUserList()
    {
-      expect(mockDisplay.getSendButton()).andReturn(mockSendButton);
-      expect(mockSendButton.addClickHandler(capture(capturedSendButtonClickHandler))).andReturn(createMock(HandlerRegistration.class));
+      // expect(mockDisplay.getSendButton()).andReturn(mockSendButton);
+      // expect(mockSendButton.addClickHandler(capture(capturedSendButtonClickHandler))).andReturn(createMock(HandlerRegistration.class));
 
       expect(mockEventBus.addHandler(eq(PublishWorkspaceChatEvent.getType()), isA(PublishWorkspaceChatEventHandler.class))).andReturn(createMock(HandlerRegistration.class));
       replay(mockDisplay, mockEventBus, mockSessionService);
@@ -112,8 +112,8 @@ public class WorkspaceUsersPresenterTest
       mockSessionService.updateTranslatorStatus(sessionId3, null);
       expectLastCall().once();
 
-      expect(mockDisplay.getSendButton()).andReturn(mockSendButton);
-      expect(mockSendButton.addClickHandler(capture(capturedSendButtonClickHandler))).andReturn(createMock(HandlerRegistration.class));
+      // expect(mockDisplay.getSendButton()).andReturn(mockSendButton);
+      // expect(mockSendButton.addClickHandler(capture(capturedSendButtonClickHandler))).andReturn(createMock(HandlerRegistration.class));
 
       expect(mockEventBus.addHandler(eq(PublishWorkspaceChatEvent.getType()), isA(PublishWorkspaceChatEventHandler.class))).andReturn(createMock(HandlerRegistration.class));
       replay(mockDisplay, mockEventBus, mockSendButton, mockSessionService);

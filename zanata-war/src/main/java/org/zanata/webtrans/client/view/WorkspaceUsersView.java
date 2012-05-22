@@ -12,8 +12,8 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
@@ -40,10 +40,10 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    @UiField
    VerticalPanel chatRoom;
 
-   @UiField
+   // @UiField -- <!-- disabled chat room until 1.7 -->
    TextBox chatInput;
 
-   @UiField
+   // @UiField -- <!-- disabled chat room until 1.7 -->
    PushButton sendButton;
 
    @UiField
@@ -54,7 +54,9 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    {
       mainPanel = new SplitLayoutPanel(3);
       initWidget(uiBinder.createAndBindUi(this));
-      sendButton.setText(uiMessages.sendLabel());
+
+      // <!-- disabled chat room until 1.7 -->
+      // sendButton.setText(uiMessages.sendLabel());
    }
 
    @Override
@@ -100,11 +102,11 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    {
       if (Strings.isNullOrEmpty(user))
       {
-         chatRoom.add(new HTML("[" + timestamp + "]   " + msg));
+         chatRoom.add(new Label("[" + timestamp + "]   " + msg));
       }
       else
       {
-         chatRoom.add(new HTML("[" + timestamp + "]   " + user + ":  " + msg));
+         chatRoom.add(new Label("[" + timestamp + "]   " + user + ":  " + msg));
       }
 
       chatRoomScrollPanel.scrollToBottom();
