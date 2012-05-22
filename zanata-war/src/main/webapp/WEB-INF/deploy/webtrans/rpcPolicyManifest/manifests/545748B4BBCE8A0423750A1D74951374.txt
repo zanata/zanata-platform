@@ -1,2 +1,0 @@
-serviceClass: org.zanata.webtrans.shared.DispatchService
-path: 83B9996690886BC7D5FF86E7EB8CA0D8.gwt.rpc
