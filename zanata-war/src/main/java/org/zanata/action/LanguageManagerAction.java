@@ -22,10 +22,15 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.faces.model.SelectItem;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -33,6 +38,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.common.LocaleId;
+import org.zanata.model.HLocale;
 import org.zanata.service.LocaleService;
 
 import com.ibm.icu.util.ULocale;
@@ -48,6 +54,10 @@ public class LanguageManagerAction implements Serializable
    private String language;
    private ULocale uLocale;
    private List<SelectItem> localeStringList;
+   private boolean enabledByDefault;
+
+   // cache this so it is called only once
+   private List<LocaleId> allLocales;
 
    @Create
    public void onCreate()
@@ -75,6 +85,16 @@ public class LanguageManagerAction implements Serializable
       this.language = language;
    }
 
+   public boolean isEnabledByDefault()
+   {
+      return enabledByDefault;
+   }
+
+   public void setEnabledByDefault(boolean enabledByDefault)
+   {
+      this.enabledByDefault = enabledByDefault;
+   }
+
    public void updateLanguage()
    {
       this.uLocale = new ULocale(this.language);
@@ -83,7 +103,7 @@ public class LanguageManagerAction implements Serializable
    public String save()
    {
       LocaleId locale = new LocaleId(language);
-      localeServiceImpl.save(locale);
+      localeServiceImpl.save(locale, enabledByDefault);
       return "success";
    }
 
@@ -102,6 +122,43 @@ public class LanguageManagerAction implements Serializable
    public List<SelectItem> getLocaleStringList()
    {
       return localeStringList;
+   }
+
+   public List<HLocale> suggestLocales( Object queryObj )
+   {
+      final String query = (String)queryObj;
+
+      if( allLocales == null )
+      {
+         allLocales = localeServiceImpl.getAllJavaLanguages();
+      }
+
+      Collection<LocaleId> filtered =
+            Collections2.filter(allLocales, new Predicate<LocaleId>()
+            {
+               @Override
+               public boolean apply(@Nullable LocaleId input)
+               {
+                  return input.getId().startsWith(query);
+               }
+            });
+
+      /*return new ArrayList<String>(Collections2.transform(filtered, new Function<LocaleId, String>()
+      {
+         @Override
+         public String apply(@Nullable LocaleId from)
+         {
+            return from.getId();
+         }
+      }));*/
+      return new ArrayList<HLocale>(Collections2.transform(filtered, new Function<LocaleId, HLocale>()
+      {
+         @Override
+         public HLocale apply(@Nullable LocaleId from)
+         {
+            return new HLocale(from);
+         }
+      }));
    }
 
 }

@@ -7,18 +7,30 @@
     xmlns:rich="http://richfaces.org/rich" >
 
 				<f:facet name="header">#{messages['jsf.SupportedLanguageDetails']}</f:facet>
-				<h:panelGrid>
-					<s:decorate id="localeField"
-						template="edit.xhtml">
-						<ui:define name="label">#{messages['jsf.Language']}</ui:define>
-						<h:selectOneMenu id="selectLocale"
-							value="#{languageManagerAction.language}" >
-							<a4j:support event="onchange" reRender="output"
-								action="#{languageManagerAction.updateLanguage()}" />
-							<f:selectItems value="#{languageManagerAction.localeStringList}" />
-						</h:selectOneMenu>
-					</s:decorate>
-				</h:panelGrid>
+                <h:panelGrid>
+                    <s:decorate id="localeField"
+                                template="edit.xhtml">
+                        <ui:define name="label">#{messages['jsf.Language']}</ui:define>
+                        <h:inputText id="localeName" value="#{languageManagerAction.language}">
+                            <a4j:support event="onkeyup" reRender="output"
+                                         action="#{languageManagerAction.updateLanguage()}" />
+                        </h:inputText>
+                        <rich:suggestionbox for="localeName" var="result"
+                                            suggestionAction="#{languageManagerAction.suggestLocales}"
+                                            width="300">
+                            <h:column>
+                                <h:outputText value="#{result.localeId}"/>
+                            </h:column>
+                            <h:column>
+                                <h:outputText value="#{result.retrieveDisplayName()}"/>
+                            </h:column>
+                        </rich:suggestionbox>
+                    </s:decorate>
+                    <s:decorate id="enabledByDefaultField" template="display.xhtml">
+                        <ui:define name="label">#{messages['jsf.EnabledByDefault']}</ui:define>
+                        <h:selectBooleanCheckbox value="#{languageManagerAction.enabledByDefault}"/>
+                    </s:decorate>
+                </h:panelGrid>
 
 				<div><h:panelGrid id="output" >
 					<s:decorate id="output1" template="display.xhtml">
