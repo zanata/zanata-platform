@@ -1,0 +1,11 @@
+.dateSpinner {
+	border: 1px dotted #7F9DB9;
+}
+
+.dateSpinner .gwt-ValueSpinnerTextBox {
+	text-align: right;
+	font-family: serif;
+	font-style: italic;
+	border: 0px;
+}
+ 

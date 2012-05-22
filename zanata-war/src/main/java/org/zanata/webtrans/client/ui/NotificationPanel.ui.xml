@@ -1,0 +1,37 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:with field="resources" type="org.zanata.webtrans.client.resources.Resources" />
+
+	<ui:style>
+		.mainPanel {
+			background-color: black;
+			width:300px;
+			color:white;
+			border-radius:8px;
+			opacity:0.8;
+		}
+		
+		.messagePanel {
+			width: 200px;
+			padding:5px;
+		}
+		
+		.dismissLink, .dismissLink:hover, .dismissLink:visited
+		{
+			color:#FFFFFF;	
+		}
+		
+	</ui:style>
+
+	<g:VerticalPanel styleName="{style.mainPanel}" spacing="2">
+		<g:cell>
+		<g:VerticalPanel ui:field="messagePanel" styleName="{style.messagePanel}" />
+		</g:cell>
+		
+		<g:cell horizontalAlignment="ALIGN_RIGHT">
+		<g:Anchor href="javascript:void(0)" ui:field="dismissLink" addStyleNames="{style.dismissLink}"><ui:msg>Dismiss</ui:msg></g:Anchor>
+		</g:cell>
+	</g:VerticalPanel>
+</ui:UiBinder>

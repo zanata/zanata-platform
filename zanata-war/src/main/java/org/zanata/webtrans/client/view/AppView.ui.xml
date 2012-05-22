@@ -26,9 +26,9 @@
         }
 
 		.topPanel-Workspace {
-			font-size: 1.2em;
+			font-size: 15px;
 			color: white;
-			padding: 5px;
+			padding: 2px;
 		}
 
       .notificationInfo {
@@ -64,24 +64,20 @@
 		}
 		
 		.translationStats {
-			float: left;
 			width: 140px;
 			height: 1.2em;
 			color: white;
-			margin-top: 7px;
 		}
 		
         .readOnly {
             font-weight: bold;
-            font-size: 1.15em;
             color: #ff6622;
-            padding-right: 7px;
-            display: inline;
         }
 		
 		.userName {
 			font-weight: bold;
-			color: #ae1f23;
+			color: #5F5F5F;
+			padding-left:5px;
 		}
 		
 		.divider {
@@ -102,82 +98,57 @@
             cursor: pointer;
             display: inline;
         }
-
-        .search-replace-link {
-            color: white;
-            text-decoration: underline;
-            cursor: pointer;
-            display: inline;
-            margin-right: 10px;
-        }
+        
+        .banner 
+        {
+			background:#5F5F5F;	
+		}
+		
+		.topMenuBar 
+		{
+			margin-right:5px;
+		}
 		
 	</ui:style>
 	<g:LayoutPanel>
-		<g:layer top="3px" height="16px">
-		    <g:HorizontalPanel width="100%">
-		      <g:cell horizontalAlignment="ALIGN_LEFT">
-		          <g:Image resource="{resources.logo}" styleName="{style.logo}"/>
-		      </g:cell>
-		      <g:cell horizontalAlignment="ALIGN_LEFT">
-                  <g:Label ui:field="readOnlyLabel" styleName="{style.readOnly}"><ui:msg>Read-only mode</ui:msg></g:Label>
-		      </g:cell>
-		       <g:cell horizontalAlignment="ALIGN_RIGHT">
-                    <g:FlowPanel styleName="{style.topPanel-right-menu}">
-                        <g:HorizontalPanel styleName="{style.topPanel-Navigation}">
-                                 <g:cell horizontalAlignment="ALIGN_CENTER">
-                                    <g:Image ui:field="userImg" height="16px" width="16px"/>
-                                 </g:cell>
-                                 <g:cell horizontalAlignment="ALIGN_CENTER">
-                                    <g:Label ui:field="user" styleName="{style.userName}"/>
-                                 </g:cell>
-                                 <g:cell horizontalAlignment="ALIGN_CENTER">
-                                    <g:Anchor href="javascript:void(0)" ui:field="helpLink"><ui:msg>Help</ui:msg></g:Anchor>
-                                 </g:cell>
-                                 <g:cell horizontalAlignment="ALIGN_CENTER">
-                                    <g:Anchor href="javascript:void(0)" ui:field="leaveLink"><ui:msg>Leave Workspace</ui:msg></g:Anchor>
-                                 </g:cell>
-                                 <g:cell horizontalAlignment="ALIGN_CENTER">
-                                    <g:Anchor href="javascript:void(0)" ui:field="signOutLink"><ui:msg>Sign Out</ui:msg></g:Anchor>
-                                 </g:cell>
-                        </g:HorizontalPanel>
-                    </g:FlowPanel>
-              </g:cell>
-		    </g:HorizontalPanel>
-		</g:layer>
-		<g:layer top="22px" height="28px">
-			<g:LayoutPanel ui:field='topPanel' styleName="{resources.style.banner}">
-				<g:layer left="0px" right="205px">
-				<g:HorizontalPanel width="100%">
-					<g:cell verticalAlignment="ALIGN_MIDDLE">
-						<g:HTMLPanel styleName="{style.topPanel-Workspace}">
-							<nobr>
-							    <g:Label ui:field="documentsLink" styleName="{style.documents-link}"><ui:msg>Documents</ui:msg></g:Label>
-								<span class="{style.divider}">></span>
-								<em>
-									<span ui:field="selectedDocumentPathSpan"/><span ui:field="selectedDocumentSpan"><ui:msg>No document selected</ui:msg></span>
-								</em>
-							</nobr>
-						</g:HTMLPanel>
-					</g:cell>
-					<g:cell verticalAlignment="ALIGN_MIDDLE">
-                        <g:HTMLPanel>
-                            <g:Label ui:field="notificationMessage" styleName="{style.notificationInfo}"/>
-                            <g:Label ui:field="dismissLink" styleName="{style.notification-dismiss}">
-                                <ui:msg>(clear)</ui:msg>
-                            </g:Label>
-                        </g:HTMLPanel>
-		            </g:cell>
-                    <g:cell verticalAlignment="ALIGN_MIDDLE" horizontalAlignment="ALIGN_RIGHT">
-                        <g:Label ui:field="searchAndReplaceLink" styleName="{style.search-replace-link}" ><ui:msg>Project wide search and replace</ui:msg></g:Label>
-                    </g:cell>
-				</g:HorizontalPanel>
-				</g:layer>
-				<g:layer right="5px" width="200px">	      
-				      <fui:TransUnitCountBar ui:field="translationStatsBar" styleName="{style.translationStats}"/>
+		<g:layer top="3px" height="38px">
+			<g:LayoutPanel ui:field='topPanel' styleName="{style.banner}">
+				<g:layer left="0px" right="0px">
+					<g:HorizontalPanel width="100%" height="100%">
+						<g:cell horizontalAlignment="ALIGN_LEFT" verticalAlignment="ALIGN_MIDDLE" width="16px">
+			         		<g:Image resource="{resources.logo}" styleName="{style.logo}"/>
+			      		</g:cell>
+						<g:cell verticalAlignment="ALIGN_MIDDLE">
+								<g:HTMLPanel styleName="{style.topPanel-Workspace}">
+									<nobr>
+										<g:Label ui:field="readOnlyLabel" styleName="{style.readOnly}"><ui:msg>Read-only mode</ui:msg></g:Label>
+									    <g:Label ui:field="documentsLink" styleName="{style.documents-link}"><ui:msg>Documents</ui:msg></g:Label>
+										<span class="{style.divider}">></span>
+										<em>
+											<span ui:field="selectedDocumentPathSpan"/><span ui:field="selectedDocumentSpan"><ui:msg>No document selected</ui:msg></span>
+										</em>
+									</nobr>
+								</g:HTMLPanel>
+						</g:cell>
+						<g:cell verticalAlignment="ALIGN_MIDDLE">
+	                        <g:HTMLPanel>
+	                            <g:Label ui:field="notificationMessage" styleName="{style.notificationInfo}"/>
+	                            <g:Label ui:field="dismissLink" styleName="{style.notification-dismiss}">
+	                                <ui:msg>(clear)</ui:msg>
+	                            </g:Label>
+	                        </g:HTMLPanel>
+			            </g:cell>
+						<g:cell width="200px" verticalAlignment="ALIGN_MIDDLE">
+	                    	 <fui:TransUnitCountBar ui:field="translationStatsBar" styleName="{style.translationStats}"/>
+	                    </g:cell>
+	                    <g:cell verticalAlignment="ALIGN_MIDDLE" horizontalAlignment="ALIGN_LEFT" width="200px">
+	                    	<g:MenuBar ui:field="topMenuBar" addStyleNames="{style.topMenuBar}"/>
+	                    </g:cell>
+					</g:HorizontalPanel>
 				</g:layer>
 			</g:LayoutPanel>
 		</g:layer>
-		<g:layer top="50px" bottom="0px" left='0px' right='0px' >
+		<g:layer top="45px" bottom="0px" left='0px' right='0px' >
 		   <g:LayoutPanel ui:field="container" />
 		</g:layer>
 	</g:LayoutPanel>

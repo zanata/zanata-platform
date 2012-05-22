@@ -1,0 +1,44 @@
+.logSEVERE {
+  color: #CE0000;
+}
+
+.logWARNING {
+  color: #FF9900;
+}
+
+.logCONFIG {
+  color: #749749;
+}
+
+.logINFO {
+  color: #154890;
+}
+
+.logFINE,.logFINER,.logFINEST {
+  color: #9C8AA5;
+}
+
+/** Default styles for simple log handler */
+.gwt-SimpleLogHandler {
+  background: white;
+  border: 2px dotted blue;
+  padding: 5px;
+  margin: 4px;
+  width:300px;
+}
+
+/** Default styles for simple log handler */
+.gwt-GroupedLogHandler {
+  background: white;
+  border: 2px dotted blue;
+  padding: 5px;
+  margin: 4px;
+  width:400px;
+}
+
+.logContentPane {
+  border: 1px solid blue;
+  height: 300px;
+  width: 100%;
+  background:white;
+}

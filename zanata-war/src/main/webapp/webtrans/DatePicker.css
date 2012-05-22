@@ -1,0 +1,108 @@
+/* 
+* Global widget style. 
+*/
+.gwt-DatePicker {
+  border: 1px solid #f1f1f1;
+  border-bottom: 2px solid #f1f1f1;
+  color: 6b6b6b;
+  cursor: default;
+  width: 7em;
+}
+
+.datePickerDay,.datePickerWeekdayLabel,.datePickerWeekendLabel {
+  font-family: Arial;
+  font-size: 65%;
+  padding: 2px;
+  text-align: center;
+  padding: 2px;
+  outline: none;
+  cursor: default;
+}
+
+.gwt-DatePicker td,.datePickerMonthSelector  td :focus {
+  outline: none
+}
+
+.gwt-DateBox input {
+  width: 8em;
+}
+
+/* 
+* Calendar styles 
+*/
+.datePickerDays {
+  background-color: white;
+  width: 100%;
+}
+
+.datePickerWeekdayLabel {
+  background: #dbe6de;
+}
+
+.datePickerWeekendLabel {
+  background: #dbe7ef;
+}
+
+.datePickerDay {
+  padding: 1px;
+  cursor: hand;
+  width: 1em;
+}
+
+.datePickerDayIsToday {
+  border: 1px solid black;
+  padding: 0px;
+}
+
+.datePickerDayIsWeekend {
+  background: #f1f1f1;
+}
+
+.datePickerDayIsFiller {
+  color: #bfbfbf;
+  padding: 1px;
+  cursor: hand;
+}
+
+.datePickerDayIsSelected {
+  background: #aaccee;
+}
+
+.datePickerDayIsDisabled {
+  color: graytext;
+}
+
+.datePickerDayIsHighlighted {
+  border: 1px solid #eeeeee;
+  padding: 0px;
+}
+
+.datePickerDayIsSelectedAndHighlighted {
+   background: #bbddff;
+}
+
+
+/* 
+* Month selector styles 
+*/
+.datePickerMonthSelector {
+  background: #dbe6de;
+  width: 100%;
+  text-align: center;
+}
+
+.datePickerMonth {
+  text-align: center;
+  vertical-align: center;
+  white-space: nowrap;
+  font-weight: bold;
+  font-size: 70%;
+}
+
+.datePickerPreviousButton {
+   text-align: left;
+}
+
+.datePickerNextButton {
+     text-align: right; 
+}

@@ -1,0 +1,38 @@
+/**************************************
+ Structural CSS 
+ */
+.gwt-FastTree .selection-bar {
+  right: 0;
+}
+
+/************************************
+Visual styling
+*/
+.gwt-FastTree {
+ z-index: 300; 
+}
+
+.gwt-FastTree .open .treeItemContent,.gwt-FastTree  .closed .treeItemContent
+  {
+  margin-right: 18px;
+}
+
+.gwt-FastTree .open {
+  background: blue;
+}
+
+.gwt-FastTreeItem-leaf {
+  padding-right: 18px;
+}
+
+.gwt-FastTreeItem .children {
+  margin-right: 10px;
+}
+
+.gwt-FastTreeItem .open {
+  background: url("treeOpen.gif") no-repeat right;
+}
+
+.gwt-FastTreeItem .closed {
+  background: url("treeClosed.gif") no-repeat right;
+}

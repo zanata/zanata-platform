@@ -1,0 +1,7 @@
+.gwt-CollapsiblePanel {
+  margin-left: 10px;
+}
+
+.gwt-CollapsiblePanel .CollapsibleContainer {
+  border-left: 1px solid #59d;
+}

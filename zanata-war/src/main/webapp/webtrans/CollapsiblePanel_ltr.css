@@ -1,0 +1,14 @@
+.gwt-CollapsiblePanel {
+  margin-right: 10px;
+}
+ 
+.gwt-CollapsiblePanel .CollapsibleContainer {
+  border-right: 10px solid #59d;
+ }
+ 
+ 
+/* Optional styles  */
+.gwt-CollapsiblePanel .CollapsibleTitle {
+  padding-left:20px;
+ }
+ 

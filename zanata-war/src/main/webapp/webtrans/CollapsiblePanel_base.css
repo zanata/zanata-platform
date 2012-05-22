@@ -1,0 +1,33 @@
+.gwt-CollapsiblePanel div:focus {
+  border: 0px;
+  \-moz-outline: none !important
+}
+
+.gwt-CollapsiblePanel {
+}
+
+.gwt-CollapsiblePanel .CollapsibleHoverBar {
+  position: relative;
+  background-color: #888;
+  width: 20px;
+}
+
+.gwt-CollapsiblePanel .CollapsibleContainer {
+  border-bottom: 1px solid #59d;
+  position: relative;
+  z-index: 100;
+  background-color: white;
+  width: 200px;
+  overflow: hidden;
+}
+
+/* Optional styles  */
+.gwt-CollapsiblePanel .CollapsibleTitle {
+  background: #6ae;
+  padding: 5px;
+  height:20px;
+}
+
+.gwt-CollapsiblePanel .CollapsibleTitle i {
+  color: white;
+}

@@ -29,6 +29,10 @@ import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.ui.HasCommand;
+import org.zanata.webtrans.client.ui.MenuCommandItem;
+import org.zanata.webtrans.client.ui.HasNotificationData;
+import org.zanata.webtrans.client.ui.NotificationPanel;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.shared.auth.Identity;
 
@@ -40,13 +44,17 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HasVisibility;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -62,27 +70,25 @@ public class AppView extends Composite implements AppPresenter.Display
       String notificationInfo();
       String notificationWarning();
       String notificationError();
+
+      String userName();
    }
 
    private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
-
-   @UiField
-   Anchor signOutLink, leaveLink, helpLink;
 
    @UiField(provided = true)
    TransUnitCountBar translationStatsBar;
 
    @UiField
-   Label readOnlyLabel, notificationMessage, user, documentsLink, dismissLink, searchAndReplaceLink;
+   Label readOnlyLabel, notificationMessage, documentsLink, dismissLink;
 
    @UiField
    SpanElement selectedDocumentSpan, selectedDocumentPathSpan;
 
    @UiField
    LayoutPanel container, topPanel;
-
-   @UiField
-   Image userImg;
+   
+   NotificationPanel notificationPanel;
 
    @UiField(provided = true)
    final Resources resources;
@@ -90,16 +96,41 @@ public class AppView extends Composite implements AppPresenter.Display
    @UiField
    Styles style;
 
+   @UiField
+   MenuBar topMenuBar;
+
+   Image userImg;
+
+   MenuBar menuBar;
+
+   MenuCommandItem helpMenuItem;
+
+   MenuCommandItem leaveWorkspaceMenuItem;
+
+   MenuCommandItem signOutMenuItem;
+
+   MenuCommandItem searchAndReplaceMenuItem;
+
 
    // TODO may be able to make these provided=true widgets
    private Widget documentListView;
    private Widget translationView;
    private Widget searchResultsView;
 
+   private final WebTransMessages messages;
+
+   private Command emptyCommand = new Command()
+   {
+      public void execute()
+      {
+      }
+   };
+
    @Inject
    public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, final Identity identity)
    {
       this.resources = resources;
+      this.messages = messages;
 
       StyleInjector.inject(resources.style().getText(), true);
 
@@ -108,13 +139,26 @@ public class AppView extends Composite implements AppPresenter.Display
       translationStatsBar = new TransUnitCountBar(messages, true);
       translationStatsBar.setVisible(false); // hide until there is a value to
                                              // display
+      
+      notificationPanel = new NotificationPanel(true, true, true);
+      notificationPanel.hide(true);
+
+      menuBar = new MenuBar(true);
+
+      helpMenuItem = new MenuCommandItem(messages.help(), emptyCommand);
+      leaveWorkspaceMenuItem = new MenuCommandItem(messages.leaveWorkspace(), emptyCommand);
+      signOutMenuItem = new MenuCommandItem(messages.signOut(), emptyCommand);
+      searchAndReplaceMenuItem = new MenuCommandItem(messages.searchAndReplace(), emptyCommand);
+
+      menuBar.addItem(searchAndReplaceMenuItem);
+      menuBar.addSeparator();
+      menuBar.addItem(helpMenuItem);
+      menuBar.addSeparator();
+      menuBar.addItem(leaveWorkspaceMenuItem);
+      menuBar.addItem(signOutMenuItem);
+      userImg = new Image(identity.getPerson().getAvatarUrl());
 
       initWidget(uiBinder.createAndBindUi(this));
-
-      userImg.setUrl(identity.getPerson().getAvatarUrl());
-
-      helpLink.setHref(messages.hrefHelpLink());
-      helpLink.setTarget("_BLANK");
 
       this.documentListView = documentListView.asWidget();
       this.container.add(this.documentListView);
@@ -182,21 +226,9 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public HasClickHandlers getHelpLink()
+   public HasNotificationData getNotificationPanel()
    {
-      return helpLink;
-   }
-
-   @Override
-   public HasClickHandlers getLeaveWorkspaceLink()
-   {
-      return leaveLink;
-   }
-
-   @Override
-   public HasClickHandlers getSignOutLink()
-   {
-      return signOutLink;
+      return notificationPanel;
    }
 
    @Override
@@ -206,16 +238,17 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public HasClickHandlers getSearchLink()
-   {
-      return searchAndReplaceLink;
-   }
-
-   @Override
    public void setUserLabel(String userLabel)
    {
-      user.setText(userLabel);
-      user.setTitle("Username");
+      HorizontalPanel userImageAndLabel = new HorizontalPanel();
+      userImageAndLabel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+      userImageAndLabel.add(userImg);
+      
+      Label userNameLabel = new Label(userLabel + " " + messages.downArrow());
+      userNameLabel.setStyleName(style.userName());
+      userImageAndLabel.add(userNameLabel);
+
+      topMenuBar.addItem(userImageAndLabel.getElement().getString(), true, menuBar);
    }
 
    @Override
@@ -268,4 +301,43 @@ public class AppView extends Composite implements AppPresenter.Display
    {
       readOnlyLabel.setVisible(visible);
    }
+
+   @Override
+   public HasClickHandlers getDismissButton()
+   {
+      return notificationPanel.getDismissButton();
+   }
+
+   @Override
+   public int getNotificationWidth()
+   {
+      // return width of the notification panel, see
+      // Style@Notification.ui.xml.mainPanel
+      return 300;
+   }
+
+   @Override
+   public HasCommand getHelpMenuItem()
+   {
+      return helpMenuItem;
+   }
+
+   @Override
+   public HasCommand getLeaveWorkspaceMenuItem()
+   {
+      return leaveWorkspaceMenuItem;
+   }
+
+   @Override
+   public HasCommand getSignOutMenuItem()
+   {
+      return signOutMenuItem;
+   }
+
+   @Override
+   public HasCommand getSearchAndReplaceMenuItem()
+   {
+      return searchAndReplaceMenuItem;
+   }
+
 }

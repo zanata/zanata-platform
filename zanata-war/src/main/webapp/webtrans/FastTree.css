@@ -1,0 +1,67 @@
+/**************************************
+ Structural CSS 
+ */
+.gwt-FastTree {
+  \-moz-user-select: none;
+  position: relative;
+}
+
+.gwt-FastTreeItem {
+  min-width: 18px;
+}
+
+.gwt-FastTreeItem .open,.gwt-FastTreeItem .closed {
+  width: 100%;
+}
+
+.gwt-FastTree .selection-bar {
+  font-size: 0;
+  position: absolute;
+  left: 0;
+  width: 1px;
+  z-index: -1;
+  outline: none;
+  \-moz-outline: none;
+}
+
+.gwt-FastTree .selection-bar :focus {
+  outline: none
+}
+
+/************************************
+Visual styling
+*/
+.gwt-FastTree .open .treeItemContent,.gwt-FastTree  .closed .treeItemContent
+  {
+  margin-left: 18px;
+}
+
+.gwt-FastTreeItem-leaf {
+  display: block;
+  padding: 2px;
+  padding-left: 18px;
+}
+
+.gwt-FastTreeItem .children {
+  margin-left: 10px;
+}
+
+.gwt-FastTreeItem .open,.gwt-FastTreeItem .closed,.gwt-FastTreeItem-leaf {
+  color: black;
+}
+
+.gwt-FastTreeItem .open {
+  background:  url(treeOpen.gif) no-repeat center left;
+}
+
+.gwt-FastTreeItem .closed {
+  background: url(treeClosed.gif) no-repeat center left;
+}
+
+.gwt-FastTree .treeItemContent {
+  padding: 2px;
+}
+
+.gwt-FastTree .selected .treeItemContent {
+  background: #93c2f1 url(selectionBar.gif) repeat-x;
+}

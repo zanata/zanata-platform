@@ -1,0 +1,50 @@
+/**************************************
+ Structural CSS 
+ */
+.gwt-FastTree {
+  \-moz-user-select: none;
+  zoom:1;
+  
+}
+
+.gwt-FastTreeItem {
+  min-width: 18px;
+}
+
+.gwt-FastTreeItem .open,.gwt-FastTreeItem .closed {
+  width: 100%;
+}
+
+.gwt-FastTree .selection-bar {
+  font-size: 0;
+  position: absolute;
+  width: 1px;
+  z-index: -1;
+  outline: none;
+  \-moz-outline: none;
+}
+
+.gwt-FastTree .selection-bar :focus {
+  outline: none
+}
+
+/************************************
+Visual styling
+*/
+.gwt-FastTreeItem-leaf {
+  display: block;
+  padding: 2px;
+}
+
+.gwt-FastTreeItem .open,.gwt-FastTreeItem .closed,.gwt-FastTreeItem-leaf
+  {
+  color: blue;
+}
+
+.gwt-FastTree .treeItemContent {
+  padding: 2px;
+}
+
+.gwt-FastTree .selected .treeItemContent {
+  background: #93c2f1 url("selectionBar.gif") repeat-x;
+}

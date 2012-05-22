@@ -1,0 +1,96 @@
+/**
+ * Default DropDownListBox styling.
+ */
+.gwt-DropDownListBox {
+  
+}
+
+.gwt-DropDownListBox .gwt-ToggleButton {
+  border-bottom: #b3b3b3 1px solid;
+  border-left: #e5e5e5 1px solid;
+  border-right: #e5e5e5 1px solid;
+  padding: 0px;
+}
+
+.gwt-DropDownListBox .gwt-ToggleButton-down,.gwt-DropDownListBox  .gwt-ToggleButton-down-hovering
+  {
+  border-bottom: #e5e5e5 1px solid;
+}
+
+.gwt-DropDownListBox  .DropDownImageHolder {
+  width: 10px;
+}
+
+.gwt-DropDownListBox  .DropDownImage {
+  width: 15px;
+  height: 10px;
+  background: url("dropDownArrow.png") no-repeat 50% 50%;
+}
+
+.gwt-DropDownListBox  .DropDownTextHolder {
+  text-align: center;
+  white-space: nowrap;
+  padding: 4px;
+  border-right: black 1px solid;
+}
+
+/**
+* Shared custom list box styles.
+**/
+.gwt-DropDownListBox .ListItems {
+  background-color: #fefeff;
+  border-bottom: 1px solid #C3D9FF;
+  cursor: pointer;
+  cursor: hand;
+  text-align: center;
+  margin-top: 1px;
+}
+
+.ListItem {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 2px;
+  border-left: 1px solid #C3D9FF;
+  border-right: 1px solid #C3D9FF;
+  border-top: 1px dotted #C3D9FF;
+  padding-left: 10px;
+}
+
+.ListItemFirstInGroup {
+  border-top: 1px solid #C3D9FF;
+}
+
+.ListItemIsHighlighted {
+  background: #e8f8f8;
+}
+
+.ListItemIsSelected {
+  background: #95b4d4;
+}
+
+.ListItemIsSelectedAndHighlighted {
+  background: #84c5e5;
+}
+
+.ListItemIsSelectedAndDisabled {
+  background: #84c5e5;
+  color: #efefef;
+}
+
+.ListItemIsDisabled {
+  color: #efefef;
+}
+
+.ListItemInnerSeparator {
+  height: 1px;
+  border-left: 1px solid #C3D9FF;
+  border-right: 1px solid #C3D9FF;
+}
+
+.ListItemOuterSeparator {
+  border-left: 1px solid #C3D9FF;
+  border-right: 1px solid #C3D9FF;
+  background: #C3D9FF;
+  padding: 2px;
+}

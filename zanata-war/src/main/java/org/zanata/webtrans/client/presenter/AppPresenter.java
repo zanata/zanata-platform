@@ -38,6 +38,8 @@ import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.ui.HasCommand;
+import org.zanata.webtrans.client.ui.HasNotificationData;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -49,6 +51,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.inject.Inject;
 
@@ -61,15 +64,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       void showInMainView(MainView editor);
 
-      HasClickHandlers getSignOutLink();
-
-      HasClickHandlers getLeaveWorkspaceLink();
-
-      HasClickHandlers getHelpLink();
-
       HasClickHandlers getDocumentsLink();
-
-      HasClickHandlers getSearchLink();
 
       void setUserLabel(String userLabel);
 
@@ -80,11 +75,26 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       void setNotificationMessage(String message, NotificationEvent.Severity severity);
 
       HasClickHandlers getDismiss();
+
       HasVisibility getDismissVisibility();
 
       void setStats(TranslationStats transStats);
 
       void setReadOnlyVisible(boolean visible);
+
+      HasNotificationData getNotificationPanel();
+
+      HasClickHandlers getDismissButton();
+
+      int getNotificationWidth();
+
+      HasCommand getLeaveWorkspaceMenuItem();
+
+      HasCommand getHelpMenuItem();
+
+      HasCommand getSignOutMenuItem();
+
+      HasCommand getSearchAndReplaceMenuItem();
 
    }
 
@@ -152,7 +162,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          }
       }));
 
-
       registerHandler(eventBus.addHandler(DocumentStatsUpdatedEvent.getType(), new DocumentStatsUpdatedEventHandler()
       {
 
@@ -196,26 +205,14 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       display.getDismissVisibility().setVisible(false);
 
-      registerHandler(display.getSignOutLink().addClickHandler(new ClickHandler()
+      display.getNotificationPanel().setMessagesToKeep(5);
+
+      registerHandler(display.getDismissButton().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
-            Application.redirectToLogout();
-         }
-      }));
-
-      registerHandler(display.getLeaveWorkspaceLink().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            // use when opening workspace in new window
-            // Application.closeWindow();
-
-            // use when opening workspace in same window
-            Application.exitWorkspace();
-            Application.redirectToZanataProjectHome(workspaceContext.getWorkspaceId());
+            display.getNotificationPanel().hide(true);
          }
       }));
 
@@ -242,21 +239,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          }
       }));
 
-      registerHandler(display.getSearchLink().addClickHandler(new ClickHandler()
-      {
-
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
-            if (!token.getView().equals(MainView.Search))
-            {
-               token.setView(MainView.Search);
-               history.newItem(token.toTokenString());
-            }
-         }
-      }));
-
       registerHandler(history.addValueChangeHandler(new ValueChangeHandler<String>()
       {
 
@@ -266,6 +248,53 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             processHistoryEvent(event);
          }
       }));
+
+      display.getLeaveWorkspaceMenuItem().setCommand(new Command()
+      {
+         @Override
+         public void execute()
+         {
+            // use when opening workspace in new window
+            // Application.closeWindow();
+
+            // use when opening workspace in same window
+            Application.exitWorkspace();
+            Application.redirectToZanataProjectHome(workspaceContext.getWorkspaceId());
+         }
+      });
+      
+      display.getHelpMenuItem().setCommand(new Command()
+      {
+         @Override
+         public void execute()
+         {
+            com.google.gwt.user.client.Window.open(messages.hrefHelpLink(), messages.hrefHelpLink(), null);
+         }
+      });
+      
+      
+      display.getSignOutMenuItem().setCommand(new Command()
+      {
+         @Override
+         public void execute()
+         {
+            Application.redirectToLogout();
+         }
+      });
+
+      display.getSearchAndReplaceMenuItem().setCommand(new Command()
+      {
+         @Override
+         public void execute()
+         {
+            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+            if (!token.getView().equals(MainView.Search))
+            {
+               token.setView(MainView.Search);
+               history.newItem(token.toTokenString());
+            }
+         }
+      });
 
       display.setUserLabel(identity.getPerson().getName());
       String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
@@ -277,6 +306,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       showView(MainView.Documents);
 
       history.fireCurrentHistoryState();
+   }
+
+   private void showErrorNotification(String msg)
+   {
+      display.getNotificationPanel().appendMessage(msg);
+      display.getNotificationPanel().setPopupPosition(com.google.gwt.user.client.Window.getClientWidth() - (display.getNotificationWidth() + 5), 40);
+      display.getNotificationPanel().show();
    }
 
    @Override
