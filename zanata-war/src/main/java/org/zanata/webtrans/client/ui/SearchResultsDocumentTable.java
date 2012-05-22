@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.presenter.SearchResultsPresenter.ReplacementState;
-import org.zanata.webtrans.client.presenter.SearchResultsPresenter.TransUnitReplaceInfo;
+import org.zanata.webtrans.client.presenter.ReplacementState;
+import org.zanata.webtrans.client.presenter.TransUnitReplaceInfo;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.google.common.base.Predicate;

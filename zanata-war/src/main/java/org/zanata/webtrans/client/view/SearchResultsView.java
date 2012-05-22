@@ -21,7 +21,7 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
-import org.zanata.webtrans.client.presenter.SearchResultsPresenter.TransUnitReplaceInfo;
+import org.zanata.webtrans.client.presenter.TransUnitReplaceInfo;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.LoadingPanel;
