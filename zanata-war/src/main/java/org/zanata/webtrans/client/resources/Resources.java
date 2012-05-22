@@ -95,4 +95,13 @@ public interface Resources extends ClientBundle
 
    @Source("images/loading.gif")
    ImageResource spinner();
+
+   @Source("images/msgerror.png")
+   ImageResource errorMsg();
+
+   @Source("images/msginfo.png")
+   ImageResource infoMsg();
+
+   @Source("images/msgwarn.png")
+   ImageResource warnMsg();
 }

@@ -29,6 +29,7 @@ import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.NotificationEventHandler;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEventHandler;
@@ -39,7 +40,6 @@ import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.HasCommand;
-import org.zanata.webtrans.client.ui.HasNotificationData;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -82,12 +82,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       void setReadOnlyVisible(boolean visible);
 
-      HasNotificationData getNotificationPanel();
-
-      HasClickHandlers getDismissButton();
-
-      int getNotificationWidth();
-
       HasCommand getLeaveWorkspaceMenuItem();
 
       HasCommand getHelpMenuItem();
@@ -101,6 +95,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    private final DocumentListPresenter documentListPresenter;
    private final TranslationPresenter translationPresenter;
    private final SearchResultsPresenter searchResultsPresenter;
+   private final NotificationPresenter notificationPresenter;
    private final History history;
    private final Identity identity;
    private final Window window;
@@ -119,7 +114,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
+   public AppPresenter(Display display, EventBus eventBus, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
    {
       super(display, eventBus);
       this.history = history;
@@ -128,6 +123,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       this.documentListPresenter = documentListPresenter;
       this.translationPresenter = translationPresenter;
       this.searchResultsPresenter = searchResultsPresenter;
+      this.notificationPresenter =notificationPresenter;
       this.window = window;
       this.windowLocation = windowLocation;
       this.workspaceContext = workspaceContext;
@@ -139,6 +135,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       documentListPresenter.bind();
       translationPresenter.bind();
       searchResultsPresenter.bind();
+      notificationPresenter.bind();
 
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
       {
@@ -156,9 +153,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          @Override
          public void onNotification(NotificationEvent event)
          {
-            display.setNotificationMessage(event.getMessage(), event.getSeverity());
-            display.getDismissVisibility().setVisible(true);
-            Log.info("Notification:" + event.getMessage());
+            // See NotificationPresenter for Severity.Error message
+            if (event.getSeverity() != Severity.Error)
+            {
+               display.setNotificationMessage(event.getMessage(), event.getSeverity());
+               display.getDismissVisibility().setVisible(true);
+               Log.info("Notification:" + event.getMessage());
+            }
          }
       }));
 
@@ -204,17 +205,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       }));
 
       display.getDismissVisibility().setVisible(false);
-
-      display.getNotificationPanel().setMessagesToKeep(5);
-
-      registerHandler(display.getDismissButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            display.getNotificationPanel().hide(true);
-         }
-      }));
 
       registerHandler(display.getDocumentsLink().addClickHandler(new ClickHandler()
       {
@@ -262,7 +252,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             Application.redirectToZanataProjectHome(workspaceContext.getWorkspaceId());
          }
       });
-      
+
       display.getHelpMenuItem().setCommand(new Command()
       {
          @Override
@@ -271,8 +261,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             com.google.gwt.user.client.Window.open(messages.hrefHelpLink(), messages.hrefHelpLink(), null);
          }
       });
-      
-      
+
       display.getSignOutMenuItem().setCommand(new Command()
       {
          @Override
@@ -306,13 +295,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       showView(MainView.Documents);
 
       history.fireCurrentHistoryState();
-   }
-
-   private void showErrorNotification(String msg)
-   {
-      display.getNotificationPanel().appendMessage(msg);
-      display.getNotificationPanel().setPopupPosition(com.google.gwt.user.client.Window.getClientWidth() - (display.getNotificationWidth() + 5), 40);
-      display.getNotificationPanel().show();
    }
 
    @Override

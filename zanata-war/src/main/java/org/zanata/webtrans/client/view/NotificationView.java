@@ -18,47 +18,63 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.ui;
+package org.zanata.webtrans.client.view;
+
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.presenter.NotificationPresenter;
+import org.zanata.webtrans.client.resources.Resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
 /**
  * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class NotificationPanel extends PopupPanel implements HasNotificationData
+public class NotificationView extends PopupPanel implements NotificationPresenter.Display
 {
 
    private static NotificationPanelUiBinder uiBinder = GWT.create(NotificationPanelUiBinder.class);
 
-   interface NotificationPanelUiBinder extends UiBinder<Widget, NotificationPanel>
+   interface NotificationPanelUiBinder extends UiBinder<Widget, NotificationView>
    {
+   }
+
+   interface Styles extends CssResource
+   {
+      String messageRow();
    }
 
    @UiField
    VerticalPanel messagePanel;
 
    @UiField
-   Anchor dismissLink;
+   Anchor dismissLink, clearLink;
+
+   @UiField
+   Resources resources;
+
+   @UiField
+   Styles style;
 
    private int messagesToKeep = 1;
 
-   public NotificationPanel(boolean modal, boolean autoHide, boolean animation)
+   @Inject
+   public NotificationView()
    {
       setWidget(uiBinder.createAndBindUi(this));
-      this.setModal(modal);
-      this.setAutoHideEnabled(autoHide);
-      this.setAnimationEnabled(animation);
-
       this.setStyleName("notificationPanel");
    }
 
@@ -78,9 +94,60 @@ public class NotificationPanel extends PopupPanel implements HasNotificationData
       return dismissLink;
    }
 
+   public HasClickHandlers getClearButton()
+   {
+      return clearLink;
+   }
+
    @Override
    public void setMessagesToKeep(int count)
    {
       messagesToKeep = count;
+   }
+
+   @Override
+   public void clearMessages()
+   {
+      messagePanel.clear();
+   }
+
+   public int getWidth()
+   {
+      // return width of the notification panel, see
+      // Style@Notification.ui.xml.mainPanel
+      return 400;
+   }
+
+   @Override
+   public void appendMessage(Severity severity, String msg)
+   {
+      HorizontalPanel panel = new HorizontalPanel();
+      Image severityImg;
+      panel.setWidth("100%");
+      if (severity == Severity.Error)
+      {
+         severityImg = new Image(resources.errorMsg());
+      }
+      else if (severity == Severity.Warning)
+      {
+         severityImg = new Image(resources.warnMsg());
+      }
+      else
+      {
+         severityImg = new Image(resources.infoMsg());
+      }
+
+      panel.add(severityImg);
+      panel.add(new Label(msg));
+      panel.setCellWidth(severityImg, "20px");
+
+      messagePanel.insert(panel, 0);
+      messagePanel.getWidget(0).setStyleName(style.messageRow());
+
+      while (messagePanel.getWidgetCount() > messagesToKeep)
+      {
+         messagePanel.remove(messagePanel.getWidgetCount() - 1);
+      }
+
    }
 }

@@ -31,8 +31,6 @@ import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.HasCommand;
 import org.zanata.webtrans.client.ui.MenuCommandItem;
-import org.zanata.webtrans.client.ui.HasNotificationData;
-import org.zanata.webtrans.client.ui.NotificationPanel;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.shared.auth.Identity;
 
@@ -54,7 +52,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.MenuBar;
-import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -88,7 +85,7 @@ public class AppView extends Composite implements AppPresenter.Display
    @UiField
    LayoutPanel container, topPanel;
    
-   NotificationPanel notificationPanel;
+   // NotificationPanel notificationPanel;
 
    @UiField(provided = true)
    final Resources resources;
@@ -139,10 +136,6 @@ public class AppView extends Composite implements AppPresenter.Display
       translationStatsBar = new TransUnitCountBar(messages, true);
       translationStatsBar.setVisible(false); // hide until there is a value to
                                              // display
-      
-      notificationPanel = new NotificationPanel(true, true, true);
-      notificationPanel.hide(true);
-
       menuBar = new MenuBar(true);
 
       helpMenuItem = new MenuCommandItem(messages.help(), emptyCommand);
@@ -226,12 +219,6 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public HasNotificationData getNotificationPanel()
-   {
-      return notificationPanel;
-   }
-
-   @Override
    public HasClickHandlers getDocumentsLink()
    {
       return documentsLink;
@@ -300,20 +287,6 @@ public class AppView extends Composite implements AppPresenter.Display
    public void setReadOnlyVisible(boolean visible)
    {
       readOnlyLabel.setVisible(visible);
-   }
-
-   @Override
-   public HasClickHandlers getDismissButton()
-   {
-      return notificationPanel.getDismissButton();
-   }
-
-   @Override
-   public int getNotificationWidth()
-   {
-      // return width of the notification panel, see
-      // Style@Notification.ui.xml.mainPanel
-      return 300;
    }
 
    @Override
