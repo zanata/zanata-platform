@@ -1,8 +1,19 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.and;
+import static org.easymock.EasyMock.capture;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.notNull;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
+import static org.easymock.EasyMock.verify;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.easymock.Capture;
@@ -29,6 +40,7 @@ import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.history.Window.Location;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.ui.HasCommand;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -43,6 +55,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.HasVisibility;
 
 @Test(groups = { "unit-tests" })
@@ -65,20 +78,28 @@ public class AppPresenterTest
    private AppPresenter appPresenter;
 
    HasClickHandlers mockDismiss;
-   HasVisibility mockDismissVisibility;
-   Display mockDisplay;
-   DocumentListPresenter mockDocumentListPresenter;
    HasClickHandlers mockDocumentsLink;
+   HasClickHandlers mockErrorNotificationBtn;
+
+   HasVisibility mockDismissVisibility;
+
+   Display mockDisplay;
    EventBus mockEventBus;
    History mockHistory;
    Identity mockIdentity;
-   HasClickHandlers mockLeaveWorkspaceLink;
    WebTransMessages mockMessages;
    Person mockPerson;
-   HasClickHandlers mockSearchLink;
+
+   HasCommand mockSearchMenuItem;
+   HasCommand mockLeaveWorkspaceMenuItem;
+   HasCommand mockSignoutMenuItem;
+   HasCommand mockHelpMenuItem;
+
+   DocumentListPresenter mockDocumentListPresenter;
    SearchResultsPresenter mockSearchResultsPresenter;
-   HasClickHandlers mockSignoutLink;
    TranslationPresenter mockTranslationPresenter;
+   NotificationPresenter mockNotificationPresenter;
+
    Window mockWindow;
    Location mockWindowLocation;
    WorkspaceContext mockWorkspaceContext;
@@ -89,12 +110,17 @@ public class AppPresenterTest
    private Capture<DocumentStatsUpdatedEventHandler> capturedDocumentStatsUpdatedEventHandler;
    private Capture<String> capturedHistoryTokenString;
    private Capture<ValueChangeHandler<String>> capturedHistoryValueChangeHandler;
-   private Capture<ClickHandler> capturedLeaveWorkspaceLinkClickHandler;
    private Capture<NotificationEventHandler> capturedNotificationEventHandler;
    private Capture<ProjectStatsUpdatedEventHandler> capturedProjectStatsUpdatedEventHandler;
-   private Capture<ClickHandler> capturedSearchLinkClickHandler;
-   private Capture<ClickHandler> capturedSignoutLinkClickHandler;
    private Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdatedEventHandler;
+
+   private Capture<ClickHandler> capturedErrorNotificationBtnHandler;
+
+   private Capture<Command> capturedLeaveWorkspaceLinkCommand;
+   private Capture<Command> capturedSearchLinkCommand;
+   private Capture<Command> capturedSignoutLinkCommand;
+   private Capture<Command> capturedHelpLinkCommand;
+
 
    private DocumentInfo testDocInfo;
    private DocumentId testDocId;
@@ -109,32 +135,40 @@ public class AppPresenterTest
       mockDisplay = createMock(AppPresenter.Display.class);
       mockDocumentListPresenter = createMock(DocumentListPresenter.class);
       mockDocumentsLink = createMock(HasClickHandlers.class);
+      mockErrorNotificationBtn = createMock(HasClickHandlers.class);
       mockEventBus = createMock(EventBus.class);
       mockHistory = createMock(History.class);
       mockIdentity = createMock(Identity.class);
-      mockLeaveWorkspaceLink = createMock(HasClickHandlers.class);
+      mockLeaveWorkspaceMenuItem = createMock(HasCommand.class);
       mockMessages = createMock(WebTransMessages.class);
       mockPerson = createMock(Person.class);
-      mockSearchLink = createMock(HasClickHandlers.class);
+      mockSearchMenuItem = createMock(HasCommand.class);
       mockSearchResultsPresenter = createMock(SearchResultsPresenter.class);
-      mockSignoutLink = createMock(HasClickHandlers.class);
+      mockSignoutMenuItem = createMock(HasCommand.class);
       mockTranslationPresenter = createMock(TranslationPresenter.class);
       mockWindow = createMock(Window.class);
       mockWindowLocation = createMock(Window.Location.class);
       mockWorkspaceContext = createMock(WorkspaceContext.class);
+      mockNotificationPresenter = createMock(NotificationPresenter.class);
+      mockHelpMenuItem = createMock(HasCommand.class);
 
       capturedDismissLinkClickHandler = new Capture<ClickHandler>();
       capturedDocumentLinkClickHandler = new Capture<ClickHandler>();
+      capturedErrorNotificationBtnHandler = new Capture<ClickHandler>();
       capturedDocumentSelectionEvent = new Capture<DocumentSelectionEvent>();
       capturedDocumentStatsUpdatedEventHandler = new Capture<DocumentStatsUpdatedEventHandler>();
       capturedHistoryTokenString = new Capture<String>();
       capturedHistoryValueChangeHandler = new Capture<ValueChangeHandler<String>>();
-      capturedLeaveWorkspaceLinkClickHandler = new Capture<ClickHandler>();
       capturedNotificationEventHandler = new Capture<NotificationEventHandler>();
       capturedProjectStatsUpdatedEventHandler = new Capture<ProjectStatsUpdatedEventHandler>();
-      capturedSearchLinkClickHandler = new Capture<ClickHandler>();
-      capturedSignoutLinkClickHandler = new Capture<ClickHandler>();
       capturedWorkspaceContextUpdatedEventHandler = new Capture<WorkspaceContextUpdateEventHandler>();
+
+      capturedSearchLinkCommand = new Capture<Command>();
+      capturedSignoutLinkCommand = new Capture<Command>();
+      capturedLeaveWorkspaceLinkCommand = new Capture<Command>();
+      capturedHelpLinkCommand = new Capture<Command>();
+
+
    }
 
    @BeforeMethod
@@ -148,7 +182,10 @@ public class AppPresenterTest
 
       setupDefaultMockExpectations();
 
-      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockIdentity, mockWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
+      appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockIdentity, mockWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
+
+      mockNotificationPresenter.setErrorLabelListener(appPresenter);
+      expectLastCall().once();
    }
 
    // Note: unable to test 'sign out' and 'close window' links as these have
@@ -383,10 +420,33 @@ public class AppPresenterTest
    {
       String testMessage = "testing";
 
-      mockDisplay.setNotificationMessage(testMessage, Severity.Error);
+      mockDisplay.setNotificationMessage(testMessage, Severity.Warning);
       mockDismissVisibility.setVisible(true); // visible upon message
       mockDisplay.setNotificationMessage("", Severity.Info);
       mockDismissVisibility.setVisible(false); // invisible upon clear
+
+      replayAllMocks();
+      appPresenter.bind();
+      NotificationEvent notification = new NotificationEvent(Severity.Warning, testMessage);
+      capturedNotificationEventHandler.getValue().onNotification(notification);
+      ClickEvent event = new ClickEvent()
+      {
+      };
+      capturedDismissLinkClickHandler.getValue().onClick(event);
+
+      verify(mockDismissVisibility, mockDisplay);
+   }
+
+   public void testShowErrorNotification()
+   {
+      String testMessage = "error testing";
+
+      expect(mockNotificationPresenter.getMessageCount()).andReturn(1);
+      mockDisplay.setErrorNotificationText(1);
+      expectLastCall().once();
+
+      mockNotificationPresenter.showErrorNotification();
+      expectLastCall().once();
 
       replayAllMocks();
       appPresenter.bind();
@@ -395,9 +455,9 @@ public class AppPresenterTest
       ClickEvent event = new ClickEvent()
       {
       };
-      capturedDismissLinkClickHandler.getValue().onClick(event);
+      capturedErrorNotificationBtnHandler.getValue().onClick(event);
 
-      verify(mockDismissVisibility, mockDisplay);
+      verify(mockNotificationPresenter, mockDisplay);
    }
 
    public void testDocumentsLinkGeneratesHistoryToken()
@@ -467,8 +527,7 @@ public class AppPresenterTest
       replayAllMocks();
       appPresenter.bind();
       //simulate click
-      ClickEvent searchLinkClickEvent = createMock(ClickEvent.class);
-      capturedSearchLinkClickHandler.getValue().onClick(searchLinkClickEvent);
+      capturedSearchLinkCommand.getValue().execute();
       HistoryToken capturedToken = HistoryToken.fromTokenString(capturedHistoryTokenString.getValue());
       assertThat("clicking search link should set view in history token to search", capturedToken.getView(), is(MainView.Search));
       //TODO could check that nothing else has changed in token
@@ -657,6 +716,11 @@ public class AppPresenterTest
       expectLastCall().once();
       mockTranslationPresenter.bind();
       expectLastCall().once();
+      mockNotificationPresenter.bind();
+      expectLastCall().once();
+
+      expect(mockNotificationPresenter.getMessageCount()).andReturn(0);
+
    }
 
    @SuppressWarnings("unchecked")
@@ -665,15 +729,14 @@ public class AppPresenterTest
       expect(mockHistory.addValueChangeHandler(and(capture(capturedHistoryValueChangeHandler), isA(ValueChangeHandler.class)))).andReturn(createMock(HandlerRegistration.class)).once();
 
       expectClickHandlerRegistration(mockDocumentsLink, capturedDocumentLinkClickHandler);
-      expectClickHandlerRegistration(mockSearchLink, capturedSearchLinkClickHandler);
       expectClickHandlerRegistration(mockDismiss, capturedDismissLinkClickHandler);
-      expectClickHandlerRegistration(mockLeaveWorkspaceLink, capturedLeaveWorkspaceLinkClickHandler);
-      expectClickHandlerRegistration(mockSignoutLink, capturedSignoutLinkClickHandler);
+      expectClickHandlerRegistration(mockErrorNotificationBtn, capturedErrorNotificationBtnHandler);
 
       expectEventHandlerRegistration(NotificationEvent.getType(), NotificationEventHandler.class, capturedNotificationEventHandler);
       expectEventHandlerRegistration(DocumentStatsUpdatedEvent.getType(), DocumentStatsUpdatedEventHandler.class, capturedDocumentStatsUpdatedEventHandler);
       expectEventHandlerRegistration(ProjectStatsUpdatedEvent.getType(), ProjectStatsUpdatedEventHandler.class, capturedProjectStatsUpdatedEventHandler);
       expectEventHandlerRegistration(WorkspaceContextUpdateEvent.getType(), WorkspaceContextUpdateEventHandler.class, capturedWorkspaceContextUpdatedEventHandler);
+
    }
 
    /**
@@ -715,14 +778,31 @@ public class AppPresenterTest
 
       mockDismissVisibility.setVisible(false); // starts invisible
       expectLastCall().once();
+
+      mockLeaveWorkspaceMenuItem.setCommand(and(capture(capturedLeaveWorkspaceLinkCommand), isA(Command.class)));
+      expectLastCall().once();
+
+      mockHelpMenuItem.setCommand(and(capture(capturedHelpLinkCommand), isA(Command.class)));
+      expectLastCall().once();
+
+      mockSearchMenuItem.setCommand(and(capture(capturedSearchLinkCommand), isA(Command.class)));
+      expectLastCall().once();
+
+      mockSignoutMenuItem.setCommand(and(capture(capturedSignoutLinkCommand), isA(Command.class)));
+      expectLastCall().once();
+
+      mockDisplay.setErrorNotificationText(0);
+      expectLastCall().once();
    }
 
    private void setupMockGetterReturnValues()
    {
-      expect(mockDisplay.getSignOutLink()).andReturn(mockSignoutLink).anyTimes();
-      expect(mockDisplay.getLeaveWorkspaceLink()).andReturn(mockLeaveWorkspaceLink).anyTimes();
+      expect(mockDisplay.getSignOutMenuItem()).andReturn(mockSignoutMenuItem).anyTimes();
+      expect(mockDisplay.getHelpMenuItem()).andReturn(mockHelpMenuItem).anyTimes();
+      expect(mockDisplay.getLeaveWorkspaceMenuItem()).andReturn(mockLeaveWorkspaceMenuItem).anyTimes();
       expect(mockDisplay.getDocumentsLink()).andReturn(mockDocumentsLink).anyTimes();
-      expect(mockDisplay.getSearchLink()).andReturn(mockSearchLink).anyTimes();
+      expect(mockDisplay.getErrorNotificationBtn()).andReturn(mockErrorNotificationBtn).anyTimes();
+      expect(mockDisplay.getSearchAndReplaceMenuItem()).andReturn(mockSearchMenuItem).anyTimes();
       expect(mockDisplay.getDismiss()).andReturn(mockDismiss).anyTimes();
       expect(mockDisplay.getDismissVisibility()).andReturn(mockDismissVisibility).anyTimes();
 
@@ -744,11 +824,13 @@ public class AppPresenterTest
 
    private void resetAllMocks()
    {
-      reset(mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
-      reset(mockEventBus, mockHistory, mockIdentity, mockLeaveWorkspaceLink);
-      reset(mockMessages, mockPerson, mockSearchResultsPresenter, mockSignoutLink);
+      reset(mockDisplay, mockDocumentListPresenter, mockDocumentsLink, mockErrorNotificationBtn);
+      reset(mockEventBus, mockHistory, mockIdentity);
+      reset(mockMessages, mockPerson, mockSearchResultsPresenter);
       reset(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
-      reset(mockDismiss, mockDismissVisibility, mockSearchLink);
+      reset(mockDismiss, mockDismissVisibility, mockNotificationPresenter);
+
+      reset(mockHelpMenuItem, mockLeaveWorkspaceMenuItem, mockSignoutMenuItem, mockSearchMenuItem);
    }
 
    private void resetAllCaptures()
@@ -759,29 +841,35 @@ public class AppPresenterTest
       capturedDocumentStatsUpdatedEventHandler.reset();
       capturedHistoryTokenString.reset();
       capturedHistoryValueChangeHandler.reset();
-      capturedLeaveWorkspaceLinkClickHandler.reset();
+      capturedLeaveWorkspaceLinkCommand.reset();
+      capturedHelpLinkCommand.reset();
       capturedNotificationEventHandler.reset();
       capturedProjectStatsUpdatedEventHandler.reset();
-      capturedSearchLinkClickHandler.reset();
-      capturedSignoutLinkClickHandler.reset();
+      capturedSearchLinkCommand.reset();
+      capturedSignoutLinkCommand.reset();
       capturedWorkspaceContextUpdatedEventHandler.reset();
+      capturedErrorNotificationBtnHandler.reset();
    }
 
    private void replayAllMocks()
    {
-      replay(mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
-      replay(mockEventBus, mockHistory, mockIdentity, mockLeaveWorkspaceLink);
-      replay(mockMessages, mockPerson, mockSearchResultsPresenter, mockSignoutLink);
+      replay(mockDisplay, mockDocumentListPresenter, mockDocumentsLink, mockErrorNotificationBtn);
+      replay(mockEventBus, mockHistory, mockIdentity);
+      replay(mockMessages, mockPerson, mockSearchResultsPresenter);
       replay(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
-      replay(mockDismiss, mockDismissVisibility, mockSearchLink);
+      replay(mockDismiss, mockDismissVisibility, mockNotificationPresenter);
+
+      replay(mockHelpMenuItem, mockLeaveWorkspaceMenuItem, mockSignoutMenuItem, mockSearchMenuItem);
    }
 
    private void verifyAllMocks()
    {
-      verify(mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
-      verify(mockEventBus, mockHistory, mockIdentity, mockLeaveWorkspaceLink);
-      verify(mockMessages, mockPerson, mockSearchResultsPresenter, mockSignoutLink);
+      verify(mockDisplay, mockDocumentListPresenter, mockDocumentsLink, mockErrorNotificationBtn);
+      verify(mockEventBus, mockHistory, mockIdentity);
+      verify(mockMessages, mockPerson, mockSearchResultsPresenter);
       verify(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
-      verify(mockDismiss, mockDismissVisibility, mockSearchLink);
+      verify(mockDismiss, mockDismissVisibility, mockNotificationPresenter);
+
+      verify(mockHelpMenuItem, mockLeaveWorkspaceMenuItem, mockSignoutMenuItem, mockSearchMenuItem);
    }
 }

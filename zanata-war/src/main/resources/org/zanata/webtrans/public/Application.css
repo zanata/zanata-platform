@@ -694,13 +694,13 @@ td.FuzzyStateDecoration div div pre, td.ApprovedStateDecoration div div pre
 }
 
 .transUnitCountTooltip {
-	background-color: #F7F488;
-	color: #2A2A04;
+	background-color:#FBFBFB;
 	text-align: center;
-	border: 1px outset #999966;
-	height: 65px;
-	border-radius: 8px;
-	-moz-border-radius: 8px;
+	border-radius: 10px;
+	border: 2px solid #818181;
+	padding:2px;
+	font-weight:bold;
+	box-shadow:5px 5px 4px #D1D1D1;
 }
 
 .transUnitCountTooltipTable {
@@ -708,11 +708,65 @@ td.FuzzyStateDecoration div div pre, td.ApprovedStateDecoration div div pre
 	font-size: 12px
 }
 
-.transUnitCountTooltipTable TD {
-	border: 1px solid #999966;
+.transUnitCountTooltipTable .topHeader {
+	border:none;
+	color: #4F4F4F;
+	white-space:nowrap;
+	padding:2px;
+}
+
+.transUnitCountTooltipTable .approved-header {
+	border:none;
+	color: #002D00;
+	white-space:nowrap;
+	padding:2px;
+}
+
+.transUnitCountTooltipTable .needReview-header {
+	border:none;
+	color: #7D3E00;
+	white-space:nowrap;
+	padding:2px;
+}
+
+.transUnitCountTooltipTable .untranslated-header {
+	border:none;
+	color: #6D6D6D;
+	white-space:nowrap;
+	padding:2px;
+}
+
+
+.transUnitCountTooltipTable .sideHeader {
+	border:none;
+	color: #4F4F4F;
+	white-space:nowrap;
+	width:40px;
+}
+
+.transUnitCountTooltipTable .approved {
+	background:#099B09;
+	border: 1px solid #006900;
+	color:#002D00;
+}
+
+.transUnitCountTooltipTable .needReview {
+	background:#FFC000;
+	border: 1px solid #CD8E00;
+	color:#7D3E00;
+}
+
+.transUnitCountTooltipTable .untranslated {
+	background:#E5E5E5;
+	border: 1px solid #B3B3B3;
+	color:#6D6D6D;
+}
+
+.transUnitCountTooltipTable td {
+	border: 1px solid #6D6D6D;
 	width: 75px;
-	border-radius: 4px;
-	-moz-border-radius: 4px;
+	border-radius: 2px;
+	color:#4F4F4F;
 }
 
 .pointer {
@@ -764,7 +818,6 @@ td.FuzzyStateDecoration div div pre, td.ApprovedStateDecoration div div pre
 	color: #FFFFFF;
 	opacity: 0.60;
 	border-radius: 20px;
-	-moz-border-radius: 20px;
 	font-weight: bold;
 }
 
@@ -786,4 +839,9 @@ td.FuzzyStateDecoration div div pre, td.ApprovedStateDecoration div div pre
 {
 	padding-top: 3px;
 	padding-left: 1px;
+}
+
+.notificationPanel 
+{
+	border:none;
 }

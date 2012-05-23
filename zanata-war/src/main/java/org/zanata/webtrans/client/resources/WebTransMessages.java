@@ -222,4 +222,22 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Nothing selected")
    String noTextFlowsSelected();
+
+   @DefaultMessage("Help")
+   String help();
+
+   @DefaultMessage("Leave Workspace")
+   String leaveWorkspace();
+
+   @DefaultMessage("Sign Out")
+   String signOut();
+
+   @DefaultMessage("Search and replace")
+   String searchAndReplace();
+   
+   @DefaultMessage("▼")
+   String downArrow();
+
+   @DefaultMessage("Notification")
+   String notification();
 }
