@@ -55,13 +55,12 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.inject.Inject;
 
-public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
+public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implements HasErrorNotificationLabel
 {
    // javac seems confused about which Display is which.
    // somehow, qualifying WidgetDisplay helps!
    public interface Display extends net.customware.gwt.presenter.client.widget.WidgetDisplay
    {
-
       void showInMainView(MainView editor);
 
       HasClickHandlers getDocumentsLink();
@@ -90,6 +89,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       HasCommand getSearchAndReplaceMenuItem();
 
+      HasClickHandlers getErrorNotificationBtn();
+
+      void setErrorNotificationText(int count);
    }
 
    private final DocumentListPresenter documentListPresenter;
@@ -130,12 +132,20 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    }
 
    @Override
+   public void setErrorNotificationLabel(int count)
+   {
+      display.setErrorNotificationText(count);
+   }
+
+   @Override
    protected void onBind()
    {
       documentListPresenter.bind();
       translationPresenter.bind();
       searchResultsPresenter.bind();
       notificationPresenter.bind();
+
+      notificationPresenter.setErrorLabelListener(this);
 
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
       {
@@ -147,9 +157,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          }
       }));
 
+      setErrorNotificationLabel(notificationPresenter.getMessageCount());
+
       registerHandler(eventBus.addHandler(NotificationEvent.getType(), new NotificationEventHandler()
       {
-
          @Override
          public void onNotification(NotificationEvent event)
          {
@@ -159,6 +170,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
                display.setNotificationMessage(event.getMessage(), event.getSeverity());
                display.getDismissVisibility().setVisible(true);
                Log.info("Notification:" + event.getMessage());
+            }
+            else
+            {
+               setErrorNotificationLabel(notificationPresenter.getMessageCount());
             }
          }
       }));
@@ -236,6 +251,15 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          public void onValueChange(ValueChangeEvent<String> event)
          {
             processHistoryEvent(event);
+         }
+      }));
+      
+      registerHandler(display.getErrorNotificationBtn().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            notificationPresenter.showErrorNotification();
          }
       }));
 

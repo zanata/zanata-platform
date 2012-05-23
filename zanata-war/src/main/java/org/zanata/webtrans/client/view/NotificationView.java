@@ -30,6 +30,7 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -55,6 +56,8 @@ public class NotificationView extends PopupPanel implements NotificationPresente
    interface Styles extends CssResource
    {
       String messageRow();
+
+      String image();
    }
 
    @UiField
@@ -136,10 +139,14 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       {
          severityImg = new Image(resources.infoMsg());
       }
+      severityImg.addStyleName(style.image());
+      Label msgLabel = new Label(msg);
 
       panel.add(severityImg);
-      panel.add(new Label(msg));
+      panel.add(msgLabel);
       panel.setCellWidth(severityImg, "20px");
+      panel.setCellVerticalAlignment(severityImg, HasVerticalAlignment.ALIGN_MIDDLE);
+      panel.setCellVerticalAlignment(msgLabel, HasVerticalAlignment.ALIGN_MIDDLE);
 
       messagePanel.insert(panel, 0);
       messagePanel.getWidget(0).setStyleName(style.messageRow());
@@ -148,6 +155,11 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       {
          messagePanel.remove(messagePanel.getWidgetCount() - 1);
       }
+   }
 
+   @Override
+   public int getMessageCount()
+   {
+      return messagePanel.getWidgetCount();
    }
 }

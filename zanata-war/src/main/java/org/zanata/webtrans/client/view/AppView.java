@@ -45,6 +45,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -52,6 +53,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -69,6 +71,10 @@ public class AppView extends Composite implements AppPresenter.Display
       String notificationError();
 
       String userName();
+
+      String hasError();
+
+      String image();
    }
 
    private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
@@ -95,6 +101,9 @@ public class AppView extends Composite implements AppPresenter.Display
 
    @UiField
    MenuBar topMenuBar;
+
+   @UiField
+   PushButton errorNotificationBtn;
 
    Image userImg;
 
@@ -136,8 +145,10 @@ public class AppView extends Composite implements AppPresenter.Display
       translationStatsBar = new TransUnitCountBar(messages, true);
       translationStatsBar.setVisible(false); // hide until there is a value to
                                              // display
-      menuBar = new MenuBar(true);
 
+      initWidget(uiBinder.createAndBindUi(this));
+
+      menuBar = new MenuBar(true);
       helpMenuItem = new MenuCommandItem(messages.help(), emptyCommand);
       leaveWorkspaceMenuItem = new MenuCommandItem(messages.leaveWorkspace(), emptyCommand);
       signOutMenuItem = new MenuCommandItem(messages.signOut(), emptyCommand);
@@ -150,8 +161,7 @@ public class AppView extends Composite implements AppPresenter.Display
       menuBar.addItem(leaveWorkspaceMenuItem);
       menuBar.addItem(signOutMenuItem);
       userImg = new Image(identity.getPerson().getAvatarUrl());
-
-      initWidget(uiBinder.createAndBindUi(this));
+      userImg.setStyleName(style.image());
 
       this.documentListView = documentListView.asWidget();
       this.container.add(this.documentListView);
@@ -161,6 +171,8 @@ public class AppView extends Composite implements AppPresenter.Display
 
       this.searchResultsView = searchResultsView.asWidget();
       this.container.add(this.searchResultsView);
+
+      errorNotificationBtn.setTitle(messages.notification());
 
       Window.enableScrolling(false);
    }
@@ -231,9 +243,13 @@ public class AppView extends Composite implements AppPresenter.Display
       userImageAndLabel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
       userImageAndLabel.add(userImg);
       
-      Label userNameLabel = new Label(userLabel + " " + messages.downArrow());
+      Label userNameLabel = new Label(userLabel);
       userNameLabel.setStyleName(style.userName());
       userImageAndLabel.add(userNameLabel);
+      Label downArrowLabel = new Label(messages.downArrow());
+      userImageAndLabel.add(downArrowLabel);
+      
+      userImageAndLabel.setCellHorizontalAlignment(downArrowLabel, HasHorizontalAlignment.ALIGN_RIGHT);
 
       topMenuBar.addItem(userImageAndLabel.getElement().getString(), true, menuBar);
    }
@@ -311,6 +327,33 @@ public class AppView extends Composite implements AppPresenter.Display
    public HasCommand getSearchAndReplaceMenuItem()
    {
       return searchAndReplaceMenuItem;
+   }
+
+   @Override
+   public HasClickHandlers getErrorNotificationBtn()
+   {
+      return errorNotificationBtn;
+   }
+
+   @Override
+   public void setErrorNotificationText(int count)
+   {
+      errorNotificationBtn.setText(String.valueOf(count));
+      errorNotificationBtn.getDownFace().setText(String.valueOf(count));
+      errorNotificationBtn.getDownDisabledFace().setText(String.valueOf(count));
+      errorNotificationBtn.getDownHoveringFace().setText(String.valueOf(count));
+      errorNotificationBtn.getUpDisabledFace().setText(String.valueOf(count));
+      errorNotificationBtn.getUpFace().setText(String.valueOf(count));
+      errorNotificationBtn.getUpHoveringFace().setText(String.valueOf(count));
+
+      if (count == 0)
+      {
+         errorNotificationBtn.removeStyleName(style.hasError());
+      }
+      else
+      {
+         errorNotificationBtn.addStyleName(style.hasError());
+      }
    }
 
 }

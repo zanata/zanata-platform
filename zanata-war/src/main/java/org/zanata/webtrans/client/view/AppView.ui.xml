@@ -104,9 +104,29 @@
 			background:#5F5F5F;	
 		}
 		
-		.topMenuBar 
+		.defaultErrorNotificationBtn
 		{
+			width:14px;
+			height:17px;
+			font-weight:bold;
+			color:#5F5F5F;
 			margin-right:5px;
+			margin-left:2px;
+		}
+		
+		.hasError
+		{
+			color:#FF0000;
+		}
+		
+		.topMenuBar table
+		{
+			width:100%;
+		}
+		
+		.image
+		{
+			margin-top:2px;
 		}
 		
 	</ui:style>
@@ -143,6 +163,9 @@
 	                    </g:cell>
 	                    <g:cell verticalAlignment="ALIGN_MIDDLE" horizontalAlignment="ALIGN_LEFT" width="200px">
 	                    	<g:MenuBar ui:field="topMenuBar" addStyleNames="{style.topMenuBar}"/>
+	                    </g:cell>
+	                    <g:cell verticalAlignment="ALIGN_MIDDLE" horizontalAlignment="ALIGN_CENTER" width="18px">
+	                    	<g:PushButton ui:field="errorNotificationBtn" addStyleNames="{style.defaultErrorNotificationBtn}"/>
 	                    </g:cell>
 					</g:HorizontalPanel>
 				</g:layer>

@@ -1,94 +1,96 @@
+/*
+ * Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package org.zanata.webtrans.client.ui;
-
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ * 
+ */
 public class TooltipPopupPanel extends PopupPanel
 {
-   final VerticalPanel popUpPanelContents = new VerticalPanel();
-
-   public void refreshData(TransUnitCountBar stats)
-   {
-      HTML message = new HTML(getHTMLTooltip(stats));
-      popUpPanelContents.clear();
-      popUpPanelContents.add(message);
-   }
+   private final Grid table;
 
    public TooltipPopupPanel(boolean autoHide)
    {
       super(autoHide);
       this.setStyleName("transUnitCountTooltip");
-      this.setWidget(popUpPanelContents);
+
+      table = new Grid(3, 5);
+      table.setStyleName("transUnitCountTooltipTable");
+      setTopAndSideHeader();
+      setStyle();
+
+      this.setWidget(table);
    }
 
-   private String getHTMLTooltip(TransUnitCountBar graph)
+   public void refreshData(TransUnitCountBar stats)
    {
-      StringBuilder sb = new StringBuilder();
+      table.setText(1, 1, String.valueOf(stats.getWordsApproved()));
+      table.setText(1, 2, String.valueOf(stats.getWordsNeedReview()));
+      table.setText(1, 3, String.valueOf(stats.getWordsUntranslated()));
+      table.setText(1, 4, String.valueOf(stats.getWordsTotal()));
 
-      sb.append("<table class='transUnitCountTooltipTable'>");
+      table.setText(2, 1, String.valueOf(stats.getUnitApproved()));
+      table.setText(2, 2, String.valueOf(stats.getUnitNeedReview()));
+      table.setText(2, 3, String.valueOf(stats.getUnitUntranslated()));
+      table.setText(2, 4, String.valueOf(stats.getUnitTotal()));
+   }
 
-      // header
-      sb.append("<tr>");
-      sb.append("<th>");
-      sb.append("</th>");
-      sb.append("<th>");
-      sb.append("Translated");
-      sb.append("</th>");
-      sb.append("<th>");
-      sb.append("Need review");
-      sb.append("</th>");
-      sb.append("<th>");
-      sb.append("Untranslated");
-      sb.append("</th>");
-      sb.append("<th>");
-      sb.append("Total");
-      sb.append("</th>");
-      sb.append("</tr>");
+   private void setTopAndSideHeader()
+   {
+      table.setText(0, 0, "");
+      table.setText(0, 1, "Translated");
+      table.setText(0, 2, "Need Review");
+      table.setText(0, 3, "Untranslated");
+      table.setText(0, 4, "Total");
 
-      sb.append("<tr>");
-      sb.append("<th>");
-      sb.append("Words");
-      sb.append("</th>");
-      sb.append("<td>");
-      sb.append(graph.getWordsApproved());
-      sb.append("</td>");
-      sb.append("<td>");
-      sb.append(graph.getWordsNeedReview());
-      sb.append("</td>");
-      sb.append("<td>");
-      sb.append(graph.getWordsUntranslated());
-      sb.append("</td>");
-      sb.append("<td>");
-      sb.append(graph.getWordsTotal());
-      sb.append("</td>");
-      sb.append("</tr>");
+      table.setText(1, 0, "Words");
+      table.setText(2, 0, "Msg");
+   }
 
-      sb.append("<tr>");
-      sb.append("<th>");
-      sb.append("Msg");
-      sb.append("</th>");
-      sb.append("<td>");
-      sb.append(graph.getUnitApproved());
-      sb.append("</td>");
-      sb.append("<td>");
-      sb.append(graph.getUnitNeedReview());
-      sb.append("</td>");
-      sb.append("<td>");
-      sb.append(graph.getUnitUntranslated());
-      sb.append("</td>");
-      sb.append("<td>");
-      sb.append(graph.getUnitTotal());
-      sb.append("</td>");
-      sb.append("</tr>");
+   private void setStyle()
+   {
+      table.getCellFormatter().setStyleName(0, 1, "approved-header");
+      table.getCellFormatter().setStyleName(0, 2, "needReview-header");
+      table.getCellFormatter().setStyleName(0, 3, "untranslated-header");
+      table.getCellFormatter().setStyleName(0, 4, "topHeader");
 
-      sb.append("</table>");
+      table.getCellFormatter().setStyleName(0, 0, "sideHeader");
+      table.getCellFormatter().setStyleName(1, 0, "sideHeader");
+      table.getCellFormatter().setStyleName(2, 0, "sideHeader");
 
-      return sb.toString();
+      table.getCellFormatter().setStyleName(1, 1, "approved");
+      table.getCellFormatter().setStyleName(2, 1, "approved");
+
+      table.getCellFormatter().setStyleName(1, 2, "needReview");
+      table.getCellFormatter().setStyleName(2, 2, "needReview");
+
+      table.getCellFormatter().setStyleName(1, 3, "untranslated");
+      table.getCellFormatter().setStyleName(2, 3, "untranslated");
    }
 
    public final void showRelativeTo(final Element target)

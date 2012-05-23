@@ -79,6 +79,7 @@ public class AppPresenterTest
 
    HasClickHandlers mockDismiss;
    HasClickHandlers mockDocumentsLink;
+   HasClickHandlers mockErrorNotificationBtn;
 
    HasVisibility mockDismissVisibility;
 
@@ -113,6 +114,8 @@ public class AppPresenterTest
    private Capture<ProjectStatsUpdatedEventHandler> capturedProjectStatsUpdatedEventHandler;
    private Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdatedEventHandler;
 
+   private Capture<ClickHandler> capturedErrorNotificationBtnHandler;
+
    private Capture<Command> capturedLeaveWorkspaceLinkCommand;
    private Capture<Command> capturedSearchLinkCommand;
    private Capture<Command> capturedSignoutLinkCommand;
@@ -132,6 +135,7 @@ public class AppPresenterTest
       mockDisplay = createMock(AppPresenter.Display.class);
       mockDocumentListPresenter = createMock(DocumentListPresenter.class);
       mockDocumentsLink = createMock(HasClickHandlers.class);
+      mockErrorNotificationBtn = createMock(HasClickHandlers.class);
       mockEventBus = createMock(EventBus.class);
       mockHistory = createMock(History.class);
       mockIdentity = createMock(Identity.class);
@@ -150,6 +154,7 @@ public class AppPresenterTest
 
       capturedDismissLinkClickHandler = new Capture<ClickHandler>();
       capturedDocumentLinkClickHandler = new Capture<ClickHandler>();
+      capturedErrorNotificationBtnHandler = new Capture<ClickHandler>();
       capturedDocumentSelectionEvent = new Capture<DocumentSelectionEvent>();
       capturedDocumentStatsUpdatedEventHandler = new Capture<DocumentStatsUpdatedEventHandler>();
       capturedHistoryTokenString = new Capture<String>();
@@ -178,6 +183,9 @@ public class AppPresenterTest
       setupDefaultMockExpectations();
 
       appPresenter = new AppPresenter(mockDisplay, mockEventBus, mockTranslationPresenter, mockDocumentListPresenter, mockSearchResultsPresenter, mockNotificationPresenter, mockIdentity, mockWorkspaceContext, mockMessages, mockHistory, mockWindow, mockWindowLocation);
+
+      mockNotificationPresenter.setErrorLabelListener(appPresenter);
+      expectLastCall().once();
    }
 
    // Note: unable to test 'sign out' and 'close window' links as these have
@@ -687,6 +695,9 @@ public class AppPresenterTest
       expectLastCall().once();
       mockNotificationPresenter.bind();
       expectLastCall().once();
+
+      expect(mockNotificationPresenter.getMessageCount()).andReturn(0);
+
    }
 
    @SuppressWarnings("unchecked")
@@ -696,11 +707,13 @@ public class AppPresenterTest
 
       expectClickHandlerRegistration(mockDocumentsLink, capturedDocumentLinkClickHandler);
       expectClickHandlerRegistration(mockDismiss, capturedDismissLinkClickHandler);
+      expectClickHandlerRegistration(mockErrorNotificationBtn, capturedErrorNotificationBtnHandler);
 
       expectEventHandlerRegistration(NotificationEvent.getType(), NotificationEventHandler.class, capturedNotificationEventHandler);
       expectEventHandlerRegistration(DocumentStatsUpdatedEvent.getType(), DocumentStatsUpdatedEventHandler.class, capturedDocumentStatsUpdatedEventHandler);
       expectEventHandlerRegistration(ProjectStatsUpdatedEvent.getType(), ProjectStatsUpdatedEventHandler.class, capturedProjectStatsUpdatedEventHandler);
       expectEventHandlerRegistration(WorkspaceContextUpdateEvent.getType(), WorkspaceContextUpdateEventHandler.class, capturedWorkspaceContextUpdatedEventHandler);
+
    }
 
    /**
@@ -754,6 +767,9 @@ public class AppPresenterTest
 
       mockSignoutMenuItem.setCommand(and(capture(capturedSignoutLinkCommand), isA(Command.class)));
       expectLastCall().once();
+
+      mockDisplay.setErrorNotificationText(0);
+      expectLastCall().once();
    }
 
    private void setupMockGetterReturnValues()
@@ -762,6 +778,7 @@ public class AppPresenterTest
       expect(mockDisplay.getHelpMenuItem()).andReturn(mockHelpMenuItem).anyTimes();
       expect(mockDisplay.getLeaveWorkspaceMenuItem()).andReturn(mockLeaveWorkspaceMenuItem).anyTimes();
       expect(mockDisplay.getDocumentsLink()).andReturn(mockDocumentsLink).anyTimes();
+      expect(mockDisplay.getErrorNotificationBtn()).andReturn(mockErrorNotificationBtn).anyTimes();
       expect(mockDisplay.getSearchAndReplaceMenuItem()).andReturn(mockSearchMenuItem).anyTimes();
       expect(mockDisplay.getDismiss()).andReturn(mockDismiss).anyTimes();
       expect(mockDisplay.getDismissVisibility()).andReturn(mockDismissVisibility).anyTimes();
@@ -784,7 +801,7 @@ public class AppPresenterTest
 
    private void resetAllMocks()
    {
-      reset(mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
+      reset(mockDisplay, mockDocumentListPresenter, mockDocumentsLink, mockErrorNotificationBtn);
       reset(mockEventBus, mockHistory, mockIdentity);
       reset(mockMessages, mockPerson, mockSearchResultsPresenter);
       reset(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
@@ -808,11 +825,12 @@ public class AppPresenterTest
       capturedSearchLinkCommand.reset();
       capturedSignoutLinkCommand.reset();
       capturedWorkspaceContextUpdatedEventHandler.reset();
+      capturedErrorNotificationBtnHandler.reset();
    }
 
    private void replayAllMocks()
    {
-      replay(mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
+      replay(mockDisplay, mockDocumentListPresenter, mockDocumentsLink, mockErrorNotificationBtn);
       replay(mockEventBus, mockHistory, mockIdentity);
       replay(mockMessages, mockPerson, mockSearchResultsPresenter);
       replay(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
@@ -823,7 +841,7 @@ public class AppPresenterTest
 
    private void verifyAllMocks()
    {
-      verify(mockDisplay, mockDocumentListPresenter, mockDocumentsLink);
+      verify(mockDisplay, mockDocumentListPresenter, mockDocumentsLink, mockErrorNotificationBtn);
       verify(mockEventBus, mockHistory, mockIdentity);
       verify(mockMessages, mockPerson, mockSearchResultsPresenter);
       verify(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);

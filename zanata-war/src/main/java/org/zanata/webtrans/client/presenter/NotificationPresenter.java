@@ -73,7 +73,11 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
       void show();
 
       void setPopupPosition(int left, int top);
+
+      int getMessageCount();
    }
+
+   private HasErrorNotificationLabel listener;
 
    @Override
    protected void onBind()
@@ -100,6 +104,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
          {
             display.clearMessages();
             display.hide(true);
+            listener.setErrorNotificationLabel(display.getMessageCount());
          }
       }));
 
@@ -110,7 +115,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
          {
             if (event.getSeverity() == Severity.Error)
             {
-               showErrorNotification(event.getMessage());
+               appendError(event.getMessage());
                Log.info("Error Notification:" + event.getMessage());
             }
          }
@@ -118,24 +123,37 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
 
    }
 
-   private void showErrorNotification(String msg)
+   public void setErrorLabelListener(HasErrorNotificationLabel listener)
    {
-      display.appendMessage(Severity.Error, msg);
+      this.listener = listener;
+   }
+
+   public void showErrorNotification()
+   {
       display.setPopupPosition(com.google.gwt.user.client.Window.getClientWidth() - (display.getWidth() + 5), 38);
       display.show();
+   }
+
+   private void appendError(String msg)
+   {
+      display.appendMessage(Severity.Error, msg);
+      showErrorNotification();
+   }
+
+   public int getMessageCount()
+   {
+      return display.getMessageCount();
    }
 
    @Override
    protected void onUnbind()
    {
       // TODO Auto-generated method stub
-
    }
 
    @Override
    protected void onRevealDisplay()
    {
       // TODO Auto-generated method stub
-
    }
 }
