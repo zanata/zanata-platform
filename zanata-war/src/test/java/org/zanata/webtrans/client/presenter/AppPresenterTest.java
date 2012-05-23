@@ -437,6 +437,29 @@ public class AppPresenterTest
       verify(mockDismissVisibility, mockDisplay);
    }
 
+   public void testShowErrorNotification()
+   {
+      String testMessage = "error testing";
+
+      expect(mockNotificationPresenter.getMessageCount()).andReturn(1);
+      mockDisplay.setErrorNotificationText(1);
+      expectLastCall().once();
+
+      mockNotificationPresenter.showErrorNotification();
+      expectLastCall().once();
+
+      replayAllMocks();
+      appPresenter.bind();
+      NotificationEvent notification = new NotificationEvent(Severity.Error, testMessage);
+      capturedNotificationEventHandler.getValue().onNotification(notification);
+      ClickEvent event = new ClickEvent()
+      {
+      };
+      capturedErrorNotificationBtnHandler.getValue().onClick(event);
+
+      verify(mockNotificationPresenter, mockDisplay);
+   }
+
    public void testDocumentsLinkGeneratesHistoryToken()
    {
       ClickEvent docLinkClickEvent = createMock(ClickEvent.class);

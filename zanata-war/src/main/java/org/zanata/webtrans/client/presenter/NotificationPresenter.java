@@ -54,8 +54,6 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
 
       void clearMessages();
 
-      int getWidth();
-      
       void setModal(boolean modal);
 
       void setAutoHideEnabled(boolean autoHide);
@@ -72,9 +70,9 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
 
       void show();
 
-      void setPopupPosition(int left, int top);
-
       int getMessageCount();
+
+      void setPopupTopRightCorner();
    }
 
    private HasErrorNotificationLabel listener;
@@ -130,7 +128,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
 
    public void showErrorNotification()
    {
-      display.setPopupPosition(com.google.gwt.user.client.Window.getClientWidth() - (display.getWidth() + 5), 38);
+      display.setPopupTopRightCorner();
       display.show();
    }
 

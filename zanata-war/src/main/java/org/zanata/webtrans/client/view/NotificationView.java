@@ -29,6 +29,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -161,5 +162,11 @@ public class NotificationView extends PopupPanel implements NotificationPresente
    public int getMessageCount()
    {
       return messagePanel.getWidgetCount();
+   }
+   
+   @Override
+   public void setPopupTopRightCorner()
+   {
+      super.setPopupPosition(Window.getClientWidth() - (getWidth() + 5), 38);
    }
 }
