@@ -79,7 +79,7 @@ public class MemberLanguageList implements Serializable
       }
 
       memberTribes = languageTeamServiceImpl.getLanguageMemberships(authenticatedAccount.getUsername());
-      log.info("now listing {0} languages", memberTribes.size());
+      log.debug("now listing {0} languages", memberTribes.size());
    }
 
 

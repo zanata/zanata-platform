@@ -388,9 +388,8 @@
         <changeSet author="camunoz@redhat.com" id="21">
             <comment>Add enabledByDefault column on HLocale</comment>
             <addColumn tableName="HLocale">
-                <column name="enabledByDefault" type="boolean" valueBoolean="false"/>
+                <column name="enabledByDefault" type="boolean" valueBoolean="true" defaultValueBoolean="false"/>
             </addColumn>
-            <sql>update HLocale set enabledByDefault = true</sql>
         </changeSet>
         
 

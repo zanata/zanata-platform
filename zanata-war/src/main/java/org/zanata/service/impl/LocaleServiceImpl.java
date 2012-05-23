@@ -234,7 +234,7 @@ public class LocaleServiceImpl implements LocaleService
       {
          return new ArrayList<HLocale>(proj.getCustomizedLocales());
       }
-      return localeDAO.findAllActive();
+      return localeDAO.findAllActiveAndEnabledByDefault();
    }
    
    @Override
