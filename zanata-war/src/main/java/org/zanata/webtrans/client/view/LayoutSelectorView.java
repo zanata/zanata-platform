@@ -23,22 +23,19 @@ package org.zanata.webtrans.client.view;
 import org.zanata.webtrans.client.presenter.LayoutSelectorPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.DockPanel;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -63,7 +60,7 @@ public class LayoutSelectorView extends PopupPanel implements LayoutSelectorPres
    Styles style;
 
    @UiField
-   VerticalPanel layoutList;
+   HorizontalPanel layoutList;
 
    @UiField
    Image configImage;
@@ -74,39 +71,54 @@ public class LayoutSelectorView extends PopupPanel implements LayoutSelectorPres
    @UiField(provided = true)
    DockPanel defaultLayout;
 
-   private Label optionLabel = new Label("Options");
-   private Label southLabel = new Label("TM/Glossay/Users");
-   private Label workspaceLabel = new Label("Workspace");
+   @UiField(provided = true)
+   DockPanel maximizeWorkspaceLayout;
 
    public LayoutSelectorView()
    {
       setAutoHideEnabled(false);
       setAnimationEnabled(false);
 
-      defaultLayout = new DockPanel();
-      defaultLayout.add(southLabel, DockPanel.SOUTH);
-      defaultLayout.add(optionLabel, DockPanel.EAST);
-      defaultLayout.add(workspaceLabel, DockPanel.CENTER);
-      
-      defaultLayout.setCellHeight(workspaceLabel, "30px");
-      defaultLayout.setCellHeight(optionLabel, "30px");
+      initDefaultLayout();
+      initMaximiseWorkspaceLayout();
 
       setWidget(uiBinder.createAndBindUi(this));
 
       this.setStyleName(style.mainPanel());
 
-      configImage.setResource(resources.config());
+      configImage.setResource(resources.viewChoose());
       configImage.addStyleName("pointer");
    }
 
-   private int getImageWidth()
+   private void initDefaultLayout()
    {
-      return 24;
+      Label optionLabel = new Label("Options");
+      Label southLabel = new Label("TM/Glossay/Users");
+      Label workspaceLabel = new Label("Workspace");
+
+      defaultLayout = new DockPanel();
+      defaultLayout.add(southLabel, DockPanel.SOUTH);
+      defaultLayout.add(optionLabel, DockPanel.EAST);
+      defaultLayout.add(workspaceLabel, DockPanel.CENTER);
+
+      defaultLayout.setCellHeight(workspaceLabel, "55px");
+      defaultLayout.setCellHeight(optionLabel, "55px");
+
+      defaultLayout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+      defaultLayout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+   }
+
+   private void initMaximiseWorkspaceLayout()
+   {
+      Label workspaceLabel = new Label("");
+
+      maximizeWorkspaceLayout = new DockPanel();
+      maximizeWorkspaceLayout.add(workspaceLabel, DockPanel.CENTER);
    }
 
    private int getWidth()
    {
-      return 200;
+      return 400;
    }
 
    @Override
@@ -115,11 +127,11 @@ public class LayoutSelectorView extends PopupPanel implements LayoutSelectorPres
       layoutList.setVisible(isShowLayoutList);
       if (isShowLayoutList)
       {
-         super.setPopupPosition((Window.getClientWidth() - getWidth()) / 2, 0);
+         super.setPopupPosition((Window.getClientWidth() - getWidth()) / 2, 13);
       }
       else
       {
-         super.setPopupPosition((Window.getClientWidth() - getImageWidth()) / 2, 0);
+         super.setPopupPosition((Window.getClientWidth() - getWidth()) / 2, 13);
       }
    }
 

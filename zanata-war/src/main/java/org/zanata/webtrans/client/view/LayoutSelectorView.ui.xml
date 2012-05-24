@@ -12,8 +12,8 @@
 		}
 		
 		.container{
-			width:300px;
-			height:300px;
+			width:400px;
+			height:100px;
 		}
 		
 		.layoutList 
@@ -22,7 +22,7 @@
 			background:#DDDDDD;
 			border:1px solid #A1A1A1;
 			width:100%;
-			height:500px;
+			height:100px;
 		}
 		
 		.configImageContainer
@@ -32,6 +32,8 @@
 			border-bottom:1px solid #A1A1A1;
 			border-left:1px solid #A1A1A1;
 			background:#DDDDDD;
+			width:18px;
+			height:18px;
 		}
 		
 		.configImageContainer:hover
@@ -39,28 +41,36 @@
 			opacity:0.8;
 		}
 		
+		.layoutTable
+		{
+			width:80px;
+			height:80px;
+		}
+		
 		.layoutTable td
 		{
 			font-size:10px;
-			border:2px solid grey;
 			border-radius:3px;
-			padding:6px;
+			box-shadow:inset 0 0 5px 3px #888;
 		}
 		
 	</ui:style>
 	
-	<g:HorizontalPanel styleName="{style.container}">
-		<g:cell verticalAlignment="ALIGN_TOP">
+	<g:VerticalPanel styleName="{style.container}" horizontalAlignment="ALIGN_CENTER">
+		<g:cell>
 			<g:FlowPanel styleName="{style.configImageContainer}">
 				<g:Image ui:field="configImage"/>
 			</g:FlowPanel>
 		</g:cell>
 		<g:cell>
-			<g:VerticalPanel ui:field="layoutList" styleName="{style.layoutList}" verticalAlignment="ALIGN_MIDDLE" horizontalAlignment="ALIGN_CENTER">
-				<g:cell >
+			<g:HorizontalPanel ui:field="layoutList" styleName="{style.layoutList}" verticalAlignment="ALIGN_MIDDLE" horizontalAlignment="ALIGN_CENTER">
+				<g:cell>
 					<g:DockPanel ui:field="defaultLayout" styleName="{style.layoutTable}"/>
 				</g:cell>
-			</g:VerticalPanel>
+				<g:cell>
+					<g:DockPanel ui:field="maximizeWorkspaceLayout" styleName="{style.layoutTable}"/>
+				</g:cell>
+			</g:HorizontalPanel>
 		</g:cell>
-	</g:HorizontalPanel>
+	</g:VerticalPanel>
 </ui:UiBinder> 
