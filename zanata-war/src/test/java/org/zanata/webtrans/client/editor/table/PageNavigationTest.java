@@ -340,21 +340,29 @@ public class PageNavigationTest
       simulateGetTransUnitListCallback();
       page.gotoPage(1, NOT_FORCE_RELOAD);
       simulateGetTransUnitListCallback();
+      assertThat(page.getCurrentPageItems().size(), is(3));
       assertThat(asIds(page.getCurrentPageItems()), hasItems(3, 4, 5));
+      assertThat(navigationService.getCurrentPage(), is(1));
 
-      //page greater than actual size
+      //page out of bound
       page.gotoPage(7, NOT_FORCE_RELOAD);
       simulateGetTransUnitListCallback();
+      assertThat(page.getCurrentPageItems().size(), is(3));
       assertThat(asIds(page.getCurrentPageItems()), hasItems(3, 4, 5));
+      assertThat(navigationService.getCurrentPage(), is(1));
 
       page.gotoPage(0, NOT_FORCE_RELOAD);
       simulateGetTransUnitListCallback();
+      assertThat(page.getCurrentPageItems().size(), is(3));
       assertThat(asIds(page.getCurrentPageItems()), hasItems(0, 1, 2));
+      assertThat(navigationService.getCurrentPage(), is(0));
 
       //page is negative
       page.gotoPage(-1, NOT_FORCE_RELOAD);
       verifyNoMoreInteractions(dispatcher);
+      assertThat(page.getCurrentPageItems().size(), is(3));
       assertThat(asIds(page.getCurrentPageItems()), hasItems(0, 1, 2));
+      assertThat(navigationService.getCurrentPage(), is(0));
    }
 
    private static List<Integer> asIds(List<TransUnit> transUnits)
