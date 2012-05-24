@@ -160,6 +160,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<gwt.version>2.4.0</gwt.version>
 		<gwt-incubator.version>2.2.0-zanata-0</gwt-incubator.version>
+        <hamcrest.version>1.2.1</hamcrest.version>
 		<!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
 		<hibernate.scope>provided</hibernate.scope>
 		<hibernate.version>3.3.2.GA</hibernate.version>
@@ -582,11 +583,18 @@
                 <scope>test</scope>
             </dependency>
 
-			<dependency>
-				<groupId>org.hamcrest</groupId>
-				<artifactId>hamcrest-all</artifactId>
-				<version>1.1</version>
-			</dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-core</artifactId>
+                <version>${hamcrest.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-library</artifactId>
+                <version>${hamcrest.version}</version>
+                <scope>test</scope>
+            </dependency>
 
 			<dependency>
 				<groupId>com.google.gwt</groupId>
