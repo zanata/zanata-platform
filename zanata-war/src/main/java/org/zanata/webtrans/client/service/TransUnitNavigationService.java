@@ -139,8 +139,7 @@ public class TransUnitNavigationService
          {
             if (transUnitId.equals(transUnit.getId()))
             {
-               int row = n + (curPage * pageSize);
-               return row;
+               return n + (curPage * pageSize);
             }
             n++;
          }

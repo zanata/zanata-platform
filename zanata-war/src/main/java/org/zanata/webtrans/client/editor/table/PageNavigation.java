@@ -24,6 +24,7 @@ package org.zanata.webtrans.client.editor.table;
 import java.util.ArrayList;
 
 import org.zanata.webtrans.client.editor.HasPageNavigation;
+import org.zanata.webtrans.client.editor.TransUnitsDataProvider;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.TransUnitNavigationService;
@@ -33,6 +34,7 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 import com.google.gwt.gen2.logging.shared.Log;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -46,17 +48,19 @@ public class PageNavigation implements HasPageNavigation
    public static final int FIRST_PAGE = 0;
    private final CachingDispatchAsync dispatcher;
    private final TransUnitNavigationService navigationService;
+   private final TransUnitsDataProvider dataProvider;
    //tracking variables
    private int pageCount;
    private int totalCount;
    private GetTransUnitActionContext context;
-   private ArrayList<TransUnit> currentPageItems;
+   private ArrayList<TransUnit> currentPageItems = Lists.newArrayList();
 
    @Inject
-   public PageNavigation(CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService)
+   public PageNavigation(CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService, TransUnitsDataProvider dataProvider)
    {
       this.dispatcher = dispatcher;
       this.navigationService = navigationService;
+      this.dataProvider = dataProvider;
    }
 
    public void init(GetTransUnitActionContext context)
@@ -158,23 +162,26 @@ public class PageNavigation implements HasPageNavigation
    }
 
    @Override
-   public void gotoPage(int pageIndex, boolean forceReloadTable)
+   public void gotoPage(int pageIndex, boolean forceReload)
    {
-      // TODO force reload
-      if (pageIndex > 0)
+      int page = normalizePageIndex(pageIndex);
+      if (page != navigationService.getCurrentPage() || forceReload)
       {
-         int targetPage = Math.min(pageIndex, lastPage());
-         if (targetPage == navigationService.getCurrentPage())
-         {
-            return;
-         }
-         GetTransUnitActionContext newContext = context.setOffset(context.getCount() * targetPage).setTargetTransUnitId(null);
+         GetTransUnitActionContext newContext = context.setOffset(context.getCount() * page).setTargetTransUnitId(null);
          Log.info(pageIndex + " page context: " + newContext);
          requestTransUnitsAndUpdatePageIndex(newContext);
       }
+   }
+
+   private int normalizePageIndex(int pageIndex)
+   {
+      if (pageIndex < 0)
+      {
+         return FIRST_PAGE;
+      }
       else
       {
-         gotoFirstPage();
+         return Math.min(lastPage(), pageIndex);
       }
    }
 
@@ -198,5 +205,10 @@ public class PageNavigation implements HasPageNavigation
                 add("context", context).
                 toString();
         // @formatter:on
+   }
+
+   public int getTotalCount()
+   {
+      return totalCount;
    }
 }

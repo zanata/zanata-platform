@@ -18,6 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
+
 package org.zanata.webtrans.client.editor.table;
 
 import java.util.List;
@@ -60,6 +61,7 @@ import com.google.common.collect.Lists;
 
 import net.customware.gwt.dispatch.shared.ActionException;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
@@ -87,7 +89,9 @@ public class PageNavigationTest
          TestFixture.makeHTextFlow(5, hLocale, ContentState.New)
    );
    // @formatter:on
-   public static final boolean NOT_FORCE_RELOAD = false;
+   private static final boolean NOT_FORCE_RELOAD = false;
+   private static final boolean FORCE_RELOAD = true;
+
    private PageNavigation page;
    @Mock
    private CachingDispatchAsync dispatcher;
@@ -200,8 +204,7 @@ public class PageNavigationTest
       verifyDispatcherAndCaptureArguments();
       GetTransUnitListResult result = callGetTransUnitListHandler();
       assertThat(result.getDocumentId(), equalTo(documentId));
-      assertThat(result.getTotalCount(), equalTo(hTextFlows.size()));
-      assertThat(asIds(result.getUnits()), hasItems(0, 1, 2, 3, 4, 5));
+      assertThat(asIds(result.getUnits()), contains(0, 1, 2, 3, 4, 5));
    }
 
    @Test
@@ -211,15 +214,13 @@ public class PageNavigationTest
       simulateGetTransUnitListCallback();
       page.gotoFirstPage();
       simulateGetTransUnitListCallback();
-      assertThat(page.getCurrentPageItems().size(), is(3));
-      assertThat(asIds(page.getCurrentPageItems()), hasItems(0, 1, 2));
+      assertThat(asIds(page.getCurrentPageItems()), contains(0, 1, 2));
       assertThat(navigationService.getCurrentPage(), is(0));
 
       //go again won't cause another call to server
       page.gotoFirstPage();
       verifyNoMoreInteractions(dispatcher);
-      assertThat(page.getCurrentPageItems().size(), is(3));
-      assertThat(asIds(page.getCurrentPageItems()), hasItems(0, 1, 2));
+      assertThat(asIds(page.getCurrentPageItems()), contains(0, 1, 2));
       assertThat(navigationService.getCurrentPage(), is(0));
    }
 
@@ -230,8 +231,7 @@ public class PageNavigationTest
       simulateGetTransUnitListCallback();
       page.gotoLastPage();
       simulateGetTransUnitListCallback();
-      assertThat(page.getCurrentPageItems().size(), is(2));
-      assertThat(asIds(page.getCurrentPageItems()), hasItems(4, 5));
+      assertThat(asIds(page.getCurrentPageItems()), contains(4, 5));
       assertThat(navigationService.getCurrentPage(), is(1));
 
       page.gotoLastPage();
@@ -244,14 +244,12 @@ public class PageNavigationTest
       simulateGetTransUnitListCallback();
       page.gotoLastPage();
       simulateGetTransUnitListCallback();
-      assertThat(page.getCurrentPageItems().size(), is(3));
-      assertThat(asIds(page.getCurrentPageItems()), hasItems(3, 4, 5));
+      assertThat(asIds(page.getCurrentPageItems()), contains(3, 4, 5));
       assertThat(navigationService.getCurrentPage(), is(1));
 
       page.gotoLastPage();
       verifyNoMoreInteractions(dispatcher);
-      assertThat(page.getCurrentPageItems().size(), is(3));
-      assertThat(asIds(page.getCurrentPageItems()), hasItems(3, 4, 5));
+      assertThat(asIds(page.getCurrentPageItems()), contains(3, 4, 5));
       assertThat(navigationService.getCurrentPage(), is(1));
    }
 
@@ -261,14 +259,12 @@ public class PageNavigationTest
       simulateGetTransUnitListCallback();
       page.gotoLastPage();
       simulateGetTransUnitListCallback();
-      assertThat(page.getCurrentPageItems().size(), is(6));
-      assertThat(asIds(page.getCurrentPageItems()), hasItems(0, 1, 2, 4, 5));
+      assertThat(asIds(page.getCurrentPageItems()), contains(0, 1, 2, 3, 4, 5));
       assertThat(navigationService.getCurrentPage(), is(0));
 
       page.gotoFirstPage();
       simulateGetTransUnitListCallback();
-      assertThat(page.getCurrentPageItems().size(), is(6));
-      assertThat(asIds(page.getCurrentPageItems()), hasItems(0, 1, 2, 4, 5));
+      assertThat(asIds(page.getCurrentPageItems()), contains(0, 1, 2, 3, 4, 5));
       assertThat(navigationService.getCurrentPage(), is(0));
    }
 
@@ -279,21 +275,18 @@ public class PageNavigationTest
       simulateGetTransUnitListCallback();
       page.gotoNextPage();
       simulateGetTransUnitListCallback();
-      assertThat(page.getCurrentPageItems().size(), is(2));
-      assertThat(asIds(page.getCurrentPageItems()), hasItems(2, 3));
+      assertThat(asIds(page.getCurrentPageItems()), contains(2, 3));
       assertThat(navigationService.getCurrentPage(), is(1));
 
       page.gotoNextPage();
       simulateGetTransUnitListCallback();
-      assertThat(page.getCurrentPageItems().size(), is(2));
-      assertThat(asIds(page.getCurrentPageItems()), hasItems(4, 5));
+      assertThat(asIds(page.getCurrentPageItems()), contains(4, 5));
       assertThat(navigationService.getCurrentPage(), is(2));
 
       //can't go any further
       page.gotoNextPage();
       verifyNoMoreInteractions(dispatcher);
-      assertThat(page.getCurrentPageItems().size(), is(2));
-      assertThat(asIds(page.getCurrentPageItems()), hasItems(4, 5));
+      assertThat(asIds(page.getCurrentPageItems()), contains(4, 5));
       assertThat(navigationService.getCurrentPage(), is(2));
    }
 
@@ -305,26 +298,22 @@ public class PageNavigationTest
       //should be on first page already
       page.gotoPreviousPage();
       verifyNoMoreInteractions(dispatcher);
-      assertThat(page.getCurrentPageItems().size(), is(2));
-      assertThat(asIds(page.getCurrentPageItems()), hasItems(0, 1));
+      assertThat(asIds(page.getCurrentPageItems()), contains(0, 1));
       assertThat(navigationService.getCurrentPage(), is(0));
 
       page.gotoLastPage();
       simulateGetTransUnitListCallback();
-      assertThat(page.getCurrentPageItems().size(), is(2));
-      assertThat(asIds(page.getCurrentPageItems()), hasItems(4, 5));
+      assertThat(asIds(page.getCurrentPageItems()), contains(4, 5));
       assertThat(navigationService.getCurrentPage(), is(2));
 
       page.gotoPreviousPage();
       simulateGetTransUnitListCallback();
-      assertThat(page.getCurrentPageItems().size(), is(2));
-      assertThat(asIds(page.getCurrentPageItems()), hasItems(2, 3));
+      assertThat(asIds(page.getCurrentPageItems()), contains(2, 3));
       assertThat(navigationService.getCurrentPage(), is(1));
 
       page.gotoPreviousPage();
       simulateGetTransUnitListCallback();
-      assertThat(page.getCurrentPageItems().size(), is(2));
-      assertThat(asIds(page.getCurrentPageItems()), hasItems(0, 1));
+      assertThat(asIds(page.getCurrentPageItems()), contains(0, 1));
       assertThat(navigationService.getCurrentPage(), is(0));
 
       //can't go any further
@@ -340,29 +329,38 @@ public class PageNavigationTest
       simulateGetTransUnitListCallback();
       page.gotoPage(1, NOT_FORCE_RELOAD);
       simulateGetTransUnitListCallback();
-      assertThat(page.getCurrentPageItems().size(), is(3));
-      assertThat(asIds(page.getCurrentPageItems()), hasItems(3, 4, 5));
+      assertThat(asIds(page.getCurrentPageItems()), contains(3, 4, 5));
       assertThat(navigationService.getCurrentPage(), is(1));
 
       //page out of bound
       page.gotoPage(7, NOT_FORCE_RELOAD);
       simulateGetTransUnitListCallback();
-      assertThat(page.getCurrentPageItems().size(), is(3));
-      assertThat(asIds(page.getCurrentPageItems()), hasItems(3, 4, 5));
+      assertThat(asIds(page.getCurrentPageItems()), contains(3, 4, 5));
       assertThat(navigationService.getCurrentPage(), is(1));
-
-      page.gotoPage(0, NOT_FORCE_RELOAD);
-      simulateGetTransUnitListCallback();
-      assertThat(page.getCurrentPageItems().size(), is(3));
-      assertThat(asIds(page.getCurrentPageItems()), hasItems(0, 1, 2));
-      assertThat(navigationService.getCurrentPage(), is(0));
 
       //page is negative
       page.gotoPage(-1, NOT_FORCE_RELOAD);
-      verifyNoMoreInteractions(dispatcher);
-      assertThat(page.getCurrentPageItems().size(), is(3));
-      assertThat(asIds(page.getCurrentPageItems()), hasItems(0, 1, 2));
+      simulateGetTransUnitListCallback();
+      assertThat(asIds(page.getCurrentPageItems()), contains(0, 1, 2));
       assertThat(navigationService.getCurrentPage(), is(0));
+   }
+
+   @Test
+   public void canForceReload()
+   {
+      page.init(context.setCount(3));
+      simulateGetTransUnitListCallback();
+      page.gotoPage(1, NOT_FORCE_RELOAD);
+      simulateGetTransUnitListCallback();
+      assertThat(navigationService.getCurrentPage(), is(1));
+
+      page.gotoPage(1, NOT_FORCE_RELOAD);
+      verifyNoMoreInteractions(dispatcher);
+      assertThat(navigationService.getCurrentPage(), is(1));
+
+      page.gotoPage(1, FORCE_RELOAD);
+      simulateGetTransUnitListCallback();
+      assertThat(navigationService.getCurrentPage(), is(1));
    }
 
    private static List<Integer> asIds(List<TransUnit> transUnits)
