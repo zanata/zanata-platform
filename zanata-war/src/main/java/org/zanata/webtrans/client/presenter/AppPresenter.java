@@ -98,6 +98,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private final TranslationPresenter translationPresenter;
    private final SearchResultsPresenter searchResultsPresenter;
    private final NotificationPresenter notificationPresenter;
+   private final LayoutSelectorPresenter layoutSelectorPresenter;
+
    private final History history;
    private final Identity identity;
    private final Window window;
@@ -116,7 +118,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
+   public AppPresenter(Display display, EventBus eventBus, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final LayoutSelectorPresenter layoutSelectorPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
    {
       super(display, eventBus);
       this.history = history;
@@ -126,6 +128,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       this.translationPresenter = translationPresenter;
       this.searchResultsPresenter = searchResultsPresenter;
       this.notificationPresenter =notificationPresenter;
+      this.layoutSelectorPresenter = layoutSelectorPresenter;
       this.window = window;
       this.windowLocation = windowLocation;
       this.workspaceContext = workspaceContext;
@@ -144,6 +147,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       translationPresenter.bind();
       searchResultsPresenter.bind();
       notificationPresenter.bind();
+      layoutSelectorPresenter.bind();
 
       notificationPresenter.setErrorLabelListener(this);
 
@@ -378,6 +382,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             currentDisplayStats = projectStats;
             break;
          case Documents:
+            layoutSelectorPresenter.show();
          default:
             display.setDocumentLabel("", messages.noDocumentSelected());
             currentDisplayStats = projectStats;

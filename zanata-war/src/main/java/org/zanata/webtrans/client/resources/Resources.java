@@ -104,4 +104,7 @@ public interface Resources extends ClientBundle
 
    @Source("images/msgwarn.png")
    ImageResource warnMsg();
+
+   @Source("images/crystal_project/_24x24/actions/run.png")
+   ImageResource config();
 }

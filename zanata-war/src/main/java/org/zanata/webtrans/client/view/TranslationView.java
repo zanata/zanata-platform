@@ -112,7 +112,6 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       setTranslationMemoryView(transMemoryView.asWidget());
 
       setWorkspaceUsersView(workspaceUsersView.asWidget());
-
    }
 
    private void setTranslationMemoryView(Widget translationMemoryView)

@@ -20,6 +20,11 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import net.customware.gwt.dispatch.client.DispatchAsync;
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
 import org.zanata.webtrans.client.editor.CheckKey;
 import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
@@ -37,6 +42,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -45,11 +51,6 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
-
-import net.customware.gwt.dispatch.client.DispatchAsync;
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.Display>
 {
@@ -91,6 +92,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private final GlossaryPresenter glossaryPresenter;
    private final WorkspaceUsersPresenter workspaceUsersPresenter;
    private final TargetContentsPresenter targetContentsPresenter;
+
    private WorkspaceContext workspaceContext;
 
    private final WebTransMessages messages;
@@ -147,6 +149,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       bindSouthPanelPresenters();
       translationEditorPresenter.bind();
       optionsPanelPresenter.bind();
+
 
       registerHandler(eventBus.addHandler(ExitWorkspaceEvent.getType(), new ExitWorkspaceEventHandler()
       {
@@ -315,7 +318,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
             }
          }
       });
-
    }
 
    @Override

@@ -1,0 +1,66 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+    xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
+    xmlns:tui="urn:import:org.zanata.webtrans.client.editor.table"
+        >
+    <ui:with field="resources" type="org.zanata.webtrans.client.resources.Resources" />
+	<ui:style type="org.zanata.webtrans.client.view.LayoutSelectorView.Styles">
+		.mainPanel
+		{
+			
+		}
+		
+		.container{
+			width:300px;
+			height:300px;
+		}
+		
+		.layoutList 
+		{
+			opacity:0.5;
+			background:#DDDDDD;
+			border:1px solid #A1A1A1;
+			width:100%;
+			height:500px;
+		}
+		
+		.configImageContainer
+		{
+			opacity:0.5;
+			border-top:1px solid #A1A1A1;
+			border-bottom:1px solid #A1A1A1;
+			border-left:1px solid #A1A1A1;
+			background:#DDDDDD;
+		}
+		
+		.configImageContainer:hover
+		{
+			opacity:0.8;
+		}
+		
+		.layoutTable td
+		{
+			font-size:10px;
+			border:2px solid grey;
+			border-radius:3px;
+			padding:6px;
+		}
+		
+	</ui:style>
+	
+	<g:HorizontalPanel styleName="{style.container}">
+		<g:cell verticalAlignment="ALIGN_TOP">
+			<g:FlowPanel styleName="{style.configImageContainer}">
+				<g:Image ui:field="configImage"/>
+			</g:FlowPanel>
+		</g:cell>
+		<g:cell>
+			<g:VerticalPanel ui:field="layoutList" styleName="{style.layoutList}" verticalAlignment="ALIGN_MIDDLE" horizontalAlignment="ALIGN_CENTER">
+				<g:cell >
+					<g:DockPanel ui:field="defaultLayout" styleName="{style.layoutTable}"/>
+				</g:cell>
+			</g:VerticalPanel>
+		</g:cell>
+	</g:HorizontalPanel>
+</ui:UiBinder> 
