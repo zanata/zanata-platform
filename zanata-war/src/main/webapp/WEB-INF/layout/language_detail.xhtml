@@ -6,54 +6,89 @@
     xmlns:a4j="http://richfaces.org/a4j"
     xmlns:rich="http://richfaces.org/rich" >
 
-				<f:facet name="header">#{messages['jsf.SupportedLanguageDetails']}</f:facet>
-                <h:panelGrid>
-                    <s:decorate id="localeField"
-                                template="edit.xhtml">
-                        <ui:define name="label">#{messages['jsf.Language']}</ui:define>
-                        <h:inputText id="localeName" value="#{languageManagerAction.language}">
-                            <a4j:support event="onkeyup" reRender="output"
-                                         action="#{languageManagerAction.updateLanguage()}" />
-                        </h:inputText>
-                        <rich:suggestionbox for="localeName" var="result"
-                                            suggestionAction="#{languageManagerAction.suggestLocales}"
-                                            width="300">
-                            <h:column>
-                                <h:outputText value="#{result.localeId}"/>
-                            </h:column>
-                            <h:column>
-                                <h:outputText value="#{result.retrieveDisplayName()}"/>
-                            </h:column>
-                        </rich:suggestionbox>
-                    </s:decorate>
-                    <s:decorate id="enabledByDefaultField" template="display.xhtml">
-                        <ui:define name="label">#{messages['jsf.EnabledByDefault']}</ui:define>
-                        <h:selectBooleanCheckbox value="#{languageManagerAction.enabledByDefault}"/>
-                    </s:decorate>
-                </h:panelGrid>
+        <script type="text/javascript">
+            function replaceUnderscores()
+            {
+                var langName = #{rich:element('localeName')}.value;
+                langName = langName.replace('_', '-');
+                #{rich:element('localeName')}.value = langName;
+                validateLangName();
+            }
+        </script>
+        <a4j:jsFunction name="validateLangName" action="#{languageManagerAction.updateLanguage()}"
+                        reRender="output,localeNameMssgs"/>
 
-				<div><h:panelGrid id="output" >
-					<s:decorate id="output1" template="display.xhtml">
-						<ui:define name="label">#{messages['jsf.CountryCode']} </ui:define>
-						<h:outputText value="#{languageManagerAction.uLocale.country}" />
-					</s:decorate>
-					<s:decorate id="output2" template="display.xhtml">
-						<ui:define name="label">#{messages['jsf.Name']} </ui:define>
-						<h:outputText value="#{languageManagerAction.uLocale.displayName}" />
-					</s:decorate>
-					<s:decorate id="output3" template="display.xhtml">
-						<ui:define name="label">#{messages['jsf.LanguageCode']} </ui:define>
-						<h:outputText value="#{languageManagerAction.uLocale.language}" />
-					</s:decorate>
-					<s:decorate id="output4" template="display.xhtml">
-						<ui:define name="label">#{messages['jsf.Variant']} </ui:define>
-						<h:outputText value="#{languageManagerAction.uLocale.variant}" />
-					</s:decorate>
-					<s:decorate id="output5" template="display.xhtml">
-						<ui:define name="label">#{messages['jsf.NativeName']} </ui:define>
-						<h:outputText value="#{languageManagerAction.uLocale.getDisplayName(languageManagerAction.uLocale)}" />
-					</s:decorate>
-				</h:panelGrid></div>
+        <f:facet name="header">#{messages['jsf.SupportedLanguageDetails']}</f:facet>
+        <h:panelGrid>
+            <s:decorate id="localeField"
+                        template="edit.xhtml">
+                <ui:define name="label">#{messages['jsf.Language']}</ui:define>
+                <h:panelGrid columns="3" border="0" cellpadding="0" cellspacing="0">
+                    <h:inputText id="localeName" value="#{languageManagerAction.language}">
+                        <a4j:support event="onkeyup"
+                                     action="#{languageManagerAction.updateLanguage()}"
+                                     reRender="output,localeNameMssgs" />
+                    </h:inputText>
+                    <h:graphicImage value="/images/combo_box_arrow.png"
+                                    onclick="#{rich:component('localeNameSuggestion')}.callSuggestion(true)"
+                                    alt=""/>
+                    <h:panelGroup id="localeNameMssgs" style="margin-left: 10px">
+                        <h:outputText value="#{languageManagerAction.languageNameValidationMessage}"
+                                      rendered="#{not languageManagerAction.language.contains('_')}"
+                                      style="color:#ff0000"/>
+                        <h:panelGroup rendered="#{languageManagerAction.language.contains('_')}">
+                            #{messages['jsf.language.validation.Underscores']}
+                            <a href="#" onclick="replaceUnderscores();">#{messages['jsf.language.validation.ReplaceUnderscores']}</a>
+                        </h:panelGroup>
+                        <h:outputText value="#{languageManagerAction.languageNameWarningMessage}"
+                                      rendered="#{languageManagerAction.languageNameWarningMessage != null}"
+                                      style="background-color: yellow"/>
+                    </h:panelGroup>
+
+                </h:panelGrid>
+                <rich:suggestionbox id="localeNameSuggestion"
+                                    for="localeName" var="result"
+                                    suggestionAction="#{languageManagerAction.suggestLocales}"
+                                    width="300">
+                    <a4j:support event="onselect"
+                                 action="#{languageManagerAction.updateLanguage()}"
+                                 reRender="output,localeNameMssgs" />
+                    <h:column>
+                        <h:outputText value="#{result.localeId}"/>
+                    </h:column>
+                    <h:column>
+                        <h:outputText value="#{result.retrieveDisplayName()}"/>
+                    </h:column>
+                </rich:suggestionbox>
+            </s:decorate>
+            <s:decorate id="enabledByDefaultField" template="display.xhtml">
+                <ui:define name="label">#{messages['jsf.EnabledByDefault']}</ui:define>
+                <h:selectBooleanCheckbox value="#{languageManagerAction.enabledByDefault}"/>
+            </s:decorate>
+        </h:panelGrid>
+
+        <div><h:panelGrid id="output" >
+            <s:decorate id="output1" template="display.xhtml">
+                <ui:define name="label">#{messages['jsf.CountryCode']} </ui:define>
+                <h:outputText value="#{languageManagerAction.uLocale.country}" />
+            </s:decorate>
+            <s:decorate id="output2" template="display.xhtml">
+                <ui:define name="label">#{messages['jsf.Name']} </ui:define>
+                <h:outputText value="#{languageManagerAction.uLocale.displayName}" />
+            </s:decorate>
+            <s:decorate id="output3" template="display.xhtml">
+                <ui:define name="label">#{messages['jsf.LanguageCode']} </ui:define>
+                <h:outputText value="#{languageManagerAction.uLocale.language}" />
+            </s:decorate>
+            <s:decorate id="output4" template="display.xhtml">
+                <ui:define name="label">#{messages['jsf.Variant']} </ui:define>
+                <h:outputText value="#{languageManagerAction.uLocale.variant}" />
+            </s:decorate>
+            <s:decorate id="output5" template="display.xhtml">
+                <ui:define name="label">#{messages['jsf.NativeName']} </ui:define>
+                <h:outputText value="#{languageManagerAction.uLocale.getDisplayName(languageManagerAction.uLocale)}" />
+            </s:decorate>
+        </h:panelGrid></div>
 
 
 </ui:composition>
