@@ -87,7 +87,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       HasCommand getSignOutMenuItem();
 
-      HasCommand getSearchAndReplaceMenuItem();
+      HasClickHandlers getSearchAndReplaceLink();
 
       HasClickHandlers getErrorNotificationBtn();
 
@@ -299,10 +299,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       });
 
-      display.getSearchAndReplaceMenuItem().setCommand(new Command()
+      display.getSearchAndReplaceLink().addClickHandler(new ClickHandler()
       {
          @Override
-         public void execute()
+         public void onClick(ClickEvent event)
          {
             HistoryToken token = HistoryToken.fromTokenString(history.getToken());
             if (!token.getView().equals(MainView.Search))

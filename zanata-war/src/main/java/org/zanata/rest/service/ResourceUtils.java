@@ -1014,9 +1014,16 @@ public class ResourceUtils
    /**
     * Returns the appropriate plural form for a given Locale.
     */
-   private String getPluralForms(HLocale locale)
+   public String getPluralForms(HLocale locale)
    {
-      LocaleId localeId = locale.getLocaleId();
+      return getPluralForms(locale.getLocaleId());
+   }
+
+   /**
+    * Returns the appropriate plural form for a given Locale Id.
+    */
+   public String getPluralForms(LocaleId localeId)
+   {
       String javaLocale = localeId.toJavaName().toLowerCase();
 
       if (pluralForms.containsKey(javaLocale))

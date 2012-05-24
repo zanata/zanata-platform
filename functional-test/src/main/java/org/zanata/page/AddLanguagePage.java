@@ -23,15 +23,17 @@ package org.zanata.page;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.Select;
 
 public class AddLanguagePage extends AbstractPage
 {
-   @FindBy(tagName = "select")
-   private WebElement languageSelection;
+   @FindBy(xpath = "//input[@type='text' and contains(@id, 'localeName')]")
+   private WebElement languageInput;
 
    @FindBy(xpath = "//input[@value='Save']")
    private WebElement saveButton;
+
+   @FindBy(xpath = "//input[@type='checkbox' and contains(@name, 'enabledByDefault')]")
+   private WebElement enabledByDefaultInput;
 
    public AddLanguagePage(final WebDriver driver)
    {
@@ -40,7 +42,13 @@ public class AddLanguagePage extends AbstractPage
 
    public AddLanguagePage selectLanguage(String language)
    {
-      new Select(languageSelection).selectByValue(language);
+      languageInput.sendKeys(language);
+      return this;
+   }
+
+   public AddLanguagePage enableLanguageByDefault()
+   {
+      enabledByDefaultInput.click();
       return this;
    }
 

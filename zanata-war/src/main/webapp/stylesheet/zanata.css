@@ -639,6 +639,12 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 }
 /* -----------------------  End Customised Language list CSS  -------------------------*/
 
+/* -----------------------  Language Administration CSS  -------------------------*/
+.disabled_lang_row {
+    background-color: #FEEDEF;
+}
+/* -----------------------  End Language Administration CSS  -------------------------*/
+
 /* -----------------------  Project iteration CSS  -------------------------*/
 
 .iterations table {
