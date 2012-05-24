@@ -21,6 +21,7 @@
 package org.zanata.webtrans.shared.rpc;
 
 
+import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
 
 public class GetTransUnitsNavigation extends AbstractWorkspaceAction<GetTransUnitsNavigationResult>
 {
@@ -36,7 +37,7 @@ public class GetTransUnitsNavigation extends AbstractWorkspaceAction<GetTransUni
    {
    }
 
-   public GetTransUnitsNavigation(Long id, String phrase, boolean isNewState, boolean isFuzzyState, boolean isApprovedState)
+   private GetTransUnitsNavigation(Long id, String phrase, boolean isNewState, boolean isFuzzyState, boolean isApprovedState)
    {
       this.id = id;
       this.phrase = phrase;
@@ -45,6 +46,10 @@ public class GetTransUnitsNavigation extends AbstractWorkspaceAction<GetTransUni
       this.isApprovedState = isApprovedState;
    }
 
+   public static GetTransUnitsNavigation newAction(GetTransUnitActionContext context)
+   {
+      return new GetTransUnitsNavigation(context.getDocumentId().getId(), context.getFindMessage(), context.isFilterUntranslated(), context.isFilterNeedReview(), context.isFilterTranslated());
+   }
 
    public Long getId()
    {

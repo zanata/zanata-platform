@@ -43,18 +43,16 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 
-import com.google.common.base.Strings;
-
+import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 @Name("webtrans.gwt.GetTransUnitListHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetTransUnitList.class)
+@Slf4j
 public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitList, GetTransUnitListResult>
 {
-   private static final org.slf4j.Logger log = LoggerFactory.getLogger(GetTransUnitListHandler.class);
-
    @In
    private TransUnitTransformer transUnitTransformer;
 
@@ -74,7 +72,8 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
    public GetTransUnitListResult execute(GetTransUnitList action, ExecutionContext context) throws ActionException
    {
       identity.checkLoggedIn();
-      log.debug("Fetching TransUnits for document {}", action.getDocumentId());
+      log.info("Fetching TransUnits for document {}", action.getDocumentId());
+      log.debug("action: {}", action);
 
       HLocale hLocale;
       try

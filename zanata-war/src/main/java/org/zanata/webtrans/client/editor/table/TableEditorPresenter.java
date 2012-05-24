@@ -232,7 +232,12 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
    private void initialiseTransUnitsNavigation()
    {
-      dispatcher.execute(new GetTransUnitsNavigation(documentId.getValue(), findMessage, filterViewConfirmationPanel.isFilterUntranslated(), filterViewConfirmationPanel.isFilterNeedReview(), filterViewConfirmationPanel.isFilterTranslated()), new AsyncCallback<GetTransUnitsNavigationResult>()
+      GetTransUnitActionContext context = GetTransUnitActionContext.of(documentId, findMessage)
+            .setFilterNeedReview(filterViewConfirmationPanel.isFilterNeedReview())
+            .setFilterTranslated(filterViewConfirmationPanel.isFilterTranslated())
+            .setFilterUntranslated(filterViewConfirmationPanel.isFilterUntranslated());
+      GetTransUnitsNavigation navigationAction = GetTransUnitsNavigation.newAction(context);
+      dispatcher.execute(navigationAction, new AsyncCallback<GetTransUnitsNavigationResult>()
       {
          @Override
          public void onSuccess(GetTransUnitsNavigationResult result)
@@ -677,8 +682,14 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          {
             display.startProcessing();
          }
+         GetTransUnitActionContext context = GetTransUnitActionContext.of(documentId, findMessage)
+               .setFilterNeedReview(filterViewConfirmationPanel.isFilterNeedReview())
+               .setFilterTranslated(filterViewConfirmationPanel.isFilterTranslated())
+               .setFilterUntranslated(filterViewConfirmationPanel.isFilterUntranslated())
+               .setOffset(startRow).setCount(numRows)
+               .setTargetTransUnitId(targetTransUnitId);
 
-         dispatcher.execute(new GetTransUnitList(documentId, startRow, numRows, findMessage, filterViewConfirmationPanel.isFilterTranslated(), filterViewConfirmationPanel.isFilterNeedReview(), filterViewConfirmationPanel.isFilterUntranslated(), targetTransUnitId), new AsyncCallback<GetTransUnitListResult>()
+         dispatcher.execute(GetTransUnitList.newAction(context), new AsyncCallback<GetTransUnitListResult>()
          {
             @Override
             public void onSuccess(GetTransUnitListResult result)

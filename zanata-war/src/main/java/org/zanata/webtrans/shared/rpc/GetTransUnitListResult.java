@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
+import com.google.common.base.Objects;
 
 
 public class GetTransUnitListResult implements DispatchResult
@@ -46,5 +47,16 @@ public class GetTransUnitListResult implements DispatchResult
    public int getGotoRow()
    {
       return gotoRow;
+   }
+
+   @Override
+   public String toString()
+   {
+      return Objects.toStringHelper(this).
+            add("documentId", documentId).
+            add("totalCount", totalCount).
+            add("gotoRow", gotoRow).
+            add("units.size", units == null ? 0 : units.size()).
+            toString();
    }
 }

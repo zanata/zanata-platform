@@ -19,12 +19,21 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.webtrans.client.editor.table;
+package org.zanata.webtrans.client.rpc;
 
-import java.util.List;
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import org.zanata.webtrans.shared.model.TransUnit;
-
-public interface EditorTableModel
+/**
+ * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
+public abstract class AbstractAsyncCallback<T> implements AsyncCallback<T>
 {
+   //TODO should refactor all callback implementation to use this as base class and have default/unified failure handling
+   @Override
+   public void onFailure(Throwable caught)
+   {
+      Log.error("failure", caught);
+   }
+
 }
