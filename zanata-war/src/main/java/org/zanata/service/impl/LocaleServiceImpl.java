@@ -118,13 +118,14 @@ public class LocaleServiceImpl implements LocaleService
       return hSupportedLanguages;
    }
 
-   public void save(LocaleId localeId)
+   public void save(LocaleId localeId, boolean enabledByDefault)
    {
       if (localeExists(localeId))
          return;
       HLocale entity = new HLocale();
       entity.setLocaleId(localeId);
       entity.setActive(true);
+      entity.setEnabledByDefault(enabledByDefault);
       localeDAO.makePersistent(entity);
       localeDAO.flush();
    }
@@ -233,7 +234,7 @@ public class LocaleServiceImpl implements LocaleService
       {
          return new ArrayList<HLocale>(proj.getCustomizedLocales());
       }
-      return localeDAO.findAllActive();
+      return localeDAO.findAllActiveAndEnabledByDefault();
    }
    
    @Override

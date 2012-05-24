@@ -20,12 +20,10 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.faces.model.SelectItem;
-
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.ibm.icu.util.ULocale;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -33,9 +31,18 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.LocaleDAO;
+import org.zanata.model.HLocale;
+import org.zanata.rest.service.ResourceUtils;
 import org.zanata.service.LocaleService;
 
-import com.ibm.icu.util.ULocale;
+import javax.annotation.Nullable;
+import javax.faces.model.SelectItem;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 @Name("languageManagerAction")
 @Scope(ScopeType.PAGE)
@@ -43,11 +50,33 @@ import com.ibm.icu.util.ULocale;
 public class LanguageManagerAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
+
+   @In
+   private LocaleDAO localeDAO;
+
    @In
    private LocaleService localeServiceImpl;
+
+   @In
+   private ResourceUtils resourceUtils;
+
+   @In
+   private Map<String, String> messages;
+
    private String language;
+
    private ULocale uLocale;
+
    private List<SelectItem> localeStringList;
+
+   private boolean enabledByDefault;
+
+   // cache this so it is called only once
+   private List<LocaleId> allLocales;
+
+   private String languageNameValidationMessage;
+
+   private String languageNameWarningMessage;
 
    @Create
    public void onCreate()
@@ -75,15 +104,47 @@ public class LanguageManagerAction implements Serializable
       this.language = language;
    }
 
+   public boolean isEnabledByDefault()
+   {
+      return enabledByDefault;
+   }
+
+   public void setEnabledByDefault(boolean enabledByDefault)
+   {
+      this.enabledByDefault = enabledByDefault;
+   }
+
+   public String getLanguageNameValidationMessage()
+   {
+      return languageNameValidationMessage;
+   }
+
+   public String getLanguageNameWarningMessage()
+   {
+      return languageNameWarningMessage;
+   }
+
    public void updateLanguage()
    {
-      this.uLocale = new ULocale(this.language);
+      if( this.language.trim().length() > 0 )
+      {
+         this.uLocale = new ULocale(this.language);
+         this.isLanguageNameValid();
+      }
+      else
+      {
+         this.uLocale = null;
+      }
    }
 
    public String save()
    {
+      if( !isLanguageNameValid() )
+      {
+         return null; // not success
+      }
       LocaleId locale = new LocaleId(language);
-      localeServiceImpl.save(locale);
+      localeServiceImpl.save(locale, enabledByDefault);
       return "success";
    }
 
@@ -102,6 +163,81 @@ public class LanguageManagerAction implements Serializable
    public List<SelectItem> getLocaleStringList()
    {
       return localeStringList;
+   }
+
+   public List<HLocale> suggestLocales( Object queryObj )
+   {
+      final String query = (String)queryObj;
+
+      if( allLocales == null )
+      {
+         allLocales = localeServiceImpl.getAllJavaLanguages();
+      }
+
+      Collection<LocaleId> filtered =
+            Collections2.filter(allLocales, new Predicate<LocaleId>()
+            {
+               @Override
+               public boolean apply(@Nullable LocaleId input)
+               {
+                  return input.getId().startsWith(query);
+               }
+            });
+
+      return new ArrayList<HLocale>(Collections2.transform(filtered, new Function<LocaleId, HLocale>()
+      {
+         @Override
+         public HLocale apply(@Nullable LocaleId from)
+         {
+            return new HLocale(from);
+         }
+      }));
+   }
+
+   public boolean isLanguageNameValid()
+   {
+      this.languageNameValidationMessage = null; // reset
+      this.languageNameWarningMessage = null;    // reset
+
+      // Cannot use FacesMessages as they are request scoped.
+      // Cannot use UI binding as they don't work in Page scoped beans
+
+      // Check that locale Id is syntactically valid
+      LocaleId localeId;
+      try
+      {
+         localeId = new LocaleId( language );
+      }
+      catch( IllegalArgumentException iaex )
+      {
+         this.languageNameValidationMessage = messages.get("jsf.language.validation.Invalid");
+         return false;
+      }
+
+      // check for already registered languages
+      if( localeServiceImpl.localeExists( localeId ) )
+      {
+         this.languageNameValidationMessage = messages.get("jsf.language.validation.Existing");
+         return false;
+      }
+
+      // Check for plural forms
+      if( resourceUtils.getPluralForms( localeId ) == null )
+      {
+         // Have to get the component Id this way as binding won't work on a Page scoped bean.
+         this.languageNameValidationMessage = messages.get("jsf.language.validation.UnknownPluralForm");
+         return false;
+      }
+
+      // Check for similar already registered languages (warning)
+      List<HLocale> similarLangs = localeDAO.findBySimilarLocaleId( localeId );
+      if( similarLangs.size() > 0 )
+      {
+         this.languageNameWarningMessage = messages.get("jsf.language.validation.SimilarLocaleFound")
+               + similarLangs.get(0).getLocaleId().getId();
+      }
+
+      return true;
    }
 
 }
