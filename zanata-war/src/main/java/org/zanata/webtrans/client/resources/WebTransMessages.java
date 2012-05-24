@@ -238,6 +238,6 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("▼")
    String downArrow();
 
-   @DefaultMessage("Notification")
-   String notification();
+   @DefaultMessage("Error notification")
+   String errorNotification();
 }

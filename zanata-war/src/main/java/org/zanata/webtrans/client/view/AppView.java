@@ -44,12 +44,14 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.MenuBar;
@@ -83,7 +85,10 @@ public class AppView extends Composite implements AppPresenter.Display
    TransUnitCountBar translationStatsBar;
 
    @UiField
-   Label readOnlyLabel, notificationMessage, documentsLink, dismissLink;
+   Label notificationMessage, dismissLink;
+   
+   @UiField
+   InlineLabel readOnlyLabel, documentsLink;
 
    @UiField
    SpanElement selectedDocumentSpan, selectedDocumentPathSpan;
@@ -105,6 +110,9 @@ public class AppView extends Composite implements AppPresenter.Display
    @UiField
    PushButton errorNotificationBtn;
 
+   @UiField
+   Anchor searchAndReplace;
+
    Image userImg;
 
    MenuBar menuBar;
@@ -114,9 +122,6 @@ public class AppView extends Composite implements AppPresenter.Display
    MenuCommandItem leaveWorkspaceMenuItem;
 
    MenuCommandItem signOutMenuItem;
-
-   MenuCommandItem searchAndReplaceMenuItem;
-
 
    // TODO may be able to make these provided=true widgets
    private Widget documentListView;
@@ -152,10 +157,9 @@ public class AppView extends Composite implements AppPresenter.Display
       helpMenuItem = new MenuCommandItem(messages.help(), emptyCommand);
       leaveWorkspaceMenuItem = new MenuCommandItem(messages.leaveWorkspace(), emptyCommand);
       signOutMenuItem = new MenuCommandItem(messages.signOut(), emptyCommand);
-      searchAndReplaceMenuItem = new MenuCommandItem(messages.searchAndReplace(), emptyCommand);
 
-      menuBar.addItem(searchAndReplaceMenuItem);
-      menuBar.addSeparator();
+      searchAndReplace.setText(messages.searchAndReplace());
+
       menuBar.addItem(helpMenuItem);
       menuBar.addSeparator();
       menuBar.addItem(leaveWorkspaceMenuItem);
@@ -172,7 +176,7 @@ public class AppView extends Composite implements AppPresenter.Display
       this.searchResultsView = searchResultsView.asWidget();
       this.container.add(this.searchResultsView);
 
-      errorNotificationBtn.setTitle(messages.notification());
+      errorNotificationBtn.setTitle(messages.errorNotification());
 
       Window.enableScrolling(false);
    }
@@ -324,9 +328,9 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public HasCommand getSearchAndReplaceMenuItem()
+   public HasClickHandlers getSearchAndReplaceLink()
    {
-      return searchAndReplaceMenuItem;
+      return searchAndReplace;
    }
 
    @Override
