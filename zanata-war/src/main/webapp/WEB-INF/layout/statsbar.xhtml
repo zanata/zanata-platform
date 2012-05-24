@@ -16,7 +16,7 @@
     <ui:param name="wFuzzy" value="#{total == 0 ? 0 : 110 * fuzzy / total}" />
 	   
 	 <s:fragment rendered="#{status.total > 0}">
-	 <div title="Total: #{status.total}, Translated: #{status.approved}, Need Review #{status.needReview}" class="translationStatusDiv">
+	 <div title="Total: #{status.total}, Translated: #{status.approved}, Need Review: #{status.needReview}" class="translationStatusDiv">
         <div class="translationStatusBar statusBar_approved" style="width:#{wTranslated}px;"></div>
         <div class="translationStatusBar statusBar_needReview" style="width:#{wFuzzy}px;"></div>
         <div class="translationStatusBar statusBar_untranslated" style="width:#{wUntranslated}px;"></div>
