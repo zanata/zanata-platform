@@ -23,27 +23,43 @@
                 </g:cell>
             </g:HorizontalPanel>
         </g:layer>
-        <g:layer top='64px' bottom='80px'>
+        <g:layer top='64px' bottom='120px'>
             <g:ScrollPanel styleName='projectWideSearchResultsPanel' >
                 <g:VerticalPanel ui:field='searchResultsPanel' width="100%" />
             </g:ScrollPanel>
         </g:layer>
-        <g:layer bottom='0px' height='80px' left="0px" right="0px">
-            <g:FlowPanel styleName='projectWideReplacementPanel' >
+        <g:layer bottom='0px' height='120px' left="0px" right="0px">
+            <g:HorizontalPanel verticalAlignment='ALIGN_MIDDLE' width="100%" height="100%" styleName='projectWideReplacementPanel' >
                 <g:InlineLabel styleName='projectWideReplacementBoxLabel' ><ui:msg>Replace with:</ui:msg></g:InlineLabel>
                 <g:TextBox ui:field='replacementTextBox' styleName='projectWideReplacementBox' />
-                <g:Button ui:field='previewButton' styleName='projectWideReplacementButton' >
-                    <ui:msg>Preview Selected</ui:msg>
-                </g:Button>
-                <g:Button ui:field='replaceAllButton' styleName='projectWideReplacementButton' >
-                    <ui:msg>Replace All Selected</ui:msg>
-                </g:Button>
-                <g:InlineLabel ui:field='selectAllLink' styleName='linkLabel' ><ui:msg>select all</ui:msg></g:InlineLabel>
-                <g:InlineLabel ui:field='replaceAllFeedbackLabel' styleName='projectWideReplaceFeedbackLabel' />
-                <g:InlineLabel ui:field='replaceAllUndoLabel' styleName='linkLabel' visible="false">
-                    <ui:msg>undo</ui:msg>
-                </g:InlineLabel>
-            </g:FlowPanel>
+                <g:cell width="100%">
+                <!-- TODO make this a scrollable list of messages with undo label each
+                     to allow undo of past replaces. Hide undo label when it is clicked -->
+                    <g:FlowPanel>
+                        <g:InlineLabel ui:field='replaceAllFeedbackLabel' styleName='projectWideReplaceFeedbackLabel' />
+                        <g:InlineLabel ui:field='replaceAllUndoLabel' addStyleNames='linkLabel linkLabelLightColor' visible="false">
+                            <ui:msg>undo</ui:msg>
+                        </g:InlineLabel>
+                    </g:FlowPanel>
+                </g:cell>
+                <g:cell horizontalAlignment="ALIGN_RIGHT">
+                    <g:VerticalPanel horizontalAlignment="ALIGN_RIGHT">
+                        <g:FlowPanel>
+                            <g:InlineLabel ui:field="selectionInfoLabel" styleName='projectWideSearchSelectionInfo'></g:InlineLabel>
+                            <g:InlineLabel ui:field='selectAllLink' addStyleNames='linkLabel linkLabelLightColor' ><ui:msg>select all</ui:msg></g:InlineLabel>
+                        </g:FlowPanel>
+                        <g:HorizontalPanel>
+                        <g:Button ui:field='previewButton' styleName='projectWideReplacementButton' >
+                                <ui:msg>Preview</ui:msg>
+                            </g:Button>
+                            <g:Button ui:field='replaceAllButton' styleName='projectWideReplacementButton' >
+                                <ui:msg>Replace</ui:msg>
+                            </g:Button>
+                        </g:HorizontalPanel>
+                        <g:CheckBox ui:field="requirePreviewChk"><ui:msg>Require preview</ui:msg></g:CheckBox>
+                    </g:VerticalPanel>
+                </g:cell>
+            </g:HorizontalPanel>
         </g:layer>
     </g:LayoutPanel>
 
