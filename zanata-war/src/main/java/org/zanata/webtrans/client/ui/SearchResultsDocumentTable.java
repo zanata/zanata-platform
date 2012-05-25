@@ -1,10 +1,30 @@
+/*
+ * Copyright 2012, Red Hat, Inc. and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package org.zanata.webtrans.client.ui;
 
 import java.util.Collection;
 import java.util.List;
 
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.presenter.ReplacementState;
+import org.zanata.webtrans.client.presenter.PreviewState;
 import org.zanata.webtrans.client.presenter.TransUnitReplaceInfo;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
@@ -36,6 +56,12 @@ import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.DefaultSelectionEventManager.BlacklistEventTranslator;
 import com.google.gwt.view.client.DefaultSelectionEventManager.SelectAction;
 
+/**
+ * Displays search results for a single document.
+ * 
+ * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
+ */
 public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
 {
    private static final int REPLACE_COLUMN_INDEX = 3;
@@ -158,7 +184,7 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
          {
             // TODO for replaced targets, highlight replacement term or show diff
             List<String> contents = info.getTransUnit().getTargets();
-            if (info.getState() == ReplacementState.PreviewAvailable)
+            if (info.getPreviewState() == PreviewState.Show)
             {
                for (int i = 0; i < contents.size(); i++)
                {
@@ -273,43 +299,57 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
       @Override
       public void render(com.google.gwt.cell.client.Cell.Context context, TransUnitReplaceInfo value, SafeHtmlBuilder sb)
       {
-         switch (value.getState())
+
+         switch (value.getPreviewState())
          {
-         case FetchingPreview:
-            sb.append(fetchingPreviewHtml);
-            break;
-         case Replacing:
-            sb.append(replacingHtml);
-            break;
-         case Undoing:
-            sb.append(undoingHtml);
-            break;
-         case PreviewAvailable:
-            super.render(context, value, sb);
-            break;
-            // TODO these two cases will depend on quick-replace mode
-         case Replaceable:
+         case NotFetched:
             sb.append(previewHtml);
             break;
-         case Replaced:
-            sb.append(undoHtml);
+         case Fetching:
+            sb.append(fetchingPreviewHtml);
+            break;
+         case Show:
+            super.render(context, value, sb);
+            break;
+         case Hide:
+            // TODO remove this to separate column when one exists
+            switch (value.getReplaceState())
+            {
+            case NotReplaced:
+               // TODO greyed out or invisible button if preview not available
+               break;
+            case Replacing:
+               sb.append(replacingHtml);
+               break;
+            case Replaced:
+               sb.append(undoHtml);
+               break;
+            case Undoing:
+               sb.append(undoingHtml);
+               break;
+            }
             break;
          }
       }
 
       @Override
       protected void onEnterKeyDown(Context context, Element parent, TransUnitReplaceInfo value, NativeEvent event, ValueUpdater<TransUnitReplaceInfo> valueUpdater) {
-         switch (value.getState())
+         switch (value.getPreviewState())
          {
-         case Replaceable:
+         case NotFetched:
             previewDelegate.execute(value);
             break;
-         case Replaced:
-            undoDelegate.execute(value);
-            break;
-         case PreviewAvailable:
-            super.onEnterKeyDown(context, parent, value, event, valueUpdater);
-            break;
+         case Show:
+         case Hide:
+            switch (value.getReplaceState())
+            {
+            case NotReplaced:
+               super.onEnterKeyDown(context, parent, value, event, valueUpdater);
+               break;
+            case Replaced:
+               undoDelegate.execute(value);
+               break;
+            }
          }
          // else ignore (is processing)
       };

@@ -21,12 +21,12 @@
 package org.zanata.webtrans.client.presenter;
 
 /**
- * Indicates whether replacement has been made in a text flow.
+ * Indicates whether a preview for a change to a text flow is available.
  * 
  * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
- * 
+ *
  */
-public enum ReplacementState
+public enum PreviewState
 {
-   NotAllowed, NotReplaced, Replacing, Replaced, Undoing
+   NotAllowed, NotFetched, Fetching, Show, Hide
 }

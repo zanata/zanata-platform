@@ -187,6 +187,12 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Successfully replaced text")
    String replacedTextSuccess();
 
+   @DefaultMessage("Replace text failed")
+   String replaceTextFailure();
+
+   @DefaultMessage("No replacements to make")
+   String noReplacementsToMake();
+
    @DefaultMessage("View in editor")
    String viewDocInEditor();
 
@@ -210,9 +216,6 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Actions")
    String actions();
-
-   @DefaultMessage("Replace text failed")
-   String replaceTextFailure();
 
    @DefaultMessage("Undo")
    String undo();

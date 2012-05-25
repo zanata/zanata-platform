@@ -281,14 +281,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             {
                selected.addAll(sel.getSelectedSet());
             }
-            if (selected.isEmpty())
-            {
-               eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.noTextFlowsSelected()));
-            }
-            else
-            {
-               firePreviewEvent(selected);
-            }
+            firePreviewEvent(selected);
          }
       }));
 
@@ -303,14 +296,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             {
                selected.addAll(sel.getSelectedSet());
             }
-            if (selected.isEmpty())
-            {
-               eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.noTextFlowsSelected()));
-            }
-            else
-            {
-               fireReplaceTextEvent(selected);
-            }
+            fireReplaceTextEvent(selected);
          }
       }));
 
@@ -363,11 +349,13 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             Log.debug("found matching TU for TU update, id: " + updateInfo.getTransUnit().getId().getId());
 
 
-            if (replaceInfo.getState() == ReplacementState.Replaced && replaceInfo.getTransUnit().getVerNum() != updateInfo.getTransUnit().getVerNum())
+            if (replaceInfo.getReplaceState() == ReplacementState.Replaced && replaceInfo.getTransUnit().getVerNum() != updateInfo.getTransUnit().getVerNum())
             {
                // can't undo after additional update
-               replaceInfo.setState(ReplacementState.Replaceable);
+               replaceInfo.setReplaceState(ReplacementState.NotReplaced);
                replaceInfo.setReplaceInfo(null);
+               replaceInfo.setPreviewState(PreviewState.NotFetched);
+               replaceInfo.setPreview(null);
 
                MultiSelectionModel<TransUnitReplaceInfo> selectionModel = documentSelectionModels.get(updateInfo.getDocumentId().getId());
                if (selectionModel == null)
@@ -498,11 +486,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void onSelectionChange(SelectionChangeEvent event)
          {
-            int selectedFlows = 0;
-            for (MultiSelectionModel<TransUnitReplaceInfo> model : documentSelectionModels.values())
-            {
-               selectedFlows += model.getSelectedSet().size();
-            }
+            int selectedFlows = countSelectedFlows();
 
             if (selectedFlows == 0)
             {
@@ -523,19 +507,39 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     * using parameters from the current history state. This will also update the
     * state and refresh the table to show 'previewing' indicator.
     * 
+    * If toPreview is empty, this is a no-op.
+    * 
     * @param toPreview
-    * @param global true if this is a 'replace all' event and should update the
-    *           global replace button
     */
    private void firePreviewEvent(List<TransUnitReplaceInfo> toPreview)
    {
-      // FIXME only fetch preview if it has not been fetched already
+      if (toPreview.isEmpty())
+      {
+         eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.noTextFlowsSelected()));
+         return;
+      }
+
       List<TransUnit> transUnits = new ArrayList<TransUnit>();
       for (TransUnitReplaceInfo replaceInfo : toPreview)
       {
-         transUnits.add(replaceInfo.getTransUnit());
-         replaceInfo.setState(ReplacementState.FetchingPreview);
-         refreshInfoDisplay(replaceInfo);
+         switch (replaceInfo.getPreviewState())
+         {
+         case NotFetched:
+            transUnits.add(replaceInfo.getTransUnit());
+            replaceInfo.setPreviewState(PreviewState.Fetching);
+            refreshInfoDisplay(replaceInfo);
+            break;
+         case Hide:
+            replaceInfo.setPreviewState(PreviewState.Show);
+            refreshInfoDisplay(replaceInfo);
+            break;
+         }
+      }
+
+      if (transUnits.isEmpty())
+      {
+         // could notify user, doesn't seem worthwhile
+         return;
       }
 
       final String searchText = currentHistoryState.getProjectSearchText();
@@ -568,7 +572,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                {
                   Log.debug("setting preview state for preview id: " + preview.getId());
                   replaceInfo.setPreview(preview);
-                  replaceInfo.setState(ReplacementState.PreviewAvailable);
+                  replaceInfo.setPreviewState(PreviewState.Show);
                   refreshInfoDisplay(replaceInfo);
                }
             }
@@ -580,21 +584,40 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    }
 
    /**
-    * Fire a {@link ReplaceText} event for the given {@link TransUnit}s
-    * using parameters from the current history state. This will also update the
-    * state and refresh the table to show 'replacing' indicator.
+    * Fire a {@link ReplaceText} event for the given {@link TransUnit}s using
+    * parameters from the current history state. This will also update the state
+    * and refresh the table to show 'replacing' indicator.
+    * 
+    * An event will not be fired if toReplace is empty or contains no text flows
+    * that are eligible for a replace operation.
     * 
     * @param toReplace list of TransUnits to replace
     */
    private void fireReplaceTextEvent(List<TransUnitReplaceInfo> toReplace)
    {
-      // FIXME only fire replace event if replacement has not already been made
+      if (toReplace.isEmpty())
+      {
+         eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.noTextFlowsSelected()));
+         return;
+      }
       List<TransUnit> transUnits = new ArrayList<TransUnit>();
       for (TransUnitReplaceInfo info : toReplace)
       {
-         transUnits.add(info.getTransUnit());
-         info.setState(ReplacementState.Replacing);
-         refreshInfoDisplay(info);
+         switch (info.getReplaceState())
+         {
+         case NotReplaced:
+            transUnits.add(info.getTransUnit());
+            info.setReplaceState(ReplacementState.Replacing);
+            info.setPreviewState(PreviewState.Hide);
+            refreshInfoDisplay(info);
+            break;
+         }
+      }
+
+      if (transUnits.isEmpty())
+      {
+         eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.noReplacementsToMake()));
+         return;
       }
 
       final String searchText = currentHistoryState.getProjectSearchText();
@@ -641,7 +664,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     */
    private void fireUndoEvent(List<TransUnitUpdateInfo> updateInfoList)
    {
-      // FIXME only fire undo for flows that are undoable?
+      // TODO only fire undo for flows that are undoable?
       // rpc method should cope with this anyway, so no big deal
 
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoInProgress()));
@@ -650,8 +673,12 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       {
          action.addUpdateToRevert(updateInfo);
          TransUnitReplaceInfo replaceInfo = allReplaceInfos.get(updateInfo.getTransUnit().getId());
-         replaceInfo.setState(ReplacementState.Undoing);
-         refreshInfoDisplay(replaceInfo);
+         // may be null if another search has been performed since the replacement
+         if (replaceInfo != null)
+         {
+            replaceInfo.setReplaceState(ReplacementState.Undoing);
+            refreshInfoDisplay(replaceInfo);
+         }
       }
       dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>()
       {
@@ -669,7 +696,15 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             for (TransUnitUpdateInfo info : result.getUpdateInfoList())
             {
                TransUnitReplaceInfo replaceInfo = allReplaceInfos.get(info.getTransUnit().getId());
-               replaceInfo.setState(ReplacementState.Replaceable);
+               replaceInfo.setReplaceState(ReplacementState.NotReplaced);
+               if (replaceInfo.getPreview() == null)
+               {
+                  replaceInfo.setPreviewState(PreviewState.NotFetched);
+               }
+               else
+               {
+                  replaceInfo.setPreviewState(PreviewState.Show);
+               }
                refreshInfoDisplay(replaceInfo);
             }
             refreshReplaceAllButton();
@@ -698,7 +733,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             if (replaceInfo != null)
             {
                replaceInfo.setReplaceInfo(updateInfo);
-               replaceInfo.setState(ReplacementState.Replaced);
+               replaceInfo.setReplaceState(ReplacementState.Replaced);
                // this should be done when the TU update event comes in
                // anyway may want to remove this
                replaceInfo.setTransUnit(updateInfo.getTransUnit());
@@ -779,7 +814,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          data.add(info);
          allReplaceInfos.put(tu.getId(), info);
       }
-      Collections.sort(data, TransUnitReplaceInfo.getComparator());
+      Collections.sort(data, TransUnitReplaceInfo.getRowComparator());
    }
 
    /**
@@ -858,7 +893,13 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       if (!token.getProjectSearchReplacement().equals(currentHistoryState.getProjectSearchReplacement()))
       {
          display.getReplacementTextBox().setValue(token.getProjectSearchReplacement(), true);
-         // FIXME should also clear previews as they are for old replacement text
+         for (TransUnitReplaceInfo info : allReplaceInfos.values())
+         {
+            info.setPreview(null);
+            info.setPreviewState(PreviewState.NotFetched);
+            refreshInfoDisplay(info);
+         }
+         refreshReplaceAllButton();
       }
 
       currentHistoryState = token;
@@ -888,26 +929,39 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private void refreshReplaceAllButton()
    {
       boolean requirePreview = display.getRequirePreviewChk().getValue();
-      display.setReplaceAllButtonEnabled(!requirePreview || allSelectedHavePreview());
+      boolean canReplace = countSelectedFlows() != 0 && (!requirePreview || allSelectedHavePreview());
+      display.setReplaceAllButtonEnabled(canReplace);
    }
 
+   /**
+    * @return false if any selected text flows do not have an available preview.
+    *         true if no text flows are selected or all have previews.
+    */
    private boolean allSelectedHavePreview()
    {
       for (MultiSelectionModel<TransUnitReplaceInfo> model : documentSelectionModels.values())
       {
          for (TransUnitReplaceInfo info : model.getSelectedSet())
          {
-            // TODO update when ReplacementState and PreviewState are finalised
-            if (info.getState() == ReplacementState.NotReplaceable
-                  || info.getState() == ReplacementState.Replaceable
-                  || info.getState() == ReplacementState.FetchingPreview
-                  || info.getState() == ReplacementState.Undoing)
+            switch (info.getPreviewState())
             {
+            case NotFetched:
+            case Fetching:
                return false;
             }
          }
       }
       return true;
+   }
+
+   private int countSelectedFlows()
+   {
+      int selectedFlows = 0;
+      for (MultiSelectionModel<TransUnitReplaceInfo> model : documentSelectionModels.values())
+      {
+         selectedFlows += model.getSelectedSet().size();
+      }
+      return selectedFlows;
    }
 
 }
