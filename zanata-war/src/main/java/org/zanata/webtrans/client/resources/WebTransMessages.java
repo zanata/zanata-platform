@@ -240,4 +240,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Error notification")
    String errorNotification();
+   
+   @DefaultMessage("Layout")
+   String layout();
 }

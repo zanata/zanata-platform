@@ -14,31 +14,16 @@
 		.container{
 			width:400px;
 			height:100px;
+			color:#FFFFFF;
 		}
 		
 		.layoutList 
 		{
-			opacity:0.5;
-			background:#DDDDDD;
-			border:1px solid #A1A1A1;
+			opacity:0.7;
+			background:#000000;
 			width:100%;
 			height:100px;
-		}
-		
-		.configImageContainer
-		{
-			opacity:0.5;
-			border-top:1px solid #A1A1A1;
-			border-bottom:1px solid #A1A1A1;
-			border-left:1px solid #A1A1A1;
-			background:#DDDDDD;
-			width:18px;
-			height:18px;
-		}
-		
-		.configImageContainer:hover
-		{
-			opacity:0.8;
+			border-radius:5px;
 		}
 		
 		.layoutTable
@@ -49,27 +34,30 @@
 		
 		.layoutTable td
 		{
-			font-size:10px;
+			font-size:0.5em;
 			border-radius:3px;
-			box-shadow:inset 0 0 5px 3px #888;
+			box-shadow:inset 0 0 6px 2px #323232;
+		}
+		
+		.layoutContainer
+		{
+			opacity:0.7;
+			outline:none;
+		}
+		.layoutContainer:hover
+		{
+			opacity:1.5;
 		}
 		
 	</ui:style>
 	
 	<g:VerticalPanel styleName="{style.container}" horizontalAlignment="ALIGN_CENTER">
 		<g:cell>
-			<g:FlowPanel styleName="{style.configImageContainer}">
-				<g:Image ui:field="configImage"/>
-			</g:FlowPanel>
-		</g:cell>
-		<g:cell>
 			<g:HorizontalPanel ui:field="layoutList" styleName="{style.layoutList}" verticalAlignment="ALIGN_MIDDLE" horizontalAlignment="ALIGN_CENTER">
-				<g:cell>
-					<g:DockPanel ui:field="defaultLayout" styleName="{style.layoutTable}"/>
-				</g:cell>
-				<g:cell>
-					<g:DockPanel ui:field="maximizeWorkspaceLayout" styleName="{style.layoutTable}"/>
-				</g:cell>
+					<g:FocusPanel ui:field="maximizeLayoutContainer" styleName="{style.layoutContainer}"/>
+					<g:FocusPanel ui:field="defaultLayoutContainer" styleName="{style.layoutContainer}"/>
+					<g:FocusPanel ui:field="noOptionLayoutContainer" styleName="{style.layoutContainer}"/>
+					<g:FocusPanel ui:field="noSouthLayoutContainer" styleName="{style.layoutContainer}"/>
 			</g:HorizontalPanel>
 		</g:cell>
 	</g:VerticalPanel>

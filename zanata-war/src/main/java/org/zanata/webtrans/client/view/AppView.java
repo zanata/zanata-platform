@@ -30,6 +30,7 @@ import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.HasCommand;
+import org.zanata.webtrans.client.ui.ImageLabel;
 import org.zanata.webtrans.client.ui.MenuCommandItem;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.shared.auth.Identity;
@@ -46,11 +47,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HasVisibility;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
@@ -113,15 +110,15 @@ public class AppView extends Composite implements AppPresenter.Display
    @UiField
    Anchor searchAndReplace;
 
-   Image userImg;
-
    MenuBar menuBar;
 
    MenuCommandItem helpMenuItem;
-
+   
    MenuCommandItem leaveWorkspaceMenuItem;
 
    MenuCommandItem signOutMenuItem;
+   
+   MenuCommandItem layoutMenuItem;
 
    // TODO may be able to make these provided=true widgets
    private Widget documentListView;
@@ -129,6 +126,8 @@ public class AppView extends Composite implements AppPresenter.Display
    private Widget searchResultsView;
 
    private final WebTransMessages messages;
+   
+   private final String userAvatarUrl;
 
    private Command emptyCommand = new Command()
    {
@@ -157,15 +156,19 @@ public class AppView extends Composite implements AppPresenter.Display
       helpMenuItem = new MenuCommandItem(messages.help(), emptyCommand);
       leaveWorkspaceMenuItem = new MenuCommandItem(messages.leaveWorkspace(), emptyCommand);
       signOutMenuItem = new MenuCommandItem(messages.signOut(), emptyCommand);
+      layoutMenuItem = new MenuCommandItem(messages.layout(), emptyCommand);
 
       searchAndReplace.setText(messages.searchAndReplace());
-
+      
+      
       menuBar.addItem(helpMenuItem);
+      menuBar.addSeparator();
+      menuBar.addItem(layoutMenuItem);
       menuBar.addSeparator();
       menuBar.addItem(leaveWorkspaceMenuItem);
       menuBar.addItem(signOutMenuItem);
-      userImg = new Image(identity.getPerson().getAvatarUrl());
-      userImg.setStyleName(style.image());
+      
+      userAvatarUrl = identity.getPerson().getAvatarUrl();
 
       this.documentListView = documentListView.asWidget();
       this.container.add(this.documentListView);
@@ -243,19 +246,11 @@ public class AppView extends Composite implements AppPresenter.Display
    @Override
    public void setUserLabel(String userLabel)
    {
-      HorizontalPanel userImageAndLabel = new HorizontalPanel();
-      userImageAndLabel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-      userImageAndLabel.add(userImg);
-      
-      Label userNameLabel = new Label(userLabel);
-      userNameLabel.setStyleName(style.userName());
-      userImageAndLabel.add(userNameLabel);
-      Label downArrowLabel = new Label(messages.downArrow());
-      userImageAndLabel.add(downArrowLabel);
-      
-      userImageAndLabel.setCellHorizontalAlignment(downArrowLabel, HasHorizontalAlignment.ALIGN_RIGHT);
+      ImageLabel userMenu = new ImageLabel(userAvatarUrl, userLabel + " " + messages.downArrow());
+      userMenu.setLabelStyle(style.userName());
+      userMenu.setImageStyle(style.image());
 
-      topMenuBar.addItem(userImageAndLabel.getElement().getString(), true, menuBar);
+      topMenuBar.addItem(userMenu.getElement().getString(), true, menuBar);
    }
 
    @Override
@@ -325,6 +320,12 @@ public class AppView extends Composite implements AppPresenter.Display
    public HasCommand getSignOutMenuItem()
    {
       return signOutMenuItem;
+   }
+   
+   @Override
+   public HasCommand getLayoutMenuItem()
+   {
+      return layoutMenuItem;
    }
 
    @Override

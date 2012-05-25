@@ -20,14 +20,14 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.inject.Inject;
-
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -45,27 +45,67 @@ public class LayoutSelectorPresenter extends WidgetPresenter<LayoutSelectorPrese
    {
       void show();
 
-      void showLayoutList(boolean isShowLayoutList);
-
-      HasClickHandlers getConfigButton();
-
-      void toggleView();
-
       void hide();
+      
+      void center();
+
+      HasClickHandlers getDefaultLayoutContainer();
+
+      HasClickHandlers getMaximiseLayoutContainer();
+
+      HasClickHandlers getNoOptionLayoutContainer();
+
+      HasClickHandlers getNoSouthLayoutContainer();
    }
 
+   private HasLayoutOrganiser layoutOrganiser;
 
    @Override
    protected void onBind()
    {
-      display.showLayoutList(false);
-
-      registerHandler(display.getConfigButton().addClickHandler(new ClickHandler()
+      display.hide();
+      
+      registerHandler(display.getDefaultLayoutContainer().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
-            display.toggleView();
+            layoutOrganiser.setSidePanelVisible(true);
+            layoutOrganiser.setSouthPanelVisible(true);
+            display.hide();
+         }
+      }));
+      
+      registerHandler(display.getMaximiseLayoutContainer().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            layoutOrganiser.setSidePanelVisible(false);
+            layoutOrganiser.setSouthPanelVisible(false);
+            display.hide();
+         }
+      }));
+      
+      registerHandler(display.getNoOptionLayoutContainer().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            layoutOrganiser.setSidePanelVisible(false);
+            layoutOrganiser.setSouthPanelVisible(true);
+            display.hide();
+         }
+      }));
+      
+      registerHandler(display.getNoSouthLayoutContainer().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            layoutOrganiser.setSidePanelVisible(true);
+            layoutOrganiser.setSouthPanelVisible(false);
+            display.hide();
          }
       }));
    }
@@ -84,11 +124,16 @@ public class LayoutSelectorPresenter extends WidgetPresenter<LayoutSelectorPrese
 
    public void show()
    {
-      display.show();
+      display.center();
    }
 
    public void hide()
    {
       display.hide();
+   }
+
+   public void setLayoutListener(HasLayoutOrganiser layoutOrganiser)
+   {
+      this.layoutOrganiser = layoutOrganiser;
    }
 }

@@ -28,12 +28,11 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -54,6 +53,8 @@ public class LayoutSelectorView extends PopupPanel implements LayoutSelectorPres
    interface Styles extends CssResource
    {
       String mainPanel();
+      
+      String layoutTable();
    }
 
    @UiField
@@ -62,95 +63,143 @@ public class LayoutSelectorView extends PopupPanel implements LayoutSelectorPres
    @UiField
    HorizontalPanel layoutList;
 
-   @UiField
-   Image configImage;
 
    @UiField
    Resources resources;
 
-   @UiField(provided = true)
-   DockPanel defaultLayout;
-
-   @UiField(provided = true)
-   DockPanel maximizeWorkspaceLayout;
-
+   @UiField
+   FocusPanel defaultLayoutContainer;
+   
+   @UiField
+   FocusPanel maximizeLayoutContainer;
+   
+   @UiField
+   FocusPanel noOptionLayoutContainer;
+   
+   @UiField
+   FocusPanel noSouthLayoutContainer;
+   
+   
+   private static final String NORTH_WIDTH = "60px";
+   private static final String EAST_WIDTH= "25px";
+   
    public LayoutSelectorView()
    {
-      setAutoHideEnabled(false);
-      setAnimationEnabled(false);
-
-      initDefaultLayout();
-      initMaximiseWorkspaceLayout();
-
       setWidget(uiBinder.createAndBindUi(this));
-
-      this.setStyleName(style.mainPanel());
-
-      configImage.setResource(resources.viewChoose());
-      configImage.addStyleName("pointer");
+      
+      setAutoHideEnabled(true);
+      setGlassEnabled(true);
+      
+      setStyleName(style.mainPanel());
+      
+      defaultLayoutContainer.add(initDefaultLayout());
+      maximizeLayoutContainer.add(initMaximiseWorkspaceLayout());
+      noOptionLayoutContainer.add(initNoOptionsWorkspaceLayout());
+      noSouthLayoutContainer.add(initNoSouthWorkspaceLayout());
    }
 
-   private void initDefaultLayout()
+   private DockPanel initDefaultLayout()
    {
+      DockPanel defaultLayout = new DockPanel();
+      defaultLayout.setStyleName(style.layoutTable());
+      
       Label optionLabel = new Label("Options");
       Label southLabel = new Label("TM/Glossay/Users");
       Label workspaceLabel = new Label("Workspace");
-
-      defaultLayout = new DockPanel();
+      
+      defaultLayout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+      defaultLayout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+      
       defaultLayout.add(southLabel, DockPanel.SOUTH);
       defaultLayout.add(optionLabel, DockPanel.EAST);
       defaultLayout.add(workspaceLabel, DockPanel.CENTER);
 
-      defaultLayout.setCellHeight(workspaceLabel, "55px");
-      defaultLayout.setCellHeight(optionLabel, "55px");
-
-      defaultLayout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-      defaultLayout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+      defaultLayout.setCellHeight(workspaceLabel, NORTH_WIDTH);
+      defaultLayout.setCellHeight(optionLabel, NORTH_WIDTH);
+      defaultLayout.setCellWidth(optionLabel, EAST_WIDTH);
+      
+      return defaultLayout;
    }
 
-   private void initMaximiseWorkspaceLayout()
+   private DockPanel initMaximiseWorkspaceLayout()
    {
-      Label workspaceLabel = new Label("");
-
-      maximizeWorkspaceLayout = new DockPanel();
+      DockPanel maximizeWorkspaceLayout = new DockPanel();
+      maximizeWorkspaceLayout.setStyleName(style.layoutTable());
+      
+      Label workspaceLabel = new Label("Workspace");
+      
+      maximizeWorkspaceLayout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+      maximizeWorkspaceLayout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+      
       maximizeWorkspaceLayout.add(workspaceLabel, DockPanel.CENTER);
+      
+      return maximizeWorkspaceLayout;
    }
-
-   private int getWidth()
+   
+   private DockPanel initNoOptionsWorkspaceLayout()
    {
-      return 400;
-   }
+      DockPanel noOptionsWorkspaceLayout = new DockPanel();
+      noOptionsWorkspaceLayout.setStyleName(style.layoutTable());
+      
+      Label workspaceLabel = new Label("Workspace");
+      Label southLabel = new Label("TM/Glossay/Users");
 
+      noOptionsWorkspaceLayout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+      noOptionsWorkspaceLayout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+      
+      noOptionsWorkspaceLayout.add(workspaceLabel, DockPanel.CENTER);
+      noOptionsWorkspaceLayout.add(southLabel, DockPanel.SOUTH);
+      
+      noOptionsWorkspaceLayout.setCellHeight(workspaceLabel, NORTH_WIDTH);
+      
+      return noOptionsWorkspaceLayout;
+   }
+   
+   private DockPanel initNoSouthWorkspaceLayout()
+   {
+      DockPanel noSouthWorkspaceLayout = new DockPanel();
+      noSouthWorkspaceLayout.setStyleName(style.layoutTable());
+      
+      Label workspaceLabel = new Label("Workspace");
+      Label optionLabel = new Label("Options");
+      
+      noSouthWorkspaceLayout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+      noSouthWorkspaceLayout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+      
+      noSouthWorkspaceLayout.add(optionLabel, DockPanel.EAST);
+      noSouthWorkspaceLayout.add(workspaceLabel, DockPanel.CENTER);
+      
+      noSouthWorkspaceLayout.setCellWidth(optionLabel, EAST_WIDTH);
+      
+      return noSouthWorkspaceLayout;
+   }
+ 
    @Override
-   public void showLayoutList(boolean isShowLayoutList)
+   public HasClickHandlers getDefaultLayoutContainer()
    {
-      layoutList.setVisible(isShowLayoutList);
-      if (isShowLayoutList)
-      {
-         super.setPopupPosition((Window.getClientWidth() - getWidth()) / 2, 13);
-      }
-      else
-      {
-         super.setPopupPosition((Window.getClientWidth() - getWidth()) / 2, 13);
-      }
+      return defaultLayoutContainer;
    }
-
+   
    @Override
-   public HasClickHandlers getConfigButton()
+   public HasClickHandlers getMaximiseLayoutContainer()
    {
-      return configImage;
+      return maximizeLayoutContainer;
    }
-
+   
    @Override
-   public void toggleView()
+   public HasClickHandlers getNoOptionLayoutContainer()
    {
-      if (layoutList.isVisible())
-      {
-         showLayoutList(false);
-      }
-      else
-      {
-         showLayoutList(true);
-      }
+      return noOptionLayoutContainer;
+   }
+   
+   @Override
+   public HasClickHandlers getNoSouthLayoutContainer()
+   {
+      return noSouthLayoutContainer;
+   }
+   
+   @Override
+   public void show(){
+      super.show();
    }
 }

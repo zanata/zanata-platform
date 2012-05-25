@@ -86,6 +86,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       HasCommand getHelpMenuItem();
 
       HasCommand getSignOutMenuItem();
+      
+      HasCommand getLayoutMenuItem();
 
       HasClickHandlers getSearchAndReplaceLink();
 
@@ -148,7 +150,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       searchResultsPresenter.bind();
       notificationPresenter.bind();
       layoutSelectorPresenter.bind();
-
+      
+      layoutSelectorPresenter.setLayoutListener(translationPresenter);
       notificationPresenter.setErrorLabelListener(this);
 
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
@@ -299,6 +302,15 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       });
 
+      display.getLayoutMenuItem().setCommand(new Command()
+      {
+         @Override
+         public void execute()
+         {
+            layoutSelectorPresenter.show();            
+         }
+      });
+      
       display.getSearchAndReplaceLink().addClickHandler(new ClickHandler()
       {
          @Override
@@ -382,7 +394,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             currentDisplayStats = projectStats;
             break;
          case Documents:
-            layoutSelectorPresenter.show();
+            break;
          default:
             display.setDocumentLabel("", messages.noDocumentSelected());
             currentDisplayStats = projectStats;
