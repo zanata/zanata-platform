@@ -12,8 +12,6 @@ import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Synchronized;
 import org.jboss.seam.core.Events;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
 import org.jboss.seam.web.ServletContexts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,7 +117,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       String projectSlug = projectIteration.getProject().getSlug();
       String iterSlug = projectIteration.getSlug();
       HProject project = projectIteration.getProject();
-      Boolean readOnly = !projectIterationIsInactive(project.getStatus(), projectIteration.getStatus());
+      Boolean readOnly = projectIterationIsInactive(project.getStatus(), projectIteration.getStatus());
       LOGGER.info("Project {} iteration {} updated, status={}, readOnly={}", new Object[] {projectSlug, iterSlug, projectIteration.getStatus(), readOnly});
 
       ProjectIterationId iterId = new ProjectIterationId(projectSlug, iterSlug);
