@@ -21,7 +21,9 @@
 
 
 /* Styles for CellTableResources. These override standard styles for CellTable
-   See: CellTable.css in GWT SDK for styles that can be overridden here
+
+   See: CellTable.css in GWT SDK (same package as CellTable.class) for styles
+   that can be overridden here.
 */
 
 

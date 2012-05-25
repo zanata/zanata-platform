@@ -116,6 +116,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
       HasValue<Boolean> getRequirePreviewChk();
 
+      void setRequirePreview(boolean required);
+
       HasClickHandlers getSelectAllButton();
 
       void clearAll();
@@ -250,6 +252,11 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void onValueChange(ValueChangeEvent<Boolean> event)
          {
+            display.setRequirePreview(event.getValue());
+            for (ListDataProvider<TransUnitReplaceInfo> provider : documentDataProviders.values())
+            {
+               provider.refresh();
+            }
             refreshReplaceAllButton();
          }
       }));
@@ -468,8 +475,18 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void execute(TransUnitReplaceInfo info)
          {
-            List<TransUnitReplaceInfo> replaceInfos = Collections.singletonList(info);
-            firePreviewEvent(replaceInfos);
+            switch (info.getPreviewState())
+            {
+            case NotAllowed:
+               break;
+            case Show:
+               info.setPreviewState(PreviewState.Hide);
+               refreshInfoDisplay(info);
+               break;
+            default:
+               firePreviewEvent(Collections.singletonList(info));
+               break;
+            }
          }
 
       };

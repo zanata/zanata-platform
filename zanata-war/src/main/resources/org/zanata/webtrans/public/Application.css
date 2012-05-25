@@ -605,6 +605,12 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	margin-bottom: 30px;
 }
 
+.projectWideSearchResultsActionColumn
+{
+	padding: 2px 4px !important;
+	overflow: visible !important;
+}
+
 .linkLabel
 {
 	cursor:pointer;

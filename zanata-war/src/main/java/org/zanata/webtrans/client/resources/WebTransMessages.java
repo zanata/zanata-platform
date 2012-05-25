@@ -150,6 +150,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Preview")
    String fetchPreview();
 
+   @DefaultMessage("Hide preview")
+   String hidePreview();
+
    @DefaultMessage("Preview replacement in all selected text flows.")
    String previewSelectedDescription();
 
@@ -173,6 +176,9 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Select text flows and view preview to enable replace.")
    String replaceSelectedDisabledDescription();
+
+   @DefaultMessage("Preview is required before replacing text")
+   String previewRequiredBeforeReplace();
 
    @DefaultMessage("Replacing")
    String replacing();

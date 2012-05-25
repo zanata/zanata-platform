@@ -196,6 +196,13 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
+   public void setRequirePreview(boolean required)
+   {
+      requirePreviewChk.setValue(required, false);
+      SearchResultsDocumentTable.setRequirePreview(required);
+   }
+
+   @Override
    public HasClickHandlers getSelectAllButton()
    {
       return selectAllLink;
