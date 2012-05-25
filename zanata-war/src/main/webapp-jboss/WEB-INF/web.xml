@@ -120,6 +120,10 @@
             <param-name>monitoring-path</param-name>
             <param-value>/admin/monitoring</param-value>
         </init-param>
+        <init-param>
+            <param-name>storage-directory</param-name>
+            <param-value>/var/lib/zanata/stats</param-value>
+        </init-param>
     </filter>
     <filter-mapping>
         <filter-name>monitoring</filter-name>
