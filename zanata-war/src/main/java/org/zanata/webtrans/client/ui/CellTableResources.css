@@ -24,6 +24,13 @@
    See: CellTable.css in GWT SDK for styles that can be overridden here
 */
 
+
+.cellTableHeader {
+  border-bottom: 3px solid #cccccc;
+  color: #777777;
+  text-shadow: none;
+}
+
 .cellTableSelectedRow
 {
   background: #a7c6fa;
