@@ -1,5 +1,6 @@
 package org.zanata.model;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -60,7 +61,7 @@ public class HDocumentHistoryJPATest extends ZanataDbunitJpaTest
       HDocumentHistory history = historyElems.get(0);
       assertThat(history.getDocId(), is(d.getDocId()));
       assertThat(history.getContentType(), is(ContentType.TextPlain));
-      assertThat(history.getLastChanged(), is(lastChanged));
+      assertThat(history.getLastChanged().getTime(), equalTo(lastChanged.getTime()));
       assertThat(history.getLastModifiedBy(), nullValue());
       assertThat(history.getLocale().getLocaleId(), is(de_DE.getLocaleId()));
       assertThat(history.getName(), is(d.getName()));
