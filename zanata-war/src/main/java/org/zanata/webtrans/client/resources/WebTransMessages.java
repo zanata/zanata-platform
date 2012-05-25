@@ -150,6 +150,12 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Preview")
    String fetchPreview();
 
+   @DefaultMessage("Preview replacement in all selected text flows.")
+   String previewSelectedDescription();
+
+   @DefaultMessage("Select text flows to enable preview.")
+   String previewSelectedDisabledDescription();
+
    @DefaultMessage("Previewing")
    String fetchingPreview();
 
@@ -161,6 +167,12 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Replace")
    String replace();
+
+   @DefaultMessage("Replace text in all selected text flows.")
+   String replaceSelectedDescription();
+
+   @DefaultMessage("Select text flows and view preview to enable replace.")
+   String replaceSelectedDisabledDescription();
 
    @DefaultMessage("Replacing")
    String replacing();
@@ -220,8 +232,12 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Select or deselect all matching text flows in this document")
    String selectAllInDocumentDetailed();
 
-   @DefaultMessage("Nothing selected")
+   @DefaultMessage("No text flows selected")
    String noTextFlowsSelected();
+
+   @DefaultMessage("{0} text flows selected")
+   @AlternateMessage({ "one", "1 text flow selected" })
+   String numTextFlowsSelected(@PluralCount int selectedFlows);
 
    @DefaultMessage("Help")
    String help();
@@ -234,7 +250,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Search and replace")
    String searchAndReplace();
-   
+
    @DefaultMessage("▼")
    String downArrow();
 

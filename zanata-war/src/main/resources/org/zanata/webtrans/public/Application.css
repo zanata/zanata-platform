@@ -504,14 +504,16 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 .projectWideReplacementPanel
 {
 	background-color: #667788;
+	color: #ffffff;
 	border-top: 3px solid #e0e8ee;
+	padding: 0px 30px;
 }
 
 .projectWideReplacementBoxLabel
 {
-	margin-left: 30px;
 	color: #ffffff;
 	font-size: 1.35em;
+	white-space: nowrap;
 }
 
 .projectWideReplacementBox
@@ -525,14 +527,28 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	margin: 15px;
 }
 
+.projectWideSearchSelectionInfo
+{
+	font-size: 1.3em;
+}
+
 .projectWideReplacementButton
 {
 	color: #223344;
 	padding: 3px 10px;
+	margin: 5px;
 	font-size: 1.6em;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	border-width: 1px;
+	white-space: nowrap;
+}
+
+.projectWideReplacButton-Disabled
+{
+	color: #777777;
+	background-color: #bbbbbb;
+	border: 1px solid #bbbbbb;
 }
 
 .projectWideReplaceFeedbackLabel
@@ -579,15 +595,6 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	float: right;
 }
 
-.linkLabel
-{
-	color:#114477;
-	cursor:pointer;
-	text-decoration: underline;
-	margin-left: 10px;
-	margin-right: 10px;
-}
-
 .projectWideSearchResultsDocumentBody
 {
 	padding-top: 15px;
@@ -596,6 +603,25 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	border-top-style: none;
 	border-bottom-width: 3px;
 	margin-bottom: 30px;
+}
+
+.linkLabel
+{
+	cursor:pointer;
+	text-decoration: underline;
+	margin-left: 10px;
+	margin-right: 10px;
+	white-space: nowrap;
+}
+
+.linkLabelNormalColor
+{
+	color:#114477;
+}
+
+.linkLabelLightColor
+{
+	color: #55ddff;
 }
 
 

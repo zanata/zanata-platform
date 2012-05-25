@@ -67,6 +67,8 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.Inject;
 
@@ -94,17 +96,25 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
       HasValue<String> getReplacementTextBox();
 
+      HasText getSelectionInfoLabel();
+
       HasValue<Boolean> getCaseSensitiveChk();
 
       HasChangeHandlers getSearchFieldSelector();
 
       String getSelectedSearchField();
 
-      public void setSearching(boolean searching);
+      void setSearching(boolean searching);
 
       HasClickHandlers getPreviewButton();
 
+      void setPreviewButtonEnabled(boolean enabled);
+
       HasClickHandlers getReplaceAllButton();
+
+      void setReplaceAllButtonEnabled(boolean enabled);
+
+      HasValue<Boolean> getRequirePreviewChk();
 
       HasClickHandlers getSelectAllButton();
 
@@ -136,12 +146,14 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             ValueChangeHandler<Boolean> selectAllHandler);
    }
 
+   private final WebTransMessages messages;
    private final CachingDispatchAsync dispatcher;
    private final History history;
    private AsyncCallback<GetProjectTransUnitListsResult> projectSearchCallback;
    private Delegate<TransUnitReplaceInfo> previewButtonDelegate;
    private Delegate<TransUnitReplaceInfo> replaceButtonDelegate;
    private Delegate<TransUnitReplaceInfo> undoButtonDelegate;
+   private Handler selectionChangeHandler;
 
    /**
     * Model objects for tables in display. Changes to these are reflected in the
@@ -162,7 +174,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     */
    private HistoryToken currentHistoryState = null;
 
-   private final WebTransMessages messages;
 
    @Inject
    public SearchResultsPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, History history, final WebTransMessages webTransMessages)
@@ -179,10 +190,12 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       projectSearchCallback = buildProjectSearchCallback();
       previewButtonDelegate = buildPreviewButtonDelegate();
       replaceButtonDelegate = buildReplaceButtonDelegate();
+      selectionChangeHandler = buildSelectionChangeHandler();
       undoButtonDelegate = buildUndoButtonDelegate();
       documentDataProviders = new HashMap<Long, ListDataProvider<TransUnitReplaceInfo>>();
       documentSelectionModels = new HashMap<Long, MultiSelectionModel<TransUnitReplaceInfo>>();
       allReplaceInfos = new HashMap<TransUnitId, TransUnitReplaceInfo>();
+      setUiForNothingSelected();
 
       // TODO use explicit 'search' button and add enter key press event for
       // text box
@@ -231,6 +244,16 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
+      registerHandler(display.getRequirePreviewChk().addValueChangeHandler(new ValueChangeHandler<Boolean>()
+      {
+
+         @Override
+         public void onValueChange(ValueChangeEvent<Boolean> event)
+         {
+            refreshReplaceAllButton();
+         }
+      }));
+
       registerHandler(display.getSearchFieldSelector().addChangeHandler(new ChangeHandler()
       {
 
@@ -264,7 +287,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             }
             else
             {
-               firePreviewEvent(selected, true);
+               firePreviewEvent(selected);
             }
          }
       }));
@@ -458,11 +481,40 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          public void execute(TransUnitReplaceInfo info)
          {
             List<TransUnitReplaceInfo> replaceInfos = Collections.singletonList(info);
-            final boolean global = false;
-
-            firePreviewEvent(replaceInfos, global);
+            firePreviewEvent(replaceInfos);
          }
 
+      };
+   }
+
+   /**
+    * @return
+    */
+   private Handler buildSelectionChangeHandler()
+   {
+      return new Handler()
+      {
+
+         @Override
+         public void onSelectionChange(SelectionChangeEvent event)
+         {
+            int selectedFlows = 0;
+            for (MultiSelectionModel<TransUnitReplaceInfo> model : documentSelectionModels.values())
+            {
+               selectedFlows += model.getSelectedSet().size();
+            }
+
+            if (selectedFlows == 0)
+            {
+               setUiForNothingSelected();
+            }
+            else
+            {
+               display.getSelectionInfoLabel().setText(messages.numTextFlowsSelected(selectedFlows));
+               display.setPreviewButtonEnabled(true);
+               refreshReplaceAllButton();
+            }
+         }
       };
    }
 
@@ -475,8 +527,9 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     * @param global true if this is a 'replace all' event and should update the
     *           global replace button
     */
-   private void firePreviewEvent(List<TransUnitReplaceInfo> toPreview, final boolean global)
+   private void firePreviewEvent(List<TransUnitReplaceInfo> toPreview)
    {
+      // FIXME only fetch preview if it has not been fetched already
       List<TransUnit> transUnits = new ArrayList<TransUnit>();
       for (TransUnitReplaceInfo replaceInfo : toPreview)
       {
@@ -519,10 +572,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                   refreshInfoDisplay(replaceInfo);
                }
             }
-            if (global)
-            {
-               // TODO update 'Replace All Selected' button to allow replace.
-            }
+            refreshReplaceAllButton();
             eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.fetchedPreview()));
          }
 
@@ -538,6 +588,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     */
    private void fireReplaceTextEvent(List<TransUnitReplaceInfo> toReplace)
    {
+      // FIXME only fire replace event if replacement has not already been made
       List<TransUnit> transUnits = new ArrayList<TransUnit>();
       for (TransUnitReplaceInfo info : toReplace)
       {
@@ -590,6 +641,9 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     */
    private void fireUndoEvent(List<TransUnitUpdateInfo> updateInfoList)
    {
+      // FIXME only fire undo for flows that are undoable?
+      // rpc method should cope with this anyway, so no big deal
+
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoInProgress()));
       RevertTransUnitUpdates action = new RevertTransUnitUpdates();
       for (TransUnitUpdateInfo updateInfo : updateInfoList)
@@ -618,6 +672,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                replaceInfo.setState(ReplacementState.Replaceable);
                refreshInfoDisplay(replaceInfo);
             }
+            refreshReplaceAllButton();
             // update model with new values?
          }
       });
@@ -715,6 +770,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             selectAllHandler(selectionModel, dataProvider));
       dataProvider.addDataDisplay(table);
 
+      selectionModel.addSelectionChangeHandler(selectionChangeHandler);
+
       List<TransUnitReplaceInfo> data = dataProvider.getList();
       for (TransUnit tu : transUnits)
       {
@@ -801,6 +858,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       if (!token.getProjectSearchReplacement().equals(currentHistoryState.getProjectSearchReplacement()))
       {
          display.getReplacementTextBox().setValue(token.getProjectSearchReplacement(), true);
+         // FIXME should also clear previews as they are for old replacement text
       }
 
       currentHistoryState = token;
@@ -816,6 +874,40 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       documentSelectionModels.clear();
       allReplaceInfos.clear();
       display.clearAll();
+      setUiForNothingSelected();
+   }
+
+   private void setUiForNothingSelected()
+   {
+      display.getSelectionInfoLabel().setText(messages.noTextFlowsSelected());
+
+      display.setPreviewButtonEnabled(false);
+      display.setReplaceAllButtonEnabled(false);
+   }
+
+   private void refreshReplaceAllButton()
+   {
+      boolean requirePreview = display.getRequirePreviewChk().getValue();
+      display.setReplaceAllButtonEnabled(!requirePreview || allSelectedHavePreview());
+   }
+
+   private boolean allSelectedHavePreview()
+   {
+      for (MultiSelectionModel<TransUnitReplaceInfo> model : documentSelectionModels.values())
+      {
+         for (TransUnitReplaceInfo info : model.getSelectedSet())
+         {
+            // TODO update when ReplacementState and PreviewState are finalised
+            if (info.getState() == ReplacementState.NotReplaceable
+                  || info.getState() == ReplacementState.Replaceable
+                  || info.getState() == ReplacementState.FetchingPreview
+                  || info.getState() == ReplacementState.Undoing)
+            {
+               return false;
+            }
+         }
+      }
+      return true;
    }
 
 }
