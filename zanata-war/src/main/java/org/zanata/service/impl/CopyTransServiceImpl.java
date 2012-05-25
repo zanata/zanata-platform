@@ -64,22 +64,7 @@ public class CopyTransServiceImpl implements CopyTransService
    
    @Logger
    Log log;
-   
-   public CopyTransServiceImpl()
-   {
-   }
 
-   // @formatter:off
-   public CopyTransServiceImpl(LocaleService localeServiceImpl, 
-                               TextFlowTargetDAO textFlowTargetDAO, 
-                               DocumentDAO documentDAO)
-   {
-      this.log = Logging.getLog(CopyTransServiceImpl.class);
-      this.localeServiceImpl = localeServiceImpl;
-      this.textFlowTargetDAO = textFlowTargetDAO;
-      this.documentDAO = documentDAO;
-   }
-   // @formatter:off
 
    @Observer(TranslatedDocResourceService.EVENT_COPY_TRANS)
    public void execute(Long docId, String project, String iterationSlug)
