@@ -43,21 +43,21 @@
                     </g:FlowPanel>
                 </g:cell>
                 <g:cell horizontalAlignment="ALIGN_RIGHT">
-                <g:VerticalPanel horizontalAlignment="ALIGN_RIGHT">
-                    <g:FlowPanel>
-                        <g:InlineLabel ui:field="selectionInfoLabel" styleName='projectWideSearchSelectionInfo'></g:InlineLabel>
-                        <g:InlineLabel ui:field='selectAllLink' addStyleNames='linkLabel linkLabelLightColor' ><ui:msg>select all</ui:msg></g:InlineLabel>
-                    </g:FlowPanel>
-                    <g:HorizontalPanel>
-                    <g:Button ui:field='previewButton' styleName='projectWideReplacementButton' >
-                            <ui:msg>Preview</ui:msg>
-                        </g:Button>
-                        <g:Button ui:field='replaceAllButton' styleName='projectWideReplacementButton' >
-                            <ui:msg>Replace</ui:msg>
-                        </g:Button>
-                    </g:HorizontalPanel>
-                    <g:CheckBox ui:field="requirePreviewChk"><ui:msg>Require preview</ui:msg></g:CheckBox>
-                </g:VerticalPanel>
+                    <g:VerticalPanel horizontalAlignment="ALIGN_RIGHT">
+                        <g:FlowPanel>
+                            <g:InlineLabel ui:field="selectionInfoLabel" styleName='projectWideSearchSelectionInfo'></g:InlineLabel>
+                            <g:InlineLabel ui:field='selectAllLink' addStyleNames='linkLabel linkLabelLightColor' ><ui:msg>select all</ui:msg></g:InlineLabel>
+                        </g:FlowPanel>
+                        <g:HorizontalPanel>
+                        <g:Button ui:field='previewButton' styleName='projectWideReplacementButton' >
+                                <ui:msg>Preview</ui:msg>
+                            </g:Button>
+                            <g:Button ui:field='replaceAllButton' styleName='projectWideReplacementButton' >
+                                <ui:msg>Replace</ui:msg>
+                            </g:Button>
+                        </g:HorizontalPanel>
+                        <g:CheckBox ui:field="requirePreviewChk"><ui:msg>Require preview</ui:msg></g:CheckBox>
+                    </g:VerticalPanel>
                 </g:cell>
             </g:HorizontalPanel>
         </g:layer>
