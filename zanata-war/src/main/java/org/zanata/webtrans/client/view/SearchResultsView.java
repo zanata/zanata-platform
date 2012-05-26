@@ -190,6 +190,12 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
+   public void setReplaceAllButtonVisible(boolean visible)
+   {
+      replaceAllButton.setVisible(visible);
+   }
+
+   @Override
    public HasValue<Boolean> getRequirePreviewChk()
    {
       return requirePreviewChk;

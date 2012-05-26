@@ -35,6 +35,8 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -43,6 +45,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdatePreview;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
 import org.zanata.webtrans.shared.rpc.PreviewReplaceText;
@@ -114,6 +117,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
       void setReplaceAllButtonEnabled(boolean enabled);
 
+      void setReplaceAllButtonVisible(boolean visible);
+
       HasValue<Boolean> getRequirePreviewChk();
 
       void setRequirePreview(boolean required);
@@ -150,6 +155,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    private final WebTransMessages messages;
    private final CachingDispatchAsync dispatcher;
+   private final WorkspaceContext workspaceContext;
    private final History history;
    private AsyncCallback<GetProjectTransUnitListsResult> projectSearchCallback;
    private Delegate<TransUnitReplaceInfo> previewButtonDelegate;
@@ -178,12 +184,13 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
 
    @Inject
-   public SearchResultsPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, History history, final WebTransMessages webTransMessages)
+   public SearchResultsPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, History history, final WebTransMessages webTransMessages, final WorkspaceContext workspaceContext)
    {
       super(display, eventBus);
       messages = webTransMessages;
       this.history = history;
       this.dispatcher = dispatcher;
+      this.workspaceContext = workspaceContext;
    }
 
    @Override
@@ -198,6 +205,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       documentSelectionModels = new HashMap<Long, MultiSelectionModel<TransUnitReplaceInfo>>();
       allReplaceInfos = new HashMap<TransUnitId, TransUnitReplaceInfo>();
       setUiForNothingSelected();
+      display.setReplaceAllButtonVisible(!workspaceContext.isReadOnly());
 
       // TODO use explicit 'search' button and add enter key press event for
       // text box
@@ -359,7 +367,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             if (replaceInfo.getReplaceState() == ReplacementState.Replaced && replaceInfo.getTransUnit().getVerNum() != updateInfo.getTransUnit().getVerNum())
             {
                // can't undo after additional update
-               replaceInfo.setReplaceState(ReplacementState.NotReplaced);
+               setReplaceState(replaceInfo, ReplacementState.NotReplaced);
                replaceInfo.setReplaceInfo(null);
                replaceInfo.setPreviewState(PreviewState.NotFetched);
                replaceInfo.setPreview(null);
@@ -380,6 +388,31 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
+      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
+      {
+         @Override
+         public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
+         {
+            display.setReplaceAllButtonVisible(!event.isReadOnly());
+
+            for (TransUnitReplaceInfo info : allReplaceInfos.values())
+            {
+               if (event.isReadOnly())
+               {
+                  setReplaceState(info, ReplacementState.NotAllowed);
+               }
+               else if (info.getReplaceInfo() == null)
+               {
+                  setReplaceState(info, ReplacementState.NotReplaced);
+               }
+               else
+               {
+                  setReplaceState(info, ReplacementState.Replaced);
+               }
+               refreshInfoDisplay(info);
+            }
+         }
+      }));
    }
 
    private void showDocInEditor(String doc, boolean runSearch)
@@ -612,6 +645,12 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     */
    private void fireReplaceTextEvent(List<TransUnitReplaceInfo> toReplace)
    {
+      if (workspaceContext.isReadOnly())
+      {
+         eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.cannotReplaceInReadOnlyMode()));
+         return;
+      }
+
       if (toReplace.isEmpty())
       {
          eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.noTextFlowsSelected()));
@@ -624,7 +663,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          {
          case NotReplaced:
             transUnits.add(info.getTransUnit());
-            info.setReplaceState(ReplacementState.Replacing);
+            setReplaceState(info, ReplacementState.Replacing);
             info.setPreviewState(PreviewState.Hide);
             refreshInfoDisplay(info);
             break;
@@ -681,6 +720,12 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     */
    private void fireUndoEvent(List<TransUnitUpdateInfo> updateInfoList)
    {
+      if (workspaceContext.isReadOnly())
+      {
+         eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.cannotUndoInReadOnlyMode()));
+         return;
+      }
+
       // TODO only fire undo for flows that are undoable?
       // rpc method should cope with this anyway, so no big deal
 
@@ -693,7 +738,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          // may be null if another search has been performed since the replacement
          if (replaceInfo != null)
          {
-            replaceInfo.setReplaceState(ReplacementState.Undoing);
+            setReplaceState(replaceInfo, ReplacementState.Undoing);
             refreshInfoDisplay(replaceInfo);
          }
       }
@@ -713,7 +758,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             for (TransUnitUpdateInfo info : result.getUpdateInfoList())
             {
                TransUnitReplaceInfo replaceInfo = allReplaceInfos.get(info.getTransUnit().getId());
-               replaceInfo.setReplaceState(ReplacementState.NotReplaced);
+               setReplaceState(replaceInfo, ReplacementState.NotReplaced);
                if (replaceInfo.getPreview() == null)
                {
                   replaceInfo.setPreviewState(PreviewState.NotFetched);
@@ -750,7 +795,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             if (replaceInfo != null)
             {
                replaceInfo.setReplaceInfo(updateInfo);
-               replaceInfo.setReplaceState(ReplacementState.Replaced);
+               ReplacementState replaceState = ReplacementState.Replaced;
+               setReplaceState(replaceInfo, replaceState);
                // this should be done when the TU update event comes in
                // anyway may want to remove this
                replaceInfo.setTransUnit(updateInfo.getTransUnit());
@@ -828,6 +874,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       for (TransUnit tu : transUnits)
       {
          TransUnitReplaceInfo info = new TransUnitReplaceInfo(docId, tu);
+         // default state is NotReplaced, this call triggers read-only check
+         setReplaceState(info, ReplacementState.NotReplaced);
          data.add(info);
          allReplaceInfos.put(tu.getId(), info);
       }
@@ -979,6 +1027,27 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          selectedFlows += model.getSelectedSet().size();
       }
       return selectedFlows;
+   }
+
+   /**
+    * Set the replace state for a {@link TransUnitReplaceInfo}, adjusting to
+    * {@link ReplacementState#NotAllowed} if the workspace is read-only.
+    * 
+    * @param replaceInfo
+    * @param replaceState to set, ignored if workspace is read-only
+    */
+   private void setReplaceState(TransUnitReplaceInfo replaceInfo, ReplacementState replaceState)
+   {
+      // TODO check that context is updated properly (becomes read-only when read-only event comes in)
+      Log.debug("Workspace read-only: " + workspaceContext.isReadOnly());
+      if (workspaceContext.isReadOnly())
+      {
+         replaceInfo.setReplaceState(ReplacementState.NotAllowed);
+      }
+      else
+      {
+         replaceInfo.setReplaceState(replaceState);
+      }
    }
 
 }

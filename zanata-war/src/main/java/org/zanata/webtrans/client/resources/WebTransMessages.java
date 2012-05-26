@@ -199,6 +199,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("No replacements to make")
    String noReplacementsToMake();
 
+   @DefaultMessage("Replace not possible in read-only workspace")
+   String cannotReplaceInReadOnlyMode();
+
    @DefaultMessage("View in editor")
    String viewDocInEditor();
 
@@ -234,6 +237,9 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Undo successful")
    String undoSuccess();
+
+   @DefaultMessage("Undo not possible in read-only workspace")
+   String cannotUndoInReadOnlyMode();
 
    @DefaultMessage("Select entire document")
    String selectAllInDocument();
