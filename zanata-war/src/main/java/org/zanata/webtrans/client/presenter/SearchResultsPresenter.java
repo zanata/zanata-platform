@@ -33,12 +33,16 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.events.KeyShortcutEvent;
+import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
+import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -78,7 +82,7 @@ import com.google.inject.Inject;
 /**
  * View for project-wide search and replace within textflow targets
  * 
- * @author David Mason, damason@redhat.com
+ * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
 public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresenter.Display>
 {
@@ -97,7 +101,11 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
       HasValue<String> getFilterTextBox();
 
+      void focusFilterTextBox();
+
       HasValue<String> getReplacementTextBox();
+
+      void focusReplacementTextBox();
 
       HasText getSelectionInfoLabel();
 
@@ -156,6 +164,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private final WebTransMessages messages;
    private final CachingDispatchAsync dispatcher;
    private final WorkspaceContext workspaceContext;
+   private final KeyShortcutPresenter keyShortcutPresenter;
    private final History history;
    private AsyncCallback<GetProjectTransUnitListsResult> projectSearchCallback;
    private Delegate<TransUnitReplaceInfo> previewButtonDelegate;
@@ -184,13 +193,19 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
 
    @Inject
-   public SearchResultsPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, History history, final WebTransMessages webTransMessages, final WorkspaceContext workspaceContext)
+   public SearchResultsPresenter(Display display, EventBus eventBus,
+         CachingDispatchAsync dispatcher,
+         History history,
+         final WebTransMessages webTransMessages,
+         final WorkspaceContext workspaceContext,
+         final KeyShortcutPresenter keyShortcutPresenter)
    {
       super(display, eventBus);
       messages = webTransMessages;
       this.history = history;
       this.dispatcher = dispatcher;
       this.workspaceContext = workspaceContext;
+      this.keyShortcutPresenter = keyShortcutPresenter;
    }
 
    @Override
@@ -324,17 +339,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void onClick(ClickEvent event)
          {
-            for (Entry<Long, ListDataProvider<TransUnitReplaceInfo>> en : documentDataProviders.entrySet())
-            {
-               MultiSelectionModel<TransUnitReplaceInfo> selectionModel = documentSelectionModels.get(en.getKey());
-               if (selectionModel != null)
-               {
-                  for (TransUnitReplaceInfo tu : en.getValue().getList())
-                  {
-                     selectionModel.setSelected(tu, true);
-                  }
-               }
-            }
+            selectAllTextFlows();
          }
       }));
 
@@ -413,6 +418,54 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             }
          }
       }));
+
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
+            KeyShortcut.SHIFT_ALT_KEYS, 'A',
+            ShortcutContext.ProjectWideSearch,
+            messages.selectAllTextFlowsKeyShortcut(),
+            new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            selectAllTextFlows();
+         }
+      }));
+
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
+            KeyShortcut.ALT_KEY, 'S',
+            ShortcutContext.ProjectWideSearch,
+            messages.focusSearchPhraseKeyShortcut(),
+            new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            display.focusFilterTextBox();
+         }
+      }));
+
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
+            KeyShortcut.ALT_KEY, 'R',
+            ShortcutContext.ProjectWideSearch,
+            messages.focusReplacementPhraseKeyShortcut(),
+            new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            display.focusReplacementTextBox();
+         }
+      }));
+
+
+      // TODO register key shortcuts:
+      // Alt+Z undo last operation
+
+      // detect currently focused document (if any)
+      // Alt+A select current doc
+      // Alt+V view current doc in editor
+      // Shift+Alt+V search current doc in editor
    }
 
    private void showDocInEditor(String doc, boolean runSearch)
@@ -439,6 +492,12 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    @Override
    public void onRevealDisplay()
    {
+      keyShortcutPresenter.setContextActive(ShortcutContext.ProjectWideSearch, true);
+   }
+
+   public void concealDisplay()
+   {
+      keyShortcutPresenter.setContextActive(ShortcutContext.ProjectWideSearch, false);
    }
 
    private AsyncCallback<GetProjectTransUnitListsResult> buildProjectSearchCallback()
@@ -847,6 +906,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    }
 
    /**
+    * Display header and all results for a single document.
+    * 
     * @param docId
     * @param docPathName
     * @param transUnits
@@ -1038,8 +1099,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     */
    private void setReplaceState(TransUnitReplaceInfo replaceInfo, ReplacementState replaceState)
    {
-      // TODO check that context is updated properly (becomes read-only when read-only event comes in)
-      Log.debug("Workspace read-only: " + workspaceContext.isReadOnly());
       if (workspaceContext.isReadOnly())
       {
          replaceInfo.setReplaceState(ReplacementState.NotAllowed);
@@ -1050,4 +1109,18 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       }
    }
 
+   private void selectAllTextFlows()
+   {
+      for (Entry<Long, ListDataProvider<TransUnitReplaceInfo>> en : documentDataProviders.entrySet())
+      {
+         MultiSelectionModel<TransUnitReplaceInfo> selectionModel = documentSelectionModels.get(en.getKey());
+         if (selectionModel != null)
+         {
+            for (TransUnitReplaceInfo tu : en.getValue().getList())
+            {
+               selectionModel.setSelected(tu, true);
+            }
+         }
+      }
+   }
 }

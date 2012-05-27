@@ -128,9 +128,23 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
+   public void focusFilterTextBox()
+   {
+      filterTextBox.setFocus(true);
+      filterTextBox.setSelectionRange(0, filterTextBox.getText().length());
+   }
+
+   @Override
    public HasValue<String> getReplacementTextBox()
    {
       return replacementTextBox;
+   }
+
+   @Override
+   public void focusReplacementTextBox()
+   {
+      replacementTextBox.setFocus(true);
+      replacementTextBox.setSelectionRange(0, replacementTextBox.getText().length());
    }
 
    @Override

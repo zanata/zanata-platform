@@ -443,6 +443,33 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	width: 99%;
 }
 
+/* TODO share this with other modal panels */
+.keyShortcutPanel
+{
+	color: white;
+	background-color: black;
+	opacity:0.85;
+	border-radius:8px;
+	padding: 20px;
+}
+
+.keyShortcutHeading
+{
+	font-size: 1.4em;
+}
+
+.keyShortcutCategory
+{
+	padding: 10px;
+	font-size: 1.2em;
+}
+
+.keyShortcutCategoryTitle
+{
+	font-size: 1.2em;
+	margin-bottom: 4px;
+}
+
 .transFilterTextBox
 {
 	margin: 0px;

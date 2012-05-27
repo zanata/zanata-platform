@@ -137,6 +137,8 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
       addStyleName("projectWideSearchResultsDocumentBody");
    }
 
+   // TODO add focus tracking field to allow current-document type interactions
+   // listeners may need to be attached in view
 
    /**
     * @return a column that displays the 1-based index of the text flow

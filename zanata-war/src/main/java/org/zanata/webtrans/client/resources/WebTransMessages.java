@@ -271,4 +271,28 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Error notification")
    String errorNotification();
+
+   @DefaultMessage("Available Keyboard Shortcuts")
+   String availableKeyShortcutsTitle();
+
+   @DefaultMessage("select text flows in all documents")
+   String selectAllTextFlowsKeyShortcut();
+
+   @DefaultMessage("focus search phrase")
+   String focusSearchPhraseKeyShortcut();
+
+   @DefaultMessage("focus replacement phrase")
+   String focusReplacementPhraseKeyShortcut();
+
+   @DefaultMessage("show available shortcuts")
+   String showAvailableKeyShortcuts();
+
+   @DefaultMessage("Application")
+   String applicationScope();
+
+   @DefaultMessage("Editing text")
+   String editScope();
+
+   @DefaultMessage("Editor navigation")
+   String navigationScope();
 }
