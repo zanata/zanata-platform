@@ -106,6 +106,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       searchingIndicator.hide();
       noResultsLabel = new Label(messages.noSearchResults());
       noResultsLabel.addStyleName("projectWideSearchNoResultsLabel");
+      searchResultsPanel.add(noResultsLabel);
       requirePreviewChk.setValue(true, false);
    }
 
