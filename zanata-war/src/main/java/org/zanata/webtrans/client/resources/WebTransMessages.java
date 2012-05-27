@@ -141,6 +141,12 @@ public interface WebTransMessages extends Messages
    @AlternateMessage({ "one", "Search found results in 1 document" })
    String searchFoundResultsInDocuments(@PluralCount int numDocs);
 
+   @DefaultMessage("Showing results for search \"{0}\" ({1} text flows in {2} documents)")
+   @AlternateMessage({
+      "one|one", "Showing results for search \"{0}\" (1 text flow in 1 document)",
+      "other|one", "Showing results for search \"{0}\" ({1} text flows in 1 document)"})
+   String showingResultsForProjectWideSearch(String searchString, @PluralCount int textFlows, @PluralCount int documents);
+
    @DefaultMessage("There are no search results to display")
    String noSearchResults();
 

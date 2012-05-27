@@ -517,16 +517,15 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void onSuccess(GetProjectTransUnitListsResult result)
          {
+            int textFlowCount = displaySearchResults(result);
             if (result.getDocumentIds().size() == 0)
             {
                display.getSearchResponseLabel().setText("");
             }
             else
             {
-               // TODO change to "showing results for search "foo bar" (X documents).
-               display.getSearchResponseLabel().setText(messages.searchFoundResultsInDocuments(result.getDocumentIds().size()));
+               display.getSearchResponseLabel().setText(messages.showingResultsForProjectWideSearch(result.getSearchAction().getSearchString(), textFlowCount, result.getDocumentIds().size()));
             }
-            displaySearchResults(result);
             display.setSearching(false);
          }
 
@@ -895,14 +894,19 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     * existing results being displayed.
     * 
     * @param result results to display
+    * @return the number of text flows that were displayed
     */
-   private void displaySearchResults(GetProjectTransUnitListsResult result)
+   private int displaySearchResults(GetProjectTransUnitListsResult result)
    {
       clearAllExistingData();
+      int totalTransUnits = 0;
       for (Long docId : result.getDocumentIds())
       {
-         displayDocumentResults(docId, result.getDocPath(docId), result.getUnits(docId));
+         List<TransUnit> transUnits = result.getUnits(docId);
+         totalTransUnits += transUnits.size();
+         displayDocumentResults(docId, result.getDocPath(docId), transUnits);
       }
+      return totalTransUnits;
    }
 
    /**
