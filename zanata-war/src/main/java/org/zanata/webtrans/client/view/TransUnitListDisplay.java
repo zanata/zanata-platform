@@ -30,4 +30,7 @@ import com.google.inject.ImplementedBy;
 public interface TransUnitListDisplay extends HasData<TransUnit>, IsWidget
 {
    void setHighlightString(String highlightString);
+
+
+   int getSelectedRowAbsoluteTop(TransUnit selected);
 }

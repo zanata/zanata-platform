@@ -29,19 +29,32 @@ import org.zanata.webtrans.shared.model.TransUnitProvidesKey;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SelectionModel;
+import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
 * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
 */
+
+/**
+ * This class is used as data provider to translation unit celltable display as well as defining selection model of it.
+ */
 @Singleton
 public class TransUnitsDataProvider extends ListDataProvider<TransUnit>
 {
 
-   @Inject
+   private SingleSelectionModel<TransUnit> selectionModel;
+
    public TransUnitsDataProvider()
    {
       super(TransUnitProvidesKey.KEY_PROVIDER);
+      selectionModel = new SingleSelectionModel<TransUnit>(TransUnitProvidesKey.KEY_PROVIDER);
+   }
+
+   public SingleSelectionModel<TransUnit> getSelectionModel()
+   {
+      return selectionModel;
    }
 }

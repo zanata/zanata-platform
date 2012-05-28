@@ -22,6 +22,7 @@
 package org.zanata.webtrans.client.editor.table;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.editor.TransUnitsDataProvider;
@@ -53,7 +54,6 @@ public class PageNavigation implements HasPageNavigation
    private int pageCount;
    private int totalCount;
    private GetTransUnitActionContext context;
-   private ArrayList<TransUnit> currentPageItems = Lists.newArrayList();
 
    @Inject
    public PageNavigation(CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService, TransUnitsDataProvider dataProvider)
@@ -82,7 +82,7 @@ public class PageNavigation implements HasPageNavigation
          public void onSuccess(GetTransUnitListResult result)
          {
             Log.info("result unit: " + result.getUnits().size());
-            currentPageItems = result.getUnits();
+            dataProvider.setList(result.getUnits());
             totalCount = result.getTotalCount();
             pageCount = (int) Math.ceil(totalCount * 1.0 / itemPerPage);
 
@@ -185,11 +185,6 @@ public class PageNavigation implements HasPageNavigation
       }
    }
 
-   public ArrayList<TransUnit> getCurrentPageItems()
-   {
-      return currentPageItems;
-   }
-
    private int lastPage()
    {
       return pageCount - 1;
@@ -207,8 +202,8 @@ public class PageNavigation implements HasPageNavigation
         // @formatter:on
    }
 
-   public int getTotalCount()
+   public TransUnitsDataProvider getDataProvider()
    {
-      return totalCount;
+      return dataProvider;
    }
 }

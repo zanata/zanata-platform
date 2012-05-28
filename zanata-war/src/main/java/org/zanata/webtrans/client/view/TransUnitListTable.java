@@ -24,20 +24,24 @@ package org.zanata.webtrans.client.view;
 import java.util.List;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.editor.TransUnitsDataProvider;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.CellTableResources;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitProvidesKey;
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -54,6 +58,7 @@ public class TransUnitListTable extends CellTable<TransUnit> implements TransUni
 //   private WebTransMessages messages;
 
    private String highlightString = null;
+   private final TransUnitsDataProvider dataProvider;
 
 
    @Override
@@ -63,10 +68,11 @@ public class TransUnitListTable extends CellTable<TransUnit> implements TransUni
    }
 
    @Inject
-   public TransUnitListTable(WebTransMessages messages)
+   public TransUnitListTable(WebTransMessages messages, TransUnitsDataProvider dataProvider)
    {
       //TODO page size should be configurable
       super(15, getCellTableResources());
+      this.dataProvider = dataProvider;
 
 
 //      this.messages = messages;
@@ -89,10 +95,22 @@ public class TransUnitListTable extends CellTable<TransUnit> implements TransUni
       sourceColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
       targetColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 
-      setSelectionModel(new SingleSelectionModel<TransUnit>(TransUnitProvidesKey.KEY_PROVIDER));
+      setSelectionModel(dataProvider.getSelectionModel());
 
       //TODO change style
       addStyleName("projectWideSearchResultsDocumentBody");
+   }
+
+   @Override
+   public int getSelectedRowAbsoluteTop(TransUnit selected)
+   {
+      int selectedIndex = dataProvider.getList().indexOf(selected);
+      if (selectedIndex >= 0 && selectedIndex < getRowCount())
+      {
+         TableRowElement rowElement = getRowElement(selectedIndex);
+         return rowElement.getAbsoluteTop();
+      }
+      return 0;
    }
 
 

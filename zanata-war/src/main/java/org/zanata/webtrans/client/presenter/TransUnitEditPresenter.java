@@ -24,12 +24,16 @@ package org.zanata.webtrans.client.presenter;
 import org.zanata.webtrans.client.editor.TransUnitsDataProvider;
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
 import org.zanata.webtrans.client.editor.table.PageNavigation;
+import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
+import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
+import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.view.TransUnitEditDisplay;
 import org.zanata.webtrans.client.view.TransUnitListDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
 import com.google.gwt.view.client.AsyncDataProvider;
+import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.inject.Inject;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -38,32 +42,44 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay> implements DocumentSelectionHandler
+public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay> implements DocumentSelectionHandler, SelectionChangeEvent.Handler
 {
 
    private final TransUnitEditDisplay display;
    private final EventBus eventBus;
    private final PageNavigation pageNavigation;
    private final TransUnitListDisplay transUnitListDisplay;
-   private final AsyncDataProvider<TransUnit> dataProvider;
+   private final SourceContentsPresenter sourceContentsPresenter;
+   private final TargetContentsPresenter targetContentsPresenter;
+   private final TransUnitsDataProvider dataProvider;
 
    @Inject
-   public TransUnitEditPresenter(TransUnitEditDisplay display, EventBus eventBus, PageNavigation pageNavigation, TransUnitListDisplay transUnitListDisplay)
+   public TransUnitEditPresenter(TransUnitEditDisplay display, EventBus eventBus, PageNavigation pageNavigation,
+                                 TransUnitListDisplay transUnitListDisplay,
+                                 SourceContentsPresenter sourceContentsPresenter,
+                                 TargetContentsPresenter targetContentsPresenter)
    {
       super(display, eventBus);
       this.display = display;
       this.eventBus = eventBus;
       this.pageNavigation = pageNavigation;
       this.transUnitListDisplay = transUnitListDisplay;
+      this.sourceContentsPresenter = sourceContentsPresenter;
+      this.targetContentsPresenter = targetContentsPresenter;
       display.setDisplayTable(transUnitListDisplay);
-      dataProvider = new TransUnitsDataProvider();
+
+      //TODO we only have one row now
+      sourceContentsPresenter.initWidgets(1);
+      targetContentsPresenter.initWidgets(1);
+      dataProvider = pageNavigation.getDataProvider();
       dataProvider.addDataDisplay(transUnitListDisplay);
    }
 
    @Override
    protected void onBind()
    {
-
+      eventBus.addHandler(DocumentSelectionEvent.getType(), this);
+      dataProvider.getSelectionModel().addSelectionChangeHandler(this);
    }
 
    @Override
@@ -81,8 +97,21 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    {
       GetTransUnitActionContext context = GetTransUnitActionContext.of(event.getDocumentId()).setCount(10);
       pageNavigation.init(context);
-
-      dataProvider.updateRowCount(pageNavigation.getTotalCount(), true);
    }
 
+   @Override
+   public void onSelectionChange(SelectionChangeEvent event)
+   {
+      TransUnit selectedTransUnit = dataProvider.getSelectionModel().getSelectedObject();
+      if (selectedTransUnit != null)
+      {
+         display.scrollToRow(selectedTransUnit);
+         //TODO we only have one row now
+         SourceContentsDisplay sourceDisplay = sourceContentsPresenter.getSourceContent(0, selectedTransUnit);
+         //TODO need to handle findMessage
+         TargetContentsDisplay targetDisplay = targetContentsPresenter.getNextTargetContentsDisplay(0, selectedTransUnit, null);
+         targetContentsPresenter.showEditors(0, 0);
+         display.openEditor(sourceDisplay, targetDisplay);
+      }
+   }
 }

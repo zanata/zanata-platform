@@ -21,10 +21,17 @@
 
 package org.zanata.webtrans.client.view;
 
+import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
+import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
+import org.zanata.webtrans.shared.model.TransUnit;
+
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 public interface TransUnitEditDisplay extends WidgetDisplay
 {
    void setDisplayTable(TransUnitListDisplay displayTable);
 
+   void scrollToRow(TransUnit selected);
+
+   void openEditor(SourceContentsDisplay sourceDisplay, TargetContentsDisplay targetDisplay);
 }

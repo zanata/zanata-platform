@@ -60,15 +60,17 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    private final TransUnitNavigationPresenter transUnitNavigationPresenter;
    private final TableEditorPresenter tableEditorPresenter;
    private final TransFilterPresenter transFilterPresenter;
+   private final TransUnitEditPresenter transUnitEditPresenter;
 
 
    @Inject
-   public TranslationEditorPresenter(Display display, EventBus eventBus, final CachingDispatchAsync dispatcher, final TableEditorPresenter tableEditorPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter, final TransFilterPresenter transFilterPresenter)
+   public TranslationEditorPresenter(Display display, EventBus eventBus, TableEditorPresenter tableEditorPresenter, TransUnitNavigationPresenter transUnitNavigationPresenter, TransFilterPresenter transFilterPresenter, TransUnitEditPresenter transUnitEditPresenter)
    {
       super(display, eventBus);
       this.tableEditorPresenter = tableEditorPresenter;
       this.transUnitNavigationPresenter = transUnitNavigationPresenter;
       this.transFilterPresenter = transFilterPresenter;
+      this.transUnitEditPresenter = transUnitEditPresenter;
    }
 
    @Override
@@ -77,8 +79,12 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       transFilterPresenter.bind();
       display.setFilterView(transFilterPresenter.getDisplay().asWidget());
 
-      tableEditorPresenter.bind();
-      display.setEditorView(tableEditorPresenter.getDisplay().asWidget());
+      //FIXME huangp hack. remove before push!!
+      transUnitEditPresenter.bind();
+      display.setEditorView(transUnitEditPresenter.getDisplay().asWidget());
+
+//      tableEditorPresenter.bind();
+//      display.setEditorView(tableEditorPresenter.getDisplay().asWidget());
 
       transUnitNavigationPresenter.bind();
       display.setTransUnitNavigation(transUnitNavigationPresenter.getDisplay().asWidget());

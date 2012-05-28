@@ -29,8 +29,9 @@ import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
 
 import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.user.client.ui.IsWidget;
 
-public interface TargetContentsDisplay extends WidgetDisplay
+public interface TargetContentsDisplay extends WidgetDisplay, IsWidget
 {
    void showButtons(boolean displayButtons);
 
