@@ -115,7 +115,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       String projectSlug = projectIteration.getProject().getSlug();
       String iterSlug = projectIteration.getSlug();
       HProject project = projectIteration.getProject();
-      Boolean readOnly = !projectIterationIsInactive(project.getStatus(), projectIteration.getStatus());
+      Boolean readOnly = projectIterationIsInactive(project.getStatus(), projectIteration.getStatus());
       LOGGER.info("Project {} iteration {} updated, status={}, readOnly={}", new Object[] {projectSlug, iterSlug, projectIteration.getStatus(), readOnly});
 
       ProjectIterationId iterId = new ProjectIterationId(projectSlug, iterSlug);

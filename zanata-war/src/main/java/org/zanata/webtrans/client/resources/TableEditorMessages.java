@@ -49,7 +49,9 @@ public interface TableEditorMessages extends Messages
    String notifyEditableWorkspace();
 
    @DefaultMessage("Validation Warnings: {0}")
-   @AlternateMessage({ "=0", "Validation Warnings: none" })
+   @AlternateMessage({
+      "one", "Validation Warnings: 1",
+      "=0", "Validation Warnings: none" })
    String validationWarningsHeading(@PluralCount
    int warningCount);
 

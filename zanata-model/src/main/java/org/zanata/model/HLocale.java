@@ -59,6 +59,7 @@ public class HLocale extends ModelEntityBase implements Serializable
    private static final long serialVersionUID = 1L;
    private LocaleId localeId;
    private boolean active;
+   private boolean enabledByDefault;
    private Set<HProject> supportedProjects;
    private Set<HProjectIteration> supportedIterations;
    private Set<HLocaleMember> members;
@@ -80,6 +81,16 @@ public class HLocale extends ModelEntityBase implements Serializable
    public boolean isActive()
    {
       return active;
+   }
+
+   public boolean isEnabledByDefault()
+   {
+      return enabledByDefault;
+   }
+
+   public void setEnabledByDefault( boolean enabledByDefault )
+   {
+      this.enabledByDefault = enabledByDefault;
    }
 
    @OneToMany(cascade=CascadeType.ALL)

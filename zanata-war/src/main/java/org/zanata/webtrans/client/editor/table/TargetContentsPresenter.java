@@ -47,6 +47,7 @@ import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
@@ -118,7 +119,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       this.identity = identity;
       this.dispatcher = dispatcher;
 
-      checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
+      checkKey = new CheckKeyImpl(ShortcutContext.Edit);
       eventBus.addHandler(UserConfigChangeEvent.getType(), this);
       eventBus.addHandler(RequestValidationEvent.getType(), this);
       eventBus.addHandler(InsertStringInEditorEvent.getType(), this);

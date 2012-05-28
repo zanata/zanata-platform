@@ -47,6 +47,7 @@ import javax.persistence.PostUpdate;
 import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -96,7 +97,7 @@ import com.google.common.base.Objects;
                        "and tft.textFlow.document.docId = :docId " +
                        "and tft.locale = :locale " +
                        "and tft.state = :state " +
-                       "group by tft.textFlow.contentHash")
+                       "group by tft.textFlow.contentHash, tft.textFlow.resId")
 })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
@@ -120,12 +121,15 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    private Map<Integer, HTextFlowTargetHistory> history;
 
    // Only for internal use (persistence transient)
+   @Setter(AccessLevel.PRIVATE)
    private Integer oldVersionNum;
 
    // Only for internal use (persistence transient)
+   @Setter(AccessLevel.PRIVATE)
    private HTextFlowTargetHistory initialState;
 
    // Only for internal use (persistence transient)
+   @Setter(AccessLevel.PRIVATE)
    private boolean lazyRelationsCopied = false;
 
    public HTextFlowTarget(HTextFlow textFlow, HLocale locale)

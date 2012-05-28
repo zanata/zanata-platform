@@ -31,6 +31,7 @@ import org.zanata.webtrans.client.events.NativeEvent;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -220,7 +221,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          }
       }));
 
-      final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Navigation);
+      final CheckKey checkKey = new CheckKeyImpl(ShortcutContext.Navigation);
 
       // TODO make testable
 

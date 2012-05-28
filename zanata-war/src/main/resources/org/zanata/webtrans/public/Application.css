@@ -443,6 +443,33 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	width: 99%;
 }
 
+/* TODO share this with other modal panels */
+.keyShortcutPanel
+{
+	color: white;
+	background-color: black;
+	opacity:0.85;
+	border-radius:8px;
+	padding: 20px;
+}
+
+.keyShortcutHeading
+{
+	font-size: 1.4em;
+}
+
+.keyShortcutCategory
+{
+	padding: 10px;
+	font-size: 1.2em;
+}
+
+.keyShortcutCategoryTitle
+{
+	font-size: 1.2em;
+	margin-bottom: 4px;
+}
+
 .transFilterTextBox
 {
 	margin: 0px;
@@ -504,14 +531,16 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 .projectWideReplacementPanel
 {
 	background-color: #667788;
+	color: #ffffff;
 	border-top: 3px solid #e0e8ee;
+	padding: 0px 30px;
 }
 
 .projectWideReplacementBoxLabel
 {
-	margin-left: 30px;
 	color: #ffffff;
 	font-size: 1.35em;
+	white-space: nowrap;
 }
 
 .projectWideReplacementBox
@@ -525,14 +554,29 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	margin: 15px;
 }
 
+.projectWideSearchSelectionInfo
+{
+	font-size: 1.3em;
+	white-space: nowrap;
+}
+
 .projectWideReplacementButton
 {
 	color: #223344;
 	padding: 3px 10px;
+	margin: 5px;
 	font-size: 1.6em;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	border-width: 1px;
+	white-space: nowrap;
+}
+
+.projectWideReplacButton-Disabled
+{
+	color: #777777;
+	background-color: #bbbbbb;
+	border: 1px solid #bbbbbb;
 }
 
 .projectWideReplaceFeedbackLabel
@@ -579,15 +623,6 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	float: right;
 }
 
-.linkLabel
-{
-	color:#114477;
-	cursor:pointer;
-	text-decoration: underline;
-	margin-left: 10px;
-	margin-right: 10px;
-}
-
 .projectWideSearchResultsDocumentBody
 {
 	padding-top: 15px;
@@ -596,6 +631,31 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	border-top-style: none;
 	border-bottom-width: 3px;
 	margin-bottom: 30px;
+}
+
+.projectWideSearchResultsActionColumn
+{
+	padding: 2px 4px !important;
+	overflow: visible !important;
+}
+
+.linkLabel
+{
+	cursor:pointer;
+	text-decoration: underline;
+	margin-left: 10px;
+	margin-right: 10px;
+	white-space: nowrap;
+}
+
+.linkLabelNormalColor
+{
+	color:#114477;
+}
+
+.linkLabelLightColor
+{
+	color: #55ddff;
 }
 
 

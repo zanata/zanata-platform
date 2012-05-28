@@ -74,10 +74,10 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    TextBox filterTextBox, replacementTextBox;
 
    @UiField
-   InlineLabel searchResponseLabel, selectAllLink, replaceAllFeedbackLabel, replaceAllUndoLabel;
+   InlineLabel searchResponseLabel, selectAllLink, replaceAllFeedbackLabel, replaceAllUndoLabel, selectionInfoLabel;
 
    @UiField
-   CheckBox caseSensitiveChk;
+   CheckBox caseSensitiveChk, requirePreviewChk;
 
    @UiField
    Button previewButton, replaceAllButton;
@@ -106,6 +106,8 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       searchingIndicator.hide();
       noResultsLabel = new Label(messages.noSearchResults());
       noResultsLabel.addStyleName("projectWideSearchNoResultsLabel");
+      searchResultsPanel.add(noResultsLabel);
+      requirePreviewChk.setValue(true, false);
    }
 
    @Override
@@ -127,9 +129,29 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
+   public void focusFilterTextBox()
+   {
+      filterTextBox.setFocus(true);
+      filterTextBox.setSelectionRange(0, filterTextBox.getText().length());
+   }
+
+   @Override
    public HasValue<String> getReplacementTextBox()
    {
       return replacementTextBox;
+   }
+
+   @Override
+   public void focusReplacementTextBox()
+   {
+      replacementTextBox.setFocus(true);
+      replacementTextBox.setSelectionRange(0, replacementTextBox.getText().length());
+   }
+
+   @Override
+   public HasText getSelectionInfoLabel()
+   {
+      return selectionInfoLabel;
    }
 
    @Override
@@ -145,9 +167,60 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
+   public void setPreviewButtonEnabled(boolean enabled)
+   {
+      previewButton.setEnabled(enabled);
+      if (enabled)
+      {
+         previewButton.removeStyleName("projectWideReplacButton-Disabled");
+         previewButton.setTitle(messages.previewSelectedDescription());
+      }
+      else
+      {
+         previewButton.addStyleName("projectWideReplacButton-Disabled");
+         previewButton.setTitle(messages.previewSelectedDisabledDescription());
+      }
+   }
+
+   @Override
    public HasClickHandlers getReplaceAllButton()
    {
       return replaceAllButton;
+   }
+
+   @Override
+   public void setReplaceAllButtonEnabled(boolean enabled)
+   {
+      replaceAllButton.setEnabled(enabled);
+      if (enabled)
+      {
+         replaceAllButton.removeStyleName("projectWideReplacButton-Disabled");
+         replaceAllButton.setTitle(messages.replaceSelectedDescription());
+      }
+      else
+      {
+         replaceAllButton.addStyleName("projectWideReplacButton-Disabled");
+         replaceAllButton.setTitle(messages.replaceSelectedDisabledDescription());
+      }
+   }
+
+   @Override
+   public void setReplaceAllButtonVisible(boolean visible)
+   {
+      replaceAllButton.setVisible(visible);
+   }
+
+   @Override
+   public HasValue<Boolean> getRequirePreviewChk()
+   {
+      return requirePreviewChk;
+   }
+
+   @Override
+   public void setRequirePreview(boolean required)
+   {
+      requirePreviewChk.setValue(required, false);
+      SearchResultsDocumentTable.setRequirePreview(required);
    }
 
    @Override
@@ -239,12 +312,14 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       searchDocLabel.setTitle(messages.searchDocInEditorDetailed());
       searchDocLabel.addClickHandler(searchDocClickHandler);
       searchDocLabel.addStyleName("linkLabel");
+      searchDocLabel.addStyleName("linkLabelNormalColor");
       searchDocLabel.addStyleName("projectWideSearchResultsDocumentLink");
       docHeading.add(searchDocLabel);
 
       InlineLabel showDocLabel = new InlineLabel(messages.viewDocInEditor());
       showDocLabel.setTitle(messages.viewDocInEditorDetailed());
       showDocLabel.addStyleName("linkLabel");
+      showDocLabel.addStyleName("linkLabelNormalColor");
       showDocLabel.addStyleName("projectWideSearchResultsDocumentLink");
       showDocLabel.addClickHandler(viewDocClickHandler);
       docHeading.add(showDocLabel);

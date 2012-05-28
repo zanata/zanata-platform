@@ -45,6 +45,7 @@ public class LanguageWorkFlow extends AbstractWebWorkFlow
 
    public ManageLanguagePage addLanguage(String localeId)
    {
-      return goToHome().goToAdministration().goToManageLanguagePage().addNewLanguage().selectLanguage(localeId).saveLanguage();
+      return goToHome().goToAdministration().goToManageLanguagePage().addNewLanguage()
+            .enableLanguageByDefault().selectLanguage(localeId).saveLanguage();
    }
 }

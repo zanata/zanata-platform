@@ -18,28 +18,38 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.zanata.webtrans.client.keys;
 
+import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 
-/* Styles for CellTableResources. These override standard styles for CellTable
-
-   See: CellTable.css in GWT SDK (same package as CellTable.class) for styles
-   that can be overridden here.
-*/
-
-
-.cellTableHeader {
-  border-bottom: 3px solid #cccccc;
-  color: #777777;
-  text-shadow: none;
-}
-
-.cellTableSelectedRow
+/**
+ * View contexts within the application that may have key shortcuts bound and
+ * may be activated and deactivated to enable or disable bound shortcuts.
+ * 
+ * @see KeyShortcutPresenter#registerKeyShortcut(KeyShortcut)
+ * @see KeyShortcutPresenter#setContextActive(ShortcutContext, boolean)
+ */
+public enum ShortcutContext
 {
-  background: #a7c6fa;
-  color: inherit;
-}
 
-.cellTableSelectedRowCell
-{
-  border-color: #a7c6fa;
+   /**
+    * For shortcuts that should always be active. Presenters should not
+    * deactivate this context.
+    */
+   Application,
+
+   /**
+    * Used by {@link SearchResultsPresenter}
+    */
+   ProjectWideSearch,
+
+   /**
+    * Used by {@link TableEditorPresenter}
+    */
+   Navigation,
+
+   /**
+    * Used by {@link InlineTargetCellEditor}
+    */
+   Edit;
 }
