@@ -41,6 +41,7 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
+import org.zanata.webtrans.client.history.Window.Location;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -165,6 +166,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private final CachingDispatchAsync dispatcher;
    private final WorkspaceContext workspaceContext;
    private final KeyShortcutPresenter keyShortcutPresenter;
+   private final Location windowLocation;
    private final History history;
    private AsyncCallback<GetProjectTransUnitListsResult> projectSearchCallback;
    private Delegate<TransUnitReplaceInfo> previewButtonDelegate;
@@ -198,7 +200,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          History history,
          final WebTransMessages webTransMessages,
          final WorkspaceContext workspaceContext,
-         final KeyShortcutPresenter keyShortcutPresenter)
+         final KeyShortcutPresenter keyShortcutPresenter,
+         Location windowLocation)
    {
       super(display, eventBus);
       messages = webTransMessages;
@@ -206,6 +209,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       this.dispatcher = dispatcher;
       this.workspaceContext = workspaceContext;
       this.keyShortcutPresenter = keyShortcutPresenter;
+      this.windowLocation = windowLocation;
    }
 
    @Override
@@ -1016,7 +1020,12 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          if (!token.getProjectSearchText().isEmpty())
          {
             display.setSearching(true);
-            dispatcher.execute(new GetProjectTransUnitLists(token.getProjectSearchText(), token.isProjectSearchInSource(), token.isProjectSearchInTarget(), token.getProjectSearchCaseSensitive()), projectSearchCallback);
+            GetProjectTransUnitLists action = new GetProjectTransUnitLists(token.getProjectSearchText(),
+                  token.isProjectSearchInSource(),
+                  token.isProjectSearchInTarget(),
+                  token.getProjectSearchCaseSensitive(),
+                  windowLocation.getQueryDocuments());
+            dispatcher.execute(action, projectSearchCallback);
          }
       }
 
