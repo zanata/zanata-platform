@@ -712,6 +712,7 @@ public class DocumentListPresenterTest
       setupMockHistory("");
       expect(mockWorkspaceContext.getWorkspaceId()).andReturn(new WorkspaceId(new ProjectIterationId(testProjectSlug, testIterationSlug), new LocaleId(testLocaleId))).anyTimes();
       expect(mockWindowLocation.getParameterMap()).andReturn(windowLocationParameters).anyTimes();
+      expect(mockWindowLocation.getQueryDocuments()).andReturn(windowLocationParameters.get("doc")).anyTimes();
    }
 
    @SuppressWarnings("unchecked")

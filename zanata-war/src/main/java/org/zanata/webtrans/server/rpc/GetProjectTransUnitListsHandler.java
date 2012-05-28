@@ -95,7 +95,7 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          filterConstraints.ignoreTarget();
       }
       // TODO handle exception thrown by search service
-      List<HTextFlowTarget> matchingFlows = textFlowSearchServiceImpl.findTextFlowTargets(action.getWorkspaceId(), filterConstraints);
+      List<HTextFlowTarget> matchingFlows = textFlowSearchServiceImpl.findTextFlowTargets(action.getWorkspaceId(), action.getDocumentPaths(), filterConstraints);
       log.info("Returned {0} results for search", matchingFlows.size());
 
       HLocale hLocale;

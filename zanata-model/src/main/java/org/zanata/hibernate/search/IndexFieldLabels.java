@@ -10,6 +10,9 @@ public interface IndexFieldLabels
 {
    public static final String PROJECT_FIELD = "project";
    public static final String ITERATION_FIELD = "iteration";
+   /**
+    * Represents the full path and name of the document
+    */
    public static final String DOCUMENT_ID_FIELD = "documentId";
    public static final String LOCALE_ID_FIELD = "locale";
    public static final String CONTENT_STATE_FIELD = "state";
