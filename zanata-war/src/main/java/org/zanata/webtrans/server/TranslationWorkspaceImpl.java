@@ -1,12 +1,13 @@
 package org.zanata.webtrans.server;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
-import org.zanata.webtrans.shared.auth.SessionId;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.PersonSessionDetails;
@@ -15,8 +16,11 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MapMaker;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
@@ -32,10 +36,16 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    private static final Log log = Logging.getLog(TranslationWorkspaceImpl.class);
    private final WorkspaceContext workspaceContext;
    private final Domain domain;
-   private final ConcurrentMap<SessionId, PersonSessionDetails> sessions = new MapMaker().makeMap();
+   private final ConcurrentMap<EditorClientId, PersonSessionDetails> sessions = new MapMaker().makeMap();
+   private final Multimap<String, EditorClientId> httpSessionToEditorClientId;
    private final ConcurrentMap<TransUnitId, String> editstatus = new MapMaker().makeMap();
 
    private final EventExecutorService eventExecutorService;
+
+   {
+      ArrayListMultimap<String, EditorClientId> almm = ArrayListMultimap.create();
+      httpSessionToEditorClientId = Multimaps.synchronizedListMultimap(almm);
+   }
 
    public TranslationWorkspaceImpl(WorkspaceContext workspaceContext)
    {
@@ -50,8 +60,10 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
          @Override
          public void onTimeout(UserInfo userInfo)
          {
-            final String sessionId = userInfo.getUserId();
-            TranslationWorkspaceImpl.this.onTimeout(sessionId);
+            String connectionId = userInfo.getUserId();
+            log.info("Timeout for GWTEventService connectionId {0}", connectionId);
+            // TODO look up EditorClientId for connectionId
+            // removeEditorClient(editorClientId);
          }
       });
    }
@@ -98,12 +110,12 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    }
 
    @Override
-   public Map<SessionId, PersonSessionDetails> getUsers()
+   public Map<EditorClientId, PersonSessionDetails> getUsers()
    {
-      Map<SessionId, PersonSessionDetails> list = new HashMap<SessionId, PersonSessionDetails>();
-      for (SessionId sessionId : sessions.keySet())
+      Map<EditorClientId, PersonSessionDetails> list = new HashMap<EditorClientId, PersonSessionDetails>();
+      for (EditorClientId editorClientId : sessions.keySet())
       {
-         list.put(sessionId, sessions.get(sessionId));
+         list.put(editorClientId, sessions.get(editorClientId));
       }
       return list;
    }
@@ -113,41 +125,39 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
       editstatus.remove(transUnitId, sessionId);
    }
 
-   private void onTimeout(final String sessionId)
+   @Override
+   public void addEditorClient(String httpSessionId, EditorClientId editorClientId, PersonId personId)
    {
-      // remove user session from workspace
-      PersonSessionDetails personSessionDetails = sessions.remove(new SessionId(sessionId));
-      if (personSessionDetails != null)
-      {
-         log.info("Timeout: Removed user '{0}' in session '{1}' from workspace {2}", personSessionDetails.getPerson().getId(), sessionId, workspaceContext);
-      }
-      else
-      {
-         log.debug("Timeout: Unknown user for session '{0}' in workspace {1} (already logged out?)", sessionId, workspaceContext);
-      }
+      log.info("Added user {0} with editorClientId {1} to workspace {2}", personId.getId(), editorClientId, workspaceContext);
+      sessions.putIfAbsent(editorClientId, new PersonSessionDetails(new Person(personId, "", ""), null));
+      httpSessionToEditorClientId.put(httpSessionId, editorClientId);
    }
 
    @Override
-   public boolean removeTranslator(SessionId sessionId, PersonId personId)
+   public Collection<EditorClientId> removeEditorClients(String httpSessionId)
    {
-      if (sessions.containsKey(sessionId))
+      Collection<EditorClientId> editorClients = httpSessionToEditorClientId.removeAll(httpSessionId);
+      for (EditorClientId editorClientId : editorClients)
       {
-         PersonSessionDetails personSessionDetails = sessions.remove(sessionId);
-         if (personSessionDetails != null)
+         removeEditorClient(editorClientId);
+      }
+      return editorClients;
+   }
+
+   @Override
+   public boolean removeEditorClient(EditorClientId editorClientId)
+   {
+      if (sessions.containsKey(editorClientId))
+      {
+         PersonSessionDetails details = sessions.remove(editorClientId);
+         if (details != null)
          {
-            log.info("Removed user '{0}' in session '{1}' from workspace {2}", personId.getId(), sessionId, workspaceContext);
+            log.info("Removed user {0} with editorClientId {1} from workspace {2}", details.getPerson().getId(), editorClientId, workspaceContext);
             return true;
          }
       }
 
       return false;
-   }
-
-   @Override
-   public void registerTranslator(SessionId sessionId, PersonId personId)
-   {
-      log.info("Added user '{0}' in session '{1}' to workspace {2}", personId.getId(), sessionId.getValue(), workspaceContext);
-      sessions.putIfAbsent(sessionId, new PersonSessionDetails(new Person(personId, "", ""), null));
    }
 
    @Override
@@ -176,20 +186,20 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
    }
 
    @Override
-   public void updateUserSelection(SessionId sessionId, TransUnit selectedTransUnit)
+   public void updateUserSelection(EditorClientId editorClientId, TransUnit selectedTransUnit)
    {
-      if (sessions.containsKey(sessionId))
+      if (sessions.containsKey(editorClientId))
       {
-         sessions.get(sessionId).setSelectedTransUnit(selectedTransUnit);
+         sessions.get(editorClientId).setSelectedTransUnit(selectedTransUnit);
       }
    }
 
    @Override
-   public TransUnit getUserSelection(SessionId sessionId)
+   public TransUnit getUserSelection(EditorClientId editorClientId)
    {
-      if (sessions.containsKey(sessionId))
+      if (sessions.containsKey(editorClientId))
       {
-         return sessions.get(sessionId).getSelectedTransUnit();
+         return sessions.get(editorClientId).getSelectedTransUnit();
       }
 
       return null;

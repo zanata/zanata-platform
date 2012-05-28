@@ -20,7 +20,7 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.shared.auth.SessionId;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 
 
@@ -31,7 +31,7 @@ public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedDa
 
    private static final long serialVersionUID = 1L;
    private TransUnitUpdateInfo tuUpdateInfo;
-   private SessionId updatedInSession;
+   private EditorClientId updatedInSession;
 
 
    // for ExposeEntity
@@ -39,7 +39,7 @@ public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedDa
    {
    }
 
-   public TransUnitUpdated(TransUnitUpdateInfo tuUpdateInfo, SessionId updatedInSession)
+   public TransUnitUpdated(TransUnitUpdateInfo tuUpdateInfo, EditorClientId updatedInSession)
    {
       this.tuUpdateInfo = tuUpdateInfo;
       this.updatedInSession = updatedInSession;
@@ -52,7 +52,7 @@ public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedDa
    }
 
    @Override
-   public SessionId getSessionId()
+   public EditorClientId getEditorClientId()
    {
       return updatedInSession;
    }

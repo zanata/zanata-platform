@@ -1,6 +1,6 @@
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.shared.auth.SessionId;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
 
 //@ExposeEntity 
@@ -9,7 +9,7 @@ public class EnterWorkspace implements SessionEventData, HasEnterWorkspaceData
    private static final long serialVersionUID = 1L;
 
    private Person person;
-   private SessionId sessionId;
+   private EditorClientId editorClientId;
 
    // for ExposeEntity
    public EnterWorkspace()
@@ -17,10 +17,10 @@ public class EnterWorkspace implements SessionEventData, HasEnterWorkspaceData
 
    }
 
-   public EnterWorkspace(SessionId sessionId, Person person)
+   public EnterWorkspace(EditorClientId editorClientId, Person person)
    {
       this.person = person;
-      this.sessionId = sessionId;
+      this.editorClientId = editorClientId;
    }
 
    @Override
@@ -30,8 +30,8 @@ public class EnterWorkspace implements SessionEventData, HasEnterWorkspaceData
    }
 
    @Override
-   public SessionId getSessionId()
+   public EditorClientId getEditorClientId()
    {
-      return sessionId;
+      return editorClientId;
    }
 }

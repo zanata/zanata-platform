@@ -53,7 +53,7 @@ public class DummyDispatchAsync extends SeamDispatchAsync
          }
          AbstractWorkspaceAction<?> wsAction = (AbstractWorkspaceAction<?>) action;
          wsAction.setWorkspaceId(this.workspaceContext.getWorkspaceId());
-         wsAction.setSessionId(this.identity.getSessionId());
+         wsAction.setEditorClientId(this.identity.getEditorClientId());
       }
 
       if (action instanceof GetTransUnitList)

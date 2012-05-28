@@ -51,9 +51,9 @@ public class TransUnitEditHandler extends AbstractActionHandler<TransUnitEditAct
 
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
       // Send TranslatorStatusUpdate event to client
-      TransUnitEdit event = new TransUnitEdit(action.getSessionId(), action.getPerson(), action.getSelectedTransUnit(), workspace.getUserSelection(action.getSessionId()));
+      TransUnitEdit event = new TransUnitEdit(action.getEditorClientId(), action.getPerson(), action.getSelectedTransUnit(), workspace.getUserSelection(action.getEditorClientId()));
 
-      workspace.updateUserSelection(action.getSessionId(), action.getSelectedTransUnit());
+      workspace.updateUserSelection(action.getEditorClientId(), action.getSelectedTransUnit());
 
       workspace.publish(event);
 

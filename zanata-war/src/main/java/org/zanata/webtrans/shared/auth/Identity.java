@@ -10,7 +10,7 @@ public class Identity implements Serializable
 
    private static final long serialVersionUID = 1L;
 
-   private SessionId sessionId;
+   private EditorClientId editorClientId;
    private Person person;
 
    @SuppressWarnings("unused")
@@ -18,9 +18,9 @@ public class Identity implements Serializable
    {
    }
 
-   public Identity(SessionId sessionId, Person person)
+   public Identity(EditorClientId editorClientId, Person person)
    {
-      this.sessionId = sessionId;
+      this.editorClientId = editorClientId;
       this.person = person;
    }
 
@@ -29,9 +29,9 @@ public class Identity implements Serializable
       return person;
    }
 
-   public SessionId getSessionId()
+   public EditorClientId getEditorClientId()
    {
-      return sessionId;
+      return editorClientId;
    }
 
 }

@@ -153,7 +153,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onExitWorkspace(ExitWorkspaceEvent event)
          {
-            workspaceUsersPresenter.removeTranslator(event.getSessionId(), event.getPerson());
+            workspaceUsersPresenter.removeTranslator(event.getEditorClientId(), event.getPerson());
             targetContentsPresenter.updateTranslators();
             display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()));
          }
@@ -164,7 +164,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onEnterWorkspace(EnterWorkspaceEvent event)
          {
-            workspaceUsersPresenter.addTranslator(event.getSessionId(), event.getPerson(), null);
+            workspaceUsersPresenter.addTranslator(event.getEditorClientId(), event.getPerson(), null);
             workspaceUsersPresenter.dispatchChatAction(event.getPerson().getId().toString(), messages.hasJoinedWorkspace());
             display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()));
          }
