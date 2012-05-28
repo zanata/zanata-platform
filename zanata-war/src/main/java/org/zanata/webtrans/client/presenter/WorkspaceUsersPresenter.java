@@ -12,8 +12,9 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.HasManageUserPanel;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
-import org.zanata.webtrans.shared.auth.SessionId;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonSessionDetails;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -96,18 +97,18 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
    {
    }
 
-   public void initUserList(Map<SessionId, PersonSessionDetails> users)
+   public void initUserList(Map<EditorClientId, PersonSessionDetails> users)
    {
-      for (SessionId sessionId : users.keySet())
+      for (EditorClientId editorClientId : users.keySet())
       {
-         addTranslator(sessionId, users.get(sessionId).getPerson(), users.get(sessionId).getSelectedTransUnit());
+         addTranslator(editorClientId, users.get(editorClientId).getPerson(), users.get(editorClientId).getSelectedTransUnit());
       }
    }
 
-   public void removeTranslator(SessionId sessionId, Person person)
+   public void removeTranslator(EditorClientId editorClientId, Person person)
    {
-      UserPanelSessionItem item = sessionService.getUserPanel(sessionId);
-      sessionService.removeUser(sessionId);
+      UserPanelSessionItem item = sessionService.getUserPanel(editorClientId);
+      sessionService.removeUser(editorClientId);
 
       display.removeUser(item.getPanel());
 
@@ -132,23 +133,23 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
    }
 
-   public void addTranslator(SessionId sessionId, Person person, TransUnit selectedTransUnit)
+   public void addTranslator(EditorClientId editorClientId, Person person, TransUnit selectedTransUnit)
    {
-      String color = sessionService.getColor(sessionId.getValue());
+      String color = sessionService.getColor(editorClientId.getValue());
 
-      UserPanelSessionItem item = sessionService.getUserPanel(sessionId);
+      UserPanelSessionItem item = sessionService.getUserPanel(editorClientId);
       if (item == null)
       {
          HasManageUserPanel panel = display.addUser(person);
          item = new UserPanelSessionItem(panel, person);
-         sessionService.addUser(sessionId, item);
+         sessionService.addUser(editorClientId, item);
       }
 
       item.setSelectedTransUnit(selectedTransUnit);
 
       item.getPanel().setColor(color);
 
-      sessionService.updateTranslatorStatus(sessionId, selectedTransUnit);
+      sessionService.updateTranslatorStatus(editorClientId, selectedTransUnit);
    }
 
    public int getTranslatorsSize()

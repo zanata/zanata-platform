@@ -31,6 +31,7 @@ import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
@@ -107,6 +108,7 @@ public class ZanataIdentity extends Identity
       }
    }
 
+   @Observer("org.jboss.seam.preDestroyContext.SESSION")
    public void logout()
    {
       if (Events.exists() && getPrincipal() != null)

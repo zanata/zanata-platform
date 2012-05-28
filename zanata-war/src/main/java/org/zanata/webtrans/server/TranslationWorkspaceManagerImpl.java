@@ -1,5 +1,6 @@
 package org.zanata.webtrans.server;
 
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.hibernate.Session;
@@ -12,8 +13,6 @@ import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Synchronized;
 import org.jboss.seam.core.Events;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
 import org.jboss.seam.web.ServletContexts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +30,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
-import org.zanata.webtrans.shared.auth.SessionId;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -85,21 +84,18 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       ImmutableSet<TranslationWorkspace> workspaceSet = ImmutableSet.copyOf(workspaceMap.values());
       for (TranslationWorkspace workspace : workspaceSet)
       {
-         boolean isRemoved = workspace.removeTranslator(retrieveSessionId(), new PersonId(username));
-         if (isRemoved)
+         String httpSessionId = ServletContexts.instance().getRequest().getSession().getId();
+         Collection<EditorClientId> editorClients = workspace.removeEditorClients(httpSessionId);
+         for (EditorClientId editorClientId : editorClients)
          {
-            LOGGER.info("Removing user {} from workspace {}", username, workspace.getWorkspaceContext());
+            LOGGER.info("Publishing ExitWorkspace event for user {} with editorClientId {} from workspace {}", new Object[] { username, editorClientId, workspace.getWorkspaceContext() });
             // Send GWT Event to client to update the userlist
-            ExitWorkspace event = new ExitWorkspace(retrieveSessionId(), new Person(new PersonId(username), person.getName(), gravatarServiceImpl.getUserImageUrl(16, person.getEmail())));
+            ExitWorkspace event = new ExitWorkspace(editorClientId, new Person(new PersonId(username), person.getName(), gravatarServiceImpl.getUserImageUrl(16, person.getEmail())));
             workspace.publish(event);
          }
       }
    }
 
-   private SessionId retrieveSessionId()
-   {
-      return new SessionId(ServletContexts.instance().getRequest().getSession().getId());
-   }
 
    @Observer(ProjectHome.PROJECT_UPDATE)
    public void projectUpdate(HIterationProject project)
@@ -119,7 +115,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       String projectSlug = projectIteration.getProject().getSlug();
       String iterSlug = projectIteration.getSlug();
       HProject project = projectIteration.getProject();
-      Boolean readOnly = !projectIterationIsInactive(project.getStatus(), projectIteration.getStatus());
+      Boolean readOnly = projectIterationIsInactive(project.getStatus(), projectIteration.getStatus());
       LOGGER.info("Project {} iteration {} updated, status={}, readOnly={}", new Object[] {projectSlug, iterSlug, projectIteration.getStatus(), readOnly});
 
       ProjectIterationId iterId = new ProjectIterationId(projectSlug, iterSlug);

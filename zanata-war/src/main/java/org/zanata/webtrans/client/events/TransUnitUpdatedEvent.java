@@ -20,7 +20,7 @@
  */
 package org.zanata.webtrans.client.events;
 
-import org.zanata.webtrans.shared.auth.SessionId;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.rpc.HasTransUnitUpdatedData;
 
@@ -50,12 +50,12 @@ public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler
    }
 
    private TransUnitUpdateInfo tuUpdateInfo;
-   private SessionId sessionId;
+   private EditorClientId editorClientId;
 
    public TransUnitUpdatedEvent(HasTransUnitUpdatedData data)
    {
       this.tuUpdateInfo = data.getUpdateInfo();
-      this.sessionId = data.getSessionId();
+      this.editorClientId = data.getEditorClientId();
    }
 
    @Override
@@ -77,9 +77,9 @@ public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler
    }
 
    @Override
-   public SessionId getSessionId()
+   public EditorClientId getEditorClientId()
    {
-      return sessionId;
+      return editorClientId;
    }
 
 }

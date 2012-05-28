@@ -18,28 +18,15 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.zanata.webtrans.client.presenter;
 
-
-/* Styles for CellTableResources. These override standard styles for CellTable
-
-   See: CellTable.css in GWT SDK (same package as CellTable.class) for styles
-   that can be overridden here.
-*/
-
-
-.cellTableHeader {
-  border-bottom: 3px solid #cccccc;
-  color: #777777;
-  text-shadow: none;
-}
-
-.cellTableSelectedRow
+/**
+ * Indicates whether a preview for a change to a text flow is available.
+ * 
+ * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
+ */
+public enum PreviewState
 {
-  background: #a7c6fa;
-  color: inherit;
-}
-
-.cellTableSelectedRowCell
-{
-  border-color: #a7c6fa;
+   NotAllowed, NotFetched, Fetching, Show, Hide
 }

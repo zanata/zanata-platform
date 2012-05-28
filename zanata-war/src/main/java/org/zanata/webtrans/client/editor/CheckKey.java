@@ -60,14 +60,6 @@ public interface CheckKey
    static final int KEY_4 = 52;
    static final int KEY_4_NUM = 37;
 
-   public static enum Context
-   {
-      /**
-       * Edit: InlineTargetCellEditor Navigation: TableEditorPresenter
-       */
-      Navigation, Edit;
-   }
-
    void init(NativeEvent event);
 
 

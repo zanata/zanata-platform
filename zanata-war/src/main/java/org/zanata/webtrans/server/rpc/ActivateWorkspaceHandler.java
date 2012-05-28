@@ -20,16 +20,16 @@
  */
 package org.zanata.webtrans.server.rpc;
 
+import lombok.Synchronized;
+import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.web.ServletContexts;
 import org.zanata.model.HAccount;
@@ -38,10 +38,11 @@ import org.zanata.service.GravatarService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
-import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
 import org.zanata.webtrans.shared.rpc.EnterWorkspace;
@@ -49,6 +50,7 @@ import org.zanata.webtrans.shared.rpc.EnterWorkspace;
 @Name("webtrans.gwt.ActivateWorkspaceHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(ActivateWorkspaceAction.class)
+@Slf4j
 public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWorkspaceAction, ActivateWorkspaceResult>
 {
 
@@ -58,38 +60,36 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
    @In
    GravatarService gravatarServiceImpl;
 
+   private static long nextEditorClientIdNum = 0;
+
+   @Synchronized
+   private static long generateEditorClientNum()
+   {
+      return nextEditorClientIdNum++;
+   }
 
    @Override
    public ActivateWorkspaceResult execute(ActivateWorkspaceAction action, ExecutionContext context) throws ActionException
    {
       ZanataIdentity.instance().checkLoggedIn();
+      Person person = retrievePerson();
 
-      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
-
-      workspace.registerTranslator(retrieveSessionId(), retrievePersonId());
-
+      WorkspaceId workspaceId = action.getWorkspaceId();
+      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
+      String httpSessionId = ServletContexts.instance().getRequest().getSession().getId();
+      EditorClientId editorClientId = new EditorClientId(httpSessionId + ":" + generateEditorClientNum());
+      workspace.addEditorClient(httpSessionId, editorClientId, person.getId());
+      log.info("Added user {} with editorClientId {} to workspace {}", new Object[] { person.getId(), editorClientId, workspaceId });
       // Send EnterWorkspace event to clients
-      EnterWorkspace event = new EnterWorkspace(retrieveSessionId(), retrievePerson());
+      EnterWorkspace event = new EnterWorkspace(editorClientId, person);
       workspace.publish(event);
-
-      Identity identity = new Identity(retrieveSessionId(), retrievePerson());
+      Identity identity = new Identity(editorClientId, person);
       return new ActivateWorkspaceResult(workspace.getWorkspaceContext(), identity);
    }
 
    @Override
    public void rollback(ActivateWorkspaceAction action, ActivateWorkspaceResult result, ExecutionContext context) throws ActionException
    {
-   }
-
-   private SessionId retrieveSessionId()
-   {
-      return new SessionId(ServletContexts.instance().getRequest().getSession().getId());
-   }
-
-   private PersonId retrievePersonId()
-   {
-      HAccount authenticatedAccount = (HAccount) Contexts.getSessionContext().get(JpaIdentityStore.AUTHENTICATED_USER);
-      return new PersonId(authenticatedAccount.getUsername());
    }
 
    private Person retrievePerson()

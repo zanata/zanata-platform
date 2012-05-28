@@ -56,7 +56,7 @@ public class SeamDispatchAsync implements CachingDispatchAsync
             callback.onFailure(new AuthorizationError(messages.dispatcherSetupFailed()));
             return;
          }
-         wsAction.setSessionId(identity.getSessionId());
+         wsAction.setEditorClientId(identity.getEditorClientId());
          wsAction.setWorkspaceId(workspaceContext.getWorkspaceId());
       }
 
@@ -112,7 +112,7 @@ public class SeamDispatchAsync implements CachingDispatchAsync
             callback.onFailure(new AuthorizationError(messages.dispatcherSetupFailed()));
             return;
          }
-         wsAction.setSessionId(identity.getSessionId());
+         wsAction.setEditorClientId(identity.getEditorClientId());
          wsAction.setWorkspaceId(workspaceContext.getWorkspaceId());
       }
 

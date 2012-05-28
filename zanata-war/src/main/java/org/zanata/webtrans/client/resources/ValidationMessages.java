@@ -54,6 +54,7 @@ public interface ValidationMessages extends Messages
 
    @Description("Lists variables that appear a different number of times between source and target strings")
    @DefaultMessage("Inconsistent count for variables: {0,list,string}")
+   @AlternateMessage({ "one", "Inconsistent count for variable: {0,list,string}" })
    String differentVarCount(@PluralCount List<String> vars);
 
 

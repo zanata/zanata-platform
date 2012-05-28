@@ -21,6 +21,8 @@
 package org.zanata.webtrans.client.presenter;
 
 import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.PresenterRevealedEvent;
+import net.customware.gwt.presenter.client.PresenterRevealedHandler;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.TranslationStats;
@@ -96,6 +98,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       void setErrorNotificationText(int count);
    }
 
+   private final KeyShortcutPresenter keyShortcutPresenter;
    private final DocumentListPresenter documentListPresenter;
    private final TranslationPresenter translationPresenter;
    private final SearchResultsPresenter searchResultsPresenter;
@@ -120,9 +123,22 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final NotificationPresenter notificationPresenter, final LayoutSelectorPresenter layoutSelectorPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
+   public AppPresenter(Display display, EventBus eventBus,
+         final KeyShortcutPresenter keyShortcutPresenter,
+         final TranslationPresenter translationPresenter,
+         final DocumentListPresenter documentListPresenter,
+         final SearchResultsPresenter searchResultsPresenter,
+         final NotificationPresenter notificationPresenter,
+		 final LayoutSelectorPresenter layoutSelectorPresenter,
+         final Identity identity,
+         final WorkspaceContext workspaceContext,
+         final WebTransMessages messages,
+         final History history,
+         final Window window,
+         final Window.Location windowLocation)
    {
       super(display, eventBus);
+      this.keyShortcutPresenter = keyShortcutPresenter;
       this.history = history;
       this.identity = identity;
       this.messages = messages;
@@ -145,6 +161,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    @Override
    protected void onBind()
    {
+      keyShortcutPresenter.bind();
       documentListPresenter.bind();
       translationPresenter.bind();
       searchResultsPresenter.bind();
@@ -325,6 +342,21 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       });
 
+      registerHandler(eventBus.addHandler(PresenterRevealedEvent.getType(), new PresenterRevealedHandler()
+      {
+
+         @Override
+         public void onPresenterRevealed(PresenterRevealedEvent event)
+         {
+            // TODO disabled until tests are updated
+//            if (event.getPresenter() == searchResultsPresenter)
+//            {
+//               display.setDocumentLabel("", messages.projectWideSearchAndReplace());
+//               currentDisplayStats = projectStats;
+//            }
+         }
+      }));
+
       display.setUserLabel(identity.getPerson().getName());
       String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
       display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName(), workspaceTitle);
@@ -332,6 +364,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       display.setReadOnlyVisible(workspaceContext.isReadOnly());
 
+      // this may be redundant with the following history event line
       showView(MainView.Documents);
 
       history.fireCurrentHistoryState();
@@ -382,22 +415,30 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
          switch (viewToShow)
          {
+         // TODO use revealDisplay/concealDisplay for editor and document views
          case Editor:
             if (selectedDocument != null)
             {
                display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
             }
             currentDisplayStats = selectedDocumentStats;
+            searchResultsPresenter.concealDisplay();
             break;
          case Search:
+            // these two lines temporarily here until PresenterRevealedHandler is
+            // fully functional
             display.setDocumentLabel("", messages.projectWideSearchAndReplace());
             currentDisplayStats = projectStats;
+            searchResultsPresenter.revealDisplay();
             break;
          case Documents:
             break;
          default:
+            // TODO may want to continue showing selected document name
+            // if a document is selected.
             display.setDocumentLabel("", messages.noDocumentSelected());
             currentDisplayStats = projectStats;
+            searchResultsPresenter.concealDisplay();
             break;
          }
          display.showInMainView(viewToShow);

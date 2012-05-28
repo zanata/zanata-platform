@@ -15,7 +15,6 @@
     <properties>
         <webdriver.version>0.9.7376</webdriver.version>
         <selenium.version>2.20.0</selenium.version>
-        <hamcrest.version>1.2.1</hamcrest.version>
         <commons-io.version>1.3.2</commons-io.version>
 
         <!--Cargo Settings -->
@@ -115,12 +114,10 @@
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-core</artifactId>
-            <version>${hamcrest.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-library</artifactId>
-            <version>${hamcrest.version}</version>
         </dependency>
 
         <!--cargo needs these-->

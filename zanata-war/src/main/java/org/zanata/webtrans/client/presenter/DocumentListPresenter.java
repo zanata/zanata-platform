@@ -23,7 +23,6 @@ package org.zanata.webtrans.client.presenter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
@@ -111,8 +110,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    private HistoryToken currentHistoryState = null;
    
    private TranslationStats projectStats;
-
-   private static final String PRE_FILTER_QUERY_PARAMETER_KEY = "doc";
 
    @Inject
    public DocumentListPresenter(Display display, EventBus eventBus, WorkspaceContext workspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages, History history, Location windowLocation)
@@ -398,16 +395,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
    private void loadDocumentList()
    {
-      // generate filter from query string if present
-      ArrayList<String> filterDocs = null;
-      List<String> queryDocs = windowLocation.getParameterMap().get(PRE_FILTER_QUERY_PARAMETER_KEY);
-      if (queryDocs != null && !queryDocs.isEmpty())
-      {
-         filterDocs = new ArrayList<String>(queryDocs);
-      }
-
-      // switch doc list to the new project
-      dispatcher.execute(new GetDocumentList(workspaceContext.getWorkspaceId().getProjectIterationId(), filterDocs), new AsyncCallback<GetDocumentListResult>()
+      dispatcher.execute(new GetDocumentList(workspaceContext.getWorkspaceId().getProjectIterationId(), windowLocation.getQueryDocuments()), new AsyncCallback<GetDocumentListResult>()
       {
          @Override
          public void onFailure(Throwable caught)
