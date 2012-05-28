@@ -20,6 +20,7 @@
  */
 package org.zanata.action;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.event.ValueChangeEvent;
@@ -36,6 +37,7 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
+import org.zanata.model.HProjectIteration;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -56,6 +58,11 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
    {
       Session session = (Session) getEntityManager().getDelegate();
       return (HIterationGroup) session.createCriteria(getEntityClass()).add(Restrictions.naturalId().set("slug", getSlug())).setCacheable(true).uniqueResult();
+   }
+
+   public List<HProjectIteration> getInstanceProjectIterations()
+   {
+      return new ArrayList<HProjectIteration>(getInstance().getProjectIterations());
    }
 
    @Override

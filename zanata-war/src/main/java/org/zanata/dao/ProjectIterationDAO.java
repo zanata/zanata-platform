@@ -298,16 +298,26 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       return totalCount.intValue();
    }
 
-   public List<HProjectIteration> searchBySlugAndProjectSlug(String searchTerm) throws ParseException
+   public List<HProjectIteration> searchLikeSlugOrProjectSlug(String searchTerm) throws ParseException
    {
-      final String FIELDS[] = { "slug", GroupSearchBridge.PROJECT_FIELD };
+      Query q = getSession().createQuery("from HProjectIteration t where t.slug LIKE :searchTerm OR t.project.slug LIKE :searchTerm");
+      q.setParameter("searchTerm", "%" + searchTerm + "%");
+      q.setCacheable(true).setComment("ProjectIterationDAO.searchLikeSlugOrProjectSlug");
 
-      MultiFieldQueryParser parser = new MultiFieldQueryParser(Version.LUCENE_29, FIELDS, new StandardAnalyzer(Version.LUCENE_29));
-      org.apache.lucene.search.Query textQuery = parser.parse(searchTerm);
+      return q.list();
 
-      org.hibernate.search.jpa.FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HProjectIteration.class);
-      @SuppressWarnings("unchecked")
-      List<HProjectIteration> matches = (List<HProjectIteration>) ftQuery.getResultList();
-      return matches;
+      // final String FIELDS[] = { "slug", GroupSearchBridge.PROJECT_FIELD };
+      //
+      // MultiFieldQueryParser parser = new
+      // MultiFieldQueryParser(Version.LUCENE_29, FIELDS, new
+      // StandardAnalyzer(Version.LUCENE_29));
+      // org.apache.lucene.search.Query textQuery = parser.parse(searchTerm);
+      //
+      // org.hibernate.search.jpa.FullTextQuery ftQuery =
+      // entityManager.createFullTextQuery(textQuery, HProjectIteration.class);
+      // @SuppressWarnings("unchecked")
+      // List<HProjectIteration> matches = (List<HProjectIteration>)
+      // ftQuery.getResultList();
+      // return matches;
    }
 }
