@@ -31,6 +31,7 @@ import org.zanata.webtrans.client.events.NativeEvent;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -153,7 +154,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onExitWorkspace(ExitWorkspaceEvent event)
          {
-            workspaceUsersPresenter.removeTranslator(event.getSessionId(), event.getPerson());
+            workspaceUsersPresenter.removeTranslator(event.getEditorClientId(), event.getPerson());
             targetContentsPresenter.updateTranslators();
             display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()));
          }
@@ -164,7 +165,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onEnterWorkspace(EnterWorkspaceEvent event)
          {
-            workspaceUsersPresenter.addTranslator(event.getSessionId(), event.getPerson(), null);
+            workspaceUsersPresenter.addTranslator(event.getEditorClientId(), event.getPerson(), null);
             workspaceUsersPresenter.dispatchChatAction(event.getPerson().getId().toString(), messages.hasJoinedWorkspace());
             display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()));
          }
@@ -220,7 +221,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          }
       }));
 
-      final CheckKey checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Navigation);
+      final CheckKey checkKey = new CheckKeyImpl(ShortcutContext.Navigation);
 
       // TODO make testable
 

@@ -141,6 +141,12 @@ public interface WebTransMessages extends Messages
    @AlternateMessage({ "one", "Search found results in 1 document" })
    String searchFoundResultsInDocuments(@PluralCount int numDocs);
 
+   @DefaultMessage("Showing results for search \"{0}\" ({1} text flows in {2} documents)")
+   @AlternateMessage({
+      "one|one", "Showing results for search \"{0}\" (1 text flow in 1 document)",
+      "other|one", "Showing results for search \"{0}\" ({1} text flows in 1 document)"})
+   String showingResultsForProjectWideSearch(String searchString, @PluralCount int textFlows, @PluralCount int documents);
+
    @DefaultMessage("There are no search results to display")
    String noSearchResults();
 
@@ -149,6 +155,15 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Preview")
    String fetchPreview();
+
+   @DefaultMessage("Hide preview")
+   String hidePreview();
+
+   @DefaultMessage("Preview replacement in all selected text flows.")
+   String previewSelectedDescription();
+
+   @DefaultMessage("Select text flows to enable preview.")
+   String previewSelectedDisabledDescription();
 
    @DefaultMessage("Previewing")
    String fetchingPreview();
@@ -162,6 +177,15 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Replace")
    String replace();
 
+   @DefaultMessage("Replace text in all selected text flows.")
+   String replaceSelectedDescription();
+
+   @DefaultMessage("Select text flows and view preview to enable replace.")
+   String replaceSelectedDisabledDescription();
+
+   @DefaultMessage("Preview is required before replacing text")
+   String previewRequiredBeforeReplace();
+
    @DefaultMessage("Replacing")
    String replacing();
 
@@ -174,6 +198,15 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Successfully replaced text")
    String replacedTextSuccess();
+
+   @DefaultMessage("Replace text failed")
+   String replaceTextFailure();
+
+   @DefaultMessage("No replacements to make")
+   String noReplacementsToMake();
+
+   @DefaultMessage("Replace not possible in read-only workspace")
+   String cannotReplaceInReadOnlyMode();
 
    @DefaultMessage("View in editor")
    String viewDocInEditor();
@@ -199,9 +232,6 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Actions")
    String actions();
 
-   @DefaultMessage("Replace text failed")
-   String replaceTextFailure();
-
    @DefaultMessage("Undo")
    String undo();
 
@@ -214,14 +244,21 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Undo successful")
    String undoSuccess();
 
+   @DefaultMessage("Undo not possible in read-only workspace")
+   String cannotUndoInReadOnlyMode();
+
    @DefaultMessage("Select entire document")
    String selectAllInDocument();
 
    @DefaultMessage("Select or deselect all matching text flows in this document")
    String selectAllInDocumentDetailed();
 
-   @DefaultMessage("Nothing selected")
+   @DefaultMessage("No text flows selected")
    String noTextFlowsSelected();
+
+   @DefaultMessage("{0} text flows selected")
+   @AlternateMessage({ "one", "1 text flow selected" })
+   String numTextFlowsSelected(@PluralCount int selectedFlows);
 
    @DefaultMessage("Help")
    String help();
@@ -234,10 +271,34 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Search and replace")
    String searchAndReplace();
-   
+
    @DefaultMessage("▼")
    String downArrow();
 
    @DefaultMessage("Error notification")
    String errorNotification();
+
+   @DefaultMessage("Available Keyboard Shortcuts")
+   String availableKeyShortcutsTitle();
+
+   @DefaultMessage("select text flows in all documents")
+   String selectAllTextFlowsKeyShortcut();
+
+   @DefaultMessage("focus search phrase")
+   String focusSearchPhraseKeyShortcut();
+
+   @DefaultMessage("focus replacement phrase")
+   String focusReplacementPhraseKeyShortcut();
+
+   @DefaultMessage("show available shortcuts")
+   String showAvailableKeyShortcuts();
+
+   @DefaultMessage("Application")
+   String applicationScope();
+
+   @DefaultMessage("Editing text")
+   String editScope();
+
+   @DefaultMessage("Editor navigation")
+   String navigationScope();
 }

@@ -65,8 +65,8 @@ import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationPanel;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
-import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -352,7 +352,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             {
                navigationService.updateMap(event.getUpdateInfo().getTransUnit().getId().getId(), event.getUpdateInfo().getTransUnit().getStatus());
                // if its different user,
-               if (!event.getSessionId().equals(identity.getSessionId()))
+               if (!event.getEditorClientId().equals(identity.getEditorClientId()))
                {
                   if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getUpdateInfo().getTransUnit().getId()))
                   {
@@ -442,18 +442,18 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onTransUnitEdit(TransUnitEditEvent event)
          {
-            if (identity.getSessionId().getValue().equals(event.getSessionId().getValue()))
+            if (identity.getEditorClientId().getValue().equals(event.getEditorClientId().getValue()))
             {
                Integer prevRow = navigationService.getRowNumber(event.getPrevSelectedTransUnit(), display.getRowValues());
                if (prevRow != null)
                {
-                  resetBorder(prevRow, event.getSessionId());
+                  resetBorder(prevRow, event.getEditorClientId());
                }
 
                Integer row = navigationService.getRowNumber(event.getSelectedTransUnit(), display.getRowValues());
                if (row != null)
                {
-                  display.updateRowBorder(row, sessionService.getColor(event.getSessionId().getValue()));
+                  display.updateRowBorder(row, sessionService.getColor(event.getEditorClientId().getValue()));
                }
             }
             else
@@ -463,13 +463,13 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                Integer prevRow = navigationService.getRowNumber(event.getPrevSelectedTransUnit(), display.getRowValues());
                if (prevRow != null && navigationService.getCurrentRowNumber() != prevRow)
                {
-                  resetBorder(prevRow, event.getSessionId());
+                  resetBorder(prevRow, event.getEditorClientId());
                }
 
                Integer row = navigationService.getRowNumber(event.getSelectedTransUnit(), display.getRowValues());
                if (row != null && navigationService.getCurrentRowNumber() != row)
                {
-                  display.updateRowBorder(row, sessionService.getColor(event.getSessionId().getValue()));
+                  display.updateRowBorder(row, sessionService.getColor(event.getEditorClientId().getValue()));
                }
             }
 
@@ -481,11 +481,11 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onExitWorkspace(ExitWorkspaceEvent event)
          {
-            TransUnit tu = sessionService.getUserPanel(event.getSessionId()).getSelectedTransUnit();
+            TransUnit tu = sessionService.getUserPanel(event.getEditorClientId()).getSelectedTransUnit();
             Integer row = navigationService.getRowNumber(tu, display.getRowValues());
             if (row != null)
             {
-               resetBorder(row, event.getSessionId());
+               resetBorder(row, event.getEditorClientId());
             }
          }
       }));
@@ -517,12 +517,12 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       History.fireCurrentHistoryState();
    }
 
-   private void resetBorder(int prevRow, SessionId sessionId)
+   private void resetBorder(int prevRow, EditorClientId editorClientId)
    {
       // Check if other users is in that row
-      for (Map.Entry<SessionId, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
+      for (Map.Entry<EditorClientId, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
       {
-         if (entry.getValue().getSelectedTransUnit() != null && !sessionId.getValue().equals(entry.getKey()))
+         if (entry.getValue().getSelectedTransUnit() != null && !editorClientId.getValue().equals(entry.getKey()))
          {
             Integer row = navigationService.getRowNumber(entry.getValue().getSelectedTransUnit(), display.getRowValues());
             if (row != null && row == prevRow)

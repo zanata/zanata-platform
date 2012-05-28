@@ -4,8 +4,13 @@ import java.io.Serializable;
 
 import org.zanata.webtrans.shared.model.Identifier;
 
-
-public final class SessionId implements Identifier<String>, Serializable
+/**
+ * Represents a single connection to Zanata from GWT.  Usually represents one tab in a browser.  It has a one-to-one relationship with
+ * GWT Event Service's client ID / connection ID, but it is not the same value.
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ *
+ */
+public final class EditorClientId implements Identifier<String>, Serializable
 {
    // generated
    private static final long serialVersionUID = 6713691712353126602L;
@@ -13,11 +18,11 @@ public final class SessionId implements Identifier<String>, Serializable
    private String id;
 
    @SuppressWarnings("unused")
-   private SessionId()
+   private EditorClientId()
    {
    }
 
-   public SessionId(String id)
+   public EditorClientId(String id)
    {
       if (id == null || id.isEmpty())
       {
@@ -31,9 +36,9 @@ public final class SessionId implements Identifier<String>, Serializable
    {
       if (obj == null)
          return false;
-      if (obj instanceof SessionId)
+      if (obj instanceof EditorClientId)
       {
-         return ((SessionId) obj).id.equals(id);
+         return ((EditorClientId) obj).id.equals(id);
       }
       return super.equals(obj);
    }
@@ -56,8 +61,4 @@ public final class SessionId implements Identifier<String>, Serializable
       return id;
    }
 
-   public static SessionId of(String id)
-   {
-      return new SessionId(id);
-   }
 }

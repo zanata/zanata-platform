@@ -18,28 +18,17 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.zanata.webtrans.client.events;
 
+import com.google.gwt.event.shared.EventHandler;
 
-/* Styles for CellTableResources. These override standard styles for CellTable
-
-   See: CellTable.css in GWT SDK (same package as CellTable.class) for styles
-   that can be overridden here.
-*/
-
-
-.cellTableHeader {
-  border-bottom: 3px solid #cccccc;
-  color: #777777;
-  text-shadow: none;
-}
-
-.cellTableSelectedRow
+/**
+ * 
+ * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a> *
+ * 
+ * @see KeyShortcutEvent
+ */
+public interface KeyShortcutEventHandler extends EventHandler
 {
-  background: #a7c6fa;
-  color: inherit;
-}
-
-.cellTableSelectedRowCell
-{
-  border-color: #a7c6fa;
+   void onKeyShortcut(KeyShortcutEvent event);
 }

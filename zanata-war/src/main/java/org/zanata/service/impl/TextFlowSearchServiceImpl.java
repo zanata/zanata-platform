@@ -30,6 +30,7 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.MultiPhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.util.Version;
@@ -60,7 +61,7 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.util.TextFlowFilter;
 
 /**
- * @author David Mason, damason@redhat.com
+ * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
 @Name("textFlowSearchServiceImpl")
 @AutoCreate
@@ -88,6 +89,24 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
 
    @Override
    public List<HTextFlowTarget> findTextFlowTargets(WorkspaceId workspace, FilterConstraints constraints)
+   {
+      return findTextFlowTargetsByDocumentPaths(workspace, null, constraints);
+   }
+
+   @Override
+   public List<HTextFlowTarget> findTextFlowTargets(WorkspaceId workspace, List<String> documents, FilterConstraints constraints)
+   {
+      return findTextFlowTargetsByDocumentPaths(workspace, documents, constraints);
+   }
+
+   /**
+    * @param workspace
+    * @param documentPaths null or empty to search entire project, otherwise
+    *           only results for the given document paths will be returned
+    * @param constraints
+    * @return
+    */
+   private List<HTextFlowTarget> findTextFlowTargetsByDocumentPaths(WorkspaceId workspace, List<String> documentPaths, FilterConstraints constraints)
    {
       LocaleId localeId = workspace.getLocaleId();
       String projectSlug = workspace.getProjectIterationId().getProjectSlug();
@@ -143,6 +162,18 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       sourceQuery.add(iterationQuery, Occur.MUST);
       sourceQuery.add(searchPhraseQuery, Occur.MUST);
 
+      if (documentPaths != null && !documentPaths.isEmpty())
+      {
+         ArrayList<Term> docPathTerms = new ArrayList<Term>();
+         for (String s : documentPaths)
+         {
+            docPathTerms.add(new Term(IndexFieldLabels.DOCUMENT_ID_FIELD, s));
+         }
+         MultiPhraseQuery documentsQuery = new MultiPhraseQuery();
+         documentsQuery.add(docPathTerms.toArray(new Term[docPathTerms.size()]));
+         sourceQuery.add(documentsQuery, Occur.MUST);
+      }
+
       List<HTextFlowTarget> resultList = new ArrayList<HTextFlowTarget>();
       if (constraints.isSearchInTarget())
       {
@@ -178,7 +209,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          FullTextQuery ftQuery = entityManager.createFullTextQuery(sourceQuery, HTextFlow.class);
          @SuppressWarnings("unchecked")
          List<HTextFlow> matchedSources = (List<HTextFlow>) ftQuery.getResultList();
-         log.info("got {0} HTextFLowTarget results", matchedSources.size());
+         log.info("got {0} HTextFLow results", matchedSources.size());
          HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
          for (HTextFlow htf : matchedSources)
          {

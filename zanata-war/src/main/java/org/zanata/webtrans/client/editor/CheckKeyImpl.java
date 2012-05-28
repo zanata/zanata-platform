@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.client.editor;
 
+import org.zanata.webtrans.client.keys.ShortcutContext;
+
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 
@@ -32,11 +34,11 @@ import com.google.gwt.event.dom.client.KeyCodes;
  **/
 public final class CheckKeyImpl implements CheckKey
 {
-   private Context context;
+   private ShortcutContext context;
    private int keyCode;
    private boolean shiftKey, altKey, ctrlKey;
 
-   public CheckKeyImpl(Context context)
+   public CheckKeyImpl(ShortcutContext context)
    {
       this.context = context;
    }
@@ -71,7 +73,7 @@ public final class CheckKeyImpl implements CheckKey
    @Override
    public boolean isPreviousEntryKey()
    {
-      if (context == Context.Edit)
+      if (context == ShortcutContext.Edit)
       {
          return altKey && (keyCode == KeyCodes.KEY_UP || keyCode == KEY_J);
       }
@@ -84,7 +86,7 @@ public final class CheckKeyImpl implements CheckKey
    @Override
    public boolean isNextEntryKey()
    {
-      if (context == Context.Edit)
+      if (context == ShortcutContext.Edit)
       {
          return altKey && (keyCode == KeyCodes.KEY_DOWN || keyCode == KEY_K);
       }

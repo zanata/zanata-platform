@@ -3,7 +3,8 @@ package org.zanata.webtrans.shared.rpc;
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
 
-import org.zanata.webtrans.shared.auth.SessionId;
+import org.zanata.webtrans.shared.auth.EditorClientId;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
 
@@ -13,7 +14,7 @@ public abstract class AbstractWorkspaceAction<R extends Result> implements Actio
    private static final long serialVersionUID = 1L;
 
    private WorkspaceId workspaceId;
-   private SessionId sessionId;
+   private EditorClientId editorClientId;
 
 
    // this value is set by SeamDispatchAsync
@@ -23,9 +24,9 @@ public abstract class AbstractWorkspaceAction<R extends Result> implements Actio
    }
 
    // this value is set by SeamDispatchAsync
-   public final void setSessionId(SessionId sessionId)
+   public final void setEditorClientId(EditorClientId editorClientId)
    {
-      this.sessionId = sessionId;
+      this.editorClientId = editorClientId;
    }
 
    public final WorkspaceId getWorkspaceId()
@@ -33,9 +34,9 @@ public abstract class AbstractWorkspaceAction<R extends Result> implements Actio
       return workspaceId;
    }
 
-   public final SessionId getSessionId()
+   public final EditorClientId getEditorClientId()
    {
-      return sessionId;
+      return editorClientId;
    }
 
 }

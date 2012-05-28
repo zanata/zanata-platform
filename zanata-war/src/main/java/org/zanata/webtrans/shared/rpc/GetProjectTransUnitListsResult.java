@@ -37,6 +37,8 @@ public class GetProjectTransUnitListsResult implements Result
 {
    private static final long serialVersionUID = 1L;
 
+   private GetProjectTransUnitLists searchAction;
+
    /**
     * Document id, matching TransUnits
     */
@@ -52,10 +54,16 @@ public class GetProjectTransUnitListsResult implements Result
    {
    }
 
-   public GetProjectTransUnitListsResult(Map<Long, String> docPaths, Map<Long, List<TransUnit>> documents)
+   public GetProjectTransUnitListsResult(GetProjectTransUnitLists searchAction, Map<Long, String> docPaths, Map<Long, List<TransUnit>> documents)
    {
+      this.searchAction = searchAction;
       this.docPaths = docPaths;
       this.documents = documents;
+   }
+
+   public GetProjectTransUnitLists getSearchAction()
+   {
+      return searchAction;
    }
 
    public List<TransUnit> getUnits(Long documentId)

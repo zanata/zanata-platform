@@ -23,8 +23,9 @@
     obsolete="0"
     plural="false"
   	wordCount="11"
-  	contentHash="MD5('hello world')"
+  	contentHash="5eb63bbbe01eeed093cb22bb8f5acdc3"
   />
+  <!-- 'Content Hash' and 'content' match, make sure to keep it that way -->
   <HTextFlowContent
     pos="0"
     content="hello world"

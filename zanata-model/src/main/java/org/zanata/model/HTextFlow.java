@@ -45,6 +45,7 @@ import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
 import javax.persistence.PreUpdate;
 
+import lombok.AccessLevel;
 import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
@@ -116,6 +117,7 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
 
    private String resId;
 
+   @Setter(AccessLevel.PRIVATE)
    private Integer pos;
 
    private HDocument document;
@@ -139,12 +141,15 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    private boolean plural;
 
    // Only for internal use (persistence transient)
+   @Setter(AccessLevel.PRIVATE)
    private Integer oldRevision;
    
-   // Only for internal use (persistence transient) 
+   // Only for internal use (persistence transient)
+   @Setter(AccessLevel.PRIVATE)
    private HTextFlowHistory initialState;
    
-   // Only for internal use (persistence transient) 
+   // Only for internal use (persistence transient)
+   @Setter(AccessLevel.PRIVATE)
    private boolean lazyRelationsCopied = false;
 
    public HTextFlow(HDocument document, String resId, String content)

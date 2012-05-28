@@ -47,8 +47,7 @@ public interface TextFlowSearchService
     * Find matching textflows within a specified document
     * 
     * @param workspace
-    * @param doc
-    * @param searchTerm to filter content by, empty to return all textflows in the document
+    * @param doc id of document to search
     * @param constraints determine fields that will be checked for searchTerm
     * @return
     */
@@ -58,7 +57,16 @@ public interface TextFlowSearchService
     * Find matching textflow targets within a project iteration for a locale
     * 
     * @param workspace
-    * @param searchTerm to filter content by, empty to return all textflows in the project version
+    * @param documents list of documents to search
+    * @param constraints determine fields that will be checked for searchTerm
+    * @return
+    */
+   List<HTextFlowTarget> findTextFlowTargets(WorkspaceId workspace, List<String> documents, FilterConstraints constraints);
+
+   /**
+    * Find matching textflow targets within a project iteration for a locale
+    * 
+    * @param workspace
     * @param constraints determine fields that will be checked for searchTerm
     * @return
     */

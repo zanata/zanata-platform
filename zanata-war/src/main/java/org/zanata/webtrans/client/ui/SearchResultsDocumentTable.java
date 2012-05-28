@@ -1,10 +1,30 @@
+/*
+ * Copyright 2012, Red Hat, Inc. and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package org.zanata.webtrans.client.ui;
 
 import java.util.Collection;
 import java.util.List;
 
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.presenter.ReplacementState;
+import org.zanata.webtrans.client.presenter.PreviewState;
 import org.zanata.webtrans.client.presenter.TransUnitReplaceInfo;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
@@ -36,22 +56,31 @@ import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.DefaultSelectionEventManager.BlacklistEventTranslator;
 import com.google.gwt.view.client.DefaultSelectionEventManager.SelectAction;
 
+/**
+ * Displays search results for a single document.
+ * 
+ * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
+ */
 public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
 {
-   private static final int REPLACE_COLUMN_INDEX = 3;
+   private static final int PREVIEW_COLUMN_INDEX = 3;
+   private static final int REPLACE_COLUMN_INDEX = 4;
 
    private static CellTableResources cellTableResources;
-   private org.zanata.webtrans.client.resources.Resources resources;
    private WebTransMessages messages;
+   private static SafeHtml spinner;
 
    private static DefaultSelectionEventManager<TransUnitReplaceInfo> selectionManager = null;
 
    private static String highlightString = null;
+   private static boolean requirePreview = true;
 
    private TextColumn<TransUnitReplaceInfo> rowIndexColumn;
    private Column<TransUnitReplaceInfo, List<String>> sourceColumn;
    private Column<TransUnitReplaceInfo, TransUnitReplaceInfo> targetColumn;
-   private ReplaceActionColumn replaceButtonColumn;
+   private ActionColumn previewButtonColumn;
+   private ActionColumn replaceButtonColumn;
 
 
    public static void setHighlightString(String highlightString)
@@ -59,6 +88,10 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
       SearchResultsDocumentTable.highlightString = highlightString;
    }
 
+   public static void setRequirePreview(boolean required)
+   {
+      requirePreview = required;
+   }
 
    public SearchResultsDocumentTable(Delegate<TransUnitReplaceInfo> previewDelegate,
          Delegate<TransUnitReplaceInfo> replaceDelegate,
@@ -71,24 +104,30 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
       super(15, getCellTableResources());
 
       this.messages = messages;
-      this.resources = resources;
-
+      if (spinner == null)
+      {
+         spinner = new ImageResourceRenderer().render(resources.spinner());
+      }
       rowIndexColumn = buildRowIndexColumn();
       sourceColumn = buildSourceColumn();
       targetColumn = buildTargetColumn();
-      replaceButtonColumn = new ReplaceActionColumn(previewDelegate, replaceDelegate, undoDelegate);
+      previewButtonColumn = new ActionColumn(new PreviewActionCell(previewDelegate));
+      replaceButtonColumn = new ActionColumn(new ReplaceActionCell(replaceDelegate, undoDelegate));
 
       setWidth("100%", true);
 
       addColumn(rowIndexColumn, messages.rowIndex());
       addColumn(sourceColumn, messages.source());
       addColumn(targetColumn, messages.target());
-      addColumn(replaceButtonColumn, messages.actions());
+      addColumn(previewButtonColumn, messages.actions());
+      // allowing preview header to refer to this also
+      addColumn(replaceButtonColumn);
 
       setColumnWidth(rowIndexColumn, 70.0, Unit.PX);
       setColumnWidth(sourceColumn, 50.0, Unit.PCT);
       setColumnWidth(targetColumn, 50.0, Unit.PCT);
-      setColumnWidth(replaceButtonColumn, 100.0, Unit.PX);
+      setColumnWidth(previewButtonColumn, 75.0, Unit.PX);
+      setColumnWidth(replaceButtonColumn, 75.0, Unit.PX);
 
       sourceColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
       targetColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
@@ -98,6 +137,8 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
       addStyleName("projectWideSearchResultsDocumentBody");
    }
 
+   // TODO add focus tracking field to allow current-document type interactions
+   // listeners may need to be attached in view
 
    /**
     * @return a column that displays the 1-based index of the text flow
@@ -158,7 +199,7 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
          {
             // TODO for replaced targets, highlight replacement term or show diff
             List<String> contents = info.getTransUnit().getTargets();
-            if (info.getState() == ReplacementState.PreviewAvailable)
+            if (info.getPreviewState() == PreviewState.Show)
             {
                for (int i = 0; i < contents.size(); i++)
                {
@@ -209,14 +250,15 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
    }
 
 
-   private class ReplaceActionColumn extends Column<TransUnitReplaceInfo, TransUnitReplaceInfo>
+   private class ActionColumn extends Column<TransUnitReplaceInfo, TransUnitReplaceInfo>
    {
 
-      public ReplaceActionColumn(Delegate<TransUnitReplaceInfo> previewDelegate, Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate)
+      public ActionColumn(ActionCell<TransUnitReplaceInfo> actionCell)
       {
-         super(new ReplaceActionCell(previewDelegate, replaceDelegate, undoDelegate));
+         super(actionCell);
          this.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
          this.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+         this.setCellStyleNames("projectWideSearchResultsActionColumn");
       }
 
       @Override
@@ -224,95 +266,147 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
       {
          return info;
       }
+
    }
 
    private class ReplaceActionCell extends ActionCell<TransUnitReplaceInfo>
    {
 
       private Delegate<TransUnitReplaceInfo> undoDelegate;
-      private Delegate<TransUnitReplaceInfo> previewDelegate;
 
-      private SafeHtml spinner;
-      private final SafeHtml previewHtml;
-      private final SafeHtml fetchingPreviewHtml;
+      private final SafeHtml disabledReplaceHtml;
       private final SafeHtml replacingHtml;
       private final SafeHtml undoHtml;
       private final SafeHtml undoingHtml;
 
-      public ReplaceActionCell(Delegate<TransUnitReplaceInfo> previewDelegate, Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate) {
+      public ReplaceActionCell(Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate) {
          super(SafeHtmlUtils.fromString(messages.replace()), replaceDelegate);
-         this.previewDelegate = previewDelegate;
          this.undoDelegate = undoDelegate;
-         spinner = new ImageResourceRenderer().render(resources.spinner());
-         fetchingPreviewHtml = buildProcessingIndicator(messages.fetchingPreview());
+         disabledReplaceHtml = buildButtonHtml("", messages.replace(), messages.previewRequiredBeforeReplace(), false);
          replacingHtml = buildProcessingIndicator(messages.replacing());
          undoingHtml = buildProcessingIndicator(messages.undoInProgress());
-         previewHtml = buildButtonHtml("", messages.fetchPreview());
          undoHtml = buildButtonHtml(messages.replaced(), messages.undo());
-      }
-
-      public SafeHtml buildButtonHtml(String message, String buttonLabel)
-      {
-         return new SafeHtmlBuilder()
-               .appendHtmlConstant(message)
-               .appendHtmlConstant("<button type=\"button\" tabindex=\"-1\">")
-               .appendHtmlConstant(buttonLabel)
-               .appendHtmlConstant("</button>")
-               .toSafeHtml();
-      }
-
-      public SafeHtml buildProcessingIndicator(String message)
-      {
-         return new SafeHtmlBuilder()
-               .append(spinner)
-               .appendHtmlConstant("<br/>")
-               .appendHtmlConstant(message)
-               .toSafeHtml();
       }
 
       @Override
       public void render(com.google.gwt.cell.client.Cell.Context context, TransUnitReplaceInfo value, SafeHtmlBuilder sb)
       {
-         switch (value.getState())
+         switch (value.getReplaceState())
          {
-         case FetchingPreview:
-            sb.append(fetchingPreviewHtml);
+         case NotReplaced:
+            if (!requirePreview || value.getPreviewState() == PreviewState.Show || value.getPreviewState() == PreviewState.Hide)
+            {
+               super.render(context, value, sb);
+            }
+            else
+            {
+               sb.append(disabledReplaceHtml);
+            }
             break;
          case Replacing:
             sb.append(replacingHtml);
             break;
+         case Replaced:
+            sb.append(undoHtml);
+            break;
          case Undoing:
             sb.append(undoingHtml);
             break;
-         case PreviewAvailable:
-            super.render(context, value, sb);
-            break;
-            // TODO these two cases will depend on quick-replace mode
-         case Replaceable:
-            sb.append(previewHtml);
+         }
+      }
+
+      @Override
+      protected void onEnterKeyDown(Context context, Element parent, TransUnitReplaceInfo value, NativeEvent event, ValueUpdater<TransUnitReplaceInfo> valueUpdater)
+      {
+         switch (value.getReplaceState())
+         {
+         case NotReplaced:
+            if (!requirePreview || value.getPreviewState() == PreviewState.Show || value.getPreviewState() == PreviewState.Hide)
+            {
+               super.onEnterKeyDown(context, parent, value, event, valueUpdater);
+            }
             break;
          case Replaced:
-            sb.append(undoHtml);
+            undoDelegate.execute(value);
+            break;
+         }
+         // else ignore (is processing)
+      };
+   }
+
+   private class PreviewActionCell extends ActionCell<TransUnitReplaceInfo>
+   {
+      private Delegate<TransUnitReplaceInfo> previewDelegate;
+
+      private final SafeHtml fetchingPreviewHtml;
+      private final SafeHtml hidePreviewHtml;
+
+      public PreviewActionCell(Delegate<TransUnitReplaceInfo> previewDelegate) {
+         super(SafeHtmlUtils.fromString(messages.fetchPreview()), previewDelegate);
+         this.previewDelegate = previewDelegate;
+         fetchingPreviewHtml = buildProcessingIndicator(messages.fetchingPreview());
+         hidePreviewHtml = buildButtonHtml("", messages.hidePreview());
+      }
+
+      @Override
+      public void render(com.google.gwt.cell.client.Cell.Context context, TransUnitReplaceInfo value, SafeHtmlBuilder sb)
+      {
+
+         switch (value.getPreviewState())
+         {
+         case NotFetched:
+         case Hide:
+            super.render(context, value, sb);
+            break;
+         case Fetching:
+            sb.append(fetchingPreviewHtml);
+            break;
+         case Show:
+            sb.append(hidePreviewHtml);
+            break;
+         case NotAllowed:
+            // empty cell
             break;
          }
       }
 
       @Override
       protected void onEnterKeyDown(Context context, Element parent, TransUnitReplaceInfo value, NativeEvent event, ValueUpdater<TransUnitReplaceInfo> valueUpdater) {
-         switch (value.getState())
-         {
-         case Replaceable:
-            previewDelegate.execute(value);
-            break;
-         case Replaced:
-            undoDelegate.execute(value);
-            break;
-         case PreviewAvailable:
-            super.onEnterKeyDown(context, parent, value, event, valueUpdater);
-            break;
-         }
-         // else ignore (is processing)
+         // delegate is responsible for taking appropriate action
+         previewDelegate.execute(value);
       };
+   }
+
+   private static SafeHtml buildButtonHtml(String message, String buttonLabel)
+   {
+      return buildButtonHtml(message, buttonLabel, "", true);
+   }
+
+   private static SafeHtml buildButtonHtml(String message, String buttonLabel, String title, boolean enabled)
+   {
+      SafeHtmlBuilder sb = new  SafeHtmlBuilder()
+            .appendHtmlConstant(message)
+            .appendHtmlConstant("<button type=\"button\" tabindex=\"-1\"");
+      if (!enabled)
+      {
+         sb.appendHtmlConstant(" title=\"")
+            .appendEscaped(title)
+            .appendHtmlConstant("\" disabled=\"disabled\"");
+      }
+      return sb
+            .appendHtmlConstant(">")
+            .appendEscaped(buttonLabel)
+            .appendHtmlConstant("</button>")
+            .toSafeHtml();
+   }
+
+   private static SafeHtml buildProcessingIndicator(String message)
+   {
+      return new SafeHtmlBuilder()
+            .append(spinner)
+            .appendHtmlConstant("<br/>")
+            .appendHtmlConstant(message)
+            .toSafeHtml();
    }
 
    private static DefaultSelectionEventManager<TransUnitReplaceInfo> getSelectionManager()
@@ -341,6 +435,7 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
             return isColumnBlacklisted(event.getColumn()) ? SelectAction.IGNORE : SelectAction.TOGGLE;
          }
       };
+      selectionEventTranslator.setColumnBlacklisted(PREVIEW_COLUMN_INDEX, true);
       selectionEventTranslator.setColumnBlacklisted(REPLACE_COLUMN_INDEX, true);
       return DefaultSelectionEventManager.<TransUnitReplaceInfo> createCustomManager(selectionEventTranslator);
    }
