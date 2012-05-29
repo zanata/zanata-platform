@@ -20,6 +20,8 @@
  */
 package org.zanata.rest.compat.v1_5_0;
 
+import java.util.List;
+
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.resteasy.client.ClientResponse;
 import org.testng.annotations.Test;
@@ -388,6 +390,10 @@ public class TranslationsCompatibilityTest extends ZanataCompatibilityTest
       // try to fetch them again
       ClientResponse<TranslationsResource> getResponse = translationsClient.getTranslations(
             "my,path,document-3.txt", LocaleId.EN_US, new StringSet(PoHeader.ID + ";" + SimpleComment.ID));
-      assertThat(getResponse.getStatus(), is(Status.NOT_FOUND.getStatusCode())); // 404
+      List<TextFlowTarget> targets = getResponse.getEntity().getTextFlowTargets();
+      for (TextFlowTarget target : targets)
+      {
+         assertThat(target.getState(), is(ContentState.New));
+      }
    }
 }

@@ -282,14 +282,14 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    {
       // ensure 'no results' message is no longer visible
       noResultsLabel.removeFromParent();
-      addDocumentLabel(docName, viewDocClickHandler, searchDocClickHandler, selectAllHandler);
+      addDocumentLabel(docName, viewDocClickHandler, searchDocClickHandler);
       SearchResultsDocumentTable table = new SearchResultsDocumentTable(previewDelegate, replaceDelegate, undoDelegate, selectionModel, selectAllHandler, messages, resources);
       searchResultsPanel.add(table);
       table.addStyleName("projectWideSearchResultsDocumentBody");
       return table;
    }
 
-   private void addDocumentLabel(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ValueChangeHandler<Boolean> selectAllHandler)
+   private void addDocumentLabel(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler)
    {
       FlowPanel docHeading = new FlowPanel();
       docHeading.addStyleName("projectWideSearchResultsDocumentHeader");
@@ -297,11 +297,6 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       InlineLabel docLabel = new InlineLabel(docName);
       docLabel.addStyleName("projectWideSearchResultsDocumentTitle");
       docHeading.add(docLabel);
-
-      CheckBox selectWholeDocCheckBox = new CheckBox(messages.selectAllInDocument());
-      selectWholeDocCheckBox.setTitle(messages.selectAllInDocumentDetailed());
-      selectWholeDocCheckBox.addValueChangeHandler(selectAllHandler);
-      docHeading.add(selectWholeDocCheckBox);
 
       InlineLabel searchDocLabel = new InlineLabel(messages.searchDocInEditor());
       searchDocLabel.setTitle(messages.searchDocInEditorDetailed());

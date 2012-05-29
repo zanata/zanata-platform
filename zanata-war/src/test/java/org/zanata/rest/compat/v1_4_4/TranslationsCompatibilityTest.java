@@ -24,6 +24,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 
+import java.util.List;
+
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
@@ -388,6 +390,10 @@ public class TranslationsCompatibilityTest extends ZanataCompatibilityTest
       // try to fetch them again
       ClientResponse<TranslationsResource> getResponse = translationsClient.getTranslations(
             "my,path,document-3.txt", LocaleId.EN_US, new StringSet(PoHeader.ID + ";" + SimpleComment.ID));
-      assertThat(getResponse.getStatus(), is(Status.NOT_FOUND.getStatusCode())); // 404
+      List<TextFlowTarget> targets = getResponse.getEntity().getTextFlowTargets();
+      for (TextFlowTarget target : targets)
+      {
+         assertThat(target.getState(), is(ContentState.New));
+      }
    }
 }

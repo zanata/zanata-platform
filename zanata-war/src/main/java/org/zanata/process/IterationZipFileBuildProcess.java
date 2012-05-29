@@ -38,6 +38,7 @@ import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceUtils;
@@ -128,9 +129,9 @@ public class IterationZipFileBuildProcess extends BackgroundProcess<IterationZip
          }
             
          TranslationsResource translationResource = new TranslationsResource();
+         List<HTextFlowTarget> hTargets = textFlowTargetDAO.findTranslations(document, hLocale);
          resourceUtils.transferToTranslationsResource(
-               translationResource, document, hLocale, extensions, 
-               textFlowTargetDAO.findTranslations(document, hLocale));
+               translationResource, document, hLocale, extensions, hTargets);
 
          Resource res = this.resourceUtils.buildResource( document );
          

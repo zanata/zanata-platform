@@ -3,6 +3,8 @@ package org.zanata.webtrans.server;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.hibernate.Session;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
@@ -79,12 +81,12 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    @Observer(ZanataIdentity.USER_LOGOUT_EVENT)
    public void exitWorkspace(String username)
    {
-      LOGGER.info("User logout: Removing {} from all workspaces", username);
+      String httpSessionId = getSessionId();
+      LOGGER.info("User logout: Removing {} from all workspaces, session: {}", username, httpSessionId);
       HPerson person = accountDAO.getByUsername(username).getPerson();
       ImmutableSet<TranslationWorkspace> workspaceSet = ImmutableSet.copyOf(workspaceMap.values());
       for (TranslationWorkspace workspace : workspaceSet)
       {
-         String httpSessionId = ServletContexts.instance().getRequest().getSession().getId();
          Collection<EditorClientId> editorClients = workspace.removeEditorClients(httpSessionId);
          for (EditorClientId editorClientId : editorClients)
          {
@@ -96,6 +98,15 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       }
    }
 
+   private String getSessionId()
+   {
+      HttpServletRequest request = ServletContexts.instance().getRequest();
+      if (request == null)
+      {
+         return null;
+      }
+      return request.getSession().getId();
+   }
 
    @Observer(ProjectHome.PROJECT_UPDATE)
    public void projectUpdate(HIterationProject project)
