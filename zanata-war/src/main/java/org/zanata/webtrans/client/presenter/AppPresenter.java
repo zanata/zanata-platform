@@ -421,7 +421,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             searchResultsPresenter.revealDisplay();
             break;
          case Documents:
-            break;
          default:
             // TODO may want to continue showing selected document name
             // if a document is selected.

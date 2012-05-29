@@ -118,11 +118,10 @@ public class AppPresenterTest
    private Capture<PresenterRevealedHandler> capturedPresenterRevealedHandler;
 
 
-   private Capture<Command> capturedLeaveWorkspaceLinkCommand;
-   private Capture<Command> capturedSignoutLinkCommand;
-   private Capture<Command> capturedHelpLinkCommand;
-   private Capture<Command> capturedLayoutLinkCommand;
-
+   private Capture<Command> capturedLeaveWorkspaceMenuCommand;
+   private Capture<Command> capturedSignoutMenuCommand;
+   private Capture<Command> capturedHelpMenuCommand;
+   private Capture<Command> capturedLayoutMenuCommand;
 
    private DocumentInfo testDocInfo;
    private DocumentId testDocId;
@@ -165,10 +164,10 @@ public class AppPresenterTest
       capturedWorkspaceContextUpdatedEventHandler = new Capture<WorkspaceContextUpdateEventHandler>();
       capturedPresenterRevealedHandler = new Capture<PresenterRevealedHandler>();
 
-      capturedSignoutLinkCommand = new Capture<Command>();
-      capturedLeaveWorkspaceLinkCommand = new Capture<Command>();
-      capturedHelpLinkCommand = new Capture<Command>();
-      capturedLayoutLinkCommand = new Capture<Command>();
+      capturedSignoutMenuCommand = new Capture<Command>();
+      capturedLeaveWorkspaceMenuCommand = new Capture<Command>();
+      capturedHelpMenuCommand = new Capture<Command>();
+      capturedLayoutMenuCommand = new Capture<Command>();
    }
 
    @BeforeMethod
@@ -428,7 +427,6 @@ public class AppPresenterTest
    public void testDismiss()
    {
       String testMessage = "testing";
-
       mockDisplay.setNotificationMessage(testMessage, Severity.Warning);
       mockDismissVisibility.setVisible(true); // visible upon message
       mockDisplay.setNotificationMessage("", Severity.Info);
@@ -791,8 +789,8 @@ public class AppPresenterTest
    {
       mockWindow.setTitle(TEST_WINDOW_TITLE);
       expectLastCall().once();
-
-      mockDisplay.initMenuList(TEST_PERSON_NAME, isA(Command.class), isA(Command.class), isA(Command.class), isA(Command.class));
+      
+      mockDisplay.initMenuList(eq(TEST_PERSON_NAME), and(capture(capturedHelpMenuCommand), isA(Command.class)), and(capture(capturedLeaveWorkspaceMenuCommand), isA(Command.class)), and(capture(capturedSignoutMenuCommand), isA(Command.class)), and(capture(capturedLayoutMenuCommand), isA(Command.class)));
       expectLastCall().anyTimes();
 
       mockDisplay.setWorkspaceNameLabel(TEST_WORKSPACE_NAME, TEST_WORKSPACE_TITLE);
@@ -863,13 +861,13 @@ public class AppPresenterTest
       capturedDocumentStatsUpdatedEventHandler.reset();
       capturedHistoryTokenString.reset();
       capturedHistoryValueChangeHandler.reset();
-      capturedLeaveWorkspaceLinkCommand.reset();
-      capturedHelpLinkCommand.reset();
-      capturedLayoutLinkCommand.reset();
+      capturedLeaveWorkspaceMenuCommand.reset();
+      capturedHelpMenuCommand.reset();
+      capturedLayoutMenuCommand.reset();
+      capturedSignoutMenuCommand.reset();
       capturedNotificationEventHandler.reset();
       capturedProjectStatsUpdatedEventHandler.reset();
       capturedSearchLinkClickHandler.reset();
-      capturedSignoutLinkCommand.reset();
       capturedWorkspaceContextUpdatedEventHandler.reset();
       capturedPresenterRevealedHandler.reset();
       capturedErrorNotificationBtnHandler.reset();
