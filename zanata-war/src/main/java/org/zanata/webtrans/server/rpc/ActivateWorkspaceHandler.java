@@ -79,7 +79,6 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
       String httpSessionId = ServletContexts.instance().getRequest().getSession().getId();
       EditorClientId editorClientId = new EditorClientId(httpSessionId + ":" + generateEditorClientNum());
       workspace.addEditorClient(httpSessionId, editorClientId, person.getId());
-      log.info("Added user {} with editorClientId {} to workspace {}", new Object[] { person.getId(), editorClientId, workspaceId });
       // Send EnterWorkspace event to clients
       EnterWorkspace event = new EnterWorkspace(editorClientId, person);
       workspace.publish(event);

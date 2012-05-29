@@ -152,6 +152,7 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace
          PersonSessionDetails details = sessions.remove(editorClientId);
          if (details != null)
          {
+            // TODO remove editorClientId from httpSessionToEditorClientId, instead of waiting until logout
             log.info("Removed user {0} with editorClientId {1} from workspace {2}", details.getPerson().getId(), editorClientId, workspaceContext);
             return true;
          }
