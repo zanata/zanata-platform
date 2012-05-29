@@ -146,6 +146,7 @@ public class PoWriter2
          copyToHeaderFields(hf, poHeader.getEntries());
       }
       setEncodingHeaderFields(hf, charset);
+      Map<String, TextFlowTarget> targets = new HashMap<String, TextFlowTarget>();
       Message headerMessage = null;
       int nPlurals = DEFAULT_NPLURALS;
       if (targetDoc != null)
@@ -157,8 +158,12 @@ public class PoWriter2
             copyToHeaderFields(hf, poTargetHeader.getEntries());
             headerMessage = hf.unwrap();
             headerMessage.setFuzzy(false); // By default, header message unwraps as fuzzy, so avoid it
-            copyTargetHeaderComments(headerMessage, poTargetHeader);
+            copyCommentsToHeader(poTargetHeader, headerMessage);
             nPlurals = extractNPlurals(poTargetHeader);
+         }
+         for (TextFlowTarget target : targetDoc.getTextFlowTargets())
+         {
+            targets.put(target.getResId(), target);
          }
       }
       if (headerMessage == null)
@@ -167,130 +172,132 @@ public class PoWriter2
       }
       poWriter.write(headerMessage, writer);
       writer.write("\n");
-      Map<String, TextFlowTarget> targets = null;
-      if (targetDoc != null)
-      {
-         targets = new HashMap<String, TextFlowTarget>();
-         for (TextFlowTarget target : targetDoc.getTextFlowTargets())
-         {
-            targets.put(target.getResId(), target);
-         }
-      }
 
       // first write header
       for (TextFlow textFlow : document.getTextFlows())
       {
-
          PotEntryHeader entryData = textFlow.getExtensions(true).findByType(PotEntryHeader.class);
          SimpleComment srcComment = textFlow.getExtensions().findByType(SimpleComment.class);
-         List<String> tfContents = textFlow.getContents();
          Message message = new Message();
-         message.setMsgid(tfContents.get(0));
+         copyTFContentsToMessage(textFlow, message);
 
-         if (textFlow.isPlural())
+         List<String> tftContents = new ArrayList<String>();
+         TextFlowTarget tfTarget = targets.get(textFlow.getId());
+         if (tfTarget != null)
          {
-            if (tfContents.size() < 1)
+            if (!tfTarget.getResId().equals(textFlow.getId()))
             {
-               throw new RuntimeException("textflow has plural flag but only has one form: resId=" + textFlow.getId());
+               throw new RuntimeException("ID from target doesn't match text-flow ID");
             }
-            message.setMsgidPlural(tfContents.get(1));
+            tftContents.addAll(tfTarget.getContents());
+            if (tfTarget.getState() == ContentState.NeedReview)
+            {
+               message.setFuzzy(true);
+            }
+            copyCommentsToMessage(tfTarget, message);
+         }
+         copyTFTContentsToMessage(textFlow, tftContents, nPlurals, message);
+
+         if (entryData != null)
+         {
+            copyMetadataToMessage(entryData, srcComment, message);
          }
          else
          {
-            if (tfContents.size() > 1)
-            {
-               throw new RuntimeException("textflow has no plural flag but multiple plural forms: resId=" + textFlow.getId());
-            }
+            log.warn("Missing POT entry for text-flow ID " + textFlow.getId());
          }
-
-         if (tfContents.size() > 2)
-         {
-            throw new RuntimeException("POT format only supports 2 plural forms: resId=" + textFlow.getId());
-         }
-
-         message.setMsgstr("");
-         if (targetDoc != null)
-         {
-            TextFlowTarget tfTarget = targets.get(textFlow.getId());
-            if (tfTarget != null)
-            {
-               if (entryData == null)
-               {
-                  log.warn("Missing POT entry for text-flow ID " + textFlow.getId());
-               }
-               else if (!tfTarget.getResId().equals(textFlow.getId()))
-               {
-                  throw new RuntimeException("ID from target doesn't match text-flow ID");
-               }
-               List<String> tftContents = new ArrayList<String>(tfTarget.getContents());
-
-               if (message.isPlural())
-               {
-                  while (tftContents.size() < nPlurals)
-                  {
-                     tftContents.add("");
-                  }
-                  for (int i = 0; i < tftContents.size(); i++)
-                  {
-                     message.addMsgstrPlural(tftContents.get(i), i);
-                  }
-                  if (tftContents.size() > nPlurals)
-                  {
-                     log.warn("too many plural forms for text flow: resId=" + textFlow.getId());
-                  }
-               }
-               else
-               {
-                  if (tftContents.size() == 0)
-                  {
-                     message.setMsgstr("");
-                  }
-                  else
-                  {
-                     message.setMsgstr(tftContents.get(0));
-                     if (tftContents.size() > 1)
-                     {
-                        throw new RuntimeException("plural forms not enabled for this text flow: resId=" + textFlow.getId());
-                     }
-                  }
-               }
-
-               SimpleComment poComment = tfTarget.getExtensions().findByType(SimpleComment.class);
-               if (poComment != null)
-               {
-                  String[] comments = poComment.getValue().split("\n");
-                  if (comments.length == 1 && comments[0].isEmpty())
-                  {
-                     // nothing
-                  }
-                  else
-                  {
-                     for (String comment : comments)
-                     {
-                        message.getComments().add(comment);
-                     }
-                  }
-               }
-               if (tfTarget.getState() == ContentState.NeedReview)
-               {
-                  message.setFuzzy(true);
-               }
-            }
-         }
-
-         if (entryData != null)
-            copyToMessage(entryData, srcComment, message);
 
          poWriter.write(message, writer);
          writer.write("\n");
       }
    }
 
-   private static void copyTargetHeaderComments(Message headerMessage, PoTargetHeader poTargetHeader)
+   private static void copyCommentsToHeader(PoTargetHeader poTargetHeader, Message headerMessage)
    {
       for (String s : poTargetHeader.getComment().split("\n"))
       {
          headerMessage.addComment(s);
+      }
+   }
+
+   private void copyTFContentsToMessage(TextFlow textFlow, Message message)
+   {
+      List<String> tfContents = textFlow.getContents();
+      message.setMsgid(tfContents.get(0));
+
+      if (textFlow.isPlural())
+      {
+         if (tfContents.size() < 1)
+         {
+            throw new RuntimeException("textflow has plural flag but only has one form: resId=" + textFlow.getId());
+         }
+         message.setMsgidPlural(tfContents.get(1));
+      }
+      else
+      {
+         if (tfContents.size() > 1)
+         {
+            throw new RuntimeException("textflow has no plural flag but multiple plural forms: resId=" + textFlow.getId());
+         }
+      }
+
+      if (tfContents.size() > 2)
+      {
+         throw new RuntimeException("POT format only supports 2 plural forms: resId=" + textFlow.getId());
+      }
+   }
+
+   private void copyCommentsToMessage(TextFlowTarget tfTarget, Message message)
+   {
+      SimpleComment poComment = tfTarget.getExtensions().findByType(SimpleComment.class);
+      if (poComment != null)
+      {
+         String[] comments = poComment.getValue().split("\n");
+         if (comments.length == 1 && comments[0].isEmpty())
+         {
+            // nothing
+         }
+         else
+         {
+            for (String comment : comments)
+            {
+               message.getComments().add(comment);
+            }
+         }
+      }
+   }
+
+   private void copyTFTContentsToMessage(TextFlow textFlow, List<String> tftContents, int nPlurals, Message message)
+   {
+      if (message.isPlural())
+      {
+         while (tftContents.size() < nPlurals)
+         {
+            tftContents.add("");
+         }
+         for (int i = 0; i < tftContents.size(); i++)
+         {
+            message.addMsgstrPlural(tftContents.get(i), i);
+         }
+         if (tftContents.size() > nPlurals)
+         {
+            log.warn("too many plural forms for text flow: resId=" + textFlow.getId());
+         }
+      }
+      else
+      {
+         if (tftContents.size() == 0)
+         {
+            message.setMsgstr("");
+         }
+         else
+         {
+            message.setMsgstr(tftContents.get(0));
+            if (tftContents.size() > 1)
+            {
+               throw new RuntimeException("plural forms not enabled for this text flow: resId=" + textFlow.getId());
+            }
+         }
       }
    }
 
@@ -319,7 +326,7 @@ public class PoWriter2
       }
    }
 
-   private static void copyToMessage(PotEntryHeader data, SimpleComment simpleComment, Message message)
+   private static void copyMetadataToMessage(PotEntryHeader data, SimpleComment simpleComment, Message message)
    {
       if (data != null)
       {
