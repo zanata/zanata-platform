@@ -20,8 +20,8 @@
 	</scm>
 
     <properties>
-      <zanata.api.version>1.6.0-alpha-2</zanata.api.version>
-      <zanata.common.version>1.6.0-alpha-2</zanata.common.version>
+      <zanata.api.version>1.6.0-alpha-4-SNAPSHOT</zanata.api.version>
+      <zanata.common.version>1.6.0-alpha-4-SNAPSHOT</zanata.common.version>
     </properties>
 
    <dependencyManagement>
@@ -35,6 +35,11 @@
           <groupId>org.zanata</groupId>
           <artifactId>zanata-rest-client</artifactId>
           <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-adapter-po</artifactId>
+            <version>${zanata.common.version}</version>
         </dependency>
       </dependencies>
    </dependencyManagement>
