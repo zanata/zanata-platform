@@ -192,6 +192,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Replaced")
    String replaced();
 
+   @DefaultMessage("Replaced \"{0}\" with \"{1}\" in {2} row {3} (\"{4}...\")")
+   String replacedTextInOneTextFlow(String searchText, String replacement, String docName, int oneBasedRowIndex, String truncatedText);
+
    @DefaultMessage("Replaced \"{0}\" with \"{1}\" in {2} text flows")
    @AlternateMessage({ "one", "Replaced \"{0}\" with \"{1}\" in 1 text flow" })
    String replacedTextInMultipleTextFlows(String searchText, String replacement, @PluralCount int numFlows);

@@ -547,13 +547,14 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       {
          onCancel();
       }
-      else if (checkKey.isUserTyping() && !checkKey.isBackspace())
+      else if (checkKey.isUserTyping() && checkKey.isEnterKey())
       {
-         editor.growSize();
+         //because enter itself will increase one line
+         editor.autoSizePlusOne();
       }
-      else if (checkKey.isUserTyping() && checkKey.isBackspace())
+      else if (checkKey.isUserTyping())
       {
-         editor.shrinkSize(false);
+         editor.autoSize();
       }
    }
 

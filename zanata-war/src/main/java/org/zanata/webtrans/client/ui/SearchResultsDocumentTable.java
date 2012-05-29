@@ -126,8 +126,8 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
       setColumnWidth(rowIndexColumn, 70.0, Unit.PX);
       setColumnWidth(sourceColumn, 50.0, Unit.PCT);
       setColumnWidth(targetColumn, 50.0, Unit.PCT);
-      setColumnWidth(previewButtonColumn, 75.0, Unit.PX);
-      setColumnWidth(replaceButtonColumn, 75.0, Unit.PX);
+      setColumnWidth(previewButtonColumn, 85.0, Unit.PX);
+      setColumnWidth(replaceButtonColumn, 85.0, Unit.PX);
 
       sourceColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
       targetColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);

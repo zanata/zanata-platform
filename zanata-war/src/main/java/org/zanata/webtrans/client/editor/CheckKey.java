@@ -159,6 +159,11 @@ public interface CheckKey
     * Backspace key pressed
     */
    boolean isBackspace();
+
+   /**
+    * Delete key pressed
+    */
+   boolean isDelete();
 }
 
 

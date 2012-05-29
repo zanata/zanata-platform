@@ -22,9 +22,7 @@ public interface ToggleEditor extends IsWidget, HasText, HasUpdateValidationWarn
 
    void showCopySourceButton(boolean displayButtons);
 
-   void shrinkSize(boolean forceShrink);
-
-   void growSize();
+   void autoSizePlusOne();
 
    void setFocus();
    
