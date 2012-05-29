@@ -55,6 +55,8 @@ public class LayoutSelectorView extends PopupPanel implements LayoutSelectorPres
       String mainPanel();
       
       String layoutTable();
+
+      String optionTD();
    }
 
    @UiField
@@ -81,7 +83,7 @@ public class LayoutSelectorView extends PopupPanel implements LayoutSelectorPres
    
    
    private static final String NORTH_WIDTH = "60px";
-   private static final String EAST_WIDTH= "25px";
+   private static final String EAST_WIDTH = "25px";
    
    public LayoutSelectorView()
    {
@@ -107,6 +109,8 @@ public class LayoutSelectorView extends PopupPanel implements LayoutSelectorPres
       Label southLabel = new Label("TM/Glossay/Users");
       Label workspaceLabel = new Label("Workspace");
       
+      optionLabel.addStyleName(style.optionTD());
+
       defaultLayout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
       defaultLayout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
       
@@ -162,6 +166,7 @@ public class LayoutSelectorView extends PopupPanel implements LayoutSelectorPres
       
       Label workspaceLabel = new Label("Workspace");
       Label optionLabel = new Label("Options");
+      optionLabel.addStyleName(style.optionTD());
       
       noSouthWorkspaceLayout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
       noSouthWorkspaceLayout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
