@@ -85,9 +85,9 @@ public class VersionGroupServiceImpl implements VersionGroupService
    }
 
    @Override
-   public List<HProjectIteration> searchBySlugAndProjectSlug(String searchTerm) throws ParseException
+   public List<HProjectIteration> searchLikeSlugOrProjectSlug(String searchTerm) throws ParseException
    {
-      return projectIterationDAO.searchBySlugAndProjectSlug(searchTerm);
+      return projectIterationDAO.searchLikeSlugOrProjectSlug(searchTerm);
    }
 
    @Override

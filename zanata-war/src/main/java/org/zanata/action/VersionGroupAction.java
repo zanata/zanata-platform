@@ -114,7 +114,7 @@ public class VersionGroupAction implements Serializable
    {
       try
       {
-         this.searchResults = versionGroupServiceImpl.searchBySlugAndProjectSlug(this.searchTerm);
+         this.searchResults = versionGroupServiceImpl.searchLikeSlugOrProjectSlug(this.searchTerm);
       }
       catch (ParseException e)
       {

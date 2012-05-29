@@ -88,6 +88,9 @@ import com.google.inject.Inject;
 public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresenter.Display>
 {
 
+   private static final int MAX_VISIBLE_REPLACEMENT_MESSAGES = 5;
+   private static final int TRUNCATED_TARGET_LENGTH = 24;
+
    public interface Display extends WidgetDisplay
    {
       HasText getSearchResponseLabel();
@@ -142,14 +145,14 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
        * 
        * @param message
        * @param undoButtonHandler
-       * @see #clearReplacementMessage()
+       * @see #clearReplacementMessages()
        */
-      void setReplacementMessage(String message, ClickHandler undoButtonHandler);
+      void addReplacementMessage(String message, ClickHandler undoButtonHandler);
 
       /**
-       * @see #setReplacementMessage(String, ClickHandler)
+       * @see #addReplacementMessage(String, ClickHandler)
        */
-      void clearReplacementMessage();
+      void clearReplacementMessages();
 
       HasData<TransUnitReplaceInfo> addDocument(
             String docName,
@@ -193,6 +196,9 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     */
    private HistoryToken currentHistoryState = null;
 
+   private List<ReplacementEventInfo> replacementEvents;
+
+   private Map<Long, String> docPaths;
 
    @Inject
    public SearchResultsPresenter(Display display, EventBus eventBus,
@@ -223,6 +229,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       documentDataProviders = new HashMap<Long, ListDataProvider<TransUnitReplaceInfo>>();
       documentSelectionModels = new HashMap<Long, MultiSelectionModel<TransUnitReplaceInfo>>();
       allReplaceInfos = new HashMap<TransUnitId, TransUnitReplaceInfo>();
+      docPaths = new HashMap<Long, String>();
       setUiForNothingSelected();
       display.setReplaceAllButtonVisible(!workspaceContext.isReadOnly());
 
@@ -756,20 +763,37 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void onSuccess(final UpdateTransUnitResult result)
          {
-            final List<TransUnitUpdateInfo> updateInfoList = result.getUpdateInfoList();
-            int successes = processSuccessfulReplacements(updateInfoList);
+            final List<TransUnitUpdateInfo> updateInfoList = processSuccessfulReplacements(result.getUpdateInfoList());
             eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.replacedTextSuccess()));
 
-            String message = messages.replacedTextInMultipleTextFlows(searchText, replacement, successes);
-            display.setReplacementMessage(message, new ClickHandler()
+            String message;
+            if (updateInfoList.size() == 1)
+            {
+               TransUnitUpdateInfo info = updateInfoList.get(0);
+               String text = info.getTransUnit().getTargets().get(0);
+               String truncatedText = text.substring(0, (text.length() <= TRUNCATED_TARGET_LENGTH ? text.length() : TRUNCATED_TARGET_LENGTH));
+               int oneBasedRowIndex = info.getTransUnit().getRowIndex()+1;
+               String docName = docPaths.get(info.getDocumentId().getId());
+               message = messages.replacedTextInOneTextFlow(searchText, replacement, docName, oneBasedRowIndex, truncatedText);
+            }
+            else
+            {
+               message = messages.replacedTextInMultipleTextFlows(searchText, replacement, updateInfoList.size());
+            }
+            final ReplacementEventInfo replacementInfo = new ReplacementEventInfo(message);
+            ClickHandler handler = new ClickHandler()
             {
                @Override
                public void onClick(ClickEvent event)
                {
-                  display.clearReplacementMessage();
                   fireUndoEvent(updateInfoList);
+                  ensureReplacementEvents().remove(replacementInfo);
+                  refreshReplacementEventInfoList();
                }
-            });
+            };
+            replacementInfo.setHandler(handler);
+            ensureReplacementEvents().add(replacementInfo);
+            refreshReplacementEventInfoList();
          }
       });
    }
@@ -845,14 +869,14 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     * @return the number of updates that are
     *         {@link TransUnitUpdateInfo#isSuccess()}
     */
-   private int processSuccessfulReplacements(final List<TransUnitUpdateInfo> updateInfoList)
+   private List<TransUnitUpdateInfo> processSuccessfulReplacements(final List<TransUnitUpdateInfo> updateInfoList)
    {
-      int successes = 0;
+      List<TransUnitUpdateInfo> successfulReplacements = new ArrayList<TransUnitUpdateInfo>();
       for (TransUnitUpdateInfo updateInfo : updateInfoList)
       {
          if (updateInfo.isSuccess())
          {
-            successes++;
+            successfulReplacements.add(updateInfo);
             TransUnitReplaceInfo replaceInfo = allReplaceInfos.get(updateInfo.getTransUnit().getId());
             if (replaceInfo != null)
             {
@@ -867,7 +891,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
          // individual failure behaviour not yet defined
       }
-      return successes;
+      return successfulReplacements;
    }
 
    /**
@@ -906,6 +930,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       int totalTransUnits = 0;
       for (Long docId : result.getDocumentIds())
       {
+         docPaths.put(docId, result.getDocPath(docId));
          List<TransUnit> transUnits = result.getUnits(docId);
          totalTransUnits += transUnits.size();
          displayDocumentResults(docId, result.getDocPath(docId), transUnits);
@@ -1135,5 +1160,55 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             }
          }
       }
+   }
+
+   private List<ReplacementEventInfo> ensureReplacementEvents()
+   {
+      if (replacementEvents == null)
+      {
+         replacementEvents = new ArrayList<ReplacementEventInfo>();
+      }
+      return replacementEvents;
+   }
+
+   private void refreshReplacementEventInfoList()
+   {
+      display.clearReplacementMessages();
+      List<ReplacementEventInfo> events = ensureReplacementEvents();
+      while (events.size() > MAX_VISIBLE_REPLACEMENT_MESSAGES)
+      {
+         events.remove(0);
+      }
+      for (ReplacementEventInfo info : events)
+      {
+         display.addReplacementMessage(info.getMessage(), info.getHandler());
+      }
+   }
+
+   private class ReplacementEventInfo
+   {
+      private String message;
+      private ClickHandler handler;
+
+      public ReplacementEventInfo(String message)
+      {
+         this.message = message;
+      }
+
+      public String getMessage()
+      {
+         return message;
+      }
+
+      public ClickHandler getHandler()
+      {
+         return handler;
+      }
+
+      public void setHandler(ClickHandler handler)
+      {
+         this.handler = handler;
+      }
+
    }
 }
