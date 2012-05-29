@@ -33,14 +33,7 @@
                 <g:InlineLabel styleName='projectWideReplacementBoxLabel' ><ui:msg>Replace with:</ui:msg></g:InlineLabel>
                 <g:TextBox ui:field='replacementTextBox' styleName='projectWideReplacementBox' />
                 <g:cell width="100%">
-                <!-- TODO make this a scrollable list of messages with undo label each
-                     to allow undo of past replaces. Hide undo label when it is clicked -->
-                    <g:FlowPanel>
-                        <g:InlineLabel ui:field='replaceAllFeedbackLabel' styleName='projectWideReplaceFeedbackLabel' />
-                        <g:InlineLabel ui:field='replaceAllUndoLabel' addStyleNames='linkLabel linkLabelLightColor' visible="false">
-                            <ui:msg>undo</ui:msg>
-                        </g:InlineLabel>
-                    </g:FlowPanel>
+                    <g:VerticalPanel ui:field="replaceLogPanel" />
                 </g:cell>
                 <g:cell horizontalAlignment="ALIGN_RIGHT">
                     <g:VerticalPanel horizontalAlignment="ALIGN_RIGHT">

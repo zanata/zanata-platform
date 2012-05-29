@@ -551,7 +551,8 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	border-radius: 10px;
 	-moz-border-radius: 10px;
 	outline: none;
-	margin: 15px;
+	margin-left: 15px;
+	margin-right: 35px;
 }
 
 .projectWideSearchSelectionInfo
