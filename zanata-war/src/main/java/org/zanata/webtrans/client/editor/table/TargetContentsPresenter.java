@@ -405,21 +405,12 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void toggleView(final ToggleEditor editor)
    {
-      // this will get deferred execution since we want to trigger table
-      // selection event first
-      scheduler.scheduleDeferred(new Scheduler.ScheduledCommand()
+      currentEditorIndex = editor.getIndex();
+      Log.debug("toggle view current editor index:" + currentEditorIndex);
+      if (currentDisplay != null)
       {
-         @Override
-         public void execute()
-         {
-            currentEditorIndex = editor.getIndex();
-            Log.debug("toggle view current editor index:" + currentEditorIndex);
-            if (currentDisplay != null)
-            {
-               currentDisplay.focusEditor(currentEditorIndex);
-            }
-         }
-      });
+         currentDisplay.focusEditor(currentEditorIndex);
+      }
 
    }
 
