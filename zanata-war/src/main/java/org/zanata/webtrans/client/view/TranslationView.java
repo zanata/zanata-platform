@@ -73,9 +73,11 @@ public class TranslationView extends Composite implements TranslationPresenter.D
 
    SplitLayoutPanel tmGlossaryPanel;
 
-   private double panelWidth = 20;
-   private double southHeight = 30;
-   private double glossaryPanelWidth = 500;
+   private static final double OPTION_PANEL_WIDTH = 208;
+   private static final double SOUTH_PANEL_HEIGHT = 150;
+   private static final double MIN_SOUTH_PANEL_HEIGHT = 30;
+   private static final double GLOSSARY_PANEL_WIDTH = 500;
+   private static final int ANIMATE_DURATION = 200;
 
 
    @Inject
@@ -98,8 +100,8 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       southPanelToggleButton.setDown(true);
 
       initWidget(uiBinder.createAndBindUi(this));
-      mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) panelWidth);
-      mainSplitPanel.setWidgetMinSize(southPanelContainer, (int) southHeight);
+      mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) OPTION_PANEL_WIDTH);
+      mainSplitPanel.setWidgetMinSize(southPanelContainer, (int) SOUTH_PANEL_HEIGHT);
 
       southPanelTab.add(tmGlossaryPanel, messages.tmGlossaryHeading());
       southPanelTab.add(userPanel, messages.nUsersOnline(0));
@@ -129,7 +131,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    private void setGlossaryView(Widget glossaryView)
    {
       tmGlossaryPanel.remove(glossaryView);
-      tmGlossaryPanel.addEast(glossaryView, glossaryPanelWidth);
+      tmGlossaryPanel.addEast(glossaryView, GLOSSARY_PANEL_WIDTH);
    }
 
    private void setEditorView(Widget editorView)
@@ -162,15 +164,14 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       Widget splitter = SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel, sidePanelOuterContainer);
       if (visible)
       {
-         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, sidePanelOuterContainer, panelWidth);
+         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, sidePanelOuterContainer, OPTION_PANEL_WIDTH);
       }
       else
       {
-         panelWidth = mainSplitPanel.getWidgetContainerElement(sidePanelOuterContainer).getOffsetWidth();
          SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, sidePanelOuterContainer, 0);
       }
       splitter.setVisible(visible);
-      mainSplitPanel.animate(200);
+      mainSplitPanel.animate(ANIMATE_DURATION);
    }
 
    @Override
@@ -180,28 +181,27 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       Widget splitter = SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel, southPanelContainer);
       if (expanded)
       {
-         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, southHeight);
+         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, SOUTH_PANEL_HEIGHT);
       }
       else
       {
-         southHeight = mainSplitPanel.getWidgetContainerElement(southPanelContainer).getOffsetHeight();
-         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, 26);
+         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, MIN_SOUTH_PANEL_HEIGHT);
       }
       splitter.setVisible(expanded);
-      mainSplitPanel.animate(200);
+      mainSplitPanel.animate(ANIMATE_DURATION);
 
    }
 
    @Override
    public void setSouthPanelVisible(boolean visible)
    {
-      double splitPosition = visible ? 26 : 0;
+      double splitPosition = visible ? MIN_SOUTH_PANEL_HEIGHT : 0;
 
       mainSplitPanel.forceLayout();
       // TODO retain southHeight? Workaround is to collapse first
       SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, splitPosition);
       SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel, southPanelContainer).setVisible(visible);
-      mainSplitPanel.animate(200);
+      mainSplitPanel.animate(ANIMATE_DURATION);
    }
 
    @Override

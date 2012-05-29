@@ -29,9 +29,7 @@ import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.ui.HasCommand;
 import org.zanata.webtrans.client.ui.ImageLabel;
-import org.zanata.webtrans.client.ui.MenuCommandItem;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.shared.auth.Identity;
 
@@ -52,6 +50,7 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -112,13 +111,13 @@ public class AppView extends Composite implements AppPresenter.Display
 
    MenuBar menuBar;
 
-   MenuCommandItem helpMenuItem;
+   MenuItem helpMenuItem;
    
-   MenuCommandItem leaveWorkspaceMenuItem;
+   MenuItem leaveWorkspaceMenuItem;
 
-   MenuCommandItem signOutMenuItem;
+   MenuItem signOutMenuItem;
    
-   MenuCommandItem layoutMenuItem;
+   MenuItem layoutMenuItem;
 
    // TODO may be able to make these provided=true widgets
    private Widget documentListView;
@@ -128,13 +127,6 @@ public class AppView extends Composite implements AppPresenter.Display
    private final WebTransMessages messages;
    
    private final String userAvatarUrl;
-
-   private Command emptyCommand = new Command()
-   {
-      public void execute()
-      {
-      }
-   };
 
    @Inject
    public AppView(Resources resources, WebTransMessages messages, DocumentListPresenter.Display documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, final Identity identity)
@@ -152,22 +144,7 @@ public class AppView extends Composite implements AppPresenter.Display
 
       initWidget(uiBinder.createAndBindUi(this));
 
-      menuBar = new MenuBar(true);
-      helpMenuItem = new MenuCommandItem(messages.help(), emptyCommand);
-      leaveWorkspaceMenuItem = new MenuCommandItem(messages.leaveWorkspace(), emptyCommand);
-      signOutMenuItem = new MenuCommandItem(messages.signOut(), emptyCommand);
-      layoutMenuItem = new MenuCommandItem(messages.layout(), emptyCommand);
-
       searchAndReplace.setText(messages.searchAndReplace());
-      
-      
-      menuBar.addItem(helpMenuItem);
-      menuBar.addSeparator();
-      menuBar.addItem(layoutMenuItem);
-      menuBar.addSeparator();
-      menuBar.addItem(leaveWorkspaceMenuItem);
-      menuBar.addItem(signOutMenuItem);
-      
       userAvatarUrl = identity.getPerson().getAvatarUrl();
 
       this.documentListView = documentListView.asWidget();
@@ -244,8 +221,23 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public void setUserLabel(String userLabel)
+   public void initMenuList(String userLabel, Command helpMenuCommand, Command leaveWorkspaceMenuCommand, Command signOutMenuCommand, Command layoutMenuCommand)
    {
+      menuBar = new MenuBar(true);
+      helpMenuItem = new MenuItem(messages.help(), helpMenuCommand);
+      leaveWorkspaceMenuItem = new MenuItem(messages.leaveWorkspace(), leaveWorkspaceMenuCommand);
+      signOutMenuItem = new MenuItem(messages.signOut(), signOutMenuCommand);
+
+      menuBar.addItem(helpMenuItem);
+      menuBar.addSeparator();
+
+      ImageLabel layoutImageLabel = new ImageLabel(resources.viewChoose(), messages.viewSelection());
+      layoutMenuItem = menuBar.addItem(layoutImageLabel.getElement().getInnerHTML(), true, layoutMenuCommand);
+
+      menuBar.addSeparator();
+      menuBar.addItem(leaveWorkspaceMenuItem);
+      menuBar.addItem(signOutMenuItem);
+
       ImageLabel userMenu = new ImageLabel(userAvatarUrl, userLabel + " " + messages.downArrow());
       userMenu.setLabelStyle(style.userName());
       userMenu.setImageStyle(style.image());
@@ -302,30 +294,6 @@ public class AppView extends Composite implements AppPresenter.Display
    public void setReadOnlyVisible(boolean visible)
    {
       readOnlyLabel.setVisible(visible);
-   }
-
-   @Override
-   public HasCommand getHelpMenuItem()
-   {
-      return helpMenuItem;
-   }
-
-   @Override
-   public HasCommand getLeaveWorkspaceMenuItem()
-   {
-      return leaveWorkspaceMenuItem;
-   }
-
-   @Override
-   public HasCommand getSignOutMenuItem()
-   {
-      return signOutMenuItem;
-   }
-   
-   @Override
-   public HasCommand getLayoutMenuItem()
-   {
-      return layoutMenuItem;
    }
 
    @Override

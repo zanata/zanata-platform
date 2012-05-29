@@ -42,7 +42,6 @@ import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.history.Window.Location;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.ui.HasCommand;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -93,16 +92,12 @@ public class AppPresenterTest
    WebTransMessages mockMessages;
    Person mockPerson;
 
-
-   HasCommand mockLeaveWorkspaceMenuItem;
-   HasCommand mockSignoutMenuItem;
-   HasCommand mockHelpMenuItem;
-
    KeyShortcutPresenter mockKeyShortcutPresenter;
    DocumentListPresenter mockDocumentListPresenter;
    SearchResultsPresenter mockSearchResultsPresenter;
    TranslationPresenter mockTranslationPresenter;
    NotificationPresenter mockNotificationPresenter;
+   LayoutSelectorPresenter mockLayoutSelectorPresenter;
 
    Window mockWindow;
    Location mockWindowLocation;
@@ -126,6 +121,7 @@ public class AppPresenterTest
    private Capture<Command> capturedLeaveWorkspaceLinkCommand;
    private Capture<Command> capturedSignoutLinkCommand;
    private Capture<Command> capturedHelpLinkCommand;
+   private Capture<Command> capturedLayoutLinkCommand;
 
 
    private DocumentInfo testDocInfo;
@@ -147,18 +143,15 @@ public class AppPresenterTest
       mockHistory = createMock(History.class);
       mockIdentity = createMock(Identity.class);
       mockKeyShortcutPresenter = createMock(KeyShortcutPresenter.class);
-      mockLeaveWorkspaceMenuItem = createMock(HasCommand.class);
       mockMessages = createMock(WebTransMessages.class);
       mockPerson = createMock(Person.class);
       mockSearchResultsPresenter = createMock(SearchResultsPresenter.class);
-      mockSignoutMenuItem = createMock(HasCommand.class);
       mockTranslationPresenter = createMock(TranslationPresenter.class);
       mockWindow = createMock(Window.class);
       mockWindowLocation = createMock(Window.Location.class);
       mockWorkspaceContext = createMock(WorkspaceContext.class);
       mockNotificationPresenter = createMock(NotificationPresenter.class);
-      mockHelpMenuItem = createMock(HasCommand.class);
-
+      mockLayoutSelectorPresenter = createMock(LayoutSelectorPresenter.class);
       capturedSearchLinkClickHandler = new Capture<ClickHandler>();
       capturedDismissLinkClickHandler = new Capture<ClickHandler>();
       capturedDocumentLinkClickHandler = new Capture<ClickHandler>();
@@ -175,8 +168,7 @@ public class AppPresenterTest
       capturedSignoutLinkCommand = new Capture<Command>();
       capturedLeaveWorkspaceLinkCommand = new Capture<Command>();
       capturedHelpLinkCommand = new Capture<Command>();
-
-
+      capturedLayoutLinkCommand = new Capture<Command>();
    }
 
    @BeforeMethod
@@ -193,8 +185,9 @@ public class AppPresenterTest
       appPresenter = new AppPresenter(mockDisplay, mockEventBus,
             mockKeyShortcutPresenter, mockTranslationPresenter,
             mockDocumentListPresenter, mockSearchResultsPresenter,
-            mockNotificationPresenter, mockIdentity, mockWorkspaceContext,
-            mockMessages, mockHistory, mockWindow, mockWindowLocation);
+            mockNotificationPresenter, mockLayoutSelectorPresenter, 
+            mockIdentity, mockWorkspaceContext, mockMessages, 
+            mockHistory, mockWindow, mockWindowLocation);
 
       mockNotificationPresenter.setErrorLabelListener(appPresenter);
       expectLastCall().once();
@@ -798,8 +791,10 @@ public class AppPresenterTest
    {
       mockWindow.setTitle(TEST_WINDOW_TITLE);
       expectLastCall().once();
-      mockDisplay.setUserLabel(TEST_PERSON_NAME);
+
+      mockDisplay.initMenuList(TEST_PERSON_NAME, isA(Command.class), isA(Command.class), isA(Command.class), isA(Command.class));
       expectLastCall().anyTimes();
+
       mockDisplay.setWorkspaceNameLabel(TEST_WORKSPACE_NAME, TEST_WORKSPACE_TITLE);
       expectLastCall().anyTimes();
       mockDisplay.setReadOnlyVisible(false);
@@ -821,24 +816,12 @@ public class AppPresenterTest
       mockDismissVisibility.setVisible(false); // starts invisible
       expectLastCall().once();
 
-      mockLeaveWorkspaceMenuItem.setCommand(and(capture(capturedLeaveWorkspaceLinkCommand), isA(Command.class)));
-      expectLastCall().once();
-
-      mockHelpMenuItem.setCommand(and(capture(capturedHelpLinkCommand), isA(Command.class)));
-      expectLastCall().once();
-
-      mockSignoutMenuItem.setCommand(and(capture(capturedSignoutLinkCommand), isA(Command.class)));
-      expectLastCall().once();
-
       mockDisplay.setErrorNotificationText(0);
       expectLastCall().once();
    }
 
    private void setupMockGetterReturnValues()
    {
-      expect(mockDisplay.getSignOutMenuItem()).andReturn(mockSignoutMenuItem).anyTimes();
-      expect(mockDisplay.getHelpMenuItem()).andReturn(mockHelpMenuItem).anyTimes();
-      expect(mockDisplay.getLeaveWorkspaceMenuItem()).andReturn(mockLeaveWorkspaceMenuItem).anyTimes();
       expect(mockDisplay.getDocumentsLink()).andReturn(mockDocumentsLink).anyTimes();
       expect(mockDisplay.getErrorNotificationBtn()).andReturn(mockErrorNotificationBtn).anyTimes();
 
@@ -869,8 +852,7 @@ public class AppPresenterTest
       reset(mockMessages, mockPerson, mockSearchResultsPresenter);
       reset(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
       reset(mockDismiss, mockDismissVisibility, mockNotificationPresenter);
-
-      reset(mockHelpMenuItem, mockLeaveWorkspaceMenuItem, mockSignoutMenuItem, mockSearchLink);
+      reset(mockSearchLink);
    }
 
    private void resetAllCaptures()
@@ -883,6 +865,7 @@ public class AppPresenterTest
       capturedHistoryValueChangeHandler.reset();
       capturedLeaveWorkspaceLinkCommand.reset();
       capturedHelpLinkCommand.reset();
+      capturedLayoutLinkCommand.reset();
       capturedNotificationEventHandler.reset();
       capturedProjectStatsUpdatedEventHandler.reset();
       capturedSearchLinkClickHandler.reset();
@@ -899,8 +882,7 @@ public class AppPresenterTest
       replay(mockMessages, mockPerson, mockSearchResultsPresenter);
       replay(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
       replay(mockDismiss, mockDismissVisibility, mockNotificationPresenter);
-
-      replay(mockHelpMenuItem, mockLeaveWorkspaceMenuItem, mockSignoutMenuItem, mockSearchLink);
+      replay(mockSearchLink);
    }
 
    private void verifyAllMocks()
@@ -910,7 +892,6 @@ public class AppPresenterTest
       verify(mockMessages, mockPerson, mockSearchResultsPresenter);
       verify(mockTranslationPresenter, mockWindow, mockWindowLocation, mockWorkspaceContext);
       verify(mockDismiss, mockDismissVisibility, mockNotificationPresenter);
-
-      verify(mockHelpMenuItem, mockLeaveWorkspaceMenuItem, mockSignoutMenuItem, mockSearchLink);
+      verify(mockSearchLink);
    }
 }

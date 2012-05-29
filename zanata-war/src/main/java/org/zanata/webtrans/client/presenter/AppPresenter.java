@@ -41,7 +41,6 @@ import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.ui.HasCommand;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -67,7 +66,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       HasClickHandlers getDocumentsLink();
 
-      void setUserLabel(String userLabel);
+      void initMenuList(String userLabel, Command helpMenuCommand, Command leaveWorkspaceMenuCommand, Command signOutMenuCommand, Command layoutMenuCommand);
 
       void setWorkspaceNameLabel(String workspaceNameLabel, String workspaceTitle);
 
@@ -82,14 +81,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       void setStats(TranslationStats transStats);
 
       void setReadOnlyVisible(boolean visible);
-
-      HasCommand getLeaveWorkspaceMenuItem();
-
-      HasCommand getHelpMenuItem();
-
-      HasCommand getSignOutMenuItem();
-      
-      HasCommand getLayoutMenuItem();
 
       HasClickHandlers getSearchAndReplaceLink();
 
@@ -287,47 +278,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
 
-      display.getLeaveWorkspaceMenuItem().setCommand(new Command()
-      {
-         @Override
-         public void execute()
-         {
-            // use when opening workspace in new window
-            // Application.closeWindow();
-
-            // use when opening workspace in same window
-            Application.exitWorkspace();
-            Application.redirectToZanataProjectHome(workspaceContext.getWorkspaceId());
-         }
-      });
-
-      display.getHelpMenuItem().setCommand(new Command()
-      {
-         @Override
-         public void execute()
-         {
-            com.google.gwt.user.client.Window.open(messages.hrefHelpLink(), messages.hrefHelpLink(), null);
-         }
-      });
-
-      display.getSignOutMenuItem().setCommand(new Command()
-      {
-         @Override
-         public void execute()
-         {
-            Application.redirectToLogout();
-         }
-      });
-
-      display.getLayoutMenuItem().setCommand(new Command()
-      {
-         @Override
-         public void execute()
-         {
-            layoutSelectorPresenter.show();            
-         }
-      });
-      
       display.getSearchAndReplaceLink().addClickHandler(new ClickHandler()
       {
          @Override
@@ -357,7 +307,46 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
 
-      display.setUserLabel(identity.getPerson().getName());
+
+      Command helpMenuCommand = new Command()
+      {
+         @Override
+         public void execute()
+         {
+            com.google.gwt.user.client.Window.open(messages.hrefHelpLink(), messages.hrefHelpLink(), null);
+         }
+      };
+
+      Command signOutMenuCommand = new Command()
+      {
+         @Override
+         public void execute()
+         {
+            Application.redirectToLogout();
+         }
+      };
+
+      Command leaveWorkspaceMenuCommand = new Command()
+      {
+         @Override
+         public void execute()
+         {
+            Application.exitWorkspace();
+            Application.redirectToZanataProjectHome(workspaceContext.getWorkspaceId());
+         }
+      };
+
+      Command layoutMenuMenuCommand = new Command()
+      {
+         @Override
+         public void execute()
+         {
+            layoutSelectorPresenter.show();
+         }
+      };
+
+
+      display.initMenuList(identity.getPerson().getName(), helpMenuCommand, leaveWorkspaceMenuCommand, signOutMenuCommand, layoutMenuMenuCommand);
       String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
       display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName(), workspaceTitle);
       window.setTitle(messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
