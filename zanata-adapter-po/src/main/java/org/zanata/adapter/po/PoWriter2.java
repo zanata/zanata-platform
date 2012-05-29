@@ -6,9 +6,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
@@ -31,6 +34,14 @@ public class PoWriter2
 {
    private static final Logger log = LoggerFactory.getLogger(PoWriter2.class);
    private final org.fedorahosted.tennera.jgettext.PoWriter poWriter = new org.fedorahosted.tennera.jgettext.PoWriter();
+   private static final int DEFAULT_NPLURALS = 1;
+
+   // TODO Expose and use the one in org.fedorahosted.tennera.jgettext.HeaderFields
+   // Modified version to extract the nplurals value
+   private static final Pattern pluralPattern = Pattern.compile(
+         "nplurals(\\s*?)=(\\s*?)(\\d*?)(\\s*?);(\\s*?)(.*)",
+         Pattern.CASE_INSENSITIVE);
+
 
    public PoWriter2()
    {
@@ -136,15 +147,18 @@ public class PoWriter2
       }
       setEncodingHeaderFields(hf, charset);
       Message headerMessage = null;
+      int nPlurals = DEFAULT_NPLURALS;
       if (targetDoc != null)
       {
-         PoTargetHeader poTargetHeader = targetDoc.getExtensions(true).findByType(PoTargetHeader.class);
+         PoTargetHeader poTargetHeader = null;
+         poTargetHeader = targetDoc.getExtensions(true).findByType(PoTargetHeader.class);
          if (poTargetHeader != null)
          {
             copyToHeaderFields(hf, poTargetHeader.getEntries());
             headerMessage = hf.unwrap();
             headerMessage.setFuzzy(false); // By default, header message unwraps as fuzzy, so avoid it
             copyTargetHeaderComments(headerMessage, poTargetHeader);
+            nPlurals = extractNPlurals(poTargetHeader);
          }
       }
       if (headerMessage == null)
@@ -208,19 +222,22 @@ public class PoWriter2
                {
                   throw new RuntimeException("ID from target doesn't match text-flow ID");
                }
-               List<String> tftContents = tfTarget.getContents();
+               List<String> tftContents = new ArrayList<String>(tfTarget.getContents());
 
                if (message.isPlural())
                {
-                  if (tftContents.isEmpty())
+                  while (tftContents.size() < nPlurals)
                   {
-                     message.addMsgstrPlural("", 0);
+                     tftContents.add("");
                   }
                   for (int i = 0; i < tftContents.size(); i++)
                   {
                      message.addMsgstrPlural(tftContents.get(i), i);
                   }
-                  // FIXME make sure we match nplurals
+                  if (tftContents.size() > nPlurals)
+                  {
+                     log.warn("too many plural forms for text flow: resId=" + textFlow.getId());
+                  }
                }
                else
                {
@@ -329,6 +346,33 @@ public class PoWriter2
             }
          }
       }
+   }
+
+   /**
+    * Determines the number of plural entries to fill for the TransResource.
+    * If this value can't be found, this method will provide a sensible default.
+    */
+   /*
+    * TODO This method is similar to org.zanata.rest.service.ResourceUtils,
+    * so perhaps it should be placed in a common class.
+    */
+   private static int extractNPlurals(PoTargetHeader header)
+   {
+      for (HeaderEntry entry : header.getEntries())
+      {
+         if (entry.getKey().equals("Plural-Forms"))
+         {
+            Matcher pluralMatcher = pluralPattern.matcher(entry.getValue());
+            if (pluralMatcher.find())
+            {
+               String pluralStr = pluralMatcher.group(3);
+               return Integer.parseInt(pluralStr);
+            }
+         }
+      }
+
+      // No suitable nplural entry found. return default
+      return DEFAULT_NPLURALS;
    }
 
 }
