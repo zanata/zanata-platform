@@ -33,6 +33,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ActionCell;
+import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.cell.client.ActionCell.Delegate;
 import com.google.gwt.cell.client.Cell.Context;
@@ -64,8 +65,8 @@ import com.google.gwt.view.client.DefaultSelectionEventManager.SelectAction;
  */
 public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
 {
-   private static final int PREVIEW_COLUMN_INDEX = 3;
-   private static final int REPLACE_COLUMN_INDEX = 4;
+   private static final int PREVIEW_COLUMN_INDEX = 4;
+   private static final int REPLACE_COLUMN_INDEX = 5;
 
    private static CellTableResources cellTableResources;
    private WebTransMessages messages;
@@ -76,6 +77,7 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
    private static String highlightString = null;
    private static boolean requirePreview = true;
 
+   private CheckColumn checkboxColumn;
    private TextColumn<TransUnitReplaceInfo> rowIndexColumn;
    private Column<TransUnitReplaceInfo, List<String>> sourceColumn;
    private Column<TransUnitReplaceInfo, TransUnitReplaceInfo> targetColumn;
@@ -108,6 +110,8 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
       {
          spinner = new ImageResourceRenderer().render(resources.spinner());
       }
+
+      checkboxColumn = new CheckColumn(selectionModel);
       rowIndexColumn = buildRowIndexColumn();
       sourceColumn = buildSourceColumn();
       targetColumn = buildTargetColumn();
@@ -116,6 +120,7 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
 
       setWidth("100%", true);
 
+      addColumn(checkboxColumn, "");
       addColumn(rowIndexColumn, messages.rowIndex());
       addColumn(sourceColumn, messages.source());
       addColumn(targetColumn, messages.target());
@@ -123,11 +128,12 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
       // allowing preview header to refer to this also
       addColumn(replaceButtonColumn);
 
+      setColumnWidth(checkboxColumn, 50.0, Unit.PX);
       setColumnWidth(rowIndexColumn, 70.0, Unit.PX);
       setColumnWidth(sourceColumn, 50.0, Unit.PCT);
       setColumnWidth(targetColumn, 50.0, Unit.PCT);
-      setColumnWidth(previewButtonColumn, 75.0, Unit.PX);
-      setColumnWidth(replaceButtonColumn, 75.0, Unit.PX);
+      setColumnWidth(previewButtonColumn, 85.0, Unit.PX);
+      setColumnWidth(replaceButtonColumn, 85.0, Unit.PX);
 
       sourceColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
       targetColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
@@ -249,6 +255,24 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
       };
    }
 
+   private class CheckColumn extends Column<TransUnitReplaceInfo, Boolean>
+   {
+
+      private SelectionModel<TransUnitReplaceInfo> selectionModel;
+
+      public CheckColumn(SelectionModel<TransUnitReplaceInfo> selectionModel)
+      {
+         super(new CheckboxCell(true, false));
+         this.selectionModel = selectionModel;
+      }
+
+      @Override
+      public Boolean getValue(TransUnitReplaceInfo info)
+      {
+         return selectionModel.isSelected(info);
+      }
+
+   }
 
    private class ActionColumn extends Column<TransUnitReplaceInfo, TransUnitReplaceInfo>
    {

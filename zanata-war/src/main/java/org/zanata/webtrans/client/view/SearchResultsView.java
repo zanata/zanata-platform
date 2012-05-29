@@ -33,7 +33,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
@@ -68,13 +67,13 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @UiField
-   VerticalPanel searchResultsPanel;
+   VerticalPanel searchResultsPanel, replaceLogPanel;
 
    @UiField
    TextBox filterTextBox, replacementTextBox;
 
    @UiField
-   InlineLabel searchResponseLabel, selectAllLink, replaceAllFeedbackLabel, replaceAllUndoLabel, selectionInfoLabel;
+   InlineLabel searchResponseLabel, selectAllLink, selectionInfoLabel;
 
    @UiField
    CheckBox caseSensitiveChk, requirePreviewChk;
@@ -92,8 +91,6 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    private final WebTransMessages messages;
 
    private Resources resources;
-
-   private HandlerRegistration currentUndoMultipleHandler;
 
    @Inject
    public SearchResultsView(Resources resources, final WebTransMessages webTransMessages)
@@ -255,24 +252,22 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
-   public void setReplacementMessage(String message, ClickHandler undoButtonHandler)
+   public void addReplacementMessage(String message, ClickHandler undoButtonHandler)
    {
-      replaceAllFeedbackLabel.setText(message);
-      replaceAllFeedbackLabel.setVisible(true);
-
-      replaceAllUndoLabel.setVisible(true);
-      if (currentUndoMultipleHandler != null)
-      {
-         currentUndoMultipleHandler.removeHandler();
-      }
-      currentUndoMultipleHandler = replaceAllUndoLabel.addClickHandler(undoButtonHandler);
+      FlowPanel logMessage = new FlowPanel();
+      logMessage.add(new InlineLabel(message));
+      InlineLabel undoLabel = new InlineLabel(messages.undo());
+      undoLabel.addClickHandler(undoButtonHandler);
+      undoLabel.addStyleName("linkLabel");
+      undoLabel.addStyleName("linkLabelLightColor");
+      logMessage.add(undoLabel);
+      replaceLogPanel.add(logMessage);
    }
 
    @Override
-   public void clearReplacementMessage()
+   public void clearReplacementMessages()
    {
-      replaceAllFeedbackLabel.setVisible(false);
-      replaceAllUndoLabel.setVisible(false);
+      replaceLogPanel.clear();
    }
 
    @Override

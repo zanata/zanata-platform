@@ -13,7 +13,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.gen2.logging.shared.Log;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -40,12 +39,19 @@ public class Editor extends Composite implements ToggleEditor
    interface Styles extends CssResource
    {
       String userLabel();
+
+      String rootContainer();
+
+      String translatorList();
+
+      String textArea();
+
+      String bottomContainer();
    }
 
    private static EditorUiBinder uiBinder = GWT.create(EditorUiBinder.class);
 
    private static final int INITIAL_LINES = 3;
-   private static final int HEIGHT_PER_LINE = 16;
 
    private static final int TYPING_TIMER_INTERVAL = 500; // ms
    private static final int TYPING_TIMER_RECURRENT_VALIDATION_PERIOD = 5; // intervals
@@ -223,6 +229,10 @@ public class Editor extends Composite implements ToggleEditor
       label.setVisible(viewMode == ViewMode.VIEW);
       textArea.setVisible(viewMode == ViewMode.EDIT);
       translatorList.setVisible(viewMode == ViewMode.EDIT);
+      if (viewMode == ViewMode.EDIT)
+      {
+         autoSize();
+      }
    }
 
    @Override
@@ -255,55 +265,22 @@ public class Editor extends Composite implements ToggleEditor
    @Override
    public void autoSize()
    {
-      shrinkSize(true);
-      growSize();
+      textArea.setVisibleLines(INITIAL_LINES);
+      while(textArea.getElement().getScrollHeight() > textArea.getElement().getClientHeight())
+      {
+         textArea.setVisibleLines(textArea.getVisibleLines() + 1);
+      }
    }
 
    /**
-    * forceShrink will resize the textArea to initialLines(3 lines) and growSize
-    * according to the scroll height
-    * 
-    * @param forceShrink
+    * when user press enter, it will autosize first and then the enter itself will increase one line
+    *
     */
    @Override
-   public void shrinkSize(boolean forceShrink)
+   public void autoSizePlusOne()
    {
-      if (forceShrink)
-      {
-         textArea.setVisibleLines(INITIAL_LINES);
-      }
-      else
-      {
-         if (textArea.getElement().getScrollHeight() <= (INITIAL_LINES * HEIGHT_PER_LINE))
-         {
-            textArea.setVisibleLines(INITIAL_LINES);
-         }
-         else
-         {
-            if (textArea.getElement().getScrollHeight() >= textArea.getElement().getClientHeight())
-            {
-               int newHeight = textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight() > 0 ? textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight() : HEIGHT_PER_LINE;
-               int newLine = (newHeight / HEIGHT_PER_LINE) - 1 > INITIAL_LINES ? (newHeight / HEIGHT_PER_LINE) - 1 : INITIAL_LINES;
-               int lines = textArea.getVisibleLines() - newLine;
-               if (lines > 0)
-               {
-                  textArea.setVisibleLines(lines);
-               }
-            }
-            growSize();
-         }
-      }
-   }
-
-   @Override
-   public void growSize()
-   {
-      if (textArea.getElement().getScrollHeight() > textArea.getElement().getClientHeight())
-      {
-         int newHeight = textArea.getElement().getScrollHeight() - textArea.getElement().getClientHeight();
-         int newLine = (newHeight / HEIGHT_PER_LINE) + 1;
-         textArea.setVisibleLines(textArea.getVisibleLines() + newLine);
-      }
+      autoSize();
+      textArea.setVisibleLines(textArea.getVisibleLines() + 1);
    }
 
    @Override
