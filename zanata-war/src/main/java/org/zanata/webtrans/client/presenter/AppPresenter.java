@@ -87,6 +87,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       HasClickHandlers getErrorNotificationBtn();
 
       void setErrorNotificationText(int count);
+
+      void setLayoutMenuVisible(boolean visible);
    }
 
    private final KeyShortcutPresenter keyShortcutPresenter;
@@ -412,6 +414,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             }
             currentDisplayStats = selectedDocumentStats;
             searchResultsPresenter.concealDisplay();
+            display.setLayoutMenuVisible(true);
             break;
          case Search:
             // these two lines temporarily here until PresenterRevealedHandler is
@@ -419,6 +422,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             display.setDocumentLabel("", messages.projectWideSearchAndReplace());
             currentDisplayStats = projectStats;
             searchResultsPresenter.revealDisplay();
+            display.setLayoutMenuVisible(false);
             break;
          case Documents:
          default:
@@ -427,6 +431,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             display.setDocumentLabel("", messages.noDocumentSelected());
             currentDisplayStats = projectStats;
             searchResultsPresenter.concealDisplay();
+            display.setLayoutMenuVisible(false);
             break;
          }
          display.showInMainView(viewToShow);

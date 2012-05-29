@@ -244,7 +244,8 @@ public class AppPresenterTest
 
       expectLoadDocAndViewEditor();
       expectViewTransitionFromEditorToDoclist(newProjectStats);
-
+      mockDisplay.setLayoutMenuVisible(true);
+      expectLastCall().once();
       replayAllMocks();
 
       appPresenter.bind();
@@ -263,6 +264,7 @@ public class AppPresenterTest
       expectLastCall().anyTimes();
       mockDisplay.setStats(notNull(TranslationStats.class));
       expectLastCall().anyTimes();
+
       expect(mockDocumentListPresenter.getDocumentId(TEST_DOCUMENT_PATH + TEST_DOCUMENT_NAME)).andReturn(testDocId).anyTimes();
 
       replayAllMocks();
@@ -292,7 +294,8 @@ public class AppPresenterTest
       expectLastCall().anyTimes();
       mockDisplay.setStats(notNull(TranslationStats.class));
       expectLastCall().anyTimes();
-
+      mockDisplay.setLayoutMenuVisible(true);
+      expectLastCall().once();
       replayAllMocks();
 
       appPresenter.bind();
@@ -308,6 +311,7 @@ public class AppPresenterTest
    {
       // return invalid document
       expect(mockDocumentListPresenter.getDocumentId(notNull(String.class))).andReturn(null).anyTimes();
+
       // not expecting show view editor
       replayAllMocks();
 
@@ -330,6 +334,9 @@ public class AppPresenterTest
       expectLastCall().once();
       mockDisplay.setStats(eq(testDocStats));
       expectLastCall().once();
+      mockDisplay.setLayoutMenuVisible(true);
+      expectLastCall().once();
+
       replayAllMocks();
 
       appPresenter.bind();
@@ -350,7 +357,8 @@ public class AppPresenterTest
       expectLoadDocAndViewEditor();
       expectViewTransitionFromEditorToDoclist(emptyProjectStats);
       expectReturnToEditorView(testDocStats);
-
+      mockDisplay.setLayoutMenuVisible(true);
+      expectLastCall().anyTimes();
       replayAllMocks();
       appPresenter.bind();
       HistoryToken token = simulateLoadDocAndViewEditor();
@@ -366,6 +374,9 @@ public class AppPresenterTest
       expectViewTransitionFromEditor(MainView.Search, emptyProjectStats, SEARCH_PAGE_LABEL);
       expectReturnToEditorView(testDocStats);
 
+      mockDisplay.setLayoutMenuVisible(true);
+      expectLastCall().anyTimes();
+
       replayAllMocks();
       appPresenter.bind();
       HistoryToken token = simulateLoadDocAndViewEditor();
@@ -380,6 +391,10 @@ public class AppPresenterTest
       expectLoadDocAndViewEditor();
       mockDisplay.setStats(eq(updatedStats));
       expectLastCall().once();
+
+      mockDisplay.setLayoutMenuVisible(true);
+      expectLastCall().once();
+
       replayAllMocks();
 
       appPresenter.bind();
@@ -394,6 +409,9 @@ public class AppPresenterTest
    {
       TranslationStats updatedStats = new TranslationStats(new TransUnitCount(9, 9, 9), new TransUnitWords(9, 9, 9));
       DocumentId notSelectedDocId = new DocumentId(7777L);
+
+      mockDisplay.setLayoutMenuVisible(true);
+      expectLastCall().once();
 
       expectLoadDocAndViewEditor();
       replayAllMocks();
@@ -412,6 +430,8 @@ public class AppPresenterTest
       expectLoadDocAndViewEditor();
       expectViewTransitionFromEditorToDoclist(emptyProjectStats);
       expectReturnToEditorView(updatedStats);
+      mockDisplay.setLayoutMenuVisible(true);
+      expectLastCall().anyTimes();
       replayAllMocks();
 
       appPresenter.bind();
@@ -431,7 +451,6 @@ public class AppPresenterTest
       mockDismissVisibility.setVisible(true); // visible upon message
       mockDisplay.setNotificationMessage("", Severity.Info);
       mockDismissVisibility.setVisible(false); // invisible upon clear
-
       replayAllMocks();
       appPresenter.bind();
       NotificationEvent notification = new NotificationEvent(Severity.Warning, testMessage);
@@ -490,8 +509,9 @@ public class AppPresenterTest
       // NOTE not expecting return to editor view as this test does not simulate
       // the event for the new history item
 
-      replayAllMocks();
+      mockDisplay.setLayoutMenuVisible(true);
 
+      replayAllMocks();
 
       appPresenter.bind();
       //discard captured tokens from bind to allow easy check for new token
@@ -532,6 +552,7 @@ public class AppPresenterTest
    {
       ClickEvent searchLinkClickEvent = createMock(ClickEvent.class);
       expect(mockHistory.getToken()).andReturn("").once();
+
       replayAllMocks();
       appPresenter.bind();
       //simulate click
@@ -728,6 +749,9 @@ public class AppPresenterTest
       mockHistory.newItem(capture(capturedHistoryTokenString));
       expectLastCall().anyTimes();
       mockEventBus.fireEvent(and(capture(capturedDocumentSelectionEvent), isA(DocumentSelectionEvent.class)));
+      expectLastCall().anyTimes();
+
+      mockDisplay.setLayoutMenuVisible(false);
       expectLastCall().anyTimes();
    }
 

@@ -107,4 +107,10 @@ public interface Resources extends ClientBundle
 
    @Source("images/crystal_project/_16x16/actions/view_choose.png")
    ImageResource viewChoose();
+   
+   @Source("images/crystal_project/_16x16/actions/help.png")
+   ImageResource help();
+
+   @Source("images/crystal_project/_16x16/actions/logout.png")
+   ImageResource logout();
 }

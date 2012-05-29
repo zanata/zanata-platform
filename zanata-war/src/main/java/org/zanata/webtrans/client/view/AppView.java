@@ -51,6 +51,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
+import com.google.gwt.user.client.ui.MenuItemSeparator;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -109,8 +110,6 @@ public class AppView extends Composite implements AppPresenter.Display
    @UiField
    Anchor searchAndReplace;
 
-   MenuBar menuBar;
-
    MenuItem helpMenuItem;
    
    MenuItem leaveWorkspaceMenuItem;
@@ -118,6 +117,8 @@ public class AppView extends Composite implements AppPresenter.Display
    MenuItem signOutMenuItem;
    
    MenuItem layoutMenuItem;
+   
+   MenuItemSeparator layoutMenuSeperator;
 
    // TODO may be able to make these provided=true widgets
    private Widget documentListView;
@@ -223,20 +224,27 @@ public class AppView extends Composite implements AppPresenter.Display
    @Override
    public void initMenuList(String userLabel, Command helpMenuCommand, Command leaveWorkspaceMenuCommand, Command signOutMenuCommand, Command layoutMenuCommand)
    {
-      menuBar = new MenuBar(true);
-      helpMenuItem = new MenuItem(messages.help(), helpMenuCommand);
-      leaveWorkspaceMenuItem = new MenuItem(messages.leaveWorkspace(), leaveWorkspaceMenuCommand);
-      signOutMenuItem = new MenuItem(messages.signOut(), signOutMenuCommand);
+      MenuBar menuBar = new MenuBar(true);
 
-      menuBar.addItem(helpMenuItem);
-      menuBar.addSeparator();
+      ImageLabel helpImageLabel = new ImageLabel(resources.help(), messages.help());
+      helpImageLabel.setImageStyle(style.image());
 
       ImageLabel layoutImageLabel = new ImageLabel(resources.viewChoose(), messages.viewSelection());
-      layoutMenuItem = menuBar.addItem(layoutImageLabel.getElement().getInnerHTML(), true, layoutMenuCommand);
+      layoutImageLabel.setImageStyle(style.image());
 
+      ImageLabel signOutImageLabel = new ImageLabel(resources.logout(), messages.signOut());
+      signOutImageLabel.setImageStyle(style.image());
+
+      helpMenuItem = menuBar.addItem(helpImageLabel.getElement().getString(), true, helpMenuCommand);
       menuBar.addSeparator();
+
+      layoutMenuItem = menuBar.addItem(layoutImageLabel.getElement().getString(), true, layoutMenuCommand);
+      layoutMenuSeperator = menuBar.addSeparator();
+
+      leaveWorkspaceMenuItem = new MenuItem(messages.leaveWorkspace(), leaveWorkspaceMenuCommand);
       menuBar.addItem(leaveWorkspaceMenuItem);
-      menuBar.addItem(signOutMenuItem);
+
+      signOutMenuItem = menuBar.addItem(signOutImageLabel.getElement().getString(), true, signOutMenuCommand);
 
       ImageLabel userMenu = new ImageLabel(userAvatarUrl, userLabel + " " + messages.downArrow());
       userMenu.setLabelStyle(style.userName());
@@ -306,6 +314,13 @@ public class AppView extends Composite implements AppPresenter.Display
    public HasClickHandlers getErrorNotificationBtn()
    {
       return errorNotificationBtn;
+   }
+
+   @Override
+   public void setLayoutMenuVisible(boolean visible)
+   {
+      layoutMenuItem.setVisible(visible);
+      layoutMenuSeperator.setVisible(visible);
    }
 
    @Override
