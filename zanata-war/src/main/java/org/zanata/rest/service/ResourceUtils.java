@@ -1353,7 +1353,7 @@ public class ResourceUtils
     * @param locale
     * @param enabledExtensions
     * @param hTargets
-    * @return true only if some data was found (non-New translations, or some
+    * @return true only if some data was found (text flow targets, or some
     *         metadata extensions)
     */
    public boolean transferToTranslationsResource(TranslationsResource transRes, HDocument document, HLocale locale, Set<String> enabledExtensions, List<HTextFlowTarget> hTargets)
@@ -1362,10 +1362,7 @@ public class ResourceUtils
 
       for (HTextFlowTarget hTarget : hTargets)
       {
-         if (hTarget.getState() != ContentState.New)
-         {
-            found = true;
-         }
+         found = true;
          TextFlowTarget target = new TextFlowTarget();
          target.setResId(hTarget.getTextFlow().getResId());
          this.transferToTextFlowTarget(hTarget, target);

@@ -230,9 +230,9 @@ public class TranslatedDocResourceService implements TranslatedDocResource
 
       HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
       TranslationsResource translationResource = new TranslationsResource();
+      List<HTextFlowTarget> hTargets = textFlowTargetDAO.findTranslations(document, hLocale);
       boolean foundData = resourceUtils.transferToTranslationsResource(
-            translationResource, document, hLocale, extensions, 
-            textFlowTargetDAO.findTranslations(document, hLocale));
+            translationResource, document, hLocale, extensions, hTargets);
 
       if (!foundData && !skeletons)
       {
