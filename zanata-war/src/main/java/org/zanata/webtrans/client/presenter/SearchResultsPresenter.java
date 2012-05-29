@@ -200,6 +200,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    private Map<Long, String> docPaths;
 
+   private boolean autoPreview = true;
+
    @Inject
    public SearchResultsPresenter(Display display, EventBus eventBus,
          CachingDispatchAsync dispatcher,
@@ -317,12 +319,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void onClick(ClickEvent event)
          {
-            List<TransUnitReplaceInfo> selected = new ArrayList<TransUnitReplaceInfo>();
-            for (MultiSelectionModel<TransUnitReplaceInfo> sel : documentSelectionModels.values())
-            {
-               selected.addAll(sel.getSelectedSet());
-            }
-            firePreviewEvent(selected);
+            previewSelected(false, false);
          }
       }));
 
@@ -607,6 +604,11 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          {
             int selectedFlows = countSelectedFlows();
 
+            if (autoPreview)
+            {
+               previewSelected(true, true);
+            }
+
             if (selectedFlows == 0)
             {
                setUiForNothingSelected();
@@ -622,6 +624,36 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    }
 
    /**
+    * 
+    * @param skipEmptyNotification true to silently ignore the request when no rows are selected
+    */
+   private void previewSelected(boolean skipEmptyNotification, boolean hideNonSelectedPreviews)
+   {
+      List<TransUnitReplaceInfo> selected = new ArrayList<TransUnitReplaceInfo>();
+      for (MultiSelectionModel<TransUnitReplaceInfo> model : documentSelectionModels.values())
+      {
+         selected.addAll(model.getSelectedSet());
+      }
+
+      if (!skipEmptyNotification || !selected.isEmpty())
+      {
+         firePreviewEvent(selected);
+      }
+
+      if (hideNonSelectedPreviews)
+      {
+         for (TransUnitReplaceInfo info : allReplaceInfos.values())
+         {
+            if (info.getPreviewState() == PreviewState.Show && !selected.contains(info))
+            {
+               info.setPreviewState(PreviewState.Hide);
+            }
+         }
+      }
+   }
+
+
+   /**
     * Fire a {@link PreviewReplaceText} event for the given {@link TransUnit}s
     * using parameters from the current history state. This will also update the
     * state and refresh the table to show 'previewing' indicator.
@@ -635,6 +667,13 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       if (toPreview.isEmpty())
       {
          eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.noTextFlowsSelected()));
+         return;
+      }
+      final String replacement = currentHistoryState.getProjectSearchReplacement();
+      // prevent failed requests for empty replacement
+      if (replacement.isEmpty())
+      {
+         eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.noReplacementPhraseEntered()));
          return;
       }
 
@@ -662,7 +701,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       }
 
       final String searchText = currentHistoryState.getProjectSearchText();
-      final String replacement = currentHistoryState.getProjectSearchReplacement();
       boolean caseSensitive = currentHistoryState.getProjectSearchCaseSensitive();
       ReplaceText action = new ReplaceText(transUnits, searchText, replacement, caseSensitive);
       PreviewReplaceText previewAction = new PreviewReplaceText(action);
@@ -1054,7 +1092,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }
 
-      if (!token.getProjectSearchReplacement().equals(currentHistoryState.getProjectSearchReplacement()))
+      boolean replacementTextChanged = !token.getProjectSearchReplacement().equals(currentHistoryState.getProjectSearchReplacement());
+      if (replacementTextChanged)
       {
          display.getReplacementTextBox().setValue(token.getProjectSearchReplacement(), true);
          for (TransUnitReplaceInfo info : allReplaceInfos.values())
@@ -1067,6 +1106,12 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       }
 
       currentHistoryState = token;
+
+      // uses currentHistoryState so must execute after token is updated.
+      if (replacementTextChanged && autoPreview)
+      {
+         previewSelected(true, false);
+      }
    }
 
    /**

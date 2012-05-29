@@ -307,7 +307,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       assertThat(response.getResponseStatus(), is(Status.OK));
 
       getResponse = transResource.getTranslations("my.txt", de_DE, null, false);
-      assertThat(getResponse.getResponseStatus(), is(Status.NOT_FOUND));
+      assertThat(getResponse.getResponseStatus(), is(Status.OK));
    }
 
    @Test

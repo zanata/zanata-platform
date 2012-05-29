@@ -69,7 +69,7 @@ public class LanguageManagerAction implements Serializable
 
    private List<SelectItem> localeStringList;
 
-   private boolean enabledByDefault;
+   private boolean enabledByDefault = true;
 
    // cache this so it is called only once
    private List<LocaleId> allLocales;

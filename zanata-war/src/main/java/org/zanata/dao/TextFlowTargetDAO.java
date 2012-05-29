@@ -128,6 +128,12 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
       return totalCount.intValue();
    }
 
+   /**
+    * Finds all (including obsolete) translations for 'document' in 'locale'.
+    * @param document
+    * @param locale
+    * @return
+    */
    @SuppressWarnings("unchecked")
    public List<HTextFlowTarget> findAllTranslations(HDocument document, LocaleId localeId)
    {
@@ -136,16 +142,20 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
             "select t from HTextFlowTarget t where " + 
             "t.textFlow.document =:document " +
             "and t.locale.localeId =:localeId " + 
-            "and t.state !=:state " + 
             "order by t.textFlow.pos");
       q.setParameter("document", document);
       q.setParameter("localeId", localeId);
-      q.setParameter("state", ContentState.New);
       q.setCacheable(true);
       return q.list();
       // @formatter:on
    }
 
+   /**
+    * Finds non-obsolete translations for 'document' in 'locale'.
+    * @param document
+    * @param locale
+    * @return
+    */
    @SuppressWarnings("unchecked")
    public List<HTextFlowTarget> findTranslations(HDocument document, HLocale locale)
    {
@@ -155,12 +165,10 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
                   "from HTextFlowTarget t where " +
                   "t.textFlow.document =:document " +
                   "and t.locale =:locale " +
-                  "and t.state !=:state " +
                   "and t.textFlow.obsolete=false " +
                   "order by t.textFlow.pos");
       q.setParameter("document", document);
       q.setParameter("locale", locale);
-      q.setParameter("state", ContentState.New);
       q.setCacheable(true);
       return q.list();
       // @formatter:on

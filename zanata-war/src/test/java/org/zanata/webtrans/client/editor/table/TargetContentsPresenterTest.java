@@ -240,14 +240,10 @@ public class TargetContentsPresenterTest
    @Test
    public void toggleViewIsDeferredExecuted()
    {
-      ArgumentCaptor<Scheduler.ScheduledCommand> commandCaptor = ArgumentCaptor.forClass(Scheduler.ScheduledCommand.class);
       when(editor.getIndex()).thenReturn(99);
       presenter.showEditors(0, TargetContentsPresenter.NO_OPEN_EDITOR);
 
       presenter.toggleView(editor);
-
-      verify(scheduler).scheduleDeferred(commandCaptor.capture());
-      commandCaptor.getValue().execute();
 
       verify(display1).focusEditor(99);
    }

@@ -205,6 +205,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Replace text failed")
    String replaceTextFailure();
 
+   @DefaultMessage("No replacement text has been entered")
+   String noReplacementPhraseEntered();
+
    @DefaultMessage("No replacements to make")
    String noReplacementsToMake();
 

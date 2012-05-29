@@ -48,7 +48,10 @@ public class AddLanguagePage extends AbstractPage
 
    public AddLanguagePage enableLanguageByDefault()
    {
-      enabledByDefaultInput.click();
+      if (!enabledByDefaultInput.isSelected())
+      {
+         enabledByDefaultInput.click();
+      }
       return this;
    }
 
