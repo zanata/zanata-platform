@@ -313,4 +313,13 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Replace text in selected rows")
    String replaceSelectedKeyShortcut();
+
+   @DefaultMessage("Show document list")
+   String showDocumentListKeyShortcut();
+
+   @DefaultMessage("Show editor view")
+   String showEditorKeyShortcut();
+
+   @DefaultMessage("Show project-wide search view")
+   String showProjectWideSearch();
 }
