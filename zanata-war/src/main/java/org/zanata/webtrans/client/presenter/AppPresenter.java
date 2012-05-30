@@ -340,6 +340,11 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
 
+      // TODO register shortcuts to change main view:
+      // Alt+L doclist
+      // Alt+O document
+      // Alt+P project-wide search
+
       display.setUserLabel(identity.getPerson().getName());
       String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
       display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName(), workspaceTitle);

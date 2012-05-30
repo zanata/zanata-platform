@@ -342,12 +342,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void onClick(ClickEvent event)
          {
-            List<TransUnitReplaceInfo> selected = new ArrayList<TransUnitReplaceInfo>();
-            for (MultiSelectionModel<TransUnitReplaceInfo> sel : documentSelectionModels.values())
-            {
-               selected.addAll(sel.getSelectedSet());
-            }
-            fireReplaceTextEvent(selected);
+            replaceSelected();
          }
       }));
 
@@ -454,7 +449,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       }));
 
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
-            KeyShortcut.ALT_KEY, 'S',
+            KeyShortcut.ALT_KEY, 'P',
             ShortcutContext.ProjectWideSearch,
             messages.focusSearchPhraseKeyShortcut(),
             new KeyShortcutEventHandler()
@@ -467,7 +462,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       }));
 
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
-            KeyShortcut.ALT_KEY, 'R',
+            KeyShortcut.ALT_KEY, 'C',
             ShortcutContext.ProjectWideSearch,
             messages.focusReplacementPhraseKeyShortcut(),
             new KeyShortcutEventHandler()
@@ -476,6 +471,19 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          public void onKeyShortcut(KeyShortcutEvent event)
          {
             display.focusReplacementTextBox();
+         }
+      }));
+
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
+            KeyShortcut.ALT_KEY, 'R',
+            ShortcutContext.ProjectWideSearch,
+            messages.replaceSelectedKeyShortcut(),
+            new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            replaceSelected();
          }
       }));
 
@@ -528,6 +536,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    public void onRevealDisplay()
    {
       keyShortcutPresenter.setContextActive(ShortcutContext.ProjectWideSearch, true);
+      display.focusReplacementTextBox();
    }
 
    public void concealDisplay()
@@ -682,12 +691,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     */
    private void previewSelected(boolean skipEmptyNotification, boolean hideNonSelectedPreviews)
    {
-      List<TransUnitReplaceInfo> selected = new ArrayList<TransUnitReplaceInfo>();
-      for (MultiSelectionModel<TransUnitReplaceInfo> model : documentSelectionModels.values())
-      {
-         selected.addAll(model.getSelectedSet());
-      }
-
+      List<TransUnitReplaceInfo> selected = getAllSelected();
       if (!skipEmptyNotification || !selected.isEmpty())
       {
          firePreviewEvent(selected);
@@ -791,6 +795,21 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
 
       });
+   }
+
+   private void replaceSelected()
+   {
+      fireReplaceTextEvent(getAllSelected());
+   }
+
+   private List<TransUnitReplaceInfo> getAllSelected()
+   {
+      List<TransUnitReplaceInfo> selected = new ArrayList<TransUnitReplaceInfo>();
+      for (MultiSelectionModel<TransUnitReplaceInfo> sel : documentSelectionModels.values())
+      {
+         selected.addAll(sel.getSelectedSet());
+      }
+      return selected;
    }
 
    /**

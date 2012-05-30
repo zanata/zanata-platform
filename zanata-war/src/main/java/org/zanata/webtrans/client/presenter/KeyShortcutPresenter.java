@@ -114,7 +114,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
       });
 
       // could try to use ?, although this is not as simple as passing character '?'
-      registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, 'K',
+      registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, 'Y',
             ShortcutContext.Application,
             messages.showAvailableKeyShortcuts(),
             new KeyShortcutEventHandler()
