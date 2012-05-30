@@ -277,33 +277,33 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
 
    }
 
-   private void setSourceColumnBorder(int row, String color, String borderWidth)
+   private void setSourceColumnBorder(int row, String color, String borderStyle, String borderWidth)
    {
       getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderTopColor", color);
-      getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderTopStyle", "solid");
+      getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderTopStyle", borderStyle);
       getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderTopWidth", borderWidth);
 
       getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderLeftColor", color);
-      getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderLeftStyle", "solid");
+      getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderLeftStyle", borderStyle);
       getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderLeftWidth", borderWidth);
 
       getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderBottomColor", color);
-      getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderBottomStyle", "solid");
+      getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderBottomStyle", borderStyle);
       getDataTable().getCellFormatter().getElement(row, 0).getStyle().setProperty("borderBottomWidth", borderWidth);
    }
 
-   private void setTargetColumnBorder(int row, String color, String borderWidth)
+   private void setTargetColumnBorder(int row, String color, String borderStyle, String borderWidth)
    {
       getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderTopColor", color);
-      getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderTopStyle", "solid");
+      getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderTopStyle", borderStyle);
       getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderTopWidth", borderWidth);
 
       getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderRightColor", color);
-      getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderRightStyle", "solid");
+      getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderRightStyle", borderStyle);
       getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderRightWidth", borderWidth);
 
       getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderBottomColor", color);
-      getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderBottomStyle", "solid");
+      getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderBottomStyle", borderStyle);
       getDataTable().getCellFormatter().getElement(row, 1).getStyle().setProperty("borderBottomWidth", borderWidth);
    }
 
@@ -312,8 +312,8 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    {
       if (row < getDataTable().getRowCount())
       {
-         setSourceColumnBorder(row, color, "2px");
-         setTargetColumnBorder(row, color, "2px");
+         setSourceColumnBorder(row, color, "solid", "2px");
+         setTargetColumnBorder(row, color, "solid", "2px");
       }
    }
 
@@ -322,8 +322,8 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    {
       if (row < getDataTable().getRowCount())
       {
-         setSourceColumnBorder(row, "", "");
-         setTargetColumnBorder(row, "", "");
+         setSourceColumnBorder(row, "", "", "");
+         setTargetColumnBorder(row, "", "", "");
       }
    }
 
