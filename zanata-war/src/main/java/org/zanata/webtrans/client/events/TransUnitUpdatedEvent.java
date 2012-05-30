@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.events;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.rpc.HasTransUnitUpdatedData;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -51,11 +52,13 @@ public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler
 
    private TransUnitUpdateInfo tuUpdateInfo;
    private EditorClientId editorClientId;
+   private UpdateType updateType;
 
    public TransUnitUpdatedEvent(HasTransUnitUpdatedData data)
    {
       this.tuUpdateInfo = data.getUpdateInfo();
       this.editorClientId = data.getEditorClientId();
+      this.updateType = data.getUpdateType();
    }
 
    @Override
@@ -80,6 +83,12 @@ public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler
    public EditorClientId getEditorClientId()
    {
       return editorClientId;
+   }
+
+   @Override
+   public UpdateType getUpdateType()
+   {
+      return updateType;
    }
 
 }
