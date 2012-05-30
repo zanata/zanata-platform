@@ -45,7 +45,7 @@ Removes some of the styling on the page-level splitters
 	width: auto;
 }
 
-#DocumentListView,#TransFilterView,#WorkspaceUsersView {
+#DocumentListView,#WorkspaceUsersView {
 	padding-bottom: 5px;
 	width: 100%;
 }
@@ -468,23 +468,6 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 {
 	font-size: 1.2em;
 	margin-bottom: 4px;
-}
-
-.transFilterTextBox
-{
-	margin: 0px;
-	font-size: 1.15em;
-	border: 2px solid lightgrey;
-	border-radius: 6px;
-	outline: none;
-	-moz-border-radius: 6px;
-	padding-left: 4px;
-}
-
-.transFilterTextBoxEmpty
-{
-	color: grey;
-	font-style: italic;
 }
 
 /* Search-replace page
