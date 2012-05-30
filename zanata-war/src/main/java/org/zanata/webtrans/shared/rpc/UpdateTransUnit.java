@@ -1,6 +1,7 @@
 package org.zanata.webtrans.shared.rpc;
 
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,15 +12,23 @@ public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResu
    private static final long serialVersionUID = 1L;
 
    private List<TransUnitUpdateRequest> updateRequests;
+   private UpdateType updateType;
 
-   protected UpdateTransUnit()
+   // needed for Gwt serialization
+   @SuppressWarnings("unused")
+   private UpdateTransUnit()
    {
+   }
+
+   public UpdateTransUnit(UpdateType updateType)
+   {
+      this.updateType = updateType;
       updateRequests = new ArrayList<TransUnitUpdateRequest>();
    }
 
-   public UpdateTransUnit(TransUnitUpdateRequest updateRequest)
+   public UpdateTransUnit(TransUnitUpdateRequest updateRequest, UpdateType updateType)
    {
-      this();
+      this(updateType);
       updateRequests.add(updateRequest);
    }
 
@@ -31,6 +40,11 @@ public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResu
    public List<TransUnitUpdateRequest> getUpdateRequests()
    {
       return updateRequests;
+   }
+
+   public UpdateType getUpdateType()
+   {
+      return updateType;
    }
 
 }

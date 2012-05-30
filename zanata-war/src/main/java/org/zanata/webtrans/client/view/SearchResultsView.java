@@ -79,7 +79,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    CheckBox caseSensitiveChk, requirePreviewChk;
 
    @UiField
-   Button previewButton, replaceAllButton;
+   Button replaceAllButton;
 
    @UiField
    ListBox searchFieldsSelect;
@@ -155,28 +155,6 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    public HasValue<Boolean> getCaseSensitiveChk()
    {
       return caseSensitiveChk;
-   }
-
-   @Override
-   public HasClickHandlers getPreviewButton()
-   {
-      return previewButton;
-   }
-
-   @Override
-   public void setPreviewButtonEnabled(boolean enabled)
-   {
-      previewButton.setEnabled(enabled);
-      if (enabled)
-      {
-         previewButton.removeStyleName("projectWideReplacButton-Disabled");
-         previewButton.setTitle(messages.previewSelectedDescription());
-      }
-      else
-      {
-         previewButton.addStyleName("projectWideReplacButton-Disabled");
-         previewButton.setTitle(messages.previewSelectedDisabledDescription());
-      }
    }
 
    @Override
@@ -274,20 +252,43 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    public HasData<TransUnitReplaceInfo> addDocument(String docName,
          ClickHandler viewDocClickHandler,
          ClickHandler searchDocClickHandler,
-         Delegate<TransUnitReplaceInfo> previewDelegate,
-         Delegate<TransUnitReplaceInfo> replaceDelegate,
-         Delegate<TransUnitReplaceInfo> undoDelegate,
          SelectionModel<TransUnitReplaceInfo> selectionModel,
          ValueChangeHandler<Boolean> selectAllHandler)
    {
-      // ensure 'no results' message is no longer visible
-      noResultsLabel.removeFromParent();
-      addDocumentLabel(docName, viewDocClickHandler, searchDocClickHandler);
-      SearchResultsDocumentTable table = new SearchResultsDocumentTable(previewDelegate, replaceDelegate, undoDelegate, selectionModel, selectAllHandler, messages, resources);
-      searchResultsPanel.add(table);
-      table.addStyleName("projectWideSearchResultsDocumentBody");
-      return table;
+      SearchResultsDocumentTable table = new SearchResultsDocumentTable(selectionModel, selectAllHandler, messages);
+      return addDocument(docName, viewDocClickHandler, searchDocClickHandler, table);
    }
+
+   @Override
+   public HasData<TransUnitReplaceInfo> addDocument(String docName,
+         ClickHandler viewDocClickHandler,
+         ClickHandler searchDocClickHandler,
+         SelectionModel<TransUnitReplaceInfo> selectionModel,
+         ValueChangeHandler<Boolean> selectAllHandler,
+         Delegate<TransUnitReplaceInfo> previewDelegate,
+         Delegate<TransUnitReplaceInfo> replaceDelegate,
+         Delegate<TransUnitReplaceInfo> undoDelegate)
+   {
+      SearchResultsDocumentTable table = new SearchResultsDocumentTable(previewDelegate, replaceDelegate, undoDelegate, selectionModel, selectAllHandler, messages, resources);
+      return addDocument(docName, viewDocClickHandler, searchDocClickHandler, table);
+   }
+
+/**
+ * @param docName
+ * @param viewDocClickHandler
+ * @param searchDocClickHandler
+ * @param table
+ * @return
+ */
+private HasData<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, SearchResultsDocumentTable table)
+{
+   // ensure 'no results' message is no longer visible
+   noResultsLabel.removeFromParent();
+   addDocumentLabel(docName, viewDocClickHandler, searchDocClickHandler);
+   searchResultsPanel.add(table);
+   table.addStyleName("projectWideSearchResultsDocumentBody");
+   return table;
+}
 
    private void addDocumentLabel(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler)
    {

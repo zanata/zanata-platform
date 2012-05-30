@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
 
 public class ReplaceText extends UpdateTransUnit
 {
@@ -34,9 +35,9 @@ public class ReplaceText extends UpdateTransUnit
    private String replaceText;
    private boolean caseSensitive;
 
-   @SuppressWarnings("unused")
    private ReplaceText()
    {
+      super(UpdateType.ReplaceText);
    }
 
    public ReplaceText(TransUnit transUnit, String searchText, String replaceText, boolean isCaseSensitive)
@@ -46,6 +47,7 @@ public class ReplaceText extends UpdateTransUnit
 
    public ReplaceText(List<TransUnit> transUnits, String searchText, String replaceText, boolean isCaseSensitive)
    {
+      this();
       caseSensitive = isCaseSensitive;
       this.searchText = searchText;
       this.replaceText = replaceText;

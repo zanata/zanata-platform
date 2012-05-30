@@ -77,6 +77,7 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
@@ -350,9 +351,23 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             // assume update was successful
             if (documentId != null && documentId.equals(event.getUpdateInfo().getDocumentId()))
             {
+               boolean editing = targetContentsPresenter.isEditing();
                navigationService.updateMap(event.getUpdateInfo().getTransUnit().getId().getId(), event.getUpdateInfo().getTransUnit().getStatus());
-               // if its different user,
-               if (!event.getEditorClientId().equals(identity.getEditorClientId()))
+               // if save-as-fuzzy on same tab
+               if (event.getEditorClientId().equals(identity.getEditorClientId()) && event.getUpdateType() == UpdateType.WebEditorSaveFuzzy)
+               {
+                  Integer rowIndex = navigationService.getRowIndex(event.getUpdateInfo().getTransUnit(), isFiltering(), display.getRowValues());
+                  if (rowIndex != null)
+                  {
+                     TransUnit rowValue = display.getRowValue(rowIndex);
+                     if (rowValue != null)
+                     {
+                        rowValue.OverrideWith(event.getUpdateInfo().getTransUnit());
+                        display.getTableModel().clearCache();
+                     }
+                  }
+               }
+               else
                {
                   if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getUpdateInfo().getTransUnit().getId()))
                   {
@@ -368,14 +383,9 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                      display.getTableModel().setRowValueOverride(rowIndex, event.getUpdateInfo().getTransUnit());
                   }
                }
-               else
+               if (editing)
                {
-                  Integer rowIndex = navigationService.getRowIndex(event.getUpdateInfo().getTransUnit(), isFiltering(), display.getRowValues());
-                  if (rowIndex != null)
-                  {
-                     display.getRowValue(rowIndex).OverrideWith(event.getUpdateInfo().getTransUnit());
-                     display.getTableModel().clearCache();
-                  }
+                  gotoCurrentRow();
                }
             }
          }
@@ -682,7 +692,9 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       @Override
       public boolean onSetRowValue(int row, TransUnit rowValue)
       {
-         final UpdateTransUnit updateTransUnit = new UpdateTransUnit(new TransUnitUpdateRequest(rowValue.getId(), rowValue.getTargets(), rowValue.getStatus(), rowValue.getVerNum()));
+         UpdateType updateType = rowValue.getStatus() == ContentState.Approved ? UpdateType.WebEditorSave : UpdateType.WebEditorSaveFuzzy;
+         Log.debug("row updated, calculated update type: " + updateType);
+         final UpdateTransUnit updateTransUnit = new UpdateTransUnit(new TransUnitUpdateRequest(rowValue.getId(), rowValue.getTargets(), rowValue.getStatus(), rowValue.getVerNum()), updateType);
          eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifySaving()));
          dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
          {

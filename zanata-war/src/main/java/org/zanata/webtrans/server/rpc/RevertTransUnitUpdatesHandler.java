@@ -46,6 +46,7 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.RevertTransUnitUpdates;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -102,7 +103,7 @@ public class RevertTransUnitUpdatesHandler extends AbstractActionHandler<RevertT
          TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(translationResult.isTranslationSuccessful(), new DocumentId(hTextFlow.getDocument().getId()), tu, wordCount, translationResult.getBaseVersionNum(), translationResult.getBaseContentState());
 
          TranslationWorkspace workspace = checkSecurityAndGetWorkspace(action);
-         workspace.publish(new TransUnitUpdated(updateInfo, action.getEditorClientId()));
+         workspace.publish(new TransUnitUpdated(updateInfo, action.getEditorClientId(), UpdateType.Revert));
          results.addUpdateResult(updateInfo);
       }
       return results;

@@ -32,6 +32,8 @@ import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.events.KeyShortcutEvent;
+import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NotificationEventHandler;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEventHandler;
@@ -40,6 +42,8 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
+import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.HasCommand;
 import org.zanata.webtrans.shared.auth.Identity;
@@ -337,6 +341,58 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 //               display.setDocumentLabel("", messages.projectWideSearchAndReplace());
 //               currentDisplayStats = projectStats;
 //            }
+         }
+      }));
+
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
+            KeyShortcut.ALT_KEY, 'L',
+            ShortcutContext.Application,
+            messages.showDocumentListKeyShortcut(),
+            new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            HistoryToken token = history.getHistoryToken();
+            token.setView(MainView.Documents);
+            history.newItem(token.toTokenString());
+         }
+      }));
+
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
+            KeyShortcut.ALT_KEY, 'O',
+            ShortcutContext.Application,
+            messages.showEditorKeyShortcut(),
+            new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            if (selectedDocument == null)
+            {
+               eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.noDocumentSelected()));
+            }
+            else
+            {
+               HistoryToken token = history.getHistoryToken();
+               token.setView(MainView.Editor);
+               history.newItem(token.toTokenString());
+            }
+         }
+      }));
+
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
+            KeyShortcut.ALT_KEY, 'P',
+            ShortcutContext.Application,
+            messages.showProjectWideSearch(),
+            new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            HistoryToken token = history.getHistoryToken();
+            token.setView(MainView.Search);
+            history.newItem(token.toTokenString());
          }
       }));
 
