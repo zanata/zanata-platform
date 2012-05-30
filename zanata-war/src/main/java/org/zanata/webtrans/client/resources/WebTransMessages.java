@@ -310,4 +310,19 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Editor navigation")
    String navigationScope();
+
+   @DefaultMessage("Toggle individual row action buttons (changes for next search)")
+   String toggleRowActionButtons();
+
+   @DefaultMessage("Replace text in selected rows")
+   String replaceSelectedKeyShortcut();
+
+   @DefaultMessage("Show document list")
+   String showDocumentListKeyShortcut();
+
+   @DefaultMessage("Show editor view")
+   String showEditorKeyShortcut();
+
+   @DefaultMessage("Show project-wide search view")
+   String showProjectWideSearch();
 }

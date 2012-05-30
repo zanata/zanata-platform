@@ -29,9 +29,16 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedData
 {
 
+   public enum UpdateType
+   {
+      WebEditorSave, WebEditorSaveFuzzy, ReplaceText, Revert
+      // TODO add types for updates through REST, copytrans, etc.
+   }
+
    private static final long serialVersionUID = 1L;
    private TransUnitUpdateInfo tuUpdateInfo;
    private EditorClientId updatedInSession;
+   private UpdateType updateType;
 
 
    // for ExposeEntity
@@ -39,10 +46,11 @@ public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedDa
    {
    }
 
-   public TransUnitUpdated(TransUnitUpdateInfo tuUpdateInfo, EditorClientId updatedInSession)
+   public TransUnitUpdated(TransUnitUpdateInfo tuUpdateInfo, EditorClientId updatedInSession, UpdateType updateType)
    {
       this.tuUpdateInfo = tuUpdateInfo;
       this.updatedInSession = updatedInSession;
+      this.updateType = updateType;
    }
 
    @Override
@@ -55,6 +63,11 @@ public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedDa
    public EditorClientId getEditorClientId()
    {
       return updatedInSession;
+   }
+
+   public UpdateType getUpdateType()
+   {
+      return updateType;
    }
 
 }

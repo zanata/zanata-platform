@@ -26,6 +26,7 @@ import org.zanata.webtrans.client.resources.UiMessages;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -43,10 +44,20 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
    {
    }
 
+   interface Styles extends CssResource
+   {
+      String transFilterTextBox();
+
+      String transFilterTextBoxEmpty();
+   }
+
    // TODO deal with showing greyed-out text
 
    @UiField
    TextBox filterTextBox;
+
+   @UiField
+   Styles style;
 
    private String hintMessage;
 
@@ -76,10 +87,10 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
    public void onFilterTextBoxFocus(FocusEvent event)
    {
       focused = true;
-      if (filterTextBox.getStyleName().contains("transFilterTextBoxEmpty"))
+      if (filterTextBox.getStyleName().contains(style.transFilterTextBoxEmpty()))
       {
          filterTextBox.setValue("");
-         filterTextBox.removeStyleName("transFilterTextBoxEmpty");
+         filterTextBox.removeStyleName(style.transFilterTextBoxEmpty());
       }
    }
 
@@ -90,7 +101,7 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
       if (filterTextBox.getText().isEmpty())
       {
          filterTextBox.setValue("");
-         filterTextBox.addStyleName("transFilterTextBoxEmpty");
+         filterTextBox.addStyleName(style.transFilterTextBoxEmpty());
          filterTextBox.setValue(hintMessage);
       }
    }

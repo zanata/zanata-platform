@@ -42,9 +42,6 @@
                             <g:InlineLabel ui:field='selectAllLink' addStyleNames='linkLabel linkLabelLightColor' ><ui:msg>select all</ui:msg></g:InlineLabel>
                         </g:FlowPanel>
                         <g:HorizontalPanel>
-                        <g:Button ui:field='previewButton' styleName='projectWideReplacementButton' >
-                                <ui:msg>Preview</ui:msg>
-                            </g:Button>
                             <g:Button ui:field='replaceAllButton' styleName='projectWideReplacementButton' >
                                 <ui:msg>Replace</ui:msg>
                             </g:Button>

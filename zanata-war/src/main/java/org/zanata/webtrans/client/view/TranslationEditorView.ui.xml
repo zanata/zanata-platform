@@ -10,7 +10,6 @@
 			background-color: #ffffff;
 			border: 2px solid #e0e8ee;
 			border-radius: 5px;
-			-moz-border-radius:5px;
 		}
 		
 		.unitStatus {
@@ -31,11 +30,17 @@
 			text-align: center;
 			display: inline;
 			}
+			
+			.filterPanelContainer
+			{
+	
+
+			}
 				
 	</ui:style>
 			<g:LayoutPanel styleName="{style.editor}">
 	            <g:layer left="1px" width="40%" top="2px" height="23px">
-		            <g:LayoutPanel ui:field="filterPanelContainer" />			    
+		            <g:LayoutPanel ui:field="filterPanelContainer" styleName="{style.filterPanelContainer}"/>			    
 	            </g:layer>
 				<g:layer width="50%" right="30px" top="3px" height="23px">
 						<g:FlowPanel ui:field="transUnitNavigationContainer"  styleName="{style.centerText}"/>
