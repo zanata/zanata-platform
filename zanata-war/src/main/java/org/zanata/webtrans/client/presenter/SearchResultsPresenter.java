@@ -122,10 +122,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
       void setSearching(boolean searching);
 
-      HasClickHandlers getPreviewButton();
-
-      void setPreviewButtonEnabled(boolean enabled);
-
       HasClickHandlers getReplaceAllButton();
 
       void setReplaceAllButtonEnabled(boolean enabled);
@@ -337,16 +333,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             token.setProjectSearchInSource(searchSource);
             token.setProjectSearchInTarget(searchTarget);
             history.newItem(token.toTokenString());
-         }
-      }));
-
-      registerHandler(display.getPreviewButton().addClickHandler(new ClickHandler()
-      {
-
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            previewSelected(false, false);
          }
       }));
 
@@ -684,7 +670,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             else
             {
                display.getSelectionInfoLabel().setText(messages.numTextFlowsSelected(selectedFlows));
-               display.setPreviewButtonEnabled(true);
                refreshReplaceAllButton();
             }
          }
@@ -1203,8 +1188,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private void setUiForNothingSelected()
    {
       display.getSelectionInfoLabel().setText(messages.noTextFlowsSelected());
-
-      display.setPreviewButtonEnabled(false);
       display.setReplaceAllButtonEnabled(false);
    }
 

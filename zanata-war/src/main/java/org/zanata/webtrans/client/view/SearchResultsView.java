@@ -79,7 +79,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    CheckBox caseSensitiveChk, requirePreviewChk;
 
    @UiField
-   Button previewButton, replaceAllButton;
+   Button replaceAllButton;
 
    @UiField
    ListBox searchFieldsSelect;
@@ -155,28 +155,6 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    public HasValue<Boolean> getCaseSensitiveChk()
    {
       return caseSensitiveChk;
-   }
-
-   @Override
-   public HasClickHandlers getPreviewButton()
-   {
-      return previewButton;
-   }
-
-   @Override
-   public void setPreviewButtonEnabled(boolean enabled)
-   {
-      previewButton.setEnabled(enabled);
-      if (enabled)
-      {
-         previewButton.removeStyleName("projectWideReplacButton-Disabled");
-         previewButton.setTitle(messages.previewSelectedDescription());
-      }
-      else
-      {
-         previewButton.addStyleName("projectWideReplacButton-Disabled");
-         previewButton.setTitle(messages.previewSelectedDisabledDescription());
-      }
    }
 
    @Override
