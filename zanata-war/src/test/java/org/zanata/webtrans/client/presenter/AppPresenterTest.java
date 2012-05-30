@@ -40,6 +40,7 @@ import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.history.Window.Location;
+import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.presenter.AppPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.HasCommand;
@@ -75,6 +76,9 @@ public class AppPresenterTest
    private static final String TEST_DOCUMENT_PATH = "test/document/path/";
    private static final String TEST_WORKSPACE_TITLE = "test workspace title";
    private static final String SEARCH_PAGE_LABEL = "Project-wide Search and Replace";
+   private static final String DOCUMENT_LIST_KEY_SHORTCUT_DESCRIPTION = "show document list";
+   private static final String SHOW_EDITOR_KEY_SHORTCUT_DESCRIPTION = "show editor view";
+   private static final String SHOW_PROJECT_WIDE_SEARCH_KEY_SHORTCUT_DESCRIPTION = "show project-wide search";
 
 
    private AppPresenter appPresenter;
@@ -117,6 +121,7 @@ public class AppPresenterTest
    private Capture<DocumentStatsUpdatedEventHandler> capturedDocumentStatsUpdatedEventHandler;
    private Capture<String> capturedHistoryTokenString;
    private Capture<ValueChangeHandler<String>> capturedHistoryValueChangeHandler;
+   private Capture<KeyShortcut> capturedKeyShortcuts;
    private Capture<NotificationEventHandler> capturedNotificationEventHandler;
    private Capture<ProjectStatsUpdatedEventHandler> capturedProjectStatsUpdatedEventHandler;
    private Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdatedEventHandler;
@@ -167,6 +172,7 @@ public class AppPresenterTest
       capturedDocumentStatsUpdatedEventHandler = new Capture<DocumentStatsUpdatedEventHandler>();
       capturedHistoryTokenString = new Capture<String>();
       capturedHistoryValueChangeHandler = new Capture<ValueChangeHandler<String>>();
+      capturedKeyShortcuts = new Capture<KeyShortcut>();
       capturedNotificationEventHandler = new Capture<NotificationEventHandler>();
       capturedProjectStatsUpdatedEventHandler = new Capture<ProjectStatsUpdatedEventHandler>();
       capturedWorkspaceContextUpdatedEventHandler = new Capture<WorkspaceContextUpdateEventHandler>();
@@ -832,6 +838,8 @@ public class AppPresenterTest
 
       mockDisplay.setErrorNotificationText(0);
       expectLastCall().once();
+
+      expect(mockKeyShortcutPresenter.registerKeyShortcut(and(capture(capturedKeyShortcuts), isA(KeyShortcut.class)))).andReturn(null).anyTimes();
    }
 
    private void setupMockGetterReturnValues()
@@ -854,6 +862,9 @@ public class AppPresenterTest
       expect(mockMessages.windowTitle(TEST_WORKSPACE_NAME, TEST_LOCALE_NAME)).andReturn(TEST_WINDOW_TITLE).anyTimes();
       expect(mockMessages.noDocumentSelected()).andReturn(NO_DOCUMENTS_STRING).anyTimes();
       expect(mockMessages.projectWideSearchAndReplace()).andReturn(SEARCH_PAGE_LABEL).anyTimes();
+      expect(mockMessages.showDocumentListKeyShortcut()).andReturn(DOCUMENT_LIST_KEY_SHORTCUT_DESCRIPTION).anyTimes();
+      expect(mockMessages.showEditorKeyShortcut()).andReturn(SHOW_EDITOR_KEY_SHORTCUT_DESCRIPTION).anyTimes();
+      expect(mockMessages.showProjectWideSearch()).andReturn(SHOW_PROJECT_WIDE_SEARCH_KEY_SHORTCUT_DESCRIPTION).anyTimes();
 
       expect(mockWorkspaceContext.getWorkspaceName()).andReturn(TEST_WORKSPACE_NAME).anyTimes();
       expect(mockWorkspaceContext.getLocaleName()).andReturn(TEST_LOCALE_NAME).anyTimes();
@@ -883,6 +894,7 @@ public class AppPresenterTest
       capturedHistoryValueChangeHandler.reset();
       capturedLeaveWorkspaceLinkCommand.reset();
       capturedHelpLinkCommand.reset();
+      capturedKeyShortcuts.reset();
       capturedNotificationEventHandler.reset();
       capturedProjectStatsUpdatedEventHandler.reset();
       capturedSearchLinkClickHandler.reset();
