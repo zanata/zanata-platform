@@ -799,7 +799,14 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    private void replaceSelected()
    {
-      fireReplaceTextEvent(getAllSelected());
+      if (replaceSelectedAllowed())
+      {
+         fireReplaceTextEvent(getAllSelected());
+      }
+      else
+      {
+         eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.previewRequiredBeforeReplace()));
+      }
    }
 
    private List<TransUnitReplaceInfo> getAllSelected()
@@ -961,7 +968,15 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                }
                else
                {
-                  replaceInfo.setPreviewState(PreviewState.Show);
+                  MultiSelectionModel<TransUnitReplaceInfo> selectionModel = documentSelectionModels.get(replaceInfo.getDocId());
+                  if (selectionModel != null && selectionModel.isSelected(replaceInfo))
+                  {
+                     replaceInfo.setPreviewState(PreviewState.Show);
+                  }
+                  else
+                  {
+                     replaceInfo.setPreviewState(PreviewState.Hide);
+                  }
                }
                refreshInfoDisplay(replaceInfo);
             }
@@ -1212,9 +1227,20 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    private void refreshReplaceAllButton()
    {
+      display.setReplaceAllButtonEnabled(replaceSelectedAllowed());
+   }
+
+   /**
+    * Checks that something is selected and that if previews are required, all
+    * selected rows have previews
+    * 
+    * @return true if conditions are met to replace selected
+    */
+   private boolean replaceSelectedAllowed()
+   {
       boolean requirePreview = display.getRequirePreviewChk().getValue();
       boolean canReplace = countSelectedFlows() != 0 && (!requirePreview || allSelectedHavePreview());
-      display.setReplaceAllButtonEnabled(canReplace);
+      return canReplace;
    }
 
    /**
