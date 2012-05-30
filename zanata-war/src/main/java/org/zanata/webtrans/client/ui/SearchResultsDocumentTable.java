@@ -102,6 +102,73 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
       requirePreview = required;
    }
 
+   /**
+    * Create a standard result document table with no action buttons.
+    * 
+    * Clicks on any cells will toggle selection.
+    * 
+    * @param selectionModel
+    * @param selectAllHandler handler for events for the selection column header
+    *           checkbox
+    * @param messages
+    */
+   public SearchResultsDocumentTable(final SelectionModel<TransUnitReplaceInfo> selectionModel,
+         ValueChangeHandler<Boolean> selectAllHandler,
+         final WebTransMessages messages)
+   {
+      super(15, getCellTableResources());
+
+      this.messages = messages;
+
+      setWidth("100%", true);
+      setSelectionModel(selectionModel, getSelectionManager());
+      addStyleName("projectWideSearchResultsDocumentBody");
+
+      checkboxColumn = new CheckColumn(selectionModel);
+      CheckboxHeader checkboxColumnHeader = new CheckboxHeader();
+      checkboxColumnHeader.addValueChangeHandler(selectAllHandler);
+      rowIndexColumn = buildRowIndexColumn();
+      sourceColumn = buildSourceColumn();
+      targetColumn = buildTargetColumn();
+
+      addColumn(checkboxColumn, checkboxColumnHeader);
+      addColumn(rowIndexColumn, messages.rowIndex());
+      addColumn(sourceColumn, messages.source());
+      addColumn(targetColumn, messages.target());
+
+      setColumnWidth(checkboxColumn, 50.0, Unit.PX);
+      setColumnWidth(rowIndexColumn, 70.0, Unit.PX);
+      setColumnWidth(sourceColumn, 50.0, Unit.PCT);
+      setColumnWidth(targetColumn, 50.0, Unit.PCT);
+
+      sourceColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
+      targetColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
+   }
+
+   /**
+    * Create a result document table with action buttons for each row.
+    * 
+    * Action button display is based on
+    * {@link TransUnitReplaceInfo#getPreviewState()} and
+    * {@link TransUnitReplaceInfo#getReplaceState()}, but Click and Enter-Key
+    * events will be generated regardless of display, so delegates must check
+    * for appropriate states.
+    * 
+    * Clicks on action button cells will not change selection. Clicks on other
+    * cells will toggle selection.
+    * 
+    * @param previewDelegate handles clicks of 'preview' button
+    * @param replaceDelegate handles clicks of 'replace' button
+    * @param undoDelegate handles clicks of 'undo' button
+    * @param selectionModel
+    * @param selectAllHandler handles events for the selection column header
+    *           checkbox
+    * @param messages
+    * @param resources
+    * 
+    * @see #SearchResultsDocumentTable(SelectionModel, ValueChangeHandler,
+    *      WebTransMessages)
+    */
    public SearchResultsDocumentTable(Delegate<TransUnitReplaceInfo> previewDelegate,
          Delegate<TransUnitReplaceInfo> replaceDelegate,
          Delegate<TransUnitReplaceInfo> undoDelegate,
@@ -110,47 +177,22 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
          final WebTransMessages messages,
          org.zanata.webtrans.client.resources.Resources resources)
    {
-      super(15, getCellTableResources());
+      this(selectionModel, selectAllHandler, messages);
 
-      this.messages = messages;
       if (spinner == null)
       {
          spinner = new ImageResourceRenderer().render(resources.spinner());
       }
 
-      checkboxColumn = new CheckColumn(selectionModel);
-      CheckboxHeader checkboxColumnHeader = new CheckboxHeader();
-      checkboxColumnHeader.addValueChangeHandler(selectAllHandler);
-
-      rowIndexColumn = buildRowIndexColumn();
-      sourceColumn = buildSourceColumn();
-      targetColumn = buildTargetColumn();
       previewButtonColumn = new ActionColumn(new PreviewActionCell(previewDelegate));
       replaceButtonColumn = new ActionColumn(new ReplaceActionCell(replaceDelegate, undoDelegate));
 
-      setWidth("100%", true);
-
-      addColumn(checkboxColumn, checkboxColumnHeader);
-      addColumn(rowIndexColumn, messages.rowIndex());
-      addColumn(sourceColumn, messages.source());
-      addColumn(targetColumn, messages.target());
+      // preview header refers to both these columns
       addColumn(previewButtonColumn, messages.actions());
-      // allowing preview header to refer to this also
       addColumn(replaceButtonColumn);
 
-      setColumnWidth(checkboxColumn, 50.0, Unit.PX);
-      setColumnWidth(rowIndexColumn, 70.0, Unit.PX);
-      setColumnWidth(sourceColumn, 50.0, Unit.PCT);
-      setColumnWidth(targetColumn, 50.0, Unit.PCT);
       setColumnWidth(previewButtonColumn, 85.0, Unit.PX);
       setColumnWidth(replaceButtonColumn, 85.0, Unit.PX);
-
-      sourceColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
-      targetColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
-
-      setSelectionModel(selectionModel, getSelectionManager());
-
-      addStyleName("projectWideSearchResultsDocumentBody");
    }
 
    // TODO add focus tracking field to allow current-document type interactions

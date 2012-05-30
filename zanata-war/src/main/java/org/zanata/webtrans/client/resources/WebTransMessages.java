@@ -307,4 +307,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Editor navigation")
    String navigationScope();
+
+   @DefaultMessage("Toggle individual row action buttons (changes for next search)")
+   String toggleRowActionButtons();
 }

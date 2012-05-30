@@ -46,6 +46,7 @@ import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.ui.SearchResultsDocumentTable;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
@@ -154,15 +155,43 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
        */
       void clearReplacementMessages();
 
+      /**
+       * Add a document header and table to the display, with no row action
+       * buttons.
+       * 
+       * @param docName document title to show
+       * @param viewDocClickHandler handler for 'view in editor' link
+       * @param searchDocClickHandler handler for 'search in editor' link
+       * @param selectionModel
+       * @param selectAllHandler
+       * @return the created table
+       * 
+       * @see SearchResultsDocumentTable#SearchResultsDocumentTable(SelectionModel, ValueChangeHandler, WebTransMessages)
+       */
+      HasData<TransUnitReplaceInfo> addDocument(String docName,
+            ClickHandler viewDocClickHandler,
+            ClickHandler searchDocClickHandler,
+            SelectionModel<TransUnitReplaceInfo> selectionModel,
+            ValueChangeHandler<Boolean> selectAllHandler);
+
+      /**
+       * Add a document header and table to the display, with action buttons per
+       * row.
+       * 
+       * @return the created table
+       * 
+       * @see #addDocument(String, ClickHandler, ClickHandler, SelectionModel, ValueChangeHandler)
+       * @see SearchResultsDocumentTable#SearchResultsDocumentTable(Delegate, Delegate, Delegate, SelectionModel, ValueChangeHandler, WebTransMessages, org.zanata.webtrans.client.resources.Resources)
+       */
       HasData<TransUnitReplaceInfo> addDocument(
             String docName,
             ClickHandler viewDocClickHandler,
             ClickHandler searchDocClickHandler,
+            SelectionModel<TransUnitReplaceInfo> selectionModel,
+            ValueChangeHandler<Boolean> selectAllHandler,
             Delegate<TransUnitReplaceInfo> previewDelegate,
             Delegate<TransUnitReplaceInfo> replaceDelegate,
-            Delegate<TransUnitReplaceInfo> undoDelegate,
-            SelectionModel<TransUnitReplaceInfo> selectionModel,
-            ValueChangeHandler<Boolean> selectAllHandler);
+            Delegate<TransUnitReplaceInfo> undoDelegate);
    }
 
    private final WebTransMessages messages;
@@ -201,6 +230,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private Map<Long, String> docPaths;
 
    private boolean autoPreview = true;
+   private boolean showRowActionButtons = false;
 
    @Inject
    public SearchResultsPresenter(Display display, EventBus eventBus,
@@ -224,10 +254,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    protected void onBind()
    {
       projectSearchCallback = buildProjectSearchCallback();
-      previewButtonDelegate = buildPreviewButtonDelegate();
-      replaceButtonDelegate = buildReplaceButtonDelegate();
       selectionChangeHandler = buildSelectionChangeHandler();
-      undoButtonDelegate = buildUndoButtonDelegate();
       documentDataProviders = new HashMap<Long, ListDataProvider<TransUnitReplaceInfo>>();
       documentSelectionModels = new HashMap<Long, MultiSelectionModel<TransUnitReplaceInfo>>();
       allReplaceInfos = new HashMap<TransUnitId, TransUnitReplaceInfo>();
@@ -466,6 +493,20 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
+      //TODO Alt+R for replace, Alt+C to focus replace field
+
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
+            KeyShortcut.ALT_KEY, 'W',
+            ShortcutContext.ProjectWideSearch,
+            messages.toggleRowActionButtons(),
+            new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            showRowActionButtons = !showRowActionButtons;
+         }
+      }));
 
       // TODO register key shortcuts:
       // Alt+Z undo last operation
@@ -540,6 +581,15 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       };
    }
 
+   private Delegate<TransUnitReplaceInfo> ensureReplaceButtonDelegate()
+   {
+      if (replaceButtonDelegate == null)
+      {
+         replaceButtonDelegate = buildReplaceButtonDelegate();
+      }
+      return replaceButtonDelegate;
+   }
+
    private Delegate<TransUnitReplaceInfo> buildReplaceButtonDelegate()
    {
       return new Delegate<TransUnitReplaceInfo>()
@@ -554,6 +604,15 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       };
    }
 
+   private Delegate<TransUnitReplaceInfo> ensureUndoButtonDelegate()
+   {
+      if (undoButtonDelegate == null)
+      {
+         undoButtonDelegate = buildUndoButtonDelegate();
+      }
+      return undoButtonDelegate;
+   }
+
    private Delegate<TransUnitReplaceInfo> buildUndoButtonDelegate()
    {
       return new Delegate<TransUnitReplaceInfo>()
@@ -564,6 +623,15 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             fireUndoEvent(Collections.singletonList(info.getReplaceInfo()));
          }
       };
+   }
+
+   private Delegate<TransUnitReplaceInfo> ensurePreviewButtonDelegate()
+   {
+      if (previewButtonDelegate == null)
+      {
+         previewButtonDelegate = buildPreviewButtonDelegate();
+      }
+      return previewButtonDelegate;
    }
 
    private Delegate<TransUnitReplaceInfo> buildPreviewButtonDelegate()
@@ -990,14 +1058,19 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       documentDataProviders.put(docId, dataProvider);
       documentSelectionModels.put(docId, selectionModel);
 
-      HasData<TransUnitReplaceInfo> table = display.addDocument(docPathName,
-            showDocClickHandler(docPathName, false),
-            showDocClickHandler(docPathName, true),
-            previewButtonDelegate,
-            replaceButtonDelegate,
-            undoButtonDelegate,
-            selectionModel,
-            selectAllHandler(selectionModel, dataProvider));
+      HasData<TransUnitReplaceInfo> table;
+      ClickHandler showDocHandler = showDocClickHandler(docPathName, false);
+      ClickHandler searchDocHandler = showDocClickHandler(docPathName, true);
+      ValueChangeHandler<Boolean> selectDocHandler = selectAllHandler(selectionModel, dataProvider);
+      if (showRowActionButtons)
+      {
+         table = display.addDocument(docPathName, showDocHandler, searchDocHandler, selectionModel, selectDocHandler,
+               ensurePreviewButtonDelegate(), ensureReplaceButtonDelegate(), ensureUndoButtonDelegate());
+      }
+      else
+      {
+         table = display.addDocument(docPathName, showDocHandler, searchDocHandler, selectionModel, selectDocHandler);
+      }
       dataProvider.addDataDisplay(table);
 
       selectionModel.addSelectionChangeHandler(selectionChangeHandler);
