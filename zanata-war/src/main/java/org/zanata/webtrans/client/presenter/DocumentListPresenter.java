@@ -63,6 +63,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display>
@@ -83,8 +85,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       HasData<DocumentNode> getDocumentListTable();
 
       ListDataProvider<DocumentNode> getDataProvider();
-      
-      void renderTable();
+
+      void renderTable(SingleSelectionModel<DocumentNode> selectionModel);
    }
 
    private final DispatchAsync dispatcher;
@@ -108,11 +110,31 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
    // used to determine whether to re-run filter
    private HistoryToken currentHistoryState = null;
-   
+
    private TranslationStats projectStats;
 
+   private final SingleSelectionModel<DocumentNode> selectionModel = new SingleSelectionModel<DocumentNode>()
+   {
+      @Override
+      public void setSelected(DocumentNode object, boolean selected)
+      {
+         if (selected && (super.getSelectedObject() != null))
+         {
+            if (object.getDocInfo().getId().equals(super.getSelectedObject().getDocInfo().getId()))
+            {
+               // switch to editor (via history) on re-selection
+               HistoryToken token = history.getHistoryToken();
+               token.setView(MainView.Editor);
+               token.setDocumentPath(object.getDocInfo().getPath() + object.getDocInfo().getName());
+               history.newItem(token);
+            }
+         }
+         super.setSelected(object, selected);
+      }
+   };
+
    @Inject
-   public DocumentListPresenter(Display display, EventBus eventBus, WorkspaceContext workspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages, History history, Location windowLocation)
+   public DocumentListPresenter(final Display display, EventBus eventBus, WorkspaceContext workspaceContext, CachingDispatchAsync dispatcher, final WebTransMessages messages, History history, Location windowLocation)
    {
       super(display, eventBus);
       this.workspaceContext = workspaceContext;
@@ -122,13 +144,25 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       this.windowLocation = windowLocation;
 
       dataProvider = display.getDataProvider();
-      display.renderTable();
+
+      display.renderTable(selectionModel);
       nodes = new HashMap<DocumentId, DocumentNode>();
    }
 
    @Override
    protected void onBind()
    {
+      selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler()
+      {
+         public void onSelectionChange(SelectionChangeEvent event)
+         {
+            DocumentNode selectedNode = selectionModel.getSelectedObject();
+            if (selectedNode != null)
+            {
+               SelectionEvent.fire(display.getDocumentList(), selectedNode.getDocInfo());
+            }
+         }
+      });
 
       registerHandler(display.getDocumentList().addSelectionHandler(new SelectionHandler<DocumentInfo>()
       {
@@ -255,7 +289,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
                filterChanged = true;
             }
 
-            //update case-sensitive checkbox to match new history state
+            // update case-sensitive checkbox to match new history state
             if (token.isDocFilterCaseSensitive() != display.getCaseSensitiveCheckbox().getValue())
             {
                display.getCaseSensitiveCheckbox().setValue(token.isDocFilterCaseSensitive());
@@ -523,7 +557,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          display.getDocumentListTable().getSelectionModel().setSelected(node, true);
       }
    }
-   
+
    public ListDataProvider<DocumentNode> getDataProvider()
    {
       return dataProvider;

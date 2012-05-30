@@ -48,6 +48,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 
 public class DocumentListView extends Composite implements DocumentListPresenter.Display, HasSelectionHandlers<DocumentInfo>
@@ -144,11 +145,11 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    }
 
    @Override
-   public void renderTable()
+   public void renderTable(SingleSelectionModel<DocumentNode> selectionModel)
    {
       // documentListTable = DocumentListTable.initDocumentListTable(this,
       // resources, messages, dataProvider);
-      documentListTable = new DocumentListTable(this, resources, messages, dataProvider);
+      documentListTable = new DocumentListTable(resources, messages, dataProvider, selectionModel);
       dataProvider.addDataDisplay(documentListTable);
 
       documentScrollPanel.clear();

@@ -74,6 +74,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SingleSelectionModel;
 
 @SuppressWarnings("rawtypes")
 @Test(groups = { "unit-tests" })
@@ -770,7 +771,8 @@ public class DocumentListPresenterTest
 
       expectLastCall().anyTimes();
 
-      mockDisplay.renderTable();
+      SingleSelectionModel<DocumentNode> selectionModel = createMock(SingleSelectionModel.class);
+      mockDisplay.renderTable(selectionModel);
 
       expect(mockDisplay.getDataProvider()).andReturn(mockDataProvider).anyTimes();
       expect(mockDisplay.getDocumentList()).andReturn(mockDocList).anyTimes();

@@ -22,8 +22,6 @@ package org.zanata.webtrans.client.ui;
 
 import java.util.Comparator;
 
-import org.zanata.webtrans.client.history.HistoryToken;
-import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.table.column.DirectoryColumn;
 import org.zanata.webtrans.client.ui.table.column.DocumentColumn;
@@ -31,55 +29,19 @@ import org.zanata.webtrans.client.ui.table.column.RemainingWordsHoursColumn;
 import org.zanata.webtrans.client.ui.table.column.StatisticColumn;
 import org.zanata.webtrans.client.ui.table.column.TranslatedColumn;
 import org.zanata.webtrans.client.ui.table.column.UntranslatedColumn;
-import org.zanata.webtrans.client.view.DocumentListView;
-import org.zanata.webtrans.shared.util.ObjectUtil;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
-import com.google.gwt.user.client.History;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 public class DocumentListTable extends CellTable<DocumentNode>
 {
-   // TODO this is not the ideal place to store this
-   // it is required since these graphs have been removed from DocumentNode so
-   // that DocumentListPresenter can be unit tested (JRE).
-   private final SingleSelectionModel<DocumentNode> selectionModel = new SingleSelectionModel<DocumentNode>()
-   {
-      @Override
-      public void setSelected(DocumentNode object, boolean selected)
-      {
-         if (selected && ObjectUtil.equals(object, super.getSelectedObject()))
-         {
-            // switch to editor (via history) on re-selection
-            HistoryToken token = HistoryToken.fromTokenString(History.getToken());
-            token.setView(MainView.Editor);
-            History.newItem(token.toTokenString());
-         }
-         super.setSelected(object, selected);
-      }
-   };
-
-   public DocumentListTable(final DocumentListView documentListView, final org.zanata.webtrans.client.resources.Resources images, final WebTransMessages messages, final ListDataProvider<DocumentNode> dataProvider)
+   public DocumentListTable(final org.zanata.webtrans.client.resources.Resources images, final WebTransMessages messages, final ListDataProvider<DocumentNode> dataProvider, final SingleSelectionModel<DocumentNode> selectionModel)
    {
       super(15, (CellTableResources) GWT.create(CellTableResources.class));
-
-      selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler()
-      {
-         public void onSelectionChange(SelectionChangeEvent event)
-         {
-            DocumentNode selectedNode = selectionModel.getSelectedObject();
-            if (selectedNode != null)
-            {
-               SelectionEvent.fire(documentListView, selectedNode.getDocInfo());
-            }
-         }
-      });
 
       setStylePrimaryName("DocumentListTable");
       setSelectionModel(selectionModel);
