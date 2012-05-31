@@ -57,7 +57,7 @@ public class AddLanguagePage extends AbstractPage
 
    public ManageLanguagePage saveLanguage()
    {
-      saveButton.click();
+      clickSaveAndCheckErrors(saveButton);
       return new ManageLanguagePage(getDriver());
    }
 }

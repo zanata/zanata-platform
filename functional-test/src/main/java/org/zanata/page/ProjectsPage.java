@@ -27,9 +27,13 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
 
 public class ProjectsPage extends AbstractPage
 {
@@ -69,8 +73,20 @@ public class ProjectsPage extends AbstractPage
       {
          return Collections.emptyList();
       }
-      WebElement table = getDriver().findElement(By.className("rich-table"));
-      List<WebElement> rows = table.findElements(By.xpath(".//tbody/tr/td[1]"));
-      return WebElementUtil.elementsToText(rows);
+
+      List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), By.className("rich-table"));
+
+      return ImmutableList.copyOf(Collections2.transform(tableRows, new Function<TableRow, String>()
+      {
+         @Override
+         public String apply(TableRow from)
+         {
+            // first column is name
+            return from.getCellContents().get(0);
+         }
+      }));
+//      WebElement table = getDriver().findElement(By.className("rich-table"));
+//      List<WebElement> rows = table.findElements(By.xpath(".//tbody/tr/td[1]"));
+//      return WebElementUtil.elementsToText(rows);
    }
 }
