@@ -41,6 +41,11 @@
 	color: grey;
 }
 
+.configTextArea
+{
+	width:100%;
+}
+
 .search_icon {
 	background-image: url(../images/crystal_project/_16x16/actions/search.png);
 }
@@ -214,6 +219,11 @@ a.action_link {
 
 a.action_link:hover {
 	background-color: #FFFFFF;
+	border:1px solid #990000;
+	color:#990000;
+}
+
+.hightlight_button:hover {
 	border:1px solid #990000;
 	color:#990000;
 }

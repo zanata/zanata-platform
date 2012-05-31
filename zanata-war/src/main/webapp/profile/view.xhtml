@@ -34,11 +34,14 @@
           <s:token allowMultiplePosts="true" />
 
           <rich:panel style="background-color: white">
-              <h2>#{messages['jsf.ApiKey']}</h2>
-              <h:commandButton action="#{personHome.regenerateApiKey}"
+          	  <table>
+          	  	<tr>
+          	  		<td><h2>#{messages['jsf.ApiKey']}</h2></td>
+          	  		<td style="padding-left:15px"><h:commandButton action="#{personHome.regenerateApiKey}"
                   value="Generate API Key" reRender="api_key,no_api_key"
-                  onclick="if (!confirm('Are you sure you want to generate your API Key?')) return false" />
-              <br/><br/>
+                  onclick="if (!confirm('Are you sure you want to generate your API Key?')) return false" class="hightlight_button"/></td>
+          	  	</tr>
+          	  </table>
               <s:span id="no_api_key" rendered="#{personHome.instance.account.apiKey == null}">#{messages['jsf.NotGenerated']}</s:span>
               <s:fragment id="api_key" rendered="#{personHome.instance.account.apiKey != null}">
                 <p>#{messages['jsf.YourCurrentApiKeyIs']}
@@ -49,7 +52,7 @@
 
           <rich:panel style="background-color: white">
               <h2>#{messages['jsf.ConfigurationForZanataini']}</h2>
-              <textarea rows="5" cols="50" readonly="true" class="code">
+              <textarea rows="5" readonly="true" class="code configTextArea">
 [servers]
 #{personHome.urlKeyLabel}#{applicationConfiguration.serverPath}/
 #{personHome.usernameKeyLabel}#{personHome.instance.account.username}
