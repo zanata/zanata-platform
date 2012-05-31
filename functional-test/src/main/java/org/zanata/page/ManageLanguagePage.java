@@ -44,7 +44,6 @@ public class ManageLanguagePage extends AbstractPage
 {
 
    public static final int LOCALE_COLUMN = 0;
-   public static final int USERNAME_COLUMN = 0;
 
    public ManageLanguagePage(WebDriver driver)
    {
@@ -57,7 +56,7 @@ public class ManageLanguagePage extends AbstractPage
       return new AddLanguagePage(getDriver());
    }
 
-   public ManageLanguagePage manageTeamMembersFor(final String localeId)
+   public ManageLanguageTeamMemberPage manageTeamMembersFor(final String localeId)
    {
       List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), By.xpath("//table"));
       Collection<TableRow> matchedRow = Collections2.filter(tableRows, new Predicate<TableRow>()
@@ -78,7 +77,7 @@ public class ManageLanguagePage extends AbstractPage
       WebElement teamMemberCell = cells.get(teamMemberCellIndex);
       WebElement teamMemberButton = teamMemberCell.findElement(By.xpath(".//input[@value='Team Members']"));
       teamMemberButton.click();
-      return this;
+      return new ManageLanguageTeamMemberPage(getDriver());
    }
 
    public ManageLanguagePage joinLanguageTeam()
@@ -94,12 +93,6 @@ public class ManageLanguagePage extends AbstractPage
       });
       joinLanguageTeamLink.click();
       return this;
-   }
-
-   public List<String> getMemberUsernames()
-   {
-      List<TableRow> languageMembersTable = WebElementUtil.getTableRows(getDriver(), By.xpath("//table"));
-      return WebElementUtil.getColumnContents(languageMembersTable, USERNAME_COLUMN);
    }
 
    public List<String> getLanguageLocales()

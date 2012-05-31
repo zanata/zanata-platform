@@ -23,6 +23,7 @@ package org.zanata.workflow;
 import java.util.List;
 
 import org.zanata.page.ManageLanguagePage;
+import org.zanata.page.ManageLanguageTeamMemberPage;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,8 +34,8 @@ public class LanguageWorkFlow extends AbstractWebWorkFlow
    public ManageLanguagePage addLanguageAndJoin(String localeId)
    {
       ManageLanguagePage manageLanguagePage = addLanguage(localeId);
-      manageLanguagePage = manageLanguagePage.manageTeamMembersFor(localeId);
-      if (!manageLanguagePage.getMemberUsernames().contains("admin"))
+      ManageLanguageTeamMemberPage teamMemberPage = manageLanguagePage.manageTeamMembersFor(localeId);
+      if (!teamMemberPage.getMemberUsernames().contains("admin"))
       {
          return manageLanguagePage.joinLanguageTeam();
       }

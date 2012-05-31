@@ -97,6 +97,7 @@ public class WebElementUtil
    private static enum WebElementTableRowFunction implements Function<WebElement, TableRow>
    {
       FUNCTION;
+
       @Override
       public TableRow apply(WebElement element)
       {
