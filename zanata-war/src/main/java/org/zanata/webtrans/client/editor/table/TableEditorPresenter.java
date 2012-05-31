@@ -47,7 +47,6 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.OpenEditorEvent;
 import org.zanata.webtrans.client.events.OpenEditorEventHandler;
-import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
@@ -348,43 +347,71 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onTransUnitUpdated(TransUnitUpdatedEvent event)
          {
+            Log.debug("onTransUnitUpdated(TransUnitUpdatedEvent)");
+
+            Log.debug("event.getUpdateType: " + event.getUpdateType());
             // assume update was successful
             if (documentId != null && documentId.equals(event.getUpdateInfo().getDocumentId()))
             {
-               boolean editing = targetContentsPresenter.isEditing();
                navigationService.updateMap(event.getUpdateInfo().getTransUnit().getId().getId(), event.getUpdateInfo().getTransUnit().getStatus());
-               // if save-as-fuzzy on same tab
-               if (event.getEditorClientId().equals(identity.getEditorClientId()) && event.getUpdateType() == UpdateType.WebEditorSaveFuzzy)
+
+               boolean editing = targetContentsPresenter.isEditing();
+               Integer rowIndex = navigationService.getRowIndex(event.getUpdateInfo().getTransUnit(), isFiltering(), display.getRowValues());
+               boolean updateRow = true;
+               boolean reopen = false;
+
+               boolean updatingSelectedTU = selectedTransUnit != null && selectedTransUnit.getId().equals(event.getUpdateInfo().getTransUnit().getId());
+               if (updatingSelectedTU)
                {
-                  Integer rowIndex = navigationService.getRowIndex(event.getUpdateInfo().getTransUnit(), isFiltering(), display.getRowValues());
-                  if (rowIndex != null)
+                  Log.info("selected TU updated");
+                  boolean sameEditorClientId = event.getEditorClientId().equals(identity.getEditorClientId());
+                  if (sameEditorClientId)
                   {
-                     TransUnit rowValue = display.getRowValue(rowIndex);
-                     if (rowValue != null)
+                     // if save-as-fuzzy on same tab
+                     if (event.getUpdateType() == UpdateType.WebEditorSaveFuzzy)
                      {
-                        rowValue.OverrideWith(event.getUpdateInfo().getTransUnit());
-                        display.getTableModel().clearCache();
+                        updateRow = false;
+                        reopen = true;
+
+                        // stay focused if same client id fuzzy edit
+                        if (rowIndex != null)
+                        {
+                           TransUnit rowValue = display.getRowValue(rowIndex);
+                           if (rowValue != null)
+                           {
+                              rowValue.OverrideWith(event.getUpdateInfo().getTransUnit());
+                              display.getTableModel().setRowValueOverride(rowIndex, event.getUpdateInfo().getTransUnit());
+                           }
+                        }
                      }
+                     else
+                     {
+                        // current client updated current TU (probably Replace, possibly save as Approved)
+                        // will kick out of editor (and clobber local changes)
+                     }
+                  }
+                  else
+                  {
+                     // another client updated current TU
+                     // will kick out of editor (and clobber local changes)
                   }
                }
                else
                {
-                  if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getUpdateInfo().getTransUnit().getId()))
-                  {
-                     Log.info("selected TU updated; clear selection");
-                     eventBus.fireEvent(new RequestValidationEvent());
-                  }
-
-                  // - add TU index to model
-                  Integer rowIndex = navigationService.getRowIndex(event.getUpdateInfo().getTransUnit(), isFiltering(), display.getRowValues());
-                  if (rowIndex != null)
-                  {
-                     Log.info("onTransUnitUpdated - update row:" + rowIndex);
-                     display.getTableModel().setRowValueOverride(rowIndex, event.getUpdateInfo().getTransUnit());
-                  }
+                  // updateRow = true, value updated below
+                  // re-open editor to keep editor focused despite model update closing editor
+                  reopen = true;
                }
-               if (editing)
+               Log.debug("reopen: " + reopen);
+               Log.debug("updateRow: " + updateRow);
+               if (updateRow && rowIndex != null)
                {
+                  Log.info("onTransUnitUpdated - update row:" + rowIndex);
+                  display.getTableModel().setRowValueOverride(rowIndex, event.getUpdateInfo().getTransUnit());
+               }
+               if (editing && reopen)
+               {
+                  Log.debug("going to current row");
                   gotoCurrentRow();
                }
             }
@@ -690,7 +717,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       }
 
       @Override
-      public boolean onSetRowValue(int row, TransUnit rowValue)
+      public boolean onSetRowValue(final int row, TransUnit rowValue)
       {
          UpdateType updateType = rowValue.getStatus() == ContentState.Approved ? UpdateType.WebEditorSave : UpdateType.WebEditorSaveFuzzy;
          Log.debug("row updated, calculated update type: " + updateType);
@@ -702,8 +729,16 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             public void onFailure(Throwable e)
             {
                Log.error("UpdateTransUnit failure " + e, e);
-               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUpdateFailed(e.getLocalizedMessage())));
+               String message = e.getLocalizedMessage();
+               failure(message);
+            }
 
+            /**
+             * @param message
+             */
+            private void failure(String message)
+            {
+               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUpdateFailed(message)));
                display.getTableModel().clearCache();
                display.reloadPage();
             }
@@ -711,7 +746,16 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             @Override
             public void onSuccess(UpdateTransUnitResult result)
             {
-               eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyUpdateSaved()));
+               // FIXME check result.success
+               if (result.isSingleSuccess())
+               {
+                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyUpdateSaved()));
+               }
+               else
+               {
+                  // TODO localised message
+                  failure("row " + row);
+               }
             }
          });
          return true;
