@@ -74,6 +74,10 @@ public class AppView extends Composite implements AppPresenter.Display
       String hasError();
 
       String image();
+
+      String menuBar();
+
+      String menuItem();
    }
 
    private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
@@ -225,6 +229,7 @@ public class AppView extends Composite implements AppPresenter.Display
    public void initMenuList(String userLabel, Command helpMenuCommand, Command leaveWorkspaceMenuCommand, Command signOutMenuCommand, Command layoutMenuCommand)
    {
       MenuBar menuBar = new MenuBar(true);
+      menuBar.addStyleName(style.menuBar());
 
       ImageLabel helpImageLabel = new ImageLabel(resources.help(), messages.help());
       helpImageLabel.setImageStyle(style.image());
@@ -235,16 +240,22 @@ public class AppView extends Composite implements AppPresenter.Display
       ImageLabel signOutImageLabel = new ImageLabel(resources.logout(), messages.signOut());
       signOutImageLabel.setImageStyle(style.image());
 
+      ImageLabel leaveWorkspaceImageLabel = new ImageLabel("", messages.leaveWorkspace());
+      leaveWorkspaceImageLabel.setImageStyle(style.image());
+
       helpMenuItem = menuBar.addItem(helpImageLabel.getElement().getString(), true, helpMenuCommand);
+      helpMenuItem.addStyleName(style.menuItem());
       menuBar.addSeparator();
 
       layoutMenuItem = menuBar.addItem(layoutImageLabel.getElement().getString(), true, layoutMenuCommand);
+      layoutMenuItem.addStyleName(style.menuItem());
       layoutMenuSeperator = menuBar.addSeparator();
 
-      leaveWorkspaceMenuItem = new MenuItem(messages.leaveWorkspace(), leaveWorkspaceMenuCommand);
-      menuBar.addItem(leaveWorkspaceMenuItem);
+      leaveWorkspaceMenuItem = menuBar.addItem(leaveWorkspaceImageLabel.getElement().getString(), true, leaveWorkspaceMenuCommand);
+      leaveWorkspaceMenuItem.addStyleName(style.menuItem());
 
       signOutMenuItem = menuBar.addItem(signOutImageLabel.getElement().getString(), true, signOutMenuCommand);
+      signOutMenuItem.addStyleName(style.menuItem());
 
       ImageLabel userMenu = new ImageLabel(userAvatarUrl, userLabel + " " + messages.downArrow());
       userMenu.setLabelStyle(style.userName());
