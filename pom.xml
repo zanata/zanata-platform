@@ -12,7 +12,6 @@
     <relativePath>../parent</relativePath>
   </parent>
 
-	<!-- Should be the same as zanata-parent/pom.xml -->
 	<scm>
 		<connection>scm:git:git://github.com/zanata/zanata-client.git</connection>
 		<developerConnection>scm:git:git@github.com:zanata/zanata-client.git</developerConnection>
@@ -20,8 +19,8 @@
 	</scm>
 
     <properties>
-      <zanata.api.version>1.6.0-alpha-4-SNAPSHOT</zanata.api.version>
-      <zanata.common.version>1.6.0-alpha-4-SNAPSHOT</zanata.common.version>
+      <zanata.api.version>1.6.0</zanata.api.version>
+      <zanata.common.version>1.6.0</zanata.common.version>
     </properties>
 
    <dependencyManagement>
