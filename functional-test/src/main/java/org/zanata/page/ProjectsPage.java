@@ -37,6 +37,7 @@ import com.google.common.collect.ImmutableList;
 
 public class ProjectsPage extends AbstractPage
 {
+   public static final int PROJECT_NAME_COLUMN = 0;
    @FindBy(id = "main_content")
    private WebElement mainContentDiv;
 
@@ -76,17 +77,6 @@ public class ProjectsPage extends AbstractPage
 
       List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), By.className("rich-table"));
 
-      return ImmutableList.copyOf(Collections2.transform(tableRows, new Function<TableRow, String>()
-      {
-         @Override
-         public String apply(TableRow from)
-         {
-            // first column is name
-            return from.getCellContents().get(0);
-         }
-      }));
-//      WebElement table = getDriver().findElement(By.className("rich-table"));
-//      List<WebElement> rows = table.findElements(By.xpath(".//tbody/tr/td[1]"));
-//      return WebElementUtil.elementsToText(rows);
+      return WebElementUtil.getColumnContents(tableRows, PROJECT_NAME_COLUMN);
    }
 }

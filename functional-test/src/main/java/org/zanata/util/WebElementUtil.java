@@ -57,10 +57,24 @@ public class WebElementUtil
    public static List<TableRow> getTableRows(WebDriver driver, By byQueryForTable)
    {
       WebElement table = driver.findElement(byQueryForTable);
-      Preconditions.checkArgument(table.getTagName().equalsIgnoreCase("table"), "argument must be a table");
+      Preconditions.checkArgument(table.getTagName().equalsIgnoreCase("table"), "By query must return a table");
 
       List<WebElement> rows = table.findElements(By.xpath(".//tbody/tr"));
       return ImmutableList.copyOf(Collections2.transform(rows, WebElementTableRowFunction.FUNCTION));
+   }
+
+   public static List<String> getColumnContents(List<TableRow> tableRows, final int columnIndex)
+   {
+      return ImmutableList.copyOf(Collections2.transform(tableRows, new Function<TableRow, String>()
+      {
+         @Override
+         public String apply(TableRow from)
+         {
+            List<String> cellContents = from.getCellContents();
+            Preconditions.checkElementIndex(columnIndex, cellContents.size(), "column index");
+            return cellContents.get(columnIndex);
+         }
+      }));
    }
 
    private static class WebElementToInnerHTMLFunction implements Function<WebElement, String>

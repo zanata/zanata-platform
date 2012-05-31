@@ -40,7 +40,7 @@ public class AddLanguagePage extends AbstractPage
       super(driver);
    }
 
-   public AddLanguagePage selectLanguage(String language)
+   public AddLanguagePage inputLanguage(String language)
    {
       languageInput.sendKeys(language);
       return this;

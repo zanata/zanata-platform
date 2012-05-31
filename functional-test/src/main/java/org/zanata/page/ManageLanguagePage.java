@@ -21,7 +21,6 @@
 package org.zanata.page;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -29,14 +28,23 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.util.TableRow;
+import org.zanata.util.WebElementUtil;
 
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class ManageLanguagePage extends AbstractPage
 {
-   private static final Logger LOGGER = LoggerFactory.getLogger(ManageLanguagePage.class);
+
+   public static final int LOCALE_COLUMN = 0;
+   public static final int USERNAME_COLUMN = 0;
 
    public ManageLanguagePage(WebDriver driver)
    {
@@ -49,22 +57,28 @@ public class ManageLanguagePage extends AbstractPage
       return new AddLanguagePage(getDriver());
    }
 
-   public ManageLanguagePage manageTeamMembersFor(String localeId)
+   public ManageLanguagePage manageTeamMembersFor(final String localeId)
    {
-      List<WebElement> languageTableRows = getDriver().findElements(By.className("rich-table-row"));
-      for (int i = 0, languageTableRowsSize = languageTableRows.size(); i < languageTableRowsSize; i++)
+      List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), By.xpath("//table"));
+      Collection<TableRow> matchedRow = Collections2.filter(tableRows, new Predicate<TableRow>()
       {
-         WebElement row = languageTableRows.get(i);
-         LOGGER.info("tabel row is: {}", row.getText());
-         if (row.getText().contains(localeId))
+         @Override
+         public boolean apply(TableRow input)
          {
-            LOGGER.info("about to click team members button #{}", i);
-            List<WebElement> teamMembersButtons = row.findElements(By.xpath("//input[@value='Team Members']"));
-            teamMembersButtons.get(i).click();
-            return this;
+            List<String> cellContents = input.getCellContents();
+            String localeCell = cellContents.get(0).trim();
+            return localeCell.equalsIgnoreCase(localeId);
          }
-      }
-      throw new RuntimeException("can't find localeId");
+      });
+
+      log.debug("for locale [{}] found table row: {}", localeId, matchedRow);
+      Preconditions.checkState(matchedRow.size() == 1, "given localeId can't not be found on table");
+      List<WebElement> cells = matchedRow.iterator().next().getCells();
+      int teamMemberCellIndex = cells.size() - 1;
+      WebElement teamMemberCell = cells.get(teamMemberCellIndex);
+      WebElement teamMemberButton = teamMemberCell.findElement(By.xpath(".//input[@value='Team Members']"));
+      teamMemberButton.click();
+      return this;
    }
 
    public ManageLanguagePage joinLanguageTeam()
@@ -84,17 +98,13 @@ public class ManageLanguagePage extends AbstractPage
 
    public List<String> getMemberUsernames()
    {
-      List<WebElement> elements = getDriver().findElements(By.className("rich-table-row"));
-      Collection<String> rows = Collections2.transform(elements, new Function<WebElement, String>()
-      {
-         @Override
-         public String apply(WebElement from)
-         {
-            String text = from.getText();
-            return text.split("\\s")[0];
-         }
-      });
-      return ImmutableList.copyOf(rows);
+      List<TableRow> languageMembersTable = WebElementUtil.getTableRows(getDriver(), By.xpath("//table"));
+      return WebElementUtil.getColumnContents(languageMembersTable, USERNAME_COLUMN);
    }
 
+   public List<String> getLanguageLocales()
+   {
+      List<TableRow> languageTable = WebElementUtil.getTableRows(getDriver(), By.xpath("//table"));
+      return WebElementUtil.getColumnContents(languageTable, LOCALE_COLUMN);
+   }
 }
