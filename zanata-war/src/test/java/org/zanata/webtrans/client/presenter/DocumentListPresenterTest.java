@@ -120,6 +120,8 @@ public class DocumentListPresenterTest
    private Capture<String> capturedHistoryTokenString;
    private Capture<HistoryToken> capturedHistoryToken;
 
+   private Capture<SingleSelectionModel<DocumentNode>> capturedSingleSelectionModel;
+
    @BeforeClass
    public void createMocks()
    {
@@ -139,6 +141,7 @@ public class DocumentListPresenterTest
 
       capturedCaseSensitiveCheckboxChangeHandler = new Capture<ValueChangeHandler<Boolean>>();
       capturedHistoryToken = new Capture<HistoryToken>();
+      capturedSingleSelectionModel = new Capture<SingleSelectionModel<DocumentNode>>();
    }
 
    @BeforeMethod
@@ -771,8 +774,8 @@ public class DocumentListPresenterTest
 
       expectLastCall().anyTimes();
 
-      SingleSelectionModel<DocumentNode> selectionModel = createMock(SingleSelectionModel.class);
-      mockDisplay.renderTable(selectionModel);
+      mockDisplay.renderTable(and(capture(capturedSingleSelectionModel), isA(SingleSelectionModel.class)));
+      expectLastCall().anyTimes();
 
       expect(mockDisplay.getDataProvider()).andReturn(mockDataProvider).anyTimes();
       expect(mockDisplay.getDocumentList()).andReturn(mockDocList).anyTimes();
