@@ -86,7 +86,7 @@ public class ReplaceTextHandler extends AbstractActionHandler<ReplaceText, Updat
          {
             String content = contents.get(i);
             Matcher matcher = pattern.matcher(content);
-            String newContent = matcher.replaceAll(replaceText);
+            String newContent = matcher.replaceAll(Matcher.quoteReplacement(replaceText));
             contents.set(i, newContent);
          }
          log.debug("transUnit {} after replace [{}]", request.getTransUnitId(), contents);
