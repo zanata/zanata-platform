@@ -5,7 +5,7 @@ import java.util.Arrays;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.zanata.client.commands.push.PushCommand;
-import org.zanata.client.commands.push.PushType;
+import org.zanata.client.commands.push.PushPullType;
 
 public class PushMojoTest extends ZanataMojoTest<PushMojo, PushCommand>
 {
@@ -62,7 +62,7 @@ public class PushMojoTest extends ZanataMojoTest<PushMojo, PushCommand>
       assertEquals("srcDir", pushMojo.getSrcDir().toString());
       assertEquals("transDir", pushMojo.getTransDir().toString());
       assertEquals("es", pushMojo.getSourceLang());
-      assertEquals(PushType.Both, pushMojo.getPushType());
+      assertEquals(PushPullType.Both, pushMojo.getPushType());
       assertEquals(false, pushMojo.getCopyTrans());
       assertEquals("import", pushMojo.getMergeType());
       assertEquals(Arrays.asList("includes"), pushMojo.getIncludes());
@@ -82,7 +82,7 @@ public class PushMojoTest extends ZanataMojoTest<PushMojo, PushCommand>
       assertEquals("srcDir", pushMojo.getSrcDir().toString());
       assertEquals("transDir", pushMojo.getTransDir().toString());
       assertEquals("es", pushMojo.getSourceLang());
-      assertEquals(PushType.Trans, pushMojo.getPushType());
+      assertEquals(PushPullType.Trans, pushMojo.getPushType());
       assertEquals(false, pushMojo.getCopyTrans());
       assertEquals("import", pushMojo.getMergeType());
       assertEquals(Arrays.asList("includes"), pushMojo.getIncludes());

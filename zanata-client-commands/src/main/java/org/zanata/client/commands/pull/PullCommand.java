@@ -13,6 +13,7 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.PushPullCommand;
+import org.zanata.client.commands.push.PushPullType;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
@@ -86,16 +87,22 @@ public class PullCommand extends PushPullCommand<PullOptions>
          }
       }
       log.info("Locales to pull: {}", getOpts().getLocaleMapList());
-      if (getOpts().getPullSrc())
+      if (getOpts().getPullType() == PushPullType.Source)
       {
-         log.info("Pulling source and target (translation) documents");
+         log.info("Pulling source documents only");
          log.info("Source-language directory (originals): {}", getOpts().getSrcDir());
+      }
+      else if( getOpts().getPullType() == PushPullType.Trans )
+      {
+         log.info("Pulling target documents (translations) only");
+         log.info("Target-language base directory (translations): {}", getOpts().getTransDir());
       }
       else
       {
-         log.info("Pulling target documents (translations) only");
+         log.info("Pulling source and target (translation) documents");
+         log.info("Source-language directory (originals): {}", getOpts().getSrcDir());
+         log.info("Target-language base directory (translations): {}", getOpts().getTransDir());
       }
-      log.info("Target-language base directory (translations): {}", getOpts().getTransDir());
       log.info("Create skeletons for untranslated messages/files: {}", getOpts().getCreateSkeletons());
 
       if (getOpts().isDryRun())
@@ -124,10 +131,13 @@ public class PullCommand extends PushPullCommand<PullOptions>
       log.info("Pulling {} docs for this module from the server", docNamesForModule.size());
       log.debug("Doc names: {}", docNamesForModule);
 
-      boolean pullSrc = getOpts().getPullSrc();
+      PushPullType pullType = getOpts().getPullType();
+      boolean pullSrc = pullType == PushPullType.Both || pullType == PushPullType.Source;
+      boolean pullTarget = pullType == PushPullType.Both || pullType == PushPullType.Trans;
+
       if (pullSrc)
       {
-         log.warn("The pullSrc option is set: existing source-language files may be overwritten/deleted");
+         log.warn("Pull Type set to '" + pullType + "': existing source-language files may be overwritten/deleted");
          confirmWithUser("This will overwrite/delete any existing documents and translations in the above directories.\n");
       }
       else
@@ -154,31 +164,34 @@ public class PullCommand extends PushPullCommand<PullOptions>
             writeSrcDoc(strat, doc);
          }
 
-         for (LocaleMapping locMapping : locales)
+         if( pullTarget )
          {
-            LocaleId locale = new LocaleId(locMapping.getLocale());
+            for (LocaleMapping locMapping : locales)
+            {
+               LocaleId locale = new LocaleId(locMapping.getLocale());
 
-            ClientResponse<TranslationsResource> transResponse = translationResources.getTranslations(
-                  docUri, locale, strat.getExtensions(), createSkeletons);
-            TranslationsResource targetDoc;
-            // ignore 404 (no translation yet for specified document)
-            if (transResponse.getResponseStatus() == Response.Status.NOT_FOUND)
-            {
-               targetDoc = null;
-               if (!createSkeletons)
+               ClientResponse<TranslationsResource> transResponse = translationResources.getTranslations(
+                     docUri, locale, strat.getExtensions(), createSkeletons);
+               TranslationsResource targetDoc;
+               // ignore 404 (no translation yet for specified document)
+               if (transResponse.getResponseStatus() == Response.Status.NOT_FOUND)
                {
-                  log.info("No translations found in locale {} for document {}", locale, localDocName);
-                  continue;
+                  targetDoc = null;
+                  if (!createSkeletons)
+                  {
+                     log.info("No translations found in locale {} for document {}", locale, localDocName);
+                     continue;
+                  }
                }
-            }
-            else
-            {
-               ClientUtility.checkResult(transResponse, uri);
-               targetDoc = transResponse.getEntity();
-            }
-            if (targetDoc != null || createSkeletons)
-            {
-               writeTargetDoc(strat, localDocName, locMapping, doc, targetDoc);
+               else
+               {
+                  ClientUtility.checkResult(transResponse, uri);
+                  targetDoc = transResponse.getEntity();
+               }
+               if (targetDoc != null || createSkeletons)
+               {
+                  writeTargetDoc(strat, localDocName, locMapping, doc, targetDoc);
+               }
             }
          }
       }

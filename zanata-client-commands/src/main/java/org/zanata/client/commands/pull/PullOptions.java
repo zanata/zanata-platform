@@ -22,6 +22,7 @@
 package org.zanata.client.commands.pull;
 
 import org.zanata.client.commands.PushPullOptions;
+import org.zanata.client.commands.push.PushPullType;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -29,6 +30,6 @@ import org.zanata.client.commands.PushPullOptions;
  */
 public interface PullOptions extends PushPullOptions
 {
-   boolean getPullSrc();
+   PushPullType getPullType();
    boolean getCreateSkeletons();
 }

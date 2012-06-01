@@ -10,8 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,7 +18,6 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.PushPullCommand;
-import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.client.util.ConsoleUtils;
@@ -113,12 +110,12 @@ public class PushCommand extends PushPullCommand<PushOptions>
       log.info("Exclude patterns: {}", StringUtils.join(getOpts().getExcludes(), " "));
       log.info("Default excludes: {}", getOpts().getDefaultExcludes());
 
-      if (getOpts().getPushType() == PushType.Trans)
+      if (getOpts().getPushType() == PushPullType.Trans)
       {
          log.info("Pushing target documents only");
          log.info("Locales to push: {}", getOpts().getLocaleMapList());
       }
-      else if(getOpts().getPushType() == PushType.Source)
+      else if(getOpts().getPushType() == PushPullType.Source)
       {
          log.info("Pushing source documents only");
       }
@@ -128,7 +125,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
          log.info("Locales to push: {}", getOpts().getLocaleMapList());
       }
       log.info("Source directory (originals): {}", getOpts().getSrcDir());
-      if (getOpts().getPushType() == PushType.Both || getOpts().getPushType() == PushType.Trans)
+      if (getOpts().getPushType() == PushPullType.Both || getOpts().getPushType() == PushPullType.Trans)
       {
          log.info("Target base directory (translations): {}", getOpts().getTransDir());
       }
@@ -248,17 +245,17 @@ public class PushCommand extends PushPullCommand<PushOptions>
          log.info("Obsolete docs: {}", obsoleteDocs);
       }
 
-      if (getOpts().getPushType() == PushType.Trans || getOpts().getPushType() == PushType.Both )
+      if (getOpts().getPushType() == PushPullType.Trans || getOpts().getPushType() == PushPullType.Both )
       {
          if (getOpts().getLocaleMapList() == null)
             throw new ConfigException("pushType set to '" + getOpts().getPushType() + "', but zanata.xml contains no <locales>");
          log.warn("pushType set to '" + getOpts().getPushType() + "': existing translations on server may be overwritten/deleted");
 
-         if( getOpts().getPushType() == PushType.Both )
+         if( getOpts().getPushType() == PushPullType.Both )
          {
             confirmWithUser("This will overwrite existing documents AND TRANSLATIONS on the server, and delete obsolete documents.\n");
          }
-         else if( getOpts().getPushType() == PushType.Trans )
+         else if( getOpts().getPushType() == PushPullType.Trans )
          {
             confirmWithUser("This will overwrite existing TRANSLATIONS on the server.\n");
          }
@@ -276,11 +273,11 @@ public class PushCommand extends PushPullCommand<PushOptions>
          srcDoc.setName(qualifiedDocName);
          debug(srcDoc);
 
-         if( getOpts().getPushType() == PushType.Source || getOpts().getPushType() == PushType.Both )
+         if( getOpts().getPushType() == PushPullType.Source || getOpts().getPushType() == PushPullType.Both )
          {
             pushSrcDocToServer(docUri, srcDoc, extensions);
          }
-         if (getOpts().getPushType() == PushType.Trans || getOpts().getPushType() == PushType.Both)
+         if (getOpts().getPushType() == PushPullType.Trans || getOpts().getPushType() == PushPullType.Both)
          {
             strat.visitTranslationResources(localDocName, srcDoc, new TranslationResourcesVisitor()
             {

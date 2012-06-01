@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptions;
-import org.zanata.client.commands.push.PushType;
+import org.zanata.client.commands.push.PushPullType;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
@@ -134,16 +134,16 @@ public class PushMojo extends PushPullMojo<PushOptions> implements PushOptions
    }
 
    @Override
-   public PushType getPushType()
+   public PushPullType getPushType()
    {
       // if the deprecated 'pushTrans' option has been used
       if( pushTrans != null )
       {
-         return Boolean.parseBoolean(pushTrans) ? PushType.Both : PushType.Source;
+         return Boolean.parseBoolean(pushTrans) ? PushPullType.Both : PushPullType.Source;
       }
       else
       {
-         return PushType.fromString(pushType);
+         return PushPullType.fromString(pushType);
       }
    }
 

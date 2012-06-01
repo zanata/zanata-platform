@@ -2,6 +2,7 @@ package org.zanata.maven;
 
 import org.zanata.client.commands.pull.PullCommand;
 import org.zanata.client.commands.pull.PullOptions;
+import org.zanata.client.commands.push.PushPullType;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
@@ -19,17 +20,28 @@ public class PullMojo extends PushPullMojo<PullOptions> implements PullOptions
 
    /**
     * Export source-language text from Zanata to local files, overwriting or
-    * erasing existing files (DANGER!)
+    * erasing existing files (DANGER!). This option is deprecated, replaced by pullType.
     * 
     * @parameter expression="${zanata.pullSrc}"
     */
-   private boolean pullSrc;
+   @Deprecated
+   // Using string instead of boolean to know when pullSrc has been explicitly used.
+   private String pullSrc;
 
    /**
     * Whether to create skeleton entries for strings/files which have not been translated yet
     * @parameter expression="${zanata.createSkeletons}"
     */
    private boolean createSkeletons;
+
+   /**
+    * Type of pull to perform from the server: "source" pulls source documents only.
+    * "trans" pulls translation documents only.
+    * "both" pulls both source and translation documents.
+    *
+    * @parameter expression="${zanata.pullType}" default-value="trans"
+    */
+   private String pullType;
 
    /**
     * Locales to pull from the server.
@@ -55,15 +67,23 @@ public class PullMojo extends PushPullMojo<PullOptions> implements PullOptions
    }
 
    @Override
-   public boolean getPullSrc()
-   {
-      return pullSrc;
-   }
-
-   @Override
    public boolean getCreateSkeletons()
    {
       return createSkeletons;
+   }
+
+   @Override
+   public PushPullType getPullType()
+   {
+      // if the deprecated 'pushTrans' option has been used
+      if( pullSrc != null )
+      {
+         return Boolean.parseBoolean(pullSrc) ? PushPullType.Both : PushPullType.Trans;
+      }
+      else
+      {
+         return PushPullType.fromString(pullType);
+      }
    }
 
    /**

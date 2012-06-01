@@ -96,9 +96,9 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
    }
 
    @Override
-   public PushType getPushType()
+   public PushPullType getPushType()
    {
-      return PushType.fromString( pushType );
+      return PushPullType.fromString(pushType);
    }
 
    @Override
@@ -131,7 +131,7 @@ class PushOptionsImpl extends ConfigurableProjectOptionsImpl implements PushOpti
    public void setPushTrans(boolean pushTrans)
    {
       this.pushTrans = pushTrans;
-      this.pushType = pushTrans ? PushType.Both.toString() : PushType.Source.toString();
+      this.pushType = pushTrans ? PushPullType.Both.toString() : PushPullType.Source.toString();
    }
 
    @Override

@@ -23,25 +23,25 @@ package org.zanata.client.commands.push;
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public enum PushType
+public enum PushPullType
 {
-   /** Push source documents only */
+   /** Push/Pull source documents only */
    Source,
-   /** Push Translated documents only */
+   /** Push/Pull Translated documents only */
    Trans,
-   /** Push both Source and Translated documents */
+   /** Push/Pull both Source and Translated documents */
    Both;
 
    /**
-    * Parse a PushType value from a string case-insensitively, and diregarding leading
+    * Parse a PushPullType value from a string case-insensitively, and disregarding leading
     * and trailing spaces.
     *
     * @param str The string to parse.
-    * @return The parsed PushType enum value, or null if the string did not match a value.
+    * @return The parsed PushPullType enum value, or null if the string did not match a value.
     */
-   public static PushType fromString(String str)
+   public static PushPullType fromString(String str)
    {
-      PushType enumVal = null;
+      PushPullType enumVal = null;
 
       if( str != null )
       {

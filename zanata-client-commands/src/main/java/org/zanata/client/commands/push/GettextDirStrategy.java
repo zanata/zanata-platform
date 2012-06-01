@@ -91,7 +91,7 @@ class GettextDirStrategy extends AbstractPushStrategy
    {
       if (locales != null)
          return locales;
-      if (getOpts().getPushType() == PushType.Both || getOpts().getPushType() == PushType.Trans)
+      if (getOpts().getPushType() == PushPullType.Both || getOpts().getPushType() == PushPullType.Trans)
       {
          if (getOpts().getLocaleMapList() != null)
          {
