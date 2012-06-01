@@ -28,6 +28,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.page.administration.AdministrationPage;
+import org.zanata.page.groups.VersionGroupsPage;
+import org.zanata.page.projects.ProjectsPage;
 
 public class HomePage extends AbstractPage
 {

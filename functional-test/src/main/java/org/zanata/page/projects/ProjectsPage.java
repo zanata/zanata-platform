@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.page;
+package org.zanata.page.projects;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,13 +27,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.zanata.page.AbstractPage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableList;
 
 public class ProjectsPage extends AbstractPage
 {

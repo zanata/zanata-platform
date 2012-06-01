@@ -4,9 +4,8 @@ import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
-import org.zanata.page.ProjectVersionPage;
-import org.zanata.page.VersionGroupPage;
-import org.zanata.page.VersionGroupsPage;
+import org.zanata.page.groups.VersionGroupPage;
+import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.util.TableRow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;

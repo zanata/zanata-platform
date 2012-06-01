@@ -1,4 +1,4 @@
-package org.zanata.page;
+package org.zanata.page.groups;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.zanata.page.AbstractPage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
@@ -101,7 +102,7 @@ public class VersionGroupPage extends AbstractPage
          {
             final List<TableRow> tableRows = WebElementUtil.getTableRows(groupDataTable);
 
-            log.info("{} project versions for this group", tableRows.size());
+            VersionGroupPage.log.info("{} project versions for this group", tableRows.size());
             Preconditions.checkState(tableRows.size() > 0, "table is empty");
             return tableRows;
          }

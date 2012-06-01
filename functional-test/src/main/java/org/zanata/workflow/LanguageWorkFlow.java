@@ -22,8 +22,8 @@ package org.zanata.workflow;
 
 import java.util.List;
 
-import org.zanata.page.ManageLanguagePage;
-import org.zanata.page.ManageLanguageTeamMemberPage;
+import org.zanata.page.administration.ManageLanguagePage;
+import org.zanata.page.administration.ManageLanguageTeamMemberPage;
 
 import lombok.extern.slf4j.Slf4j;
 

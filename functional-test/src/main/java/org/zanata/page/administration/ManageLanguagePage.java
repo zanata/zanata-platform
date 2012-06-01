@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.page;
+package org.zanata.page.administration;
 
 import java.util.Collection;
 import java.util.List;
@@ -26,8 +26,7 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.zanata.page.AbstractPage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 
@@ -35,7 +34,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableList;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -70,7 +68,7 @@ public class ManageLanguagePage extends AbstractPage
          }
       });
 
-      log.debug("for locale [{}] found table row: {}", localeId, matchedRow);
+      ManageLanguagePage.log.debug("for locale [{}] found table row: {}", localeId, matchedRow);
       Preconditions.checkState(matchedRow.size() == 1, "given localeId can't not be found on table");
       List<WebElement> cells = matchedRow.iterator().next().getCells();
       int teamMemberCellIndex = cells.size() - 1;

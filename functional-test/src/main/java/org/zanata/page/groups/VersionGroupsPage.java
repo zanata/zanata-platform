@@ -1,4 +1,4 @@
-package org.zanata.page;
+package org.zanata.page.groups;
 
 import java.util.Collections;
 import java.util.List;
@@ -7,6 +7,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.zanata.page.AbstractPage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 
