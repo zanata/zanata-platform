@@ -34,9 +34,11 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class ProjectPage extends AbstractPage
 {
-   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectPage.class);
 
    @FindBy(id = "main_content")
    private WebElement mainContent;
@@ -51,6 +53,7 @@ public class ProjectPage extends AbstractPage
    public ProjectPage(final WebDriver driver)
    {
       super(driver);
+      //TODO this is ugly and may change in the future
       h1 = mainContent.findElements(By.tagName("h1"));
       Preconditions.checkState(h1.size() >= 2, "should have at least 2 <h1> under main content");
    }
@@ -73,8 +76,9 @@ public class ProjectPage extends AbstractPage
 
    public ProjectVersionPage goToActiveVersion(final String versionId)
    {
+      //TODO active versions may not exist yet
       List<WebElement> versionLinks = activeVersions.findElements(By.tagName("a"));
-      LOGGER.info("found {} active versions", versionLinks.size());
+      log.info("found {} active versions", versionLinks.size());
 
       Preconditions.checkState(!versionLinks.isEmpty(), "no version links available");
       Collection<WebElement> found = Collections2.filter(versionLinks, new Predicate<WebElement>()

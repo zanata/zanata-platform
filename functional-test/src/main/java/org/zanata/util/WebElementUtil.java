@@ -57,6 +57,11 @@ public class WebElementUtil
    public static List<TableRow> getTableRows(WebDriver driver, By byQueryForTable)
    {
       WebElement table = driver.findElement(byQueryForTable);
+      return getTableRows(table);
+   }
+
+   public static List<TableRow> getTableRows(WebElement table)
+   {
       Preconditions.checkArgument(table.getTagName().equalsIgnoreCase("table"), "By query must return a table");
 
       List<WebElement> rows = table.findElements(By.xpath(".//tbody/tr"));
@@ -73,6 +78,18 @@ public class WebElementUtil
             List<String> cellContents = from.getCellContents();
             Preconditions.checkElementIndex(columnIndex, cellContents.size(), "column index");
             return cellContents.get(columnIndex);
+         }
+      }));
+   }
+
+   public static ImmutableList<List<String>> transformToTwoDimensionList(List<TableRow> tableRows)
+   {
+      return ImmutableList.copyOf(Collections2.transform(tableRows, new Function<TableRow, List<String>>()
+      {
+         @Override
+         public List<String> apply(TableRow from)
+         {
+            return from.getCellContents();
          }
       }));
    }

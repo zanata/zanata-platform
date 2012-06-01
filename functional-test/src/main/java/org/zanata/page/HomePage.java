@@ -36,6 +36,9 @@ public class HomePage extends AbstractPage
    @FindBy(id = "Projects")
    private WebElement projectsLink;
 
+   @FindBy(id = "version-groups")
+   private WebElement groupsLink;
+
    @FindBy(id = "header_top_right")
    private WebElement headerTopRightDiv;
 
@@ -73,6 +76,12 @@ public class HomePage extends AbstractPage
    {
       projectsLink.click();
       return new ProjectsPage(getDriver());
+   }
+
+   public VersionGroupsPage goToGroups()
+   {
+      groupsLink.click();
+      return new VersionGroupsPage(getDriver());
    }
 
    public AdministrationPage goToAdministration()
