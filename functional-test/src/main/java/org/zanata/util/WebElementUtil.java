@@ -23,11 +23,13 @@ package org.zanata.util;
 import java.util.Collection;
 import java.util.List;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 
@@ -37,18 +39,9 @@ public class WebElementUtil
    {
    }
 
-   private static final Function<WebElement, String> ELEMENT_TO_TEXT_FUNCTION = new Function<WebElement, String>()
-   {
-      @Override
-      public String apply(WebElement from)
-      {
-         return from.getText();
-      }
-   };
-
    public static List<String> elementsToText(Collection<WebElement> webElements)
    {
-      return ImmutableList.copyOf(Collections2.transform(webElements, ELEMENT_TO_TEXT_FUNCTION));
+      return ImmutableList.copyOf(Collections2.transform(webElements, WebElementToTextFunction.FUNCTION));
    }
 
    public static String getInnerHTML(WebDriver driver, WebElement element)
@@ -58,14 +51,54 @@ public class WebElementUtil
 
    public static List<String> elementsToInnerHTML(WebDriver driver, Collection<WebElement> webElements)
    {
-      return ImmutableList.copyOf(Collections2.transform(webElements, new WebElementInnerHTMLFunction(driver)));
+      return ImmutableList.copyOf(Collections2.transform(webElements, new WebElementToInnerHTMLFunction(driver)));
    }
 
-   static class WebElementInnerHTMLFunction implements Function<WebElement, String>
+   public static List<TableRow> getTableRows(WebDriver driver, By byQueryForTable)
+   {
+      WebElement table = driver.findElement(byQueryForTable);
+      return getTableRows(table);
+   }
+
+   public static List<TableRow> getTableRows(WebElement table)
+   {
+      Preconditions.checkArgument(table.getTagName().equalsIgnoreCase("table"), "By query must return a table");
+
+      List<WebElement> rows = table.findElements(By.xpath(".//tbody/tr"));
+      return ImmutableList.copyOf(Collections2.transform(rows, WebElementTableRowFunction.FUNCTION));
+   }
+
+   public static List<String> getColumnContents(List<TableRow> tableRows, final int columnIndex)
+   {
+      return ImmutableList.copyOf(Collections2.transform(tableRows, new Function<TableRow, String>()
+      {
+         @Override
+         public String apply(TableRow from)
+         {
+            List<String> cellContents = from.getCellContents();
+            Preconditions.checkElementIndex(columnIndex, cellContents.size(), "column index");
+            return cellContents.get(columnIndex);
+         }
+      }));
+   }
+
+   public static ImmutableList<List<String>> transformToTwoDimensionList(List<TableRow> tableRows)
+   {
+      return ImmutableList.copyOf(Collections2.transform(tableRows, new Function<TableRow, List<String>>()
+      {
+         @Override
+         public List<String> apply(TableRow from)
+         {
+            return from.getCellContents();
+         }
+      }));
+   }
+
+   private static class WebElementToInnerHTMLFunction implements Function<WebElement, String>
    {
       private final WebDriver driver;
 
-      private WebElementInnerHTMLFunction(WebDriver driver)
+      public WebElementToInnerHTMLFunction(WebDriver driver)
       {
          this.driver = driver;
       }
@@ -76,5 +109,27 @@ public class WebElementUtil
          return getInnerHTML(driver, from);
       }
 
+   }
+
+   private static enum WebElementTableRowFunction implements Function<WebElement, TableRow>
+   {
+      FUNCTION;
+
+      @Override
+      public TableRow apply(WebElement element)
+      {
+         return new TableRow(element);
+      }
+   }
+
+   public static enum WebElementToTextFunction implements Function<WebElement, String>
+   {
+      FUNCTION;
+
+      @Override
+      public String apply(WebElement from)
+      {
+         return from.getText();
+      }
    }
 }

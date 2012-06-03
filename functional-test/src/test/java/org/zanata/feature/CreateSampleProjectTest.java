@@ -29,9 +29,10 @@ import org.hamcrest.Matchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
-import org.zanata.page.ProjectPage;
-import org.zanata.page.ProjectVersionPage;
-import org.zanata.page.WebTranPage;
+import org.zanata.page.administration.ManageLanguagePage;
+import org.zanata.page.projects.ProjectPage;
+import org.zanata.page.projects.ProjectVersionPage;
+import org.zanata.page.webtrans.WebTranPage;
 import org.zanata.workflow.ClientPushWorkFlow;
 import org.zanata.workflow.LanguageWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
@@ -107,6 +108,11 @@ public class CreateSampleProjectTest
       workFlow.addLanguageAndJoin("en-US");
       workFlow.addLanguageAndJoin("pl");
       workFlow.addLanguageAndJoin("zh");
+
+      ManageLanguagePage languagePage = workFlow.goToHome().goToAdministration().goToManageLanguagePage();
+      List<String> languageLocales = languagePage.getLanguageLocales();
+
+      assertThat(languageLocales, Matchers.hasItems("en-US", "pl", "zh"));
    }
 
    @Test(dependsOnMethods = { "canCreateProjectAndVersion", "canAddLanguage" }, invocationTimeOut = 50000)

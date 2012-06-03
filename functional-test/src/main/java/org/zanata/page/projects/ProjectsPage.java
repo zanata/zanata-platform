@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.page;
+package org.zanata.page.projects;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,12 +27,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.zanata.page.AbstractPage;
+import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 
 public class ProjectsPage extends AbstractPage
 {
+   public static final int PROJECT_NAME_COLUMN = 0;
    @FindBy(id = "main_content")
    private WebElement mainContentDiv;
 
@@ -69,8 +71,9 @@ public class ProjectsPage extends AbstractPage
       {
          return Collections.emptyList();
       }
-      WebElement table = getDriver().findElement(By.className("rich-table"));
-      List<WebElement> rows = table.findElements(By.xpath(".//tbody/tr/td[1]"));
-      return WebElementUtil.elementsToText(rows);
+
+      List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), By.className("rich-table"));
+
+      return WebElementUtil.getColumnContents(tableRows, PROJECT_NAME_COLUMN);
    }
 }

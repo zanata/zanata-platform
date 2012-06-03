@@ -21,10 +21,9 @@
 package org.zanata.workflow;
 
 import org.zanata.page.AbstractPage;
-import org.zanata.page.HomePage;
-import org.zanata.page.ProjectPage;
-import org.zanata.page.ProjectVersionPage;
-import org.zanata.page.ProjectsPage;
+import org.zanata.page.projects.ProjectPage;
+import org.zanata.page.projects.ProjectVersionPage;
+import org.zanata.page.projects.ProjectsPage;
 import org.zanata.util.Constants;
 
 public class ProjectWorkFlow extends AbstractWebWorkFlow
