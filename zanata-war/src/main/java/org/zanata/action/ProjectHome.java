@@ -112,7 +112,7 @@ public class ProjectHome extends SlugHome<HIterationProject>
    {
       if (!isSlugAvailable(slug))
       {
-         FacesMessages.instance().addToControl(componentId, "This slug is not available");
+         FacesMessages.instance().addToControl(componentId, "This Project ID is not available");
          return false;
       }
       return true;

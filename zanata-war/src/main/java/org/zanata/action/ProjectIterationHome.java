@@ -25,7 +25,6 @@ import java.util.Set;
 
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.NoResultException;
 
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
@@ -124,7 +123,7 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
    {
       if (!isSlugAvailable(slug))
       {
-         FacesMessages.instance().addToControl(componentId, "This slug is not available");
+         FacesMessages.instance().addToControl(componentId, "This Version ID is not available");
          return false;
       }
       return true;
