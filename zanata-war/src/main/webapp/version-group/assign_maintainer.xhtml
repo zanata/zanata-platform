@@ -9,7 +9,7 @@
     xmlns:a4j="http://richfaces.org/a4j"
     template="../WEB-INF/layout/template.xhtml">
    
-    <ui:define name="page_title">#{messages['jsf.Groups']}:#{versionGroupHome.instance.slug}:#{messages['jsf.AddGroupMaintainer']}</ui:define>
+    <ui:define name="page_title">#{messages['jsf.Groups']}:#{versionGroupHome.instance.name}:#{messages['jsf.AddGroupMaintainer']}</ui:define>
     <ui:define name="left_content">
 		<rich:panel>
             <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
@@ -29,8 +29,8 @@
       </script>
       
       	<h1>
-	      #{messages['jsf.GroupId']}:&nbsp;
-	      <s:link id="versionGroup" styleClass="table_link" value="#{versionGroupHome.instance.slug}" view="/version-group/version_group.xhtml"> 
+	      #{messages['jsf.GroupName']}:&nbsp;
+	      <s:link id="versionGroup" styleClass="table_link" value="#{versionGroupHome.instance.name}" view="/version-group/version_group.xhtml"> 
           	<f:param name="slug" value="#{versionGroupHome.instance.slug}"/>
           </s:link>
 	    </h1>
