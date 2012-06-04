@@ -29,6 +29,7 @@
     	<rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
     	
     	 <h1>#{messages['jsf.GroupId']}: #{versionGroupHome.instance.slug}</h1>
+    	 <h1>#{messages['jsf.Name']}: #{versionGroupHome.instance.name}</h1>
     	 
     	 <s:formattedText value="#{versionGroupHome.instance.description}" rendered="#{!empty versionGroupHome.instance.description}"/>
     	 
