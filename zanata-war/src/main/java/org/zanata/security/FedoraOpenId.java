@@ -245,6 +245,7 @@ public class FedoraOpenId
       try
       {
          String var = "http://" + username + FEDORA_HOST;
+         var = "https://www.google.com/accounts/o8/id";
          setId(var);
          LOGGER.info("openid: {}", getId());
          login();
