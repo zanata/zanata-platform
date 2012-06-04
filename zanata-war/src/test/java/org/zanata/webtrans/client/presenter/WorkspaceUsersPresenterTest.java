@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
+import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
@@ -30,6 +31,7 @@ import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.PersonSessionDetails;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
+import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData.MESSAGE_TYPE;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -55,25 +57,32 @@ public class WorkspaceUsersPresenterTest
 
    UserSessionService mockSessionService = createMock(UserSessionService.class);
 
+   private final static String PUBLIC_CHANNEL_WARN = "Warning! This is a public channel";
+
    @BeforeMethod
    public void resetMocks()
    {
-      reset(mockDisplay, mockEventBus, mockSendButton, mockSessionService);
+      reset(mockDisplay, mockEventBus, mockSendButton, mockSessionService, mockMessages, mockDispatcher, mockIdentity);
       workspaceUsersPresenter = new WorkspaceUsersPresenter(mockDisplay, mockEventBus, mockIdentity, mockDispatcher, mockMessages, mockSessionService);
    }
 
    public void setEmptyUserList()
    {
-      // expect(mockDisplay.getSendButton()).andReturn(mockSendButton);
-      // expect(mockSendButton.addClickHandler(capture(capturedSendButtonClickHandler))).andReturn(createMock(HandlerRegistration.class));
+      expect(mockDisplay.getSendButton()).andReturn(mockSendButton);
+      expect(mockSendButton.addClickHandler(capture(capturedSendButtonClickHandler))).andReturn(createMock(HandlerRegistration.class));
 
+      expect(mockMessages.thisIsAPublicChannel()).andReturn(PUBLIC_CHANNEL_WARN);
+
+      mockDisplay.appendChat(null, null, PUBLIC_CHANNEL_WARN, MESSAGE_TYPE.SYSTEM_WARNING);
+      expectLastCall().once();
+      
       expect(mockEventBus.addHandler(eq(PublishWorkspaceChatEvent.getType()), isA(PublishWorkspaceChatEventHandler.class))).andReturn(createMock(HandlerRegistration.class));
-      replay(mockDisplay, mockEventBus, mockSessionService);
+      replayAll();
 
       workspaceUsersPresenter.bind();
       workspaceUsersPresenter.initUserList(new HashMap<EditorClientId, PersonSessionDetails>());
 
-      verify(mockDisplay, mockEventBus, mockSessionService);
+      verifyAll();
    }
 
    public void setNonEmptyUserList()
@@ -94,6 +103,11 @@ public class WorkspaceUsersPresenterTest
       UserPanelSessionItem mockItem2 = new UserPanelSessionItem(mockPanel2, person2);
       UserPanelSessionItem mockItem3 = new UserPanelSessionItem(mockPanel3, person3);
 
+      expect(mockMessages.thisIsAPublicChannel()).andReturn(PUBLIC_CHANNEL_WARN);
+
+      mockDisplay.appendChat(null, null, PUBLIC_CHANNEL_WARN, MESSAGE_TYPE.SYSTEM_WARNING);
+      expectLastCall().once();
+
       expect(mockSessionService.getColor("sessionId1")).andReturn("color1");
       expect(mockSessionService.getColor("sessionId2")).andReturn("color2");
       expect(mockSessionService.getColor("sessionId3")).andReturn("color3");
@@ -111,11 +125,11 @@ public class WorkspaceUsersPresenterTest
       mockSessionService.updateTranslatorStatus(editorClientId3, null);
       expectLastCall().once();
 
-      // expect(mockDisplay.getSendButton()).andReturn(mockSendButton);
-      // expect(mockSendButton.addClickHandler(capture(capturedSendButtonClickHandler))).andReturn(createMock(HandlerRegistration.class));
+      expect(mockDisplay.getSendButton()).andReturn(mockSendButton);
+      expect(mockSendButton.addClickHandler(capture(capturedSendButtonClickHandler))).andReturn(createMock(HandlerRegistration.class));
 
       expect(mockEventBus.addHandler(eq(PublishWorkspaceChatEvent.getType()), isA(PublishWorkspaceChatEventHandler.class))).andReturn(createMock(HandlerRegistration.class));
-      replay(mockDisplay, mockEventBus, mockSendButton, mockSessionService);
+      replayAll();
 
       workspaceUsersPresenter.bind();
 
@@ -125,6 +139,16 @@ public class WorkspaceUsersPresenterTest
       people.put(new EditorClientId("sessionId3"), new PersonSessionDetails(person3, null));
       workspaceUsersPresenter.initUserList(people);
 
-      verify(mockDisplay, mockEventBus, mockSendButton, mockSessionService);
+      verifyAll();
+   }
+   
+   private void verifyAll()
+   {
+      verify(mockDisplay, mockEventBus, mockSendButton, mockSessionService, mockMessages, mockIdentity, mockDispatcher);
+   }
+
+   private void replayAll()
+   {
+      replay(mockDisplay, mockEventBus, mockSendButton, mockSessionService, mockMessages, mockIdentity, mockDispatcher);
    }
 }

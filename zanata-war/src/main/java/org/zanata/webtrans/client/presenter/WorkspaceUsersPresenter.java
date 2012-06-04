@@ -14,14 +14,17 @@ import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.HasManageUserPanel;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
-import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonSessionDetails;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
+import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData.MESSAGE_TYPE;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatResult;
 
+import com.google.common.base.Strings;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
@@ -47,7 +50,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
       HasText getInputText();
 
-      void appendChat(String user, String timestamp, String msg);
+      void appendChat(String user, String timestamp, String msg, MESSAGE_TYPE messageType);
 
       void removeUser(HasManageUserPanel userPanel);
    }
@@ -65,26 +68,31 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
    @Override
    protected void onBind()
    {
-      /**
-       * <!-- disabled chat room until 1.7 -->
-       * display.getSendButton().addClickHandler(new ClickHandler() {
-       * 
-       * @Override public void onClick(ClickEvent event) { if
-       *           (!Strings.isNullOrEmpty(display.getInputText().getText())) {
-       *           dispatchChatAction(identity.getPerson().getId().toString(),
-       *           display.getInputText().getText());
-       *           display.getInputText().setText(""); } } });
-       **/
+
+      display.getSendButton().addClickHandler(new ClickHandler()
+      {
+
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            if (!Strings.isNullOrEmpty(display.getInputText().getText()))
+            {
+               dispatchChatAction(identity.getPerson().getId().toString(), display.getInputText().getText(), MESSAGE_TYPE.USER_MSG);
+               display.getInputText().setText("");
+            }
+         }
+      });
 
       registerHandler(eventBus.addHandler(PublishWorkspaceChatEvent.getType(), new PublishWorkspaceChatEventHandler()
       {
          @Override
          public void onPublishWorkspaceChat(PublishWorkspaceChatEvent event)
          {
-            display.appendChat(event.getPersonId(), event.getTimestamp(), event.getMsg());
+            display.appendChat(event.getPersonId(), event.getTimestamp(), event.getMsg(), event.getMessageType());
          }
       }));
 
+      display.appendChat(null, null, messages.thisIsAPublicChannel(), MESSAGE_TYPE.SYSTEM_WARNING);
    }
 
    @Override
@@ -112,12 +120,12 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
       display.removeUser(item.getPanel());
 
-      dispatchChatAction(person.getId().toString(), messages.hasQuitWorkspace());
+      dispatchChatAction(null, messages.hasQuitWorkspace(person.getId().toString()), MESSAGE_TYPE.SYSTEM_MSG);
    }
 
-   public void dispatchChatAction(String person, String msg)
+   public void dispatchChatAction(String person, String msg, MESSAGE_TYPE messageType)
    {
-      dispatcher.execute(new PublishWorkspaceChatAction(person, msg), new AsyncCallback<PublishWorkspaceChatResult>()
+      dispatcher.execute(new PublishWorkspaceChatAction(person, msg, messageType), new AsyncCallback<PublishWorkspaceChatResult>()
       {
 
          @Override

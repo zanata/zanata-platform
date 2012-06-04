@@ -5,14 +5,18 @@ import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.HasManageUserPanel;
 import org.zanata.webtrans.client.ui.UserPanel;
 import org.zanata.webtrans.shared.model.Person;
+import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData.MESSAGE_TYPE;
 
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -31,6 +35,15 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    {
    }
 
+   interface Styles extends CssResource
+   {
+      String systemMsg();
+
+      String userName();
+
+      String systemWarn();
+   }
+
    @UiField
    VerticalPanel userListPanel;
 
@@ -40,14 +53,17 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    @UiField
    VerticalPanel chatRoom;
 
-   // @UiField -- <!-- disabled chat room until 1.7 -->
+   @UiField
    TextBox chatInput;
 
-   // @UiField -- <!-- disabled chat room until 1.7 -->
+   @UiField
    PushButton sendButton;
 
    @UiField
    ScrollPanel chatRoomScrollPanel;
+
+   @UiField
+   Styles style;
 
    @Inject
    public WorkspaceUsersView(final UiMessages uiMessages)
@@ -55,8 +71,7 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
       mainPanel = new SplitLayoutPanel(3);
       initWidget(uiBinder.createAndBindUi(this));
 
-      // <!-- disabled chat room until 1.7 -->
-      // sendButton.setText(uiMessages.sendLabel());
+      sendButton.setText(uiMessages.sendLabel());
    }
 
    @Override
@@ -98,16 +113,36 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    }
 
    @Override
-   public void appendChat(String user, String timestamp, String msg)
+   public void appendChat(String user, String timestamp, String msg, MESSAGE_TYPE messageType)
    {
-      if (Strings.isNullOrEmpty(user))
+      Label timestampLabel = new Label("[" + timestamp + "]");
+      Label msgLabel = new Label(msg);
+      if (messageType == MESSAGE_TYPE.SYSTEM_MSG)
       {
-         chatRoom.add(new Label("[" + timestamp + "]   " + msg));
+         timestampLabel.setStyleName(style.systemMsg());
+         msgLabel.setStyleName(style.systemMsg());
       }
-      else
+      else if (messageType == MESSAGE_TYPE.SYSTEM_WARNING)
       {
-         chatRoom.add(new Label("[" + timestamp + "]   " + user + ":  " + msg));
+         timestampLabel.setStyleName(style.systemWarn());
+         msgLabel.setStyleName(style.systemWarn());
       }
+
+      HorizontalPanel hp = new HorizontalPanel();
+
+      if (!Strings.isNullOrEmpty(timestamp))
+      {
+         hp.add(timestampLabel);
+      }
+      if (!Strings.isNullOrEmpty(user))
+      {
+         Label userLabel = new Label(user + ":");
+         userLabel.setStyleName(style.userName());
+         hp.add(userLabel);
+      }
+      hp.add(msgLabel);
+
+      chatRoom.add(hp);
 
       chatRoomScrollPanel.scrollToBottom();
    }

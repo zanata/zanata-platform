@@ -40,6 +40,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
+import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData.MESSAGE_TYPE;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -352,13 +353,13 @@ public class TranslationPresenterTest
 
 
       expect(mockMessages.nUsersOnline(participants.size())).andReturn(TEST_USERS_ONLINE_MESSAGE).anyTimes();
-      expect(mockMessages.hasJoinedWorkspace()).andReturn(TEST_HAS_JONINED_WORKSPACE_MESSAGE).once();
+      expect(mockMessages.hasJoinedWorkspace("bob")).andReturn(TEST_HAS_JONINED_WORKSPACE_MESSAGE).once();
       mockDisplay.setParticipantsTitle(TEST_USERS_ONLINE_MESSAGE);
       expectLastCall().once(); // once for now
 
       expect(mockWorkspaceUsersPresenter.getTranslatorsSize()).andReturn(2);
 
-      mockWorkspaceUsersPresenter.dispatchChatAction("bob", TEST_HAS_JONINED_WORKSPACE_MESSAGE);
+      mockWorkspaceUsersPresenter.dispatchChatAction("bob", TEST_HAS_JONINED_WORKSPACE_MESSAGE, MESSAGE_TYPE.USER_MSG);
       expectLastCall();
       
       mockWorkspaceUsersPresenter.addTranslator(new EditorClientId("sessionId1"), new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"), null);

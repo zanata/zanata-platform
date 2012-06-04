@@ -32,6 +32,7 @@ import org.zanata.webtrans.client.ui.SplitLayoutPanelHelper;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.StyleInjector;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -157,6 +158,12 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    }
 
    @Override
+   public boolean isUserPanelOpen()
+   {
+      return southPanelTab.getSelectedIndex() == southPanelTab.getWidgetIndex(userPanel);
+   }
+
+   @Override
    public void setSidePanelVisible(boolean visible)
    {
       mainSplitPanel.forceLayout();
@@ -221,6 +228,12 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    public HasValue<Boolean> getSouthPanelToggle()
    {
       return southPanelToggleButton;
+   }
+
+   @Override
+   public HasSelectionHandlers<Integer> getSouthTabPanel()
+   {
+      return southPanelTab;
    }
 
 }
