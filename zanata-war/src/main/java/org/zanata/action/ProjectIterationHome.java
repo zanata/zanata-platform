@@ -34,6 +34,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
+import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
@@ -176,6 +177,10 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
       return state;
    }
    
+   public boolean isProjectActive()
+   {
+      return getInstance().getProject().getStatus() == EntityStatus.ACTIVE;
+   }
    
    private void updateOverrideLocales()
    {

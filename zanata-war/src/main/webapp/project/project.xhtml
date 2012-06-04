@@ -128,7 +128,7 @@
     <s:link styleClass="action_link" rendered="#{s:hasRole('admin')}" value="#{messages['jsf.project.EditHomePage.label']}" view="/project/homepage_edit.xhtml" title="#{messages['jsf.project.EditHomePage.tooltip']}" propagation="none">
       <f:param name="slug" value="#{projectHome.instance.slug}"/>
     </s:link>
-    <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'add-iteration')}" view="/project/add_iteration.xhtml" value="#{messages['jsf.CreateVersion']}" propagation="none">
+    <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'add-iteration') and projectHome.isProjectActive()}" view="/project/add_iteration.xhtml" value="#{messages['jsf.CreateVersion']}" propagation="none">
     	<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
     </s:link>
     <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'update')}" view="/project/assign_maintainer.xhtml" value="#{messages['jsf.ManageMaintainers']}" propagation="none">
