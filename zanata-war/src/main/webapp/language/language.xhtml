@@ -135,7 +135,7 @@
                     <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
                     <a4j:commandButton value="#{messages['jsf.Add']}"
                                      action="#{languageTeamAction.addTeamMember(person.id)}"
-                                     rendered="#{!languageTeamAction.isPersonInTeam(person.id)}" reRender="userAddPanel, memberPanel" />
+                                     rendered="#{!languageTeamAction.isPersonInTeam(person.id)}" reRender="searchResults, memberPanel" />
                     <h:outputText value="#{messages['jsf.AlreadyInTeam']}"
                                   rendered="#{languageTeamAction.isPersonInTeam(person.id)}" />
                   </rich:column>
