@@ -10,6 +10,20 @@
     template="../WEB-INF/layout/template.xhtml">
     
 <ui:define name="page_title">#{messages['jsf.Groups']}:#{versionGroupHome.instance.slug}</ui:define>
+
+<ui:define name="head">
+    <script type="text/javascript">
+        function submitSearchOnEnter(e)
+        {
+            if(e.keyCode == 13 )
+            {
+                #{rich:element('searchBtn')}.click();
+                return false;
+            }
+        }
+    </script>
+</ui:define>
+
 <ui:define name="center_content">
     <a4j:form>
     	<rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
@@ -73,8 +87,10 @@
             <a4j:form>
                 <h1>Find Project Version</h1>
                 <p>
-                    <h:inputText value="#{versionGroupAction.searchTerm}" />
-                    <a4j:commandButton value="#{messages['jsf.Search']}"
+                    <h:inputText value="#{versionGroupAction.searchTerm}"
+                                 onkeydown="return submitSearchOnEnter(event)"/>
+                    <a4j:commandButton id="searchBtn"
+                                       value="#{messages['jsf.Search']}"
                                        action="#{versionGroupAction.searchProjectAndVersion}"
                                        reRender="searchResults"
                                        status="searchStatus" />
