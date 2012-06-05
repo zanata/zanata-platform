@@ -232,12 +232,12 @@ a.table_link {
 	font-size: 14px;
 	font-weight: bold;
 	padding: 4px;
-	-moz-border-radius: 5px;
 	border-radius: 5px;
 	color: #7092C3;
 	text-decoration: none;
 	margin: 1px;
 	text-align: right;
+	outline:none;
 }
 
 a.table_link:hover {

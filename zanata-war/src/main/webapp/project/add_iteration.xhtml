@@ -8,11 +8,17 @@
     xmlns:rich="http://richfaces.org/rich"
     template="../WEB-INF/layout/template.xhtml">
 
-<ui:define name="page_title">#{projectHome.instance.name} - Add Version</ui:define>
+<ui:define name="page_title">#{projectIterationHome.instance.project.name} - Add Version</ui:define>
 <ui:define name="center_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
-    <h1>#{messages['jsf.NameCreateANewVersion']}</h1>
-
+	<h1>
+	      #{messages['jsf.ProjectName']}:&nbsp;
+	      <s:link id="project" styleClass="table_link" value="#{projectIterationHome.instance.project.name}" view="/project/project.xhtml"> 
+          	<f:param name="slug" value="#{projectIterationHome.instance.project.slug}"/>
+          </s:link>
+	  </h1>
+	  
+	  
     <ui:include src="../WEB-INF/layout/iteration_edit_form.xhtml" />
 
 </ui:define>
