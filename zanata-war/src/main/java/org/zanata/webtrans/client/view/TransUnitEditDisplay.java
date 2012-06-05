@@ -32,5 +32,4 @@ public interface TransUnitEditDisplay extends WidgetDisplay
    void init(TransUnitListDisplay transUnitListDisplay, SourceContentsDisplay sourceContentsDisplay, TargetContentsDisplay targetContentsDisplay);
 
    void scrollToRow(TransUnit selected);
-
 }

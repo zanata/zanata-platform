@@ -694,8 +694,8 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             @Override
             public void onSuccess(GetTransUnitListResult result)
             {
-               targetContentsPresenter.initWidgets(display.getPageSize());
-               sourceContentsPresenter.initWidgets(display.getPageSize());
+               targetContentsPresenter.initWidgets();
+               sourceContentsPresenter.initWidgets();
                SerializableResponse<TransUnit> response = new SerializableResponse<TransUnit>(result.getUnits());
                Log.info("Got " + result.getUnits().size() + " rows back of " + result.getTotalCount() + " available");
                callback.onRowsReady(request, response);
@@ -1012,7 +1012,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
             display.setTransUnitDetails(transUnit);
 
-            sourceContentsPresenter.setSelectedSource(display.getSelectedRowNumber());
+            sourceContentsPresenter.setSelectedSource();
             if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
             {
                selectedTransUnit = transUnit;

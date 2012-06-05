@@ -128,7 +128,7 @@ public class TargetContentsPresenterTest
       presenter.setCellEditor(cellEditor);
 
       when(displayProvider.get()).thenReturn(display1).thenReturn(display2);
-      presenter.initWidgets(PAGE_SIZE);
+      presenter.initWidgets();
 
       verify(display1).setListener(presenter);
       verify(display2).setListener(presenter);
@@ -138,7 +138,7 @@ public class TargetContentsPresenterTest
    public void canSetToViewMode() 
    {
       //given show editor at row 0
-      presenter.showEditors(0, -1);
+      presenter.showEditors(-1);
 
       presenter.setToViewMode();
 
@@ -159,7 +159,7 @@ public class TargetContentsPresenterTest
       when(navMessages.editSaveShortcut()).thenReturn(buttonTitle);
 
       //when selecting row 1
-      TargetContentsDisplay result = presenter.getNextTargetContentsDisplay(0, transUnit, findMessages);
+      TargetContentsDisplay result = presenter.setValue(transUnit, findMessages);
 
       assertThat(result, sameInstance(display1));
       verify(display1).setTargets(targetContents);
@@ -179,7 +179,7 @@ public class TargetContentsPresenterTest
       when(navMessages.editSaveWithEnterShortcut()).thenReturn(buttonTitle);
 
       //when selecting row 2
-      TargetContentsDisplay result = presenter.getNextTargetContentsDisplay(1, transUnit, findMessages);
+      TargetContentsDisplay result = presenter.setValue(transUnit, findMessages);
 
       assertThat(result, sameInstance(display2));
       verify(display2).setTargets(targetContents);
@@ -228,7 +228,7 @@ public class TargetContentsPresenterTest
    public void canCopySource()
    {
       when(sourceContentPresenter.getSelectedSource()).thenReturn("source");
-      presenter.showEditors(0, TargetContentsPresenter.NO_OPEN_EDITOR);
+      presenter.showEditors(TargetContentsPresenter.NO_OPEN_EDITOR);
 
       presenter.copySource(editor);
 
@@ -244,7 +244,7 @@ public class TargetContentsPresenterTest
    public void toggleViewIsDeferredExecuted()
    {
       when(editor.getIndex()).thenReturn(99);
-      presenter.showEditors(0, TargetContentsPresenter.NO_OPEN_EDITOR);
+      presenter.showEditors(TargetContentsPresenter.NO_OPEN_EDITOR);
 
       presenter.toggleView(editor);
 
@@ -264,7 +264,7 @@ public class TargetContentsPresenterTest
    @Test
    public void canGetNewTargets()
    {
-      presenter.showEditors(1, TargetContentsPresenter.NO_OPEN_EDITOR);
+      presenter.showEditors(TargetContentsPresenter.NO_OPEN_EDITOR);
       when(display2.getNewTargets()).thenReturn(targetContents);
 
       ArrayList<String> result = presenter.getNewTargets();
@@ -319,7 +319,7 @@ public class TargetContentsPresenterTest
    {
       when(display1.getEditors()).thenReturn(Lists.newArrayList(currentEditors));
       when(display1.isEditing()).thenReturn(true);
-      presenter.showEditors(0, 0);
+      presenter.showEditors(0);
    }
 
    @Test

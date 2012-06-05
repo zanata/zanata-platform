@@ -20,24 +20,20 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.ui.HasSelectableSource;
 import org.zanata.webtrans.shared.model.TransUnit;
-
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.collect.Lists;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -48,14 +44,13 @@ public class SourceContentsPresenter
    private HasSelectableSource selectedSource;
 
    private final EventBus eventBus;
-   private Provider<SourceContentsDisplay> displayProvider;
-   private ArrayList<SourceContentsDisplay> displayList;
+   private SourceContentsDisplay display;
 
    @Inject
-   public SourceContentsPresenter(final EventBus eventBus, Provider<SourceContentsDisplay> displayProvider)
+   public SourceContentsPresenter(final EventBus eventBus, SourceContentsDisplay sourceContentsDisplay)
    {
       this.eventBus = eventBus;
-      this.displayProvider = displayProvider;
+      display = sourceContentsDisplay;
    }
 
    private final ClickHandler selectSourceHandler = new ClickHandler()
@@ -82,17 +77,15 @@ public class SourceContentsPresenter
    /**
     * Select first source in the list when row is selected or reselect previous selected one
     *
-    * @param row
     */
-   public void setSelectedSource(int row)
+   public void setSelectedSource()
    {
-      SourceContentsDisplay sourceContentsView = displayList.get(row);
-      if (sourceContentsView != null)
+      if (display != null)
       {
          // after save as fuzzy re-render(will call
          // SourceContentsView.setValue(TransUnit) which cause re-creation of
          // SourcePanel list), we want to re-select the radio button
-         List<HasSelectableSource> sourcePanelList = sourceContentsView.getSourcePanelList();
+         List<HasSelectableSource> sourcePanelList = display.getSourcePanelList();
          for (HasSelectableSource sourcePanel : sourcePanelList)
          {
             if (selectedSource != null && selectedSource.getSource().equals(sourcePanel.getSource()))
@@ -102,7 +95,7 @@ public class SourceContentsPresenter
             }
          }
          //else by default it will select the first one
-         fireClickEventToSelectSource(sourceContentsView.getSourcePanelList().get(0));
+         fireClickEventToSelectSource(display.getSourcePanelList().get(0));
       }
    }
 
@@ -116,33 +109,25 @@ public class SourceContentsPresenter
       return selectedSource.getSource();
    }
 
-   public SourceContentsDisplay getSourceContent(int row, TransUnit value)
+   public SourceContentsDisplay setValue(TransUnit value)
    {
-      SourceContentsDisplay sourceContentsView = displayList.get(row);
+      display.setValue(value);
 
-      sourceContentsView.setValue(value);
-
-      List<HasSelectableSource> sourcePanelList = sourceContentsView.getSourcePanelList();
+      List<HasSelectableSource> sourcePanelList = display.getSourcePanelList();
 
       for (HasClickHandlers sourcePanel : sourcePanelList)
       {
          sourcePanel.addClickHandler(selectSourceHandler);
       }
-      return sourceContentsView;
+      return display;
    }
 
-   public void initWidgets(int pageSize)
+   public void initWidgets()
    {
-      displayList = Lists.newArrayList();
-      for (int i = 0; i < pageSize; i++)
-      {
-         SourceContentsDisplay display = displayProvider.get();
-         displayList.add(display);
-      }
    }
 
    public SourceContentsDisplay getDisplay()
    {
-      return displayList.get(0);
+      return display;
    }
 }

@@ -165,8 +165,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>,
 		curCol = curCellEditInfo.getCellIndex();
 
 		this.cellValue = cellValue;
-		targetContentsPresenter.showEditors(curRow,
-				TargetContentsPresenter.NO_OPEN_EDITOR);
+		targetContentsPresenter.showEditors(
+            TargetContentsPresenter.NO_OPEN_EDITOR);
 
 		isOpened = true;
 
@@ -329,7 +329,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>,
 	}
 
 	public void showEditors(int rowIndex, int editorIndex) {
-		targetContentsPresenter.showEditors(rowIndex, editorIndex);
+		targetContentsPresenter.showEditors(editorIndex);
 
 	}
 

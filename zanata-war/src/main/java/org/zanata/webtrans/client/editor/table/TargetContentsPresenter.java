@@ -129,7 +129,13 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Inject
    public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final CachingDispatchAsync dispatcher, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final UserSessionService sessionService, final UserConfigHolder configHolder, UserWorkspaceContext userWorkspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel, final KeyShortcutPresenter keyShortcutPresenter, TranslationHistoryPresenter historyPresenter)
    {
-      this.displayProvider = displayProvider;
+      currentDisplay = displayProvider.get();
+      currentDisplay.setListener(this);
+      if (userWorkspaceContext.hasReadOnlyAccess())
+      {
+         Log.debug("read only mode. Hide buttons");
+         currentDisplay.showButtons(false);
+      }
       this.eventBus = eventBus;
       this.messages = messages;
       this.sourceContentsPresenter = sourceContentsPresenter;
@@ -358,11 +364,9 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          }
       });
    }
-
-   public void showEditors(int rowIndex, int editorIndex)
+   public void showEditors(int editorIndex)
    {
       Log.debug("enter show editor with editor index:" + editorIndex + " current editor index:" + currentEditorIndex);
-      currentDisplay = displayList.get(rowIndex);
       currentEditors = currentDisplay.getEditors();
 
       for (ToggleEditor editor : currentDisplay.getEditors())
@@ -374,12 +378,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       revealDisplay();
 
       fireTransUnitEditAction();
-
-      if (configHolder.isDisplayButtons())
-      {
-         currentDisplay.showButtons(true);
-      }
-
+      
       if (editorIndex != NO_OPEN_EDITOR)
       {
          currentEditorIndex = editorIndex;
@@ -397,7 +396,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       {
          validationMessagePanel.clear();
          currentDisplay.focusEditor(currentEditorIndex);
-         Log.debug("show editors at row:" + rowIndex + " current editor:" + currentEditorIndex);
          updateTranslators();
       }
    }
@@ -451,28 +449,15 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
    }
 
-   public TargetContentsDisplay getNextTargetContentsDisplay(int rowIndex, TransUnit transUnit, String findMessages)
+   public TargetContentsDisplay setValue(TransUnit transUnit, String findMessages)
    {
-      TargetContentsDisplay result = displayList.get(rowIndex);
-      result.setFindMessage(findMessages);
-      result.setTargets(transUnit.getTargets());
-      if (userWorkspaceContext.hasReadOnlyAccess())
-      {
-         Log.debug("read only mode. Hide buttons");
-         result.showButtons(false);
-      }
-      return result;
+      currentDisplay.setFindMessage(findMessages);
+      currentDisplay.setTargets(transUnit.getTargets());
+      return currentDisplay;
    }
 
-   public void initWidgets(int pageSize)
+   public void initWidgets()
    {
-      displayList = Lists.newArrayList();
-      for (int i = 0; i < pageSize; i++)
-      {
-         TargetContentsDisplay display = displayProvider.get();
-         display.setListener(this);
-         displayList.add(display);
-      }
    }
 
    @Override
@@ -652,13 +637,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       // TODO optimise a bit. If some config hasn't changed or not relevant in
       // this context, don't bother doing anything
-      for (TargetContentsDisplay display : displayList)
+      currentDisplay.showButtons(configHolder.isDisplayButtons());
+      for (ToggleEditor editor : currentDisplay.getEditors())
       {
-         display.showButtons(configHolder.isDisplayButtons());
-         for (ToggleEditor editor : display.getEditors())
-         {
-            editor.showCopySourceButton(configHolder.isDisplayButtons());
-         }
+         editor.showCopySourceButton(configHolder.isDisplayButtons());
       }
 
       boolean enterSavesApproved = configHolder.isEnterSavesApproved();
@@ -832,6 +814,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
    public TargetContentsDisplay getDisplay()
    {
-      return displayList.get(0);
+      return currentDisplay;
    }
 }

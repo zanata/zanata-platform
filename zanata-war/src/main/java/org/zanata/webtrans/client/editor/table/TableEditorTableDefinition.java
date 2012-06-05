@@ -109,7 +109,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          VerticalPanel panel = new VerticalPanel();
          panel.addStyleName("TableEditorCell-Source-Table");
 
-         SourceContentsDisplay sourceContentsView = sourceContentsPresenter.getSourceContent(view.getRowIndex(), rowValue);
+         SourceContentsDisplay sourceContentsView = sourceContentsPresenter.setValue(rowValue);
 
          if (!Strings.isNullOrEmpty(findMessage))
          {
@@ -154,7 +154,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          view.setStyleName("TableEditorCell TableEditorCell-Target");
          final VerticalPanel targetPanel = new VerticalPanel();
 
-         TargetContentsDisplay contentsDisplay = targetContentsPresenter.getNextTargetContentsDisplay(view.getRowIndex(), rowValue, findMessage);
+         TargetContentsDisplay contentsDisplay = targetContentsPresenter.setValue(rowValue, findMessage);
          targetContentsPresenter.setToViewMode();
 
          targetPanel.add(contentsDisplay.asWidget());

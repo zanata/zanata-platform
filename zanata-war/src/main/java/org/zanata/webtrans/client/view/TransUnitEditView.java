@@ -47,7 +47,7 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
    @UiField
    ScrollPanel tuTablePanel;
    @UiField
-   HorizontalPanel editorPanel;
+   ScrollPanel editorPanel;
 
    public TransUnitEditView()
    {
@@ -70,8 +70,18 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
    {
       tuTablePanel.setWidget(transUnitListDisplay);
       this.displayTable = transUnitListDisplay;
-      editorPanel.add(sourceContentsDisplay);
-      editorPanel.add(targetContentsDisplay);
+      if (sourceContentsDisplay == null || targetContentsDisplay == null)
+      {
+         //must be readonly mode.
+         rootPanel.setWidgetSize(editorPanel, 0);
+         return;
+      }
+      HorizontalPanel hPanel = new HorizontalPanel();
+      hPanel.add(sourceContentsDisplay);
+      hPanel.add(targetContentsDisplay);
+      hPanel.setCellWidth(sourceContentsDisplay, "50%");
+      hPanel.setCellWidth(targetContentsDisplay, "50%");
+      editorPanel.add(hPanel);
    }
 
    @Override

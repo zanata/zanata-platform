@@ -2,17 +2,17 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 
     <g:SplitLayoutPanel>
-        <g:north size="500" min-size="100">
+        <g:center min-size="300">
             <g:ScrollPanel width="100%" ui:field="tuTablePanel">
 
             </g:ScrollPanel>
-        </g:north>
-        <g:center>
-            <g:ScrollPanel width="100%" >
-               <g:HorizontalPanel ui:field="editorPanel" width="100%">
+        </g:center>
+        <g:south size="300" min-size="200">
+            <g:ScrollPanel width="100%" ui:field="editorPanel">
+               <g:HorizontalPanel width="100%">
 
                </g:HorizontalPanel>
             </g:ScrollPanel>
-        </g:center>
+        </g:south>
     </g:SplitLayoutPanel>
 </ui:UiBinder>
