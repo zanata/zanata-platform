@@ -33,6 +33,7 @@ import org.zanata.webtrans.client.ui.SplitLayoutPanelHelper;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -48,6 +49,11 @@ public class TranslationView extends Composite implements TranslationPresenter.D
 {
    interface TranslationViewUiBinder extends UiBinder<LayoutPanel, TranslationView>
    {
+   }
+
+   interface Styles extends CssResource
+   {
+      String messageAlert();
    }
 
    private static TranslationViewUiBinder uiBinder = GWT.create(TranslationViewUiBinder.class);
@@ -69,6 +75,9 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    
    @UiField
    SplitLayoutPanel mainSplitPanel;
+
+   @UiField
+   Styles style;
 
    LayoutPanel userPanel;
 
@@ -155,6 +164,18 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    public void setParticipantsTitle(String title)
    {
       southPanelTab.setTabText(southPanelTab.getWidgetIndex(userPanel), title);
+   }
+
+   @Override
+   public void setMessageAlert()
+   {
+      southPanelTab.getTabWidget(southPanelTab.getWidgetIndex(userPanel)).addStyleName(style.messageAlert());
+   }
+
+   @Override
+   public void removeMessageAlert()
+   {
+      southPanelTab.getTabWidget(southPanelTab.getWidgetIndex(userPanel)).removeStyleName(style.messageAlert());
    }
 
    @Override

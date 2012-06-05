@@ -50,6 +50,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
@@ -93,6 +94,10 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       boolean isUserPanelOpen();
 
       HasSelectionHandlers<Integer> getSouthTabPanel();
+
+      void setMessageAlert();
+
+      void removeMessageAlert();
    }
 
    private final DispatchAsync dispatcher;
@@ -110,6 +115,26 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private NativeEvent nativeEvent;
 
    private boolean southPanelExpanded = true;
+
+   private boolean isAlert = false;
+
+   private final Timer msgAlertTimer = new Timer()
+   {
+      @Override
+      public void run()
+      {
+         if (!isAlert)
+         {
+            display.setMessageAlert();
+            isAlert = true;
+         }
+         else
+         {
+            display.removeMessageAlert();
+            isAlert = false;
+         }
+      }
+   };
 
    @Inject
    public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TargetContentsPresenter targetContentsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final OptionsPanelPresenter optionsPanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final NativeEvent nativeEvent, final WorkspaceContext workspaceContext)
@@ -132,7 +157,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    public void onRevealDisplay()
    {
    }
-
 
    private void loadTranslatorList()
    {
@@ -196,20 +220,24 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
             if (!display.isUserPanelOpen())
             {
                display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()) + " *");
+               msgAlertTimer.scheduleRepeating(800);
+               msgAlertTimer.run();
             }
          }
       }));
 
       registerHandler(display.getSouthTabPanel().addSelectionHandler(new SelectionHandler<Integer>()
       {
-         
+
          @Override
          public void onSelection(SelectionEvent<Integer> event)
          {
             display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()));
+            msgAlertTimer.cancel();
+            display.removeMessageAlert();
          }
       }));
-      
+
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
       {
          @Override
@@ -270,7 +298,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
             if (display.asWidget().isVisible() && (event.getNativeEvent().getType().equals("keyup") || event.getNativeEvent().getType().equals("keydown")))
             {
                checkKey.init(event.getNativeEvent());
-               
+
                if (translationEditorPresenter.getSelectedTransUnit() != null && checkKey.isCopyFromTransMem())
                {
                   int index;
