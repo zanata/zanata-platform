@@ -116,6 +116,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
       HasValue<Boolean> getCaseSensitiveChk();
 
+      HasValue<Boolean> getSelectAllChk();
+
       HasChangeHandlers getSearchFieldSelector();
 
       String getSelectedSearchField();
@@ -301,6 +303,26 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             {
                token.setProjectSearchCaseSensitive(event.getValue());
                history.newItem(token.toTokenString());
+            }
+         }
+      }));
+
+      registerHandler(display.getSelectAllChk().addValueChangeHandler(new ValueChangeHandler<Boolean>()
+      {
+
+         @Override
+         public void onValueChange(ValueChangeEvent<Boolean> event)
+         {
+            if (event.getValue())
+            {
+               selectAllTextFlows();
+            }
+            else
+            {
+               for (MultiSelectionModel<TransUnitReplaceInfo> selectionModel : documentSelectionModels.values())
+               {
+                  selectionModel.clear();
+               }
             }
          }
       }));

@@ -511,6 +511,11 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	font-size: 1.1em;
 }
 
+.projectWideSearchSelectAllChk
+{
+	margin-left: 47px;
+}
+
 .projectWideReplacementPanel
 {
 	background-color: #667788;

@@ -19,11 +19,17 @@
                     </g:ListBox>
                 </g:VerticalPanel>
                 <g:cell width="100%" >
-                    <g:InlineLabel ui:field="searchResponseLabel" styleName='projectWideSearchReportLabel' ></g:InlineLabel>
+                    <g:InlineLabel></g:InlineLabel>
                 </g:cell>
             </g:HorizontalPanel>
         </g:layer>
-        <g:layer top='64px' bottom='120px'>
+        <g:layer top='64px' height='32px' left="0px" right="0px">
+            <g:HorizontalPanel verticalAlignment='ALIGN_MIDDLE' width="100%" height="100%" styleName='projectWideSearchPanel' >
+                <g:CheckBox ui:field="selectAllChk" styleName='projectWideSearchSelectAllChk'><ui:msg>Select all</ui:msg></g:CheckBox>
+                <g:InlineLabel ui:field="searchResponseLabel" styleName='projectWideSearchReportLabel' ></g:InlineLabel>
+            </g:HorizontalPanel>
+        </g:layer>
+        <g:layer top='96px' bottom='120px'>
             <g:ScrollPanel styleName='projectWideSearchResultsPanel' >
                 <g:VerticalPanel ui:field='searchResultsPanel' width="100%" />
             </g:ScrollPanel>

@@ -76,7 +76,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    InlineLabel searchResponseLabel, selectAllLink, selectionInfoLabel;
 
    @UiField
-   CheckBox caseSensitiveChk, requirePreviewChk;
+   CheckBox caseSensitiveChk, selectAllChk, requirePreviewChk;
 
    @UiField
    Button replaceAllButton;
@@ -155,6 +155,12 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    public HasValue<Boolean> getCaseSensitiveChk()
    {
       return caseSensitiveChk;
+   }
+
+   @Override
+   public HasValue<Boolean> getSelectAllChk()
+   {
+      return selectAllChk;
    }
 
    @Override
