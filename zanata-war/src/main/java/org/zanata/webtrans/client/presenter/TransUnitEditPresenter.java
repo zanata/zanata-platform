@@ -48,7 +48,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    private final TransUnitEditDisplay display;
    private final EventBus eventBus;
    private final PageNavigation pageNavigation;
-   private final TransUnitListDisplay transUnitListDisplay;
    private final SourceContentsPresenter sourceContentsPresenter;
    private final TargetContentsPresenter targetContentsPresenter;
    private final TransUnitsDataProvider dataProvider;
@@ -63,14 +62,14 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       this.display = display;
       this.eventBus = eventBus;
       this.pageNavigation = pageNavigation;
-      this.transUnitListDisplay = transUnitListDisplay;
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.targetContentsPresenter = targetContentsPresenter;
-      display.setDisplayTable(transUnitListDisplay);
 
       //TODO we only have one row now
       sourceContentsPresenter.initWidgets(1);
       targetContentsPresenter.initWidgets(1);
+      display.init(transUnitListDisplay, sourceContentsPresenter.getDisplay(), targetContentsPresenter.getDisplay());
+
       dataProvider = pageNavigation.getDataProvider();
       dataProvider.addDataDisplay(transUnitListDisplay);
    }
@@ -106,12 +105,11 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       if (selectedTransUnit != null)
       {
          display.scrollToRow(selectedTransUnit);
+         sourceContentsPresenter.getDisplay().setValue(selectedTransUnit);
+         targetContentsPresenter.getDisplay().setTargets(selectedTransUnit.getTargets());
          //TODO we only have one row now
-         SourceContentsDisplay sourceDisplay = sourceContentsPresenter.getSourceContent(0, selectedTransUnit);
-         //TODO need to handle findMessage
-         TargetContentsDisplay targetDisplay = targetContentsPresenter.getNextTargetContentsDisplay(0, selectedTransUnit, null);
+         sourceContentsPresenter.setSelectedSource(0);
          targetContentsPresenter.showEditors(0, 0);
-         display.openEditor(sourceDisplay, targetDisplay);
       }
    }
 }

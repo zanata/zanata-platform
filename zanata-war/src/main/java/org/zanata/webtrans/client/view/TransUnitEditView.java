@@ -27,11 +27,11 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -43,26 +43,15 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
 
    private TransUnitListDisplay displayTable;
 
-   private ScrollPanel rootPanel;
-   private final DialogBox editorDialog;
+   private SplitLayoutPanel rootPanel;
+   @UiField
+   ScrollPanel tuTablePanel;
+   @UiField
+   HorizontalPanel editorPanel;
 
    public TransUnitEditView()
    {
       rootPanel = uiBinder.createAndBindUi(this);
-
-      //editor popup
-      editorDialog = new DialogBox(true, true);
-      editorDialog.setWidth("100%");
-      //TODO caption can be used to display current editing translator or some other information
-      editorDialog.setText("Translation Unit Editor");
-
-   }
-
-   @Override
-   public void setDisplayTable(TransUnitListDisplay displayTable)
-   {
-      rootPanel.setWidget(displayTable);
-      this.displayTable = displayTable;
    }
 
    @Override
@@ -73,18 +62,16 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
 
       Log.debug("absolute top: " + absoluteTop + " selection top:" + selectedRowAbsoluteTop);
       //TODO this will scroll to top and cell table header won't be visible.
-      rootPanel.setVerticalScrollPosition(selectedRowAbsoluteTop - absoluteTop + rootPanel.getVerticalScrollPosition());
+      tuTablePanel.setVerticalScrollPosition(selectedRowAbsoluteTop - absoluteTop + tuTablePanel.getVerticalScrollPosition());
    }
 
    @Override
-   public void openEditor(SourceContentsDisplay sourceDisplay, TargetContentsDisplay targetDisplay)
+   public void init(TransUnitListDisplay transUnitListDisplay, SourceContentsDisplay sourceContentsDisplay, TargetContentsDisplay targetContentsDisplay)
    {
-      HorizontalPanel editorMain = new HorizontalPanel();
-      editorMain.setWidth("100%");
-      editorMain.add(sourceDisplay);
-      editorMain.add(targetDisplay);
-      editorDialog.setWidget(editorMain);
-      editorDialog.center();
+      tuTablePanel.setWidget(transUnitListDisplay);
+      this.displayTable = transUnitListDisplay;
+      editorPanel.add(sourceContentsDisplay);
+      editorPanel.add(targetContentsDisplay);
    }
 
    @Override
@@ -93,7 +80,7 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
       return rootPanel;
    }
 
-   interface TransUnitTableViewUiBinder extends UiBinder<ScrollPanel, TransUnitEditView>
+   interface TransUnitTableViewUiBinder extends UiBinder<SplitLayoutPanel, TransUnitEditView>
    {
    }
 }

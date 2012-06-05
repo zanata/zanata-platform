@@ -140,4 +140,9 @@ public class SourceContentsPresenter
          displayList.add(display);
       }
    }
+
+   public SourceContentsDisplay getDisplay()
+   {
+      return displayList.get(0);
+   }
 }

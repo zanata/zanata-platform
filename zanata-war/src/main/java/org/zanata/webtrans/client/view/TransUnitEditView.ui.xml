@@ -1,6 +1,18 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
-    <g:ScrollPanel width="100%">
 
-    </g:ScrollPanel>
+    <g:SplitLayoutPanel>
+        <g:north size="500" min-size="100">
+            <g:ScrollPanel width="100%" ui:field="tuTablePanel">
+
+            </g:ScrollPanel>
+        </g:north>
+        <g:center>
+            <g:ScrollPanel width="100%" >
+               <g:HorizontalPanel ui:field="editorPanel" width="100%">
+
+               </g:HorizontalPanel>
+            </g:ScrollPanel>
+        </g:center>
+    </g:SplitLayoutPanel>
 </ui:UiBinder>

@@ -27,6 +27,7 @@ import org.zanata.webtrans.client.ui.HasSelectableSource;
 import org.zanata.webtrans.client.ui.SourcePanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
+import com.google.common.base.Objects;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;

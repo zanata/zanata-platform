@@ -29,9 +29,8 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 public interface TransUnitEditDisplay extends WidgetDisplay
 {
-   void setDisplayTable(TransUnitListDisplay displayTable);
+   void init(TransUnitListDisplay transUnitListDisplay, SourceContentsDisplay sourceContentsDisplay, TargetContentsDisplay targetContentsDisplay);
 
    void scrollToRow(TransUnit selected);
 
-   void openEditor(SourceContentsDisplay sourceDisplay, TargetContentsDisplay targetDisplay);
 }

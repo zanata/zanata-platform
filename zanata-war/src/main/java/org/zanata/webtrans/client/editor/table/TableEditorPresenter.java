@@ -361,7 +361,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             // assume update was successful
             if (documentId != null && documentId.equals(event.getUpdateInfo().getDocumentId()))
             {
-               navigationService.updateMap(event.getUpdateInfo().getTransUnit().getId().getId(), event.getUpdateInfo().getTransUnit().getStatus());
+               navigationService.updateState(event.getUpdateInfo().getTransUnit().getId().getId(), event.getUpdateInfo().getTransUnit().getStatus());
 
                boolean editing = targetContentsPresenter.isEditing();
                Integer rowIndex = navigationService.getRowNumber(event.getUpdateInfo().getTransUnit(), display.getRowValues());

@@ -829,4 +829,9 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          targetContentsDisplay.addUndo(undoLink);
       }
    }
+
+   public TargetContentsDisplay getDisplay()
+   {
+      return displayList.get(0);
+   }
 }
