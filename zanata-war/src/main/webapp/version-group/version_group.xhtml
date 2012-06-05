@@ -82,7 +82,7 @@
     </rich:dataList>
   </rich:panel>
 
-    <rich:modalPanel id="versionAddPanel" width="530" height="320" autosized="true">
+    <rich:modalPanel id="versionAddPanel" width="530" height="420">
         <f:subview id="projectVersionSearch">
             <a4j:form>
                 <h1>Find Project Version</h1>
@@ -100,7 +100,7 @@
             </a4j:form>
             <a4j:region>
                 <a4j:status id="searchStatus" startText="Searching..." stopText="" />
-                <a4j:outputPanel id="searchResults" layout="block" style="overflow:auto;">
+                <a4j:outputPanel id="searchResults" layout="block" style="overflow:auto;height:320px">
                     <h:outputText id="noResultsMessage" rendered="#{empty versionGroupAction.searchResults}" value="No results to display." />
                     <h:form rendered="#{not empty versionGroupAction.searchResults}">
                         <rich:dataTable id="resultTable"
