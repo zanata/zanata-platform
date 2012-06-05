@@ -3,19 +3,22 @@
 # convenience script to run liquibase with suitable Zanata settings
 # see http://liquibase.org/manual/command_line
 
+# If you need mysql/slf4j jars: yum install mysql-connector-java slf4j
+
 SCRIPT_PATH=`dirname ${BASH_SOURCE[0]}`
 war=$SCRIPT_PATH/..
 
-if [ -z $JBOSS_HOME ]; then
-  echo "Error: JBOSS_HOME not set.  For instance: export JBOSS_HOME=/opt/jboss-ewp-5.1/jboss-as-web"
-  exit 1
-fi
-
 classpath=\
-$(echo $war/WEB-INF/lib/*.jar \
-$war/WEB-INF/classes/ \
-$JBOSS_HOME/server/default/lib/mysql-connector-java*.jar \
-$JBOSS_HOME/lib/log4j-boot.jar | sed 's/ /:/g')
+$(echo \
+   $war/WEB-INF/classes/ \
+   /usr/share/java/mysql-connector-java.jar \
+   /usr/share/java/slf4j/simple.jar \
+   /usr/share/java/slf4j/api.jar \
+   $war/WEB-INF/lib/*.jar \
+ | sed 's/ /:/g')
+
+# slf4j simple.jar needs to be before api.jar due to
+# https://bugzilla.redhat.com/show_bug.cgi?id=828644
 
 if [ -r liquibase.properties ]; then
   defs=
@@ -26,7 +29,7 @@ fi
 java \
 -jar $war/WEB-INF/lib/liquibase-core*.jar \
 --classpath $classpath \
---changeLogFile=db/db.changelog.xml \
+--changeLogFile db/db.changelog.xml \
 $defs \
 "$@"
 
