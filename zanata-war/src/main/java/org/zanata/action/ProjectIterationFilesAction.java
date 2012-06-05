@@ -23,6 +23,7 @@ package org.zanata.action;
 import java.io.InputStream;
 import java.util.List;
 
+import org.hibernate.validator.InvalidStateException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -169,7 +170,7 @@ public class ProjectIterationFilesAction
          // TODO Copy Trans values
          // Extensions are hard-coded to GetText, since it is the only supported format at the time
          this.documentServiceImpl.saveDocument(this.projectSlug, this.iterationSlug,
-               this.documentFileUpload.getDocumentPath() + doc.getName(), doc, new StringSet(ExtensionType.GetText.toString()),
+               doc, new StringSet(ExtensionType.GetText.toString()),
                false);
 
          FacesMessages.instance().add(Severity.INFO, "Document file {0} uploaded.", this.documentFileUpload.getFileName());
@@ -177,6 +178,10 @@ public class ProjectIterationFilesAction
       catch (ZanataServiceException zex)
       {
          FacesMessages.instance().add(Severity.ERROR, zex.getMessage(), this.documentFileUpload.getFileName());
+      }
+      catch (InvalidStateException isex)
+      {
+         FacesMessages.instance().add(Severity.ERROR, "Invalid arguments");
       }
    }
 
