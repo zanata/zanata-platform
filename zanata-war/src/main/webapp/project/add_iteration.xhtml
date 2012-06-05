@@ -19,8 +19,14 @@
 	  </h1>
 	  
 	  
-    <ui:include src="../WEB-INF/layout/iteration_edit_form.xhtml" />
-
+    <s:fragment rendered="#{projectIterationHome.isProjectActive()}">
+    	<ui:include src="../WEB-INF/layout/iteration_edit_form.xhtml"/>
+	</s:fragment>
+	
+	 <s:fragment rendered="#{!projectIterationHome.isProjectActive()}">
+	 	<rich:spacer height="20px"/>
+    	<span class="errors">#{projectIterationHome.instance.project.name} is not active.</span>
+	</s:fragment>
 </ui:define>
 
 </ui:composition>

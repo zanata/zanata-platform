@@ -25,7 +25,6 @@ import java.util.List;
 
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
-import javax.persistence.NoResultException;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
@@ -38,6 +37,7 @@ import org.zanata.common.EntityStatus;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HProjectIteration;
+import org.zanata.service.SlugEntityService;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -52,6 +52,9 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
+
+   @In
+   SlugEntityService slugEntityServiceImpl;
 
    @Override
    protected HIterationGroup loadInstance()
@@ -110,7 +113,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
    {
       if (!isSlugAvailable(slug))
       {
-         FacesMessages.instance().addToControl(componentId, "This slug is not available");
+         FacesMessages.instance().addToControl(componentId, "This Group ID is not available");
          return false;
       }
       return true;
@@ -118,16 +121,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
    public boolean isSlugAvailable(String slug)
    {
-      try
-      {
-         getEntityManager().createQuery("from HIterationGroup g where g.slug = :slug").setParameter("slug", slug).getSingleResult();
-         return false;
-      }
-      catch (NoResultException e)
-      {
-         // pass
-      }
-      return true;
+      return slugEntityServiceImpl.isSlugAvailable(slug, HIterationGroup.class);
    }
 
    @Override
