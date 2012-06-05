@@ -101,7 +101,7 @@
             <a4j:region>
                 <a4j:status id="searchStatus" startText="Searching..." stopText="" />
                 <a4j:outputPanel id="searchResults" layout="block" style="overflow:auto;height:320px">
-                    <h:outputText id="noResultsMessage" rendered="#{empty versionGroupAction.searchResults}" value="No results to display." />
+                    <h:outputText id="noResultsMessage" rendered="#{empty versionGroupAction.searchResults and versionGroupAction.searchResults != null}" value="#{messages['jsf.NoResultToDisplayProjectSearch']}" />
                     <h:form rendered="#{not empty versionGroupAction.searchResults}">
                         <rich:dataTable id="resultTable"
                                         value="#{versionGroupAction.searchResults}" var="projectIteration">
