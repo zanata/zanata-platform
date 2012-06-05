@@ -30,7 +30,7 @@
     <dependency>
       <groupId>org.fedorahosted.tennera</groupId>
       <artifactId>jgettext</artifactId>
-      <version>${tennera.version}</version>
+      <version>0.7-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
