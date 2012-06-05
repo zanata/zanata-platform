@@ -62,8 +62,6 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.ActionCell.Delegate;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
@@ -107,6 +105,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       HasValue<String> getFilterTextBox();
 
       void focusFilterTextBox();
+
+      HasClickHandlers getSearchButton();
 
       HasValue<String> getReplacementTextBox();
 
@@ -260,20 +260,13 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       setUiForNothingSelected();
       display.setReplaceAllButtonVisible(!workspaceContext.isReadOnly());
 
-      // TODO use explicit 'search' button and add enter key press event for
-      // text box
-      registerHandler(display.getFilterTextBox().addValueChangeHandler(new ValueChangeHandler<String>()
+      registerHandler(display.getSearchButton().addClickHandler(new ClickHandler()
       {
 
          @Override
-         public void onValueChange(ValueChangeEvent<String> event)
+         public void onClick(ClickEvent event)
          {
-            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
-            if (!event.getValue().equals(token.getProjectSearchText()))
-            {
-               token.setProjectSearchText(event.getValue());
-               history.newItem(token.toTokenString());
-            }
+            updateSearch();
          }
       }));
 
@@ -287,21 +280,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             if (!event.getValue().equals(token.getProjectSearchReplacement()))
             {
                token.setProjectSearchReplacement(event.getValue());
-               history.newItem(token.toTokenString());
-            }
-         }
-      }));
-
-      registerHandler(display.getCaseSensitiveChk().addValueChangeHandler(new ValueChangeHandler<Boolean>()
-      {
-
-         @Override
-         public void onValueChange(ValueChangeEvent<Boolean> event)
-         {
-            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
-            if (event.getValue() != token.getProjectSearchCaseSensitive())
-            {
-               token.setProjectSearchCaseSensitive(event.getValue());
                history.newItem(token.toTokenString());
             }
          }
@@ -339,22 +317,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                provider.refresh();
             }
             refreshReplaceAllButton();
-         }
-      }));
-
-      registerHandler(display.getSearchFieldSelector().addChangeHandler(new ChangeHandler()
-      {
-
-         @Override
-         public void onChange(ChangeEvent event)
-         {
-            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
-            String selected = display.getSelectedSearchField();
-            boolean searchSource = selected.equals("source") || selected.equals("both");
-            boolean searchTarget = selected.equals("target") || selected.equals("both");
-            token.setProjectSearchInSource(searchSource);
-            token.setProjectSearchInTarget(searchTarget);
-            history.newItem(token.toTokenString());
          }
       }));
 
@@ -590,6 +552,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             }
             else
             {
+               // TODO add case sensitivity and scope
                display.getSearchResponseLabel().setText(messages.showingResultsForProjectWideSearch(result.getSearchAction().getSearchString(), textFlowCount, result.getDocumentIds().size()));
             }
             display.setSearching(false);
@@ -1350,6 +1313,45 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       for (ReplacementEventInfo info : events)
       {
          display.addReplacementMessage(info.getMessage(), info.getHandler());
+      }
+   }
+
+   private void updateSearch()
+   {
+      boolean changed = false;
+      HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+
+      Boolean caseSensitive = display.getCaseSensitiveChk().getValue();
+      if (caseSensitive != token.getProjectSearchCaseSensitive())
+      {
+         token.setProjectSearchCaseSensitive(caseSensitive);
+         changed = true;
+      }
+
+      String searchPhrase = display.getFilterTextBox().getValue();
+      if (!searchPhrase.equals(token.getProjectSearchText()))
+      {
+         token.setProjectSearchText(searchPhrase);
+         changed = true;
+      }
+
+      String selected = display.getSelectedSearchField();
+      boolean searchSource = selected.equals("source") || selected.equals("both");
+      boolean searchTarget = selected.equals("target") || selected.equals("both");
+      if (searchSource != token.isProjectSearchInSource())
+      {
+         token.setProjectSearchInSource(searchSource);
+         changed = true;
+      }
+      if (searchTarget != token.isProjectSearchInTarget())
+      {
+         token.setProjectSearchInTarget(searchTarget);
+         changed = true;
+      }
+
+      if (changed)
+      {
+         history.newItem(token.toTokenString());
       }
    }
 

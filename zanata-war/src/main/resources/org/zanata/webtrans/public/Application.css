@@ -476,9 +476,10 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 
 .projectWideSearchPanel
 {
-	color: #666666;
+	color: #999999;
 	background-color: #f3f2f2;
 	border-bottom: 1px solid lightgrey;
+	padding-left: 20px;
 }
 
 .gwt-ListBox
@@ -496,12 +497,20 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 {
 	color: #000000;
 	padding: 3px;
-	margin: 15px;
+	margin: 10px;
 	font-size: 1.3em;
 	border: 3px solid lightgrey;
 	border-radius: 6px;
 	outline: none;
 	-moz-border-radius: 6px;
+}
+
+.projectWideSearchButton
+{
+	color: #444444;
+	font-size: 1.3em;
+	margin-right: 15px;
+	padding: 2px 8px;
 }
 
 .projectWideSearchReportLabel
@@ -513,7 +522,7 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 
 .projectWideSearchSelectAllChk
 {
-	margin-left: 47px;
+	margin-left: 27px;
 }
 
 .projectWideReplacementPanel
