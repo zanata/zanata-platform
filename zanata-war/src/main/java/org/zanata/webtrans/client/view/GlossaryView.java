@@ -167,6 +167,10 @@ public class GlossaryView extends Composite implements GlossaryPresenter.Display
       glossaryTable.addColumn(detailsColumn, messages.detailsLabel());
       glossaryTable.addColumn(copyColumn);
 
+      Label noResult = new Label("Found no glossary results");
+      noResult.setStyleName("boldFont");
+      glossaryTable.setEmptyTableWidget(noResult);
+
       final NoSelectionModel<GlossaryResultItem> selectionModel = new NoSelectionModel<GlossaryResultItem>();
       final DefaultSelectionEventManager<GlossaryResultItem> manager = DefaultSelectionEventManager.createBlacklistManager(0, 1, 2);
       glossaryTable.setSelectionModel(selectionModel, manager);

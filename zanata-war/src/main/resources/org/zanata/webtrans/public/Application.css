@@ -889,3 +889,8 @@ td.FuzzyStateDecoration div div pre, td.ApprovedStateDecoration div div pre
 {
 	border:none;
 }
+
+.boldFont
+{
+	font-weight:bold;
+}
