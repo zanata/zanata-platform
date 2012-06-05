@@ -98,7 +98,7 @@
         </a4j:form>
       </rich:panel>
 
-      <rich:modalPanel id="userAddPanel" width="530" height="320" autosized="true">
+      <rich:modalPanel id="userAddPanel" width="530" height="420">
         <f:subview id="personSearch">
           <a4j:form>
             <h1>Find Users To Add</h1>
@@ -116,8 +116,7 @@
           </a4j:form>
           <a4j:region>
             <a4j:status id="searchStatus" startText="Searching..." stopText="" />
-            <a4j:outputPanel id="searchResults" layout="block"
-                             style="overflow:auto;">
+            <a4j:outputPanel id="searchResults" layout="block" style="overflow:auto;height:320px">
               <h:outputText id="noResultsMessage" rendered="#{empty languageTeamAction.searchResults}" value="No results to display." />
               <h:form rendered="#{not empty languageTeamAction.searchResults}">
                 <rich:dataTable id="personTable"
@@ -135,7 +134,7 @@
                     <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
                     <a4j:commandButton value="#{messages['jsf.Add']}"
                                      action="#{languageTeamAction.addTeamMember(person.id)}"
-                                     rendered="#{!languageTeamAction.isPersonInTeam(person.id)}" reRender="userAddPanel, memberPanel" />
+                                     rendered="#{!languageTeamAction.isPersonInTeam(person.id)}" reRender="searchResults, memberPanel" />
                     <h:outputText value="#{messages['jsf.AlreadyInTeam']}"
                                   rendered="#{languageTeamAction.isPersonInTeam(person.id)}" />
                   </rich:column>

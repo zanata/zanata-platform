@@ -26,7 +26,6 @@ import java.util.Set;
 
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.NoResultException;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
@@ -112,7 +111,7 @@ public class ProjectHome extends SlugHome<HIterationProject>
    {
       if (!isSlugAvailable(slug))
       {
-         FacesMessages.instance().addToControl(componentId, "This slug is not available");
+         FacesMessages.instance().addToControl(componentId, "This Project ID is not available");
          return false;
       }
       return true;
@@ -214,6 +213,11 @@ public class ProjectHome extends SlugHome<HIterationProject>
             getInstance().getCustomizedLocales().addAll(locale);
          }
       }
+   }
+
+   public boolean isProjectActive()
+   {
+      return getInstance().getStatus() == EntityStatus.ACTIVE;
    }
 
    public boolean isReadOnly(HProjectIteration iteration)

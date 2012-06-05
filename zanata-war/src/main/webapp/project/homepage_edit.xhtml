@@ -11,7 +11,13 @@
    <ui:define name="page_title">#{projectHome.instance.name} - Edit Home</ui:define>
 	<ui:define name="center_content">
 	    <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
-	    <h1>#{projectHome.instance.name}</h1>
+	
+		<h1>
+	      #{messages['jsf.ProjectName']}:&nbsp;
+	      <s:link id="project" styleClass="table_link" value="#{projectHome.instance.name}" view="/project/project.xhtml"> 
+          	<f:param name="slug" value="#{projectHome.instance.slug}"/>
+          </s:link>
+		</h1>
 	
 	    <h:form>
 		    <rich:panel>
