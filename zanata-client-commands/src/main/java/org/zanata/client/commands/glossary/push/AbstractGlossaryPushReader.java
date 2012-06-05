@@ -42,7 +42,7 @@ public abstract class AbstractGlossaryPushReader
 
    protected LocaleId getLocaleFromMap(String localLocale)
    {
-      if (!getOpts().getLocaleMapList().isEmpty())
+      if (getOpts() != null && !getOpts().getLocaleMapList().isEmpty())
       {
          for (LocaleMapping loc : getOpts().getLocaleMapList())
          {
