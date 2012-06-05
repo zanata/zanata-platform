@@ -74,7 +74,7 @@ public class CreateSampleProjectTest
 
    }
 
-   @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = "This slug is not available")
+   @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = "This Project ID is not available")
    public void cannotCreateProjectWithSameProjectId() {
       new LoginWorkFlow().signIn("admin", "admin");
       ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();

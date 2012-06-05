@@ -21,7 +21,7 @@
     <properties>
       <zanata.api.version>1.6.0</zanata.api.version>
       <zanata.client.version>1.6.0</zanata.client.version>
-      <zanata.common.version>1.6.0</zanata.common.version>
+      <zanata.common.version>1.6.1-SNAPSHOT</zanata.common.version>
 
         <!--delombok properties-->
         <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
