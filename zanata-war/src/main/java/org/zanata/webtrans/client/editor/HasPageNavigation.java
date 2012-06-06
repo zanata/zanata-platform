@@ -2,14 +2,14 @@ package org.zanata.webtrans.client.editor;
 
 public interface HasPageNavigation
 {
-   public void gotoFirstPage();
+   void gotoFirstPage();
 
-   public void gotoLastPage();
+   void gotoLastPage();
 
-   public void gotoNextPage();
+   void gotoNextPage();
 
-   public void gotoPreviousPage();
+   void gotoPreviousPage();
 
-   public void gotoPage(int page, boolean forced);
+   void gotoPage(int page, boolean forced);
 
 }

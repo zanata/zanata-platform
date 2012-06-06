@@ -57,6 +57,10 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
    @Override
    public void scrollToRow(TransUnit selected)
    {
+      if (selected == null)
+      {
+         return;
+      }
       int selectedRowAbsoluteTop = displayTable.getSelectedRowAbsoluteTop(selected);
       int absoluteTop = rootPanel.getAbsoluteTop();
 
@@ -77,11 +81,12 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
          return;
       }
       HorizontalPanel hPanel = new HorizontalPanel();
+      hPanel.setWidth("100%");
       hPanel.add(sourceContentsDisplay);
       hPanel.add(targetContentsDisplay);
       hPanel.setCellWidth(sourceContentsDisplay, "50%");
       hPanel.setCellWidth(targetContentsDisplay, "50%");
-      editorPanel.add(hPanel);
+      editorPanel.setWidget(hPanel);
    }
 
    @Override

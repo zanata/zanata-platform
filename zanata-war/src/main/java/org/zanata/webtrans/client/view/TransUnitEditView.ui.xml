@@ -9,9 +9,6 @@
         </g:center>
         <g:south size="300" min-size="200">
             <g:ScrollPanel width="100%" ui:field="editorPanel">
-               <g:HorizontalPanel width="100%">
-
-               </g:HorizontalPanel>
             </g:ScrollPanel>
         </g:south>
     </g:SplitLayoutPanel>

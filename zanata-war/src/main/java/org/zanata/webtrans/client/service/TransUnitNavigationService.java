@@ -41,31 +41,6 @@ import com.google.inject.Singleton;
 @Singleton
 public class TransUnitNavigationService
 {
-   public static final Predicate<ContentState> FUZZY_OR_NEW_PREDICATE = new Predicate<ContentState>()
-   {
-      @Override
-      public boolean apply(ContentState contentState)
-      {
-         return contentState == ContentState.New || contentState == ContentState.NeedReview;
-      }
-   };
-   public static final Predicate<ContentState> FUZZY_PREDICATE = new Predicate<ContentState>()
-   {
-      @Override
-      public boolean apply(ContentState contentState)
-      {
-         return contentState == ContentState.NeedReview;
-      }
-   };
-   public static final Predicate<ContentState> NEW_PREDICATE = new Predicate<ContentState>()
-   {
-      @Override
-      public boolean apply(ContentState contentState)
-      {
-         return contentState == ContentState.New;
-      }
-   };
-
    private Map<Long, ContentState> idAndStateMap;
    private ArrayList<Long> idIndexList;
 
@@ -87,12 +62,12 @@ public class TransUnitNavigationService
 
    public int getNextStateRowIndex(Predicate<ContentState> condition)
    {
-      if (curRowIndex >= idIndexList.size() - 1)
+      if (curRowIndex >= maxRowIndex())
       {
          return curRowIndex;
       }
 
-      for (int i = curRowIndex + 1; i <= idIndexList.size() - 1; i++)
+      for (int i = curRowIndex + 1; i <= maxRowIndex(); i++)
       {
          ContentState contentState = idAndStateMap.get(idIndexList.get(i));
          if (condition.apply(contentState))
@@ -101,6 +76,11 @@ public class TransUnitNavigationService
          }
       }
       return curRowIndex;
+   }
+
+   private int maxRowIndex()
+   {
+      return idIndexList.size() - 1;
    }
 
    public int getPreviousStateRowIndex(Predicate<ContentState> condition)
@@ -192,11 +172,21 @@ public class TransUnitNavigationService
 
    public int getNextRowIndex()
    {
-      return curRowIndex + 1;
+      return Math.min(curRowIndex + 1, maxRowIndex());
    }
 
    public int getPrevRowIndex()
    {
-      return curRowIndex - 1;
+      return Math.max(curRowIndex - 1, 0);
+   }
+
+   public int getTargetPage(int targetIndex)
+   {
+      return targetIndex / pageSize;
+   }
+
+   public TransUnitId getTargetTransUnitId(int rowIndex)
+   {
+      return new TransUnitId(idIndexList.get(rowIndex));
    }
 }

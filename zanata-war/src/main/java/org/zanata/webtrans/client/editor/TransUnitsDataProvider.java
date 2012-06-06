@@ -22,13 +22,22 @@
 package org.zanata.webtrans.client.editor;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.zanata.webtrans.client.presenter.TransUnitEditPresenter;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitProvidesKey;
+import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Collections2;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
@@ -41,11 +50,12 @@ import com.google.inject.Singleton;
 /**
  * This class is used as data provider to translation unit celltable display as well as defining selection model of it.
  */
+//TODO rename it to TransUnitDataModel
 @Singleton
 public class TransUnitsDataProvider extends ListDataProvider<TransUnit>
 {
 
-   private SingleSelectionModel<TransUnit> selectionModel;
+   private final SingleSelectionModel<TransUnit> selectionModel;
 
    public TransUnitsDataProvider()
    {
@@ -56,5 +66,39 @@ public class TransUnitsDataProvider extends ListDataProvider<TransUnit>
    public SingleSelectionModel<TransUnit> getSelectionModel()
    {
       return selectionModel;
+   }
+
+   public TransUnit getSelectedOrNull()
+   {
+      return selectionModel.getSelectedObject();
+   }
+
+   public HandlerRegistration addSelectionChangeHandler(SelectionChangeEvent.Handler handler)
+   {
+      return selectionModel.addSelectionChangeHandler(handler);
+   }
+
+   public void selectById(TransUnitId transUnitId)
+   {
+      Log.info("select by trans unit id: " + transUnitId);
+      List<TransUnit> units = getList();
+      Collection<TransUnit> found = Collections2.filter(units, new FindByTransUnitIdPredicate(transUnitId));
+      if (found.size() == 1)
+      {
+         TransUnit toBeSelected = found.iterator().next();
+         selectionModel.setSelected(toBeSelected, true);
+      }
+      else
+      {
+         Log.warn("can not find and select transUnit with id: " + transUnitId);
+      }
+   }
+
+   public void selectByRowNumber(int gotoRow)
+   {
+      Log.info("select by row number: " + gotoRow);
+      Preconditions.checkElementIndex(gotoRow, getList().size(), "go to row");
+      TransUnit toBeSelected = getList().get(gotoRow);
+      selectionModel.setSelected(toBeSelected, true);
    }
 }

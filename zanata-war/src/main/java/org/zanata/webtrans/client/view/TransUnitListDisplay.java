@@ -22,6 +22,8 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.shared.model.TransUnit;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.cellview.client.LoadingStateChangeEvent;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.view.client.HasData;
 import com.google.inject.ImplementedBy;
@@ -31,6 +33,7 @@ public interface TransUnitListDisplay extends HasData<TransUnit>, IsWidget
 {
    void setHighlightString(String highlightString);
 
-
    int getSelectedRowAbsoluteTop(TransUnit selected);
+
+   HandlerRegistration addLoadingStateChangeHandler(LoadingStateChangeEvent.Handler handler);
 }

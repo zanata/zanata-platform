@@ -30,15 +30,18 @@ import org.zanata.webtrans.client.ui.CellTableResources;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitProvidesKey;
+import org.zanata.webtrans.shared.util.ObjectUtil;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.TableRowElement;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.LoadingStateChangeEvent;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.view.client.SelectionModel;
@@ -105,14 +108,13 @@ public class TransUnitListTable extends CellTable<TransUnit> implements TransUni
    public int getSelectedRowAbsoluteTop(TransUnit selected)
    {
       int selectedIndex = dataProvider.getList().indexOf(selected);
-      if (selectedIndex >= 0 && selectedIndex < getRowCount())
+      TableRowElement rowElement = null;
+      if (isRowWithinBounds(selectedIndex))
       {
-         TableRowElement rowElement = getRowElement(selectedIndex);
-         return rowElement.getAbsoluteTop();
+         rowElement = getRowElement(selectedIndex);
       }
-      return 0;
+      return rowElement == null ? getAbsoluteTop() : rowElement.getAbsoluteTop();
    }
-
 
    /**
     * @return a column that displays the 1-based index of the text flow

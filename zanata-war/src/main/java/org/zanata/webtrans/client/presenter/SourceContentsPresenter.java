@@ -78,7 +78,7 @@ public class SourceContentsPresenter
     * Select first source in the list when row is selected or reselect previous selected one
     *
     */
-   public void setSelectedSource()
+   public void selectedSource()
    {
       if (display != null)
       {

@@ -837,7 +837,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          navigationService.updateCurrentPageAndRowIndex(display.getCurrentPage(), display.getSelectedRowNumber());
          if (navigationService.getCurrentRowIndex() < display.getTableModel().getRowCount())
          {
-            gotoNextState(TransUnitNavigationService.FUZZY_OR_NEW_PREDICATE);
+            gotoNextState(UserConfigHolder.FUZZY_OR_NEW_PREDICATE);
          }
       }
 
@@ -847,7 +847,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          navigationService.updateCurrentPageAndRowIndex(display.getCurrentPage(), display.getSelectedRowNumber());
          if (navigationService.getCurrentRowIndex() > 0)
          {
-            gotoPrevState(TransUnitNavigationService.FUZZY_OR_NEW_PREDICATE);
+            gotoPrevState(UserConfigHolder.FUZZY_OR_NEW_PREDICATE);
          }
       }
 
@@ -857,7 +857,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          navigationService.updateCurrentPageAndRowIndex(display.getCurrentPage(), display.getSelectedRowNumber());
          if (navigationService.getCurrentRowIndex() < display.getTableModel().getRowCount())
          {
-            gotoNextState(TransUnitNavigationService.FUZZY_PREDICATE);
+            gotoNextState(UserConfigHolder.FUZZY_PREDICATE);
          }
       }
 
@@ -867,7 +867,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          navigationService.updateCurrentPageAndRowIndex(display.getCurrentPage(), display.getSelectedRowNumber());
          if (navigationService.getCurrentRowIndex() > 0)
          {
-            gotoPrevState(TransUnitNavigationService.FUZZY_PREDICATE);
+            gotoPrevState(UserConfigHolder.FUZZY_PREDICATE);
          }
       }
 
@@ -877,7 +877,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          navigationService.updateCurrentPageAndRowIndex(display.getCurrentPage(), display.getSelectedRowNumber());
          if (navigationService.getCurrentRowIndex() < display.getTableModel().getRowCount())
          {
-            gotoNextState(TransUnitNavigationService.NEW_PREDICATE);
+            gotoNextState(UserConfigHolder.NEW_PREDICATE);
          }
       }
 
@@ -887,7 +887,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          navigationService.updateCurrentPageAndRowIndex(display.getCurrentPage(), display.getSelectedRowNumber());
          if (navigationService.getCurrentRowIndex() > 0)
          {
-            gotoPrevState(TransUnitNavigationService.NEW_PREDICATE);
+            gotoPrevState(UserConfigHolder.NEW_PREDICATE);
          }
       }
 
@@ -1012,7 +1012,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
             display.setTransUnitDetails(transUnit);
 
-            sourceContentsPresenter.setSelectedSource();
+            sourceContentsPresenter.selectedSource();
             if (selectedTransUnit == null || !transUnit.getId().equals(selectedTransUnit.getId()))
             {
                selectedTransUnit = transUnit;

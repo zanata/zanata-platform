@@ -19,9 +19,31 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.webtrans.client.editor.table;
+package org.zanata.webtrans.shared.util;
 
-public enum TransUnitSelectionStatus
+import javax.annotation.Nullable;
+
+import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
+import com.google.common.base.Predicate;
+
+public class FindByTransUnitIdPredicate implements Predicate<TransUnit>
 {
-   SELECTED, EDITING, MOVED, INVALID_SELECTION
+   private final TransUnitId id;
+
+   public FindByTransUnitIdPredicate(TransUnitId id)
+   {
+      this.id = id;
+   }
+
+   public FindByTransUnitIdPredicate(long id)
+   {
+      this.id = new TransUnitId(id);
+   }
+
+   @Override
+   public boolean apply(@Nullable TransUnit input)
+   {
+      return input != null && input.getId().equals(id);
+   }
 }

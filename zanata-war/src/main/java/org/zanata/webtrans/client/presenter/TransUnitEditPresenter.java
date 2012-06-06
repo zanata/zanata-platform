@@ -27,12 +27,16 @@ import org.zanata.webtrans.client.editor.table.PageNavigation;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
+import org.zanata.webtrans.client.events.NavTransUnitEvent;
+import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.view.TransUnitEditDisplay;
 import org.zanata.webtrans.client.view.TransUnitListDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.cellview.client.LoadingStateChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.inject.Inject;
 
@@ -42,7 +46,11 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay> implements DocumentSelectionHandler, SelectionChangeEvent.Handler, WorkspaceContextUpdateEventHandler
+public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay> implements DocumentSelectionHandler,
+      SelectionChangeEvent.Handler,
+      WorkspaceContextUpdateEventHandler,
+      NavTransUnitHandler,
+      LoadingStateChangeEvent.Handler
 {
 
    private final TransUnitEditDisplay display;
@@ -68,8 +76,15 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.targetContentsPresenter = targetContentsPresenter;
 
-      //TODO workspaceContext may happen anytime not just and startup
-      if (workspaceContext.isReadOnly())
+      initViewOnWorkspaceContext(workspaceContext.isReadOnly());
+
+      dataProvider = pageNavigation.getDataProvider();
+      dataProvider.addDataDisplay(transUnitListDisplay);
+   }
+
+   private void initViewOnWorkspaceContext(boolean readOnly)
+   {
+      if (readOnly)
       {
          display.init(transUnitListDisplay, null, null);
       }
@@ -77,16 +92,16 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       {
          display.init(transUnitListDisplay, sourceContentsPresenter.getDisplay(), targetContentsPresenter.getDisplay());
       }
-
-      dataProvider = pageNavigation.getDataProvider();
-      dataProvider.addDataDisplay(transUnitListDisplay);
    }
 
    @Override
    protected void onBind()
    {
       eventBus.addHandler(DocumentSelectionEvent.getType(), this);
-      dataProvider.getSelectionModel().addSelectionChangeHandler(this);
+      eventBus.addHandler(NavTransUnitEvent.getType(), this);
+      eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this);
+      transUnitListDisplay.addLoadingStateChangeHandler(this);
+      dataProvider.addSelectionChangeHandler(this);
    }
 
    @Override
@@ -103,19 +118,20 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    public void onDocumentSelected(DocumentSelectionEvent event)
    {
       GetTransUnitActionContext context = GetTransUnitActionContext.of(event.getDocumentId()).setCount(10);
+      //here it loads trans unit for a document from server
       pageNavigation.init(context);
    }
 
    @Override
    public void onSelectionChange(SelectionChangeEvent event)
    {
-      TransUnit selectedTransUnit = dataProvider.getSelectionModel().getSelectedObject();
+      TransUnit selectedTransUnit = dataProvider.getSelectedOrNull();
       if (selectedTransUnit != null)
       {
-         display.scrollToRow(selectedTransUnit);
+         Log.debug("selected: " + selectedTransUnit.getId());
          sourceContentsPresenter.setValue(selectedTransUnit);
          targetContentsPresenter.setValue(selectedTransUnit, null);
-         sourceContentsPresenter.setSelectedSource();
+         sourceContentsPresenter.selectedSource();
          targetContentsPresenter.showEditors(0);
       }
    }
@@ -123,9 +139,22 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
    {
-      if (event.isReadOnly())
+      initViewOnWorkspaceContext(event.isReadOnly());
+   }
+
+   @Override
+   public void onNavTransUnit(NavTransUnitEvent event)
+   {
+      pageNavigation.navigateTo(event.getRowType());
+   }
+
+   @Override
+   public void onLoadingStateChanged(LoadingStateChangeEvent event)
+   {
+      if (event.getLoadingState() == LoadingStateChangeEvent.LoadingState.LOADED)
       {
-         display.init(transUnitListDisplay, null, null);
+         Log.debug("finish loading. scroll to selected");
+         display.scrollToRow(dataProvider.getSelectedOrNull());
       }
    }
 }

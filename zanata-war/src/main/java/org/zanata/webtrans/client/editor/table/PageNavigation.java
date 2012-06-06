@@ -22,21 +22,22 @@
 package org.zanata.webtrans.client.editor.table;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.editor.TransUnitsDataProvider;
+import org.zanata.webtrans.client.events.NavTransUnitEvent;
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.TransUnitNavigationService;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
-import com.google.gwt.gen2.logging.shared.Log;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -50,17 +51,19 @@ public class PageNavigation implements HasPageNavigation
    private final CachingDispatchAsync dispatcher;
    private final TransUnitNavigationService navigationService;
    private final TransUnitsDataProvider dataProvider;
+   private final UserConfigHolder configHolder;
    //tracking variables
    private int pageCount;
    private int totalCount;
    private GetTransUnitActionContext context;
 
    @Inject
-   public PageNavigation(CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService, TransUnitsDataProvider dataProvider)
+   public PageNavigation(CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService, TransUnitsDataProvider dataProvider, UserConfigHolder configHolder)
    {
       this.dispatcher = dispatcher;
       this.navigationService = navigationService;
       this.dataProvider = dataProvider;
+      this.configHolder = configHolder;
    }
 
    public void init(GetTransUnitActionContext context)
@@ -81,8 +84,10 @@ public class PageNavigation implements HasPageNavigation
          @Override
          public void onSuccess(GetTransUnitListResult result)
          {
-            Log.info("result unit: " + result.getUnits().size());
-            dataProvider.setList(result.getUnits());
+            ArrayList<TransUnit> units = result.getUnits();
+            Log.info("result unit: " + units.size());
+            dataProvider.setList(units);
+            dataProvider.refresh(); // force the display to re-render
             totalCount = result.getTotalCount();
             pageCount = (int) Math.ceil(totalCount * 1.0 / itemPerPage);
 
@@ -97,6 +102,7 @@ public class PageNavigation implements HasPageNavigation
                gotoRow = result.getGotoRow() % itemPerPage;
             }
             navigationService.updateCurrentPageAndRowIndex(currentPageIndex, gotoRow);
+            dataProvider.selectByRowNumber(gotoRow);
          }
       });
    }
@@ -173,6 +179,14 @@ public class PageNavigation implements HasPageNavigation
       }
    }
 
+   public void loadPageAndGoToRow(int pageIndex, TransUnitId transUnitId)
+   {
+      int page = normalizePageIndex(pageIndex);
+      GetTransUnitActionContext newContext = context.setOffset(context.getCount() * page).setTargetTransUnitId(transUnitId);
+      Log.info(pageIndex + " page context: " + newContext);
+      requestTransUnitsAndUpdatePageIndex(newContext);
+   }
+
    private int normalizePageIndex(int pageIndex)
    {
       if (pageIndex < 0)
@@ -205,5 +219,41 @@ public class PageNavigation implements HasPageNavigation
    public TransUnitsDataProvider getDataProvider()
    {
       return dataProvider;
+   }
+
+   //TODO clean up this class dependency mess
+   public void navigateTo(NavTransUnitEvent.NavigationType navigationType)
+   {
+      int rowIndex = 0;
+      switch (navigationType)
+      {
+         case PrevEntry:
+            rowIndex = navigationService.getPrevRowIndex();
+            break;
+         case NextEntry:
+            rowIndex = navigationService.getNextRowIndex();
+            break;
+         case PrevState:
+            rowIndex = navigationService.getPreviousStateRowIndex(configHolder.getContentStatePredicate());
+            break;
+         case NextState:
+            rowIndex = navigationService.getNextStateRowIndex(configHolder.getContentStatePredicate());
+            break;
+         case FirstEntry:
+            rowIndex = 0;
+            break;
+         case LastEntry:
+            rowIndex = totalCount - 1;
+            break;
+      }
+      int targetPage = navigationService.getTargetPage(rowIndex);
+      TransUnitId targetTransUnitId = navigationService.getTargetTransUnitId(rowIndex);
+      Log.info("target page : [" + targetPage + "] target TU id: " + targetTransUnitId);
+
+      if (navigationService.getCurrentPage() == targetPage)
+      {
+         dataProvider.selectById(targetTransUnitId);
+      }
+      loadPageAndGoToRow(targetPage, targetTransUnitId);
    }
 }

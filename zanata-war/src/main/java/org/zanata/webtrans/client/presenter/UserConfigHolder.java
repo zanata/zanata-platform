@@ -20,12 +20,38 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import org.zanata.common.ContentState;
+import com.google.common.base.Predicate;
 import com.google.inject.Singleton;
 
 
 @Singleton
 public class UserConfigHolder
 {
+   public static final Predicate<ContentState> FUZZY_OR_NEW_PREDICATE = new Predicate<ContentState>()
+   {
+      @Override
+      public boolean apply(ContentState contentState)
+      {
+         return contentState == ContentState.New || contentState == ContentState.NeedReview;
+      }
+   };
+   public static final Predicate<ContentState> FUZZY_PREDICATE = new Predicate<ContentState>()
+   {
+      @Override
+      public boolean apply(ContentState contentState)
+      {
+         return contentState == ContentState.NeedReview;
+      }
+   };
+   public static final Predicate<ContentState> NEW_PREDICATE = new Predicate<ContentState>()
+   {
+      @Override
+      public boolean apply(ContentState contentState)
+      {
+         return contentState == ContentState.New;
+      }
+   };
    private boolean enterSavesApproved = false;
    private boolean escClosesEditor = false;
    private boolean buttonFuzzy = true;
@@ -77,6 +103,7 @@ public class UserConfigHolder
       return displayButtons;
    }
 
+   //TODO TableEditorPresenter will call this one workspaceContext change event. Thus the method must be public.
    public void setDisplayButtons(boolean displayButtons)
    {
       this.displayButtons = displayButtons;
@@ -85,5 +112,21 @@ public class UserConfigHolder
    public boolean isFuzzyAndUntranslated()
    {
       return buttonFuzzy && buttonUntranslated;
+   }
+
+   public Predicate<ContentState> getContentStatePredicate()
+   {
+      if (isFuzzyAndUntranslated())
+      {
+         return FUZZY_OR_NEW_PREDICATE;
+      }
+      else if (isButtonFuzzy())
+      {
+         return FUZZY_PREDICATE;
+      }
+      else
+      {
+         return NEW_PREDICATE;
+      }
    }
 }
