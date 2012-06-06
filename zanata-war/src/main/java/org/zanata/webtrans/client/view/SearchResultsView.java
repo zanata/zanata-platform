@@ -32,9 +32,12 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -76,10 +79,10 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    InlineLabel searchResponseLabel, selectAllLink, selectionInfoLabel;
 
    @UiField
-   CheckBox caseSensitiveChk, requirePreviewChk;
+   CheckBox caseSensitiveChk, selectAllChk, requirePreviewChk;
 
    @UiField
-   Button replaceAllButton;
+   Button searchButton, replaceAllButton;
 
    @UiField
    ListBox searchFieldsSelect;
@@ -132,6 +135,21 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       filterTextBox.setSelectionRange(0, filterTextBox.getText().length());
    }
 
+   @UiHandler("filterTextBox")
+   void onFilterTextBoxKeyUp(KeyUpEvent event)
+   {
+      if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+      {
+         searchButton.click();
+      }
+   }
+
+   @Override
+   public HasClickHandlers getSearchButton()
+   {
+      return searchButton;
+   }
+
    @Override
    public HasValue<String> getReplacementTextBox()
    {
@@ -155,6 +173,12 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    public HasValue<Boolean> getCaseSensitiveChk()
    {
       return caseSensitiveChk;
+   }
+
+   @Override
+   public HasValue<Boolean> getSelectAllChk()
+   {
+      return selectAllChk;
    }
 
    @Override
