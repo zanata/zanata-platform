@@ -79,14 +79,18 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    @Inject
    public DocumentListView(Resources resources, WebTransMessages messages, UiMessages uiMessages, final CachingDispatchAsync dispatcher, EventBus eventBus)
    {
+
       this.resources = resources;
       this.messages = messages;
-      
-      filterTextBox = new ClearableTextBox(resources, uiMessages);
-      // TODO set this from the presenter if possible
-      dataProvider = new ListDataProvider<DocumentNode>();
 
+      dataProvider = new ListDataProvider<DocumentNode>();
+      filterTextBox = new ClearableTextBox(resources, uiMessages);
       initWidget(uiBinder.createAndBindUi(this));
+      filterTextBox.setTitle(messages.docListFilterDescription());
+      // TODO set this from the presenter if possible
+      caseSensitiveCheckBox.setTitle(messages.docListFilterCaseSensitiveDescription());
+      exactSearchCheckBox.setTitle(messages.docListFilterExactMatchDescription());
+
    }
 
    @Override
