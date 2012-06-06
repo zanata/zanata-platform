@@ -21,9 +21,9 @@
 
 package org.zanata.webtrans.client.presenter;
 
-import org.zanata.webtrans.client.editor.TransUnitsDataProvider;
+import org.zanata.webtrans.client.service.TransUnitsDataModel;
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
-import org.zanata.webtrans.client.editor.table.PageNavigation;
+import org.zanata.webtrans.client.service.NavigationController;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
@@ -55,14 +55,14 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
    private final TransUnitEditDisplay display;
    private final EventBus eventBus;
-   private final PageNavigation pageNavigation;
+   private final NavigationController navigationController;
    private final TransUnitListDisplay transUnitListDisplay;
    private final SourceContentsPresenter sourceContentsPresenter;
    private final TargetContentsPresenter targetContentsPresenter;
-   private final TransUnitsDataProvider dataProvider;
+   private final TransUnitsDataModel dataModel;
 
    @Inject
-   public TransUnitEditPresenter(TransUnitEditDisplay display, EventBus eventBus, PageNavigation pageNavigation,
+   public TransUnitEditPresenter(TransUnitEditDisplay display, EventBus eventBus, NavigationController navigationController,
                                  TransUnitListDisplay transUnitListDisplay,
                                  SourceContentsPresenter sourceContentsPresenter,
                                  TargetContentsPresenter targetContentsPresenter,
@@ -71,15 +71,15 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       super(display, eventBus);
       this.display = display;
       this.eventBus = eventBus;
-      this.pageNavigation = pageNavigation;
+      this.navigationController = navigationController;
       this.transUnitListDisplay = transUnitListDisplay;
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.targetContentsPresenter = targetContentsPresenter;
 
       initViewOnWorkspaceContext(workspaceContext.isReadOnly());
 
-      dataProvider = pageNavigation.getDataProvider();
-      dataProvider.addDataDisplay(transUnitListDisplay);
+      dataModel = navigationController.getDataModel();
+      dataModel.addDataDisplay(transUnitListDisplay);
    }
 
    private void initViewOnWorkspaceContext(boolean readOnly)
@@ -101,7 +101,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       eventBus.addHandler(NavTransUnitEvent.getType(), this);
       eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this);
       transUnitListDisplay.addLoadingStateChangeHandler(this);
-      dataProvider.addSelectionChangeHandler(this);
+      dataModel.addSelectionChangeHandler(this);
    }
 
    @Override
@@ -119,13 +119,13 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    {
       GetTransUnitActionContext context = GetTransUnitActionContext.of(event.getDocumentId()).setCount(10);
       //here it loads trans unit for a document from server
-      pageNavigation.init(context);
+      navigationController.init(context);
    }
 
    @Override
    public void onSelectionChange(SelectionChangeEvent event)
    {
-      TransUnit selectedTransUnit = dataProvider.getSelectedOrNull();
+      TransUnit selectedTransUnit = dataModel.getSelectedOrNull();
       if (selectedTransUnit != null)
       {
          Log.debug("selected: " + selectedTransUnit.getId());
@@ -145,7 +145,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onNavTransUnit(NavTransUnitEvent event)
    {
-      pageNavigation.navigateTo(event.getRowType());
+      navigationController.navigateTo(event.getRowType());
    }
 
    @Override
@@ -154,7 +154,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       if (event.getLoadingState() == LoadingStateChangeEvent.LoadingState.LOADED)
       {
          Log.debug("finish loading. scroll to selected");
-         display.scrollToRow(dataProvider.getSelectedOrNull());
+         display.scrollToRow(dataModel.getSelectedOrNull());
       }
    }
 }

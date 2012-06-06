@@ -19,7 +19,10 @@ import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.common.collect.Lists;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Test(groups = { "unit-tests" })
+@Slf4j
 public class TransUnitNavigationServiceTest
 {
    private TransUnitNavigationService navigationService;
@@ -53,6 +56,9 @@ public class TransUnitNavigationServiceTest
          transIdStateMap.put(tu.getId().getId(), tu.getStatus());
          idIndexList.add(tu.getId().getId());
       }
+      log.info("TransUnit list size: {}", tuList.size());
+      log.info("transIdStateMap : \n\t{}", transIdStateMap);
+      log.info("idIndexList : \n\t{}", idIndexList);
    }
 
    @BeforeMethod
@@ -122,6 +128,9 @@ public class TransUnitNavigationServiceTest
 
       navigationService.updateCurrentPageAndRowIndex(0, 4);
       assertEquals(navigationService.getPreviousStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 2);
+
+      navigationService.updateCurrentPageAndRowIndex(0, 0);
+      assertEquals(navigationService.getPreviousStateRowIndex(UserConfigHolder.FUZZY_OR_NEW_PREDICATE), 0);
    }
 
    @Test

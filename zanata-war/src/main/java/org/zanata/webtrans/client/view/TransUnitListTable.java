@@ -24,28 +24,21 @@ package org.zanata.webtrans.client.view;
 import java.util.List;
 
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.editor.TransUnitsDataProvider;
+import org.zanata.webtrans.client.service.TransUnitsDataModel;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.CellTableResources;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitProvidesKey;
-import org.zanata.webtrans.shared.util.ObjectUtil;
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.TableRowElement;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.LoadingStateChangeEvent;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.view.client.SelectionModel;
-import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -61,7 +54,7 @@ public class TransUnitListTable extends CellTable<TransUnit> implements TransUni
 //   private WebTransMessages messages;
 
    private String highlightString = null;
-   private final TransUnitsDataProvider dataProvider;
+   private final TransUnitsDataModel dataModel;
 
 
    @Override
@@ -71,11 +64,11 @@ public class TransUnitListTable extends CellTable<TransUnit> implements TransUni
    }
 
    @Inject
-   public TransUnitListTable(WebTransMessages messages, TransUnitsDataProvider dataProvider)
+   public TransUnitListTable(WebTransMessages messages, TransUnitsDataModel dataModel)
    {
       //TODO page size should be configurable
       super(15, getCellTableResources());
-      this.dataProvider = dataProvider;
+      this.dataModel = dataModel;
 
 
 //      this.messages = messages;
@@ -98,7 +91,7 @@ public class TransUnitListTable extends CellTable<TransUnit> implements TransUni
       sourceColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
       targetColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 
-      setSelectionModel(dataProvider.getSelectionModel());
+      setSelectionModel(dataModel.getSelectionModel());
 
       //TODO change style
       addStyleName("projectWideSearchResultsDocumentBody");
@@ -107,7 +100,7 @@ public class TransUnitListTable extends CellTable<TransUnit> implements TransUni
    @Override
    public int getSelectedRowAbsoluteTop(TransUnit selected)
    {
-      int selectedIndex = dataProvider.getList().indexOf(selected);
+      int selectedIndex = dataModel.getList().indexOf(selected);
       TableRowElement rowElement = null;
       if (isRowWithinBounds(selectedIndex))
       {

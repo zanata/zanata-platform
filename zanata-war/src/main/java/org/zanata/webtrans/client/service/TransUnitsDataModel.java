@@ -19,7 +19,7 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.webtrans.client.editor;
+package org.zanata.webtrans.client.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,20 +50,26 @@ import com.google.inject.Singleton;
 /**
  * This class is used as data provider to translation unit celltable display as well as defining selection model of it.
  */
-//TODO rename it to TransUnitDataModel
 @Singleton
-public class TransUnitsDataProvider extends ListDataProvider<TransUnit>
+public class TransUnitsDataModel extends ListDataProvider<TransUnit>
 {
 
    private final SingleSelectionModel<TransUnit> selectionModel;
 
-   public TransUnitsDataProvider()
+   public TransUnitsDataModel()
    {
       super(TransUnitProvidesKey.KEY_PROVIDER);
       selectionModel = new SingleSelectionModel<TransUnit>(TransUnitProvidesKey.KEY_PROVIDER);
    }
 
-   public SingleSelectionModel<TransUnit> getSelectionModel()
+   //for testing
+   TransUnitsDataModel(SingleSelectionModel<TransUnit> selectionModel)
+   {
+      super(TransUnitProvidesKey.KEY_PROVIDER);
+      this.selectionModel = selectionModel;
+   }
+
+   public SelectionModel<TransUnit> getSelectionModel()
    {
       return selectionModel;
    }

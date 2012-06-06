@@ -39,6 +39,7 @@ import com.google.inject.Singleton;
  **/
 
 @Singleton
+//TODO after retiring TableEditorPresenter remove unused methods and maybe rename it to something else (NavigationStateHolder?) and get the NavigationController to be named after Service.
 public class TransUnitNavigationService
 {
    private Map<Long, ContentState> idAndStateMap;
@@ -47,12 +48,16 @@ public class TransUnitNavigationService
    private int pageSize;
    private int curRowIndex = 0;
    private int curPage = 0;
+   private int totalCount;
+   private int pageCount;
 
    public void init(Map<Long, ContentState> transIdStateMap, ArrayList<Long> idIndexList, int pageSize)
    {
       this.idAndStateMap = transIdStateMap;
       this.idIndexList = idIndexList;
       this.pageSize = pageSize;
+      totalCount = idIndexList.size();
+      pageCount = (int) Math.ceil(totalCount * 1.0 / pageSize);
    }
 
    public void updateState(Long id, ContentState newState)
@@ -62,11 +67,6 @@ public class TransUnitNavigationService
 
    public int getNextStateRowIndex(Predicate<ContentState> condition)
    {
-      if (curRowIndex >= maxRowIndex())
-      {
-         return curRowIndex;
-      }
-
       for (int i = curRowIndex + 1; i <= maxRowIndex(); i++)
       {
          ContentState contentState = idAndStateMap.get(idIndexList.get(i));
@@ -80,16 +80,11 @@ public class TransUnitNavigationService
 
    private int maxRowIndex()
    {
-      return idIndexList.size() - 1;
+      return totalCount - 1;
    }
 
    public int getPreviousStateRowIndex(Predicate<ContentState> condition)
    {
-      if (curRowIndex == 0)
-      {
-         return curRowIndex;
-      }
-
       for (int i = curRowIndex - 1; i >= 0; i--)
       {
          ContentState contentState = idAndStateMap.get(idIndexList.get(i));
@@ -188,5 +183,10 @@ public class TransUnitNavigationService
    public TransUnitId getTargetTransUnitId(int rowIndex)
    {
       return new TransUnitId(idIndexList.get(rowIndex));
+   }
+
+   public int lastPage()
+   {
+      return pageCount - 1;
    }
 }

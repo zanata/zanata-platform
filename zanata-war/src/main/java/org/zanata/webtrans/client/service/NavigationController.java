@@ -19,17 +19,16 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.webtrans.client.editor.table;
+package org.zanata.webtrans.client.service;
 
 import java.util.ArrayList;
 
 import org.zanata.webtrans.client.editor.HasPageNavigation;
-import org.zanata.webtrans.client.editor.TransUnitsDataProvider;
+import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.service.TransUnitNavigationService;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
@@ -37,7 +36,6 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -45,24 +43,22 @@ import com.google.inject.Singleton;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class PageNavigation implements HasPageNavigation
+public class NavigationController implements HasPageNavigation
 {
    public static final int FIRST_PAGE = 0;
    private final CachingDispatchAsync dispatcher;
    private final TransUnitNavigationService navigationService;
-   private final TransUnitsDataProvider dataProvider;
+   private final TransUnitsDataModel dataModel;
    private final UserConfigHolder configHolder;
    //tracking variables
-   private int pageCount;
-   private int totalCount;
    private GetTransUnitActionContext context;
 
    @Inject
-   public PageNavigation(CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService, TransUnitsDataProvider dataProvider, UserConfigHolder configHolder)
+   public NavigationController(CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService, TransUnitsDataModel dataModel, UserConfigHolder configHolder)
    {
       this.dispatcher = dispatcher;
       this.navigationService = navigationService;
-      this.dataProvider = dataProvider;
+      this.dataModel = dataModel;
       this.configHolder = configHolder;
    }
 
@@ -75,7 +71,7 @@ public class PageNavigation implements HasPageNavigation
 
    private void requestTransUnitsAndUpdatePageIndex(GetTransUnitActionContext context)
    {
-      Log.info("requesting transUnits: " + toString());
+      Log.info("requesting transUnits: " + context);
       final int itemPerPage = context.getCount();
       final int offset = context.getOffset();
 
@@ -86,10 +82,8 @@ public class PageNavigation implements HasPageNavigation
          {
             ArrayList<TransUnit> units = result.getUnits();
             Log.info("result unit: " + units.size());
-            dataProvider.setList(units);
-            dataProvider.refresh(); // force the display to re-render
-            totalCount = result.getTotalCount();
-            pageCount = (int) Math.ceil(totalCount * 1.0 / itemPerPage);
+            dataModel.setList(units);
+            dataModel.refresh(); // force the display to re-render
 
             // default values
             int gotoRow = 0;
@@ -102,7 +96,7 @@ public class PageNavigation implements HasPageNavigation
                gotoRow = result.getGotoRow() % itemPerPage;
             }
             navigationService.updateCurrentPageAndRowIndex(currentPageIndex, gotoRow);
-            dataProvider.selectByRowNumber(gotoRow);
+            dataModel.selectByRowNumber(gotoRow);
          }
       });
    }
@@ -134,9 +128,9 @@ public class PageNavigation implements HasPageNavigation
    @Override
    public void gotoLastPage()
    {
-      if (navigationService.getCurrentPage() != lastPage())
+      if (navigationService.getCurrentPage() != navigationService.lastPage())
       {
-         GetTransUnitActionContext lastPageContext = context.setOffset(context.getCount() * lastPage()).setTargetTransUnitId(null);
+         GetTransUnitActionContext lastPageContext = context.setOffset(context.getCount() * navigationService.lastPage()).setTargetTransUnitId(null);
          Log.info("last page context: " + lastPageContext);
          requestTransUnitsAndUpdatePageIndex(lastPageContext);
       }
@@ -145,7 +139,7 @@ public class PageNavigation implements HasPageNavigation
    @Override
    public void gotoNextPage()
    {
-      if (navigationService.getCurrentPage() < lastPage())
+      if (navigationService.getCurrentPage() < navigationService.lastPage())
       {
          int nextPage = navigationService.getCurrentPage() + 1;
 
@@ -195,30 +189,13 @@ public class PageNavigation implements HasPageNavigation
       }
       else
       {
-         return Math.min(lastPage(), pageIndex);
+         return Math.min(navigationService.lastPage(), pageIndex);
       }
    }
 
-   private int lastPage()
+   public TransUnitsDataModel getDataModel()
    {
-      return pageCount - 1;
-   }
-
-   @Override
-   public String toString()
-   {
-      // @formatter:off
-        return Objects.toStringHelper(this).
-                add("totalCount", totalCount).
-                add("pageCount", pageCount).
-                add("context", context).
-                toString();
-        // @formatter:on
-   }
-
-   public TransUnitsDataProvider getDataProvider()
-   {
-      return dataProvider;
+      return dataModel;
    }
 
    //TODO clean up this class dependency mess
@@ -243,7 +220,7 @@ public class PageNavigation implements HasPageNavigation
             rowIndex = 0;
             break;
          case LastEntry:
-            rowIndex = totalCount - 1;
+            rowIndex = navigationService.lastPage();
             break;
       }
       int targetPage = navigationService.getTargetPage(rowIndex);
@@ -252,7 +229,7 @@ public class PageNavigation implements HasPageNavigation
 
       if (navigationService.getCurrentPage() == targetPage)
       {
-         dataProvider.selectById(targetTransUnitId);
+         dataModel.selectById(targetTransUnitId);
       }
       loadPageAndGoToRow(targetPage, targetTransUnitId);
    }
