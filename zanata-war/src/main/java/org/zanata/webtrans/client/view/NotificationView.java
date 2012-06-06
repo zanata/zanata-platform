@@ -20,15 +20,20 @@
  */
 package org.zanata.webtrans.client.view;
 
+import java.util.Date;
+
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.presenter.NotificationPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -64,6 +69,15 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       String timeLabel();
    }
 
+   private final Timer hidePopupTimer = new Timer()
+   {
+      @Override
+      public void run()
+      {
+         hide(true);
+      }
+   };
+   
    @UiField
    VerticalPanel messagePanel;
 
@@ -126,7 +140,7 @@ public class NotificationView extends PopupPanel implements NotificationPresente
    }
 
    @Override
-   public void appendMessage(Severity severity, String msg, String time)
+   public void appendMessage(Severity severity, String msg)
    {
       HorizontalPanel panel = new HorizontalPanel();
       Image severityImg;
@@ -145,7 +159,7 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       }
       severityImg.addStyleName(style.image());
 
-      Label timeLabel = new Label("[" + time + "]");
+      Label timeLabel = new Label("[" + DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT).format(new Date()) + "]");
       Label msgLabel = new Label(msg);
       
       timeLabel.setStyleName(style.timeLabel());
@@ -180,5 +194,20 @@ public class NotificationView extends PopupPanel implements NotificationPresente
    public void setPopupTopRightCorner()
    {
       super.setPopupPosition(Window.getClientWidth() - (getWidth() + 5), 38);
+   }
+   
+   @Override
+   public void hide(boolean autoClosed) 
+   {
+      hidePopupTimer.cancel();
+      super.hide(autoClosed);
+   }
+   
+   @Override
+   public void show(int delayMillisToClose)
+   {
+      hidePopupTimer.cancel();
+      super.show();
+      hidePopupTimer.schedule(delayMillisToClose);
    }
 }

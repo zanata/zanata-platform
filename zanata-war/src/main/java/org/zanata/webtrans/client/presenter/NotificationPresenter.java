@@ -20,8 +20,6 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import java.util.Date;
-
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -34,9 +32,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
-import com.google.gwt.user.client.Timer;
 import com.google.inject.Inject;
 
 /**
@@ -67,7 +62,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
 
       void hide(boolean autoClosed);
 
-      void appendMessage(Severity severity, String message, String time);
+      void appendMessage(Severity severity, String message);
 
       void setMessagesToKeep(int count);
 
@@ -78,20 +73,13 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
       int getMessageCount();
 
       void setPopupTopRightCorner();
+
+      void show(int delayMillisToClose);
    }
 
    private HasNotificationLabel listener;
 
    private static final int MESSAGE_TO_KEEP = 6;
-
-   private final Timer hidePopupTimer = new Timer()
-   {
-      @Override
-      public void run()
-      {
-         display.hide(true);
-      }
-   };
 
    @Override
    protected void onBind()
@@ -100,7 +88,6 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
       display.setAutoHideEnabled(true);
       display.setAnimationEnabled(true);
       display.hide(true);
-      hidePopupTimer.cancel();
       display.setMessagesToKeep(MESSAGE_TO_KEEP);
       display.setPopupTopRightCorner();
 
@@ -110,7 +97,6 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
          public void onClick(ClickEvent event)
          {
             display.hide(true);
-            hidePopupTimer.cancel();
          }
       }));
 
@@ -121,7 +107,6 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
          {
             display.clearMessages();
             display.hide(true);
-            hidePopupTimer.cancel();
             listener.setNotificationLabel(display.getMessageCount(), Severity.Info);
          }
       }));
@@ -131,7 +116,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
          @Override
          public void onNotification(NotificationEvent event)
          {
-            appendNotification(event.getSeverity(), event.getMessage(), DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT).format(new Date()));
+            appendNotification(event.getSeverity(), event.getMessage());
             Log.info("Notification:" + event.getMessage());
             listener.setNotificationLabel(display.getMessageCount(), event.getSeverity());
          }
@@ -146,9 +131,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
 
    private void showNotification()
    {
-      hidePopupTimer.cancel();
-      display.show();
-      hidePopupTimer.schedule(2500);
+      display.show(2500);
    }
 
    public void showNotificationWithNoTimer()
@@ -156,9 +139,9 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
       display.show();
    }
 
-   private void appendNotification(Severity severity, String msg, String time)
+   private void appendNotification(Severity severity, String msg)
    {
-      display.appendMessage(severity, msg, time);
+      display.appendMessage(severity, msg);
       if (severity == Severity.Error)
       {
          showNotificationWithNoTimer();
