@@ -52,6 +52,8 @@ import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 
+import javax.faces.context.FacesContext;
+
 @Name("projectIterationFilesAction")
 @Scope(ScopeType.PAGE)
 public class ProjectIterationFilesAction
@@ -126,7 +128,7 @@ public class ProjectIterationFilesAction
    }
 
    @Restrict("#{projectIterationFilesAction.fileUploadAllowed}")
-   public void uploadTranslationFile()
+   public String uploadTranslationFile()
    {
       TranslationsResource transRes = null;
       try
@@ -157,10 +159,14 @@ public class ProjectIterationFilesAction
       {
          FacesMessages.instance().add(Severity.ERROR, zex.getMessage(), this.translationFileUpload.getFileName());
       }
+
+      // NB This needs to be done as for some reason seam is losing the parameters when redirecting
+      // This is efectively the same as returning void
+      return FacesContext.getCurrentInstance().getViewRoot().getViewId();
    }
 
    @Restrict("#{projectIterationFilesAction.documentUploadAllowed}")
-   public void uploadDocumentFile()
+   public String uploadDocumentFile()
    {
       try
       {
@@ -183,6 +189,10 @@ public class ProjectIterationFilesAction
       {
          FacesMessages.instance().add(Severity.ERROR, "Invalid arguments");
       }
+
+      // NB This needs to be done as for some reason seam is losing the parameters when redirecting
+      // This is efectively the same as returning void
+      return FacesContext.getCurrentInstance().getViewRoot().getViewId();
    }
 
    public boolean isFileUploadAllowed()
