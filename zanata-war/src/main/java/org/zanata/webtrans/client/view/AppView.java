@@ -21,7 +21,6 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.common.TranslationStats;
-import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.MainView;
@@ -48,7 +47,6 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -68,10 +66,6 @@ public class AppView extends Composite implements AppPresenter.Display
 
    interface Styles extends CssResource
    {
-      String notificationInfo();
-      String notificationWarning();
-      String notificationError();
-
       String userName();
 
       String hasError();
@@ -84,9 +78,6 @@ public class AppView extends Composite implements AppPresenter.Display
    @UiField(provided = true)
    TransUnitCountBar translationStatsBar;
 
-   @UiField
-   Label notificationMessage, dismissLink;
-   
    @UiField
    InlineLabel readOnlyLabel, documentsLink;
 
@@ -223,18 +214,6 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public HasClickHandlers getDismiss()
-   {
-      return dismissLink;
-   }
-
-   @Override
-   public HasVisibility getDismissVisibility()
-   {
-      return dismissLink;
-   }
-
-   @Override
    public HasClickHandlers getDocumentsLink()
    {
       return documentsLink;
@@ -272,28 +251,6 @@ public class AppView extends Composite implements AppPresenter.Display
    {
       selectedDocumentPathSpan.setInnerText(docPath);
       selectedDocumentSpan.setInnerText(docName);
-   }
-
-   @Override
-   public void setNotificationMessage(String message, NotificationEvent.Severity severity)
-   {
-      notificationMessage.setText(message);
-      notificationMessage.setTitle(message);
-
-      // TODO use setStyleDependentName (notification-severity.name())
-      switch (severity)
-      {
-      case Info:
-         notificationMessage.setStyleName(style.notificationInfo());
-         break;
-      case Warning:
-         notificationMessage.setStyleName(style.notificationWarning());
-         break;
-      case Error:
-         notificationMessage.setStyleName(style.notificationError());
-         break;
-      }
-      dismissLink.setVisible(!message.isEmpty());
    }
 
    @Override

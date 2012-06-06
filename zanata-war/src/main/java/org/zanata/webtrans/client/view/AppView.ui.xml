@@ -31,32 +31,6 @@
 			padding:2px;
 		}
 
-      .notificationInfo {
-         color: white;
-         padding: 5px;
-         display: inline;
-      }
-        
-      .notificationWarning {
-         color: yellow;
-         padding: 5px;
-         display: inline;
-      }
-        
-      .notificationError {
-         color: black;
-         background: lightSalmon;
-         padding: 5px;
-         display: inline;
-      }
-        
-      .notification-dismiss {
-            color: white;
-            text-decoration: underline;
-            cursor: pointer;
-            display: inline;
-      }
-
 		.topPanel-Workspace a {
 			color: white;
 			font-weight: bold;
@@ -168,14 +142,6 @@
 								</nobr>
 							</g:HTMLPanel>
 						</g:cell>
-						<g:cell>
-	                        <g:HTMLPanel>
-	                            <g:Label ui:field="notificationMessage" styleName="{style.notificationInfo}"/>
-	                            <g:Label ui:field="dismissLink" styleName="{style.notification-dismiss}">
-	                                <ui:msg>(clear)</ui:msg>
-	                            </g:Label>
-	                        </g:HTMLPanel>
-			            </g:cell>
 						<g:cell width="200px">
 	                    	 <fui:TransUnitCountBar ui:field="translationStatsBar" styleName="{style.translationStats}"/>
 	                    </g:cell>

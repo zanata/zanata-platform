@@ -124,7 +124,6 @@ public class NotificationPresenterTest
          NotificationEvent notification = new NotificationEvent(Severity.Error, msg);
          capturedNotificationEventHandler.getValue().onNotification(notification);
       }
-      assertThat(notificationPresenter.getMessageCount(), is(testMessages.length));
 
       verifyAllMocks();
    }
@@ -154,7 +153,6 @@ public class NotificationPresenterTest
          NotificationEvent notification = new NotificationEvent(Severity.Error, msg);
          capturedNotificationEventHandler.getValue().onNotification(notification);
       }
-      assertThat(notificationPresenter.getMessageCount(), is(MSG_TO_KEEP));
 
       verifyAllMocks();
    }

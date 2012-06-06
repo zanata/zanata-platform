@@ -32,6 +32,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.Timer;
 import com.google.inject.Inject;
 
 /**
@@ -77,14 +78,27 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
 
    private HasErrorNotificationLabel listener;
 
+   private static final int MESSAGE_TO_KEEP = 6;
+
+   private final Timer hidePopupTimer = new Timer()
+   {
+      @Override
+      public void run()
+      {
+         display.hide(true);
+      }
+   };
+
    @Override
    protected void onBind()
    {
-      display.setModal(true);
+      display.setModal(false);
       display.setAutoHideEnabled(true);
       display.setAnimationEnabled(true);
       display.hide(true);
-      display.setMessagesToKeep(5);
+      hidePopupTimer.cancel();
+      display.setMessagesToKeep(MESSAGE_TO_KEEP);
+      display.setPopupTopRightCorner();
 
       registerHandler(display.getDismissButton().addClickHandler(new ClickHandler()
       {
@@ -92,6 +106,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
          public void onClick(ClickEvent event)
          {
             display.hide(true);
+            hidePopupTimer.cancel();
          }
       }));
 
@@ -102,6 +117,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
          {
             display.clearMessages();
             display.hide(true);
+            hidePopupTimer.cancel();
             listener.setErrorNotificationLabel(display.getMessageCount());
          }
       }));
@@ -111,36 +127,42 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
          @Override
          public void onNotification(NotificationEvent event)
          {
-            if (event.getSeverity() == Severity.Error)
-            {
-               appendError(event.getMessage());
-               Log.info("Error Notification:" + event.getMessage());
-            }
+            appendNotification(event.getSeverity(), event.getMessage());
+            Log.info("Notification:" + event.getMessage());
+            listener.setErrorNotificationLabel(display.getMessageCount());
          }
       }));
-
    }
 
    public void setErrorLabelListener(HasErrorNotificationLabel listener)
    {
       this.listener = listener;
+      listener.setErrorNotificationLabel(0);
    }
 
-   public void showErrorNotification()
+   private void showNotification()
    {
-      display.setPopupTopRightCorner();
+      hidePopupTimer.cancel();
+      display.show();
+      hidePopupTimer.schedule(2500);
+   }
+
+   public void showNotificationWithNoTimer()
+   {
       display.show();
    }
 
-   private void appendError(String msg)
+   private void appendNotification(Severity severity, String msg)
    {
-      display.appendMessage(Severity.Error, msg);
-      showErrorNotification();
-   }
-
-   public int getMessageCount()
-   {
-      return display.getMessageCount();
+      display.appendMessage(severity, msg);
+      if (severity == Severity.Error)
+      {
+         showNotificationWithNoTimer();
+      }
+      else
+      {
+         showNotification();
+      }
    }
 
    @Override
