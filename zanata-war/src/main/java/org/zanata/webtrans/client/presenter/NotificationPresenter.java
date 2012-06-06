@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.util.Date;
+
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -32,6 +34,8 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.client.Timer;
 import com.google.inject.Inject;
 
@@ -63,7 +67,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
 
       void hide(boolean autoClosed);
 
-      void appendMessage(Severity severity, String message);
+      void appendMessage(Severity severity, String message, String time);
 
       void setMessagesToKeep(int count);
 
@@ -127,7 +131,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
          @Override
          public void onNotification(NotificationEvent event)
          {
-            appendNotification(event.getSeverity(), event.getMessage());
+            appendNotification(event.getSeverity(), event.getMessage(), DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT).format(new Date()));
             Log.info("Notification:" + event.getMessage());
             listener.setErrorNotificationLabel(display.getMessageCount());
          }
@@ -152,9 +156,9 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
       display.show();
    }
 
-   private void appendNotification(Severity severity, String msg)
+   private void appendNotification(Severity severity, String msg, String time)
    {
-      display.appendMessage(severity, msg);
+      display.appendMessage(severity, msg, time);
       if (severity == Severity.Error)
       {
          showNotificationWithNoTimer();
