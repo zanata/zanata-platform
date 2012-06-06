@@ -59,7 +59,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.inject.Inject;
 
-public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implements HasErrorNotificationLabel
+public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implements HasNotificationLabel
 {
    // javac seems confused about which Display is which.
    // somehow, qualifying WidgetDisplay helps!
@@ -87,9 +87,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
 
       HasClickHandlers getSearchAndReplaceLink();
 
-      HasClickHandlers getErrorNotificationBtn();
+      HasClickHandlers getNotificationBtn();
 
-      void setErrorNotificationText(int count);
+      void setNotificationText(int count, Severity severity);
    }
 
    private final KeyShortcutPresenter keyShortcutPresenter;
@@ -143,9 +143,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
    }
 
    @Override
-   public void setErrorNotificationLabel(int count)
+   public void setNotificationLabel(int count, Severity severity)
    {
-      display.setErrorNotificationText(count);
+      display.setNotificationText(count, severity);
    }
 
    @Override
@@ -157,7 +157,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
       searchResultsPresenter.bind();
       notificationPresenter.bind();
 
-      notificationPresenter.setErrorLabelListener(this);
+      notificationPresenter.setNotificationListener(this);
 
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
       {
@@ -231,7 +231,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
          }
       }));
       
-      registerHandler(display.getErrorNotificationBtn().addClickHandler(new ClickHandler()
+      registerHandler(display.getNotificationBtn().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)

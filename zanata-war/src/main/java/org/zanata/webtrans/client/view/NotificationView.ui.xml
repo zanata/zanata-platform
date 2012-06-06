@@ -36,6 +36,11 @@
 			margin-top:2px;
 		}
 		
+		.timeLabel
+		{
+			font-size:10px;
+		}
+		
 	</ui:style>
 
 	<g:VerticalPanel styleName="{style.mainPanel}" spacing="2">

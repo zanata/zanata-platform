@@ -60,6 +60,8 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       String messageRow();
 
       String image();
+
+      String timeLabel();
    }
 
    @UiField
@@ -145,12 +147,14 @@ public class NotificationView extends PopupPanel implements NotificationPresente
 
       Label timeLabel = new Label("[" + time + "]");
       Label msgLabel = new Label(msg);
+      
+      timeLabel.setStyleName(style.timeLabel());
 
       panel.add(severityImg);
       panel.add(timeLabel);
       panel.add(msgLabel);
       panel.setCellWidth(severityImg, "20px");
-      panel.setCellWidth(timeLabel, "115px");
+      panel.setCellWidth(timeLabel, "95px");
 
       panel.setCellVerticalAlignment(severityImg, HasVerticalAlignment.ALIGN_MIDDLE);
       panel.setCellVerticalAlignment(timeLabel, HasVerticalAlignment.ALIGN_MIDDLE);

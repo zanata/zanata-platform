@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.common.TranslationStats;
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.MainView;
@@ -69,6 +70,8 @@ public class AppView extends Composite implements AppPresenter.Display
       String userName();
 
       String hasError();
+      
+      String hasWarning();
 
       String image();
    }
@@ -99,7 +102,7 @@ public class AppView extends Composite implements AppPresenter.Display
    MenuBar topMenuBar;
 
    @UiField
-   PushButton errorNotificationBtn;
+   PushButton notificationBtn;
 
    @UiField
    Anchor searchAndReplace;
@@ -167,7 +170,7 @@ public class AppView extends Composite implements AppPresenter.Display
       this.searchResultsView = searchResultsView.asWidget();
       this.container.add(this.searchResultsView);
 
-      errorNotificationBtn.setTitle(messages.errorNotification());
+      notificationBtn.setTitle(messages.errorNotification());
 
       Window.enableScrolling(false);
    }
@@ -291,29 +294,36 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public HasClickHandlers getErrorNotificationBtn()
+   public HasClickHandlers getNotificationBtn()
    {
-      return errorNotificationBtn;
+      return notificationBtn;
    }
 
    @Override
-   public void setErrorNotificationText(int count)
+   public void setNotificationText(int count, Severity severity)
    {
-      errorNotificationBtn.setText(String.valueOf(count));
-      errorNotificationBtn.getDownFace().setText(String.valueOf(count));
-      errorNotificationBtn.getDownDisabledFace().setText(String.valueOf(count));
-      errorNotificationBtn.getDownHoveringFace().setText(String.valueOf(count));
-      errorNotificationBtn.getUpDisabledFace().setText(String.valueOf(count));
-      errorNotificationBtn.getUpFace().setText(String.valueOf(count));
-      errorNotificationBtn.getUpHoveringFace().setText(String.valueOf(count));
+      notificationBtn.setText(String.valueOf(count));
+      notificationBtn.getDownFace().setText(String.valueOf(count));
+      notificationBtn.getDownDisabledFace().setText(String.valueOf(count));
+      notificationBtn.getDownHoveringFace().setText(String.valueOf(count));
+      notificationBtn.getUpDisabledFace().setText(String.valueOf(count));
+      notificationBtn.getUpFace().setText(String.valueOf(count));
+      notificationBtn.getUpHoveringFace().setText(String.valueOf(count));
 
-      if (count == 0)
+      if (severity == Severity.Error)
       {
-         errorNotificationBtn.removeStyleName(style.hasError());
+         notificationBtn.removeStyleName(style.hasWarning());
+         notificationBtn.addStyleName(style.hasError());
       }
+      else if(severity == Severity.Warning)
+      {
+         notificationBtn.addStyleName(style.hasWarning());
+         notificationBtn.removeStyleName(style.hasError());
+      } 
       else
       {
-         errorNotificationBtn.addStyleName(style.hasError());
+         notificationBtn.removeStyleName(style.hasError());
+         notificationBtn.removeStyleName(style.hasWarning());
       }
    }
 

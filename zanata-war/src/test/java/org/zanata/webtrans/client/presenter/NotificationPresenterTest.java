@@ -44,7 +44,7 @@ public class NotificationPresenterTest
    private Capture<ClickHandler> capturedClearClickHandler;
    private Capture<NotificationEventHandler> capturedNotificationEventHandler;
    
-   private final static int MSG_TO_KEEP = 5;
+   private final static int MSG_TO_KEEP = 6;
 
    @BeforeClass
    public void createMocks()

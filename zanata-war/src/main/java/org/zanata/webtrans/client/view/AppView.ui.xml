@@ -83,7 +83,7 @@
 			background:#5F5F5F;	
 		}
 		
-		.defaultErrorNotificationBtn
+		.notificationBtn
 		{
 			width:14px;
 			height:17px;
@@ -96,6 +96,11 @@
 		.hasError
 		{
 			color:#FF0000;
+		}
+		
+		.hasWarning
+		{
+			color:#919100;
 		}
 		
 		.topMenuBar table
@@ -145,14 +150,14 @@
 						<g:cell width="200px">
 	                    	 <fui:TransUnitCountBar ui:field="translationStatsBar" styleName="{style.translationStats}"/>
 	                    </g:cell>
-	                    <g:cell horizontalAlignment="ALIGN_CENTER" width="150px">
+	                    <g:cell horizontalAlignment="ALIGN_CENTER" width="130px">
 	                    	<g:Anchor ui:field="searchAndReplace" styleName="{style.searchAndReplace}"/>
 	                    </g:cell>
 	                    <g:cell horizontalAlignment="ALIGN_LEFT" width="200px">
 	                    	<g:MenuBar ui:field="topMenuBar" addStyleNames="{style.topMenuBar}"/>
 	                    </g:cell>
 	                    <g:cell horizontalAlignment="ALIGN_CENTER" width="18px">
-	                    	<g:PushButton ui:field="errorNotificationBtn" addStyleNames="{style.defaultErrorNotificationBtn}"/>
+	                    	<g:PushButton ui:field="notificationBtn" addStyleNames="{style.notificationBtn}"/>
 	                    </g:cell>
 					</g:HorizontalPanel>
 				</g:layer>

@@ -80,7 +80,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
       void setPopupTopRightCorner();
    }
 
-   private HasErrorNotificationLabel listener;
+   private HasNotificationLabel listener;
 
    private static final int MESSAGE_TO_KEEP = 6;
 
@@ -122,7 +122,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
             display.clearMessages();
             display.hide(true);
             hidePopupTimer.cancel();
-            listener.setErrorNotificationLabel(display.getMessageCount());
+            listener.setNotificationLabel(display.getMessageCount(), Severity.Info);
          }
       }));
 
@@ -133,15 +133,15 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
          {
             appendNotification(event.getSeverity(), event.getMessage(), DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT).format(new Date()));
             Log.info("Notification:" + event.getMessage());
-            listener.setErrorNotificationLabel(display.getMessageCount());
+            listener.setNotificationLabel(display.getMessageCount(), event.getSeverity());
          }
       }));
    }
 
-   public void setErrorLabelListener(HasErrorNotificationLabel listener)
+   public void setNotificationListener(HasNotificationLabel listener)
    {
       this.listener = listener;
-      listener.setErrorNotificationLabel(0);
+      listener.setNotificationLabel(0, Severity.Info);
    }
 
    private void showNotification()

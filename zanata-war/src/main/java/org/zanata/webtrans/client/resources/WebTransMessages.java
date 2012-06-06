@@ -275,7 +275,7 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Sign Out")
    String signOut();
 
-   @DefaultMessage("Search and replace")
+   @DefaultMessage("Search & replace")
    String searchAndReplace();
 
    @DefaultMessage("▼")
