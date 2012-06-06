@@ -325,4 +325,14 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Warning! This is a public channel")
    String thisIsAPublicChannel();
+
+   @DefaultMessage("Only show documents that contain the search text with matching case")
+   String docListFilterCaseSensitiveDescription();
+
+   @DefaultMessage("Only show documents with full path and name in the search text")
+   String docListFilterExactMatchDescription();
+
+   @DefaultMessage("Enter text to filter the document list. Use commas (,) to separate multiple searches")
+   String docListFilterDescription();
+
 }

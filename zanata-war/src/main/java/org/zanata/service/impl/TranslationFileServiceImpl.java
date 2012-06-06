@@ -100,13 +100,15 @@ public class TranslationFileServiceImpl implements TranslationFileService
       PoReader2 poReader = new PoReader2();
       // assume english as source locale
       Resource res = poReader.extractTemplate(new InputSource(fileContents), new LocaleId("en"), fileName);
+      // trim extra spaces
+      docPath = docPath.trim();
       // get rid of leading slashes ("/")
-      if( docPath.startsWith("/") )
+      while( docPath.startsWith("/") )
       {
          docPath = docPath.substring(1);
       }
-      // Add a trailing slash ("/") if there isn't one
-      if( !docPath.endsWith("/") )
+      // Add a trailing slash ("/") if there isn't one, and there is a need for one
+      if( docPath.length() > 0 && !docPath.endsWith("/") )
       {
          docPath = docPath.concat("/");
       }
