@@ -35,13 +35,12 @@ public interface DocumentService
     *
     * @param projectSlug The document's project id.
     * @param iterationSlug The document's project iteration id.
-    * @param docId The document id.
-    * @param sourceDoc The document contents.
+    * @param sourceDoc The document to save. (If the document's name matches a docId already stored, it will be overwritten)
     * @param extensions Document extensions to save.
     * @param copyTrans Whether to copy translations from other projects or not. A true value does not guarantee that
     *                  this will happen, it is only a suggestion.
     * @return The created / updated document
     */
-   public HDocument saveDocument( String projectSlug, String iterationSlug, String docId, Resource sourceDoc,
+   public HDocument saveDocument( String projectSlug, String iterationSlug, Resource sourceDoc,
                                   Set<String> extensions, boolean copyTrans );
 }

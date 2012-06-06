@@ -68,30 +68,13 @@ public class DocumentServiceImpl implements DocumentService
    private ApplicationConfiguration applicationConfiguration;
 
 
-   public DocumentServiceImpl()
-   {
-   }
-
-   public DocumentServiceImpl(ProjectIterationDAO projectIterationDAO,
-                              DocumentDAO documentDAO,
-                              LocaleService localeService,
-                              CopyTransService copyTransService,
-                              ResourceUtils resourceUtils,
-                              ApplicationConfiguration applicationConfiguration)
-   {
-      this.projectIterationDAO = projectIterationDAO;
-      this.documentDAO = documentDAO;
-      this.localeServiceImpl = localeService;
-      this.copyTransServiceImpl = copyTransService;
-      this.resourceUtils = resourceUtils;
-      this.applicationConfiguration = applicationConfiguration;
-   }
-
-   public HDocument saveDocument( String projectSlug, String iterationSlug, String docId, Resource sourceDoc,
+   public HDocument saveDocument( String projectSlug, String iterationSlug, Resource sourceDoc,
                                   Set<String> extensions, boolean copyTrans )
    {
       // Only active iterations allow the addition of a document
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+
+      String docId = sourceDoc.getName();
 
       HDocument document = documentDAO.getByDocIdAndIteration(hProjectIteration, docId);
       HLocale hLocale = this.localeServiceImpl.validateSourceLocale( sourceDoc.getLang() );
