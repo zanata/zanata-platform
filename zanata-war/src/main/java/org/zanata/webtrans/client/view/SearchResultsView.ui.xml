@@ -13,6 +13,7 @@
                 <g:VerticalPanel>
                     <g:CheckBox ui:field="caseSensitiveChk"><ui:msg>Case sensitive</ui:msg></g:CheckBox>
                     <g:ListBox ui:field="searchFieldsSelect" selectedIndex="0">
+                        <!-- TODO use values from SearchResultsPresenter.Display -->
                         <g:item value="target"><ui:msg>search target</ui:msg></g:item>
                         <g:item value="source"><ui:msg>search source</ui:msg></g:item>
                         <g:item value="both"><ui:msg>search both</ui:msg></g:item>
