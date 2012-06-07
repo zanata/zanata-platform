@@ -331,4 +331,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Enter text to filter the document list. Use commas (,) to separate multiple searches")
    String docListFilterDescription();
+
+   @DefaultMessage("Disable 'Replace' button until previews have been generated for all selected text flows")
+   String requirePreviewDescription();
 }

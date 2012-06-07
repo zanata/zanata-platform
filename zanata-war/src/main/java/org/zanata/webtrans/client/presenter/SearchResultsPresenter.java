@@ -112,13 +112,15 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
       void focusReplacementTextBox();
 
-      HasText getSelectionInfoLabel();
-
       HasValue<Boolean> getCaseSensitiveChk();
 
       HasValue<Boolean> getSelectAllChk();
 
       HasChangeHandlers getSearchFieldSelector();
+
+      static String SEARCH_FIELD_TARGET = "target";
+      static String SEARCH_FIELD_SOURCE = "source";
+      static String SEARCH_FIELD_BOTH = "both";
 
       String getSelectedSearchField();
 
@@ -133,8 +135,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       HasValue<Boolean> getRequirePreviewChk();
 
       void setRequirePreview(boolean required);
-
-      HasClickHandlers getSelectAllButton();
 
       void clearAll();
 
@@ -280,7 +280,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             if (!event.getValue().equals(token.getProjectSearchReplacement()))
             {
                token.setProjectSearchReplacement(event.getValue());
-               history.newItem(token.toTokenString());
+               history.newItem(token);
             }
          }
       }));
@@ -327,19 +327,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          public void onClick(ClickEvent event)
          {
             replaceSelected();
-         }
-      }));
-
-
-      // TODO check "select entire document" checkbox if all rows individually
-      // selected (and clear for none selected)
-      registerHandler(display.getSelectAllButton().addClickHandler(new ClickHandler()
-      {
-
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            selectAllTextFlows();
          }
       }));
 
@@ -508,7 +495,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       {
          token.setSearchText("");
       }
-      history.newItem(token.toTokenString());
+      history.newItem(token);
    }
 
    @Override
@@ -663,7 +650,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             }
             else
             {
-               display.getSelectionInfoLabel().setText(messages.numTextFlowsSelected(selectedFlows));
                refreshReplaceAllButton();
             }
          }
@@ -1206,7 +1192,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    private void setUiForNothingSelected()
    {
-      display.getSelectionInfoLabel().setText(messages.noTextFlowsSelected());
       display.setReplaceAllButtonEnabled(false);
    }
 
@@ -1319,7 +1304,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private void updateSearch()
    {
       boolean changed = false;
-      HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+      HistoryToken token = history.getHistoryToken();
 
       Boolean caseSensitive = display.getCaseSensitiveChk().getValue();
       if (caseSensitive != token.getProjectSearchCaseSensitive())
@@ -1336,8 +1321,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       }
 
       String selected = display.getSelectedSearchField();
-      boolean searchSource = selected.equals("source") || selected.equals("both");
-      boolean searchTarget = selected.equals("target") || selected.equals("both");
+      boolean searchSource = selected.equals(Display.SEARCH_FIELD_SOURCE) || selected.equals(Display.SEARCH_FIELD_BOTH);
+      boolean searchTarget = selected.equals(Display.SEARCH_FIELD_TARGET) || selected.equals(Display.SEARCH_FIELD_BOTH);
       if (searchSource != token.isProjectSearchInSource())
       {
          token.setProjectSearchInSource(searchSource);
@@ -1351,7 +1336,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
       if (changed)
       {
-         history.newItem(token.toTokenString());
+         history.newItem(token);
       }
    }
 

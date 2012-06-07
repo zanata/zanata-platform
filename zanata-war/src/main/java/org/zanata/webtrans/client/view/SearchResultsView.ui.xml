@@ -6,13 +6,14 @@
     xmlns:c="urn:import:com.google.gwt.user.cellview.client">
 
     <g:LayoutPanel>
-        <g:layer top='0px' height='64px' left="0px" right="0px">
+        <g:layer top='0px' height='64px' left="0px" width="50%">
             <g:HorizontalPanel verticalAlignment='ALIGN_MIDDLE' width="100%" height="100%" styleName='projectWideSearchPanel' >
                 <g:TextBox ui:field='filterTextBox' styleName='projectWideSearchBox' />
                 <g:Button ui:field='searchButton' styleName='projectWideSearchButton' ><ui:msg>Search</ui:msg></g:Button>
                 <g:VerticalPanel>
                     <g:CheckBox ui:field="caseSensitiveChk"><ui:msg>Case sensitive</ui:msg></g:CheckBox>
                     <g:ListBox ui:field="searchFieldsSelect" selectedIndex="0">
+                        <!-- TODO use values from SearchResultsPresenter.Display -->
                         <g:item value="target"><ui:msg>search target</ui:msg></g:item>
                         <g:item value="source"><ui:msg>search source</ui:msg></g:item>
                         <g:item value="both"><ui:msg>search both</ui:msg></g:item>
@@ -23,38 +24,38 @@
                 </g:cell>
             </g:HorizontalPanel>
         </g:layer>
+
+
+
+        <g:layer top='0px' height='64px' right="0px" width="50%">
+            <g:HorizontalPanel verticalAlignment='ALIGN_MIDDLE' width="100%" height="100%" styleName='projectWideSearchPanel' >
+                <g:cell horizontalAlignment="ALIGN_RIGHT" >
+                    <g:TextBox ui:field='replacementTextBox' styleName='projectWideReplacementBox' />
+                </g:cell>
+                <g:VerticalPanel horizontalAlignment="ALIGN_LEFT">
+                    <g:Button ui:field='replaceAllButton' styleName='projectWideReplacementButton' >
+                        <ui:msg>Replace</ui:msg>
+                    </g:Button>
+                    <g:CheckBox ui:field="requirePreviewChk"><ui:msg>Require preview</ui:msg></g:CheckBox>
+                </g:VerticalPanel>
+            </g:HorizontalPanel>
+        </g:layer>
+
+
         <g:layer top='64px' height='32px' left="0px" right="0px">
             <g:HorizontalPanel verticalAlignment='ALIGN_MIDDLE' width="100%" height="100%" styleName='projectWideSearchPanel' >
                 <g:CheckBox ui:field="selectAllChk" styleName='projectWideSearchSelectAllChk'><ui:msg>Select all</ui:msg></g:CheckBox>
                 <g:InlineLabel ui:field="searchResponseLabel" styleName='projectWideSearchReportLabel' ></g:InlineLabel>
             </g:HorizontalPanel>
         </g:layer>
-        <g:layer top='96px' bottom='120px'>
+        <g:layer top='96px' bottom='100px'>
             <g:ScrollPanel styleName='projectWideSearchResultsPanel' >
                 <g:VerticalPanel ui:field='searchResultsPanel' width="100%" />
             </g:ScrollPanel>
         </g:layer>
-        <g:layer bottom='0px' height='120px' left="0px" right="0px">
-            <g:HorizontalPanel verticalAlignment='ALIGN_MIDDLE' width="100%" height="100%" styleName='projectWideReplacementPanel' >
-                <g:InlineLabel styleName='projectWideReplacementBoxLabel' ><ui:msg>Replace with:</ui:msg></g:InlineLabel>
-                <g:TextBox ui:field='replacementTextBox' styleName='projectWideReplacementBox' />
-                <g:cell width="100%">
-                    <g:VerticalPanel ui:field="replaceLogPanel" />
-                </g:cell>
-                <g:cell horizontalAlignment="ALIGN_RIGHT">
-                    <g:VerticalPanel horizontalAlignment="ALIGN_RIGHT">
-                        <g:FlowPanel>
-                            <g:InlineLabel ui:field="selectionInfoLabel" styleName='projectWideSearchSelectionInfo'></g:InlineLabel>
-                            <g:InlineLabel ui:field='selectAllLink' addStyleNames='linkLabel linkLabelLightColor' ><ui:msg>select all</ui:msg></g:InlineLabel>
-                        </g:FlowPanel>
-                        <g:HorizontalPanel>
-                            <g:Button ui:field='replaceAllButton' styleName='projectWideReplacementButton' >
-                                <ui:msg>Replace</ui:msg>
-                            </g:Button>
-                        </g:HorizontalPanel>
-                        <g:CheckBox ui:field="requirePreviewChk"><ui:msg>Require preview</ui:msg></g:CheckBox>
-                    </g:VerticalPanel>
-                </g:cell>
+        <g:layer bottom='0px' height='100px' left="0px" right="0px">
+            <g:HorizontalPanel width="100%" height="100%" styleName='projectWideSearchLogPanel' horizontalAlignment="ALIGN_CENTER" verticalAlignment='ALIGN_MIDDLE' >
+                <g:VerticalPanel ui:field="replaceLogPanel" />
             </g:HorizontalPanel>
         </g:layer>
     </g:LayoutPanel>
