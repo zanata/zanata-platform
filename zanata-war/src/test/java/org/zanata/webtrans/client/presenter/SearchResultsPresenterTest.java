@@ -30,8 +30,11 @@ import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
@@ -44,6 +47,7 @@ import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
+import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
 import org.zanata.webtrans.client.history.Window.Location;
 import org.zanata.webtrans.client.keys.KeyShortcut;
@@ -52,6 +56,7 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -78,6 +83,8 @@ public class SearchResultsPresenterTest
    private static final String TEST_MESSAGE_REPLACE_SELECTED_KEY_SHORTCUT = "Replace selected text flows";
    private static final String TEST_MESSAGE_TOGGLE_ROW_ACTION_BUTTONS = "Toggle row action buttons";
 
+   private static final String TEST_SEARCH_PHRASE = "search phrase";
+
 
    //object under test
    SearchResultsPresenter searchResultsPresenter;
@@ -95,6 +102,8 @@ public class SearchResultsPresenterTest
    Location mockWindowLocation;
    WorkspaceContext mockWorkspaceContext;
 
+   HasValue<Boolean> mockCaseSensitiveChk;
+   HasValue<String> mockFilterTextBox;
    HasClickHandlers mockReplaceAllButton;
    HasValue<String> mockReplacementTextBox;
    HasValue<Boolean> mockRequirePreviewChk;
@@ -103,6 +112,8 @@ public class SearchResultsPresenterTest
    HasValue<Boolean> mockSelectAllChk;
    HasText mockSelectionInfoLabel;
 
+
+   List<Capture<?>> allCaptures;
 
    Capture<ValueChangeHandler<String>> capturedHistoryValueChangeHandler;
    Capture<ClickHandler> capturedReplaceAllButtonClickHandler;
@@ -114,7 +125,8 @@ public class SearchResultsPresenterTest
 
    Capture<TransUnitUpdatedEventHandler> capturedTransUnitUpdatedEventHandler;
    Capture<WorkspaceContextUpdateEventHandler> capturedWorkspaceContextUpdatedEventHandler;
-   private Capture<KeyShortcut> capturedKeyShortcuts;
+   Capture<KeyShortcut> capturedKeyShortcuts;
+   Capture<HistoryToken> capturedHistoryToken;
 
 
 
@@ -139,6 +151,8 @@ public class SearchResultsPresenterTest
       mockWindowLocation = createAndAddMock(Window.Location.class);
       mockWorkspaceContext = createAndAddMock(WorkspaceContext.class);
 
+      mockCaseSensitiveChk = createAndAddMock(HasValue.class);
+      mockFilterTextBox = createAndAddMock(HasValue.class);
       mockReplaceAllButton = createAndAddMock(HasClickHandlers.class);
       mockReplacementTextBox = createAndAddMock(HasValue.class);
       mockRequirePreviewChk = createAndAddMock(HasValue.class);
@@ -152,18 +166,31 @@ public class SearchResultsPresenterTest
 
    private void createAllCaptures()
    {
-      capturedHistoryValueChangeHandler = new Capture<ValueChangeHandler<String>>();
-      capturedReplaceAllButtonClickHandler = new Capture<ClickHandler>();
-      capturedReplacementTextBoxValueChangeHandler = new Capture<ValueChangeHandler<String>>();
-      capturedRequirePreviewChkValueChangeHandler = new Capture<ValueChangeHandler<Boolean>>();
-      capturedSearchButtonClickHandler = new Capture<ClickHandler>();
-      capturedSelectAllButtonClickHandler = new Capture<ClickHandler>();
-      capturedSelectAllChkValueChangeHandler = new Capture<ValueChangeHandler<Boolean>>();
+      allCaptures = new ArrayList<Capture<?>>();
 
-      capturedTransUnitUpdatedEventHandler = new Capture<TransUnitUpdatedEventHandler>();
-      capturedWorkspaceContextUpdatedEventHandler = new Capture<WorkspaceContextUpdateEventHandler>();
+      capturedHistoryValueChangeHandler = addCapture(new Capture<ValueChangeHandler<String>>());
+      capturedReplaceAllButtonClickHandler = addCapture(new Capture<ClickHandler>());
+      capturedReplacementTextBoxValueChangeHandler = addCapture(new Capture<ValueChangeHandler<String>>());
+      capturedRequirePreviewChkValueChangeHandler = addCapture(new Capture<ValueChangeHandler<Boolean>>());
+      capturedSearchButtonClickHandler = addCapture(new Capture<ClickHandler>());
+      capturedSelectAllButtonClickHandler = addCapture(new Capture<ClickHandler>());
+      capturedSelectAllChkValueChangeHandler = addCapture(new Capture<ValueChangeHandler<Boolean>>());
 
-      capturedKeyShortcuts = new Capture<KeyShortcut>();
+      capturedTransUnitUpdatedEventHandler = addCapture(new Capture<TransUnitUpdatedEventHandler>());
+      capturedWorkspaceContextUpdatedEventHandler = addCapture(new Capture<WorkspaceContextUpdateEventHandler>());
+
+      capturedKeyShortcuts = addCapture(new Capture<KeyShortcut>());
+      capturedHistoryToken = addCapture(new Capture<HistoryToken>());
+   }
+
+   /**
+    * Convenience method to add a capture to allCaptures
+    * @return the given capture for assignment
+    */
+   private <T> Capture<T> addCapture(Capture<T> capture)
+   {
+      allCaptures.add(capture);
+      return capture;
    }
 
    private <T> T createAndAddMock(Class<T> clazz)
@@ -193,6 +220,53 @@ public class SearchResultsPresenterTest
       searchResultsPresenter.bind();
       verifyAllMocks();
    }
+
+   public void searchButtonClickUpdatesHistory()
+   {
+      boolean caseSensitiveFalseValue = false;
+
+      HistoryToken historyToken = searchPageHistoryToken();
+      expect(mockHistory.getHistoryToken()).andReturn(historyToken).once();
+      expect(mockCaseSensitiveChk.getValue()).andReturn(caseSensitiveFalseValue).once();
+      expect(mockFilterTextBox.getValue()).andReturn(TEST_SEARCH_PHRASE).once();
+      expect(mockDisplay.getSelectedSearchField()).andReturn(SearchResultsPresenter.Display.SEARCH_FIELD_TARGET).once();
+
+      mockHistory.newItem(capture(capturedHistoryToken));
+      expectLastCall().once();
+      replayAllMocks();
+
+      searchResultsPresenter.bind();
+      // not sure if this is set to visible yet, need to look at that
+
+      ClickEvent event = new ClickEvent()
+      {
+      };
+      capturedSearchButtonClickHandler.getValue().onClick(event);
+
+      verifyAllMocks();
+
+      HistoryToken newToken = capturedHistoryToken.getValue();
+      assertThat("new history token should be updated with current search phrase in search text box",
+            newToken.getProjectSearchText(), is(TEST_SEARCH_PHRASE));
+      assertThat("new history token project search case sensitivity should match checkbox value",
+            newToken.getProjectSearchCaseSensitive(), is(caseSensitiveFalseValue));
+      assertThat("new history token should reflect search in target when selected search field is target",
+            newToken.isProjectSearchInTarget(), is(true));
+      assertThat("new history token should reflect not to search in source when selected search field is target",
+            newToken.isProjectSearchInSource(), is(false));
+   }
+
+   /**
+    * @return
+    */
+   private HistoryToken searchPageHistoryToken()
+   {
+      HistoryToken historyToken = new HistoryToken();
+      historyToken.setView(MainView.Search);
+      return historyToken;
+   }
+
+
 
    private void setupDefaultMockExpectations()
    {
@@ -230,6 +304,7 @@ public class SearchResultsPresenterTest
 
    private void expectDisplayComponentGetters()
    {
+      // getters used during bind
       expect(mockDisplay.getSelectionInfoLabel()).andReturn(mockSelectionInfoLabel).anyTimes();
       expect(mockDisplay.getSearchButton()).andReturn(mockSearchButton).anyTimes();
       expect(mockDisplay.getReplacementTextBox()).andReturn(mockReplacementTextBox).anyTimes();
@@ -237,6 +312,10 @@ public class SearchResultsPresenterTest
       expect(mockDisplay.getRequirePreviewChk()).andReturn(mockRequirePreviewChk).anyTimes();
       expect(mockDisplay.getReplaceAllButton()).andReturn(mockReplaceAllButton).anyTimes();
       expect(mockDisplay.getSelectAllButton()).andReturn(mockSelectAllButton).anyTimes();
+
+      // getters used after bind
+      expect(mockDisplay.getCaseSensitiveChk()).andReturn(mockCaseSensitiveChk).anyTimes();
+      expect(mockDisplay.getFilterTextBox()).andReturn(mockFilterTextBox).anyTimes();
    }
 
    private void expectHandlerRegistrations()
@@ -280,18 +359,10 @@ public class SearchResultsPresenterTest
 
    private void resetAllCaptures()
    {
-      capturedHistoryValueChangeHandler.reset();
-      capturedReplaceAllButtonClickHandler.reset();
-      capturedReplacementTextBoxValueChangeHandler.reset();
-      capturedRequirePreviewChkValueChangeHandler.reset();
-      capturedSearchButtonClickHandler.reset();
-      capturedSelectAllButtonClickHandler.reset();
-      capturedSelectAllChkValueChangeHandler.reset();
-
-      capturedTransUnitUpdatedEventHandler.reset();
-      capturedWorkspaceContextUpdatedEventHandler.reset();
-
-      capturedKeyShortcuts.reset();
+      for (Capture<?> capture : allCaptures)
+      {
+         capture.reset();
+      }
    }
 
    private void resetAllMocks()
