@@ -224,24 +224,10 @@ public class SearchResultsPresenterTest
    public void searchButtonClickUpdatesHistory()
    {
       boolean caseSensitiveFalseValue = false;
-
-      HistoryToken historyToken = searchPageHistoryToken();
-      expect(mockHistory.getHistoryToken()).andReturn(historyToken).once();
-      expect(mockCaseSensitiveChk.getValue()).andReturn(caseSensitiveFalseValue).once();
-      expect(mockFilterTextBox.getValue()).andReturn(TEST_SEARCH_PHRASE).once();
-      expect(mockDisplay.getSelectedSearchField()).andReturn(SearchResultsPresenter.Display.SEARCH_FIELD_TARGET).once();
-
-      mockHistory.newItem(capture(capturedHistoryToken));
-      expectLastCall().once();
+      expectRunSearch(searchPageHistoryToken(), caseSensitiveFalseValue, TEST_SEARCH_PHRASE, SearchResultsPresenter.Display.SEARCH_FIELD_TARGET);
       replayAllMocks();
-
       searchResultsPresenter.bind();
-      // not sure if this is set to visible yet, need to look at that
-
-      ClickEvent event = new ClickEvent()
-      {
-      };
-      capturedSearchButtonClickHandler.getValue().onClick(event);
+      simulateClick(capturedSearchButtonClickHandler);
 
       verifyAllMocks();
 
@@ -256,8 +242,52 @@ public class SearchResultsPresenterTest
             newToken.isProjectSearchInSource(), is(false));
    }
 
+   public void searchWithCaseSensitive()
+   {
+      boolean caseSensitiveTrueValue = true;
+      expectRunSearch(searchPageHistoryToken(), caseSensitiveTrueValue, TEST_SEARCH_PHRASE, SearchResultsPresenter.Display.SEARCH_FIELD_TARGET);
+      replayAllMocks();
+      searchResultsPresenter.bind();
+      simulateClick(capturedSearchButtonClickHandler);
+      verifyAllMocks();
+
+      HistoryToken newToken = capturedHistoryToken.getValue();
+      assertThat("new history token project search case sensitivity should match checkbox value",
+            newToken.getProjectSearchCaseSensitive(), is(caseSensitiveTrueValue));
+   }
+
+   public void searchInSource()
+   {
+      expectRunSearch(searchPageHistoryToken(), false, TEST_SEARCH_PHRASE, SearchResultsPresenter.Display.SEARCH_FIELD_SOURCE);
+      replayAllMocks();
+      searchResultsPresenter.bind();
+      simulateClick(capturedSearchButtonClickHandler);
+      verifyAllMocks();
+
+      HistoryToken newToken = capturedHistoryToken.getValue();
+      assertThat("new history token should reflect search in source when selected search field is source",
+            newToken.isProjectSearchInSource(), is(true));
+      assertThat("new history token should reflect not to search in target when selected search field is source",
+            newToken.isProjectSearchInTarget(), is(false));
+   }
+
+   public void searchInSourceAndTarget()
+   {
+      expectRunSearch(searchPageHistoryToken(), false, TEST_SEARCH_PHRASE, SearchResultsPresenter.Display.SEARCH_FIELD_BOTH);
+      replayAllMocks();
+      searchResultsPresenter.bind();
+      simulateClick(capturedSearchButtonClickHandler);
+      verifyAllMocks();
+
+      HistoryToken newToken = capturedHistoryToken.getValue();
+      assertThat("new history token should reflect search in source when selected search field is both",
+            newToken.isProjectSearchInSource(), is(true));
+      assertThat("new history token should reflect search in target when selected search field is both",
+            newToken.isProjectSearchInTarget(), is(true));
+   }
+
    /**
-    * @return
+    * @return a history token with defaults except current page is search page
     */
    private HistoryToken searchPageHistoryToken()
    {
@@ -266,7 +296,13 @@ public class SearchResultsPresenterTest
       return historyToken;
    }
 
-
+   private void simulateClick(Capture<ClickHandler> clickable)
+   {
+      ClickEvent event = new ClickEvent()
+      {
+      };
+      clickable.getValue().onClick(event);
+   }
 
    private void setupDefaultMockExpectations()
    {
@@ -355,6 +391,17 @@ public class SearchResultsPresenterTest
    private <H extends EventHandler> void expectEventHandlerRegistration(Type<H> expectedType, Class<H> expectedClass, Capture<H> handlerCapture)
    {
       expect(mockEventBus.addHandler(eq(expectedType), and(capture(handlerCapture), isA(expectedClass)))).andReturn(createMock(HandlerRegistration.class)).once();
+   }
+
+   private void expectRunSearch(HistoryToken previousHistoryToken, boolean caseSensitive, String searchPhrase, String searchInFields)
+   {
+      expect(mockHistory.getHistoryToken()).andReturn(previousHistoryToken).once();
+      expect(mockCaseSensitiveChk.getValue()).andReturn(caseSensitive).once();
+      expect(mockFilterTextBox.getValue()).andReturn(searchPhrase).once();
+      expect(mockDisplay.getSelectedSearchField()).andReturn(searchInFields).once();
+
+      mockHistory.newItem(capture(capturedHistoryToken));
+      expectLastCall().once();
    }
 
    private void resetAllCaptures()
