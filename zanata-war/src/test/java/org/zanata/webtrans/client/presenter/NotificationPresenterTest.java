@@ -125,11 +125,7 @@ public class NotificationPresenterTest
       for (int count = 0;count<testMessages.length;count++)
       {
          expect(mockDisplay.getMessageCount()).andReturn(count);
-      }
-      
-      
-      for (int count = 0;count<testMessages.length;count++)
-      {
+
          mockListener.setNotificationLabel(count, Severity.Error);
          expectLastCall().once();
       }
@@ -161,20 +157,8 @@ public class NotificationPresenterTest
       
       for (int count = 0;count<=MSG_TO_KEEP;count++)
       {
-//         expect(mockDisplay.getMessageCount()).andReturn(count);
-      }
+         expect(mockDisplay.getMessageCount()).andReturn(count);
 
-      expect(mockDisplay.getMessageCount()).andReturn(0);
-      expect(mockDisplay.getMessageCount()).andReturn(1);
-      expect(mockDisplay.getMessageCount()).andReturn(2);
-      expect(mockDisplay.getMessageCount()).andReturn(3);
-      expect(mockDisplay.getMessageCount()).andReturn(4);
-      expect(mockDisplay.getMessageCount()).andReturn(5);
-      expect(mockDisplay.getMessageCount()).andReturn(6);
-      expect(mockDisplay.getMessageCount()).andReturn(7);
-      
-      for(int count = 0;count <= MSG_TO_KEEP;count++)
-      {
          mockListener.setNotificationLabel(count, Severity.Error);
          expectLastCall().once();
       }
@@ -182,8 +166,6 @@ public class NotificationPresenterTest
       mockDisplay.show();
       expectLastCall().times(testMessages.length);
 
-      expect(mockDisplay.getMessageCount()).andReturn(MSG_TO_KEEP);
-      
       mockListener.setNotificationLabel(0, Severity.Info);
       expectLastCall().once();
       

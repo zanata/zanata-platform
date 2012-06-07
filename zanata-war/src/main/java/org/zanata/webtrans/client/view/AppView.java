@@ -170,7 +170,7 @@ public class AppView extends Composite implements AppPresenter.Display
       this.searchResultsView = searchResultsView.asWidget();
       this.container.add(this.searchResultsView);
 
-      notificationBtn.setTitle(messages.errorNotification());
+      notificationBtn.setTitle(messages.notification());
 
       Window.enableScrolling(false);
    }

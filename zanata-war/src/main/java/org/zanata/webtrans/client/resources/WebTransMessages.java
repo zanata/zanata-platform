@@ -281,8 +281,8 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("▼")
    String downArrow();
 
-   @DefaultMessage("Error notification")
-   String errorNotification();
+   @DefaultMessage("Notification")
+   String notification();
 
    @DefaultMessage("Available Keyboard Shortcuts")
    String availableKeyShortcutsTitle();

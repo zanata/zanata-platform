@@ -95,12 +95,12 @@
 		
 		.hasError
 		{
-			color:#FF0000;
+			background:#FF6E6E;
 		}
 		
 		.hasWarning
 		{
-			color:#919100;
+			background:#FFFF00;
 		}
 		
 		.topMenuBar table
@@ -150,7 +150,7 @@
 						<g:cell width="200px">
 	                    	 <fui:TransUnitCountBar ui:field="translationStatsBar" styleName="{style.translationStats}"/>
 	                    </g:cell>
-	                    <g:cell horizontalAlignment="ALIGN_CENTER" width="130px">
+	                    <g:cell horizontalAlignment="ALIGN_CENTER" width="120px">
 	                    	<g:Anchor ui:field="searchAndReplace" styleName="{style.searchAndReplace}"/>
 	                    </g:cell>
 	                    <g:cell horizontalAlignment="ALIGN_LEFT" width="200px">

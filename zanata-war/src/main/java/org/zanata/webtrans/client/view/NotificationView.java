@@ -136,7 +136,7 @@ public class NotificationView extends PopupPanel implements NotificationPresente
    {
       // return width of the notification panel, see
       // Style@Notification.ui.xml.mainPanel
-      return 400;
+      return 320;
    }
 
    @Override
@@ -159,7 +159,7 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       }
       severityImg.addStyleName(style.image());
 
-      Label timeLabel = new Label("[" + DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT).format(new Date()) + "]");
+      Label timeLabel = new Label("[" + DateTimeFormat.getFormat(PredefinedFormat.TIME_SHORT).format(new Date()) + "]");
       Label msgLabel = new Label(msg);
       
       timeLabel.setStyleName(style.timeLabel());
@@ -168,7 +168,7 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       panel.add(timeLabel);
       panel.add(msgLabel);
       panel.setCellWidth(severityImg, "20px");
-      panel.setCellWidth(timeLabel, "95px");
+      panel.setCellWidth(timeLabel, "40px");
 
       panel.setCellVerticalAlignment(severityImg, HasVerticalAlignment.ALIGN_MIDDLE);
       panel.setCellVerticalAlignment(timeLabel, HasVerticalAlignment.ALIGN_MIDDLE);
