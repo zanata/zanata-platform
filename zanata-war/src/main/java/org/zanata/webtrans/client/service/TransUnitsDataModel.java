@@ -107,4 +107,20 @@ public class TransUnitsDataModel extends ListDataProvider<TransUnit>
       TransUnit toBeSelected = getList().get(gotoRow);
       selectionModel.setSelected(toBeSelected, true);
    }
+
+   public boolean update(TransUnit updatedTU)
+   {
+      for (int i = 0; i < getList().size(); i++)
+      {
+         TransUnit unit = getList().get(i);
+         if (unit.getId().equals(updatedTU.getId()))
+         {
+            Log.info("update TU at row " + i);
+            getList().set(i, updatedTU);
+            return true;
+         }
+      }
+      Log.warn("can not find TU to update. updated TU id:" + updatedTU.getId());
+      return false;
+   }
 }

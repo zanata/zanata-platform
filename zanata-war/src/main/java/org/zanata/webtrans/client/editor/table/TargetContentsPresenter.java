@@ -46,6 +46,7 @@ import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
+import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.keys.KeyShortcut;
@@ -346,7 +347,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          currentDisplay.setToView();
          currentDisplay.showButtons(false);
       }
-      concealDisplay();
    }
 
    private void fireTransUnitEditAction()
@@ -379,11 +379,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
       fireTransUnitEditAction();
       
-      if (editorIndex != NO_OPEN_EDITOR)
-      {
-         currentEditorIndex = editorIndex;
-      }
-      else if (currentEditorIndex == LAST_INDEX)
+      if (currentEditorIndex == LAST_INDEX)
       {
          currentEditorIndex = currentEditors.size() - 1;
       }
@@ -392,6 +388,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          currentEditorIndex = 0;
       }
 
+      //TODO remove this if
       if (currentEditorIndex != NO_OPEN_EDITOR && currentEditorIndex < currentEditors.size())
       {
          validationMessagePanel.clear();
@@ -495,17 +492,18 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          currentEditorIndex = 0;
          if (forceSave)
          {
-            cellEditor.acceptEdit();
-            cellEditor.setRowValueOverride(cellEditor.getCurrentRow(), cellEditor.getTargetCell());
+            eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.Approved));
+//            cellEditor.acceptEdit();
+//            cellEditor.setRowValueOverride(cellEditor.getCurrentRow(), cellEditor.getTargetCell());
          }
-         scheduler.scheduleDeferred(new Scheduler.ScheduledCommand()
-         {
-            @Override
-            public void execute()
-            {
-               cellEditor.saveAndMoveRow(NavTransUnitEvent.NavigationType.NextEntry);
-            }
-         });
+//         scheduler.scheduleDeferred(new Scheduler.ScheduledCommand()
+//         {
+//            @Override
+//            public void execute()
+//            {
+//               cellEditor.saveAndMoveRow(NavTransUnitEvent.NavigationType.NextEntry);
+//            }
+//         });
       }
    }
 

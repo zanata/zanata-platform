@@ -45,8 +45,6 @@ import org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
-import org.zanata.webtrans.client.events.OpenEditorEvent;
-import org.zanata.webtrans.client.events.OpenEditorEventHandler;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
@@ -477,15 +475,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                }
 
             }
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(OpenEditorEvent.getType(), new OpenEditorEventHandler()
-      {
-         @Override
-         public void onOpenEditor(OpenEditorEvent event)
-         {
-            tableModelHandler.gotoRowInCurrentPage(event.getRowNum(), true);
          }
       }));
 

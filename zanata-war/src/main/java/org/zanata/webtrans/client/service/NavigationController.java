@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -36,6 +38,7 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -43,7 +46,7 @@ import com.google.inject.Singleton;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class NavigationController implements HasPageNavigation
+public class NavigationController implements HasPageNavigation, TransUnitUpdatedEventHandler
 {
    public static final int FIRST_PAGE = 0;
    private final CachingDispatchAsync dispatcher;
@@ -232,5 +235,15 @@ public class NavigationController implements HasPageNavigation
          dataModel.selectById(targetTransUnitId);
       }
       loadPageAndGoToRow(targetPage, targetTransUnitId);
+   }
+
+   @Override
+   public void onTransUnitUpdated(TransUnitUpdatedEvent event)
+   {
+      if (Objects.equal(event.getUpdateInfo().getDocumentId(), context.getDocumentId()))
+      {
+         TransUnit updatedTU = event.getUpdateInfo().getTransUnit();
+         navigationService.updateState(updatedTU.getId().getId(), updatedTU.getStatus());
+      }
    }
 }

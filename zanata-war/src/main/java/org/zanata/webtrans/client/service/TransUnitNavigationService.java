@@ -26,9 +26,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.inject.Singleton;
 
