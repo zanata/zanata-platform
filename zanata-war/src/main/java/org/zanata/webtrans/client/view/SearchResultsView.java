@@ -76,7 +76,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    TextBox filterTextBox, replacementTextBox;
 
    @UiField
-   InlineLabel searchResponseLabel, selectAllLink, selectionInfoLabel;
+   InlineLabel searchResponseLabel;
 
    @UiField
    CheckBox caseSensitiveChk, selectAllChk, requirePreviewChk;
@@ -164,12 +164,6 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
-   public HasText getSelectionInfoLabel()
-   {
-      return selectionInfoLabel;
-   }
-
-   @Override
    public HasValue<Boolean> getCaseSensitiveChk()
    {
       return caseSensitiveChk;
@@ -220,12 +214,6 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    {
       requirePreviewChk.setValue(required, false);
       SearchResultsDocumentTable.setRequirePreview(required);
-   }
-
-   @Override
-   public HasClickHandlers getSelectAllButton()
-   {
-      return selectAllLink;
    }
 
    @Override

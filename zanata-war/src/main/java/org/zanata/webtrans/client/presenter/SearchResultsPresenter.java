@@ -112,8 +112,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
       void focusReplacementTextBox();
 
-      HasText getSelectionInfoLabel();
-
       HasValue<Boolean> getCaseSensitiveChk();
 
       HasValue<Boolean> getSelectAllChk();
@@ -137,8 +135,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       HasValue<Boolean> getRequirePreviewChk();
 
       void setRequirePreview(boolean required);
-
-      HasClickHandlers getSelectAllButton();
 
       void clearAll();
 
@@ -331,19 +327,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          public void onClick(ClickEvent event)
          {
             replaceSelected();
-         }
-      }));
-
-
-      // TODO check "select entire document" checkbox if all rows individually
-      // selected (and clear for none selected)
-      registerHandler(display.getSelectAllButton().addClickHandler(new ClickHandler()
-      {
-
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            selectAllTextFlows();
          }
       }));
 
@@ -667,7 +650,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             }
             else
             {
-               display.getSelectionInfoLabel().setText(messages.numTextFlowsSelected(selectedFlows));
                refreshReplaceAllButton();
             }
          }
@@ -1210,7 +1192,6 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    private void setUiForNothingSelected()
    {
-      display.getSelectionInfoLabel().setText(messages.noTextFlowsSelected());
       display.setReplaceAllButtonEnabled(false);
    }
 

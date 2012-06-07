@@ -63,7 +63,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.GwtEvent.Type;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 
 /**
@@ -76,7 +75,6 @@ public class SearchResultsPresenterTest
 
    private static final int TOTAL_KEY_SHORTCUTS = 5;
 
-   private static final String TEST_MESSAGE_NO_TEXT_FLOWS_SELECTED = "No text flows selected";
    private static final String TEST_MESSAGE_SELECT_ALL_TEXT_FLOWS_KEY_SHORTCUT = "Select all text flows";
    private static final String TEST_MESSAGE_FOCUS_SEARCH_PHRASE_KEY_SHORTCUT = "Focus search phrase";
    private static final String TEST_MESSAGE_FOCUS_REPLACEMENT_PHRASE_KEY_SHORTCUT = "Focus replacement phrase";
@@ -108,9 +106,7 @@ public class SearchResultsPresenterTest
    HasValue<String> mockReplacementTextBox;
    HasValue<Boolean> mockRequirePreviewChk;
    HasClickHandlers mockSearchButton;
-   HasClickHandlers mockSelectAllButton;
    HasValue<Boolean> mockSelectAllChk;
-   HasText mockSelectionInfoLabel;
 
 
    List<Capture<?>> allCaptures;
@@ -157,9 +153,7 @@ public class SearchResultsPresenterTest
       mockReplacementTextBox = createAndAddMock(HasValue.class);
       mockRequirePreviewChk = createAndAddMock(HasValue.class);
       mockSearchButton = createAndAddMock(HasClickHandlers.class);
-      mockSelectAllButton = createAndAddMock(HasClickHandlers.class);
       mockSelectAllChk = createAndAddMock(HasValue.class);
-      mockSelectionInfoLabel = createAndAddMock(HasText.class);
 
       allMocks = createdMocks.toArray();
    }
@@ -314,9 +308,6 @@ public class SearchResultsPresenterTest
 
       expectDisplayComponentGetters();
 
-      mockSelectionInfoLabel.setText(TEST_MESSAGE_NO_TEXT_FLOWS_SELECTED);
-      expectLastCall().once();
-
       mockDisplay.setReplaceAllButtonEnabled(false);
       expectLastCall().once();
 
@@ -330,7 +321,6 @@ public class SearchResultsPresenterTest
 
    private void expectUiMessages()
    {
-      expect(mockMessages.noTextFlowsSelected()).andReturn(TEST_MESSAGE_NO_TEXT_FLOWS_SELECTED).anyTimes();
       expect(mockMessages.selectAllTextFlowsKeyShortcut()).andReturn(TEST_MESSAGE_SELECT_ALL_TEXT_FLOWS_KEY_SHORTCUT).anyTimes();
       expect(mockMessages.focusSearchPhraseKeyShortcut()).andReturn(TEST_MESSAGE_FOCUS_SEARCH_PHRASE_KEY_SHORTCUT).anyTimes();
       expect(mockMessages.focusReplacementPhraseKeyShortcut()).andReturn(TEST_MESSAGE_FOCUS_REPLACEMENT_PHRASE_KEY_SHORTCUT).anyTimes();
@@ -341,13 +331,11 @@ public class SearchResultsPresenterTest
    private void expectDisplayComponentGetters()
    {
       // getters used during bind
-      expect(mockDisplay.getSelectionInfoLabel()).andReturn(mockSelectionInfoLabel).anyTimes();
       expect(mockDisplay.getSearchButton()).andReturn(mockSearchButton).anyTimes();
       expect(mockDisplay.getReplacementTextBox()).andReturn(mockReplacementTextBox).anyTimes();
       expect(mockDisplay.getSelectAllChk()).andReturn(mockSelectAllChk).anyTimes();
       expect(mockDisplay.getRequirePreviewChk()).andReturn(mockRequirePreviewChk).anyTimes();
       expect(mockDisplay.getReplaceAllButton()).andReturn(mockReplaceAllButton).anyTimes();
-      expect(mockDisplay.getSelectAllButton()).andReturn(mockSelectAllButton).anyTimes();
 
       // getters used after bind
       expect(mockDisplay.getCaseSensitiveChk()).andReturn(mockCaseSensitiveChk).anyTimes();
@@ -361,7 +349,6 @@ public class SearchResultsPresenterTest
       expectValueChangeHandlerRegistration(mockSelectAllChk, capturedSelectAllChkValueChangeHandler);
       expectValueChangeHandlerRegistration(mockRequirePreviewChk, capturedRequirePreviewChkValueChangeHandler);
       expectClickHandlerRegistration(mockReplaceAllButton, capturedReplaceAllButtonClickHandler);
-      expectClickHandlerRegistration(mockSelectAllButton, capturedSelectAllButtonClickHandler);
 
       expect(mockHistory.addValueChangeHandler(capture(capturedHistoryValueChangeHandler))).andReturn(createMock(HandlerRegistration.class)).once();
 
