@@ -108,6 +108,7 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       noResultsLabel.addStyleName("projectWideSearchNoResultsLabel");
       searchResultsPanel.add(noResultsLabel);
       requirePreviewChk.setValue(true, false);
+      requirePreviewChk.setTitle(messages.requirePreviewDescription());
    }
 
    @Override
