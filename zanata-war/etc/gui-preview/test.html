@@ -1,1043 +1,1161 @@
 <html xmlns="http://www.w3.org/1999/html">
 <head>
 <STYLE type="text/css">
-	body
-	{
-		background:white;
-		margin:0;	
-	}	
+body {
+	background: white;
+	margin: 0;
+}
 
-	.container 
-	{
-		width:100%;
-		height:34px;
-		margin:0;
-		
-		background:-webkit-linear-gradient(top, #354F71 0%,#1A2D45 100%);
-		background:-moz-linear-gradient(top, #354F71 0%,#1A2D45 100%);
-		background:-o-linear-gradient(top, #354F71 0%,#1A2D45 100%);
-		background:-ms-linear-gradient(top, #354F71 0%,#1A2D45 100%);
-	}
-
-	.logo
-	{
-		width:145px;
-	}
-
-	.logoCol
-	{
-	}
-
-	.navbar ul li.logoCol a
-	{
-		margin-left:0px;
-	}
-
-	.navbar ul li.logoCol a:hover
-	{
-		background:none;
-	}
-
-	.navbar ul li.logoCol
-	{
-		width:750px;
-	}
-
-
-	.logoCol div
-	{
-		padding-top:5px;
-	}
-
-	.navbar ul li.translationCol
-	{
-		box-shadow:none;
-	}
-	.userCol
-	{
-		width:auto;
-	}
-
-	.navbar ul li.userCol a
-	{
-		margin-left:5px;
-		margin-right:5px;
-	}
-
-	.userCol img
-	{
-		padding:0;
-		border:1px solid white;
-	}
-
-	.navbar ul li.menuCol a
-	{
-		text-align:center;
-		width:30px;
-		font-size:18px;
-	}
-
-	.navBar ul li.menuCol:hover
-	{
-		background:#7E91A9;
-	}
-
-	.navBar
-	{
-		width:1024px;
-		height:100%;
-		margin:0 auto;
-	}
-	.navBar ul
-	{
-		display:table;
-		width:100%;
-		float:none;
-		vertical-align:middle;
-		margin:0;
-		padding:0px;
-	}
-
-	.navbar > ul > li:first-child, .navbar > ul > li:first-child:hover
-	{
-		border-left:none;
-		border-right:none;
-		box-shadow:none;
-		background:none;
-	}
-
-	.navbar > ul > li:last-child, .navbar > ul > li:last-child:hover
-	{
-		border-right:none;
-	}
-
-	.navBar ul li
-	{
-		display:table-cell;
-		float:none;
-		list-style-type:none;
-		margin:0;
-		padding:0;
-		text-align:center;
-		vertical-align:middle;
-		border-right:1px solid #000000;
-		box-shadow:inset 1px 0 0 #6A7D95;
-	}
-
-	.navBar ul li:hover
-	{
-		background:#1A2D45;
-	}
-
-	.navBar ul li a
-	{
-		display:block;
-		height:33px;
-		line-height:33px;
-		font-size:13px;
-		color:white;
-		font-family:helvetica;
-		font-weight:bold;
-		text-decoration:none;
-		outline:none;
-		width:160px;
-		margin:0 auto;
-	}
-
-	.navBar ul li:hover a
-	{
-		border-right:none;
-		box-shadow:none;
-	}
-
-	.navBar ul li img
-	{
-		margin-right:4px;
-		vertical-align:middle;
-	}
-
-	.adminConfig 
-	{
-		padding-left:10px;
-	}
+.header {
+	width: 100%;
+	height: 34px;
+	margin: 0;
+	background: -webkit-linear-gradient(top, #354F71 0%, #1A2D45 100%);
+	background: -moz-linear-gradient(top, #354F71 0%, #1A2D45 100%);
+	background: -o-linear-gradient(top, #354F71 0%, #1A2D45 100%);
+	background: -ms-linear-gradient(top, #354F71 0%, #1A2D45 100%);
 	
-	.navBar li div.submenu
-	{
-		height:0px;
-		position: absolute;
-		width:170px;
-		overflow:hidden;
-		z-index:999;
-	}
+	position:fixed;
+	top:0px;
+}
 
-	.navBar li:hover div.submenu
-	{
-		height:auto;
-		position: absolute;
+.logo {
+	width: 145px;
+}
 
-		-webkit-transition: ease-in-out .1s;
-		-moz-transition: ease-in-out .1s;
-		-o-transition: ease-in-out .1s;
-		-ms-transition: ease-in-out .1s;
-		transition: ease-in-out .1s;
+.logoCol {
+	
+}
 
-		border-top: 1px solid #1A2D45;
-		
-		-webkit-box-shadow: 0px 3px 4px rgba(0,0,0,.3);
-		-moz-box-shadow: 0px 3px 4px rgba(0,0,0,.3);
-		box-shadow: 0px 3px 4px rgba(0,0,0,.3);
-	}
+.navbar ul li.logoCol a {
+	margin-left: 0px;
+}
 
-	.navBar li .submenu ul
-	{
-		border:1px solid lightgrey;
-	}
+.navbar ul li.logoCol a:hover {
+	background: none;
+}
 
-	.navBar li .submenu ul li
-	{
-		display:block;	
-		width:100%;
-		float:left;
-		text-align:left;
-		height:auto;
-		color:black;
-		border-bottom:1px solid #DDDDDD;
-		border-top:none;
-		border-left:none;
-		border-right:none;
-		box-shadow:none;
-			
-	}
+.navbar ul li.logoCol {
+	width: 750px;
+}
 
-	.navBar li .submenu ul li:last-child
-	{
-		border-bottom:none;
-	}
+.logoCol div {
+	padding-top: 5px;
+}
 
-	.navbar li .submenu ul li:hover
-	{
-		background:#BACDE5;
-	}
+.navbar ul li.translationCol {
+	box-shadow: none;
+}
 
-	.navBar ul li .submenu ul li a
-	{
-		color:#454545;
-		font-size:12px;
-		text-shadow:none;
-		line-height:28px;
-		text-align:left;
-		width:160px
-	}
+.userCol {
+	width: auto;
+}
 
-	.navBar ul li .submenu img
-	{
-		border:none;
-	}
+.navbar ul li.userCol a {
+	margin-left: 5px;
+	margin-right: 5px;
+}
 
-    /* Buttons */
+.userCol img {
+	padding: 0;
+	border: 1px solid white;
+}
 
-    .genericButton
-    {
-        height: 36px;
-        line-height: 36px;
-        border: 1px solid #999;
-        border-radius: 4px;
-        cursor: pointer;
-        margin: 0 0 20px 0;
-        -webkit-box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
-        box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
-        background: #CCC;
-        background: -moz-linear-gradient(top, #EEE 0%, #CCC 100%);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#EEE), color-stop(100%,#CCC));
-        background: -webkit-linear-gradient(top, #EEE 0%,#CCC 100%);
-        background: -o-linear-gradient(top, #EEE 0%,#CCC 100%);
-        background: -ms-linear-gradient(top, #EEE 0%,#CCC 100%);
-        background: linear-gradient(top, #EEE 0%,#CCC 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#cccccc',GradientType=0 );
+.navbar ul li.menuCol a {
+	text-align: center;
+	width: 30px;
+	font-size: 18px;
+}
 
-        /* Text (previously on the a tag) */
-        display: block;
-        font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
-        font-weight: bold;
-        font-size: 16px;
-        padding: 0 20px;
-        text-align: center;
-        text-decoration: none;
-        color: #444;
-        text-shadow: 0 1px 1px white;
-    }
+.navBar ul li.menuCol:hover {
+	background: #7E91A9;
+}
 
-    .genericButton:hover
-    {
-        background: #CCC;
-        background: -moz-linear-gradient(top, white 0%, #DDD 100%);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,white), color-stop(100%,#DDD));
-        background: -webkit-linear-gradient(top, white 0%,#DDD 100%);
-        background: -o-linear-gradient(top, white 0%,#DDD 100%);
-        background: -ms-linear-gradient(top, white 0%,#DDD 100%);
-        background: linear-gradient(top, white 0%,#DDD 100%);
-        filter: progid:DXImageTransform.Microsoft.
-    }
+.navBar {
+	width: 1024px;
+	height: 100%;
+	margin: 0 auto;
+}
 
-    .genericButton:active
-    {
-        -webkit-box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
-        box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
-        background: #CCC;
-        background: -moz-linear-gradient(top, #DDD 0%, white 100%);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#DDD), color-stop(100%,white));
-        background: -webkit-linear-gradient(top, #DDD 0%,white 100%);
-        background: -o-linear-gradient(top, #DDD 0%,white 100%);
-        background: -ms-linear-gradient(top, #DDD 0%,white 100%);
-        background: linear-gradient(top, #DDD 0%,white 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dddddd', endColorstr='#ffffff',GradientType=0 );
-    }
+.navBar ul {
+	display: table;
+	width: 100%;
+	float: none;
+	vertical-align: middle;
+	margin: 0;
+	padding: 0px;
+}
 
-    .greenBtn
-    {
-        border-color: #1D692D;
-        -webkit-box-shadow: inset 0 1px 1px #94DDA6, 0 1px 2px rgba(0, 0, 0, 0.61);
-        -moz-box-shadow: inset 0 1px 1px #94dda6, 0 1px 2px rgba(0,0,0,0.61);
-        box-shadow: inset 0 1px 1px #94DDA6, 0 1px 2px rgba(0, 0, 0, 0.61);
-        background: #5DBB73;
-        background: -moz-linear-gradient(top, #5DBB73 0%, #2D9047 100%);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#5DBB73), color-stop(100%,#2D9047));
-        background: -webkit-linear-gradient(top, #5DBB73 0%,#2D9047 100%);
-        background: -o-linear-gradient(top, #5DBB73 0%,#2D9047 100%);
-        background: -ms-linear-gradient(top, #5DBB73 0%,#2D9047 100%);
-        background: linear-gradient(top, #5DBB73 0%,#2D9047 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5dbb73', endColorstr='#2d9047',GradientType=0 );
+.navbar>ul>li:first-child,.navbar>ul>li:first-child:hover {
+	border-left: none;
+	border-right: none;
+	box-shadow: none;
+	background: none;
+}
 
-        /* Text (previously on an a tag) */
-        display: block;
-        font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
-        font-weight: bold;
-        font-size: 16px;
-        padding: 0 20px;
-        text-align: center;
-        text-decoration: none;
-        color: white;
-        text-shadow: 0 1px 2px #114A1E, 0 1px 0 #114A1E;
-    }
+.navbar>ul>li:last-child,.navbar>ul>li:last-child:hover {
+	border-right: none;
+}
 
-    .greenBtn:hover
-    {
-        text-shadow: 0 1px 2px #114A1E, 0 1px 0 #114A1E;
-        border-color: #1D692D;
-        -webkit-box-shadow: inset 0 1px 1px #94DDA6, 0 1px 2px rgba(0, 0, 0, 0.61);
-        -moz-box-shadow: inset 0 1px 1px #94dda6, 0 1px 2px rgba(0,0,0,0.61);
-        box-shadow: inset 0 1px 1px #94DDA6, 0 1px 2px rgba(0, 0, 0, 0.61);
-        background: #68CE80;
-        background: -moz-linear-gradient(top, #68CE80 0%, #3CAE5A 100%);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#68CE80), color-stop(100%,#3CAE5A));
-        background: -webkit-linear-gradient(top, #68CE80 0%,#3CAE5A 100%);
-        background: -o-linear-gradient(top, #68CE80 0%,#3CAE5A 100%);
-        background: -ms-linear-gradient(top, #68CE80 0%,#3CAE5A 100%);
-        background: linear-gradient(top, #68CE80 0%,#3CAE5A 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#68ce80', endColorstr='#3cae5a',GradientType=0 );
-    }
+.navBar ul li {
+	display: table-cell;
+	float: none;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	vertical-align: middle;
+	border-right: 1px solid #000000;
+	box-shadow: inset 1px 0 0 #6A7D95;
+}
 
-    .greenBtn:active
-    {
-        background: #5DBB73;
-        background: -moz-linear-gradient(top, #2D9047 0%, #5DBB73 100%);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#2D9047), color-stop(100%,#5DBB73));
-        background: -webkit-linear-gradient(top, #2D9047 0%,#5DBB73 100%);
-        background: -o-linear-gradient(top, #2D9047 0%,#5DBB73 100%);
-        background: -ms-linear-gradient(top, #2D9047 0%,#5DBB73 100%);
-        background: linear-gradient(top, #2D9047 0%,#5DBB73 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2d9047', endColorstr='#5dbb73',GradientType=0 );
-    }
+.navBar ul li:hover {
+	background: #1A2D45;
+}
 
-    .redBtn
-    {
-        border-color: #7D180A;
-        -webkit-box-shadow: inset 0 1px 1px #FB926A, 0 1px 2px rgba(0, 0, 0, 0.61);
-        -moz-box-shadow: inset 0 1px 1px #FB926A, 0 1px 2px rgba(0,0,0,0.61);
-        box-shadow: inset 0 1px 1px #FB926A, 0 1px 2px rgba(0, 0, 0, 0.61);
-        background: #C54224;
-        background: -moz-linear-gradient(top, #EF6638 0%, #B62918 100%);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#EF6638), color-stop(100%,#B62918));
-        background: -webkit-linear-gradient(top, #EF6638 0%,#B62918 100%);
-        background: -o-linear-gradient(top, #EF6638 0%,#B62918 100%);
-        background: -ms-linear-gradient(top, #EF6638 0%,#B62918 100%);
-        background: linear-gradient(top, #EF6638 0%,#B62918 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ef6638', endColorstr='#b62918',GradientType=0 );
+.navBar ul li a {
+	display: block;
+	height: 33px;
+	line-height: 33px;
+	font-size: 13px;
+	color: white;
+	font-family: helvetica;
+	font-weight: bold;
+	text-decoration: none;
+	outline: none;
+	width: 160px;
+	margin: 0 auto;
+}
 
-        /* Text (previously on an a tag) */
-        display: block;
-        font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
-        font-weight: bold;
-        font-size: 16px;
-        padding: 0 20px;
-        text-align: center;
-        text-decoration: none;
-        color: white;
-        text-shadow: 0 1px 2px #114A1E, 0 1px 0 #114A1E;
-    }
+.navBar ul li:hover a {
+	border-right: none;
+	box-shadow: none;
+}
 
-    .redBtn:hover
-    {
-        border-color: #7D180A;
-        -webkit-box-shadow: inset 0 1px 1px #FB926A, 0 1px 2px rgba(0, 0, 0, 0.61);
-        box-shadow: inset 0 1px 1px #FB926A, 0 1px 2px rgba(0, 0, 0, 0.61);
-        background: #ED754E;
-        background: -moz-linear-gradient(top, #ED754E 0%, #C93E23 100%);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ED754E), color-stop(100%,#C93E23));
-        background: -webkit-linear-gradient(top, #ED754E 0%,#C93E23 100%);
-        background: -o-linear-gradient(top, #ED754E 0%,#C93E23 100%);
-        background: -ms-linear-gradient(top, #ED754E 0%,#C93E23 100%);
-        background: linear-gradient(top, #ED754E 0%,#C93E23 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ed754e', endColorstr='#c93e23',GradientType=0 );
-    }
+.navBar ul li img {
+	margin-right: 4px;
+	vertical-align: middle;
+}
 
-    .redBtn:active
-    {
-        background: #ED754E;
-        background: -moz-linear-gradient(top, #C93E23 0%, #ED754E 100%);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#C93E23), color-stop(100%,#ED754E));
-        background: -webkit-linear-gradient(top, #C93E23 0%,#ED754E 100%);
-        background: -o-linear-gradient(top, #C93E23 0%,#ED754E 100%);
-        background: -ms-linear-gradient(top, #C93E23 0%,#ED754E 100%);
-        background: linear-gradient(top, #C93E23 0%,#ED754E 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c93e23', endColorstr='#ed754e',GradientType=0 );
-    }
+.adminConfig {
+	padding-left: 10px;
+}
 
-    .blueBtn
-    {
-        border-color: #4770B0;
-        -webkit-box-shadow: inset 0 1px 1px #658ECE, 0 1px 2px rgba(0, 0, 0, 0.61);
-        -moz-box-shadow: inset 0 1px 1px #658ECE, 0 1px 2px rgba(0,0,0,0.61);
-        box-shadow: inset 0 1px 1px #658ECE, 0 1px 2px rgba(0, 0, 0, 0.61);
-        background: #153E7E;
-        background: -moz-linear-gradient(top, #4770B0 0%, #153E7E 100%);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4770B0), color-stop(100%,#153E7E));
-        background: -webkit-linear-gradient(top, #4770B0 0%,#153E7E 100%);
-        background: -o-linear-gradient(top, #4770B0 0%,#153E7E 100%);
-        background: -ms-linear-gradient(top, #4770B0 0%,#153E7E 100%);
-        background: linear-gradient(top, #4770B0 0%,#153E7E 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4770b0', endColorstr='#153e7e',GradientType=0 );
+.navBar li div.submenu {
+	height: 0px;
+	position: absolute;
+	width: 170px;
+	overflow: hidden;
+	z-index: 999;
+}
 
-        /* Text (previously on an a tag) */
-        display: block;
-        font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
-        font-weight: bold;
-        font-size: 16px;
-        padding: 0 20px;
-        text-align: center;
-        text-decoration: none;
-        color: white;
-        text-shadow: 0 1px 2px #000242, 0 1px 0 #000242;
-    }
+.navBar li:hover div.submenu {
+	height: auto;
+	position: absolute;
+	-webkit-transition: ease-in-out .1s;
+	-moz-transition: ease-in-out .1s;
+	-o-transition: ease-in-out .1s;
+	-ms-transition: ease-in-out .1s;
+	transition: ease-in-out .1s;
+	border-top: 1px solid #1A2D45;
+	-webkit-box-shadow: 0px 3px 4px rgba(0, 0, 0, .3);
+	-moz-box-shadow: 0px 3px 4px rgba(0, 0, 0, .3);
+	box-shadow: 0px 3px 4px rgba(0, 0, 0, .3);
+}
 
-    .blueBtn:hover
-    {
-        border-color: #4770B0;
-        -webkit-box-shadow: inset 0 1px 1px #658ECE, 0 1px 2px rgba(0, 0, 0, 0.61);
-        box-shadow: inset 0 1px 1px #658ECE, 0 1px 2px rgba(0, 0, 0, 0.61);
-        background: #153E7E;
-        background: -moz-linear-gradient(top, #3D66A6 0%, #3D66A6 100%);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#3D66A6), color-stop(100%,#3D66A6));
-        background: -webkit-linear-gradient(top, #3D66A6 0%,#3D66A6 100%);
-        background: -o-linear-gradient(top, #3D66A6 0%,#3D66A6 100%);
-        background: -ms-linear-gradient(top, #3D66A6 0%,#3D66A6 100%);
-        background: linear-gradient(top, #3D66A6 0%,#3D66A6 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3d66a6', endColorstr='#3d66a6',GradientType=0 );
-    }
+.navBar li .submenu ul {
+	border: 1px solid lightgrey;
+}
 
-    .blueBtn:active
-    {
-        background: #153E7E;
-        background: -moz-linear-gradient(top, #153E7E 0%, #4770B0 100%);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#153E7E), color-stop(100%,#4770B0));
-        background: -webkit-linear-gradient(top, #153E7E 0%,#4770B0 100%);
-        background: -o-linear-gradient(top, #153E7E 0%,#4770B0 100%);
-        background: -ms-linear-gradient(top, #153E7E 0%,#4770B0 100%);
-        background: linear-gradient(top, #153E7E 0%,#4770B0 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#153e7e', endColorstr='#4770b0',GradientType=0 );
-    }
+.navBar li .submenu ul li {
+	display: block;
+	width: 100%;
+	float: left;
+	text-align: left;
+	height: auto;
+	color: black;
+	border-bottom: 1px solid #DDDDDD;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	box-shadow: none;
+	background:#FFFFFF;
+}
 
-    /* Button sizes */
-    .smallBtn
-    {
-        line-height: 20px !important;
-        height: 20px;
-        font-size: 12px;
-        margin-bottom: 10px;
-    }
-    .largeBtn
-    {
-        line-height: 36px !important;
-        height: 36px;
-        font-size: 20px;
-        margin-bottom: 18px;
-    }
+.navBar li .submenu ul li:last-child {
+	border-bottom: none;
+}
 
-    /* Copy of rich table styles */
-    .rich-table {
-        width: 100%;
-    }
-    .rich-table {
-        /*border-top: solid 1px silver;
+.navbar li .submenu ul li:hover {
+	background: #BACDE5;
+}
+
+.navBar ul li .submenu ul li a {
+	color: #454545;
+	font-size: 12px;
+	text-shadow: none;
+	line-height: 28px;
+	text-align: left;
+	width: 160px
+}
+
+.navBar ul li .submenu img {
+	border: none;
+}
+
+/* Buttons */
+.genericButton {
+	height: 36px;
+	line-height: 36px;
+	border: 1px solid #999;
+	border-radius: 4px;
+	cursor: pointer;
+	margin: 0 0 20px 0;
+	-webkit-box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
+	box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
+	background: #CCC;
+	background: -moz-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #EEE),
+		color-stop(100%, #CCC) );
+	background: -webkit-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: -o-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: -ms-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: linear-gradient(top, #EEE 0%, #CCC 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#eeeeee',
+		endColorstr='#cccccc', GradientType=0 );
+	/* Text (previously on the a tag) */
+	display: block;
+	font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
+	font-weight: bold;
+	font-size: 16px;
+	padding: 0 20px;
+	text-align: center;
+	text-decoration: none;
+	color: #444;
+	text-shadow: 0 1px 1px white;
+}
+
+.genericButton:hover {
+	background: #CCC;
+	background: -moz-linear-gradient(top, white 0%, #DDD 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, white),
+		color-stop(100%, #DDD) );
+	background: -webkit-linear-gradient(top, white 0%, #DDD 100%);
+	background: -o-linear-gradient(top, white 0%, #DDD 100%);
+	background: -ms-linear-gradient(top, white 0%, #DDD 100%);
+	background: linear-gradient(top, white 0%, #DDD 100%);
+	filter: progid:DXImageTransform.Microsoft.
+}
+
+.genericButton:active {
+	-webkit-box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
+	box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
+	background: #CCC;
+	background: -moz-linear-gradient(top, #DDD 0%, white 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #DDD),
+		color-stop(100%, white) );
+	background: -webkit-linear-gradient(top, #DDD 0%, white 100%);
+	background: -o-linear-gradient(top, #DDD 0%, white 100%);
+	background: -ms-linear-gradient(top, #DDD 0%, white 100%);
+	background: linear-gradient(top, #DDD 0%, white 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#dddddd',
+		endColorstr='#ffffff', GradientType=0 );
+}
+
+.greenBtn {
+	border-color: #1D692D;
+	-webkit-box-shadow: inset 0 1px 1px #94DDA6, 0 1px 2px
+		rgba(0, 0, 0, 0.61);
+	-moz-box-shadow: inset 0 1px 1px #94dda6, 0 1px 2px rgba(0, 0, 0, 0.61);
+	box-shadow: inset 0 1px 1px #94DDA6, 0 1px 2px rgba(0, 0, 0, 0.61);
+	background: #5DBB73;
+	background: -moz-linear-gradient(top, #5DBB73 0%, #2D9047 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #5DBB73),
+		color-stop(100%, #2D9047) );
+	background: -webkit-linear-gradient(top, #5DBB73 0%, #2D9047 100%);
+	background: -o-linear-gradient(top, #5DBB73 0%, #2D9047 100%);
+	background: -ms-linear-gradient(top, #5DBB73 0%, #2D9047 100%);
+	background: linear-gradient(top, #5DBB73 0%, #2D9047 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#5dbb73',
+		endColorstr='#2d9047', GradientType=0 );
+	/* Text (previously on an a tag) */
+	display: block;
+	font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
+	font-weight: bold;
+	font-size: 16px;
+	padding: 0 20px;
+	text-align: center;
+	text-decoration: none;
+	color: white;
+	text-shadow: 0 1px 2px #114A1E, 0 1px 0 #114A1E;
+}
+
+.greenBtn:hover {
+	text-shadow: 0 1px 2px #114A1E, 0 1px 0 #114A1E;
+	border-color: #1D692D;
+	-webkit-box-shadow: inset 0 1px 1px #94DDA6, 0 1px 2px
+		rgba(0, 0, 0, 0.61);
+	-moz-box-shadow: inset 0 1px 1px #94dda6, 0 1px 2px rgba(0, 0, 0, 0.61);
+	box-shadow: inset 0 1px 1px #94DDA6, 0 1px 2px rgba(0, 0, 0, 0.61);
+	background: #68CE80;
+	background: -moz-linear-gradient(top, #68CE80 0%, #3CAE5A 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #68CE80),
+		color-stop(100%, #3CAE5A) );
+	background: -webkit-linear-gradient(top, #68CE80 0%, #3CAE5A 100%);
+	background: -o-linear-gradient(top, #68CE80 0%, #3CAE5A 100%);
+	background: -ms-linear-gradient(top, #68CE80 0%, #3CAE5A 100%);
+	background: linear-gradient(top, #68CE80 0%, #3CAE5A 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#68ce80',
+		endColorstr='#3cae5a', GradientType=0 );
+}
+
+.greenBtn:active {
+	background: #5DBB73;
+	background: -moz-linear-gradient(top, #2D9047 0%, #5DBB73 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #2D9047),
+		color-stop(100%, #5DBB73) );
+	background: -webkit-linear-gradient(top, #2D9047 0%, #5DBB73 100%);
+	background: -o-linear-gradient(top, #2D9047 0%, #5DBB73 100%);
+	background: -ms-linear-gradient(top, #2D9047 0%, #5DBB73 100%);
+	background: linear-gradient(top, #2D9047 0%, #5DBB73 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#2d9047',
+		endColorstr='#5dbb73', GradientType=0 );
+}
+
+.redBtn {
+	border-color: #7D180A;
+	-webkit-box-shadow: inset 0 1px 1px #FB926A, 0 1px 2px
+		rgba(0, 0, 0, 0.61);
+	-moz-box-shadow: inset 0 1px 1px #FB926A, 0 1px 2px rgba(0, 0, 0, 0.61);
+	box-shadow: inset 0 1px 1px #FB926A, 0 1px 2px rgba(0, 0, 0, 0.61);
+	background: #C54224;
+	background: -moz-linear-gradient(top, #EF6638 0%, #B62918 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #EF6638),
+		color-stop(100%, #B62918) );
+	background: -webkit-linear-gradient(top, #EF6638 0%, #B62918 100%);
+	background: -o-linear-gradient(top, #EF6638 0%, #B62918 100%);
+	background: -ms-linear-gradient(top, #EF6638 0%, #B62918 100%);
+	background: linear-gradient(top, #EF6638 0%, #B62918 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#ef6638',
+		endColorstr='#b62918', GradientType=0 );
+	/* Text (previously on an a tag) */
+	display: block;
+	font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
+	font-weight: bold;
+	font-size: 16px;
+	padding: 0 20px;
+	text-align: center;
+	text-decoration: none;
+	color: white;
+	text-shadow: 0 1px 2px #114A1E, 0 1px 0 #114A1E;
+}
+
+.redBtn:hover {
+	border-color: #7D180A;
+	-webkit-box-shadow: inset 0 1px 1px #FB926A, 0 1px 2px
+		rgba(0, 0, 0, 0.61);
+	box-shadow: inset 0 1px 1px #FB926A, 0 1px 2px rgba(0, 0, 0, 0.61);
+	background: #ED754E;
+	background: -moz-linear-gradient(top, #ED754E 0%, #C93E23 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ED754E),
+		color-stop(100%, #C93E23) );
+	background: -webkit-linear-gradient(top, #ED754E 0%, #C93E23 100%);
+	background: -o-linear-gradient(top, #ED754E 0%, #C93E23 100%);
+	background: -ms-linear-gradient(top, #ED754E 0%, #C93E23 100%);
+	background: linear-gradient(top, #ED754E 0%, #C93E23 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#ed754e',
+		endColorstr='#c93e23', GradientType=0 );
+}
+
+.redBtn:active {
+	background: #ED754E;
+	background: -moz-linear-gradient(top, #C93E23 0%, #ED754E 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #C93E23),
+		color-stop(100%, #ED754E) );
+	background: -webkit-linear-gradient(top, #C93E23 0%, #ED754E 100%);
+	background: -o-linear-gradient(top, #C93E23 0%, #ED754E 100%);
+	background: -ms-linear-gradient(top, #C93E23 0%, #ED754E 100%);
+	background: linear-gradient(top, #C93E23 0%, #ED754E 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#c93e23',
+		endColorstr='#ed754e', GradientType=0 );
+}
+
+.blueBtn {
+	border-color: #4770B0;
+	-webkit-box-shadow: inset 0 1px 1px #658ECE, 0 1px 2px
+		rgba(0, 0, 0, 0.61);
+	-moz-box-shadow: inset 0 1px 1px #658ECE, 0 1px 2px rgba(0, 0, 0, 0.61);
+	box-shadow: inset 0 1px 1px #658ECE, 0 1px 2px rgba(0, 0, 0, 0.61);
+	background: #153E7E;
+	background: -moz-linear-gradient(top, #4770B0 0%, #153E7E 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #4770B0),
+		color-stop(100%, #153E7E) );
+	background: -webkit-linear-gradient(top, #4770B0 0%, #153E7E 100%);
+	background: -o-linear-gradient(top, #4770B0 0%, #153E7E 100%);
+	background: -ms-linear-gradient(top, #4770B0 0%, #153E7E 100%);
+	background: linear-gradient(top, #4770B0 0%, #153E7E 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#4770b0',
+		endColorstr='#153e7e', GradientType=0 );
+	/* Text (previously on an a tag) */
+	display: block;
+	font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
+	font-weight: bold;
+	font-size: 16px;
+	padding: 0 20px;
+	text-align: center;
+	text-decoration: none;
+	color: white;
+	text-shadow: 0 1px 2px #000242, 0 1px 0 #000242;
+}
+
+.blueBtn:hover {
+	border-color: #4770B0;
+	-webkit-box-shadow: inset 0 1px 1px #658ECE, 0 1px 2px
+		rgba(0, 0, 0, 0.61);
+	box-shadow: inset 0 1px 1px #658ECE, 0 1px 2px rgba(0, 0, 0, 0.61);
+	background: #153E7E;
+	background: -moz-linear-gradient(top, #3D66A6 0%, #3D66A6 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #3D66A6),
+		color-stop(100%, #3D66A6) );
+	background: -webkit-linear-gradient(top, #3D66A6 0%, #3D66A6 100%);
+	background: -o-linear-gradient(top, #3D66A6 0%, #3D66A6 100%);
+	background: -ms-linear-gradient(top, #3D66A6 0%, #3D66A6 100%);
+	background: linear-gradient(top, #3D66A6 0%, #3D66A6 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#3d66a6',
+		endColorstr='#3d66a6', GradientType=0 );
+}
+
+.blueBtn:active {
+	background: #153E7E;
+	background: -moz-linear-gradient(top, #153E7E 0%, #4770B0 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #153E7E),
+		color-stop(100%, #4770B0) );
+	background: -webkit-linear-gradient(top, #153E7E 0%, #4770B0 100%);
+	background: -o-linear-gradient(top, #153E7E 0%, #4770B0 100%);
+	background: -ms-linear-gradient(top, #153E7E 0%, #4770B0 100%);
+	background: linear-gradient(top, #153E7E 0%, #4770B0 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#153e7e',
+		endColorstr='#4770b0', GradientType=0 );
+}
+
+/* Button sizes */
+.smallBtn {
+	line-height: 20px !important;
+	height: 20px;
+	font-size: 12px;
+	margin-bottom: 10px;
+}
+
+.largeBtn {
+	line-height: 36px !important;
+	height: 36px;
+	font-size: 20px;
+	margin-bottom: 18px;
+}
+
+/* Copy of rich table styles */
+.rich-table {
+	width: 100%;
+}
+
+.rich-table { /*border-top: solid 1px silver;
         border-left: solid 1px silver;*/
-        /*background-color: #E8EDFF;*/
-        background-color: #EEE;
-        empty-cells: show;
-        border-collapse: collapse;
-        border-radius: 10px;
-        /* This is for the faux 3D effect */
-        box-shadow: 5px 5px 5px #888888;
-    }
-    .rich-table tbody tr:hover {
-        background-color: white;
-    }
-    table {
-        margin: 0px;
-    }
-    .rich-table-thead {
-        /*border-bottom: solid 1px silver;*/
-    }
-    .rich-table-subheader {
-        /*background-color: #B9C9FE;*/
-        background-color: #5F5F5F;
-    }
-    .rich-table-subheader th:first-child {
-        border-top-left-radius: 10px;
-    }
-    .rich-table-subheader th:last-child {
-        border-top-right-radius: 10px;
-    }
-    .rich-table-subheadercell {
-        /*border-right: solid 1px silver;*/
-        padding: 10px 10px 10px 10px;
-        text-align: center;
-        font-size: 11px;
-        /*color: black;*/
-        color: #ffffff;
-        font-family: Arial,Verdana,sans-serif;
-        white-space: nowrap;
-    }
-    th {
-        font-weight: bold;
-        text-align: center;
-    }
-    th, td {
-        border: none;
-        padding: 0px;
-    }
-    .rich-table-cell {
-        /*border-right: solid 1px silver;
+	/*background-color: #E8EDFF;*/
+	background-color: #EEE;
+	empty-cells: show;
+	border-collapse: collapse;
+	border-radius: 10px;
+	/* This is for the faux 3D effect */
+	box-shadow: 5px 5px 5px #888888;
+}
+
+.rich-table tbody tr:hover {
+	background-color: white;
+}
+
+table {
+	margin: 0px;
+}
+
+.rich-table-thead { /*border-bottom: solid 1px silver;*/
+	
+}
+
+.rich-table-subheader { /*background-color: #B9C9FE;*/
+	background-color: #5F5F5F;
+}
+
+.rich-table-subheader th:first-child {
+	border-top-left-radius: 10px;
+}
+
+.rich-table-subheader th:last-child {
+	border-top-right-radius: 10px;
+}
+
+.rich-table-subheadercell { /*border-right: solid 1px silver;*/
+	padding: 10px 10px 10px 10px;
+	text-align: center;
+	font-size: 11px;
+	/*color: black;*/
+	color: #ffffff;
+	font-family: Arial, Verdana, sans-serif;
+	white-space: nowrap;
+}
+
+th {
+	font-weight: bold;
+	text-align: center;
+}
+
+th,td {
+	border: none;
+	padding: 0px;
+}
+
+.rich-table-cell { /*border-right: solid 1px silver;
         border-bottom: solid 1px silver;*/
-        border-top: solid 2px white;
-        padding: 10px 10px 10px 10px;
-        font-size: 11px;
-        color: black;
-        font-family: Arial,Verdana,sans-serif;
-    }
-    /* End of richfaces table styles */
+	border-top: solid 2px white;
+	padding: 10px 10px 10px 10px;
+	font-size: 11px;
+	color: black;
+	font-family: Arial, Verdana, sans-serif;
+}
+/* End of richfaces table styles */
 
-    /* Copy of Richfaces Panel styles*/
-    .rich-panel {
-        border-radius: 5px;
-        -moz-border-radius: 5px;
-        margin-bottom: 10px;
-        border-width: 1px;
-        border-style: solid;
-        padding: 1px;
-        background-color: #EEE;
-        border-color: silver;
-        /* This is for the faux 3D effect */
-        box-shadow: 5px 5px 5px #888888;
-    }
-    .rich-panel .rich-panel-header {
-        background-image: none;
-        padding: 2px 3px;
-    }
-    .rich-panel-header {
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-        -moz-border-radius: 5px;
-        text-align: center;
-    }
-    .rich-panel-header {
-        padding: 2px;
-        /*border-width: 1px;*/
-        border-style: solid;
-        background-position: top left;
-        background-repeat: repeat-x;
-    }
-    .rich-panel-header {
-        background-color: #5F5F5F;
-        border-color: #5F5F5F;
-        font-size: 11px;
-        color: white;
-        font-weight: bold;
-        font-family: Arial,Verdana,sans-serif;
-        /*background-image: url(/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.GradientA/DATB/eAF7emTy1lIvJgASigOz);*/
-    }
-    .rich-panel-body {
-        border: 1px solid;
-        border-color: #F4F4F4;
-    }
-    .rich-panel-body {
-        padding: 10px;
-    }
-    .rich-panel-body {
-        font-size: 11px;
-        color: black;
-        font-family: Arial,Verdana,sans-serif;
-    }
-    /* End of Richfaces Panel styles */
+/* Copy of Richfaces Panel styles*/
+.rich-panel {
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	margin-bottom: 10px;
+	border-width: 1px;
+	border-style: solid;
+	padding: 1px;
+	background-color: #EEE;
+	border-color: silver;
+	/* This is for the faux 3D effect */
+	box-shadow: 5px 5px 5px #888888;
+}
 
-    /* Richfaces Data Scroller styles */
-    .rich-dtascroller-table {
-        /*border-color: silver;
+.rich-panel .rich-panel-header {
+	background-image: none;
+	padding: 2px 3px;
+}
+
+.rich-panel-header {
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	-moz-border-radius: 5px;
+	text-align: center;
+}
+
+.rich-panel-header {
+	padding: 2px;
+	/*border-width: 1px;*/
+	border-style: solid;
+	background-position: top left;
+	background-repeat: repeat-x;
+}
+
+.rich-panel-header {
+	background-color: #5F5F5F;
+	border-color: #5F5F5F;
+	font-size: 11px;
+	color: white;
+	font-weight: bold;
+	font-family: Arial, Verdana, sans-serif;
+	/*background-image: url(/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.GradientA/DATB/eAF7emTy1lIvJgASigOz);*/
+}
+
+.rich-panel-body {
+	border: 1px solid;
+	border-color: #F4F4F4;
+}
+
+.rich-panel-body {
+	padding: 10px;
+}
+
+.rich-panel-body {
+	font-size: 11px;
+	color: black;
+	font-family: Arial, Verdana, sans-serif;
+}
+/* End of Richfaces Panel styles */
+
+/* Richfaces Data Scroller styles */
+.rich-dtascroller-table { /*border-color: silver;
         background-color: white;*/
-    }
-    .rich-dtascroller-table {
-        /*border-width: 1px;
+	
+}
+
+.rich-dtascroller-table { /*border-width: 1px;
         border-style: solid;*/
-    }
-    .rich-datascr-button-dsbld {
-        color: silver;
-    }
-    .rich-datascr-button {
-        /*background-color: #EAF0F8;*/
-        border-radius: 5px;
-        border-color: silver;
-        font-family: Arial,Verdana,sans-serif;
-        font-size: 11px;
+	
+}
 
-        border: 1px solid #999;
-        border-radius: 4px;
-        -webkit-box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
-        box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
-        background: #CCC;
-        background: -moz-linear-gradient(top, #EEE 0%, #CCC 100%);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#EEE), color-stop(100%,#CCC));
-        background: -webkit-linear-gradient(top, #EEE 0%,#CCC 100%);
-        background: -o-linear-gradient(top, #EEE 0%,#CCC 100%);
-        background: -ms-linear-gradient(top, #EEE 0%,#CCC 100%);
-        background: linear-gradient(top, #EEE 0%,#CCC 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#cccccc',GradientType=0 );
-    }
-    .rich-datascr-button:hover {
-        -webkit-box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
-        box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
-        background: #CCC;
-        background: -moz-linear-gradient(top, white 0%, #DDD 100%);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,white), color-stop(100%,#DDD));
-        background: -webkit-linear-gradient(top, white 0%,#DDD 100%);
-        background: -o-linear-gradient(top, white 0%,#DDD 100%);
-        background: -ms-linear-gradient(top, white 0%,#DDD 100%);
-        background: linear-gradient(top, white 0%,#DDD 100%);
-        filter: progid:DXImageTransform.Microsoft.
-    }
-    .rich-datascr-button:active {
-        background: #CCC;
-        background: -moz-linear-gradient(top, #DDD 0%, white 100%);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#DDD), color-stop(100%,white));
-        background: -webkit-linear-gradient(top, #DDD 0%,white 100%);
-        background: -o-linear-gradient(top, #DDD 0%,white 100%);
-        background: -ms-linear-gradient(top, #DDD 0%,white 100%);
-        background: linear-gradient(top, #DDD 0%,white 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dddddd', endColorstr='#ffffff',GradientType=0 );
-    }
-    .rich-datascr-button-dsbld {
-        cursor: default;
-    }
-    .rich-datascr-button {
-        border-width: 1px;
-        border-style: solid;
-        width: 25px;
-        cursor: pointer;
-        text-align: center;
+.rich-datascr-button-dsbld {
+	color: silver;
+}
 
-    }
-    .rich-datascr-act {
-        /*border-top-color: black;*/
-        color: #ffffff;
-        background-color: #5F5F5F;
-        font-family: Arial,Verdana,sans-serif;
-        font-size: 11px;
-        font-weight: bold;
-    }
-    .rich-datascr-act {
-        /*border-top-width: 2px;
+.rich-datascr-button { /*background-color: #EAF0F8;*/
+	border-radius: 5px;
+	border-color: silver;
+	font-family: Arial, Verdana, sans-serif;
+	font-size: 11px;
+	border: 1px solid #999;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
+	box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
+	background: #CCC;
+	background: -moz-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #EEE),
+		color-stop(100%, #CCC) );
+	background: -webkit-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: -o-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: -ms-linear-gradient(top, #EEE 0%, #CCC 100%);
+	background: linear-gradient(top, #EEE 0%, #CCC 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#eeeeee',
+		endColorstr='#cccccc', GradientType=0 );
+}
+
+.rich-datascr-button:hover {
+	-webkit-box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
+	box-shadow: inset 0 1px 1px white, 0 1px 2px rgba(0, 0, 0, 0.31);
+	background: #CCC;
+	background: -moz-linear-gradient(top, white 0%, #DDD 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, white),
+		color-stop(100%, #DDD) );
+	background: -webkit-linear-gradient(top, white 0%, #DDD 100%);
+	background: -o-linear-gradient(top, white 0%, #DDD 100%);
+	background: -ms-linear-gradient(top, white 0%, #DDD 100%);
+	background: linear-gradient(top, white 0%, #DDD 100%);
+	filter: progid:DXImageTransform.Microsoft.
+}
+
+.rich-datascr-button:active {
+	background: #CCC;
+	background: -moz-linear-gradient(top, #DDD 0%, white 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #DDD),
+		color-stop(100%, white) );
+	background: -webkit-linear-gradient(top, #DDD 0%, white 100%);
+	background: -o-linear-gradient(top, #DDD 0%, white 100%);
+	background: -ms-linear-gradient(top, #DDD 0%, white 100%);
+	background: linear-gradient(top, #DDD 0%, white 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(   startColorstr='#dddddd',
+		endColorstr='#ffffff', GradientType=0 );
+}
+
+.rich-datascr-button-dsbld {
+	cursor: default;
+}
+
+.rich-datascr-button {
+	border-width: 1px;
+	border-style: solid;
+	width: 25px;
+	cursor: pointer;
+	text-align: center;
+}
+
+.rich-datascr-act { /*border-top-color: black;*/
+	color: #ffffff;
+	background-color: #5F5F5F;
+	font-family: Arial, Verdana, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+}
+
+.rich-datascr-act { /*border-top-width: 2px;
         border-top-style: solid;*/
-        width: 25px;
-        text-align: center;
-        border-radius: 5px;
-        padding: 5px;
-    }
-    .rich-datascr-inact {
-        /*border-top-color: #4A75B5;*/
-        /*color: #4A75B5;*/
-        color: #5F5F5F;
-        font-family: Arial,Verdana,sans-serif;
-        font-size: 11px;
-    }
-    .rich-datascr-inact {
-       /* border-top-width: 2px;
-        border-top-style: solid;*/
-        width: 25px;
-        cursor: pointer;
-        text-align: center;
-        border-width: 1px;
-        border-color: #5F5F5F;
-        border-style: solid;
-        border-radius: 5px;
-        padding: 5px;
-    }
-    .rich-datascr-inact:hover {
-        box-shadow: 0 0 5px grey inset;
-    }
-    /* End Richfaces Data scroller styles */
+	width: 25px;
+	text-align: center;
+	border-radius: 5px;
+	padding: 5px;
+}
 
+.rich-datascr-inact { /*border-top-color: #4A75B5;*/
+	/*color: #4A75B5;*/
+	color: #5F5F5F;
+	font-family: Arial, Verdana, sans-serif;
+	font-size: 11px;
+}
+
+.rich-datascr-inact { /* border-top-width: 2px;
+        border-top-style: solid;*/
+	width: 25px;
+	cursor: pointer;
+	text-align: center;
+	border-width: 1px;
+	border-color: #5F5F5F;
+	border-style: solid;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+.rich-datascr-inact:hover {
+	box-shadow: 0 0 5px grey inset;
+}
+/* End Richfaces Data scroller styles */
+.contents 
+{
+	width: 1024px;
+	margin-top:0;
+	margin-bottom:50px;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+.footer
+{
+	width: 100%;
+	height: 34px;
+	background: -webkit-linear-gradient(top, #1A2D45  0%,  #354F71 100%);
+	background: -moz-linear-gradient(top, #1A2D45 0%, #354F71 100%);
+	background: -o-linear-gradient(top, #1A2D45 0%, #354F71 100%);
+	background: -ms-linear-gradient(top, #1A2D45 0%,#354F71 100%);
+	position:fixed;
+	bottom:0px;
+	color:lightgray;
+	text-align:center;
+	font-size:12px;
+	font-family:arial;
+}
+
+.footer a
+{
+	color:lightgray;
+	font-weight:bold;
+	text-decoration:none;
+}
+
+.footer a:hover
+{
+	color:white;
+}
+
+.footer div
+{
+	padding-top:8px;
+}
 
 </STYLE>
 </head>
 <body>
-	
-	<div class="container">
+
+	<div class="header">
 		<div class="navBar">
 			<ul>
-				<li class="logoCol"><a href="#"><div><img src="logo2.png" class="logo"/></div></a></li>
-				<li class="translationCol">
-					<a href="#"><img src="kwrite.png"/>Translation</a>
+				<li class="logoCol"><a href="#"><div>
+							<img src="logo2.png" class="logo" />
+						</div></a></li>
+				<li class="translationCol"><a href="#"><img
+						src="kwrite.png" />Translation</a>
 					<div class="submenu">
 						<ul>
-							<li><a href="project"><img src="kllckety.png"/>Projects</a></li>
-							<li><a href="#"><img src="kdf.png"/>Groups</a></li>
-							<li><a href="#"><img src="locale.png"/>Languages</a></li>
-						</ul> 
-					</div>
-				</li>
-				<li class="userCol">
-						<a href="#" >
-							<img src="http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?d=mm&amp;r=g&amp;s=23" height="23">
-							<span>administrator</span>
-						</a>
-						<div class="submenu">
-							<ul>
-									
-								<li><a href="#"><img src="kuser.png"/>My Profile</a></li>
-								<li><a href="#">Sign Out</a></li>
-							</ul> 
-						</div>
-				</li>
-				<li class="menuCol">
-					<a href="#">&#9660;</a>
+							<li><a href="project"><img src="kllckety.png" />Projects</a></li>
+							<li><a href="#"><img src="kdf.png" />Groups</a></li>
+							<li><a href="#"><img src="locale.png" />Languages</a></li>
+						</ul>
+					</div></li>
+				<li class="userCol"><a href="#"> <img
+						src="http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?d=mm&amp;r=g&amp;s=23"
+						height="23"> <span>administrator</span>
+				</a>
 					<div class="submenu">
-					<ul>
-									
-						<li><a href="#"><img src="help.png"/>Help</a></li>
-						<li><a href="#"><img src="lin_agt_wrench.png"/>Administration</a></li>
-					</ul> 
-				</li>
+						<ul>
+
+							<li><a href="#"><img src="kuser.png" />My Profile</a></li>
+							<li><a href="#">Sign Out</a></li>
+						</ul>
+					</div></li>
+				<li class="menuCol"><a href="#">&#9660;</a>
+					<div class="submenu">
+						<ul>
+
+							<li><a href="#"><img src="help.png" />Help</a></li>
+							<li><a href="#"><img src="lin_agt_wrench.png" />Administration</a></li>
+						</ul></li>
 			</ul>
 		</div>
 	</div>
 
-	<!-- Buttons -->
-	<div>
-        <h2>Buttons</h2>
+	<div class="contents">
 
-        <p>
-            <a href="#" class="genericButton">Generic Button Link</a>
-        </p>
-        <p>In other colors...</p>
-        <p>
-            <input type="button" value="Generic Input Button" class="genericButton">
-            <input type="button" value="Generic Input Button" class="genericButton greenBtn">
-            <input type="button" value="Generic Input Button" class="genericButton redBtn">
-            <input type="button" value="Generic Input Button" class="genericButton blueBtn">
-        </p>
-        <p>In different sizes...</p>
-        <p>
-            <input type="button" value="Generic Input Button" class="genericButton smallBtn">
-            <input type="button" value="Generic Input Button" class="genericButton greenBtn">
-            <input type="button" value="Generic Input Button" class="genericButton redBtn largeBtn">
-        </p>
+		<!-- Rich Faces Components -->
+		<div>
+			<h2>Rich Faces</h2>
+			<h3>Tables</h3>
+
+			<div
+				style="max-width: 500px; margin-left: 20px; margin-bottom: 20px;">
+				<table class="rich-table " id="main_content:j_id83:projectList"
+					border="0" cellpadding="0" cellspacing="0">
+					<colgroup span="4"></colgroup>
+					<thead class="rich-table-thead">
+						<tr class="rich-table-subheader ">
+							<th class="rich-table-subheadercell  " scope="col"
+								id="main_content:j_id83:projectList:j_id99header"
+								onclick="A4J.AJAX.Submit('main_content:j_id83',event,{'similarityGroupingId':'main_content:j_id83:projectList','parameters':{'fsp':'main_content:j_id83:projectList:j_id99','main_content:j_id83:projectList':'fsp'} ,'actionUrl':'/project/list'} )"
+								style="cursor: pointer;">
+								<div id="main_content:j_id83:projectList:j_id99header:sortDiv">
+									<span class="rich-table-sortable-header">Project Name<img
+										src="sort.gif" alt="" width="15" height="15"
+										class="rich-sort-icon"></span>
+								</div>
+							</th>
+							<th class="rich-table-subheadercell  " scope="col"
+								id="main_content:j_id83:projectList:j_id104header">
+								<div id="main_content:j_id83:projectList:j_id104header:sortDiv">Description</div>
+							</th>
+							<th class="rich-table-subheadercell  " scope="col"
+								id="main_content:j_id83:projectList:j_id107header"
+								onclick="A4J.AJAX.Submit('main_content:j_id83',event,{'similarityGroupingId':'main_content:j_id83:projectList','parameters':{'fsp':'main_content:j_id83:projectList:j_id107','main_content:j_id83:projectList':'fsp'} ,'actionUrl':'/project/list'} )"
+								style="cursor: pointer;">
+								<div id="main_content:j_id83:projectList:j_id107header:sortDiv">
+									<span class="rich-table-sortable-header">Creation Date<img
+										src="sort.gif" alt="" width="15" height="15"
+										class="rich-sort-icon"></span>
+								</div>
+							</th>
+							<th class="rich-table-subheadercell  " scope="col"
+								id="main_content:j_id83:projectList:j_id110header"
+								onclick="A4J.AJAX.Submit('main_content:j_id83',event,{'similarityGroupingId':'main_content:j_id83:projectList','parameters':{'fsp':'main_content:j_id83:projectList:j_id110','main_content:j_id83:projectList':'fsp'} ,'actionUrl':'/project/list'} )"
+								style="cursor: pointer;">
+								<div id="main_content:j_id83:projectList:j_id110header:sortDiv">
+									<span class="rich-table-sortable-header">Status<img
+										src="sort.gif" alt="" width="15" height="15"
+										class="rich-sort-icon"></span>
+								</div>
+							</th>
+						</tr>
+					</thead>
+					<tbody id="main_content:j_id83:projectList:tb">
+						<tr class="rich-table-row rich-table-firstrow ">
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:0:j_id99" width="270px"><a
+								href="/project/view/alex-test"
+								id="main_content:j_id83:projectList:0:project"
+								class="table_link">alex-test</a></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:0:j_id104" width="270px">alex-test
+								description</td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:0:j_id107" width="auto">May
+								30, 2012</td>
+							<td class="rich-table-cell centered"
+								id="main_content:j_id83:projectList:0:j_id110" width="60px">
+								Active</td>
+						</tr>
+						<tr class="rich-table-row ">
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:1:j_id99" width="270px"><a
+								href="/project/view/Tar"
+								id="main_content:j_id83:projectList:1:project"
+								class="table_link">GNU Tar</a></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:1:j_id104" width="270px"></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:1:j_id107" width="auto">May
+								10, 2012</td>
+							<td class="rich-table-cell centered"
+								id="main_content:j_id83:projectList:1:j_id110" width="60px">
+								Active</td>
+						</tr>
+						<tr class="rich-table-row ">
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:2:j_id99" width="270px"><a
+								href="/project/view/testproject"
+								id="main_content:j_id83:projectList:2:project"
+								class="table_link">test project</a></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:2:j_id104" width="270px"></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:2:j_id107" width="auto">May
+								8, 2012</td>
+							<td class="rich-table-cell centered"
+								id="main_content:j_id83:projectList:2:j_id110" width="60px">
+								Active</td>
+						</tr>
+						<tr class="rich-table-row ">
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:3:j_id99" width="270px"><a
+								href="/project/view/plural"
+								id="main_content:j_id83:projectList:3:project"
+								class="table_link">plural</a></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:3:j_id104" width="270px">plural</td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:3:j_id107" width="auto">Apr
+								18, 2012</td>
+							<td class="rich-table-cell centered"
+								id="main_content:j_id83:projectList:3:j_id110" width="60px">
+								Active</td>
+						</tr>
+						<tr class="rich-table-row ">
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:4:j_id99" width="270px"><a
+								href="/project/view/java-var-test"
+								id="main_content:j_id83:projectList:4:project"
+								class="table_link">java-var-test</a></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:4:j_id104" width="270px">
+								java-var-test</td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:4:j_id107" width="auto">Mar
+								28, 2012</td>
+							<td class="rich-table-cell centered"
+								id="main_content:j_id83:projectList:4:j_id110" width="60px">
+								Active</td>
+						</tr>
+						<tr class="rich-table-row ">
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:5:j_id99" width="270px"><a
+								href="/project/view/SomeProject1"
+								id="main_content:j_id83:projectList:5:project"
+								class="table_link">Some Project 1</a></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:5:j_id104" width="270px">Description
+								of Some Project</td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:5:j_id107" width="auto">Mar
+								20, 2012</td>
+							<td class="rich-table-cell centered"
+								id="main_content:j_id83:projectList:5:j_id110" width="60px">
+								Active</td>
+						</tr>
+						<tr class="rich-table-row ">
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:6:j_id99" width="270px"><a
+								href="/project/view/test"
+								id="main_content:j_id83:projectList:6:project"
+								class="table_link">Test</a></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:6:j_id104" width="270px"></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:6:j_id107" width="auto">Mar
+								20, 2012</td>
+							<td class="rich-table-cell centered"
+								id="main_content:j_id83:projectList:6:j_id110" width="60px">
+								Active</td>
+						</tr>
+						<tr class="rich-table-row ">
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:7:j_id99" width="270px"><a
+								href="/project/view/SOA-GSG"
+								id="main_content:j_id83:projectList:7:project"
+								class="table_link">SOA Getting Started Guide</a></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:7:j_id104" width="270px"></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:7:j_id107" width="auto">Mar
+								1, 2012</td>
+							<td class="rich-table-cell centered"
+								id="main_content:j_id83:projectList:7:j_id110" width="60px">
+								Active</td>
+						</tr>
+						<tr class="rich-table-row ">
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:8:j_id99" width="270px"><a
+								href="/project/view/python-merge-test"
+								id="main_content:j_id83:projectList:8:project"
+								class="table_link">PythonMergeTest</a></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:8:j_id104" width="270px"></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:8:j_id107" width="auto">Feb
+								22, 2012</td>
+							<td class="rich-table-cell centered"
+								id="main_content:j_id83:projectList:8:j_id110" width="60px">
+								Active</td>
+						</tr>
+						<tr class="rich-table-row ">
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:9:j_id99" width="270px"><a
+								href="/project/view/delete-test2"
+								id="main_content:j_id83:projectList:9:project"
+								class="table_link">Python</a></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:9:j_id104" width="270px"></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:9:j_id107" width="auto">Feb
+								22, 2012</td>
+							<td class="rich-table-cell centered"
+								id="main_content:j_id83:projectList:9:j_id110" width="60px">
+								Active</td>
+						</tr>
+						<tr class="rich-table-row ">
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:10:j_id99" width="270px"><a
+								href="/project/view/delete-test"
+								id="main_content:j_id83:projectList:10:project"
+								class="table_link">Python Delete Test</a></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:10:j_id104" width="270px"></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:10:j_id107" width="auto">Feb
+								22, 2012</td>
+							<td class="rich-table-cell centered"
+								id="main_content:j_id83:projectList:10:j_id110" width="60px">
+								Active</td>
+						</tr>
+						<tr class="rich-table-row ">
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:11:j_id99" width="270px"><a
+								href="/project/view/prop-test"
+								id="main_content:j_id83:projectList:11:project"
+								class="table_link">Sample Properties</a></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:11:j_id104" width="270px">Tests
+								for UTF-8 characters.</td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:11:j_id107" width="auto">Feb
+								21, 2012</td>
+							<td class="rich-table-cell centered"
+								id="main_content:j_id83:projectList:11:j_id110" width="60px">
+								Active</td>
+						</tr>
+						<tr class="rich-table-row ">
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:12:j_id99" width="270px"><a
+								href="/project/view/python-test"
+								id="main_content:j_id83:projectList:12:project"
+								class="table_link">BOB</a></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:12:j_id104" width="270px">THINGY</td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:12:j_id107" width="auto">Feb
+								21, 2012</td>
+							<td class="rich-table-cell centered"
+								id="main_content:j_id83:projectList:12:j_id110" width="60px">
+								Active</td>
+						</tr>
+						<tr class="rich-table-row ">
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:13:j_id99" width="270px"><a
+								href="/project/view/pyclient-test"
+								id="main_content:j_id83:projectList:13:project"
+								class="table_link">Python client test</a></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:13:j_id104" width="270px"></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:13:j_id107" width="auto">Feb
+								20, 2012</td>
+							<td class="rich-table-cell centered"
+								id="main_content:j_id83:projectList:13:j_id110" width="60px">
+								Active</td>
+						</tr>
+						<tr class="rich-table-row ">
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:14:j_id99" width="270px"><a
+								href="/project/view/validation-test"
+								id="main_content:j_id83:projectList:14:project"
+								class="table_link">ValidationTest</a></td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:14:j_id104" width="270px">
+								ValidationTestProject</td>
+							<td class="rich-table-cell "
+								id="main_content:j_id83:projectList:14:j_id107" width="auto">Feb
+								20, 2012</td>
+							<td class="rich-table-cell centered"
+								id="main_content:j_id83:projectList:14:j_id110" width="60px">
+								Active</td>
+						</tr>
+					</tbody>
+				</table>
+				<!-- Spacer -->
+				<img alt="" class="rich-spacer " height="15"
+					id="main_content:j_id83:j_id113"
+					src="/a4j/g/3_3_3.Finalimages/spacer.gif" width="1">
+				<!-- Data scroller -->
+				<div class="rich-datascr " id="main_content:j_id83:sc2" style=""
+					align="center">
+					<table border="0" cellpadding="0" cellspacing="1"
+						class="rich-dtascroller-table " id="main_content:j_id83:sc2_table"
+						style="text-align: center">
+						<tbody>
+							<tr>
+								<td class="rich-datascr-button-dsbld rich-datascr-button">&#171;&#171;</td>
+								<td class="rich-datascr-button-dsbld rich-datascr-button">&#171;</td>
+								<td class="rich-datascr-button-dsbld rich-datascr-button"></td>
+								<td class="rich-datascr-act ">1</td>
+								<td class="rich-datascr-inact "
+									onclick="Event.fire(this, 'rich:datascroller:onscroll', {'page': '2'});">2
+								</td>
+								<td class="rich-datascr-inact "
+									onclick="Event.fire(this, 'rich:datascroller:onscroll', {'page': '3'});">3
+								</td>
+								<td class="rich-datascr-inact "
+									onclick="Event.fire(this, 'rich:datascroller:onscroll', {'page': '4'});">4
+								</td>
+								<td class=" rich-datascr-button"
+									onclick="Event.fire(this, 'rich:datascroller:onscroll', {'page': 'next'});"></td>
+								<td class=" rich-datascr-button"
+									onclick="Event.fire(this, 'rich:datascroller:onscroll', {'page': 'fastforward'});">&#187;
+								</td>
+								<td class=" rich-datascr-button"
+									onclick="Event.fire(this, 'rich:datascroller:onscroll', {'page': 'last'});">&#187;&#187;
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<h3>Button Panels</h3>
+
+			<div style="margin-left: 10px; margin-bottom: 10px; width: 200px;">
+				<div class="rich-panel" id="loggedIn">
+					<div class="rich-panel-header " id="loggedIn_header">Actions</div>
+					<div class="rich-panel-body " id="loggedIn_body">
+						<a href="/project/edit/?slug=alex-test" id="j_id115"
+							class="genericButton redBtn smallBtn">Edit Project </a> <a
+							href="/project/homepage_edit.seam?slug=alex-test" id="j_id117"
+							title="Edit the Project's home page code as persisted. Useful when the home page cannot be edited via the project edit page."
+							class="genericButton redBtn smallBtn"> Edit Page Code </a> <a
+							href="/project/add_iteration.seam?projectSlug=alex-test"
+							id="j_id119" class="genericButton redBtn smallBtn"> Create
+							Version </a> <a href="/project/maintainer/?projectSlug=alex-test"
+							id="j_id121" class="genericButton redBtn smallBtn"> Manage
+							Maintainers </a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Buttons -->
+		<div>
+			<h2>Buttons</h2>
+
+			<p>
+				<a href="#" class="genericButton">Generic Button Link</a>
+			</p>
+			<p>In other colors...</p>
+			<p>
+				<input type="button" value="Generic Input Button"
+					class="genericButton"> <input type="button"
+					value="Generic Input Button" class="genericButton greenBtn">
+				<input type="button" value="Generic Input Button"
+					class="genericButton redBtn"> <input type="button"
+					value="Generic Input Button" class="genericButton blueBtn">
+			</p>
+			<p>In different sizes...</p>
+			<p>
+				<input type="button" value="Generic Input Button"
+					class="genericButton smallBtn"> <input type="button"
+					value="Generic Input Button" class="genericButton greenBtn">
+				<input type="button" value="Generic Input Button"
+					class="genericButton redBtn largeBtn">
+			</p>
+		</div>
+		
+		
 	</div>
-
-    <!-- Rich Faces Components -->
-    <div>
-        <h2>Rich Faces</h2>
-        <h3>Tables</h3>
-
-        <div style="max-width: 500px; margin-left: 20px; margin-bottom: 20px;">
-            <table class="rich-table " id="main_content:j_id83:projectList" border="0" cellpadding="0" cellspacing="0">
-                <colgroup span="4"></colgroup>
-                <thead class="rich-table-thead">
-                <tr class="rich-table-subheader ">
-                    <th class="rich-table-subheadercell  " scope="col" id="main_content:j_id83:projectList:j_id99header"
-                        onclick="A4J.AJAX.Submit('main_content:j_id83',event,{'similarityGroupingId':'main_content:j_id83:projectList','parameters':{'fsp':'main_content:j_id83:projectList:j_id99','main_content:j_id83:projectList':'fsp'} ,'actionUrl':'/project/list'} )"
-                        style="cursor: pointer;">
-                        <div id="main_content:j_id83:projectList:j_id99header:sortDiv"><span
-                                class="rich-table-sortable-header">Project Name<img
-                                src="sort.gif"
-                                alt="" width="15" height="15" class="rich-sort-icon"></span></div>
-                    </th>
-                    <th class="rich-table-subheadercell  " scope="col" id="main_content:j_id83:projectList:j_id104header">
-                        <div id="main_content:j_id83:projectList:j_id104header:sortDiv">Description</div>
-                    </th>
-                    <th class="rich-table-subheadercell  " scope="col" id="main_content:j_id83:projectList:j_id107header"
-                        onclick="A4J.AJAX.Submit('main_content:j_id83',event,{'similarityGroupingId':'main_content:j_id83:projectList','parameters':{'fsp':'main_content:j_id83:projectList:j_id107','main_content:j_id83:projectList':'fsp'} ,'actionUrl':'/project/list'} )"
-                        style="cursor: pointer;">
-                        <div id="main_content:j_id83:projectList:j_id107header:sortDiv"><span
-                                class="rich-table-sortable-header">Creation Date<img
-                                src="sort.gif"
-                                alt="" width="15" height="15" class="rich-sort-icon"></span></div>
-                    </th>
-                    <th class="rich-table-subheadercell  " scope="col" id="main_content:j_id83:projectList:j_id110header"
-                        onclick="A4J.AJAX.Submit('main_content:j_id83',event,{'similarityGroupingId':'main_content:j_id83:projectList','parameters':{'fsp':'main_content:j_id83:projectList:j_id110','main_content:j_id83:projectList':'fsp'} ,'actionUrl':'/project/list'} )"
-                        style="cursor: pointer;">
-                        <div id="main_content:j_id83:projectList:j_id110header:sortDiv"><span
-                                class="rich-table-sortable-header">Status<img
-                                src="sort.gif"
-                                alt="" width="15" height="15" class="rich-sort-icon"></span></div>
-                    </th>
-                </tr>
-                </thead>
-                <tbody id="main_content:j_id83:projectList:tb">
-                <tr class="rich-table-row rich-table-firstrow ">
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:0:j_id99" width="270px"><a
-                            href="/project/view/alex-test" id="main_content:j_id83:projectList:0:project"
-                            class="table_link">alex-test</a></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:0:j_id104" width="270px">alex-test
-                        description
-                    </td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:0:j_id107" width="auto">May 30, 2012
-                    </td>
-                    <td class="rich-table-cell centered" id="main_content:j_id83:projectList:0:j_id110" width="60px">
-                        Active
-                    </td>
-                </tr>
-                <tr class="rich-table-row ">
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:1:j_id99" width="270px"><a
-                            href="/project/view/Tar" id="main_content:j_id83:projectList:1:project" class="table_link">GNU
-                        Tar</a></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:1:j_id104" width="270px"></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:1:j_id107" width="auto">May 10, 2012
-                    </td>
-                    <td class="rich-table-cell centered" id="main_content:j_id83:projectList:1:j_id110" width="60px">
-                        Active
-                    </td>
-                </tr>
-                <tr class="rich-table-row ">
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:2:j_id99" width="270px"><a
-                            href="/project/view/testproject" id="main_content:j_id83:projectList:2:project"
-                            class="table_link">test project</a></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:2:j_id104" width="270px"></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:2:j_id107" width="auto">May 8, 2012
-                    </td>
-                    <td class="rich-table-cell centered" id="main_content:j_id83:projectList:2:j_id110" width="60px">
-                        Active
-                    </td>
-                </tr>
-                <tr class="rich-table-row ">
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:3:j_id99" width="270px"><a
-                            href="/project/view/plural" id="main_content:j_id83:projectList:3:project" class="table_link">plural</a>
-                    </td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:3:j_id104" width="270px">plural</td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:3:j_id107" width="auto">Apr 18, 2012
-                    </td>
-                    <td class="rich-table-cell centered" id="main_content:j_id83:projectList:3:j_id110" width="60px">
-                        Active
-                    </td>
-                </tr>
-                <tr class="rich-table-row ">
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:4:j_id99" width="270px"><a
-                            href="/project/view/java-var-test" id="main_content:j_id83:projectList:4:project"
-                            class="table_link">java-var-test</a></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:4:j_id104" width="270px">
-                        java-var-test
-                    </td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:4:j_id107" width="auto">Mar 28, 2012
-                    </td>
-                    <td class="rich-table-cell centered" id="main_content:j_id83:projectList:4:j_id110" width="60px">
-                        Active
-                    </td>
-                </tr>
-                <tr class="rich-table-row ">
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:5:j_id99" width="270px"><a
-                            href="/project/view/SomeProject1" id="main_content:j_id83:projectList:5:project"
-                            class="table_link">Some Project 1</a></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:5:j_id104" width="270px">Description of
-                        Some Project
-                    </td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:5:j_id107" width="auto">Mar 20, 2012
-                    </td>
-                    <td class="rich-table-cell centered" id="main_content:j_id83:projectList:5:j_id110" width="60px">
-                        Active
-                    </td>
-                </tr>
-                <tr class="rich-table-row ">
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:6:j_id99" width="270px"><a
-                            href="/project/view/test" id="main_content:j_id83:projectList:6:project"
-                            class="table_link">Test</a></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:6:j_id104" width="270px"></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:6:j_id107" width="auto">Mar 20, 2012
-                    </td>
-                    <td class="rich-table-cell centered" id="main_content:j_id83:projectList:6:j_id110" width="60px">
-                        Active
-                    </td>
-                </tr>
-                <tr class="rich-table-row ">
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:7:j_id99" width="270px"><a
-                            href="/project/view/SOA-GSG" id="main_content:j_id83:projectList:7:project" class="table_link">SOA
-                        Getting Started Guide</a></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:7:j_id104" width="270px"></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:7:j_id107" width="auto">Mar 1, 2012
-                    </td>
-                    <td class="rich-table-cell centered" id="main_content:j_id83:projectList:7:j_id110" width="60px">
-                        Active
-                    </td>
-                </tr>
-                <tr class="rich-table-row ">
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:8:j_id99" width="270px"><a
-                            href="/project/view/python-merge-test" id="main_content:j_id83:projectList:8:project"
-                            class="table_link">PythonMergeTest</a></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:8:j_id104" width="270px"></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:8:j_id107" width="auto">Feb 22, 2012
-                    </td>
-                    <td class="rich-table-cell centered" id="main_content:j_id83:projectList:8:j_id110" width="60px">
-                        Active
-                    </td>
-                </tr>
-                <tr class="rich-table-row ">
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:9:j_id99" width="270px"><a
-                            href="/project/view/delete-test2" id="main_content:j_id83:projectList:9:project"
-                            class="table_link">Python</a></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:9:j_id104" width="270px"></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:9:j_id107" width="auto">Feb 22, 2012
-                    </td>
-                    <td class="rich-table-cell centered" id="main_content:j_id83:projectList:9:j_id110" width="60px">
-                        Active
-                    </td>
-                </tr>
-                <tr class="rich-table-row ">
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:10:j_id99" width="270px"><a
-                            href="/project/view/delete-test" id="main_content:j_id83:projectList:10:project"
-                            class="table_link">Python Delete Test</a></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:10:j_id104" width="270px"></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:10:j_id107" width="auto">Feb 22, 2012
-                    </td>
-                    <td class="rich-table-cell centered" id="main_content:j_id83:projectList:10:j_id110" width="60px">
-                        Active
-                    </td>
-                </tr>
-                <tr class="rich-table-row ">
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:11:j_id99" width="270px"><a
-                            href="/project/view/prop-test" id="main_content:j_id83:projectList:11:project"
-                            class="table_link">Sample Properties</a></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:11:j_id104" width="270px">Tests for
-                        UTF-8 characters.
-                    </td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:11:j_id107" width="auto">Feb 21, 2012
-                    </td>
-                    <td class="rich-table-cell centered" id="main_content:j_id83:projectList:11:j_id110" width="60px">
-                        Active
-                    </td>
-                </tr>
-                <tr class="rich-table-row ">
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:12:j_id99" width="270px"><a
-                            href="/project/view/python-test" id="main_content:j_id83:projectList:12:project"
-                            class="table_link">BOB</a></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:12:j_id104" width="270px">THINGY</td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:12:j_id107" width="auto">Feb 21, 2012
-                    </td>
-                    <td class="rich-table-cell centered" id="main_content:j_id83:projectList:12:j_id110" width="60px">
-                        Active
-                    </td>
-                </tr>
-                <tr class="rich-table-row ">
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:13:j_id99" width="270px"><a
-                            href="/project/view/pyclient-test" id="main_content:j_id83:projectList:13:project"
-                            class="table_link">Python client test</a></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:13:j_id104" width="270px"></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:13:j_id107" width="auto">Feb 20, 2012
-                    </td>
-                    <td class="rich-table-cell centered" id="main_content:j_id83:projectList:13:j_id110" width="60px">
-                        Active
-                    </td>
-                </tr>
-                <tr class="rich-table-row ">
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:14:j_id99" width="270px"><a
-                            href="/project/view/validation-test" id="main_content:j_id83:projectList:14:project"
-                            class="table_link">ValidationTest</a></td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:14:j_id104" width="270px">
-                        ValidationTestProject
-                    </td>
-                    <td class="rich-table-cell " id="main_content:j_id83:projectList:14:j_id107" width="auto">Feb 20, 2012
-                    </td>
-                    <td class="rich-table-cell centered" id="main_content:j_id83:projectList:14:j_id110" width="60px">
-                        Active
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <!-- Spacer -->
-            <img alt="" class="rich-spacer " height="15" id="main_content:j_id83:j_id113" src="/a4j/g/3_3_3.Finalimages/spacer.gif" width="1">
-            <!-- Data scroller -->
-            <div class="rich-datascr " id="main_content:j_id83:sc2" style=" " align="center">
-                <table border="0" cellpadding="0" cellspacing="1" class="rich-dtascroller-table "
-                       id="main_content:j_id83:sc2_table" style="text-align:center">
-                    <tbody>
-                    <tr>
-                        <td class="rich-datascr-button-dsbld rich-datascr-button">&#171;&#171;</td>
-                        <td class="rich-datascr-button-dsbld rich-datascr-button">&#171;</td>
-                        <td class="rich-datascr-button-dsbld rich-datascr-button"></td>
-                        <td class="rich-datascr-act ">1</td>
-                        <td class="rich-datascr-inact "
-                            onclick="Event.fire(this, 'rich:datascroller:onscroll', {'page': '2'});">2
-                        </td>
-                        <td class="rich-datascr-inact "
-                            onclick="Event.fire(this, 'rich:datascroller:onscroll', {'page': '3'});">3
-                        </td>
-                        <td class="rich-datascr-inact "
-                            onclick="Event.fire(this, 'rich:datascroller:onscroll', {'page': '4'});">4
-                        </td>
-                        <td class=" rich-datascr-button"
-                            onclick="Event.fire(this, 'rich:datascroller:onscroll', {'page': 'next'});"></td>
-                        <td class=" rich-datascr-button"
-                            onclick="Event.fire(this, 'rich:datascroller:onscroll', {'page': 'fastforward'});">&#187;
-                        </td>
-                        <td class=" rich-datascr-button"
-                            onclick="Event.fire(this, 'rich:datascroller:onscroll', {'page': 'last'});">&#187;&#187;
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <h3>Button Panels</h3>
-
-        <div style="margin-left: 10px; margin-bottom: 10px; width: 200px;">
-            <div class="rich-panel" id="loggedIn">
-                <div class="rich-panel-header " id="loggedIn_header">Actions</div>
-                <div class="rich-panel-body " id="loggedIn_body">
-                    <a href="/project/edit/?slug=alex-test" id="j_id115"
-                       class="genericButton redBtn smallBtn">Edit Project
-                    </a>
-                    <a href="/project/homepage_edit.seam?slug=alex-test" id="j_id117"
-                       title="Edit the Project's home page code as persisted. Useful when the home page cannot be edited via the project edit page."
-                       class="genericButton redBtn smallBtn">
-                        Edit Page Code
-                    </a>
-                    <a href="/project/add_iteration.seam?projectSlug=alex-test" id="j_id119" class="genericButton redBtn smallBtn">
-                        Create Version
-                    </a>
-                    <a href="/project/maintainer/?projectSlug=alex-test" id="j_id121" class="genericButton redBtn smallBtn">
-                        Manage Maintainers
-                    </a>
-                </div>
-            </div>
-        </div>
-
-    </div>
+	<div class="footer">
+		<div>
+			Copyright 2008-12 <a href="http://www.redhat.com/">Red Hat, Inc</a> and others.. Powered by <a href="http://zanata.org/">Zanata version 2.0</a> 
+		</div>
+	</div>
 </body>
 
 </html>
