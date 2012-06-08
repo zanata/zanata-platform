@@ -1,12 +1,7 @@
 #container {
-	width: 900px;
+	width: 1024px;
 	margin: 0 auto;
 	background-color: #ffffff;
-}
-
-#localeSelector {
-	float: left;
-	width: 100px;
 }
 
 #yui-main {
@@ -335,27 +330,42 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 /* ----------------------- End Header CSS  -------------------------*/
 
 /* -----------------------  Footer CSS  -------------------------*/
-#ft {
-	background: url('../images/footer_background.png') 0 0 repeat-x;
-	-moz-border-radius-bottomright: 5px;
-	-moz-border-radius-bottomleft: 5px;
-	border-bottom-right-radius: 5px;
-	border-bottom-left-radius: 5px;
-	float: left;
-}
 
-#footer {
+.footer
+{
 	width: 100%;
-	line-height: 20px;
-	text-align: center;
-	padding-top: 10px;
+	height: 34px;
+	background: -webkit-linear-gradient(top, #1A2D45  0%,  #354F71 100%);
+	background: -moz-linear-gradient(top, #1A2D45 0%, #354F71 100%);
+	background: -o-linear-gradient(top, #1A2D45 0%, #354F71 100%);
+	background: -ms-linear-gradient(top, #1A2D45 0%,#354F71 100%);
+	position:fixed;
+	bottom:0px;
+	color:#D3D3D3;
+	text-align:center;
 }
 
-#footer-text {
-	float: left;
-	margin-left: 100px;
-	width: 700px;
+.footer a
+{
+	color:#D3D3D3;
+	font-weight:bold;
+	text-decoration:none;
 }
+
+.footer a:hover
+{
+	color:white;
+}
+
+.footer #localeSelector {
+	float: right;
+}
+
+.footer div
+{
+	display:inline-table;
+}
+
 /* -----------------------  End Footer CSS  -------------------------*/
 
 /* -----------------------  Loading Frame CSS (loading.xhtml)  -------------------------*/
