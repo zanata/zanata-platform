@@ -51,8 +51,8 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.SelectionModel;
+import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.inject.Inject;
 
 /**
@@ -262,10 +262,10 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
-   public HasData<TransUnitReplaceInfo> addDocument(String docName,
+   public ListDataProvider<TransUnitReplaceInfo> addDocument(String docName,
          ClickHandler viewDocClickHandler,
          ClickHandler searchDocClickHandler,
-         SelectionModel<TransUnitReplaceInfo> selectionModel,
+         MultiSelectionModel<TransUnitReplaceInfo> selectionModel,
          ValueChangeHandler<Boolean> selectAllHandler)
    {
       SearchResultsDocumentTable table = new SearchResultsDocumentTable(selectionModel, selectAllHandler, messages);
@@ -273,10 +273,10 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
-   public HasData<TransUnitReplaceInfo> addDocument(String docName,
+   public ListDataProvider<TransUnitReplaceInfo> addDocument(String docName,
          ClickHandler viewDocClickHandler,
          ClickHandler searchDocClickHandler,
-         SelectionModel<TransUnitReplaceInfo> selectionModel,
+         MultiSelectionModel<TransUnitReplaceInfo> selectionModel,
          ValueChangeHandler<Boolean> selectAllHandler,
          Delegate<TransUnitReplaceInfo> previewDelegate,
          Delegate<TransUnitReplaceInfo> replaceDelegate,
@@ -293,14 +293,17 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
  * @param table
  * @return
  */
-private HasData<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, SearchResultsDocumentTable table)
+private ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, SearchResultsDocumentTable table)
 {
    // ensure 'no results' message is no longer visible
    noResultsLabel.removeFromParent();
    addDocumentLabel(docName, viewDocClickHandler, searchDocClickHandler);
    searchResultsPanel.add(table);
    table.addStyleName("projectWideSearchResultsDocumentBody");
-   return table;
+
+   ListDataProvider<TransUnitReplaceInfo> dataProvider = new ListDataProvider<TransUnitReplaceInfo>();
+   dataProvider.addDataDisplay(table);
+   return dataProvider;
 }
 
    private void addDocumentLabel(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler)
