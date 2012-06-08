@@ -21,9 +21,9 @@
 
 package org.zanata.webtrans.client.presenter;
 
+import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEventHandler;
-import org.zanata.webtrans.client.rpc.NoOpAsyncCallback;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TransUnitsDataModel;
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
@@ -40,12 +40,9 @@ import org.zanata.webtrans.client.view.TransUnitEditDisplay;
 import org.zanata.webtrans.client.view.TransUnitListDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
-import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
-import org.zanata.webtrans.shared.rpc.TransUnitEditResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.gwt.user.cellview.client.LoadingStateChangeEvent;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.inject.Inject;
 
@@ -72,8 +69,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    private final TransUnitSaveService saveService;
    private final TranslatorInteractionService translatorService;
    private final TransUnitsDataModel dataModel;
-
-   private TransUnit selectedTransUnit = null;
 
    //TODO too many constructor dependency
    @Inject
@@ -145,7 +140,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onSelectionChange(SelectionChangeEvent event)
    {
-      selectedTransUnit = dataModel.getSelectedOrNull();
+      TransUnit selectedTransUnit = dataModel.getSelectedOrNull();
       if (selectedTransUnit != null)
       {
          Log.debug("selected: " + selectedTransUnit.getId());
@@ -182,13 +177,18 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onTransUnitSave(final TransUnitSaveEvent event)
    {
+      TransUnit selected = dataModel.getSelectedOrNull();
+      if (selected == null)
+      {
+         return;
+      }
       if (event == TransUnitSaveEvent.CANCEL_EDIT_EVENT)
       {
-         targetContentsPresenter.setValue(selectedTransUnit, null);
+         targetContentsPresenter.setValue(selected, null);
       }
-      else if (hasStateChange(event))
+      else if (hasStateChange(event, selected))
       {
-         proceedToSave(event);
+         proceedToSave(event, selected);
       }
       else if (event.andMove())
       {
@@ -197,16 +197,19 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       }
    }
 
-   private boolean hasStateChange(TransUnitSaveEvent event)
+   private boolean hasStateChange(TransUnitSaveEvent event, TransUnit selected)
    {
       //check whether target contents or status has changed
-      return !(selectedTransUnit.getStatus() == event.getStatus() && Objects.equal(targetContentsPresenter.getNewTargets(), selectedTransUnit.getTargets()));
+      return !(selected.getStatus() == event.getStatus() && Objects.equal(targetContentsPresenter.getNewTargets(), selected.getTargets()));
    }
 
-   private void proceedToSave(final TransUnitSaveEvent event)
+   private void proceedToSave(final TransUnitSaveEvent event, TransUnit selected)
    {
-      targetContentsPresenter.setToViewMode();
-      saveService.saveTranslation(selectedTransUnit, targetContentsPresenter.getNewTargets(), event.getStatus(), new TransUnitSaveService.SaveResultCallback()
+      if (event.getStatus() != ContentState.NeedReview)
+      {
+         targetContentsPresenter.setToViewMode();
+      }
+      saveService.saveTranslation(selected, targetContentsPresenter.getNewTargets(), event.getStatus(), new TransUnitSaveService.SaveResultCallback()
       {
          @Override
          public void onSaveSuccess(TransUnit updatedTU)

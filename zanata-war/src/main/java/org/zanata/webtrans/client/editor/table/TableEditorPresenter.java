@@ -430,7 +430,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          }
       }));
 
-      registerHandler(eventBus.addHandler(NavTransUnitEvent.getType(), new NavTransUnitHandler()
+      /*registerHandler(eventBus.addHandler(NavTransUnitEvent.getType(), new NavTransUnitHandler()
       {
          @Override
          public void onNavTransUnit(NavTransUnitEvent event)
@@ -476,7 +476,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
 
             }
          }
-      }));
+      }));*/
 
       registerHandler(eventBus.addHandler(TransUnitEditEvent.getType(), new TransUnitEditEventHandler()
       {

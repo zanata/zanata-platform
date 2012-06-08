@@ -33,6 +33,7 @@ import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NativeEvent;
+import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;

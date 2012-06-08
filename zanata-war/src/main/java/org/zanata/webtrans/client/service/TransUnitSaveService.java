@@ -24,7 +24,6 @@ package org.zanata.webtrans.client.service;
 import java.util.List;
 
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -62,6 +61,7 @@ public class TransUnitSaveService
    {
       TransUnitUpdated.UpdateType updateType = status == ContentState.Approved ? TransUnitUpdated.UpdateType.WebEditorSave : TransUnitUpdated.UpdateType.WebEditorSaveFuzzy;
       final UpdateTransUnit updateTransUnit = new UpdateTransUnit(new TransUnitUpdateRequest(old.getId(), newTargets, status, old.getVerNum()), updateType);
+      Log.info("about to update TU: " + updateTransUnit);
       eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifySaving()));
       dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
       {
@@ -76,11 +76,12 @@ public class TransUnitSaveService
          @Override
          public void onSuccess(UpdateTransUnitResult result)
          {
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved()));
             // FIXME check result.success
             TransUnit updatedTU = result.getUpdateInfoList().get(0).getTransUnit();
+            Log.info("update resulted TU: " + updatedTU.debugString());
             if (result.isSingleSuccess())
             {
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved()));
                callback.onSaveSuccess(updatedTU);
             }
             else

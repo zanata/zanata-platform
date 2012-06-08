@@ -109,8 +109,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private boolean isModalNavEnabled;
 
    private final Identity identity;
-   private final UserWorkspaceContext userWorkspaceContext;
-   private final CachingDispatchAsync dispatcher;
 
    private boolean enterSavesApprovedRegistered;
    private boolean escClosesEditorRegistered;
@@ -127,7 +125,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private final KeyShortcut prevStateShortcut;
 
    @Inject
-   public TargetContentsPresenter(TargetContentsDisplay display, final CachingDispatchAsync dispatcher, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final UserSessionService sessionService, final UserConfigHolder configHolder, UserWorkspaceContext userWorkspaceContext, ValidationMessagePanelDisplay validationMessagePanel, final KeyShortcutPresenter keyShortcutPresenter,  TranslationHistoryPresenter historyPresenter)
+   public TargetContentsPresenter(TargetContentsDisplay display, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final UserSessionService sessionService,final UserConfigHolder configHolder, UserWorkspaceContext userWorkspaceContext, ValidationMessagePanelDisplay validationMessagePanel, final KeyShortcutPresenter keyShortcutPresenter, TranslationHistoryPresenter historyPresenter)
    {
       currentDisplay = display;
       currentDisplay.setListener(this);
@@ -140,11 +138,9 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       this.messages = messages;
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.configHolder = configHolder;
-      this.userWorkspaceContext = userWorkspaceContext;
       this.validationMessagePanel = validationMessagePanel;
       this.sessionService = sessionService;
       this.identity = identity;
-      this.dispatcher = dispatcher;
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.historyPresenter = historyPresenter;
       this.historyPresenter.setCurrentValueHolder(this);
@@ -363,15 +359,16 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          editor.clearTranslatorList();
          validate(editor);
       }
-      
+      currentDisplay.showButtons(isDisplayButtons());
       revealDisplay();
       
       if (currentEditorIndex == LAST_INDEX)
       {
          currentEditorIndex = currentEditors.size() - 1;
       }
-      else
+      else if (currentEditorIndex < 0 || currentEditorIndex >= currentEditors.size())
       {
+         Log.warn("editor index is invalid:" + currentEditorIndex + ". Set to 0");
          currentEditorIndex = 0;
       }
 
@@ -704,11 +701,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    public void moveToNextState(final NavTransUnitEvent.NavigationType nav)
    {
       eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.Approved).andMoveTo(nav));
-   }
-
-   public void saveAndMoveRow(NavTransUnitEvent.NavigationType nav)
-   {
-//      cellEditor.saveAndMoveRow(nav);
    }
 
    @Override

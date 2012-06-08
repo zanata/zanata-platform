@@ -31,6 +31,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitProvidesKey;
 import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Collections2;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -42,6 +43,8 @@ import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import static org.zanata.webtrans.shared.model.TransUnitProvidesKey.KEY_PROVIDER;
 
 /**
 * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -56,16 +59,18 @@ public class TransUnitsDataModel extends ListDataProvider<TransUnit>
 
    private final SingleSelectionModel<TransUnit> selectionModel;
 
+   private TransUnit cachedSelection = null;
+
    public TransUnitsDataModel()
    {
-      super(TransUnitProvidesKey.KEY_PROVIDER);
-      selectionModel = new SingleSelectionModel<TransUnit>(TransUnitProvidesKey.KEY_PROVIDER);
+      super(KEY_PROVIDER);
+      selectionModel = new SingleSelectionModel<TransUnit>(KEY_PROVIDER);
    }
 
    //for testing
    TransUnitsDataModel(SingleSelectionModel<TransUnit> selectionModel)
    {
-      super(TransUnitProvidesKey.KEY_PROVIDER);
+      super(KEY_PROVIDER);
       this.selectionModel = selectionModel;
    }
 
@@ -76,7 +81,17 @@ public class TransUnitsDataModel extends ListDataProvider<TransUnit>
 
    public TransUnit getSelectedOrNull()
    {
-      return selectionModel.getSelectedObject();
+      // the reason we need to have our own cached TransUnit is:
+      // when save as fuzzy, the selection won't change and selectionModel will return a obsolete cache with wrong version number
+      // isSelected only compares key (TransUnitId) to see whether to return its own cached selection
+      if (selectionModel.isSelected(cachedSelection))
+      {
+         return cachedSelection;
+      }
+      else
+      {
+         return selectionModel.getSelectedObject();
+      }
    }
 
    public HandlerRegistration addSelectionChangeHandler(SelectionChangeEvent.Handler handler)
@@ -108,19 +123,17 @@ public class TransUnitsDataModel extends ListDataProvider<TransUnit>
       selectionModel.setSelected(toBeSelected, true);
    }
 
-   public boolean update(TransUnit updatedTU)
+   public void update(TransUnit updatedTU)
    {
       for (int i = 0; i < getList().size(); i++)
       {
          TransUnit unit = getList().get(i);
-         if (unit.getId().equals(updatedTU.getId()))
+         if (Objects.equal(getKey(unit), getKey(updatedTU)))
          {
             Log.info("update TU at row " + i);
             getList().set(i, updatedTU);
-            return true;
+            cachedSelection = updatedTU;
          }
       }
-      Log.warn("can not find TU to update. updated TU id:" + updatedTU.getId());
-      return false;
    }
 }

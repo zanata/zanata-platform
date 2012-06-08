@@ -28,7 +28,6 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -49,7 +48,6 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
-import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
@@ -70,9 +68,7 @@ import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.GwtEvent;
 
 @Test(groups = { "unit-tests" })
@@ -101,18 +97,15 @@ public class TargetContentsPresenterTest
 
    @Mock
    private UserSessionService sessionService;
-   
-   @Mock
-   private CachingDispatchAsync dispatcher;
+
    @Mock
    private TranslationHistoryPresenter historyPresenter;
-
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TargetContentsPresenter(display, dispatcher, identity, eventBus, tableEditorMessages, sourceContentPresenter, sessionService, configHolder, userWorkspaceContext, validationPanel, keyShortcutPresenter, historyPresenter);
+      presenter = new TargetContentsPresenter(display, identity, eventBus, tableEditorMessages, sourceContentPresenter, sessionService, configHolder, userWorkspaceContext, validationPanel, keyShortcutPresenter, historyPresenter);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.getType(), presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
@@ -128,9 +121,6 @@ public class TargetContentsPresenterTest
    @Test
    public void canSetToViewMode() 
    {
-      //given show editor at row 0
-      presenter.showEditors(-1);
-
       presenter.setToViewMode();
 
       verify(display).setToView();
