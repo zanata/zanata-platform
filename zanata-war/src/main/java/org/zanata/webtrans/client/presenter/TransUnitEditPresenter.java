@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.presenter;
 
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEventHandler;
+import org.zanata.webtrans.client.rpc.NoOpAsyncCallback;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TransUnitsDataModel;
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
@@ -34,13 +35,17 @@ import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.client.service.TranslatorInteractionService;
 import org.zanata.webtrans.client.view.TransUnitEditDisplay;
 import org.zanata.webtrans.client.view.TransUnitListDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
+import org.zanata.webtrans.shared.rpc.TransUnitEditResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.gwt.user.cellview.client.LoadingStateChangeEvent;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.inject.Inject;
 
@@ -65,6 +70,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    private final SourceContentsPresenter sourceContentsPresenter;
    private final TargetContentsPresenter targetContentsPresenter;
    private final TransUnitSaveService saveService;
+   private final TranslatorInteractionService translatorService;
    private final TransUnitsDataModel dataModel;
 
    private TransUnit selectedTransUnit = null;
@@ -76,6 +82,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
                                  SourceContentsPresenter sourceContentsPresenter,
                                  TargetContentsPresenter targetContentsPresenter,
                                  TransUnitSaveService saveService,
+                                 TranslatorInteractionService translatorService,
                                  WorkspaceContext workspaceContext)
    {
       super(display, eventBus);
@@ -86,6 +93,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.targetContentsPresenter = targetContentsPresenter;
       this.saveService = saveService;
+      this.translatorService = translatorService;
 
       initViewOnWorkspaceContext(workspaceContext.isReadOnly());
 
@@ -145,6 +153,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
          targetContentsPresenter.setValue(selectedTransUnit, null);
          sourceContentsPresenter.selectedSource();
          targetContentsPresenter.showEditors(0);
+         translatorService.transUnitSelected(selectedTransUnit);
       }
    }
 

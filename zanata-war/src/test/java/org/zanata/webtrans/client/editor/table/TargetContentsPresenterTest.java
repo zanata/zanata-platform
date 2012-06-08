@@ -33,8 +33,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import javax.inject.Provider;
+import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
@@ -46,6 +45,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
@@ -54,6 +54,7 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
+import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
@@ -69,6 +70,7 @@ import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -76,19 +78,15 @@ import com.google.gwt.event.shared.GwtEvent;
 @Test(groups = { "unit-tests" })
 public class TargetContentsPresenterTest
 {
-   public static final int PAGE_SIZE = 2;
    private TargetContentsPresenter presenter;
 
-   @Mock private Provider<TargetContentsDisplay> displayProvider;
    @Mock private EventBus eventBus;
    @Mock private TableEditorMessages tableEditorMessages;
    @Mock private SourceContentsPresenter sourceContentPresenter;
    @Mock private KeyShortcutPresenter keyShortcutPresenter;
    @Mock private NavigationMessages navMessages;
    @Mock private UserWorkspaceContext userWorkspaceContext;
-   @Mock private Scheduler scheduler;
-   @Mock private TargetContentsDisplay display1;
-   @Mock private TargetContentsDisplay display2;
+   @Mock private TargetContentsDisplay display;
    @Mock private ValidationMessagePanelDisplay validationPanel;
    @Mock
    private ToggleEditor editor, editor2, editor3;
@@ -96,7 +94,6 @@ public class TargetContentsPresenterTest
    private Identity identity;
    @Mock private TransUnit transUnit;
    @Mock private UserConfigHolder configHolder;
-   @Mock private TransUnitsEditModel cellEditor;
 
    private final ArrayList<String> targetContents = Lists.newArrayList("", "");
    @Captor private ArgumentCaptor<RunValidationEvent> runValidationEventCaptor;
@@ -115,7 +112,7 @@ public class TargetContentsPresenterTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TargetContentsPresenter(displayProvider, dispatcher, identity, eventBus, tableEditorMessages, sourceContentPresenter, sessionService, configHolder, userWorkspaceContext, scheduler, validationPanel, keyShortcutPresenter, historyPresenter);
+      presenter = new TargetContentsPresenter(display, dispatcher, identity, eventBus, tableEditorMessages, sourceContentPresenter, sessionService, configHolder, userWorkspaceContext, validationPanel, keyShortcutPresenter, historyPresenter);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.getType(), presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
@@ -125,13 +122,7 @@ public class TargetContentsPresenterTest
       verify(eventBus).addHandler(TransUnitEditEvent.getType(), presenter);
       verify(eventBus).addHandler(EnableModalNavigationEvent.getType(), presenter);
 
-      presenter.setCellEditor(cellEditor);
-
-      when(displayProvider.get()).thenReturn(display1).thenReturn(display2);
-      presenter.initWidgets();
-
-      verify(display1).setListener(presenter);
-      verify(display2).setListener(presenter);
+      verify(display).setListener(presenter);
    }
 
    @Test
@@ -142,50 +133,28 @@ public class TargetContentsPresenterTest
 
       presenter.setToViewMode();
 
-      verify(display1).setToView();
-      verify(display1).showButtons(false);
-      verifyZeroInteractions(display2);
+      verify(display).setToView();
+      verify(display).showButtons(false);
    }
 
    @Test
-   public void canGetNextTargetContentsDisplay() 
+   public void canSetValueToDisplay()
    {
       //given NOT read only mode, enter NOT as save
       String buttonTitle = "Save (Ctrl + Enter)";
       String findMessages = "abc";
       when(transUnit.getTargets()).thenReturn(targetContents);
-//      when(workspaceContext.isReadOnly()).thenReturn(false);
+      when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(false);
       when(configHolder.isEnterSavesApproved()).thenReturn(false);
       when(navMessages.editSaveShortcut()).thenReturn(buttonTitle);
 
       //when selecting row 1
       TargetContentsDisplay result = presenter.setValue(transUnit, findMessages);
 
-      assertThat(result, sameInstance(display1));
-      verify(display1).setTargets(targetContents);
-      verify(display1).setFindMessage(findMessages);
-      verifyNoMoreInteractions(display1);
-      verifyZeroInteractions(display2);
-   }
-
-   @Test
-   public void canGetNextTargetContentsDisplayWithDifferentButtonTitle() 
-   {
-      //given read only mode, enter as save option
-      String buttonTitle = "Save (Enter)";
-      String findMessages = "abc";
-      when(transUnit.getTargets()).thenReturn(targetContents);
-      when(configHolder.isEnterSavesApproved()).thenReturn(true);
-      when(navMessages.editSaveWithEnterShortcut()).thenReturn(buttonTitle);
-
-      //when selecting row 2
-      TargetContentsDisplay result = presenter.setValue(transUnit, findMessages);
-
-      assertThat(result, sameInstance(display2));
-      verify(display2).setTargets(targetContents);
-      verify(display2).setFindMessage(findMessages);
-      verifyNoMoreInteractions(display2);
-      verifyZeroInteractions(display1);
+      assertThat(result, sameInstance(display));
+      verify(display).setTargets(targetContents);
+      verify(display).setFindMessage(findMessages);
+      verifyNoMoreInteractions(display);
    }
 
    @Test
@@ -219,9 +188,14 @@ public class TargetContentsPresenterTest
    @Test
    public void canSaveAsFuzzy()
    {
+      when(display.getNewTargets()).thenReturn(targetContents);
       presenter.saveAsFuzzy();
 
-      verify(cellEditor).acceptFuzzyEdit();
+      ArgumentCaptor<TransUnitSaveEvent> captor = ArgumentCaptor.forClass(TransUnitSaveEvent.class);
+      verify(eventBus).fireEvent(captor.capture());
+      TransUnitSaveEvent event = captor.getValue();
+      assertThat(event.getTargets(), Matchers.<List<String>>equalTo(targetContents));
+      assertThat(event.getStatus(), equalTo(ContentState.NeedReview));
    }
 
    @Test
@@ -234,21 +208,10 @@ public class TargetContentsPresenterTest
 
       verify(editor).setTextAndValidate("source");
       verify(editor).setViewMode(ToggleEditor.ViewMode.EDIT);
-      verify(display1).showButtons(true);
+      verify(display).showButtons(true);
       verify(editor).autoSize();
       verify(editor).setFocus();
       verify(eventBus).fireEvent(isA(NotificationEvent.class));
-   }
-
-   @Test
-   public void toggleViewIsDeferredExecuted()
-   {
-      when(editor.getIndex()).thenReturn(99);
-      presenter.showEditors(TargetContentsPresenter.NO_OPEN_EDITOR);
-
-      presenter.toggleView(editor);
-
-      verify(display1).focusEditor(99);
    }
 
    @Test
@@ -265,7 +228,7 @@ public class TargetContentsPresenterTest
    public void canGetNewTargets()
    {
       presenter.showEditors(TargetContentsPresenter.NO_OPEN_EDITOR);
-      when(display2.getNewTargets()).thenReturn(targetContents);
+      when(display.getNewTargets()).thenReturn(targetContents);
 
       ArrayList<String> result = presenter.getNewTargets();
 
@@ -287,8 +250,7 @@ public class TargetContentsPresenterTest
 
       presenter.onValueChanged(new UserConfigChangeEvent());
 
-      verify(display1).showButtons(configHolder.isDisplayButtons());
-      verify(display2).showButtons(configHolder.isDisplayButtons());
+      verify(display).showButtons(configHolder.isDisplayButtons());
    }
 
    @Test
@@ -317,50 +279,17 @@ public class TargetContentsPresenterTest
 
    private void givenCurrentEditorsAs(ToggleEditor... currentEditors)
    {
-      when(display1.getEditors()).thenReturn(Lists.newArrayList(currentEditors));
-      when(display1.isEditing()).thenReturn(true);
+      when(display.getEditors()).thenReturn(Lists.newArrayList(currentEditors));
+      when(display.isEditing()).thenReturn(true);
       presenter.showEditors(0);
-   }
-
-   @Test
-   public void canSaveAndMoveRow()
-   {
-      presenter.saveAndMoveRow(NavTransUnitEvent.NavigationType.NextEntry);
-
-      verify(cellEditor).saveAndMoveRow(NavTransUnitEvent.NavigationType.NextEntry);
    }
 
    @Test
    public void onCancelCanResetTextBack()
    {
-      givenCurrentEditorsAs(editor, editor2, editor3);
-      when(cellEditor.getTargetCell()).thenReturn(transUnit);
-      when(transUnit.getTargets()).thenReturn(Lists.newArrayList("a", "b", "c"));
-      when(editor.getIndex()).thenReturn(0);
-      when(editor2.getIndex()).thenReturn(1);
-      when(editor3.getIndex()).thenReturn(2);
-
       presenter.onCancel();
 
-      verify(display1).setToView();
-      verify(editor).setTextAndValidate("a");
-      verify(editor2).setTextAndValidate("b");
-      verify(editor3).setTextAndValidate("c");
-   }
-
-   @Test
-   public void onCancelCanSetTextBackToNull()
-   {
-      givenCurrentEditorsAs(editor, editor2, editor3);
-      when(cellEditor.getTargetCell()).thenReturn(transUnit);
-      when(transUnit.getTargets()).thenReturn(null);
-
-      presenter.onCancel();
-
-      verify(display1).setToView();
-      verify(editor).setTextAndValidate(null);
-      verify(editor2).setTextAndValidate(null);
-      verify(editor3).setTextAndValidate(null);
+      verify(eventBus).fireEvent(TransUnitSaveEvent.CANCEL_EDIT_EVENT);
    }
 
    @Test

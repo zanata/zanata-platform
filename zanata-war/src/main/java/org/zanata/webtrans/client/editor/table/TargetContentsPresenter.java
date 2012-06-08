@@ -127,9 +127,9 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private final KeyShortcut prevStateShortcut;
 
    @Inject
-   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final CachingDispatchAsync dispatcher, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final UserSessionService sessionService, final UserConfigHolder configHolder, UserWorkspaceContext userWorkspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel, final KeyShortcutPresenter keyShortcutPresenter, TranslationHistoryPresenter historyPresenter)
+   public TargetContentsPresenter(TargetContentsDisplay display, final CachingDispatchAsync dispatcher, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final UserSessionService sessionService, final UserConfigHolder configHolder, UserWorkspaceContext userWorkspaceContext, ValidationMessagePanelDisplay validationMessagePanel, final KeyShortcutPresenter keyShortcutPresenter,  TranslationHistoryPresenter historyPresenter)
    {
-      currentDisplay = displayProvider.get();
+      currentDisplay = display;
       currentDisplay.setListener(this);
       if (userWorkspaceContext.hasReadOnlyAccess())
       {
@@ -352,21 +352,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
    }
 
-   private void fireTransUnitEditAction()
-   {
-      dispatcher.execute(new TransUnitEditAction(identity.getPerson(), cellEditor.getTargetCell()), new AsyncCallback<TransUnitEditResult>()
-      {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-         }
-
-         @Override
-         public void onSuccess(TransUnitEditResult result)
-         {
-         }
-      });
-   }
    public void showEditors(int editorIndex)
    {
       Log.debug("enter show editor with editor index:" + editorIndex + " current editor index:" + currentEditorIndex);
@@ -378,9 +363,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          editor.clearTranslatorList();
          validate(editor);
       }
+      
       revealDisplay();
-
-      fireTransUnitEditAction();
       
       if (currentEditorIndex == LAST_INDEX)
       {
@@ -724,7 +708,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
    public void saveAndMoveRow(NavTransUnitEvent.NavigationType nav)
    {
-      cellEditor.saveAndMoveRow(nav);
+//      cellEditor.saveAndMoveRow(nav);
    }
 
    @Override
