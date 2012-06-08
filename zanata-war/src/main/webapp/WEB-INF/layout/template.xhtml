@@ -55,7 +55,7 @@
 					<li id="userCol">
 						<s:fragment rendered="#{identity.loggedIn}">
 							<a href="#"> 
-								<h:graphicImage value="#{gravatarServiceImpl.getUserImageUrl(23)}" height="23" title="http://gravatar.com"/> 
+								<h:graphicImage value="#{gravatarServiceImpl.getUserImageUrl(23)}" height="23" title="http://gravatar.com" class="avatar"/> 
 								<span><h:outputText value="#{identity.username} " /></span>
 							</a>
 							<div class="submenu">

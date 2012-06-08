@@ -574,7 +574,7 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	margin-right: 5px;
 }
 
-#userCol img {
+#userCol img.avatar {
 	padding: 0;
 	border: 1px solid white;
 }
@@ -593,7 +593,7 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	background: #7E91A9;
 }
 
-.navBar div.submenu {
+div.submenu {
 	height: 0px;
 	position: absolute;
 	width: 170px;
@@ -615,11 +615,11 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	box-shadow: 0px 3px 4px rgba(0, 0, 0, .3);
 }
 
-.navBar div.submenu ul {
+div.submenu ul {
 	border: 1px solid lightgrey;
 }
 
-.navBar div.submenu ul li {
+div.submenu ul li {
 	display: block;
 	width: 100%;
 	float: left;
@@ -634,7 +634,7 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	background:#FFFFFF;
 }
 
-.navBar div.submenu ul li:last-child {
+div.submenu ul li:last-child {
 	border-bottom: none;
 }
 
@@ -642,7 +642,7 @@ div.submenu ul li:hover {
 	background: #BACDE5;
 }
 
-.navBar div.submenu ul li a {
+div.submenu ul li a {
 	color: #454545;
 	font-size: 12px;
 	text-shadow: none;
@@ -651,7 +651,7 @@ div.submenu ul li:hover {
 	width: 160px
 }
 
-.navBar div.submenu img {
+div.submenu img {
 	border: none;
 }
 
