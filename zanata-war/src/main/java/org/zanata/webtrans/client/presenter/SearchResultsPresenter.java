@@ -189,6 +189,13 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             Delegate<TransUnitReplaceInfo> previewDelegate,
             Delegate<TransUnitReplaceInfo> replaceDelegate,
             Delegate<TransUnitReplaceInfo> undoDelegate);
+
+      /**
+       * Required to avoid instantiating a component that calls client-only code in the presenter
+       * 
+       * @return a new selection model for use with table
+       */
+      MultiSelectionModel<TransUnitReplaceInfo> createMultiSelectionModel();
    }
 
    private final WebTransMessages messages;
@@ -1044,7 +1051,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private void displayDocumentResults(Long docId, final String docPathName, List<TransUnit> transUnits)
    {
       ListDataProvider<TransUnitReplaceInfo> dataProvider;
-      final MultiSelectionModel<TransUnitReplaceInfo> selectionModel = new MultiSelectionModel<TransUnitReplaceInfo>();
+      final MultiSelectionModel<TransUnitReplaceInfo> selectionModel = display.createMultiSelectionModel();
       documentSelectionModels.put(docId, selectionModel);
       ClickHandler showDocHandler = showDocClickHandler(docPathName, false);
       ClickHandler searchDocHandler = showDocClickHandler(docPathName, true);

@@ -346,4 +346,10 @@ private ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, Click
          searchingIndicator.hide();
       }
    }
+
+   @Override
+   public MultiSelectionModel<TransUnitReplaceInfo> createMultiSelectionModel()
+   {
+      return new MultiSelectionModel<TransUnitReplaceInfo>();
+   }
 }
