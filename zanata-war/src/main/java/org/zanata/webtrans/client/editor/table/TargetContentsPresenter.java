@@ -25,8 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Provider;
-
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
@@ -60,7 +58,6 @@ import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.TranslationHistoryPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
@@ -84,7 +81,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.*;
 
 @Singleton
@@ -102,7 +98,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
 
    private final ValidationMessagePanelDisplay validationMessagePanel;
-   private TargetContentsDisplay currentDisplay;
+   private TargetContentsDisplay display;
    private int currentEditorIndex = NO_OPEN_EDITOR;
    private ArrayList<ToggleEditor> currentEditors;
    private TransUnitsEditModel cellEditor;
@@ -127,12 +123,12 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Inject
    public TargetContentsPresenter(TargetContentsDisplay display, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final UserSessionService sessionService,final UserConfigHolder configHolder, UserWorkspaceContext userWorkspaceContext, ValidationMessagePanelDisplay validationMessagePanel, final KeyShortcutPresenter keyShortcutPresenter, TranslationHistoryPresenter historyPresenter)
    {
-      currentDisplay = display;
-      currentDisplay.setListener(this);
+      this.display = display;
+      this.display.setListener(this);
       if (userWorkspaceContext.hasReadOnlyAccess())
       {
          Log.debug("read only mode. Hide buttons");
-         currentDisplay.showButtons(false);
+         this.display.showButtons(false);
       }
       this.eventBus = eventBus;
       this.messages = messages;
@@ -336,30 +332,30 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
    public boolean isEditing()
    {
-      return currentDisplay != null && currentDisplay.isEditing();
+      return display != null && display.isEditing();
    }
 
    public void setToViewMode()
    {
-      if (currentDisplay != null)
+      if (display != null)
       {
-         currentDisplay.setToView();
-         currentDisplay.showButtons(false);
+         display.setToView();
+         display.showButtons(false);
       }
    }
 
    public void showEditors(int editorIndex)
    {
       Log.debug("enter show editor with editor index:" + editorIndex + " current editor index:" + currentEditorIndex);
-      currentEditors = currentDisplay.getEditors();
+      currentEditors = display.getEditors();
 
-      for (ToggleEditor editor : currentDisplay.getEditors())
+      for (ToggleEditor editor : display.getEditors())
       {
          editor.setViewMode(ToggleEditor.ViewMode.EDIT);
          editor.clearTranslatorList();
          validate(editor);
       }
-      currentDisplay.showButtons(isDisplayButtons());
+      display.showButtons(isDisplayButtons());
       revealDisplay();
       
       if (currentEditorIndex == LAST_INDEX)
@@ -373,7 +369,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
 
       validationMessagePanel.clear();
-      currentDisplay.focusEditor(currentEditorIndex);
+      display.focusEditor(currentEditorIndex);
       updateTranslators();
    }
 
@@ -428,9 +424,9 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
    public TargetContentsDisplay setValue(TransUnit transUnit, String findMessages)
    {
-      currentDisplay.setFindMessage(findMessages);
-      currentDisplay.setTargets(transUnit.getTargets());
-      return currentDisplay;
+      display.setFindMessage(findMessages);
+      display.setTargets(transUnit.getTargets());
+      return display;
    }
 
    //TODO to be removed
@@ -465,7 +461,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       if (currentEditorIndex + 1 < currentEditors.size())
       {
-         currentDisplay.focusEditor(currentEditorIndex + 1);
+         display.focusEditor(currentEditorIndex + 1);
          currentEditorIndex++;
       }
       else
@@ -488,7 +484,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       if (currentEditorIndex - 1 >= 0)
       {
-         currentDisplay.focusEditor(currentEditorIndex - 1);
+         display.focusEditor(currentEditorIndex - 1);
          currentEditorIndex--;
       }
       else
@@ -537,7 +533,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       Log.debug("copy source");
       currentEditorIndex = editor.getIndex();
-      currentDisplay.showButtons(true);
+      display.showButtons(true);
       editor.setTextAndValidate(sourceContentsPresenter.getSelectedSource());
       editor.setViewMode(ViewMode.EDIT);
       editor.autoSize();
@@ -549,21 +545,14 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    }
 
    @Override
-   //TODO to be removed
    public void toggleView(final ToggleEditor editor)
    {
       currentEditorIndex = editor.getIndex();
-      Log.debug("toggle view current editor index:" + currentEditorIndex);
-      if (currentDisplay != null)
-      {
-         currentDisplay.focusEditor(currentEditorIndex);
-      }
-
    }
 
    public ArrayList<String> getNewTargets()
    {
-      return currentDisplay.getNewTargets();
+      return display.getNewTargets();
    }
 
    @Override
@@ -584,8 +573,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       // TODO optimise a bit. If some config hasn't changed or not relevant in
       // this context, don't bother doing anything
-      currentDisplay.showButtons(configHolder.isDisplayButtons());
-      for (ToggleEditor editor : currentDisplay.getEditors())
+      display.showButtons(configHolder.isDisplayButtons());
+      for (ToggleEditor editor : display.getEditors())
       {
          editor.showCopySourceButton(configHolder.isDisplayButtons());
       }
@@ -653,7 +642,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       if (isEditing())
       {
-         for (ToggleEditor editor : currentDisplay.getEditors())
+         for (ToggleEditor editor : display.getEditors())
          {
             editor.setViewMode(ToggleEditor.ViewMode.EDIT);
             validate(editor);
@@ -729,6 +718,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
    public TargetContentsDisplay getDisplay()
    {
-      return currentDisplay;
+      return display;
    }
 }
