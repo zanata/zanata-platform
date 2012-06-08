@@ -638,7 +638,7 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	border-bottom: none;
 }
 
-.navbar div.submenu ul li:hover {
+div.submenu ul li:hover {
 	background: #BACDE5;
 }
 
