@@ -140,6 +140,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onSelectionChange(SelectionChangeEvent event)
    {
+      //FIXME need to save pending change
       TransUnit selectedTransUnit = dataModel.getSelectedOrNull();
       if (selectedTransUnit != null)
       {
@@ -161,7 +162,16 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onNavTransUnit(NavTransUnitEvent event)
    {
-      navigationController.navigateTo(event.getRowType());
+      TransUnit selected = dataModel.getSelectedOrNull();
+      if (selected == null)
+      {
+         navigationController.navigateTo(event.getRowType());
+      }
+      else
+      {
+         //we want to save any pending state and then move
+         onTransUnitSave(new TransUnitSaveEvent(targetContentsPresenter.getNewTargets(), selected.getStatus()).andMoveTo(event.getRowType()));
+      }
    }
 
    @Override
@@ -186,7 +196,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       {
          targetContentsPresenter.setValue(selected, null);
       }
-      else if (hasStateChange(event, selected))
+      else if (hasStateChange(selected, event.getStatus()))
       {
          proceedToSave(event, selected);
       }
@@ -197,10 +207,10 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       }
    }
 
-   private boolean hasStateChange(TransUnitSaveEvent event, TransUnit selected)
+   private boolean hasStateChange(TransUnit old, ContentState newStatus)
    {
       //check whether target contents or status has changed
-      return !(selected.getStatus() == event.getStatus() && Objects.equal(targetContentsPresenter.getNewTargets(), selected.getTargets()));
+      return !(old.getStatus() == newStatus && Objects.equal(targetContentsPresenter.getNewTargets(), old.getTargets()));
    }
 
    private void proceedToSave(final TransUnitSaveEvent event, TransUnit selected)
