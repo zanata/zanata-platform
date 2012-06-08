@@ -204,7 +204,7 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
    //TODO clean up this class dependency mess
    public void navigateTo(NavTransUnitEvent.NavigationType navigationType)
    {
-      int rowIndex = 0;
+      int rowIndex;
       switch (navigationType)
       {
          case PrevEntry:
@@ -225,6 +225,9 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
          case LastEntry:
             rowIndex = navigationService.lastPage();
             break;
+         default:
+            Log.info("ignore unknown navigation type:" + navigationType);
+            return;
       }
       int targetPage = navigationService.getTargetPage(rowIndex);
       TransUnitId targetTransUnitId = navigationService.getTargetTransUnitId(rowIndex);

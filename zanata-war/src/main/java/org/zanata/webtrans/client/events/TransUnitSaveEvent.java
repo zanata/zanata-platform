@@ -33,8 +33,11 @@ import com.google.gwt.event.shared.GwtEvent;
 public class TransUnitSaveEvent extends GwtEvent<TransUnitSaveEventHandler>
 {
    public static Type<TransUnitSaveEventHandler> TYPE = new Type<TransUnitSaveEventHandler>();
+   public static final TransUnitSaveEvent CANCEL_EDIT_EVENT = new TransUnitSaveEvent(null, null);
+
    private List<String> targets = Lists.newArrayList();
    private ContentState status;
+   private NavTransUnitEvent.NavigationType navigationType;
 
    public TransUnitSaveEvent(List<String> targets, ContentState status)
    {
@@ -60,5 +63,21 @@ public class TransUnitSaveEvent extends GwtEvent<TransUnitSaveEventHandler>
    public ContentState getStatus()
    {
       return status;
+   }
+
+   public TransUnitSaveEvent andMoveTo(NavTransUnitEvent.NavigationType navigationType)
+   {
+      this.navigationType = navigationType;
+      return this;
+   }
+
+   public boolean andMove()
+   {
+      return navigationType != null;
+   }
+
+   public NavTransUnitEvent.NavigationType getNavigationType()
+   {
+      return navigationType;
    }
 }

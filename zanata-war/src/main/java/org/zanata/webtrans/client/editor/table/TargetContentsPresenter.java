@@ -29,6 +29,7 @@ import javax.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
 import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
@@ -76,14 +77,15 @@ import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
 import org.zanata.webtrans.shared.rpc.TransUnitEditResult;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType;
+import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType.*;
 
 @Singleton
 public class TargetContentsPresenter implements TargetContentsDisplay.Listener, EnableModalNavigationEventHandler, TransUnitEditEventHandler, UserConfigChangeHandler, RequestValidationEventHandler, InsertStringInEditorHandler, CopyDataToEditorHandler
@@ -98,12 +100,9 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private final UserSessionService sessionService;
    private final UserConfigHolder configHolder;
 
-   private Scheduler scheduler;
 
    private final ValidationMessagePanelDisplay validationMessagePanel;
    private TargetContentsDisplay currentDisplay;
-   private Provider<TargetContentsDisplay> displayProvider;
-   private ArrayList<TargetContentsDisplay> displayList = Lists.newArrayList();
    private int currentEditorIndex = NO_OPEN_EDITOR;
    private ArrayList<ToggleEditor> currentEditors;
    private TransUnitsEditModel cellEditor;
@@ -142,7 +141,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.configHolder = configHolder;
       this.userWorkspaceContext = userWorkspaceContext;
-      this.scheduler = scheduler;
       this.validationMessagePanel = validationMessagePanel;
       this.sessionService = sessionService;
       this.identity = identity;
@@ -151,12 +149,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       this.historyPresenter = historyPresenter;
       this.historyPresenter.setCurrentValueHolder(this);
 
-      eventBus.addHandler(UserConfigChangeEvent.getType(), this);
-      eventBus.addHandler(RequestValidationEvent.getType(), this);
-      eventBus.addHandler(InsertStringInEditorEvent.getType(), this);
-      eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
-      eventBus.addHandler(TransUnitEditEvent.getType(), this);
-      eventBus.addHandler(EnableModalNavigationEvent.getType(), this);
+      bindEventHandlers();
 
       keyShortcutPresenter.register(new KeyShortcut(Keys.setOf(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_1), new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_1)), ShortcutContext.Edit, messages.copyFromTM(1), new KeyShortcutEventHandler()
       {
@@ -330,6 +323,16 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }));
    }
 
+   private void bindEventHandlers()
+   {
+      eventBus.addHandler(UserConfigChangeEvent.getType(), this);
+      eventBus.addHandler(RequestValidationEvent.getType(), this);
+      eventBus.addHandler(InsertStringInEditorEvent.getType(), this);
+      eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
+      eventBus.addHandler(TransUnitEditEvent.getType(), this);
+      eventBus.addHandler(EnableModalNavigationEvent.getType(), this);
+   }
+
    private ToggleEditor getCurrentEditor()
    {
       return currentEditors.get(currentEditorIndex);
@@ -388,13 +391,9 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          currentEditorIndex = 0;
       }
 
-      //TODO remove this if
-      if (currentEditorIndex != NO_OPEN_EDITOR && currentEditorIndex < currentEditors.size())
-      {
-         validationMessagePanel.clear();
-         currentDisplay.focusEditor(currentEditorIndex);
-         updateTranslators();
-      }
+      validationMessagePanel.clear();
+      currentDisplay.focusEditor(currentEditorIndex);
+      updateTranslators();
    }
 
    @Override
@@ -453,6 +452,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       return currentDisplay;
    }
 
+   //TODO to be removed
    public void initWidgets()
    {
    }
@@ -492,18 +492,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          currentEditorIndex = 0;
          if (forceSave)
          {
-            eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.Approved));
-//            cellEditor.acceptEdit();
-//            cellEditor.setRowValueOverride(cellEditor.getCurrentRow(), cellEditor.getTargetCell());
+            eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.Approved).andMoveTo(NextEntry));
          }
-//         scheduler.scheduleDeferred(new Scheduler.ScheduledCommand()
-//         {
-//            @Override
-//            public void execute()
-//            {
-//               cellEditor.saveAndMoveRow(NavTransUnitEvent.NavigationType.NextEntry);
-//            }
-//         });
       }
    }
 
@@ -525,27 +515,15 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          currentEditorIndex = LAST_INDEX;
          if (forceSave)
          {
-            cellEditor.acceptEdit();
-            cellEditor.setRowValueOverride(cellEditor.getCurrentRow(), cellEditor.getTargetCell());
+            eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.Approved).andMoveTo(PrevEntry));
          }
-         scheduler.scheduleDeferred(new Scheduler.ScheduledCommand()
-         {
-            @Override
-            public void execute()
-            {
-               cellEditor.saveAndMoveRow(NavTransUnitEvent.NavigationType.PrevEntry);
-            }
-         });
       }
    }
 
    @Override
    public void saveAsFuzzy()
    {
-      Preconditions.checkState(cellEditor != null, "InlineTargetCellEditor must be set for triggering table save event");
-      cellEditor.acceptFuzzyEdit();
-      cellEditor.setRowValueOverride(cellEditor.getCurrentRow(), cellEditor.getTargetCell());
-      cellEditor.gotoCurrentRow(true);
+      eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.NeedReview));
    }
 
    @Override
@@ -570,17 +548,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void onCancel()
    {
-      List<String> targets = cellEditor.getTargetCell().getTargets();
-      for (ToggleEditor editor : currentEditors)
-      {
-         String content = null;
-         if (targets != null && targets.size() > editor.getIndex())
-         {
-            content = targets.get(editor.getIndex());
-         }
-         editor.setTextAndValidate(content);
-      }
-      setToViewMode();
+      eventBus.fireEvent(TransUnitSaveEvent.CANCEL_EDIT_EVENT);
    }
 
    @Override
@@ -600,6 +568,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    }
 
    @Override
+   //TODO to be removed
    public void toggleView(final ToggleEditor editor)
    {
       currentEditorIndex = editor.getIndex();
@@ -623,8 +592,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       editor.addValidationMessagePanel(validationMessagePanel);
    }
 
-   // TODO InlineTargetCellEditor is not managed by gin. Therefore this can't be
-   // injected
+   // TODO to be removed
    public void setCellEditor(TransUnitsEditModel cellEditor)
    {
       this.cellEditor = cellEditor;
@@ -751,31 +719,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
    public void moveToNextState(final NavTransUnitEvent.NavigationType nav)
    {
-      cellEditor.savePendingChange(true);
-      scheduler.scheduleDeferred(new Scheduler.ScheduledCommand()
-      {
-         @Override
-         public void execute()
-         {
-            goToRowWithState(nav);
-         }
-      });
-   }
-
-   private void goToRowWithState(NavTransUnitEvent.NavigationType nav)
-   {
-      if (configHolder.isFuzzyAndUntranslated())
-      {
-         cellEditor.gotoFuzzyAndNewRow(nav);
-      }
-      else if (configHolder.isButtonUntranslated())
-      {
-         cellEditor.gotoNewRow(nav);
-      }
-      else if (configHolder.isButtonFuzzy())
-      {
-         cellEditor.gotoFuzzyRow(nav);
-      }
+      eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), ContentState.Approved).andMoveTo(nav));
    }
 
    public void saveAndMoveRow(NavTransUnitEvent.NavigationType nav)
@@ -803,11 +747,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
    public void addUndoLink(int row, UndoLink undoLink)
    {
-      if (row >=0 && row < displayList.size())
-      {
-         TargetContentsDisplay targetContentsDisplay = displayList.get(row);
-         targetContentsDisplay.addUndo(undoLink);
-      }
+//      TargetContentsDisplay targetContentsDisplay = displayList.get(row);
+//      targetContentsDisplay.addUndo(undoLink);
    }
 
    public TargetContentsDisplay getDisplay()

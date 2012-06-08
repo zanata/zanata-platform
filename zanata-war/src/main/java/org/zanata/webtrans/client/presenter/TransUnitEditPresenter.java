@@ -21,12 +21,9 @@
 
 package org.zanata.webtrans.client.presenter;
 
-import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEventHandler;
-import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TransUnitsDataModel;
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
 import org.zanata.webtrans.client.service.NavigationController;
@@ -40,14 +37,10 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.view.TransUnitEditDisplay;
 import org.zanata.webtrans.client.view.TransUnitListDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
-import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
-import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
-import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Objects;
 import com.google.gwt.user.cellview.client.LoadingStateChangeEvent;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.inject.Inject;
 
@@ -71,8 +64,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    private final TransUnitListDisplay transUnitListDisplay;
    private final SourceContentsPresenter sourceContentsPresenter;
    private final TargetContentsPresenter targetContentsPresenter;
-   private final CachingDispatchAsync dispatcher;
-   private final TableEditorMessages messages;
+   private final TransUnitSaveService saveService;
    private final TransUnitsDataModel dataModel;
 
    private TransUnit selectedTransUnit = null;
@@ -83,9 +75,8 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
                                  TransUnitListDisplay transUnitListDisplay,
                                  SourceContentsPresenter sourceContentsPresenter,
                                  TargetContentsPresenter targetContentsPresenter,
-                                 CachingDispatchAsync dispatcher,
-                                 WorkspaceContext workspaceContext,
-                                 TableEditorMessages messages)
+                                 TransUnitSaveService saveService,
+                                 WorkspaceContext workspaceContext)
    {
       super(display, eventBus);
       this.display = display;
@@ -94,8 +85,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       this.transUnitListDisplay = transUnitListDisplay;
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.targetContentsPresenter = targetContentsPresenter;
-      this.dispatcher = dispatcher;
-      this.messages = messages;
+      this.saveService = saveService;
 
       initViewOnWorkspaceContext(workspaceContext.isReadOnly());
 
@@ -181,46 +171,50 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    }
 
    @Override
-   public void onTransUnitSave(TransUnitSaveEvent event)
+   public void onTransUnitSave(final TransUnitSaveEvent event)
+   {
+      if (event == TransUnitSaveEvent.CANCEL_EDIT_EVENT)
+      {
+         targetContentsPresenter.setValue(selectedTransUnit, null);
+      }
+      else if (hasStateChange(event))
+      {
+         proceedToSave(event);
+      }
+      else if (event.andMove())
+      {
+         //nothing has changed and it's not cancelling
+         navigationController.navigateTo(event.getNavigationType());
+      }
+   }
+
+   private boolean hasStateChange(TransUnitSaveEvent event)
+   {
+      //check whether target contents or status has changed
+      return !(selectedTransUnit.getStatus() == event.getStatus() && Objects.equal(targetContentsPresenter.getNewTargets(), selectedTransUnit.getTargets()));
+   }
+
+   private void proceedToSave(final TransUnitSaveEvent event)
    {
       targetContentsPresenter.setToViewMode();
-      TransUnitUpdated.UpdateType updateType = event.getStatus() == ContentState.Approved ? TransUnitUpdated.UpdateType.WebEditorSave : TransUnitUpdated.UpdateType.WebEditorSaveFuzzy;
-      Log.debug("row updated, calculated update type: " + updateType);
-      final UpdateTransUnit updateTransUnit = new UpdateTransUnit(new TransUnitUpdateRequest(selectedTransUnit.getId(), event.getTargets(), event.getStatus(), selectedTransUnit.getVerNum()), updateType);
-      eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifySaving()));
-      dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
+      saveService.saveTranslation(selectedTransUnit, targetContentsPresenter.getNewTargets(), event.getStatus(), new TransUnitSaveService.SaveResultCallback()
       {
          @Override
-         public void onFailure(Throwable e)
+         public void onSaveSuccess(TransUnit updatedTU)
          {
-            Log.error("UpdateTransUnit failure ", e);
-            String message = e.getLocalizedMessage();
-            saveFailure(message);
+            dataModel.update(updatedTU);
+            if (event.andMove())
+            {
+               navigationController.navigateTo(event.getNavigationType());
+            }
          }
 
          @Override
-         public void onSuccess(UpdateTransUnitResult result)
+         public void onSaveFail()
          {
-            // FIXME check result.success
-            TransUnit updatedTU = result.getUpdateInfoList().get(0).getTransUnit();
-            if (result.isSingleSuccess() && dataModel.update(updatedTU))
-            {
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved()));
-               navigationController.navigateTo(NavTransUnitEvent.NavigationType.NextEntry);
-               targetContentsPresenter.showEditors(0);
-            }
-            else
-            {
-               // TODO localised message
-               saveFailure("row " + selectedTransUnit.getRowIndex());
-            }
+            targetContentsPresenter.showEditors(0);
          }
       });
    }
 
-   private void saveFailure(String message)
-   {
-      eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyUpdateFailed(message)));
-      targetContentsPresenter.showEditors(0);
-   }
 }

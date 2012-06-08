@@ -82,6 +82,7 @@ public class TransUnitListTable extends CellTable<TransUnit> implements TransUni
 
       addColumn(rowIndexColumn, messages.rowIndex());
       addColumn(sourceColumn, messages.source());
+      //TODO add copy source button here?
       addColumn(targetColumn, messages.target());
 
       setColumnWidth(rowIndexColumn, 70.0, com.google.gwt.dom.client.Style.Unit.PX);
