@@ -1,6 +1,8 @@
 #container {
 	width: 1024px;
-	margin: 0 auto;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top:32px;
 	background-color: #ffffff;
 }
 
@@ -464,123 +466,195 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 /* -----------------------  End JSF components CSS  -------------------------*/
 
 /* -----------------------  Top menu CSS  -------------------------*/
-/* Caution! Ensure accessibility in print and other media types... */
-@media projection , screen {
-	/* Use class for showing/hiding tab content, so that visibility can be better controlled in different media types... */
-	.ui-tabs-hide {
-		display: none;
-	}
+
+
+/* new menu bar */
+.header {
+	width: 100%;
+	height: 34px;
+	margin: 0;
+	background: -webkit-linear-gradient(top, #354F71 0%, #1A2D45 100%);
+	background: -moz-linear-gradient(top, #354F71 0%, #1A2D45 100%);
+	background: -o-linear-gradient(top, #354F71 0%, #1A2D45 100%);
+	background: -ms-linear-gradient(top, #354F71 0%, #1A2D45 100%);
+	position:fixed;
+	top:0px;
 }
 
-/* Hide useless elements in print layouts... */
-@media print {
-	.ui-tabs-nav {
-		display: none;
-	}
+.logo {
+	width: 145px;
 }
 
-#tabs-menu {
-	background: url('../images/bar_background.png') 0 0 repeat-x;
-	border: 1px solid #EAEAEA;
-	border-bottom-color: #CACACA;
-	border-radius: 3px;
-	-moz-border-radius: 3px;
-	float: left;
-	width: 900px;
-	height: 40px;
+.navBar {
+	width: 1024px;
+	height: 100%;
+	margin: 0 auto;
 }
 
-#tabs .ui-tabs-nav {
-	margin: 0 0;
-	padding:0;
-	position:relative;
-	z-index:1;
+.navBar ul {
+	display: table;
+	width: 100%;
+	float: none;
+	vertical-align: middle;
+	margin: 0;
+	padding: 0px;
 }
 
-#tabs .ui-tabs-nav li {
-	line-height: 40px;
-	list-style: none;
-	float: left;
-	min-width: 84px; /* be nice to Opera */
+.navBar ul li {
+	display: table-cell;
+	float: none;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	vertical-align: middle;
+	border-right: 1px solid #000000;
+	box-shadow: inset 1px 0 0 #6A7D95;
 }
 
-#tabs .ui-tabs-nav li a {
-	color: #000000;
-	white-space: nowrap; /* required in IE 6 */
-	height:40px;
-	font-weight:bold;
-	padding: 0 15px;
+.navBar ul li:hover {
+	background: #1A2D45;
 }
 
-#tabs .ui-tabs-nav li.ui-tabs-selected {
-	border-top: 1px solid #C1BFBF;
-	border-left: 1px solid #C1BFBF;
+.navBar ul li a {
+	display: block;
+	height: 33px;
+	line-height: 33px;
+	font-size: 13px;
+	color: white;
+	font-family: helvetica;
+	font-weight: bold;
+	text-decoration: none;
+	outline: none;
+	width: 160px;
+	margin: 0 auto;
 }
 
-#tabs .ui-tabs-nav li.ui-tabs-selected a {
-	background-color: #d3d3d3;
-	color: black;
-	margin-top: 0;
-	height:40px;
-	display:block;
+.navBar ul li:hover a {
+	border-right: none;
+	box-shadow: none;
 }
 
-#tabs img {
-	margin-right: 5px;
+.navBar ul li img {
+	margin-right: 4px;
 	vertical-align: middle;
 }
 
-#tabs .ui-tabs-nav a,.ui-tabs-nav a span {
-	display: block;
-	width:auto;
-	cursor:pointer;
-	outline: 0 none;
+#logoCol, #logoCol:hover {
+	width: 750px;
+	border-left: none;
+	border-right: none;
+	box-shadow: none;
+	background: none;
 }
 
-.ui-tabs-nav-issues {
-	position: relative;
+#logoCol a {
+	margin-left: 0px;
 }
 
-.ui-tabs-nav-issues ul {
-	border-bottom-right-radius: 3px;
-	border-bottom-left-radius: 3px;
-	-moz-border-radius-bottomright: 3px;
-	-moz-border-radius-bottomleft: 3px;
-	display: none;
-	border: 1px solid #ddd;
-	margin:0;
-	padding-left:0px;
+#logoCol a:hover {
+	background: none;
 }
 
-.ui-tabs-nav-issues:hover ul {
-	display: block;
+#logoCol img {
+	padding-top: 3px;
+}
+
+
+#translationCol {
+	box-shadow: none;
+}
+
+#userCol {
+	width: auto;
+}
+
+#userCol a {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+#userCol img {
+	padding: 0;
+	border: 1px solid white;
+}
+
+#menuCol a.text {
+	text-align: center;
+	width: 30px;
+	font-size: 18px;
+}
+
+#menuCol, #menuCol:hover {
+	border-right: none;
+}
+
+#menuCol:hover {
+	background: #7E91A9;
+}
+
+.navBar div.submenu {
+	height: 0px;
 	position: absolute;
+	width: 170px;
+	overflow: hidden;
+	z-index: 999;
 }
 
-.ui-tabs-nav-issues ul li a {
-	background: #eeeeee !important;
-	padding: 0 !important;
-	text-align: left !important;
-	border-bottom: 1px solid #ddd;
-	height: 12px !important;
-	font-weight: normal !important;
-	padding: 8px 10px !important;
-	line-height: 1.2em;
-	margin:0px;
+.navBar li:hover div.submenu {
+	height: auto;
+	position: absolute;
+	-webkit-transition: ease-in-out .1s;
+	-moz-transition: ease-in-out .1s;
+	-o-transition: ease-in-out .1s;
+	-ms-transition: ease-in-out .1s;
+	transition: ease-in-out .1s;
+	border-top: 1px solid #1A2D45;
+	-webkit-box-shadow: 0px 3px 4px rgba(0, 0, 0, .3);
+	-moz-box-shadow: 0px 3px 4px rgba(0, 0, 0, .3);
+	box-shadow: 0px 3px 4px rgba(0, 0, 0, .3);
 }
 
-.ui-tabs-loading em {
-	padding: 0 0 0 20px;
-	background: url(../images/loading.gif) no-repeat 0 50%;
+.navBar div.submenu ul {
+	border: 1px solid lightgrey;
 }
 
-.ui-tabs-nav-issues ul li a:hover {
-	background-color: #dddddd !important;
+.navBar div.submenu ul li {
+	display: block;
+	width: 100%;
+	float: left;
+	text-align: left;
+	height: auto;
+	color: black;
+	border-bottom: 1px solid #DDDDDD;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	box-shadow: none;
+	background:#FFFFFF;
 }
 
-.ui-tabs-nav-issues ul li {
-	width: 180px;
+.navBar div.submenu ul li:last-child {
+	border-bottom: none;
 }
+
+.navbar div.submenu ul li:hover {
+	background: #BACDE5;
+}
+
+.navBar div.submenu ul li a {
+	color: #454545;
+	font-size: 12px;
+	text-shadow: none;
+	line-height: 28px;
+	text-align: left;
+	width: 160px
+}
+
+.navBar div.submenu img {
+	border: none;
+}
+
 /* -----------------------  End Top menu CSS  -------------------------*/
 
 /* -----------------------  Login form CSS  -------------------------*/
