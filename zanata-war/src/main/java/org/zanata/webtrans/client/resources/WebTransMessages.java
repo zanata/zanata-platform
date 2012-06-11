@@ -147,6 +147,9 @@ public interface WebTransMessages extends Messages
       "other|one", "Showing results for search \"{0}\" ({1} text flows in 1 document)"})
    String showingResultsForProjectWideSearch(String searchString, @PluralCount int textFlows, @PluralCount int documents);
 
+   @DefaultMessage("Search \"{0}\" returned no results")
+   String searchForPhraseReturnedNoResults(String searchString);
+
    @DefaultMessage("There are no search results to display")
    String noSearchResults();
 
@@ -331,4 +334,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Enter text to filter the document list. Use commas (,) to separate multiple searches")
    String docListFilterDescription();
+
+   @DefaultMessage("Disable 'Replace' button until previews have been generated for all selected text flows")
+   String requirePreviewDescription();
 }
