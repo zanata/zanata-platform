@@ -168,6 +168,13 @@
 				<f:param name="projectSlug" value="#{viewAllStatusAction.projectSlug}" />
 				<f:param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
 			</s:link>
+            <s:link styleClass="action_link"
+                    value="#{messages['jsf.iteration.CopyTrans']}"
+                    title="#{messages['jsf.iteration.CopyTrans.title']}"
+                    action="#{viewAllStatusAction.performCopyTrans}"
+                    rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'copy-trans')}"
+                    onclick="return confirm('#{messages['jsf.iteration.CopyTrans.confirm']}');">
+            </s:link>
 		</rich:panel>
 	</ui:define>
 
