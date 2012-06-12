@@ -25,6 +25,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.hibernate.validator.Email;
 import org.jboss.seam.ScopeType;
@@ -45,10 +46,12 @@ import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
+import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import org.zanata.service.LocaleService;
+import org.zanata.service.VersionGroupService;
 
 /**
  * Sends an email to a specified role.
@@ -67,10 +70,12 @@ public class SendEmailAction implements Serializable
    private static final String EMAIL_TYPE_CONTACT_ADMIN = "contact_admin";
    private static final String EMAIL_TYPE_CONTACT_COORDINATOR = "contact_coordinator";
    private static final String EMAIL_TYPE_REQUEST_TO_JOIN = "request_to_join_language_team";
+   private static final String EMAIL_TYPE_REQUEST_TO_JOIN_GROUP = "request_to_join_group";
 
    private static final String ADMIN_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_admin.xhtml";
    private static final String COORDINATOR_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_coordinator.xhtml";
    private static final String REQUEST_TO_JOIN_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_request_to_join.xhtml";
+   private static final String REQUEST_TO_JOIN_GROUP_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_request_to_join_group.xhtml";
 
    @In
    private ApplicationConfiguration applicationConfiguration;
@@ -90,6 +95,9 @@ public class SendEmailAction implements Serializable
    @In
    private LocaleSelector localeSelector;
 
+   @In
+   private VersionGroupService versionGroupServiceImpl;
+
    @Logger
    private Log log;
 
@@ -104,8 +112,12 @@ public class SendEmailAction implements Serializable
    private String emailType;
    private String toName;
    private String toEmailAddr;
+
    private String language;
    private HLocale locale;
+
+   private String versionGroupSlug;
+   private HIterationGroup versionGroup;
 
    @Create
    public void onCreate()
@@ -211,6 +223,22 @@ public class SendEmailAction implements Serializable
       return locale;
    }
 
+   public String getVersionGroupSlug()
+   {
+      return versionGroupSlug;
+   }
+
+   public void setVersionGroupSlug(String versionGroupSlug)
+   {
+      this.versionGroupSlug = versionGroupSlug;
+      versionGroup = versionGroupServiceImpl.getBySlug(versionGroupSlug);
+   }
+
+   public HIterationGroup getVersionGroup()
+   {
+      return versionGroup;
+   }
+
    private List<HPerson> coordinators;
 
    private List<HPerson> getCoordinators()
@@ -281,6 +309,11 @@ public class SendEmailAction implements Serializable
             sendToLanguageCoordinators(REQUEST_TO_JOIN_EMAIL_TEMPLATE);
             return "success";
          }
+         else if (emailType.equals(EMAIL_TYPE_REQUEST_TO_JOIN_GROUP))
+         {
+            sendToVersionGroupMaintainer(REQUEST_TO_JOIN_GROUP_EMAIL_TEMPLATE);
+            return "success";
+         }
          else
          {
             throw new Exception("Invalid email type: " + emailType);
@@ -312,6 +345,26 @@ public class SendEmailAction implements Serializable
          }
          log.info("Sent language team coordinator email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}', language '{5}'", fromName, fromLoginName, replyEmail, subject, message, language);
          FacesMessages.instance().add("#{messages['jsf.email.coordinator.SentNotification']}");
+      }
+      else
+      {
+         sendToAdminEmails(emailTemplate);
+      }
+   }
+
+   private void sendToVersionGroupMaintainer(String emailTemplate)
+   {
+      Set<HPerson> maintainers = versionGroup.getMaintainers();
+      if (!maintainers.isEmpty())
+      {
+         for (HPerson maintainer : maintainers)
+         {
+            toName = maintainer.getName();
+            toEmailAddr = maintainer.getEmail();
+            renderer.render(emailTemplate);
+         }
+         log.info("Sent version group maintainer email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}', language '{5}'", fromName, fromLoginName, replyEmail, subject, message, language);
+         FacesMessages.instance().add("#{messages['jsf.email.group.maintainer.SentNotification']}");
       }
       else
       {

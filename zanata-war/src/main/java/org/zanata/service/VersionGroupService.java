@@ -47,4 +47,6 @@ public interface VersionGroupService
    boolean joinVersionGroup(String slug, Long projectIterationId);
 
    boolean leaveVersionGroup(String slug, Long projectIterationId);
+
+   HProjectIteration getProjectIterationBySlug(String projectSlug, String iterationSlug);
 }

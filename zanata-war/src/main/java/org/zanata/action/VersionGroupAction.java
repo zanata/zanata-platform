@@ -21,19 +21,25 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.lucene.queryParser.ParseException;
+import org.h2.util.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.log.Log;
+import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
+import org.zanata.dao.ProjectDAO;
+import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
+import org.zanata.model.HIterationProject;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionGroupService;
 
@@ -46,11 +52,17 @@ public class VersionGroupAction implements Serializable
    @In
    private VersionGroupService versionGroupServiceImpl;
 
-   @Logger
-   Log log;
+   @In
+   private ProjectDAO projectDAO;
+
+   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+   HAccount authenticatedAccount;
 
    private List<HIterationGroup> allVersionGroups;
+
    private List<HProjectIteration> searchResults;
+
+   private List<HProjectIteration> maintainedProjectVersions;
 
    private HIterationGroup group;
 
@@ -65,11 +77,44 @@ public class VersionGroupAction implements Serializable
       allVersionGroups = versionGroupServiceImpl.getAllActiveVersionGroupsOrIsMaintainer();
    }
 
-   public void init(String slug)
+   public void init(String slug, String projectSlug, String iterationSlug)
    {
       group = versionGroupServiceImpl.getBySlug(slug);
+      executePreSearch(projectSlug, iterationSlug);
    }
 
+   /**
+    * Run search on unique project version if projectSlug, iterationSlug exits
+    */
+   private void executePreSearch(String projectSlug, String iterationSlug)
+   {
+      if (!StringUtils.isNullOrEmpty(projectSlug) && !StringUtils.isNullOrEmpty(iterationSlug))
+      {
+         HProjectIteration projectIteration = versionGroupServiceImpl.getProjectIterationBySlug(projectSlug, iterationSlug);
+         if (projectIteration != null)
+         {
+            getSearchResults().add(projectIteration);
+         }
+      }
+   }
+
+   public void searchMaintainedProjects()
+   {
+      Set<HProject> maintainedProjects = authenticatedAccount.getPerson().getMaintainerProjects();
+      for(HProject project:maintainedProjects)
+      {
+         getMaintainedProjectVersions().addAll(projectDAO.getAllIterations(project.getSlug()));
+      }
+   }
+
+   public List<HProjectIteration> getMaintainedProjectVersions()
+   {
+      if (maintainedProjectVersions == null)
+      {
+         maintainedProjectVersions = new ArrayList<HProjectIteration>();
+      }
+      return maintainedProjectVersions;
+   }
    public String getSearchTerm()
    {
       return searchTerm;
@@ -82,6 +127,10 @@ public class VersionGroupAction implements Serializable
 
    public List<HProjectIteration> getSearchResults()
    {
+      if (searchResults == null)
+      {
+         searchResults = new ArrayList<HProjectIteration>();
+      }
       return searchResults;
    }
 
@@ -153,6 +202,11 @@ public class VersionGroupAction implements Serializable
          return isShowActiveGroups();
       }
       return false;
+   }
+
+   public boolean isUserProjectMaintainer()
+   {
+      return authenticatedAccount != null && authenticatedAccount.getPerson().isMaintainerOfProjects();
    }
 
    public String getGroupNameFilter()

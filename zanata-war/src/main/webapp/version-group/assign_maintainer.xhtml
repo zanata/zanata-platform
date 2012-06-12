@@ -24,14 +24,14 @@
       <script type="text/javascript">
         function confirmDelete()
         {
-          return confirm("#{messages['jsf.AreYouSureYouWishToRemoveThisPersonAsVersionGroupMaintainer']}");
+          return confirm("#{messages['jsf.AreYouSureYouWishToRemoveThisPersonAsGroupMaintainer']}");
         }
       </script>
       
       	<h1>
 	      #{messages['jsf.GroupName']}:&nbsp;
 	      <s:link id="versionGroup" styleClass="table_link" value="#{versionGroupHome.instance.name}" view="/version-group/version_group.xhtml"> 
-          	<f:param name="slug" value="#{versionGroupHome.instance.slug}"/>
+          	<f:param name="versionGroupSlug" value="#{versionGroupHome.instance.slug}"/>
           </s:link>
 	    </h1>
                       

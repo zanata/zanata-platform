@@ -209,14 +209,26 @@
   </rule>
   
   <!-- Version group -->
+  
+  <rule>
+    <from casesensitive="true">^/version-group/create(.+)$</from>
+    <to last="true">/version-group/create_version_group.seam?$1</to>
+  </rule>
+  
+  
   <rule>
     <from casesensitive="true">^/version-group/list(.+)?$</from>
     <to last="true">/version-group/home.seam$1</to>
   </rule>
   
   <rule>
-    <from casesensitive="true">^/version-group/view/(.+)$</from>
-    <to last="true">/version-group/version_group.seam\?slug=$1</to>
+    <from casesensitive="true">^/version-group/view/([^/]+)/([^/]+)/([^/]+)/?$</from>
+    <to last="true">/version-group/version_group.seam\?versionGroupSlug=$1&amp;projectSlug=$2&amp;iterationSlug=$3</to>
+  </rule>
+  
+  <rule>
+    <from casesensitive="true">^/version-group/view/([^/]+)/?$</from>
+    <to last="true">/version-group/version_group.seam\?versionGroupSlug=$1</to>
   </rule>
   
   <rule>
@@ -228,7 +240,12 @@
     <from casesensitive="true">^/version-group/maintainer/(.+)?$</from>
     <to last="true">/version-group/assign_maintainer.seam$1</to>
   </rule>
-    
+  
+   <rule>
+    <from casesensitive="true">^/version-group/join/(.+)$</from>
+    <to last="true">/version-group/request_to_join.seam\?emailType=request_to_join_group&amp;versionGroupSlug=$1</to>
+  </rule>
+  
   <outbound-rule>
     <from>^(/.+)?/admin/(.+).seam$</from>
     <to>$1/admin/$2</to>
@@ -331,10 +348,22 @@
     <from>^(/.+)?/version-group/home.seam(.+)?$</from>
     <to>$1/version-group/list$2</to>
   </outbound-rule>
+  
+   <outbound-rule>
+    <from>^(/.+)?/version-group/create_version_group.seam(.+)?$</from>
+    <to>$1/version-group/create/$2</to>
+  </outbound-rule>
+  
   <outbound-rule>
-    <from>^(/.+)?/version-group/version_group.seam\?slug=(.+)$</from>
+    <from>^(/.+)?/version-group/version_group.seam\?versionGroupSlug=(.+)$</from>
     <to>$1/version-group/view/$2</to>
   </outbound-rule>
+  
+  <outbound-rule>
+    <from>^(/.+)?/version-group/version_group.seam\?versionGroupSlug=([^&amp;]+)&amp;projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)$</from>
+    <to>$1/version-group/view/$2/$3/$4</to>
+  </outbound-rule>
+  
   <outbound-rule>
     <from>^(/.+)?/version-group/edit.seam(.+)$</from>
     <to>$1/version-group/edit/$2</to>

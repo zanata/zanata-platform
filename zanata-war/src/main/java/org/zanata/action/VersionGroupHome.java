@@ -30,8 +30,10 @@ import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.model.HAccount;
@@ -49,12 +51,18 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
    private static final long serialVersionUID = 1L;
 
    private String slug;
+   private String projectSlug;
+   private String iterationSlug;
 
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
 
    @In
    SlugEntityService slugEntityServiceImpl;
+
+
+   @Logger
+   Log log;
 
    @Override
    protected HIterationGroup loadInstance()
@@ -94,6 +102,26 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
    public void setSlug(String slug)
    {
       this.slug = slug;
+   }
+
+   public String getProjectSlug()
+   {
+      return projectSlug;
+   }
+
+   public void setProjectSlug(String projectSlug)
+   {
+      this.projectSlug = projectSlug;
+   }
+
+   public String getIterationSlug()
+   {
+      return iterationSlug;
+   }
+
+   public void setIterationSlug(String iterationSlug)
+   {
+      this.iterationSlug = iterationSlug;
    }
 
    public void validateSuppliedId()

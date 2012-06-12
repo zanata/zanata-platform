@@ -79,6 +79,12 @@ public class VersionGroupServiceImpl implements VersionGroupService
    }
 
    @Override
+   public HProjectIteration getProjectIterationBySlug(String projectSlug, String iterationSlug)
+   {
+      return projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+   }
+
+   @Override
    public HIterationGroup getBySlug(String slug)
    {
       return versionGroupDAO.getBySlug(slug);

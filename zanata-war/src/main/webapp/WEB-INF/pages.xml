@@ -190,31 +190,57 @@
     </page>
     
     <page view-id="/version-group/version_group.xhtml">
-    	<param name="slug" value="#{versionGroupHome.slug}" />
+    	<param name="versionGroupSlug" value="#{versionGroupHome.slug}" />
+    	<param name="projectSlug" value="#{versionGroupHome.projectSlug}" />
+    	<param name="iterationSlug" value="#{versionGroupHome.iterationSlug}" />
+    	
     	<action execute="#{versionGroupHome.validateSuppliedId}" />
-    	<action execute="#{versionGroupAction.init(slug)}" />
+    	<action execute="#{versionGroupAction.init(versionGroupSlug,projectSlug,iterationSlug)}" />
   	</page>
   	
   	<page view-id="/version-group/edit.xhtml" login-required="true">
-	    <param name="slug" value="#{versionGroupHome.slug}" />
+	    <param name="versionGroupSlug" value="#{versionGroupHome.slug}" />
 	    <action execute="#{identity.checkPermission(versionGroupHome.instance, 'update')}" />
 	    <navigation from-action="#{versionGroupHome.update}">
 	      <redirect view-id="/version-group/version_group.xhtml">
-	        <param name="slug" value="#{versionGroupHome.slug}" />
+	        <param name="versionGroupSlug" value="#{versionGroupHome.slug}" />
 	      </redirect>
 	    </navigation>
 	    <navigation from-action="#{versionGroupHome.cancel}">
 	      <redirect view-id="/version-group/version_group.xhtml">
-	        <param name="slug" value="#{versionGroupHome.slug}" />
+	        <param name="versionGroupSlug" value="#{versionGroupHome.slug}" />
 	      </redirect>
 	    </navigation>
   	</page>
 
     <page view-id="/version-group/assign_maintainer.xhtml" >
-        <param name="slug" value="#{versionGroupMaintainerManageAction.slug}" />
-        <param name="slug" value="#{versionGroupHome.slug}" />
+        <param name="versionGroupSlug" value="#{versionGroupMaintainerManageAction.slug}" />
+        <param name="versionGroupSlug" value="#{versionGroupHome.slug}" />
         <action execute="#{versionGroupMaintainerManageAction.init()}" />
     </page>
+    
+    <page view-id="/version-group/request_to_join.xhtml">
+	    <param name="emailType" value="#{sendEmail.emailType}" />
+	    <param name="versionGroupSlug" value="#{sendEmail.versionGroupSlug}" />
+	    <action execute="#{versionGroupAction.searchMaintainedProjects}" />
+	    <navigation from-action="#{sendEmail.send}">
+	      <rule if-outcome="success">
+	        <redirect view-id="/version-group/version-group.xhtml">
+	          <param name="versionGroupSlug" value="#{sendEmail.versionGroupSlug}" />        
+	        </redirect>
+	      </rule>
+	      <rule if-outcome="failure">
+	        <redirect view-id="/version-group/request_to_join.xhtml" />
+	      </rule>
+	    </navigation>
+	    <navigation from-action="#{sendEmail.cancel}">
+	      <rule>
+	        <redirect view-id="/version-group/version-group.xhtml">
+	          <param name="versionGroupSlug" value="#{sendEmail.versionGroupSlug}" />
+	        </redirect>
+	      </rule>
+	    </navigation>
+	 </page>
 
   <!-- Profile -->
 

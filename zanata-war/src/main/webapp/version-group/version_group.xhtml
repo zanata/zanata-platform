@@ -26,7 +26,6 @@
 
 <ui:define name="center_content">
     <a4j:form>
-    	<rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
     	
     	 <h1>#{messages['jsf.GroupId']}: #{versionGroupHome.instance.slug}</h1>
     	 <h1>#{messages['jsf.Name']}: #{versionGroupHome.instance.name}</h1>
@@ -65,12 +64,14 @@
     <a href="#" class="action_link" onclick="#{rich:component('versionAddPanel')}.show()">#{messages['jsf.AddProjectVersions']}</a>
 
     <s:link styleClass="action_link" value="#{messages['jsf.EditGroup']}" view="/version-group/edit.xhtml" propagation="none">
-      <f:param name="slug" value="#{versionGroupHome.instance.slug}"/>
+      <f:param name="versionGroupSlug" value="#{versionGroupHome.instance.slug}"/>
     </s:link>
 
     <s:link styleClass="action_link" view="/version-group/assign_maintainer.xhtml" value="#{messages['jsf.ManageMaintainers']}" propagation="none">
-    	<f:param name="slug" value="#{versionGroupHome.instance.slug}"/>
+    	<f:param name="versionGroupSlug" value="#{versionGroupHome.instance.slug}"/>
     </s:link>
+    
+     <s:link styleClass="action_link" view="/version-group/join/#{versionGroupHome.instance.slug}" value="#{messages['jsf.RequestToJoinVersionGroup']}" propagation="none" rendered="#{identity.loggedIn and versionGroupAction.isUserProjectMaintainer()}"/>
 
   </rich:panel>
 
@@ -82,7 +83,17 @@
     </rich:dataList>
   </rich:panel>
 
-    <rich:modalPanel id="versionAddPanel" width="530" height="420">
+  <s:fragment rendered="#{versionGroupHome.projectSlug != null and versionGroupHome.iterationSlug != null}">
+ 	 <script>
+ 	 	jQuery(document).ready(function() 
+ 	 	{
+ 		 	#{rich:component("versionAddPanel")}.show();
+ 	  	});
+ 	</script>
+  </s:fragment>
+ 
+ 
+    <rich:modalPanel id="versionAddPanel" width="530" height="420" rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'update')}">
         <f:subview id="projectVersionSearch">
             <a4j:form>
                 <h1>Find Project Version</h1>
@@ -101,7 +112,7 @@
             <a4j:region>
                 <a4j:status id="searchStatus" startText="Searching..." stopText="" />
                 <a4j:outputPanel id="searchResults" layout="block" style="overflow:auto;height:320px">
-                    <h:outputText id="noResultsMessage" rendered="#{empty versionGroupAction.searchResults and versionGroupAction.searchResults != null}" value="#{messages['jsf.NoResultToDisplayProjectSearch']}" />
+                    <h:outputText id="noResultsMessage" rendered="#{empty versionGroupAction.searchResults}" value="#{messages['jsf.NoResultToDisplayProjectSearch']}" />
                     <h:form rendered="#{not empty versionGroupAction.searchResults}">
                         <rich:dataTable id="resultTable"
                                         value="#{versionGroupAction.searchResults}" var="projectIteration">
