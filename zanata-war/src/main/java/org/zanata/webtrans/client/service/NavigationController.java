@@ -177,7 +177,7 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
       }
    }
 
-   public void loadPageAndGoToRow(int pageIndex, TransUnitId transUnitId)
+   private void loadPageAndGoToRow(int pageIndex, TransUnitId transUnitId)
    {
       int page = normalizePageIndex(pageIndex);
       GetTransUnitActionContext newContext = context.setOffset(context.getCount() * page).setTargetTransUnitId(transUnitId);
