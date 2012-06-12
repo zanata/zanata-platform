@@ -72,7 +72,7 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
       requestTransUnitsAndUpdatePageIndex(context);
    }
 
-   private void requestTransUnitsAndUpdatePageIndex(GetTransUnitActionContext context)
+   private void requestTransUnitsAndUpdatePageIndex(final GetTransUnitActionContext context)
    {
       Log.info("requesting transUnits: " + context);
       final int itemPerPage = context.getCount();
@@ -99,7 +99,8 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
                gotoRow = result.getGotoRow() % itemPerPage;
             }
             navigationService.updateCurrentPageAndRowIndex(currentPageIndex, gotoRow);
-            dataModel.selectByRowNumber(gotoRow);
+            TransUnitId goToRowId = result.getUnits().get(gotoRow).getId();
+            dataModel.selectById(goToRowId);
          }
       });
    }
@@ -236,8 +237,12 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
       if (navigationService.getCurrentPage() == targetPage)
       {
          dataModel.selectById(targetTransUnitId);
+         navigationService.updateCurrentPageAndRowIndex(targetPage, dataModel.getIndexOnPage(targetTransUnitId));
       }
-      loadPageAndGoToRow(targetPage, targetTransUnitId);
+      else
+      {
+         loadPageAndGoToRow(targetPage, targetTransUnitId);
+      }
    }
 
    @Override

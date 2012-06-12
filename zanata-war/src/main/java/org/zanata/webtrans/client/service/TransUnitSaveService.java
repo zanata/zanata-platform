@@ -61,7 +61,7 @@ public class TransUnitSaveService
    {
       TransUnitUpdated.UpdateType updateType = status == ContentState.Approved ? TransUnitUpdated.UpdateType.WebEditorSave : TransUnitUpdated.UpdateType.WebEditorSaveFuzzy;
       final UpdateTransUnit updateTransUnit = new UpdateTransUnit(new TransUnitUpdateRequest(old.getId(), newTargets, status, old.getVerNum()), updateType);
-      Log.info("about to update TU: " + updateTransUnit);
+      Log.info("about to save translation: " + updateTransUnit);
       eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifySaving()));
       dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
       {

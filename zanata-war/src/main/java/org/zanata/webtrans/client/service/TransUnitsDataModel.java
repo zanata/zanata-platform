@@ -51,7 +51,7 @@ import static org.zanata.webtrans.shared.model.TransUnitProvidesKey.KEY_PROVIDER
 */
 
 /**
- * This class is used as data provider to translation unit celltable display as well as defining selection model of it.
+ * This class is used as data provider for translation unit celltable display as well as defining selection model of it.
  */
 @Singleton
 public class TransUnitsDataModel extends ListDataProvider<TransUnit>
@@ -90,7 +90,8 @@ public class TransUnitsDataModel extends ListDataProvider<TransUnit>
       }
       else
       {
-         return selectionModel.getSelectedObject();
+         cachedSelection = selectionModel.getSelectedObject();
+         return cachedSelection;
       }
    }
 
@@ -115,25 +116,42 @@ public class TransUnitsDataModel extends ListDataProvider<TransUnit>
       }
    }
 
-   public void selectByRowNumber(int gotoRow)
+   public void update(TransUnit updatedTU)
    {
-      Log.info("select by row number: " + gotoRow);
-      Preconditions.checkElementIndex(gotoRow, getList().size(), "go to row");
-      TransUnit toBeSelected = getList().get(gotoRow);
-      selectionModel.setSelected(toBeSelected, true);
+      int index = getIndexOnPage(updatedTU.getId());
+
+      Log.info("update TU at row number " + (index + 1));
+      getList().set(index, updatedTU);
+      cachedSelection = updatedTU;
    }
 
-   public void update(TransUnit updatedTU)
+   public boolean hasStaleData(List<String> newTargets)
+   {
+      return cachedSelection != null && !Objects.equal(cachedSelection.getTargets(), newTargets);
+   }
+
+   public TransUnit getStaleSelection()
+   {
+      return cachedSelection;
+   }
+
+   public int getIndexOnPage(TransUnitId transUnitId)
+   {
+      int index = findIndexByKey(transUnitId);
+      Preconditions.checkState(index >= 0, "cannot find transUnitId [%s] in current page", transUnitId);
+      return index;
+   }
+
+   private int findIndexByKey(TransUnitId transUnitId)
    {
       for (int i = 0; i < getList().size(); i++)
       {
          TransUnit unit = getList().get(i);
-         if (Objects.equal(getKey(unit), getKey(updatedTU)))
+         if (Objects.equal(getKey(unit), transUnitId))
          {
-            Log.info("update TU at row " + i);
-            getList().set(i, updatedTU);
-            cachedSelection = updatedTU;
+            return i;
          }
       }
+      return -1;
    }
 }

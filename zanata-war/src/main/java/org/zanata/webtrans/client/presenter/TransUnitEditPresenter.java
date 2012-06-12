@@ -21,6 +21,8 @@
 
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
+
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEventHandler;
@@ -140,17 +142,48 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onSelectionChange(SelectionChangeEvent event)
    {
-      //FIXME need to save pending change
+      if (dataModel.hasStaleData(targetContentsPresenter.getNewTargets()))
+      {
+         savePendingChangeBeforeShowingNewSelection();
+      }
+      else
+      {
+         showSelection();
+      }
+   }
+
+   private void showSelection()
+   {
       TransUnit selectedTransUnit = dataModel.getSelectedOrNull();
       if (selectedTransUnit != null)
       {
-         Log.debug("selected: " + selectedTransUnit.getId());
+         Log.info("selected: " + selectedTransUnit.getId());
          sourceContentsPresenter.setValue(selectedTransUnit);
          targetContentsPresenter.setValue(selectedTransUnit, null);
          sourceContentsPresenter.selectedSource();
          targetContentsPresenter.showEditors(0);
          translatorService.transUnitSelected(selectedTransUnit);
       }
+   }
+
+   private void savePendingChangeBeforeShowingNewSelection()
+   {
+      Log.info("saving pending change: " + targetContentsPresenter.getNewTargets() + " to :" + dataModel.getStaleSelection().debugString());
+      saveService.saveTranslation(dataModel.getStaleSelection(), targetContentsPresenter.getNewTargets(), ContentState.NeedReview, new TransUnitSaveService.SaveResultCallback()
+      {
+         @Override
+         public void onSaveSuccess(TransUnit updatedTU)
+         {
+            dataModel.update(updatedTU);
+            Log.info("pending change saved. now show selection.");
+            showSelection();
+         }
+
+         @Override
+         public void onSaveFail()
+         {
+         }
+      });
    }
 
    @Override
@@ -227,6 +260,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
             dataModel.update(updatedTU);
             if (event.andMove())
             {
+               Log.info("save success and now move to " + event.getNavigationType());
                navigationController.navigateTo(event.getNavigationType());
             }
          }

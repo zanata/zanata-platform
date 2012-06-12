@@ -31,6 +31,7 @@ import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.inject.Singleton;
@@ -151,6 +152,7 @@ public class TransUnitNavigationService
    {
       this.curPage = curPage;
       curRowIndex = this.curPage * pageSize + selectedRow;
+      Log.info("update current page:" + curPage + ", current row index:" + curRowIndex);
    }
 
    public int getCurrentPage()
