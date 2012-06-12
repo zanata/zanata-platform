@@ -21,25 +21,23 @@
 
 package org.zanata.webtrans.client.presenter;
 
-import java.util.ArrayList;
-
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.events.FindMessageEvent;
-import org.zanata.webtrans.client.events.FindMessageHandler;
-import org.zanata.webtrans.client.events.TransUnitSaveEvent;
-import org.zanata.webtrans.client.events.TransUnitSaveEventHandler;
-import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
-import org.zanata.webtrans.client.service.TransUnitSaveService;
-import org.zanata.webtrans.client.service.TransUnitsDataModel;
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
-import org.zanata.webtrans.client.service.NavigationController;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
+import org.zanata.webtrans.client.events.FindMessageEvent;
+import org.zanata.webtrans.client.events.FindMessageHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
+import org.zanata.webtrans.client.events.TransUnitSaveEvent;
+import org.zanata.webtrans.client.events.TransUnitSaveEventHandler;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.client.service.NavigationController;
+import org.zanata.webtrans.client.service.TransUnitSaveService;
+import org.zanata.webtrans.client.service.TransUnitsDataModel;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
 import org.zanata.webtrans.client.view.TransUnitEditDisplay;
 import org.zanata.webtrans.client.view.TransUnitListDisplay;
@@ -57,7 +55,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay> implements DocumentSelectionHandler,
+public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay> implements
       SelectionChangeEvent.Handler,
       WorkspaceContextUpdateEventHandler,
       NavTransUnitHandler,
@@ -117,12 +115,10 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    protected void onBind()
    {
-      eventBus.addHandler(DocumentSelectionEvent.getType(), this);
       eventBus.addHandler(NavTransUnitEvent.getType(), this);
       eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this);
       eventBus.addHandler(TransUnitSaveEvent.TYPE, this);
       eventBus.addHandler(FindMessageEvent.getType(), this);
-      eventBus.addHandler(TransUnitUpdatedEvent.getType(), navigationController);
       transUnitListDisplay.addLoadingStateChangeHandler(this);
       dataModel.addSelectionChangeHandler(this);
    }
@@ -135,15 +131,6 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    protected void onRevealDisplay()
    {
-   }
-
-   @Override
-   public void onDocumentSelected(DocumentSelectionEvent event)
-   {
-      //TODO page size should be configurable
-      GetTransUnitActionContext context = GetTransUnitActionContext.of(event.getDocumentId()).setCount(10);
-      //here it loads trans unit for a document from server
-      navigationController.init(context);
    }
 
    @Override
@@ -283,10 +270,8 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onFindMessage(FindMessageEvent event)
    {
-      Log.info("Find Message Event: " + event.getMessage());
-      savePendingChangeBeforeShowingNewSelection();
-      String findMessage = event.getMessage();
-      //TODO implement
-      throw new UnsupportedOperationException("implement me!");
+      transUnitListDisplay.setHighlightString(event.getMessage());
+      sourceContentsPresenter.getDisplay().highlightSearch(event.getMessage());
+      targetContentsPresenter.getDisplay().setFindMessage(event.getMessage());
    }
 }

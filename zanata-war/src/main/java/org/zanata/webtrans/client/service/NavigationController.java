@@ -25,6 +25,11 @@ import java.util.ArrayList;
 
 import org.zanata.webtrans.client.editor.HasPageNavigation;
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
+import org.zanata.webtrans.client.events.DocumentSelectionEvent;
+import org.zanata.webtrans.client.events.DocumentSelectionHandler;
+import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
+import org.zanata.webtrans.client.events.FindMessageEvent;
+import org.zanata.webtrans.client.events.FindMessageHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
@@ -39,16 +44,20 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class NavigationController implements HasPageNavigation, TransUnitUpdatedEventHandler
+public class NavigationController implements HasPageNavigation, TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler
 {
    public static final int FIRST_PAGE = 0;
+   private final EventBus eventBus;
    private final CachingDispatchAsync dispatcher;
    private final TransUnitNavigationService navigationService;
    private final TransUnitsDataModel dataModel;
@@ -57,15 +66,24 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
    private GetTransUnitActionContext context;
 
    @Inject
-   public NavigationController(CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService, TransUnitsDataModel dataModel, UserConfigHolder configHolder)
+   public NavigationController(EventBus eventBus, CachingDispatchAsync dispatcher, TransUnitNavigationService navigationService, TransUnitsDataModel dataModel, UserConfigHolder configHolder)
    {
+      this.eventBus = eventBus;
       this.dispatcher = dispatcher;
       this.navigationService = navigationService;
       this.dataModel = dataModel;
       this.configHolder = configHolder;
+      bindHandlers();
    }
 
-   public void init(GetTransUnitActionContext context)
+   private void bindHandlers()
+   {
+      eventBus.addHandler(DocumentSelectionEvent.getType(), this);
+      eventBus.addHandler(TransUnitUpdatedEvent.getType(), this);
+      eventBus.addHandler(FindMessageEvent.getType(), this);
+   }
+
+   protected void init(GetTransUnitActionContext context)
    {
       this.context = context;
       requestNavigationIndex(context);
@@ -252,6 +270,34 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
       {
          TransUnit updatedTU = event.getUpdateInfo().getTransUnit();
          navigationService.updateState(updatedTU.getId().getId(), updatedTU.getStatus());
+      }
+   }
+
+   @Override
+   public void onFindMessage(FindMessageEvent event)
+   {
+      // TODO modal navigation disabled if there's findMessage
+      String findMessage = event.getMessage();
+      if (Strings.isNullOrEmpty(findMessage))
+      {
+         init(context.setFindMessage(findMessage));
+         eventBus.fireEvent(new EnableModalNavigationEvent(true));
+      }
+      else
+      {
+         eventBus.fireEvent(new EnableModalNavigationEvent(false));
+         requestTransUnitsAndUpdatePageIndex(context.setFindMessage(findMessage));
+      }
+   }
+
+   @Override
+   public void onDocumentSelected(DocumentSelectionEvent event)
+   {
+      if (context == null || !Objects.equal(context.getDocumentId(), event.getDocumentId()))
+      {
+         //TODO page size should be configurable
+         GetTransUnitActionContext context = GetTransUnitActionContext.of(event.getDocumentId()).setCount(10);
+         init(context);
       }
    }
 }

@@ -66,6 +66,7 @@ import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.customware.gwt.dispatch.shared.Result;
+import net.customware.gwt.presenter.client.EventBus;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
@@ -101,6 +102,8 @@ public class NavigationControllerTest
    private NavigationController controller;
    @Mock
    private CachingDispatchAsync dispatcher;
+   @Mock
+   private EventBus eventBus;
    private TransUnitNavigationService navigationService;
    private DocumentId documentId = new DocumentId(1L);
 
@@ -133,7 +136,6 @@ public class NavigationControllerTest
    private GetTransUnitActionContext context;
    @Mock private SingleSelectionModel<TransUnit> selectionModel;
 
-
    @BeforeMethod
    public void setUp() throws Exception
    {
@@ -144,7 +146,7 @@ public class NavigationControllerTest
       UserConfigHolder configHolder = new UserConfigHolder();
       TransUnitsDataModel dataModel = new TransUnitsDataModel(selectionModel);
 
-      controller = new NavigationController(dispatcher, navigationService, dataModel, configHolder);
+      controller = new NavigationController(eventBus, dispatcher, navigationService, dataModel, configHolder);
 
       context = GetTransUnitActionContext.of(documentId);
    }
