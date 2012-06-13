@@ -315,38 +315,38 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          }
       }));
 
-      registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler()
-      {
-         @Override
-         public void onDocumentSelected(DocumentSelectionEvent event)
-         {
-            loadDocument(event.getDocumentId());
-         }
-      }));
+//      registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler()
+//      {
+//         @Override
+//         public void onDocumentSelected(DocumentSelectionEvent event)
+//         {
+//            loadDocument(event.getDocumentId());
+//         }
+//      }));
 
-      registerHandler(eventBus.addHandler(FindMessageEvent.getType(), new FindMessageHandler()
-      {
-
-         @Override
-         public void onFindMessage(FindMessageEvent event)
-         {
-            Log.info("Find Message Event: " + event.getMessage());
-            display.getTargetCellEditor().savePendingChange(true);
-            if (selectedTransUnit != null)
-            {
-               Log.info("cancelling selection");
-               display.getTargetCellEditor().clearSelection();
-            }
-            findMessage = event.getMessage();
-            display.setFindMessage(findMessage);
-            if (selectedTransUnit != null)
-            {
-               targetTransUnitId = selectedTransUnit.getId();
-            }
-            initialiseTransUnitList();
-         }
-
-      }));
+//      registerHandler(eventBus.addHandler(FindMessageEvent.getType(), new FindMessageHandler()
+//      {
+//
+//         @Override
+//         public void onFindMessage(FindMessageEvent event)
+//         {
+//            Log.info("Find Message Event: " + event.getMessage());
+//            display.getTargetCellEditor().savePendingChange(true);
+//            if (selectedTransUnit != null)
+//            {
+//               Log.info("cancelling selection");
+//               display.getTargetCellEditor().clearSelection();
+//            }
+//            findMessage = event.getMessage();
+//            display.setFindMessage(findMessage);
+//            if (selectedTransUnit != null)
+//            {
+//               targetTransUnitId = selectedTransUnit.getId();
+//            }
+//            initialiseTransUnitList();
+//         }
+//
+//      }));
 
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler()
       {

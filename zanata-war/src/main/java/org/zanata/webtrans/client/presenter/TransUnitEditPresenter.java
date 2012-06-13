@@ -22,17 +22,13 @@
 package org.zanata.webtrans.client.presenter;
 
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
-import org.zanata.webtrans.client.events.DocumentSelectionEvent;
-import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEventHandler;
-import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.service.NavigationController;
@@ -151,7 +147,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       TransUnit selectedTransUnit = dataModel.getSelectedOrNull();
       if (selectedTransUnit != null)
       {
-         Log.info("selected: " + selectedTransUnit.getId());
+         Log.info("selected id: " + selectedTransUnit.getId());
          sourceContentsPresenter.setValue(selectedTransUnit);
          targetContentsPresenter.setValue(selectedTransUnit, null);
          sourceContentsPresenter.selectedSource();
