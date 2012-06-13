@@ -23,7 +23,6 @@ package org.zanata.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.lucene.queryParser.ParseException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -91,7 +90,7 @@ public class VersionGroupServiceImpl implements VersionGroupService
    }
 
    @Override
-   public List<HProjectIteration> searchLikeSlugOrProjectSlug(String searchTerm) throws ParseException
+   public List<HProjectIteration> searchLikeSlugOrProjectSlug(String searchTerm)
    {
       return projectIterationDAO.searchLikeSlugOrProjectSlug(searchTerm);
    }

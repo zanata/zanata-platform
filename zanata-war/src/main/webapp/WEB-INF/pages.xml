@@ -195,7 +195,8 @@
     	<param name="iterationSlug" value="#{versionGroupHome.iterationSlug}" />
     	
     	<action execute="#{versionGroupHome.validateSuppliedId}" />
-    	<action execute="#{versionGroupAction.init(versionGroupSlug,projectSlug,iterationSlug)}" />
+    	<action execute="#{versionGroupAction.init(versionGroupSlug)}"/>
+    	<action execute="#{versionGroupAction.executePreSearch(projectSlug,iterationSlug)}" on-postback="false" />
   	</page>
   	
   	<page view-id="/version-group/edit.xhtml" login-required="true">
