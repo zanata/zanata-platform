@@ -58,21 +58,20 @@
 
 <ui:define name="left_content">
 
-  <rich:panel id="loggedIn" rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'update')}">
+  <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
     <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+    <s:fragment rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
+        <a href="#" class="action_link" onclick="#{rich:component('versionAddPanel')}.show()">#{messages['jsf.AddProjectVersions']}</a>
 
-    <a href="#" class="action_link" onclick="#{rich:component('versionAddPanel')}.show()">#{messages['jsf.AddProjectVersions']}</a>
+        <s:link styleClass="action_link" value="#{messages['jsf.EditGroup']}" view="/version-group/edit.xhtml" propagation="none">
+          <f:param name="versionGroupSlug" value="#{versionGroupHome.instance.slug}"/>
+        </s:link>
 
-    <s:link styleClass="action_link" value="#{messages['jsf.EditGroup']}" view="/version-group/edit.xhtml" propagation="none">
-      <f:param name="versionGroupSlug" value="#{versionGroupHome.instance.slug}"/>
-    </s:link>
-
-    <s:link styleClass="action_link" view="/version-group/assign_maintainer.xhtml" value="#{messages['jsf.ManageMaintainers']}" propagation="none">
-    	<f:param name="versionGroupSlug" value="#{versionGroupHome.instance.slug}"/>
-    </s:link>
-    
-     <s:link styleClass="action_link" view="/version-group/join/#{versionGroupHome.instance.slug}" value="#{messages['jsf.RequestToJoinVersionGroup']}" propagation="none" rendered="#{identity.loggedIn and versionGroupAction.isUserProjectMaintainer()}"/>
-
+        <s:link styleClass="action_link" view="/version-group/assign_maintainer.xhtml" value="#{messages['jsf.ManageMaintainers']}" propagation="none">
+            <f:param name="versionGroupSlug" value="#{versionGroupHome.instance.slug}"/>
+        </s:link>
+    </s:fragment>
+     <s:link styleClass="action_link" view="/version-group/join/#{versionGroupHome.instance.slug}" value="#{messages['jsf.RequestToJoinVersionGroup']}" propagation="none" rendered="#{versionGroupAction.isUserProjectMaintainer()}"/>
   </rich:panel>
 
   <rich:panel>
@@ -83,7 +82,7 @@
     </rich:dataList>
   </rich:panel>
 
-  <s:fragment rendered="#{versionGroupHome.projectSlug != null and versionGroupHome.iterationSlug != null}">
+  <s:fragment rendered="#{versionGroupAction.showPopup() and s:hasPermission(versionGroupHome.instance, 'update')}">
  	 <script>
  	 	jQuery(document).ready(function() 
  	 	{
@@ -127,15 +126,6 @@
                                 </rich:column>
 
                                 <rich:column styleClass="centered">
-                                    <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-                                    <a4j:commandButton value="#{messages['jsf.Add']}"
-                                                     action="#{versionGroupAction.joinVersionGroup(selectableVersion.projectIteration.id)}"
-                                                     rendered="#{!versionGroupAction.isVersionInGroup(selectableVersion.projectIteration.id)}" reRender="searchResults, iterationsDataTable" />
-                                    <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
-                                                  rendered="#{versionGroupAction.isVersionInGroup(selectableVersion.projectIteration.id)}" />
-                                </rich:column>
-
-                                <rich:column styleClass="centered">
                                     <f:facet name="header">
                                         <h:panelGroup>
                                             <h:selectBooleanCheckbox title="Select all" value="#{versionGroupAction.selectAll}">
@@ -145,6 +135,8 @@
                                     </f:facet>
 
                                     <h:selectBooleanCheckbox title="Select" value="#{selectableVersion.selected}" rendered="#{!versionGroupAction.isVersionInGroup(selectableVersion.projectIteration.id)}"/>
+                                    <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
+                                                  rendered="#{versionGroupAction.isVersionInGroup(selectableVersion.projectIteration.id)}" />
 
                                 </rich:column>
                             </rich:dataTable>

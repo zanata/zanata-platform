@@ -12,71 +12,42 @@
    <ui:param name="showGlobalMessages" value="true"/>
    
    <ui:define name="page_title">#{messages['jsf.RequestToJoinVersionGroupTitle']}</ui:define>
-   
-    <ui:define name="left_content">
-    	<rich:panel rendered="#{identity.loggedIn}">
-            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-             <a href="#" class="action_link" onclick="#{rich:component('maintainedProjectPanel')}.show()">#{messages['jsf.SelectProjectVersions']}</a>
-    	</rich:panel>
-    	
-    	
-    	<rich:modalPanel id="maintainedProjectPanel" width="530" height="420" rendered="#{identity.loggedIn}">
-        <f:subview id="maintainedProjectVersion">
-            <a4j:form>
-                <h1>Maintained Projects</h1>
-                <p>
-                    <a4j:commandButton id="addSelectedBtn"
-                                       value="#{messages['jsf.AddSelected']}"
-                                       reRender="searchResults" />
-                                       
-                    <h:commandButton value="#{messages['jsf.Close']}"
-                                     onclick="#{rich:component('maintainedProjectPanel')}.hide(); return false;" />
-                </p>
-            </a4j:form>
-            <a4j:region>
-                <a4j:outputPanel id="searchResults" layout="block" style="overflow:auto;height:320px">
-                    <h:outputText id="noResultsMessage" rendered="#{empty versionGroupAction.maintainedProjectVersions}" value="#{messages['jsf.NoMaintainedProject']}" />
-                    <h:form rendered="#{not empty versionGroupAction.maintainedProjectVersions}">
-                        <rich:dataTable id="resultTable"
-                                        value="#{versionGroupAction.maintainedProjectVersions}" var="projectIteration">
-                            <f:facet name="header">#{messages['jsf.MaintainedProjects']}</f:facet>
-                            <rich:column sortBy="#{projectIteration.project.name}">
-                                <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
-                                #{projectIteration.project.name}
-                            </rich:column>
-                            <rich:column sortBy="#{projectIteration.slug}">
-                                <f:facet name="header">#{messages['jsf.Version']}</f:facet>
-                                #{projectIteration.slug}
-                            </rich:column>
 
-                            <rich:column styleClass="centered">
-                                <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-                                <a4j:commandButton value="#{messages['jsf.Add']}"
-                                                 action="#{versionGroupAction.joinVersionGroup(projectIteration.id)}"
-                                                 rendered="#{!versionGroupAction.isVersionInGroup(projectIteration.id)}" reRender="searchResults, iterationsDataTable" />
-                                <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
-                                              rendered="#{versionGroupAction.isVersionInGroup(projectIteration.id)}" />
-                            </rich:column>
-
-
-                        </rich:dataTable>
-                    </h:form>
-                </a4j:outputPanel>
-            </a4j:region>
-        </f:subview>
-    </rich:modalPanel>
-    
-    
-    </ui:define>
-    
-    
    <ui:define name="center_content">
       <rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
       <h:form>
          <s:token allowMultiplePosts="true" />
          <h1>#{messages['jsf.RequestToJoinVersionGroupTitle']}</h1>
          <rich:panel>
-            
+             <h:outputText id="noResultsMessage" rendered="#{empty versionGroupAction.maintainedProjectVersions}" value="#{messages['jsf.NoMaintainedProject']}" />
+
+             <s:fragment rendered="#{not empty versionGroupAction.maintainedProjectVersions}">
+                 <rich:dataTable id="resultTable" value="#{versionGroupAction.maintainedProjectVersions}" var="projectIteration">
+                     <f:facet name="header">#{messages['jsf.MaintainedProjects']}</f:facet>
+                     <rich:column sortBy="#{projectIteration.project.name}">
+                         <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
+                         #{projectIteration.project.name}
+                     </rich:column>
+                     <rich:column sortBy="#{projectIteration.slug}">
+                         <f:facet name="header">#{messages['jsf.Version']}</f:facet>
+                         #{projectIteration.slug}
+                     </rich:column>
+
+                     <rich:column styleClass="centered">
+                         <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+                         <a4j:commandButton value="#{messages['jsf.Add']}"
+                                            action="#{versionGroupAction.joinVersionGroup(projectIteration.id)}"
+                                            rendered="#{!versionGroupAction.isVersionInGroup(projectIteration.id)}" reRender="searchResults" />
+                         <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
+                                       rendered="#{versionGroupAction.isVersionInGroup(projectIteration.id)}" />
+                     </rich:column>
+                 </rich:dataTable>
+             </s:fragment>
+
+
+
+
+
             <s:decorate id="nameField" template="../WEB-INF/layout/display.xhtml">
                <ui:define name="label">#{messages['jsf.email.From']}</ui:define>
                <h:outputText id="senderName" value="#{sendEmail.fromName}"

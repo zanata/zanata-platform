@@ -22,7 +22,6 @@ package org.zanata.action;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
@@ -51,8 +50,6 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
    private static final long serialVersionUID = 1L;
 
    private String slug;
-   private String projectSlug;
-   private String iterationSlug;
 
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
@@ -102,26 +99,6 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
    public void setSlug(String slug)
    {
       this.slug = slug;
-   }
-
-   public String getProjectSlug()
-   {
-      return projectSlug;
-   }
-
-   public void setProjectSlug(String projectSlug)
-   {
-      this.projectSlug = projectSlug;
-   }
-
-   public String getIterationSlug()
-   {
-      return iterationSlug;
-   }
-
-   public void setIterationSlug(String iterationSlug)
-   {
-      this.iterationSlug = iterationSlug;
    }
 
    public void validateSuppliedId()

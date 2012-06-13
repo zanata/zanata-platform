@@ -191,12 +191,10 @@
     
     <page view-id="/version-group/version_group.xhtml">
     	<param name="versionGroupSlug" value="#{versionGroupHome.slug}" />
-    	<param name="projectSlug" value="#{versionGroupHome.projectSlug}" />
-    	<param name="iterationSlug" value="#{versionGroupHome.iterationSlug}" />
-    	
+
     	<action execute="#{versionGroupHome.validateSuppliedId}" />
     	<action execute="#{versionGroupAction.init(versionGroupSlug)}"/>
-    	<action execute="#{versionGroupAction.executePreSearch(projectSlug,iterationSlug)}" on-postback="false" />
+    	<action execute="#{versionGroupAction.executePreSearch()}" on-postback="false" />
   	</page>
   	
   	<page view-id="/version-group/edit.xhtml" login-required="true">
@@ -223,7 +221,10 @@
     <page view-id="/version-group/request_to_join.xhtml">
 	    <param name="emailType" value="#{sendEmail.emailType}" />
 	    <param name="versionGroupSlug" value="#{sendEmail.versionGroupSlug}" />
+
+        <action execute="#{versionGroupAction.init(versionGroupSlug)}"/>
 	    <action execute="#{versionGroupAction.searchMaintainedProjects}" />
+
 	    <navigation from-action="#{sendEmail.send}">
 	      <rule if-outcome="success">
 	        <redirect view-id="/version-group/version-group.xhtml">

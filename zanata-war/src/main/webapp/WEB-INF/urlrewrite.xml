@@ -220,15 +220,10 @@
     <from casesensitive="true">^/version-group/list(.+)?$</from>
     <to last="true">/version-group/home.seam$1</to>
   </rule>
-  
+
   <rule>
-    <from casesensitive="true">^/version-group/view/([^/]+)/([^/]+)/([^/]+)/?$</from>
-    <to last="true">/version-group/version_group.seam\?versionGroupSlug=$1&amp;projectSlug=$2&amp;iterationSlug=$3</to>
-  </rule>
-  
-  <rule>
-    <from casesensitive="true">^/version-group/view/([^/]+)/?$</from>
-    <to last="true">/version-group/version_group.seam\?versionGroupSlug=$1</to>
+    <from casesensitive="true">^/version-group/view/([^/]+)/?(\?(.*))?$</from>
+    <to last="true">/version-group/version_group.seam\?versionGroupSlug=$1&amp;$3</to>
   </rule>
   
   <rule>
@@ -358,12 +353,7 @@
     <from>^(/.+)?/version-group/version_group.seam\?versionGroupSlug=(.+)$</from>
     <to>$1/version-group/view/$2</to>
   </outbound-rule>
-  
-  <outbound-rule>
-    <from>^(/.+)?/version-group/version_group.seam\?versionGroupSlug=([^&amp;]+)&amp;projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)$</from>
-    <to>$1/version-group/view/$2/$3/$4</to>
-  </outbound-rule>
-  
+
   <outbound-rule>
     <from>^(/.+)?/version-group/edit.seam(.+)$</from>
     <to>$1/version-group/edit/$2</to>

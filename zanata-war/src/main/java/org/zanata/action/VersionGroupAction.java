@@ -21,11 +21,11 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.h2.util.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -33,6 +33,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
@@ -61,6 +62,9 @@ public class VersionGroupAction implements Serializable
    @Logger
    Log log;
 
+   @RequestParameter
+   private String[] slugParam;
+
    private List<HIterationGroup> allVersionGroups;
 
    private List<SelectableHIterationProject> searchResults;
@@ -81,10 +85,10 @@ public class VersionGroupAction implements Serializable
       private HProjectIteration projectIteration;
       private boolean selected;
 
-      public SelectableHIterationProject(HProjectIteration projectIteration)
+      public SelectableHIterationProject(HProjectIteration projectIteration, boolean selected)
       {
          this.projectIteration = projectIteration;
-         selected = false;
+         this.selected = selected;
       }
 
       public HProjectIteration getProjectIteration()
@@ -101,6 +105,11 @@ public class VersionGroupAction implements Serializable
       {
          this.selected = selected;
       }
+   }
+
+   public boolean showPopup()
+   {
+      return slugParam != null && slugParam.length != 0;
    }
 
    public void loadAllActiveGroupsOrIsMaintainer()
@@ -139,14 +148,22 @@ public class VersionGroupAction implements Serializable
     * Run search on unique project version if projectSlug, iterationSlug exits
     * else search versions available
     */
-   public void executePreSearch(String projectSlug, String iterationSlug)
+   public void executePreSearch()
    {
-      if (!StringUtils.isNullOrEmpty(projectSlug) && !StringUtils.isNullOrEmpty(iterationSlug))
+      if (slugParam != null && slugParam.length != 0)
       {
-         HProjectIteration projectVersion = versionGroupServiceImpl.getProjectIterationBySlug(projectSlug, iterationSlug);
-         if (projectVersion != null)
+         for (String param : slugParam)
          {
-            getSearchResults().add(new SelectableHIterationProject(projectVersion));
+            String[] paramSet = param.split(":");
+
+            if (paramSet.length == 2)
+            {
+               HProjectIteration projectVersion = versionGroupServiceImpl.getProjectIterationBySlug(paramSet[0],  paramSet[1]);
+               if (projectVersion != null)
+               {
+                  getSearchResults().add(new SelectableHIterationProject(projectVersion, true));
+               }
+            }
          }
       }
       else
@@ -207,7 +224,7 @@ public class VersionGroupAction implements Serializable
 
    @Transactional
    @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
-   public void joinVersionGroup(Long projectIterationId)
+   private void joinVersionGroup(Long projectIterationId)
    {
       versionGroupServiceImpl.joinVersionGroup(group.getSlug(), projectIterationId);
    }
@@ -226,7 +243,7 @@ public class VersionGroupAction implements Serializable
       List<HProjectIteration> result = versionGroupServiceImpl.searchLikeSlugOrProjectSlug(this.searchTerm);
       for (HProjectIteration version : result)
       {
-         getSearchResults().add(new SelectableHIterationProject(version));
+         getSearchResults().add(new SelectableHIterationProject(version, false));
       }
    }
 
