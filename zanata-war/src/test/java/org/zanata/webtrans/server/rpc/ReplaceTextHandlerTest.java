@@ -60,7 +60,7 @@ public class ReplaceTextHandlerTest
       handler.updateTransUnitHandler = mockUpdateTransUnitHandler;
       handler.securityServiceImpl = mockSecurityService;
       transUnitBuilder = TransUnit.Builder.newTransUnitBuilder()
-            .setId(1).setResId("").setLocaleId("en-US").setVerNum(1).addSource("abc");
+            .setId(1).setResId("").setLocaleId("en-US").setVerNum(1).addSource("abc").setVerNum(0).setRowIndex(0);
    }
 
    @Test
