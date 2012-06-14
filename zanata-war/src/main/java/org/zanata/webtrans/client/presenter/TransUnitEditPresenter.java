@@ -76,8 +76,8 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    private final TransUnitsDataModel dataModel;
 
    //state we need to keep track of
-   private FilterViewEvent filterOptions;
-   private FindMessageEvent findMessage;
+   private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
+   private FindMessageEvent findMessage = FindMessageEvent.DEFAULT;
 
    //TODO too many constructor dependency
    @Inject
@@ -125,6 +125,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this);
       eventBus.addHandler(TransUnitSaveEvent.TYPE, this);
       eventBus.addHandler(FindMessageEvent.getType(), this);
+      eventBus.addHandler(FilterViewEvent.getType(), this);
       transUnitListDisplay.addLoadingStateChangeHandler(this);
       dataModel.addSelectionChangeHandler(this);
    }
@@ -319,7 +320,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void saveAsFuzzyAndFilter()
    {
-      saveAndFilter(ContentState.Approved);
+      saveAndFilter(ContentState.NeedReview);
    }
 
    private void saveAndFilter(ContentState status)

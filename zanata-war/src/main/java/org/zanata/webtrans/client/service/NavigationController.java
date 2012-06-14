@@ -36,6 +36,7 @@ import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
@@ -44,6 +45,7 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -92,6 +94,7 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
 
    private void requestTransUnitsAndUpdatePageIndex(final GetTransUnitActionContext context)
    {
+      this.context = context;
       Log.info("requesting transUnits: " + context);
       final int itemPerPage = context.getCount();
       final int offset = context.getOffset();
@@ -125,6 +128,7 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
 
    private void requestNavigationIndex(GetTransUnitActionContext context)
    {
+      this.context = context;
       final int itemPerPage = context.getCount();
       dispatcher.execute(GetTransUnitsNavigation.newAction(context), new AbstractAsyncCallback<GetTransUnitsNavigationResult>()
       {
@@ -276,7 +280,7 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
    @Override
    public void onFindMessage(FindMessageEvent event)
    {
-      // TODO modal navigation disabled if there's findMessage
+      // TODO modal navigation disabled if there's findMessage. turn FindMessageEvent into UpdateContextCommand like the rest.
       String findMessage = event.getMessage();
       context = context.setFindMessage(findMessage);
       if (Strings.isNullOrEmpty(findMessage))
@@ -301,15 +305,28 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
    {
       if (context == null)
       {
-         Log.warn("no context available!!");
-         return;
+         Preconditions.checkState(command instanceof DocumentSelectionEvent, "no existing context available. Must select document first.");
+         DocumentId documentId = ((DocumentSelectionEvent) command).getDocumentId();
+         init(GetTransUnitActionContext.of(documentId));
       }
-      GetTransUnitActionContext old = context;
-      context = command.updateContext(context);
-      if (!context.equals(old))
+      else
       {
-         init(context);
+         GetTransUnitActionContext newContext = command.updateContext(context);
+         if (context.needReloadList(newContext))
+         {
+            requestTransUnitsAndUpdatePageIndex(setTargetTransUnitIdIfApplicable(newContext));
+         }
+         if (context.needReloadNavigationIndex(newContext))
+         {
+            requestNavigationIndex(newContext);
+         }
       }
+   }
+
+   private GetTransUnitActionContext setTargetTransUnitIdIfApplicable(GetTransUnitActionContext context)
+   {
+      TransUnit selected = dataModel.getSelectedOrNull();
+      return selected != null ? context.setTargetTransUnitId(selected.getId()) : context;
    }
 
    public static interface UpdateContextCommand

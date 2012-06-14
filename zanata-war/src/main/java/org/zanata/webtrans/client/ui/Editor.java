@@ -138,9 +138,8 @@ public class Editor extends Composite implements ToggleEditor
       if (!listener.isReadOnly())
       {
          label.setTitle(messages.clickHere());
+         setViewMode(ViewMode.EDIT);
       }
-      textArea.setVisible(false);
-      translatorList.setVisible(false);
    }
 
    private void setLabelText(String displayString)

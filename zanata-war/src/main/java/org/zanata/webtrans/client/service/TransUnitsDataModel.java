@@ -82,8 +82,8 @@ public class TransUnitsDataModel extends ListDataProvider<TransUnit>
    public TransUnit getSelectedOrNull()
    {
       // the reason we need to have our own cached TransUnit is:
-      // when save as fuzzy, the selection won't change and selectionModel will return a obsolete cache with wrong version number
-      // isSelected only compares key (TransUnitId) to see whether to return its own cached selection
+      // when save as fuzzy, the selection won't change and selectionModel will return an obsolete cache with wrong version number
+      // isSelected only compares key (TransUnitId) to see whether to return our own cached selection
       if (selectionModel.isSelected(cachedSelection))
       {
          return cachedSelection;
