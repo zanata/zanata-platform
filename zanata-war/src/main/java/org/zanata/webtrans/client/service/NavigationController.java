@@ -275,6 +275,7 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
          TransUnit updatedTU = event.getUpdateInfo().getTransUnit();
          navigationService.updateState(updatedTU.getId().getId(), updatedTU.getStatus());
       }
+      //TODO concurrent edit and color change etc.
    }
 
    @Override

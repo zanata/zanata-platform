@@ -25,6 +25,7 @@ import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationPanel;
+import org.zanata.webtrans.client.ui.LoadingPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -35,6 +36,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -51,12 +53,15 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
    @UiField
    ScrollPanel editorPanel;
 
-   private final FilterViewConfirmationPanel filterViewConfirmationPanel;
+   private final FilterViewConfirmationDisplay filterViewConfirmationPanel;
+   private final LoadingPanel loadingPanel;
 
-   public TransUnitEditView()
+   @Inject
+   public TransUnitEditView(LoadingPanel loadingPanel, FilterViewConfirmationDisplay filterViewConfirmationDisplay)
    {
+      this.loadingPanel = loadingPanel;
+      filterViewConfirmationPanel = filterViewConfirmationDisplay;
       rootPanel = uiBinder.createAndBindUi(this);
-      filterViewConfirmationPanel = new FilterViewConfirmationPanel();
    }
 
    @Override

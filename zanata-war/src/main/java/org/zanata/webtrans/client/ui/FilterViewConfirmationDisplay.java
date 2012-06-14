@@ -21,6 +21,9 @@
 
 package org.zanata.webtrans.client.ui;
 
+import com.google.inject.ImplementedBy;
+
+@ImplementedBy(FilterViewConfirmationPanel.class)
 public interface FilterViewConfirmationDisplay
 {
    interface Listener
@@ -30,6 +33,10 @@ public interface FilterViewConfirmationDisplay
       void discardChangesAndFilter();
       void cancelFilter();
    }
+
+   void center();
+
+   void hide();
 
    void setListener(Listener listener);
 }
