@@ -24,13 +24,17 @@ package org.zanata.webtrans.client.editor.table;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 
 /**
+ * This class is immutable and all the mutator methods will return a new instance of it.
+ * This is so that it can be shared by multiple ojects to keep track of states easily.
+ *
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class GetTransUnitActionContext
 {
-   //TODO make this class singleton/immutable and be used by FilterViewConfirmationPanel and TableEditorPresenter
+   //TODO make this class singleton and be used by FilterViewConfirmationPanel and TableEditorPresenter
 
    private final DocumentId documentId;
    private String findMessage;
@@ -44,6 +48,18 @@ public class GetTransUnitActionContext
    private GetTransUnitActionContext(DocumentId documentId)
    {
       this.documentId = documentId;
+   }
+
+   private GetTransUnitActionContext(GetTransUnitActionContext other)
+   {
+      documentId = other.getDocumentId();
+      findMessage = other.getFindMessage();
+      offset = other.getOffset();
+      count = other.getCount();
+      filterTranslated = other.isFilterTranslated();
+      filterNeedReview = other.isFilterNeedReview();
+      filterUntranslated = other.isFilterUntranslated();
+      targetTransUnitId = other.getTargetTransUnitId();
    }
 
    public static GetTransUnitActionContext of(DocumentId documentId)
@@ -68,8 +84,9 @@ public class GetTransUnitActionContext
 
    public GetTransUnitActionContext setFindMessage(String findMessage)
    {
-      this.findMessage = findMessage;
-      return this;
+      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+      result.findMessage = findMessage;
+      return result;
    }
 
    public boolean isFilterTranslated()
@@ -79,8 +96,9 @@ public class GetTransUnitActionContext
 
    public GetTransUnitActionContext setFilterTranslated(boolean filterTranslated)
    {
-      this.filterTranslated = filterTranslated;
-      return this;
+      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+      result.filterTranslated = filterTranslated;
+      return result;
    }
 
    public boolean isFilterNeedReview()
@@ -90,8 +108,9 @@ public class GetTransUnitActionContext
 
    public GetTransUnitActionContext setFilterNeedReview(boolean filterNeedReview)
    {
-      this.filterNeedReview = filterNeedReview;
-      return this;
+      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+      result.filterNeedReview = filterNeedReview;
+      return result;
    }
 
    public boolean isFilterUntranslated()
@@ -101,8 +120,9 @@ public class GetTransUnitActionContext
 
    public GetTransUnitActionContext setFilterUntranslated(boolean filterUntranslated)
    {
-      this.filterUntranslated = filterUntranslated;
-      return this;
+      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+      result.filterUntranslated = filterUntranslated;
+      return result;
    }
 
    public TransUnitId getTargetTransUnitId()
@@ -112,8 +132,9 @@ public class GetTransUnitActionContext
 
    public GetTransUnitActionContext setTargetTransUnitId(TransUnitId targetTransUnitId)
    {
-      this.targetTransUnitId = targetTransUnitId;
-      return this;
+      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+      result.targetTransUnitId = targetTransUnitId;
+      return result;
    }
 
    public int getOffset()
@@ -123,8 +144,9 @@ public class GetTransUnitActionContext
 
    public GetTransUnitActionContext setOffset(int offset)
    {
-      this.offset = offset;
-      return this;
+      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+      result.offset = offset;
+      return result;
    }
 
    public int getCount()
@@ -134,8 +156,9 @@ public class GetTransUnitActionContext
 
    public GetTransUnitActionContext setCount(int count)
    {
-      this.count = count;
-      return this;
+      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+      result.count = count;
+      return result;
    }
 
    @Override
@@ -152,6 +175,37 @@ public class GetTransUnitActionContext
             add("filterUntranslated", filterUntranslated).
             add("targetTransUnitId", targetTransUnitId).
             toString();
+      // @formatter:on
+   }
+
+   /**
+    * Detects whether context has changed so that we need to reload translation unit list
+    * @param newContext new context compare to current
+    * @return true if we should reload list
+    */
+   public boolean needReloadList(GetTransUnitActionContext newContext)
+   {
+      return needReloadNavigationIndex(newContext) || count != newContext.count || offset != newContext.offset;
+   }
+
+   /**
+    * Detects whether context has changed so that we need to reload navigation indexes
+    * @param newContext new context compare to current
+    * @return true if we should reload navigation index
+    */
+   public boolean needReloadNavigationIndex(GetTransUnitActionContext newContext)
+   {
+      if (this == newContext)
+      {
+         return false;
+      }
+
+      // @formatter:off
+      return filterNeedReview != newContext.filterNeedReview
+            || filterTranslated != newContext.filterTranslated
+            || filterUntranslated != newContext.filterUntranslated
+            || !documentId.equals(newContext.documentId)
+            || !Objects.equal(findMessage, newContext.findMessage);
       // @formatter:on
    }
 }
