@@ -1,6 +1,6 @@
 package org.zanata.webtrans.shared.rpc;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 
@@ -11,7 +11,7 @@ public class GetDocumentList extends AbstractWorkspaceAction<GetDocumentListResu
    private static final long serialVersionUID = 1L;
 
    private ProjectIterationId projectIterationId;
-   private ArrayList<String> filters;
+   private List<String> filters;
 
    @SuppressWarnings("unused")
    private GetDocumentList()
@@ -23,7 +23,7 @@ public class GetDocumentList extends AbstractWorkspaceAction<GetDocumentListResu
       this(id, null);
    }
 
-   public GetDocumentList(ProjectIterationId id, ArrayList<String> filters)
+   public GetDocumentList(ProjectIterationId id, List<String> filters)
    {
       this.projectIterationId = id;
       this.filters = filters;
@@ -39,12 +39,12 @@ public class GetDocumentList extends AbstractWorkspaceAction<GetDocumentListResu
       this.projectIterationId = projectIterationId;
    }
 
-   public ArrayList<String> getFilters()
+   public List<String> getFilters()
    {
       return filters;
    }
 
-   public void setFilters(ArrayList<String> filters)
+   public void setFilters(List<String> filters)
    {
       this.filters = filters;
    }

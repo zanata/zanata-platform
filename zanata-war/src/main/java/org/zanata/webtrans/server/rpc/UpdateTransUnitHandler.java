@@ -102,7 +102,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          int wordCount = hTextFlow.getWordCount().intValue();
          TransUnit tu = transUnitTransformer.transform(hTextFlow, newTarget.getLocale());
          TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(translationResult.isTranslationSuccessful(), new DocumentId(hTextFlow.getDocument().getId()), tu, wordCount, translationResult.getBaseVersionNum(), translationResult.getBaseContentState());
-         workspace.publish(new TransUnitUpdated(updateInfo, action.getSessionId()));
+         workspace.publish(new TransUnitUpdated(updateInfo, action.getEditorClientId(), action.getUpdateType()));
 
          result.addUpdateResult(updateInfo);
       }

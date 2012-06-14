@@ -18,35 +18,26 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.page;
+package org.zanata.page.administration;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.Select;
+import org.zanata.page.AbstractPage;
 
-public class AddLanguagePage extends AbstractPage
+public class AdministrationPage extends AbstractPage
 {
-   @FindBy(tagName = "select")
-   private WebElement languageSelection;
+   @FindBy(id = "Admin_Manage_languages_a_home")
+   private WebElement manageLanguagesLink;
 
-   @FindBy(xpath = "//input[@value='Save']")
-   private WebElement saveButton;
-
-   public AddLanguagePage(final WebDriver driver)
+   public AdministrationPage(WebDriver driver)
    {
       super(driver);
    }
 
-   public AddLanguagePage selectLanguage(String language)
+   public ManageLanguagePage goToManageLanguagePage()
    {
-      new Select(languageSelection).selectByValue(language);
-      return this;
-   }
-
-   public ManageLanguagePage saveLanguage()
-   {
-      saveButton.click();
+      manageLanguagesLink.click();
       return new ManageLanguagePage(getDriver());
    }
 }

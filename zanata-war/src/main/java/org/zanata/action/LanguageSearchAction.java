@@ -31,6 +31,7 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.core.Events;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HLocale;
 import org.zanata.service.LocaleService;
 
@@ -43,6 +44,8 @@ public class LanguageSearchAction implements Serializable
    private static final long serialVersionUID = 1L;
    @In
    private LocaleService localeServiceImpl;
+   @In
+   private LocaleDAO localeDAO;
    @DataModel
    List<HLocale> allLanguages;
    @DataModelSelection
@@ -57,22 +60,31 @@ public class LanguageSearchAction implements Serializable
    {
       return selectedLanguage;
    }
-
-   public void disable(HLocale zanataLocalePair)
-   {
-      localeServiceImpl.disable(zanataLocalePair.getLocaleId());
-      Events.instance().raiseEvent("disableLanguage");
-   }
-
-   public void enable(HLocale zanataLocalePair)
-   {
-      localeServiceImpl.enable(zanataLocalePair.getLocaleId());
-      Events.instance().raiseEvent("enableLanguage");
-   }
    
    public String manageMembers(HLocale zanataLocalePair)
    {
       return "/language/view/" + zanataLocalePair.getLocaleId().getId();
+   }
+
+   public void selectedLocaleChanged()
+   {
+      selectedLanguage = localeDAO.makePersistent(selectedLanguage);
+      localeDAO.flush();
+   }
+
+   public void selectedLocaleActivatedOrDeactivated()
+   {
+      selectedLanguage = localeDAO.makePersistent(selectedLanguage);
+      localeDAO.flush();
+
+      if( selectedLanguage.isActive() )
+      {
+         Events.instance().raiseEvent("enableLanguage");
+      }
+      else
+      {
+         Events.instance().raiseEvent("disableLanguage");
+      }
    }
 
 }

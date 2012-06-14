@@ -1,6 +1,5 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
@@ -25,8 +24,8 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.HasManageUserPanel;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
-import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.PersonSessionDetails;
@@ -65,14 +64,14 @@ public class WorkspaceUsersPresenterTest
 
    public void setEmptyUserList()
    {
-      expect(mockDisplay.getSendButton()).andReturn(mockSendButton);
-      expect(mockSendButton.addClickHandler(capture(capturedSendButtonClickHandler))).andReturn(createMock(HandlerRegistration.class));
+      // expect(mockDisplay.getSendButton()).andReturn(mockSendButton);
+      // expect(mockSendButton.addClickHandler(capture(capturedSendButtonClickHandler))).andReturn(createMock(HandlerRegistration.class));
 
       expect(mockEventBus.addHandler(eq(PublishWorkspaceChatEvent.getType()), isA(PublishWorkspaceChatEventHandler.class))).andReturn(createMock(HandlerRegistration.class));
       replay(mockDisplay, mockEventBus, mockSessionService);
 
       workspaceUsersPresenter.bind();
-      workspaceUsersPresenter.initUserList(new HashMap<SessionId, PersonSessionDetails>());
+      workspaceUsersPresenter.initUserList(new HashMap<EditorClientId, PersonSessionDetails>());
 
       verify(mockDisplay, mockEventBus, mockSessionService);
    }
@@ -83,9 +82,9 @@ public class WorkspaceUsersPresenterTest
       Person person2 = new Person(new PersonId("person2"), "Smith John", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16");
       Person person3 = new Person(new PersonId("person3"), "Smohn Jith", "http://www.gravatar.com/avatar/smohn@zanata.org?d=mm&s=16");
       
-      SessionId sessionId1 = new SessionId("sessionId1");
-      SessionId sessionId2 = new SessionId("sessionId2");
-      SessionId sessionId3 = new SessionId("sessionId3");
+      EditorClientId editorClientId1 = new EditorClientId("sessionId1");
+      EditorClientId editorClientId2 = new EditorClientId("sessionId2");
+      EditorClientId editorClientId3 = new EditorClientId("sessionId3");
 
       HasManageUserPanel mockPanel1 = createMock(HasManageUserPanel.class);
       HasManageUserPanel mockPanel2 = createMock(HasManageUserPanel.class);
@@ -99,31 +98,31 @@ public class WorkspaceUsersPresenterTest
       expect(mockSessionService.getColor("sessionId2")).andReturn("color2");
       expect(mockSessionService.getColor("sessionId3")).andReturn("color3");
 
-      expect(mockSessionService.getUserPanel(sessionId1)).andReturn(mockItem1);
-      expect(mockSessionService.getUserPanel(sessionId2)).andReturn(mockItem2);
-      expect(mockSessionService.getUserPanel(sessionId3)).andReturn(mockItem3);
+      expect(mockSessionService.getUserPanel(editorClientId1)).andReturn(mockItem1);
+      expect(mockSessionService.getUserPanel(editorClientId2)).andReturn(mockItem2);
+      expect(mockSessionService.getUserPanel(editorClientId3)).andReturn(mockItem3);
       
-      mockSessionService.updateTranslatorStatus(sessionId1, null);
+      mockSessionService.updateTranslatorStatus(editorClientId1, null);
       expectLastCall().once();
 
-      mockSessionService.updateTranslatorStatus(sessionId2, null);
+      mockSessionService.updateTranslatorStatus(editorClientId2, null);
       expectLastCall().once();
 
-      mockSessionService.updateTranslatorStatus(sessionId3, null);
+      mockSessionService.updateTranslatorStatus(editorClientId3, null);
       expectLastCall().once();
 
-      expect(mockDisplay.getSendButton()).andReturn(mockSendButton);
-      expect(mockSendButton.addClickHandler(capture(capturedSendButtonClickHandler))).andReturn(createMock(HandlerRegistration.class));
+      // expect(mockDisplay.getSendButton()).andReturn(mockSendButton);
+      // expect(mockSendButton.addClickHandler(capture(capturedSendButtonClickHandler))).andReturn(createMock(HandlerRegistration.class));
 
       expect(mockEventBus.addHandler(eq(PublishWorkspaceChatEvent.getType()), isA(PublishWorkspaceChatEventHandler.class))).andReturn(createMock(HandlerRegistration.class));
       replay(mockDisplay, mockEventBus, mockSendButton, mockSessionService);
 
       workspaceUsersPresenter.bind();
 
-      Map<SessionId, PersonSessionDetails> people = new HashMap<SessionId, PersonSessionDetails>();
-      people.put(new SessionId("sessionId1"), new PersonSessionDetails(person1, null));
-      people.put(new SessionId("sessionId2"), new PersonSessionDetails(person2, null));
-      people.put(new SessionId("sessionId3"), new PersonSessionDetails(person3, null));
+      Map<EditorClientId, PersonSessionDetails> people = new HashMap<EditorClientId, PersonSessionDetails>();
+      people.put(new EditorClientId("sessionId1"), new PersonSessionDetails(person1, null));
+      people.put(new EditorClientId("sessionId2"), new PersonSessionDetails(person2, null));
+      people.put(new EditorClientId("sessionId3"), new PersonSessionDetails(person3, null));
       workspaceUsersPresenter.initUserList(people);
 
       verify(mockDisplay, mockEventBus, mockSendButton, mockSessionService);

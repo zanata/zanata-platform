@@ -47,7 +47,6 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.OpenEditorEvent;
 import org.zanata.webtrans.client.events.OpenEditorEventHandler;
-import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
@@ -65,8 +64,8 @@ import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationPanel;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
-import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -77,6 +76,7 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
@@ -347,35 +347,72 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onTransUnitUpdated(TransUnitUpdatedEvent event)
          {
+            Log.debug("onTransUnitUpdated(TransUnitUpdatedEvent)");
+
+            Log.debug("event.getUpdateType: " + event.getUpdateType());
             // assume update was successful
             if (documentId != null && documentId.equals(event.getUpdateInfo().getDocumentId()))
             {
                navigationService.updateMap(event.getUpdateInfo().getTransUnit().getId().getId(), event.getUpdateInfo().getTransUnit().getStatus());
-               // if its different user,
-               if (!event.getSessionId().equals(identity.getSessionId()))
-               {
-                  if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getUpdateInfo().getTransUnit().getId()))
-                  {
-                     Log.info("selected TU updated; clear selection");
-                     eventBus.fireEvent(new RequestValidationEvent());
-                  }
 
-                  // - add TU index to model
-                  Integer rowIndex = navigationService.getRowIndex(event.getUpdateInfo().getTransUnit(), isFiltering(), display.getRowValues());
-                  if (rowIndex != null)
+               boolean editing = targetContentsPresenter.isEditing();
+               Integer rowIndex = navigationService.getRowIndex(event.getUpdateInfo().getTransUnit(), isFiltering(), display.getRowValues());
+               boolean updateRow = true;
+               boolean reopen = false;
+
+               boolean updatingSelectedTU = selectedTransUnit != null && selectedTransUnit.getId().equals(event.getUpdateInfo().getTransUnit().getId());
+               if (updatingSelectedTU)
+               {
+                  Log.info("selected TU updated");
+                  boolean sameEditorClientId = event.getEditorClientId().equals(identity.getEditorClientId());
+                  if (sameEditorClientId)
                   {
-                     Log.info("onTransUnitUpdated - update row:" + rowIndex);
-                     display.getTableModel().setRowValueOverride(rowIndex, event.getUpdateInfo().getTransUnit());
+                     // if save-as-fuzzy on same tab
+                     if (event.getUpdateType() == UpdateType.WebEditorSaveFuzzy)
+                     {
+                        updateRow = false;
+                        reopen = true;
+
+                        // stay focused if same client id fuzzy edit
+                        if (rowIndex != null)
+                        {
+                           TransUnit rowValue = display.getRowValue(rowIndex);
+                           if (rowValue != null)
+                           {
+                              rowValue.OverrideWith(event.getUpdateInfo().getTransUnit());
+                              display.getTableModel().setRowValueOverride(rowIndex, event.getUpdateInfo().getTransUnit());
+                           }
+                        }
+                     }
+                     else
+                     {
+                        // current client updated current TU (probably Replace, possibly save as Approved)
+                        // will kick out of editor (and clobber local changes)
+                     }
+                  }
+                  else
+                  {
+                     // another client updated current TU
+                     // will kick out of editor (and clobber local changes)
                   }
                }
                else
                {
-                  Integer rowIndex = navigationService.getRowIndex(event.getUpdateInfo().getTransUnit(), isFiltering(), display.getRowValues());
-                  if (rowIndex != null)
-                  {
-                     display.getRowValue(rowIndex).OverrideWith(event.getUpdateInfo().getTransUnit());
-                     display.getTableModel().clearCache();
-                  }
+                  // updateRow = true, value updated below
+                  // re-open editor to keep editor focused despite model update closing editor
+                  reopen = true;
+               }
+               Log.debug("reopen: " + reopen);
+               Log.debug("updateRow: " + updateRow);
+               if (updateRow && rowIndex != null)
+               {
+                  Log.info("onTransUnitUpdated - update row:" + rowIndex);
+                  display.getTableModel().setRowValueOverride(rowIndex, event.getUpdateInfo().getTransUnit());
+               }
+               if (editing && reopen)
+               {
+                  Log.debug("going to current row");
+                  gotoCurrentRow();
                }
             }
          }
@@ -442,18 +479,18 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onTransUnitEdit(TransUnitEditEvent event)
          {
-            if (identity.getSessionId().getValue().equals(event.getSessionId().getValue()))
+            if (identity.getEditorClientId().getValue().equals(event.getEditorClientId().getValue()))
             {
                Integer prevRow = navigationService.getRowNumber(event.getPrevSelectedTransUnit(), display.getRowValues());
                if (prevRow != null)
                {
-                  resetBorder(prevRow, event.getSessionId());
+                  resetBorder(prevRow, event.getEditorClientId());
                }
 
                Integer row = navigationService.getRowNumber(event.getSelectedTransUnit(), display.getRowValues());
                if (row != null)
                {
-                  display.updateRowBorder(row, sessionService.getColor(event.getSessionId().getValue()));
+                  display.updateRowBorder(row, sessionService.getColor(event.getEditorClientId().getValue()));
                }
             }
             else
@@ -463,13 +500,13 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                Integer prevRow = navigationService.getRowNumber(event.getPrevSelectedTransUnit(), display.getRowValues());
                if (prevRow != null && navigationService.getCurrentRowNumber() != prevRow)
                {
-                  resetBorder(prevRow, event.getSessionId());
+                  resetBorder(prevRow, event.getEditorClientId());
                }
 
                Integer row = navigationService.getRowNumber(event.getSelectedTransUnit(), display.getRowValues());
                if (row != null && navigationService.getCurrentRowNumber() != row)
                {
-                  display.updateRowBorder(row, sessionService.getColor(event.getSessionId().getValue()));
+                  display.updateRowBorder(row, sessionService.getColor(event.getEditorClientId().getValue()));
                }
             }
 
@@ -481,11 +518,11 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          @Override
          public void onExitWorkspace(ExitWorkspaceEvent event)
          {
-            TransUnit tu = sessionService.getUserPanel(event.getSessionId()).getSelectedTransUnit();
+            TransUnit tu = sessionService.getUserPanel(event.getEditorClientId()).getSelectedTransUnit();
             Integer row = navigationService.getRowNumber(tu, display.getRowValues());
             if (row != null)
             {
-               resetBorder(row, event.getSessionId());
+               resetBorder(row, event.getEditorClientId());
             }
          }
       }));
@@ -517,12 +554,12 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       History.fireCurrentHistoryState();
    }
 
-   private void resetBorder(int prevRow, SessionId sessionId)
+   private void resetBorder(int prevRow, EditorClientId editorClientId)
    {
       // Check if other users is in that row
-      for (Map.Entry<SessionId, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
+      for (Map.Entry<EditorClientId, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
       {
-         if (entry.getValue().getSelectedTransUnit() != null && !sessionId.getValue().equals(entry.getKey()))
+         if (entry.getValue().getSelectedTransUnit() != null && !editorClientId.getValue().equals(entry.getKey()))
          {
             Integer row = navigationService.getRowNumber(entry.getValue().getSelectedTransUnit(), display.getRowValues());
             if (row != null && row == prevRow)
@@ -680,9 +717,11 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       }
 
       @Override
-      public boolean onSetRowValue(int row, TransUnit rowValue)
+      public boolean onSetRowValue(final int row, TransUnit rowValue)
       {
-         final UpdateTransUnit updateTransUnit = new UpdateTransUnit(new TransUnitUpdateRequest(rowValue.getId(), rowValue.getTargets(), rowValue.getStatus(), rowValue.getVerNum()));
+         UpdateType updateType = rowValue.getStatus() == ContentState.Approved ? UpdateType.WebEditorSave : UpdateType.WebEditorSaveFuzzy;
+         Log.debug("row updated, calculated update type: " + updateType);
+         final UpdateTransUnit updateTransUnit = new UpdateTransUnit(new TransUnitUpdateRequest(rowValue.getId(), rowValue.getTargets(), rowValue.getStatus(), rowValue.getVerNum()), updateType);
          eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifySaving()));
          dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
          {
@@ -690,8 +729,16 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             public void onFailure(Throwable e)
             {
                Log.error("UpdateTransUnit failure " + e, e);
-               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUpdateFailed(e.getLocalizedMessage())));
+               String message = e.getLocalizedMessage();
+               failure(message);
+            }
 
+            /**
+             * @param message
+             */
+            private void failure(String message)
+            {
+               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUpdateFailed(message)));
                display.getTableModel().clearCache();
                display.reloadPage();
             }
@@ -699,7 +746,16 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             @Override
             public void onSuccess(UpdateTransUnitResult result)
             {
-               eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyUpdateSaved()));
+               // FIXME check result.success
+               if (result.isSingleSuccess())
+               {
+                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyUpdateSaved()));
+               }
+               else
+               {
+                  // TODO localised message
+                  failure("row " + row);
+               }
             }
          });
          return true;

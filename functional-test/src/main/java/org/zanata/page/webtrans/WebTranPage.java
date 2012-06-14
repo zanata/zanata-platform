@@ -18,10 +18,8 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.page;
+package org.zanata.page.webtrans;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -30,12 +28,11 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.page.AbstractPage;
 import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 public class WebTranPage extends AbstractPage
 {

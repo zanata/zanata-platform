@@ -31,6 +31,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityNotFoundException;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
@@ -44,6 +45,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 
 @Name("viewAllStatusAction")
@@ -66,6 +68,12 @@ public class ViewAllStatusAction implements Serializable
    
    @In
    LocaleService localeServiceImpl;
+
+   @In
+   CopyTransService copyTransServiceImpl;
+
+   @In
+   Map<String, String> messages;
 
    private String iterationSlug;
    
@@ -187,6 +195,12 @@ public class ViewAllStatusAction implements Serializable
       }
       Collections.sort(result);
       return result;
+   }
+
+   public void performCopyTrans()
+   {
+      copyTransServiceImpl.copyTransForIteration( getProjectIteration() );
+      FacesMessages.instance().add( messages.get("jsf.iteration.CopyTrans.success") );
    }
 
    public boolean getShowAllLocales()

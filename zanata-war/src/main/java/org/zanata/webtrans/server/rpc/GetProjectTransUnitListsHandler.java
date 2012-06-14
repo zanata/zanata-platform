@@ -82,7 +82,7 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          // TODO empty searches shouldn't be requested, consider replacing this
          // with an error, or making behaviour return all targets for the
          // project (consider performance).
-         return new GetProjectTransUnitListsResult(docPaths, matchingTUs);
+         return new GetProjectTransUnitListsResult(action, docPaths, matchingTUs);
       }
 
       FilterConstraints filterConstraints = FilterConstraints.filterBy(action.getSearchString()).excludeNew().caseSensitive(action.isCaseSensitive());
@@ -95,7 +95,7 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          filterConstraints.ignoreTarget();
       }
       // TODO handle exception thrown by search service
-      List<HTextFlowTarget> matchingFlows = textFlowSearchServiceImpl.findTextFlowTargets(action.getWorkspaceId(), filterConstraints);
+      List<HTextFlowTarget> matchingFlows = textFlowSearchServiceImpl.findTextFlowTargets(action.getWorkspaceId(), action.getDocumentPaths(), filterConstraints);
       log.info("Returned {0} results for search", matchingFlows.size());
 
       HLocale hLocale;
@@ -177,7 +177,7 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          docPaths.put(htf.getDocument().getId(), htf.getDocument().getDocId());
       }
 
-      return new GetProjectTransUnitListsResult(docPaths, matchingTUs);
+      return new GetProjectTransUnitListsResult(action, docPaths, matchingTUs);
    }
 
    private String foldCase(String original)

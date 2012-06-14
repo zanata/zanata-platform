@@ -33,7 +33,7 @@ public interface LocaleService
 {
    List<HLocale> getAllLocales();
 
-   void save(LocaleId localeId);
+   void save(LocaleId localeId, boolean enabledByDefault);
 
    void disable(LocaleId locale);
 

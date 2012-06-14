@@ -32,6 +32,9 @@ import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentList, GetDocumentListResult>
 {
 
+   @Logger
+   Log log;
+
    @In
    ProjectIterationDAO projectIterationDAO;
 
@@ -41,7 +44,6 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
    @Override
    public GetDocumentListResult execute(GetDocumentList action, ExecutionContext context) throws ActionException
    {
-
       ZanataIdentity.instance().checkLoggedIn();
 
       LocaleId localeId = action.getWorkspaceId().getLocaleId();
@@ -51,7 +53,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
       Collection<HDocument> hDocs = hProjectIteration.getDocuments().values();
       for (HDocument hDoc : hDocs)
       {
-         if (action.getFilters() == null || action.getFilters().contains(hDoc.getPath() + hDoc.getName()))
+         if (action.getFilters() == null || action.getFilters().isEmpty() || action.getFilters().contains(hDoc.getPath() + hDoc.getName()))
          {
             DocumentId docId = new DocumentId(hDoc.getId());
             TranslationStats stats = documentDAO.getStatistics(hDoc.getId(), localeId);

@@ -73,6 +73,7 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 import com.google.common.collect.Lists;
@@ -307,7 +308,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
       assertThat(response.getResponseStatus(), is(Status.OK));
 
       getResponse = transResource.getTranslations("my.txt", de_DE, null, false);
-      assertThat(getResponse.getResponseStatus(), is(Status.NOT_FOUND));
+      assertThat(getResponse.getResponseStatus(), is(Status.OK));
    }
 
    @Test
@@ -1001,7 +1002,8 @@ public class TranslationResourceRestTest extends ZanataRestTest
       int versionNum = 0; // no previous translation
 
       // Translate using webtrans
-      UpdateTransUnit action = new UpdateTransUnit(new TransUnitUpdateRequest(new TransUnitId(textFlowId), Lists.newArrayList(translation), translationState, versionNum));
+      UpdateType updateType = (translationState == ContentState.Approved ? UpdateType.WebEditorSave : UpdateType.WebEditorSaveFuzzy);
+      UpdateTransUnit action = new UpdateTransUnit(new TransUnitUpdateRequest(new TransUnitId(textFlowId), Lists.newArrayList(translation), translationState, versionNum), updateType);
       action.setWorkspaceId( workspaceId );
       
       UpdateTransUnitResult result = transUnitHandler.execute(action, null);

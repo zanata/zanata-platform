@@ -384,6 +384,13 @@
                                      baseColumnNames="projectIterationId" constraintName="FKiterationGroup_ProjectIteration_projectIterationId"
                                      referencedTableName="HProjectIteration" referencedColumnNames="id" />
         </changeSet>
+
+        <changeSet author="camunoz@redhat.com" id="21">
+            <comment>Add enabledByDefault column on HLocale</comment>
+            <addColumn tableName="HLocale">
+                <column name="enabledByDefault" type="boolean" valueBoolean="true" defaultValueBoolean="false"/>
+            </addColumn>
+        </changeSet>
         
 
 </databaseChangeLog>

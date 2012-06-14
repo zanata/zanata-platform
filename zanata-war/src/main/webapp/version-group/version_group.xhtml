@@ -10,15 +10,30 @@
     template="../WEB-INF/layout/template.xhtml">
     
 <ui:define name="page_title">#{messages['jsf.Groups']}:#{versionGroupHome.instance.name}</ui:define>
+
+<ui:define name="head">
+    <script type="text/javascript">
+        function submitSearchOnEnter(e)
+        {
+            if(e.keyCode == 13 )
+            {
+                #{rich:element('searchBtn')}.click();
+                return false;
+            }
+        }
+    </script>
+</ui:define>
+
 <ui:define name="center_content">
     <a4j:form>
     	<rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
     	
     	 <h1>#{messages['jsf.GroupId']}: #{versionGroupHome.instance.slug}</h1>
+    	 <h1>#{messages['jsf.Name']}: #{versionGroupHome.instance.name}</h1>
     	 
     	 <s:formattedText value="#{versionGroupHome.instance.description}" rendered="#{!empty versionGroupHome.instance.description}"/>
     	 
-        <rich:dataTable id="iterationsDataTable" value="#{versionGroupHome.instance.projectIterations.toArray()}"
+        <rich:dataTable id="iterationsDataTable" value="#{versionGroupHome.instanceProjectIterations}"
                         var="_iteration">
             <rich:column sortBy="#{_iteration.project.slug}">
                 <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
@@ -67,13 +82,15 @@
     </rich:dataList>
   </rich:panel>
 
-    <rich:modalPanel id="versionAddPanel" width="530" height="320" autosized="true">
+    <rich:modalPanel id="versionAddPanel" width="530" height="420">
         <f:subview id="projectVersionSearch">
             <a4j:form>
                 <h1>Find Project Version</h1>
                 <p>
-                    <h:inputText value="#{versionGroupAction.searchTerm}" />
-                    <a4j:commandButton value="#{messages['jsf.Search']}"
+                    <h:inputText value="#{versionGroupAction.searchTerm}"
+                                 onkeydown="return submitSearchOnEnter(event)"/>
+                    <a4j:commandButton id="searchBtn"
+                                       value="#{messages['jsf.Search']}"
                                        action="#{versionGroupAction.searchProjectAndVersion}"
                                        reRender="searchResults"
                                        status="searchStatus" />
@@ -83,8 +100,8 @@
             </a4j:form>
             <a4j:region>
                 <a4j:status id="searchStatus" startText="Searching..." stopText="" />
-                <a4j:outputPanel id="searchResults" layout="block" style="overflow:auto;">
-                    <h:outputText id="noResultsMessage" rendered="#{empty versionGroupAction.searchResults}" value="No results to display." />
+                <a4j:outputPanel id="searchResults" layout="block" style="overflow:auto;height:320px">
+                    <h:outputText id="noResultsMessage" rendered="#{empty versionGroupAction.searchResults and versionGroupAction.searchResults != null}" value="#{messages['jsf.NoResultToDisplayProjectSearch']}" />
                     <h:form rendered="#{not empty versionGroupAction.searchResults}">
                         <rich:dataTable id="resultTable"
                                         value="#{versionGroupAction.searchResults}" var="projectIteration">

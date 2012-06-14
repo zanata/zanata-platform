@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.zanata</groupId>
         <artifactId>server</artifactId>
-        <version>1.6.0-beta-2-SNAPSHOT</version>
+        <version>1.6.1-SNAPSHOT</version>
     </parent>
     <artifactId>zanata-model</artifactId>
     <name>Zanata model</name>
@@ -46,8 +46,11 @@
     <dependencies>
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
-            <scope>test</scope>
+            <artifactId>hamcrest-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>

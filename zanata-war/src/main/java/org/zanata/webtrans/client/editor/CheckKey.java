@@ -60,14 +60,6 @@ public interface CheckKey
    static final int KEY_4 = 52;
    static final int KEY_4_NUM = 37;
 
-   public static enum Context
-   {
-      /**
-       * Edit: InlineTargetCellEditor Navigation: TableEditorPresenter
-       */
-      Navigation, Edit;
-   }
-
    void init(NativeEvent event);
 
 
@@ -167,6 +159,11 @@ public interface CheckKey
     * Backspace key pressed
     */
    boolean isBackspace();
+
+   /**
+    * Delete key pressed
+    */
+   boolean isDelete();
 }
 
 

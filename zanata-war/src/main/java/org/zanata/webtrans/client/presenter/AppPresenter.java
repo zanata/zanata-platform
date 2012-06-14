@@ -21,6 +21,8 @@
 package org.zanata.webtrans.client.presenter;
 
 import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.PresenterRevealedEvent;
+import net.customware.gwt.presenter.client.PresenterRevealedHandler;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.TranslationStats;
@@ -29,6 +31,9 @@ import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.events.KeyShortcutEvent;
+import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NotificationEventHandler;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEventHandler;
@@ -37,7 +42,10 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.history.Window;
+import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.ui.HasCommand;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -49,27 +57,19 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.inject.Inject;
 
-public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
+public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implements HasErrorNotificationLabel
 {
    // javac seems confused about which Display is which.
    // somehow, qualifying WidgetDisplay helps!
    public interface Display extends net.customware.gwt.presenter.client.widget.WidgetDisplay
    {
-
       void showInMainView(MainView editor);
 
-      HasClickHandlers getSignOutLink();
-
-      HasClickHandlers getLeaveWorkspaceLink();
-
-      HasClickHandlers getHelpLink();
-
       HasClickHandlers getDocumentsLink();
-
-      HasClickHandlers getSearchLink();
 
       void setUserLabel(String userLabel);
 
@@ -80,17 +80,31 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       void setNotificationMessage(String message, NotificationEvent.Severity severity);
 
       HasClickHandlers getDismiss();
+
       HasVisibility getDismissVisibility();
 
       void setStats(TranslationStats transStats);
 
       void setReadOnlyVisible(boolean visible);
 
+      HasCommand getLeaveWorkspaceMenuItem();
+
+      HasCommand getHelpMenuItem();
+
+      HasCommand getSignOutMenuItem();
+
+      HasClickHandlers getSearchAndReplaceLink();
+
+      HasClickHandlers getErrorNotificationBtn();
+
+      void setErrorNotificationText(int count);
    }
 
+   private final KeyShortcutPresenter keyShortcutPresenter;
    private final DocumentListPresenter documentListPresenter;
    private final TranslationPresenter translationPresenter;
    private final SearchResultsPresenter searchResultsPresenter;
+   private final NotificationPresenter notificationPresenter;
    private final History history;
    private final Identity identity;
    private final Window window;
@@ -109,26 +123,49 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
+   public AppPresenter(Display display, EventBus eventBus,
+         final KeyShortcutPresenter keyShortcutPresenter,
+         final TranslationPresenter translationPresenter,
+         final DocumentListPresenter documentListPresenter,
+         final SearchResultsPresenter searchResultsPresenter,
+         final NotificationPresenter notificationPresenter,
+         final Identity identity,
+         final WorkspaceContext workspaceContext,
+         final WebTransMessages messages,
+         final History history,
+         final Window window,
+         final Window.Location windowLocation)
    {
       super(display, eventBus);
+      this.keyShortcutPresenter = keyShortcutPresenter;
       this.history = history;
       this.identity = identity;
       this.messages = messages;
       this.documentListPresenter = documentListPresenter;
       this.translationPresenter = translationPresenter;
       this.searchResultsPresenter = searchResultsPresenter;
+      this.notificationPresenter =notificationPresenter;
       this.window = window;
       this.windowLocation = windowLocation;
       this.workspaceContext = workspaceContext;
    }
 
    @Override
+   public void setErrorNotificationLabel(int count)
+   {
+      display.setErrorNotificationText(count);
+   }
+
+   @Override
    protected void onBind()
    {
+      keyShortcutPresenter.bind();
       documentListPresenter.bind();
       translationPresenter.bind();
       searchResultsPresenter.bind();
+      notificationPresenter.bind();
+
+      notificationPresenter.setErrorLabelListener(this);
 
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
       {
@@ -140,18 +177,26 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          }
       }));
 
+      setErrorNotificationLabel(notificationPresenter.getMessageCount());
+
       registerHandler(eventBus.addHandler(NotificationEvent.getType(), new NotificationEventHandler()
       {
-
          @Override
          public void onNotification(NotificationEvent event)
          {
-            display.setNotificationMessage(event.getMessage(), event.getSeverity());
-            display.getDismissVisibility().setVisible(true);
-            Log.info("Notification:" + event.getMessage());
+            // See NotificationPresenter for Severity.Error message
+            if (event.getSeverity() != Severity.Error)
+            {
+               display.setNotificationMessage(event.getMessage(), event.getSeverity());
+               display.getDismissVisibility().setVisible(true);
+               Log.info("Notification:" + event.getMessage());
+            }
+            else
+            {
+               setErrorNotificationLabel(notificationPresenter.getMessageCount());
+            }
          }
       }));
-
 
       registerHandler(eventBus.addHandler(DocumentStatsUpdatedEvent.getType(), new DocumentStatsUpdatedEventHandler()
       {
@@ -196,29 +241,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       display.getDismissVisibility().setVisible(false);
 
-      registerHandler(display.getSignOutLink().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            Application.redirectToLogout();
-         }
-      }));
-
-      registerHandler(display.getLeaveWorkspaceLink().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            // use when opening workspace in new window
-            // Application.closeWindow();
-
-            // use when opening workspace in same window
-            Application.exitWorkspace();
-            Application.redirectToZanataProjectHome(workspaceContext.getWorkspaceId());
-         }
-      }));
-
       registerHandler(display.getDocumentsLink().addClickHandler(new ClickHandler()
       {
          @Override
@@ -242,9 +264,59 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          }
       }));
 
-      registerHandler(display.getSearchLink().addClickHandler(new ClickHandler()
+      registerHandler(history.addValueChangeHandler(new ValueChangeHandler<String>()
       {
 
+         @Override
+         public void onValueChange(ValueChangeEvent<String> event)
+         {
+            processHistoryEvent(event);
+         }
+      }));
+      
+      registerHandler(display.getErrorNotificationBtn().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            notificationPresenter.showErrorNotification();
+         }
+      }));
+
+      display.getLeaveWorkspaceMenuItem().setCommand(new Command()
+      {
+         @Override
+         public void execute()
+         {
+            // use when opening workspace in new window
+            // Application.closeWindow();
+
+            // use when opening workspace in same window
+            Application.exitWorkspace();
+            Application.redirectToZanataProjectHome(workspaceContext.getWorkspaceId());
+         }
+      });
+
+      display.getHelpMenuItem().setCommand(new Command()
+      {
+         @Override
+         public void execute()
+         {
+            com.google.gwt.user.client.Window.open(messages.hrefHelpLink(), messages.hrefHelpLink(), null);
+         }
+      });
+
+      display.getSignOutMenuItem().setCommand(new Command()
+      {
+         @Override
+         public void execute()
+         {
+            Application.redirectToLogout();
+         }
+      });
+
+      display.getSearchAndReplaceLink().addClickHandler(new ClickHandler()
+      {
          @Override
          public void onClick(ClickEvent event)
          {
@@ -255,15 +327,72 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
                history.newItem(token.toTokenString());
             }
          }
-      }));
+      });
 
-      registerHandler(history.addValueChangeHandler(new ValueChangeHandler<String>()
+      registerHandler(eventBus.addHandler(PresenterRevealedEvent.getType(), new PresenterRevealedHandler()
       {
 
          @Override
-         public void onValueChange(ValueChangeEvent<String> event)
+         public void onPresenterRevealed(PresenterRevealedEvent event)
          {
-            processHistoryEvent(event);
+            // TODO disabled until tests are updated
+//            if (event.getPresenter() == searchResultsPresenter)
+//            {
+//               display.setDocumentLabel("", messages.projectWideSearchAndReplace());
+//               currentDisplayStats = projectStats;
+//            }
+         }
+      }));
+
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
+            KeyShortcut.ALT_KEY, 'L',
+            ShortcutContext.Application,
+            messages.showDocumentListKeyShortcut(),
+            new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            HistoryToken token = history.getHistoryToken();
+            token.setView(MainView.Documents);
+            history.newItem(token.toTokenString());
+         }
+      }));
+
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
+            KeyShortcut.ALT_KEY, 'O',
+            ShortcutContext.Application,
+            messages.showEditorKeyShortcut(),
+            new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            if (selectedDocument == null)
+            {
+               eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.noDocumentSelected()));
+            }
+            else
+            {
+               HistoryToken token = history.getHistoryToken();
+               token.setView(MainView.Editor);
+               history.newItem(token.toTokenString());
+            }
+         }
+      }));
+
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(
+            KeyShortcut.ALT_KEY, 'P',
+            ShortcutContext.Application,
+            messages.showProjectWideSearch(),
+            new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            HistoryToken token = history.getHistoryToken();
+            token.setView(MainView.Search);
+            history.newItem(token.toTokenString());
          }
       }));
 
@@ -274,6 +403,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       display.setReadOnlyVisible(workspaceContext.isReadOnly());
 
+      // this may be redundant with the following history event line
       showView(MainView.Documents);
 
       history.fireCurrentHistoryState();
@@ -324,21 +454,29 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
          switch (viewToShow)
          {
+         // TODO use revealDisplay/concealDisplay for editor and document views
          case Editor:
             if (selectedDocument != null)
             {
                display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
             }
             currentDisplayStats = selectedDocumentStats;
+            searchResultsPresenter.concealDisplay();
             break;
          case Search:
+            // these two lines temporarily here until PresenterRevealedHandler is
+            // fully functional
             display.setDocumentLabel("", messages.projectWideSearchAndReplace());
             currentDisplayStats = projectStats;
+            searchResultsPresenter.revealDisplay();
             break;
          case Documents:
          default:
+            // TODO may want to continue showing selected document name
+            // if a document is selected.
             display.setDocumentLabel("", messages.noDocumentSelected());
             currentDisplayStats = projectStats;
+            searchResultsPresenter.concealDisplay();
             break;
          }
          display.showInMainView(viewToShow);

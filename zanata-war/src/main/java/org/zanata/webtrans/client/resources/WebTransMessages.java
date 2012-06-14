@@ -141,6 +141,15 @@ public interface WebTransMessages extends Messages
    @AlternateMessage({ "one", "Search found results in 1 document" })
    String searchFoundResultsInDocuments(@PluralCount int numDocs);
 
+   @DefaultMessage("Showing results for search \"{0}\" ({1} text flows in {2} documents)")
+   @AlternateMessage({
+      "one|one", "Showing results for search \"{0}\" (1 text flow in 1 document)",
+      "other|one", "Showing results for search \"{0}\" ({1} text flows in 1 document)"})
+   String showingResultsForProjectWideSearch(String searchString, @PluralCount int textFlows, @PluralCount int documents);
+
+   @DefaultMessage("Search \"{0}\" returned no results")
+   String searchForPhraseReturnedNoResults(String searchString);
+
    @DefaultMessage("There are no search results to display")
    String noSearchResults();
 
@@ -149,6 +158,15 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Preview")
    String fetchPreview();
+
+   @DefaultMessage("Hide preview")
+   String hidePreview();
+
+   @DefaultMessage("Preview replacement in all selected text flows.")
+   String previewSelectedDescription();
+
+   @DefaultMessage("Select text flows to enable preview.")
+   String previewSelectedDisabledDescription();
 
    @DefaultMessage("Previewing")
    String fetchingPreview();
@@ -162,11 +180,23 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Replace")
    String replace();
 
+   @DefaultMessage("Replace text in all selected text flows.")
+   String replaceSelectedDescription();
+
+   @DefaultMessage("Select text flows and view preview to enable replace.")
+   String replaceSelectedDisabledDescription();
+
+   @DefaultMessage("Preview is required before replacing text")
+   String previewRequiredBeforeReplace();
+
    @DefaultMessage("Replacing")
    String replacing();
 
    @DefaultMessage("Replaced")
    String replaced();
+
+   @DefaultMessage("Replaced \"{0}\" with \"{1}\" in {2} row {3} (\"{4}...\")")
+   String replacedTextInOneTextFlow(String searchText, String replacement, String docName, int oneBasedRowIndex, String truncatedText);
 
    @DefaultMessage("Replaced \"{0}\" with \"{1}\" in {2} text flows")
    @AlternateMessage({ "one", "Replaced \"{0}\" with \"{1}\" in 1 text flow" })
@@ -174,6 +204,18 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Successfully replaced text")
    String replacedTextSuccess();
+
+   @DefaultMessage("Replace text failed")
+   String replaceTextFailure();
+
+   @DefaultMessage("No replacement text has been entered")
+   String noReplacementPhraseEntered();
+
+   @DefaultMessage("No replacements to make")
+   String noReplacementsToMake();
+
+   @DefaultMessage("Replace not possible in read-only workspace")
+   String cannotReplaceInReadOnlyMode();
 
    @DefaultMessage("View in editor")
    String viewDocInEditor();
@@ -199,9 +241,6 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Actions")
    String actions();
 
-   @DefaultMessage("Replace text failed")
-   String replaceTextFailure();
-
    @DefaultMessage("Undo")
    String undo();
 
@@ -214,12 +253,88 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Undo successful")
    String undoSuccess();
 
+   @DefaultMessage("Undo not possible in read-only workspace")
+   String cannotUndoInReadOnlyMode();
+
    @DefaultMessage("Select entire document")
    String selectAllInDocument();
 
    @DefaultMessage("Select or deselect all matching text flows in this document")
    String selectAllInDocumentDetailed();
 
-   @DefaultMessage("Nothing selected")
+   @DefaultMessage("No text flows selected")
    String noTextFlowsSelected();
+
+   @DefaultMessage("{0} text flows selected")
+   @AlternateMessage({ "one", "1 text flow selected" })
+   String numTextFlowsSelected(@PluralCount int selectedFlows);
+
+   @DefaultMessage("Help")
+   String help();
+
+   @DefaultMessage("Leave Workspace")
+   String leaveWorkspace();
+
+   @DefaultMessage("Sign Out")
+   String signOut();
+
+   @DefaultMessage("Search and replace")
+   String searchAndReplace();
+
+   @DefaultMessage("▼")
+   String downArrow();
+
+   @DefaultMessage("Error notification")
+   String errorNotification();
+
+   @DefaultMessage("Available Keyboard Shortcuts")
+   String availableKeyShortcutsTitle();
+
+   @DefaultMessage("select text flows in all documents")
+   String selectAllTextFlowsKeyShortcut();
+
+   @DefaultMessage("focus search phrase")
+   String focusSearchPhraseKeyShortcut();
+
+   @DefaultMessage("focus replacement phrase")
+   String focusReplacementPhraseKeyShortcut();
+
+   @DefaultMessage("show available shortcuts")
+   String showAvailableKeyShortcuts();
+
+   @DefaultMessage("Application")
+   String applicationScope();
+
+   @DefaultMessage("Editing text")
+   String editScope();
+
+   @DefaultMessage("Editor navigation")
+   String navigationScope();
+
+   @DefaultMessage("Toggle individual row action buttons (changes for next search)")
+   String toggleRowActionButtons();
+
+   @DefaultMessage("Replace text in selected rows")
+   String replaceSelectedKeyShortcut();
+
+   @DefaultMessage("Show document list")
+   String showDocumentListKeyShortcut();
+
+   @DefaultMessage("Show editor view")
+   String showEditorKeyShortcut();
+
+   @DefaultMessage("Show project-wide search view")
+   String showProjectWideSearch();
+
+   @DefaultMessage("Only show documents that contain the search text with matching case")
+   String docListFilterCaseSensitiveDescription();
+
+   @DefaultMessage("Only show documents with full path and name in the search text")
+   String docListFilterExactMatchDescription();
+
+   @DefaultMessage("Enter text to filter the document list. Use commas (,) to separate multiple searches")
+   String docListFilterDescription();
+
+   @DefaultMessage("Disable 'Replace' button until previews have been generated for all selected text flows")
+   String requirePreviewDescription();
 }

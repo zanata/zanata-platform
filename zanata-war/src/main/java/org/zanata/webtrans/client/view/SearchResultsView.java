@@ -21,7 +21,7 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
-import org.zanata.webtrans.client.presenter.SearchResultsPresenter.TransUnitReplaceInfo;
+import org.zanata.webtrans.client.presenter.TransUnitReplaceInfo;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.LoadingPanel;
@@ -32,10 +32,12 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -49,8 +51,8 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.SelectionModel;
+import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.inject.Inject;
 
 /**
@@ -68,19 +70,19 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @UiField
-   VerticalPanel searchResultsPanel;
+   VerticalPanel searchResultsPanel, replaceLogPanel;
 
    @UiField
    TextBox filterTextBox, replacementTextBox;
 
    @UiField
-   InlineLabel searchResponseLabel, selectAllLink, replaceAllFeedbackLabel, replaceAllUndoLabel;
+   InlineLabel searchResponseLabel;
 
    @UiField
-   CheckBox caseSensitiveChk;
+   CheckBox caseSensitiveChk, selectAllChk, requirePreviewChk;
 
    @UiField
-   Button replaceAllButton;
+   Button searchButton, replaceAllButton;
 
    @UiField
    ListBox searchFieldsSelect;
@@ -93,8 +95,6 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
 
    private Resources resources;
 
-   private HandlerRegistration currentUndoMultipleHandler;
-
    @Inject
    public SearchResultsView(Resources resources, final WebTransMessages webTransMessages)
    {
@@ -106,6 +106,9 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       searchingIndicator.hide();
       noResultsLabel = new Label(messages.noSearchResults());
       noResultsLabel.addStyleName("projectWideSearchNoResultsLabel");
+      searchResultsPanel.add(noResultsLabel);
+      requirePreviewChk.setValue(true, false);
+      requirePreviewChk.setTitle(messages.requirePreviewDescription());
    }
 
    @Override
@@ -127,9 +130,38 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
+   public void focusFilterTextBox()
+   {
+      filterTextBox.setFocus(true);
+      filterTextBox.setSelectionRange(0, filterTextBox.getText().length());
+   }
+
+   @UiHandler("filterTextBox")
+   void onFilterTextBoxKeyUp(KeyUpEvent event)
+   {
+      if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+      {
+         searchButton.click();
+      }
+   }
+
+   @Override
+   public HasClickHandlers getSearchButton()
+   {
+      return searchButton;
+   }
+
+   @Override
    public HasValue<String> getReplacementTextBox()
    {
       return replacementTextBox;
+   }
+
+   @Override
+   public void focusReplacementTextBox()
+   {
+      replacementTextBox.setFocus(true);
+      replacementTextBox.setSelectionRange(0, replacementTextBox.getText().length());
    }
 
    @Override
@@ -139,15 +171,50 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
+   public HasValue<Boolean> getSelectAllChk()
+   {
+      return selectAllChk;
+   }
+
+   @Override
    public HasClickHandlers getReplaceAllButton()
    {
       return replaceAllButton;
    }
 
    @Override
-   public HasClickHandlers getSelectAllButton()
+   public void setReplaceAllButtonEnabled(boolean enabled)
    {
-      return selectAllLink;
+      replaceAllButton.setEnabled(enabled);
+      if (enabled)
+      {
+         replaceAllButton.removeStyleName("projectWideReplacButton-Disabled");
+         replaceAllButton.setTitle(messages.replaceSelectedDescription());
+      }
+      else
+      {
+         replaceAllButton.addStyleName("projectWideReplacButton-Disabled");
+         replaceAllButton.setTitle(messages.replaceSelectedDisabledDescription());
+      }
+   }
+
+   @Override
+   public void setReplaceAllButtonVisible(boolean visible)
+   {
+      replaceAllButton.setVisible(visible);
+   }
+
+   @Override
+   public HasValue<Boolean> getRequirePreviewChk()
+   {
+      return requirePreviewChk;
+   }
+
+   @Override
+   public void setRequirePreview(boolean required)
+   {
+      requirePreviewChk.setValue(required, false);
+      SearchResultsDocumentTable.setRequirePreview(required);
    }
 
    @Override
@@ -176,46 +243,70 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
-   public void setReplacementMessage(String message, ClickHandler undoButtonHandler)
+   public void addReplacementMessage(String message, ClickHandler undoButtonHandler)
    {
-      replaceAllFeedbackLabel.setText(message);
-      replaceAllFeedbackLabel.setVisible(true);
-
-      replaceAllUndoLabel.setVisible(true);
-      if (currentUndoMultipleHandler != null)
-      {
-         currentUndoMultipleHandler.removeHandler();
-      }
-      currentUndoMultipleHandler = replaceAllUndoLabel.addClickHandler(undoButtonHandler);
+      FlowPanel logMessage = new FlowPanel();
+      logMessage.add(new InlineLabel(message));
+      InlineLabel undoLabel = new InlineLabel(messages.undo());
+      undoLabel.addClickHandler(undoButtonHandler);
+      undoLabel.addStyleName("linkLabel");
+      undoLabel.addStyleName("linkLabelLightColor");
+      logMessage.add(undoLabel);
+      replaceLogPanel.add(logMessage);
    }
 
    @Override
-   public void clearReplacementMessage()
+   public void clearReplacementMessages()
    {
-      replaceAllFeedbackLabel.setVisible(false);
-      replaceAllUndoLabel.setVisible(false);
+      replaceLogPanel.clear();
    }
 
    @Override
-   public HasData<TransUnitReplaceInfo> addDocument(String docName,
+   public ListDataProvider<TransUnitReplaceInfo> addDocument(String docName,
          ClickHandler viewDocClickHandler,
          ClickHandler searchDocClickHandler,
-         Delegate<TransUnitReplaceInfo> previewDelegate,
-         Delegate<TransUnitReplaceInfo> replaceDelegate,
-         Delegate<TransUnitReplaceInfo> undoDelegate,
-         SelectionModel<TransUnitReplaceInfo> selectionModel,
+         MultiSelectionModel<TransUnitReplaceInfo> selectionModel,
          ValueChangeHandler<Boolean> selectAllHandler)
    {
-      // ensure 'no results' message is no longer visible
-      noResultsLabel.removeFromParent();
-      addDocumentLabel(docName, viewDocClickHandler, searchDocClickHandler, selectAllHandler);
-      SearchResultsDocumentTable table = new SearchResultsDocumentTable(previewDelegate, replaceDelegate, undoDelegate, selectionModel, selectAllHandler, messages, resources);
-      searchResultsPanel.add(table);
-      table.addStyleName("projectWideSearchResultsDocumentBody");
-      return table;
+      SearchResultsDocumentTable table = new SearchResultsDocumentTable(selectionModel, selectAllHandler, messages);
+      return addDocument(docName, viewDocClickHandler, searchDocClickHandler, table);
    }
 
-   private void addDocumentLabel(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ValueChangeHandler<Boolean> selectAllHandler)
+   @Override
+   public ListDataProvider<TransUnitReplaceInfo> addDocument(String docName,
+         ClickHandler viewDocClickHandler,
+         ClickHandler searchDocClickHandler,
+         MultiSelectionModel<TransUnitReplaceInfo> selectionModel,
+         ValueChangeHandler<Boolean> selectAllHandler,
+         Delegate<TransUnitReplaceInfo> previewDelegate,
+         Delegate<TransUnitReplaceInfo> replaceDelegate,
+         Delegate<TransUnitReplaceInfo> undoDelegate)
+   {
+      SearchResultsDocumentTable table = new SearchResultsDocumentTable(previewDelegate, replaceDelegate, undoDelegate, selectionModel, selectAllHandler, messages, resources);
+      return addDocument(docName, viewDocClickHandler, searchDocClickHandler, table);
+   }
+
+/**
+ * @param docName
+ * @param viewDocClickHandler
+ * @param searchDocClickHandler
+ * @param table
+ * @return
+ */
+private ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, SearchResultsDocumentTable table)
+{
+   // ensure 'no results' message is no longer visible
+   noResultsLabel.removeFromParent();
+   addDocumentLabel(docName, viewDocClickHandler, searchDocClickHandler);
+   searchResultsPanel.add(table);
+   table.addStyleName("projectWideSearchResultsDocumentBody");
+
+   ListDataProvider<TransUnitReplaceInfo> dataProvider = new ListDataProvider<TransUnitReplaceInfo>();
+   dataProvider.addDataDisplay(table);
+   return dataProvider;
+}
+
+   private void addDocumentLabel(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler)
    {
       FlowPanel docHeading = new FlowPanel();
       docHeading.addStyleName("projectWideSearchResultsDocumentHeader");
@@ -224,21 +315,18 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       docLabel.addStyleName("projectWideSearchResultsDocumentTitle");
       docHeading.add(docLabel);
 
-      CheckBox selectWholeDocCheckBox = new CheckBox(messages.selectAllInDocument());
-      selectWholeDocCheckBox.setTitle(messages.selectAllInDocumentDetailed());
-      selectWholeDocCheckBox.addValueChangeHandler(selectAllHandler);
-      docHeading.add(selectWholeDocCheckBox);
-
       InlineLabel searchDocLabel = new InlineLabel(messages.searchDocInEditor());
       searchDocLabel.setTitle(messages.searchDocInEditorDetailed());
       searchDocLabel.addClickHandler(searchDocClickHandler);
       searchDocLabel.addStyleName("linkLabel");
+      searchDocLabel.addStyleName("linkLabelNormalColor");
       searchDocLabel.addStyleName("projectWideSearchResultsDocumentLink");
       docHeading.add(searchDocLabel);
 
       InlineLabel showDocLabel = new InlineLabel(messages.viewDocInEditor());
       showDocLabel.setTitle(messages.viewDocInEditorDetailed());
       showDocLabel.addStyleName("linkLabel");
+      showDocLabel.addStyleName("linkLabelNormalColor");
       showDocLabel.addStyleName("projectWideSearchResultsDocumentLink");
       showDocLabel.addClickHandler(viewDocClickHandler);
       docHeading.add(showDocLabel);
@@ -257,5 +345,11 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
       {
          searchingIndicator.hide();
       }
+   }
+
+   @Override
+   public MultiSelectionModel<TransUnitReplaceInfo> createMultiSelectionModel()
+   {
+      return new MultiSelectionModel<TransUnitReplaceInfo>();
    }
 }

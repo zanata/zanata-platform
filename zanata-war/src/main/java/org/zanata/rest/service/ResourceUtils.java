@@ -1014,9 +1014,16 @@ public class ResourceUtils
    /**
     * Returns the appropriate plural form for a given Locale.
     */
-   private String getPluralForms(HLocale locale)
+   public String getPluralForms(HLocale locale)
    {
-      LocaleId localeId = locale.getLocaleId();
+      return getPluralForms(locale.getLocaleId());
+   }
+
+   /**
+    * Returns the appropriate plural form for a given Locale Id.
+    */
+   public String getPluralForms(LocaleId localeId)
+   {
       String javaLocale = localeId.toJavaName().toLowerCase();
 
       if (pluralForms.containsKey(javaLocale))
@@ -1346,7 +1353,7 @@ public class ResourceUtils
     * @param locale
     * @param enabledExtensions
     * @param hTargets
-    * @return true only if some data was found (non-New translations, or some
+    * @return true only if some data was found (text flow targets, or some
     *         metadata extensions)
     */
    public boolean transferToTranslationsResource(TranslationsResource transRes, HDocument document, HLocale locale, Set<String> enabledExtensions, List<HTextFlowTarget> hTargets)
@@ -1355,10 +1362,7 @@ public class ResourceUtils
 
       for (HTextFlowTarget hTarget : hTargets)
       {
-         if (hTarget.getState() != ContentState.New)
-         {
-            found = true;
-         }
+         found = true;
          TextFlowTarget target = new TextFlowTarget();
          target.setResId(hTarget.getTextFlow().getResId());
          this.transferToTextFlowTarget(hTarget, target);

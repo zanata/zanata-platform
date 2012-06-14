@@ -74,6 +74,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SingleSelectionModel;
 
 @SuppressWarnings("rawtypes")
 @Test(groups = { "unit-tests" })
@@ -119,6 +120,8 @@ public class DocumentListPresenterTest
    private Capture<String> capturedHistoryTokenString;
    private Capture<HistoryToken> capturedHistoryToken;
 
+   private Capture<SingleSelectionModel<DocumentNode>> capturedSingleSelectionModel;
+
    @BeforeClass
    public void createMocks()
    {
@@ -138,6 +141,7 @@ public class DocumentListPresenterTest
 
       capturedCaseSensitiveCheckboxChangeHandler = new Capture<ValueChangeHandler<Boolean>>();
       capturedHistoryToken = new Capture<HistoryToken>();
+      capturedSingleSelectionModel = new Capture<SingleSelectionModel<DocumentNode>>();
    }
 
    @BeforeMethod
@@ -712,6 +716,7 @@ public class DocumentListPresenterTest
       setupMockHistory("");
       expect(mockWorkspaceContext.getWorkspaceId()).andReturn(new WorkspaceId(new ProjectIterationId(testProjectSlug, testIterationSlug), new LocaleId(testLocaleId))).anyTimes();
       expect(mockWindowLocation.getParameterMap()).andReturn(windowLocationParameters).anyTimes();
+      expect(mockWindowLocation.getQueryDocuments()).andReturn(windowLocationParameters.get("doc")).anyTimes();
    }
 
    @SuppressWarnings("unchecked")
@@ -769,7 +774,8 @@ public class DocumentListPresenterTest
 
       expectLastCall().anyTimes();
 
-      mockDisplay.renderTable();
+      mockDisplay.renderTable(and(capture(capturedSingleSelectionModel), isA(SingleSelectionModel.class)));
+      expectLastCall().anyTimes();
 
       expect(mockDisplay.getDataProvider()).andReturn(mockDataProvider).anyTimes();
       expect(mockDisplay.getDocumentList()).andReturn(mockDocList).anyTimes();

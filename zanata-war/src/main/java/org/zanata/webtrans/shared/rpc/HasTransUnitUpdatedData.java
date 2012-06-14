@@ -1,7 +1,8 @@
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.shared.auth.SessionId;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
 
 
 
@@ -10,6 +11,7 @@ public interface HasTransUnitUpdatedData
 
    TransUnitUpdateInfo getUpdateInfo();
 
-   SessionId getSessionId();
+   EditorClientId getEditorClientId();
 
+   UpdateType getUpdateType();
 }

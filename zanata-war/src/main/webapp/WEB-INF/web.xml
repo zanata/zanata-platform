@@ -1,6 +1,16 @@
 <web-app>
 	<display-name>Zanata WebTrans GWT Application</display-name>
 
+    <filter>
+         <filter-name>gwtCacheControlFilter</filter-name>
+         <filter-class>org.zanata.servlet.GWTCacheControlFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+         <filter-name>gwtCacheControlFilter</filter-name>
+         <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
 	<servlet>
 		<servlet-name>EventService</servlet-name>
 		<servlet-class>

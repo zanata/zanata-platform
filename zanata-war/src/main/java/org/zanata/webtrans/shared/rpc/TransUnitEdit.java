@@ -21,7 +21,8 @@
 
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.shared.auth.SessionId;
+import org.zanata.webtrans.shared.auth.EditorClientId;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnit;
 
@@ -31,11 +32,11 @@ public class TransUnitEdit implements SessionEventData, HasTransUnitEditData
    private Person person;
    private TransUnit selectedTransUnit;
    private TransUnit prevSelectedTransUnit;
-   private SessionId sessionId;
+   private EditorClientId editorClientId;
 
-   public TransUnitEdit(SessionId sessionId, Person person, TransUnit selectedTransUnit, TransUnit prevSelectedTransUnit)
+   public TransUnitEdit(EditorClientId editorClientId, Person person, TransUnit selectedTransUnit, TransUnit prevSelectedTransUnit)
    {
-      this.sessionId = sessionId;
+      this.editorClientId = editorClientId;
       this.person = person;
       this.selectedTransUnit = selectedTransUnit;
       this.prevSelectedTransUnit = prevSelectedTransUnit;
@@ -65,9 +66,9 @@ public class TransUnitEdit implements SessionEventData, HasTransUnitEditData
    }
 
    @Override
-   public SessionId getSessionId()
+   public EditorClientId getEditorClientId()
    {
-      return sessionId;
+      return editorClientId;
    }
 
 }

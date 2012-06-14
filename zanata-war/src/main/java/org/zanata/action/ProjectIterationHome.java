@@ -25,7 +25,6 @@ import java.util.Set;
 
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.NoResultException;
 
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
@@ -35,6 +34,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
+import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
@@ -124,7 +124,7 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
    {
       if (!isSlugAvailable(slug))
       {
-         FacesMessages.instance().addToControl(componentId, "This slug is not available");
+         FacesMessages.instance().addToControl(componentId, "This Version ID is not available");
          return false;
       }
       return true;
@@ -177,6 +177,10 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
       return state;
    }
    
+   public boolean isProjectActive()
+   {
+      return getInstance().getProject().getStatus() == EntityStatus.ACTIVE;
+   }
    
    private void updateOverrideLocales()
    {

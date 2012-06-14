@@ -57,23 +57,24 @@
                 <g:VerticalPanel ui:field='userListPanel' styleName="userListTable" width="100%" />
             </g:ScrollPanel>
         </g:west>
-        <g:center>
+         <g:center>
         	<g:LayoutPanel height="100%" width="100%">
         	<g:layer top="0px" bottom="24px">
 				<g:ScrollPanel styleName="{style.chatRoomScrollPanel}" ui:field="chatRoomScrollPanel">
 			    	<g:VerticalPanel ui:field="chatRoom" styleName="{style.chatRoom}"/>
 			    </g:ScrollPanel>
 			</g:layer>
-			<g:layer bottom="2px" height="24px">
-				<g:HorizontalPanel width="100%" spacing="3">
-		        		<g:cell>
-			        		<g:TextBox styleName="{style.chatInput}" ui:field="chatInput"/>
-			        	</g:cell>
-			        	<g:cell width="40px">
-							<g:PushButton addStyleNames="{style.sendButton}" ui:field="sendButton"/>	
-						</g:cell>	        	
-		        	</g:HorizontalPanel>
-			</g:layer>
+			<!-- Disable chat function until 1.7, need further testing on HTML safe-->
+<!-- 			<g:layer bottom="2px" height="24px"> -->
+<!-- 				<g:HorizontalPanel width="100%" spacing="3"> -->
+<!-- 		        		<g:cell> -->
+<!-- 			        		<g:TextBox styleName="{style.chatInput}" ui:field="chatInput"/> -->
+<!-- 			        	</g:cell> -->
+<!-- 			        	<g:cell width="40px"> -->
+<!-- 							<g:PushButton addStyleNames="{style.sendButton}" ui:field="sendButton"/>	 -->
+<!-- 						</g:cell>	        	 -->
+<!-- 		        	</g:HorizontalPanel> -->
+<!-- 			</g:layer> -->
         	</g:LayoutPanel>
         </g:center>
     </g:SplitLayoutPanel>

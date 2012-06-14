@@ -45,7 +45,7 @@ Removes some of the styling on the page-level splitters
 	width: auto;
 }
 
-#DocumentListView,#TransFilterView,#WorkspaceUsersView {
+#DocumentListView,#WorkspaceUsersView {
 	padding-bottom: 5px;
 	width: 100%;
 }
@@ -443,21 +443,31 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	width: 99%;
 }
 
-.transFilterTextBox
+/* TODO share this with other modal panels */
+.keyShortcutPanel
 {
-	margin: 0px;
-	font-size: 1.15em;
-	border: 2px solid lightgrey;
-	border-radius: 6px;
-	outline: none;
-	-moz-border-radius: 6px;
-	padding-left: 4px;
+	color: white;
+	background-color: black;
+	opacity:0.85;
+	border-radius:8px;
+	padding: 20px;
 }
 
-.transFilterTextBoxEmpty
+.keyShortcutHeading
 {
-	color: grey;
-	font-style: italic;
+	font-size: 1.4em;
+}
+
+.keyShortcutCategory
+{
+	padding: 10px;
+	font-size: 1.2em;
+}
+
+.keyShortcutCategoryTitle
+{
+	font-size: 1.2em;
+	margin-bottom: 4px;
 }
 
 /* Search-replace page
@@ -466,9 +476,11 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 
 .projectWideSearchPanel
 {
-	color: #666666;
+	color: #999999;
 	background-color: #f3f2f2;
 	border-bottom: 1px solid lightgrey;
+	padding: 0px 20px;
+	white-space: nowrap;
 }
 
 .gwt-ListBox
@@ -486,12 +498,31 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 {
 	color: #000000;
 	padding: 3px;
-	margin: 15px;
+	margin: 10px;
 	font-size: 1.3em;
 	border: 3px solid lightgrey;
 	border-radius: 6px;
 	outline: none;
 	-moz-border-radius: 6px;
+}
+
+.projectWideSearchButton
+{
+	color: #444444;
+	font-size: 1.3em;
+	margin-right: 15px;
+	padding: 2px 8px;
+}
+
+.projectWideReplacementBox
+{
+	padding: 4px;
+	font-size: 1.8em;
+	border: 4px solid lightgrey;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	outline: none;
+	margin-right: 10px;
 }
 
 .projectWideSearchReportLabel
@@ -501,28 +532,23 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	font-size: 1.1em;
 }
 
-.projectWideReplacementPanel
+.projectWideSearchSelectAllChk
+{
+	margin-left: 27px;
+}
+
+.projectWideSearchLogPanel
 {
 	background-color: #667788;
-	border-top: 3px solid #e0e8ee;
-}
-
-.projectWideReplacementBoxLabel
-{
-	margin-left: 30px;
 	color: #ffffff;
-	font-size: 1.35em;
+	border-top: 3px solid #e0e8ee;
+	padding: 0px 30px;
 }
 
-.projectWideReplacementBox
+.projectWideSearchSelectionInfo
 {
-	padding: 4px;
-	font-size: 1.8em;
-	border: 4px solid #667788;
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	outline: none;
-	margin: 15px;
+	font-size: 1.3em;
+	white-space: nowrap;
 }
 
 .projectWideReplacementButton
@@ -530,9 +556,16 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	color: #223344;
 	padding: 3px 10px;
 	font-size: 1.6em;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	border-width: 1px;
+	white-space: nowrap;
+}
+
+.projectWideReplacButton-Disabled
+{
+	color: #777777;
+	background-color: #bbbbbb;
+	border: 2px solid #bbbbbb;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
 }
 
 .projectWideReplaceFeedbackLabel
@@ -579,15 +612,6 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	float: right;
 }
 
-.linkLabel
-{
-	color:#114477;
-	cursor:pointer;
-	text-decoration: underline;
-	margin-left: 10px;
-	margin-right: 10px;
-}
-
 .projectWideSearchResultsDocumentBody
 {
 	padding-top: 15px;
@@ -596,6 +620,31 @@ tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent-Edit
 	border-top-style: none;
 	border-bottom-width: 3px;
 	margin-bottom: 30px;
+}
+
+.projectWideSearchResultsActionColumn
+{
+	padding: 2px 4px !important;
+	overflow: visible !important;
+}
+
+.linkLabel
+{
+	cursor:pointer;
+	text-decoration: underline;
+	margin-left: 10px;
+	margin-right: 10px;
+	white-space: nowrap;
+}
+
+.linkLabelNormalColor
+{
+	color:#114477;
+}
+
+.linkLabelLightColor
+{
+	color: #55ddff;
 }
 
 
@@ -694,13 +743,13 @@ td.FuzzyStateDecoration div div pre, td.ApprovedStateDecoration div div pre
 }
 
 .transUnitCountTooltip {
-	background-color: #F7F488;
-	color: #2A2A04;
+	background-color:#FBFBFB;
 	text-align: center;
-	border: 1px outset #999966;
-	height: 65px;
-	border-radius: 8px;
-	-moz-border-radius: 8px;
+	border-radius: 10px;
+	border: 2px solid #818181;
+	padding:2px;
+	font-weight:bold;
+	box-shadow:5px 5px 4px #D1D1D1;
 }
 
 .transUnitCountTooltipTable {
@@ -708,11 +757,65 @@ td.FuzzyStateDecoration div div pre, td.ApprovedStateDecoration div div pre
 	font-size: 12px
 }
 
-.transUnitCountTooltipTable TD {
-	border: 1px solid #999966;
+.transUnitCountTooltipTable .topHeader {
+	border:none;
+	color: #4F4F4F;
+	white-space:nowrap;
+	padding:2px;
+}
+
+.transUnitCountTooltipTable .approved-header {
+	border:none;
+	color: #002D00;
+	white-space:nowrap;
+	padding:2px;
+}
+
+.transUnitCountTooltipTable .needReview-header {
+	border:none;
+	color: #7D3E00;
+	white-space:nowrap;
+	padding:2px;
+}
+
+.transUnitCountTooltipTable .untranslated-header {
+	border:none;
+	color: #6D6D6D;
+	white-space:nowrap;
+	padding:2px;
+}
+
+
+.transUnitCountTooltipTable .sideHeader {
+	border:none;
+	color: #4F4F4F;
+	white-space:nowrap;
+	width:40px;
+}
+
+.transUnitCountTooltipTable .approved {
+	background:#099B09;
+	border: 1px solid #006900;
+	color:#002D00;
+}
+
+.transUnitCountTooltipTable .needReview {
+	background:#FFC000;
+	border: 1px solid #CD8E00;
+	color:#7D3E00;
+}
+
+.transUnitCountTooltipTable .untranslated {
+	background:#E5E5E5;
+	border: 1px solid #B3B3B3;
+	color:#6D6D6D;
+}
+
+.transUnitCountTooltipTable td {
+	border: 1px solid #6D6D6D;
 	width: 75px;
-	border-radius: 4px;
-	-moz-border-radius: 4px;
+	border-radius: 2px;
+	color:#4F4F4F;
 }
 
 .pointer {
@@ -764,7 +867,6 @@ td.FuzzyStateDecoration div div pre, td.ApprovedStateDecoration div div pre
 	color: #FFFFFF;
 	opacity: 0.60;
 	border-radius: 20px;
-	-moz-border-radius: 20px;
 	font-weight: bold;
 }
 
@@ -786,4 +888,14 @@ td.FuzzyStateDecoration div div pre, td.ApprovedStateDecoration div div pre
 {
 	padding-top: 3px;
 	padding-left: 1px;
+}
+
+.notificationPanel 
+{
+	border:none;
+}
+
+.boldFont
+{
+	font-weight:bold;
 }

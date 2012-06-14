@@ -1,22 +1,22 @@
 /*
- * Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
- * @author tags. See the copyright.txt file in the distribution for a full
- * listing of individual contributors.
+ * Copyright 2012, Red Hat, Inc. and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
  *
- * This is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
  *
- * This software is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this software; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
- * site: http://www.fsf.org.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.zanata.webtrans.server.rpc;
 
@@ -24,17 +24,11 @@ import java.util.List;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
-import org.zanata.dao.ProjectDAO;
-import org.zanata.model.HLocale;
-import org.zanata.model.HProject;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.TranslationService.TranslationResult;
@@ -45,9 +39,9 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.WorkspaceId;
-import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.RevertTransUnitUpdates;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import lombok.extern.slf4j.Slf4j;
@@ -98,7 +92,7 @@ public class RevertTransUnitUpdatesHandler extends AbstractActionHandler<RevertT
          TransUnit tu = transUnitTransformer.transform(hTextFlow, newTarget.getLocale());
          TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(translationResult.isTranslationSuccessful(), new DocumentId(hTextFlow.getDocument().getId()), tu, wordCount, translationResult.getBaseVersionNum(), translationResult.getBaseContentState());
 
-         workspace.publish(new TransUnitUpdated(updateInfo, action.getSessionId()));
+         workspace.publish(new TransUnitUpdated(updateInfo, action.getEditorClientId(), UpdateType.Revert));
          results.addUpdateResult(updateInfo);
       }
       return results;

@@ -77,14 +77,14 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       ZanataIdentity.instance().checkLoggedIn();
 
       TransMemoryQuery transMemoryQuery = action.getQuery();
-      log.info("Fetching matches for {}", transMemoryQuery);
+      log.debug("Fetching matches for {}", transMemoryQuery);
 
       LocaleId localeID = action.getLocaleId();
       HLocale hLocale = localeServiceImpl.getByLocaleId(localeID);
 
       ArrayList<TransMemoryResultItem> results = searchTransMemory(hLocale, transMemoryQuery);
 
-      log.info("Returning {} TM matches for {}", results.size(), transMemoryQuery);
+      log.debug("Returning {} TM matches for {}", results.size(), transMemoryQuery);
       return new GetTranslationMemoryResult(action, results);
    }
 

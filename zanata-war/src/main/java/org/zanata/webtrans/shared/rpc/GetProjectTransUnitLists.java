@@ -20,12 +20,14 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
+import java.util.List;
+
 
 /**
  * Get all text flows from a project that contain the given search string,
  * grouped by document.
  * 
- * @author David Mason, damason@redhat.com
+ * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
  * 
  */
 public class GetProjectTransUnitLists extends AbstractWorkspaceAction<GetProjectTransUnitListsResult>
@@ -35,6 +37,7 @@ public class GetProjectTransUnitLists extends AbstractWorkspaceAction<GetProject
    private boolean caseSensitive;
    private boolean searchInSource;
    private boolean searchInTarget;
+   private List<String> documentPaths;
 
    @SuppressWarnings("unused")
    private GetProjectTransUnitLists()
@@ -43,10 +46,16 @@ public class GetProjectTransUnitLists extends AbstractWorkspaceAction<GetProject
 
    public GetProjectTransUnitLists(String searchString, boolean searchInSource, boolean searchInTarget, boolean caseSensitive)
    {
+      this(searchString, searchInSource, searchInTarget, caseSensitive, null);
+   }
+
+   public GetProjectTransUnitLists(String searchString, boolean searchInSource, boolean searchInTarget, boolean caseSensitive, List<String> documentPaths)
+   {
       this.searchString = searchString;
       this.searchInSource = searchInSource;
       this.searchInTarget = searchInTarget;
       this.caseSensitive = caseSensitive;
+      this.documentPaths = documentPaths;
    }
 
    public String getSearchString()
@@ -67,5 +76,10 @@ public class GetProjectTransUnitLists extends AbstractWorkspaceAction<GetProject
    public boolean isCaseSensitive()
    {
       return this.caseSensitive;
+   }
+
+   public List<String> getDocumentPaths()
+   {
+      return documentPaths;
    }
 }

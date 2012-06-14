@@ -49,7 +49,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 @ActionHandlerFor(GetTransUnitList.class)
 public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitList, GetTransUnitListResult>
 {
-   private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(GetTransUnitListHandler.class);
+   private static final org.slf4j.Logger log = LoggerFactory.getLogger(GetTransUnitListHandler.class);
 
    @In
    private TransUnitTransformer transUnitTransformer;
@@ -64,7 +64,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
    public GetTransUnitListResult execute(GetTransUnitList action, ExecutionContext context) throws ActionException
    {
       ZanataIdentity.instance().checkLoggedIn();
-      LOGGER.info("Fetching TransUnits for document {}", action.getDocumentId());
+      log.debug("Fetching TransUnits for document {}", action.getDocumentId());
 
       HLocale hLocale;
       try
@@ -85,13 +85,13 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
 
       if ((action.getPhrase() != null && !action.getPhrase().isEmpty()) || (action.isFilterTranslated() || action.isFilterNeedReview() || action.isFilterUntranslated()))
       {
-         LOGGER.info("Fetch TransUnits: {}", action.getPhrase());
+         log.debug("Fetch TransUnits: {}", action.getPhrase());
          filter = new TextFlowFilterImpl(action.getPhrase(), action.isFilterTranslated(), action.isFilterNeedReview(), action.isFilterUntranslated());
          textFlows = textFlowDAO.getTransUnitList(action.getDocumentId().getValue());
       }
       else
       {
-         LOGGER.info("Fetch TransUnits:*");
+         log.debug("Fetch TransUnits:*");
          filter = new TextFlowFilterImpl();
          textFlows = textFlowDAO.getTransUnitList(action.getDocumentId().getValue());
       }

@@ -41,6 +41,11 @@
 	color: grey;
 }
 
+.configTextArea
+{
+	width:100%;
+}
+
 .search_icon {
 	background-image: url(../images/crystal_project/_16x16/actions/search.png);
 }
@@ -218,16 +223,21 @@ a.action_link:hover {
 	color:#990000;
 }
 
+.hightlight_button:hover {
+	border:1px solid #990000;
+	color:#990000;
+}
+
 a.table_link {
 	font-size: 14px;
 	font-weight: bold;
 	padding: 4px;
-	-moz-border-radius: 5px;
 	border-radius: 5px;
 	color: #7092C3;
 	text-decoration: none;
 	margin: 1px;
 	text-align: right;
+	outline:none;
 }
 
 a.table_link:hover {
@@ -638,6 +648,12 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	width: 70px;
 }
 /* -----------------------  End Customised Language list CSS  -------------------------*/
+
+/* -----------------------  Language Administration CSS  -------------------------*/
+.disabled_lang_row {
+    background-color: #FEEDEF;
+}
+/* -----------------------  End Language Administration CSS  -------------------------*/
 
 /* -----------------------  Project iteration CSS  -------------------------*/
 

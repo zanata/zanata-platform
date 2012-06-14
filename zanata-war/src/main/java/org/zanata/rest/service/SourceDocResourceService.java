@@ -239,7 +239,7 @@ public class SourceDocResourceService implements SourceDocResource
       // TODO No need for docId param since it's resource.getName()
       document =
             this.documentServiceImpl.saveDocument(
-                  this.projectSlug, this.iterationSlug, resource.getName(), resource, extensions, copytrans);
+                  this.projectSlug, this.iterationSlug, resource, extensions, copytrans);
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, document.getDocId(), extensions);
 
@@ -350,7 +350,8 @@ public class SourceDocResourceService implements SourceDocResource
          response = Response.ok();
       }
 
-      document = this.documentServiceImpl.saveDocument(projectSlug, iterationSlug, id, resource, extensions, copytrans);
+      resource.setName( id );
+      document = this.documentServiceImpl.saveDocument(projectSlug, iterationSlug, resource, extensions, copytrans);
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, document.getDocId(), extensions);
 

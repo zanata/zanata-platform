@@ -4,7 +4,7 @@ import java.util.Map;
 
 import net.customware.gwt.dispatch.shared.Result;
 
-import org.zanata.webtrans.shared.auth.SessionId;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.PersonSessionDetails;
 
 
@@ -13,7 +13,7 @@ public class GetTranslatorListResult implements Result
 
    private static final long serialVersionUID = 1L;
 
-   private Map<SessionId, PersonSessionDetails> translatorlist;
+   private Map<EditorClientId, PersonSessionDetails> translatorlist;
    private int size;
 
    @SuppressWarnings("unused")
@@ -21,13 +21,13 @@ public class GetTranslatorListResult implements Result
    {
    }
 
-   public GetTranslatorListResult(Map<SessionId, PersonSessionDetails> translatorlist, int size)
+   public GetTranslatorListResult(Map<EditorClientId, PersonSessionDetails> translatorlist, int size)
    {
       this.translatorlist = translatorlist;
       this.size = size;
    }
 
-   public Map<SessionId, PersonSessionDetails> getTranslatorList()
+   public Map<EditorClientId, PersonSessionDetails> getTranslatorList()
    {
       return translatorlist;
    }

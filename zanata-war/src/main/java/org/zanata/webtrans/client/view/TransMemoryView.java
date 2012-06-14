@@ -223,6 +223,10 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       tmTable.addColumn(new SimilarityColumn<TransMemoryResultItem>(), messages.similarityLabel());
       tmTable.addColumn(detailsColumn, messages.detailsLabel());
 
+      Label noResult = new Label("Found no translation memory results");
+      noResult.setStyleName("boldFont");
+      tmTable.setEmptyTableWidget(noResult);
+
       final NoSelectionModel<TransMemoryResultItem> selectionModel = new NoSelectionModel<TransMemoryResultItem>();
       final DefaultSelectionEventManager<TransMemoryResultItem> manager = DefaultSelectionEventManager.createBlacklistManager(0, 1, 2);
       tmTable.setSelectionModel(selectionModel, manager);

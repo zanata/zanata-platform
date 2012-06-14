@@ -20,31 +20,42 @@
  */
 package org.zanata.workflow;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zanata.page.ManageLanguagePage;
+import java.util.List;
 
+import org.zanata.page.administration.ManageLanguagePage;
+import org.zanata.page.administration.ManageLanguageTeamMemberPage;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class LanguageWorkFlow extends AbstractWebWorkFlow
 {
-   private static final Logger LOGGER = LoggerFactory.getLogger(LanguageWorkFlow.class);
 
    public ManageLanguagePage addLanguageAndJoin(String localeId)
    {
       ManageLanguagePage manageLanguagePage = addLanguage(localeId);
-      manageLanguagePage = manageLanguagePage.manageTeamMembersFor(localeId);
-      if (!manageLanguagePage.getMemberUsernames().contains("admin"))
+      ManageLanguageTeamMemberPage teamMemberPage = manageLanguagePage.manageTeamMembersFor(localeId);
+      if (!teamMemberPage.getMemberUsernames().contains("admin"))
       {
          return manageLanguagePage.joinLanguageTeam();
       }
       else
       {
-         LOGGER.warn("admin has already joined the language [{}]", localeId);
+         log.warn("admin has already joined the language [{}]", localeId);
          return manageLanguagePage;
       }
    }
 
    public ManageLanguagePage addLanguage(String localeId)
    {
-      return goToHome().goToAdministration().goToManageLanguagePage().addNewLanguage().selectLanguage(localeId).saveLanguage();
+      ManageLanguagePage manageLanguagePage = goToHome().goToAdministration().goToManageLanguagePage();
+      List<String> locales = manageLanguagePage.getLanguageLocales();
+      if (locales.contains(localeId))
+      {
+         log.warn("{} has already been added", localeId);
+         return manageLanguagePage;
+      }
+      //continue to add the new language
+      return manageLanguagePage.addNewLanguage().enableLanguageByDefault().inputLanguage(localeId).saveLanguage();
    }
 }

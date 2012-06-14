@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.zanata</groupId>
         <artifactId>server</artifactId>
-        <version>1.6.0-beta-2-SNAPSHOT</version>
+        <version>1.6.1-SNAPSHOT</version>
     </parent>
     <groupId>org.zanata</groupId>
     <artifactId>functional-test</artifactId>
@@ -15,7 +15,6 @@
     <properties>
         <webdriver.version>0.9.7376</webdriver.version>
         <selenium.version>2.20.0</selenium.version>
-        <hamcrest.version>1.2.1</hamcrest.version>
         <commons-io.version>1.3.2</commons-io.version>
 
         <!--Cargo Settings -->
@@ -115,12 +114,10 @@
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-core</artifactId>
-            <version>${hamcrest.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-library</artifactId>
-            <version>${hamcrest.version}</version>
         </dependency>
 
         <!--cargo needs these-->
@@ -191,6 +188,7 @@
                                 <systemProperties>
                                     <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
                                     <jboss.server.log.threshold>INFO</jboss.server.log.threshold>
+                                    <hibernate.search.default.indexBase>${project.build.directory}/zanataindex</hibernate.search.default.indexBase>
                                 </systemProperties>
                             </container>
                             <configuration>

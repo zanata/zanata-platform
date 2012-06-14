@@ -25,7 +25,7 @@
 	<parent>
 		<groupId>org.zanata</groupId>
 		<artifactId>server</artifactId>
-		<version>1.6.0-beta-2-SNAPSHOT</version>
+		<version>1.6.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>zanata-war</artifactId>
 	<packaging>war</packaging>
@@ -46,7 +46,6 @@
 		
 		<!-- application properties -->
 		<env.debug>false</env.debug>
-		<env.hibernate.indexBase>zanatasearchindex</env.hibernate.indexBase>
 		<war.name>zanata</war.name>
 		<zanata.gwt.module>org.zanata.webtrans.Application</zanata.gwt.module>
 		<extra.servlets />
@@ -1232,8 +1231,14 @@
 
 		<dependency>
 			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-all</artifactId>
+			<artifactId>hamcrest-core</artifactId>
 			<scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <scope>test</scope>
         </dependency>
 
 		<dependency>

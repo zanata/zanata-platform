@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
-import org.zanata.webtrans.shared.auth.SessionId;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
@@ -50,10 +50,10 @@ public class TranslationWorkspaceImplTest
    @Test
    public void onTimeoutRemove()
    {
-      ConcurrentMap<SessionId, PersonId> sessions = new MapMaker().makeMap();
-      sessions.put(SessionId.of("a"), new PersonId("person a"));
-      sessions.put(SessionId.of("b"), new PersonId("person b"));
+      ConcurrentMap<EditorClientId, PersonId> sessions = new MapMaker().makeMap();
+      sessions.put(new EditorClientId("a"), new PersonId("person a"));
+      sessions.put(new EditorClientId("b"), new PersonId("person b"));
 
-      sessions.remove(SessionId.of("a"));
+      sessions.remove(new EditorClientId("a"));
    }
 }

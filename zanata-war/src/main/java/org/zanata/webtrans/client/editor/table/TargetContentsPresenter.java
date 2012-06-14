@@ -47,6 +47,7 @@ import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
@@ -55,8 +56,8 @@ import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
-import org.zanata.webtrans.shared.auth.SessionId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -118,7 +119,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       this.identity = identity;
       this.dispatcher = dispatcher;
 
-      checkKey = new CheckKeyImpl(CheckKeyImpl.Context.Edit);
+      checkKey = new CheckKeyImpl(ShortcutContext.Edit);
       eventBus.addHandler(UserConfigChangeEvent.getType(), this);
       eventBus.addHandler(RequestValidationEvent.getType(), this);
       eventBus.addHandler(InsertStringInEditorEvent.getType(), this);
@@ -208,26 +209,26 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       if (event.getSelectedTransUnit() != null)
       {
-         updateEditorTranslatorList(event.getSelectedTransUnit().getId(), event.getPerson(), event.getSessionId());
+         updateEditorTranslatorList(event.getSelectedTransUnit().getId(), event.getPerson(), event.getEditorClientId());
       }
    }
 
-   private void updateEditorTranslatorList(TransUnitId selectedTransUnitId, Person person, SessionId sessionId)
+   private void updateEditorTranslatorList(TransUnitId selectedTransUnitId, Person person, EditorClientId editorClientId)
    {
       if (cellEditor.getTargetCell() != null)
       {
-         if (!sessionId.equals(identity.getSessionId()) && cellEditor.getTargetCell().getId().equals(selectedTransUnitId))
+         if (!editorClientId.equals(identity.getEditorClientId()) && cellEditor.getTargetCell().getId().equals(selectedTransUnitId))
          {
             for (ToggleEditor editor : currentEditors)
             {
-               editor.addTranslator(person.getName(), sessionService.getColor(sessionId.getValue()));
+               editor.addTranslator(person.getName(), sessionService.getColor(editorClientId.getValue()));
             }
          }
          else
          {
             for (ToggleEditor editor : currentEditors)
             {
-               editor.removeTranslator(person.getName(), sessionService.getColor(sessionId.getValue()));
+               editor.removeTranslator(person.getName(), sessionService.getColor(editorClientId.getValue()));
             }
          }
       }
@@ -242,7 +243,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
             editor.clearTranslatorList();
          }
 
-         for (Map.Entry<SessionId, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
+         for (Map.Entry<EditorClientId, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
          {
             if (entry.getValue().getSelectedTransUnit() != null)
             {
@@ -404,21 +405,12 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void toggleView(final ToggleEditor editor)
    {
-      // this will get deferred execution since we want to trigger table
-      // selection event first
-      scheduler.scheduleDeferred(new Scheduler.ScheduledCommand()
+      currentEditorIndex = editor.getIndex();
+      Log.debug("toggle view current editor index:" + currentEditorIndex);
+      if (currentDisplay != null)
       {
-         @Override
-         public void execute()
-         {
-            currentEditorIndex = editor.getIndex();
-            Log.debug("toggle view current editor index:" + currentEditorIndex);
-            if (currentDisplay != null)
-            {
-               currentDisplay.focusEditor(currentEditorIndex);
-            }
-         }
-      });
+         currentDisplay.focusEditor(currentEditorIndex);
+      }
 
    }
 
@@ -546,13 +538,14 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       {
          onCancel();
       }
-      else if (checkKey.isUserTyping() && !checkKey.isBackspace())
+      else if (checkKey.isUserTyping() && checkKey.isEnterKey())
       {
-         editor.growSize();
+         //because enter itself will increase one line
+         editor.autoSizePlusOne();
       }
-      else if (checkKey.isUserTyping() && checkKey.isBackspace())
+      else if (checkKey.isUserTyping())
       {
-         editor.shrinkSize(false);
+         editor.autoSize();
       }
    }
 

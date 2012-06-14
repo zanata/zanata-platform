@@ -18,7 +18,8 @@ import org.zanata.service.GravatarService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
-import org.zanata.webtrans.shared.auth.SessionId;
+import org.zanata.webtrans.shared.auth.EditorClientId;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.PersonSessionDetails;
@@ -50,11 +51,11 @@ public class GetTranslatorListHandler extends AbstractActionHandler<GetTranslato
 
       TranslationWorkspace translationWorkspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
 
-      Map<SessionId, PersonSessionDetails> result = translationWorkspace.getUsers();
+      Map<EditorClientId, PersonSessionDetails> result = translationWorkspace.getUsers();
 
       // Use AccountDAO to convert the PersonId to Person
-      Map<SessionId, PersonSessionDetails> translators = new HashMap<SessionId, PersonSessionDetails>();
-      for (Map.Entry<SessionId, PersonSessionDetails> entry : result.entrySet())
+      Map<EditorClientId, PersonSessionDetails> translators = new HashMap<EditorClientId, PersonSessionDetails>();
+      for (Map.Entry<EditorClientId, PersonSessionDetails> entry : result.entrySet())
       {
          PersonId personId = entry.getValue().getPerson().getId();
 

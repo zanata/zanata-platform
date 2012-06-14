@@ -50,9 +50,10 @@
     </rich:panel>
 
     <div class="actionButtons">
-    	<h:commandButton value="#{messages['jsf.Save']}" 
-    						action="#{versionGroupHome.persist}" 
-    						rendered="#{!versionGroupHome.managed}"/> 
+    	<h:commandButton id="save"
+                         value="#{messages['jsf.Save']}"
+    						action="#{versionGroupHome.persist}"
+    						rendered="#{!versionGroupHome.managed}"/>
         <h:commandButton id="update"
                       value="#{messages['jsf.Update']}"
                      action="#{versionGroupHome.update}"
