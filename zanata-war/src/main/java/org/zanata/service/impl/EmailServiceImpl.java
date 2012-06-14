@@ -89,7 +89,7 @@ public class EmailServiceImpl implements EmailService
    }
 
    @Override
-   public String sendToVersionGroupMaintainer(String emailTemplate, Set<HPerson> maintainers, String fromName, String fromLoginName, String replyEmail, String subject, String message)
+   public String sendToVersionGroupMaintainer(String emailTemplate, List<HPerson> maintainers, String fromName, String fromLoginName, String replyEmail, String subject, String message)
    {
       if (!maintainers.isEmpty())
       {

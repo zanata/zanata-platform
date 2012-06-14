@@ -213,32 +213,29 @@
   	</page>
 
     <page view-id="/version-group/assign_maintainer.xhtml" >
-        <param name="versionGroupSlug" value="#{versionGroupMaintainerManageAction.slug}" />
         <param name="versionGroupSlug" value="#{versionGroupHome.slug}" />
         <action execute="#{versionGroupMaintainerManageAction.init()}" />
     </page>
     
     <page view-id="/version-group/request_to_join.xhtml">
 	    <param name="emailType" value="#{sendEmail.emailType}" />
-	    <param name="versionGroupSlug" value="#{sendEmail.versionGroupSlug}" />
+        <param name="versionGroupSlug" value="#{versionGroupJoinAction.slug}" />
+        <action execute="#{versionGroupJoinAction.init()}"/>
 
-        <action execute="#{versionGroupJoinAction.init(versionGroupSlug)}"/>
-	    <action execute="#{versionGroupJoinAction.searchMaintainedProjects}" />
-
-	    <navigation from-action="#{sendEmail.send}">
+	    <navigation from-action="#{versionGroupJoinAction.send}">
 	      <rule if-outcome="success">
-	        <redirect view-id="/version-group/version-group.xhtml">
-	          <param name="versionGroupSlug" value="#{sendEmail.versionGroupSlug}" />        
+	        <redirect view-id="/version-group/version_group.xhtml">
+	          <param name="versionGroupSlug" value="#{versionGroupJoinAction.slug}" />
 	        </redirect>
 	      </rule>
 	      <rule if-outcome="failure">
 	        <redirect view-id="/version-group/request_to_join.xhtml" />
 	      </rule>
 	    </navigation>
-	    <navigation from-action="#{sendEmail.cancel}">
+	    <navigation from-action="#{versionGroupJoinAction.cancel}">
 	      <rule>
-	        <redirect view-id="/version-group/version-group.xhtml">
-	          <param name="versionGroupSlug" value="#{sendEmail.versionGroupSlug}" />
+	        <redirect view-id="/version-group/version_group.xhtml">
+	          <param name="versionGroupSlug" value="#{versionGroupJoinAction.slug}" />
 	        </redirect>
 	      </rule>
 	    </navigation>

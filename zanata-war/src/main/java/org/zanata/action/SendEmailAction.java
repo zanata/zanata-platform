@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.hibernate.validator.Email;
 import org.jboss.seam.ScopeType;
@@ -38,13 +39,11 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HAccount;
-import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import org.zanata.service.EmailService;
 import org.zanata.service.LocaleService;
-import org.zanata.service.VersionGroupService;
 
 /**
  * Sends an email to a specified role.
@@ -82,9 +81,6 @@ public class SendEmailAction implements Serializable
    @In
    private LocaleSelector localeSelector;
 
-   @In
-   private VersionGroupService versionGroupServiceImpl;
-
    @Logger
    private Log log;
 
@@ -98,8 +94,7 @@ public class SendEmailAction implements Serializable
    private String language;
    private HLocale locale;
 
-   private String versionGroupSlug;
-   private HIterationGroup versionGroup;
+   private List<HPerson> groupMaintainers;
 
    @Create
    public void onCreate()
@@ -195,18 +190,6 @@ public class SendEmailAction implements Serializable
       return locale;
    }
 
-   public String getVersionGroupSlug()
-   {
-      return versionGroupSlug;
-   }
-
-   public void setVersionGroupSlug(String versionGroupSlug)
-   {
-      this.versionGroupSlug = versionGroupSlug;
-      versionGroup = versionGroupServiceImpl.getBySlug(versionGroupSlug);
-   }
-
-
    private List<HPerson> getCoordinators()
    {
       List<HPerson> coordinators = new ArrayList<HPerson>();
@@ -255,7 +238,7 @@ public class SendEmailAction implements Serializable
          }
          else if (emailType.equals(EMAIL_TYPE_REQUEST_TO_JOIN_GROUP))
          {
-            String msg = emailServiceImpl.sendToVersionGroupMaintainer(REQUEST_TO_JOIN_GROUP_EMAIL_TEMPLATE, versionGroup.getMaintainers(), fromName, fromLoginName, replyEmail, subject, message);
+            String msg = emailServiceImpl.sendToVersionGroupMaintainer(REQUEST_TO_JOIN_GROUP_EMAIL_TEMPLATE, groupMaintainers, fromName, fromLoginName, replyEmail, subject, message);
             FacesMessages.instance().add(msg);
             return "success";
          }
@@ -286,4 +269,9 @@ public class SendEmailAction implements Serializable
       return "canceled";
    }
 
+   public String sendToVersionGroupMaintainer(List<HPerson> maintainers)
+   {
+      groupMaintainers = maintainers;
+      return send();
+   }
 }

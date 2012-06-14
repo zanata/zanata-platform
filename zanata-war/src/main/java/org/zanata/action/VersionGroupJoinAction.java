@@ -30,11 +30,13 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
+import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionGroupService;
@@ -52,6 +54,9 @@ public class VersionGroupJoinAction implements Serializable
    @In
    private ProjectDAO projectDAO;
 
+   @In
+   private SendEmailAction sendEmail;
+
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
 
@@ -62,13 +67,12 @@ public class VersionGroupJoinAction implements Serializable
 
    private HIterationGroup group;
 
-   public void init(String slug)
+   private String slug;
+
+   public void init()
    {
       group = versionGroupServiceImpl.getBySlug(slug);
-   }
 
-   public void searchMaintainedProjects()
-   {
       Set<HProject> maintainedProjects = authenticatedAccount.getPerson().getMaintainerProjects();
       for (HProject project : maintainedProjects)
       {
@@ -93,4 +97,93 @@ public class VersionGroupJoinAction implements Serializable
       return versionGroupServiceImpl.isVersionInGroup(group, projectIterationId);
    }
 
+   public String cancel()
+   {
+      return sendEmail.cancel();
+   }
+
+   public String send()
+   {
+      boolean isAnyVersionSelected = false;
+      for (SelectableHIterationProject projectVersion : getMaintainedProjectVersions())
+      {
+         if (projectVersion.isSelected())
+         {
+            isAnyVersionSelected = true;
+         }
+      }
+
+      if(isAnyVersionSelected)
+      {
+         group = versionGroupServiceImpl.getBySlug(slug);
+
+         List<HPerson> maintainers = new ArrayList<HPerson>();
+         for (HPerson maintainer : group.getMaintainers())
+         {
+            maintainers.add(maintainer);
+         }
+         return sendEmail.sendToVersionGroupMaintainer(maintainers);
+      }
+      else
+      {
+         FacesMessages.instance().add("#{messages['jsf.NoProjectVersionSelected']}");
+         return "success";
+      }
+
+   }
+
+   public HIterationGroup getGroup()
+   {
+      return group;
+   }
+
+   public String getSlug()
+   {
+      return slug;
+   }
+
+   public void setSlug(String slug)
+   {
+      this.slug = slug;
+   }
+
+   public String getQuery()
+   {
+      StringBuilder queryBuilder = new StringBuilder();
+      queryBuilder.append(slug);
+      queryBuilder.append("/");
+      if (!getMaintainedProjectVersions().isEmpty())
+      {
+         queryBuilder.append("?");
+
+         for(int i = 0; i < getMaintainedProjectVersions().size(); i++)
+         {
+            SelectableHIterationProject projectVersion =  getMaintainedProjectVersions().get(i);
+            if (projectVersion.isSelected())
+            {
+               if(i != 0)
+               {
+                  queryBuilder.append("&");
+               }
+               queryBuilder.append("slugParam=");
+               queryBuilder.append(projectVersion.getProjectIteration().getProject().getSlug());
+               queryBuilder.append(":");
+               queryBuilder.append(projectVersion.getProjectIteration().getSlug());
+            }
+         }
+
+//         for (SelectableHIterationProject projectVersion : getMaintainedProjectVersions())
+//         {
+//            if (projectVersion.isSelected())
+//            {
+//               queryBuilder.append("slugParam=");
+//               queryBuilder.append(projectVersion.getProjectIteration().getProject().getSlug());
+//               queryBuilder.append(":");
+//               queryBuilder.append(projectVersion.getProjectIteration().getSlug());
+//               queryBuilder.append("&");
+//            }
+//         }
+      }
+      return queryBuilder.toString();
+   }
 }

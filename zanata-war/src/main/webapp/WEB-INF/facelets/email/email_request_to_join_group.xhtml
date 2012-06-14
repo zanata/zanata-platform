@@ -14,7 +14,7 @@
   <ui:param name="subject" value="#{messages['jsf.email.joingrouprequest.Subject']}" />
   
   <ui:define name="body">
-        <p>#{messages['jsf.email.coordinator.DearMaintainer']}</p>
+        <p>#{messages['jsf.email.maintainer.DearMaintainer']}</p>
         <p>#{messages['jsf.email.joingrouprequest.RequestingToJoinGroup']}</p>
         <s:fragment rendered="#{not empty sendEmail.htmlMessage}">
           <p>#{messages['jsf.email.joinrequest.UserMessageIntro']}</p>
@@ -24,13 +24,15 @@
         </s:fragment>
 
       <p> #{messages['jsf.email.joingrouprequest.ResponseInstructions']}</p>
+
+
       <p>
-          <a href="#{applicationConfiguration.serverPath}/language/view/#{sendEmail.locale.localeId.id}">
-              #{applicationConfiguration.serverPath}/language/view/#{sendEmail.locale.localeId.id}
+          <a href="#{applicationConfiguration.serverPath}/version-group/view/#{versionGroupJoinAction.query}">
+              #{applicationConfiguration.serverPath}/version-group/view/#{versionGroupJoinAction.query}
           </a>
       </p>
 
-      <p>#{messages['jsf.email.joingrouprequest.ManualAddVersionInstruction']}</p>
+      <p>#{messages['jsf.email.joingrouprequest.ManualAddVersionInstructions']}</p>
   </ui:define>
   
 </ui:composition>

@@ -58,7 +58,7 @@ public interface EmailService
     * @param message
     * @return
     */
-   String sendToVersionGroupMaintainer(String emailTemplate, Set<HPerson> maintainers, String fromName, String fromLoginName, String replyEmail, String subject, String message);
+   String sendToVersionGroupMaintainer(String emailTemplate, List<HPerson> maintainers, String fromName, String fromLoginName, String replyEmail, String subject, String message);
 
    /**
     *  sends emails to language coordinators -> admin -> admin users
