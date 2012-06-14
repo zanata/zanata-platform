@@ -150,4 +150,18 @@ public class VersionGroupServiceImpl implements VersionGroupService
       }
       return false;
    }
+
+   @Override
+   public boolean isVersionInGroup(HIterationGroup group, Long projectIterationId)
+   {
+      for (HProjectIteration iteration : group.getProjectIterations())
+      {
+         if (iteration.getId().equals(projectIterationId))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+
 }

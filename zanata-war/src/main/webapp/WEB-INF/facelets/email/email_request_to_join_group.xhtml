@@ -11,24 +11,26 @@
   <ui:param name="toEmailAddr" value="#{emailServiceImpl.toEmailAddr}" />
   <ui:param name="replyToName" value="#{sendEmail.fromName}" />
   <ui:param name="replyToEmail" value="#{sendEmail.replyEmail}" />
-  <ui:param name="subject" value="#{messages['jsf.email.joinrequest.Subject']}" />
+  <ui:param name="subject" value="#{messages['jsf.email.joingrouprequest.Subject']}" />
   
   <ui:define name="body">
-        <p>#{messages['jsf.email.coordinator.DearCoordinator']}</p>
-        <p>#{messages['jsf.email.joinrequest.UserRequestingToJoin']}</p>
+        <p>#{messages['jsf.email.coordinator.DearMaintainer']}</p>
+        <p>#{messages['jsf.email.joingrouprequest.RequestingToJoinGroup']}</p>
         <s:fragment rendered="#{not empty sendEmail.htmlMessage}">
           <p>#{messages['jsf.email.joinrequest.UserMessageIntro']}</p>
           <hr/>
           <h:outputText value="#{sendEmail.htmlMessage}" escape="false" />
           <hr/>
         </s:fragment>
-        <p>#{messages['jsf.email.joinrequest.AddUserInstructions']}</p>
-        <p>#{messages['jsf.email.coordinator.ResponseInstructions']}</p>
-        <p>
+
+      <p> #{messages['jsf.email.joingrouprequest.ResponseInstructions']}</p>
+      <p>
           <a href="#{applicationConfiguration.serverPath}/language/view/#{sendEmail.locale.localeId.id}">
-            #{applicationConfiguration.serverPath}/language/view/#{sendEmail.locale.localeId.id}
+              #{applicationConfiguration.serverPath}/language/view/#{sendEmail.locale.localeId.id}
           </a>
-        </p>
+      </p>
+
+      <p>#{messages['jsf.email.joingrouprequest.ManualAddVersionInstruction']}</p>
   </ui:define>
   
 </ui:composition>

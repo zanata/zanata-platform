@@ -222,8 +222,8 @@
 	    <param name="emailType" value="#{sendEmail.emailType}" />
 	    <param name="versionGroupSlug" value="#{sendEmail.versionGroupSlug}" />
 
-        <action execute="#{versionGroupAction.init(versionGroupSlug)}"/>
-	    <action execute="#{versionGroupAction.searchMaintainedProjects}" />
+        <action execute="#{versionGroupJoinAction.init(versionGroupSlug)}"/>
+	    <action execute="#{versionGroupJoinAction.searchMaintainedProjects}" />
 
 	    <navigation from-action="#{sendEmail.send}">
 	      <rule if-outcome="success">

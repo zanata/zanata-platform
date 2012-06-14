@@ -19,27 +19,26 @@
          <s:token allowMultiplePosts="true" />
          <h1>#{messages['jsf.RequestToJoinVersionGroupTitle']}</h1>
          <rich:panel>
-             <h:outputText id="noResultsMessage" rendered="#{empty versionGroupAction.maintainedProjectVersions}" value="#{messages['jsf.NoMaintainedProject']}" />
+             <h:outputText id="noResultsMessage" rendered="#{empty versionGroupJoinAction.maintainedProjectVersions}" value="#{messages['jsf.NoMaintainedProject']}" />
 
-             <s:fragment rendered="#{not empty versionGroupAction.maintainedProjectVersions}">
-                 <rich:dataTable id="resultTable" value="#{versionGroupAction.maintainedProjectVersions}" var="projectIteration">
+             <s:fragment rendered="#{not empty versionGroupJoinAction.maintainedProjectVersions}">
+                 <rich:dataTable id="resultTable" value="#{versionGroupJoinAction.maintainedProjectVersions}" var="selectableVersion">
                      <f:facet name="header">#{messages['jsf.MaintainedProjects']}</f:facet>
-                     <rich:column sortBy="#{projectIteration.project.name}">
+                     <rich:column sortBy="#{selectableVersion.projectIteration.project.name}">
                          <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
                          #{projectIteration.project.name}
                      </rich:column>
-                     <rich:column sortBy="#{projectIteration.slug}">
+                     <rich:column sortBy="#{selectableVersion.projectIteration.slug}">
                          <f:facet name="header">#{messages['jsf.Version']}</f:facet>
                          #{projectIteration.slug}
                      </rich:column>
 
                      <rich:column styleClass="centered">
                          <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-                         <a4j:commandButton value="#{messages['jsf.Add']}"
-                                            action="#{versionGroupAction.joinVersionGroup(projectIteration.id)}"
-                                            rendered="#{!versionGroupAction.isVersionInGroup(projectIteration.id)}" reRender="searchResults" />
+                         <h:selectBooleanCheckbox title="Select" value="#{selectableVersion.selected}" rendered="#{!versionGroupJoinAction.isVersionInGroup(selectableVersion.projectIteration.id)}"/>
+
                          <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
-                                       rendered="#{versionGroupAction.isVersionInGroup(projectIteration.id)}" />
+                                       rendered="#{versionGroupJoinAction.isVersionInGroup(projectIteration.id)}" />
                      </rich:column>
                  </rich:dataTable>
              </s:fragment>

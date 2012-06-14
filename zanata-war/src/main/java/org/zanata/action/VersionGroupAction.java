@@ -21,28 +21,23 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.annotations.web.RequestParameter;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
-import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
-import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionGroupService;
+import org.zanata.service.VersionGroupService.SelectableHIterationProject;
 
 @Name("versionGroupAction")
 @Scope(ScopeType.PAGE)
@@ -53,14 +48,8 @@ public class VersionGroupAction implements Serializable
    @In
    private VersionGroupService versionGroupServiceImpl;
 
-   @In
-   private ProjectDAO projectDAO;
-
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
-
-   @Logger
-   Log log;
 
    @RequestParameter
    private String[] slugParam;
@@ -68,8 +57,6 @@ public class VersionGroupAction implements Serializable
    private List<HIterationGroup> allVersionGroups;
 
    private List<SelectableHIterationProject> searchResults;
-
-   private List<HProjectIteration> maintainedProjectVersions;
 
    private HIterationGroup group;
 
@@ -79,33 +66,6 @@ public class VersionGroupAction implements Serializable
    private boolean showActiveGroups = true;
    private boolean showObsoleteGroups = false;
    private boolean selectAll = false;
-
-   public final class SelectableHIterationProject
-   {
-      private HProjectIteration projectIteration;
-      private boolean selected;
-
-      public SelectableHIterationProject(HProjectIteration projectIteration, boolean selected)
-      {
-         this.projectIteration = projectIteration;
-         this.selected = selected;
-      }
-
-      public HProjectIteration getProjectIteration()
-      {
-         return projectIteration;
-      }
-
-      public boolean getSelected()
-      {
-         return selected;
-      }
-
-      public void setSelected(boolean selected)
-      {
-         this.selected = selected;
-      }
-   }
 
    public boolean showPopup()
    {
@@ -126,7 +86,7 @@ public class VersionGroupAction implements Serializable
    {
       for (SelectableHIterationProject selectableVersion : getSearchResults())
       {
-         if (selectableVersion.getSelected())
+         if (selectableVersion.isSelected())
          {
             joinVersionGroup(selectableVersion.getProjectIteration().getId());
          }
@@ -173,24 +133,6 @@ public class VersionGroupAction implements Serializable
 
    }
 
-   public void searchMaintainedProjects()
-   {
-      Set<HProject> maintainedProjects = authenticatedAccount.getPerson().getMaintainerProjects();
-      for (HProject project : maintainedProjects)
-      {
-         getMaintainedProjectVersions().addAll(projectDAO.getAllIterations(project.getSlug()));
-      }
-   }
-
-   public List<HProjectIteration> getMaintainedProjectVersions()
-   {
-      if (maintainedProjectVersions == null)
-      {
-         maintainedProjectVersions = new ArrayList<HProjectIteration>();
-      }
-      return maintainedProjectVersions;
-   }
-
    public String getSearchTerm()
    {
       return searchTerm;
@@ -212,14 +154,7 @@ public class VersionGroupAction implements Serializable
 
    public boolean isVersionInGroup(Long projectIterationId)
    {
-      for (HProjectIteration iteration : group.getProjectIterations())
-      {
-         if (iteration.getId().equals(projectIterationId))
-         {
-            return true;
-         }
-      }
-      return false;
+     return versionGroupServiceImpl.isVersionInGroup(group, projectIterationId);
    }
 
    @Transactional

@@ -48,4 +48,34 @@ public interface VersionGroupService
    boolean leaveVersionGroup(String slug, Long projectIterationId);
 
    HProjectIteration getProjectIterationBySlug(String projectSlug, String iterationSlug);
+
+   boolean isVersionInGroup(HIterationGroup group, Long projectIterationId);
+
+
+   public final class SelectableHIterationProject
+   {
+      private HProjectIteration projectIteration;
+      private boolean selected;
+
+      public SelectableHIterationProject(HProjectIteration projectIteration, boolean selected)
+      {
+         this.projectIteration = projectIteration;
+         this.selected = selected;
+      }
+
+      public HProjectIteration getProjectIteration()
+      {
+         return projectIteration;
+      }
+
+      public boolean isSelected()
+      {
+         return selected;
+      }
+
+      public void setSelected(boolean selected)
+      {
+         this.selected = selected;
+      }
+   }
 }
