@@ -23,6 +23,8 @@ package org.zanata.webtrans.client.presenter;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
+import org.zanata.webtrans.client.events.FilterViewEvent;
+import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
@@ -35,6 +37,7 @@ import org.zanata.webtrans.client.service.NavigationController;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TransUnitsDataModel;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
+import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
 import org.zanata.webtrans.client.view.TransUnitEditDisplay;
 import org.zanata.webtrans.client.view.TransUnitListDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -57,7 +60,9 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       NavTransUnitHandler,
       LoadingStateChangeEvent.Handler,
       TransUnitSaveEventHandler,
-      FindMessageHandler
+      FindMessageHandler,
+      FilterViewEventHandler,
+      FilterViewConfirmationDisplay.Listener
 {
 
    private final TransUnitEditDisplay display;
@@ -69,6 +74,10 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    private final TransUnitSaveService saveService;
    private final TranslatorInteractionService translatorService;
    private final TransUnitsDataModel dataModel;
+
+   //state we need to keep track of
+   private FilterViewEvent filterOptions;
+   private FindMessageEvent findMessage;
 
    //TODO too many constructor dependency
    @Inject
@@ -82,6 +91,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    {
       super(display, eventBus);
       this.display = display;
+      this.display.addFilterConfirmationHandler(this);
       this.eventBus = eventBus;
       this.navigationController = navigationController;
       this.transUnitListDisplay = transUnitListDisplay;
@@ -132,7 +142,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onSelectionChange(SelectionChangeEvent event)
    {
-      if (dataModel.hasStaleData(targetContentsPresenter.getNewTargets()))
+      if (hasTargetContentsChanged())
       {
          savePendingChangeBeforeShowingNewSelection();
       }
@@ -217,7 +227,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       }
       if (event == TransUnitSaveEvent.CANCEL_EDIT_EVENT)
       {
-         targetContentsPresenter.setValue(selected, null);
+         targetContentsPresenter.setValue(selected, findMessage.getMessage());
       }
       else if (hasStateChange(selected, event.getStatus()))
       {
@@ -266,8 +276,82 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    @Override
    public void onFindMessage(FindMessageEvent event)
    {
+      findMessage = event;
       transUnitListDisplay.setHighlightString(event.getMessage());
       sourceContentsPresenter.getDisplay().highlightSearch(event.getMessage());
       targetContentsPresenter.getDisplay().setFindMessage(event.getMessage());
+   }
+
+   @Override
+   public void onFilterView(FilterViewEvent event)
+   {
+      filterOptions = event;
+      if (!event.isCancelFilter())
+      {
+         if (hasTargetContentsChanged())
+         {
+            display.showFilterConfirmation();
+         }
+         else
+         {
+            hideFilterConfirmationAndDoFiltering();
+         }
+      }
+   }
+
+   private void hideFilterConfirmationAndDoFiltering()
+   {
+      display.hideFilterConfirmation();
+      navigationController.execute(filterOptions);
+   }
+
+   private boolean hasTargetContentsChanged()
+   {
+      return dataModel.hasStaleData(targetContentsPresenter.getNewTargets());
+   }
+
+   @Override
+   public void saveChangesAndFilter()
+   {
+      saveAndFilter(ContentState.Approved);
+   }
+
+   @Override
+   public void saveAsFuzzyAndFilter()
+   {
+      saveAndFilter(ContentState.Approved);
+   }
+
+   private void saveAndFilter(ContentState status)
+   {
+      saveService.saveTranslation(dataModel.getSelectedOrNull(), targetContentsPresenter.getNewTargets(), status, new TransUnitSaveService.SaveResultCallback()
+      {
+         @Override
+         public void onSaveSuccess(TransUnit updatedTU)
+         {
+            dataModel.update(updatedTU);
+            hideFilterConfirmationAndDoFiltering();
+         }
+
+         @Override
+         public void onSaveFail()
+         {
+            display.hideFilterConfirmation();
+         }
+      });
+   }
+
+   @Override
+   public void discardChangesAndFilter()
+   {
+      targetContentsPresenter.setValue(dataModel.getSelectedOrNull(), findMessage.getMessage());
+      hideFilterConfirmationAndDoFiltering();
+   }
+
+   @Override
+   public void cancelFilter()
+   {
+      eventBus.fireEvent(new FilterViewEvent(filterOptions.isFilterTranslated(), filterOptions.isFilterNeedReview(), filterOptions.isFilterUntranslated(), true));
+      display.hideFilterConfirmation();
    }
 }

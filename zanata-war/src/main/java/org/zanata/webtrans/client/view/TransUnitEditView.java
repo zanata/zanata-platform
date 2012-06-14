@@ -23,6 +23,8 @@ package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
 import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
+import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
+import org.zanata.webtrans.client.ui.FilterViewConfirmationPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -49,9 +51,12 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
    @UiField
    ScrollPanel editorPanel;
 
+   private final FilterViewConfirmationPanel filterViewConfirmationPanel;
+
    public TransUnitEditView()
    {
       rootPanel = uiBinder.createAndBindUi(this);
+      filterViewConfirmationPanel = new FilterViewConfirmationPanel();
    }
 
    @Override
@@ -67,6 +72,24 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
       Log.debug("absolute top: " + absoluteTop + " selection top:" + selectedRowAbsoluteTop);
       //TODO this will scroll to top and cell table header won't be visible.
       tuTablePanel.setVerticalScrollPosition(selectedRowAbsoluteTop - absoluteTop + tuTablePanel.getVerticalScrollPosition());
+   }
+
+   @Override
+   public void showFilterConfirmation()
+   {
+      filterViewConfirmationPanel.center();
+   }
+
+   @Override
+   public void hideFilterConfirmation()
+   {
+      filterViewConfirmationPanel.hide();
+   }
+
+   @Override
+   public void addFilterConfirmationHandler(FilterViewConfirmationDisplay.Listener listener)
+   {
+      filterViewConfirmationPanel.setListener(listener);
    }
 
    @Override

@@ -278,26 +278,42 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
    {
       // TODO modal navigation disabled if there's findMessage
       String findMessage = event.getMessage();
+      context = context.setFindMessage(findMessage);
       if (Strings.isNullOrEmpty(findMessage))
       {
-         init(context.setFindMessage(findMessage));
+         init(context);
          eventBus.fireEvent(new EnableModalNavigationEvent(true));
       }
       else
       {
          eventBus.fireEvent(new EnableModalNavigationEvent(false));
-         requestTransUnitsAndUpdatePageIndex(context.setFindMessage(findMessage));
+         requestTransUnitsAndUpdatePageIndex(context);
       }
    }
 
    @Override
-   public void onDocumentSelected(DocumentSelectionEvent event)
+   public void onDocumentSelected(DocumentSelectionEvent documentSelection)
    {
-      if (context == null || !Objects.equal(context.getDocumentId(), event.getDocumentId()))
+      execute(documentSelection);
+   }
+
+   public void execute(UpdateContextCommand command)
+   {
+      if (context == null)
       {
-         //TODO page size should be configurable
-         GetTransUnitActionContext context = GetTransUnitActionContext.of(event.getDocumentId()).setCount(10);
+         Log.warn("no context available!!");
+         return;
+      }
+      GetTransUnitActionContext old = context;
+      context = command.updateContext(context);
+      if (!context.equals(old))
+      {
          init(context);
       }
+   }
+
+   public static interface UpdateContextCommand
+   {
+      GetTransUnitActionContext updateContext(GetTransUnitActionContext currentContext);
    }
 }

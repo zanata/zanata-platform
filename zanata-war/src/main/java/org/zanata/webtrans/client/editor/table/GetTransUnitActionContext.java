@@ -30,7 +30,7 @@ import com.google.common.base.Objects;
  */
 public class GetTransUnitActionContext
 {
-   //TODO make this class singleton and be used by FilterViewConfirmationPanel and TableEditorPresenter
+   //TODO make this class singleton/immutable and be used by FilterViewConfirmationPanel and TableEditorPresenter
 
    private final DocumentId documentId;
    private String findMessage;

@@ -1,9 +1,11 @@
 package org.zanata.webtrans.client.events;
 
+import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
+import org.zanata.webtrans.client.service.NavigationController;
 import org.zanata.webtrans.shared.model.DocumentId;
 import com.google.gwt.event.shared.GwtEvent;
 
-public class DocumentSelectionEvent extends GwtEvent<DocumentSelectionHandler>
+public class DocumentSelectionEvent extends GwtEvent<DocumentSelectionHandler> implements NavigationController.UpdateContextCommand
 {
 
    /**
@@ -44,4 +46,10 @@ public class DocumentSelectionEvent extends GwtEvent<DocumentSelectionHandler>
       return getType();
    }
 
+   @Override
+   public GetTransUnitActionContext updateContext(GetTransUnitActionContext currentContext)
+   {
+      GetTransUnitActionContext context = GetTransUnitActionContext.of(document);
+      return currentContext != null ? context.setFindMessage(currentContext.getFindMessage()) : context;
+   }
 }

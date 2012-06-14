@@ -19,25 +19,17 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.webtrans.client.view;
+package org.zanata.webtrans.client.ui;
 
-import org.zanata.webtrans.client.editor.table.SourceContentsDisplay;
-import org.zanata.webtrans.client.editor.table.TargetContentsDisplay;
-import org.zanata.webtrans.client.presenter.TransUnitEditPresenter;
-import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
-import org.zanata.webtrans.shared.model.TransUnit;
-
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-
-public interface TransUnitEditDisplay extends WidgetDisplay
+public interface FilterViewConfirmationDisplay
 {
-   void init(TransUnitListDisplay transUnitListDisplay, SourceContentsDisplay sourceContentsDisplay, TargetContentsDisplay targetContentsDisplay);
+   interface Listener
+   {
+      void saveChangesAndFilter();
+      void saveAsFuzzyAndFilter();
+      void discardChangesAndFilter();
+      void cancelFilter();
+   }
 
-   void scrollToRow(TransUnit selected);
-
-   void showFilterConfirmation();
-
-   void hideFilterConfirmation();
-
-   void addFilterConfirmationHandler(FilterViewConfirmationDisplay.Listener listener);
+   void setListener(Listener listener);
 }

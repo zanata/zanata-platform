@@ -1,8 +1,10 @@
 package org.zanata.webtrans.client.events;
 
+import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
+import org.zanata.webtrans.client.service.NavigationController;
 import com.google.gwt.event.shared.GwtEvent;
 
-public class FilterViewEvent extends GwtEvent<FilterViewEventHandler>
+public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements NavigationController.UpdateContextCommand
 {
    /**
     * Handler type.
@@ -66,4 +68,9 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler>
       return cancelFilter;
    }
 
+   @Override
+   public GetTransUnitActionContext updateContext(GetTransUnitActionContext currentContext)
+   {
+      return currentContext.setFilterNeedReview(filterNeedReview).setFilterTranslated(filterTranslated).setFilterUntranslated(filterUntranslated);
+   }
 }
