@@ -63,33 +63,31 @@ public class VersionGroupJoinAction implements Serializable
    @Logger
    Log log;
 
-   private List<SelectableHIterationProject> maintainedProjectVersions;
+   private List<SelectableHIterationProject> projectVersions;
 
    private HIterationGroup group;
 
    private String slug;
 
-   public void init()
+   public void searchMaintainedProjectVersion()
    {
-      group = versionGroupServiceImpl.getBySlug(slug);
-
       Set<HProject> maintainedProjects = authenticatedAccount.getPerson().getMaintainerProjects();
       for (HProject project : maintainedProjects)
       {
          for (HProjectIteration projectIteration : projectDAO.getAllIterations(project.getSlug()))
          {
-            getMaintainedProjectVersions().add(new SelectableHIterationProject(projectIteration, false));
+            getProjectVersions().add(new SelectableHIterationProject(projectIteration, false));
          }
       }
    }
 
-   public List<SelectableHIterationProject> getMaintainedProjectVersions()
+   public List<SelectableHIterationProject> getProjectVersions()
    {
-      if (maintainedProjectVersions == null)
+      if (projectVersions == null)
       {
-         maintainedProjectVersions = new ArrayList<SelectableHIterationProject>();
+         projectVersions = new ArrayList<SelectableHIterationProject>();
       }
-      return maintainedProjectVersions;
+      return projectVersions;
    }
 
    public boolean isVersionInGroup(Long projectIterationId)
@@ -102,10 +100,11 @@ public class VersionGroupJoinAction implements Serializable
       return sendEmail.cancel();
    }
 
+
    public String send()
    {
       boolean isAnyVersionSelected = false;
-      for (SelectableHIterationProject projectVersion : getMaintainedProjectVersions())
+      for (SelectableHIterationProject projectVersion : getProjectVersions())
       {
          if (projectVersion.isSelected())
          {
@@ -115,10 +114,8 @@ public class VersionGroupJoinAction implements Serializable
 
       if(isAnyVersionSelected)
       {
-         group = versionGroupServiceImpl.getBySlug(slug);
-
          List<HPerson> maintainers = new ArrayList<HPerson>();
-         for (HPerson maintainer : group.getMaintainers())
+         for (HPerson maintainer : getGroup().getMaintainers())
          {
             maintainers.add(maintainer);
          }
@@ -134,6 +131,10 @@ public class VersionGroupJoinAction implements Serializable
 
    public HIterationGroup getGroup()
    {
+      if(group == null)
+      {
+         group = versionGroupServiceImpl.getBySlug(slug);
+      }
       return group;
    }
 
@@ -152,13 +153,13 @@ public class VersionGroupJoinAction implements Serializable
       StringBuilder queryBuilder = new StringBuilder();
       queryBuilder.append(slug);
       queryBuilder.append("/");
-      if (!getMaintainedProjectVersions().isEmpty())
+      if (!getProjectVersions().isEmpty())
       {
          queryBuilder.append("?");
 
-         for(int i = 0; i < getMaintainedProjectVersions().size(); i++)
+         for(int i = 0; i < getProjectVersions().size(); i++)
          {
-            SelectableHIterationProject projectVersion =  getMaintainedProjectVersions().get(i);
+            SelectableHIterationProject projectVersion =  getProjectVersions().get(i);
             if (projectVersion.isSelected())
             {
                if(i != 0)
@@ -171,18 +172,6 @@ public class VersionGroupJoinAction implements Serializable
                queryBuilder.append(projectVersion.getProjectIteration().getSlug());
             }
          }
-
-//         for (SelectableHIterationProject projectVersion : getMaintainedProjectVersions())
-//         {
-//            if (projectVersion.isSelected())
-//            {
-//               queryBuilder.append("slugParam=");
-//               queryBuilder.append(projectVersion.getProjectIteration().getProject().getSlug());
-//               queryBuilder.append(":");
-//               queryBuilder.append(projectVersion.getProjectIteration().getSlug());
-//               queryBuilder.append("&");
-//            }
-//         }
       }
       return queryBuilder.toString();
    }

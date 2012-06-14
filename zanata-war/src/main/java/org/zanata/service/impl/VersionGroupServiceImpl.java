@@ -96,6 +96,12 @@ public class VersionGroupServiceImpl implements VersionGroupService
    }
 
    @Override
+   public List<HIterationGroup> searchLikeSlug(String searchTerm)
+   {
+      return versionGroupDAO.searchLikeSlug(searchTerm);
+   }
+
+   @Override
    public List<HPerson> getMaintainerBySlug(String slug)
    {
       return versionGroupDAO.getMaintainerBySlug(slug);
@@ -154,11 +160,14 @@ public class VersionGroupServiceImpl implements VersionGroupService
    @Override
    public boolean isVersionInGroup(HIterationGroup group, Long projectIterationId)
    {
-      for (HProjectIteration iteration : group.getProjectIterations())
+      if (group != null && projectIterationId != null)
       {
-         if (iteration.getId().equals(projectIterationId))
+         for (HProjectIteration iteration : group.getProjectIterations())
          {
-            return true;
+            if (iteration.getId().equals(projectIterationId))
+            {
+               return true;
+            }
          }
       }
       return false;

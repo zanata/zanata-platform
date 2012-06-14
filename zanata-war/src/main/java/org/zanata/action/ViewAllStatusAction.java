@@ -41,12 +41,14 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitWords;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
+import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
+import org.zanata.service.VersionGroupService;
 
 @Name("viewAllStatusAction")
 @Scope(ScopeType.PAGE)
@@ -75,15 +77,22 @@ public class ViewAllStatusAction implements Serializable
    @In
    Map<String, String> messages;
 
+   @In
+   private VersionGroupService versionGroupServiceImpl;
+
    private String iterationSlug;
    
    private String projectSlug;
    
+   private String searchTerm;
+
    private boolean showAllLocales = false;
    
    private HProjectIteration projectIteration;
 
-   
+   private List<HIterationGroup> searchResults;
+
+
    public static class Status implements Comparable<Status>
    {
       private String locale;
@@ -257,5 +266,37 @@ public class ViewAllStatusAction implements Serializable
       }
    }
 
+   public List<HIterationGroup> getSearchResults()
+   {
+      if(searchResults == null)
+      {
+         searchResults = new ArrayList<HIterationGroup>();
+      }
+      return searchResults;
+   }
 
+   public String getSearchTerm()
+   {
+      return searchTerm;
+   }
+
+   public void setSearchTerm(String searchTerm)
+   {
+      this.searchTerm = searchTerm;
+   }
+
+   public void searchGroup()
+   {
+      searchResults = versionGroupServiceImpl.searchLikeSlug(searchTerm);
+   }
+
+   public boolean isVersionInGroup()
+   {
+      return versionGroupServiceImpl.isVersionInGroup(null, getProjectIteration().getId());
+   }
+
+   public void redirect()
+   {
+
+   }
 }

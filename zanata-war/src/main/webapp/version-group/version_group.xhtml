@@ -110,36 +110,36 @@
                 </p>
             </a4j:form>
             <a4j:region>
-                <a4j:form rendered="#{not empty versionGroupAction.searchResults}">
-                    <a4j:outputPanel id="searchResults" layout="block" style="overflow:auto;height:320px">
-                        <h:outputText id="noResultsMessage" rendered="#{empty versionGroupAction.searchResults}" value="#{messages['jsf.NoResultToDisplayProjectSearch']}" />
-                            <rich:dataTable id="resultTable" value="#{versionGroupAction.searchResults}" var="selectableVersion">
-                                <f:facet name="header">#{messages['jsf.SearchResults']}</f:facet>
+                <a4j:form id="searchResults">
+                    <h:outputText id="noResultsMessage" rendered="#{empty versionGroupAction.searchResults}" value="#{messages['jsf.NoResultToDisplayProjectSearch']}" />
+                    <a4j:outputPanel  layout="block" style="overflow:auto;height:320px" rendered="#{not empty versionGroupAction.searchResults}">
+                        <rich:dataTable id="resultTable" value="#{versionGroupAction.searchResults}" var="selectableVersion">
+                            <f:facet name="header">#{messages['jsf.SearchResults']}</f:facet>
 
-                                <rich:column sortBy="#{selectableVersion.projectIteration.project.name}">
-                                    <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
-                                    #{selectableVersion.projectIteration.project.name}
-                                </rich:column>
-                                <rich:column sortBy="#{selectableVersion.projectIteration.slug}">
-                                    <f:facet name="header">#{messages['jsf.Version']}</f:facet>
-                                    #{selectableVersion.projectIteration.slug}
-                                </rich:column>
+                            <rich:column sortBy="#{selectableVersion.projectIteration.project.name}">
+                                <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
+                                #{selectableVersion.projectIteration.project.name}
+                            </rich:column>
+                            <rich:column sortBy="#{selectableVersion.projectIteration.slug}">
+                                <f:facet name="header">#{messages['jsf.Version']}</f:facet>
+                                #{selectableVersion.projectIteration.slug}
+                            </rich:column>
 
-                                <rich:column styleClass="centered">
-                                    <f:facet name="header">
-                                        <h:panelGroup>
-                                            <h:selectBooleanCheckbox title="Select all" value="#{versionGroupAction.selectAll()}">
-                                                <a4j:support event="onchange" reRender="searchResults" action="#{versionGroupAction.selectAll()}"/>
-                                            </h:selectBooleanCheckbox>
-                                        </h:panelGroup>
-                                    </f:facet>
+                            <rich:column styleClass="centered">
+                                <f:facet name="header">
+                                    <h:panelGroup>
+                                        <h:selectBooleanCheckbox title="Select all" value="#{versionGroupAction.selectAll()}">
+                                            <a4j:support event="onchange" reRender="searchResults" action="#{versionGroupAction.selectAll()}"/>
+                                        </h:selectBooleanCheckbox>
+                                    </h:panelGroup>
+                                </f:facet>
 
-                                    <h:selectBooleanCheckbox title="Select" value="#{selectableVersion.selected}" rendered="#{!versionGroupAction.isVersionInGroup(selectableVersion.projectIteration.id)}"/>
-                                    <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
-                                                  rendered="#{versionGroupAction.isVersionInGroup(selectableVersion.projectIteration.id)}" />
+                                <h:selectBooleanCheckbox title="Select" value="#{selectableVersion.selected}" rendered="#{!versionGroupAction.isVersionInGroup(selectableVersion.projectIteration.id)}"/>
+                                <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
+                                              rendered="#{versionGroupAction.isVersionInGroup(selectableVersion.projectIteration.id)}" />
 
-                                </rich:column>
-                            </rich:dataTable>
+                            </rich:column>
+                        </rich:dataTable>
                     </a4j:outputPanel>
                     <rich:spacer height="5px" width="100%" />
                     <a4j:commandButton id="addSelectedBtn"

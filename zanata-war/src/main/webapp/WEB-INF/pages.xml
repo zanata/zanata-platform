@@ -220,7 +220,7 @@
     <page view-id="/version-group/request_to_join.xhtml">
 	    <param name="emailType" value="#{sendEmail.emailType}" />
         <param name="versionGroupSlug" value="#{versionGroupJoinAction.slug}" />
-        <action execute="#{versionGroupJoinAction.init()}"/>
+        <action execute="#{versionGroupJoinAction.searchMaintainedProjectVersion()}"/>
 
 	    <navigation from-action="#{versionGroupJoinAction.send}">
 	      <rule if-outcome="success">
