@@ -43,6 +43,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.process.CopyTransProcessHandle;
 import org.zanata.rest.service.TranslatedDocResourceService;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
@@ -206,6 +207,22 @@ public class CopyTransServiceImpl implements CopyTransService
       for( HDocument doc : iteration.getDocuments().values() )
       {
          this.copyTransForDocument(doc);
+      }
+   }
+
+   @Override
+   public void copyTransForIteration(HProjectIteration iteration, CopyTransProcessHandle procHandle)
+   {
+      List<HLocale> localeList =
+            localeServiceImpl.getSupportedLangugeByProjectIteration(iteration.getProject().getSlug(),
+                  iteration.getSlug());
+
+      procHandle.setMaxProgress( iteration.getDocuments().size() * localeList.size() );
+      procHandle.setCurrentProgress(0);
+      for( HDocument doc : iteration.getDocuments().values() )
+      {
+         this.copyTransForDocument(doc);
+         procHandle.incrementProgress( localeList.size() );
       }
    }
 }

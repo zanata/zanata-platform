@@ -168,14 +168,36 @@
 				<f:param name="projectSlug" value="#{viewAllStatusAction.projectSlug}" />
 				<f:param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
 			</s:link>
-            <s:link styleClass="action_link"
-                    value="#{messages['jsf.iteration.CopyTrans']}"
-                    title="#{messages['jsf.iteration.CopyTrans.title']}"
-                    action="#{viewAllStatusAction.performCopyTrans}"
-                    rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'copy-trans')}"
-                    onclick="return confirm('#{messages['jsf.iteration.CopyTrans.confirm']}');">
-            </s:link>
+            <a4j:outputPanel id="copyTransLink">
+                <s:link styleClass="action_link"
+                        value="#{messages['jsf.iteration.CopyTrans']}"
+                        title="#{messages['jsf.iteration.CopyTrans.title']}"
+                        action="#{copyTransManager.startCopyTrans( viewAllStatusAction.projectIteration )}"
+                        rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'copy-trans') and not copyTransManager.isCopyTransRunning(viewAllStatusAction.projectIteration)}"
+                        disabled="#{copyTransManager.isCopyTransRunning( viewAllStatusAction.projectIteration )}"
+                        onclick="return confirm('#{messages['jsf.iteration.CopyTrans.confirm']}');" >
+                </s:link>
+            </a4j:outputPanel>
 		</rich:panel>
+
+        <a4j:form>
+            <a4j:outputPanel id="copyTransIndicator">
+                <a4j:outputPanel id="copyTransMssg" rendered="#{copyTransManager.isCopyTransRunning( viewAllStatusAction.projectIteration )}">
+                    Copy Trans in Progress (started by #{copyTransManager.getCopyTransProgress( viewAllStatusAction.projectIteration ).triggeredBy}):
+                </a4j:outputPanel>
+                <!-- minValue is -1 because of a bug when 0 is used -->
+                <rich:progressBar id="copyTransProgressBar"
+                                  value="#{copyTransManager.getCopyTransProgress( viewAllStatusAction.projectIteration ).currentProgress}"
+                                  minValue="-1"
+                                  maxValue="#{copyTransManager.getCopyTransProgress( viewAllStatusAction.projectIteration ).maxProgress - 1}"
+                                  interval="900"
+                                  ignoreDupResponses="true"
+                                  enabled="#{copyTransManager.isCopyTransRunning( viewAllStatusAction.projectIteration )}"
+                                  label="Estimated time remaining: #{copyTransManager.getCopyTransProgress( viewAllStatusAction.projectIteration ).estimatedTimeRemaining} secs"
+                                  reRenderAfterComplete="copyTransIndicator,copyTransLink">
+                </rich:progressBar>
+            </a4j:outputPanel>
+        </a4j:form>
 	</ui:define>
 
 </ui:composition>
