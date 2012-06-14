@@ -61,7 +61,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
       void setQueries(List<String> queries);
 
-      HasClickHandlers getPrefillButton();
+      HasClickHandlers getMergeButton();
 
    }
 
@@ -70,17 +70,17 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
    private GetTranslationMemory submittedRequest = null;
    private GetTranslationMemory lastRequest = null;
    private TransMemoryDetailsPresenter tmInfoPresenter;
-   private PrefillPresenter prefillPresenter;
+   private TransMemoryMergePresenter transMemoryMergePresenter;
    private ListDataProvider<TransMemoryResultItem> dataProvider;
 
    @Inject
-   public TransMemoryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, TransMemoryDetailsPresenter tmInfoPresenter, WorkspaceContext workspaceContext, PrefillPresenter prefillPresenter)
+   public TransMemoryPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, TransMemoryDetailsPresenter tmInfoPresenter, WorkspaceContext workspaceContext, TransMemoryMergePresenter transMemoryMergePresenter)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
       this.workspaceContext = workspaceContext;
       this.tmInfoPresenter = tmInfoPresenter;
-      this.prefillPresenter = prefillPresenter;
+      this.transMemoryMergePresenter = transMemoryMergePresenter;
 
       dataProvider = new ListDataProvider<TransMemoryResultItem>();
       display.setDataProvider(dataProvider);
@@ -161,12 +161,12 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
          }
       });
 
-      display.getPrefillButton().addClickHandler(new ClickHandler()
+      display.getMergeButton().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
-            prefillPresenter.preparePrefill();
+            transMemoryMergePresenter.prepareTMMerge();
          }
       });
    }

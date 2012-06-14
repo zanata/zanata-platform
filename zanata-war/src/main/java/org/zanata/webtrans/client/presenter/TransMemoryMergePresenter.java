@@ -18,15 +18,16 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
+
 package org.zanata.webtrans.client.presenter;
 
 import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.ui.PrefillPopupPanelDisplay;
+import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
-import org.zanata.webtrans.shared.rpc.PrefillTranslation;
+import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import com.google.common.base.Preconditions;
 import com.google.gwt.gen2.logging.shared.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -40,16 +41,16 @@ import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Info;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class PrefillPresenter extends WidgetPresenter<PrefillPopupPanelDisplay> implements PrefillPopupPanelDisplay.Listener
+public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergePopupPanelDisplay> implements TransMemoryMergePopupPanelDisplay.Listener
 {
 
-   private PrefillPopupPanelDisplay display;
+   private TransMemoryMergePopupPanelDisplay display;
    private final EventBus eventBus;
    private final CachingDispatchAsync dispatcher;
    private final TableEditorPresenter tableEditorPresenter;
 
    @Inject
-   public PrefillPresenter(PrefillPopupPanelDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, TableEditorPresenter tableEditorPresenter)
+   public TransMemoryMergePresenter(TransMemoryMergePopupPanelDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, TableEditorPresenter tableEditorPresenter)
    {
       super(display, eventBus);
       this.display = display;
@@ -75,27 +76,28 @@ public class PrefillPresenter extends WidgetPresenter<PrefillPopupPanelDisplay> 
    }
 
    @Override
-   public void proceedToPrefill(String approvedPercent)
+   public void proceedToMergeTM(String approvedPercent)
    {
       display.showProcessing();
       DocumentId docId = tableEditorPresenter.getDocumentId();
       Preconditions.checkNotNull(docId, "document id is null");
 
       Integer threshold = Integer.valueOf(approvedPercent);
-      dispatcher.execute(new PrefillTranslation(threshold, docId), new AsyncCallback<NoOpResult>()
+      dispatcher.execute(new TransMemoryMerge(threshold, docId), new AsyncCallback<NoOpResult>()
       {
          @Override
          public void onFailure(Throwable caught)
          {
             Log.warning("failed:" + caught.getMessage());
-            eventBus.fireEvent(new NotificationEvent(Error, "Prefill failed"));
+            //TODO localise string
+            eventBus.fireEvent(new NotificationEvent(Error, "Translation Memory merge failed"));
             display.hide();
          }
 
          @Override
          public void onSuccess(NoOpResult result)
          {
-            eventBus.fireEvent(new NotificationEvent(Info, "Prefill success. Document reloaded."));
+            eventBus.fireEvent(new NotificationEvent(Info, "Translation Memory merge success. Document reloaded."));
             display.hide();
             tableEditorPresenter.initialiseTransUnitList();
          }
@@ -103,12 +105,12 @@ public class PrefillPresenter extends WidgetPresenter<PrefillPopupPanelDisplay> 
    }
 
    @Override
-   public void cancelPrefill()
+   public void cancelMergeTM()
    {
       display.hide();
    }
 
-   public void preparePrefill()
+   public void prepareTMMerge()
    {
       display.showForm();
    }

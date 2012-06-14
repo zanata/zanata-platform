@@ -31,24 +31,24 @@ import com.google.inject.Singleton;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class PrefillPopupPanelView extends DialogBox implements PrefillPopupPanelDisplay
+public class TransMemoryMergePopupPanelView extends DialogBox implements TransMemoryMergePopupPanelDisplay
 {
 
-   private final PrefillForm prefillForm;
+   private final TMMergeForm TMMergeForm;
    private final Label processingLabel = new Label("processing...");
 
    @Inject
-   public PrefillPopupPanelView(PrefillForm prefillForm, UiMessages messages)
+   public TransMemoryMergePopupPanelView(TMMergeForm TMMergeForm, UiMessages messages)
    {
       //auto hide false, modal true
       super(false, true);
-      getCaption().setText(messages.prefillCaption());
+      getCaption().setText(messages.mergeTMCaption());
       setGlassEnabled(true);
       VerticalPanel main = new VerticalPanel();
-      main.add(prefillForm);
+      main.add(TMMergeForm);
       main.add(processingLabel);
       add(main);
-      this.prefillForm = prefillForm;
+      this.TMMergeForm = TMMergeForm;
       processingLabel.setVisible(false);
       hide();
    }
@@ -56,13 +56,13 @@ public class PrefillPopupPanelView extends DialogBox implements PrefillPopupPane
    @Override
    public void setListener(Listener listener)
    {
-      prefillForm.setListener(listener);
+      TMMergeForm.setListener(listener);
    }
 
    @Override
    public void showProcessing()
    {
-      prefillForm.setVisible(false);
+      TMMergeForm.setVisible(false);
       processingLabel.setVisible(true);
    }
 
@@ -70,7 +70,7 @@ public class PrefillPopupPanelView extends DialogBox implements PrefillPopupPane
    public void showForm()
    {
       processingLabel.setVisible(false);
-      prefillForm.setVisible(true);
+      TMMergeForm.setVisible(true);
       center();
    }
 }

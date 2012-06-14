@@ -18,6 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
+
 package org.zanata.webtrans.shared.rpc;
 
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -29,20 +30,20 @@ import net.customware.gwt.dispatch.shared.AbstractSimpleResult;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class PrefillTranslation extends AbstractWorkspaceAction<NoOpResult>
+public class TransMemoryMerge extends AbstractWorkspaceAction<NoOpResult>
 {
    private static final long serialVersionUID = 1L;
    private int approvedThreshold;
    private DocumentId docId;
 
-   public PrefillTranslation(int approvedThreshold, DocumentId docId)
+   public TransMemoryMerge(int approvedThreshold, DocumentId docId)
    {
       this.approvedThreshold = approvedThreshold;
       this.docId = docId;
    }
 
    @SuppressWarnings("unused")
-   PrefillTranslation()
+   TransMemoryMerge()
    {
    }
 

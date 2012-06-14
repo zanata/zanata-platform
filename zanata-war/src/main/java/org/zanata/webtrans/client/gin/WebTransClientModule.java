@@ -52,7 +52,7 @@ import org.zanata.webtrans.client.presenter.GlossaryPresenter;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.presenter.NotificationPresenter;
 import org.zanata.webtrans.client.presenter.OptionsPanelPresenter;
-import org.zanata.webtrans.client.presenter.PrefillPresenter;
+import org.zanata.webtrans.client.presenter.TransMemoryMergePresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.TransMemoryDetailsPresenter;
@@ -68,8 +68,8 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.rpc.DelegatingDispatchAsync;
 import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.client.ui.OptionsPanelView;
-import org.zanata.webtrans.client.ui.PrefillPopupPanelDisplay;
-import org.zanata.webtrans.client.ui.PrefillPopupPanelView;
+import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
+import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelView;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
 import org.zanata.webtrans.client.view.AppView;
@@ -129,7 +129,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bind(TargetContentsDisplay.class).to(TargetContentsView.class);
       bind(SourceContentsDisplay.class).to(SourceContentsView.class);
       bind(ValidationMessagePanelDisplay.class).to(ValidationMessagePanelView.class).in(Singleton.class);
-      bindPresenter(PrefillPresenter.class, PrefillPopupPanelDisplay.class, PrefillPopupPanelView.class);
+      bindPresenter(TransMemoryMergePresenter.class, TransMemoryMergePopupPanelDisplay.class, TransMemoryMergePopupPanelView.class);
 
       bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);
       bind(NativeEvent.class).to(NativeEventImpl.class).in(Singleton.class);

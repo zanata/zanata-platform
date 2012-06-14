@@ -18,6 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
+
 package org.zanata.webtrans.server.rpc;
 
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
-import org.zanata.webtrans.shared.rpc.PrefillTranslation;
+import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -56,11 +57,11 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import static org.zanata.service.SecurityService.TranslationAction.*;
 
-@Name("webtrans.gwt.PrefillTranslationHandler")
+@Name("webtrans.gwt.TransMemoryMergeHandler")
 @Scope(ScopeType.STATELESS)
-@ActionHandlerFor(PrefillTranslation.class)
+@ActionHandlerFor(TransMemoryMerge.class)
 @Slf4j
-public class PrefillTranslationHandler extends AbstractActionHandler<PrefillTranslation, NoOpResult>
+public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMerge, NoOpResult>
 {
 
    @In(value = "webtrans.gwt.GetTransMemoryHandler", create = true)
@@ -82,7 +83,7 @@ public class PrefillTranslationHandler extends AbstractActionHandler<PrefillTran
    private LocaleService localeServiceImpl;
 
    @Override
-   public NoOpResult execute(PrefillTranslation action, ExecutionContext context) throws ActionException
+   public NoOpResult execute(TransMemoryMerge action, ExecutionContext context) throws ActionException
    {
       ZanataIdentity.instance().checkLoggedIn();
 
@@ -95,7 +96,7 @@ public class PrefillTranslationHandler extends AbstractActionHandler<PrefillTran
       HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
 
       List<HTextFlow> hTextFlows = textFlowDAO.getAllUntranslatedTextFlowByDocumentId(action.getDocumentId().getId(), hLocale);
-      log.info("#{} untranslated text flow in doc id {}", hTextFlows.size(), action.getDocumentId());
+      TransMemoryMergeHandler.log.info("#{} untranslated text flow in doc id {}", hTextFlows.size(), action.getDocumentId());
 
       TransMemoryAboveThresholdPredicate predicate = new TransMemoryAboveThresholdPredicate(action.getApprovedThreshold());
       for (HTextFlow hTextFlow : hTextFlows)
@@ -105,7 +106,7 @@ public class PrefillTranslationHandler extends AbstractActionHandler<PrefillTran
          if (aboveThreshold.size() > 0)
          {
             TransMemoryResultItem mostSimilarTM = aboveThreshold.iterator().next();
-            log.info("auto translation from translation memory for textFlow id {} with contents {}", hTextFlow.getId(), mostSimilarTM.getTargetContents());
+            TransMemoryMergeHandler.log.info("auto translation from translation memory for textFlow id {} with contents {}", hTextFlow.getId(), mostSimilarTM.getTargetContents());
 
             //TODO we may want to wrap it in try/catch block and ignore any exceptions. i.e. we may have concurrent editing conflict and do we give it a damn?
             translationServiceImpl.translate(hTextFlow, hLocale, mostSimilarTM.getTargetContents(), ContentState.Approved);
@@ -116,7 +117,7 @@ public class PrefillTranslationHandler extends AbstractActionHandler<PrefillTran
    }
 
    @Override
-   public void rollback(PrefillTranslation action, NoOpResult result, ExecutionContext context) throws ActionException
+   public void rollback(TransMemoryMerge action, NoOpResult result, ExecutionContext context) throws ActionException
    {
    }
 

@@ -6,7 +6,7 @@ import org.zanata.webtrans.client.presenter.TransMemoryPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.EnumListBox;
-import org.zanata.webtrans.client.ui.PrefillPopupPanelDisplay;
+import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.client.ui.table.column.CopyButtonColumn;
 import org.zanata.webtrans.client.ui.table.column.DetailsColumn;
@@ -70,9 +70,9 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    ScrollPanel scrollPanel;
 
    @UiField
-   Button prefillButton;
+   Button mergeTMButton;
 
-   private PrefillPopupPanelDisplay prefillPopup;
+   private TransMemoryMergePopupPanelDisplay transMemoryMergePopup;
 
    CellTable<TransMemoryResultItem> tmTable;
 
@@ -87,7 +87,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    private DetailsColumn<TransMemoryResultItem> detailsColumn;
 
    @Inject
-   public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, final Resources resources, PrefillPopupPanelDisplay prefillPopup)
+   public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, final Resources resources, TransMemoryMergePopupPanelDisplay transMemoryMergePopup)
    {
       this.messages = messages;
 
@@ -97,13 +97,13 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
       detailsColumn = new DetailsColumn<TransMemoryResultItem>(resources);
 
       searchType = new EnumListBox<SearchType>(SearchType.class, searchTypeRenderer);
-      this.prefillPopup = prefillPopup;
+      this.transMemoryMergePopup = transMemoryMergePopup;
       initWidget(uiBinder.createAndBindUi(this));
 
       headerLabel.setText(messages.translationMemoryHeading());
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
-      prefillButton.setText(messages.prefillButtonLabel());
+      mergeTMButton.setText(messages.mergeTMButtonLabel());
    }
 
    @Override
@@ -134,9 +134,9 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
    }
 
    @Override
-   public HasClickHandlers getPrefillButton()
+   public HasClickHandlers getMergeButton()
    {
-      return prefillButton;
+      return mergeTMButton;
    }
 
    @Override

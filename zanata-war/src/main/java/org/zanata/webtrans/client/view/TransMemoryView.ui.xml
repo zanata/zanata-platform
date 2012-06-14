@@ -20,7 +20,7 @@
                 <g:ValueListBox ui:field="searchType"/>
 				<g:Button ui:field="searchButton"/>
 				<g:Button ui:field="clearButton"/>
-                <g:Button ui:field="prefillButton"/>
+                <g:Button ui:field="mergeTMButton"/>
 			</g:HorizontalPanel>
 		</g:layer>
 		<g:layer top="25px" bottom="0px">

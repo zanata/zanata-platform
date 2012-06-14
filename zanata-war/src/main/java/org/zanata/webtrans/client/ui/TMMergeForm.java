@@ -31,19 +31,15 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class PrefillForm extends Composite
+public class TMMergeForm extends Composite
 {
-   private PrefillPopupPanelDisplay.Listener listener;
+   private static TMMergeFormUiBinder uiBinder = GWT.create(TMMergeFormUiBinder.class);
 
-   interface PrefillFormUiBinder extends UiBinder<VerticalPanel, PrefillForm>
-   {
-   }
-   private static PrefillFormUiBinder uiBinder = GWT.create(PrefillFormUiBinder.class);
+   private TransMemoryMergePopupPanelDisplay.Listener listener;
 
    @UiField
    ListBox approvedPercent;
@@ -52,7 +48,7 @@ public class PrefillForm extends Composite
    @UiField
    Button cancelButton;
 
-   public PrefillForm()
+   public TMMergeForm()
    {
       initWidget(uiBinder.createAndBindUi(this));
    }
@@ -62,7 +58,7 @@ public class PrefillForm extends Composite
       return approvedPercent.getValue(approvedPercent.getSelectedIndex());
    }
 
-   public void setListener(PrefillPopupPanelDisplay.Listener listener)
+   public void setListener(TransMemoryMergePopupPanelDisplay.Listener listener)
    {
       this.listener = listener;
    }
@@ -70,13 +66,17 @@ public class PrefillForm extends Composite
    @UiHandler("confirmButton")
    public void onConfirmButtonClick(ClickEvent event)
    {
-      Preconditions.checkNotNull(listener, "Do you forget to call setListener on PrefillForm?");
-      listener.proceedToPrefill(getSelectedApprovedPercent());
+      Preconditions.checkNotNull(listener, "Do you forget to call setListener on TMMergeForm?");
+      listener.proceedToMergeTM(getSelectedApprovedPercent());
    }
 
    @UiHandler("cancelButton")
    public void onCancelButtonClick(ClickEvent event)
    {
-      listener.cancelPrefill();
+      listener.cancelMergeTM();
+   }
+
+   interface TMMergeFormUiBinder extends UiBinder<VerticalPanel, TMMergeForm>
+   {
    }
 }
