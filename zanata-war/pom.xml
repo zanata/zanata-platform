@@ -46,7 +46,6 @@
 		
 		<!-- application properties -->
 		<env.debug>false</env.debug>
-		<env.hibernate.indexBase>zanatasearchindex</env.hibernate.indexBase>
 		<war.name>zanata</war.name>
 		<zanata.gwt.module>org.zanata.webtrans.Application</zanata.gwt.module>
 		<extra.servlets />
