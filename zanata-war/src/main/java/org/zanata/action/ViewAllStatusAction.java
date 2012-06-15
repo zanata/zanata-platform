@@ -37,14 +37,9 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
-import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitWords;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.model.HAccount;
-import org.zanata.model.HIterationGroup;
-import org.zanata.model.HLocale;
-import org.zanata.model.HProject;
-import org.zanata.model.HProjectIteration;
+import org.zanata.model.*;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
@@ -55,19 +50,19 @@ import org.zanata.service.VersionGroupService;
 public class ViewAllStatusAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
-   
+
    @Logger
    Log log;
-   
+
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
-   
+
    @In
    ZanataIdentity identity;
-   
+
    @In
    ProjectIterationDAO projectIterationDAO;
-   
+
    @In
    LocaleService localeServiceImpl;
 
@@ -81,17 +76,16 @@ public class ViewAllStatusAction implements Serializable
    private VersionGroupService versionGroupServiceImpl;
 
    private String iterationSlug;
-   
+
    private String projectSlug;
-   
+
    private String searchTerm;
 
    private boolean showAllLocales = false;
-   
+
    private HProjectIteration projectIteration;
 
    private List<HIterationGroup> searchResults;
-
 
    public static class Status implements Comparable<Status>
    {
@@ -129,7 +123,7 @@ public class ViewAllStatusAction implements Serializable
       {
          return per;
       }
-      
+
       public boolean isUserInLanguageTeam()
       {
          return userInLanguageTeam;
@@ -165,7 +159,7 @@ public class ViewAllStatusAction implements Serializable
 
    public void validateIteration()
    {
-      if( this.getProjectIteration() == null )
+      if (this.getProjectIteration() == null)
       {
          throw new EntityNotFoundException(this.iterationSlug, HProjectIteration.class);
       }
@@ -198,7 +192,7 @@ public class ViewAllStatusAction implements Serializable
 
          }
          boolean isMember = authenticatedAccount != null ? authenticatedAccount.getPerson().isMember(var) : false;
-         
+
          Status op = new Status(var.getLocaleId().getId(), var.retrieveNativeName(), words, per, isMember);
          result.add(op);
       }
@@ -208,8 +202,8 @@ public class ViewAllStatusAction implements Serializable
 
    public void performCopyTrans()
    {
-      copyTransServiceImpl.copyTransForIteration( getProjectIteration() );
-      FacesMessages.instance().add( messages.get("jsf.iteration.CopyTrans.success") );
+      copyTransServiceImpl.copyTransForIteration(getProjectIteration());
+      FacesMessages.instance().add(messages.get("jsf.iteration.CopyTrans.success"));
    }
 
    public boolean getShowAllLocales()
@@ -221,10 +215,10 @@ public class ViewAllStatusAction implements Serializable
    {
       this.showAllLocales = showAllLocales;
    }
-   
+
    public HProjectIteration getProjectIteration()
    {
-      if( this.projectIteration == null )
+      if (this.projectIteration == null)
       {
          this.projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
       }
@@ -235,28 +229,25 @@ public class ViewAllStatusAction implements Serializable
    {
       return this.getProjectIteration().getProject();
    }
-   
+
    public boolean isIterationReadOnly()
    {
-      return this.getProjectIteration().getProject().getStatus() == EntityStatus.READONLY || 
-             this.getProjectIteration().getStatus() == EntityStatus.READONLY;
+      return this.getProjectIteration().getProject().getStatus() == EntityStatus.READONLY || this.getProjectIteration().getStatus() == EntityStatus.READONLY;
    }
-   
+
    public boolean isIterationObsolete()
    {
-      return this.getProjectIteration().getProject().getStatus() == EntityStatus.OBSOLETE || 
-             this.getProjectIteration().getStatus() == EntityStatus.OBSOLETE;
+      return this.getProjectIteration().getProject().getStatus() == EntityStatus.OBSOLETE || this.getProjectIteration().getStatus() == EntityStatus.OBSOLETE;
    }
-   
+
    public boolean isUserAllowedToTranslate(String localeId)
    {
-      return !isIterationReadOnly() && !isIterationObsolete() 
-             && identity.hasPermission("add-translation", getProject(), localeServiceImpl.getByLocaleId(localeId));
+      return !isIterationReadOnly() && !isIterationObsolete() && identity.hasPermission("add-translation", getProject(), localeServiceImpl.getByLocaleId(localeId));
    }
-   
+
    private List<HLocale> getDisplayLocales()
    {
-      if( this.showAllLocales || authenticatedAccount == null )
+      if (this.showAllLocales || authenticatedAccount == null)
       {
          return localeServiceImpl.getSupportedLangugeByProjectIteration(this.projectSlug, this.iterationSlug);
       }
@@ -268,7 +259,7 @@ public class ViewAllStatusAction implements Serializable
 
    public List<HIterationGroup> getSearchResults()
    {
-      if(searchResults == null)
+      if (searchResults == null)
       {
          searchResults = new ArrayList<HIterationGroup>();
       }
@@ -293,10 +284,5 @@ public class ViewAllStatusAction implements Serializable
    public boolean isVersionInGroup()
    {
       return versionGroupServiceImpl.isVersionInGroup(null, getProjectIteration().getId());
-   }
-
-   public void redirect()
-   {
-
    }
 }

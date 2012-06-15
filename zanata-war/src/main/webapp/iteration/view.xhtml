@@ -239,7 +239,8 @@
                                         <h:outputText value="#{messages['jsf.Actions']}"/>
                                     </f:facet>
 
-                                    <a4j:commandButton title="Select group" value="Select" rendered="#{!viewAllStatusAction.isVersionInGroup()}" action="#{viewAllStatusAction.redirect()}"/>
+                                    <s:link view="/iteration/request_join_group/#{group.slug}/#{viewAllStatusAction.projectSlug}/#{viewAllStatusAction.projectIteration.slug}" rendered="#{!viewAllStatusAction.isVersionInGroup()}" title="Select group" value="Select" propagation="none"/>
+
                                     <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
                                                   rendered="#{viewAllStatusAction.isVersionInGroup()}" />
 

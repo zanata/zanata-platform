@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -34,11 +36,8 @@ import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.ProjectDAO;
-import org.zanata.model.HAccount;
-import org.zanata.model.HIterationGroup;
-import org.zanata.model.HPerson;
-import org.zanata.model.HProject;
-import org.zanata.model.HProjectIteration;
+import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.model.*;
 import org.zanata.service.VersionGroupService;
 import org.zanata.service.VersionGroupService.SelectableHIterationProject;
 
@@ -55,6 +54,9 @@ public class VersionGroupJoinAction implements Serializable
    private ProjectDAO projectDAO;
 
    @In
+   private ProjectIterationDAO projectIterationDAO;
+
+   @In(create=true)
    private SendEmailAction sendEmail;
 
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
@@ -69,6 +71,10 @@ public class VersionGroupJoinAction implements Serializable
 
    private String slug;
 
+   private String iterationSlug;
+
+   private String projectSlug;
+
    public void searchMaintainedProjectVersion()
    {
       Set<HProject> maintainedProjects = authenticatedAccount.getPerson().getMaintainerProjects();
@@ -78,6 +84,19 @@ public class VersionGroupJoinAction implements Serializable
          {
             getProjectVersions().add(new SelectableHIterationProject(projectIteration, false));
          }
+      }
+   }
+
+   public void searchProjectVersion()
+   {
+      if(StringUtils.isNotEmpty(iterationSlug) && StringUtils.isNotEmpty(projectSlug))
+      {
+          HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+          if(projectIteration != null)
+          {
+            getProjectVersions().add(new SelectableHIterationProject(projectIteration, true));
+          }
+
       }
    }
 
@@ -100,7 +119,6 @@ public class VersionGroupJoinAction implements Serializable
       return sendEmail.cancel();
    }
 
-
    public String send()
    {
       boolean isAnyVersionSelected = false;
@@ -111,11 +129,10 @@ public class VersionGroupJoinAction implements Serializable
             isAnyVersionSelected = true;
          }
       }
-
-      if(isAnyVersionSelected)
+      if (isAnyVersionSelected)
       {
          List<HPerson> maintainers = new ArrayList<HPerson>();
-         for (HPerson maintainer : getGroup().getMaintainers())
+         for (HPerson maintainer : versionGroupServiceImpl.getMaintainerBySlug(slug))
          {
             maintainers.add(maintainer);
          }
@@ -131,7 +148,7 @@ public class VersionGroupJoinAction implements Serializable
 
    public HIterationGroup getGroup()
    {
-      if(group == null)
+      if (group == null)
       {
          group = versionGroupServiceImpl.getBySlug(slug);
       }
@@ -148,6 +165,26 @@ public class VersionGroupJoinAction implements Serializable
       this.slug = slug;
    }
 
+   public String getIterationSlug()
+   {
+      return iterationSlug;
+   }
+
+   public void setIterationSlug(String iterationSlug)
+   {
+      this.iterationSlug = iterationSlug;
+   }
+
+   public String getProjectSlug()
+   {
+      return projectSlug;
+   }
+
+   public void setProjectSlug(String projectSlug)
+   {
+      this.projectSlug = projectSlug;
+   }
+
    public String getQuery()
    {
       StringBuilder queryBuilder = new StringBuilder();
@@ -157,12 +194,12 @@ public class VersionGroupJoinAction implements Serializable
       {
          queryBuilder.append("?");
 
-         for(int i = 0; i < getProjectVersions().size(); i++)
+         for (int i = 0; i < getProjectVersions().size(); i++)
          {
-            SelectableHIterationProject projectVersion =  getProjectVersions().get(i);
+            SelectableHIterationProject projectVersion = getProjectVersions().get(i);
             if (projectVersion.isSelected())
             {
-               if(i != 0)
+               if (i != 0)
                {
                   queryBuilder.append("&");
                }

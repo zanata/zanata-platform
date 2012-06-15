@@ -3,9 +3,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
    xmlns:s="http://jboss.com/products/seam/taglib"
    xmlns:ui="http://java.sun.com/jsf/facelets"
-   xmlns:f="http://java.sun.com/jsf/core"
-   xmlns:h="http://java.sun.com/jsf/html"
-   xmlns:a4j="http://richfaces.org/a4j"
    xmlns:rich="http://richfaces.org/rich"
    template="/WEB-INF/layout/template.xhtml">
 
@@ -14,7 +11,20 @@
    <ui:define name="page_title">#{messages['jsf.RequestToJoinVersionGroupTitle']}</ui:define>
 
    <ui:define name="center_content">
-      <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
+      <rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
+
+       <h1>
+           #{messages['jsf.GroupId']}:&nbsp;
+           <s:link view="/version-group/view/#{versionGroupJoinAction.slug}" styleClass="table_link">
+               #{versionGroupJoinAction.slug}
+           </s:link>
+       </h1>
+       <h1>
+           #{messages['jsf.Name']}:&nbsp;
+           #{versionGroupJoinAction.group.name}
+       </h1>
+
+
 
        <ui:include src="../WEB-INF/layout/version_group_join.xhtml" />
 

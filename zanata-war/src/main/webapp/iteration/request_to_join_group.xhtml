@@ -14,7 +14,21 @@
    <ui:define name="page_title">#{messages['jsf.RequestToJoinVersionGroupTitle']}</ui:define>
 
    <ui:define name="center_content">
-      <rich:jQuery selector="#tab_version_groups" query="addClass('ui-tabs-selected')" />
+      <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
+
+       <h1>
+           #{messages['jsf.ProjectId']}:&nbsp;
+           <s:link view="/project/view/#{versionGroupJoinAction.projectSlug}" styleClass="table_link">
+               #{versionGroupJoinAction.projectSlug}
+           </s:link>
+       </h1>
+       <h1>
+           #{messages['jsf.Version']}:&nbsp;
+           <s:link view="/iteration/view/#{versionGroupJoinAction.projectSlug}/#{versionGroupJoinAction.iterationSlug}" styleClass="table_link">
+               #{versionGroupJoinAction.iterationSlug}
+           </s:link>
+       </h1>
+
 
        <ui:include src="../WEB-INF/layout/version_group_join.xhtml" />
 
