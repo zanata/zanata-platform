@@ -30,11 +30,15 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityNotFoundException;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.TransUnitWords;
@@ -53,6 +57,14 @@ import org.zanata.service.LocaleService;
 public class ViewAllStatusAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
+
+   private static final PeriodFormatterBuilder PERIOD_FORMATTER_BUILDER =
+         new PeriodFormatterBuilder()
+               .appendDays().appendSuffix(" day", " days")
+               .appendSeparator(", ")
+               .appendHours().appendSuffix(" hour", " hours")
+               .appendSeparator(", ")
+               .appendMinutes().appendSuffix(" min", " mins");
    
    @Logger
    Log log;
@@ -200,11 +212,6 @@ public class ViewAllStatusAction implements Serializable
       return result;
    }
 
-   public void performCopyTrans()
-   {
-      copyTransServiceImpl.copyTransForIteration( getProjectIteration() );
-      FacesMessages.instance().add( messages.get("jsf.iteration.CopyTrans.success") );
-   }
 
    public boolean getShowAllLocales()
    {
@@ -282,19 +289,82 @@ public class ViewAllStatusAction implements Serializable
       CopyTransProcessHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
       if( handle != null )
       {
-         if( handle.getShouldStop() )
-         {
-            return handle.getMaxProgress();
-         }
-         else
-         {
-            return handle.getCurrentProgress();
-         }
+         return handle.getCurrentProgress();
       }
       else
       {
-         return 0;
+         return Integer.MAX_VALUE; // Return the maximum so that the progress bar stops polling
       }
+   }
+
+   public int getCopyTransMaxProgress()
+   {
+      CopyTransProcessHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
+      if( handle != null )
+      {
+         return handle.getMaxProgress();
+      }
+      else
+      {
+         return 1;
+      }
+   }
+
+   public String getCopyTransStartTime()
+   {
+      PeriodFormatter formatter = PERIOD_FORMATTER_BUILDER.toFormatter();
+      CopyTransProcessHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
+      Period period = new Period( handle.getStartTimeLapse() * 1000 ); // convert to milliseconds
+
+      if( period.toStandardMinutes().getMinutes() <= 0 )
+      {
+         return "less than a minute"; // TODO Localize
+      }
+      else
+      {
+         return formatter.print( period.normalizedStandard() );
+      }
+   }
+
+   public String getCopyTransEstimatedTimeLeft()
+   {
+      PeriodFormatter formatter = PERIOD_FORMATTER_BUILDER.toFormatter();
+      CopyTransProcessHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
+      Period period = new Period( handle.getEstimatedTimeRemaining() * 1000 ); // convert to milliseconds
+
+      if( period.toStandardMinutes().getMinutes() <= 0 )
+      {
+         return "less than a minute"; // TODO Localize
+      }
+      else
+      {
+         return formatter.print( period.normalizedStandard() );
+      }
+   }
+
+   public String getCopyTransStatusMessage()
+   {
+      if( !isCopyTransRunning() )
+      {
+         CopyTransProcessHandle recentProcessHandle = copyTransManager.getMostRecentlyFinished( getProjectIteration() );
+
+         if( recentProcessHandle == null )
+         {
+            return null;
+         }
+         // Only return a message when cancelled by another user
+         else if( recentProcessHandle.getCancelledBy() != null
+               && !recentProcessHandle.getCancelledBy().equals( identity.getCredentials().getUsername() ) )
+         {
+            return "Last Translation copy cancelled by " + recentProcessHandle.getCancelledBy();
+         }
+         // ... or if the process finished successfully
+         else if( recentProcessHandle != null && !recentProcessHandle.isInProgress() )
+         {
+            return "Last Translation copy completed by " + recentProcessHandle.getTriggeredBy();
+         }
+      }
+      return null;
    }
 
    public CopyTransProcessHandle getCopyTransProcessHandle()

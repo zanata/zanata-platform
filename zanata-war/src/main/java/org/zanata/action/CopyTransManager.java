@@ -20,6 +20,7 @@
  */
 package org.zanata.action;
 
+import com.google.common.collect.MapMaker;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -33,6 +34,7 @@ import org.zanata.process.CopyTransProcessHandle;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Manager Bean that keeps track of manual copy trans being run on all iterations
@@ -48,6 +50,13 @@ public class CopyTransManager
    // Collection of currently running copy trans processes
    private Map<Long, CopyTransProcessHandle> currentlyRunning =
          Collections.synchronizedMap( new HashMap<Long, CopyTransProcessHandle>() );
+
+   // Collection of recently cancelled copy trans processes (discards the oldest ones)
+   private Map<Long, CopyTransProcessHandle> recentlyCancelled =
+         new MapMaker()
+               .softValues()
+               .expiration(1, TimeUnit.HOURS) // keep them for an hour
+               .makeMap();
 
    @In
    private CopyTransProcess copyTransProcess; // Get a new instance with every injection
@@ -89,7 +98,43 @@ public class CopyTransManager
       {
          CopyTransProcessHandle handle = this.getCopyTransProcessHandle(iteration);
          handle.setShouldStop( true );
-         //this.currentlyRunning.remove( iteration.getId() );
+         handle.setCancelledBy( identity.getCredentials().getUsername() );
+         this.recentlyCancelled.put( iteration.getId(), this.currentlyRunning.remove( iteration.getId() ) );
       }
    }
+
+   /**
+    * Obtains the most recently finished (cancelled or otherwise) process handle for a copy trans on a given iteration.
+    * If a long time has passed since the last cancelled process, or if there has not been a recent cancellation, this
+    * method may return null.
+    *
+    * @param iteration The Project iteration for which to retrieve the most recently finished process handle.
+    * @return Most recently finished process handle for the project iteration, or null if there isn't one.
+    */
+   public CopyTransProcessHandle getMostRecentlyFinished( HProjectIteration iteration )
+   {
+      // Only if copy trans is not running
+      if( !this.isCopyTransRunning(iteration) )
+      {
+         CopyTransProcessHandle mostRecent = this.recentlyCancelled.get( iteration.getId() );
+         CopyTransProcessHandle recentlyRan = this.currentlyRunning.get( iteration.getId() );
+
+         if( mostRecent == null )
+         {
+            mostRecent = recentlyRan;
+         }
+         else if( recentlyRan != null && mostRecent != null
+               && recentlyRan.getStartTimeLapse() < mostRecent.getStartTimeLapse() )
+         {
+            mostRecent = recentlyRan;
+         }
+
+         return mostRecent;
+      }
+      else
+      {
+         return null;
+      }
+   }
+
 }

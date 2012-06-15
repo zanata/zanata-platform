@@ -20,13 +20,9 @@
  */
 package org.zanata.process;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.joda.time.Period;
-import org.joda.time.format.PeriodFormatter;
-import org.joda.time.format.PeriodFormatterBuilder;
 import org.zanata.model.HProjectIteration;
 
 /**
@@ -34,26 +30,9 @@ import org.zanata.model.HProjectIteration;
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@RequiredArgsConstructor()
+@RequiredArgsConstructor
 public class CopyTransProcessHandle extends ProcessHandle
 {
-   private static final PeriodFormatterBuilder REMAINING_TIME_FORMATTER_BUILDER =
-         new PeriodFormatterBuilder()
-         .appendDays().appendSuffix(" day", " days")
-         .appendSeparator(", ")
-         .appendHours().appendSuffix(" hour", " hours")
-         .appendSeparator(", ")
-         .appendMinutes().appendSuffix(" min", " mins")
-         .appendSeparator(", ")
-         .appendSeconds().appendSuffix(" sec", " secs");
-
-   private static final PeriodFormatterBuilder START_TIME_FORMATTER_BUILDER =
-         new PeriodFormatterBuilder()
-               .appendDays().appendSuffix(" day", " days")
-               .appendSeparator(", ")
-               .appendHours().appendSuffix(" hour", " hours")
-               .appendSeparator(", ")
-               .appendMinutes().appendSuffix(" min", " mins");
 
    @Getter
    private final HProjectIteration projectIteration;
@@ -65,34 +44,8 @@ public class CopyTransProcessHandle extends ProcessHandle
    @Setter
    private int documentsProcessed;
 
+   @Getter
+   @Setter
+   private String cancelledBy;
 
-   public String getFormattedRemainingTime()
-   {
-      PeriodFormatter formatter = REMAINING_TIME_FORMATTER_BUILDER.toFormatter();
-      Period period = new Period( super.getEstimatedTimeRemaining() * 1000 ); // convert to milliseconds
-
-      if( period.toStandardSeconds().getSeconds() <= 0 )
-      {
-         return "less than a second"; // TODO Localize
-      }
-      else
-      {
-         return formatter.print( period.normalizedStandard() );
-      }
-   }
-
-   public String getFormattedStartTime()
-   {
-      PeriodFormatter formatter = START_TIME_FORMATTER_BUILDER.toFormatter();
-      Period period = new Period( super.getStartTimeLapse() * 1000 ); // convert to milliseconds
-
-      if( period.toStandardMinutes().getMinutes() <= 0 )
-      {
-         return "less than a minute"; // TODO Localize
-      }
-      else
-      {
-         return formatter.print( period.normalizedStandard() );
-      }
-   }
 }

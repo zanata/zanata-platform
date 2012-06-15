@@ -210,12 +210,15 @@
                 <rich:progressBar id="copyTransProgressBar"
                                   value="#{viewAllStatusAction.copyTransProgress}"
                                   minValue="-1"
-                                  maxValue="#{pHandle.maxProgress - 1}"
-                                  interval="900"
+                                  maxValue="#{viewAllStatusAction.copyTransMaxProgress - 1}"
+                                  interval="2000"
                                   ignoreDupResponses="true"
                                   reRender="progressMssgs"
                                   reRenderAfterComplete="copyTransIndicator,copyTransLink">
                 </rich:progressBar>
+                <a4j:outputPanel>
+                    #{viewAllStatusAction.copyTransStatusMessage}
+                </a4j:outputPanel>
                 <a4j:outputPanel id="progressMssgs"
                                  ajaxRendered="true"
                                  layout="block"
@@ -223,9 +226,9 @@
                     <s:div style="text-align:right;" rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'copy-trans')}">
                         <h:commandButton value="Cancel" action="#{viewAllStatusAction.cancelCopyTrans}" />
                     </s:div>
-                    Started #{pHandle.formattedStartTime} ago by #{pHandle.triggeredBy}
+                    Started #{viewAllStatusAction.copyTransStartTime} ago by #{pHandle.triggeredBy}
                     <br/>
-                    Estimated Time Remaining: #{pHandle.formattedRemainingTime}
+                    Estimated Time Remaining: #{viewAllStatusAction.copyTransEstimatedTimeLeft}
                     <br/>
                     Processed documents: #{pHandle.documentsProcessed} of #{viewAllStatusAction.projectIteration.documents.size()}
                 </a4j:outputPanel>
