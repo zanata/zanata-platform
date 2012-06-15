@@ -37,13 +37,13 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
-import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitWords;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.process.CopyTransProcessHandle;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
@@ -74,6 +74,9 @@ public class ViewAllStatusAction implements Serializable
 
    @In
    Map<String, String> messages;
+
+   @In
+   CopyTransManager copyTransManager;
 
    private String iterationSlug;
    
@@ -243,6 +246,60 @@ public class ViewAllStatusAction implements Serializable
    {
       return !isIterationReadOnly() && !isIterationObsolete() 
              && identity.hasPermission("add-translation", getProject(), localeServiceImpl.getByLocaleId(localeId));
+   }
+
+   public boolean isCopyTransRunning()
+   {
+      return copyTransManager.isCopyTransRunning( getProjectIteration() );
+   }
+
+   public void startCopyTrans()
+   {
+      if( isCopyTransRunning() )
+      {
+         FacesMessages.instance().add("Someone else already started a translation copy for this version.");
+         return;
+      }
+      else if( getProjectIteration().getDocuments().size() <= 0 )
+      {
+         FacesMessages.instance().add("There are no documents in this project version.");
+         return;
+      }
+
+      copyTransManager.startCopyTrans( getProjectIteration() );
+   }
+
+   public void cancelCopyTrans()
+   {
+      if( isCopyTransRunning() )
+      {
+         copyTransManager.cancelCopyTrans( getProjectIteration() );
+      }
+   }
+
+   public int getCopyTransProgress()
+   {
+      CopyTransProcessHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
+      if( handle != null )
+      {
+         if( handle.getShouldStop() )
+         {
+            return handle.getMaxProgress();
+         }
+         else
+         {
+            return handle.getCurrentProgress();
+         }
+      }
+      else
+      {
+         return 0;
+      }
+   }
+
+   public CopyTransProcessHandle getCopyTransProcessHandle()
+   {
+      return copyTransManager.getCopyTransProcessHandle( getProjectIteration() );
    }
    
    private List<HLocale> getDisplayLocales()

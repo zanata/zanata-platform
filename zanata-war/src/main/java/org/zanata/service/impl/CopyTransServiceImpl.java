@@ -189,6 +189,46 @@ public class CopyTransServiceImpl implements CopyTransService
    @Override
    public void copyTransForDocument(HDocument document)
    {
+      this.copyTransForDocument(document, null);
+   }
+
+   /**
+    * @see CopyTransServiceImpl#copyTransForIteration(org.zanata.model.HProjectIteration, org.zanata.process.CopyTransProcessHandle)
+    */
+   @Override
+   public void copyTransForIteration(HProjectIteration iteration)
+   {
+      this.copyTransForIteration(iteration, null);
+   }
+
+   @Override
+   public void copyTransForIteration(HProjectIteration iteration, CopyTransProcessHandle procHandle)
+   {
+      if( procHandle != null )
+      {
+         List<HLocale> localeList =
+               localeServiceImpl.getSupportedLangugeByProjectIteration(iteration.getProject().getSlug(),
+                     iteration.getSlug());
+
+         procHandle.setMaxProgress( iteration.getDocuments().size() * localeList.size() );
+         procHandle.setCurrentProgress(0);
+      }
+
+      for( HDocument doc : iteration.getDocuments().values() )
+      {
+         if( procHandle.getShouldStop() )
+         {
+            return;
+         }
+         this.copyTransForDocument(doc, procHandle);
+      }
+   }
+
+   /**
+    * @see CopyTransServiceImpl#copyTransForDocument(org.zanata.model.HDocument)
+    */
+   private void copyTransForDocument(HDocument document, CopyTransProcessHandle processHandle)
+   {
       log.info("copyTrans start: document \"{0}\"", document.getDocId());
       List<HLocale> localeList =
             localeServiceImpl.getSupportedLangugeByProjectIteration(document.getProjectIteration().getProject().getSlug(),
@@ -196,33 +236,30 @@ public class CopyTransServiceImpl implements CopyTransService
 
       for (HLocale locale : localeList)
       {
-         copyTransForLocale(document, locale);
+         if( processHandle.getShouldStop() )
+         {
+            return;
+         }
+         copyTransForLocale(document, locale, processHandle);
+      }
+
+      if( processHandle != null )
+      {
+         processHandle.setDocumentsProcessed( processHandle.getDocumentsProcessed() + 1 );
       }
       log.info("copyTrans finished: document \"{0}\"", document.getDocId());
    }
 
-   @Override
-   public void copyTransForIteration(HProjectIteration iteration)
+   /**
+    * @see CopyTransServiceImpl#copyTransForLocale(org.zanata.model.HDocument, org.zanata.model.HLocale, org.zanata.process.CopyTransProcessHandle)
+    */
+   private void copyTransForLocale(HDocument document, HLocale locale, CopyTransProcessHandle procHandle)
    {
-      for( HDocument doc : iteration.getDocuments().values() )
-      {
-         this.copyTransForDocument(doc);
-      }
-   }
+      this.copyTransForLocale(document, locale);
 
-   @Override
-   public void copyTransForIteration(HProjectIteration iteration, CopyTransProcessHandle procHandle)
-   {
-      List<HLocale> localeList =
-            localeServiceImpl.getSupportedLangugeByProjectIteration(iteration.getProject().getSlug(),
-                  iteration.getSlug());
-
-      procHandle.setMaxProgress( iteration.getDocuments().size() * localeList.size() );
-      procHandle.setCurrentProgress(0);
-      for( HDocument doc : iteration.getDocuments().values() )
+      if( procHandle != null )
       {
-         this.copyTransForDocument(doc);
-         procHandle.incrementProgress( localeList.size() );
+         procHandle.incrementProgress(1);
       }
    }
 }

@@ -10,6 +10,24 @@
 
 
     <ui:define name="page_title">#{viewAllStatusAction.projectSlug}:#{viewAllStatusAction.iterationSlug}</ui:define>
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function copyTransLinkClicked()
+            {
+                if(#{viewAllStatusAction.projectIteration.documents.size() > 0})
+                {
+                    return confirm('#{messages['jsf.iteration.CopyTrans.confirm']}');
+                }
+                else
+                {
+                    alert('#{messages['jsf.iteration.CopyTrans.noDocuments']}');
+                    return false;
+                }
+            }
+        </script>
+    </ui:define>
+
     <ui:define name="center_content">
 		<rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 			
@@ -172,30 +190,45 @@
                 <s:link styleClass="action_link"
                         value="#{messages['jsf.iteration.CopyTrans']}"
                         title="#{messages['jsf.iteration.CopyTrans.title']}"
-                        action="#{copyTransManager.startCopyTrans( viewAllStatusAction.projectIteration )}"
-                        rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'copy-trans') and not copyTransManager.isCopyTransRunning(viewAllStatusAction.projectIteration)}"
-                        disabled="#{copyTransManager.isCopyTransRunning( viewAllStatusAction.projectIteration )}"
-                        onclick="return confirm('#{messages['jsf.iteration.CopyTrans.confirm']}');" >
+                        action="#{viewAllStatusAction.startCopyTrans}"
+                        rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'copy-trans') and not viewAllStatusAction.copyTransRunning}"
+                        disabled="#{viewAllStatusAction.copyTransRunning}"
+                        onclick="return copyTransLinkClicked()" >
                 </s:link>
             </a4j:outputPanel>
 		</rich:panel>
 
         <a4j:form>
-            <a4j:outputPanel id="copyTransIndicator">
-                <a4j:outputPanel id="copyTransMssg" rendered="#{copyTransManager.isCopyTransRunning( viewAllStatusAction.projectIteration )}">
-                    Copy Trans in Progress (started by #{copyTransManager.getCopyTransProgress( viewAllStatusAction.projectIteration ).triggeredBy}):
+            <ui:param name="pHandle" value="#{viewAllStatusAction.copyTransProcessHandle}"/>
+            <ui:param name="copyTransRunning" value="#{viewAllStatusAction.copyTransRunning}"/>
+
+            <a4j:outputPanel id="copyTransIndicator" layout="block" rendered="#{identity.loggedIn}">
+                <a4j:outputPanel rendered="#{copyTransRunning}">
+                    Copy Trans in Progress...
                 </a4j:outputPanel>
                 <!-- minValue is -1 because of a bug when 0 is used -->
                 <rich:progressBar id="copyTransProgressBar"
-                                  value="#{copyTransManager.getCopyTransProgress( viewAllStatusAction.projectIteration ).currentProgress}"
+                                  value="#{viewAllStatusAction.copyTransProgress}"
                                   minValue="-1"
-                                  maxValue="#{copyTransManager.getCopyTransProgress( viewAllStatusAction.projectIteration ).maxProgress - 1}"
+                                  maxValue="#{pHandle.maxProgress - 1}"
                                   interval="900"
                                   ignoreDupResponses="true"
-                                  enabled="#{copyTransManager.isCopyTransRunning( viewAllStatusAction.projectIteration )}"
-                                  label="Estimated time remaining: #{copyTransManager.getCopyTransProgress( viewAllStatusAction.projectIteration ).estimatedTimeRemaining} secs"
+                                  reRender="progressMssgs"
                                   reRenderAfterComplete="copyTransIndicator,copyTransLink">
                 </rich:progressBar>
+                <a4j:outputPanel id="progressMssgs"
+                                 ajaxRendered="true"
+                                 layout="block"
+                                 rendered="#{copyTransRunning}">
+                    <s:div style="text-align:right;" rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'copy-trans')}">
+                        <h:commandButton value="Cancel" action="#{viewAllStatusAction.cancelCopyTrans}" />
+                    </s:div>
+                    Started #{pHandle.formattedStartTime} ago by #{pHandle.triggeredBy}
+                    <br/>
+                    Estimated Time Remaining: #{pHandle.formattedRemainingTime}
+                    <br/>
+                    Processed documents: #{pHandle.documentsProcessed} of #{viewAllStatusAction.projectIteration.documents.size()}
+                </a4j:outputPanel>
             </a4j:outputPanel>
         </a4j:form>
 	</ui:define>

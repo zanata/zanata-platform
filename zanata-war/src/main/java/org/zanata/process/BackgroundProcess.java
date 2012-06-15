@@ -43,7 +43,7 @@ public abstract class BackgroundProcess<H extends ProcessHandle>
    @Asynchronous
    public void startProcess(H handle)
    {
-      handle.setInProgress(true);
+      handle.start();
       
       try
       {
@@ -55,7 +55,7 @@ public abstract class BackgroundProcess<H extends ProcessHandle>
       }
       finally
       {
-         handle.setInProgress(false);
+         handle.finish();
       }
    }
    

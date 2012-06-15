@@ -59,7 +59,8 @@ public class CopyTransManager
    public boolean isCopyTransRunning( HProjectIteration iteration )
    {
       return currentlyRunning.containsKey( iteration.getId() )
-            && currentlyRunning.get( iteration.getId() ).isInProgress();
+            && currentlyRunning.get( iteration.getId() ).isInProgress()
+            && !currentlyRunning.get( iteration.getId() ).getShouldStop();
    }
 
    public void startCopyTrans( HProjectIteration iteration )
@@ -67,7 +68,7 @@ public class CopyTransManager
       // double check
       if( isCopyTransRunning(iteration) )
       {
-         throw new RuntimeException("Copy Trans is already running for iteration '" + iteration.getSlug() + "'");
+         throw new RuntimeException("Copy Trans is already running for version '" + iteration.getSlug() + "'");
       }
 
       CopyTransProcessHandle handle = new CopyTransProcessHandle( iteration, identity.getCredentials().getUsername() );
@@ -77,8 +78,18 @@ public class CopyTransManager
       copyTransProcess.startProcess(handle);
    }
 
-   public CopyTransProcessHandle getCopyTransProgress( HProjectIteration iteration )
+   public CopyTransProcessHandle getCopyTransProcessHandle(HProjectIteration iteration)
    {
       return currentlyRunning.get( iteration.getId() );
+   }
+
+   public void cancelCopyTrans( HProjectIteration iteration )
+   {
+      if( isCopyTransRunning(iteration) )
+      {
+         CopyTransProcessHandle handle = this.getCopyTransProcessHandle(iteration);
+         handle.setShouldStop( true );
+         //this.currentlyRunning.remove( iteration.getId() );
+      }
    }
 }

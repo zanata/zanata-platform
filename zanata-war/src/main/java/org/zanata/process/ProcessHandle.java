@@ -1,5 +1,8 @@
 package org.zanata.process;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * Generic background process handle. Provides information about the process.
  *
@@ -12,17 +15,11 @@ public class ProcessHandle
    private int maxProgress = 100;
    private int minProgress = 0;
    private int currentProgress = 0;
-   private int estimatedTimeRemaining = -1;
-   private long firstProgressUpdateTime = -1;
+   private long startTime = -1;
 
    public boolean isInProgress()
    {
       return inProgress;
-   }
-
-   public void setInProgress(boolean inProgress)
-   {
-      this.inProgress = inProgress;
    }
 
    public boolean getShouldStop()
@@ -60,46 +57,68 @@ public class ProcessHandle
       return currentProgress;
    }
 
+   void start()
+   {
+      if( !this.isInProgress() && this.startTime == -1 )
+      {
+         this.startTime = System.currentTimeMillis();
+         this.inProgress = true;
+      }
+   }
+
+   void finish()
+   {
+      this.inProgress = false;
+   }
+
    public void setCurrentProgress(int currentProgress)
    {
+      this.start(); // start if it hasn't been done yet
       this.currentProgress = currentProgress;
-      this.updateEstimatedTimeRemaining();
       this.evaluateInProgress();
    }
    
    public void incrementProgress(int increment)
    {
+      this.start(); // start if it hasn't been done yet
       this.currentProgress += increment;
-      this.updateEstimatedTimeRemaining();
       this.evaluateInProgress();
    }
 
    /**
-    * Returns the estimated time (in seconds) remaining for completion of the process.
+    * @return The estimated time (in seconds) remaining for completion of the process.
     */
-   public int getEstimatedTimeRemaining()
+   public long getEstimatedTimeRemaining()
    {
-      return this.estimatedTimeRemaining;
-   }
-
-   private void updateEstimatedTimeRemaining()
-   {
-      // On first update, cannot make an informed estimate
-      // On subsequent updates however...
-      if( this.firstProgressUpdateTime != -1 )
+      if( this.startTime != -1 )
       {
          long currentTime = System.currentTimeMillis();
-         long timeElapsed = currentTime - this.firstProgressUpdateTime;
+         long timeElapsed = currentTime - this.startTime;
          long averageTimePerProgressUnit = timeElapsed / this.currentProgress;
 
-         this.estimatedTimeRemaining = (int)(averageTimePerProgressUnit * (this.maxProgress - this.currentProgress))/1000; //convert to secs
+         return (averageTimePerProgressUnit * (this.maxProgress - this.currentProgress)) / 1000; //convert to secs
       }
       else
       {
-         this.firstProgressUpdateTime = System.currentTimeMillis();
+         return 0;
       }
    }
-   
+
+   /**
+    * @return The number of seconds since the process was marked as started.
+    */
+   public long getStartTimeLapse()
+   {
+      if( this.startTime != -1 )
+      {
+         return (System.currentTimeMillis() - this.startTime) / 1000; // convert to secs
+      }
+      else
+      {
+         return 0;
+      }
+   }
+
    private void evaluateInProgress()
    {
       if( this.currentProgress >= this.maxProgress )
