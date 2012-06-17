@@ -10,8 +10,6 @@ import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.easymock.Capture;
@@ -37,6 +35,8 @@ public class NotificationPresenterTest
    HasClickHandlers mockDismiss;
    HasClickHandlers mockClear;
 
+   HasNotificationLabel mockListener;
+   
    Display mockDisplay;
    EventBus mockEventBus;
 
@@ -44,7 +44,7 @@ public class NotificationPresenterTest
    private Capture<ClickHandler> capturedClearClickHandler;
    private Capture<NotificationEventHandler> capturedNotificationEventHandler;
    
-   private final static int MSG_TO_KEEP = 5;
+   private final static int MSG_TO_KEEP = 6;
 
    @BeforeClass
    public void createMocks()
@@ -53,7 +53,7 @@ public class NotificationPresenterTest
       mockClear = createMock(HasClickHandlers.class);
       mockDisplay = createMock(NotificationPresenter.Display.class);
       mockEventBus = createMock(EventBus.class);
-      // mockWindow = createMock(Window.class);
+      mockListener = createMock(HasNotificationLabel.class);
 
       capturedDismissClickHandler = new Capture<ClickHandler>();
       capturedClearClickHandler = new Capture<ClickHandler>();
@@ -73,8 +73,12 @@ public class NotificationPresenterTest
 
    public void testOnBind()
    {
+      mockListener.setNotificationLabel(0, Severity.Info);
+      expectLastCall().once();
+      
       replayAllMocks();
       notificationPresenter.bind();
+      notificationPresenter.setNotificationListener(mockListener);
       verifyAllMocks();
    }
 
@@ -85,14 +89,20 @@ public class NotificationPresenterTest
       mockDisplay.appendMessage(Severity.Error, testMessage);
       expectLastCall().once();
 
-      mockDisplay.setPopupTopRightCorner();
-      expectLastCall().once();
-
       mockDisplay.show();
       expectLastCall().once();
-
+      
+      expect(mockDisplay.getMessageCount()).andReturn(1);
+      
+      mockListener.setNotificationLabel(0, Severity.Info);
+      expectLastCall().once();
+      
+      mockListener.setNotificationLabel(1, Severity.Error);
+      expectLastCall().once();
+      
       replayAllMocks();
       notificationPresenter.bind();
+      notificationPresenter.setNotificationListener(mockListener);
       NotificationEvent notification = new NotificationEvent(Severity.Error, testMessage);
       capturedNotificationEventHandler.getValue().onNotification(notification);
 
@@ -109,22 +119,28 @@ public class NotificationPresenterTest
          expectLastCall().once();
       }
 
-      mockDisplay.setPopupTopRightCorner();
-      expectLastCall().times(testMessages.length);
-
       mockDisplay.show();
-      expectLastCall().times(testMessages.length);
+      expectLastCall().anyTimes();
 
-      expect(mockDisplay.getMessageCount()).andReturn(testMessages.length);
+      for (int count = 0;count<testMessages.length;count++)
+      {
+         expect(mockDisplay.getMessageCount()).andReturn(count);
 
+         mockListener.setNotificationLabel(count, Severity.Error);
+         expectLastCall().once();
+      }
+
+      mockListener.setNotificationLabel(0, Severity.Info);
+      expectLastCall().once();
+      
       replayAllMocks();
       notificationPresenter.bind();
+      notificationPresenter.setNotificationListener(mockListener);
       for (String msg : testMessages)
       {
          NotificationEvent notification = new NotificationEvent(Severity.Error, msg);
          capturedNotificationEventHandler.getValue().onNotification(notification);
       }
-      assertThat(notificationPresenter.getMessageCount(), is(testMessages.length));
 
       verifyAllMocks();
    }
@@ -138,23 +154,30 @@ public class NotificationPresenterTest
          mockDisplay.appendMessage(Severity.Error, msg);
          expectLastCall().once();
       }
+      
+      for (int count = 0;count<=MSG_TO_KEEP;count++)
+      {
+         expect(mockDisplay.getMessageCount()).andReturn(count);
 
-      mockDisplay.setPopupTopRightCorner();
-      expectLastCall().times(testMessages.length);
-
+         mockListener.setNotificationLabel(count, Severity.Error);
+         expectLastCall().once();
+      }
+      
       mockDisplay.show();
       expectLastCall().times(testMessages.length);
 
-      expect(mockDisplay.getMessageCount()).andReturn(MSG_TO_KEEP);
-
+      mockListener.setNotificationLabel(0, Severity.Info);
+      expectLastCall().once();
+      
       replayAllMocks();
       notificationPresenter.bind();
+      notificationPresenter.setNotificationListener(mockListener);
+      
       for (String msg : testMessages)
       {
          NotificationEvent notification = new NotificationEvent(Severity.Error, msg);
          capturedNotificationEventHandler.getValue().onNotification(notification);
       }
-      assertThat(notificationPresenter.getMessageCount(), is(MSG_TO_KEEP));
 
       verifyAllMocks();
    }
@@ -193,7 +216,7 @@ public class NotificationPresenterTest
 
    private void expectPresenterSetupActions()
    {
-      mockDisplay.setModal(true);
+      mockDisplay.setModal(false);
       expectLastCall().once();
       mockDisplay.setAutoHideEnabled(true);
       expectLastCall().once();
@@ -202,6 +225,8 @@ public class NotificationPresenterTest
       mockDisplay.hide(true);
       expectLastCall().once();
       mockDisplay.setMessagesToKeep(MSG_TO_KEEP);
+      expectLastCall().once();
+      mockDisplay.setPopupTopRightCorner();
       expectLastCall().once();
    }
 
@@ -221,16 +246,16 @@ public class NotificationPresenterTest
 
    private void resetAllMocks()
    {
-      reset(mockDisplay, mockEventBus, mockDismiss, mockClear);
+      reset(mockDisplay, mockEventBus, mockDismiss, mockClear, mockListener);
    }
 
    private void replayAllMocks()
    {
-      replay(mockDisplay, mockEventBus, mockDismiss, mockClear);
+      replay(mockDisplay, mockEventBus, mockDismiss, mockClear, mockListener);
    }
 
    private void verifyAllMocks()
    {
-      verify(mockDisplay, mockEventBus, mockDismiss, mockClear);
+      verify(mockDisplay, mockEventBus, mockDismiss, mockClear, mockListener);
    }
 }
