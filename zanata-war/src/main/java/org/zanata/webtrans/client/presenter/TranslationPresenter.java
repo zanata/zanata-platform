@@ -28,6 +28,8 @@ import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.NativeEvent;
+import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
+import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
@@ -38,11 +40,17 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
+import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData.MESSAGE_TYPE;
+
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
@@ -82,6 +90,14 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       void setOptionsToggleTooltip(String tooltip);
 
       HasValue<Boolean> getSouthPanelToggle();
+
+      boolean isUserPanelOpen();
+
+      HasSelectionHandlers<Integer> getSouthTabPanel();
+
+      void setMessageAlert();
+
+      void removeMessageAlert();
    }
 
    private final DispatchAsync dispatcher;
@@ -99,6 +115,26 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private NativeEvent nativeEvent;
 
    private boolean southPanelExpanded = true;
+
+   private boolean isAlert = false;
+
+   private final Timer msgAlertTimer = new Timer()
+   {
+      @Override
+      public void run()
+      {
+         if (!isAlert)
+         {
+            display.setMessageAlert();
+            isAlert = true;
+         }
+         else
+         {
+            display.removeMessageAlert();
+            isAlert = false;
+         }
+      }
+   };
 
    @Inject
    public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TargetContentsPresenter targetContentsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final OptionsPanelPresenter optionsPanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final NativeEvent nativeEvent, final WorkspaceContext workspaceContext)
@@ -121,7 +157,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    public void onRevealDisplay()
    {
    }
-
 
    private void loadTranslatorList()
    {
@@ -166,7 +201,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          public void onEnterWorkspace(EnterWorkspaceEvent event)
          {
             workspaceUsersPresenter.addTranslator(event.getEditorClientId(), event.getPerson(), null);
-            workspaceUsersPresenter.dispatchChatAction(event.getPerson().getId().toString(), messages.hasJoinedWorkspace());
+            workspaceUsersPresenter.dispatchChatAction(null, messages.hasJoinedWorkspace(event.getPerson().getId().toString()), MESSAGE_TYPE.SYSTEM_MSG);
             display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()));
          }
       }));
@@ -176,6 +211,32 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       // EventProcessor.
       // Thus we load the translator list here.
       loadTranslatorList();
+
+      registerHandler(eventBus.addHandler(PublishWorkspaceChatEvent.getType(), new PublishWorkspaceChatEventHandler()
+      {
+         @Override
+         public void onPublishWorkspaceChat(PublishWorkspaceChatEvent event)
+         {
+            if (!display.isUserPanelOpen())
+            {
+               display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()) + " *");
+               msgAlertTimer.scheduleRepeating(800);
+               msgAlertTimer.run();
+            }
+         }
+      }));
+
+      registerHandler(display.getSouthTabPanel().addSelectionHandler(new SelectionHandler<Integer>()
+      {
+
+         @Override
+         public void onSelection(SelectionEvent<Integer> event)
+         {
+            display.setParticipantsTitle(messages.nUsersOnline(workspaceUsersPresenter.getTranslatorsSize()));
+            msgAlertTimer.cancel();
+            display.removeMessageAlert();
+         }
+      }));
 
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), new WorkspaceContextUpdateEventHandler()
       {
@@ -237,7 +298,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
             if (display.asWidget().isVisible() && (event.getNativeEvent().getType().equals("keyup") || event.getNativeEvent().getType().equals("keydown")))
             {
                checkKey.init(event.getNativeEvent());
-               
+
                if (translationEditorPresenter.getSelectedTransUnit() != null && checkKey.isCopyFromTransMem())
                {
                   int index;

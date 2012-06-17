@@ -58,7 +58,7 @@ public class PublishWorkspaceChatHandler extends AbstractActionHandler<PublishWo
       Date currentDate = new Date();
       SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy h:mm:ss");
       
-      PublishWorkspaceChat event = new PublishWorkspaceChat(action.getPerson(), formatter.format(currentDate), action.getMsg());
+      PublishWorkspaceChat event = new PublishWorkspaceChat(action.getPerson(), formatter.format(currentDate), action.getMsg(), action.getMessageType());
       workspace.publish(event);
 
       return new PublishWorkspaceChatResult();
