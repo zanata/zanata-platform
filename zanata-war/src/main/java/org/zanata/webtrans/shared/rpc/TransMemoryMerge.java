@@ -22,19 +22,21 @@
 package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
+import java.util.Map;
 
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 
 import com.google.common.base.Objects;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class TransMemoryMerge extends AbstractWorkspaceAction<NoOpResult>
+public class TransMemoryMerge extends AbstractWorkspaceAction<UpdateTransUnitResult>
 {
    private static final long serialVersionUID = 1L;
    private int thresholdPercent;
-   private List<TransUnitId> unitIds;
+   private List<TransUnitUpdateRequest> updateRequests;
    private MergeOption differentProjectOption;
    private MergeOption differentDocumentOption;
    private MergeOption differentResIdOption;
@@ -44,10 +46,10 @@ public class TransMemoryMerge extends AbstractWorkspaceAction<NoOpResult>
    {
    }
 
-   public TransMemoryMerge(int threshold, List<TransUnitId> unitIds, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
+   public TransMemoryMerge(int threshold, List<TransUnitUpdateRequest> updateRequests, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
    {
       thresholdPercent = threshold;
-      this.unitIds = unitIds;
+      this.updateRequests = updateRequests;
       this.differentProjectOption = differentProjectOption;
       this.differentDocumentOption = differentDocumentOption;
       this.differentResIdOption = differentResIdOption;
@@ -56,11 +58,6 @@ public class TransMemoryMerge extends AbstractWorkspaceAction<NoOpResult>
    public int getThresholdPercent()
    {
       return thresholdPercent;
-   }
-
-   public List<TransUnitId> getUnitIds()
-   {
-      return unitIds;
    }
 
    public MergeOption getDifferentProjectOption()
@@ -78,13 +75,18 @@ public class TransMemoryMerge extends AbstractWorkspaceAction<NoOpResult>
       return differentResIdOption;
    }
 
+   public List<TransUnitUpdateRequest> getUpdateRequests()
+   {
+      return updateRequests;
+   }
+
    @Override
    public String toString()
    {
       // @formatter:off
       return Objects.toStringHelper(this).
             add("thresholdPercent", thresholdPercent).
-            add("unitIds", unitIds).
+            add("updateRequests", updateRequests).
             add("differentProjectOption", differentProjectOption).
             add("differentDocumentOption", differentDocumentOption).
             add("differentResIdOption", differentResIdOption).

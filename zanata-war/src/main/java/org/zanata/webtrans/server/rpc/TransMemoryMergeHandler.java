@@ -23,7 +23,11 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Nullable;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -35,6 +39,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
@@ -47,13 +52,18 @@ import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
-import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
+import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
+import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -65,7 +75,7 @@ import static org.zanata.service.SecurityService.TranslationAction.*;
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(TransMemoryMerge.class)
 @Slf4j
-public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMerge, NoOpResult>
+public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMerge, UpdateTransUnitResult>
 {
 
    @In(value = "webtrans.gwt.GetTransMemoryHandler", create = true)
@@ -73,6 +83,9 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
 
    @In(value = "webtrans.gwt.GetTransMemoryDetailsHandler", create = true)
    private GetTransMemoryDetailsHandler getTransMemoryDetailsHandler;
+
+   @In(value = "webtrans.gwt.UpdateTransUnitHandler", create = true)
+   private UpdateTransUnitHandler updateTransUnitHandler;
    
    @In
    private SecurityService securityServiceImpl;
@@ -84,15 +97,16 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
    private TextFlowDAO textFlowDAO;
 
    @In
-   private TranslationService translationServiceImpl;
-
-   @In
    private LocaleService localeServiceImpl;
 
+   @In
+   private ZanataIdentity identity;
+
    @Override
-   public NoOpResult execute(TransMemoryMerge action, ExecutionContext context) throws ActionException
+   public UpdateTransUnitResult execute(TransMemoryMerge action, ExecutionContext context) throws ActionException
    {
-      ZanataIdentity.instance().checkLoggedIn();
+      //TODO all this routine check and get local, workspace etc is duplicated. Refactor it out to securityService?
+      identity.checkLoggedIn();
 
       WorkspaceId workspaceId = action.getWorkspaceId();
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
@@ -102,23 +116,46 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
 
       HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
 
-      List<HTextFlow> hTextFlows = fetchTextFlowsForAutoFill(action);
+      Map<Long, TransUnitUpdateRequest> requestMap = transformToMap(action.getUpdateRequests());
+      List<HTextFlow> hTextFlows = textFlowDAO.findByIdList(Lists.newArrayList(requestMap.keySet()));
 
       // FIXME this won't scale well (copy from GetTransMemoryHandler)
       List<Long> idsWithTranslations = textFlowDAO.findIdsWithTranslations(hLocale.getLocaleId());
 
       TransMemoryAboveThresholdPredicate predicate = new TransMemoryAboveThresholdPredicate(action.getThresholdPercent());
+
+      List<TransUnitUpdateRequest> updateRequests = Lists.newArrayList();
       for (HTextFlow hTextFlow : hTextFlows)
       {
          ArrayList<TransMemoryResultItem> tmResults = getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(hTextFlow.getContents(), SearchType.FUZZY_PLURAL), idsWithTranslations);
-         TransMemoryResultItem mostSimilarTM = findTMAboveThreshold(tmResults, predicate);
-         if (mostSimilarTM != null)
+         TransMemoryResultItem tmResult = findTMAboveThreshold(tmResults, predicate);
+         if (tmResult != null)
          {
-            autoFillTranslation(hLocale, hTextFlow, mostSimilarTM, action);
+            TransMemoryDetails tmDetail = getTransMemoryDetailsHandler.getTransMemoryDetail(hLocale, hTextFlow);
+            ContentState statusToSet = new TransMemoryMergeStatusResolver().workOutStatus(action, hTextFlow, tmDetail, tmResult);
+            if (statusToSet != null)
+            {
+               TransUnitUpdateRequest unfilledRequest = requestMap.get(hTextFlow.getId());
+               TransUnitUpdateRequest request = new TransUnitUpdateRequest(unfilledRequest.getTransUnitId(), tmResult.getTargetContents(), statusToSet, unfilledRequest.getBaseTranslationVersion());
+               log.debug("auto translate from translation memory {}", request);
+               updateRequests.add(request);
+            }
          }
       }
-      //TODO best send out event and let all clients to refresh table if they are editing this document
-      return new NoOpResult();
+
+      UpdateTransUnitResult result = updateTransUnitHandler.doTranslation(localeId, workspace, updateRequests, action.getEditorClientId(), TransUnitUpdated.UpdateType.ReplaceText);
+      log.debug("TM merge result {}", result);
+      return result;
+   }
+
+   private Map<Long, TransUnitUpdateRequest> transformToMap(List<TransUnitUpdateRequest> updateRequests)
+   {
+      ImmutableMap.Builder<Long, TransUnitUpdateRequest> mapBuilder = ImmutableMap.builder();
+      for (TransUnitUpdateRequest updateRequest : updateRequests)
+      {
+         mapBuilder.put(updateRequest.getTransUnitId().getId(), updateRequest);
+      }
+      return mapBuilder.build();
    }
 
    private TransMemoryResultItem findTMAboveThreshold(ArrayList<TransMemoryResultItem> tmResults, TransMemoryAboveThresholdPredicate predicate)
@@ -134,43 +171,8 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
       }
    }
 
-   private void autoFillTranslation(HLocale hLocale, HTextFlow hTextFlow, TransMemoryResultItem mostSimilarTM, TransMemoryMerge action)
-   {
-      TransMemoryDetails tmDetail = null;
-      try
-      {
-         tmDetail = getTransMemoryDetailsHandler.getTransMemoryDetail(hLocale, hTextFlow);
-         ContentState statusToSet = new TransMemoryMergeStatusResolver().workOutStatus(action, hTextFlow, tmDetail, mostSimilarTM);
-         if (statusToSet != null)
-         {
-            log.debug("auto translation from translation memory for textFlow id {} with contents {}, status {}",
-                  new Object[]{hTextFlow.getId(), mostSimilarTM.getTargetContents(), statusToSet});
-            translationServiceImpl.translate(hTextFlow, hLocale, mostSimilarTM.getTargetContents(), ContentState.Approved);
-         }
-      }
-      catch (Exception e)
-      {
-         log.warn("unable to merge TM on text flow id {}, with TM detail {}", hTextFlow.getId(), tmDetail);
-      }
-   }
-
-   private List<HTextFlow> fetchTextFlowsForAutoFill(TransMemoryMerge action)
-   {
-      Collection<TransUnitId> unitIds = action.getUnitIds();
-      List<Long> textFlowIds = Lists.newArrayList(transform(unitIds, new Function<TransUnitId, Long>()
-      {
-         @Override
-         public Long apply(TransUnitId from)
-         {
-            return from.getId();
-         }
-      }));
-      log.info("TM merge text flows: {}", textFlowIds);
-      return textFlowDAO.findByIdList(textFlowIds);
-   }
-
    @Override
-   public void rollback(TransMemoryMerge action, NoOpResult result, ExecutionContext context) throws ActionException
+   public void rollback(TransMemoryMerge action, UpdateTransUnitResult result, ExecutionContext context) throws ActionException
    {
    }
 

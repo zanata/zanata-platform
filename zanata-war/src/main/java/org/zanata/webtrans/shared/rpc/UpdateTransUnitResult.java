@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 
+import com.google.common.base.Objects;
+
 import net.customware.gwt.dispatch.shared.Result;
 
 public class UpdateTransUnitResult implements Result
@@ -56,5 +58,13 @@ public class UpdateTransUnitResult implements Result
       {
          throw new IllegalStateException("this method can only be used when checking results for a single TransUnit update");
       }
+   }
+
+   @Override
+   public String toString()
+   {
+      return Objects.toStringHelper(this).
+            add("tuUpdateInfo", tuUpdateInfo).
+            toString();
    }
 }

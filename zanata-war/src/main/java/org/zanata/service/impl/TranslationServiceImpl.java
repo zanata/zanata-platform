@@ -218,16 +218,6 @@ public class TranslationServiceImpl implements TranslationService
       return hTextFlowTarget;
    }
 
-   @Override
-   public HTextFlowTarget translate(@Nonnull HTextFlow hTextFlow, @Nonnull HLocale hLocale, @Nonnull List<String> contentsToSave, ContentState state)
-   {
-      validateLocale(hLocale.getLocaleId(), hTextFlow);
-      int nPlurals = getNumPlurals(hLocale, hTextFlow);
-      HTextFlowTarget hTextFlowTarget = getOrCreateTarget(hTextFlow, hLocale);
-      translate(hTextFlowTarget, contentsToSave, state, nPlurals);
-      return hTextFlowTarget;
-   }
-
    private HTextFlowTarget translate(@Nonnull HTextFlowTarget hTextFlowTarget, @Nonnull List<String> contentsToSave, ContentState requestedState, int nPlurals)
    {
       boolean targetChanged = false;

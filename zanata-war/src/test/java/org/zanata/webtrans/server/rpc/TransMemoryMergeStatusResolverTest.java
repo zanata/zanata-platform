@@ -34,6 +34,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.MergeOption;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import com.google.common.collect.Lists;
@@ -86,7 +87,8 @@ public class TransMemoryMergeStatusResolverTest
 
    private static TransMemoryMerge mergeTMAction(MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
    {
-      return new TransMemoryMerge(80, Lists.newArrayList(new TransUnitId(1)), differentProjectOption, differentDocumentOption, differentResIdOption);
+      TransUnitUpdateRequest updateRequest = new TransUnitUpdateRequest(new TransUnitId(1), null, null, 0);
+      return new TransMemoryMerge(80, Lists.newArrayList(updateRequest), differentProjectOption, differentDocumentOption, differentResIdOption);
    }
 
    private static TransMemoryMerge mergeTMActionWhenResIdIsDifferent(MergeOption resIdOption)

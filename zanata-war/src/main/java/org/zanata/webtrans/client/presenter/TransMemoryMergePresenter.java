@@ -32,9 +32,13 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.MergeOption;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
+import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
+import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -73,21 +77,6 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
    }
 
    @Override
-   protected void onBind()
-   {
-   }
-
-   @Override
-   protected void onUnbind()
-   {
-   }
-
-   @Override
-   protected void onRevealDisplay()
-   {
-   }
-
-   @Override
    public void proceedToMergeTM(String percentage, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
    {
       Collection<TransUnit> newItems = getUntranslatedItems();
@@ -101,7 +90,7 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
 
       display.showProcessing();
       TransMemoryMerge action = prepareTMMergeAction(newItems, percentage, differentProjectOption, differentDocumentOption, differentResIdOption);
-      dispatcher.execute(action, new AsyncCallback<NoOpResult>()
+      dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>()
       {
          @Override
          public void onFailure(Throwable caught)
@@ -112,11 +101,11 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
          }
 
          @Override
-         public void onSuccess(NoOpResult result)
+         public void onSuccess(UpdateTransUnitResult result)
          {
             eventBus.fireEvent(new NotificationEvent(Info, messages.mergeTMSuccess()));
             display.hide();
-            tableEditorPresenter.initialiseTransUnitList();
+//            tableEditorPresenter.initialiseTransUnitList();
          }
       });
    }
@@ -134,18 +123,19 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
       });
    }
 
-   private TransMemoryMerge prepareTMMergeAction(Collection<TransUnit> newItems, String percentage, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
+   private TransMemoryMerge prepareTMMergeAction(Collection<TransUnit> untranslatedTUs, String percentage, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
    {
       Integer threshold = Integer.valueOf(percentage);
-      List<TransUnitId> unitIds = Lists.newArrayList(Collections2.transform(newItems, new Function<TransUnit, TransUnitId>()
+
+      List<TransUnitUpdateRequest> updateRequests = Lists.newArrayList(Collections2.transform(untranslatedTUs, new Function<TransUnit, TransUnitUpdateRequest>()
       {
          @Override
-         public TransUnitId apply(TransUnit from)
+         public TransUnitUpdateRequest apply(TransUnit from)
          {
-            return from.getId();
+            return new TransUnitUpdateRequest(from.getId(), null, null, from.getVerNum());
          }
       }));
-      return new TransMemoryMerge(threshold, unitIds, differentProjectOption, differentDocumentOption, differentResIdOption);
+      return new TransMemoryMerge(threshold, updateRequests, differentProjectOption, differentDocumentOption, differentResIdOption);
    }
 
    @Override
@@ -157,5 +147,21 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
    public void prepareTMMerge()
    {
       display.showForm();
+   }
+
+
+   @Override
+   protected void onBind()
+   {
+   }
+
+   @Override
+   protected void onUnbind()
+   {
+   }
+
+   @Override
+   protected void onRevealDisplay()
+   {
    }
 }

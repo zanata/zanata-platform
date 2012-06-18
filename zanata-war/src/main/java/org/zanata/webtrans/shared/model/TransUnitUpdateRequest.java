@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.zanata.common.ContentState;
+import com.google.common.base.Objects;
 
 /**
  * Represents a request to update the translation for a {@link TransUnit},
@@ -77,4 +78,14 @@ public class TransUnitUpdateRequest implements Serializable
       return baseTranslationVersion;
    }
 
+   @Override
+   public String toString()
+   {
+      return Objects.toStringHelper(this).
+            add("transUnitId", transUnitId).
+            add("newContents", newContents).
+            add("newContentState", newContentState).
+            add("baseTranslationVersion", baseTranslationVersion).
+            toString();
+   }
 }

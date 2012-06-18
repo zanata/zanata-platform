@@ -30,6 +30,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.inject.Inject;
@@ -88,7 +89,7 @@ public class TMMergeForm extends Composite
       listener.cancelMergeTM();
    }
 
-   interface TMMergeFormUiBinder extends UiBinder<VerticalPanel, TMMergeForm>
+   interface TMMergeFormUiBinder extends UiBinder<Grid, TMMergeForm>
    {
    }
 }
