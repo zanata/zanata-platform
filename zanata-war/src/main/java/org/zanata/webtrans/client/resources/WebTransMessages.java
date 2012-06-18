@@ -128,11 +128,11 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Project-wide Search and Replace")
    String projectWideSearchAndReplace();
 
-   @DefaultMessage("has quit workspace")
-   String hasQuitWorkspace();
+   @DefaultMessage("{0} has quit workspace")
+   String hasQuitWorkspace(String user);
 
-   @DefaultMessage("has joined workspace")
-   String hasJoinedWorkspace();
+   @DefaultMessage("{0} has joined workspace")
+   String hasJoinedWorkspace(String user);
 
    @DefaultMessage("Searching")
    String searching();
@@ -278,14 +278,14 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Sign Out")
    String signOut();
 
-   @DefaultMessage("Search and replace")
+   @DefaultMessage("Search & replace")
    String searchAndReplace();
 
    @DefaultMessage("▼")
    String downArrow();
 
-   @DefaultMessage("Error notification")
-   String errorNotification();
+   @DefaultMessage("Notification")
+   String notification();
 
    @DefaultMessage("Available Keyboard Shortcuts")
    String availableKeyShortcutsTitle();
@@ -325,6 +325,9 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Show project-wide search view")
    String showProjectWideSearch();
+
+   @DefaultMessage("Warning! This is a public channel")
+   String thisIsAPublicChannel();
 
    @DefaultMessage("Only show documents that contain the search text with matching case")
    String docListFilterCaseSensitiveDescription();

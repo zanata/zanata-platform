@@ -124,7 +124,7 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
    {
       if (!isSlugAvailable(slug))
       {
-         FacesMessages.instance().addToControl(componentId, "This Version ID is not available");
+         FacesMessages.instance().addToControl(componentId, "This Version ID has been used in this project");
          return false;
       }
       return true;

@@ -722,7 +722,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
          UpdateType updateType = rowValue.getStatus() == ContentState.Approved ? UpdateType.WebEditorSave : UpdateType.WebEditorSaveFuzzy;
          Log.debug("row updated, calculated update type: " + updateType);
          final UpdateTransUnit updateTransUnit = new UpdateTransUnit(new TransUnitUpdateRequest(rowValue.getId(), rowValue.getTargets(), rowValue.getStatus(), rowValue.getVerNum()), updateType);
-         eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifySaving()));
          dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
          {
             @Override

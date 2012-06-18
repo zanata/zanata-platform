@@ -32,8 +32,11 @@ import org.zanata.webtrans.client.ui.SplitLayoutPanelHelper;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.StyleInjector;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.LayoutPanel;
@@ -47,6 +50,11 @@ public class TranslationView extends Composite implements TranslationPresenter.D
 {
    interface TranslationViewUiBinder extends UiBinder<LayoutPanel, TranslationView>
    {
+   }
+
+   interface Styles extends CssResource
+   {
+      String messageAlert();
    }
 
    private static TranslationViewUiBinder uiBinder = GWT.create(TranslationViewUiBinder.class);
@@ -69,14 +77,38 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    @UiField
    SplitLayoutPanel mainSplitPanel;
 
+   @UiField
+   Styles style;
+
    LayoutPanel userPanel;
 
    SplitLayoutPanel tmGlossaryPanel;
 
-   private double panelWidth = 20;
-   private double southHeight = 30;
-   private double glossaryPanelWidth = 500;
+   private static double SIDE_PANEL_WIDTH = 20;
+   private static double SOUTH_PANEL_HEIGHT = 30;
+   private final static double GLOSSARY_PANEL_WIDTH = 500;
 
+   private final static int ANIMATE_DURATION = 200;
+
+   private boolean isAlert = false;
+
+   private final Timer msgAlertTimer = new Timer()
+   {
+      @Override
+      public void run()
+      {
+         if (!isAlert)
+         {
+            setMessageAlert();
+            isAlert = true;
+         }
+         else
+         {
+            removeMessageAlert();
+            isAlert = false;
+         }
+      }
+   };
 
    @Inject
    public TranslationView(Resources resources, WebTransMessages messages, TranslationEditorPresenter.Display translationEditorView, OptionsPanelPresenter.Display sidePanelView, TransMemoryPresenter.Display transMemoryView, WorkspaceUsersPresenter.Display workspaceUsersView, GlossaryPresenter.Display glossaryView)
@@ -98,8 +130,8 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       southPanelToggleButton.setDown(true);
 
       initWidget(uiBinder.createAndBindUi(this));
-      mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) panelWidth);
-      mainSplitPanel.setWidgetMinSize(southPanelContainer, (int) southHeight);
+      mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) SIDE_PANEL_WIDTH);
+      mainSplitPanel.setWidgetMinSize(southPanelContainer, (int) SOUTH_PANEL_HEIGHT);
 
       southPanelTab.add(tmGlossaryPanel, messages.tmGlossaryHeading());
       southPanelTab.add(userPanel, messages.nUsersOnline(0));
@@ -130,7 +162,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    private void setGlossaryView(Widget glossaryView)
    {
       tmGlossaryPanel.remove(glossaryView);
-      tmGlossaryPanel.addEast(glossaryView, glossaryPanelWidth);
+      tmGlossaryPanel.addEast(glossaryView, GLOSSARY_PANEL_WIDTH);
    }
 
    private void setEditorView(Widget editorView)
@@ -156,6 +188,22 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       southPanelTab.setTabText(southPanelTab.getWidgetIndex(userPanel), title);
    }
 
+   private void setMessageAlert()
+   {
+      southPanelTab.getTabWidget(southPanelTab.getWidgetIndex(userPanel)).addStyleName(style.messageAlert());
+   }
+
+   private void removeMessageAlert()
+   {
+      southPanelTab.getTabWidget(southPanelTab.getWidgetIndex(userPanel)).removeStyleName(style.messageAlert());
+   }
+
+   @Override
+   public boolean isUserPanelOpen()
+   {
+      return southPanelTab.getSelectedIndex() == southPanelTab.getWidgetIndex(userPanel);
+   }
+
    @Override
    public void setSidePanelVisible(boolean visible)
    {
@@ -163,15 +211,15 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       Widget splitter = SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel, sidePanelOuterContainer);
       if (visible)
       {
-         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, sidePanelOuterContainer, panelWidth);
+         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, sidePanelOuterContainer, SIDE_PANEL_WIDTH);
       }
       else
       {
-         panelWidth = mainSplitPanel.getWidgetContainerElement(sidePanelOuterContainer).getOffsetWidth();
+         SIDE_PANEL_WIDTH = mainSplitPanel.getWidgetContainerElement(sidePanelOuterContainer).getOffsetWidth();
          SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, sidePanelOuterContainer, 0);
       }
       splitter.setVisible(visible);
-      mainSplitPanel.animate(200);
+      mainSplitPanel.animate(ANIMATE_DURATION);
    }
 
    @Override
@@ -181,28 +229,28 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       Widget splitter = SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel, southPanelContainer);
       if (expanded)
       {
-         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, southHeight);
+         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, SOUTH_PANEL_HEIGHT);
       }
       else
       {
-         southHeight = mainSplitPanel.getWidgetContainerElement(southPanelContainer).getOffsetHeight();
-         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, 26);
+         SOUTH_PANEL_HEIGHT = mainSplitPanel.getWidgetContainerElement(southPanelContainer).getOffsetHeight();
+         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, SOUTH_PANEL_HEIGHT);
       }
       splitter.setVisible(expanded);
-      mainSplitPanel.animate(200);
+      mainSplitPanel.animate(ANIMATE_DURATION);
 
    }
 
    @Override
    public void setSouthPanelVisible(boolean visible)
    {
-      double splitPosition = visible ? 26 : 0;
+      double splitPosition = visible ? SOUTH_PANEL_HEIGHT : 0;
 
       mainSplitPanel.forceLayout();
       // TODO retain southHeight? Workaround is to collapse first
       SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, splitPosition);
       SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel, southPanelContainer).setVisible(visible);
-      mainSplitPanel.animate(200);
+      mainSplitPanel.animate(ANIMATE_DURATION);
    }
 
    @Override
@@ -221,6 +269,26 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    public HasValue<Boolean> getSouthPanelToggle()
    {
       return southPanelToggleButton;
+   }
+
+   @Override
+   public HasSelectionHandlers<Integer> getSouthTabPanel()
+   {
+      return southPanelTab;
+   }
+
+   @Override
+   public void startAlert(int periodMillis)
+   {
+      msgAlertTimer.scheduleRepeating(periodMillis);
+      msgAlertTimer.run();
+   }
+
+   @Override
+   public void cancelAlert()
+   {
+      msgAlertTimer.cancel();
+      removeMessageAlert();
    }
 
 }
