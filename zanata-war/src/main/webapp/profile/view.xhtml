@@ -89,9 +89,9 @@
                       styleClass="version_header">
                 <h:outputText value="None Available" rendered="#{empty personHome.instance.maintainerVersionGroups}"/>
                 <h:form>
-                    <rich:dataGrid value="#{personHome.instance.maintainerVersionGroups.toArray()}" var="group" columns="6" styleClass="noBorderTable" style="border:0px">
+                    <rich:dataGrid value="#{personHome.instance.maintainerVersionGroups.toArray()}" var="group" columns="3" styleClass="noBorderTable" style="border:0px">
                         <s:link view="/version-group/version_group.xhtml" propagation="none" value="#{group.name}" styleClass="table_link">
-                            <f:param name="slug" value="#{group.slug}" />
+                            <f:param name="versionGroupSlug" value="#{group.slug}" />
                         </s:link>
                     </rich:dataGrid>
                 </h:form>

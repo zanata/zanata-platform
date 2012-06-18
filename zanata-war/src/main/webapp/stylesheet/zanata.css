@@ -449,6 +449,11 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
     background:white;
 }
 
+.noBackgroundTable
+{
+    background:none;
+}
+
 .noBorderTable .rich-table {
 	border-width: 0px;
 }
