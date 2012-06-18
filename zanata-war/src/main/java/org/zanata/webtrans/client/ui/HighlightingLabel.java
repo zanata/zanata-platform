@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.ui;
 
+import com.google.common.base.Strings;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HTML;
 
@@ -65,7 +66,14 @@ public class HighlightingLabel extends HTML
    public void highlightSearch(String search)
    {
       Element element = getElement();
-      Highlighting.searchHighlight(search, element);
+      if (Strings.isNullOrEmpty(search))
+      {
+         highlight();
+      }
+      else
+      {
+         Highlighting.searchHighlight(search, element);
+      }
    }
 
 }

@@ -10,12 +10,14 @@ public class PublishWorkspaceChatEvent extends GwtEvent<PublishWorkspaceChatEven
    private final String personId;
    private final String timestamp;
    private final String msg;
+   private final MESSAGE_TYPE messageType;
 
    public PublishWorkspaceChatEvent(HasWorkspaceChatData data)
    {
       personId = data.getPersonId();
       timestamp = data.getTimestamp();
       msg = data.getMsg();
+      messageType = data.getMessageType();
    }
 
    /**
@@ -65,5 +67,11 @@ public class PublishWorkspaceChatEvent extends GwtEvent<PublishWorkspaceChatEven
    public String getMsg()
    {
       return msg;
+   }
+
+   @Override
+   public MESSAGE_TYPE getMessageType()
+   {
+      return messageType;
    }
 }

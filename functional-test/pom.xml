@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.zanata</groupId>
         <artifactId>server</artifactId>
-        <version>1.6.1-SNAPSHOT</version>
+        <version>1.7-SNAPSHOT</version>
     </parent>
     <groupId>org.zanata</groupId>
     <artifactId>functional-test</artifactId>
@@ -188,6 +188,7 @@
                                 <systemProperties>
                                     <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
                                     <jboss.server.log.threshold>INFO</jboss.server.log.threshold>
+                                    <hibernate.search.default.indexBase>${project.build.directory}/zanataindex</hibernate.search.default.indexBase>
                                 </systemProperties>
                             </container>
                             <configuration>

@@ -73,18 +73,23 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
       int getMessageCount();
 
       void setPopupTopRightCorner();
+
+      void show(int delayMillisToClose);
    }
 
-   private HasErrorNotificationLabel listener;
+   private HasNotificationLabel listener;
+
+   private static final int MESSAGE_TO_KEEP = 6;
 
    @Override
    protected void onBind()
    {
-      display.setModal(true);
+      display.setModal(false);
       display.setAutoHideEnabled(true);
       display.setAnimationEnabled(true);
       display.hide(true);
-      display.setMessagesToKeep(5);
+      display.setMessagesToKeep(MESSAGE_TO_KEEP);
+      display.setPopupTopRightCorner();
 
       registerHandler(display.getDismissButton().addClickHandler(new ClickHandler()
       {
@@ -102,7 +107,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
          {
             display.clearMessages();
             display.hide(true);
-            listener.setErrorNotificationLabel(display.getMessageCount());
+            listener.setNotificationLabel(display.getMessageCount(), Severity.Info);
          }
       }));
 
@@ -111,36 +116,40 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
          @Override
          public void onNotification(NotificationEvent event)
          {
-            if (event.getSeverity() == Severity.Error)
-            {
-               appendError(event.getMessage());
-               Log.info("Error Notification:" + event.getMessage());
-            }
+            appendNotification(event.getSeverity(), event.getMessage());
+            Log.info("Notification:" + event.getMessage());
+            listener.setNotificationLabel(display.getMessageCount(), event.getSeverity());
          }
       }));
-
    }
 
-   public void setErrorLabelListener(HasErrorNotificationLabel listener)
+   public void setNotificationListener(HasNotificationLabel listener)
    {
       this.listener = listener;
+      listener.setNotificationLabel(0, Severity.Info);
    }
 
-   public void showErrorNotification()
+   private void showNotification()
    {
-      display.setPopupTopRightCorner();
+      display.show(2500);
+   }
+
+   public void showNotificationWithNoTimer()
+   {
       display.show();
    }
 
-   private void appendError(String msg)
+   private void appendNotification(Severity severity, String msg)
    {
-      display.appendMessage(Severity.Error, msg);
-      showErrorNotification();
-   }
-
-   public int getMessageCount()
-   {
-      return display.getMessageCount();
+      display.appendMessage(severity, msg);
+      if (severity == Severity.Error)
+      {
+         showNotificationWithNoTimer();
+      }
+      else
+      {
+         showNotification();
+      }
    }
 
    @Override

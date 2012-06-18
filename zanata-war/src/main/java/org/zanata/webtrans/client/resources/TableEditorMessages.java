@@ -24,9 +24,6 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Failed to load data from server")
    String notifyLoadFailed();
 
-   @DefaultMessage("Saving...")
-   String notifySaving();
-
    @DefaultMessage("Save FAILED: {0}")
    String notifyUpdateFailed(String errorMessage);
 

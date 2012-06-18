@@ -426,3 +426,24 @@ when
 then
   check.grant();
 end
+
+/*****************************************************************************************
+
+  Copy Trans rules
+
+******************************************************************************************/
+
+/** Admins and Project maintainers can perform copy-trans  */
+
+rule IterationCopyTrans
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck( action == "copy-trans", granted == false )
+  authenticatedPerson: HPerson()
+  $iteration: HProjectIteration(
+    eval( authenticatedPerson.isMaintainer( $iteration.getProject() ) )
+  )
+then
+  check.grant();
+end

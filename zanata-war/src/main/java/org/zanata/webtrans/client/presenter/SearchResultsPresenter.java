@@ -71,7 +71,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -166,10 +165,10 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
        * 
        * @see SearchResultsDocumentTable#SearchResultsDocumentTable(SelectionModel, ValueChangeHandler, WebTransMessages)
        */
-      HasData<TransUnitReplaceInfo> addDocument(String docName,
+      ListDataProvider<TransUnitReplaceInfo> addDocument(String docName,
             ClickHandler viewDocClickHandler,
             ClickHandler searchDocClickHandler,
-            SelectionModel<TransUnitReplaceInfo> selectionModel,
+            MultiSelectionModel<TransUnitReplaceInfo> selectionModel,
             ValueChangeHandler<Boolean> selectAllHandler);
 
       /**
@@ -181,15 +180,22 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
        * @see #addDocument(String, ClickHandler, ClickHandler, SelectionModel, ValueChangeHandler)
        * @see SearchResultsDocumentTable#SearchResultsDocumentTable(Delegate, Delegate, Delegate, SelectionModel, ValueChangeHandler, WebTransMessages, org.zanata.webtrans.client.resources.Resources)
        */
-      HasData<TransUnitReplaceInfo> addDocument(
+      ListDataProvider<TransUnitReplaceInfo> addDocument(
             String docName,
             ClickHandler viewDocClickHandler,
             ClickHandler searchDocClickHandler,
-            SelectionModel<TransUnitReplaceInfo> selectionModel,
+            MultiSelectionModel<TransUnitReplaceInfo> selectionModel,
             ValueChangeHandler<Boolean> selectAllHandler,
             Delegate<TransUnitReplaceInfo> previewDelegate,
             Delegate<TransUnitReplaceInfo> replaceDelegate,
             Delegate<TransUnitReplaceInfo> undoDelegate);
+
+      /**
+       * Required to avoid instantiating a component that calls client-only code in the presenter
+       * 
+       * @return a new selection model for use with table
+       */
+      MultiSelectionModel<TransUnitReplaceInfo> createMultiSelectionModel();
    }
 
    private final WebTransMessages messages;
@@ -276,7 +282,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          @Override
          public void onValueChange(ValueChangeEvent<String> event)
          {
-            HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+            HistoryToken token = history.getHistoryToken();
             if (!event.getValue().equals(token.getProjectSearchReplacement()))
             {
                token.setProjectSearchReplacement(event.getValue());
@@ -535,7 +541,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             int textFlowCount = displaySearchResults(result);
             if (result.getDocumentIds().size() == 0)
             {
-               display.getSearchResponseLabel().setText("");
+               // TODO add case sensitivity and scope
+               display.getSearchResponseLabel().setText(messages.searchForPhraseReturnedNoResults(result.getSearchAction().getSearchString()));
             }
             else
             {
@@ -1043,25 +1050,22 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     */
    private void displayDocumentResults(Long docId, final String docPathName, List<TransUnit> transUnits)
    {
-      final MultiSelectionModel<TransUnitReplaceInfo> selectionModel = new MultiSelectionModel<TransUnitReplaceInfo>();
-      final ListDataProvider<TransUnitReplaceInfo> dataProvider = new ListDataProvider<TransUnitReplaceInfo>();
-      documentDataProviders.put(docId, dataProvider);
+      ListDataProvider<TransUnitReplaceInfo> dataProvider;
+      final MultiSelectionModel<TransUnitReplaceInfo> selectionModel = display.createMultiSelectionModel();
       documentSelectionModels.put(docId, selectionModel);
-
-      HasData<TransUnitReplaceInfo> table;
       ClickHandler showDocHandler = showDocClickHandler(docPathName, false);
       ClickHandler searchDocHandler = showDocClickHandler(docPathName, true);
-      ValueChangeHandler<Boolean> selectDocHandler = selectAllHandler(selectionModel, dataProvider);
+      ValueChangeHandler<Boolean> selectDocHandler = selectAllHandler(docId, selectionModel);
       if (showRowActionButtons)
       {
-         table = display.addDocument(docPathName, showDocHandler, searchDocHandler, selectionModel, selectDocHandler,
+         dataProvider = display.addDocument(docPathName, showDocHandler, searchDocHandler, selectionModel, selectDocHandler,
                ensurePreviewButtonDelegate(), ensureReplaceButtonDelegate(), ensureUndoButtonDelegate());
       }
       else
       {
-         table = display.addDocument(docPathName, showDocHandler, searchDocHandler, selectionModel, selectDocHandler);
+         dataProvider = display.addDocument(docPathName, showDocHandler, searchDocHandler, selectionModel, selectDocHandler);
       }
-      dataProvider.addDataDisplay(table);
+      documentDataProviders.put(docId, dataProvider);
 
       selectionModel.addSelectionChangeHandler(selectionChangeHandler);
 
@@ -1102,7 +1106,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     * @param dataProvider
     * @return the new handler
     */
-   private ValueChangeHandler<Boolean> selectAllHandler(final MultiSelectionModel<TransUnitReplaceInfo> selectionModel, final ListDataProvider<TransUnitReplaceInfo> dataProvider)
+   private ValueChangeHandler<Boolean> selectAllHandler(final Long docId, final MultiSelectionModel<TransUnitReplaceInfo> selectionModel)
    {
       return new ValueChangeHandler<Boolean>()
       {
@@ -1111,9 +1115,13 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          {
             if (event.getValue())
             {
-               for (TransUnitReplaceInfo info : dataProvider.getList())
+               ListDataProvider<TransUnitReplaceInfo> dataProvider = documentDataProviders.get(docId);
+               if (dataProvider != null)
                {
-                  selectionModel.setSelected(info, true);
+                  for (TransUnitReplaceInfo info : dataProvider.getList())
+                  {
+                     selectionModel.setSelected(info, true);
+                  }
                }
             }
             else

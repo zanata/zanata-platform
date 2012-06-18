@@ -39,6 +39,7 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
@@ -199,4 +200,12 @@ public class CopyTransServiceImpl implements CopyTransService
       log.info("copyTrans finished: document \"{0}\"", document.getDocId());
    }
 
+   @Override
+   public void copyTransForIteration(HProjectIteration iteration)
+   {
+      for( HDocument doc : iteration.getDocuments().values() )
+      {
+         this.copyTransForDocument(doc);
+      }
+   }
 }
