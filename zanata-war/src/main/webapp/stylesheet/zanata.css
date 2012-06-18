@@ -203,6 +203,17 @@ td.wrapped {
     word-wrap: break-word;
 }
 
+a.button {
+	font-size: 1em;
+	font-weight: bold;
+	background-color: #FFFFFF;
+	border: 1px solid #A2C4F5;
+	padding: 1px 8px;
+	border-radius: 5px;
+	color: #7092C3;
+	text-align: center;
+}
+
 a.action_link {
 	display: block;
 	font-size: 14px;
@@ -210,14 +221,13 @@ a.action_link {
 	background-color: #FFFFFF;
 	border: 1px solid #A2C4F5;
 	padding: 4px;
-	-moz-border-radius: 5px;
 	border-radius: 5px;
 	color: #7092C3;
 	margin-top: 4px;
 	text-align: center;
 }
 
-a.action_link:hover {
+a.action_link:hover, a.button:hover {
 	background-color: #FFFFFF;
 	border:1px solid #990000;
 	color:#990000;

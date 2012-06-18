@@ -35,7 +35,7 @@
           </s:link>
 	    </h1>
                       
-      <rich:panel rendered="#{s:hasPermission(versionGroupMaintainerManageAction.iterationGroup, 'update')}">
+      <rich:panel rendered="#{s:hasPermission(versionGroupMaintainerManageAction.group, 'update')}">
         <f:facet name="header">#{messages['jsf.GroupMaintainers']}</f:facet>
 		<h:messages />
 		
@@ -68,7 +68,7 @@
       </rich:panel>
 
         <rich:modalPanel id="maintainerAddPanel" width="505" autosized="true" moveable="false">
-            <rich:panel rendered="#{s:hasPermission(versionGroupMaintainerManageAction.iterationGroup, 'update')}">
+            <rich:panel rendered="#{s:hasPermission(versionGroupMaintainerManageAction.group, 'update')}">
                 <a4j:form>
                     <h1>#{messages['jsf.AddGroupMaintainer']}</h1>
                     <ui:include src="../WEB-INF/layout/add_maintainer_form.xhtml" />

@@ -173,4 +173,21 @@ public class VersionGroupServiceImpl implements VersionGroupService
       return false;
    }
 
+   @Override
+   public boolean isGroupInVersion(String groupSlug, Long projectIterationId)
+   {
+      HIterationGroup group = versionGroupDAO.getBySlug(groupSlug);
+      if (group != null)
+      {
+         for (HProjectIteration iteration : group.getProjectIterations())
+         {
+            if (iteration.getId().equals(projectIterationId))
+            {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+
 }

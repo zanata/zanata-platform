@@ -217,8 +217,6 @@
                 </a4j:form>
                 <a4j:region>
                     <a4j:status id="searchStatus" startText="Searching..." stopText="" />
-
-
                     <a4j:form id="searchResults">
                         <h:outputText id="noResultsMessage" rendered="#{empty viewAllStatusAction.searchResults}" value="#{messages['jsf.NoResultToDisplay']}" />
                         <a4j:outputPanel layout="block" style="overflow:auto;height:320px" rendered="#{not empty viewAllStatusAction.searchResults}">
@@ -239,10 +237,10 @@
                                         <h:outputText value="#{messages['jsf.Actions']}"/>
                                     </f:facet>
 
-                                    <s:link view="/iteration/request_join_group/#{group.slug}/#{viewAllStatusAction.projectSlug}/#{viewAllStatusAction.projectIteration.slug}" rendered="#{!viewAllStatusAction.isVersionInGroup()}" title="Select group" value="Select" propagation="none"/>
+                                    <s:link view="/iteration/request_join_group/#{group.slug}/#{viewAllStatusAction.projectSlug}/#{viewAllStatusAction.projectIteration.slug}" rendered="#{!viewAllStatusAction.isGroupInVersion(group.slug)}" title="Select group" value="Select" propagation="none" styleClass="button"/>
 
                                     <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
-                                                  rendered="#{viewAllStatusAction.isVersionInGroup()}" />
+                                                  rendered="#{viewAllStatusAction.isGroupInVersion(group.slug)}" />
 
                                 </rich:column>
                             </rich:dataTable>

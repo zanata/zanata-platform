@@ -83,7 +83,7 @@
     </rich:dataList>
   </rich:panel>
 
-  <s:fragment rendered="#{versionGroupAction.showPopup() and s:hasPermission(versionGroupHome.instance, 'update')}">
+  <s:fragment rendered="#{versionGroupAction.isParamExists() and s:hasPermission(versionGroupHome.instance, 'update')}">
  	 <script>
  	 	jQuery(document).ready(function() 
  	 	{
@@ -129,7 +129,7 @@
                             <rich:column styleClass="centered">
                                 <f:facet name="header">
                                     <h:panelGroup>
-                                        <h:selectBooleanCheckbox title="Select all" value="#{versionGroupAction.selectAll()}">
+                                        <h:selectBooleanCheckbox title="Select all" value="#{versionGroupAction.selectAll}">
                                             <a4j:support event="onchange" reRender="searchResults" action="#{versionGroupAction.selectAll()}"/>
                                         </h:selectBooleanCheckbox>
                                     </h:panelGroup>

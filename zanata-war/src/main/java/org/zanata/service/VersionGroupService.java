@@ -53,6 +53,7 @@ public interface VersionGroupService
 
    boolean isVersionInGroup(HIterationGroup group, Long projectIterationId);
 
+   boolean isGroupInVersion(String groupSlug, Long id);
 
    public final class SelectableHIterationProject
    {

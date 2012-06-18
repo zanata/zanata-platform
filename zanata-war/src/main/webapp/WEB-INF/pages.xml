@@ -213,7 +213,7 @@
   	</page>
 
     <page view-id="/version-group/assign_maintainer.xhtml" >
-        <param name="versionGroupSlug" value="#{versionGroupHome.slug}" />
+        <param name="versionGroupSlug" value="#{versionGroupMaintainerManageAction.slug}" />
         <action execute="#{versionGroupMaintainerManageAction.init()}" />
     </page>
     
