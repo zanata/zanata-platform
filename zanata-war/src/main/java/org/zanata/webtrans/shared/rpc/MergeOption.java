@@ -21,8 +21,6 @@
 
 package org.zanata.webtrans.shared.rpc;
 
-import com.google.common.base.Strings;
-
 public enum MergeOption
 {
    FUZZY, SKIP, APPROVED

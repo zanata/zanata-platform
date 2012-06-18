@@ -22,7 +22,6 @@
 package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.resources.EnumMessages;
-import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 import org.zanata.webtrans.shared.rpc.MergeOption;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

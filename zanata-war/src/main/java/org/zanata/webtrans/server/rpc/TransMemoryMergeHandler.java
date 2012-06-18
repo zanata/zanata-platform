@@ -23,11 +23,8 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Nullable;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -35,35 +32,23 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.testng.collections.Lists;
 import org.zanata.common.ContentState;
-import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
-import org.zanata.security.ZanataIdentity;
-import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
-import org.zanata.service.TranslationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
-import org.zanata.webtrans.server.TranslationWorkspaceManager;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
-import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
-import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
-import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -113,17 +98,10 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
       {
          ArrayList<TransMemoryResultItem> tmResults = getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(hTextFlow.getContents(), SearchType.FUZZY_PLURAL), idsWithTranslations);
          TransMemoryResultItem tmResult = findTMAboveThreshold(tmResults, predicate);
-         if (tmResult != null)
+         TransUnitUpdateRequest request = createRequest(action, hLocale, requestMap, hTextFlow, tmResult);
+         if (request != null)
          {
-            TransMemoryDetails tmDetail = getTransMemoryDetailsHandler.getTransMemoryDetail(hLocale, hTextFlow);
-            ContentState statusToSet = new TransMemoryMergeStatusResolver().workOutStatus(action, hTextFlow, tmDetail, tmResult);
-            if (statusToSet != null)
-            {
-               TransUnitUpdateRequest unfilledRequest = requestMap.get(hTextFlow.getId());
-               TransUnitUpdateRequest request = new TransUnitUpdateRequest(unfilledRequest.getTransUnitId(), tmResult.getTargetContents(), statusToSet, unfilledRequest.getBaseTranslationVersion());
-               log.debug("auto translate from translation memory {}", request);
-               updateRequests.add(request);
-            }
+            updateRequests.add(request);
          }
       }
 
@@ -153,6 +131,24 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
       {
          return null;
       }
+   }
+
+   private TransUnitUpdateRequest createRequest(TransMemoryMerge action, HLocale hLocale, Map<Long, TransUnitUpdateRequest> requestMap, HTextFlow hTextFlow, TransMemoryResultItem tmResult)
+   {
+      if (tmResult == null)
+      {
+         return null;
+      }
+      TransMemoryDetails tmDetail = getTransMemoryDetailsHandler.getTransMemoryDetail(hLocale, hTextFlow);
+      ContentState statusToSet = new TransMemoryMergeStatusResolver().workOutStatus(action, hTextFlow, tmDetail, tmResult);
+      if (statusToSet != null)
+      {
+         TransUnitUpdateRequest unfilledRequest = requestMap.get(hTextFlow.getId());
+         TransUnitUpdateRequest request = new TransUnitUpdateRequest(unfilledRequest.getTransUnitId(), tmResult.getTargetContents(), statusToSet, unfilledRequest.getBaseTranslationVersion());
+         log.debug("auto translate from translation memory {}", request);
+         return request;
+      }
+      return null;
    }
 
    @Override
