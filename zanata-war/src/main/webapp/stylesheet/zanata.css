@@ -588,6 +588,10 @@ a.readonly_link,a.readonly_link:visited,a.readonly_link:link {
 	background: #7E91A9;
 }
 
+#menuCol .submenu {
+    margin-left:-130px;
+}
+
 div.submenu {
 	height: 0px;
 	position: absolute;
