@@ -38,7 +38,7 @@
 		
 		.timeLabel
 		{
-			font-size:10px;
+			font-size:0.7em;
 		}
 		
 	</ui:style>

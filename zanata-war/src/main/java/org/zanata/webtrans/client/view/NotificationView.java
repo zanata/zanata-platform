@@ -168,7 +168,7 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       panel.add(timeLabel);
       panel.add(msgLabel);
       panel.setCellWidth(severityImg, "20px");
-      panel.setCellWidth(timeLabel, "40px");
+      panel.setCellWidth(timeLabel, "50px");
 
       panel.setCellVerticalAlignment(severityImg, HasVerticalAlignment.ALIGN_MIDDLE);
       panel.setCellVerticalAlignment(timeLabel, HasVerticalAlignment.ALIGN_MIDDLE);
