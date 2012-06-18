@@ -23,7 +23,7 @@ package org.zanata.service.impl;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -64,8 +64,13 @@ public class EmailServiceImpl implements EmailService
    @In
    private ApplicationConfiguration applicationConfiguration;
 
+   @In
+   Map<String, String> messages;
+
+
    private String toName;
    private String toEmailAddr;
+   private String receivedReason;
 
 
    @Override
@@ -73,6 +78,7 @@ public class EmailServiceImpl implements EmailService
    {
       if (!coordinators.isEmpty())
       {
+         receivedReason = messages.get("jsf.email.coordinator.ReceivedReason");
          for (HPerson coord : coordinators)
          {
             toName = coord.getName();
@@ -93,6 +99,7 @@ public class EmailServiceImpl implements EmailService
    {
       if (!maintainers.isEmpty())
       {
+         receivedReason = messages.get("jsf.email.group.maintainer.ReceivedReason");
          for (HPerson maintainer : maintainers)
          {
             toName = maintainer.getName();
@@ -114,6 +121,7 @@ public class EmailServiceImpl implements EmailService
       List<String> adminEmails = applicationConfiguration.getAdminEmail();
       if (!adminEmails.isEmpty())
       {
+         receivedReason = messages.get("jsf.email.admin.ReceivedReason");
          toName = ResourceBundle.instance().getString("jsf.ZanataAdministrator");
          for (String email : adminEmails)
          {
@@ -136,6 +144,7 @@ public class EmailServiceImpl implements EmailService
     */
    private String sendToAdminUsers(String emailTemplate, String fromName, String fromLoginName, String replyEmail, String subject, String message)
    {
+      receivedReason = messages.get("jsf.email.admin.user.ReceivedReason");
       for (HPerson admin : getAdmins())
       {
          toName = admin.getName();
@@ -178,5 +187,10 @@ public class EmailServiceImpl implements EmailService
    public String getToEmailAddr()
    {
       return toEmailAddr;
+   }
+
+   public String getReceivedReason()
+   {
+      return receivedReason;
    }
 }
