@@ -312,34 +312,20 @@ public class ViewAllStatusAction implements Serializable
 
    public String getCopyTransStartTime()
    {
-      PeriodFormatter formatter = PERIOD_FORMATTER_BUILDER.toFormatter();
       CopyTransProcessHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
-      Period period = new Period( handle.getStartTimeLapse() * 1000 ); // convert to milliseconds
+      long durationSinceStart = 0;
+      if( handle.isStarted() )
+      {
+         durationSinceStart = (System.currentTimeMillis() - handle.getStartTime());
+      }
 
-      if( period.toStandardMinutes().getMinutes() <= 0 )
-      {
-         return "less than a minute"; // TODO Localize
-      }
-      else
-      {
-         return formatter.print( period.normalizedStandard() );
-      }
+      return formatTimePeriod( durationSinceStart );
    }
 
    public String getCopyTransEstimatedTimeLeft()
    {
-      PeriodFormatter formatter = PERIOD_FORMATTER_BUILDER.toFormatter();
       CopyTransProcessHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
-      Period period = new Period( handle.getEstimatedTimeRemaining() * 1000 ); // convert to milliseconds
-
-      if( period.toStandardMinutes().getMinutes() <= 0 )
-      {
-         return "less than a minute"; // TODO Localize
-      }
-      else
-      {
-         return formatter.print( period.normalizedStandard() );
-      }
+      return formatTimePeriod(handle.getEstimatedTimeRemaining());
    }
 
    public String getCopyTransStatusMessage()
@@ -347,22 +333,55 @@ public class ViewAllStatusAction implements Serializable
       if( !isCopyTransRunning() )
       {
          CopyTransProcessHandle recentProcessHandle = copyTransManager.getMostRecentlyFinished( getProjectIteration() );
+         StringBuilder message = new StringBuilder("Last Translation copy ");
 
          if( recentProcessHandle == null )
          {
             return null;
          }
-         // Only return a message when cancelled by another user
-         else if( recentProcessHandle.getCancelledBy() != null
-               && !recentProcessHandle.getCancelledBy().equals( identity.getCredentials().getUsername() ) )
+
+         // cancelled
+         if( recentProcessHandle.getCancelledBy() != null )
          {
-            return "Last Translation copy cancelled by " + recentProcessHandle.getCancelledBy();
+            message.append("cancelled by ");
+
+            // ... by the same user
+            if( recentProcessHandle.getCancelledBy().equals( identity.getCredentials().getUsername() ) )
+            {
+               message.append("you ");
+            }
+            // .. by another user
+            else
+            {
+               message.append( recentProcessHandle.getCancelledBy() ).append(" ");
+            }
+
+            // when was it done
+            message.append(formatTimePeriod( System.currentTimeMillis() - recentProcessHandle.getCancelledTime() ))
+                  .append(" ago.");
          }
-         // ... or if the process finished successfully
-         else if( recentProcessHandle != null && !recentProcessHandle.isInProgress() )
+         // completed
+         else
          {
-            return "Last Translation copy completed by " + recentProcessHandle.getTriggeredBy();
+            message.append("completed by ");
+
+            // ... by the same user
+            if( recentProcessHandle.getTriggeredBy().equals( identity.getCredentials().getUsername() ) )
+            {
+               message.append("you ");
+            }
+            // .. by another user
+            else
+            {
+               message.append( recentProcessHandle.getTriggeredBy() ).append(" ");
+            }
+
+            // when was it done
+            message.append(formatTimePeriod( System.currentTimeMillis() - recentProcessHandle.getFinishTime() ))
+                  .append(" ago.");
          }
+
+         return message.toString();
       }
       return null;
    }
@@ -370,6 +389,22 @@ public class ViewAllStatusAction implements Serializable
    public CopyTransProcessHandle getCopyTransProcessHandle()
    {
       return copyTransManager.getCopyTransProcessHandle( getProjectIteration() );
+   }
+
+   private String formatTimePeriod( long durationInMillis )
+   {
+      PeriodFormatter formatter = PERIOD_FORMATTER_BUILDER.toFormatter();
+      CopyTransProcessHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
+      Period period = new Period( durationInMillis );
+
+      if( period.toStandardMinutes().getMinutes() <= 0 )
+      {
+         return "less than a minute"; // TODO Localize
+      }
+      else
+      {
+         return formatter.print( period.normalizedStandard() );
+      }
    }
    
    private List<HLocale> getDisplayLocales()

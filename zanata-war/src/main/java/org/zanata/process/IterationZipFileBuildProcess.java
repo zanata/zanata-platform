@@ -120,7 +120,7 @@ public class IterationZipFileBuildProcess extends BackgroundProcess<IterationZip
       for (HDocument document : allIterationDocs)
       {
          // Stop the process if signaled to do so
-         if (zipHandle.getShouldStop())
+         if (zipHandle.shouldStop())
          {
             zipOutput.close();
             downloadFile.delete();

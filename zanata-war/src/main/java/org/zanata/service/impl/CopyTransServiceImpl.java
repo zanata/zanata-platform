@@ -216,7 +216,7 @@ public class CopyTransServiceImpl implements CopyTransService
 
       for( HDocument doc : iteration.getDocuments().values() )
       {
-         if( procHandle.getShouldStop() )
+         if( procHandle.shouldStop() )
          {
             return;
          }
@@ -236,7 +236,7 @@ public class CopyTransServiceImpl implements CopyTransService
 
       for (HLocale locale : localeList)
       {
-         if( processHandle.getShouldStop() )
+         if( processHandle.shouldStop() )
          {
             return;
          }

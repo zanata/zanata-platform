@@ -1,7 +1,9 @@
 package org.zanata.process;
 
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 
 /**
  * Generic background process handle. Provides information about the process.
@@ -10,26 +12,34 @@ import java.util.Date;
  */
 public class ProcessHandle
 {
-   private boolean inProgress = false;
    private boolean shouldStop = false;
    private int maxProgress = 100;
    private int minProgress = 0;
    private int currentProgress = 0;
    private long startTime = -1;
+   private long finishTime = -1;
+
+   // process listeners
+   private Collection<BackgroundProcessListener> listeners = new HashSet<BackgroundProcessListener>();
 
    public boolean isInProgress()
    {
-      return inProgress;
+      return this.isStarted() && !this.isFinished() && currentProgress < maxProgress;
    }
 
-   public boolean getShouldStop()
+   /**
+    * Informs the process (via the handle) that it should stop.
+    * It's up to the process implementation to heed this advise or
+    * ignore it.
+    */
+   public void stop()
    {
-      return shouldStop;
+      this.shouldStop = true;
    }
 
-   public void setShouldStop(boolean shouldStop)
+   public boolean shouldStop()
    {
-      this.shouldStop = shouldStop;
+      return this.shouldStop;
    }
 
    public int getMaxProgress()
@@ -62,31 +72,47 @@ public class ProcessHandle
       if( !this.isInProgress() && this.startTime == -1 )
       {
          this.startTime = System.currentTimeMillis();
-         this.inProgress = true;
       }
    }
 
    void finish()
    {
-      this.inProgress = false;
+      this.finishTime = System.currentTimeMillis();
+      for( BackgroundProcessListener l : this.listeners )
+      {
+         l.onComplete( this );
+      }
    }
 
    public void setCurrentProgress(int currentProgress)
    {
       this.start(); // start if it hasn't been done yet
       this.currentProgress = currentProgress;
-      this.evaluateInProgress();
    }
    
    public void incrementProgress(int increment)
    {
       this.start(); // start if it hasn't been done yet
       this.currentProgress += increment;
-      this.evaluateInProgress();
+   }
+
+   public void addListener( BackgroundProcessListener listener )
+   {
+      this.listeners.add(listener);
+   }
+
+   public boolean isStarted()
+   {
+      return this.startTime != -1;
+   }
+
+   public boolean isFinished()
+   {
+      return this.finishTime != -1;
    }
 
    /**
-    * @return The estimated time (in seconds) remaining for completion of the process.
+    * @return The estimated time (in milliseconds) remaining for completion of the process.
     */
    public long getEstimatedTimeRemaining()
    {
@@ -96,7 +122,7 @@ public class ProcessHandle
          long timeElapsed = currentTime - this.startTime;
          long averageTimePerProgressUnit = timeElapsed / this.currentProgress;
 
-         return (averageTimePerProgressUnit * (this.maxProgress - this.currentProgress)) / 1000; //convert to secs
+         return averageTimePerProgressUnit * (this.maxProgress - this.currentProgress);
       }
       else
       {
@@ -105,25 +131,18 @@ public class ProcessHandle
    }
 
    /**
-    * @return The number of seconds since the process was marked as started.
+    * @return Process start time, or -1 if the process hasn't been started yet.
     */
-   public long getStartTimeLapse()
+   public long getStartTime()
    {
-      if( this.startTime != -1 )
-      {
-         return (System.currentTimeMillis() - this.startTime) / 1000; // convert to secs
-      }
-      else
-      {
-         return 0;
-      }
+      return this.startTime;
    }
 
-   private void evaluateInProgress()
+   /**
+    * @return Process finish time (cancelled or otherwise), or -1 if the process hasn't finished yet.
+    */
+   public long getFinishTime()
    {
-      if( this.currentProgress >= this.maxProgress )
-      {
-         this.inProgress = false;
-      }
+      return this.finishTime;
    }
 }

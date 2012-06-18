@@ -28,6 +28,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.security.Identity;
 import org.zanata.model.HProjectIteration;
+import org.zanata.process.BackgroundProcessListener;
 import org.zanata.process.CopyTransProcess;
 import org.zanata.process.CopyTransProcessHandle;
 
@@ -47,12 +48,22 @@ import java.util.concurrent.TimeUnit;
 @Startup
 public class CopyTransManager
 {
+   // Single instance of the process listener
+   private final CopyTransProcessListener listenerInstance = new CopyTransProcessListener();
+
    // Collection of currently running copy trans processes
    private Map<Long, CopyTransProcessHandle> currentlyRunning =
          Collections.synchronizedMap( new HashMap<Long, CopyTransProcessHandle>() );
 
    // Collection of recently cancelled copy trans processes (discards the oldest ones)
    private Map<Long, CopyTransProcessHandle> recentlyCancelled =
+         new MapMaker()
+               .softValues()
+               .expiration(1, TimeUnit.HOURS) // keep them for an hour
+               .makeMap();
+
+   // Collection of recently completed copy trans processes (discards the olders ones)
+   private Map<Long, CopyTransProcessHandle> recentlyFinished =
          new MapMaker()
                .softValues()
                .expiration(1, TimeUnit.HOURS) // keep them for an hour
@@ -68,8 +79,7 @@ public class CopyTransManager
    public boolean isCopyTransRunning( HProjectIteration iteration )
    {
       return currentlyRunning.containsKey( iteration.getId() )
-            && currentlyRunning.get( iteration.getId() ).isInProgress()
-            && !currentlyRunning.get( iteration.getId() ).getShouldStop();
+            && !currentlyRunning.get( iteration.getId() ).isFinished();
    }
 
    public void startCopyTrans( HProjectIteration iteration )
@@ -82,6 +92,7 @@ public class CopyTransManager
 
       CopyTransProcessHandle handle = new CopyTransProcessHandle( iteration, identity.getCredentials().getUsername() );
       handle.setMaxProgress( iteration.getDocuments().size() );
+      handle.addListener(listenerInstance);
       currentlyRunning.put(iteration.getId(), handle);
 
       copyTransProcess.startProcess(handle);
@@ -97,7 +108,8 @@ public class CopyTransManager
       if( isCopyTransRunning(iteration) )
       {
          CopyTransProcessHandle handle = this.getCopyTransProcessHandle(iteration);
-         handle.setShouldStop( true );
+         handle.stop();
+         handle.setCancelledTime( System.currentTimeMillis() );
          handle.setCancelledBy( identity.getCredentials().getUsername() );
          this.recentlyCancelled.put( iteration.getId(), this.currentlyRunning.remove( iteration.getId() ) );
       }
@@ -117,14 +129,14 @@ public class CopyTransManager
       if( !this.isCopyTransRunning(iteration) )
       {
          CopyTransProcessHandle mostRecent = this.recentlyCancelled.get( iteration.getId() );
-         CopyTransProcessHandle recentlyRan = this.currentlyRunning.get( iteration.getId() );
+         CopyTransProcessHandle recentlyRan = this.recentlyFinished.get( iteration.getId() );
 
          if( mostRecent == null )
          {
             mostRecent = recentlyRan;
          }
          else if( recentlyRan != null && mostRecent != null
-               && recentlyRan.getStartTimeLapse() < mostRecent.getStartTimeLapse() )
+               && recentlyRan.getStartTime() > mostRecent.getStartTime() )
          {
             mostRecent = recentlyRan;
          }
@@ -134,6 +146,20 @@ public class CopyTransManager
       else
       {
          return null;
+      }
+   }
+
+   /**
+    * Internal class to detect when a copy trans process is complete.
+    */
+   private final class CopyTransProcessListener implements BackgroundProcessListener<CopyTransProcessHandle>
+   {
+      @Override
+      public void onComplete(CopyTransProcessHandle handle)
+      {
+         // move the entry to the recently finished
+         recentlyFinished.put( handle.getProjectIteration().getId(),
+               currentlyRunning.remove( handle.getProjectIteration().getId() ) );
       }
    }
 

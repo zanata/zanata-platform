@@ -20,35 +20,17 @@
  */
 package org.zanata.process;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import org.zanata.model.HProjectIteration;
-
 /**
- * Process Handle for a background copy trans.
+ * Listener interface for background process events.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@RequiredArgsConstructor
-public class CopyTransProcessHandle extends ProcessHandle
+public interface BackgroundProcessListener<T extends ProcessHandle>
 {
-
-   @Getter
-   private final HProjectIteration projectIteration;
-
-   @Getter
-   private final String triggeredBy;
-
-   @Getter
-   @Setter
-   private int documentsProcessed;
-
-   @Getter
-   @Setter
-   private String cancelledBy;
-
-   @Getter
-   @Setter
-   private long cancelledTime;
+   /**
+    * Invoked when the process is finished.
+    *
+    * @param handle The process' handle.
+    */
+   void onComplete( T handle );
 }
