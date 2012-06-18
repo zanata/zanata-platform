@@ -164,7 +164,7 @@
 			</a4j:form>
 		</rich:panel>
 
-        <rich:simpleTogglePanel label="Joined Groups" switchType="client">
+        <rich:simpleTogglePanel label="#{messages['jsf.JoinedGroups']}" switchType="client">
             <h:form>
                 <rich:dataGrid value="#{viewAllStatusAction.projectIteration.groups.toArray()}" var="group" columns="3" styleClass="noBorderTable noBackgroundTable" style="border:0px">
                     <s:link view="/version-group/version_group.xhtml" propagation="none" value="#{group.name}" styleClass="table_link">
