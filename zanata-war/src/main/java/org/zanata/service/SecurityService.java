@@ -21,24 +21,25 @@
 
 package org.zanata.service;
 
-import org.zanata.common.LocaleId;
+import org.zanata.model.HLocale;
 import org.zanata.webtrans.server.TranslationWorkspace;
+import org.zanata.webtrans.shared.NoSuchWorkspaceException;
+import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public interface SecurityService
 {
+
    /**
     * This will check permission for performing an action upon translations with given project and locale
     *
-    * @param workspace workspace
-    * @param projectSlug project slug
-    * @param localeId localeId
-    * @param action translation action
-    * @throws org.jboss.seam.security.AuthorizationException, org.jboss.seam.security.NotLoggedInException
+    * @param action abstract workspace action which contains locale id and project slug
+    * @param translationAction translation action enum (at the moment only supports MODIFY)
+    * @throws org.jboss.seam.security.AuthorizationException, org.jboss.seam.security.NotLoggedInException org.zanata.webtrans.shared.NoSuchWorkspaceException
     */
-   void checkPermissionForTranslation(TranslationWorkspace workspace, String projectSlug, LocaleId localeId, TranslationAction action);
+   SecurityCheckResult checkPermission(AbstractWorkspaceAction action, TranslationAction translationAction) throws NoSuchWorkspaceException;
 
    public enum TranslationAction
    {
@@ -59,5 +60,11 @@ public interface SecurityService
       {
          return action;
       }
+   }
+
+   interface SecurityCheckResult
+   {
+      HLocale getLocale();
+      TranslationWorkspace getWorkspace();
    }
 }

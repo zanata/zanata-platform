@@ -35,6 +35,11 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
 import org.zanata.webtrans.server.TranslationWorkspace;
+import org.zanata.webtrans.server.TranslationWorkspaceManager;
+import org.zanata.webtrans.shared.NoSuchWorkspaceException;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
+import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -53,16 +58,52 @@ public class SecurityServiceImpl implements SecurityService
    @In
    ZanataIdentity identity;
 
+   @In
+   private TranslationWorkspaceManager translationWorkspaceManager;
+
    @Override
-   public void checkPermissionForTranslation(TranslationWorkspace workspace, String projectSlug, LocaleId localeId, TranslationAction action)
+   public SecurityCheckResult checkPermission(AbstractWorkspaceAction action, TranslationAction translationAction) throws NoSuchWorkspaceException
    {
+      identity.checkLoggedIn();
+
+      WorkspaceId workspaceId = action.getWorkspaceId();
+      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
+      LocaleId localeId = workspaceId.getLocaleId();
+      ProjectIterationId projectIterationId = workspaceId.getProjectIterationId();
       if (workspace.getWorkspaceContext().isReadOnly())
       {
          throw new AuthorizationException("Project or version is read-only");
       }
 
+      String projectSlug = projectIterationId.getProjectSlug();
       HProject hProject = projectDAO.getBySlug(projectSlug);
       HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
-      identity.checkPermission(action.action(), hLocale, hProject);
+      identity.checkPermission(translationAction.action(), hLocale, hProject);
+
+      return new SecurityCheckResultImpl(hLocale, workspace);
+   }
+
+   private static class SecurityCheckResultImpl implements SecurityCheckResult
+   {
+      private final HLocale hLocale;
+      private final TranslationWorkspace workspace;
+
+      private SecurityCheckResultImpl(HLocale hLocale, TranslationWorkspace workspace)
+      {
+         this.hLocale = hLocale;
+         this.workspace = workspace;
+      }
+
+      @Override
+      public HLocale getLocale()
+      {
+         return hLocale;
+      }
+
+      @Override
+      public TranslationWorkspace getWorkspace()
+      {
+         return workspace;
+      }
    }
 }

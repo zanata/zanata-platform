@@ -22,24 +22,19 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
-
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.LocaleId;
+import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.security.ZanataIdentity;
 import org.zanata.service.SecurityService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.TranslationService.TranslationResult;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
-import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -48,6 +43,10 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
+
+import lombok.extern.slf4j.Slf4j;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
 
 
 @Name("webtrans.gwt.UpdateTransUnitHandler")
@@ -65,26 +64,14 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    @In
    SecurityService securityServiceImpl;
 
-   @In
-   ZanataIdentity identity;
-
-   @In
-   TranslationWorkspaceManager translationWorkspaceManager;
-
    @Override
    public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException
    {
-      identity.checkLoggedIn();
+      SecurityService.SecurityCheckResult securityCheckResult = securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY);
+      HLocale hLocale = securityCheckResult.getLocale();
+      TranslationWorkspace workspace = securityCheckResult.getWorkspace();
 
-      LocaleId localeId = action.getWorkspaceId().getLocaleId();
-      log.debug("Updating {} TransUnits for loacle {}", action.getUpdateRequests().size(), localeId);
-
-      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
-      String projectSlug = action.getWorkspaceId().getProjectIterationId().getProjectSlug();
-
-      securityServiceImpl.checkPermissionForTranslation(workspace, projectSlug, localeId, SecurityService.TranslationAction.MODIFY);
-
-      return doTranslation(localeId, workspace, action.getUpdateRequests(), action.getEditorClientId(), action.getUpdateType());
+      return doTranslation(hLocale.getLocaleId(), workspace, action.getUpdateRequests(), action.getEditorClientId(), action.getUpdateType());
    }
 
    protected UpdateTransUnitResult doTranslation(LocaleId localeId, TranslationWorkspace workspace, List<TransUnitUpdateRequest> updateRequests, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)

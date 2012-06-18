@@ -89,32 +89,16 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
    
    @In
    private SecurityService securityServiceImpl;
-
-   @In
-   private TranslationWorkspaceManager translationWorkspaceManager;
    
    @In
    private TextFlowDAO textFlowDAO;
 
-   @In
-   private LocaleService localeServiceImpl;
-
-   @In
-   private ZanataIdentity identity;
-
    @Override
    public UpdateTransUnitResult execute(TransMemoryMerge action, ExecutionContext context) throws ActionException
    {
-      //TODO all this routine check and get local, workspace etc is duplicated. Refactor it out to securityService?
-      identity.checkLoggedIn();
-
-      WorkspaceId workspaceId = action.getWorkspaceId();
-      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
-      LocaleId localeId = workspaceId.getLocaleId();
-      ProjectIterationId projectIterationId = workspaceId.getProjectIterationId();
-      securityServiceImpl.checkPermissionForTranslation(workspace, projectIterationId.getProjectSlug(), localeId, MODIFY);
-
-      HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
+      SecurityService.SecurityCheckResult securityCheckResult = securityServiceImpl.checkPermission(action, MODIFY);
+      HLocale hLocale = securityCheckResult.getLocale();
+      TranslationWorkspace workspace = securityCheckResult.getWorkspace();
 
       Map<Long, TransUnitUpdateRequest> requestMap = transformToMap(action.getUpdateRequests());
       List<HTextFlow> hTextFlows = textFlowDAO.findByIdList(Lists.newArrayList(requestMap.keySet()));
@@ -143,7 +127,7 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
          }
       }
 
-      UpdateTransUnitResult result = updateTransUnitHandler.doTranslation(localeId, workspace, updateRequests, action.getEditorClientId(), TransUnitUpdated.UpdateType.ReplaceText);
+      UpdateTransUnitResult result = updateTransUnitHandler.doTranslation(hLocale.getLocaleId(), workspace, updateRequests, action.getEditorClientId(), TransUnitUpdated.UpdateType.ReplaceText);
       log.debug("TM merge result {}", result);
       return result;
    }

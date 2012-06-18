@@ -30,29 +30,34 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.service.SecurityService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.ReplaceText;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 import com.google.common.base.Strings;
 
+import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 @Name("webtrans.gwt.ReplaceTextHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(ReplaceText.class)
+@Slf4j
 public class ReplaceTextHandler extends AbstractActionHandler<ReplaceText, UpdateTransUnitResult>
 {
-   private static final Logger log = LoggerFactory.getLogger(ReplaceTextHandler.class);
-
    @In(value = "webtrans.gwt.UpdateTransUnitHandler", create = true)
    UpdateTransUnitHandler updateTransUnitHandler;
+
+   @In
+   SecurityService securityServiceImpl;
 
    @Override
    public UpdateTransUnitResult execute(ReplaceText action, ExecutionContext context) throws ActionException
    {
-      //TODO in an optimal world we should do security check before making all the effort. Wait for SecurityService implementation
+      securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY);
+
       replaceTextInUpdateRequests(action);
 
       return updateTransUnitHandler.execute(action, context);

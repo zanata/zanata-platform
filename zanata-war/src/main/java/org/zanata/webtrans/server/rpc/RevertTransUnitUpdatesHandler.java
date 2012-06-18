@@ -26,19 +26,17 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.security.ZanataIdentity;
 import org.zanata.service.SecurityService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.TranslationService.TranslationResult;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
-import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
-import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.RevertTransUnitUpdates;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
@@ -66,22 +64,16 @@ public class RevertTransUnitUpdatesHandler extends AbstractActionHandler<RevertT
    TransUnitTransformer transUnitTransformer;
 
    @In
-   ZanataIdentity identity;
-
-   @In
-   TranslationWorkspaceManager translationWorkspaceManager;
-
-   @In
    SecurityService securityServiceImpl;
 
    @Override
    public UpdateTransUnitResult execute(RevertTransUnitUpdates action, ExecutionContext context) throws ActionException
    {
-      identity.checkLoggedIn();
-      WorkspaceId workspaceId = action.getWorkspaceId();
-      List<TranslationResult> revertResults = translationServiceImpl.revertTranslations(workspaceId.getLocaleId(), action.getUpdatesToRevert());
-      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
-      securityServiceImpl.checkPermissionForTranslation(workspace, workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getLocaleId(), SecurityService.TranslationAction.MODIFY);
+      SecurityService.SecurityCheckResult securityCheckResult = securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY);
+      HLocale hLocale = securityCheckResult.getLocale();
+      TranslationWorkspace workspace = securityCheckResult.getWorkspace();
+
+      List<TranslationResult> revertResults = translationServiceImpl.revertTranslations(hLocale.getLocaleId(), action.getUpdatesToRevert());
 
       UpdateTransUnitResult results = new UpdateTransUnitResult();
       for (TranslationResult translationResult : revertResults)
