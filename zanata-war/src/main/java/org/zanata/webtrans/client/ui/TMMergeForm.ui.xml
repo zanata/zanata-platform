@@ -1,18 +1,74 @@
+<!--
+  ~ Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
+  ~ @author tags. See the copyright.txt file in the distribution for a full
+  ~ listing of individual contributors.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it under the
+  ~ terms of the GNU Lesser General Public License as published by the Free
+  ~ Software Foundation; either version 2.1 of the License, or (at your option)
+  ~ any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  ~ FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+  ~ details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this software; if not, write to the Free Software Foundation,
+  ~ Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+  ~ site: http://www.fsf.org.
+  -->
+
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
-    <g:VerticalPanel spacing="10">
-        <!--TODO localise-->
-        <g:HorizontalPanel>
-            <g:Label>Approved threshold:</g:Label>
-            <g:ListBox ui:field="approvedPercent">
-                <g:item value='100'>100%</g:item>
-                <g:item value='95'>95%</g:item>
-                <g:item>90%</g:item>
-            </g:ListBox>
-        </g:HorizontalPanel>
-        <g:HorizontalPanel>
-            <g:Button ui:field="confirmButton" text="Proceed to pre-fill" />
-            <g:Button ui:field="cancelButton" text="Cancel" />
-        </g:HorizontalPanel>
-    </g:VerticalPanel>
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:zui='urn:import:org.zanata.webtrans.client.ui'
+        >
+    <ui:with field="messages" type="org.zanata.webtrans.client.resources.UiMessages"/>
+
+    <g:Grid>
+        <g:row>
+            <g:customCell>
+                <g:Label text="{messages.matchThreshold}"/>
+            </g:customCell>
+            <g:customCell>
+                <g:ListBox ui:field="matchThreshold">
+                    <g:item value='100'>100%</g:item>
+                    <g:item value='90'>90%</g:item>
+                    <g:item value='80'>80%</g:item>
+                </g:ListBox>
+            </g:customCell>
+        </g:row>
+        <g:row>
+            <g:customCell>
+                <g:Label text="{messages.differentProjectSlug}" />
+            </g:customCell>
+            <g:customCell>
+                <zui:EnumListBox ui:field="differentProject" />
+            </g:customCell>
+        </g:row>
+        <g:row>
+            <g:customCell>
+                <g:Label text="{messages.differentDocument}" />
+            </g:customCell>
+            <g:customCell>
+                <zui:EnumListBox ui:field="differentDocument" />
+            </g:customCell>
+        </g:row>
+        <g:row>
+            <g:customCell>
+                <g:Label text="{messages.differentResId}" />
+            </g:customCell>
+            <g:customCell>
+                <zui:EnumListBox ui:field="differentResId" />
+            </g:customCell>
+        </g:row>
+        <g:row>
+            <g:customCell>
+                <g:Button ui:field="confirmButton" text="{messages.mergeTMConfirm}"/>
+            </g:customCell>
+            <g:customCell>
+                <g:Button ui:field="cancelButton" text="{messages.mergeTMCancel}"/>
+            </g:customCell>
+        </g:row>
+    </g:Grid>
 </ui:UiBinder>

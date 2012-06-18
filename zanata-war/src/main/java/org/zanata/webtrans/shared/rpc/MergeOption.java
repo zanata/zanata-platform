@@ -18,27 +18,12 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.ui;
 
+package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.shared.rpc.MergeOption;
+import com.google.common.base.Strings;
 
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-
-public interface TransMemoryMergePopupPanelDisplay extends WidgetDisplay
+public enum MergeOption
 {
-   void hide();
-
-   void setListener(Listener listener);
-
-   void showProcessing();
-
-   void showForm();
-
-   interface Listener
-   {
-      void proceedToMergeTM(String percentage, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption);
-
-      void cancelMergeTM();
-   }
+   FUZZY, SKIP, APPROVED
 }

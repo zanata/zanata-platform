@@ -21,10 +21,9 @@
 
 package org.zanata.webtrans.client.ui;
 
-import org.zanata.webtrans.client.resources.UiMessages;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import org.zanata.webtrans.client.resources.EnumMessages;
+import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
+import org.zanata.webtrans.shared.rpc.MergeOption;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -32,46 +31,29 @@ import com.google.inject.Singleton;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class TransMemoryMergePopupPanelView extends DialogBox implements TransMemoryMergePopupPanelDisplay
+public class MergeOptionRenderer extends EnumRenderer<MergeOption>
 {
-
-   private final TMMergeForm TMMergeForm;
-   private final Label processingLabel = new Label("processing...");
+   private final EnumMessages messages;
 
    @Inject
-   public TransMemoryMergePopupPanelView(TMMergeForm TMMergeForm, UiMessages messages)
+   public MergeOptionRenderer(EnumMessages messages)
    {
-      //auto hide false, modal true
-      super(false, true);
-      getCaption().setText(messages.mergeTMCaption());
-      setGlassEnabled(true);
-      VerticalPanel main = new VerticalPanel();
-      main.add(TMMergeForm);
-      main.add(processingLabel);
-      add(main);
-      this.TMMergeForm = TMMergeForm;
-      processingLabel.setVisible(false);
-      hide();
+      this.messages = messages;
    }
 
    @Override
-   public void setListener(Listener listener)
+   public String render(MergeOption option)
    {
-      TMMergeForm.setListener(listener);
-   }
-
-   @Override
-   public void showProcessing()
-   {
-      TMMergeForm.setVisible(false);
-      processingLabel.setVisible(true);
-   }
-
-   @Override
-   public void showForm()
-   {
-      processingLabel.setVisible(false);
-      TMMergeForm.setVisible(true);
-      center();
+      switch (option)
+      {
+      case FUZZY:
+         return messages.mergeAsFuzzy();
+      case APPROVED:
+         return messages.mergeAsApproved();
+      case SKIP:
+         return messages.skipMerge();
+      default:
+         return getEmptyValue();
+      }
    }
 }

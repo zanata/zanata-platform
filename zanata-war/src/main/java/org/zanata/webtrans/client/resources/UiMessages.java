@@ -84,4 +84,31 @@ public interface UiMessages extends Messages
 
    @DefaultMessage("Select TM match percentage to pre-fill translations.")
    String mergeTMCaption();
+
+   @DefaultMessage("No text has new status to be merged.")
+   String noTranslationToMerge();
+
+   @DefaultMessage("Translation Memory merge failed")
+   String mergeTMFailed();
+
+   @DefaultMessage("Translation Memory merge success. Document reloaded.")
+   String mergeTMSuccess();
+
+   @DefaultMessage("Proceed to auto-fill")
+   String mergeTMConfirm();
+
+   @DefaultMessage("Cancel")
+   String mergeTMCancel();
+
+   @DefaultMessage("Match percentage threshold")
+   String matchThreshold();
+
+   @DefaultMessage("Different project")
+   String differentProjectSlug();
+
+   @DefaultMessage("Different document")
+   String differentDocument();
+
+   @DefaultMessage("Different resource ID")
+   String differentResId();
 }

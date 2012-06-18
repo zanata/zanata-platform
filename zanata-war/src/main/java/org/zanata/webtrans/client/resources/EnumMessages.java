@@ -35,4 +35,13 @@ public interface EnumMessages extends com.google.gwt.i18n.client.Messages
 
    @DefaultMessage("Lucene")
    String searchTypeRaw();
+
+   @DefaultMessage("Merge as need review")
+   String mergeAsFuzzy();
+
+   @DefaultMessage("Merge as approved")
+   String mergeAsApproved();
+
+   @DefaultMessage("Skip merge")
+   String skipMerge();
 }

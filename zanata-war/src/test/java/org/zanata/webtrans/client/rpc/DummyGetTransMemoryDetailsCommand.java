@@ -27,7 +27,7 @@ public class DummyGetTransMemoryDetailsCommand implements Command
       ArrayList<TransMemoryDetails> items = new ArrayList<TransMemoryDetails>();
       for (int i = 0; i < 4; i++)
       {
-         items.add(new TransMemoryDetails("source " + i + " comment", "target " + i + " comment", "workspace " + i, "iteration "+ i, "doc id:" + + i));
+         items.add(new TransMemoryDetails("source " + i + " comment", "target " + i + " comment", "workspace " + i, "iteration "+ i, "doc id:" + + i, "resId"));
       }
       
       callback.onSuccess(new TransMemoryDetailsList(items));

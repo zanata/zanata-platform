@@ -21,11 +21,11 @@
 
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.shared.model.DocumentId;
+import java.util.List;
+
+import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.common.base.Objects;
-
-import net.customware.gwt.dispatch.shared.AbstractSimpleResult;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -33,36 +33,62 @@ import net.customware.gwt.dispatch.shared.AbstractSimpleResult;
 public class TransMemoryMerge extends AbstractWorkspaceAction<NoOpResult>
 {
    private static final long serialVersionUID = 1L;
-   private int approvedThreshold;
-   private DocumentId docId;
-
-   public TransMemoryMerge(int approvedThreshold, DocumentId docId)
-   {
-      this.approvedThreshold = approvedThreshold;
-      this.docId = docId;
-   }
+   private int thresholdPercent;
+   private List<TransUnitId> unitIds;
+   private MergeOption differentProjectOption;
+   private MergeOption differentDocumentOption;
+   private MergeOption differentResIdOption;
 
    @SuppressWarnings("unused")
    TransMemoryMerge()
    {
    }
 
-   public int getApprovedThreshold()
+   public TransMemoryMerge(int threshold, List<TransUnitId> unitIds, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
    {
-      return approvedThreshold;
+      thresholdPercent = threshold;
+      this.unitIds = unitIds;
+      this.differentProjectOption = differentProjectOption;
+      this.differentDocumentOption = differentDocumentOption;
+      this.differentResIdOption = differentResIdOption;
    }
 
-   public DocumentId getDocumentId()
+   public int getThresholdPercent()
    {
-      return docId;
+      return thresholdPercent;
+   }
+
+   public List<TransUnitId> getUnitIds()
+   {
+      return unitIds;
+   }
+
+   public MergeOption getDifferentProjectOption()
+   {
+      return differentProjectOption;
+   }
+
+   public MergeOption getDifferentDocumentOption()
+   {
+      return differentDocumentOption;
+   }
+
+   public MergeOption getDifferentResIdOption()
+   {
+      return differentResIdOption;
    }
 
    @Override
    public String toString()
    {
+      // @formatter:off
       return Objects.toStringHelper(this).
-            add("approvedThreshold", approvedThreshold).
-            add("docId", docId).
+            add("thresholdPercent", thresholdPercent).
+            add("unitIds", unitIds).
+            add("differentProjectOption", differentProjectOption).
+            add("differentDocumentOption", differentDocumentOption).
+            add("differentResIdOption", differentResIdOption).
             toString();
+      // @formatter:on
    }
 }

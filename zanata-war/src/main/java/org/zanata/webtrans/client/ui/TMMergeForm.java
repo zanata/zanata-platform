@@ -21,6 +21,7 @@
 
 package org.zanata.webtrans.client.ui;
 
+import org.zanata.webtrans.shared.rpc.MergeOption;
 import com.google.common.base.Preconditions;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,6 +32,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.inject.Inject;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -42,20 +44,25 @@ public class TMMergeForm extends Composite
    private TransMemoryMergePopupPanelDisplay.Listener listener;
 
    @UiField
-   ListBox approvedPercent;
+   ListBox matchThreshold;
    @UiField
    Button confirmButton;
    @UiField
    Button cancelButton;
+   @UiField(provided = true)
+   EnumListBox<MergeOption> differentProject;
+   @UiField(provided = true)
+   EnumListBox<MergeOption> differentDocument;
+   @UiField(provided = true)
+   EnumListBox<MergeOption> differentResId;
 
-   public TMMergeForm()
+   @Inject
+   public TMMergeForm(MergeOptionRenderer mergeOptionRenderer)
    {
+      differentProject = new EnumListBox<MergeOption>(MergeOption.class, mergeOptionRenderer);
+      differentDocument = new EnumListBox<MergeOption>(MergeOption.class, mergeOptionRenderer);
+      differentResId = new EnumListBox<MergeOption>(MergeOption.class, mergeOptionRenderer);
       initWidget(uiBinder.createAndBindUi(this));
-   }
-
-   public String getSelectedApprovedPercent()
-   {
-      return approvedPercent.getValue(approvedPercent.getSelectedIndex());
    }
 
    public void setListener(TransMemoryMergePopupPanelDisplay.Listener listener)
@@ -67,7 +74,12 @@ public class TMMergeForm extends Composite
    public void onConfirmButtonClick(ClickEvent event)
    {
       Preconditions.checkNotNull(listener, "Do you forget to call setListener on TMMergeForm?");
-      listener.proceedToMergeTM(getSelectedApprovedPercent());
+      listener.proceedToMergeTM(getSelectedMatchThreshold(), differentProject.getValue(), differentDocument.getValue(), differentResId.getValue());
+   }
+
+   private String getSelectedMatchThreshold()
+   {
+      return matchThreshold.getValue(matchThreshold.getSelectedIndex());
    }
 
    @UiHandler("cancelButton")

@@ -82,19 +82,20 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       LocaleId localeID = action.getLocaleId();
       HLocale hLocale = localeServiceImpl.getByLocaleId(localeID);
 
-      ArrayList<TransMemoryResultItem> results = searchTransMemory(hLocale, transMemoryQuery);
+      // FIXME this won't scale well(findIdsWithTransliations will scan the entire table each time)
+      List<Long> idsWithTranslations = textFlowDAO.findIdsWithTranslations(hLocale.getLocaleId());
+
+      ArrayList<TransMemoryResultItem> results = searchTransMemory(hLocale, transMemoryQuery, idsWithTranslations);
 
       log.debug("Returning {} TM matches for {}", results.size(), transMemoryQuery);
       return new GetTranslationMemoryResult(action, results);
    }
 
-   protected ArrayList<TransMemoryResultItem> searchTransMemory(HLocale hLocale, TransMemoryQuery transMemoryQuery)
+   protected ArrayList<TransMemoryResultItem> searchTransMemory(HLocale hLocale, TransMemoryQuery transMemoryQuery, List<Long> idsWithTranslations)
    {
       ArrayList<TransMemoryResultItem> results = Lists.newArrayList();
       try
       {
-         // FIXME this won't scale well(findIdsWithTransliations will scan the entire table each time)
-         List<Long> idsWithTranslations = textFlowDAO.findIdsWithTranslations(hLocale.getLocaleId());
          List<Object[]> matches = textFlowDAO.getSearchResult(transMemoryQuery, idsWithTranslations, MAX_RESULTS);
 
          Map<TMKey, TransMemoryResultItem> matchesMap = new LinkedHashMap<TMKey, TransMemoryResultItem>(matches.size());

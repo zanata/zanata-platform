@@ -21,15 +21,25 @@
 
 package org.zanata.webtrans.client.presenter;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
-import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.MergeOption;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
-import com.google.common.base.Preconditions;
-import com.google.gwt.gen2.logging.shared.Log;
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -48,15 +58,17 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
    private final EventBus eventBus;
    private final CachingDispatchAsync dispatcher;
    private final TableEditorPresenter tableEditorPresenter;
+   private final UiMessages messages;
 
    @Inject
-   public TransMemoryMergePresenter(TransMemoryMergePopupPanelDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, TableEditorPresenter tableEditorPresenter)
+   public TransMemoryMergePresenter(TransMemoryMergePopupPanelDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, TableEditorPresenter tableEditorPresenter, UiMessages messages)
    {
       super(display, eventBus);
       this.display = display;
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
       this.tableEditorPresenter = tableEditorPresenter;
+      this.messages = messages;
       display.setListener(this);
    }
 
@@ -76,32 +88,64 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
    }
 
    @Override
-   public void proceedToMergeTM(String approvedPercent)
+   public void proceedToMergeTM(String percentage, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
    {
-      display.showProcessing();
-      DocumentId docId = tableEditorPresenter.getDocumentId();
-      Preconditions.checkNotNull(docId, "document id is null");
+      Collection<TransUnit> newItems = getUntranslatedItems();
 
-      Integer threshold = Integer.valueOf(approvedPercent);
-      dispatcher.execute(new TransMemoryMerge(threshold, docId), new AsyncCallback<NoOpResult>()
+      if (newItems.isEmpty())
+      {
+         eventBus.fireEvent(new NotificationEvent(Info, messages.noTranslationToMerge()));
+         display.hide();
+         return;
+      }
+
+      display.showProcessing();
+      TransMemoryMerge action = prepareTMMergeAction(newItems, percentage, differentProjectOption, differentDocumentOption, differentResIdOption);
+      dispatcher.execute(action, new AsyncCallback<NoOpResult>()
       {
          @Override
          public void onFailure(Throwable caught)
          {
-            Log.warning("failed:" + caught.getMessage());
-            //TODO localise string
-            eventBus.fireEvent(new NotificationEvent(Error, "Translation Memory merge failed"));
+            Log.warn("TM merge failed", caught);
+            eventBus.fireEvent(new NotificationEvent(Error, messages.mergeTMFailed()));
             display.hide();
          }
 
          @Override
          public void onSuccess(NoOpResult result)
          {
-            eventBus.fireEvent(new NotificationEvent(Info, "Translation Memory merge success. Document reloaded."));
+            eventBus.fireEvent(new NotificationEvent(Info, messages.mergeTMSuccess()));
             display.hide();
             tableEditorPresenter.initialiseTransUnitList();
          }
       });
+   }
+
+   private Collection<TransUnit> getUntranslatedItems()
+   {
+      List<TransUnit> currentItems = tableEditorPresenter.getDisplay().getRowValues();
+      return Collections2.filter(currentItems, new Predicate<TransUnit>()
+      {
+         @Override
+         public boolean apply(TransUnit input)
+         {
+            return input.getStatus() == ContentState.New;
+         }
+      });
+   }
+
+   private TransMemoryMerge prepareTMMergeAction(Collection<TransUnit> newItems, String percentage, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
+   {
+      Integer threshold = Integer.valueOf(percentage);
+      List<TransUnitId> unitIds = Lists.newArrayList(Collections2.transform(newItems, new Function<TransUnit, TransUnitId>()
+      {
+         @Override
+         public TransUnitId apply(TransUnit from)
+         {
+            return from.getId();
+         }
+      }));
+      return new TransMemoryMerge(threshold, unitIds, differentProjectOption, differentDocumentOption, differentResIdOption);
    }
 
    @Override

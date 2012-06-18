@@ -29,6 +29,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.testng.collections.Lists;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
@@ -42,19 +43,22 @@ import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
+import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
+import static com.google.common.collect.Collections2.*;
 import static org.zanata.service.SecurityService.TranslationAction.*;
 
 @Name("webtrans.gwt.TransMemoryMergeHandler")
@@ -66,6 +70,9 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
 
    @In(value = "webtrans.gwt.GetTransMemoryHandler", create = true)
    private GetTransMemoryHandler getTransMemoryHandler;
+
+   @In(value = "webtrans.gwt.GetTransMemoryDetailsHandler", create = true)
+   private GetTransMemoryDetailsHandler getTransMemoryDetailsHandler;
    
    @In
    private SecurityService securityServiceImpl;
@@ -95,25 +102,71 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
 
       HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
 
-      List<HTextFlow> hTextFlows = textFlowDAO.getAllUntranslatedTextFlowByDocumentId(action.getDocumentId().getId(), hLocale);
-      TransMemoryMergeHandler.log.info("#{} untranslated text flow in doc id {}", hTextFlows.size(), action.getDocumentId());
+      List<HTextFlow> hTextFlows = fetchTextFlowsForAutoFill(action);
 
-      TransMemoryAboveThresholdPredicate predicate = new TransMemoryAboveThresholdPredicate(action.getApprovedThreshold());
+      // FIXME this won't scale well (copy from GetTransMemoryHandler)
+      List<Long> idsWithTranslations = textFlowDAO.findIdsWithTranslations(hLocale.getLocaleId());
+
+      TransMemoryAboveThresholdPredicate predicate = new TransMemoryAboveThresholdPredicate(action.getThresholdPercent());
       for (HTextFlow hTextFlow : hTextFlows)
       {
-         ArrayList<TransMemoryResultItem> tmResults = getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(hTextFlow.getContents(), SearchType.FUZZY_PLURAL));
-         Collection<TransMemoryResultItem> aboveThreshold = Collections2.filter(tmResults, predicate);
-         if (aboveThreshold.size() > 0)
+         ArrayList<TransMemoryResultItem> tmResults = getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(hTextFlow.getContents(), SearchType.FUZZY_PLURAL), idsWithTranslations);
+         TransMemoryResultItem mostSimilarTM = findTMAboveThreshold(tmResults, predicate);
+         if (mostSimilarTM != null)
          {
-            TransMemoryResultItem mostSimilarTM = aboveThreshold.iterator().next();
-            TransMemoryMergeHandler.log.info("auto translation from translation memory for textFlow id {} with contents {}", hTextFlow.getId(), mostSimilarTM.getTargetContents());
-
-            //TODO we may want to wrap it in try/catch block and ignore any exceptions. i.e. we may have concurrent editing conflict and do we give it a damn?
-            translationServiceImpl.translate(hTextFlow, hLocale, mostSimilarTM.getTargetContents(), ContentState.Approved);
+            autoFillTranslation(hLocale, hTextFlow, mostSimilarTM, action);
          }
       }
       //TODO best send out event and let all clients to refresh table if they are editing this document
       return new NoOpResult();
+   }
+
+   private TransMemoryResultItem findTMAboveThreshold(ArrayList<TransMemoryResultItem> tmResults, TransMemoryAboveThresholdPredicate predicate)
+   {
+      Collection<TransMemoryResultItem> aboveThreshold = filter(tmResults, predicate);
+      if (aboveThreshold.size() > 0)
+      {
+         return aboveThreshold.iterator().next();
+      }
+      else
+      {
+         return null;
+      }
+   }
+
+   private void autoFillTranslation(HLocale hLocale, HTextFlow hTextFlow, TransMemoryResultItem mostSimilarTM, TransMemoryMerge action)
+   {
+      TransMemoryDetails tmDetail = null;
+      try
+      {
+         tmDetail = getTransMemoryDetailsHandler.getTransMemoryDetail(hLocale, hTextFlow);
+         ContentState statusToSet = new TransMemoryMergeStatusResolver().workOutStatus(action, hTextFlow, tmDetail, mostSimilarTM);
+         if (statusToSet != null)
+         {
+            log.debug("auto translation from translation memory for textFlow id {} with contents {}, status {}",
+                  new Object[]{hTextFlow.getId(), mostSimilarTM.getTargetContents(), statusToSet});
+            translationServiceImpl.translate(hTextFlow, hLocale, mostSimilarTM.getTargetContents(), ContentState.Approved);
+         }
+      }
+      catch (Exception e)
+      {
+         log.warn("unable to merge TM on text flow id {}, with TM detail {}", hTextFlow.getId(), tmDetail);
+      }
+   }
+
+   private List<HTextFlow> fetchTextFlowsForAutoFill(TransMemoryMerge action)
+   {
+      Collection<TransUnitId> unitIds = action.getUnitIds();
+      List<Long> textFlowIds = Lists.newArrayList(transform(unitIds, new Function<TransUnitId, Long>()
+      {
+         @Override
+         public Long apply(TransUnitId from)
+         {
+            return from.getId();
+         }
+      }));
+      log.info("TM merge text flows: {}", textFlowIds);
+      return textFlowDAO.findByIdList(textFlowIds);
    }
 
    @Override
