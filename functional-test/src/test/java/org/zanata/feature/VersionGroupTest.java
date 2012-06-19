@@ -6,6 +6,7 @@ import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
+import org.zanata.page.projects.ProjectPage;
 import org.zanata.util.TableRow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
@@ -41,18 +42,21 @@ public class VersionGroupTest
       // given two projects and versions are created
       new LoginWorkFlow().signIn("admin", "admin");
       ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
-      projectWorkFlow.createNewProject("group-project-a", "project a to be grouped")
-            .clickCreateVersionLink().inputVersionId("master").saveVersion();
+      ProjectPage projectA = projectWorkFlow.createNewProject("group-project-a", "project a to be grouped");
+      projectWorkFlow.createNewProjectVersion(projectA, "master");
 
-      projectWorkFlow.createNewProject("group-project-b", "project b to be grouped")
-            .clickCreateVersionLink().inputVersionId("master").saveVersion();
+      ProjectPage projectB = projectWorkFlow.createNewProject("group-project-b", "project b to be grouped");
+      projectWorkFlow.createNewProjectVersion(projectB, "master");
 
       VersionGroupPage versionGroupPage = projectWorkFlow.goToHome().goToGroups().goToGroup("group one");
-      List<TableRow> searchResult = versionGroupPage.addProjectVersion().searchProject("group-project");
+      List<TableRow> searchResult = versionGroupPage.addProjectVersion().searchProject("group");
       log.info("come back {} rows in search result", searchResult.size());
 
+      //add first row from search result into group
       TableRow versionToBeAdd = searchResult.get(0);
       List<String> projectAndVersion = versionToBeAdd.getCellContents();
+      assertThat(projectAndVersion.get(0), Matchers.equalTo("project a to be grouped"));
+
       VersionGroupPage groupPage = versionGroupPage.addToGroup(versionToBeAdd).closeSearchResult();
 
       List<List<String>> projectVersions = groupPage.getNotEmptyProjectVersionsInGroup();

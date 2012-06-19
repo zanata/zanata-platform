@@ -42,19 +42,19 @@ public class VersionGroupPage extends AbstractPage
       return this;
    }
 
-   public List<TableRow> searchProject(String projectName)
+   public List<TableRow> searchProject(final String projectName)
    {
       WebElement searchField = waitForTenSec().until(new Function<WebDriver, WebElement>()
       {
          @Override
          public WebElement apply(WebDriver driver)
          {
-            return addProjectVersionPanel.findElement(By.xpath(".//input[contains(@name, 'projectVersionSearch')]"));
+            return addProjectVersionPanel.findElement(By.xpath(".//input[contains(@name, 'projectVersionSearch') and @type='text']"));
          }
       });
 
       searchField.sendKeys(projectName);
-      WebElement searchButton = addProjectVersionPanel.findElement(By.xpath(".//input[contains(@id, 'projectVersionSearch')]"));
+      WebElement searchButton = addProjectVersionPanel.findElement(By.xpath(".//input[contains(@id, 'searchBtn')]"));
       searchButton.click();
 
       WebElement searchResultTable = waitForTenSec().until(new Function<WebDriver, WebElement>()
@@ -62,7 +62,15 @@ public class VersionGroupPage extends AbstractPage
          @Override
          public WebElement apply(WebDriver driver)
          {
-            return addProjectVersionPanel.findElement(By.xpath(".//table[contains(@id, ':resultTable')]"));
+            WebElement table = addProjectVersionPanel.findElement(By.xpath(".//table[contains(@id, ':resultTable')]"));
+            List<TableRow> tableRows = WebElementUtil.getTableRows(table);
+            //we want to wait until search result comes back
+            if (tableRows.isEmpty() || !tableRows.get(0).getCellContents().get(0).contains(projectName))
+            {
+               log.debug("waiting for search result refresh...");
+               return null;
+            }
+            return table;
          }
       });
 
@@ -74,7 +82,10 @@ public class VersionGroupPage extends AbstractPage
       List<WebElement> cells = projectVersionRow.getCells();
       int selectVersionIndex = cells.size() - 1;
       WebElement selectCheckBox = cells.get(selectVersionIndex).findElement(By.xpath(".//input[@type='checkbox']"));
-      selectCheckBox.click();
+      if (!selectCheckBox.isSelected())
+      {
+         selectCheckBox.click();
+      }
 
       WebElement addSelected = addProjectVersionPanel.findElement(By.xpath(".//input[@value='Add Selected']"));
       addSelected.click();
@@ -105,7 +116,7 @@ public class VersionGroupPage extends AbstractPage
          {
             final List<TableRow> tableRows = WebElementUtil.getTableRows(groupDataTable);
 
-            VersionGroupPage.log.info("{} project versions for this group", tableRows.size());
+            log.info("{} project versions for this group", tableRows.size());
             Preconditions.checkState(tableRows.size() > 0, "table is empty");
             return tableRows;
          }

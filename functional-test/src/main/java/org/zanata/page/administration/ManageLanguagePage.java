@@ -56,7 +56,22 @@ public class ManageLanguagePage extends AbstractPage
 
    public ManageLanguageTeamMemberPage manageTeamMembersFor(final String localeId)
    {
-      List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), By.xpath("//table"));
+      WebElement localeTable = waitForTenSec().until(new Function<WebDriver, WebElement>()
+      {
+         @Override
+         public WebElement apply(WebDriver driver)
+         {
+            WebElement table = driver.findElement(By.xpath("//table"));
+            if (table.isDisplayed())
+            {
+               return table;
+            }
+            log.debug("table still loading...");
+            return null;
+         }
+      });
+
+      List<TableRow> tableRows = WebElementUtil.getTableRows(localeTable);
       log.debug("locale table: {}", tableRows);
       Collection<TableRow> matchedRow = Collections2.filter(tableRows, new Predicate<TableRow>()
       {
