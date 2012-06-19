@@ -72,9 +72,12 @@ public class VersionGroupPage extends AbstractPage
    public VersionGroupPage addToGroup(TableRow projectVersionRow)
    {
       List<WebElement> cells = projectVersionRow.getCells();
-      int addButtonIndex = cells.size() - 1;
-      WebElement addButton = cells.get(addButtonIndex).findElement(By.xpath(".//input[@type='button']"));
-      addButton.click();
+      int selectVersionIndex = cells.size() - 1;
+      WebElement selectCheckBox = cells.get(selectVersionIndex).findElement(By.xpath(".//input[@type='checkbox']"));
+      selectCheckBox.click();
+
+      WebElement addSelected = addProjectVersionPanel.findElement(By.xpath(".//input[@value='Add Selected']"));
+      addSelected.click();
       return this;
    }
 

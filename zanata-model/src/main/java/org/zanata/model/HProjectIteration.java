@@ -80,6 +80,7 @@ public class HProjectIteration extends SlugEntityBase
 
    private boolean overrideLocales = false;
    private Set<HLocale> customizedLocales;
+   private Set<HIterationGroup> groups;
 
    public boolean getOverrideLocales()
    {
@@ -139,5 +140,16 @@ public class HProjectIteration extends SlugEntityBase
       if (allDocuments == null)
          allDocuments = new HashMap<String, HDocument>();
       return allDocuments;
+   }
+
+   @ManyToMany
+   @JoinTable(name = "HIterationGroup_ProjectIteration", joinColumns = @JoinColumn(name = "projectIterationId"), inverseJoinColumns = @JoinColumn(name = "iterationGroupId"))
+   public Set<HIterationGroup> getGroups()
+   {
+      if (groups == null)
+      {
+         groups = new HashSet<HIterationGroup>();
+      }
+      return groups;
    }
 }

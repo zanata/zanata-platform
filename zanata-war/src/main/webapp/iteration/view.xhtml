@@ -10,6 +10,20 @@
 
 
     <ui:define name="page_title">#{viewAllStatusAction.projectSlug}:#{viewAllStatusAction.iterationSlug}</ui:define>
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function submitSearchOnEnter(e)
+            {
+                if(e.keyCode == 13 )
+                {
+                    #{rich:element('searchBtn')}.click();
+                    return false;
+                }
+            }
+        </script>
+    </ui:define>
+
     <ui:define name="center_content">
 		<rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 			
@@ -149,6 +163,19 @@
 				</a4j:region>
 			</a4j:form>
 		</rich:panel>
+
+        <rich:simpleTogglePanel label="#{messages['jsf.JoinedGroups']}" switchType="client">
+            <h:form>
+                <rich:dataGrid value="#{viewAllStatusAction.projectIteration.groups.toArray()}" var="group" columns="3" styleClass="noBorderTable noBackgroundTable" style="border:0px">
+                    <s:link view="/version-group/version_group.xhtml" propagation="none" value="#{group.name}" styleClass="table_link">
+                        <f:param name="versionGroupSlug" value="#{group.slug}" />
+                    </s:link>
+                </rich:dataGrid>
+            </h:form>
+        </rich:simpleTogglePanel>
+
+
+
 	</ui:define>
 
 	<ui:define name="left_content">
@@ -175,7 +202,66 @@
                     rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'copy-trans')}"
                     onclick="return confirm('#{messages['jsf.iteration.CopyTrans.confirm']}');">
             </s:link>
+
+            <s:fragment rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'update')}">
+                <a href="#" class="action_link" onclick="#{rich:component('versionSearchPanel')}.show()">#{messages['jsf.RequestToJoinVersionGroup']}</a>
+            </s:fragment>
+
 		</rich:panel>
+
+
+
+        <rich:modalPanel id="versionSearchPanel" width="530" height="440" rendered="#{identity.loggedIn and s:hasPermission(viewAllStatusAction.projectIteration, 'update')}">
+            <f:subview id="versionSearch">
+                <a4j:form>
+                    <h1>Find Group</h1>
+                    <p>
+                        <h:inputText value="#{viewAllStatusAction.searchTerm}"
+                                     onkeydown="return submitSearchOnEnter(event)"/>
+                        <a4j:commandButton id="searchBtn"
+                                           value="#{messages['jsf.Search']}"
+                                           action="#{viewAllStatusAction.searchGroup}"
+                                           reRender="searchResults" status="searchStatus" />
+
+                        <a4j:commandButton value="#{messages['jsf.Close']}"
+                                           onclick="#{rich:component('versionSearchPanel')}.hide(); return false;" />
+
+                    </p>
+                </a4j:form>
+                <a4j:region>
+                    <a4j:status id="searchStatus" startText="Searching..." stopText="" />
+                    <a4j:form id="searchResults">
+                        <h:outputText id="noResultsMessage" rendered="#{empty viewAllStatusAction.searchResults}" value="#{messages['jsf.NoResultToDisplay']}" />
+                        <a4j:outputPanel layout="block" style="overflow:auto;height:320px" rendered="#{not empty viewAllStatusAction.searchResults}">
+                            <rich:dataTable id="resultTable" value="#{viewAllStatusAction.searchResults}" var="group">
+                                <f:facet name="header">#{messages['jsf.SearchResults']}</f:facet>
+
+                                <rich:column sortBy="#{group.name}">
+                                    <f:facet name="header">#{messages['jsf.GroupName']}</f:facet>
+                                    #{group.name}
+                                </rich:column>
+                                <rich:column>
+                                    <f:facet name="header">#{messages['jsf.Description']}</f:facet>
+                                    #{group.description}
+                                </rich:column>
+
+                                <rich:column styleClass="centered">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{messages['jsf.Actions']}"/>
+                                    </f:facet>
+
+                                    <s:link view="/iteration/request_join_group/#{group.slug}/#{viewAllStatusAction.projectSlug}/#{viewAllStatusAction.projectIteration.slug}" rendered="#{!viewAllStatusAction.isGroupInVersion(group.slug)}" title="Select group" value="Select" propagation="none" styleClass="button"/>
+
+                                    <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
+                                                  rendered="#{viewAllStatusAction.isGroupInVersion(group.slug)}" />
+
+                                </rich:column>
+                            </rich:dataTable>
+                        </a4j:outputPanel>
+                    </a4j:form>
+                </a4j:region>
+            </f:subview>
+        </rich:modalPanel>
 	</ui:define>
 
 </ui:composition>

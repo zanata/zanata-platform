@@ -120,6 +120,15 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
    }
 
    @SuppressWarnings("unchecked")
+   public List<HProjectIteration> getAllIterations(String slug)
+   {
+      Query q = getSession().createQuery("from HProjectIteration t where t.project.slug = :projectSlug");
+      q.setParameter("projectSlug", slug);
+      q.setCacheable(true).setComment("ProjectDAO.getAllIterations");
+      return q.list();
+   }
+
+   @SuppressWarnings("unchecked")
    public List<HProjectIteration> getActiveIterations(String slug)
    {
       Query q = getSession().createQuery("from HProjectIteration t where t.project.slug = :projectSlug and t.status = :status");

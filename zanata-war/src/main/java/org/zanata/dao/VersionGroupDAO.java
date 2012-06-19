@@ -84,4 +84,12 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long>
       List<HPerson> results = q.list();
       return results;
    }
+
+   public List<HIterationGroup> searchLikeSlug(String searchTerm)
+   {
+      Query query = getSession().createQuery("from HIterationGroup g where g.slug LIKE :searchTerm AND g.status = :status");
+      query.setParameter("searchTerm", "%" + searchTerm + "%");
+      query.setParameter("status", EntityStatus.ACTIVE);
+      return query.list();
+   }
 }

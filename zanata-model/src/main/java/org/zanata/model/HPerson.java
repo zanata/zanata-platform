@@ -179,6 +179,12 @@ public class HPerson extends ModelEntityBase implements Serializable
    }
 
    @Transient
+   public boolean isMaintainerOfProjects()
+   {
+      return !getMaintainerProjects().isEmpty();
+   }
+
+   @Transient
    public boolean isCoordinator(HLocale locale)
    {
       // TODO PERF consider implementing business key equality

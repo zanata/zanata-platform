@@ -21,10 +21,10 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.hibernate.validator.Email;
 import org.jboss.seam.ScopeType;
@@ -33,21 +33,16 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.core.ResourceBundle;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.international.LocaleSelector;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.security.RunAsOperation;
-import org.jboss.seam.security.management.IdentityManager;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
+import org.zanata.service.EmailService;
 import org.zanata.service.LocaleService;
 
 /**
@@ -67,19 +62,15 @@ public class SendEmailAction implements Serializable
    private static final String EMAIL_TYPE_CONTACT_ADMIN = "contact_admin";
    private static final String EMAIL_TYPE_CONTACT_COORDINATOR = "contact_coordinator";
    private static final String EMAIL_TYPE_REQUEST_TO_JOIN = "request_to_join_language_team";
+   private static final String EMAIL_TYPE_REQUEST_TO_JOIN_GROUP = "request_to_join_group";
 
    private static final String ADMIN_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_admin.xhtml";
    private static final String COORDINATOR_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_coordinator.xhtml";
    private static final String REQUEST_TO_JOIN_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_request_to_join.xhtml";
+   private static final String REQUEST_TO_JOIN_GROUP_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_request_to_join_group.xhtml";
 
    @In
-   private ApplicationConfiguration applicationConfiguration;
-
-   @In
-   private PersonDAO personDAO;
-
-   @In
-   private IdentityManager identityManager;
+   private EmailService emailServiceImpl;
 
    @In(required = true, value = JpaIdentityStore.AUTHENTICATED_USER)
    private HAccount authenticatedAccount;
@@ -93,19 +84,17 @@ public class SendEmailAction implements Serializable
    @Logger
    private Log log;
 
-   @In(create = true)
-   private Renderer renderer;
-
    private String fromName;
    private String fromLoginName;
    private String replyEmail;
    private String subject;
    private String message;
    private String emailType;
-   private String toName;
-   private String toEmailAddr;
+
    private String language;
    private HLocale locale;
+
+   private List<HPerson> groupMaintainers;
 
    @Create
    public void onCreate()
@@ -185,16 +174,6 @@ public class SendEmailAction implements Serializable
       this.emailType = emailType;
    }
 
-   public String getToName()
-   {
-      return toName;
-   }
-
-   public String getToEmailAddr()
-   {
-      return toEmailAddr;
-   }
-
    public String getLanguage()
    {
       return language;
@@ -211,11 +190,9 @@ public class SendEmailAction implements Serializable
       return locale;
    }
 
-   private List<HPerson> coordinators;
-
    private List<HPerson> getCoordinators()
    {
-      coordinators = new ArrayList<HPerson>();
+      List<HPerson> coordinators = new ArrayList<HPerson>();
       
       for (HLocaleMember member : locale.getMembers())
       {
@@ -225,31 +202,6 @@ public class SendEmailAction implements Serializable
          }
       }
       return coordinators;
-   }
-
-   private List<HPerson> admins;
-
-   /**
-    * 
-    * @return a list of admin users
-    */
-   private List<HPerson> getAdmins()
-   {
-      // required to read admin users for a non-admin session
-      new RunAsOperation()
-      {
-         @Override
-         public void execute()
-         {
-            admins = new ArrayList<HPerson>();
-            for (Principal admin : identityManager.listMembers("admin"))
-            {
-               admins.add(personDAO.findByUsername(admin.getName()));
-            }
-         }
-      }.addRole("admin").run();
-
-      return admins;
    }
 
    /**
@@ -268,17 +220,26 @@ public class SendEmailAction implements Serializable
       {
          if (emailType.equals(EMAIL_TYPE_CONTACT_ADMIN))
          {
-            sendToAdminEmails(ADMIN_EMAIL_TEMPLATE);
+            String msg = emailServiceImpl.sendToAdminEmails(ADMIN_EMAIL_TEMPLATE, fromName, fromLoginName, replyEmail, subject, message);
+            FacesMessages.instance().add(msg);
             return "success";
          }
          else if (emailType.equals(EMAIL_TYPE_CONTACT_COORDINATOR))
          {
-            sendToLanguageCoordinators(COORDINATOR_EMAIL_TEMPLATE);
+            String msg = emailServiceImpl.sendToLanguageCoordinators(COORDINATOR_EMAIL_TEMPLATE, getCoordinators(), fromName, fromLoginName, replyEmail, subject, message, language);
+            FacesMessages.instance().add(msg);
             return "success";
          }
          else if (emailType.equals(EMAIL_TYPE_REQUEST_TO_JOIN))
          {
-            sendToLanguageCoordinators(REQUEST_TO_JOIN_EMAIL_TEMPLATE);
+            String msg = emailServiceImpl.sendToLanguageCoordinators(REQUEST_TO_JOIN_EMAIL_TEMPLATE, getCoordinators(), fromName, fromLoginName, replyEmail, subject, message, language);
+            FacesMessages.instance().add(msg);
+            return "success";
+         }
+         else if (emailType.equals(EMAIL_TYPE_REQUEST_TO_JOIN_GROUP))
+         {
+            String msg = emailServiceImpl.sendToVersionGroupMaintainer(REQUEST_TO_JOIN_GROUP_EMAIL_TEMPLATE, groupMaintainers, fromName, fromLoginName, replyEmail, subject, message);
+            FacesMessages.instance().add(msg);
             return "success";
          }
          else
@@ -298,72 +259,6 @@ public class SendEmailAction implements Serializable
       }
    }
 
-   private void sendToLanguageCoordinators(String emailTemplate)
-   {
-
-      List<HPerson> coordinators = getCoordinators();
-      if (!coordinators.isEmpty())
-      {
-         for (HPerson coord : coordinators)
-         {
-            toName = coord.getName();
-            toEmailAddr = coord.getEmail();
-            renderer.render(emailTemplate);
-         }
-         log.info("Sent language team coordinator email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}', language '{5}'", fromName, fromLoginName, replyEmail, subject, message, language);
-         FacesMessages.instance().add("#{messages['jsf.email.coordinator.SentNotification']}");
-      }
-      else
-      {
-         sendToAdminEmails(emailTemplate);
-      }
-   }
-
-   /**
-    * sends emails to configured admin emails for server, or admin users if no
-    * server emails are configured.
-    * 
-    * Throws exception if there is a problem.
-    * 
-    * @param emailTemplate
-    */
-   private void sendToAdminEmails(String emailTemplate)
-   {
-      List<String> adminEmails = applicationConfiguration.getAdminEmail();
-      if (!adminEmails.isEmpty())
-      {
-         toName = ResourceBundle.instance().getString("jsf.ZanataAdministrator");
-         for (String email : adminEmails)
-         {
-            toEmailAddr = email;
-            renderer.render(emailTemplate);
-         }
-         log.info("Sent server admin email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'", fromName, fromLoginName, replyEmail, subject, message);
-         FacesMessages.instance().add("#{messages['jsf.email.admin.SentNotification']}");
-      }
-      else
-      {
-         sendToAdminUsers(emailTemplate);
-      }
-   }
-
-   /**
-    * Emails admin users with given template
-    * 
-    * @param emailTemplate
-    */
-   private void sendToAdminUsers(String emailTemplate)
-   {
-      for (HPerson admin : getAdmins())
-      {
-         toName = admin.getName();
-         toEmailAddr = admin.getEmail();
-         renderer.render(emailTemplate);
-      }
-      FacesMessages.instance().add("#{messages['jsf.email.admin.SentNotification']}");
-      log.info("Sent admin users email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'", fromName, fromLoginName, replyEmail, subject, message);
-   }
-
    /**
     * @return string 'canceled'
     */
@@ -374,4 +269,9 @@ public class SendEmailAction implements Serializable
       return "canceled";
    }
 
+   public String sendToVersionGroupMaintainer(List<HPerson> maintainers)
+   {
+      groupMaintainers = maintainers;
+      return send();
+   }
 }
