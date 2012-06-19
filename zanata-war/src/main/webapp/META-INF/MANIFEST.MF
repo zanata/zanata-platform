@@ -21,5 +21,30 @@ Class-Path: zanata-common-api-1.6-SNAPSHOT.jar zanata-common-util-1.6-
  ss-el-1.0_02.CR4.jar hibernate-search-3.1.1.GA.jar hsqldb-1.8.0.8-bre
  w.jar zanata-adapter-po-1.6.0-alpha-2.jar jgettext-0.6.jar resteasy-a
  tom-provider-2.1.0.GA.jar commons-beanutils-1.7.0.jar openprops-0.5.j
- ar
+ ar zanata-common-api-1.6.0.jar zanata-common-util-1.6.1-SNAPSHOT.jar 
+ zanata-adapter-po-1.6.1-SNAPSHOT.jar jgettext-0.7-SNAPSHOT.jar jboss-
+ seam-ui-2.2.0.GA.jar jboss-seam-jul-2.2.0.GA.jar jboss-seam-debug-2.2
+ .0.GA.jar jsf-facelets-1.1.15.B1.jar jboss-seam-mail-2.2.0.GA.jar jbo
+ ss-seam-remoting-2.2.0.GA.jar jboss-seam-resteasy-2.2.0.GA.jar restea
+ sy-jackson-provider-2.1.0.GA.jar jackson-jaxrs-1.5.0.jar drools-core-
+ 5.0.1.jar mvel2-2.0.10.jar drools-api-5.0.1.jar joda-time-1.6.jar dro
+ ols-compiler-5.0.1.jar antlr-runtime-3.1.1.jar core-3.4.2.v_883_R34x.
+ jar janino-2.5.15.jar richfaces-api-3.3.3.Final.jar richfaces-impl-3.
+ 3.3.Final.jar commons-digester-1.8.1.jar richfaces-ui-3.3.3.Final.jar
+  ehcache-core-2.5.1.jar dbunit-2.2.jar urlrewritefilter-3.0.4.jar jav
+ amelody-core-1.37.0.jar jrobin-1.5.9.jar enunciate-core-annotations-1
+ .24.jar quartz-1.5.2.jar commons-fileupload-1.2.1.jar gwt-servlet-2.4
+ .0.jar gin-1.5.0.jar guice-3.0.jar javax.inject-1.jar aopalliance-1.0
+ .jar guice-assistedinject-3.0-rc2.jar gwt-dispatch-1.0.0.jar gwt-log-
+ 3.1.7.jar gwteventservice-1.2.0.jar eventservice-rpc-1.2.0.jar events
+ ervice-1.2.0.jar liquibase-core-2.0.3.jar modify-column-2.0.0.jar liq
+ uibase-slf4j-1.0.0.jar htmlparser-1.6.jar openid4java-0.9.5.jar openi
+ d4java-consumer-0.9.5.jar openid4java-nodeps-0.9.5.jar nekohtml-1.9.7
+ .jar openid4java-server-0.9.5.jar openid4java-server-JdbcServerAssoci
+ ationStore-0.9.5.jar spring-jdbc-2.0.6.jar spring-beans-2.0.6.jar spr
+ ing-core-2.0.6.jar spring-context-2.0.6.jar spring-dao-2.0.6.jar open
+ id4java-consumer-SampleConsumer-0.9.5.jar openid4java-server-SampleSe
+ rver-0.9.5.jar openxri-client-1.2.0.jar openxri-syntax-1.2.0.jar jug-
+ 1.1.2.jar xmlsec-1.3.0.jar zanata-model-1.7-SNAPSHOT.jar server-1.7-S
+ NAPSHOT.jar
 
