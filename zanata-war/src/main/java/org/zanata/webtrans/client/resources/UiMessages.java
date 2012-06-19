@@ -79,7 +79,7 @@ public interface UiMessages extends Messages
    @DefaultMessage("Send")
    String sendLabel();
 
-   @DefaultMessage("Merge TM")
+   @DefaultMessage("TM merge for this page")
    String mergeTMButtonLabel();
 
    @DefaultMessage("Select TM match percentage to pre-fill translations.")

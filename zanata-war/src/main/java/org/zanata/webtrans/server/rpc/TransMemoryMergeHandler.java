@@ -133,17 +133,19 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
       }
    }
 
-   private TransUnitUpdateRequest createRequest(TransMemoryMerge action, HLocale hLocale, Map<Long, TransUnitUpdateRequest> requestMap, HTextFlow hTextFlow, TransMemoryResultItem tmResult)
+   private TransUnitUpdateRequest createRequest(TransMemoryMerge action, HLocale hLocale, Map<Long, TransUnitUpdateRequest> requestMap, HTextFlow hTextFlowToBeFilled, TransMemoryResultItem tmResult)
    {
       if (tmResult == null)
       {
          return null;
       }
-      TransMemoryDetails tmDetail = getTransMemoryDetailsHandler.getTransMemoryDetail(hLocale, hTextFlow);
-      ContentState statusToSet = new TransMemoryMergeStatusResolver().workOutStatus(action, hTextFlow, tmDetail, tmResult);
+      Long tmSourceId = tmResult.getSourceIdList().get(0);
+      HTextFlow tmSource = textFlowDAO.findById(tmSourceId, false);
+      TransMemoryDetails tmDetail = getTransMemoryDetailsHandler.getTransMemoryDetail(hLocale, tmSource);
+      ContentState statusToSet = new TransMemoryMergeStatusResolver().workOutStatus(action, hTextFlowToBeFilled, tmDetail, tmResult);
       if (statusToSet != null)
       {
-         TransUnitUpdateRequest unfilledRequest = requestMap.get(hTextFlow.getId());
+         TransUnitUpdateRequest unfilledRequest = requestMap.get(hTextFlowToBeFilled.getId());
          TransUnitUpdateRequest request = new TransUnitUpdateRequest(unfilledRequest.getTransUnitId(), tmResult.getTargetContents(), statusToSet, unfilledRequest.getBaseTranslationVersion());
          log.debug("auto translate from translation memory {}", request);
          return request;
