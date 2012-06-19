@@ -1,0 +1,44 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2012-02-24T06:25:39\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: Chinese (Simplified)\n"
+"Language: zh-Hans\n"
+"X-Generator: Zanata 1.5.0-alpha-3-SNAPSHOT\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+# translation has 100% match from TM but approved
+#. Tag: title
+#, no-c-format
+msgid "About Fedora"
+msgstr "approved"
+
+# translation has 100% match from TM
+#. Tag: subtitle
+#, no-c-format
+msgid "Fedora, the Fedora Project, and how you can help."
+msgstr ""
+
+# translation has 100% match from TM but is fuzzy state
+#. Tag: productname
+#, fuzzy, no-c-format
+msgid "Fedora"
+msgstr "Fedora"
+
+# translation has less than 100% match from TM
+#. Tag: para
+#, no-c-format
+msgid "Tells Fedora, the Fedora Project, and how you get."
+msgstr ""
+
+# translation has no matched TM
+#. Tag: para
+#, no-c-format
+msgid "This string has no TM match."
+msgstr ""

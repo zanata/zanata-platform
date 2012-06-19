@@ -41,6 +41,7 @@ public enum Constants
    zanataApiKey("zanata.apikey");
 
    private static final Logger LOGGER = LoggerFactory.getLogger(Constants.class);
+   public static final int FIFTY_SEC = 50000;
    private String value;
 
    private Constants(String value)

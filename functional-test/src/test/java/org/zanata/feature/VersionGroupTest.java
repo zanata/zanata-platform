@@ -41,10 +41,10 @@ public class VersionGroupTest
       // given two projects and versions are created
       new LoginWorkFlow().signIn("admin", "admin");
       ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
-      projectWorkFlow.createNewProject("group-project-a", "project to be grouped")
+      projectWorkFlow.createNewProject("group-project-a", "project a to be grouped")
             .clickCreateVersionLink().inputVersionId("master").saveVersion();
 
-      projectWorkFlow.createNewProject("group-project-b", "project with same version slug/version id")
+      projectWorkFlow.createNewProject("group-project-b", "project b to be grouped")
             .clickCreateVersionLink().inputVersionId("master").saveVersion();
 
       VersionGroupPage versionGroupPage = projectWorkFlow.goToHome().goToGroups().goToGroup("group one");

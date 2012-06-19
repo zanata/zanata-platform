@@ -20,25 +20,46 @@
  */
 package org.zanata.workflow;
 
+import java.util.List;
+
 import org.zanata.page.AbstractPage;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.page.projects.ProjectsPage;
 import org.zanata.util.Constants;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class ProjectWorkFlow extends AbstractWebWorkFlow
 {
    public ProjectPage createNewProject(String projectId, String projectName)
    {
-      return goToHome().goToProjects().clickOnCreateProjectLink().inputProjectId(projectId).inputProjectName(projectName).saveProject();
+      ProjectsPage projectsPage = goToHome().goToProjects();
+      List<String> projects = projectsPage.getProjectNamesOnCurrentPage();
+      log.info("current projects: {}", projects);
+
+      if (projects.contains(projectName))
+      {
+         log.warn("{} has already been created. Presumably you are running test manually and more than once.", projectId);
+         //since we can't create same project multiple times,
+         //if we run this test more than once manually, we don't want it to fail
+         return projectsPage.goToProject(projectName);
+      }
+      return projectsPage.clickOnCreateProjectLink().inputProjectId(projectId).inputProjectName(projectName).saveProject();
    }
 
    public ProjectVersionPage createNewProjectVersion(ProjectPage projectPage, String projectVersion)
    {
+      if (projectPage.getVersions().contains(projectVersion))
+      {
+         log.warn("{} has already been created. Presumably you are running test manually and more than once.", projectVersion);
+         return projectPage.goToActiveVersion(projectVersion);
+      }
       return projectPage.clickCreateVersionLink().inputVersionId(projectVersion).saveVersion();
    }
 
-   public <P extends AbstractPage> ProjectPage goToProjectByName(String projectName)
+   public ProjectPage goToProjectByName(String projectName)
    {
       ProjectsPage projects = goToHome().goToPage(Constants.projectsLink.value(), ProjectsPage.class);
       return projects.goToProject(projectName);

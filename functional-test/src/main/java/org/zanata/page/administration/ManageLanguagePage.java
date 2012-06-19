@@ -57,18 +57,19 @@ public class ManageLanguagePage extends AbstractPage
    public ManageLanguageTeamMemberPage manageTeamMembersFor(final String localeId)
    {
       List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), By.xpath("//table"));
+      log.debug("locale table: {}", tableRows);
       Collection<TableRow> matchedRow = Collections2.filter(tableRows, new Predicate<TableRow>()
       {
          @Override
          public boolean apply(TableRow input)
          {
             List<String> cellContents = input.getCellContents();
-            String localeCell = cellContents.get(0).trim();
+            String localeCell = cellContents.get(LOCALE_COLUMN).trim();
             return localeCell.equalsIgnoreCase(localeId);
          }
       });
 
-      ManageLanguagePage.log.debug("for locale [{}] found table row: {}", localeId, matchedRow);
+      log.debug("for locale [{}] found table row: {}", localeId, matchedRow);
       Preconditions.checkState(matchedRow.size() == 1, "given localeId can't not be found on table");
       List<WebElement> cells = matchedRow.iterator().next().getCells();
       int teamMemberCellIndex = cells.size() - 1;

@@ -1,0 +1,33 @@
+# 
+# AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2012-06-18T04:48:59\n"
+"PO-Revision-Date: 2012-06-18T04:48:59\n"
+"Last-Translator: Patrick Huang\n"
+"Language-Team: None\n"
+"MIME-Version: 1.0\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#, no-c-format
+msgid "About Fedora"
+msgstr ""
+
+#. Tag: subtitle
+#, no-c-format
+msgid "Fedora, the Fedora Project, and how you can help."
+msgstr ""
+
+#. Tag: productname
+#, no-c-format
+msgid "Fedora"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Describes Fedora, the Fedora Project, and how you can help."
+msgstr ""
