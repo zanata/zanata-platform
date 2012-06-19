@@ -87,12 +87,13 @@ public class GlossaryCSVReaderTest
       reader.setOpts(mockPushOption);
       EasyMock.replay(mockPushOption);
 
-      Glossary glossary = reader.extractGlossary(sourceFile);
+      List<Glossary> glossaries = reader.extractGlossary(sourceFile);
       // System.out.println(glossary);
-      Assert.assertNotNull(glossary);
-      Assert.assertEquals(2, glossary.getGlossaryEntries().size());
+      Assert.assertEquals(1, glossaries.size());
 
-      for (GlossaryEntry entry : glossary.getGlossaryEntries())
+      Assert.assertEquals(2, glossaries.get(0).getGlossaryEntries().size());
+
+      for (GlossaryEntry entry : glossaries.get(0).getGlossaryEntries())
       {
          Assert.assertEquals(3, entry.getGlossaryTerms().size());
       }
@@ -118,12 +119,13 @@ public class GlossaryCSVReaderTest
       reader.setOpts(mockPushOption);
       EasyMock.replay(mockPushOption);
 
-      Glossary glossary = reader.extractGlossary(sourceFile);
+      List<Glossary> glossaries = reader.extractGlossary(sourceFile);
       // System.out.println(glossary);
-      Assert.assertNotNull(glossary);
-      Assert.assertEquals(2, glossary.getGlossaryEntries().size());
+      Assert.assertEquals(1, glossaries.size());
 
-      for (GlossaryEntry entry : glossary.getGlossaryEntries())
+      Assert.assertEquals(2, glossaries.get(0).getGlossaryEntries().size());
+
+      for (GlossaryEntry entry : glossaries.get(0).getGlossaryEntries())
       {
          Assert.assertEquals(3, entry.getGlossaryTerms().size());
       }

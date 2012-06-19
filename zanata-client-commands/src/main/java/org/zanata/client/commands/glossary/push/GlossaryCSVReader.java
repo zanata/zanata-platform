@@ -23,6 +23,7 @@ package org.zanata.client.commands.glossary.push;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -44,8 +45,11 @@ import au.com.bytecode.opencsv.CSVReader;
 public class GlossaryCSVReader extends AbstractGlossaryPushReader
 {
    @Override
-   public Glossary extractGlossary(File glossaryFile) throws IOException, RuntimeException
+   public List<Glossary> extractGlossary(File glossaryFile) throws IOException, RuntimeException
    {
+      int entryCount = 0;
+      List<Glossary> glossaries = new ArrayList<Glossary>();
+
       CSVReader reader = new CSVReader(new FileReader(glossaryFile));
 
       List<String[]> entries = reader.readAll();
@@ -81,8 +85,16 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader
             entry.getGlossaryTerms().add(term);
          }
          glossary.getGlossaryEntries().add(entry);
+         entryCount++;
+
+         if (entryCount == ENTRIES_PER_GLOSSARY || i == entries.size() - 1)
+         {
+            glossaries.add(glossary);
+            entryCount = 0;
+            glossary = new Glossary();
+         }
       }
-      return glossary;
+      return glossaries;
 
    }
 

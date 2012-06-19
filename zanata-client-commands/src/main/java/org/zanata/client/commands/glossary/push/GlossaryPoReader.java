@@ -26,6 +26,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.Message;
@@ -45,11 +47,10 @@ import org.zanata.rest.dto.GlossaryTerm;
  **/
 public class GlossaryPoReader extends AbstractGlossaryPushReader
 {
-
    private static final Logger log = LoggerFactory.getLogger(GlossaryPoReader.class);
 
    @Override
-   public Glossary extractGlossary(File glossaryFile) throws IOException
+   public List<Glossary> extractGlossary(File glossaryFile) throws IOException
    {
       BufferedInputStream bis = new BufferedInputStream(new FileInputStream(glossaryFile));
       try
@@ -64,9 +65,11 @@ public class GlossaryPoReader extends AbstractGlossaryPushReader
       }
    }
 
-   private Glossary extractTemplate(InputSource potInputSource)
+   private List<Glossary> extractTemplate(InputSource potInputSource)
    {
+      int entryCount = 0;
       MessageStreamParser messageParser = createParser(potInputSource);
+      List<Glossary> glossaries = new ArrayList<Glossary>();
 
       LocaleId srcLang = getLocaleFromMap(getOpts().getSourceLang());
       LocaleId targetLang = getLocaleFromMap(getOpts().getTransLang());
@@ -150,9 +153,17 @@ public class GlossaryPoReader extends AbstractGlossaryPushReader
             entry.getGlossaryTerms().add(targetTerm);
 
             glossary.getGlossaryEntries().add(entry);
+            entryCount++;
+         }
+
+         if (entryCount == ENTRIES_PER_GLOSSARY || !messageParser.hasNext())
+         {
+            glossaries.add(glossary);
+            entryCount = 0;
+            glossary = new Glossary();
          }
       }
-      return glossary;
+      return glossaries;
    }
 
    static MessageStreamParser createParser(InputSource inputSource)

@@ -22,6 +22,7 @@ package org.zanata.client.commands.glossary.push;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
@@ -80,9 +81,10 @@ public class GlossaryPoReaderTest
       reader.setOpts(mockPushOption);
       EasyMock.replay(mockPushOption);
 
-      Glossary glossary = reader.extractGlossary(sourceFile);
-      Assert.assertNotNull(glossary);
-      Assert.assertEquals(578, glossary.getGlossaryEntries().size());
+      List<Glossary> glossaries = reader.extractGlossary(sourceFile);
+      Assert.assertEquals(2, glossaries.size());
+      Assert.assertEquals(300, glossaries.get(0).getGlossaryEntries().size());
+      Assert.assertEquals(278, glossaries.get(1).getGlossaryEntries().size());
 
    }
 }

@@ -23,6 +23,7 @@ package org.zanata.client.commands.glossary.push;
 import java.io.File;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
@@ -137,10 +138,24 @@ public class GlossaryPushCommand extends ConfigurableCommand<GlossaryPushOptions
 
       log.info("pushing glossary document [{}] to server", glossaryFile.getName());
       
-      Glossary glossary = reader.extractGlossary(glossaryFile);
-      log.debug(glossary.toString());
-      ClientResponse<String> response = glossaryResource.put(glossary);
-      ClientUtility.checkResult(response, uri);
+      List<Glossary> glossaries = reader.extractGlossary(glossaryFile);
+
+      int totalEntries = 0;
+      for (Glossary glossary : glossaries)
+      {
+         totalEntries = totalEntries + glossary.getGlossaryEntries().size();
+         log.debug("total entries:" + totalEntries);
+      }
+      
+      int totalDone = 0;
+      for (Glossary glossary : glossaries)
+      {
+         log.debug(glossary.toString());
+         ClientResponse<String> response = glossaryResource.put(glossary);
+         ClientUtility.checkResult(response, uri);
+         totalDone = totalDone + glossary.getGlossaryEntries().size();
+         log.info("Pushed " + totalDone + " of " + totalEntries + " glossary entries");
+      }
    }
 }
 

@@ -22,6 +22,7 @@ package org.zanata.client.commands.glossary.push;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.LocaleId;
@@ -36,9 +37,11 @@ public abstract class AbstractGlossaryPushReader
 {
    private GlossaryPushOptions opts;
 
+   public static final int ENTRIES_PER_GLOSSARY = 300;
+
    private String fileExtension;
 
-   public abstract Glossary extractGlossary(File glossaryFile) throws IOException;
+   public abstract List<Glossary> extractGlossary(File glossaryFile) throws IOException;
 
    protected LocaleId getLocaleFromMap(String localLocale)
    {
