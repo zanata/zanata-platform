@@ -117,7 +117,7 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
 
    private String resId;
 
-   @Setter(AccessLevel.PRIVATE)
+   @Setter(AccessLevel.PROTECTED)
    private Integer pos;
 
    private HDocument document;
