@@ -87,7 +87,7 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader
          glossary.getGlossaryEntries().add(entry);
          entryCount++;
 
-         if (entryCount == ENTRIES_PER_GLOSSARY || i == entries.size() - 1)
+         if (entryCount == getOpts().getBatchSize() || i == entries.size() - 1)
          {
             glossaries.add(glossary);
             entryCount = 0;

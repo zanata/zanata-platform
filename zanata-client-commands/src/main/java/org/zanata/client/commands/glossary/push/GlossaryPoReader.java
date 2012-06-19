@@ -156,7 +156,7 @@ public class GlossaryPoReader extends AbstractGlossaryPushReader
             entryCount++;
          }
 
-         if (entryCount == ENTRIES_PER_GLOSSARY || !messageParser.hasNext())
+         if (entryCount == getOpts().getBatchSize() || !messageParser.hasNext())
          {
             glossaries.add(glossary);
             entryCount = 0;

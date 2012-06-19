@@ -81,6 +81,13 @@ public class GlossaryPushMojo extends ConfigurableProjectMojo<GlossaryPushOption
     */
    private String commentCols = "pos,description";
 
+   /**
+    * Batch size for large glossary file
+    * 
+    * @parameter expression="${zanata.batchSize}" default-value=50
+    */
+   private int batchSize = 50;
+
 
    public GlossaryPushMojo() throws Exception
    {
@@ -128,6 +135,12 @@ public class GlossaryPushMojo extends ConfigurableProjectMojo<GlossaryPushOption
          Collections.addAll(list, commentHeadersList);
       }
       return list;
+   }
+
+   @Override
+   public int getBatchSize()
+   {
+      return batchSize;
    }
 }
 

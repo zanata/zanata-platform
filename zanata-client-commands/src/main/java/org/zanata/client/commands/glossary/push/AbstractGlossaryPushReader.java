@@ -37,8 +37,6 @@ public abstract class AbstractGlossaryPushReader
 {
    private GlossaryPushOptions opts;
 
-   public static final int ENTRIES_PER_GLOSSARY = 300;
-
    private String fileExtension;
 
    public abstract List<Glossary> extractGlossary(File glossaryFile) throws IOException;

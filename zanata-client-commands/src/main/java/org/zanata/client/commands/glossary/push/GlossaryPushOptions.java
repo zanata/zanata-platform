@@ -13,6 +13,8 @@ public interface GlossaryPushOptions extends ConfigurableProjectOptions
 
    public String getTransLang();
 
+   public int getBatchSize();
+
    public boolean getTreatSourceCommentsAsTarget();
 
    public List<String> getCommentCols();

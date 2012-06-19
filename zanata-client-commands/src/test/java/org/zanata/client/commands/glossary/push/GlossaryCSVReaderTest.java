@@ -83,6 +83,7 @@ public class GlossaryCSVReaderTest
       EasyMock.expect(mockPushOption.getLocaleMapList()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getTreatSourceCommentsAsTarget()).andReturn(false).anyTimes();
       EasyMock.expect(mockPushOption.getCommentCols()).andReturn(commentHeaders).anyTimes();
+      EasyMock.expect(mockPushOption.getBatchSize()).andReturn(300).anyTimes();
 
       reader.setOpts(mockPushOption);
       EasyMock.replay(mockPushOption);
@@ -115,6 +116,7 @@ public class GlossaryCSVReaderTest
       EasyMock.expect(mockPushOption.getLocaleMapList()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getTreatSourceCommentsAsTarget()).andReturn(false).anyTimes();
       EasyMock.expect(mockPushOption.getCommentCols()).andReturn(commentHeaders).anyTimes();
+      EasyMock.expect(mockPushOption.getBatchSize()).andReturn(300).anyTimes();
 
       reader.setOpts(mockPushOption);
       EasyMock.replay(mockPushOption);

@@ -111,12 +111,18 @@ public class GlossaryPushCommand extends ConfigurableCommand<GlossaryPushOptions
       log.info("Translation language: {}", getOpts().getTransLang());
       log.info("All translation comment: {}", getOpts().getTreatSourceCommentsAsTarget());
       log.info("Glossary file: {}", getOpts().getGlossaryFile());
+      log.info("Batch size: {}", getOpts().getBatchSize());
 
       File glossaryFile = getOpts().getGlossaryFile();
 
       if (!glossaryFile.exists())
       {
          throw new RuntimeException("File '" + glossaryFile + "' does not exist - check glossaryFile option");
+      }
+
+      if (getOpts().getBatchSize() >= 0)
+      {
+         throw new RuntimeException("Batch size needs to be 1 or more.");
       }
 
       String fileExtension = validateFileExtensionWithTransLang();
