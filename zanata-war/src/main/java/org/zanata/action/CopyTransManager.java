@@ -157,9 +157,12 @@ public class CopyTransManager
       @Override
       public void onComplete(CopyTransProcessHandle handle)
       {
-         // move the entry to the recently finished
-         recentlyFinished.put( handle.getProjectIteration().getId(),
-               currentlyRunning.remove( handle.getProjectIteration().getId() ) );
+         // move the entry to the recently finished, if not already done (i.e. it was cancelled)
+         if( currentlyRunning.containsValue( handle ) )
+         {
+            recentlyFinished.put( handle.getProjectIteration().getId(),
+                  currentlyRunning.remove( handle.getProjectIteration().getId() ) );
+         }
       }
    }
 

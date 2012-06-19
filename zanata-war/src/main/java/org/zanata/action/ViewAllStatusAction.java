@@ -32,6 +32,7 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityNotFoundException;
 import org.jboss.seam.log.Log;
@@ -48,6 +49,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.process.CopyTransProcessHandle;
+import org.zanata.seam.scope.FlashScopeBean;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
@@ -89,6 +91,9 @@ public class ViewAllStatusAction implements Serializable
 
    @In
    CopyTransManager copyTransManager;
+
+   @In
+   FlashScopeBean flash;
 
    private String iterationSlug;
    
@@ -264,12 +269,12 @@ public class ViewAllStatusAction implements Serializable
    {
       if( isCopyTransRunning() )
       {
-         FacesMessages.instance().add("Someone else already started a translation copy for this version.");
+         flash.setAttribute("message", "Someone else already started a translation copy for this version.");
          return;
       }
       else if( getProjectIteration().getDocuments().size() <= 0 )
       {
-         FacesMessages.instance().add("There are no documents in this project version.");
+         flash.setAttribute("message", "There are no documents in this project version.");
          return;
       }
 

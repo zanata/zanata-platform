@@ -30,7 +30,16 @@
 
     <ui:define name="center_content">
 		<rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
-			
+
+        <ui:remove>
+            <!-- This is a place holder to avoid using FacesMessages, as they are lost on redirects or Ajax requests -->
+        </ui:remove>
+        <a4j:outputPanel rendered="#{flash.hasAttribute('message')}">
+            <ul id="messages" class="message">
+                <li class="infomsg">#{flash.getAndClearAttribute('message')}</li>
+            </ul>
+        </a4j:outputPanel>
+
 		<h1>
 	       #{messages['jsf.ProjectId']}:&nbsp;
 	       <s:link view="/project/view/#{viewAllStatusAction.projectSlug}" styleClass="table_link">
@@ -41,13 +50,13 @@
             #{messages['jsf.Version']}:&nbsp;
             #{viewAllStatusAction.iterationSlug}
         </h1>
-			
+
 		<rich:panel id="iteration-status-panel">
 		
 			<ui:include src="/WEB-INF/layout/loading.xhtml">
 				<ui:param name="regionId" value="langTableRegion"/>
 			</ui:include>
-		
+
 			<a4j:form>
 				<a4j:region id="langTableRegion">
 					<s:token allowMultiplePosts="true" />
@@ -224,7 +233,7 @@
                                  layout="block"
                                  rendered="#{copyTransRunning}">
                     <s:div style="text-align:right;" rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'copy-trans')}">
-                        <h:commandButton value="Cancel" action="#{viewAllStatusAction.cancelCopyTrans}" />
+                        <s:button value="Cancel" action="#{viewAllStatusAction.cancelCopyTrans}" />
                     </s:div>
                     Started #{viewAllStatusAction.copyTransStartTime} ago by #{pHandle.triggeredBy}
                     <br/>

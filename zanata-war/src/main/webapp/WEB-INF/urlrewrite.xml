@@ -275,8 +275,10 @@
     <to>$1/project/list$2</to>
   </outbound-rule>
   <outbound-rule>
-    <from>^(/.+)?/iteration/view.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)$</from>
-    <to>$1/iteration/view/$2/$3</to>
+    <condition type="parameter" name="projectSlug" />
+    <condition type="parameter" name="iterationSlug"/>
+    <from>^(/.+)?/iteration/view.seam(\?.*)?$</from>
+    <to>$1/iteration/view/%{parameter:projectSlug}/%{parameter:iterationSlug}$2</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/iteration/files.seam\?project=([^&amp;]+)&amp;iteration=([^&amp;]+)&amp;localeId=([^&amp;]+)$</from>

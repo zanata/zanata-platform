@@ -363,6 +363,13 @@
     <param name="projectSlug" value="#{viewAllStatusAction.projectSlug}" />
     <param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
     <action execute="#{viewAllStatusAction.validateIteration}"/>
+
+    <navigation from-action="#{viewAllStatusAction.startCopyTrans}">
+      <redirect view-id="/iteration/view.xhtml" include-page-params="true"/>
+    </navigation>
+    <navigation from-action="#{viewAllStatusAction.cancelCopyTrans}">
+      <redirect view-id="/iteration/view.xhtml" include-page-params="true"/>
+    </navigation>
   </page>
   
   <page view-id="/iteration/files.xhtml">
