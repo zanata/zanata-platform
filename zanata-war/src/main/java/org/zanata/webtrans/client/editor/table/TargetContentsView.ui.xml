@@ -9,7 +9,13 @@
     <ui:with field="messages" type="org.zanata.webtrans.client.resources.NavigationMessages" />
     <ui:with field="images" type="org.zanata.webtrans.client.editor.table.TableResources" />
 
-    <g:VerticalPanel width="100%">
+    <ui:style>
+        .targetContentsCell {
+            table-layout: fixed;
+        }
+    </ui:style>
+
+    <g:VerticalPanel width="100%" addStyleNames="{style.targetContentsCell}">
         <g:cell verticalAlignment="ALIGN_TOP">
             <g:Grid ui:field="editorGrid" />
         </g:cell>

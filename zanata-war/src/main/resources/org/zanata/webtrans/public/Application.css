@@ -287,27 +287,31 @@ td.TableEditorCell-Target {
 	word-break: break-all;
 }
 
-/*@-moz-document {
+/* below is a hack to allow firefox display extra long word properly */
+@-moz-document {
 {}
-	table.TableEditorCell-Source-Table { 
+    table.TableEditor {
+        table-layout : fixed;
+    }
+	table.TableEditorCell-Source-Table {
 		overflow-x:auto;
 		display: block;
-		width: 100%;
 	}
 	table.TableEditorCell-Target-Table {
 		overflow-x: auto;
 		display: block;
 	}
 	div.TransUnitDetail-Wrapper {
-		width: 450px;
-	}
-}*/
+	    width: 450px;
+    }
+}
 
 .TableEditorCell-Source-Table {
 	width: 100%;
 }
 
 .TableEditorCell-Target-Table {
+    width: 100%;
 }
 
 .TransUnitDetail-Wrapper {
