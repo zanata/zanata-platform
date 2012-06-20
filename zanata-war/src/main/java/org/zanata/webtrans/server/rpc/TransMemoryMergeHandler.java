@@ -151,7 +151,7 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
       Long tmSourceId = tmResult.getSourceIdList().get(0);
       HTextFlow tmSource = textFlowDAO.findById(tmSourceId, false);
       TransMemoryDetails tmDetail = getTransMemoryDetailsHandler.getTransMemoryDetail(hLocale, tmSource);
-      ContentState statusToSet = new TransMemoryMergeStatusResolver().workOutStatus(action, hTextFlowToBeFilled, tmDetail, tmResult);
+      ContentState statusToSet = TransMemoryMergeStatusResolver.newInstance().workOutStatus(action, hTextFlowToBeFilled, tmDetail, tmResult);
       if (statusToSet != null)
       {
          TransUnitUpdateRequest unfilledRequest = requestMap.get(hTextFlowToBeFilled.getId());

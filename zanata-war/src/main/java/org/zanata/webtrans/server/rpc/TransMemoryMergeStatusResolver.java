@@ -36,6 +36,14 @@ import com.google.common.base.Objects;
  */
 public class TransMemoryMergeStatusResolver
 {
+   private TransMemoryMergeStatusResolver()
+   {
+   }
+
+   public static TransMemoryMergeStatusResolver newInstance()
+   {
+      return new TransMemoryMergeStatusResolver();
+   }
 
    private boolean needReview = false;
    private boolean needSkip = false;

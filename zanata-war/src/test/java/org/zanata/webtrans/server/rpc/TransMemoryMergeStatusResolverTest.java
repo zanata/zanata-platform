@@ -61,7 +61,7 @@ public class TransMemoryMergeStatusResolverTest
    @BeforeMethod
    public void beforeMethod()
    {
-      resolver = new TransMemoryMergeStatusResolver();
+      resolver = TransMemoryMergeStatusResolver.newInstance();
 
       HDocument document = new HDocument(docId, "message.po", "/po", ContentType.PO, new HLocale(new LocaleId("en")));
       HProjectIteration projectIteration = new HProjectIteration();

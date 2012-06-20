@@ -259,7 +259,7 @@ public class TranslationServiceImpl implements TranslationService
     * necessary and set the new state if it has changed.
     * 
     * @return true if the content state or contents list were updated, false otherwise
-    * @see #adjustContentState(TextFlowTarget, int)
+    * @see #adjustContentsAndState(org.zanata.model.HTextFlowTarget, int, java.util.List)
     */
    private boolean setContentStateIfChanged(@Nonnull ContentState requestedState, @Nonnull HTextFlowTarget target, int nPlurals)
    {
