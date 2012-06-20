@@ -64,7 +64,8 @@ public class TransMemoryMergeStatusResolver
 
    private void compareTextFlowResId(TransMemoryMerge action, HTextFlow tfToBeFilled, TransMemoryDetails tmDetail)
    {
-      if (notEqual(tfToBeFilled.getResId(), tmDetail.getResId()))
+      if (action.getDifferentResIdOption() != MergeOption.APPROVED
+            && notEqual(tfToBeFilled.getResId(), tmDetail.getResId()))
       {
          setFlagsBasedOnOption(action.getDifferentResIdOption());
       }
@@ -72,7 +73,8 @@ public class TransMemoryMergeStatusResolver
 
    private void compareDocId(TransMemoryMerge action, HTextFlow tfToBeFilled, TransMemoryDetails tmDetail)
    {
-      if (notEqual(tfToBeFilled.getDocument().getDocId(), tmDetail.getDocId()))
+      if (action.getDifferentDocumentOption() != MergeOption.APPROVED
+            && notEqual(tfToBeFilled.getDocument().getDocId(), tmDetail.getDocId()))
       {
          setFlagsBasedOnOption(action.getDifferentDocumentOption());
       }
@@ -80,7 +82,8 @@ public class TransMemoryMergeStatusResolver
 
    private void compareProjectName(TransMemoryMerge action, HTextFlow tfToBeFilled, TransMemoryDetails tmDetail)
    {
-      if (notEqual(tfToBeFilled.getDocument().getProjectIteration().getProject().getName(), tmDetail.getProjectName()))
+      if (action.getDifferentProjectOption() != MergeOption.APPROVED
+            && notEqual(tfToBeFilled.getDocument().getProjectIteration().getProject().getName(), tmDetail.getProjectName()))
       {
          setFlagsBasedOnOption(action.getDifferentProjectOption());
       }

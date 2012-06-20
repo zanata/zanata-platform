@@ -35,6 +35,7 @@ import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.SecurityService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
@@ -96,6 +97,12 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
       List<TransUnitUpdateRequest> updateRequests = Lists.newArrayList();
       for (HTextFlow hTextFlow : hTextFlows)
       {
+         HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale);
+         if (hTextFlowTarget == null || hTextFlowTarget.getState() != ContentState.New)
+         {
+            log.warn("Text flow id {} is not untranslated. Ignored.", hTextFlow.getId());
+            continue;
+         }
          ArrayList<TransMemoryResultItem> tmResults = getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(hTextFlow.getContents(), SearchType.FUZZY_PLURAL), idsWithTranslations);
          TransMemoryResultItem tmResult = findTMAboveThreshold(tmResults, predicate);
          TransUnitUpdateRequest request = createRequest(action, hLocale, requestMap, hTextFlow, tmResult);
@@ -105,9 +112,11 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
          }
       }
 
-      UpdateTransUnitResult result = updateTransUnitHandler.doTranslation(hLocale.getLocaleId(), workspace, updateRequests, action.getEditorClientId(), TransUnitUpdated.UpdateType.ReplaceText);
-      log.debug("TM merge result {}", result);
-      return result;
+      if (updateRequests.isEmpty())
+      {
+         return new UpdateTransUnitResult();
+      }
+      return updateTransUnitHandler.doTranslation(hLocale.getLocaleId(), workspace, updateRequests, action.getEditorClientId(), TransUnitUpdated.UpdateType.TMMerge);
    }
 
    private Map<Long, TransUnitUpdateRequest> transformToMap(List<TransUnitUpdateRequest> updateRequests)

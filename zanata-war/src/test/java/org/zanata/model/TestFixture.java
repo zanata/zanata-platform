@@ -21,8 +21,10 @@
 
 package org.zanata.model;
 
+import java.util.Date;
+
 import org.zanata.common.ContentState;
-import org.zanata.model.HTextFlow;
+import org.zanata.common.ContentType;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 public class TestFixture
@@ -36,5 +38,27 @@ public class TestFixture
    {
       return TransUnit.Builder.newTransUnitBuilder().setId(id).setResId("resId" + id).setVerNum(0)
             .setLocaleId("en").addSource("source").addTargets("target").setStatus(contentState).setRowIndex(id).build();
+   }
+
+   public static HTextFlow makeHTextFlow(long id, HLocale hLocale, ContentState contentState, String docId)
+   {
+      HDocument hDocument = new HDocument(docId, "message.po", "/src/main/resources", ContentType.PO, hLocale);
+      HTextFlow hTextFlow = new HTextFlow(hDocument, "resId" + id, "hello world " + id);
+      hTextFlow.setId(id);
+      hTextFlow.setPos((int) id);
+
+      HTextFlowTarget target = new HTextFlowTarget();
+      target.setTextFlow(hTextFlow);
+      target.setVersionNum(0);
+      target.setState(contentState);
+      target.setLastChanged(new Date());
+
+      hTextFlow.getTargets().put(hLocale, target);
+      return hTextFlow;
+   }
+
+   public static HTextFlow makeApprovedHTextFlow(long id, HLocale hLocale)
+   {
+      return makeHTextFlow(id, hLocale, ContentState.Approved, "pot/message.pot");
    }
 }
