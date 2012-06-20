@@ -120,7 +120,7 @@ public class GlossaryPushCommand extends ConfigurableCommand<GlossaryPushOptions
          throw new RuntimeException("File '" + glossaryFile + "' does not exist - check glossaryFile option");
       }
 
-      if (getOpts().getBatchSize() >= 0)
+      if (getOpts().getBatchSize() <= 0)
       {
          throw new RuntimeException("Batch size needs to be 1 or more.");
       }
