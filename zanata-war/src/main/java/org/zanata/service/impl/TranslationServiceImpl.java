@@ -584,7 +584,8 @@ public class TranslationServiceImpl implements TranslationService
             }
             else
             {
-               log.info("attempt to revert target version {} for tu with id {}, but current version is {}. Not reverting.");
+               log.info("attempt to revert target version {} for tu with id {}, but current version is {}. Not reverting.",
+                     new Object[] {info.getTransUnit().getVerNum(), tuId, versionNum});
                results.add(buildFailResult(hTextFlowTarget));
             }
          }

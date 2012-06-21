@@ -30,6 +30,11 @@
 			padding:5px;
 			outline:none;
 		}
+
+        .inlineLink, .inlineLink:hover, .inlineLink:visited
+        {
+            color: #ff0000;
+        }
 		
 		.image
 		{

@@ -30,9 +30,6 @@ public interface UiMessages extends Messages
 {
    @DefaultMessage("")
    String typeToEnter();
-   
-   @DefaultMessage("Phrase")
-   String phraseButtonLabel();
 
    @DefaultMessage("Clear")
    String clearButtonLabel();
@@ -57,9 +54,6 @@ public interface UiMessages extends Messages
    
    @DefaultMessage("Target Term")
    String targetTermLabel();
-
-   @DefaultMessage("Copy \"{0}\" to the editor")
-   String copyLinkTooltip(String targetMessage);
 
    @DefaultMessage("Translation Memory")
    String translationMemoryHeading();
@@ -88,10 +82,10 @@ public interface UiMessages extends Messages
    @DefaultMessage("No text has new status to be merged.")
    String noTranslationToMerge();
 
-   @DefaultMessage("Translation Memory merge failed")
+   @DefaultMessage("TM merge failed")
    String mergeTMFailed();
 
-   @DefaultMessage("Translation Memory merge success. Document reloaded.")
+   @DefaultMessage("TM merge success")
    String mergeTMSuccess();
 
    @DefaultMessage("Proceed to auto-fill")

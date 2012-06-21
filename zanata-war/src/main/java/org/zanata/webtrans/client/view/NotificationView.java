@@ -71,6 +71,14 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       String image();
 
       String timeLabel();
+
+      String inlineLink();
+
+      String messagePanel();
+
+      String mainPanel();
+
+      String link();
    }
 
    private final Timer hidePopupTimer = new Timer()
@@ -166,6 +174,7 @@ public class NotificationView extends PopupPanel implements NotificationPresente
          link.addClickHandler(linkClickHandler);
          panel.add(link);
          panel.setCellHorizontalAlignment(link, HasHorizontalAlignment.ALIGN_RIGHT);
+         link.setStyleName(style.inlineLink());
       }
       panel.setCellWidth(severityImg, "20px");
       panel.setCellWidth(timeLabel, "50px");

@@ -250,6 +250,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Undo replacement failed")
    String undoReplacementFailure();
 
+   @DefaultMessage("Undo failed")
+   String undoFailure();
+
    @DefaultMessage("Undo successful")
    String undoSuccess();
 

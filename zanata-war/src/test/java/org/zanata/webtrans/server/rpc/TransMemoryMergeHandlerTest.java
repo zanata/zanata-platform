@@ -174,6 +174,37 @@ public class TransMemoryMergeHandlerTest
    }
 
    @Test
+   public void willTranslateIfTargetIsNull() throws ActionException
+   {
+      // Given: text flow id 1 is not untranslated
+      final long transUnitId = 1L;
+      TransMemoryMerge action = prepareActionAndMockSecurityService(80, transUnitId);
+
+      HTextFlow hTextFlow = TestFixture.makeHTextFlow(transUnitId, hLocale, ContentState.New, "pot/a.po");
+      hTextFlow.getTargets().put(hLocale, null); //make sure target is null
+      when(textFlowDAO.findByIdList(newArrayList(transUnitId))).thenReturn(newArrayList(hTextFlow));
+      when(textFlowDAO.findIdsWithTranslations(hLocale.getLocaleId())).thenReturn(idsWithTranslations);
+      // Given: there is TM results returned for text flow id 1
+      HTextFlow tmResultSource = TestFixture.makeApprovedHTextFlow(11L, hLocale);
+      TransMemoryQuery tmQuery = new TransMemoryQuery(hTextFlow.getContents(), FUZZY_PLURAL);
+      TransMemoryResultItem tmResult = tmResult(tmResultSource.getId(), 100);
+      when(getTransMemoryHandler.searchTransMemory(hLocale, tmQuery, idsWithTranslations))
+            .thenReturn(newArrayList(tmResult));
+      when(textFlowDAO.findById(tmResultSource.getId(), false)).thenReturn(tmResultSource);
+      // Given: tm detail of text flow id 11
+      when(getTransMemoryDetailsHandler.getTransMemoryDetail(hLocale, tmResultSource)).thenReturn(tmDetail());
+
+      // When: execute the action
+      handler.execute(action, null);
+
+      // Then: we should have translation auto filled
+      verify(updateTransUnitHandler).doTranslation(same(hLocale.getLocaleId()), same(workspace), updateRequestCaptor.capture(), same(action.getEditorClientId()), eq(TransUnitUpdated.UpdateType.TMMerge));
+      List<TransUnitUpdateRequest> updateRequest = updateRequestCaptor.getValue();
+      assertThat(updateRequest, Matchers.hasSize(1));
+      assertThat(updateRequest.get(0).getNewContents(), Matchers.equalTo(tmResult.getTargetContents()));
+   }
+
+   @Test
    public void willNotTranslateIfNoTM() throws ActionException
    {
       // Given: an action with threshold 80% and trans unit id is 1

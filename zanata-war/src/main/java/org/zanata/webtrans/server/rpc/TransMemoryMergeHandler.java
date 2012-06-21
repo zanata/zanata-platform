@@ -98,7 +98,7 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
       for (HTextFlow hTextFlow : hTextFlows)
       {
          HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale);
-         if (hTextFlowTarget == null || hTextFlowTarget.getState() != ContentState.New)
+         if (hTextFlowTarget != null && hTextFlowTarget.getState() != ContentState.New)
          {
             log.warn("Text flow id {} is not untranslated. Ignored.", hTextFlow.getId());
             continue;

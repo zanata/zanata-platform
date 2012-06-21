@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
+import com.google.common.collect.Lists;
 
 
 /**
@@ -42,10 +43,9 @@ public class RevertTransUnitUpdates extends AbstractWorkspaceAction<UpdateTransU
       updatesToRevert = new ArrayList<TransUnitUpdateInfo>();
    }
 
-   public RevertTransUnitUpdates(TransUnitUpdateInfo toRevert)
+   public RevertTransUnitUpdates(List<TransUnitUpdateInfo> updatesToRevert)
    {
-      this();
-      addUpdateToRevert(toRevert);
+      this.updatesToRevert = Lists.newArrayList(updatesToRevert);
    }
 
    public void addUpdateToRevert(TransUnitUpdateInfo toRevert)
