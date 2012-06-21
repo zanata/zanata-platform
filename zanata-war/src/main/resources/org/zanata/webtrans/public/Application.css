@@ -288,7 +288,7 @@ td.TableEditorCell-Target {
 }
 
 /* below is a hack to allow firefox display extra long word properly */
-@-moz-document {
+@-moz-document url-prefix() {
 {}
     table.TableEditor {
         table-layout : fixed;
@@ -297,10 +297,7 @@ td.TableEditorCell-Target {
 		overflow-x:auto;
 		display: block;
 	}
-	table.TableEditorCell-Target-Table {
-		overflow-x: auto;
-		display: block;
-	}
+	
 	div.TransUnitDetail-Wrapper {
 	    width: 450px;
     }

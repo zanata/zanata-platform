@@ -13,11 +13,19 @@
         .targetContentsCell {
             table-layout: fixed;
         }
+        
+        .editorGridWrapper
+        {
+			display:block;
+			overflow-x:auto;
+		}
     </ui:style>
 
     <g:VerticalPanel width="100%" addStyleNames="{style.targetContentsCell}">
         <g:cell verticalAlignment="ALIGN_TOP">
-            <g:Grid ui:field="editorGrid" />
+        	<g:FlowPanel styleName="{style.editorGridWrapper}">
+            	<g:Grid ui:field="editorGrid" />
+            </g:FlowPanel>
         </g:cell>
         <g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_RIGHT" width="100px">
             <g:HorizontalPanel ui:field="buttons" styleName="gwt-Button" visible="false">
