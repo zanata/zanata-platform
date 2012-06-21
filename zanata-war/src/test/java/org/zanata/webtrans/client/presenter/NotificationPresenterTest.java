@@ -86,7 +86,7 @@ public class NotificationPresenterTest
    {
       String testMessage = "error testing";
 
-      mockDisplay.appendMessage(Severity.Error, testMessage);
+      mockDisplay.appendMessage(Severity.Error, testMessage, null, null);
       expectLastCall().once();
 
       mockDisplay.show();
@@ -115,7 +115,7 @@ public class NotificationPresenterTest
 
       for (String msg : testMessages)
       {
-         mockDisplay.appendMessage(Severity.Error, msg);
+         mockDisplay.appendMessage(Severity.Error, msg, null, null);
          expectLastCall().once();
       }
 
@@ -151,7 +151,7 @@ public class NotificationPresenterTest
 
       for (String msg : testMessages)
       {
-         mockDisplay.appendMessage(Severity.Error, msg);
+         mockDisplay.appendMessage(Severity.Error, msg, null, null);
          expectLastCall().once();
       }
       

@@ -22,11 +22,14 @@ package org.zanata.webtrans.client.view;
 
 import java.util.Date;
 
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.presenter.NotificationPresenter;
 import org.zanata.webtrans.client.resources.Resources;
 
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
@@ -40,6 +43,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -140,33 +144,29 @@ public class NotificationView extends PopupPanel implements NotificationPresente
    }
 
    @Override
-   public void appendMessage(Severity severity, String msg)
+   public void appendMessage(Severity severity, String msg, String linkText, ClickHandler linkClickHandler)
    {
       HorizontalPanel panel = new HorizontalPanel();
       Image severityImg;
       panel.setWidth("100%");
-      if (severity == Severity.Error)
-      {
-         severityImg = new Image(resources.errorMsg());
-      }
-      else if (severity == Severity.Warning)
-      {
-         severityImg = new Image(resources.warnMsg());
-      }
-      else
-      {
-         severityImg = new Image(resources.infoMsg());
-      }
-      severityImg.addStyleName(style.image());
+
+      severityImg = createSeverityImage(severity);
+      panel.add(severityImg);
 
       Label timeLabel = new Label("[" + DateTimeFormat.getFormat(PredefinedFormat.TIME_SHORT).format(new Date()) + "]");
-      Label msgLabel = new Label(msg);
-      
       timeLabel.setStyleName(style.timeLabel());
-
-      panel.add(severityImg);
       panel.add(timeLabel);
+
+      Label msgLabel = new Label(msg);
       panel.add(msgLabel);
+
+      if (!Strings.isNullOrEmpty(linkText) && linkClickHandler != null)
+      {
+         Anchor link = new Anchor(linkText);
+         link.addClickHandler(linkClickHandler);
+         panel.add(link);
+         panel.setCellHorizontalAlignment(link, HasHorizontalAlignment.ALIGN_RIGHT);
+      }
       panel.setCellWidth(severityImg, "20px");
       panel.setCellWidth(timeLabel, "50px");
 
@@ -182,6 +182,25 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       {
          messagePanel.remove(messagePanel.getWidgetCount() - 1);
       }
+   }
+
+   private Image createSeverityImage(Severity severity)
+   {
+      Image severityImg;
+      if (severity == Severity.Error)
+      {
+         severityImg = new Image(resources.errorMsg());
+      }
+      else if (severity == Severity.Warning)
+      {
+         severityImg = new Image(resources.warnMsg());
+      }
+      else
+      {
+         severityImg = new Image(resources.infoMsg());
+      }
+      severityImg.addStyleName(style.image());
+      return severityImg;
    }
 
    @Override

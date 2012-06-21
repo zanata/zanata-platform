@@ -62,7 +62,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
 
       void hide(boolean autoClosed);
 
-      void appendMessage(Severity severity, String message);
+      void appendMessage(Severity severity, String message, String linkText, ClickHandler linkClickHandler);
 
       void setMessagesToKeep(int count);
 
@@ -116,7 +116,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
          @Override
          public void onNotification(NotificationEvent event)
          {
-            appendNotification(event.getSeverity(), event.getMessage());
+            appendNotification(event.getSeverity(), event.getMessage(), event.getLinkText(), event.getLinkClickHandler());
             Log.info("Notification:" + event.getMessage());
             listener.setNotificationLabel(display.getMessageCount(), event.getSeverity());
          }
@@ -139,9 +139,9 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
       display.show();
    }
 
-   private void appendNotification(Severity severity, String msg)
+   private void appendNotification(Severity severity, String msg, String linkText, ClickHandler linkClickHandler)
    {
-      display.appendMessage(severity, msg);
+      display.appendMessage(severity, msg, linkText, linkClickHandler);
       if (severity == Severity.Error)
       {
          showNotificationWithNoTimer();
