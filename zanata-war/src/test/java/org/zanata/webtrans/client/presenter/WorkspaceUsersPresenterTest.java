@@ -82,9 +82,9 @@ public class WorkspaceUsersPresenterTest
       Person person2 = new Person(new PersonId("person2"), "Smith John", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16");
       Person person3 = new Person(new PersonId("person3"), "Smohn Jith", "http://www.gravatar.com/avatar/smohn@zanata.org?d=mm&s=16");
       
-      EditorClientId editorClientId1 = new EditorClientId("sessionId1");
-      EditorClientId editorClientId2 = new EditorClientId("sessionId2");
-      EditorClientId editorClientId3 = new EditorClientId("sessionId3");
+      EditorClientId editorClientId1 = new EditorClientId("sessionId1", 1);
+      EditorClientId editorClientId2 = new EditorClientId("sessionId2", 1);
+      EditorClientId editorClientId3 = new EditorClientId("sessionId3", 1);
 
       HasManageUserPanel mockPanel1 = createMock(HasManageUserPanel.class);
       HasManageUserPanel mockPanel2 = createMock(HasManageUserPanel.class);
@@ -94,9 +94,9 @@ public class WorkspaceUsersPresenterTest
       UserPanelSessionItem mockItem2 = new UserPanelSessionItem(mockPanel2, person2);
       UserPanelSessionItem mockItem3 = new UserPanelSessionItem(mockPanel3, person3);
 
-      expect(mockSessionService.getColor("sessionId1")).andReturn("color1");
-      expect(mockSessionService.getColor("sessionId2")).andReturn("color2");
-      expect(mockSessionService.getColor("sessionId3")).andReturn("color3");
+      expect(mockSessionService.getColor(editorClientId1.getValue())).andReturn("color1");
+      expect(mockSessionService.getColor(editorClientId2.getValue())).andReturn("color2");
+      expect(mockSessionService.getColor(editorClientId3.getValue())).andReturn("color3");
 
       expect(mockSessionService.getUserPanel(editorClientId1)).andReturn(mockItem1);
       expect(mockSessionService.getUserPanel(editorClientId2)).andReturn(mockItem2);
@@ -120,9 +120,9 @@ public class WorkspaceUsersPresenterTest
       workspaceUsersPresenter.bind();
 
       Map<EditorClientId, PersonSessionDetails> people = new HashMap<EditorClientId, PersonSessionDetails>();
-      people.put(new EditorClientId("sessionId1"), new PersonSessionDetails(person1, null));
-      people.put(new EditorClientId("sessionId2"), new PersonSessionDetails(person2, null));
-      people.put(new EditorClientId("sessionId3"), new PersonSessionDetails(person3, null));
+      people.put(editorClientId1, new PersonSessionDetails(person1, null));
+      people.put(editorClientId2, new PersonSessionDetails(person2, null));
+      people.put(editorClientId3, new PersonSessionDetails(person3, null));
       workspaceUsersPresenter.initUserList(people);
 
       verify(mockDisplay, mockEventBus, mockSendButton, mockSessionService);

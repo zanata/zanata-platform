@@ -51,9 +51,9 @@ public class TranslationWorkspaceImplTest
    public void onTimeoutRemove()
    {
       ConcurrentMap<EditorClientId, PersonId> sessions = new MapMaker().makeMap();
-      sessions.put(new EditorClientId("a"), new PersonId("person a"));
-      sessions.put(new EditorClientId("b"), new PersonId("person b"));
+      sessions.put(new EditorClientId("a", 1), new PersonId("person a"));
+      sessions.put(new EditorClientId("b", 1), new PersonId("person b"));
 
-      sessions.remove(new EditorClientId("a"));
+      sessions.remove(new EditorClientId("a", 1));
    }
 }
