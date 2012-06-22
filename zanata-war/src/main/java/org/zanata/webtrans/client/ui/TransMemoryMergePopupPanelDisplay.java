@@ -37,7 +37,7 @@ public interface TransMemoryMergePopupPanelDisplay extends WidgetDisplay
 
    interface Listener
    {
-      void proceedToMergeTM(String percentage, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption);
+      void proceedToMergeTM(int percentage, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption);
 
       void cancelMergeTM();
    }

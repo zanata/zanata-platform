@@ -77,7 +77,7 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
    }
 
    @Override
-   public void proceedToMergeTM(String percentage, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
+   public void proceedToMergeTM(int percentage, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
    {
       Collection<TransUnit> newItems = getUntranslatedItems();
 
@@ -125,10 +125,8 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
       });
    }
 
-   private TransMemoryMerge prepareTMMergeAction(Collection<TransUnit> untranslatedTUs, String percentage, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
+   private TransMemoryMerge prepareTMMergeAction(Collection<TransUnit> untranslatedTUs, int threshold, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
    {
-      Integer threshold = Integer.valueOf(percentage);
-
       List<TransUnitUpdateRequest> updateRequests = Lists.newArrayList(Collections2.transform(untranslatedTUs, new Function<TransUnit, TransUnitUpdateRequest>()
       {
          @Override

@@ -78,9 +78,10 @@ public class TMMergeForm extends Composite
       listener.proceedToMergeTM(getSelectedMatchThreshold(), differentProject.getValue(), differentDocument.getValue(), differentResId.getValue());
    }
 
-   private String getSelectedMatchThreshold()
+   private int getSelectedMatchThreshold()
    {
-      return matchThreshold.getValue(matchThreshold.getSelectedIndex());
+      String percent = matchThreshold.getValue(matchThreshold.getSelectedIndex());
+      return Integer.valueOf(percent);
    }
 
    @UiHandler("cancelButton")

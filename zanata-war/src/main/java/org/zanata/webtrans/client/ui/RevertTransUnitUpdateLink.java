@@ -60,6 +60,7 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
    }
 
    /**
+    * Give the UpdateTransUnitResult object returned from trans unit update handler, then it will create a click handler.
     * When the click handler gets clicked, it will:
     * <ul>
     *    <li>call RevertTransUnitUpdatesHandler to revert changes</li>
@@ -68,6 +69,7 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
     *    <li>on failure it will re-enable click handler and revert text to undo</li>
     * </ul>
     * @param updateTransUnitResult result from update translation rpc call.
+    * @see RevertTransUnitUpdateClickHandler
     */
    @Override
    public void prepareUndoFor(UpdateTransUnitResult updateTransUnitResult)

@@ -36,7 +36,7 @@ public class TransMemoryMergePopupPanelView extends DialogBox implements TransMe
 {
 
    private final TMMergeForm TMMergeForm;
-   private final Label processingLabel = new Label("processing...");
+   private final Label processingLabel;
 
    @Inject
    public TransMemoryMergePopupPanelView(TMMergeForm TMMergeForm, UiMessages messages)
@@ -47,6 +47,7 @@ public class TransMemoryMergePopupPanelView extends DialogBox implements TransMe
       setGlassEnabled(true);
       VerticalPanel main = new VerticalPanel();
       main.add(TMMergeForm);
+      processingLabel = new Label(messages.processing());
       main.add(processingLabel);
       add(main);
       this.TMMergeForm = TMMergeForm;
