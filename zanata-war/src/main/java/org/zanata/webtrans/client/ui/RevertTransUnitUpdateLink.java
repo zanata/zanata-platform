@@ -120,8 +120,7 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
          }
          setText(messages.undoInProgress());
          disableLink();
-         //we ensure the undo can only be click once.
-         handlerRegistration.removeHandler();
+
          dispatcher.execute(revertAction, new AsyncCallback<UpdateTransUnitResult>()
          {
             @Override
@@ -137,6 +136,8 @@ public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
             {
                eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.undoSuccess()));
                setText(messages.undone());
+               //we ensure the undo can only be click once.
+               handlerRegistration.removeHandler();
             }
          });
 
