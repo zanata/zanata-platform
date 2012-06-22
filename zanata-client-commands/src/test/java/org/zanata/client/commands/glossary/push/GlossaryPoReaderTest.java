@@ -22,6 +22,7 @@ package org.zanata.client.commands.glossary.push;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.easymock.EasyMock;
@@ -49,7 +50,13 @@ public class GlossaryPoReaderTest
    IMocksControl control = EasyMock.createControl();
    GlossaryPushOptions mockPushOption;
 
-   private final File sourceFile = new File("src/test/resources/glossary/fuel_hi.po");
+   private final File sourceFile = new File("src/test/resources/glossary/fuel_hi.po"); //578 glossary entries
+   private final File sourceFile2 = new File("src/test/resources/glossary/compendium-zh_TW.po"); //2645 glossary entries
+
+   private final int sourceSize1 = 578;
+   private final int sourceSize2 = 2645;
+
+   private final int BATCH_SIZE = 50;
 
    @BeforeMethod
    void beforeMethod()
@@ -77,17 +84,41 @@ public class GlossaryPoReaderTest
       EasyMock.expect(mockPushOption.getTransLang()).andReturn("hi").anyTimes();
       EasyMock.expect(mockPushOption.getLocaleMapList()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getTreatSourceCommentsAsTarget()).andReturn(false).anyTimes();
-      EasyMock.expect(mockPushOption.getBatchSize()).andReturn(300).anyTimes();
+      EasyMock.expect(mockPushOption.getBatchSize()).andReturn(BATCH_SIZE).anyTimes();
 
       reader.setOpts(mockPushOption);
       EasyMock.replay(mockPushOption);
 
       List<Glossary> glossaries = reader.extractGlossary(sourceFile);
-      Assert.assertEquals(2, glossaries.size());
-      Assert.assertEquals(300, glossaries.get(0).getGlossaryEntries().size());
-      Assert.assertEquals(278, glossaries.get(1).getGlossaryEntries().size());
+      Assert.assertEquals(Math.ceil(sourceSize1/BATCH_SIZE), glossaries.size(),BATCH_SIZE);
+      Assert.assertEquals(BATCH_SIZE, glossaries.get(0).getGlossaryEntries().size());
+      Assert.assertEquals(BATCH_SIZE, glossaries.get(1).getGlossaryEntries().size());
+
+      Assert.assertEquals(sourceSize1%BATCH_SIZE, glossaries.get(glossaries.size()-1).getGlossaryEntries().size());
 
    }
+
+    @Test
+    public void glossaryBatchTest() throws IOException
+    {
+        mockPushOption = createMock("mockPushGlossaryOption", GlossaryPushOptions.class);
+        EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
+        EasyMock.expect(mockPushOption.getTransLang()).andReturn("zh-Hants").anyTimes();
+        EasyMock.expect(mockPushOption.getLocaleMapList()).andReturn(locales).anyTimes();
+        EasyMock.expect(mockPushOption.getTreatSourceCommentsAsTarget()).andReturn(false).anyTimes();
+        EasyMock.expect(mockPushOption.getBatchSize()).andReturn(BATCH_SIZE).anyTimes();
+
+        reader.setOpts(mockPushOption);
+        EasyMock.replay(mockPushOption);
+
+        List<Glossary> glossaries = reader.extractGlossary(sourceFile2);
+        Assert.assertEquals(Math.ceil(sourceSize2/BATCH_SIZE), glossaries.size(), BATCH_SIZE);
+        Assert.assertEquals(BATCH_SIZE, glossaries.get(0).getGlossaryEntries().size());
+        Assert.assertEquals(BATCH_SIZE, glossaries.get(1).getGlossaryEntries().size());
+
+        Assert.assertEquals(sourceSize2%BATCH_SIZE, glossaries.get(glossaries.size()-1).getGlossaryEntries().size());
+
+    }
 }
 
 
