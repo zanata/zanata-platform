@@ -62,12 +62,12 @@ public class ManageLanguagePage extends AbstractPage
          public WebElement apply(WebDriver driver)
          {
             WebElement table = driver.findElement(By.xpath("//table"));
-            if (table.isDisplayed())
+            if (WebElementUtil.getTableRows(table).isEmpty())
             {
-               return table;
+               log.debug("assuming table still loading...");
+               return null;
             }
-            log.debug("table still loading...");
-            return null;
+            return table;
          }
       });
 
