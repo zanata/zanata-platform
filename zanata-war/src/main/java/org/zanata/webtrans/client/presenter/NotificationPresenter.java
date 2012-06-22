@@ -27,6 +27,8 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.NotificationEventHandler;
+import org.zanata.webtrans.client.ui.InlineLink;
+import org.zanata.webtrans.client.ui.UndoLink;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -62,11 +64,9 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
 
       void hide(boolean autoClosed);
 
-      void appendMessage(Severity severity, String message, String linkText, ClickHandler linkClickHandler);
+      void appendMessage(Severity severity, String message, InlineLink inlineLink);
 
       void setMessagesToKeep(int count);
-
-      void appendMessage(String message);
 
       void show();
 
@@ -116,7 +116,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
          @Override
          public void onNotification(NotificationEvent event)
          {
-            appendNotification(event.getSeverity(), event.getMessage(), event.getLinkText(), event.getLinkClickHandler());
+            appendNotification(event.getSeverity(), event.getMessage(), event.getInlineLink());
             Log.info("Notification:" + event.getMessage());
             listener.setNotificationLabel(display.getMessageCount(), event.getSeverity());
          }
@@ -139,9 +139,9 @@ public class NotificationPresenter extends WidgetPresenter<NotificationPresenter
       display.show();
    }
 
-   private void appendNotification(Severity severity, String msg, String linkText, ClickHandler linkClickHandler)
+   private void appendNotification(Severity severity, String msg, InlineLink inlineLink)
    {
-      display.appendMessage(severity, msg, linkText, linkClickHandler);
+      display.appendMessage(severity, msg, inlineLink);
       if (severity == Severity.Error)
       {
          showNotificationWithNoTimer();

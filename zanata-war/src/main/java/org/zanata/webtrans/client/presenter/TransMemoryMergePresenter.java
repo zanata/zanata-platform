@@ -28,13 +28,12 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.UiMessages;
-import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.MergeOption;
-import org.zanata.webtrans.shared.rpc.RevertTransUnitUpdates;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 import com.allen_sauer.gwt.log.client.Log;
@@ -42,10 +41,9 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -63,10 +61,10 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
    private final CachingDispatchAsync dispatcher;
    private final TableEditorPresenter tableEditorPresenter;
    private final UiMessages messages;
-   private final WebTransMessages webTransMessages;
+   private final Provider<UndoLink> undoLinkProvider;
 
    @Inject
-   public TransMemoryMergePresenter(TransMemoryMergePopupPanelDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, TableEditorPresenter tableEditorPresenter, UiMessages messages, WebTransMessages webTransMessages)
+   public TransMemoryMergePresenter(TransMemoryMergePopupPanelDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, TableEditorPresenter tableEditorPresenter, UiMessages messages, Provider<UndoLink> undoLinkProvider)
    {
       super(display, eventBus);
       this.display = display;
@@ -74,7 +72,7 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
       this.dispatcher = dispatcher;
       this.tableEditorPresenter = tableEditorPresenter;
       this.messages = messages;
-      this.webTransMessages = webTransMessages;
+      this.undoLinkProvider = undoLinkProvider;
       display.setListener(this);
    }
 
@@ -105,8 +103,9 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
          @Override
          public void onSuccess(UpdateTransUnitResult result)
          {
-            NotificationEvent event = new NotificationEvent(Info, messages.mergeTMSuccess());
-            event.appendInlineLinkToMessage(webTransMessages.undo(), new RevertTransUnitUpdateClickHandler(result));
+            UndoLink undoLink = undoLinkProvider.get();
+            undoLink.prepareUndoFor(result);
+            NotificationEvent event = new NotificationEvent(Info, messages.mergeTMSuccess(), undoLink);
             eventBus.fireEvent(event);
             display.hide();
          }
@@ -166,34 +165,5 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
    @Override
    protected void onRevealDisplay()
    {
-   }
-
-   private class RevertTransUnitUpdateClickHandler implements ClickHandler
-   {
-      private final RevertTransUnitUpdates revertAction;
-
-      RevertTransUnitUpdateClickHandler(UpdateTransUnitResult updateTransUnitResult)
-      {
-         this.revertAction = new RevertTransUnitUpdates(updateTransUnitResult.getUpdateInfoList());
-      }
-
-      @Override
-      public void onClick(ClickEvent event)
-      {
-         dispatcher.execute(revertAction, new AsyncCallback<UpdateTransUnitResult>()
-         {
-            @Override
-            public void onFailure(Throwable caught)
-            {
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, webTransMessages.undoFailure()));
-            }
-
-            @Override
-            public void onSuccess(UpdateTransUnitResult result)
-            {
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, webTransMessages.undoSuccess()));
-            }
-         });
-      }
    }
 }

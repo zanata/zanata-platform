@@ -562,11 +562,11 @@ public class TranslationServiceImpl implements TranslationService
             //check that version has not advanced
             // TODO probably also want to check that source has not been updated
             Integer versionNum = hTextFlowTarget.getVersionNum();
-            log.info("hTextFlowTarget version {}, TransUnit version {}", versionNum, info.getTransUnit().getVerNum());
+            log.debug("about to revert hTextFlowTarget version {} to TransUnit version {}", versionNum, info.getTransUnit().getVerNum());
             if (versionNum.equals(info.getTransUnit().getVerNum()))
             {
                //look up replaced version
-               HTextFlowTargetHistory oldTarget = hTextFlowTarget.getHistory().get(Integer.valueOf(info.getPreviousVersionNum()));
+               HTextFlowTargetHistory oldTarget = hTextFlowTarget.getHistory().get(info.getPreviousVersionNum());
                if (oldTarget != null)
                {
                   //generate request

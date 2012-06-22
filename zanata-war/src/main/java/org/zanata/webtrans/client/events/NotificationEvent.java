@@ -1,8 +1,7 @@
 package org.zanata.webtrans.client.events;
 
-import com.google.gwt.event.dom.client.ClickHandler;
+import org.zanata.webtrans.client.ui.InlineLink;
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.user.client.ui.InlineHyperlink;
 
 public class NotificationEvent extends GwtEvent<NotificationEventHandler>
 {
@@ -33,13 +32,19 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler>
 
    private final Severity severity;
    private final String message;
-   private String linkText;
-   private ClickHandler linkClickHandler;
+   private InlineLink inlineLink;
 
    public NotificationEvent(Severity severity, String message)
    {
       this.severity = severity;
       this.message = message;
+   }
+
+   public NotificationEvent(Severity severity, String message, InlineLink inlineLink)
+   {
+      this.severity = severity;
+      this.message = message;
+      this.inlineLink = inlineLink;
    }
 
    public Severity getSeverity()
@@ -52,27 +57,9 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler>
       return message;
    }
 
-   /**
-    * append a link to message
-    * @param linkText link text
-    * @param clickHandler action to perform when click on the link
-    * @return notification event itself
-    */
-   public NotificationEvent appendInlineLinkToMessage(String linkText, ClickHandler clickHandler)
+   public InlineLink getInlineLink()
    {
-      this.linkText = linkText;
-      this.linkClickHandler = clickHandler;
-      return this;
-   }
-
-   public String getLinkText()
-   {
-      return linkText;
-   }
-
-   public ClickHandler getLinkClickHandler()
-   {
-      return linkClickHandler;
+      return inlineLink;
    }
 
    @Override

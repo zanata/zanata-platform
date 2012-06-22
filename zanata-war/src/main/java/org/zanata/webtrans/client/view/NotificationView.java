@@ -22,14 +22,12 @@ package org.zanata.webtrans.client.view;
 
 import java.util.Date;
 
-import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.presenter.NotificationPresenter;
 import org.zanata.webtrans.client.resources.Resources;
+import org.zanata.webtrans.client.ui.InlineLink;
 
-import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
@@ -43,7 +41,6 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -111,17 +108,6 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       this.setStyleName("notificationPanel");
    }
 
-   @Override
-   public void appendMessage(String msg)
-   {
-      messagePanel.insert(new Label(msg), 0);
-
-      while (messagePanel.getWidgetCount() > messagesToKeep)
-      {
-         messagePanel.remove(messagePanel.getWidgetCount() - 1);
-      }
-   }
-
    public HasClickHandlers getDismissButton()
    {
       return dismissLink;
@@ -152,9 +138,11 @@ public class NotificationView extends PopupPanel implements NotificationPresente
    }
 
    @Override
-   public void appendMessage(Severity severity, String msg, String linkText, ClickHandler linkClickHandler)
+   public void appendMessage(Severity severity, String msg, InlineLink inlineLink)
    {
       HorizontalPanel panel = new HorizontalPanel();
+      panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+
       Image severityImg;
       panel.setWidth("100%");
 
@@ -168,20 +156,14 @@ public class NotificationView extends PopupPanel implements NotificationPresente
       Label msgLabel = new Label(msg);
       panel.add(msgLabel);
 
-      if (!Strings.isNullOrEmpty(linkText) && linkClickHandler != null)
+      if (inlineLink != null)
       {
-         Anchor link = new Anchor(linkText);
-         link.addClickHandler(linkClickHandler);
-         panel.add(link);
-         panel.setCellHorizontalAlignment(link, HasHorizontalAlignment.ALIGN_RIGHT);
-         link.setStyleName(style.inlineLink());
+         inlineLink.setLinkStyle(style.inlineLink());
+         panel.add(inlineLink);
       }
       panel.setCellWidth(severityImg, "20px");
       panel.setCellWidth(timeLabel, "50px");
 
-      panel.setCellVerticalAlignment(severityImg, HasVerticalAlignment.ALIGN_MIDDLE);
-      panel.setCellVerticalAlignment(timeLabel, HasVerticalAlignment.ALIGN_MIDDLE);
-      panel.setCellVerticalAlignment(msgLabel, HasVerticalAlignment.ALIGN_MIDDLE);
       panel.setCellHorizontalAlignment(msgLabel, HasHorizontalAlignment.ALIGN_LEFT);
 
       messagePanel.insert(panel, 0);
