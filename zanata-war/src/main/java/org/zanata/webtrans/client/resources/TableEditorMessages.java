@@ -9,9 +9,6 @@ import com.google.gwt.i18n.client.Messages;
 public interface TableEditorMessages extends Messages
 {
 
-   @DefaultMessage("Source comment: ")
-   String sourceCommentLabel();
-
    @DefaultMessage("Message has been copied to the target.")
    String notifyCopied();
 
@@ -32,12 +29,6 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Validation error - See validation message")
    String notifyValidationError();
-
-   @DefaultMessage("Failed to Stop Editing TransUnit")
-   String notifyStopFailed();
-
-   @DefaultMessage("Failed to Lock TransUnit")
-   String notifyLockFailed();
 
    @DefaultMessage("Workspace is set to read only")
    String notifyReadOnlyWorkspace();

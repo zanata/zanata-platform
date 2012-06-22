@@ -73,6 +73,9 @@ public interface UiMessages extends Messages
    @DefaultMessage("Send")
    String sendLabel();
 
+   @DefaultMessage("Processing...")
+   String processing();
+
    @DefaultMessage("TM merge for this page")
    String mergeTMButtonLabel();
 

@@ -106,12 +106,6 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Source comment: {0}")
    String sourceCommentLabel(String comment);
 
-   @DefaultMessage("Undo")
-   String undoLabel();
-
-   @DefaultMessage("Redo")
-   String redoLabel();
-
    @DefaultMessage("Click here to start translating")
    String clickHere();
 

@@ -77,23 +77,8 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("▲ Restore")
    String restoreLabel();
 
-   @DefaultMessage("Find")
-   String findButton();
-
-   @DefaultMessage("Find Messages")
-   String transUnitSearchesHeading();
-
-   @DefaultMessage("Translation Unit Details")
-   String transUnitDetailsHeading();
-
    @DefaultMessage("Translation Memory/Glossary")
    String tmGlossaryHeading();
-
-   @DefaultMessage("Validation Details")
-   String validationDetailsHeading();
-
-   @DefaultMessage("Source or Target content")
-   String findSourceOrTargetString();
 
    @DefaultMessage("{0} (Shortcut: {1})")
    String tooltipsWithShortcut(String text, String shortcut);
