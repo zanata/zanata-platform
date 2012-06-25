@@ -53,4 +53,20 @@ public class TransMemoryTest
 
       assertThat(exitCode, Matchers.equalTo(0));
    }
+
+   @Test(timeOut = Constants.FIFTY_SEC)
+   public void pushTransMemoryProjectWithDifferentProjectName() {
+      new LoginWorkFlow().signIn("admin", "admin");
+      LanguageWorkFlow languageWorkFlow = new LanguageWorkFlow();
+      languageWorkFlow.addLanguageAndJoin("en-US");
+      languageWorkFlow.addLanguageAndJoin("zh-CN");
+
+      ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
+      ProjectPage projectPage = projectWorkFlow.createNewProject("trans-memory-v2", "trans memory test v2");
+      projectWorkFlow.createNewProjectVersion(projectPage, "master");
+
+      int exitCode = new ClientPushWorkFlow().mvnPush("trans-memory", "-Dzanata.projectConfig=differentProject/zanata.xml", "-Dzanata.projectVersion=master", "-Dzanata.pushType=Source");
+
+      assertThat(exitCode, Matchers.equalTo(0));
+   }
 }

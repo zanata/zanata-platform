@@ -49,7 +49,7 @@ public class ExperimentTest
       String msgStr = "msgstr \"%s %d\"";
       String potMsgStr = "msgstr \"\"";
 
-      for (int i = 5; i < 55; i++)
+      for (int i = 55; i > 0; i--)
       {
          System.out.println(tag);
          System.out.println(msgCtx);
