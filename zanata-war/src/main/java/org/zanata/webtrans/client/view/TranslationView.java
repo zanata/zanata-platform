@@ -85,7 +85,8 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    SplitLayoutPanel tmGlossaryPanel;
 
    private static double SIDE_PANEL_WIDTH = 20;
-   private static double SOUTH_PANEL_HEIGHT = 30;
+   private static double SOUTH_PANEL_HEIGHT = 150;
+   private static double MIN_SOUTH_PANEL_HEIGHT = 26;
    private final static double GLOSSARY_PANEL_WIDTH = 500;
 
    private final static int ANIMATE_DURATION = 200;
@@ -234,7 +235,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       else
       {
          SOUTH_PANEL_HEIGHT = mainSplitPanel.getWidgetContainerElement(southPanelContainer).getOffsetHeight();
-         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, SOUTH_PANEL_HEIGHT);
+         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, southPanelContainer, MIN_SOUTH_PANEL_HEIGHT);
       }
       splitter.setVisible(expanded);
       mainSplitPanel.animate(ANIMATE_DURATION);
