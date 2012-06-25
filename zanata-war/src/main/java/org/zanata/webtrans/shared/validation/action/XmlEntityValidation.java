@@ -20,11 +20,15 @@
  */
 package org.zanata.webtrans.shared.validation.action;
 
+import java.util.ArrayList;
+
 import org.zanata.webtrans.client.resources.ValidationMessages;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
-import com.google.gwt.thirdparty.guava.common.base.Strings;
 
 /**
  * 
@@ -33,17 +37,18 @@ import com.google.gwt.thirdparty.guava.common.base.Strings;
  **/
 public class XmlEntityValidation extends ValidationAction
 {
-   
+
    private final static String entityRegex = "&[:a-z_A-Z][a-z_A-Z0-9.-]*;";
    private final static RegExp entityExp = RegExp.compile(entityRegex);
-   
-   
-   private final static String entityNameRegex = "[:a-z_A-Z][a-z_A-Z0-9.-]*";
-   private final static RegExp entityNameExp = RegExp.compile(entityNameRegex);
-   
-   private final static String ENTITY_START_CHAR= "&";
-   private final static String ENTITY_END_CHAR= ";";
-   
+
+   private final static RegExp entityGlobalExp = RegExp.compile(entityRegex, "g");
+
+   private final static String ENTITY_START_CHAR = "&";
+
+   // XML PREDEFINED ENTITY
+   // private final static String[] PRE_DEFINED_ENTITY = { "&quot;", "&amp;",
+   // "&apos;", "&lt;", "&gt;" };
+
    public XmlEntityValidation(final ValidationMessages messages)
    {
       super(messages.xmlEntityValidatorName(), messages.xmlEntityValidatorDescription(), true, messages);
@@ -52,39 +57,65 @@ public class XmlEntityValidation extends ValidationAction
    @Override
    public void doValidate(String source, String target)
    {
-      if(Strings.isNullOrEmpty(target))
+      validateIncompleteEntity(target);
+      validateSourceTargetEntity(source, target);
+   }
+
+   private void validateSourceTargetEntity(String source, String target)
+   {
+      if (Strings.isNullOrEmpty(source) || Strings.isNullOrEmpty(target))
       {
          return;
       }
       
-      Iterable<String> words = Splitter.on(" ").trimResults().omitEmptyStrings().split(target);
-      
-      for(String word: words)
+      ArrayList<String> error = listMissing(source, target);
+      if (!error.isEmpty())
       {
-         if(word.startsWith(ENTITY_START_CHAR) && word.endsWith(ENTITY_END_CHAR))
+         addError(getMessages().entityMissing(error));
+      }
+
+   }
+
+   private ArrayList<String> listMissing(String compareFrom, String compareTo)
+   {
+      String tmp = compareTo;
+      ArrayList<String> unmatched = new ArrayList<String>();
+      MatchResult result = entityGlobalExp.exec(compareFrom);
+
+      while (result != null)
+      {
+         String entity = result.getGroup(0);
+         Log.debug("Found entity:" + entity);
+         if (!tmp.contains(entity))
          {
-            if(!entityExp.test(word))
-            {
-               addError("Possible XML entity '" + word + "' does not match naming requirements");
-            }
-         } 
-         else if(word.startsWith(ENTITY_START_CHAR))
-         {
-            if(entityNameExp.test(word.substring(1)))
-            {
-               addError("Possible XML entity '" + word + "' does not end with '" + ENTITY_END_CHAR + "'");
-            }
+            unmatched.add(entity);
          }
-         else if(word.endsWith(ENTITY_END_CHAR))
+         else
          {
-            if(entityNameExp.test(word.substring(0, word.length() - 1)))
-            {
-               addError("Possible XML entity '" + word + "' does not starts with '" + ENTITY_START_CHAR + "'");
-            }
+            tmp = tmp.replaceFirst(entity, ""); // remove matched node from
          }
-         else 
+         result = entityGlobalExp.exec(compareFrom);
+      }
+      return unmatched;
+   }
+
+   private void validateIncompleteEntity(String target)
+   {
+      if (Strings.isNullOrEmpty(target))
+      {
+         return;
+      }
+
+      Iterable<String> words = Splitter.on(" ").trimResults().omitEmptyStrings().split(target);
+
+      for (String word : words)
+      {
+         if (word.startsWith(ENTITY_START_CHAR))
          {
-            //normal wording, ignore
+            if (!entityExp.test(word))
+            {
+               addError(getMessages().incompleteXMLEntity(word));
+            }
          }
       }
    }

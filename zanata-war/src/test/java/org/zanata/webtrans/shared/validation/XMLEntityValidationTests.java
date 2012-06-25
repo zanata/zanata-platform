@@ -24,21 +24,20 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
+
+import java.util.ArrayList;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
 import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 
 /**
- *
+ * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
+ * 
  **/
 @Test(groups = { "unit-tests" })
 public class XMLEntityValidationTests
@@ -46,7 +45,6 @@ public class XMLEntityValidationTests
    // mock message strings
    private static final String MOCK_ENTITY_VALIDATOR_NAME = "test xml entity validator name";
    private static final String MOCK_ENTITY_VALIDATOR_DESCRIPTION = "test xml entity validator description";
-
 
    private XmlEntityValidation xmlEntityValidation;
 
@@ -94,7 +92,7 @@ public class XMLEntityValidationTests
       assertThat(xmlEntityValidation.hasError(), is(false));
       assertThat(xmlEntityValidation.getError().size(), is(0));
    }
-   
+
    @Test
    public void testWithCompleteEntity()
    {
@@ -102,36 +100,54 @@ public class XMLEntityValidationTests
       String source = "Source string";
       String target = "Target string: &mash; bla bla &test;";
       xmlEntityValidation.validate(source, target);
-     
+
       assertThat(xmlEntityValidation.hasError(), is(false));
       assertThat(xmlEntityValidation.getError().size(), is(0));
    }
-   
+
    @Test
-   public void testWithErrorEntityWithMissingEndChar()
+   public void testWithIncompleteEntity()
    {
+      mockMessages = createMock(ValidationMessages.class);
+
+      expect(mockMessages.xmlEntityValidatorName()).andReturn(MOCK_ENTITY_VALIDATOR_NAME).anyTimes();
+      expect(mockMessages.xmlEntityValidatorDescription()).andReturn(MOCK_ENTITY_VALIDATOR_DESCRIPTION).anyTimes();
+
+      expect(mockMessages.incompleteXMLEntity("&mash")).andReturn("Mock incomplete messages");
+      expect(mockMessages.incompleteXMLEntity("&test")).andReturn("Mock incomplete messages");
+      replay(mockMessages);
+
       xmlEntityValidation = new XmlEntityValidation(mockMessages);
       String source = "Source string";
       String target = "Target string: &mash bla bla &test";
       xmlEntityValidation.validate(source, target);
-     
+
       assertThat(xmlEntityValidation.hasError(), is(true));
       assertThat(xmlEntityValidation.getError().size(), is(2));
    }
    
    @Test
-   public void testWithErrorEntityWithMissingStartChar()
+   public void testWithMissingEntity()
    {
+      mockMessages = createMock(ValidationMessages.class);
+
+      expect(mockMessages.xmlEntityValidatorName()).andReturn(MOCK_ENTITY_VALIDATOR_NAME).anyTimes();
+      expect(mockMessages.xmlEntityValidatorDescription()).andReturn(MOCK_ENTITY_VALIDATOR_DESCRIPTION).anyTimes();
+
+      ArrayList<String> missingEntities = new ArrayList<String>();
+      missingEntities.add("&amp;");
+      missingEntities.add("&RedHat;");
+      
+      expect(mockMessages.entityMissing(missingEntities)).andReturn("Mock missing messages");
+      replay(mockMessages);
+
       xmlEntityValidation = new XmlEntityValidation(mockMessages);
-      String source = "Source string";
-      String target = "Target string: mash; bla bla test;";
+      String source = "Source string &amp; and &RedHat;";
+      String target = "Target string";
       xmlEntityValidation.validate(source, target);
-     
+
       assertThat(xmlEntityValidation.hasError(), is(true));
-      assertThat(xmlEntityValidation.getError().size(), is(2));
+      assertThat(xmlEntityValidation.getError().size(), is(1));
    }
-   
+
 }
-
-
- 
