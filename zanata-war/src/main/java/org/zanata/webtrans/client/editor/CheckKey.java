@@ -49,16 +49,16 @@ public interface CheckKey
    static final int KEY_S = 'S';
    
    static int KEY_1 = 49;
-   static int KEY_1_NUM = 35;
+   static int KEY_1_NUM = 97;
    
    static final int KEY_2 = 50;
-   static final int KEY_2_NUM = 40;
+   static final int KEY_2_NUM = 98;
    
    static final int KEY_3 = 51;
-   static final int KEY_3_NUM = 34;
+   static final int KEY_3_NUM = 99;
    
    static final int KEY_4 = 52;
-   static final int KEY_4_NUM = 37;
+   static final int KEY_4_NUM = 100;
 
    void init(NativeEvent event);
 
@@ -99,7 +99,7 @@ public interface CheckKey
    boolean isCopyFromSourceKey();
    
    /**
-    * Copy from translation memory: CTRL+SHIFT+(1/2/3/4)
+    * Copy from translation memory: CTRL+ALT+(1/2/3/4)
     * 
     */
    boolean isCopyFromTransMem();
