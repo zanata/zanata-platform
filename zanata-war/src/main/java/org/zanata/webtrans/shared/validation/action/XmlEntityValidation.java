@@ -67,20 +67,10 @@ public class XmlEntityValidation extends ValidationAction
       {
          return;
       }
-      
-      ArrayList<String> error = listMissing(source, target);
-      if (!error.isEmpty())
-      {
-         addError(getMessages().entityMissing(error));
-      }
 
-   }
-
-   private ArrayList<String> listMissing(String compareFrom, String compareTo)
-   {
-      String tmp = compareTo;
+      String tmp = target;
       ArrayList<String> unmatched = new ArrayList<String>();
-      MatchResult result = entityGlobalExp.exec(compareFrom);
+      MatchResult result = entityGlobalExp.exec(source);
 
       while (result != null)
       {
@@ -88,15 +78,20 @@ public class XmlEntityValidation extends ValidationAction
          Log.debug("Found entity:" + entity);
          if (!tmp.contains(entity))
          {
-            unmatched.add(entity);
+            unmatched.add(" [" + entity + "] ");
          }
          else
          {
-            tmp = tmp.replaceFirst(entity, ""); // remove matched node from
+            tmp = tmp.replaceFirst(entity, ""); // remove matched entity from
          }
-         result = entityGlobalExp.exec(compareFrom);
+         result = entityGlobalExp.exec(source);
       }
-      return unmatched;
+      
+      if (!unmatched.isEmpty())
+      {
+         addError(getMessages().entityMissing(unmatched));
+      }
+
    }
 
    private void validateIncompleteEntity(String target)
@@ -110,7 +105,7 @@ public class XmlEntityValidation extends ValidationAction
 
       for (String word : words)
       {
-         if (word.startsWith(ENTITY_START_CHAR))
+         if (word.startsWith(ENTITY_START_CHAR) && word.length() > 1)
          {
             if (!entityExp.test(word))
             {
