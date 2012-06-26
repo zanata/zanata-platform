@@ -27,6 +27,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.security.Identity;
+import org.zanata.common.CopyTransOptions;
 import org.zanata.model.HProjectIteration;
 import org.zanata.process.BackgroundProcessListener;
 import org.zanata.process.CopyTransProcess;
@@ -82,7 +83,18 @@ public class CopyTransManager
             && !currentlyRunning.get( iteration.getId() ).isFinished();
    }
 
+   /**
+    * Start a Translation copy with the default options.
+    */
    public void startCopyTrans( HProjectIteration iteration )
+   {
+      this.startCopyTrans( iteration, new CopyTransOptions() );
+   }
+
+   /**
+    * Start a Translation copy with the given custom options.
+    */
+   public void startCopyTrans( HProjectIteration iteration, CopyTransOptions options )
    {
       // double check
       if( isCopyTransRunning(iteration) )
@@ -90,7 +102,7 @@ public class CopyTransManager
          throw new RuntimeException("Copy Trans is already running for version '" + iteration.getSlug() + "'");
       }
 
-      CopyTransProcessHandle handle = new CopyTransProcessHandle( iteration, identity.getCredentials().getUsername() );
+      CopyTransProcessHandle handle = new CopyTransProcessHandle( iteration, identity.getCredentials().getUsername(), options );
       handle.setMaxProgress( iteration.getDocuments().size() );
       handle.addListener(listenerInstance);
       currentlyRunning.put(iteration.getId(), handle);

@@ -31,9 +31,9 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
-import org.jboss.seam.transaction.Transaction;
+import org.jboss.seam.util.Work;
 import org.zanata.common.ContentState;
+import org.zanata.common.CopyTransOptions;
 import org.zanata.dao.DatabaseConstants;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowTargetDAO;
@@ -68,8 +68,23 @@ public class CopyTransServiceImpl implements CopyTransService
    Log log;
 
 
+   /**
+    * Internal helper class to keep track of copy trans matches.
+    */
+   private class CopyTransMatch
+   {
+      private CopyTransMatch(HTextFlowTarget matchingTarget, ContentState targetState)
+      {
+         this.matchingTarget = matchingTarget;
+         this.targetState = targetState;
+      }
+
+      HTextFlowTarget matchingTarget;
+      ContentState targetState;
+   }
+
    @Observer(TranslatedDocResourceService.EVENT_COPY_TRANS)
-   public void execute(Long docId, String project, String iterationSlug)
+   public void runCopyTrans(Long docId, String project, String iterationSlug)
    {
       HDocument document = documentDAO.findById(docId, true);
       log.info("copyTrans start: document \"{0}\"", document.getDocId());
@@ -103,63 +118,176 @@ public class CopyTransServiceImpl implements CopyTransService
       return "translation auto-copied from project " + projectname + ", version " + version + ", document " + documentid + author;
    }
 
-   // TODO unit testing for this method. Reduce complexity(pass cyclomatic complexity analysis)
    @Override
    public void copyTransForLocale(HDocument document, HLocale locale)
    {
+      this.copyTransForLocale(document, locale, new CopyTransOptions());
+   }
+
+
+   /**
+    * Copies matching translations into a document for a given locale.
+    * Note: This method is executed within a single transaction.
+    *
+    * @param document Document to copy translations into.
+    * @param locale The locale for which to find matching translations to copy.
+    * @param options Options to configure the copy trans process.
+    */
+   // TODO unit testing for this method. Reduce complexity(pass cyclomatic complexity analysis)
+   public void copyTransForLocale(final HDocument document, final HLocale locale, final CopyTransOptions options)
+   {
+      try
+      {
+         new Work<Void>() {
+            @Override
+            protected Void work() throws Exception
+            {
+               ScrollableResults results = null;
+
+               try
+               {
+                  int copyCount = 0;
+
+                  results = textFlowTargetDAO.findLatestEquivalentTranslations(document, locale);
+                  HTextFlow originalTf = null;
+
+                  while (results.next())
+                  {
+                     originalTf = (HTextFlow)results.get(1);
+                     HTextFlowTarget hTarget = originalTf.getTargets().get( locale.getId() );
+
+                     // Stop looking at this text flow altogether if there is an already approved translation
+                     if (hTarget != null && hTarget.getState() == ContentState.Approved)
+                     {
+                        continue;
+                     }
+
+                     // Get the best match for the original text flow
+                     CopyTransMatch bestMatch = CopyTransServiceImpl.this.findBestMatch(results, originalTf, options);
+
+                     // Create the new translation (or overwrite non-approved ones)
+
+                     if (hTarget == null)
+                     {
+                        hTarget = new HTextFlowTarget(originalTf, locale);
+                        hTarget.setVersionNum(1);
+                        originalTf.getTargets().put(locale.getId(), hTarget);
+                     }
+                     else
+                     {
+                        // increase the versionNum
+                        hTarget.setVersionNum(hTarget.getVersionNum() + 1);
+                     }
+
+                     // if a best match is found
+                     if( bestMatch != null )
+                     {
+                        // NB we don't touch creationDate
+                        hTarget.setTextFlowRevision(originalTf.getRevision());
+                        hTarget.setLastChanged(bestMatch.matchingTarget.getLastChanged());
+                        hTarget.setLastModifiedBy(bestMatch.matchingTarget.getLastModifiedBy());
+                        hTarget.setContents(bestMatch.matchingTarget.getContents());
+                        hTarget.setState(bestMatch.targetState);
+                        HSimpleComment hcomment = hTarget.getComment();
+                        if (hcomment == null)
+                        {
+                           hcomment = new HSimpleComment();
+                           hTarget.setComment(hcomment);
+                        }
+                        hcomment.setComment(createComment(bestMatch.matchingTarget));
+                        textFlowTargetDAO.makePersistent(hTarget);
+                        ++copyCount;
+
+                        // manually flush
+                        if( copyCount % DatabaseConstants.BATCH_SIZE == 0 )
+                        {
+                           textFlowTargetDAO.flush();
+                           textFlowTargetDAO.clear();
+                        }
+                     }
+                  }
+
+                  log.info("copyTrans: {0} {1} translations for document \"{2}{3}\" ", copyCount, locale.getLocaleId(), document.getPath(), document.getName());
+               }
+               finally
+               {
+                  if( results != null )
+                  {
+                     results.close();
+                  }
+               }
+
+               return null;
+            }
+         }.workInTransaction();
+      }
+      catch (Exception e)
+      {
+         log.warn("exception during copy trans", e);
+      }
+
       ScrollableResults results = null;
       
       try
       {
          int copyCount = 0;
-         int rowCount = 0;
-         
+
          results = textFlowTargetDAO.findLatestEquivalentTranslations(document, locale);
-         
+         HTextFlow originalTf = null;
+
          while (results.next())
          {
-            rowCount++;
-            
-            final HTextFlowTarget oldTFT = (HTextFlowTarget)results.get(0);
-            final HTextFlow textFlow = (HTextFlow)results.get(1);
-            HTextFlowTarget hTarget = textFlow.getTargets().get( locale ); 
-            
+            originalTf = (HTextFlow)results.get(1);
+            HTextFlowTarget hTarget = originalTf.getTargets().get( locale.getId() );
+
+            // Stop looking at this text flow altogether if there is an already approved translation
             if (hTarget != null && hTarget.getState() == ContentState.Approved)
+            {
                continue;
-            
+            }
+
+            // Get the best match for the original text flow
+            CopyTransMatch bestMatch = this.findBestMatch(results, originalTf, options);
+
+            // Create the new translation (or overwrite non-approved ones)
+
             if (hTarget == null)
             {
-               hTarget = new HTextFlowTarget(textFlow, locale);
+               hTarget = new HTextFlowTarget(originalTf, locale);
                hTarget.setVersionNum(1);
-               textFlow.getTargets().put(locale, hTarget);
+               originalTf.getTargets().put(locale.getId(), hTarget);
             }
             else
             {
-               // DB trigger will copy old value to history table, if we
-               // change the versionNum
+               // increase the versionNum
                hTarget.setVersionNum(hTarget.getVersionNum() + 1);
             }
-            // NB we don't touch creationDate
-            hTarget.setTextFlowRevision(textFlow.getRevision());
-            hTarget.setLastChanged(oldTFT.getLastChanged());
-            hTarget.setLastModifiedBy(oldTFT.getLastModifiedBy());
-            hTarget.setContents(oldTFT.getContents());
-            hTarget.setState(oldTFT.getState());
-            HSimpleComment hcomment = hTarget.getComment();
-            if (hcomment == null)
+
+            // if a best match is found
+            if( bestMatch != null )
             {
-               hcomment = new HSimpleComment();
-               hTarget.setComment(hcomment);
-            }
-            hcomment.setComment(createComment(oldTFT));
-            textFlowTargetDAO.makePersistent(hTarget);
-            ++copyCount;
-            
-            // manually flush
-            if( rowCount % DatabaseConstants.BATCH_SIZE == 0 )
-            {
-               textFlowTargetDAO.flush();
-               textFlowTargetDAO.clear();
+               // NB we don't touch creationDate
+               hTarget.setTextFlowRevision(originalTf.getRevision());
+               hTarget.setLastChanged(bestMatch.matchingTarget.getLastChanged());
+               hTarget.setLastModifiedBy(bestMatch.matchingTarget.getLastModifiedBy());
+               hTarget.setContents(bestMatch.matchingTarget.getContents());
+               hTarget.setState(bestMatch.targetState);
+               HSimpleComment hcomment = hTarget.getComment();
+               if (hcomment == null)
+               {
+                  hcomment = new HSimpleComment();
+                  hTarget.setComment(hcomment);
+               }
+               hcomment.setComment(createComment(bestMatch.matchingTarget));
+               textFlowTargetDAO.makePersistent(hTarget);
+               ++copyCount;
+
+               // manually flush
+               if( copyCount % DatabaseConstants.BATCH_SIZE == 0 )
+               {
+                  textFlowTargetDAO.flush();
+                  textFlowTargetDAO.clear();
+               }
             }
          }
 
@@ -170,7 +298,7 @@ public class CopyTransServiceImpl implements CopyTransService
          log.warn("exception during copy trans", e);
          try
          {
-            Transaction.instance().rollback();
+            //Transaction.instance().rollback();
          }
          catch (Exception i)
          {
@@ -185,11 +313,96 @@ public class CopyTransServiceImpl implements CopyTransService
          }
       }
    }
+
+   /**
+    * Finds the best match in a result set for the first TextFlow found.
+    * This is just a convenience method to split functionality of the copyTransForLocale
+    * method.
+    *
+    * @param results The results to analyze. The cursor will be left in the position of
+    *                the last analyzed row of the results.
+    *                The cursor should be placed at the first element that will be analyzed.
+    * @param originalTf Text Flow to look for copy trans matches.
+    * @param options
+    * @return The best match for copy trans against the provided original text flow.
+    */
+   private CopyTransMatch findBestMatch( ScrollableResults results, HTextFlow originalTf, CopyTransOptions options )
+   {
+      CopyTransMatch bestMatch = null;
+
+      // NB: using a do-while loop to process the current result first
+      do
+      {
+         HTextFlowTarget currentTft = (HTextFlowTarget)results.get(0);
+         HTextFlow currentTf = (HTextFlow)results.get(1);
+
+         // If there is a change in the text flow, scroll back and return the best match found so far
+         if ( !currentTf.getId().equals(originalTf.getId()) )
+         {
+            results.previous();
+            return bestMatch;
+         }
+
+         // Find out if it is a better match than the current one, only if the there is no best match or if
+         // we have found a match that could be improved
+         if( bestMatch == null || bestMatch.targetState != ContentState.Approved )
+         {
+            ContentState currentCandidateTargetState = ContentState.Approved;
+
+            // Context
+            boolean contextMatch = currentTft.getTextFlow().getResId().equals( originalTf.getResId() );
+            if( options.getContextMismatchAction() == CopyTransOptions.ConditionRuleAction.REJECT )
+            {
+               if( !contextMatch )
+               {
+                  continue;// rejected, continue
+               }
+            }
+            else if( options.getContextMismatchAction() == CopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY )
+            {
+               if( !contextMatch )
+               {
+                  currentCandidateTargetState = ContentState.NeedReview;
+               }
+            }
+            // If the action is IGNORE, don't even check
+
+            // Doc Id
+            boolean docIdMatch = currentTft.getTextFlow().getDocument().getDocId().equals( originalTf.getDocument().getDocId() );
+            if( options.getDocIdMismatchAction() == CopyTransOptions.ConditionRuleAction.REJECT )
+            {
+               if( !docIdMatch )
+               {
+                  continue;// rejected, continue
+               }
+            }
+            else if( options.getDocIdMismatchAction() == CopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY )
+            {
+               if( !docIdMatch )
+               {
+                  currentCandidateTargetState = ContentState.NeedReview;
+               }
+            }
+            // If the action is IGNORE, don't even check
+
+            // See if there is a better match at this point
+            if( bestMatch == null ||
+                (bestMatch.targetState != ContentState.Approved && currentCandidateTargetState == ContentState.Approved) )
+            {
+               bestMatch = new CopyTransMatch(currentTft, currentCandidateTargetState);
+            }
+
+         }
+      }
+      while( results.next() );
+
+      return bestMatch;
+   }
    
    @Override
    public void copyTransForDocument(HDocument document)
    {
-      this.copyTransForDocument(document, null);
+      this.copyTransForDocument(document, new CopyTransOptions(), null);
    }
 
    /**
@@ -220,14 +433,14 @@ public class CopyTransServiceImpl implements CopyTransService
          {
             return;
          }
-         this.copyTransForDocument(doc, procHandle);
+         this.copyTransForDocument(doc, procHandle.getOptions(), procHandle);
       }
    }
 
    /**
     * @see CopyTransServiceImpl#copyTransForDocument(org.zanata.model.HDocument)
     */
-   private void copyTransForDocument(HDocument document, CopyTransProcessHandle processHandle)
+   private void copyTransForDocument(HDocument document, CopyTransOptions options, CopyTransProcessHandle processHandle)
    {
       log.info("copyTrans start: document \"{0}\"", document.getDocId());
       List<HLocale> localeList =
@@ -236,11 +449,11 @@ public class CopyTransServiceImpl implements CopyTransService
 
       for (HLocale locale : localeList)
       {
-         if( processHandle.shouldStop() )
+         if( processHandle != null && processHandle.shouldStop() )
          {
             return;
          }
-         copyTransForLocale(document, locale, processHandle);
+         copyTransForLocale(document, locale, options, processHandle);
       }
 
       if( processHandle != null )
@@ -251,11 +464,11 @@ public class CopyTransServiceImpl implements CopyTransService
    }
 
    /**
-    * @see CopyTransServiceImpl#copyTransForLocale(org.zanata.model.HDocument, org.zanata.model.HLocale, org.zanata.process.CopyTransProcessHandle)
+    * @see CopyTransServiceImpl#copyTransForLocale(org.zanata.model.HDocument, org.zanata.model.HLocale, org.zanata.common.CopyTransOptions, org.zanata.process.CopyTransProcessHandle)
     */
-   private void copyTransForLocale(HDocument document, HLocale locale, CopyTransProcessHandle procHandle)
+   private void copyTransForLocale(HDocument document, HLocale locale, CopyTransOptions options, CopyTransProcessHandle procHandle)
    {
-      this.copyTransForLocale(document, locale);
+      this.copyTransForLocale(document, locale, options);
 
       if( procHandle != null )
       {

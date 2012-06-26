@@ -213,13 +213,13 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
          for (HTextFlow htf : matchedSources)
          {
-            HTextFlowTarget htft = htf.getTargets().get(hLocale);
+            HTextFlowTarget htft = htf.getTargets().get(hLocale.getId());
             if (htft != null && htft.getState() != ContentState.New)
             {
                // TODO filter other states?
                if (!resultList.contains(htft))
                {
-                  resultList.add(htf.getTargets().get(hLocale));
+                  resultList.add(htf.getTargets().get(hLocale.getId()));
                }
             }
          }

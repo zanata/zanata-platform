@@ -103,9 +103,9 @@ public class ResourceUtilsTest
       fuzzyTarg.setState(ContentState.NeedReview);
       apprTarg.setState(ContentState.Approved);
 
-      originalTF.getTargets().put(newLoc, newTarg);
-      originalTF.getTargets().put(fuzzyLoc, fuzzyTarg);
-      originalTF.getTargets().put(apprLoc, apprTarg);
+      originalTF.getTargets().put(newLoc.getId(), newTarg);
+      originalTF.getTargets().put(fuzzyLoc.getId(), fuzzyTarg);
+      originalTF.getTargets().put(apprLoc.getId(), apprTarg);
 
       to.getAllTextFlows().put("id", originalTF);
 
@@ -119,7 +119,7 @@ public class ResourceUtilsTest
       boolean changed = resourceUtils.transferFromTextFlows(from, to, new HashSet<String>(), newTFRevision);
 
 
-      Map<HLocale, HTextFlowTarget> targets = to.getAllTextFlows().get("id").getTargets();
+      Map<Long, HTextFlowTarget> targets = to.getAllTextFlows().get("id").getTargets();
       newTarg = targets.get(newLoc);
       assertThat(newTarg.getState(), is(ContentState.New));
       assertThat(newTarg.getVersionNum(), is(newTargVersionBefore));

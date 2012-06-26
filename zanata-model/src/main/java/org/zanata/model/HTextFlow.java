@@ -126,7 +126,7 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
 
    private List<String> contents;
 
-   private Map<HLocale, HTextFlowTarget> targets;
+   private Map<Long, HTextFlowTarget> targets;
 
    private Map<Integer, HTextFlowHistory> history;
 
@@ -303,14 +303,16 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    }
 
    @OneToMany(cascade = CascadeType.ALL, mappedBy = "textFlow")
-   @MapKey(name = "locale")
+   @org.hibernate.annotations.MapKey( columns = {
+         @Column(name = "locale")
+   })
    @BatchSize(size = 10)
    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-   public Map<HLocale, HTextFlowTarget> getTargets()
+   public Map<Long, HTextFlowTarget> getTargets()
    {
       if (targets == null)
       {
-         targets = new HashMap<HLocale, HTextFlowTarget>();
+         targets = new HashMap<Long, HTextFlowTarget>();
       }
       return targets;
    }

@@ -211,13 +211,13 @@ public class TranslationServiceImpl implements TranslationService
     */
    private HTextFlowTarget getOrCreateTarget(HTextFlow hTextFlow, HLocale hLocale)
    {
-      HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale);
+      HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale.getId());
 
       if (hTextFlowTarget == null)
       {
          hTextFlowTarget = new HTextFlowTarget(hTextFlow, hLocale);
          hTextFlowTarget.setVersionNum(0); // this will be incremented when content is set (below)
-         hTextFlow.getTargets().put(hLocale, hTextFlowTarget);
+         hTextFlow.getTargets().put(hLocale.getId(), hTextFlowTarget);
       }
       return hTextFlowTarget;
    }
@@ -378,7 +378,7 @@ public class TranslationServiceImpl implements TranslationService
       {
          for (HTextFlow textFlow : document.getTextFlows())
          {
-            HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale);
+            HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale.getId());
             if (hTarget != null)
             {
                removedTargets.add(hTarget);
@@ -398,7 +398,7 @@ public class TranslationServiceImpl implements TranslationService
          }
          else
          {
-            HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale);
+            HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale.getId());
             boolean targetChanged = false;
             if (hTarget == null)
             {
@@ -406,7 +406,7 @@ public class TranslationServiceImpl implements TranslationService
                log.debug("locale: {0}", locale);
                hTarget = new HTextFlowTarget(textFlow, hLocale);
                hTarget.setVersionNum(0); // incremented when content is set
-               textFlow.getTargets().put(hLocale, hTarget);
+               textFlow.getTargets().put(hLocale.getId(), hTarget);
                targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
                targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
             }

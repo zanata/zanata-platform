@@ -104,7 +104,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
                   continue;
                }
             }
-            HTextFlowTarget target = textFlow.getTargets().get(hLocale);
+            HTextFlowTarget target = textFlow.getTargets().get(hLocale.getId());
             // double check in case of caching issues
             if (target == null || target.getState() != ContentState.Approved)
             {

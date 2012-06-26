@@ -759,7 +759,31 @@ a.version_link:hover {
 .highlighted_datatable_row {
 	background-color: lightYellow;
 }
-/* -----------------------  End Inline project iteration CSS  -------------------------*/
+/* -----------------------  End project iteration CSS  -------------------------*/
+
+/* -----------------------  Project Iteration Copy Trans CSS  -----------------------------*/
+
+.copy_trans_options_table td {
+    padding: 5px 0 5px 5px;
+}
+
+.copy_trans_options_table select {
+    width: 97%;
+}
+
+.copy_trans_options_table td.reject_action {
+    background-color: red;
+}
+
+.copy_trans_options_table td.approved_action {
+    background-color: #099b09;
+}
+
+.copy_trans_options_table .option_table td {
+    border: 1px solid #000000;
+}
+
+/* -----------------------  End Project Iteration Copy Trans CSS  -------------------------*/
 
 /* ------------------------ Profile Page CSS ------------------------------------------*/
 .inactive_tab {

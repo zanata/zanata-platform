@@ -23,6 +23,7 @@ package org.zanata.process;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.zanata.common.CopyTransOptions;
 import org.zanata.model.HProjectIteration;
 
 /**
@@ -39,6 +40,9 @@ public class CopyTransProcessHandle extends ProcessHandle
 
    @Getter
    private final String triggeredBy;
+
+   @Getter
+   private final CopyTransOptions options;
 
    @Getter
    @Setter

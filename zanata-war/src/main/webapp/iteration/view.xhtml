@@ -12,20 +12,6 @@
     <ui:define name="page_title">#{viewAllStatusAction.projectSlug}:#{viewAllStatusAction.iterationSlug}</ui:define>
 
     <ui:define name="head">
-        <script type="text/javascript">
-            function copyTransLinkClicked()
-            {
-                if(#{viewAllStatusAction.projectIteration.documents.size() > 0})
-                {
-                    return confirm('#{messages['jsf.iteration.CopyTrans.confirm']}');
-                }
-                else
-                {
-                    alert('#{messages['jsf.iteration.CopyTrans.noDocuments']}');
-                    return false;
-                }
-            }
-        </script>
     </ui:define>
 
     <ui:define name="center_content">
@@ -199,10 +185,11 @@
                 <s:link styleClass="action_link"
                         value="#{messages['jsf.iteration.CopyTrans']}"
                         title="#{messages['jsf.iteration.CopyTrans.title']}"
-                        action="#{viewAllStatusAction.startCopyTrans}"
+                        view="/iteration/copy_trans.xhtml"
                         rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'copy-trans') and not viewAllStatusAction.copyTransRunning}"
-                        disabled="#{viewAllStatusAction.copyTransRunning}"
-                        onclick="return copyTransLinkClicked()" >
+                        disabled="#{viewAllStatusAction.copyTransRunning}">
+                    <f:param name="projectSlug" value="#{viewAllStatusAction.projectSlug}"/>
+                    <f:param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}"/>
                 </s:link>
             </a4j:outputPanel>
 		</rich:panel>
