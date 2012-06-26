@@ -45,6 +45,7 @@ import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;
 import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
 import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
 import org.zanata.webtrans.shared.validation.action.ValidationAction;
+import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 
 import com.google.inject.Inject;
 
@@ -70,11 +71,13 @@ public class ValidationService
       NewlineLeadTrailValidation newlineLeadTrailValidation = new NewlineLeadTrailValidation(valMessages);
       PrintfVariablesValidation printfVariablesValidation = new PrintfVariablesValidation(valMessages);
       JavaVariablesValidation javaVariablesValidation = new JavaVariablesValidation(valMessages);
+      XmlEntityValidation xmlEntityValidation = new XmlEntityValidation(valMessages);
 
       validationMap.put(htmlxmlValidation.getId(), htmlxmlValidation);
       validationMap.put(newlineLeadTrailValidation.getId(), newlineLeadTrailValidation);
       validationMap.put(printfVariablesValidation.getId(), printfVariablesValidation);
       validationMap.put(javaVariablesValidation.getId(), javaVariablesValidation);
+      validationMap.put(xmlEntityValidation.getId(), xmlEntityValidation);
 
       eventBus.addHandler(RunValidationEvent.getType(), new RunValidationEventHandler()
       {
