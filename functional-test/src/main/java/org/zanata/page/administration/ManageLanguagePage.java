@@ -56,37 +56,31 @@ public class ManageLanguagePage extends AbstractPage
 
    public ManageLanguageTeamMemberPage manageTeamMembersFor(final String localeId)
    {
-      WebElement localeTable = waitForTenSec().until(new Function<WebDriver, WebElement>()
+      TableRow matchedRow = waitForTenSec().until(new Function<WebDriver, TableRow>()
       {
          @Override
-         public WebElement apply(WebDriver driver)
+         public TableRow apply(WebDriver driver)
          {
-            WebElement table = driver.findElement(By.xpath("//table"));
-            if (WebElementUtil.getTableRows(table).isEmpty())
+            List<TableRow> tableRows = WebElementUtil.getTableRows(driver, By.xpath("//table"));
+            Collection<TableRow> matchedRow = Collections2.filter(tableRows, new Predicate<TableRow>()
             {
-               log.debug("assuming table still loading...");
-               return null;
-            }
-            return table;
-         }
-      });
+               @Override
+               public boolean apply(TableRow input)
+               {
+                  List<String> cellContents = input.getCellContents();
+                  String localeCell = cellContents.get(LOCALE_COLUMN).trim();
+                  return localeCell.equalsIgnoreCase(localeId);
+               }
+            });
 
-      List<TableRow> tableRows = WebElementUtil.getTableRows(localeTable);
-      log.debug("locale table: {}", tableRows);
-      Collection<TableRow> matchedRow = Collections2.filter(tableRows, new Predicate<TableRow>()
-      {
-         @Override
-         public boolean apply(TableRow input)
-         {
-            List<String> cellContents = input.getCellContents();
-            String localeCell = cellContents.get(LOCALE_COLUMN).trim();
-            return localeCell.equalsIgnoreCase(localeId);
+            log.debug("for locale [{}] found table row: {}", localeId, matchedRow);
+            //we keep looking for the locale until timeout
+            return (matchedRow.size() == 1) ? matchedRow.iterator().next() : null;
          }
       });
 
       log.debug("for locale [{}] found table row: {}", localeId, matchedRow);
-      Preconditions.checkState(matchedRow.size() == 1, "given localeId can't not be found on table");
-      List<WebElement> cells = matchedRow.iterator().next().getCells();
+      List<WebElement> cells = matchedRow.getCells();
       int teamMemberCellIndex = cells.size() - 1;
       WebElement teamMemberCell = cells.get(teamMemberCellIndex);
       WebElement teamMemberButton = teamMemberCell.findElement(By.xpath(".//input[@value='Team Members']"));
