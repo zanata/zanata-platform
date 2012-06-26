@@ -42,7 +42,7 @@
         <zanata.target.war>${basedir}/../zanata-war/target/zanata-${zanata.target.version}-autotest.war</zanata.target.war>
         <zanata.instance.url>http://${cargo.host}:${cargo.servlet.port}/${context.path}</zanata.instance.url>
         <zanata.apikey>b6d7044e9ee3b2447c28fb7c50d86d98</zanata.apikey>
-        <zanata.client.version>1.6.0-alpha-2</zanata.client.version>
+        <zanata.client.version>1.6.0</zanata.client.version>
         <zanata.sample.projects.basedir>${project.build.testOutputDirectory}/sample-projects</zanata.sample.projects.basedir>
     </properties>
 
@@ -217,9 +217,10 @@
                                     <cargo.hostname>${cargo.host}</cargo.hostname>
                                     <cargo.servlet.port>9898</cargo.servlet.port>
 
-                                    <!--<cargo.jvmargs>${cargo.debug.args}</cargo.jvmargs> -->
-                                    <cargo.jvmargs>-XX:PermSize=512m -XX:MaxPermSize=1024 -XX:+UseConcMarkSweepGC -XX:+CMSPermGenSweepingEnabled -XX:+CMSClassUnloadingEnabled</cargo.jvmargs>
-                                    <!--<cargo.jvmargs>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005</cargo.jvmargs> -->
+                                    <cargo.jvmargs>
+                                        -XX:PermSize=512m -XX:MaxPermSize=1024 -XX:+UseConcMarkSweepGC -XX:+CMSPermGenSweepingEnabled -XX:+CMSClassUnloadingEnabled
+                                        -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
+                                    </cargo.jvmargs>
                                 </properties>
                             </configuration>
                         </configuration>

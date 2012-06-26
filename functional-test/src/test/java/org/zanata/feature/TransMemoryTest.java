@@ -35,6 +35,7 @@ import static org.hamcrest.MatcherAssert.*;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@Test(enabled = false, description = "This test is to set up Translation Memory test data on the server. Disabled on Jenkins.")
 public class TransMemoryTest
 {
 
@@ -49,7 +50,7 @@ public class TransMemoryTest
       ProjectPage projectPage = projectWorkFlow.createNewProject("trans-memory", "trans memory test");
       projectWorkFlow.createNewProjectVersion(projectPage, "master");
 
-      int exitCode = new ClientPushWorkFlow().mvnPush("trans-memory", "-Dzanata.merge=import", "-Dzanata.projectVersion=master", "-Dzanata.pushTrans=true");
+      int exitCode = new ClientPushWorkFlow().mvnPush("trans-memory", "-Dzanata.merge=import", "-Dzanata.projectVersion=master", "-Dzanata.pushType=Both");
 
       assertThat(exitCode, Matchers.equalTo(0));
    }
@@ -65,7 +66,13 @@ public class TransMemoryTest
       ProjectPage projectPage = projectWorkFlow.createNewProject("trans-memory-v2", "trans memory test v2");
       projectWorkFlow.createNewProjectVersion(projectPage, "master");
 
-      int exitCode = new ClientPushWorkFlow().mvnPush("trans-memory", "-Dzanata.projectConfig=differentProject/zanata.xml", "-Dzanata.projectVersion=master", "-Dzanata.pushType=Source");
+      // @formatter:off
+      int exitCode = new ClientPushWorkFlow().mvnPush("trans-memory",
+            "-Dzanata.projectConfig=differentProject/zanata.xml",
+            "-Dzanata.projectVersion=master",
+            "-Dzanata.copyTrans=false",
+            "-Dzanata.pushType=Source");
+      // @formatter:on
 
       assertThat(exitCode, Matchers.equalTo(0));
    }
