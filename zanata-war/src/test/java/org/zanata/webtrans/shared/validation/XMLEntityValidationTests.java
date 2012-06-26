@@ -135,8 +135,8 @@ public class XMLEntityValidationTests
       expect(mockMessages.xmlEntityValidatorDescription()).andReturn(MOCK_ENTITY_VALIDATOR_DESCRIPTION).anyTimes();
 
       ArrayList<String> missingEntities = new ArrayList<String>();
-      missingEntities.add("&amp;");
-      missingEntities.add("&RedHat;");
+      missingEntities.add(" [&amp;] ");
+      missingEntities.add(" [&RedHat;] ");
       
       expect(mockMessages.entityMissing(missingEntities)).andReturn("Mock missing messages");
       replay(mockMessages);

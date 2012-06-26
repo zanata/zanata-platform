@@ -94,7 +94,7 @@ public interface ValidationMessages extends Messages
    @AlternateMessage({ "one", "Tag in unexpected position: {0,list,string}" })
    String tagsWrongOrder(@PluralCount List<String> tags);
 
-
+   
    //XML Entity validator
 
    @DefaultMessage("XML entity")
