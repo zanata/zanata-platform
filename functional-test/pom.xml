@@ -219,7 +219,7 @@
 
                                     <cargo.jvmargs>
                                         -XX:PermSize=512m -XX:MaxPermSize=1024 -XX:+UseConcMarkSweepGC -XX:+CMSPermGenSweepingEnabled -XX:+CMSClassUnloadingEnabled
-                                        -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
+                                        -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8788 -Xnoagent -Djava.compiler=NONE
                                     </cargo.jvmargs>
                                 </properties>
                             </configuration>
