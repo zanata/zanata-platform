@@ -76,13 +76,13 @@ public interface UiMessages extends Messages
    @DefaultMessage("Processing...")
    String processing();
 
-   @DefaultMessage("TM merge for this page")
+   @DefaultMessage("TM merge for current page")
    String mergeTMButtonLabel();
 
    @DefaultMessage("Select TM match percentage to pre-fill translations.")
    String mergeTMCaption();
 
-   @DefaultMessage("No text has new status to be merged.")
+   @DefaultMessage("No text can be TM merged")
    String noTranslationToMerge();
 
    @DefaultMessage("TM merge failed")

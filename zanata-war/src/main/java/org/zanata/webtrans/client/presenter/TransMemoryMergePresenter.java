@@ -103,10 +103,17 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
          @Override
          public void onSuccess(UpdateTransUnitResult result)
          {
-            UndoLink undoLink = undoLinkProvider.get();
-            undoLink.prepareUndoFor(result);
-            NotificationEvent event = new NotificationEvent(Info, messages.mergeTMSuccess(), undoLink);
-            eventBus.fireEvent(event);
+            if (result.getUpdateInfoList().isEmpty())
+            {
+               eventBus.fireEvent(new NotificationEvent(Info, messages.noTranslationToMerge()));
+            }
+            else
+            {
+               UndoLink undoLink = undoLinkProvider.get();
+               undoLink.prepareUndoFor(result);
+               NotificationEvent event = new NotificationEvent(Info, messages.mergeTMSuccess(), undoLink);
+               eventBus.fireEvent(event);
+            }
             display.hide();
          }
       });
