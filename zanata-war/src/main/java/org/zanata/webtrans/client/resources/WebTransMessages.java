@@ -331,4 +331,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Disable 'Replace' button until previews have been generated for all selected text flows")
    String requirePreviewDescription();
+
+   @DefaultMessage("Copy from translation memory: {0}")
+   String copyFromTM(String index);
 }

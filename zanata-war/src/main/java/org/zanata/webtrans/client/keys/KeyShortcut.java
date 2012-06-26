@@ -37,6 +37,24 @@ public class KeyShortcut
    public static final int CTRL_KEY = 0x4;
    public static final int META_KEY = 0x8;
    public static final int SHIFT_ALT_KEYS = ALT_KEY | SHIFT_KEY;
+   public static final int CTRL_ALT_KEYS = CTRL_KEY | ALT_KEY;
+   
+   public static final int KEY_G = 'G';
+   public static final int KEY_J = 'J';
+   public static final int KEY_K = 'K';
+   public static final int KEY_S = 'S';
+   
+   public static int KEY_1 = 49;
+   public static int KEY_1_NUM = 97;
+   
+   public static final int KEY_2 = 50;
+   public static final int KEY_2_NUM = 98;
+   
+   public static final int KEY_3 = 51;
+   public static final int KEY_3_NUM = 99;
+   
+   public static final int KEY_4 = 52;
+   public static final int KEY_4_NUM = 100;
 
    private final int modifiers;
    private final int keyCode;

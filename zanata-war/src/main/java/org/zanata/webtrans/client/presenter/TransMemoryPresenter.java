@@ -137,6 +137,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
                }
                if (item != null)
                {
+                  Log.debug("Copy from translation memory:" + (event.getIndex()+1));
                   eventBus.fireEvent(new CopyDataToEditorEvent(item.getTargetContents()));
                }
             }

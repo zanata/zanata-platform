@@ -31,6 +31,7 @@ import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.presenter.TranslationPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -62,6 +63,7 @@ public class TranslationPresenterTest
    private static final String TEST_HAS_JONINED_WORKSPACE_MESSAGE = "has joined workspace";
    private static final String TEST_SHOW_OPTIONS_TOOLTIP = "tooltip to show options";
    private static final String TEST_HIDE_OPTIONS_TOOLTIP = "tooltip to hide options";
+   private static final String COPY_FROM_TM = "Copy from TM";
 
    // object under test
    private TranslationPresenter translationPresenter;
@@ -81,6 +83,7 @@ public class TranslationPresenterTest
    private WorkspaceContext mockWorkspaceContext;
    private WorkspaceUsersPresenter mockWorkspaceUsersPresenter;
    private TargetContentsPresenter mockTargetContentsPresenter;
+   private KeyShortcutPresenter mockKeyShortcutPresenter;
 
    // mock view components
    private HasValue<Boolean> mockOptionsToggle;
@@ -96,9 +99,8 @@ public class TranslationPresenterTest
    private Capture<ValueChangeHandler<Boolean>> capturedOptionsToggleValueChangeHandler;
    private Capture<ValueChangeHandler<Boolean>> capturedSouthPanelToggleValueChangeHandler;
    private Capture<SelectionHandler<Integer>> capturedSouthPanelSelectionHandler;
-
+   private Capture<KeyShortcut> capturedKeyShortcuts;
    private Capture<PublishWorkspaceChatEventHandler> capturedPublishWorkspaceChatEventHandler;
-
    private Capture<NativePreviewHandler> capturedKeyShortcutHandler;
 
    @SuppressWarnings("unchecked")
@@ -117,6 +119,7 @@ public class TranslationPresenterTest
       mockWorkspaceContext = createMock(WorkspaceContext.class);
       mockWorkspaceUsersPresenter = createMock(WorkspaceUsersPresenter.class);
       mockTargetContentsPresenter = createMock(TargetContentsPresenter.class);
+      mockKeyShortcutPresenter = createMock(KeyShortcutPresenter.class);
 
       mockOptionsToggle = createMock(HasValue.class);
       mockSouthPanelToggle = createMock(HasValue.class);
@@ -125,7 +128,7 @@ public class TranslationPresenterTest
 
    private TranslationPresenter newTranslationPresenter()
    {
-      return new TranslationPresenter(mockDisplay, mockEventBus, mockDispatcher, mockTargetContentsPresenter, mockWorkspaceUsersPresenter, mockTranslationEditorPresenter, mockSidePanelPresenter, mockTransMemoryPresenter, mockGlossaryPresenter, mockMessages, mockNativeEvent, mockWorkspaceContext);
+      return new TranslationPresenter(mockDisplay, mockEventBus, mockDispatcher, mockTargetContentsPresenter, mockWorkspaceUsersPresenter, mockTranslationEditorPresenter, mockSidePanelPresenter, mockTransMemoryPresenter, mockGlossaryPresenter, mockMessages, mockNativeEvent, mockWorkspaceContext, mockKeyShortcutPresenter);
    }
 
 
@@ -520,6 +523,14 @@ public class TranslationPresenterTest
 
       expect(mockMessages.showEditorOptions()).andReturn(TEST_SHOW_OPTIONS_TOOLTIP).anyTimes();
       expect(mockMessages.hideEditorOptions()).andReturn(TEST_HIDE_OPTIONS_TOOLTIP).anyTimes();
+      
+      expect(mockMessages.copyFromTM("1")).andReturn(COPY_FROM_TM).anyTimes();
+      expect(mockMessages.copyFromTM("2")).andReturn(COPY_FROM_TM).anyTimes();
+      expect(mockMessages.copyFromTM("3")).andReturn(COPY_FROM_TM).anyTimes();
+      expect(mockMessages.copyFromTM("4")).andReturn(COPY_FROM_TM).anyTimes();
+      
+      capturedKeyShortcuts = new Capture<KeyShortcut>();
+      expect(mockKeyShortcutPresenter.registerKeyShortcut(and(capture(capturedKeyShortcuts), isA(KeyShortcut.class)))).andReturn(null).anyTimes();
 
 
       capturedEnterWorkspaceEventHandler = new Capture<EnterWorkspaceEventHandler>();
@@ -576,7 +587,7 @@ public class TranslationPresenterTest
    {
       reset(mockDispatcher, mockDisplay, mockEventBus, mockGlossaryPresenter);
       reset(mockMessages, mockNativeEvent, mockSidePanelPresenter, mockTranslationEditorPresenter, mockTransMemoryPresenter);
-      reset(mockWorkspaceContext, mockWorkspaceUsersPresenter);
+      reset(mockWorkspaceContext, mockWorkspaceUsersPresenter, mockKeyShortcutPresenter);
 
       reset(mockOptionsToggle, mockSouthPanelToggle, mockSouthPanel);
    }
@@ -585,7 +596,7 @@ public class TranslationPresenterTest
    {
       replay(mockDispatcher, mockDisplay, mockEventBus, mockGlossaryPresenter);
       replay(mockMessages, mockNativeEvent, mockSidePanelPresenter, mockTranslationEditorPresenter, mockTransMemoryPresenter);
-      replay(mockWorkspaceContext, mockWorkspaceUsersPresenter);
+      replay(mockWorkspaceContext, mockWorkspaceUsersPresenter, mockKeyShortcutPresenter);
 
       replay(mockOptionsToggle, mockSouthPanelToggle, mockSouthPanel);
    }
@@ -594,7 +605,7 @@ public class TranslationPresenterTest
    {
       verify(mockDispatcher, mockDisplay, mockEventBus, mockGlossaryPresenter);
       verify(mockMessages, mockNativeEvent, mockSidePanelPresenter, mockTranslationEditorPresenter, mockTransMemoryPresenter);
-      verify(mockWorkspaceContext, mockWorkspaceUsersPresenter);
+      verify(mockWorkspaceContext, mockWorkspaceUsersPresenter, mockKeyShortcutPresenter);
 
       verify(mockOptionsToggle, mockSouthPanelToggle, mockSouthPanel);
    }

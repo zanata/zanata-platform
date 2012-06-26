@@ -418,6 +418,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
                display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
             }
             currentDisplayStats = selectedDocumentStats;
+            translationPresenter.revealDisplay();
             searchResultsPresenter.concealDisplay();
             break;
          case Search:
@@ -425,6 +426,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             // fully functional
             display.setDocumentLabel("", messages.projectWideSearchAndReplace());
             currentDisplayStats = projectStats;
+            translationPresenter.concealDisplay();
             searchResultsPresenter.revealDisplay();
             break;
          case Documents:
@@ -433,6 +435,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> implemen
             // if a document is selected.
             display.setDocumentLabel("", messages.noDocumentSelected());
             currentDisplayStats = projectStats;
+            translationPresenter.concealDisplay();
             searchResultsPresenter.concealDisplay();
             break;
          }

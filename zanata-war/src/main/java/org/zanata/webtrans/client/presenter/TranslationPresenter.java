@@ -32,12 +32,15 @@ import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
 import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEventHandler;
+import org.zanata.webtrans.client.events.KeyShortcutEvent;
+import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NativeEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -107,6 +110,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private final GlossaryPresenter glossaryPresenter;
    private final WorkspaceUsersPresenter workspaceUsersPresenter;
    private final TargetContentsPresenter targetContentsPresenter;
+   private final KeyShortcutPresenter keyShortcutPresenter;
+
    private WorkspaceContext workspaceContext;
 
    private final WebTransMessages messages;
@@ -116,7 +121,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    private boolean southPanelExpanded = true;
 
    @Inject
-   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TargetContentsPresenter targetContentsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final OptionsPanelPresenter optionsPanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final NativeEvent nativeEvent, final WorkspaceContext workspaceContext)
+   public TranslationPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TargetContentsPresenter targetContentsPresenter, final WorkspaceUsersPresenter workspaceUsersPresenter, final TranslationEditorPresenter translationEditorPresenter, final OptionsPanelPresenter optionsPanelPresenter, final TransMemoryPresenter transMemoryPresenter, final GlossaryPresenter glossaryPresenter, final WebTransMessages messages, final NativeEvent nativeEvent, final WorkspaceContext workspaceContext, final KeyShortcutPresenter keyShortcutPresenter)
    {
       super(display, eventBus);
       this.messages = messages;
@@ -126,6 +131,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       this.optionsPanelPresenter = optionsPanelPresenter;
       this.glossaryPresenter = glossaryPresenter;
       this.targetContentsPresenter = targetContentsPresenter;
+      this.keyShortcutPresenter = keyShortcutPresenter;
       this.dispatcher = dispatcher;
 
       this.nativeEvent = nativeEvent;
@@ -135,6 +141,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    @Override
    public void onRevealDisplay()
    {
+      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, true);
    }
 
    private void loadTranslatorList()
@@ -259,6 +266,68 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          }
       }));
 
+      KeyShortcutEventHandler copyTM1Handler = new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            if (translationEditorPresenter.getSelectedTransUnit() != null)
+            {
+               eventBus.fireEvent(new TransMemoryShortcutCopyEvent(0));
+            }
+         }
+      };
+      
+      KeyShortcutEventHandler copyTM2Handler = new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            if (translationEditorPresenter.getSelectedTransUnit() != null)
+            {
+               eventBus.fireEvent(new TransMemoryShortcutCopyEvent(1));
+            }
+         }
+      };
+      
+      KeyShortcutEventHandler copyTM3Handler = new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            if (translationEditorPresenter.getSelectedTransUnit() != null)
+            {
+               eventBus.fireEvent(new TransMemoryShortcutCopyEvent(2));
+            }
+         }
+      };
+      
+      KeyShortcutEventHandler copyTM4Handler = new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            if (translationEditorPresenter.getSelectedTransUnit() != null)
+            {
+               eventBus.fireEvent(new TransMemoryShortcutCopyEvent(3));
+            }
+         }
+      };
+      
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_1, ShortcutContext.Edit, messages.copyFromTM("1"), copyTM1Handler));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_1_NUM, ShortcutContext.Edit, messages.copyFromTM("1"), copyTM1Handler));
+      
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_2, ShortcutContext.Edit, messages.copyFromTM("2"), copyTM2Handler));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_2_NUM, ShortcutContext.Edit, messages.copyFromTM("2"), copyTM2Handler));
+
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_3, ShortcutContext.Edit, messages.copyFromTM("3"), copyTM3Handler));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_3_NUM, ShortcutContext.Edit, messages.copyFromTM("3"), copyTM3Handler));
+      
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_4, ShortcutContext.Edit, messages.copyFromTM("4"), copyTM4Handler));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_4_NUM, ShortcutContext.Edit, messages.copyFromTM("4"), copyTM4Handler));
+      
+      
+      
       final CheckKey checkKey = new CheckKeyImpl(ShortcutContext.Navigation);
 
       // TODO make testable
@@ -275,35 +344,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
             if (display.asWidget().isVisible() && (event.getNativeEvent().getType().equals("keyup") || event.getNativeEvent().getType().equals("keydown")))
             {
                checkKey.init(event.getNativeEvent());
-
-               if (translationEditorPresenter.getSelectedTransUnit() != null && checkKey.isCopyFromTransMem())
-               {
-                  int index;
-                  switch (checkKey.getKeyCode())
-                  {
-                  case CheckKey.KEY_1:
-                  case CheckKey.KEY_1_NUM:
-                     index = 0;
-                     break;
-                  case CheckKey.KEY_2:
-                  case CheckKey.KEY_2_NUM:
-                     index = 1;
-                     break;
-                  case CheckKey.KEY_3:
-                  case CheckKey.KEY_3_NUM:
-                     index = 2;
-                     break;
-                  case CheckKey.KEY_4:
-                  case CheckKey.KEY_4_NUM:
-                     index = 3;
-                     break;
-                  default:
-                     index = -1;
-                     break;
-                  }
-                  Log.info("Copy from translation memory:" + index);
-                  eventBus.fireEvent(new TransMemoryShortcutCopyEvent(index));
-               }
 
                /**
                 * @formatter:off
@@ -433,6 +473,11 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       transMemoryPresenter.unbind();
       glossaryPresenter.unbind();
       workspaceUsersPresenter.unbind();
+   }
+
+   public void concealDisplay()
+   {
+      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, false);
    }
 
 }
