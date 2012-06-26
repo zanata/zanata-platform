@@ -35,11 +35,12 @@ import static org.hamcrest.MatcherAssert.*;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(enabled = false, description = "This test is to set up Translation Memory test data on the server. Disabled on Jenkins.")
+@Test(enabled = false,
+      timeOut = Constants.FIFTY_SEC,
+      description = "This test is to set up Translation Memory test data on the server. Disabled on Jenkins.")
 public class TransMemoryTest
 {
 
-   @Test(timeOut = Constants.FIFTY_SEC)
    public void pushTransMemoryProject() {
       new LoginWorkFlow().signIn("admin", "admin");
       LanguageWorkFlow languageWorkFlow = new LanguageWorkFlow();
@@ -55,7 +56,6 @@ public class TransMemoryTest
       assertThat(exitCode, Matchers.equalTo(0));
    }
 
-   @Test(timeOut = Constants.FIFTY_SEC)
    public void pushTransMemoryProjectWithDifferentProjectName() {
       new LoginWorkFlow().signIn("admin", "admin");
       LanguageWorkFlow languageWorkFlow = new LanguageWorkFlow();

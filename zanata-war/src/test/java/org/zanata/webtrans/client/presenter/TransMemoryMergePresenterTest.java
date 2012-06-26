@@ -53,7 +53,9 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.UndoLink;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.MergeOption;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
@@ -206,7 +208,7 @@ public class TransMemoryMergePresenterTest
    }
 
    @Test
-   public void onRequestTMMergeSuccessWillCreateUndoLinkAndNotify() {
+   public void onRequestTMMergeSuccessWithTranslationWillCreateUndoLinkAndNotify() {
       // Given:
       // there is untranslated text flow on page
       List<TransUnit> currentPageRows = Lists.newArrayList(makeTransUnit(1, ContentState.New));
@@ -218,8 +220,8 @@ public class TransMemoryMergePresenterTest
       presenter.proceedToMergeTM(100, MergeOption.SKIP, MergeOption.APPROVED, MergeOption.FUZZY);
       verify(dispatcher).execute(transMemoryMergeCaptor.capture(), callbackCaptor.capture());
       AsyncCallback<UpdateTransUnitResult> callback = callbackCaptor.getValue();
-      // rpc call success
-      UpdateTransUnitResult result = new UpdateTransUnitResult();
+      // rpc call success and result has some updated info
+      UpdateTransUnitResult result = new UpdateTransUnitResult(new TransUnitUpdateInfo(true, null, null, 0, 0, ContentState.Approved));
       callback.onSuccess(result);
 
       // Then:
@@ -231,6 +233,33 @@ public class TransMemoryMergePresenterTest
       assertThat(event.getMessage(), Matchers.sameInstance(messages.mergeTMSuccess()));
       assertThat(event.getInlineLink(), Matchers.<InlineLink>sameInstance(undoLink));
       verify(undoLink).prepareUndoFor(result);
+   }
+
+   @Test
+   public void onRequestTMMergeSuccessWithoutTranslationWillJustNotify() {
+      // Given:
+      // there is untranslated text flow on page
+      List<TransUnit> currentPageRows = Lists.newArrayList(makeTransUnit(1, ContentState.New));
+      mockCurrentPageToReturn(currentPageRows);
+      UndoLink undoLink = mock(UndoLink.class);
+      when(undoLinkProvider.get()).thenReturn(undoLink);
+
+      // When:
+      presenter.proceedToMergeTM(100, MergeOption.SKIP, MergeOption.APPROVED, MergeOption.FUZZY);
+      verify(dispatcher).execute(transMemoryMergeCaptor.capture(), callbackCaptor.capture());
+      AsyncCallback<UpdateTransUnitResult> callback = callbackCaptor.getValue();
+      // rpc call success but result has no updated info
+      UpdateTransUnitResult result = new UpdateTransUnitResult();
+      callback.onSuccess(result);
+
+      // Then:
+      verify(messages).noTranslationToMerge();
+      verify(eventBus).fireEvent(notificationEventCaptor.capture());
+      verify(display).hide();
+      NotificationEvent event = notificationEventCaptor.getValue();
+      assertThat(event.getSeverity(), Matchers.equalTo(NotificationEvent.Severity.Info));
+      assertThat(event.getMessage(), Matchers.sameInstance(messages.noTranslationToMerge()));
+      assertThat(event.getInlineLink(), Matchers.nullValue());
    }
 
    private static List<Long> getIds(List<TransUnitUpdateRequest> updateRequests)
