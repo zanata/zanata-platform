@@ -48,17 +48,17 @@ public interface CheckKey
    static final int KEY_K = 'K';
    static final int KEY_S = 'S';
    
-   static int KEY_1 = 49;
-   static int KEY_1_NUM = 97;
+   static int KEY_1 = 49; // keycode of number '1' on the top keyboard
+   static int KEY_1_NUM = 97; // keycode of number '1' in the key pad without modifier
    
-   static final int KEY_2 = 50;
-   static final int KEY_2_NUM = 98;
+   static final int KEY_2 = 50; // keycode of number '2' on the top keyboard
+   static final int KEY_2_NUM = 98; // keycode of number '2' in the key pad without modifier
    
-   static final int KEY_3 = 51;
-   static final int KEY_3_NUM = 99;
+   static final int KEY_3 = 51; // keycode of number '3' on the top keyboard
+   static final int KEY_3_NUM = 99; // keycode of number '3' in the key pad without modifier
    
-   static final int KEY_4 = 52;
-   static final int KEY_4_NUM = 100;
+   static final int KEY_4 = 52; // keycode of number '4' on the top keyboard
+   static final int KEY_4_NUM = 100; // keycode of number '4' in the key pad without modifier
 
    void init(NativeEvent event);
 
