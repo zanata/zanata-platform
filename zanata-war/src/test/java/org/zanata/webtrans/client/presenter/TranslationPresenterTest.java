@@ -524,11 +524,6 @@ public class TranslationPresenterTest
       expect(mockMessages.showEditorOptions()).andReturn(TEST_SHOW_OPTIONS_TOOLTIP).anyTimes();
       expect(mockMessages.hideEditorOptions()).andReturn(TEST_HIDE_OPTIONS_TOOLTIP).anyTimes();
       
-      expect(mockMessages.copyFromTM("1")).andReturn(COPY_FROM_TM).anyTimes();
-      expect(mockMessages.copyFromTM("2")).andReturn(COPY_FROM_TM).anyTimes();
-      expect(mockMessages.copyFromTM("3")).andReturn(COPY_FROM_TM).anyTimes();
-      expect(mockMessages.copyFromTM("4")).andReturn(COPY_FROM_TM).anyTimes();
-      
       capturedKeyShortcuts = new Capture<KeyShortcut>();
       expect(mockKeyShortcutPresenter.registerKeyShortcut(and(capture(capturedKeyShortcuts), isA(KeyShortcut.class)))).andReturn(null).anyTimes();
 

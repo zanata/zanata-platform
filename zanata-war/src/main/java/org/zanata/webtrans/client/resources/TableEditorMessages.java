@@ -45,4 +45,7 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Run Validation")
    String runValidation();
+   
+   @DefaultMessage("Copy from translation memory {0}")
+   String copyFromTM(String index);
 }

@@ -25,8 +25,6 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.editor.CheckKey;
-import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.editor.table.TargetContentsPresenter;
 import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
 import org.zanata.webtrans.client.events.EnterWorkspaceEventHandler;
@@ -37,7 +35,6 @@ import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NativeEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEventHandler;
-import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.keys.KeyShortcut;
@@ -51,13 +48,12 @@ import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData.MESSAGE_TYPE;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
@@ -116,8 +112,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 
    private final WebTransMessages messages;
 
-   private NativeEvent nativeEvent;
-
    private boolean southPanelExpanded = true;
 
    @Inject
@@ -134,14 +128,13 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.dispatcher = dispatcher;
 
-      this.nativeEvent = nativeEvent;
       this.workspaceContext = workspaceContext;
    }
 
    @Override
    public void onRevealDisplay()
    {
-      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, true);
+      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
    }
 
    private void loadTranslatorList()
@@ -266,137 +259,57 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          }
       }));
 
-      KeyShortcutEventHandler copyTM1Handler = new KeyShortcutEventHandler()
+      KeyShortcutEventHandler gotoPreRowHandler = new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            if (translationEditorPresenter.getSelectedTransUnit() != null)
+            if (isEditorInFocus())
             {
-               eventBus.fireEvent(new TransMemoryShortcutCopyEvent(0));
+               translationEditorPresenter.gotoPrevRow(false);
             }
          }
       };
-      
-      KeyShortcutEventHandler copyTM2Handler = new KeyShortcutEventHandler()
+
+      KeyShortcutEventHandler gotoNextRowHandler = new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            if (translationEditorPresenter.getSelectedTransUnit() != null)
+            if (isEditorInFocus())
             {
-               eventBus.fireEvent(new TransMemoryShortcutCopyEvent(1));
+               translationEditorPresenter.gotoNextRow(false);
             }
          }
       };
+
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_UP, ShortcutContext.Edit, messages.moveToNextEntry(), gotoPreRowHandler, KeyShortcut.KEY_DOWN, true, true, true));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_J, ShortcutContext.Edit, messages.moveToNextEntry(), gotoPreRowHandler, KeyShortcut.KEY_DOWN, true, true, true));
+
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_DOWN, ShortcutContext.Edit, messages.moveToPreviousEntry(), gotoNextRowHandler, KeyShortcut.KEY_DOWN, true, true, true));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_K, ShortcutContext.Edit, messages.moveToPreviousEntry(), gotoNextRowHandler, KeyShortcut.KEY_DOWN, true, true, true));
+
       
-      KeyShortcutEventHandler copyTM3Handler = new KeyShortcutEventHandler()
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(0, KeyCodes.KEY_ENTER, ShortcutContext.Navigation, messages.openEditorInSelectedRow(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            if (translationEditorPresenter.getSelectedTransUnit() != null)
+            if (isEditorInFocus())
             {
-               eventBus.fireEvent(new TransMemoryShortcutCopyEvent(2));
+               translationEditorPresenter.openEditorOnSelectedRow();
             }
          }
-      };
-      
-      KeyShortcutEventHandler copyTM4Handler = new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            if (translationEditorPresenter.getSelectedTransUnit() != null)
-            {
-               eventBus.fireEvent(new TransMemoryShortcutCopyEvent(3));
-            }
-         }
-      };
-      
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_1, ShortcutContext.Edit, messages.copyFromTM("1"), copyTM1Handler));
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_1_NUM, ShortcutContext.Edit, messages.copyFromTM("1"), copyTM1Handler));
-      
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_2, ShortcutContext.Edit, messages.copyFromTM("2"), copyTM2Handler));
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_2_NUM, ShortcutContext.Edit, messages.copyFromTM("2"), copyTM2Handler));
-
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_3, ShortcutContext.Edit, messages.copyFromTM("3"), copyTM3Handler));
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_3_NUM, ShortcutContext.Edit, messages.copyFromTM("3"), copyTM3Handler));
-      
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_4, ShortcutContext.Edit, messages.copyFromTM("4"), copyTM4Handler));
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_4_NUM, ShortcutContext.Edit, messages.copyFromTM("4"), copyTM4Handler));
-      
-      
-      
-      final CheckKey checkKey = new CheckKeyImpl(ShortcutContext.Navigation);
-
-      // TODO make testable
-
-      nativeEvent.addNativePreviewHandler(new NativePreviewHandler()
-      {
-         @Override
-         public void onPreviewNativeEvent(NativePreviewEvent event)
-         {
-            /**
-             * keyup is used because TargetCellEditor will intercept the event
-             * again (Firefox) See textArea.addKeyDownHandler@InlineTargetCellEditor
-             **/
-            if (display.asWidget().isVisible() && (event.getNativeEvent().getType().equals("keyup") || event.getNativeEvent().getType().equals("keydown")))
-            {
-               checkKey.init(event.getNativeEvent());
-
-               /**
-                * @formatter:off
-                * Only when the Table is showed,editor is closed, search field
-                * not focused, the keyboard event will be processed.
-                **/
-               if (!translationEditorPresenter.isEditing() &&
-                  !translationEditorPresenter.isTransFilterFocused() && 
-                  !transMemoryPresenter.getDisplay().isFocused() && 
-                  !glossaryPresenter.getDisplay().isFocused() &&
-                  !translationEditorPresenter.getDisplay().isPagerFocused())
-               {
-                  if (event.getNativeEvent().getType().equals("keyup"))
-                  {
-                     if (checkKey.isEnterKey() && !checkKey.isCtrlKey())
-                     {
-                        if (translationEditorPresenter.getSelectedTransUnit() != null)
-                        {
-                           if (!translationEditorPresenter.isCancelButtonFocused())
-                           {
-                              event.getNativeEvent().stopPropagation();
-                              event.getNativeEvent().preventDefault();
-                              
-                              translationEditorPresenter.openEditorOnSelectedRow();
-                           }
-                           translationEditorPresenter.setCancelButtonFocused(false);
-                        }
-                     }
-                  }
-                  if (event.getNativeEvent().getType().equals("keydown"))
-                  {
-                     if (checkKey.isPreviousEntryKey())
-                     {
-                        Log.info("Go to previous entry");
-                        event.getNativeEvent().stopPropagation();
-                        event.getNativeEvent().preventDefault();
-                        translationEditorPresenter.gotoPrevRow(false);
-                     }
-                     else if (checkKey.isNextEntryKey())
-                     {
-                        Log.info("Go to next entry");
-                        event.getNativeEvent().stopPropagation();
-                        event.getNativeEvent().preventDefault();
-                        translationEditorPresenter.gotoNextRow(false);
-                     }
-                  }
-               }
-            }
-         }
-      });
-
+      }, KeyShortcut.KEY_UP, true, true, true));
    }
 
+   private boolean isEditorInFocus()
+   {
+      return !translationEditorPresenter.isTransFilterFocused() && 
+            !transMemoryPresenter.getDisplay().isFocused() && 
+            !glossaryPresenter.getDisplay().isFocused() &&
+            !translationEditorPresenter.getDisplay().isPagerFocused();
+   }
    @Override
    protected void onUnbind()
    {
@@ -477,7 +390,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 
    public void concealDisplay()
    {
-      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, false);
+      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, false);
    }
 
 }

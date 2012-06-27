@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
@@ -34,7 +35,9 @@ import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Strings;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
@@ -68,14 +71,15 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
 
       public void clearPanel();
 
-      //hide method not provided as auto-hide is enabled
+      // hide method not provided as auto-hide is enabled
    }
 
    /**
     * Key uses {@link KeyShortcut#keysHash()}
     */
    private Map<Integer, Set<KeyShortcut>> shortcutMap;
-
+   private Map<Integer, String> keyDisplayMap;
+   
    private Set<ShortcutContext> activeContexts;
 
    private WebTransMessages messages;
@@ -85,6 +89,16 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
    {
       super(display, eventBus);
       this.messages = webTransMessages;
+      keyDisplayMap = new HashMap<Integer, String>();
+      
+      keyDisplayMap.put(KeyShortcut.ALT_KEY, "Alt");
+      keyDisplayMap.put(KeyShortcut.SHIFT_KEY, "Shift");
+      keyDisplayMap.put(KeyShortcut.META_KEY, "Meta");
+      keyDisplayMap.put(KeyShortcut.CTRL_KEY, "Ctrl");
+      
+      keyDisplayMap.put(KeyCodes.KEY_DOWN, "Down Arrow");
+      keyDisplayMap.put(KeyCodes.KEY_UP, "Up Arrow");
+      keyDisplayMap.put(KeyCodes.KEY_ENTER, "Enter");
    }
 
    @Override
@@ -100,10 +114,8 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          {
             NativeEvent evt = event.getNativeEvent();
 
-            if ((event.getTypeInt() & Event.ONKEYDOWN) != 0)
+            if ((event.getTypeInt() & (Event.ONKEYDOWN | Event.ONKEYUP)) != 0)
             {
-               Log.debug("Event type: " + evt.getType());
-
                processKeyEvent(evt);
 
                // Log.debug("Key event. Stopping propagation.");
@@ -113,11 +125,9 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          }
       });
 
-      // could try to use ?, although this is not as simple as passing character '?'
-      registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, 'Y',
-            ShortcutContext.Application,
-            messages.showAvailableKeyShortcuts(),
-            new KeyShortcutEventHandler()
+      // could try to use ?, although this is not as simple as passing character
+      // '?'
+      registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, 'Y', ShortcutContext.Application, messages.showAvailableKeyShortcuts(), new KeyShortcutEventHandler()
       {
 
          @Override
@@ -127,30 +137,50 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
             for (ShortcutContext context : ensureActiveContexts())
             {
                ArrayList<String> shortcutStrings = new ArrayList<String>();
+               for(Entry<Integer, Set<KeyShortcut>> entry:ensureShortcutMap().entrySet())
+               {
+                  Set<KeyShortcut> shortcutSet = entry.getValue();
+                  for (KeyShortcut shortcut : shortcutSet)
+                  {
+                     Log.info("======" + shortcut.getDescription());
+                  }
+               }
+               
                for (Set<KeyShortcut> shortcutSet : ensureShortcutMap().values())
                {
                   for (KeyShortcut shortcut : shortcutSet)
                   {
-                     if (shortcut.getContext() == context)
+                     if (shortcut.getContext() == context && shortcut.isDisplayInView())
                      {
                         StringBuilder sb = new StringBuilder();
                         if ((shortcut.getModifiers() & KeyShortcut.CTRL_KEY) != 0)
                         {
-                           sb.append("Ctrl+");
+                           sb.append(keyDisplayMap.get(KeyShortcut.CTRL_KEY));
+                           sb.append("+");
                         }
                         if ((shortcut.getModifiers() & KeyShortcut.SHIFT_KEY) != 0)
                         {
-                           sb.append("Shift+");
+                           sb.append(keyDisplayMap.get(KeyShortcut.SHIFT_KEY));
+                           sb.append("+");
                         }
                         if ((shortcut.getModifiers() & KeyShortcut.META_KEY) != 0)
                         {
-                           sb.append("Meta+");
+                           sb.append(keyDisplayMap.get(KeyShortcut.META_KEY));
+                           sb.append("+");
                         }
                         if ((shortcut.getModifiers() & KeyShortcut.ALT_KEY) != 0)
                         {
-                           sb.append("Alt+");
+                           sb.append(keyDisplayMap.get(KeyShortcut.ALT_KEY));
+                           sb.append("+");
                         }
-                        sb.append((char) shortcut.getKeyCode());
+                        if (!Strings.isNullOrEmpty(keyDisplayMap.get(shortcut.getKeyCode())))
+                        {
+                           sb.append(keyDisplayMap.get(shortcut.getKeyCode()));
+                        }
+                        else
+                        {
+                           sb.append((char) shortcut.getKeyCode());
+                        }
                         sb.append(" : ");
                         sb.append(shortcut.getDescription());
                         shortcutStrings.add(sb.toString());
@@ -203,7 +233,8 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
       {
          if (context == ShortcutContext.Application)
          {
-            // TODO throw exception? Remove this check? Just warn but still remove context?
+            // TODO throw exception? Remove this check? Just warn but still
+            // remove context?
             Log.warn("Tried to set global shortcut context inactive. Ignoring.");
          }
          else
@@ -215,7 +246,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
 
    public HandlerRegistration registerKeyShortcut(KeyShortcut shortcut)
    {
-      Log.info("registering key shortcut. key: " + shortcut.getKeyCode() + " modifier: " + shortcut.getModifiers() + " keyhash: " + shortcut.keysHash());
+      Log.debug("registering key shortcut. key: " + shortcut.getKeyCode() + " modifier: " + shortcut.getModifiers() + " keyhash: " + shortcut.keysHash());
       Set<KeyShortcut> shortcuts = ensureShortcutMap().get(shortcut.keysHash());
       if (shortcuts == null)
       {
@@ -237,8 +268,16 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          KeyShortcutEvent shortcutEvent = new KeyShortcutEvent(modifiers, evt.getKeyCode());
          for (KeyShortcut shortcut : shortcuts)
          {
-            if (ensureActiveContexts().contains(shortcut.getContext()))
+            if (ensureActiveContexts().contains(shortcut.getContext()) && shortcut.getKeyAction().equals(evt.getType()))
             {
+               if (shortcut.isStopPropagation())
+               {
+                  evt.stopPropagation();
+               }
+               if (shortcut.isPreventDefault())
+               {
+                  evt.preventDefault();
+               }
                shortcut.getHandler().onKeyShortcut(shortcutEvent);
             }
          }
@@ -249,7 +288,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
     * Calculate a hash that should match {@link KeyShortcut#keysHash()}.
     * 
     * @param evt
-    * @return 
+    * @return
     * @see KeyShortcut#keysHash()
     */
    private int calculateKeyHash(int modifiers, int keyCode)
@@ -306,7 +345,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
             shortcuts.remove(shortcut);
          }
       }
-      
+
    }
 
 }

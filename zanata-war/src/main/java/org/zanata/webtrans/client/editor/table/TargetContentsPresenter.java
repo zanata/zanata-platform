@@ -37,8 +37,11 @@ import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
 import org.zanata.webtrans.client.events.EnableModalNavigationEventHandler;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.InsertStringInEditorHandler;
+import org.zanata.webtrans.client.events.KeyShortcutEvent;
+import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RequestValidationEventHandler;
@@ -47,7 +50,9 @@ import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
+import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.ShortcutContext;
+import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.presenter.SourceContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
@@ -83,6 +88,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private final EventBus eventBus;
    private final TableEditorMessages messages;
    private final SourceContentsPresenter sourceContentsPresenter;
+   private final KeyShortcutPresenter keyShortcutPresenter;
    private final UserSessionService sessionService;
    private final UserConfigHolder configHolder;
 
@@ -97,7 +103,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private int currentEditorIndex = NO_OPEN_EDITOR;
    private ArrayList<ToggleEditor> currentEditors;
    private TransUnitsEditModel cellEditor;
-
    private boolean isModalNavEnabled;
 
    private final Identity identity;
@@ -105,7 +110,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private final CachingDispatchAsync dispatcher;
 
    @Inject
-   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final CachingDispatchAsync dispatcher, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final UserSessionService sessionService, UserConfigHolder configHolder, WorkspaceContext workspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel)
+   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, final CachingDispatchAsync dispatcher, final Identity identity, final EventBus eventBus, final TableEditorMessages messages, final SourceContentsPresenter sourceContentsPresenter, final UserSessionService sessionService, UserConfigHolder configHolder, WorkspaceContext workspaceContext, Scheduler scheduler, ValidationMessagePanelDisplay validationMessagePanel, final KeyShortcutPresenter keyShortcutPresenter)
    {
       this.displayProvider = displayProvider;
       this.eventBus = eventBus;
@@ -118,6 +123,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       this.sessionService = sessionService;
       this.identity = identity;
       this.dispatcher = dispatcher;
+      this.keyShortcutPresenter = keyShortcutPresenter;
 
       checkKey = new CheckKeyImpl(ShortcutContext.Edit);
       eventBus.addHandler(UserConfigChangeEvent.getType(), this);
@@ -126,6 +132,54 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
       eventBus.addHandler(TransUnitEditEvent.getType(), this);
       eventBus.addHandler(EnableModalNavigationEvent.getType(), this);
+
+      KeyShortcutEventHandler copyTM1Handler = new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            eventBus.fireEvent(new TransMemoryShortcutCopyEvent(0));
+         }
+      };
+
+      KeyShortcutEventHandler copyTM2Handler = new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            eventBus.fireEvent(new TransMemoryShortcutCopyEvent(1));
+         }
+      };
+
+      KeyShortcutEventHandler copyTM3Handler = new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            eventBus.fireEvent(new TransMemoryShortcutCopyEvent(2));
+         }
+      };
+
+      KeyShortcutEventHandler copyTM4Handler = new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            eventBus.fireEvent(new TransMemoryShortcutCopyEvent(3));
+         }
+      };
+
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_1, ShortcutContext.Edit, messages.copyFromTM("1"), copyTM1Handler));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_1_NUM, ShortcutContext.Edit, messages.copyFromTM("1"), copyTM1Handler, false));
+
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_2, ShortcutContext.Edit, messages.copyFromTM("2"), copyTM2Handler));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_2_NUM, ShortcutContext.Edit, messages.copyFromTM("2"), copyTM2Handler, false));
+
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_3, ShortcutContext.Edit, messages.copyFromTM("3"), copyTM3Handler));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_3_NUM, ShortcutContext.Edit, messages.copyFromTM("3"), copyTM3Handler, false));
+      
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_4, ShortcutContext.Edit, messages.copyFromTM("4"), copyTM4Handler));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_4_NUM, ShortcutContext.Edit, messages.copyFromTM("4"), copyTM4Handler, false));
    }
 
    private ToggleEditor getCurrentEditor()
@@ -145,6 +199,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          currentDisplay.setToView();
          currentDisplay.showButtons(false);
       }
+      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, false);
+      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
    }
 
    private void fireTransUnitEditAction()
@@ -162,6 +218,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          }
       });
    }
+
    public void showEditors(int rowIndex, int editorIndex)
    {
       Log.debug("enter show editor with editor index:" + editorIndex + " current editor index:" + currentEditorIndex);
@@ -174,9 +231,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          editor.clearTranslatorList();
          validate(editor);
       }
-      
+      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, true);
+      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, false);
+
       fireTransUnitEditAction();
-      
+
       if (configHolder.isDisplayButtons())
       {
          currentDisplay.showButtons(true);
@@ -399,6 +458,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       editor.setViewMode(ViewMode.EDIT);
       editor.autoSize();
       editor.setFocus();
+
+      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, true);
+      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, false);
+
       eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
    }
 
@@ -458,6 +521,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
             editor.setViewMode(ToggleEditor.ViewMode.EDIT);
             validate(editor);
          }
+         keyShortcutPresenter.setContextActive(ShortcutContext.Edit, true);
+         keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, false);
       }
    }
 
@@ -540,7 +605,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
       else if (checkKey.isUserTyping() && checkKey.isEnterKey())
       {
-         //because enter itself will increase one line
+         // because enter itself will increase one line
          editor.autoSizePlusOne();
       }
       else if (checkKey.isUserTyping())
