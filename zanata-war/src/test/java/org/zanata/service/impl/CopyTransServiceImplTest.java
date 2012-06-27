@@ -264,8 +264,8 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       HLocale deLang = localeService.getByLocaleId("de");
       HTextFlow tf = newDoc.getTextFlows().get(0);
 
-      assertThat((Collection)tf.getTargets().get(asLang.getId()).getContents(), empty());
-      assertThat((Collection)tf.getTargets().get(deLang.getId()).getContents(), empty());
+      assertThat(tf.getTargets().get(asLang.getId()).getContents(), Matchers.<String>empty());
+      assertThat(tf.getTargets().get(deLang.getId()).getContents(), Matchers.<String>empty());
    }
 
    @Test
@@ -431,8 +431,8 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       HLocale deLang = localeService.getByLocaleId("de");
       HTextFlow tf = newDoc.getTextFlows().get(0);
 
-      assertThat((Collection)tf.getTargets().get(asLang.getId()).getContents(), empty());
-      assertThat((Collection)tf.getTargets().get(deLang.getId()).getContents(), empty());
+      assertThat(tf.getTargets().get(asLang.getId()).getContents(), Matchers.<String>empty());
+      assertThat(tf.getTargets().get(deLang.getId()).getContents(), Matchers.<String>empty());
    }
 
    @Test
