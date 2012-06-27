@@ -87,17 +87,16 @@ import com.google.common.base.Objects;
 @Entity
 @NamedQueries({
    @NamedQuery(name = "HTextFlowTarget.findLatestEquivalentTranslations",
-               query = "select tft, tfExample, max(tft.lastChanged) " +
-                       "from HTextFlowTarget tft, HTextFlow tfExample " +
-                       "left join fetch tft.textFlow " +
+               query = "select match, textFlow " +
+                       "from HTextFlowTarget match, HTextFlow textFlow " +
+                       "left join fetch match.textFlow " +
                        "where " +
-                       "tfExample.resId = tft.textFlow.resId " +
-                       "and tfExample.document = :document " +
-                       "and tfExample.contentHash = tft.textFlow.contentHash " +
-                       "and tft.textFlow.document.docId = :docId " +
-                       "and tft.locale = :locale " +
-                       "and tft.state = :state " +
-                       "group by tft.textFlow.contentHash, tft.textFlow.resId")
+                       "textFlow.document = :document " +
+                       "and textFlow.contentHash = match.textFlow.contentHash " +
+                       "and match.locale = :locale " +
+                       "and match.state = :state " +
+                       "and match.textFlow != textFlow " +       // Do not reuse its own translations
+                       "order by textFlow.id, match.lastChanged desc")
 })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed

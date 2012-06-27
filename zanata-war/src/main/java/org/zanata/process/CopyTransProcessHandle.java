@@ -20,51 +20,39 @@
  */
 package org.zanata.process;
 
-import org.jboss.seam.annotations.Logger;
-import org.jboss.seam.annotations.async.Asynchronous;
-import org.jboss.seam.log.Log;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.zanata.common.CopyTransOptions;
+import org.zanata.model.HProjectIteration;
 
 /**
- * Contains logic that should be executed asynchronously in the background.
- * 
+ * Process Handle for a background copy trans.
+ *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public abstract class BackgroundProcess<H extends ProcessHandle>
+@RequiredArgsConstructor
+public class CopyTransProcessHandle extends ProcessHandle
 {
 
-   @Logger
-   private Log log;
+   @Getter
+   private final HProjectIteration projectIteration;
 
-   /**
-    * Starts the process.
-    * 
-    * @param handle The handle to be used for the running process.
-    */
-   @Asynchronous
-   public void startProcess(H handle)
-   {
-      // make sure the process handle is not being reused
-      if( handle.isStarted() || handle.isFinished() )
-      {
-         throw new RuntimeException("Process handles cannot be reused.");
-      }
+   @Getter
+   private final String triggeredBy;
 
-      handle.start();
-      
-      try
-      {
-         runProcess(handle);
-      }
-      catch( Throwable t )
-      {
-         // TODO add the throwable to the handle
-         log.error("Exception with long running process.", t);
-      }
-      finally
-      {
-         handle.finish();
-      }
-   }
-   
-   protected abstract void runProcess(H handle) throws Exception;
+   @Getter
+   private final CopyTransOptions options;
+
+   @Getter
+   @Setter
+   private int documentsProcessed;
+
+   @Getter
+   @Setter
+   private String cancelledBy;
+
+   @Getter
+   @Setter
+   private long cancelledTime;
 }

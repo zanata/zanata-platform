@@ -388,6 +388,13 @@
     <param name="projectSlug" value="#{viewAllStatusAction.projectSlug}" />
     <param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
     <action execute="#{viewAllStatusAction.validateIteration}"/>
+
+    <navigation from-action="#{viewAllStatusAction.startCopyTrans}">
+      <redirect view-id="/iteration/view.xhtml" include-page-params="true"/>
+    </navigation>
+    <navigation from-action="#{viewAllStatusAction.cancelCopyTrans}">
+      <redirect view-id="/iteration/view.xhtml" include-page-params="true"/>
+    </navigation>
   </page>
   
   <page view-id="/iteration/files.xhtml">
@@ -425,7 +432,6 @@
     </navigation>
   </page>
 
-
     <page view-id="/iteration/request_to_join_group.xhtml">
         <param name="emailType" value="#{sendEmail.emailType}" />
         <param name="versionGroupSlug" value="#{versionGroupJoinAction.slug}" />
@@ -454,6 +460,24 @@
             </rule>
         </navigation>
     </page>
+
+  <page view-id="/iteration/copy_trans.xhtml">
+      <param name="projectSlug" value="#{copyTransAction.projectSlug}" />
+      <param name="iterationSlug" value="#{copyTransAction.iterationSlug}" />
+
+      <navigation from-action="#{copyTransAction.startCopyTrans}">
+        <redirect view-id="/iteration/view.xhtml" include-page-params="true">
+          <param name="projectSlug" value="#{copyTransAction.projectSlug}" />
+          <param name="iterationSlug" value="#{copyTransAction.iterationSlug}" />
+        </redirect>
+      </navigation>
+      <navigation from-action="#{copyTransAction.cancel}">
+        <redirect view-id="/iteration/view.xhtml" include-page-params="true">
+          <param name="projectSlug" value="#{copyTransAction.projectSlug}" />
+          <param name="iterationSlug" value="#{copyTransAction.iterationSlug}" />
+        </redirect>
+      </navigation>
+  </page>
   
 
   <!-- Language -->

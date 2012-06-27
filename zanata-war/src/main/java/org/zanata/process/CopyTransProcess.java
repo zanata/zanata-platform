@@ -20,51 +20,26 @@
  */
 package org.zanata.process;
 
-import org.jboss.seam.annotations.Logger;
-import org.jboss.seam.annotations.async.Asynchronous;
-import org.jboss.seam.log.Log;
+import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
+import org.zanata.service.CopyTransService;
 
 /**
- * Contains logic that should be executed asynchronously in the background.
- * 
+ * Performs copy trans as a background process.
+ *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public abstract class BackgroundProcess<H extends ProcessHandle>
+@Name("copyTransProcess")
+@AutoCreate
+public class CopyTransProcess extends BackgroundProcess<CopyTransProcessHandle>
 {
+   @In
+   private CopyTransService copyTransServiceImpl;
 
-   @Logger
-   private Log log;
-
-   /**
-    * Starts the process.
-    * 
-    * @param handle The handle to be used for the running process.
-    */
-   @Asynchronous
-   public void startProcess(H handle)
+   @Override
+   protected void runProcess(CopyTransProcessHandle handle) throws Exception
    {
-      // make sure the process handle is not being reused
-      if( handle.isStarted() || handle.isFinished() )
-      {
-         throw new RuntimeException("Process handles cannot be reused.");
-      }
-
-      handle.start();
-      
-      try
-      {
-         runProcess(handle);
-      }
-      catch( Throwable t )
-      {
-         // TODO add the throwable to the handle
-         log.error("Exception with long running process.", t);
-      }
-      finally
-      {
-         handle.finish();
-      }
+      copyTransServiceImpl.copyTransForIteration( handle.getProjectIteration(), handle );
    }
-   
-   protected abstract void runProcess(H handle) throws Exception;
 }

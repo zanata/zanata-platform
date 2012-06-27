@@ -39,7 +39,7 @@ public class ProjectIterationZipFileAction
       if( this.zipFilePrepHandle != null && this.zipFilePrepHandle.isInProgress() )
       {
          // Cancel any other processes
-         this.zipFilePrepHandle.setShouldStop(true);
+         this.zipFilePrepHandle.stop();
       }
       
       // Build a background process Handle
@@ -61,7 +61,7 @@ public class ProjectIterationZipFileAction
    {
       if( this.zipFilePrepHandle.isInProgress() )
       {
-         this.zipFilePrepHandle.setShouldStop(true);
+         this.zipFilePrepHandle.stop();
       }
    }
    

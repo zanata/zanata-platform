@@ -85,6 +85,11 @@
     <to last="true">/iteration/request_to_join_group.seam\?emailType=request_to_join_group&amp;versionGroupSlug=$1&amp;projectSlug=$2&amp;iterationSlug=$3</to>
   </rule>
 
+  <rule>
+    <from casesensitive="true">^/iteration/copytrans/([^/]+)/(.+)$</from>
+    <to last="true">/iteration/copy_trans.seam\?projectSlug=$1&amp;iterationSlug=$2</to>
+  </rule>
+
   <!-- zanata.xml -->
   <rule>
     <from casesensitive="true">^/project/view/([^/]+)/iter/([^/]+)/config/?$</from>
@@ -292,8 +297,8 @@
     <to>$1/project/list$2</to>
   </outbound-rule>
   <outbound-rule>
-    <from>^(/.+)?/iteration/view.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)$</from>
-    <to>$1/iteration/view/$2/$3</to>
+    <from>^(/.+)?/iteration/view.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)(&amp;(.+))?$</from>
+    <to>$1/iteration/view/$2/$3?$5</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/iteration/files.seam\?project=([^&amp;]+)&amp;iteration=([^&amp;]+)&amp;localeId=([^&amp;]+)$</from>
@@ -304,6 +309,10 @@
     <to>$1/iteration/edit/$2/$3</to>
   </outbound-rule>
 
+  <outbound-rule>
+    <from>^(/.+)?/iteration/copy_trans.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)(&amp;(.+))?$</from>
+    <to>$1/iteration/copytrans/$2/$3?$5</to>
+  </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/account/login.seam(.+)?$</from>
     <to>$1/account/sign_in$2</to>

@@ -20,51 +20,17 @@
  */
 package org.zanata.process;
 
-import org.jboss.seam.annotations.Logger;
-import org.jboss.seam.annotations.async.Asynchronous;
-import org.jboss.seam.log.Log;
-
 /**
- * Contains logic that should be executed asynchronously in the background.
- * 
+ * Listener interface for background process events.
+ *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public abstract class BackgroundProcess<H extends ProcessHandle>
+public interface BackgroundProcessListener<T extends ProcessHandle>
 {
-
-   @Logger
-   private Log log;
-
    /**
-    * Starts the process.
-    * 
-    * @param handle The handle to be used for the running process.
+    * Invoked when the process is finished.
+    *
+    * @param handle The process' handle.
     */
-   @Asynchronous
-   public void startProcess(H handle)
-   {
-      // make sure the process handle is not being reused
-      if( handle.isStarted() || handle.isFinished() )
-      {
-         throw new RuntimeException("Process handles cannot be reused.");
-      }
-
-      handle.start();
-      
-      try
-      {
-         runProcess(handle);
-      }
-      catch( Throwable t )
-      {
-         // TODO add the throwable to the handle
-         log.error("Exception with long running process.", t);
-      }
-      finally
-      {
-         handle.finish();
-      }
-   }
-   
-   protected abstract void runProcess(H handle) throws Exception;
+   void onComplete( T handle );
 }

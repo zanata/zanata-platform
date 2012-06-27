@@ -1,0 +1,114 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                template="../WEB-INF/layout/template.xhtml">
+
+    <ui:define name="page_title">Copy Trans for #{viewAllStatusAction.projectSlug}:#{viewAllStatusAction.iterationSlug}</ui:define>
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function actionSelected(dropDown, cellId)
+            {
+                var idx = dropDown.selectedIndex;
+                var which = dropDown.options[idx].value;
+
+                if( which == 'REJECT' )
+                {
+                    jQuery('#' + cellId).css('background-color', 'red');
+                }
+                else if( which == 'DOWNGRADE_TO_FUZZY' )
+                {
+                    jQuery('#' + cellId).css('background-color', '#ffc000');
+                }
+                else
+                {
+                    jQuery('#' + cellId).css('background-color', 'white');
+                }
+            }
+
+            // initialize drop down colors
+            jQuery( function() {
+                actionSelected(#{rich:element('contextMismatchAction')}, 'contextMismatchCell');
+                actionSelected(#{rich:element('documentIdMismatchAction')}, 'documentIdMismatchCell');
+            });
+        </script>
+    </ui:define>
+
+    <ui:define name="center_content">
+        <a4j:form>
+            <a4j:outputPanel id="copyTransOptionsPanel" rendered="#{not copyTransAction.copyTransRunning}">
+
+                <rich:panel>
+
+                    <table border="0" class="copy_trans_options_table" width="100%">
+                        <tr>
+                            <th>Condition</th>
+                            <th>Action</th>
+                        </tr>
+                        <tr>
+                            <td>1. On Content mismatch</td>
+                            <td class="reject_action">
+                                <h:selectOneMenu disabled="#{true}">
+                                    <f:selectItem itemLabel="Reject" itemValue="1"/>
+                                </h:selectOneMenu>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2. On Context mismatch (Res Id, msgctx)</td>
+                            <td id="contextMismatchCell">
+                                <h:selectOneMenu id="contextMismatchAction"
+                                                 value="#{copyTransAction.contextMismatchAction}"
+                                                 onchange="actionSelected(this, 'contextMismatchCell');">
+                                    <f:selectItem itemLabel="Reject" itemValue="REJECT"/>
+                                    <f:selectItem itemLabel="Downgrade to Fuzzy, try next rule" itemValue="DOWNGRADE_TO_FUZZY"/>
+                                    <f:selectItem itemLabel="Don't care, try next rule" itemValue="IGNORE"/>
+                                </h:selectOneMenu>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3. On Document Id mismatch (Document name and path) </td>
+                            <td id="documentIdMismatchCell">
+                                <h:selectOneMenu id="documentIdMismatchAction"
+                                                 value="#{copyTransAction.documentIdMismatchAction}"
+                                                 onchange="actionSelected(this, 'documentIdMismatchCell');">
+                                    <f:selectItem itemLabel="Reject" itemValue="REJECT"/>
+                                    <f:selectItem itemLabel="Downgrade to Fuzzy, try next rule" itemValue="DOWNGRADE_TO_FUZZY"/>
+                                    <f:selectItem itemLabel="Don't care, try next rule" itemValue="IGNORE"/>
+                                </h:selectOneMenu>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4. Otherwise</td>
+                            <td class="approved_action">Approved</td>
+                        </tr>
+                    </table>
+
+                </rich:panel>
+
+                <h:commandButton value="Start" action="#{copyTransAction.startCopyTrans}"/>
+                <h:commandButton value="Cancel" action="#{copyTransAction.cancel}"/>
+            </a4j:outputPanel>
+        </a4j:form>
+
+        <rich:panel rendered="#{copyTransAction.copyTransRunning}">
+            A Translation Copy has already been started by #{copyTransManager.getCopyTransProcessHandle( copyTransAction.projectIteration ).triggeredBy}
+            for version <b>#{copyTransAction.projectIteration.slug}</b> of project <b>#{copyTransAction.projectIteration.project.name}</b>.
+            <br/>
+            <s:link view="/iteration/view.xhtml" value="Please click here to view progress.">
+                <f:param name="projectSlug" value="#{copyTransAction.projectSlug}"/>
+                <f:param name="iterationSlug" value="#{copyTransAction.iterationSlug}"/>
+            </s:link>
+        </rich:panel>
+
+    </ui:define>
+
+    <ui:define name="left_content">
+    </ui:define>
+
+</ui:composition>
