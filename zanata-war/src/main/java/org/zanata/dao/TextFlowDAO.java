@@ -21,6 +21,7 @@
 package org.zanata.dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -54,8 +55,12 @@ import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
+import org.zanata.util.HTextFlowPosComparator;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
+
+import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -65,6 +70,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 {
+   //TODO replace all getSession() code to use entityManager
    private static final Version LUCENE_VERSION = Version.LUCENE_29;
 
    @In
@@ -237,7 +243,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<HTextFlow> getTransUnitList(Long documentId)
+   public List<HTextFlow> getTextFlows(Long documentId)
    {
       Query q = getSession().createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos");
       q.setParameter("id", documentId);
@@ -288,20 +294,18 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
     * @param hLocale locale
     * @return a list of HTextFlow that has no translation for given locale.
     */
-   public List<HTextFlow> getAllUntranslatedTextFlowByDocumentId(Long documentId, HLocale hLocale)
+   public List<HTextFlow> getAllUntranslatedTextFlowByDocumentId(DocumentId documentId, HLocale hLocale)
    {
       // @formatter:off
       String query = "select distinct tf from HTextFlow tf left join tf.targets " +
             "where tf.obsolete = 0 and tf.document.id = :docId and " +
             "(:locale not in indices(tf.targets) or exists " + //text flow does not have a target for given locale
-            "  (select tft.id from HTextFlowTarget tft where tft.textFlow.id = tf.id and tft.locale = :locale and " +
-            "     (size(tft.contents) = 0 or tft.state = :contentState)" +
-            "  )" + //text flow has target but target has either empty contents or content state is NEW
+            "  (select tft.id from HTextFlowTarget tft where tft.textFlow.id = tf.id and tft.locale = :locale and tft.state = :contentState)" + //text flow has target but target has either empty contents or content state is NEW
             ") order by tf.pos";
       // @formatter:on
 
       Query textFlowQuery = getSession().createQuery(query);
-      textFlowQuery.setParameter("docId", documentId);
+      textFlowQuery.setParameter("docId", documentId.getId());
       textFlowQuery.setParameter("locale", hLocale);
       textFlowQuery.setParameter("contentState", ContentState.New);
       textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getAllUntranslatedTextFlowByDocId");
@@ -310,6 +314,51 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       List<HTextFlow> result = textFlowQuery.list();
       log.debug("doc {} has {} untranslated textFlow for locale {}",
             new Object [] { documentId, result.size(), hLocale.getLocaleId()});
+      return result;
+   }
+
+   public List<HTextFlow> getTextFlowsByStatus(DocumentId documentId, HLocale hLocale, boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated)
+   {
+      List<HTextFlow> result = Lists.newArrayList();
+      List<HTextFlow> untranslated = Lists.newArrayList();
+      List<HTextFlow> translated = Lists.newArrayList();
+
+      if (filterUntranslated)
+      {
+         //hard part. leave it alone.
+         untranslated = getAllUntranslatedTextFlowByDocumentId(documentId, hLocale);
+         result.addAll(untranslated);
+      }
+      if (filterNeedReview || filterTranslated)
+      {
+         // @formatter:off
+         String queryString = "select distinct tf from HTextFlow tf inner join tf.targets as tft " +
+               "where tf.document.id = :docId and tft.locale = :locale and tft.state in (:contentStates) " +
+               "order by tf.pos";
+         // @formatter:on
+         List<ContentState> contentStates = Lists.newArrayList();
+         if (filterNeedReview)
+         {
+            contentStates.add(ContentState.NeedReview);
+         }
+         if (filterTranslated)
+         {
+            contentStates.add(ContentState.Approved);
+         }
+         Query query = getSession().createQuery(queryString);
+         query.setParameter("docId", documentId.getId());
+         query.setParameter("locale", hLocale);
+         query.setParameterList("contentStates", contentStates);
+         query.setCacheable(true).setComment("TextFlowDAO.getTextFlowsByStatus");
+
+         translated = query.list();
+         result.addAll(translated);
+      }
+
+      if (!untranslated.isEmpty() && !translated.isEmpty())
+      {
+         Collections.sort(result, HTextFlowPosComparator.INSTANCE);
+      }
       return result;
    }
 }

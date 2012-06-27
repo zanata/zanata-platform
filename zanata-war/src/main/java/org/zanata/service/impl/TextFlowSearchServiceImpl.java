@@ -21,6 +21,7 @@
 package org.zanata.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -39,10 +40,8 @@ import org.hibernate.search.jpa.FullTextQuery;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
@@ -50,6 +49,7 @@ import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.hibernate.search.ConfigurableNgramAnalyzer;
 import org.zanata.hibernate.search.IndexFieldLabels;
+import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
@@ -58,7 +58,8 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
-import org.zanata.webtrans.shared.util.TextFlowFilter;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -80,9 +81,6 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
 
    @In
    DocumentDAO documentDAO;
-
-   @In
-   TextFlowFilter textFlowFilterImpl;
 
    @In
    private FullTextEntityManager entityManager;
@@ -129,14 +127,14 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       if (!constraints.isSearchInSource() && !constraints.isSearchInTarget())
       {
          //searching nowhere
-         return new ArrayList<HTextFlowTarget>();
+         return Collections.emptyList();
       }
 
       // FIXME remove .trim() and zero-length check when ngram analyzer is updated to respect leading and trailing whitespace
       int searchLength = Math.min(3, constraints.getSearchString().trim().length());
       if (searchLength == 0)
       {
-         return new ArrayList<HTextFlowTarget>();
+         return Collections.emptyList();
       }
       Analyzer ngramAnalyzer = new ConfigurableNgramAnalyzer(searchLength, !constraints.isCaseSensitive());
 
@@ -231,7 +229,126 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
    @Override
    public List<HTextFlow> findTextFlows(WorkspaceId workspace, DocumentId doc, FilterConstraints constraints)
    {
-      // TODO Implement findTextFlows within document
-      return null;
+      //TODO this method has high percentage of duplication from the above method. Refactor.
+      LocaleId localeId = workspace.getLocaleId();
+      String projectSlug = workspace.getProjectIterationId().getProjectSlug();
+      String iterationSlug = workspace.getProjectIterationId().getIterationSlug();
+
+      localeServiceImpl.validateLocaleByProjectIteration(localeId, projectSlug, iterationSlug);
+
+      if (!constraints.isSearchInSource() && !constraints.isSearchInTarget())
+      {
+         //searching nowhere
+         return Collections.emptyList();
+      }
+
+      // FIXME remove .trim() and zero-length check when ngram analyzer is updated to respect leading and trailing whitespace
+      int searchLength = Math.min(3, constraints.getSearchString().trim().length());
+      if (searchLength == 0)
+      {
+         return Collections.emptyList();
+      }
+      Analyzer ngramAnalyzer = new ConfigurableNgramAnalyzer(searchLength, !constraints.isCaseSensitive());
+
+      String[] searchFields = (constraints.isCaseSensitive() ? IndexFieldLabels.CONTENT_FIELDS_CASE_PRESERVED : IndexFieldLabels.CONTENT_FIELDS_CASE_FOLDED);
+
+      Query searchPhraseQuery;
+      QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_29, searchFields, ngramAnalyzer);
+      try
+      {
+         searchPhraseQuery = parser.parse("\"" + QueryParser.escape(constraints.getSearchString()) + "\"");
+      }
+      catch (ParseException e)
+      {
+         throw new ZanataServiceException("Failed to parse query", e);
+      }
+
+      TermQuery projectQuery = new TermQuery(new Term(IndexFieldLabels.PROJECT_FIELD, projectSlug));
+      TermQuery iterationQuery = new TermQuery(new Term(IndexFieldLabels.ITERATION_FIELD, iterationSlug));
+      TermQuery localeQuery = new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD, localeId.getId()));
+      HDocument hDocument = documentDAO.getById(doc.getId());
+      TermQuery documentQuery = new TermQuery(new Term(IndexFieldLabels.DOCUMENT_ID_FIELD, hDocument.getDocId()));
+
+      BooleanQuery sourceQuery = new BooleanQuery();
+      sourceQuery.add(projectQuery, Occur.MUST);
+      sourceQuery.add(iterationQuery, Occur.MUST);
+      sourceQuery.add(searchPhraseQuery, Occur.MUST);
+      sourceQuery.add(documentQuery, Occur.MUST);
+
+      List<HTextFlow> resultList = Lists.newArrayList();
+      if (constraints.isSearchInTarget())
+      {
+         BooleanQuery targetQuery = (BooleanQuery) sourceQuery.clone();
+         targetQuery.add(localeQuery, Occur.MUST);
+         if (!constraints.isIncludeApproved())
+         {
+            TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.Approved.toString()));
+            targetQuery.add(approvedStateQuery, Occur.MUST_NOT);
+         }
+
+         if (!constraints.isIncludeFuzzy())
+         {
+            TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.NeedReview.toString()));
+            targetQuery.add(approvedStateQuery, Occur.MUST_NOT);
+         }
+
+         if (!constraints.isIncludeNew())
+         {
+            TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.New.toString()));
+            targetQuery.add(approvedStateQuery, Occur.MUST_NOT);
+         }
+
+         FullTextQuery ftQuery = entityManager.createFullTextQuery(targetQuery, HTextFlowTarget.class);
+         @SuppressWarnings("unchecked")
+         List<HTextFlowTarget> matchedTargets = (List<HTextFlowTarget>) ftQuery.getResultList();
+         log.info("got {} HTextFLowTarget results", matchedTargets.size());
+         List<HTextFlow> hTextFlows = Lists.transform(matchedTargets, new Function<HTextFlowTarget, HTextFlow>()
+         {
+            @Override
+            public HTextFlow apply(HTextFlowTarget target)
+            {
+               return target.getTextFlow();
+            }
+         });
+         resultList.addAll(hTextFlows);
+      }
+
+      if (constraints.isSearchInSource())
+      {
+         FullTextQuery ftQuery = entityManager.createFullTextQuery(sourceQuery, HTextFlow.class);
+         @SuppressWarnings("unchecked")
+         List<HTextFlow> matchedSources = (List<HTextFlow>) ftQuery.getResultList();
+         log.info("got {} HTextFLow results", matchedSources.size());
+         HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
+         for (HTextFlow hTextFlow : matchedSources)
+         {
+            if (!resultList.contains(hTextFlow))
+            {
+               HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale.getId());
+               if (isContentStateValid(hTextFlowTarget, constraints))
+               {
+                  resultList.add(hTextFlow);
+               }
+            }
+         }
+      }
+
+      return resultList;
    }
+
+   private static boolean isContentStateValid(HTextFlowTarget hTextFlowTarget, FilterConstraints constraints)
+   {
+      if (hTextFlowTarget == null)
+      {
+         return constraints.isIncludeNew();
+      }
+      else
+      {
+         ContentState state = hTextFlowTarget.getState();
+         return (constraints.isIncludeApproved() && state == ContentState.Approved) ||
+               (constraints.isIncludeFuzzy() && state == ContentState.NeedReview) ||
+               (constraints.isIncludeNew() && state == ContentState.New);
+      }
+   }
+
 }
