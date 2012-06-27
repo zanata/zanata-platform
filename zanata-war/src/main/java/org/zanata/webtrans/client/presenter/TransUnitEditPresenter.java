@@ -169,7 +169,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
 
    private void savePendingChangeBeforeShowingNewSelection()
    {
-      Log.info("saving pending change: " + targetContentsPresenter.getNewTargets() + " to :" + dataModel.getStaleSelection().debugString());
+      Log.debug("saving pending change: " + targetContentsPresenter.getNewTargets() + " to :" + dataModel.getStaleSelection().debugString());
       saveService.saveTranslation(dataModel.getStaleSelection(), targetContentsPresenter.getNewTargets(), ContentState.NeedReview, new TransUnitSaveService.SaveResultCallback()
       {
          @Override
@@ -178,6 +178,38 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
             dataModel.update(updatedTU);
             Log.info("pending change saved. now show selection.");
             showSelection();
+         }
+
+         @Override
+         public void onSaveFail()
+         {
+         }
+      });
+   }
+
+   public void goToPage(int pageNumber)
+   {
+      if (hasTargetContentsChanged())
+      {
+         savePendingChangeAndGoToPageNumber(pageNumber);
+      }
+      else
+      {
+         navigationController.gotoPage(pageNumber - 1, false);
+      }
+   }
+
+   private void savePendingChangeAndGoToPageNumber(final int pageNumber)
+   {
+      Log.debug("saving pending change: " + targetContentsPresenter.getNewTargets() + " to :" + dataModel.getStaleSelection().debugString());
+      saveService.saveTranslation(dataModel.getStaleSelection(), targetContentsPresenter.getNewTargets(), ContentState.NeedReview, new TransUnitSaveService.SaveResultCallback()
+      {
+         @Override
+         public void onSaveSuccess(TransUnit updatedTU)
+         {
+            dataModel.update(updatedTU);
+            Log.info("pending change saved. now got to page number" + pageNumber);
+            navigationController.gotoPage(pageNumber - 1, false);
          }
 
          @Override

@@ -31,6 +31,8 @@ import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
+import org.zanata.webtrans.client.events.PageChangeEvent;
+import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
@@ -122,6 +124,7 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
             navigationService.updateCurrentPageAndRowIndex(currentPageIndex, gotoRow);
             TransUnitId goToRowId = result.getUnits().get(gotoRow).getId();
             dataModel.selectById(goToRowId);
+            eventBus.fireEvent(new PageChangeEvent(navigationService.getCurrentPage()));
          }
       });
    }
@@ -136,6 +139,7 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
          public void onSuccess(GetTransUnitsNavigationResult result)
          {
             navigationService.init(result.getTransIdStateList(), result.getIdIndexList(), itemPerPage);
+            eventBus.fireEvent(new PageCountChangeEvent(navigationService.getPageCount()));
          }
       });
    }
@@ -194,7 +198,7 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
       if (page != navigationService.getCurrentPage() || forceReload)
       {
          GetTransUnitActionContext newContext = context.setOffset(context.getCount() * page).setTargetTransUnitId(null);
-         Log.info(pageIndex + " page context: " + newContext);
+         Log.info("page index: " + pageIndex + " page context: " + newContext);
          requestTransUnitsAndUpdatePageIndex(newContext);
       }
    }
@@ -203,13 +207,13 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
    {
       int page = normalizePageIndex(pageIndex);
       GetTransUnitActionContext newContext = context.setOffset(context.getCount() * page).setTargetTransUnitId(transUnitId);
-      Log.info(pageIndex + " page context: " + newContext);
+      Log.info("page index: " + pageIndex + " page context: " + newContext);
       requestTransUnitsAndUpdatePageIndex(newContext);
    }
 
    private int normalizePageIndex(int pageIndex)
    {
-      if (pageIndex < 0)
+      if (pageIndex <= 0)
       {
          return FIRST_PAGE;
       }
@@ -246,10 +250,10 @@ public class NavigationController implements HasPageNavigation, TransUnitUpdated
             rowIndex = 0;
             break;
          case LastEntry:
-            rowIndex = navigationService.lastPage();
+            rowIndex = navigationService.maxRowIndex();
             break;
          default:
-            Log.info("ignore unknown navigation type:" + navigationType);
+            Log.warn("ignore unknown navigation type:" + navigationType);
             return;
       }
       int targetPage = navigationService.getTargetPage(rowIndex);

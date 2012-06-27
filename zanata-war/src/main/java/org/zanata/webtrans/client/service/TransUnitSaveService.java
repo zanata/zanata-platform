@@ -27,6 +27,7 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
@@ -35,6 +36,7 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -48,13 +50,15 @@ public class TransUnitSaveService
    private final TableEditorMessages messages;
    private final EventBus eventBus;
    private final CachingDispatchAsync dispatcher;
+   private final Provider<UndoLink> undoLinkProvider;
 
    @Inject
-   public TransUnitSaveService(TableEditorMessages messages, EventBus eventBus, CachingDispatchAsync dispatcher)
+   public TransUnitSaveService(TableEditorMessages messages, EventBus eventBus, CachingDispatchAsync dispatcher, Provider<UndoLink> undoLinkProvider)
    {
       this.messages = messages;
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
+      this.undoLinkProvider = undoLinkProvider;
    }
 
    public void saveTranslation(final TransUnit old, List<String> newTargets, ContentState status, final SaveResultCallback callback)
@@ -62,7 +66,6 @@ public class TransUnitSaveService
       TransUnitUpdated.UpdateType updateType = status == ContentState.Approved ? TransUnitUpdated.UpdateType.WebEditorSave : TransUnitUpdated.UpdateType.WebEditorSaveFuzzy;
       final UpdateTransUnit updateTransUnit = new UpdateTransUnit(new TransUnitUpdateRequest(old.getId(), newTargets, status, old.getVerNum()), updateType);
       Log.info("about to save translation: " + updateTransUnit);
-      eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifySaving()));
       dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
       {
          @Override
@@ -81,7 +84,9 @@ public class TransUnitSaveService
             Log.info("update resulted TU: " + updatedTU.debugString());
             if (result.isSingleSuccess())
             {
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved()));
+               UndoLink undoLink = undoLinkProvider.get();
+               undoLink.prepareUndoFor(result);
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved(), undoLink));
                callback.onSaveSuccess(updatedTU);
             }
             else

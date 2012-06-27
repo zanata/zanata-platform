@@ -26,20 +26,20 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.editor.filter.TransFilterPresenter;
 import org.zanata.webtrans.client.editor.table.TableEditorPresenter;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.events.PageChangeEvent;
+import org.zanata.webtrans.client.events.PageChangeEventHandler;
+import org.zanata.webtrans.client.events.PageCountChangeEvent;
+import org.zanata.webtrans.client.events.PageCountChangeEventHandler;
 import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.shared.model.TransUnit;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.gen2.table.event.client.PageChangeEvent;
-import com.google.gwt.gen2.table.event.client.PageChangeHandler;
-import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
-import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TranslationEditorPresenter extends WidgetPresenter<TranslationEditorPresenter.Display>
+public class TranslationEditorPresenter extends WidgetPresenter<TranslationEditorPresenter.Display> implements PageChangeEventHandler, PageCountChangeEventHandler
 {
 
    public interface Display extends WidgetDisplay
@@ -100,36 +100,51 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
          @Override
          public void onValueChange(ValueChangeEvent<Integer> event)
          {
-            tableEditorPresenter.getDisplay().getTargetCellEditor().savePendingChange(true);
-            tableEditorPresenter.gotoPage(event.getValue() - 1, false);
+            transUnitEditPresenter.goToPage(event.getValue());
+//            tableEditorPresenter.getDisplay().getTargetCellEditor().savePendingChange(true);
+//            tableEditorPresenter.gotoPage(event.getValue() - 1, false);
          }
       }));
 
       // TODO this uses incubator's HandlerRegistration
-      tableEditorPresenter.addPageChangeHandler(new PageChangeHandler()
-      {
-         @Override
-         public void onPageChange(PageChangeEvent event)
-         {
-            display.getPageNavigation().setValue(event.getNewPage() + 1);
-         }
-      });
+//      tableEditorPresenter.addPageChangeHandler(new PageChangeHandler()
+//      {
+//         @Override
+//         public void onPageChange(PageChangeEvent event)
+//         {
+//            display.getPageNavigation().setValue(event.getNewPage() + 1);
+//         }
+//      });
+      registerHandler(eventBus.addHandler(PageChangeEvent.TYPE, this));
+      registerHandler(eventBus.addHandler(PageCountChangeEvent.TYPE, this));
 
       // TODO this uses incubator's HandlerRegistration
-      tableEditorPresenter.addPageCountChangeHandler(new PageCountChangeHandler()
-      {
-         @Override
-         public void onPageCountChange(PageCountChangeEvent event)
-         {
-            display.getPageNavigation().setPageCount(event.getNewPageCount());
-         }
-      });
+//      tableEditorPresenter.addPageCountChangeHandler(new PageCountChangeHandler()
+//      {
+//         @Override
+//         public void onPageCountChange(PageCountChangeEvent event)
+//         {
+//            display.getPageNavigation().setPageCount(event.getNewPageCount());
+//         }
+//      });
+   }
+
+   @Override
+   public void onPageChange(PageChangeEvent event)
+   {
+      display.getPageNavigation().setValue(event.getPageNumber());
+   }
+
+   @Override
+   public void onPageCountChange(PageCountChangeEvent event)
+   {
+      display.getPageNavigation().setPageCount(event.getPageCount());
    }
 
    @Override
    protected void onUnbind()
    {
-      tableEditorPresenter.unbind();
+//      tableEditorPresenter.unbind();
       transUnitNavigationPresenter.unbind();
    }
 
@@ -156,21 +171,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    public boolean isTransFilterFocused()
    {
       return transFilterPresenter.isFocused();
-   }
-
-   public void gotoCurrentRow()
-   {
-      tableEditorPresenter.gotoCurrentRow();
-   }
-
-   public void gotoPrevRow(boolean andEdit)
-   {
-      tableEditorPresenter.gotoPrevRow(andEdit);
-   }
-
-   public void gotoNextRow(boolean andEdit)
-   {
-      tableEditorPresenter.gotoNextRow(andEdit);
    }
 
    public void openEditorOnSelectedRow()

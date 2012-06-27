@@ -82,7 +82,7 @@ public class TransUnitNavigationService
       return curRowIndex;
    }
 
-   private int maxRowIndex()
+   public int maxRowIndex()
    {
       return totalCount - 1;
    }
@@ -193,5 +193,10 @@ public class TransUnitNavigationService
    public int lastPage()
    {
       return pageCount - 1;
+   }
+
+   public int getPageCount()
+   {
+      return pageCount;
    }
 }
