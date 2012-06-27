@@ -111,9 +111,9 @@ public class ZanataIdentity extends Identity
    @Observer("org.jboss.seam.preDestroyContext.SESSION")
    public void logout()
    {
-      if (Events.exists() && getPrincipal() != null)
+      if (Events.exists() && getCredentials() != null)
       {
-         Events.instance().raiseEvent(USER_LOGOUT_EVENT, getPrincipal().getName());
+         Events.instance().raiseEvent(USER_LOGOUT_EVENT, getCredentials().getUsername());
       }
       super.logout();
    }

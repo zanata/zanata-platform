@@ -77,7 +77,7 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
       WorkspaceId workspaceId = action.getWorkspaceId();
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
       String httpSessionId = ServletContexts.instance().getRequest().getSession().getId();
-      EditorClientId editorClientId = new EditorClientId(httpSessionId + ":" + generateEditorClientNum());
+      EditorClientId editorClientId = new EditorClientId(httpSessionId, generateEditorClientNum());
       workspace.addEditorClient(httpSessionId, editorClientId, person.getId());
       // Send EnterWorkspace event to clients
       EnterWorkspace event = new EnterWorkspace(editorClientId, person);

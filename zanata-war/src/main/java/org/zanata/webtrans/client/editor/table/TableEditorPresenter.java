@@ -62,6 +62,7 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.TransUnitNavigationService;
 import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationPanel;
+import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
 import org.zanata.webtrans.shared.auth.EditorClientId;
@@ -100,6 +101,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.Display> implements HasPageNavigation
 {
@@ -179,6 +181,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    private final TargetContentsPresenter targetContentsPresenter;
 
    private final UserSessionService sessionService;
+   private final Provider<UndoLink> undoLinkProvider;
 
    private UserConfigHolder configHolder;
    private Scheduler scheduler;
@@ -188,7 +191,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
    private final TransUnitNavigationService navigationService;
 
    @Inject
-   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourceContentsPresenter sourceContentsPresenter, final TargetContentsPresenter targetContentsPresenter, UserConfigHolder configHolder, Scheduler scheduler, TransUnitNavigationService navigationService, final UserSessionService sessionService)
+   public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages, final WorkspaceContext workspaceContext, final SourceContentsPresenter sourceContentsPresenter, final TargetContentsPresenter targetContentsPresenter, UserConfigHolder configHolder, Scheduler scheduler, TransUnitNavigationService navigationService, final UserSessionService sessionService, Provider<UndoLink> undoLinkProvider)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
@@ -202,6 +205,7 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
       this.navigationService = navigationService;
       this.sessionService = sessionService;
 
+      this.undoLinkProvider = undoLinkProvider;
    }
 
    /**
@@ -748,7 +752,9 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
                // FIXME check result.success
                if (result.isSingleSuccess())
                {
-                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyUpdateSaved()));
+                  UndoLink undoLink = undoLinkProvider.get();
+                  undoLink.prepareUndoFor(result);
+                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyUpdateSaved(), undoLink));
                }
                else
                {

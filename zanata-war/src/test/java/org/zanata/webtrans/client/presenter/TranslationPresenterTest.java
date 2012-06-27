@@ -358,8 +358,8 @@ public class TranslationPresenterTest
 
       // expect lookup translator list
       Map<EditorClientId, Person> participants = new HashMap<EditorClientId, Person>();
-      participants.put(new EditorClientId("sessionId1"), new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"));
-      participants.put(new EditorClientId("sessionId2"), new Person(new PersonId("smith"), "Smith Bob", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16"));
+      participants.put(new EditorClientId("sessionId1", 1), new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"));
+      participants.put(new EditorClientId("sessionId2", 1), new Person(new PersonId("smith"), "Smith Bob", "http://www.gravatar.com/avatar/smith@zanata.org?d=mm&s=16"));
       capturedTranslatorListRequest = new Capture<GetTranslatorList>();
       capturedTranslatorListRequestCallback = new Capture<AsyncCallback<GetTranslatorListResult>>();
 
@@ -374,13 +374,13 @@ public class TranslationPresenterTest
       mockWorkspaceUsersPresenter.dispatchChatAction(null, TEST_HAS_JONINED_WORKSPACE_MESSAGE, MESSAGE_TYPE.SYSTEM_MSG);
       expectLastCall();
 
-      mockWorkspaceUsersPresenter.addTranslator(new EditorClientId("sessionId1"), new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"), null);
+      mockWorkspaceUsersPresenter.addTranslator(new EditorClientId("sessionId1", 1), new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"), null);
       expectLastCall();
 
       // simulate enter workspace event
       EnterWorkspaceEvent event = createMock(EnterWorkspaceEvent.class);
 
-      expect(event.getEditorClientId()).andReturn(new EditorClientId("sessionId1"));
+      expect(event.getEditorClientId()).andReturn(new EditorClientId("sessionId1", 1));
       expect(event.getPerson()).andReturn(new Person(new PersonId("bob"), "Bob Smith", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16")).times(2);
 
       replay(mockDispatcher, mockDisplay, mockMessages, mockWorkspaceUsersPresenter, event);
@@ -399,9 +399,9 @@ public class TranslationPresenterTest
 
       // expect lookup translator list
       Map<EditorClientId, Person> participants = new HashMap<EditorClientId, Person>();
-      participants.put(new EditorClientId("sessionId1"), new Person(new PersonId("john"), "John Jones", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
-      participants.put(new EditorClientId("sessionId2"), new Person(new PersonId("jones"), "Jones John", "http://www.gravatar.com/avatar/jones@zanata.org?d=mm&s=16"));
-      participants.put(new EditorClientId("sessionId2"), new Person(new PersonId("jim"), "Jim Jones", "http://www.gravatar.com/avatar/jim@zanata.org?d=mm&s=16"));
+      participants.put(new EditorClientId("sessionId1", 1), new Person(new PersonId("john"), "John Jones", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
+      participants.put(new EditorClientId("sessionId2", 1), new Person(new PersonId("jones"), "Jones John", "http://www.gravatar.com/avatar/jones@zanata.org?d=mm&s=16"));
+      participants.put(new EditorClientId("sessionId2", 1), new Person(new PersonId("jim"), "Jim Jones", "http://www.gravatar.com/avatar/jim@zanata.org?d=mm&s=16"));
 
 
       capturedTranslatorListRequest = new Capture<GetTranslatorList>();
@@ -411,13 +411,13 @@ public class TranslationPresenterTest
       mockDisplay.setParticipantsTitle(TEST_USERS_ONLINE_MESSAGE);
       expectLastCall().once(); // once for now
 
-      mockWorkspaceUsersPresenter.removeTranslator(new EditorClientId("sessionId1"), new Person(new PersonId("john"), "John Jones", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
+      mockWorkspaceUsersPresenter.removeTranslator(new EditorClientId("sessionId1", 1), new Person(new PersonId("john"), "John Jones", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
       expectLastCall().once();
 
       // simulate enter workspace event
       ExitWorkspaceEvent event = createMock(ExitWorkspaceEvent.class);
 
-      expect(event.getEditorClientId()).andReturn(new EditorClientId("sessionId1"));
+      expect(event.getEditorClientId()).andReturn(new EditorClientId("sessionId1", 1));
       expect(event.getPerson()).andReturn(new Person(new PersonId("john"), "John Jones", "http://www.gravatar.com/avatar/john@zanata.org?d=mm&s=16"));
       expect(mockWorkspaceUsersPresenter.getTranslatorsSize()).andReturn(2);
 
@@ -502,7 +502,7 @@ public class TranslationPresenterTest
    private void setupDefaultMockExpectations()
    {
       Map<EditorClientId, PersonSessionDetails> people = new HashMap<EditorClientId, PersonSessionDetails>();
-      people.put(new EditorClientId("sessionId"), new PersonSessionDetails(new Person(new PersonId("jones"), "Joey Jones", "http://www.gravatar.com/avatar/joey@zanata.org?d=mm&s=16"), null));
+      people.put(new EditorClientId("sessionId", 1), new PersonSessionDetails(new Person(new PersonId("jones"), "Joey Jones", "http://www.gravatar.com/avatar/joey@zanata.org?d=mm&s=16"), null));
 
       setupDefaultMockExpectations(people);
    }

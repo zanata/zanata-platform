@@ -24,6 +24,7 @@ import org.zanata.action.ProjectIterationHome;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
+import org.zanata.model.HAccount;
 import org.zanata.model.HIterationProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
@@ -82,8 +83,24 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    public void exitWorkspace(String username)
    {
       String httpSessionId = getSessionId();
-      LOGGER.info("User logout: Removing {} from all workspaces, session: {}", username, httpSessionId);
-      HPerson person = accountDAO.getByUsername(username).getPerson();
+      if (httpSessionId == null)
+      {
+         LOGGER.debug("Logout: null session");
+         return;
+      }
+      LOGGER.info("Logout: Removing user {} from all workspaces, session: {}", username, httpSessionId);
+      String personName = "<unknown>";
+      String personEmail = "<unknown>";
+      HAccount account = accountDAO.getByUsername(username);
+      if (account != null)
+      {
+         HPerson person = account.getPerson();
+         if (person != null)
+         {
+            personName = person.getName();
+            personEmail = person.getEmail();
+         }
+      }
       ImmutableSet<TranslationWorkspace> workspaceSet = ImmutableSet.copyOf(workspaceMap.values());
       for (TranslationWorkspace workspace : workspaceSet)
       {
@@ -92,7 +109,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
          {
             LOGGER.info("Publishing ExitWorkspace event for user {} with editorClientId {} from workspace {}", new Object[] { username, editorClientId, workspace.getWorkspaceContext() });
             // Send GWT Event to client to update the userlist
-            ExitWorkspace event = new ExitWorkspace(editorClientId, new Person(new PersonId(username), person.getName(), gravatarServiceImpl.getUserImageUrl(16, person.getEmail())));
+            ExitWorkspace event = new ExitWorkspace(editorClientId, new Person(new PersonId(username), personName, gravatarServiceImpl.getUserImageUrl(16, personEmail)));
             workspace.publish(event);
          }
       }
