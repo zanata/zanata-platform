@@ -38,7 +38,9 @@ import org.zanata.model.HTextFlowTarget;
 public class ReindexAsyncBean
 {
 
-   private static final int BATCH_SIZE = 500;
+   //TODO make this configurable
+   private static final int BATCH_SIZE = 5000;
+
    @Logger
    private Log log;
 
@@ -174,16 +176,13 @@ public class ReindexAsyncBean
       ScrollableResults results = null;
       try
       {
-         // TODO try this, see how it affects reindexing time:
-         //session.flushToIndexes();
-//         session.getSearchFactory().optimize(clazz);
 
+         log.info("Setting manual-flush and ignore-cache for {0}", clazz);
          session.setFlushMode(FlushMode.MANUAL);
          session.setCacheMode(CacheMode.IGNORE);
 
-         results = session.createCriteria(clazz).setFetchSize(BATCH_SIZE).scroll(ScrollMode.FORWARD_ONLY);
-
          int index = 0;
+         results = session.createCriteria(clazz).setFirstResult(index).setMaxResults(BATCH_SIZE).scroll(ScrollMode.FORWARD_ONLY);
          while (results.next())
          {
             objectProgress++;
@@ -191,8 +190,11 @@ public class ReindexAsyncBean
             session.index(results.get(0)); // index each element
             if (index % BATCH_SIZE == 0)
             {
+               log.info("periodic flush and clear for {0} (index {1})", clazz, index);
                session.flushToIndexes(); // apply changes to indexes
                session.clear(); // clear since the queue is processed
+               results.close();
+               results = session.createCriteria(clazz).setFirstResult(index).setMaxResults(BATCH_SIZE).scroll(ScrollMode.FORWARD_ONLY);
             }
          }
          session.flushToIndexes(); // apply changes to indexes
