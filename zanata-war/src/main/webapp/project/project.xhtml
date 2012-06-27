@@ -44,7 +44,9 @@
                                    var="_iteration"
                                    columnClasses="iteration_grid_col"
                                    styleClass="noBorderTable">
-                        <a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}" class="version_link">
+                        <s:link view="/iteration/view.xhtml" styleClass="version_link">
+                            <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+                            <f:param name="iterationSlug" value="#{_iteration.slug}"/>
                             <div class="version_link_div">
                                 <div class="version_title">
                                     <h:outputText value="#{_iteration.slug}"/>
@@ -53,7 +55,7 @@
                                     Documents: #{_iteration.documents.size()}
                                 </div>
                             </div>
-                        </a>
+                        </s:link>
                     </rich:dataGrid>
                 </rich:tab>
             </rich:tabPanel>
@@ -72,7 +74,9 @@
                              var="_iteration"
                              columnClasses="iteration_grid_col"
                              styleClass="noBorderTable">
-                        <a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}" class="version_link">
+                        <s:link view="/iteration/view.xhtml" styleClass="version_link">
+                            <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+                            <f:param name="iterationSlug" value="#{_iteration.slug}"/>
                             <div class="version_link_div">
                                 <div class="version_title">
                                     <h:outputText value="#{_iteration.slug}"/>
@@ -81,7 +85,7 @@
                                     Documents: #{_iteration.documents.size()}
                                 </div>
                             </div>
-                        </a>
+                        </s:link>
                     </rich:dataGrid>
                 </rich:tab>
             </rich:tabPanel>
@@ -99,7 +103,9 @@
                              var="_iteration"
                              columnClasses="iteration_grid_col"
                              styleClass="noBorderTable">
-                        <a href="#{request.contextPath}/iteration/view/#{projectHome.instance.slug}/#{_iteration.slug}" class="version_link">
+                        <s:link view="/iteration/view.xhtml" styleClass="version_link">
+                            <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+                            <f:param name="iterationSlug" value="#{_iteration.slug}"/>
                             <div class="version_link_div">
                                 <div class="version_title">
                                     <h:outputText value="#{_iteration.slug}"/>
@@ -108,7 +114,7 @@
                                     Documents: #{_iteration.documents.size()}
                                 </div>
                             </div>
-                        </a>
+                        </s:link>
                     </rich:dataGrid>
                 </rich:tab>
             </rich:tabPanel>

@@ -385,7 +385,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
    }
 
    @Test
-   public void rejectMovedDocumentsAndMismatchingContext() throws Exception
+   public void rejectMovedDocumentsAndMismatchingContext()
    {
       CopyTransService copyTransService = seam.autowire(CopyTransServiceImpl.class);
       DocumentDAO documentDAO = seam.autowire(DocumentDAO.class);
@@ -436,7 +436,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
    }
 
    @Test
-   public void ignoreMovedDocumentsAndMismatchedContext() throws Exception
+   public void ignoreMovedDocumentsAndMismatchedContext()
    {
       CopyTransService copyTransService = seam.autowire(CopyTransServiceImpl.class);
       DocumentDAO documentDAO = seam.autowire(DocumentDAO.class);
@@ -496,7 +496,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
    }
 
    @Test
-   public void overwriteFuzzyWithApproved() throws Exception
+   public void overwriteFuzzyWithApproved()
    {
       CopyTransService copyTransService = seam.autowire(CopyTransServiceImpl.class);
       DocumentDAO documentDAO = seam.autowire(DocumentDAO.class);

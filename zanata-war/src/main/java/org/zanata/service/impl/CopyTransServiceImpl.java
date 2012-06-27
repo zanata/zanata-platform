@@ -22,6 +22,8 @@ package org.zanata.service.impl;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.hibernate.ScrollableResults;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -56,11 +58,14 @@ import org.zanata.service.LocaleService;
 public class CopyTransServiceImpl implements CopyTransService
 {
    @In
+   private EntityManager entityManager;
+
+   @In
    private LocaleService localeServiceImpl;
    
    @In
    private TextFlowTargetDAO textFlowTargetDAO;
-   
+
    @In
    private DocumentDAO documentDAO;
    
@@ -195,14 +200,13 @@ public class CopyTransServiceImpl implements CopyTransService
                            hTarget.setComment(hcomment);
                         }
                         hcomment.setComment(createComment(bestMatch.matchingTarget));
-                        textFlowTargetDAO.makePersistent(hTarget);
                         ++copyCount;
 
                         // manually flush
                         if( copyCount % DatabaseConstants.BATCH_SIZE == 0 )
                         {
-                           textFlowTargetDAO.flush();
-                           textFlowTargetDAO.clear();
+                           entityManager.flush();
+                           entityManager.clear();
                         }
                      }
                   }
@@ -224,93 +228,6 @@ public class CopyTransServiceImpl implements CopyTransService
       catch (Exception e)
       {
          log.warn("exception during copy trans", e);
-      }
-
-      ScrollableResults results = null;
-      
-      try
-      {
-         int copyCount = 0;
-
-         results = textFlowTargetDAO.findLatestEquivalentTranslations(document, locale);
-         HTextFlow originalTf = null;
-
-         while (results.next())
-         {
-            originalTf = (HTextFlow)results.get(1);
-            HTextFlowTarget hTarget = originalTf.getTargets().get( locale.getId() );
-
-            // Stop looking at this text flow altogether if there is an already approved translation
-            if (hTarget != null && hTarget.getState() == ContentState.Approved)
-            {
-               continue;
-            }
-
-            // Get the best match for the original text flow
-            CopyTransMatch bestMatch = this.findBestMatch(results, originalTf, options);
-
-            // Create the new translation (or overwrite non-approved ones)
-
-            if (hTarget == null)
-            {
-               hTarget = new HTextFlowTarget(originalTf, locale);
-               hTarget.setVersionNum(1);
-               originalTf.getTargets().put(locale.getId(), hTarget);
-            }
-            else
-            {
-               // increase the versionNum
-               hTarget.setVersionNum(hTarget.getVersionNum() + 1);
-            }
-
-            // if a best match is found
-            if( bestMatch != null )
-            {
-               // NB we don't touch creationDate
-               hTarget.setTextFlowRevision(originalTf.getRevision());
-               hTarget.setLastChanged(bestMatch.matchingTarget.getLastChanged());
-               hTarget.setLastModifiedBy(bestMatch.matchingTarget.getLastModifiedBy());
-               hTarget.setContents(bestMatch.matchingTarget.getContents());
-               hTarget.setState(bestMatch.targetState);
-               HSimpleComment hcomment = hTarget.getComment();
-               if (hcomment == null)
-               {
-                  hcomment = new HSimpleComment();
-                  hTarget.setComment(hcomment);
-               }
-               hcomment.setComment(createComment(bestMatch.matchingTarget));
-               textFlowTargetDAO.makePersistent(hTarget);
-               ++copyCount;
-
-               // manually flush
-               if( copyCount % DatabaseConstants.BATCH_SIZE == 0 )
-               {
-                  textFlowTargetDAO.flush();
-                  textFlowTargetDAO.clear();
-               }
-            }
-         }
-
-         log.info("copyTrans: {0} {1} translations for document \"{2}{3}\" ", copyCount, locale.getLocaleId(), document.getPath(), document.getName());
-      }
-      catch (Exception e)
-      {
-         log.warn("exception during copy trans", e);
-         try
-         {
-            //Transaction.instance().rollback();
-         }
-         catch (Exception i)
-         {
-            log.warn("exception during transaction rollback", i);
-         }
-      }
-      finally
-      {
-         if( results != null )
-         {
-            results.close();
-         }
       }
    }
 
