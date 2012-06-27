@@ -46,25 +46,50 @@
                               rendered="#{!reindexAction.reindexing}"
                               reRender="reindexPanel">
                 <rich:column width="270px" sortBy="#{clazz.className}" sortOrder="ASCENDING" selfSorted="false">
-                  <f:facet name="header">Class</f:facet>
+                  <f:facet name="header">Table</f:facet>
                   <h:outputText value="#{clazz.className}" />
                 </rich:column>
                 <rich:column width="auto" styleClass="centered">
-                  <f:facet name="header">Purge index</f:facet>
+                  <f:facet name="header">
+                    #{messages['jsf.manageSearch.purge']}
+                  </f:facet>
+                  <rich:toolTip showDelay="800" styleClass="leftalign">
+                    <p>#{messages['jsf.manageSearch.purge.Description']}</p>
+                    <p>#{messages['jsf.manageSearch.purge.ObsoletesOccupyDiskSpace']}</p>
+                    <p>#{messages['jsf.manageSearch.purge.RemoveByRunningOptimize']}</p>
+                  </rich:toolTip>
                   <h:selectBooleanCheckbox value="#{clazz.purge}" />
                 </rich:column>
                 <rich:column width="auto" styleClass="centered">
-                  <f:facet name="header">Reindex</f:facet>
+                  <f:facet name="header">
+                    #{messages['jsf.manageSearch.reindex']}
+                  </f:facet>
+                  <rich:toolTip showDelay="800" styleClass="leftalign">
+                    <p>#{messages['jsf.manageSearch.reindex.Description']}</p>
+                    <p>#{messages['jsf.manageSearch.reindex.OnlyWhenOutOfDate']}</p>
+                    <p>#{messages['jsf.manageSearch.reindex.AllRowsWillBeReindexed']}</p>
+                    <p>#{messages['jsf.manageSearch.reindex.IndexedRowsWillBeUpdated']}</p>
+                    <p><em>#{messages['jsf.manageSearch.reindex.TimeAndMemoryWarning']}</em></p>
+                    <p><em>#{messages['jsf.manageSearch.reindex.RunDuringOffPeak']}</em></p>
+                  </rich:toolTip>
                   <h:selectBooleanCheckbox value="#{clazz.reindex}" />
                 </rich:column>
                 <rich:column width="auto" styleClass="centered">
-                  <f:facet name="header">Optimize</f:facet>
+                  <f:facet name="header">
+                    #{messages['jsf.manageSearch.optimize']}
+                  </f:facet>
+                  <rich:toolTip showDelay="800" styleClass="leftalign">
+                    <p>#{messages['jsf.manageSearch.optimize.Description']}</p>
+                    <p>#{messages['jsf.manageSearch.optimize.RemovesObsoleteEntries']}</p>
+                    <p>#{messages['jsf.manageSearch.optimize.WillNotInfluenceIndexTime']}</p>
+                    <p><em>#{messages['jsf.manageSearch.optimize.TempFileWarning']}</em></p>
+                  </rich:toolTip>
                   <h:selectBooleanCheckbox value="#{clazz.optimize}" />
                 </rich:column>
               </rich:dataTable>
 
               <a4j:commandButton id="reindex"
-                  value="#{messages['jsf.ReindexFullTextSearchDatabase']}"
+                  value="#{messages['jsf.ManageSearch.PerformSelectedActions']}"
                   action="#{reindexAction.reindexDatabase}"
                   rendered="#{!reindexAction.reindexing}"
                   reRender="reindexPanel"/>
