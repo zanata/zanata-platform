@@ -332,11 +332,11 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Disable 'Replace' button until previews have been generated for all selected text flows")
    String requirePreviewDescription();
 
-   @DefaultMessage("Move to next entry")
-   String moveToNextEntry();
+   @DefaultMessage("Nagivate to next row")
+   String navigateToNextRow();
    
-   @DefaultMessage("Move to previous entry")
-   String moveToPreviousEntry();
+   @DefaultMessage("Navigate to previous row")
+   String navigateToPreviousRow();
 
    @DefaultMessage("Open editor in selected row")
    String openEditorInSelectedRow();

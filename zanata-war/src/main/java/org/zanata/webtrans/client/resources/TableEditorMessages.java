@@ -48,4 +48,16 @@ public interface TableEditorMessages extends Messages
    
    @DefaultMessage("Copy from translation memory {0}")
    String copyFromTM(String index);
+
+   @DefaultMessage("Move to next row")
+   String moveToNextRow();
+
+   @DefaultMessage("Move to previous row")
+   String moveToPreviousRow();
+   
+   @DefaultMessage("Move to next state entry")
+   String moveToNextStateEntry();
+
+   @DefaultMessage("Save as fuzzy")
+   String saveAsFuzzy();
 }

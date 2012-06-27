@@ -56,16 +56,16 @@ public class KeyShortcut
    public static final int KEY_4 = 52;
    public static final int KEY_4_NUM = 100;
    
-   public static final String KEY_UP = "keyup";
-   public static final String KEY_DOWN = "keydown";
-   public static final String KEY_PRESS = "keypress";
+   public static final String KEY_UP_EVENT = "keyup";
+   public static final String KEY_DOWN_EVENT = "keydown";
+   public static final String KEY_PRESS_EVENT = "keypress";
 
    private final int modifiers;
    private final int keyCode;
    private final ShortcutContext context;
    private String description;
    private final KeyShortcutEventHandler handler;
-   private final String keyAction;
+   private final String keyEvent;
    
    private final boolean displayInView;
    
@@ -98,14 +98,14 @@ public class KeyShortcut
     * 
     * @param keyAction defined if shortcut action to be triggered by KeyUp, or KeyDown. Default KeyDown.
     */
-   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, String keyAction, boolean displayInView, boolean stopPropagation, boolean preventDefault)
+   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, String keyEvent, boolean displayInView, boolean stopPropagation, boolean preventDefault)
    {
       this.modifiers = modifiers;
       this.keyCode = keyCode;
       this.context = context;
       this.description = description;
       this.handler = handler;
-      this.keyAction = keyAction;
+      this.keyEvent = keyEvent;
       this.displayInView = displayInView;
       this.stopPropagation = stopPropagation;
       this.preventDefault = preventDefault;
@@ -113,12 +113,12 @@ public class KeyShortcut
    
    public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, boolean displayInView)
    {
-      this(modifiers,keyCode, context, description, handler, KEY_DOWN, displayInView, false, false);
+      this(modifiers,keyCode, context, description, handler, KEY_DOWN_EVENT, displayInView, false, false);
    }
    
    public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler)
    {
-      this(modifiers,keyCode, context, description, handler, KEY_DOWN, true, false, false);
+      this(modifiers,keyCode, context, description, handler, KEY_DOWN_EVENT, true, false, false);
    }
 
    public int getModifiers()
@@ -146,9 +146,9 @@ public class KeyShortcut
       return handler;
    }
 
-   public String getKeyAction()
+   public String getKeyEvent()
    {
-      return keyAction;
+      return keyEvent;
    }
 
    public boolean isDisplayInView()

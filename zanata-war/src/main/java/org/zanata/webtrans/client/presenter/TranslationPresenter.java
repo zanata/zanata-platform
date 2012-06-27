@@ -283,12 +283,12 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          }
       };
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_UP, ShortcutContext.Edit, messages.moveToNextEntry(), gotoPreRowHandler, KeyShortcut.KEY_DOWN, true, true, true));
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_J, ShortcutContext.Edit, messages.moveToNextEntry(), gotoPreRowHandler, KeyShortcut.KEY_DOWN, true, true, true));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_UP, ShortcutContext.Navigation, messages.navigateToNextRow(), gotoPreRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_J, ShortcutContext.Navigation, messages.navigateToNextRow(), gotoPreRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
 
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_DOWN, ShortcutContext.Edit, messages.moveToPreviousEntry(), gotoNextRowHandler, KeyShortcut.KEY_DOWN, true, true, true));
-      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_K, ShortcutContext.Edit, messages.moveToPreviousEntry(), gotoNextRowHandler, KeyShortcut.KEY_DOWN, true, true, true));
-
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_DOWN, ShortcutContext.Navigation, messages.navigateToPreviousRow(), gotoNextRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_K, ShortcutContext.Navigation, messages.navigateToPreviousRow(), gotoNextRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
+      
       
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(0, KeyCodes.KEY_ENTER, ShortcutContext.Navigation, messages.openEditorInSelectedRow(), new KeyShortcutEventHandler()
       {
@@ -300,7 +300,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
                translationEditorPresenter.openEditorOnSelectedRow();
             }
          }
-      }, KeyShortcut.KEY_UP, true, true, true));
+      }, KeyShortcut.KEY_UP_EVENT, true, true, true));
    }
 
    private boolean isEditorInFocus()

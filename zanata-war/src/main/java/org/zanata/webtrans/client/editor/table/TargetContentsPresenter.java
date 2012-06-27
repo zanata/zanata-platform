@@ -75,6 +75,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -180,6 +181,66 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_4, ShortcutContext.Edit, messages.copyFromTM("4"), copyTM4Handler));
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.KEY_4_NUM, ShortcutContext.Edit, messages.copyFromTM("4"), copyTM4Handler, false));
+      
+      
+      KeyShortcutEventHandler moveNextKeyHandler = new KeyShortcutEventHandler()
+      {
+         
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            moveNext(false);
+         }
+      };
+      
+      KeyShortcutEventHandler movePreviousKeyHandler = new KeyShortcutEventHandler()
+      {
+         
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            movePrevious(false);
+         }
+      };
+      
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_DOWN, ShortcutContext.Edit, messages.moveToNextRow(), moveNextKeyHandler));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_K, ShortcutContext.Edit, messages.moveToNextRow(), moveNextKeyHandler));
+      
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_UP, ShortcutContext.Edit, messages.moveToPreviousRow(), movePreviousKeyHandler));
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_J, ShortcutContext.Edit, messages.moveToPreviousRow(), movePreviousKeyHandler));
+      
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_PAGEDOWN, ShortcutContext.Edit, messages.moveToNextStateEntry(), new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            if(isModalNavEnabled)
+            {
+               moveToNextState(NavTransUnitEvent.NavigationType.NextEntry);
+            }
+         }
+      }));
+      
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_PAGEUP, ShortcutContext.Edit, messages.moveToNextStateEntry(), new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            if(isModalNavEnabled)
+            {
+               moveToNextState(NavTransUnitEvent.NavigationType.PrevEntry);
+            }
+         }
+      }));
+      
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_KEY, KeyShortcut.KEY_S, ShortcutContext.Edit, messages.saveAsFuzzy(), new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            saveAsFuzzy();
+         }
+      }, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
    }
 
    private ToggleEditor getCurrentEditor()
@@ -571,27 +632,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       {
          copySource(editor);
       }
-      else if (checkKey.isNextEntryKey())
-      {
-         moveNext(false);
-      }
-      else if (checkKey.isPreviousEntryKey())
-      {
-         movePrevious(false);
-      }
-      else if (checkKey.isNextStateEntryKey() && isModalNavEnabled)
-      {
-         moveToNextState(NavTransUnitEvent.NavigationType.NextEntry);
-      }
-      else if (checkKey.isPreviousStateEntryKey() && isModalNavEnabled)
-      {
-         moveToNextState(NavTransUnitEvent.NavigationType.PrevEntry);
-      }
       else if (checkKey.isSaveAsFuzzyKey())
       {
-         event.stopPropagation();
-         event.preventDefault(); // stop browser save
-         saveAsFuzzy();
+//         event.stopPropagation();
+//         event.preventDefault(); // stop browser save
+//         saveAsFuzzy();
       }
       else if (checkKey.isSaveAsApprovedKey(configHolder.isButtonEnter()))
       {

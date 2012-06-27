@@ -262,7 +262,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          KeyShortcutEvent shortcutEvent = new KeyShortcutEvent(modifiers, evt.getKeyCode());
          for (KeyShortcut shortcut : shortcuts)
          {
-            if (ensureActiveContexts().contains(shortcut.getContext()) && shortcut.getKeyAction().equals(evt.getType()))
+            if (ensureActiveContexts().contains(shortcut.getContext()) && shortcut.getKeyEvent().equals(evt.getType()))
             {
                if (shortcut.isStopPropagation())
                {
