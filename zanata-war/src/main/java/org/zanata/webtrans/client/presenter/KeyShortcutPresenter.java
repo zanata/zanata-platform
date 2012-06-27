@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -137,14 +138,6 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
             for (ShortcutContext context : ensureActiveContexts())
             {
                ArrayList<String> shortcutStrings = new ArrayList<String>();
-               for(Entry<Integer, Set<KeyShortcut>> entry:ensureShortcutMap().entrySet())
-               {
-                  Set<KeyShortcut> shortcutSet = entry.getValue();
-                  for (KeyShortcut shortcut : shortcutSet)
-                  {
-                     Log.info("======" + shortcut.getDescription());
-                  }
-               }
                
                for (Set<KeyShortcut> shortcutSet : ensureShortcutMap().values())
                {
@@ -187,7 +180,8 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
                      }
                   }
                }
-
+               Collections.sort(shortcutStrings);
+               
                String contextName = "";
                switch (context)
                {
