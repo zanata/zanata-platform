@@ -45,6 +45,7 @@ import org.zanata.common.EntityStatus;
 import org.zanata.common.TransUnitWords;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
+import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -328,7 +329,7 @@ public class ViewAllStatusAction implements Serializable
          durationSinceStart = (System.currentTimeMillis() - handle.getStartTime());
       }
 
-      return formatTimePeriod( durationSinceStart );
+      return formatTimePeriod(durationSinceStart);
    }
 
    public String getCopyTransEstimatedTimeLeft()

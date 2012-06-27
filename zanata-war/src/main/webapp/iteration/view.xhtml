@@ -220,7 +220,10 @@
             </s:fragment>
 		</rich:panel>
 
-        <<a4j:outputPanel id="copyTransIndicator" layout="block" rendered="#{identity.loggedIn}">
+        <a4j:form>
+            <ui:param name="pHandle" value="#{viewAllStatusAction.copyTransProcessHandle}"/>
+            <ui:param name="copyTransRunning" value="#{viewAllStatusAction.copyTransRunning}"/>
+            <a4j:outputPanel id="copyTransIndicator" layout="block" rendered="#{identity.loggedIn}">
                 <a4j:outputPanel rendered="#{copyTransRunning}">
                     Copy Trans in Progress...
                 </a4j:outputPanel>
@@ -251,6 +254,7 @@
                     Processed documents: #{pHandle.documentsProcessed} of #{viewAllStatusAction.projectIteration.documents.size()}
                 </a4j:outputPanel>
             </a4j:outputPanel>
+
         </a4j:form>
 
         <rich:modalPanel id="versionSearchPanel" width="530" height="440" rendered="#{identity.loggedIn and s:hasPermission(viewAllStatusAction.projectIteration, 'update')}">

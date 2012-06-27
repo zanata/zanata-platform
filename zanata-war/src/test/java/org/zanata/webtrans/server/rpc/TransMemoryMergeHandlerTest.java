@@ -181,7 +181,7 @@ public class TransMemoryMergeHandlerTest
       TransMemoryMerge action = prepareActionAndMockSecurityService(80, transUnitId);
 
       HTextFlow hTextFlow = TestFixture.makeHTextFlow(transUnitId, hLocale, ContentState.New, "pot/a.po");
-      hTextFlow.getTargets().put(hLocale, null); //make sure target is null
+      hTextFlow.getTargets().put(hLocale.getId(), null); //make sure target is null
       when(textFlowDAO.findByIdList(newArrayList(transUnitId))).thenReturn(newArrayList(hTextFlow));
       when(textFlowDAO.findIdsWithTranslations(hLocale.getLocaleId())).thenReturn(idsWithTranslations);
       // Given: there is TM results returned for text flow id 1

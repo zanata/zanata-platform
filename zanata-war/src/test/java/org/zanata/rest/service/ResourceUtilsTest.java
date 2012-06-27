@@ -85,6 +85,8 @@ public class ResourceUtilsTest
       newLoc = new HLocale(LocaleId.DE);
       fuzzyLoc = new HLocale(LocaleId.FR);
       apprLoc = new HLocale(LocaleId.ES);
+      // Target Locale ids
+      Long newLocId = 1L, fuzzyLocId = 2L, apprLocId = 3L;
 
       HTextFlowTarget newTarg, fuzzyTarg, apprTarg;
       newTarg = new HTextFlowTarget(originalTF, newLoc);
@@ -103,9 +105,9 @@ public class ResourceUtilsTest
       fuzzyTarg.setState(ContentState.NeedReview);
       apprTarg.setState(ContentState.Approved);
 
-      originalTF.getTargets().put(newLoc.getId(), newTarg);
-      originalTF.getTargets().put(fuzzyLoc.getId(), fuzzyTarg);
-      originalTF.getTargets().put(apprLoc.getId(), apprTarg);
+      originalTF.getTargets().put(newLocId, newTarg);
+      originalTF.getTargets().put(fuzzyLocId, fuzzyTarg);
+      originalTF.getTargets().put(apprLocId, apprTarg);
 
       to.getAllTextFlows().put("id", originalTF);
 
@@ -120,17 +122,17 @@ public class ResourceUtilsTest
 
 
       Map<Long, HTextFlowTarget> targets = to.getAllTextFlows().get("id").getTargets();
-      newTarg = targets.get(newLoc);
+      newTarg = targets.get(newLocId);
       assertThat(newTarg.getState(), is(ContentState.New));
       assertThat(newTarg.getVersionNum(), is(newTargVersionBefore));
       assertThat(newTarg.getTextFlowRevision(), is(originalTFRevision));
 
-      fuzzyTarg = targets.get(fuzzyLoc);
+      fuzzyTarg = targets.get(fuzzyLocId);
       assertThat(fuzzyTarg.getState(), is(ContentState.NeedReview));
       assertThat(fuzzyTarg.getVersionNum(), is(fuzzyTargVersionBefore));
       assertThat(fuzzyTarg.getTextFlowRevision(), is(originalTFRevision));
 
-      apprTarg = targets.get(apprLoc);
+      apprTarg = targets.get(apprLocId);
       assertThat("approved targets should be set to fuzzy when source content changes", apprTarg.getState(), is(ContentState.NeedReview));
       assertThat(apprTarg.getVersionNum(), is(apprTargVersionBefore + 1));
       // Note: TFTRevision should be updated when target content or state is
