@@ -78,7 +78,13 @@ public abstract class AbstractPushStrategy
       dirScanner.setExcludes(excludes.toArray(new String[excludes.size()]));
       dirScanner.setIncludes(includes.toArray(new String[includes.size()]));
       dirScanner.scan();
-      return dirScanner.getIncludedFiles();
+      String[] includedFiles = dirScanner.getIncludedFiles();
+      for (int i = 0; i < includedFiles.length; i++)
+      {
+         // canonicalise file separator (to handle backslash on Windows)
+         includedFiles[i] = includedFiles[i].replace(File.separator, "/");
+      }
+      return includedFiles;
    }
 
    private void excludeLocaleFileName(List<String> excludes)
