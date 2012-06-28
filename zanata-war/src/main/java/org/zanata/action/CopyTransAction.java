@@ -26,6 +26,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.common.CopyTransOptions;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HProjectIteration;
@@ -119,6 +120,7 @@ public class CopyTransAction
       return copyTransManager.isCopyTransRunning( getProjectIteration() );
    }
 
+   @Restrict("#{s:hasPermission(copyTransAction.projectIteration, 'copy-trans')}")
    public void startCopyTrans()
    {
       if( isCopyTransRunning() )

@@ -464,6 +464,8 @@
   <page view-id="/iteration/copy_trans.xhtml">
       <param name="projectSlug" value="#{copyTransAction.projectSlug}" />
       <param name="iterationSlug" value="#{copyTransAction.iterationSlug}" />
+      <!-- can't use <restrict> here either -->
+      <action execute="#{identity.checkPermission(copyTransAction.projectIteration, 'copy-trans')}" />
 
       <navigation from-action="#{copyTransAction.startCopyTrans}">
         <redirect view-id="/iteration/view.xhtml" include-page-params="true">

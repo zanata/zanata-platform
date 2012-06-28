@@ -30,10 +30,8 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.web.RequestParameter;
-import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.framework.EntityNotFoundException;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
@@ -270,22 +268,7 @@ public class ViewAllStatusAction implements Serializable
       return copyTransManager.isCopyTransRunning( getProjectIteration() );
    }
 
-   public void startCopyTrans()
-   {
-      if( isCopyTransRunning() )
-      {
-         flash.setAttribute("message", "Someone else already started a translation copy for this version.");
-         return;
-      }
-      else if( getProjectIteration().getDocuments().size() <= 0 )
-      {
-         flash.setAttribute("message", "There are no documents in this project version.");
-         return;
-      }
-
-      copyTransManager.startCopyTrans( getProjectIteration() );
-   }
-
+   @Restrict("#{s:hasPermission(viewAllStatusAction.projectIteration, 'copy-trans')}")
    public void cancelCopyTrans()
    {
       if( isCopyTransRunning() )
