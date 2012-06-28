@@ -71,8 +71,10 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
       void showPanel();
 
       public void clearPanel();
-
-      // hide method not provided as auto-hide is enabled
+      
+      boolean isShowing();
+      
+      void hide(boolean autoClosed);
    }
 
    /**
@@ -97,9 +99,12 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
       keyDisplayMap.put(KeyShortcut.META_KEY, "Meta");
       keyDisplayMap.put(KeyShortcut.CTRL_KEY, "Ctrl");
       
-      keyDisplayMap.put(KeyCodes.KEY_DOWN, "Down Arrow");
-      keyDisplayMap.put(KeyCodes.KEY_UP, "Up Arrow");
+      keyDisplayMap.put(KeyCodes.KEY_DOWN, "Down");
+      keyDisplayMap.put(KeyCodes.KEY_UP, "Up");
       keyDisplayMap.put(KeyCodes.KEY_ENTER, "Enter");
+      keyDisplayMap.put(KeyCodes.KEY_PAGEDOWN, "Page Down");
+      keyDisplayMap.put(KeyCodes.KEY_PAGEUP, "Page Up");
+      keyDisplayMap.put(KeyCodes.KEY_ESCAPE, "Esc");
    }
 
    @Override
@@ -126,11 +131,23 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          }
       });
 
+      registerKeyShortcut(new KeyShortcut(0, KeyCodes.KEY_ESCAPE, ShortcutContext.Application, messages.closeShortcutView(), new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            if(display.isShowing())
+            {
+               display.hide(true);
+            }
+         }
+      }));
+      
+      
       // could try to use ?, although this is not as simple as passing character
       // '?'
       registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, 'Y', ShortcutContext.Application, messages.showAvailableKeyShortcuts(), new KeyShortcutEventHandler()
       {
-
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {

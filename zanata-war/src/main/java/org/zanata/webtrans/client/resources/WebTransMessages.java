@@ -340,4 +340,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Open editor in selected row")
    String openEditorInSelectedRow();
+
+   @DefaultMessage("Close keyboard shortcut list")
+   String closeShortcutView();
 }

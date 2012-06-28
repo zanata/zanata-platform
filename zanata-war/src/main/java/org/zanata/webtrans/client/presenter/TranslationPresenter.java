@@ -264,10 +264,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            if (isEditorInFocus())
-            {
-               translationEditorPresenter.gotoPrevRow(false);
-            }
+            translationEditorPresenter.gotoPrevRow(false);
          }
       };
 
@@ -276,26 +273,25 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            if (isEditorInFocus())
-            {
-               translationEditorPresenter.gotoNextRow(false);
-            }
+            translationEditorPresenter.gotoNextRow(false);
          }
       };
 
+      // Register shortcut ALT+(UP/J) for previous row navigation
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_UP, ShortcutContext.Navigation, messages.navigateToNextRow(), gotoPreRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_J, ShortcutContext.Navigation, messages.navigateToNextRow(), gotoPreRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
 
+      // Register shortcut ALT+(Down/K) for next row navigation
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_DOWN, ShortcutContext.Navigation, messages.navigateToPreviousRow(), gotoNextRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_K, ShortcutContext.Navigation, messages.navigateToPreviousRow(), gotoNextRowHandler, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
-      
-      
+
+      // Register shortcut Enter to open editor in selected row - if no other input field is in focus
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(0, KeyCodes.KEY_ENTER, ShortcutContext.Navigation, messages.openEditorInSelectedRow(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            if (isEditorInFocus())
+            if (!isOtherInputFieldFocused())
             {
                translationEditorPresenter.openEditorOnSelectedRow();
             }
@@ -303,13 +299,14 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       }, KeyShortcut.KEY_UP_EVENT, true, true, true));
    }
 
-   private boolean isEditorInFocus()
+   private boolean isOtherInputFieldFocused()
    {
-      return !translationEditorPresenter.isTransFilterFocused() && 
-            !transMemoryPresenter.getDisplay().isFocused() && 
-            !glossaryPresenter.getDisplay().isFocused() &&
-            !translationEditorPresenter.getDisplay().isPagerFocused();
+      return translationEditorPresenter.isTransFilterFocused() || 
+            transMemoryPresenter.getDisplay().isFocused() || 
+            glossaryPresenter.getDisplay().isFocused() || 
+            translationEditorPresenter.getDisplay().isPagerFocused();
    }
+
    @Override
    protected void onUnbind()
    {
@@ -324,7 +321,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    }
 
    /**
-    * Handle all changes required to completely hide and unbind the south panel for read-only mode, or to undo said changes.
+    * Handle all changes required to completely hide and unbind the south panel
+    * for read-only mode, or to undo said changes.
     * 
     * @param readOnly
     */
@@ -341,11 +339,11 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
          setSouthPanelExpanded(display.getSouthPanelToggle().getValue());
       }
    }
-   
+
    /**
-    * Expand or collapse south panel, binding or unbinding presenters
-    * as appropriate. Will have no effect if the panel is already in
-    * the state of expansion or contraction that is specified.
+    * Expand or collapse south panel, binding or unbinding presenters as
+    * appropriate. Will have no effect if the panel is already in the state of
+    * expansion or contraction that is specified.
     * 
     * @param expanded
     */
@@ -353,14 +351,14 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
       if (expanded == southPanelExpanded)
       {
-         return; //nothing to do
+         return; // nothing to do
       }
       display.setSouthPanelExpanded(expanded);
       southPanelExpanded = expanded;
       if (expanded)
       {
          bindSouthPanelPresenters();
-         
+
          TransUnit tu = translationEditorPresenter.getSelectedTransUnit();
          if (tu != null)
          {
@@ -380,7 +378,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       glossaryPresenter.bind();
       workspaceUsersPresenter.bind();
    }
-   
+
    private void unbindSouthPanelPresenters()
    {
       transMemoryPresenter.unbind();
