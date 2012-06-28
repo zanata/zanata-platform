@@ -114,6 +114,15 @@ td.centered {
 	text-align: center;
 }
 
+.leftalign {
+	text-align: left;
+}
+
+.rich-tool-tip p {
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+
 /* -----------------------  Browser specific  ----------------------- */
 
 /* Additional IE specific bug fixes... */

@@ -823,7 +823,7 @@ td.FuzzyStateDecoration div div pre, td.ApprovedStateDecoration div div pre
 	cursor: pointer;
 }
 
-.translationContainer pre {
+.translationContainer pre, .translationContainer textarea {
 	font-size: 14px;
 	font-family: sans-serif;
 	word-wrap: break-word;
