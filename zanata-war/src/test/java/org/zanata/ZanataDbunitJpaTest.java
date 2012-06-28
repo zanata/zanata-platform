@@ -8,6 +8,7 @@ import java.net.URL;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
@@ -19,6 +20,10 @@ import org.dbunit.dataset.datatype.DataTypeException;
 import org.dbunit.dataset.datatype.DefaultDataTypeFactory;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.operation.DatabaseOperation;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.persister.collection.AbstractCollectionPersister;
+import org.hibernate.persister.entity.EntityPersister;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -87,14 +92,44 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
       }
 
       executeOperations(beforeTestOperations);
+      clearCache();
    }
 
    @AfterMethod
    public void cleanDataAfterTest()
    {
       executeOperations(afterTestOperations);
+      clearCache();
    }
 
+   private void clearCache()
+   {
+      Session session = getSession();
+      SessionFactory sessionFactory = session.getSessionFactory();
+      
+      // Clear the Entity cache
+      Map classMetadata = sessionFactory.getAllClassMetadata();
+      for( Object obj : classMetadata.values() )
+      {
+         EntityPersister p = (EntityPersister)obj;
+         if( p.hasCache() )
+         {
+            sessionFactory.evictEntity( p.getEntityName() );
+         }
+      }
+      
+      // Clear the Collection cache
+      Map collMetadata = sessionFactory.getAllCollectionMetadata();
+      for( Object obj : collMetadata.values() )
+      {
+         AbstractCollectionPersister p = (AbstractCollectionPersister)obj;
+         if( p.hasCache() )
+         {
+            sessionFactory.evictCollection( p.getRole() );
+         }
+      }
+   }
+   
    private void executeOperations(List<DataSetOperation> list)
    {
       IDatabaseConnection con = null;
