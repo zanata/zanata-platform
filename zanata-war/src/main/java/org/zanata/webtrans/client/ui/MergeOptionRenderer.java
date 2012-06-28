@@ -46,11 +46,11 @@ public class MergeOptionRenderer extends EnumRenderer<MergeOption>
       switch (option)
       {
       case FUZZY:
-         return messages.mergeAsFuzzy();
-      case APPROVED:
-         return messages.mergeAsApproved();
-      case SKIP:
-         return messages.skipMerge();
+         return messages.downgradeToFuzzy();
+      case IGNORE_CHECK:
+         return messages.ignoreDifference();
+      case REJECT:
+         return messages.rejectMerge();
       default:
          return getEmptyValue();
       }

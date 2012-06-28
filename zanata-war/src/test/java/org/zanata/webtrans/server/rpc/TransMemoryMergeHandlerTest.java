@@ -118,7 +118,7 @@ public class TransMemoryMergeHandlerTest
          requests.add(new TransUnitUpdateRequest(new TransUnitId(tranUnitId), null, null, 0));
       }
       // we have TransMemoryMergeStatusResolverTest to cover various different merge options so here we don't test that
-      TransMemoryMerge action = new TransMemoryMerge(threshold, requests, MergeOption.APPROVED, MergeOption.APPROVED, MergeOption.APPROVED);
+      TransMemoryMerge action = new TransMemoryMerge(threshold, requests, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK);
       mockSecurityService(action);
       return action;
    }
@@ -274,7 +274,7 @@ public class TransMemoryMergeHandlerTest
       // Given: an action with threshold 80% and trans unit id is 1, with different doc id option set to skip
       final long transUnitId = 1L;
       ArrayList<TransUnitUpdateRequest> requests = Lists.newArrayList(new TransUnitUpdateRequest(new TransUnitId(1L), null, null, 0));
-      TransMemoryMerge action = new TransMemoryMerge(80, requests, MergeOption.APPROVED, MergeOption.SKIP, MergeOption.APPROVED);
+      TransMemoryMerge action = new TransMemoryMerge(80, requests, MergeOption.IGNORE_CHECK, MergeOption.REJECT, MergeOption.IGNORE_CHECK);
       mockSecurityService(action);
 
       HTextFlow hTextFlow = TestFixture.makeHTextFlow(transUnitId, hLocale, ContentState.New, "pot/a.po");

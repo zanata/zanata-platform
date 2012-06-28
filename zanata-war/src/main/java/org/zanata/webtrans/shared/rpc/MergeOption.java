@@ -23,5 +23,5 @@ package org.zanata.webtrans.shared.rpc;
 
 public enum MergeOption
 {
-   FUZZY, SKIP, APPROVED
+   FUZZY, REJECT, IGNORE_CHECK
 }
