@@ -228,7 +228,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          }
       }));
 
-      // Register shortcut ALT+(PageUp) to move previous state entry - if modal navigation is enabled
+      // Register shortcut ALT+(PageUp) to move previous state entry - if modal
+      // navigation is enabled
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyCodes.KEY_PAGEUP, ShortcutContext.Edit, messages.moveToPreviousStateRow(), new KeyShortcutEventHandler()
       {
          @Override
@@ -261,7 +262,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          }
       }, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
 
-      // Register shortcut ENTER to save as approved (if configHolder.isButtonEnter() = true)
+      // Register shortcut ENTER to save as approved (if
+      // configHolder.isButtonEnter() = true)
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(0, KeyCodes.KEY_ENTER, ShortcutContext.Edit, messages.saveAsApprovedEnter(), new KeyShortcutEventHandler()
       {
          @Override
@@ -273,9 +275,9 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
             }
          }
       }, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
-      
-      
-     // Register shortcut ESC to close editor - (if configHolder.isButtonEsc() = true)
+
+      // Register shortcut ESC to close editor - (if configHolder.isButtonEsc()
+      // = true)
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(0, KeyCodes.KEY_ESCAPE, ShortcutContext.Edit, messages.closeEditor(), new KeyShortcutEventHandler()
       {
          @Override
@@ -287,6 +289,19 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
             }
          }
       }));
+
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.ALT_KEY, KeyShortcut.KEY_G, ShortcutContext.Edit, "Copy from source", new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            if(getCurrentEditor().isFocused())
+            {
+               copySource(getCurrentEditor());
+            }
+         }
+      }));
+
    }
 
    private ToggleEditor getCurrentEditor()
@@ -674,11 +689,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    {
       checkKey.init(event.getNativeEvent());
 
-      if (checkKey.isCopyFromSourceKey())
-      {
-         copySource(editor);
-      }
-      else if (checkKey.isUserTyping() && checkKey.isEnterKey())
+      if (checkKey.isUserTyping() && checkKey.isEnterKey())
       {
          // because enter itself will increase one line
          editor.autoSizePlusOne();
