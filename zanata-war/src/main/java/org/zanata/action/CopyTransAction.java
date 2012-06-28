@@ -20,6 +20,8 @@
  */
 package org.zanata.action;
 
+import java.util.Map;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -37,7 +39,6 @@ import static org.zanata.common.CopyTransOptions.ConditionRuleAction;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("copyTransAction")
-//@Scope(ScopeType.PAGE)
 public class CopyTransAction
 {
 
@@ -49,6 +50,9 @@ public class CopyTransAction
 
    @In
    private FlashScopeBean flash;
+
+   @In
+   private Map<String, String> messages;
 
    private String iterationSlug;
 
@@ -119,12 +123,12 @@ public class CopyTransAction
    {
       if( isCopyTransRunning() )
       {
-         flash.setAttribute("message", "Someone else already started a translation copy for this version.");
+         flash.setAttribute("message", messages.get("jsf.iteration.CopyTrans.AlreadyStarted.flash"));
          return;
       }
       else if( getProjectIteration().getDocuments().size() <= 0 )
       {
-         flash.setAttribute("message", "There are no documents in this project version.");
+         flash.setAttribute("message", messages.get("jsf.iteration.CopyTrans.NoDocuments"));
          return;
       }
 
@@ -134,7 +138,7 @@ public class CopyTransAction
       options.setDocIdMismatchAction( ConditionRuleAction.valueOf( this.documentIdMismatchAction ) );
 
       copyTransManager.startCopyTrans( getProjectIteration(), options );
-      flash.setAttribute("message", "Translation copy started.");
+      flash.setAttribute("message", messages.get("jsf.iteration.CopyTrans.Started"));
    }
 
    public void cancel()

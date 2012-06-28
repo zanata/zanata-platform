@@ -9,7 +9,7 @@
                 xmlns:a4j="http://richfaces.org/a4j"
                 template="../WEB-INF/layout/template.xhtml">
 
-    <ui:define name="page_title">Copy Trans for #{viewAllStatusAction.projectSlug}:#{viewAllStatusAction.iterationSlug}</ui:define>
+    <ui:define name="page_title">#{messages['jsf.iteration.CopyTrans.pageTitle']}</ui:define>
 
     <ui:define name="head">
         <script type="text/javascript">
@@ -48,11 +48,11 @@
 
                     <table border="0" class="copy_trans_options_table" width="100%">
                         <tr>
-                            <th>Condition</th>
-                            <th>Action</th>
+                            <th>#{message['jsf.iteration.CopyTrans.Condition']}</th>
+                            <th>#{message['jsf.iteration.CopyTrans.Action']}</th>
                         </tr>
                         <tr>
-                            <td>1. On Content mismatch</td>
+                            <td>#{messages['jsf.iteration.CopyTrans.Condition.onContentMismatch']}</td>
                             <td class="reject_action">
                                 <h:selectOneMenu disabled="#{true}">
                                     <f:selectItem itemLabel="Reject" itemValue="1"/>
@@ -60,45 +60,44 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>2. On Context mismatch (Res Id, msgctx)</td>
+                            <td>#{messages['jsf.iteration.CopyTrans.Condition.onContextMismatch']}</td>
                             <td id="contextMismatchCell">
                                 <h:selectOneMenu id="contextMismatchAction"
                                                  value="#{copyTransAction.contextMismatchAction}"
                                                  onchange="actionSelected(this, 'contextMismatchCell');">
-                                    <f:selectItem itemLabel="Reject" itemValue="REJECT"/>
-                                    <f:selectItem itemLabel="Downgrade to Fuzzy, try next rule" itemValue="DOWNGRADE_TO_FUZZY"/>
-                                    <f:selectItem itemLabel="Don't care, try next rule" itemValue="IGNORE"/>
+                                    <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.reject']}" itemValue="REJECT"/>
+                                    <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.downgradeToFuzzy']}" itemValue="DOWNGRADE_TO_FUZZY"/>
+                                    <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.ignore']}" itemValue="IGNORE"/>
                                 </h:selectOneMenu>
                             </td>
                         </tr>
                         <tr>
-                            <td>3. On Document Id mismatch (Document name and path) </td>
+                            <td>#{messages['jsf.iteration.CopyTrans.Condition.onDocIdMismatch']}</td>
                             <td id="documentIdMismatchCell">
                                 <h:selectOneMenu id="documentIdMismatchAction"
                                                  value="#{copyTransAction.documentIdMismatchAction}"
                                                  onchange="actionSelected(this, 'documentIdMismatchCell');">
-                                    <f:selectItem itemLabel="Reject" itemValue="REJECT"/>
-                                    <f:selectItem itemLabel="Downgrade to Fuzzy, try next rule" itemValue="DOWNGRADE_TO_FUZZY"/>
-                                    <f:selectItem itemLabel="Don't care, try next rule" itemValue="IGNORE"/>
+                                    <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.reject']}" itemValue="REJECT"/>
+                                    <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.downgradeToFuzzy']}" itemValue="DOWNGRADE_TO_FUZZY"/>
+                                    <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.ignore']}" itemValue="IGNORE"/>
                                 </h:selectOneMenu>
                             </td>
                         </tr>
                         <tr>
-                            <td>4. Otherwise</td>
-                            <td class="approved_action">Approved</td>
+                            <td>#{messages['jsf.iteration.CopyTrans.Condition.final']}</td>
+                            <td class="approved_action">#{messages['jsf.Approved']}</td>
                         </tr>
                     </table>
 
                 </rich:panel>
 
-                <h:commandButton value="Start" action="#{copyTransAction.startCopyTrans}"/>
-                <h:commandButton value="Cancel" action="#{copyTransAction.cancel}"/>
+                <h:commandButton value="#{messages['jsf.Start']}" action="#{copyTransAction.startCopyTrans}"/>
+                <h:commandButton value="#{messages['jsf.Cancel']}" action="#{copyTransAction.cancel}"/>
             </a4j:outputPanel>
         </a4j:form>
 
         <rich:panel rendered="#{copyTransAction.copyTransRunning}">
-            A Translation Copy has already been started by #{copyTransManager.getCopyTransProcessHandle( copyTransAction.projectIteration ).triggeredBy}
-            for version <b>#{copyTransAction.projectIteration.slug}</b> of project <b>#{copyTransAction.projectIteration.project.name}</b>.
+            <h:outputText value="#{messages['jsf.iteration.CopyTrans.AlreadyStarted']}" escape="false"/>
             <br/>
             <s:link view="/iteration/view.xhtml" value="Please click here to view progress.">
                 <f:param name="projectSlug" value="#{copyTransAction.projectSlug}"/>

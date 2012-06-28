@@ -161,7 +161,7 @@
 						</rich:column>
 						<rich:column sortBy="#{stats.per}"
 							styleClass="#{viewAllStatusAction.showAllLocales and stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
-							<f:facet name="header">Percentage</f:facet>
+							<f:facet name="header">#{messages['jsf.iteration.stats.Percentage']}</f:facet>
 							<ui:param name="tstatus" value="#{stats.words}" />
 							<ui:include src="../WEB-INF/layout/statsbar.xhtml">
 								<ui:param name="status" value="#{tstatus}" />
@@ -225,7 +225,7 @@
             <ui:param name="copyTransRunning" value="#{viewAllStatusAction.copyTransRunning}"/>
             <a4j:outputPanel id="copyTransIndicator" layout="block" rendered="#{identity.loggedIn}">
                 <a4j:outputPanel rendered="#{copyTransRunning}">
-                    Copy Trans in Progress...
+                    #{messages['jsf.iteration.CopyTrans.inProgress']}
                 </a4j:outputPanel>
                 <!-- minValue is -1 because of a bug when 0 is used -->
                 <rich:progressBar id="copyTransProgressBar"
@@ -247,11 +247,11 @@
                     <s:div style="text-align:right;" rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'copy-trans')}">
                         <s:button value="Cancel" action="#{viewAllStatusAction.cancelCopyTrans}" />
                     </s:div>
-                    Started #{viewAllStatusAction.copyTransStartTime} ago by #{pHandle.triggeredBy}
+                    #{messages['jsf.iteration.CopyTrans.started']}
                     <br/>
-                    Estimated Time Remaining: #{viewAllStatusAction.copyTransEstimatedTimeLeft}
+                    #{messages['jsf.iteration.CopyTrans.estimatedTimeRemaining']}
                     <br/>
-                    Processed documents: #{pHandle.documentsProcessed} of #{viewAllStatusAction.projectIteration.documents.size()}
+                    #{messages['jsf.iteration.CopyTrans.processedDocuments']}
                 </a4j:outputPanel>
             </a4j:outputPanel>
 
