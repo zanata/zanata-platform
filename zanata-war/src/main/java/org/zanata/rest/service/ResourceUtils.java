@@ -1014,6 +1014,8 @@ public class ResourceUtils
 
    /**
     * Returns the appropriate plural form for a given Locale.
+    * Returns a default value if there is no plural form information
+    * for the provided locale.
     */
    public String getPluralForms(HLocale locale)
    {
@@ -1022,8 +1024,22 @@ public class ResourceUtils
 
    /**
     * Returns the appropriate plural form for a given Locale Id.
+    * Returns a default value if there is no plural form information
+    * for the provided locale id.
+    *
+    * @see {@link ResourceUtils#getPluralForms(org.zanata.common.LocaleId, boolean)}
     */
    public String getPluralForms(LocaleId localeId)
+   {
+      return getPluralForms(localeId, true);
+   }
+
+   /**
+    * Returns the appropriate plural from for a given locale Id.
+    *
+    * @return A default value if useDefault is True. Otherwise, null.
+    */
+   public String getPluralForms(LocaleId localeId, boolean useDefault)
    {
       String javaLocale = localeId.toJavaName().toLowerCase();
 
@@ -1044,8 +1060,14 @@ public class ResourceUtils
          }
       }
 
-      // Not found, return the default
-      return DEFAULT_PLURAL_FORM;
+      if( useDefault )
+      {
+         return DEFAULT_PLURAL_FORM;
+      }
+      else
+      {
+         return null;
+      }
    }
 
    public int getNumPlurals(HDocument document, HLocale hLocale)
