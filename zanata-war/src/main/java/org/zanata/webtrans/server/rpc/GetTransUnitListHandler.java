@@ -127,7 +127,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
 
    private boolean hasSearchPhrase(GetTransUnitList action)
    {
-      return !Strings.isNullOrEmpty(action.getPhrase()) || action.getPhrase().trim().length() != 0;
+      return !Strings.isNullOrEmpty(action.getPhrase()) && action.getPhrase().trim().length() != 0;
    }
 
    private List<HTextFlow> searchByPhrase(GetTransUnitList action)
