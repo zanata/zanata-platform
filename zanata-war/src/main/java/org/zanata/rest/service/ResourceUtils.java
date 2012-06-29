@@ -101,6 +101,7 @@ public class ResourceUtils
    private static final Pattern NPLURALS_TAG_PATTERN = Pattern.compile("nplurals=");
    private static final Pattern NPLURALS_PATTERN = Pattern.compile("nplurals=[0-9]+");
    private static final String PLURALS_FILE = "pluralforms.properties";
+   private static final String DEFAULT_PLURAL_FORM = "nplurals=1; plural=0";
 
    private static final Log log = Logging.getLog(ResourceUtils.class);
 
@@ -1043,8 +1044,8 @@ public class ResourceUtils
          }
       }
 
-      // Not found, return null
-      return null;
+      // Not found, return the default
+      return DEFAULT_PLURAL_FORM;
    }
 
    public int getNumPlurals(HDocument document, HLocale hLocale)
