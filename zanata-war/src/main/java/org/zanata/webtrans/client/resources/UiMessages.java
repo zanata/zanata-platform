@@ -110,7 +110,7 @@ public interface UiMessages extends Messages
    String differentDocument();
 
    @DefaultMessage("On Context mismatch (Res Id, msgctx):")
-   String differentResId();
+   String differentContext();
 
    @DefaultMessage("Otherwise:")
    String otherwise();

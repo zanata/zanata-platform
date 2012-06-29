@@ -139,7 +139,7 @@ public class TransMemoryMergeHandlerTest
 
    private static TransMemoryDetails tmDetail()
    {
-      return new TransMemoryDetails("", "", "project a", "master", "pot/msg.pot", "resId");
+      return new TransMemoryDetails("", "", "project a", "master", "pot/msg.pot", "resId", null);
    }
 
 
@@ -288,7 +288,7 @@ public class TransMemoryMergeHandlerTest
             .thenReturn(newArrayList(mostSimilarTM, tmResult(12L, 90), tmResult(13L, 80)));
       when(textFlowDAO.findById(tmResultSource.getId(), false)).thenReturn(tmResultSource);
       // Given: tm detail of text flow id 11 which has different doc id
-      TransMemoryDetails tmDetails = new TransMemoryDetails("", "", "project a", "master", "different/doc/id", "resId");
+      TransMemoryDetails tmDetails = new TransMemoryDetails("", "", "project a", "master", "different/doc/id", "resId", "");
       when(getTransMemoryDetailsHandler.getTransMemoryDetail(hLocale, tmResultSource)).thenReturn(tmDetails);
 
       // When: execute the action

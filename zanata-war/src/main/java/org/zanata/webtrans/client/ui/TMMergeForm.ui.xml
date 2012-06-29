@@ -103,13 +103,13 @@
         </g:row>
         <g:row>
             <g:customCell>
-                <g:Label text="{messages.differentResId}" />
+                <g:Label text="{messages.differentContext}" />
             </g:customCell>
             <g:customCell>
-                <g:InlineLabel ui:field="differentResIdStatus"/>
+                <g:InlineLabel ui:field="differentContextStatus"/>
             </g:customCell>
             <g:customCell>
-                <g:HorizontalPanel ui:field="differentResId" />
+                <g:HorizontalPanel ui:field="differentContext" />
             </g:customCell>
         </g:row>
         <g:row>

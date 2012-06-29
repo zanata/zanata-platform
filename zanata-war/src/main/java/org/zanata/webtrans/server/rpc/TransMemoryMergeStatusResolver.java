@@ -56,6 +56,7 @@ public class TransMemoryMergeStatusResolver
          needReview = true;
       }
       compareTextFlowResId(action, tfToBeFilled, tmDetail);
+      compareTextFlowMsgContext(action, tfToBeFilled, tmDetail);
       compareDocId(action, tfToBeFilled, tmDetail);
       compareProjectName(action, tfToBeFilled, tmDetail);
 
@@ -72,10 +73,26 @@ public class TransMemoryMergeStatusResolver
 
    private void compareTextFlowResId(TransMemoryMerge action, HTextFlow tfToBeFilled, TransMemoryDetails tmDetail)
    {
-      if (action.getDifferentResIdOption() != MergeOption.IGNORE_CHECK
+      if (action.getDifferentContextOption() != MergeOption.IGNORE_CHECK
             && notEqual(tfToBeFilled.getResId(), tmDetail.getResId()))
       {
-         setFlagsBasedOnOption(action.getDifferentResIdOption());
+         setFlagsBasedOnOption(action.getDifferentContextOption());
+      }
+   }
+
+   private void compareTextFlowMsgContext(TransMemoryMerge action, HTextFlow tfToBeFilled, TransMemoryDetails tmDetail)
+   {
+      if (action.getDifferentContextOption() != MergeOption.IGNORE_CHECK)
+      {
+         String msgCtx = null;
+         if (tfToBeFilled.getPotEntryData() != null)
+         {
+            msgCtx = tfToBeFilled.getPotEntryData().getContext();
+         }
+         if (notEqual(msgCtx, tmDetail.getMsgContext()))
+         {
+            setFlagsBasedOnOption(action.getDifferentContextOption());
+         }
       }
    }
 

@@ -176,7 +176,7 @@ public class TransMemoryMergePresenterTest
       assertThat(getIds(updateRequests), Matchers.contains(1L, 4L, 5L));
       assertThat(action.getDifferentProjectOption(), Matchers.equalTo(MergeOption.IGNORE_CHECK));
       assertThat(action.getDifferentDocumentOption(), Matchers.equalTo(MergeOption.REJECT));
-      assertThat(action.getDifferentResIdOption(), Matchers.equalTo(MergeOption.FUZZY));
+      assertThat(action.getDifferentContextOption(), Matchers.equalTo(MergeOption.FUZZY));
    }
 
    @Test
