@@ -112,7 +112,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
             double percent = calculateSimilarityPercentage(transMemoryQuery, textFlow.getContents());
 
             ArrayList<String> textFlowContents = new ArrayList<String>(textFlow.getContents());
-            ArrayList<String> targetContents = new ArrayList<String>(textFlow.getTargets().get(hLocale).getContents());
+            ArrayList<String> targetContents = new ArrayList<String>(textFlow.getTargets().get(hLocale.getId()).getContents());
 
             TMKey key = new TMKey(textFlowContents, targetContents);
             TransMemoryResultItem item = matchesMap.get(key);
@@ -157,7 +157,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
             return true;
          }
       }
-      HTextFlowTarget target = textFlow.getTargets().get(hLocale);
+      HTextFlowTarget target = textFlow.getTargets().get(hLocale.getId());
       // double check in case of caching issues
       return target == null || target.getState() != ContentState.Approved;
    }

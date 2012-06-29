@@ -71,7 +71,7 @@ public class GetTransMemoryDetailsHandler extends AbstractActionHandler<GetTrans
 
    protected TransMemoryDetails getTransMemoryDetail(HLocale hLocale, HTextFlow tf)
    {
-      HTextFlowTarget tft = tf.getTargets().get(hLocale);
+      HTextFlowTarget tft = tf.getTargets().get(hLocale.getId());
       HSimpleComment sourceComment = tf.getComment();
       HSimpleComment targetComment = tft.getComment();
       String docId = tf.getDocument().getDocId();
