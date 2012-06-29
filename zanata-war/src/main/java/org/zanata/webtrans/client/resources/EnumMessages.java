@@ -44,4 +44,13 @@ public interface EnumMessages extends com.google.gwt.i18n.client.Messages
 
    @DefaultMessage("Downgrade to Fuzzy, try next rule")
    String downgradeToFuzzy();
+
+   @DefaultMessage("Needs Review")
+   String fuzzyStatus();
+
+   @DefaultMessage("Approved")
+   String approvedStatus();
+
+   @DefaultMessage("Don''t care")
+   String skipStatus();
 }
