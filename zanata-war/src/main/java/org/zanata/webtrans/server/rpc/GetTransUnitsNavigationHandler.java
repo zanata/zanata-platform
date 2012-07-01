@@ -92,7 +92,7 @@ public class GetTransUnitsNavigationHandler extends AbstractActionHandler<GetTra
 
       for (HTextFlow textFlow : textFlows)
       {
-         HTextFlowTarget textFlowTarget = textFlow.getTargets().get(hLocale);
+         HTextFlowTarget textFlowTarget = textFlow.getTargets().get(hLocale.getId());
          if (checkStateAndValidate(action.isNewState(), action.isFuzzyState(), action.isApprovedState(), textFlowTarget))
          {
             if (textFlowTarget == null)

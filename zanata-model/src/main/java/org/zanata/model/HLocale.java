@@ -53,7 +53,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString(of = {"localeId"}, doNotUseGetters = true)
-@EqualsAndHashCode(callSuper = true, of = {"active", "localeId"}, doNotUseGetters = true)
+@EqualsAndHashCode(callSuper = false, of = {"localeId"}, doNotUseGetters = true)
 public class HLocale extends ModelEntityBase implements Serializable
 {
    private static final long serialVersionUID = 1L;

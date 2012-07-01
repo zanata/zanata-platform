@@ -53,7 +53,7 @@ public class TestFixture
       target.setState(contentState);
       target.setLastChanged(new Date());
 
-      hTextFlow.getTargets().put(hLocale, target);
+      hTextFlow.getTargets().put(hLocale.getId(), target);
       return hTextFlow;
    }
 

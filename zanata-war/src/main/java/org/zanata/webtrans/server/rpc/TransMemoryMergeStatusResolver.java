@@ -56,6 +56,7 @@ public class TransMemoryMergeStatusResolver
          needReview = true;
       }
       compareTextFlowResId(action, tfToBeFilled, tmDetail);
+      compareTextFlowMsgContext(action, tfToBeFilled, tmDetail);
       compareDocId(action, tfToBeFilled, tmDetail);
       compareProjectName(action, tfToBeFilled, tmDetail);
 
@@ -72,16 +73,32 @@ public class TransMemoryMergeStatusResolver
 
    private void compareTextFlowResId(TransMemoryMerge action, HTextFlow tfToBeFilled, TransMemoryDetails tmDetail)
    {
-      if (action.getDifferentResIdOption() != MergeOption.APPROVED
+      if (action.getDifferentContextOption() != MergeOption.IGNORE_CHECK
             && notEqual(tfToBeFilled.getResId(), tmDetail.getResId()))
       {
-         setFlagsBasedOnOption(action.getDifferentResIdOption());
+         setFlagsBasedOnOption(action.getDifferentContextOption());
+      }
+   }
+
+   private void compareTextFlowMsgContext(TransMemoryMerge action, HTextFlow tfToBeFilled, TransMemoryDetails tmDetail)
+   {
+      if (action.getDifferentContextOption() != MergeOption.IGNORE_CHECK)
+      {
+         String msgCtx = null;
+         if (tfToBeFilled.getPotEntryData() != null)
+         {
+            msgCtx = tfToBeFilled.getPotEntryData().getContext();
+         }
+         if (notEqual(msgCtx, tmDetail.getMsgContext()))
+         {
+            setFlagsBasedOnOption(action.getDifferentContextOption());
+         }
       }
    }
 
    private void compareDocId(TransMemoryMerge action, HTextFlow tfToBeFilled, TransMemoryDetails tmDetail)
    {
-      if (action.getDifferentDocumentOption() != MergeOption.APPROVED
+      if (action.getDifferentDocumentOption() != MergeOption.IGNORE_CHECK
             && notEqual(tfToBeFilled.getDocument().getDocId(), tmDetail.getDocId()))
       {
          setFlagsBasedOnOption(action.getDifferentDocumentOption());
@@ -90,7 +107,7 @@ public class TransMemoryMergeStatusResolver
 
    private void compareProjectName(TransMemoryMerge action, HTextFlow tfToBeFilled, TransMemoryDetails tmDetail)
    {
-      if (action.getDifferentProjectOption() != MergeOption.APPROVED
+      if (action.getDifferentProjectOption() != MergeOption.IGNORE_CHECK
             && notEqual(tfToBeFilled.getDocument().getProjectIteration().getProject().getName(), tmDetail.getProjectName()))
       {
          setFlagsBasedOnOption(action.getDifferentProjectOption());
@@ -99,7 +116,7 @@ public class TransMemoryMergeStatusResolver
 
    private void setFlagsBasedOnOption(MergeOption mergeOption)
    {
-      if (mergeOption == MergeOption.SKIP)
+      if (mergeOption == MergeOption.REJECT)
       {
          needSkip = true;
       }

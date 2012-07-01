@@ -667,16 +667,6 @@ td.ApprovedStateDecoration div div div
 	padding: 5px;
 }
 
-td.FuzzyStateDecoration div div pre, td.ApprovedStateDecoration div div pre
-{
-	font-size: 14px;
-	font-family: sans-serif;
-	white-space: pre-wrap;
-	word-wrap: normal;
-	padding: 0px;
-	margin: 0px;
-}
-
 .HasValidationError {
 	border-left:3px solid red;
 	border-right:3px solid red;
@@ -823,7 +813,7 @@ td.FuzzyStateDecoration div div pre, td.ApprovedStateDecoration div div pre
 	cursor: pointer;
 }
 
-.translationContainer pre {
+.translationContainer pre, .translationContainer textarea {
 	font-size: 14px;
 	font-family: sans-serif;
 	word-wrap: break-word;

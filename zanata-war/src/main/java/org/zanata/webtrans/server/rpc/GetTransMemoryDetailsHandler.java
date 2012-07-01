@@ -71,13 +71,14 @@ public class GetTransMemoryDetailsHandler extends AbstractActionHandler<GetTrans
 
    protected TransMemoryDetails getTransMemoryDetail(HLocale hLocale, HTextFlow tf)
    {
-      HTextFlowTarget tft = tf.getTargets().get(hLocale);
+      HTextFlowTarget tft = tf.getTargets().get(hLocale.getId());
       HSimpleComment sourceComment = tf.getComment();
       HSimpleComment targetComment = tft.getComment();
       String docId = tf.getDocument().getDocId();
       String iterationName = tf.getDocument().getProjectIteration().getSlug();
       String projectName = tf.getDocument().getProjectIteration().getProject().getName();
-      return new TransMemoryDetails(HSimpleComment.toString(sourceComment), HSimpleComment.toString(targetComment), projectName, iterationName, docId, tf.getResId());
+      String msgContext = (tf.getPotEntryData() == null) ? null : tf.getPotEntryData().getContext();
+      return new TransMemoryDetails(HSimpleComment.toString(sourceComment), HSimpleComment.toString(targetComment), projectName, iterationName, docId, tf.getResId(), msgContext);
    }
 
    @Override

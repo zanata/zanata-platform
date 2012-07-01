@@ -22,9 +22,7 @@
 package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
-import java.util.Map;
 
-import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 
 import com.google.common.base.Objects;
@@ -39,20 +37,20 @@ public class TransMemoryMerge extends AbstractWorkspaceAction<UpdateTransUnitRes
    private List<TransUnitUpdateRequest> updateRequests;
    private MergeOption differentProjectOption;
    private MergeOption differentDocumentOption;
-   private MergeOption differentResIdOption;
+   private MergeOption differentContextOption;
 
    @SuppressWarnings("unused")
    TransMemoryMerge()
    {
    }
 
-   public TransMemoryMerge(int threshold, List<TransUnitUpdateRequest> updateRequests, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
+   public TransMemoryMerge(int threshold, List<TransUnitUpdateRequest> updateRequests, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentContextOption)
    {
       thresholdPercent = threshold;
       this.updateRequests = updateRequests;
       this.differentProjectOption = differentProjectOption;
       this.differentDocumentOption = differentDocumentOption;
-      this.differentResIdOption = differentResIdOption;
+      this.differentContextOption = differentContextOption;
    }
 
    public int getThresholdPercent()
@@ -70,9 +68,9 @@ public class TransMemoryMerge extends AbstractWorkspaceAction<UpdateTransUnitRes
       return differentDocumentOption;
    }
 
-   public MergeOption getDifferentResIdOption()
+   public MergeOption getDifferentContextOption()
    {
-      return differentResIdOption;
+      return differentContextOption;
    }
 
    public List<TransUnitUpdateRequest> getUpdateRequests()
@@ -89,7 +87,7 @@ public class TransMemoryMerge extends AbstractWorkspaceAction<UpdateTransUnitRes
             add("updateRequests", updateRequests).
             add("differentProjectOption", differentProjectOption).
             add("differentDocumentOption", differentDocumentOption).
-            add("differentResIdOption", differentResIdOption).
+            add("differentContextOption", differentContextOption).
             toString();
       // @formatter:on
    }

@@ -19,9 +19,40 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.webtrans.shared.rpc;
+package org.zanata.webtrans.client.ui;
 
-public enum MergeOption
+import org.zanata.webtrans.client.resources.EnumMessages;
+import org.zanata.webtrans.shared.rpc.MergeOption;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
+/**
+ * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
+@Singleton
+public class MergeStatusRenderer extends EnumRenderer<MergeOption>
 {
-   FUZZY, REJECT, IGNORE_CHECK
+   private final EnumMessages messages;
+
+   @Inject
+   public MergeStatusRenderer(EnumMessages messages)
+   {
+      this.messages = messages;
+   }
+
+   @Override
+   public String render(MergeOption option)
+   {
+      switch (option)
+      {
+      case FUZZY:
+         return messages.fuzzyStatus();
+      case IGNORE_CHECK:
+         return messages.skipStatus();
+      case REJECT:
+         return messages.rejectMerge();
+      default:
+         return getEmptyValue();
+      }
+   }
 }

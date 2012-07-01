@@ -21,7 +21,9 @@
        </h1>
        <h1>
            #{messages['jsf.Name']}:&nbsp;
-           #{versionGroupJoinAction.group.name}
+           <s:link id="versionGroup" styleClass="table_link" value="#{versionGroupJoinAction.group.name}" view="/version-group/version_group.xhtml"> 
+          	<f:param name="versionGroupSlug" value="#{versionGroupJoinAction.group.slug}"/>
+          </s:link>
        </h1>
 
 

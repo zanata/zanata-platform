@@ -12,13 +12,14 @@ public class TransMemoryDetails implements IsSerializable
    private String iterationName;
    private String docId;
    private String resId;
+   private String msgContext;
 
    @SuppressWarnings("unused")
    private TransMemoryDetails()
    {
    }
 
-   public TransMemoryDetails(String sourceComment, String targetComment, String projectName, String iterationName, String docId, String resId)
+   public TransMemoryDetails(String sourceComment, String targetComment, String projectName, String iterationName, String docId, String resId, String msgContext)
    {
       this.sourceComment = sourceComment;
       this.targetComment = targetComment;
@@ -26,6 +27,7 @@ public class TransMemoryDetails implements IsSerializable
       this.iterationName = iterationName;
       this.docId = docId;
       this.resId = resId;
+      this.msgContext = msgContext;
    }
 
    public String getSourceComment()
@@ -59,6 +61,11 @@ public class TransMemoryDetails implements IsSerializable
       return resId;
    }
 
+   public String getMsgContext()
+   {
+      return msgContext;
+   }
+
    @Override
    public String toString()
    {
@@ -70,6 +77,7 @@ public class TransMemoryDetails implements IsSerializable
             add("iterationName", iterationName).
             add("docId", docId).
             add("resId", resId).
+            add("msgContext", msgContext).
             toString();
       // @formatter:on
    }

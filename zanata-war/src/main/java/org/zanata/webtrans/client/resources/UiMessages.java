@@ -100,12 +100,24 @@ public interface UiMessages extends Messages
    @DefaultMessage("Match percentage threshold")
    String matchThreshold();
 
-   @DefaultMessage("Different project")
+   @DefaultMessage("On Content mismatch:")
+   String differentContent();
+
+   @DefaultMessage("On Project Name mismatch:")
    String differentProjectSlug();
 
-   @DefaultMessage("Different document")
+   @DefaultMessage("On Document Id mismatch (Document name and path):")
    String differentDocument();
 
-   @DefaultMessage("Different resource ID")
-   String differentResId();
+   @DefaultMessage("On Context mismatch (Res Id, msgctx):")
+   String differentContext();
+
+   @DefaultMessage("Otherwise:")
+   String otherwise();
+
+   @DefaultMessage("Condition")
+   String condition();
+
+   @DefaultMessage("Action")
+   String action();
 }
