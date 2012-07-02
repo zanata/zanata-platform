@@ -40,6 +40,7 @@ import com.google.gwt.dom.client.NativeEvent;
 * CTRL+Enter - Save as approved
 * Enter - Save as approved (if isEnterKeySavesEnabled = true)
 * 
+* @deprecated See KeyShortcutPresenter for keyboard shortcut management
 **/
 public interface CheckKey
 {

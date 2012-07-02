@@ -29,8 +29,6 @@ import javax.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.zanata.webtrans.client.editor.CheckKey;
-import org.zanata.webtrans.client.editor.CheckKeyImpl;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
 import org.zanata.webtrans.client.events.EnableModalNavigationEvent;
@@ -93,7 +91,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private final UserSessionService sessionService;
    private final UserConfigHolder configHolder;
 
-   private final CheckKey checkKey;
    private WorkspaceContext workspaceContext;
    private Scheduler scheduler;
 
@@ -126,7 +123,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       this.dispatcher = dispatcher;
       this.keyShortcutPresenter = keyShortcutPresenter;
 
-      checkKey = new CheckKeyImpl(ShortcutContext.Edit);
       eventBus.addHandler(UserConfigChangeEvent.getType(), this);
       eventBus.addHandler(RequestValidationEvent.getType(), this);
       eventBus.addHandler(InsertStringInEditorEvent.getType(), this);
@@ -262,8 +258,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          }
       }, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
 
-      // Register shortcut ENTER to save as approved (if
-      // configHolder.isButtonEnter() = true)
+      // Register shortcut ENTER to save as approved (if configHolder.isButtonEnter() = true) or move to next line
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(0, KeyCodes.KEY_ENTER, ShortcutContext.Edit, messages.saveAsApprovedEnter(), new KeyShortcutEventHandler()
       {
          @Override
@@ -272,12 +267,26 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
             if (configHolder.isButtonEnter())
             {
                saveAsApprovedAndMoveNext();
+            } 
+            else 
+            {
+               Log.info("=======auto size + 1");
+               getCurrentEditor().autoSizePlusOne();
             }
          }
-      }, KeyShortcut.KEY_DOWN_EVENT, true, true, true));
+      }, KeyShortcut.KEY_DOWN_EVENT, true, true, false));
 
-      // Register shortcut ESC to close editor - (if configHolder.isButtonEsc()
-      // = true)
+      keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.ESC_ENTER_KEYS, ShortcutContext.Edit, messages.userTyping(), new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            Log.info("=======auto size");
+            getCurrentEditor().autoSize();
+         }
+      }, KeyShortcut.KEY_DOWN_EVENT, true, false, false, true));
+
+      // Register shortcut ESC to close editor - (if configHolder.isButtonEsc() = true)
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(0, KeyCodes.KEY_ESCAPE, ShortcutContext.Edit, messages.closeEditor(), new KeyShortcutEventHandler()
       {
          @Override
@@ -295,7 +304,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            if(getCurrentEditor().isFocused())
+            if (getCurrentEditor().isFocused())
             {
                copySource(getCurrentEditor());
             }
@@ -687,16 +696,9 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void onEditorKeyDown(KeyDownEvent event, ToggleEditor editor)
    {
-      checkKey.init(event.getNativeEvent());
-
-      if (checkKey.isUserTyping() && checkKey.isEnterKey())
+      if (keyShortcutPresenter.isUserTyping(event.getNativeEvent()))
       {
-         // because enter itself will increase one line
-         editor.autoSizePlusOne();
-      }
-      else if (checkKey.isUserTyping())
-      {
-         editor.autoSize();
+//         editor.autoSize();
       }
    }
 

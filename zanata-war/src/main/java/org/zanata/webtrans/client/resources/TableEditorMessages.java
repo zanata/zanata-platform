@@ -72,4 +72,7 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Close opened editor")
    String closeEditor();
+
+   @DefaultMessage("User typing")
+   String userTyping();
 }

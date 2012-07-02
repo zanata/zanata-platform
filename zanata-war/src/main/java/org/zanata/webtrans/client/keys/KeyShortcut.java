@@ -23,6 +23,8 @@ package org.zanata.webtrans.client.keys;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 
+import com.google.gwt.event.dom.client.KeyCodes;
+
 /**
  * Represents a key shortcut for registration with {@link KeyShortcutPresenter}.
  * 
@@ -38,6 +40,7 @@ public class KeyShortcut
    public static final int META_KEY = 0x8;
    public static final int SHIFT_ALT_KEYS = ALT_KEY | SHIFT_KEY;
    public static final int CTRL_ALT_KEYS = CTRL_KEY | ALT_KEY;
+   public static final int ESC_ENTER_KEYS = KeyCodes.KEY_ESCAPE | KeyCodes.KEY_ENTER;
    
    public static final int KEY_G = 'G';
    public static final int KEY_J = 'J';
@@ -71,6 +74,7 @@ public class KeyShortcut
    
    private final boolean stopPropagation;
    private final boolean preventDefault;
+   private final boolean isNot;
    /**
     * Construct a KeyShortcut.
     * 
@@ -97,8 +101,16 @@ public class KeyShortcut
     * @param description shown to the user in the key shortcut summary pane
     * 
     * @param keyAction defined if shortcut action to be triggered by KeyUp, or KeyDown. Default KeyDown.
+    * 
+    * @param displayInView
+    * 
+    * @param stopPropagation
+    * 
+    * @param preventDefault
+    * 
+    * @param isNot
     */
-   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, String keyEvent, boolean displayInView, boolean stopPropagation, boolean preventDefault)
+   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, String keyEvent, boolean displayInView, boolean stopPropagation, boolean preventDefault, boolean isNot)
    {
       this.modifiers = modifiers;
       this.keyCode = keyCode;
@@ -109,6 +121,12 @@ public class KeyShortcut
       this.displayInView = displayInView;
       this.stopPropagation = stopPropagation;
       this.preventDefault = preventDefault;
+      this.isNot = isNot;
+   }
+   
+   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, String keyEvent, boolean displayInView, boolean stopPropagation, boolean preventDefault)
+   {
+      this(modifiers,keyCode, context, description, handler, keyEvent, displayInView, false, false, false);
    }
    
    public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, boolean displayInView)
@@ -164,6 +182,11 @@ public class KeyShortcut
    public boolean isPreventDefault()
    {
       return preventDefault;
+   }
+
+   public boolean isNot()
+   {
+      return isNot;
    }
 
    /**
