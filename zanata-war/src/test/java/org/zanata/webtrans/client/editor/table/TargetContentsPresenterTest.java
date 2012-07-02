@@ -60,7 +60,6 @@ import org.zanata.webtrans.client.presenter.TranslationHistoryPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelDisplay;
@@ -192,7 +191,7 @@ public class TargetContentsPresenterTest
    public void canCopySource()
    {
       when(sourceContentPresenter.getSelectedSource()).thenReturn("source");
-      presenter.showEditors(TargetContentsPresenter.NO_OPEN_EDITOR);
+      presenter.showEditors();
 
       presenter.copySource(editor);
 
@@ -217,7 +216,7 @@ public class TargetContentsPresenterTest
    @Test
    public void canGetNewTargets()
    {
-      presenter.showEditors(TargetContentsPresenter.NO_OPEN_EDITOR);
+      presenter.showEditors();
       when(display.getNewTargets()).thenReturn(targetContents);
 
       ArrayList<String> result = presenter.getNewTargets();
@@ -271,7 +270,7 @@ public class TargetContentsPresenterTest
    {
       when(display.getEditors()).thenReturn(Lists.newArrayList(currentEditors));
       when(display.isEditing()).thenReturn(true);
-      presenter.showEditors(0);
+      presenter.showEditors();
    }
 
    @Test

@@ -108,6 +108,7 @@ public class TransUnitEditView extends Composite implements TransUnitEditDisplay
          rootPanel.setWidgetSize(editorPanel, 0);
          return;
       }
+      //TODO extra long string will break the layout
       HorizontalPanel hPanel = new HorizontalPanel();
       hPanel.setWidth("100%");
       hPanel.add(sourceContentsDisplay);

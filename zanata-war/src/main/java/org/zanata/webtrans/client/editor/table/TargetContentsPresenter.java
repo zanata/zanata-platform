@@ -74,6 +74,7 @@ import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
 import org.zanata.webtrans.shared.rpc.TransUnitEditResult;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Objects;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -101,10 +102,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    private TargetContentsDisplay display;
    private int currentEditorIndex = NO_OPEN_EDITOR;
    private ArrayList<ToggleEditor> currentEditors;
-   private TransUnitsEditModel cellEditor;
+
    private boolean isModalNavEnabled;
 
    private final Identity identity;
+   private TransUnitId currentTransUnitId;
 
    private boolean enterSavesApprovedRegistered;
    private boolean escClosesEditorRegistered;
@@ -344,7 +346,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       }
    }
 
-   public void showEditors(int editorIndex)
+   public void showEditors()
    {
       Log.debug("enter show editor current editor index:" + currentEditorIndex);
       currentEditors = display.getEditors();
@@ -384,54 +386,44 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
    private void updateEditorTranslatorList(TransUnitId selectedTransUnitId, Person person, EditorClientId editorClientId)
    {
-      if (cellEditor.getTargetCell() != null)
+      if (!editorClientId.equals(identity.getEditorClientId()) && Objects.equal(currentTransUnitId, selectedTransUnitId))
       {
-         if (!editorClientId.equals(identity.getEditorClientId()) && cellEditor.getTargetCell().getId().equals(selectedTransUnitId))
+         for (ToggleEditor editor : currentEditors)
          {
-            for (ToggleEditor editor : currentEditors)
-            {
-               editor.addTranslator(person.getName(), sessionService.getColor(editorClientId.getValue()));
-            }
+            editor.addTranslator(person.getName(), sessionService.getColor(editorClientId.getValue()));
          }
-         else
+      }
+      else
+      {
+         for (ToggleEditor editor : currentEditors)
          {
-            for (ToggleEditor editor : currentEditors)
-            {
-               editor.removeTranslator(person.getName(), sessionService.getColor(editorClientId.getValue()));
-            }
+            editor.removeTranslator(person.getName(), sessionService.getColor(editorClientId.getValue()));
          }
       }
    }
 
    public void updateTranslators()
    {
-      if (isEditing())
+      for (ToggleEditor editor : currentEditors)
       {
-         for (ToggleEditor editor : currentEditors)
-         {
-            editor.clearTranslatorList();
-         }
+         editor.clearTranslatorList();
+      }
 
-         for (Map.Entry<EditorClientId, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
+      for (Map.Entry<EditorClientId, UserPanelSessionItem> entry : sessionService.getUserSessionMap().entrySet())
+      {
+         if (entry.getValue().getSelectedTransUnit() != null)
          {
-            if (entry.getValue().getSelectedTransUnit() != null)
-            {
-               updateEditorTranslatorList(entry.getValue().getSelectedTransUnit().getId(), entry.getValue().getPerson(), entry.getKey());
-            }
+            updateEditorTranslatorList(entry.getValue().getSelectedTransUnit().getId(), entry.getValue().getPerson(), entry.getKey());
          }
       }
    }
 
    public TargetContentsDisplay setValue(TransUnit transUnit, String findMessages)
    {
+      currentTransUnitId = transUnit.getId();
       display.setFindMessage(findMessages);
       display.setTargets(transUnit.getTargets());
       return display;
-   }
-
-   //TODO to be removed
-   public void initWidgets()
-   {
    }
 
    @Override
@@ -562,12 +554,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
       editor.addValidationMessagePanel(validationMessagePanel);
    }
 
-   // TODO to be removed
-   public void setCellEditor(TransUnitsEditModel cellEditor)
-   {
-      this.cellEditor = cellEditor;
-   }
-
    @Override
    public void onValueChanged(UserConfigChangeEvent event)
    {
@@ -640,15 +626,12 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
    @Override
    public void onRequestValidation(RequestValidationEvent event)
    {
-      if (isEditing())
+      for (ToggleEditor editor : display.getEditors())
       {
-         for (ToggleEditor editor : display.getEditors())
-         {
-            editor.setViewMode(ToggleEditor.ViewMode.EDIT);
-            validate(editor);
-         }
-         revealDisplay();
+         editor.setViewMode(ToggleEditor.ViewMode.EDIT);
+         validate(editor);
       }
+      revealDisplay();
    }
 
    @Override
@@ -665,12 +648,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
    private void copyTextWhenIsEditing(List<String> contents, boolean isInsertText)
    {
-      if (!isEditing())
-      {
-         eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUnopened()));
-         return;
-      }
-
       if (isInsertText)
       {
          getCurrentEditor().insertTextInCursorPosition(contents.get(0));

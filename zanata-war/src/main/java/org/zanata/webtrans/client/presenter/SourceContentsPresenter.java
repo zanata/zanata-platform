@@ -122,10 +122,6 @@ public class SourceContentsPresenter
       return display;
    }
 
-   public void initWidgets()
-   {
-   }
-
    public SourceContentsDisplay getDisplay()
    {
       return display;

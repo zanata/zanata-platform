@@ -168,7 +168,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
          sourceContentsPresenter.setValue(selectedTransUnit);
          targetContentsPresenter.setValue(selectedTransUnit, null);
          sourceContentsPresenter.selectedSource();
-         targetContentsPresenter.showEditors(0);
+         targetContentsPresenter.showEditors();
          translatorService.transUnitSelected(selectedTransUnit);
       }
    }
@@ -307,7 +307,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
          @Override
          public void onSaveFail()
          {
-            targetContentsPresenter.showEditors(0);
+            targetContentsPresenter.showEditors();
          }
       });
    }
@@ -405,7 +405,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
          eventBus.fireEvent(new NotificationEvent(Warning, "Concurrent edit detected. Reset value for current row"));
          targetContentsPresenter.setToViewMode();
          targetContentsPresenter.setValue(updatedTransUnit, findMessage.getMessage());
-         targetContentsPresenter.showEditors(0);
+         targetContentsPresenter.showEditors();
       }
    }
 }

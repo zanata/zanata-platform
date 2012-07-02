@@ -683,8 +683,6 @@ public class TableEditorPresenter extends WidgetPresenter<TableEditorPresenter.D
             @Override
             public void onSuccess(GetTransUnitListResult result)
             {
-               targetContentsPresenter.initWidgets();
-               sourceContentsPresenter.initWidgets();
                SerializableResponse<TransUnit> response = new SerializableResponse<TransUnit>(result.getUnits());
                Log.info("Got " + result.getUnits().size() + " rows back of " + result.getTotalCount() + " available");
                callback.onRowsReady(request, response);

@@ -24,18 +24,15 @@ package org.zanata.webtrans.client.editor.table;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.common.base.Objects;
-import com.google.common.base.Strings;
 
 /**
  * This class is immutable and all the mutator methods will return a new instance of it.
- * This is so that it can be shared by multiple ojects to keep track of states easily.
+ * This is so that it can be shared by multiple objects to keep track of states easily.
  *
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class GetTransUnitActionContext
 {
-   //TODO make this class singleton and be used by FilterViewConfirmationPanel and TableEditorPresenter
-
    private final DocumentId documentId;
    private String findMessage;
    private int offset = 0;

@@ -75,7 +75,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>,
 			TargetContentsPresenter targetContentsPresenter) {
 		this.isReadOnly = isReadOnly;
 		this.targetContentsPresenter = targetContentsPresenter;
-		this.targetContentsPresenter.setCellEditor(this);
 
 		cancelCallback = callback;
 		editRowCallback = rowCallback;
@@ -165,10 +164,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>,
 		curCol = curCellEditInfo.getCellIndex();
 
 		this.cellValue = cellValue;
-		targetContentsPresenter.showEditors(
-            TargetContentsPresenter.NO_OPEN_EDITOR);
+		targetContentsPresenter.showEditors();
 
-		isOpened = true;
+      isOpened = true;
 
 		Element element = table.getCellFormatter().getElement(curRow, curCol);
 		TableEditorView.scrollIntoView(element);
@@ -329,7 +327,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>,
 	}
 
 	public void showEditors(int rowIndex, int editorIndex) {
-		targetContentsPresenter.showEditors(editorIndex);
+		targetContentsPresenter.showEditors();
 
 	}
 
