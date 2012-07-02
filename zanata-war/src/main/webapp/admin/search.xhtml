@@ -14,87 +14,107 @@
       <rich:jQuery selector="#tab_admin" query="addClass('ui-tabs-selected')" />
       <rich:panel>
         <h1>#{messages['jsf.ManageSearch']}</h1>
-                 
-        <!-- TODO reformat indentation, change button label id to match progress message id -->
+
         <a4j:form>
           <s:token allowMultiplePosts="true" />
           <a4j:region>
-            <a4j:outputPanel id="reindexPanel">
 
-              <!-- minValue is -1 because of a bug when 0 is used -->
-              <!-- reRender expression is present as reRenderAfterComplete fails sometimes -->
-              <rich:progressBar id="reindexProgressBar"
-                    value="#{reindexAction.reindexProgress}"
-                    interval="1000"
-                    label="#{messages['jsf.search.reindex.ProgressMessage']}"
-                    minValue="-1"
-                    maxValue="#{reindexAction.reindexCount - 1}"
-                    enabled="#{reindexAction.reindexing}"
-                    reRender="#{reindexAction.reindexing ? reindex : reindexPanel}"
-                    reRenderAfterComplete="reindexPanel">
-              </rich:progressBar>
+            <a4j:outputPanel id="actions">
+              <a4j:outputPanel rendered="#{reindexAction.canceled || !reindexAction.inProgress}">
+                <h2>#{messages['jsf.manageSearch.Actions']}</h2>
+                <rich:dataTable id="classList" rows="#{reindexAction.classes.size}"
+                                value="#{reindexAction.classes.toArray()}" var="clazz"
+                                reRender="actions">
+                  <rich:column width="270px" sortBy="#{clazz.className}" sortOrder="ASCENDING" selfSorted="false">
+                    <f:facet name="header">Table</f:facet>
+                    <h:outputText value="#{clazz.className}" />
+                  </rich:column>
+                  <rich:column width="auto" styleClass="centered">
+                    <f:facet name="header">#{messages['jsf.manageSearch.purge']}</f:facet>
+                    <rich:toolTip showDelay="800" styleClass="leftalign">
+                      <p>#{messages['jsf.manageSearch.purge.Description']}</p>
+                      <p>#{messages['jsf.manageSearch.purge.ObsoletesOccupyDiskSpace']}</p>
+                      <p>#{messages['jsf.manageSearch.purge.RemoveByRunningOptimize']}</p>
+                    </rich:toolTip>
+                    <h:selectBooleanCheckbox value="#{clazz.purge}" />
+                  </rich:column>
+                  <rich:column width="auto" styleClass="centered">
+                    <f:facet name="header">#{messages['jsf.manageSearch.reindex']}</f:facet>
+                    <rich:toolTip showDelay="800" styleClass="leftalign">
+                      <p>#{messages['jsf.manageSearch.reindex.Description']}</p>
+                      <p>#{messages['jsf.manageSearch.reindex.OnlyWhenOutOfDate']}</p>
+                      <p>#{messages['jsf.manageSearch.reindex.AllRowsWillBeReindexed']}</p>
+                      <p>#{messages['jsf.manageSearch.reindex.IndexedRowsWillBeUpdated']}</p>
+                      <p><em>#{messages['jsf.manageSearch.reindex.TimeAndMemoryWarning']}</em></p>
+                      <p><em>#{messages['jsf.manageSearch.reindex.RunDuringOffPeak']}</em></p>
+                    </rich:toolTip>
+                    <h:selectBooleanCheckbox value="#{clazz.reindex}" />
+                  </rich:column>
+                  <rich:column width="auto" styleClass="centered">
+                    <f:facet name="header">#{messages['jsf.manageSearch.optimize']}</f:facet>
+                    <rich:toolTip showDelay="800" styleClass="leftalign">
+                      <p>#{messages['jsf.manageSearch.optimize.Description']}</p>
+                      <p>#{messages['jsf.manageSearch.optimize.RemovesObsoleteEntries']}</p>
+                      <p>#{messages['jsf.manageSearch.optimize.WillNotInfluenceIndexTime']}</p>
+                      <p><em>#{messages['jsf.manageSearch.optimize.TempFileWarning']}</em></p>
+                    </rich:toolTip>
+                    <h:selectBooleanCheckbox value="#{clazz.optimize}" />
+                  </rich:column>
+                </rich:dataTable>
 
-              <h:outputText rendered="#{reindexAction.reindexError}" escape="false">
-                <p>#{messages['jsf.search.reindex.ErrorMessage']}</p>
+                <rich:spacer height="10px" width="100%"/>
+                <!-- TODO select all button -->
+                <a4j:commandButton id="reindex"
+                    value="#{messages['jsf.ManageSearch.PerformSelectedActions']}"
+                    action="#{reindexAction.reindexDatabase}"
+                    reRender="actions,progress"/>
+              </a4j:outputPanel>
+            </a4j:outputPanel>
+
+            <a4j:outputPanel id="progress">
+              <h2>#{messages['jsf.ManageSearch.CurrentProgress']}</h2>
+              <h:outputText rendered="#{!reindexAction.started}" escape="false">
+                <p>#{messages['jsf.ManageSearch.NoOperationsRunning']}</p>
               </h:outputText>
-              <h:outputText rendered="#{reindexAction.reindexError}" escape="false">
+              <h:outputText rendered="#{reindexAction.started and !reindexAction.inProgress and !reindexAction.canceled and !reindexAction.error}">
+                <p>#{messages['jsf.ManageSearch.Completed']}</p>
+              </h:outputText>
+              <h:outputText rendered="#{reindexAction.canceled}" escape="false">
+                <p>#{messages['jsf.ManageSearch.Aborted']}</p>
+              </h:outputText>
+              <h:outputText rendered="#{reindexAction.error}" escape="false">
+                <p>#{messages['jsf.search.reindex.ErrorMessage']}</p>
                 <p>#{messages['jsf.search.reindex.PleaseReindex']}</p>
               </h:outputText>
 
-              <rich:dataTable id="classList" rows="#{reindexAction.classes.size}"
-                              value="#{reindexAction.classes.toArray()}" var="clazz"
-                              rendered="#{!reindexAction.reindexing}"
-                              reRender="reindexPanel">
-                <rich:column width="270px" sortBy="#{clazz.className}" sortOrder="ASCENDING" selfSorted="false">
-                  <f:facet name="header">Table</f:facet>
-                  <h:outputText value="#{clazz.className}" />
-                </rich:column>
-                <rich:column width="auto" styleClass="centered">
-                  <f:facet name="header">
-                    #{messages['jsf.manageSearch.purge']}
-                  </f:facet>
-                  <rich:toolTip showDelay="800" styleClass="leftalign">
-                    <p>#{messages['jsf.manageSearch.purge.Description']}</p>
-                    <p>#{messages['jsf.manageSearch.purge.ObsoletesOccupyDiskSpace']}</p>
-                    <p>#{messages['jsf.manageSearch.purge.RemoveByRunningOptimize']}</p>
-                  </rich:toolTip>
-                  <h:selectBooleanCheckbox value="#{clazz.purge}" />
-                </rich:column>
-                <rich:column width="auto" styleClass="centered">
-                  <f:facet name="header">
-                    #{messages['jsf.manageSearch.reindex']}
-                  </f:facet>
-                  <rich:toolTip showDelay="800" styleClass="leftalign">
-                    <p>#{messages['jsf.manageSearch.reindex.Description']}</p>
-                    <p>#{messages['jsf.manageSearch.reindex.OnlyWhenOutOfDate']}</p>
-                    <p>#{messages['jsf.manageSearch.reindex.AllRowsWillBeReindexed']}</p>
-                    <p>#{messages['jsf.manageSearch.reindex.IndexedRowsWillBeUpdated']}</p>
-                    <p><em>#{messages['jsf.manageSearch.reindex.TimeAndMemoryWarning']}</em></p>
-                    <p><em>#{messages['jsf.manageSearch.reindex.RunDuringOffPeak']}</em></p>
-                  </rich:toolTip>
-                  <h:selectBooleanCheckbox value="#{clazz.reindex}" />
-                </rich:column>
-                <rich:column width="auto" styleClass="centered">
-                  <f:facet name="header">
-                    #{messages['jsf.manageSearch.optimize']}
-                  </f:facet>
-                  <rich:toolTip showDelay="800" styleClass="leftalign">
-                    <p>#{messages['jsf.manageSearch.optimize.Description']}</p>
-                    <p>#{messages['jsf.manageSearch.optimize.RemovesObsoleteEntries']}</p>
-                    <p>#{messages['jsf.manageSearch.optimize.WillNotInfluenceIndexTime']}</p>
-                    <p><em>#{messages['jsf.manageSearch.optimize.TempFileWarning']}</em></p>
-                  </rich:toolTip>
-                  <h:selectBooleanCheckbox value="#{clazz.optimize}" />
-                </rich:column>
-              </rich:dataTable>
+              <a4j:outputPanel>
+                <!-- minValue is -1 because of a bug when 0 is used -->
+                <rich:progressBar id="reindexProgressBar"
+                      value="#{reindexAction.reindexProgress}"
+                      interval="1000"
+                      label="#{messages['jsf.search.reindex.ProgressMessage']}"
+                      minValue="-1"
+                      maxValue="#{reindexAction.reindexCount - 1}"
+                      reRender="timeEstimate"
+                      reRenderAfterComplete="progress,actions">
+                </rich:progressBar>
+              </a4j:outputPanel>
 
-              <a4j:commandButton id="reindex"
-                  value="#{messages['jsf.ManageSearch.PerformSelectedActions']}"
-                  action="#{reindexAction.reindexDatabase}"
-                  rendered="#{!reindexAction.reindexing}"
-                  reRender="reindexPanel"/>
+              <a4j:outputPanel id="timeEstimate">
+                <h:outputText rendered="#{reindexAction.inProgress}">
+                  <p>#{messages['jsf.ManageSearch.ElapsedTime']}</p>
+                  <p>#{messages['jsf.ManageSearch.RemainingTime']}</p>
+                </h:outputText>
+              </a4j:outputPanel>
+
+                <a4j:commandButton id="cancel"
+                    value="#{messages['jsf.ManageSearch.Abort']}"
+                    action="#{reindexAction.cancel}"
+                    rendered="#{reindexAction.inProgress and !reindexAction.canceled}"
+                    reRender="actions,progress"/>
 
             </a4j:outputPanel>
+
           </a4j:region>
         </a4j:form>
       </rich:panel>
