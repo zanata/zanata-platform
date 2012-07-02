@@ -63,7 +63,15 @@
                 </rich:dataTable>
 
                 <rich:spacer height="10px" width="100%"/>
-                <!-- TODO select all button -->
+
+                <a4j:commandButton id="selectNone"
+                    value="#{messages['jsf.ManageSearch.SelectNone']}"
+                    action="#{reindexAction.selectAll(false)}"
+                    reRender="actions"/>
+                <a4j:commandButton id="selectAll"
+                    value="#{messages['jsf.ManageSearch.SelectAll']}"
+                    action="#{reindexAction.selectAll(true)}"
+                    reRender="actions"/>
                 <a4j:commandButton id="reindex"
                     value="#{messages['jsf.ManageSearch.PerformSelectedActions']}"
                     action="#{reindexAction.reindexDatabase}"

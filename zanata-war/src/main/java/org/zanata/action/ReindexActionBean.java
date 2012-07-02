@@ -27,6 +27,16 @@ public class ReindexActionBean
       return reindexAsync.getReindexOptions();
    }
 
+   public void selectAll(boolean selected)
+   {
+      for (ReindexClassOptions opts : reindexAsync.getReindexOptions())
+      {
+         opts.setPurge(selected);
+         opts.setReindex(selected);
+         opts.setOptimize(selected);
+      }
+   }
+
    public boolean isInProgress()
    {
       return reindexAsync.getProcessHandle().isInProgress();
