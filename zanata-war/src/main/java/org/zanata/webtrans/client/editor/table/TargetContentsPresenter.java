@@ -270,18 +270,17 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
             } 
             else 
             {
-               Log.info("=======auto size + 1");
                getCurrentEditor().autoSizePlusOne();
             }
          }
       }, KeyShortcut.KEY_DOWN_EVENT, true, true, false));
-
+      
+      // Register user typing keys to (anything not CTRL or ALT or ESC or ENTER) resize textarea
       keyShortcutPresenter.registerKeyShortcut(new KeyShortcut(KeyShortcut.CTRL_ALT_KEYS, KeyShortcut.ESC_ENTER_KEYS, ShortcutContext.Edit, messages.userTyping(), new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
-            Log.info("=======auto size");
             getCurrentEditor().autoSize();
          }
       }, KeyShortcut.KEY_DOWN_EVENT, true, false, false, true));

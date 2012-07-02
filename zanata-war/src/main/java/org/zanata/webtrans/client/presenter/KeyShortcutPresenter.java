@@ -268,37 +268,34 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
       int modifiers = calculateModifiers(evt);
       int keyHash = calculateKeyHash(modifiers, evt.getKeyCode());
       Log.debug("processing key shortcut for key" + evt.getKeyCode() + " with hash " + keyHash);
-      // Set<KeyShortcut> shortcuts = ensureShortcutMap().get(keyHash);
-      // if (shortcuts != null)
-      // {
-      // KeyShortcutEvent shortcutEvent = new KeyShortcutEvent(modifiers,
-      // evt.getKeyCode());
-      // for (KeyShortcut shortcut : shortcuts)
-      // {
-      // if (ensureActiveContexts().contains(shortcut.getContext()) &&
-      // shortcut.getKeyEvent().equals(evt.getType()))
-      // {
-      // if (shortcut.isStopPropagation())
-      // {
-      // evt.stopPropagation();
-      // }
-      // if (shortcut.isPreventDefault())
-      // {
-      // evt.preventDefault();
-      // }
-      // shortcut.getHandler().onKeyShortcut(shortcutEvent);
-      // }
-      // }
-      // }
-
-      for (Entry<Integer, Set<KeyShortcut>> entry : ensureShortcutMap().entrySet())
+      Set<KeyShortcut> shortcuts = ensureShortcutMap().get(keyHash);
+      if (shortcuts != null)
       {
          KeyShortcutEvent shortcutEvent = new KeyShortcutEvent(modifiers, evt.getKeyCode());
-         for (KeyShortcut shortcut : entry.getValue())
+         for (KeyShortcut shortcut : shortcuts)
          {
             if (ensureActiveContexts().contains(shortcut.getContext()) && shortcut.getKeyEvent().equals(evt.getType()))
             {
-               if (entry.getKey().equals(keyHash) || shortcut.isNot())
+               if (shortcut.isStopPropagation())
+               {
+                  evt.stopPropagation();
+               }
+               if (shortcut.isPreventDefault())
+               {
+                  evt.preventDefault();
+               }
+               shortcut.getHandler().onKeyShortcut(shortcutEvent);
+            }
+         }
+      }
+      else // this is to check any keyShortcut isNot = true registered
+      {
+         for (Entry<Integer, Set<KeyShortcut>> entry : ensureShortcutMap().entrySet())
+         {
+            KeyShortcutEvent shortcutEvent = new KeyShortcutEvent(modifiers, evt.getKeyCode());
+            for (KeyShortcut shortcut : entry.getValue())
+            {
+               if (ensureActiveContexts().contains(shortcut.getContext()) && shortcut.getKeyEvent().equals(evt.getType()) && shortcut.isNot())
                {
                   if (shortcut.isStopPropagation())
                   {
