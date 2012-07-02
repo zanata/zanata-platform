@@ -52,20 +52,16 @@ public class ReindexAsyncBean
    private Set<Class<?>> indexables = new HashSet<Class<?>>();
    private HashMap<Class<?>, ReindexClassOptions> indexingOptions = new HashMap<Class<?>, ReindexClassOptions>();
 
-   private boolean reindexing;
-
-   private int objectCount;
-   private int objectProgress;
    private boolean hasError;
+
+   private ProcessHandle handle;
 
    @Create
    public void create()
    {
-      reindexing = false;
+      handle = new ProcessHandle();
+      handle.setMaxProgress(0); //prevent progress indicator showing before first reindex
       hasError = false;
-
-      objectCount = 0;
-      objectProgress = 0;
 
       // TODO: find a version of this that works:
       // indexables.addAll(StandardDeploymentStrategy.instance().getAnnotatedClasses().get(Indexed.class.getName()));
@@ -88,6 +84,11 @@ public class ReindexAsyncBean
       return indexingOptions.values();
    }
 
+   public ProcessHandle getProcessHandle()
+   {
+      return handle;
+   }
+
    /**
     * Prepare to reindex lucene search index. This ensures that progress counts
     * are properly initialised before the asynchronous startReindex() method is
@@ -96,25 +97,40 @@ public class ReindexAsyncBean
    public void prepareReindex()
    {
       // TODO print message? throw exception?
-      if (reindexing)
+      if (handle.isInProgress())
          return;
 
+      handle = new ProcessHandle();
+      handle.start();
+
       hasError = false;
-      reindexing = true;
+
       log.info("Re-indexing started");
 
       session = Search.getFullTextSession((Session) entityManagerFactory.createEntityManager().getDelegate());
 
       // set up progress counter
-      objectCount = 0;
+      int totalOperations = 0;
       for (Class<?> clazz : indexables)
       {
-         if (indexingOptions.get(clazz).isReindex())
+         ReindexClassOptions opts = indexingOptions.get(clazz);
+         if (opts.isPurge())
          {
-            objectCount += (Integer) session.createCriteria(clazz).setProjection(Projections.rowCount()).list().get(0);
+            totalOperations++;
+         }
+
+         if (opts.isReindex())
+         {
+            totalOperations += (Integer) session.createCriteria(clazz).setProjection(Projections.rowCount()).list().get(0);
+         }
+
+         if (opts.isOptimize())
+         {
+            totalOperations++;
          }
       }
-      objectProgress = 0;
+      handle.setMaxProgress(totalOperations);
+      handle.setCurrentProgress(0);
    }
 
    /**
@@ -124,55 +140,61 @@ public class ReindexAsyncBean
    @Asynchronous
    public void startReindex()
    {
-      if (!reindexing)
+      // TODO this is necessary because isInProgress checks number of operations, which may be 0
+      // look at updating isInProgress not to care about count
+      if (handle.maxProgress == 0) {
+         handle.finish();
+         log.info("Reindexing aborted because there are no actions to perform (may be indexing an empty table)");
+         return;
+      }
+      if (!handle.isInProgress())
       {
          throw new RuntimeException("startReindex() must not be called before prepareReindex()");
       }
 
       for (Class<?> clazz : indexables)
       {
-         if (indexingOptions.get(clazz).isPurge())
+         if (!handle.shouldStop() && indexingOptions.get(clazz).isPurge())
          {
             log.info("purging index for {0}", clazz);
             session.purgeAll(clazz);
+            handle.incrementProgress(1);
          }
-      }
-
-      for (Class<?> clazz : indexables)
-      {
-         if (indexingOptions.get(clazz).isReindex())
+         if (!handle.shouldStop() && indexingOptions.get(clazz).isReindex())
          {
             log.info("reindexing {0}", clazz);
             reindex(clazz);
          }
-      }
-
-      for (Class<?> clazz : indexables)
-      {
-         if (indexingOptions.get(clazz).isOptimize())
+         if (!handle.shouldStop() && indexingOptions.get(clazz).isOptimize())
          {
             log.info("optimizing {0}", clazz);
             session.getSearchFactory().optimize(clazz);
+            handle.incrementProgress(1);
          }
       }
 
-      if (objectCount != objectProgress)
+      if (handle.shouldStop()) {
+         log.info("index operation canceled by user");
+      }
+      else
       {
-         // @formatter: off
-         log.warn("Did not reindex the expected number of objects. Counted {0} but indexed {1}. "
-         + "The index may be out-of-sync. "
-         + "This is most likely caused by database activity during reindexing.", objectCount, objectProgress);
-         // @formatter: on
+         if (handle.getCurrentProgress() != handle.getMaxProgress())
+         {
+            // @formatter: off
+            log.warn("Did not reindex the expected number of objects. Counted {0} but indexed {1}. "
+                  + "The index may be out-of-sync. "
+                  + "This may be caused by lack of sufficient memory, or by database activity during reindexing.", handle.getMaxProgress(), handle.getCurrentProgress());
+            // @formatter: on
+         }
+
+         log.info("Re-indexing finished" + (hasError ? " with errors" : ""));
       }
 
-      log.info("Re-indexing finished" + (hasError ? " with errors" : ""));
-      reindexing = false;
+      handle.finish();
    }
 
    private void reindex(Class<?> clazz)
    {
-      log.info("Re-indexing {0}", clazz);
-
       ScrollableResults results = null;
       try
       {
@@ -183,11 +205,11 @@ public class ReindexAsyncBean
 
          int index = 0;
          results = session.createCriteria(clazz).setFirstResult(index).setMaxResults(BATCH_SIZE).scroll(ScrollMode.FORWARD_ONLY);
-         while (results.next())
+         while (results.next() && !handle.shouldStop())
          {
-            objectProgress++;
             index++;
             session.index(results.get(0)); // index each element
+            handle.incrementProgress(1);
             if (index % BATCH_SIZE == 0)
             {
                log.info("periodic flush and clear for {0} (index {1})", clazz, index);
@@ -212,33 +234,141 @@ public class ReindexAsyncBean
       }
    }
 
-   /**
-    * @return true if a reindex operation is running, false otherwise
-    */
-   public boolean isReindexing()
-   {
-      return reindexing;
-   }
+   // TODO merge everything below into ProcessHandle in 1.7 branch
 
-   public boolean hasError()
+   public class ProcessHandle
    {
-      return hasError;
-   }
+      private boolean shouldStop = false;
+      private int minProgress = 0;
+      private int maxProgress = 100;
+      private int currentProgress = 0;
+      private long startTime = -1;
+      private long finishTime = -1;
 
-   /**
-    * @return the total number of objects to be reindexed
-    */
-   public int getObjectCount()
-   {
-      return objectCount;
-   }
+      public boolean isInProgress()
+      {
+         return this.isStarted() && !this.isFinished() && currentProgress < maxProgress;
+      }
 
-   /**
-    * @return the number of objects that have been reindexed
-    */
-   public int getObjectProgress()
-   {
-      return objectProgress;
-   }
+      public void stop()
+      {
+         shouldStop = true;
+      }
 
+      public boolean shouldStop()
+      {
+         return shouldStop;
+      }
+
+      public int getMaxProgress()
+      {
+         return maxProgress;
+      }
+
+      public void setMaxProgress(int maxProgress)
+      {
+         this.maxProgress = maxProgress;
+      }
+
+      public int getMinProgress()
+      {
+         return minProgress;
+      }
+
+      public void setMinProgress(int minProgress)
+      {
+         this.minProgress = minProgress;
+      }
+
+      public int getCurrentProgress()
+      {
+         return currentProgress;
+      }
+
+      void start()
+      {
+         if( !this.isInProgress() && this.startTime == -1 )
+         {
+            this.startTime = System.currentTimeMillis();
+         }
+      }
+
+      void finish()
+      {
+         this.finishTime = System.currentTimeMillis();
+      }
+
+      public void setCurrentProgress(int currentProgress)
+      {
+         this.start(); // start if it hasn't been done yet
+         this.currentProgress = currentProgress;
+      }
+
+      public void incrementProgress(int increment)
+      {
+         this.start(); // start if it hasn't been done yet
+         this.currentProgress += increment;
+      }
+
+      public boolean isStarted()
+      {
+         return this.startTime != -1;
+      }
+
+      public boolean isFinished()
+      {
+         return this.finishTime != -1;
+      }
+
+      public long getEstimatedTimeRemaining()
+      {
+         if( this.startTime == -1 )
+         {
+            return 0;
+         }
+
+         long currentTime = System.currentTimeMillis();
+         long timeElapsed = currentTime - this.startTime;
+         //avoid divide by zero. Slight inaccuracy is acceptable for this approximation.
+         long averageTimePerProgressUnit = timeElapsed / (this.currentProgress == 0 ? 1 : this.currentProgress);
+
+         return averageTimePerProgressUnit * (this.maxProgress - this.currentProgress);
+      }
+
+      public long getElapsedTime()
+      {
+         if (!isStarted())
+         {
+            return 0;
+         }
+
+         if (isFinished())
+         {
+            return getFinishTime() - getStartTime();
+         }
+         else
+         {
+            return System.currentTimeMillis() - getStartTime();
+         }
+      }
+
+      public long getStartTime()
+      {
+         return this.startTime;
+      }
+
+      /**
+       * @return Process finish time (cancelled or otherwise), or -1 if the process hasn't finished yet.
+       */
+      public long getFinishTime()
+      {
+         return this.finishTime;
+      }
+
+      // methods to add in process handle subclass
+      public boolean hasError()
+      {
+         return hasError;
+      }
+   }
 }
