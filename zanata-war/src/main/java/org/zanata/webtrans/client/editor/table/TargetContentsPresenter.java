@@ -346,7 +346,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener, 
 
    public void showEditors(int editorIndex)
    {
-      Log.debug("enter show editor with editor index:" + editorIndex + " current editor index:" + currentEditorIndex);
+      Log.debug("enter show editor current editor index:" + currentEditorIndex);
       currentEditors = display.getEditors();
 
       for (ToggleEditor editor : display.getEditors())

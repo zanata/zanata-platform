@@ -29,8 +29,11 @@ import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEventHandler;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.service.NavigationController;
@@ -50,6 +53,7 @@ import com.google.inject.Inject;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+import static org.zanata.webtrans.client.events.NotificationEvent.Severity.*;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -62,7 +66,8 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       TransUnitSaveEventHandler,
       FindMessageHandler,
       FilterViewEventHandler,
-      FilterViewConfirmationDisplay.Listener
+      FilterViewConfirmationDisplay.Listener,
+      TransUnitUpdatedEventHandler
 {
 
    private final TransUnitEditDisplay display;
@@ -126,6 +131,7 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
       eventBus.addHandler(TransUnitSaveEvent.TYPE, this);
       eventBus.addHandler(FindMessageEvent.getType(), this);
       eventBus.addHandler(FilterViewEvent.getType(), this);
+      eventBus.addHandler(TransUnitUpdatedEvent.getType(), this);
       transUnitListDisplay.addLoadingStateChangeHandler(this);
       dataModel.addSelectionChangeHandler(this);
    }
@@ -386,5 +392,20 @@ public class TransUnitEditPresenter extends WidgetPresenter<TransUnitEditDisplay
    {
       eventBus.fireEvent(new FilterViewEvent(filterOptions.isFilterTranslated(), filterOptions.isFilterNeedReview(), filterOptions.isFilterUntranslated(), true));
       display.hideFilterConfirmation();
+   }
+
+   @Override
+   public void onTransUnitUpdated(TransUnitUpdatedEvent event)
+   {
+      TransUnit updatedTransUnit = event.getUpdateInfo().getTransUnit();
+      if (Objects.equal(dataModel.getSelectedOrNull(), updatedTransUnit))
+      {
+         //TODO current edit has happened. What's the best way to show it to user.
+         Log.info("detect concurrent edit. Closing editor");
+         eventBus.fireEvent(new NotificationEvent(Warning, "Concurrent edit detected. Reset value for current row"));
+         targetContentsPresenter.setToViewMode();
+         targetContentsPresenter.setValue(updatedTransUnit, findMessage.getMessage());
+         targetContentsPresenter.showEditors(0);
+      }
    }
 }
