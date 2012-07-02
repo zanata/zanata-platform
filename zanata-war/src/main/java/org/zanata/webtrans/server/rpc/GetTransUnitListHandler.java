@@ -43,6 +43,8 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 
+import com.google.common.base.Strings;
+
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;

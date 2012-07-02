@@ -42,6 +42,7 @@ import org.zanata.rest.service.ResourceUtils;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.client.editor.table.GetTransUnitActionContext;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
@@ -129,6 +130,8 @@ public class NavigationControllerTest
    private ResourceUtils resourceUtils;
    @Mock
    private ZanataIdentity identity;
+   @Mock
+   private TextFlowSearchService textFlowSearchServiceImpl;
 
    private GetTransUnitListHandler getTransUnitListHandler;
    private GetTransUnitsNavigationHandler getTransUnitsNavigationHandler;
@@ -182,11 +185,12 @@ public class NavigationControllerTest
       getTransUnitListHandler = SeamAutowire.instance()
             .use("identity", identity)
             .use("textFlowDAO", textFlowDAO)
+            .use("textFlowSearchServiceImpl", textFlowSearchServiceImpl)
             .use("localeServiceImpl", localeServiceImpl)
             .use("resourceUtils", resourceUtils)
             .autowire(GetTransUnitListHandler.class);
       // @formatter:on
-      when(textFlowDAO.getTransUnitList(documentId.getId())).thenReturn(hTextFlows);
+      when(textFlowDAO.getTextFlows(documentId.getId())).thenReturn(hTextFlows);
       when(localeServiceImpl.validateLocaleByProjectIteration(any(LocaleId.class), anyString(), anyString())).thenReturn(hLocale);
       when(resourceUtils.getNumPlurals(any(HDocument.class), any(HLocale.class))).thenReturn(1);
    }
