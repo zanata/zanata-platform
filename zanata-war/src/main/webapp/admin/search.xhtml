@@ -26,7 +26,7 @@
                                 value="#{reindexAction.classes.toArray()}" var="clazz"
                                 reRender="actions">
                   <rich:column width="270px" sortBy="#{clazz.className}" sortOrder="ASCENDING" selfSorted="false">
-                    <f:facet name="header">Table</f:facet>
+                    <f:facet name="header">#{messages['jsf.manageSearch.Table']}</f:facet>
                     <h:outputText value="#{clazz.className}" />
                   </rich:column>
                   <rich:column width="auto" styleClass="centered">
@@ -91,8 +91,8 @@
                 <p>#{messages['jsf.ManageSearch.Aborted']}</p>
               </h:outputText>
               <h:outputText rendered="#{reindexAction.error}" escape="false">
-                <p>#{messages['jsf.search.reindex.ErrorMessage']}</p>
-                <p>#{messages['jsf.search.reindex.PleaseReindex']}</p>
+                <p>#{messages['jsf.manageSearch.ErrorMessage']}</p>
+                <p>#{messages['jsf.manageSearch.PleaseReindex']}</p>
               </h:outputText>
 
               <a4j:outputPanel>
@@ -100,7 +100,7 @@
                 <rich:progressBar id="reindexProgressBar"
                       value="#{reindexAction.reindexProgress}"
                       interval="1000"
-                      label="#{messages['jsf.search.reindex.ProgressMessage']}"
+                      label="#{messages['jsf.manageSearch.ProgressMessage']}"
                       minValue="-1"
                       maxValue="#{reindexAction.reindexCount - 1}"
                       reRender="timeEstimate"
@@ -110,6 +110,9 @@
               </a4j:outputPanel>
 
               <a4j:outputPanel id="timeEstimate">
+                <h:outputText rendered="#{reindexAction.inProgress || reindexAction.canceled || reindexAction.error}">
+                  <p>#{messages['jsf.manageSearch.CurrentTable']}</p>
+                </h:outputText>
                 <h:outputText rendered="#{reindexAction.inProgress}">
                   <p>#{messages['jsf.ManageSearch.ElapsedTime']}</p>
                   <p>#{messages['jsf.ManageSearch.RemainingTime']}</p>

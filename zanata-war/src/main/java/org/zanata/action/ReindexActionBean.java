@@ -42,6 +42,11 @@ public class ReindexActionBean
       return reindexAsync.getProcessHandle().isInProgress();
    }
 
+   public String getCurrentClass()
+   {
+      return reindexAsync.getCurrentClassName();
+   }
+
    public boolean isError()
    {
       return reindexAsync.getProcessHandle().hasError();

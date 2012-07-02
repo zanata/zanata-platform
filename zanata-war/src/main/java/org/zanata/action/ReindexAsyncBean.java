@@ -51,6 +51,7 @@ public class ReindexAsyncBean
 
    private Set<Class<?>> indexables = new HashSet<Class<?>>();
    private HashMap<Class<?>, ReindexClassOptions> indexingOptions = new HashMap<Class<?>, ReindexClassOptions>();
+   private Class<?> currentClass;
 
    private boolean hasError;
 
@@ -87,6 +88,15 @@ public class ReindexAsyncBean
    public ProcessHandle getProcessHandle()
    {
       return handle;
+   }
+
+   public String getCurrentClassName()
+   {
+      if (currentClass == null)
+      {
+         return "none";
+      }
+      return currentClass.getSimpleName();
    }
 
    /**
@@ -157,17 +167,20 @@ public class ReindexAsyncBean
          if (!handle.shouldStop() && indexingOptions.get(clazz).isPurge())
          {
             log.info("purging index for {0}", clazz);
+            currentClass = clazz;
             session.purgeAll(clazz);
             handle.incrementProgress(1);
          }
          if (!handle.shouldStop() && indexingOptions.get(clazz).isReindex())
          {
             log.info("reindexing {0}", clazz);
+            currentClass = clazz;
             reindex(clazz);
          }
          if (!handle.shouldStop() && indexingOptions.get(clazz).isOptimize())
          {
             log.info("optimizing {0}", clazz);
+            currentClass = clazz;
             session.getSearchFactory().optimize(clazz);
             handle.incrementProgress(1);
          }
