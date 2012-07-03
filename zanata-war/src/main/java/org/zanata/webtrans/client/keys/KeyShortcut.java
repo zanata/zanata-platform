@@ -23,6 +23,8 @@ package org.zanata.webtrans.client.keys;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 
+import com.google.gwt.event.dom.client.KeyCodes;
+
 /**
  * Represents a key shortcut for registration with {@link KeyShortcutPresenter}.
  * 
@@ -30,19 +32,52 @@ import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  * 
  */
-public class KeyShortcut
+public class KeyShortcut implements Comparable<KeyShortcut>
 {
    public static final int ALT_KEY = 0x1;
    public static final int SHIFT_KEY = 0x2;
    public static final int CTRL_KEY = 0x4;
    public static final int META_KEY = 0x8;
    public static final int SHIFT_ALT_KEYS = ALT_KEY | SHIFT_KEY;
+   public static final int CTRL_ALT_KEYS = CTRL_KEY | ALT_KEY;
+   public static final int ESC_ENTER_KEYS = KeyCodes.KEY_ESCAPE | KeyCodes.KEY_ENTER;
+
+   public static final int KEY_G = 'G';
+   public static final int KEY_J = 'J';
+   public static final int KEY_K = 'K';
+   public static final int KEY_S = 'S';
+
+   public static int KEY_1 = 49;
+   public static int KEY_1_NUM = 97;
+
+   public static final int KEY_2 = 50;
+   public static final int KEY_2_NUM = 98;
+
+   public static final int KEY_3 = 51;
+   public static final int KEY_3_NUM = 99;
+
+   public static final int KEY_4 = 52;
+   public static final int KEY_4_NUM = 100;
+
+   public static final String KEY_UP_EVENT = "keyup";
+   public static final String KEY_DOWN_EVENT = "keydown";
+   public static final String KEY_PRESS_EVENT = "keypress";
 
    private final int modifiers;
    private final int keyCode;
    private final ShortcutContext context;
    private String description;
    private final KeyShortcutEventHandler handler;
+   private final String keyEvent;
+
+   //Display in shortcut summary view
+   private final boolean displayInView;
+
+   private final boolean stopPropagation;
+   private final boolean preventDefault;
+   
+   //Match anything else that is not the registered shortcut
+   private final boolean isNot;
 
    /**
     * Construct a KeyShortcut.
@@ -68,14 +103,45 @@ public class KeyShortcut
     * @param context see
     *           {@link KeyShortcutPresenter#setContextActive(ShortcutContext, boolean)}
     * @param description shown to the user in the key shortcut summary pane
+    * 
+    * @param keyAction defined if shortcut action to be triggered by KeyUp, or
+    *           KeyDown. Default KeyDown.
+    * 
+    * @param displayInView
+    * 
+    * @param stopPropagation
+    * 
+    * @param preventDefault
+    * 
+    * @param isNot
     */
-   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler)
+   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, String keyEvent, boolean displayInView, boolean stopPropagation, boolean preventDefault, boolean isNot)
    {
       this.modifiers = modifiers;
       this.keyCode = keyCode;
       this.context = context;
       this.description = description;
       this.handler = handler;
+      this.keyEvent = keyEvent;
+      this.displayInView = displayInView;
+      this.stopPropagation = stopPropagation;
+      this.preventDefault = preventDefault;
+      this.isNot = isNot;
+   }
+
+   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, String keyEvent, boolean displayInView, boolean stopPropagation, boolean preventDefault)
+   {
+      this(modifiers, keyCode, context, description, handler, keyEvent, displayInView, false, false, false);
+   }
+
+   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler, boolean displayInView)
+   {
+      this(modifiers, keyCode, context, description, handler, KEY_DOWN_EVENT, displayInView, false, false);
+   }
+
+   public KeyShortcut(int modifiers, int keyCode, ShortcutContext context, String description, KeyShortcutEventHandler handler)
+   {
+      this(modifiers, keyCode, context, description, handler, KEY_DOWN_EVENT, true, false, false);
    }
 
    public int getModifiers()
@@ -101,6 +167,31 @@ public class KeyShortcut
    public KeyShortcutEventHandler getHandler()
    {
       return handler;
+   }
+
+   public String getKeyEvent()
+   {
+      return keyEvent;
+   }
+
+   public boolean isDisplayInView()
+   {
+      return displayInView;
+   }
+
+   public boolean isStopPropagation()
+   {
+      return stopPropagation;
+   }
+
+   public boolean isPreventDefault()
+   {
+      return preventDefault;
+   }
+
+   public boolean isNot()
+   {
+      return isNot;
    }
 
    /**
@@ -136,5 +227,25 @@ public class KeyShortcut
          return false;
       KeyShortcut other = (KeyShortcut) obj;
       return modifiers == other.modifiers && keyCode == other.keyCode && context == other.context;
+   }
+
+   @Override
+   public int compareTo(KeyShortcut o)
+   {
+      Integer compareFrom;
+      Integer compareTo;
+
+      if (this.modifiers == o.modifiers)
+      {
+         compareFrom = this.modifiers + this.keyCode;
+         compareTo = o.modifiers + o.keyCode;
+      }
+      else
+      {
+         compareFrom = this.modifiers;
+         compareTo = o.modifiers;
+      }
+
+      return compareFrom.compareTo(compareTo);
    }
 }

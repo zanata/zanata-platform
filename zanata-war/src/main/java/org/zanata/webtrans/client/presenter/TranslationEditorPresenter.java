@@ -147,16 +147,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       return tableEditorPresenter.getDisplay().getTargetCellEditor().isEditing();
    }
 
-   public boolean isCancelButtonFocused()
-   {
-      return tableEditorPresenter.getDisplay().getTargetCellEditor().isCancelButtonFocused();
-   }
-
-   public void setCancelButtonFocused(boolean isCancelButtonFocused)
-   {
-      tableEditorPresenter.getDisplay().getTargetCellEditor().setCancelButtonFocused(isCancelButtonFocused);
-   }
-
    public boolean isTransFilterFocused()
    {
       return transFilterPresenter.isFocused();

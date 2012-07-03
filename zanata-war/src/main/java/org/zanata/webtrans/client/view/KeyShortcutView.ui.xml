@@ -1,9 +1,48 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-    xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-    <g:VerticalPanel ui:field="keyShortcutPanel" styleName="keyShortcutPanel">
-        <!-- add a vertical panel for each active context -->
-    </g:VerticalPanel>
+	<ui:style type="org.zanata.webtrans.client.view.KeyShortcutView.Styles">
+		.keyShortcutPanel {
+			color: #FFFFFF;
+			background: black;
+			opacity: 0.85;
+			border-radius: 8px;
+			padding: 20px;
+		}
+		
+		.keyShortcutHeading {
+			font-size: 1.4em;
+		}
+		
+		.keyShortcutCategoryTitle {
+			font-size: 1.2em;
+			padding:4px 0;
+		}
+		
+		.keyShortcutTable
+		{
+			padding-bottom:5px;
+			font-size: 1.2em;
+		}
+		
+		.keyShortcutTable td
+		{
+			padding:0 10px;
+			border:none;
+			color:#FFA07A;
+			background:black;
+		}
+	</ui:style>
+
+	<g:VerticalPanel styleName="{style.keyShortcutPanel}" width="515px" height="220px">
+		<g:cell horizontalAlignment="ALIGN_CENTER">
+			<g:Label ui:field="heading" styleName="{style.keyShortcutHeading}"/>
+		</g:cell>
+		
+		<g:cell>
+			<g:FlowPanel ui:field="shortcutContainer"/>
+		</g:cell>
+	</g:VerticalPanel>
 
 </ui:UiBinder>
